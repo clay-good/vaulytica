@@ -1,0 +1,40 @@
+{
+  "id": "joint-venture-agreement",
+  "version": "1.0.0",
+  "name": "Joint Venture Agreement",
+  "description": "Contractual or entity joint venture between US parties, covering governance, capital, deadlock, and exit. Selects the COMM-146..151 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "joint venture agreement",
+      "joint venture",
+      "jv agreement",
+      "collaboration agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the venture",
+      "capital contributions of the members",
+      "deadlock",
+      "buy-sell",
+      "jv company",
+      "exclusivity of the venture"
+    ],
+    "negative_features": ["merger", "employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Venture", "Member", "Capital Contribution"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["operating-agreement-llc", "partnership-agreement"],
+  "compliance_matrix_columns": [
+    "Scope and exclusivity of the venture",
+    "Capital contributions and funding calls",
+    "Governance, reserved matters, deadlock",
+    "Profit and loss allocation",
+    "Transfer restrictions and exit / buy-sell",
+    "IP ownership and background IP"
+  ]
+}

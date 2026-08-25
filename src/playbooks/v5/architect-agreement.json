@@ -1,0 +1,42 @@
+{
+  "id": "architect-agreement",
+  "version": "1.0.0",
+  "name": "Owner-Architect Agreement",
+  "description": "Owner-architect agreement on an AIA B101-style baseline, reviewed for scope phases, standard of care, and instruments-of-service rights. Selects the CON-107..112 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "owner-architect agreement",
+      "architect agreement",
+      "b101",
+      "agreement between owner and architect",
+      "design services agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "instruments of service",
+      "schematic design",
+      "design development",
+      "construction documents",
+      "standard of care",
+      "additional services",
+      "certificates of payment"
+    ],
+    "negative_features": ["employment offer", "purchase and sale agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Architect", "Instruments of Service", "Basic Services"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "AIA-B101",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["design-build-agreement", "construction-contract"],
+  "compliance_matrix_columns": [
+    "Basic services by phase and additional services",
+    "Standard of care (no warranty/guarantee)",
+    "Instruments of service license and termination effect",
+    "Construction-phase duties and site visits",
+    "Compensation, reimbursables, and phase caps",
+    "Professional liability insurance limits"
+  ]
+}

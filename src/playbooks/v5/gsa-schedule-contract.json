@@ -1,0 +1,38 @@
+{
+  "id": "gsa-schedule-contract",
+  "version": "1.0.0",
+  "name": "GSA Schedule / MAS Contract Terms",
+  "description": "GSA Multiple Award Schedule contract terms, including Price Reductions and Trade Agreements Act compliance. Selects the COMM-163..167 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "gsa schedule",
+      "multiple award schedule",
+      "mas contract",
+      "federal supply schedule"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "price reductions clause",
+      "basis of award customer",
+      "trade agreements act",
+      "commercial sales practices",
+      "industrial funding fee"
+    ],
+    "negative_features": ["employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Schedule Contract", "Basis of Award"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "GSA-MAS",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["far-subcontract-flowdown"],
+  "compliance_matrix_columns": [
+    "Basis-of-award customer and price reductions",
+    "Industrial funding fee and 72A reporting",
+    "Trade Agreements Act country of origin",
+    "Ordering procedures and order-level terms",
+    "Option periods and extensions"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "equity-incentive-plan",
+  "version": "1.0.0",
+  "name": "Omnibus Equity Incentive Plan",
+  "description": "Omnibus stock plan reviewed for the share reserve, § 422 ISO limits, adjustment, and change-of-control mechanics. Selects the EQT-101..107 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "equity incentive plan",
+      "stock incentive plan",
+      "omnibus incentive plan",
+      "stock plan"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "share reserve",
+      "incentive stock options",
+      "nonstatutory stock options",
+      "evergreen",
+      "administrator",
+      "change in control",
+      "adjustment upon changes in capitalization"
+    ],
+    "negative_features": ["this grant notice", "employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Plan", "Award", "Administrator", "Share Reserve"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-422",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["stock-option-grant", "rsu-grant"],
+  "compliance_matrix_columns": [
+    "Share reserve and evergreen mechanics",
+    "ISO $100,000 limit and 10-year term",
+    "Administrator authority and repricing limits",
+    "Capitalization adjustment provisions",
+    "Change-in-control treatment",
+    "Amendment and stockholder-approval triggers",
+    "Clawback policy hook"
+  ]
+}

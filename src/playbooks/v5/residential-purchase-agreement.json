@@ -1,0 +1,43 @@
+{
+  "id": "residential-purchase-agreement",
+  "version": "1.0.0",
+  "name": "Residential Purchase Agreement",
+  "description": "One-to-four-family residential purchase contract, reviewed for the financing, inspection, and disclosure contingencies US residential practice requires. Selects the RE-138..145 ruleset (8 checks).",
+  "match_features": {
+    "title_keywords": [
+      "residential purchase agreement",
+      "residential real estate purchase",
+      "purchase and sale agreement for residential",
+      "offer to purchase real estate"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "earnest money",
+      "inspection contingency",
+      "financing contingency",
+      "lead-based paint",
+      "closing costs",
+      "appraisal contingency",
+      "seller's disclosure"
+    ],
+    "negative_features": ["commercial property", "employment agreement", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Buyer", "Seller", "Property", "Earnest Money"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-RESIDENTIAL-RE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["listing-agreement", "warranty-deed"],
+  "compliance_matrix_columns": [
+    "Earnest money and escrow holder",
+    "Financing and appraisal contingencies",
+    "Inspection contingency and repair procedure",
+    "Lead-based paint disclosure (pre-1978)",
+    "Seller property-condition disclosure",
+    "Title, survey, and permitted exceptions",
+    "Closing date, possession, and prorations",
+    "Default remedies and liquidated damages"
+  ]
+}

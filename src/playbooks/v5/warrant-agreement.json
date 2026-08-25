@@ -1,0 +1,39 @@
+{
+  "id": "warrant-agreement",
+  "version": "1.0.0",
+  "name": "Warrant to Purchase Stock",
+  "description": "Stand-alone warrant, reviewed for exercise mechanics, anti-dilution, and expiration/termination events. Selects the EQT-120..124 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "warrant to purchase",
+      "warrant agreement",
+      "common stock purchase warrant",
+      "preferred stock warrant"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "exercise price",
+      "net exercise",
+      "cashless exercise",
+      "warrant shares",
+      "expiration date of this warrant",
+      "anti-dilution adjustment"
+    ],
+    "negative_features": ["option grant notice", "restricted stock unit", "employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Warrant", "Exercise Price", "Warrant Shares"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-SECURITIES",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["convertible-note", "safe-yc"],
+  "compliance_matrix_columns": [
+    "Number of shares, class, and exercise price",
+    "Cashless / net exercise mechanics",
+    "Anti-dilution and capitalization adjustments",
+    "Expiration and automatic-exercise trigger",
+    "Termination on acquisition and notice period"
+  ]
+}

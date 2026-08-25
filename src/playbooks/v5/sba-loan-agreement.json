@@ -1,0 +1,41 @@
+{
+  "id": "sba-loan-agreement",
+  "version": "1.0.0",
+  "name": "SBA 7(a) / 504 Loan Agreement",
+  "description": "SBA-guaranteed loan documents, reviewed against the SOP 50 10 program requirements including personal guaranties and use of proceeds. Selects the BNK-109..114 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "sba loan agreement",
+      "sba 7(a)",
+      "sba 504",
+      "small business administration loan"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "small business administration",
+      "sba form 148",
+      "unconditional guarantee",
+      "use of proceeds",
+      "sop 50 10",
+      "eligible passive company",
+      "life insurance assignment"
+    ],
+    "negative_features": ["employment offer", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Loan", "Guarantor", "Borrower"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SBA-SOP-50-10",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["loan-agreement", "guaranty"],
+  "compliance_matrix_columns": [
+    "SBA authorization incorporated",
+    "Use-of-proceeds restrictions",
+    "Personal guaranty of 20%+ owners",
+    "Collateral and hazard insurance",
+    "Life-insurance assignment where required",
+    "Prepayment penalties and program limits"
+  ]
+}

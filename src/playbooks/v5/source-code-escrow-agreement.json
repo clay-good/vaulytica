@@ -1,0 +1,38 @@
+{
+  "id": "source-code-escrow-agreement",
+  "version": "1.0.0",
+  "name": "Source Code Escrow Agreement",
+  "description": "Three-party escrow of source code, reviewed for the release conditions and the § 365(n) bankruptcy protection. Selects the IPL-129..133 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "source code escrow",
+      "escrow agreement for source code",
+      "technology escrow agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "deposit materials",
+      "release condition",
+      "escrow agent",
+      "verification of the deposit",
+      "section 365(n)",
+      "update the deposit"
+    ],
+    "negative_features": ["employment offer", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Deposit Materials", "Escrow Agent", "Release Condition"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "11-USC-365n",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["oem-agreement", "saas-customer"],
+  "compliance_matrix_columns": [
+    "Deposit contents and update cadence",
+    "Verification / integrity testing rights",
+    "Release conditions and dispute procedure",
+    "§ 365(n) election preserved in bankruptcy",
+    "License scope after release"
+  ]
+}

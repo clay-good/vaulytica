@@ -1,0 +1,41 @@
+{
+  "id": "franchise-agreement",
+  "version": "1.0.0",
+  "name": "Franchise Agreement",
+  "description": "Franchise agreement under the FTC Franchise Rule (16 C.F.R. Part 436) and state franchise relationship laws. Selects the COMM-134..139 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "franchise agreement",
+      "franchising agreement",
+      "area development agreement",
+      "unit franchise agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "franchisee",
+      "franchisor",
+      "initial franchise fee",
+      "royalty fee",
+      "system standards",
+      "operations manual",
+      "protected territory"
+    ],
+    "negative_features": ["distributor", "reseller", "employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Franchisee", "Franchisor", "System", "Territory"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FTC-FRANCHISE-RULE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["franchise-disclosure-document"],
+  "compliance_matrix_columns": [
+    "Grant, territory, and exclusivity",
+    "Initial fee, royalty, and advertising fund",
+    "System standards and manual compliance",
+    "Term, renewal, and transfer",
+    "Termination and post-term covenants",
+    "State franchise-relationship law overrides"
+  ]
+}

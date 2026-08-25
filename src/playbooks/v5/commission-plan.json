@@ -1,0 +1,40 @@
+{
+  "id": "commission-plan",
+  "version": "1.0.0",
+  "name": "Sales Commission Plan",
+  "description": "Sales incentive plan, reviewed for the earning trigger, post-termination commissions, and state wage-law exposure. Selects the EMP-109..114 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "commission plan",
+      "sales compensation plan",
+      "incentive compensation plan",
+      "sales commission agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "quota",
+      "accelerator",
+      "commission is earned when",
+      "clawback of commissions",
+      "draw against commissions",
+      "on-target earnings"
+    ],
+    "negative_features": ["lease of the premises", "merger", "purchase and sale"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Quota", "Commission", "Plan Year"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-WAGE-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["offer-letter", "bonus-plan"],
+  "compliance_matrix_columns": [
+    "When a commission is earned vs. paid",
+    "Post-termination / trailing commissions",
+    "Chargebacks and clawbacks",
+    "Unilateral modification of quotas and rates",
+    "Recoverable vs. non-recoverable draw",
+    "Dispute and reconciliation procedure"
+  ]
+}

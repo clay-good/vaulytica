@@ -1,0 +1,39 @@
+{
+  "id": "letter-of-intent-lease",
+  "version": "1.0.0",
+  "name": "Lease Letter of Intent",
+  "description": "Non-binding lease LOI, reviewed for the binding/non-binding split, exclusivity, and economic terms. Selects the RE-107..111 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "letter of intent",
+      "lease letter of intent",
+      "loi for lease",
+      "term sheet for lease"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "non-binding",
+      "rentable square feet",
+      "tenant improvement allowance",
+      "free rent",
+      "this letter of intent",
+      "subject to a mutually acceptable lease"
+    ],
+    "negative_features": ["purchase and sale agreement", "employment agreement", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Premises", "Base Rent", "Term"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-REAL-ESTATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["lease-commercial-multitenant", "tenant-improvement-work-letter"],
+  "compliance_matrix_columns": [
+    "Binding vs. non-binding provisions identified",
+    "Premises, term, and base rent",
+    "TI allowance and free rent",
+    "Exclusivity / no-shop period",
+    "Expiration of the LOI"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "arbitration-demand",
+  "version": "1.0.0",
+  "name": "Demand for Arbitration",
+  "description": "Arbitration demand under AAA or JAMS rules, reviewed for the clause citation, relief statement, and filing/service mechanics. Selects the SET-123..127 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "demand for arbitration",
+      "arbitration demand",
+      "notice of arbitration",
+      "request for arbitration"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "american arbitration association",
+      "jams",
+      "the arbitration clause",
+      "the relief sought",
+      "locale",
+      "the nature of the dispute",
+      "arbitrator selection"
+    ],
+    "negative_features": ["this agreement is entered into", "employment offer"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Claimant", "Respondent", "Demand"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "AAA-JAMS",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["confidential-settlement"],
+  "compliance_matrix_columns": [
+    "Arbitration clause quoted and located",
+    "Nature of the dispute and claims asserted",
+    "Relief and amount in controversy",
+    "Locale / seat and governing rules",
+    "Service on the respondent and filing fee"
+  ]
+}

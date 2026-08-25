@@ -1,0 +1,40 @@
+{
+  "id": "joint-development-agreement",
+  "version": "1.0.0",
+  "name": "Joint Development Agreement",
+  "description": "Collaborative R&D agreement, reviewed for background/foreground IP allocation, joint-inventorship default, and publication control. Selects the IPL-116..121 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "joint development agreement",
+      "collaborative research agreement",
+      "co-development agreement",
+      "research and development agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "background intellectual property",
+      "foreground intellectual property",
+      "jointly developed",
+      "project plan",
+      "joint inventions",
+      "publication rights"
+    ],
+    "negative_features": ["employment offer", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Background IP", "Foreground IP", "Project"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "35-USC-262",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["technology-transfer-agreement", "patent-license"],
+  "compliance_matrix_columns": [
+    "Background IP identified and licensed",
+    "Foreground / joint IP ownership rule",
+    "§ 262 joint-owner default addressed",
+    "Prosecution and enforcement control",
+    "Publication review and delay period",
+    "Exclusivity and field-of-use limits"
+  ]
+}

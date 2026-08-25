@@ -1,0 +1,37 @@
+{
+  "id": "assignment-of-claim",
+  "version": "1.0.0",
+  "name": "Assignment of Claim",
+  "description": "Assignment of a legal claim or judgment, reviewed for assignability, champerty limits, and notice to the obligor. Selects the SET-111..115 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "assignment of claim",
+      "assignment of judgment",
+      "assignment of cause of action"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "hereby assigns all right, title and interest in the claim",
+      "the assigned claim",
+      "real party in interest",
+      "notice to the obligor",
+      "no warranty of collectability"
+    ],
+    "negative_features": ["employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Assigned Claim", "Assignor", "Assignee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-SETTLEMENT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["litigation-funding-agreement"],
+  "compliance_matrix_columns": [
+    "Claim identified with specificity",
+    "Assignability and anti-assignment review",
+    "Champerty / maintenance jurisdictional note",
+    "Notice to the obligor and substitution",
+    "Warranties as to title and collectability"
+  ]
+}

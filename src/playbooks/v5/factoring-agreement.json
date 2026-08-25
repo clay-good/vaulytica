@@ -1,0 +1,41 @@
+{
+  "id": "factoring-agreement",
+  "version": "1.0.0",
+  "name": "Accounts Receivable Factoring Agreement",
+  "description": "Sale of receivables, reviewed for the true-sale vs. secured-loan characterization, recourse, and notification terms. Selects the BNK-121..126 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "factoring agreement",
+      "accounts receivable purchase agreement",
+      "receivables purchase agreement",
+      "invoice factoring"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "purchased accounts",
+      "true sale",
+      "recourse",
+      "advance rate",
+      "reserve account",
+      "notification to account debtors",
+      "chargeback"
+    ],
+    "negative_features": ["employment offer", "lease of the premises", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Purchased Accounts", "Advance Rate", "Reserve"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["security-agreement", "ucc-1-financing-statement"],
+  "compliance_matrix_columns": [
+    "True-sale intent and protective security interest",
+    "Recourse vs. non-recourse and dispute chargebacks",
+    "Advance rate, discount fee, and reserve release",
+    "Notification / verification of account debtors",
+    "UCC-1 filing and lien priority",
+    "Effective cost-of-funds disclosure"
+  ]
+}

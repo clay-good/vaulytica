@@ -1,0 +1,33 @@
+{
+  "id": "trademark-assignment",
+  "version": "1.0.0",
+  "name": "Trademark Assignment",
+  "description": "Assignment of trademarks with the goodwill, as 15 U.S.C. § 1060 requires, for USPTO recordation. Selects the IPL-106..110 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": ["trademark assignment", "assignment of trademark", "assignment of marks"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "together with the goodwill of the business",
+      "registration no.",
+      "the assigned marks",
+      "intent-to-use application",
+      "recordation with the united states patent and trademark office"
+    ],
+    "negative_features": ["patent", "employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Assigned Marks", "Goodwill"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "15-USC-1060",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["trademark-license", "ip-assignment"],
+  "compliance_matrix_columns": [
+    "Marks and registrations listed",
+    "Goodwill expressly assigned (§ 1060)",
+    "Intent-to-use restriction respected",
+    "Recordation authorization",
+    "Quality-control transition and phase-out license"
+  ]
+}

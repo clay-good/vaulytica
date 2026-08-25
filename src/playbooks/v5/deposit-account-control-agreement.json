@@ -1,0 +1,39 @@
+{
+  "id": "deposit-account-control-agreement",
+  "version": "1.0.0",
+  "name": "Deposit Account Control Agreement (DACA)",
+  "description": "Three-party control agreement perfecting a security interest in a deposit account under UCC § 9-104. Selects the BNK-127..131 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "deposit account control agreement",
+      "daca",
+      "account control agreement",
+      "blocked account agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "control of the deposit account",
+      "shifting control",
+      "notice of exclusive control",
+      "the depositary bank",
+      "section 9-104",
+      "bank's prior rights"
+    ],
+    "negative_features": ["employment offer", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Deposit Account", "Secured Party", "Bank"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9-104",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["security-agreement", "revolving-credit-agreement"],
+  "compliance_matrix_columns": [
+    "Control language satisfying § 9-104(a)(2)",
+    "Springing vs. hard control",
+    "Notice of exclusive control mechanics and timing",
+    "Bank's setoff and prior-rights subordination",
+    "Termination and successor-bank provisions"
+  ]
+}

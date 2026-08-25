@@ -1,0 +1,39 @@
+{
+  "id": "relocation-agreement",
+  "version": "1.0.0",
+  "name": "Relocation / Repayment Agreement",
+  "description": "Relocation benefit and repayment agreement, reviewed for the repayment trigger, wage-deduction limits, and tax gross-up. Selects the EMP-120..124 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "relocation agreement",
+      "relocation repayment agreement",
+      "relocation assistance agreement",
+      "sign-on repayment agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "relocation expenses",
+      "repayment obligation",
+      "if you voluntarily resign within",
+      "gross-up",
+      "prorated repayment",
+      "deduct from your final paycheck"
+    ],
+    "negative_features": ["lease of the premises shall commence", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Relocation Benefits", "Repayment Period"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-WAGE-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["offer-letter"],
+  "compliance_matrix_columns": [
+    "Benefits provided and dollar cap",
+    "Repayment trigger and proration schedule",
+    "Wage-deduction authorization and state limits",
+    "Tax gross-up treatment",
+    "Involuntary-termination carve-out"
+  ]
+}

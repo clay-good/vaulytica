@@ -1,0 +1,38 @@
+{
+  "id": "reservation-of-rights-letter",
+  "version": "1.0.0",
+  "name": "Reservation of Rights Letter",
+  "description": "Insurer reservation-of-rights letter, reviewed for the specificity, independent-counsel trigger, and coverage-position clarity. Selects the INS-114..118 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "reservation of rights",
+      "reservation of rights letter",
+      "coverage position letter"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "reserves all rights",
+      "under a full reservation of rights",
+      "the policy provides",
+      "independent counsel",
+      "declaratory relief",
+      "we may disclaim coverage"
+    ],
+    "negative_features": ["employment offer", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Policy", "Claim", "Insured"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-INSURANCE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["insurance-policy-summary"],
+  "compliance_matrix_columns": [
+    "Specific policy provisions cited",
+    "Facts giving rise to each reservation",
+    "Defense provided vs. denied",
+    "Independent-counsel (Cumis-type) trigger",
+    "Right to seek declaratory relief reserved"
+  ]
+}

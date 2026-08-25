@@ -1,0 +1,39 @@
+{
+  "id": "bonus-plan",
+  "version": "1.0.0",
+  "name": "Annual Incentive / Bonus Plan",
+  "description": "Annual cash incentive plan, reviewed for discretion, the employed-on-payment-date condition, and § 409A short-term deferral. Selects the EMP-115..119 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "bonus plan",
+      "annual incentive plan",
+      "management incentive plan",
+      "short-term incentive plan"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "target bonus",
+      "performance metrics",
+      "must be employed on the payment date",
+      "the committee retains discretion",
+      "bonus pool",
+      "prorated bonus"
+    ],
+    "negative_features": ["stock option", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Target Bonus", "Performance Period"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-409A",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["executive-employment", "commission-plan"],
+  "compliance_matrix_columns": [
+    "Performance metrics and measurement period",
+    "Discretion reserved and its limits",
+    "Employed-on-payment-date condition",
+    "§ 409A short-term deferral timing",
+    "Proration on leave, hire, or termination"
+  ]
+}

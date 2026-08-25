@@ -1,0 +1,39 @@
+{
+  "id": "equipment-finance-agreement",
+  "version": "1.0.0",
+  "name": "Equipment Finance Agreement",
+  "description": "Equipment finance agreement (a loan, not a lease), reviewed for the security interest, hell-or-high-water payment, and disclosure posture. Selects the BNK-139..143 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "equipment finance agreement",
+      "equipment financing agreement",
+      "efa",
+      "conditional sale contract"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "grants a security interest in the equipment",
+      "unconditional obligation to pay",
+      "prepayment",
+      "ucc-1 financing statement",
+      "the equipment cost",
+      "title to the equipment passes"
+    ],
+    "negative_features": ["lease of the premises", "employment offer", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Equipment", "Financed Amount", "Payment Schedule"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-9",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["equipment-lease", "security-agreement", "ucc-1-financing-statement"],
+  "compliance_matrix_columns": [
+    "Loan vs. true-lease characterization",
+    "Security interest grant and UCC-1 filing",
+    "Payment schedule, rate, and prepayment terms",
+    "Insurance and casualty risk",
+    "Default, acceleration, and disposition of collateral"
+  ]
+}

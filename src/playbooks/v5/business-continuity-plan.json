@@ -1,0 +1,41 @@
+{
+  "id": "business-continuity-plan",
+  "version": "1.0.0",
+  "name": "Business Continuity / Disaster Recovery Plan",
+  "description": "BC/DR plan, reviewed against ISO 22301-style elements: BIA, RTO/RPO, activation, and test cadence. Selects the POL-120..125 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "business continuity plan",
+      "disaster recovery plan",
+      "bcp",
+      "continuity of operations plan"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "recovery time objective",
+      "recovery point objective",
+      "business impact analysis",
+      "plan activation",
+      "alternate site",
+      "tabletop exercise",
+      "crisis management team"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["RTO", "RPO", "Critical Function"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ISO-22301",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["security-incident-response-plan", "information-security-policy"],
+  "compliance_matrix_columns": [
+    "Business impact analysis and critical functions",
+    "RTO and RPO stated per function",
+    "Activation criteria and authority",
+    "Alternate site / work arrangements",
+    "Communication and notification tree",
+    "Testing cadence and plan maintenance"
+  ]
+}

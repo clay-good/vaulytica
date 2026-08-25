@@ -1,0 +1,42 @@
+{
+  "id": "arbitration-agreement-employment",
+  "version": "1.0.0",
+  "name": "Employment Arbitration Agreement",
+  "description": "Standalone employment arbitration agreement, reviewed against the unconscionability factors and the EFAA's sexual-harassment carve-out. Selects the EMP-101..108 ruleset (8 checks).",
+  "match_features": {
+    "title_keywords": [
+      "arbitration agreement",
+      "mutual arbitration agreement",
+      "agreement to arbitrate",
+      "dispute resolution agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "binding arbitration",
+      "class action waiver",
+      "the federal arbitration act",
+      "aaa employment arbitration rules",
+      "arbitrator shall be selected",
+      "each party shall bear"
+    ],
+    "negative_features": ["lease of the premises", "merger", "purchase and sale"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Arbitration", "Covered Claims"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FAA-EFAA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["employment-at-will-us", "offer-letter"],
+  "compliance_matrix_columns": [
+    "Mutuality of the obligation to arbitrate",
+    "EFAA carve-out for sexual harassment/assault claims",
+    "Cost allocation (employer pays arbitration fees)",
+    "Discovery adequacy",
+    "Remedies parity with court",
+    "Class / collective waiver and PAGA severability",
+    "Arbitrator selection neutrality",
+    "Opt-out mechanism and consideration"
+  ]
+}

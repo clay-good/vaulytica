@@ -1,0 +1,40 @@
+{
+  "id": "background-check-disclosure",
+  "version": "1.0.0",
+  "name": "FCRA Background Check Disclosure and Authorization",
+  "description": "Pre-employment consumer-report disclosure, measured against the FCRA § 604(b) stand-alone-document rule and the adverse-action sequence. Selects the EMP-148..153 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "background check disclosure",
+      "disclosure and authorization",
+      "consumer report disclosure",
+      "fair credit reporting act disclosure"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "consumer report",
+      "consumer reporting agency",
+      "a summary of your rights under the fair credit reporting act",
+      "investigative consumer report",
+      "authorize",
+      "pre-adverse action"
+    ],
+    "negative_features": ["merger", "lease of the premises", "purchase and sale"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Consumer Report", "Applicant"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FCRA-15-USC-1681b",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["offer-letter"],
+  "compliance_matrix_columns": [
+    "Stand-alone disclosure with no extraneous terms",
+    "No liability waiver embedded in the disclosure",
+    "Clear written authorization",
+    "Investigative-consumer-report notice",
+    "Summary of Rights delivery",
+    "Pre-adverse and adverse-action sequence"
+  ]
+}

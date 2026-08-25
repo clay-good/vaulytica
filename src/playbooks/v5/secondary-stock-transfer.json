@@ -1,0 +1,40 @@
+{
+  "id": "secondary-stock-transfer",
+  "version": "1.0.0",
+  "name": "Secondary Stock Transfer Agreement",
+  "description": "Private secondary sale of shares by an existing holder, covering ROFR clearance, transfer restrictions, and Rule 144 / § 4(a)(7) posture. Selects the EQT-125..130 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "stock transfer agreement",
+      "secondary purchase agreement",
+      "share transfer agreement",
+      "stock sale agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "right of first refusal",
+      "the company's consent to transfer",
+      "transfer restrictions",
+      "rule 144",
+      "section 4(a)(7)",
+      "selling stockholder"
+    ],
+    "negative_features": ["merger", "employment agreement", "the company hereby issues"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Seller", "Purchaser", "Shares"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-SECURITIES",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["stockholders-agreement", "rofr-co-sale"],
+  "compliance_matrix_columns": [
+    "ROFR / co-sale waiver evidence",
+    "Company consent and transfer-agent instruction",
+    "Securities-law exemption relied on",
+    "Seller representations on title and liens",
+    "Information asymmetry / big-boy acknowledgment",
+    "409A and tax reporting responsibility"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "quitclaim-deed",
+  "version": "1.0.0",
+  "name": "Quitclaim Deed",
+  "description": "Quitclaim conveyance, reviewed for the granting words, legal description, and the absence of any title warranty. Selects the RE-128..132 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": ["quitclaim deed", "quit claim deed", "quitclaim"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "does hereby remise, release and quitclaim",
+      "without any covenants of warranty",
+      "legal description",
+      "grantor",
+      "grantee",
+      "notary public"
+    ],
+    "negative_features": ["warranty deed", "lease of the premises", "employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Grantor", "Grantee", "Property"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-CONVEYANCING",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["warranty-deed"],
+  "compliance_matrix_columns": [
+    "Granting words appropriate to a quitclaim",
+    "Legal description of the property",
+    "No-warranty recital",
+    "Consideration recital and transfer-tax statement",
+    "Notarial acknowledgment and recording block"
+  ]
+}

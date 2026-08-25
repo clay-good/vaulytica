@@ -1,0 +1,34 @@
+{
+  "id": "internship-agreement",
+  "version": "1.0.0",
+  "name": "Internship Agreement",
+  "description": "Internship agreement, reviewed against the FLSA primary-beneficiary test for unpaid interns and the IP/confidentiality terms. Selects the EMP-130..134 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": ["internship agreement", "intern agreement", "internship offer"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "intern",
+      "academic credit",
+      "unpaid internship",
+      "primary beneficiary",
+      "the internship period",
+      "no guarantee of employment"
+    ],
+    "negative_features": ["lease of the premises", "merger", "purchase and sale"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Intern", "Internship Period"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FLSA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["offer-letter", "piia"],
+  "compliance_matrix_columns": [
+    "Paid vs. unpaid and FLSA primary-beneficiary factors",
+    "Academic-credit and educational-benefit recitals",
+    "No-promise-of-employment statement",
+    "IP assignment and confidentiality",
+    "Workers' compensation and insurance coverage"
+  ]
+}

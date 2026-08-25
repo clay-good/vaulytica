@@ -1,0 +1,39 @@
+{
+  "id": "advertising-insertion-order",
+  "version": "1.0.0",
+  "name": "Advertising Insertion Order (IAB Terms)",
+  "description": "Digital advertising insertion order on IAB Standard Terms v3.0, covering makegoods, verification, and cancellation. Selects the COMM-168..172 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "insertion order",
+      "advertising insertion order",
+      "media insertion order",
+      "iab terms"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "impressions",
+      "makegood",
+      "iab standard terms",
+      "cancellation right",
+      "ad verification",
+      "flight dates"
+    ],
+    "negative_features": ["employment", "lease of the premises", "software as a service"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Insertion Order", "Media Company", "Agency"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IAB-3.0",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["marketing-services-agreement", "influencer-agreement"],
+  "compliance_matrix_columns": [
+    "Flight dates, inventory, and impressions",
+    "Pricing, discrepancy, and third-party measurement",
+    "Makegood and under-delivery remedy",
+    "Cancellation notice periods",
+    "Sequential liability / agency payment"
+  ]
+}

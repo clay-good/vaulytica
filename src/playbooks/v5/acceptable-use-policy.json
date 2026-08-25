@@ -1,0 +1,39 @@
+{
+  "id": "acceptable-use-policy",
+  "version": "1.0.0",
+  "name": "Acceptable Use Policy (Employee IT)",
+  "description": "Employee IT acceptable-use policy, reviewed for the monitoring notice, prohibited-use list, and the NLRA § 7 limits on overbroad rules. Selects the POL-108..112 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "acceptable use policy",
+      "computer use policy",
+      "it acceptable use",
+      "technology use policy"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "no expectation of privacy",
+      "company systems",
+      "monitoring",
+      "prohibited uses",
+      "personal use",
+      "return of company property"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "api key"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Company Systems", "User"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-EMPLOYMENT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["employee-handbook", "information-security-policy"],
+  "compliance_matrix_columns": [
+    "Systems covered and users bound",
+    "Monitoring notice and privacy expectation",
+    "Prohibited uses enumerated",
+    "NLRA § 7 protected-activity savings clause",
+    "Discipline and enforcement"
+  ]
+}

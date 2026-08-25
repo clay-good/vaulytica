@@ -1,0 +1,41 @@
+{
+  "id": "oem-agreement",
+  "version": "1.0.0",
+  "name": "OEM / White-Label Agreement",
+  "description": "OEM or white-label agreement embedding one party's product in another's branded offering. Selects the COMM-237..242 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "oem agreement",
+      "white label agreement",
+      "white-label",
+      "original equipment manufacturer agreement",
+      "embedded license agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "embedded in the oem product",
+      "rebrand",
+      "under the oem's brand",
+      "end user license",
+      "minimum purchase commitment",
+      "support tiers"
+    ],
+    "negative_features": ["employment", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["OEM Product", "Licensed Technology", "End User"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["distribution-agreement", "eula"],
+  "compliance_matrix_columns": [
+    "Embedded license scope and branding rights",
+    "End-user license pass-through",
+    "Support tiering (L1 / L2 / L3)",
+    "IP indemnity and defense control",
+    "Minimum commitments and pricing",
+    "Source-code escrow / continuity"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "media-release",
+  "version": "1.0.0",
+  "name": "Model / Talent Release",
+  "description": "Release of name, image, and likeness for commercial use, measured against state right-of-publicity statutes. Selects the COMM-184..188 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "model release",
+      "talent release",
+      "appearance release",
+      "photo release",
+      "likeness release"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "name, image and likeness",
+      "right of publicity",
+      "irrevocably grants",
+      "in all media now known or hereafter devised",
+      "no further compensation"
+    ],
+    "negative_features": ["employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Release", "Likeness"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-RIGHT-OF-PUBLICITY",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["influencer-agreement"],
+  "compliance_matrix_columns": [
+    "Scope of media, territory, and duration",
+    "Consideration recited",
+    "Minor's parent/guardian signature",
+    "Revocability and moral-rights waiver",
+    "Post-mortem right-of-publicity treatment"
+  ]
+}

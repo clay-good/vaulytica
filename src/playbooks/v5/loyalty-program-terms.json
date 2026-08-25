@@ -1,0 +1,39 @@
+{
+  "id": "loyalty-program-terms",
+  "version": "1.0.0",
+  "name": "Loyalty / Rewards Program Terms",
+  "description": "Consumer loyalty program terms, reviewed for points expiration, unilateral devaluation, and state gift-card overlaps. Selects the COMM-219..223 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "loyalty program terms",
+      "rewards program terms",
+      "membership rewards terms",
+      "points program"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "points expire",
+      "reward tier",
+      "program currency",
+      "we may modify or terminate the program",
+      "redemption",
+      "no cash value"
+    ],
+    "negative_features": ["employment", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Points", "Member", "Program"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-CONSUMER",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["website-terms-of-use"],
+  "compliance_matrix_columns": [
+    "Points expiration and forfeiture terms",
+    "Unilateral devaluation / program termination",
+    "Redemption mechanics and blackout limits",
+    "Gift-card / stored-value law interaction",
+    "Account closure and transfer on death"
+  ]
+}

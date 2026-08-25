@@ -1,0 +1,42 @@
+{
+  "id": "do-policy",
+  "version": "1.0.0",
+  "name": "D&O Liability Policy Review",
+  "description": "Directors and officers liability policy, reviewed for Side A/B/C structure, the insured-vs-insured exclusion, and severability. Selects the INS-101..107 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "directors and officers liability",
+      "d&o policy",
+      "management liability policy",
+      "directors & officers"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "side a",
+      "insured versus insured",
+      "wrongful act",
+      "claims made and reported",
+      "severability of the application",
+      "final adjudication",
+      "entity coverage"
+    ],
+    "negative_features": ["employment offer", "lease of the premises", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Wrongful Act", "Claim", "Insured Person"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-INSURANCE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["insurance-policy-summary", "indemnification-agreement"],
+  "compliance_matrix_columns": [
+    "Side A / B / C structure and limits",
+    "Claims-made-and-reported trigger and notice",
+    "Insured-vs-insured exclusion and carve-backs",
+    "Conduct exclusions with final-adjudication wording",
+    "Severability of application and exclusions",
+    "Defense-cost treatment (duty to defend vs. reimburse)",
+    "Run-off / tail on change of control"
+  ]
+}

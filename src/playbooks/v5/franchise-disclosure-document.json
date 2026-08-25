@@ -1,0 +1,35 @@
+{
+  "id": "franchise-disclosure-document",
+  "version": "1.0.0",
+  "name": "Franchise Disclosure Document (FDD)",
+  "description": "FDD prose reviewed against the 23 items the FTC Franchise Rule requires (16 C.F.R. § 436.5). Selects the COMM-140..145 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": ["franchise disclosure document", "fdd", "disclosure document"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "item 19",
+      "financial performance representation",
+      "item 20",
+      "outlets and franchisee information",
+      "receipt page",
+      "franchisor's litigation history"
+    ],
+    "negative_features": ["this agreement is entered into", "witnesseth"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Franchisor", "Franchisee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FTC-FRANCHISE-RULE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["franchise-agreement"],
+  "compliance_matrix_columns": [
+    "Item 1–5 franchisor, litigation, bankruptcy, fees",
+    "Item 7 estimated initial investment",
+    "Item 19 financial performance representation",
+    "Item 20 outlet tables",
+    "Item 21 audited financial statements",
+    "Receipt page and 14-day disclosure timing"
+  ]
+}

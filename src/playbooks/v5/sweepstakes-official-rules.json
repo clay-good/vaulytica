@@ -1,0 +1,41 @@
+{
+  "id": "sweepstakes-official-rules",
+  "version": "1.0.0",
+  "name": "Sweepstakes / Contest Official Rules",
+  "description": "Official rules for a US promotion, checked for the no-purchase-necessary, odds, AMOE, and eligibility disclosures state lottery law requires. Selects the COMM-224..230 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "official rules",
+      "sweepstakes rules",
+      "contest rules",
+      "giveaway official rules"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "no purchase necessary",
+      "a purchase will not increase your chances",
+      "odds of winning",
+      "void where prohibited",
+      "approximate retail value",
+      "alternate method of entry"
+    ],
+    "negative_features": ["this agreement is entered into by and between", "employment"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Sponsor", "Entrant", "Prize"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-LOTTERY-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["website-terms-of-use"],
+  "compliance_matrix_columns": [
+    "No-purchase-necessary and AMOE statement",
+    "Odds of winning disclosure",
+    "Eligibility, age, and geographic limits",
+    "Start/end dates and entry period",
+    "Prize ARV and winner tax responsibility",
+    "Sponsor identity and rules availability",
+    "Winner list and publicity release"
+  ]
+}

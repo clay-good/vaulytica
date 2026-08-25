@@ -1,0 +1,40 @@
+{
+  "id": "data-sharing-agreement",
+  "version": "1.0.0",
+  "name": "Data Sharing Agreement (Research / Inter-Agency)",
+  "description": "Controller-to-controller or research data sharing agreement, reviewed for purpose limitation, de-identification, and re-identification bans. Selects the PRV-118..123 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "data sharing agreement",
+      "data use agreement",
+      "information sharing agreement",
+      "data transfer agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "limited data set",
+      "de-identified",
+      "re-identification",
+      "permitted purposes of the data",
+      "the recipient shall not",
+      "irb approval"
+    ],
+    "negative_features": ["merger", "employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Shared Data", "Recipient", "Permitted Purpose"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-PRIVACY",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["dpa-multi-state-us", "phi-authorization"],
+  "compliance_matrix_columns": [
+    "Data elements shared and purpose limitation",
+    "De-identification standard applied",
+    "Re-identification prohibition",
+    "Onward-transfer and publication limits",
+    "Security safeguards and breach notice",
+    "Destruction / return at end of purpose"
+  ]
+}

@@ -23,6 +23,7 @@ import {
   LAUNCH_RULES,
   V3_RULES,
   V4_RULES,
+  V5_RULES,
   runEngine,
   type EngineRun,
   type Rule,
@@ -84,7 +85,7 @@ export async function loadAccuracyDeps(opts: { dkbDir?: string } = {}): Promise<
     dkb,
     launchPlaybooks,
     extendedPlaybooks,
-    rules: [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES] as readonly Rule[],
+    rules: [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES] as readonly Rule[],
   };
   cachedByDir.set(dkbDir, deps);
   return deps;

@@ -1,0 +1,39 @@
+{
+  "id": "property-management-agreement",
+  "version": "1.0.0",
+  "name": "Property Management Agreement",
+  "description": "Owner-manager agreement for commercial or residential property, covering authority limits, trust accounts, and licensing. Selects the RE-112..117 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "property management agreement",
+      "management agreement for the property",
+      "asset management agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the manager shall",
+      "management fee",
+      "trust account",
+      "operating account",
+      "owner's approval for expenditures",
+      "leasing commissions"
+    ],
+    "negative_features": ["purchase and sale agreement", "employment agreement", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Manager", "Owner", "Property", "Management Fee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-REAL-ESTATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["lease-commercial-multitenant"],
+  "compliance_matrix_columns": [
+    "Scope of authority and expenditure limits",
+    "Management fee and leasing commissions",
+    "Segregated trust / operating accounts",
+    "Real-estate broker licensing recital",
+    "Insurance, indemnity, and standard of care",
+    "Termination rights and transition of records"
+  ]
+}

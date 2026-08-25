@@ -18,7 +18,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { LAUNCH_RULES, V3_RULES, V4_RULES } from "../../src/engine/index.js";
+import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES } from "../../src/engine/index.js";
 import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
 
 const root = process.cwd();
@@ -71,14 +71,16 @@ describe("README rule counts", () => {
     expect(summed).toBe(LAUNCH_RULES.length);
   });
 
-  it("quotes the live v3 and v4 addends", () => {
+  it("quotes the live v3, v4, and v5 addends", () => {
     expect(readme).toContain(`**v3 (+${V3_RULES.length} rules)**`);
     expect(readme).toContain(`**v4 (+${V4_RULES.length} rules)**`);
+    expect(readme).toContain(`**v5 (+${V5_RULES.length} rules)**`);
     expect(readme).toContain(`| v4 | Every operative document | +${V4_RULES.length} rules,`);
+    expect(readme).toContain(`| v5 | The US catalog | +${V5_RULES.length} rules,`);
   });
 
   it("quotes the live catalog total", () => {
-    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
+    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length;
     expect(readme).toContain(`**${total.toLocaleString("en-US")}-rule**`);
   });
 
@@ -146,7 +148,7 @@ describe("landing-page rule counts", () => {
   it("quotes the live catalog total in the hero facts strip", () => {
     // The hero states the headline number before anything else on the page.
     // It is the first thing a reader checks and the first thing to age.
-    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
+    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length;
     const quoted = [...landing.matchAll(/data-rule-total>([\d,]+)</g)].map((m) =>
       Number(m[1]!.replace(/,/g, "")),
     );
@@ -154,11 +156,11 @@ describe("landing-page rule counts", () => {
     for (const n of quoted) expect(n).toBe(total);
   });
 
-  it("quotes the live launch set, v4 addend, and total", () => {
-    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
+  it("quotes the live launch set, v4 and v5 addends, and total", () => {
+    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length;
     expect(landing).toContain(
       `${LAUNCH_RULES.length} rules at launch across ten categories — ${V3_RULES.length} more in v3, ` +
-        `${V4_RULES.length} more in v4 (${total.toLocaleString("en-US")} in`,
+        `${V4_RULES.length} more in v4, ${V5_RULES.length} more in v5 (${total.toLocaleString("en-US")} in`,
     );
   });
 });
@@ -167,7 +169,7 @@ describe("architecture-diagram rule counts", () => {
   const architecture = readFileSync(join(root, "docs", "architecture.md"), "utf8");
 
   it("quotes the live launch set and catalog total", () => {
-    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
+    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length;
     expect(architecture).toContain(
       `${LAUNCH_RULES.length} launch · ${total.toLocaleString("en-US")} total rules`,
     );

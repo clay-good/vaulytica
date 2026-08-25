@@ -1,0 +1,38 @@
+{
+  "id": "fiscal-sponsorship-agreement",
+  "version": "1.0.0",
+  "name": "Fiscal Sponsorship Agreement",
+  "description": "Model A or C fiscal sponsorship between a 501(c)(3) sponsor and a sponsored project. Selects the GOV-128..132 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "fiscal sponsorship agreement",
+      "fiscal sponsorship",
+      "sponsored project agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "fiscal sponsor",
+      "sponsored project",
+      "variance power",
+      "charitable purposes",
+      "administrative fee",
+      "grantor restricted funds"
+    ],
+    "negative_features": ["employment agreement", "merger", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Sponsor", "Project", "Project Fund"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-501C3",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["nonprofit-bylaws", "grant-agreement"],
+  "compliance_matrix_columns": [
+    "Model A vs. Model C characterization",
+    "Variance power retained by the sponsor",
+    "Administrative fee and fund accounting",
+    "Charitable-purpose limitation on use",
+    "Termination and transfer of the project fund"
+  ]
+}

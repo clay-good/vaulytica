@@ -1,0 +1,41 @@
+{
+  "id": "litigation-funding-agreement",
+  "version": "1.0.0",
+  "name": "Litigation Funding Agreement",
+  "description": "Third-party litigation funding agreement, reviewed for control, privilege/work-product, champerty, and disclosure-rule exposure. Selects the SET-138..143 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "litigation funding agreement",
+      "litigation finance agreement",
+      "funding agreement",
+      "legal funding agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the funder",
+      "funded claim",
+      "proceeds waterfall",
+      "the funder shall have no right to control",
+      "work product",
+      "champerty",
+      "return on the funded amount"
+    ],
+    "negative_features": ["employment offer", "merger agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Funder", "Funded Claim", "Proceeds"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-LITIGATION-FINANCE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["assignment-of-claim", "engagement-letter"],
+  "compliance_matrix_columns": [
+    "No funder control over litigation or settlement",
+    "Proceeds waterfall and multiple/return cap",
+    "Privilege and work-product protection recital",
+    "Champerty / maintenance and usury posture",
+    "Disclosure obligations under local rules or D.N.J./Del. standing orders",
+    "Termination, budget overrun, and case-abandonment terms"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "forbearance-agreement",
+  "version": "1.0.0",
+  "name": "Forbearance Agreement",
+  "description": "Lender forbearance following default, reviewed for the default acknowledgment, no-waiver, and release terms. Selects the BNK-115..120 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "forbearance agreement",
+      "forbearance and modification agreement",
+      "standstill and forbearance"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "existing defaults",
+      "forbearance period",
+      "the lender does not waive",
+      "reaffirmation of the loan documents",
+      "borrower releases the lender",
+      "forbearance termination event"
+    ],
+    "negative_features": ["employment offer", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Existing Defaults", "Forbearance Period"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-LENDING",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["loan-agreement", "security-agreement"],
+  "compliance_matrix_columns": [
+    "Existing defaults acknowledged and specified",
+    "Forbearance period and termination events",
+    "No-waiver and reservation of rights",
+    "Reaffirmation by borrower and guarantors",
+    "Borrower release of lender claims",
+    "Conditions, milestones, and new consideration"
+  ]
+}

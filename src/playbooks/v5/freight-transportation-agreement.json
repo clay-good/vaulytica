@@ -1,0 +1,41 @@
+{
+  "id": "freight-transportation-agreement",
+  "version": "1.0.0",
+  "name": "Freight / Transportation Agreement",
+  "description": "Motor-carrier or broker transportation agreement under 49 U.S.C. and the Carmack Amendment. Selects the COMM-118..123 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "transportation agreement",
+      "motor carrier agreement",
+      "freight agreement",
+      "broker-carrier agreement",
+      "transportation services agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "bill of lading",
+      "carmack",
+      "cargo liability",
+      "motor carrier",
+      "freight charges",
+      "detention and demurrage"
+    ],
+    "negative_features": ["warehouse", "software as a service", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Carrier", "Shipper", "Shipment"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "49-USC-14706",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["warehousing-3pl-agreement"],
+  "compliance_matrix_columns": [
+    "Carmack cargo-liability standard and limits",
+    "Bill of lading terms and precedence",
+    "Insurance and certificates",
+    "Freight charges, accessorials, and payment",
+    "Indemnity and independent-contractor status",
+    "Claims filing and suit deadlines"
+  ]
+}

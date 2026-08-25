@@ -1,0 +1,44 @@
+{
+  "id": "website-terms-of-use",
+  "version": "1.0.0",
+  "name": "Website Terms of Use",
+  "description": "Public website terms of use, reviewed for assent mechanics, the modification-by-posting problem, and consumer-arbitration disclosure. Selects the COMM-201..206 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "terms of use",
+      "website terms",
+      "terms and conditions of use",
+      "site terms"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "by using this site",
+      "we may modify these terms",
+      "user-generated content",
+      "dmca",
+      "acceptable use",
+      "governs your use of the site"
+    ],
+    "negative_features": [
+      "subscription fee",
+      "the services will be provided as described in an order form",
+      "employment"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Site", "User", "Content"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-CONSUMER",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["saas-tos", "privacy-policy-lint"],
+  "compliance_matrix_columns": [
+    "Assent mechanism (clickwrap vs browsewrap)",
+    "Unilateral modification and notice",
+    "DMCA agent designation",
+    "User-content license scope",
+    "Arbitration / class waiver conspicuousness",
+    "Disclaimer and liability cap conspicuousness"
+  ]
+}

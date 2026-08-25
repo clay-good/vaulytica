@@ -28,6 +28,10 @@ const REPO_ROOT = join(__dirname, "..");
 export const EXTENDED_SOURCE_DIRS = [
   join(REPO_ROOT, "src", "playbooks", "v3"),
   join(REPO_ROOT, "src", "playbooks", "v4"),
+  // spec-v45 — the US catalog expansion. 105 additional US document
+  // families, bundled from their own directory so the wave stays
+  // reviewable as a unit and the v3/v4 dirs keep their spec provenance.
+  join(REPO_ROOT, "src", "playbooks", "v5"),
 ];
 export const EXTENDED_MANIFEST_PATH = join(REPO_ROOT, "playbooks", "extended.json");
 

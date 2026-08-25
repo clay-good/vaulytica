@@ -1,0 +1,43 @@
+{
+  "id": "proxy-statement-narrative",
+  "version": "1.0.0",
+  "name": "Proxy Statement Narrative (DEF 14A)",
+  "description": "Annual-meeting proxy prose reviewed against the Schedule 14A disclosure items. Selects the GOV-117..122 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "proxy statement",
+      "notice of annual meeting of stockholders",
+      "def 14a",
+      "notice of annual meeting and proxy statement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "record date",
+      "broker non-vote",
+      "say-on-pay",
+      "beneficial ownership",
+      "compensation discussion and analysis",
+      "audit committee report"
+    ],
+    "negative_features": [
+      "this agreement is entered into by and between",
+      "the parties agree as follows"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Record Date", "Annual Meeting"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "SEC-SCHEDULE-14A",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["committee-charter", "insider-trading-policy"],
+  "compliance_matrix_columns": [
+    "Record date, quorum, and vote standards",
+    "Broker non-vote and abstention treatment",
+    "Director nominee biographies and independence",
+    "Executive compensation tables and CD&A",
+    "Beneficial ownership table",
+    "Auditor fees and ratification"
+  ]
+}

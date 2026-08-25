@@ -1,0 +1,39 @@
+{
+  "id": "expert-witness-retention",
+  "version": "1.0.0",
+  "name": "Expert Witness Retention Agreement",
+  "description": "Retention of a testifying or consulting expert, reviewed for the FRCP 26(b)(4) draft-report protection and independence terms. Selects the SET-128..132 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "expert witness agreement",
+      "expert retention agreement",
+      "consulting expert agreement",
+      "retention of expert"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "testifying expert",
+      "consulting expert",
+      "draft reports",
+      "rule 26",
+      "the expert's opinions",
+      "hourly rate for deposition testimony"
+    ],
+    "negative_features": ["employment offer", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Expert", "Engagement", "Report"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-26b4",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["engagement-letter"],
+  "compliance_matrix_columns": [
+    "Testifying vs. consulting designation",
+    "Rule 26(b)(4) draft-report and communication protection",
+    "Independence and no-contingent-fee recital",
+    "Rates, retainer, and deposition-fee responsibility",
+    "Document retention and return of case materials"
+  ]
+}

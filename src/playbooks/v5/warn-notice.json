@@ -1,0 +1,40 @@
+{
+  "id": "warn-notice",
+  "version": "1.0.0",
+  "name": "WARN Act Notice",
+  "description": "Plant-closing or mass-layoff notice measured against the federal WARN Act content requirements (29 U.S.C. § 2102; 20 C.F.R. § 639.7). Selects the EMP-142..147 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "warn notice",
+      "worker adjustment and retraining",
+      "notice of plant closing",
+      "notice of mass layoff"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "worker adjustment and retraining notification",
+      "60 days",
+      "bumping rights",
+      "expected date of separation",
+      "permanent or temporary",
+      "the name and telephone number of a company official"
+    ],
+    "negative_features": ["this agreement is entered into by and between", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Affected Employees", "Separation Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "WARN-29-USC-2101",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["separation-agreement"],
+  "compliance_matrix_columns": [
+    "60-day advance timing",
+    "Permanent vs. temporary and expected date",
+    "Bumping-rights statement",
+    "Job titles and number of affected employees",
+    "Company contact for further information",
+    "State mini-WARN overlay (CA, NY, NJ, and others)"
+  ]
+}

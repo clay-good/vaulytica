@@ -1,0 +1,43 @@
+{
+  "id": "purchase-order-terms",
+  "version": "1.0.0",
+  "name": "Purchase Order Terms and Conditions",
+  "description": "Buyer-form purchase order terms for a sale of goods under UCC Article 2, including the battle-of-the-forms posture under § 2-207. Selects the COMM-101..105 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "purchase order terms",
+      "purchase order",
+      "standard terms of purchase",
+      "po terms"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "this purchase order",
+      "acknowledgment of this order",
+      "additional or different terms",
+      "goods conforming",
+      "shipment shall constitute acceptance"
+    ],
+    "negative_features": [
+      "statement of work",
+      "software as a service",
+      "master services agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Purchase Order", "Goods", "Seller"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-2",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["master-purchase-agreement"],
+  "compliance_matrix_columns": [
+    "Acceptance limited to PO terms (§ 2-207)",
+    "Price and payment terms",
+    "Delivery, title, and risk of loss",
+    "Warranty and inspection/rejection",
+    "Cancellation for convenience"
+  ]
+}

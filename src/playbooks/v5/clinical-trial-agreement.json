@@ -1,0 +1,42 @@
+{
+  "id": "clinical-trial-agreement",
+  "version": "1.0.0",
+  "name": "Clinical Trial Agreement",
+  "description": "Sponsor-site clinical trial agreement, reviewed against 21 C.F.R. Parts 50/56/312 and subject-injury, publication, and data terms. Selects the HC-114..120 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "clinical trial agreement",
+      "clinical study agreement",
+      "site agreement",
+      "investigator agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the protocol",
+      "institutional review board",
+      "subject injury",
+      "informed consent form",
+      "principal investigator",
+      "form fda 1572",
+      "publication of the study results"
+    ],
+    "negative_features": ["merger", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Protocol", "Study", "Principal Investigator"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "21-CFR-312",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["informed-consent", "data-sharing-agreement"],
+  "compliance_matrix_columns": [
+    "Protocol incorporation and amendment control",
+    "IRB approval as condition precedent",
+    "Subject-injury cost responsibility",
+    "Informed-consent form control and language",
+    "Publication rights and sponsor review window",
+    "Data ownership, access, and § 1572 obligations",
+    "Financial disclosure and debarment certification"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "side-letter",
+  "version": "1.0.0",
+  "name": "Investor Side Letter",
+  "description": "Side letter granting an investor rights outside the main documents, reviewed for MFN, precedence, and disclosure of the modification. Selects the MNA-124..128 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": ["side letter", "letter agreement regarding", "investor side letter"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "most favored nation",
+      "notwithstanding anything to the contrary in the purchase agreement",
+      "information rights",
+      "board observer",
+      "pro rata rights",
+      "this letter shall terminate upon"
+    ],
+    "negative_features": ["employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Side Letter", "Investor"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-VENTURE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["investor-rights-agreement", "subscription-agreement"],
+  "compliance_matrix_columns": [
+    "Rights granted beyond the main documents",
+    "Precedence over the principal agreement",
+    "MFN scope and disclosure obligation",
+    "Termination on IPO / transfer / threshold drop",
+    "Amendment mechanics and other-investor consent"
+  ]
+}

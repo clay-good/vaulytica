@@ -1,0 +1,40 @@
+{
+  "id": "staffing-services-agreement",
+  "version": "1.0.0",
+  "name": "Staffing / Contingent Labor Agreement",
+  "description": "Staffing-agency agreement supplying contingent workers, including co-employment allocation and conversion fees. Selects the COMM-129..133 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "staffing agreement",
+      "staffing services agreement",
+      "contingent labor",
+      "temporary staffing",
+      "managed service provider agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "assigned employees",
+      "co-employment",
+      "conversion fee",
+      "bill rate",
+      "the agency is the employer of record",
+      "background check"
+    ],
+    "negative_features": ["software as a service", "goods", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Assigned Employee", "Client", "Bill Rate"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-EMPLOYMENT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["independent-contractor", "employment-at-will-us"],
+  "compliance_matrix_columns": [
+    "Employer-of-record allocation",
+    "Wage, hour, and benefits responsibility",
+    "Conversion / buyout fee",
+    "Workers' compensation and insurance",
+    "Background check and screening consents"
+  ]
+}

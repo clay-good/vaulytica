@@ -1,0 +1,42 @@
+{
+  "id": "articles-of-organization",
+  "version": "1.0.0",
+  "name": "Articles of Organization (LLC)",
+  "description": "LLC formation certificate filed with a Secretary of State, reviewed against the RULLCA-style required contents. Selects the GOV-101..105 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "articles of organization",
+      "certificate of formation",
+      "certificate of organization"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "registered agent",
+      "the name of the limited liability company",
+      "principal office",
+      "organizer",
+      "member-managed",
+      "manager-managed"
+    ],
+    "negative_features": [
+      "shares of common stock",
+      "board of directors",
+      "this agreement is entered into"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Company", "Registered Agent"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "RULLCA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["operating-agreement-llc", "charter-incorporation"],
+  "compliance_matrix_columns": [
+    "Entity name with required designator",
+    "Registered agent and registered office",
+    "Management structure (member vs. manager)",
+    "Duration / perpetual existence",
+    "Organizer signature and effective date"
+  ]
+}

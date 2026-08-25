@@ -1,0 +1,39 @@
+{
+  "id": "design-build-agreement",
+  "version": "1.0.0",
+  "name": "Design-Build Agreement",
+  "description": "Owner-design-builder agreement on a DBIA/AIA A141-style baseline, reviewed for the single-point-of-responsibility and standard-of-care terms. Selects the CON-101..106 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "design-build agreement",
+      "design build agreement",
+      "owner and design-builder"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "design-builder",
+      "single point of responsibility",
+      "basis of design documents",
+      "owner's program",
+      "design standard of care",
+      "guaranteed maximum price"
+    ],
+    "negative_features": ["employment offer", "purchase and sale agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Design-Builder", "Owner's Program", "Work"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "DBIA-AIA-A141",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["construction-contract", "architect-agreement"],
+  "compliance_matrix_columns": [
+    "Single point of responsibility recital",
+    "Owner's program and basis-of-design documents",
+    "Design standard of care vs. performance warranty",
+    "Pricing model (GMP / lump sum) and contingency",
+    "Design review and owner approval rights",
+    "Insurance including professional liability"
+  ]
+}

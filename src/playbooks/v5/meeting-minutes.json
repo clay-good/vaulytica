@@ -1,0 +1,40 @@
+{
+  "id": "meeting-minutes",
+  "version": "1.0.0",
+  "name": "Board / Shareholder Meeting Minutes",
+  "description": "Minutes of a directors' or shareholders' meeting, reviewed for the notice, quorum, vote, and adjournment record that makes the minutes evidence. Selects the GOV-111..116 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "minutes of the meeting",
+      "meeting minutes",
+      "minutes of a regular meeting",
+      "minutes of the annual meeting"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "a quorum was present",
+      "notice of the meeting",
+      "called to order",
+      "the motion carried",
+      "there being no further business",
+      "abstained"
+    ],
+    "negative_features": ["this agreement is entered into by and between", "witnesseth"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Meeting", "Chair", "Secretary"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "MBCA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["board-resolution", "written-consent"],
+  "compliance_matrix_columns": [
+    "Notice or waiver of notice recited",
+    "Quorum recited",
+    "Attendance and who presided",
+    "Motions, votes, and abstentions",
+    "Conflict-of-interest recusals",
+    "Adjournment and secretary signature"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "far-subcontract-flowdown",
+  "version": "1.0.0",
+  "name": "FAR Flow-Down Rider (Federal Subcontract)",
+  "description": "Rider imposing mandatory FAR/DFARS clauses on a subcontractor under a federal prime contract. Selects the COMM-157..162 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "flow-down",
+      "flowdown",
+      "far clauses",
+      "federal subcontract rider",
+      "government contract rider"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "52.222-26",
+      "52.204-21",
+      "dfars",
+      "the contracting officer",
+      "incorporated by reference",
+      "prime contract number"
+    ],
+    "negative_features": ["software as a service", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Prime Contract", "Contracting Officer"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FAR",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["teaming-agreement", "gsa-schedule-contract"],
+  "compliance_matrix_columns": [
+    "Mandatory clause list and incorporation by reference",
+    "Audit and records access (FAR 52.215-2)",
+    "Termination for convenience of the government",
+    "Cybersecurity (DFARS 252.204-7012 / NIST 800-171)",
+    "Small-business and socioeconomic clauses",
+    "Payment / prompt-payment flow-down"
+  ]
+}

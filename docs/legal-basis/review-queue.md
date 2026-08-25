@@ -6,8 +6,8 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1111 single-document rules
-- **Signed:** 0 of 1111 · **Queued (unreviewed, top 100):** 100
+- **Engine:** `9.41.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1716 single-document rules
+- **Signed:** 0 of 1716 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
 
@@ -77,50 +77,50 @@ firing refines the order automatically — re-run `npm run accuracy` then
 | 52 | `BNK-047` — Collateral description / indication (§ 9-504) | critical | banking | 0 | `ucc-9-504` |
 | 53 | `BNK-050` — Authorization by debtor (§ 9-509) | critical | banking | 0 | `ucc-9-509` |
 | 54 | `BNK-051` — Confession of judgment / cognovit clause | critical | banking | 0 | `bnk-practice-ftc-credit-practices-cognovit` |
-| 55 | `COMM-001` — Quantity term — requirements / output / firm quantity | critical | commercial | 0 | `ucc-2-306` |
-| 56 | `COMM-002` — Delivery schedule / lead time | critical | commercial | 0 | `ucc-2-309` |
-| 57 | `COMM-003` — Specifications / conformance and warranty | critical | commercial | 0 | `ucc-2-313` |
-| 58 | `COMM-004` — Price or price-adjustment mechanism | critical | commercial | 0 | `ucc-2-305` |
-| 59 | `COMM-005` — Inspection, acceptance, and rejection | critical | commercial | 0 | `ucc-2-513` |
-| 60 | `COMM-006` — Force majeure / excuse for supervening events | critical | commercial | 0 | `ucc-2-615` |
-| 61 | `COMM-007` — Best-efforts obligation for a requirements / exclusive arrangement | critical | commercial | 0 | `ucc-2-306-2-` |
-| 62 | `COMM-008` — Appointment, territory, and exclusivity | critical | commercial | 0 | `sherman-1-vertical-territorial-restraints-rule-of-reason-gte-sylvania-` |
-| 63 | `COMM-009` — Minimum purchase / performance requirements | critical | commercial | 0 | `comm-distribution-minimums` |
-| 64 | `COMM-010` — Resale-pricing freedom / MAP policy | critical | commercial | 0 | `sherman-1-resale-price-maintenance-rule-of-reason-leegin-` |
-| 65 | `COMM-011` — Term and termination — good cause and notice | critical | commercial | 0 | `comm-dealer-termination` |
-| 66 | `COMM-012` — Trademark license and quality control | critical | commercial | 0 | `lanham-45` |
-| 67 | `COMM-013` — Post-termination — inventory repurchase and cease use | critical | commercial | 0 | `comm-dealer-repurchase` |
-| 68 | `COMM-014` — Qualified-referral / lead definition | critical | commercial | 0 | `comm-referral-qualification` |
-| 69 | `COMM-015` — Referral-fee amount and payment terms | critical | commercial | 0 | `comm-referral-compensation` |
-| 70 | `COMM-016` — RESPA § 8 compliance for settlement-service referrals | critical | commercial | 0 | `respa-8-prohibition-against-kickbacks-and-unearned-fees` |
-| 71 | `COMM-017` — Independent contractor — no authority to bind | critical | commercial | 0 | `comm-referral-agency` |
-| 72 | `COMM-018` — Anti-kickback / anti-bribery representation | critical | commercial | 0 | `comm-referral-anti-bribery` |
-| 73 | `COMM-019` — Scope of services / deliverables / campaign | critical | commercial | 0 | `comm-marketing-scope` |
-| 74 | `COMM-020` — FTC endorsement / testimonial disclosure | critical | commercial | 0 | `ftc-16-c-f-r-part-255` |
-| 75 | `COMM-021` — CAN-SPAM compliance for email marketing | critical | commercial | 0 | `can-spam-7704-commercial-email-requirements` |
-| 76 | `COMM-022` — Ownership of deliverables / work product | critical | commercial | 0 | `comm-marketing-ip` |
-| 77 | `COMM-023` — Advertising-claims substantiation | critical | commercial | 0 | `ftc-15-u-s-c-45` |
-| 78 | `COMM-024` — Warranty of title and against infringement | critical | commercial | 0 | `ucc-2-312` |
-| 79 | `COMM-025` — Limitation of remedies / exclusive remedy | critical | commercial | 0 | `ucc-2-719` |
-| 80 | `COMM-026` — Competing-products restriction (exclusive dealing) | critical | commercial | 0 | `sherman-1-exclusive-dealing-rule-of-reason-tampa-electric-` |
-| 81 | `COMM-027` — Product liability, recall, and indemnity allocation | critical | commercial | 0 | `comm-distribution-product-liability` |
-| 82 | `COMM-028` — Confidentiality of leads and customer information | critical | commercial | 0 | `comm-referral-confidentiality` |
-| 83 | `COMM-029` — Non-circumvention | critical | commercial | 0 | `comm-referral-non-circumvention` |
-| 84 | `COMM-030` — Consumer-data privacy compliance | critical | commercial | 0 | `comm-marketing-data-privacy` |
-| 85 | `COMM-031` — Client approval rights over creative and claims | critical | commercial | 0 | `comm-marketing-approval` |
-| 86 | `COMM-032` — Effect of termination on accrued and pipeline referral fees | critical | commercial | 0 | `comm-referral-tail` |
-| 87 | `COMM-033` — Restriction on Partner representations about the Company | critical | commercial | 0 | `lanham-43-a-` |
-| 88 | `COMM-034` — Telemarketing / anti-spam compliance for Partner outreach | critical | commercial | 0 | `tcpa-227-consent-for-telemarketing-calls-and-texts` |
-| 89 | `COMM-035` — Third-party rights clearance and non-infringement of deliverables | critical | commercial | 0 | `lanham-43-a-` |
-| 90 | `COMM-036` — Confidentiality of Client information | critical | commercial | 0 | `comm-marketing-confidentiality` |
-| 91 | `COMM-037` — Subcontractor and influencer responsibility (flow-down) | critical | commercial | 0 | `ftc-16-c-f-r-part-255` |
-| 92 | `COMM-038` — Inventory / stocking and forecasting | critical | commercial | 0 | `comm-distribution-inventory` |
-| 93 | `COMM-039` — Warranty pass-through and warranty-claim administration | critical | commercial | 0 | `comm-distribution-warranty-passthrough` |
-| 94 | `COMM-040` — Implied warranty of merchantability / fitness — granted or disclaimed | critical | commercial | 0 | `ucc-2-316` |
-| 95 | `CON-001` — Owner / contractor / architect identified | critical | construction | 0 | `aia-a101` |
-| 96 | `CON-002` — Scope of work / contract documents | critical | construction | 0 | `aia-a201` |
-| 97 | `CON-003` — Contract sum + price / payment terms | critical | construction | 0 | `aia-a101` |
-| 98 | `CON-006` — Indemnification + insurance + waiver of subrogation | critical | construction | 0 | `ca-civ-2782` |
-| 99 | `CON-008` — General contractor / subcontractor / project identified | critical | construction | 0 | `con-practice-subk-baseline` |
-| 100 | `CON-009` — Subcontract scope of work + flow-down | critical | construction | 0 | `aia-a401` |
+| 55 | `BNK-101` — Commitment, availability, and borrowing base | critical | banking | 0 | `form-lsta` |
+| 56 | `BNK-103` — Financial covenants and testing dates | critical | banking | 0 | `practice-financial-covenants` |
+| 57 | `BNK-109` — SBA authorization incorporated | critical | banking | 0 | `agency-us-small-business-administration` |
+| 58 | `BNK-110` — Use-of-proceeds restrictions | critical | banking | 0 | `agency-us-small-business-administration` |
+| 59 | `BNK-111` — Personal guaranty of twenty-percent owners | critical | banking | 0 | `agency-us-small-business-administration` |
+| 60 | `BNK-115` — Existing defaults acknowledged and specified | critical | banking | 0 | `practice-forbearance-defaults` |
+| 61 | `BNK-116` — Forbearance period and termination events | critical | banking | 0 | `practice-forbearance-period` |
+| 62 | `BNK-117` — No-waiver and reservation of rights | critical | banking | 0 | `practice-forbearance-no-waiver` |
+| 63 | `BNK-118` — Reaffirmation by borrower and guarantors | critical | banking | 0 | `practice-forbearance-reaffirmation` |
+| 64 | `BNK-121` — True-sale intent and protective security interest | critical | banking | 0 | `ucc-9-109` |
+| 65 | `BNK-122` — Recourse and dispute chargebacks | critical | banking | 0 | `practice-factoring-recourse` |
+| 66 | `BNK-125` — UCC-1 filing and lien priority | critical | banking | 0 | `ucc-9-322` |
+| 67 | `BNK-127` — Control language satisfying § 9-104(a)(2) | critical | banking | 0 | `ucc-9-104` |
+| 68 | `BNK-129` — Notice of exclusive control mechanics and timing | critical | banking | 0 | `practice-noce` |
+| 69 | `BNK-130` — Bank setoff and prior-rights subordination | critical | banking | 0 | `ucc-9-340` |
+| 70 | `BNK-132` — APR types, ranges, and variable-rate index | critical | banking | 0 | `cfr-12-1026-6-b` |
+| 71 | `BNK-135` — Forty-five-day advance notice of adverse changes | critical | banking | 0 | `cfr-12-1026-9-c` |
+| 72 | `BNK-139` — Loan versus true-lease characterization | critical | banking | 0 | `ucc-1-203` |
+| 73 | `BNK-140` — Security interest grant and UCC-1 filing | critical | banking | 0 | `ucc-9-203` |
+| 74 | `COMM-001` — Quantity term — requirements / output / firm quantity | critical | commercial | 0 | `ucc-2-306` |
+| 75 | `COMM-002` — Delivery schedule / lead time | critical | commercial | 0 | `ucc-2-309` |
+| 76 | `COMM-003` — Specifications / conformance and warranty | critical | commercial | 0 | `ucc-2-313` |
+| 77 | `COMM-004` — Price or price-adjustment mechanism | critical | commercial | 0 | `ucc-2-305` |
+| 78 | `COMM-005` — Inspection, acceptance, and rejection | critical | commercial | 0 | `ucc-2-513` |
+| 79 | `COMM-006` — Force majeure / excuse for supervening events | critical | commercial | 0 | `ucc-2-615` |
+| 80 | `COMM-007` — Best-efforts obligation for a requirements / exclusive arrangement | critical | commercial | 0 | `ucc-2-306-2-` |
+| 81 | `COMM-008` — Appointment, territory, and exclusivity | critical | commercial | 0 | `sherman-1-vertical-territorial-restraints-rule-of-reason-gte-sylvania-` |
+| 82 | `COMM-009` — Minimum purchase / performance requirements | critical | commercial | 0 | `comm-distribution-minimums` |
+| 83 | `COMM-010` — Resale-pricing freedom / MAP policy | critical | commercial | 0 | `sherman-1-resale-price-maintenance-rule-of-reason-leegin-` |
+| 84 | `COMM-011` — Term and termination — good cause and notice | critical | commercial | 0 | `comm-dealer-termination` |
+| 85 | `COMM-012` — Trademark license and quality control | critical | commercial | 0 | `lanham-45` |
+| 86 | `COMM-013` — Post-termination — inventory repurchase and cease use | critical | commercial | 0 | `comm-dealer-repurchase` |
+| 87 | `COMM-014` — Qualified-referral / lead definition | critical | commercial | 0 | `comm-referral-qualification` |
+| 88 | `COMM-015` — Referral-fee amount and payment terms | critical | commercial | 0 | `comm-referral-compensation` |
+| 89 | `COMM-016` — RESPA § 8 compliance for settlement-service referrals | critical | commercial | 0 | `respa-8-prohibition-against-kickbacks-and-unearned-fees` |
+| 90 | `COMM-017` — Independent contractor — no authority to bind | critical | commercial | 0 | `comm-referral-agency` |
+| 91 | `COMM-018` — Anti-kickback / anti-bribery representation | critical | commercial | 0 | `comm-referral-anti-bribery` |
+| 92 | `COMM-019` — Scope of services / deliverables / campaign | critical | commercial | 0 | `comm-marketing-scope` |
+| 93 | `COMM-020` — FTC endorsement / testimonial disclosure | critical | commercial | 0 | `ftc-16-c-f-r-part-255` |
+| 94 | `COMM-021` — CAN-SPAM compliance for email marketing | critical | commercial | 0 | `can-spam-7704-commercial-email-requirements` |
+| 95 | `COMM-022` — Ownership of deliverables / work product | critical | commercial | 0 | `comm-marketing-ip` |
+| 96 | `COMM-023` — Advertising-claims substantiation | critical | commercial | 0 | `ftc-15-u-s-c-45` |
+| 97 | `COMM-024` — Warranty of title and against infringement | critical | commercial | 0 | `ucc-2-312` |
+| 98 | `COMM-025` — Limitation of remedies / exclusive remedy | critical | commercial | 0 | `ucc-2-719` |
+| 99 | `COMM-026` — Competing-products restriction (exclusive dealing) | critical | commercial | 0 | `sherman-1-exclusive-dealing-rule-of-reason-tampa-electric-` |
+| 100 | `COMM-027` — Product liability, recall, and indemnity allocation | critical | commercial | 0 | `comm-distribution-product-liability` |
 

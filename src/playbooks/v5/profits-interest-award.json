@@ -1,0 +1,45 @@
+{
+  "id": "profits-interest-award",
+  "version": "1.0.0",
+  "name": "LLC Profits Interest Award",
+  "description": "Profits-interest grant in an LLC or partnership under Rev. Procs. 93-27 and 2001-43. Selects the EQT-114..119 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "profits interest",
+      "profits interest award",
+      "incentive units",
+      "class b units award"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "threshold amount",
+      "distribution threshold",
+      "rev. proc. 93-27",
+      "capital account",
+      "83(b) election",
+      "vesting of the units",
+      "safe harbor"
+    ],
+    "negative_features": [
+      "shares of common stock",
+      "incentive stock option",
+      "employment agreement"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Units", "Threshold Amount", "Participant"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "REV-PROC-93-27",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["operating-agreement-llc", "section-83b-election"],
+  "compliance_matrix_columns": [
+    "Threshold / hurdle amount set at grant-date value",
+    "Rev. Proc. 93-27 safe-harbor recitals",
+    "§ 83(b) election direction and deadline",
+    "Vesting, forfeiture, and repurchase",
+    "Capital-account and distribution mechanics",
+    "Partner (not employee) tax treatment warning"
+  ]
+}

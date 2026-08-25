@@ -85,6 +85,57 @@
     ]
   },
   {
+    "id": "acceptable-use-policy",
+    "version": "1.0.0",
+    "name": "Acceptable Use Policy (Employee IT)",
+    "description": "Employee IT acceptable-use policy, reviewed for the monitoring notice, prohibited-use list, and the NLRA § 7 limits on overbroad rules. Selects the POL-108..112 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "acceptable use policy",
+        "computer use policy",
+        "it acceptable use",
+        "technology use policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "no expectation of privacy",
+        "company systems",
+        "monitoring",
+        "prohibited uses",
+        "personal use",
+        "return of company property"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "api key"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Company Systems",
+      "User"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-EMPLOYMENT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "employee-handbook",
+      "information-security-policy"
+    ],
+    "compliance_matrix_columns": [
+      "Systems covered and users bound",
+      "Monitoring notice and privacy expectation",
+      "Prohibited uses enumerated",
+      "NLRA § 7 protected-activity savings clause",
+      "Discipline and enforcement"
+    ]
+  },
+  {
     "id": "advance-directive",
     "version": "1.0.0",
     "name": "Advance Directive / Living Will",
@@ -167,6 +218,58 @@
       "Triggering condition",
       "Revocation",
       "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "advertising-insertion-order",
+    "version": "1.0.0",
+    "name": "Advertising Insertion Order (IAB Terms)",
+    "description": "Digital advertising insertion order on IAB Standard Terms v3.0, covering makegoods, verification, and cancellation. Selects the COMM-168..172 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "insertion order",
+        "advertising insertion order",
+        "media insertion order",
+        "iab terms"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "impressions",
+        "makegood",
+        "iab standard terms",
+        "cancellation right",
+        "ad verification",
+        "flight dates"
+      ],
+      "negative_features": [
+        "employment",
+        "lease of the premises",
+        "software as a service"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Insertion Order",
+      "Media Company",
+      "Agency"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IAB-3.0",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "marketing-services-agreement",
+      "influencer-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Flight dates, inventory, and impressions",
+      "Pricing, discrepancy, and third-party measurement",
+      "Makegood and under-delivery remedy",
+      "Cancellation notice periods",
+      "Sequential liability / agency payment"
     ]
   },
   {
@@ -513,6 +616,60 @@
     ]
   },
   {
+    "id": "api-terms",
+    "version": "1.0.0",
+    "name": "API Terms of Service / Developer Agreement",
+    "description": "Developer-facing API terms covering license scope, rate limits, deprecation, and data use. Selects the COMM-207..212 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "api terms",
+        "developer agreement",
+        "api license agreement",
+        "developer terms of service"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "api key",
+        "rate limit",
+        "deprecation policy",
+        "your application",
+        "we may suspend access",
+        "api call",
+        "sandbox"
+      ],
+      "negative_features": [
+        "employment",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "API",
+      "Developer Application",
+      "API Key"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "saas-vendor",
+      "data-license-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "License scope and permitted use",
+      "Rate limits, quotas, and suspension",
+      "Deprecation / breaking-change notice period",
+      "End-user data handling and privacy flow-down",
+      "Branding and attribution requirements",
+      "Termination and wind-down of live integrations"
+    ]
+  },
+  {
     "id": "appellate-brief",
     "version": "1.0.0",
     "name": "Appellate Brief (filing-format)",
@@ -727,6 +884,215 @@
     ]
   },
   {
+    "id": "arbitration-agreement-employment",
+    "version": "1.0.0",
+    "name": "Employment Arbitration Agreement",
+    "description": "Standalone employment arbitration agreement, reviewed against the unconscionability factors and the EFAA's sexual-harassment carve-out. Selects the EMP-101..108 ruleset (8 checks).",
+    "match_features": {
+      "title_keywords": [
+        "arbitration agreement",
+        "mutual arbitration agreement",
+        "agreement to arbitrate",
+        "dispute resolution agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "binding arbitration",
+        "class action waiver",
+        "the federal arbitration act",
+        "aaa employment arbitration rules",
+        "arbitrator shall be selected",
+        "each party shall bear"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "merger",
+        "purchase and sale"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Arbitration",
+      "Covered Claims"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FAA-EFAA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "employment-at-will-us",
+      "offer-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Mutuality of the obligation to arbitrate",
+      "EFAA carve-out for sexual harassment/assault claims",
+      "Cost allocation (employer pays arbitration fees)",
+      "Discovery adequacy",
+      "Remedies parity with court",
+      "Class / collective waiver and PAGA severability",
+      "Arbitrator selection neutrality",
+      "Opt-out mechanism and consideration"
+    ]
+  },
+  {
+    "id": "arbitration-demand",
+    "version": "1.0.0",
+    "name": "Demand for Arbitration",
+    "description": "Arbitration demand under AAA or JAMS rules, reviewed for the clause citation, relief statement, and filing/service mechanics. Selects the SET-123..127 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "demand for arbitration",
+        "arbitration demand",
+        "notice of arbitration",
+        "request for arbitration"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "american arbitration association",
+        "jams",
+        "the arbitration clause",
+        "the relief sought",
+        "locale",
+        "the nature of the dispute",
+        "arbitrator selection"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Claimant",
+      "Respondent",
+      "Demand"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "AAA-JAMS",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "confidential-settlement"
+    ],
+    "compliance_matrix_columns": [
+      "Arbitration clause quoted and located",
+      "Nature of the dispute and claims asserted",
+      "Relief and amount in controversy",
+      "Locale / seat and governing rules",
+      "Service on the respondent and filing fee"
+    ]
+  },
+  {
+    "id": "architect-agreement",
+    "version": "1.0.0",
+    "name": "Owner-Architect Agreement",
+    "description": "Owner-architect agreement on an AIA B101-style baseline, reviewed for scope phases, standard of care, and instruments-of-service rights. Selects the CON-107..112 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "owner-architect agreement",
+        "architect agreement",
+        "b101",
+        "agreement between owner and architect",
+        "design services agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "instruments of service",
+        "schematic design",
+        "design development",
+        "construction documents",
+        "standard of care",
+        "additional services",
+        "certificates of payment"
+      ],
+      "negative_features": [
+        "employment offer",
+        "purchase and sale agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Architect",
+      "Instruments of Service",
+      "Basic Services"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "AIA-B101",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "design-build-agreement",
+      "construction-contract"
+    ],
+    "compliance_matrix_columns": [
+      "Basic services by phase and additional services",
+      "Standard of care (no warranty/guarantee)",
+      "Instruments of service license and termination effect",
+      "Construction-phase duties and site visits",
+      "Compensation, reimbursables, and phase caps",
+      "Professional liability insurance limits"
+    ]
+  },
+  {
+    "id": "articles-of-organization",
+    "version": "1.0.0",
+    "name": "Articles of Organization (LLC)",
+    "description": "LLC formation certificate filed with a Secretary of State, reviewed against the RULLCA-style required contents. Selects the GOV-101..105 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "articles of organization",
+        "certificate of formation",
+        "certificate of organization"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "registered agent",
+        "the name of the limited liability company",
+        "principal office",
+        "organizer",
+        "member-managed",
+        "manager-managed"
+      ],
+      "negative_features": [
+        "shares of common stock",
+        "board of directors",
+        "this agreement is entered into"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Company",
+      "Registered Agent"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "RULLCA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "operating-agreement-llc",
+      "charter-incorporation"
+    ],
+    "compliance_matrix_columns": [
+      "Entity name with required designator",
+      "Registered agent and registered office",
+      "Management structure (member vs. manager)",
+      "Duration / perpetual existence",
+      "Organizer signature and effective date"
+    ]
+  },
+  {
     "id": "asset-purchase-agreement",
     "version": "1.0.0",
     "name": "Asset Purchase Agreement (APA)",
@@ -772,6 +1138,157 @@
       "IRC § 1060",
       "State bulk-sales statutes",
       "WARN Act"
+    ]
+  },
+  {
+    "id": "assignment-and-assumption-agreement",
+    "version": "1.0.0",
+    "name": "Assignment and Assumption Agreement",
+    "description": "Assignment of contracts and assumption of liabilities, typically a closing deliverable. Selects the MNA-108..112 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "assignment and assumption agreement",
+        "assignment and assumption",
+        "assumption agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "hereby assigns",
+        "assumes and agrees to perform",
+        "assumed liabilities",
+        "excluded liabilities",
+        "assigned contracts",
+        "effective as of the closing"
+      ],
+      "negative_features": [
+        "lease of the premises shall commence",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Assigned Contracts",
+      "Assumed Liabilities",
+      "Assignor",
+      "Assignee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-MA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "asset-purchase-agreement",
+      "bill-of-sale"
+    ],
+    "compliance_matrix_columns": [
+      "Schedule of assigned contracts",
+      "Assumed vs. excluded liabilities",
+      "Third-party consent carve-out",
+      "Effective time tied to closing",
+      "Further-assurances and power of attorney"
+    ]
+  },
+  {
+    "id": "assignment-of-claim",
+    "version": "1.0.0",
+    "name": "Assignment of Claim",
+    "description": "Assignment of a legal claim or judgment, reviewed for assignability, champerty limits, and notice to the obligor. Selects the SET-111..115 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "assignment of claim",
+        "assignment of judgment",
+        "assignment of cause of action"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "hereby assigns all right, title and interest in the claim",
+        "the assigned claim",
+        "real party in interest",
+        "notice to the obligor",
+        "no warranty of collectability"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Assigned Claim",
+      "Assignor",
+      "Assignee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-SETTLEMENT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "litigation-funding-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Claim identified with specificity",
+      "Assignability and anti-assignment review",
+      "Champerty / maintenance jurisdictional note",
+      "Notice to the obligor and substitution",
+      "Warranties as to title and collectability"
+    ]
+  },
+  {
+    "id": "auto-renewal-terms",
+    "version": "1.0.0",
+    "name": "Automatic Renewal / Negative Option Terms",
+    "description": "Subscription auto-renewal disclosures under ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws. Selects the COMM-231..236 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "automatic renewal terms",
+        "auto-renewal",
+        "subscription terms",
+        "negative option"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "will automatically renew",
+        "cancel at any time",
+        "renewal price",
+        "before the renewal date",
+        "cancellation instructions",
+        "recurring charge"
+      ],
+      "negative_features": [
+        "employment",
+        "merger",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Subscription",
+      "Renewal Term"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ROSCA-15-USC-8403",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "saas-tos",
+      "website-terms-of-use"
+    ],
+    "compliance_matrix_columns": [
+      "Clear and conspicuous renewal disclosure",
+      "Affirmative consent to the recurring charge",
+      "Simple cancellation mechanism",
+      "Advance renewal / price-increase notice",
+      "Post-cancellation confirmation",
+      "State ARL overlays (CA, NY, and others)"
     ]
   },
   {
@@ -939,6 +1456,312 @@
       "45 CFR § 164.314(a)",
       "45 CFR § 164.410",
       "45 CFR § 164.504(e)(5) (flow-down)"
+    ]
+  },
+  {
+    "id": "background-check-disclosure",
+    "version": "1.0.0",
+    "name": "FCRA Background Check Disclosure and Authorization",
+    "description": "Pre-employment consumer-report disclosure, measured against the FCRA § 604(b) stand-alone-document rule and the adverse-action sequence. Selects the EMP-148..153 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "background check disclosure",
+        "disclosure and authorization",
+        "consumer report disclosure",
+        "fair credit reporting act disclosure"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "consumer report",
+        "consumer reporting agency",
+        "a summary of your rights under the fair credit reporting act",
+        "investigative consumer report",
+        "authorize",
+        "pre-adverse action"
+      ],
+      "negative_features": [
+        "merger",
+        "lease of the premises",
+        "purchase and sale"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Consumer Report",
+      "Applicant"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FCRA-15-USC-1681b",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "offer-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Stand-alone disclosure with no extraneous terms",
+      "No liability waiver embedded in the disclosure",
+      "Clear written authorization",
+      "Investigative-consumer-report notice",
+      "Summary of Rights delivery",
+      "Pre-adverse and adverse-action sequence"
+    ]
+  },
+  {
+    "id": "bill-of-sale",
+    "version": "1.0.0",
+    "name": "Bill of Sale",
+    "description": "Conveyance of personal property at an asset closing, reviewed for the title warranty and free-and-clear recital. Selects the MNA-113..116 ruleset (4 checks).",
+    "match_features": {
+      "title_keywords": [
+        "bill of sale",
+        "general bill of sale",
+        "bill of sale and assignment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "hereby sells, transfers and delivers",
+        "free and clear of all liens",
+        "as is, where is",
+        "the purchased assets",
+        "good and marketable title"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "employment agreement",
+        "shares of common stock"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Purchased Assets",
+      "Seller",
+      "Buyer"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-2",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "asset-purchase-agreement",
+      "assignment-and-assumption-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Assets conveyed with schedule reference",
+      "Title warranty and lien-free recital",
+      "As-is disclaimer consistency with the APA",
+      "Effective time and further assurances"
+    ]
+  },
+  {
+    "id": "biometric-consent",
+    "version": "1.0.0",
+    "name": "Biometric Data Consent (BIPA-style)",
+    "description": "Written biometric release measured against Illinois BIPA § 15(b) and the Texas/Washington analogs. Selects the PRV-101..106 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "biometric consent",
+        "biometric release",
+        "biometric information consent",
+        "fingerprint consent"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "biometric identifier",
+        "biometric information",
+        "retention schedule",
+        "the specific purpose",
+        "the length of term",
+        "written release"
+      ],
+      "negative_features": [
+        "merger",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Biometric Data",
+      "Retention Schedule"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "BIPA-740-ILCS-14",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "privacy-notice-us",
+      "employee-handbook"
+    ],
+    "compliance_matrix_columns": [
+      "Written release before collection",
+      "Specific purpose stated",
+      "Length of term stated",
+      "Publicly available retention and destruction schedule",
+      "No sale/lease/trade of biometric data",
+      "Reasonable standard of care recital"
+    ]
+  },
+  {
+    "id": "board-resolution",
+    "version": "1.0.0",
+    "name": "Board Resolution (Standalone)",
+    "description": "Standalone resolution of a board of directors, reviewed for the recitals, quorum, and authorization language a corporate record needs. Selects the GOV-106..110 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "board resolution",
+        "resolution of the board",
+        "resolutions of the board of directors",
+        "corporate resolution"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "resolved, that",
+        "whereas",
+        "the board of directors of",
+        "further resolved",
+        "duly adopted",
+        "authorized officer"
+      ],
+      "negative_features": [
+        "this agreement is entered into by and between",
+        "employment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Corporation",
+      "Board"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "MBCA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "written-consent",
+      "meeting-minutes"
+    ],
+    "compliance_matrix_columns": [
+      "Recitals establishing the purpose",
+      "Quorum / adoption recital",
+      "Specific authorization granted",
+      "Officer delegation and further-acts clause",
+      "Date, secretary certification, and effectiveness"
+    ]
+  },
+  {
+    "id": "bonus-plan",
+    "version": "1.0.0",
+    "name": "Annual Incentive / Bonus Plan",
+    "description": "Annual cash incentive plan, reviewed for discretion, the employed-on-payment-date condition, and § 409A short-term deferral. Selects the EMP-115..119 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "bonus plan",
+        "annual incentive plan",
+        "management incentive plan",
+        "short-term incentive plan"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "target bonus",
+        "performance metrics",
+        "must be employed on the payment date",
+        "the committee retains discretion",
+        "bonus pool",
+        "prorated bonus"
+      ],
+      "negative_features": [
+        "stock option",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Target Bonus",
+      "Performance Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-409A",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "executive-employment",
+      "commission-plan"
+    ],
+    "compliance_matrix_columns": [
+      "Performance metrics and measurement period",
+      "Discretion reserved and its limits",
+      "Employed-on-payment-date condition",
+      "§ 409A short-term deferral timing",
+      "Proration on leave, hire, or termination"
+    ]
+  },
+  {
+    "id": "business-continuity-plan",
+    "version": "1.0.0",
+    "name": "Business Continuity / Disaster Recovery Plan",
+    "description": "BC/DR plan, reviewed against ISO 22301-style elements: BIA, RTO/RPO, activation, and test cadence. Selects the POL-120..125 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "business continuity plan",
+        "disaster recovery plan",
+        "bcp",
+        "continuity of operations plan"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "recovery time objective",
+        "recovery point objective",
+        "business impact analysis",
+        "plan activation",
+        "alternate site",
+        "tabletop exercise",
+        "crisis management team"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "purchase order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "RTO",
+      "RPO",
+      "Critical Function"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ISO-22301",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "security-incident-response-plan",
+      "information-security-policy"
+    ],
+    "compliance_matrix_columns": [
+      "Business impact analysis and critical functions",
+      "RTO and RPO stated per function",
+      "Activation criteria and authority",
+      "Alternate site / work arrangements",
+      "Communication and notification tree",
+      "Testing cadence and plan maintenance"
     ]
   },
   {
@@ -1329,6 +2152,112 @@
     ]
   },
   {
+    "id": "childrens-privacy-notice",
+    "version": "1.0.0",
+    "name": "Children's Privacy Notice (COPPA)",
+    "description": "Directed-to-children privacy notice measured against the COPPA Rule (16 C.F.R. § 312.4) direct-notice and consent items. Selects the PRV-107..112 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "children's privacy",
+        "children's privacy notice",
+        "coppa notice",
+        "privacy policy for children"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "under 13",
+        "verifiable parental consent",
+        "children's online privacy protection",
+        "parent may review",
+        "operator's contact information",
+        "we do not condition participation"
+      ],
+      "negative_features": [
+        "merger",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Child",
+      "Parent",
+      "Personal Information"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "COPPA-16-CFR-312",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "privacy-notice-us",
+      "website-terms-of-use"
+    ],
+    "compliance_matrix_columns": [
+      "Operator identity and contact details",
+      "Categories collected and how used",
+      "Verifiable parental consent mechanism",
+      "Parental review, deletion, and revocation rights",
+      "No conditioning participation on excess collection",
+      "Third-party disclosure and retention limits"
+    ]
+  },
+  {
+    "id": "clinical-trial-agreement",
+    "version": "1.0.0",
+    "name": "Clinical Trial Agreement",
+    "description": "Sponsor-site clinical trial agreement, reviewed against 21 C.F.R. Parts 50/56/312 and subject-injury, publication, and data terms. Selects the HC-114..120 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "clinical trial agreement",
+        "clinical study agreement",
+        "site agreement",
+        "investigator agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the protocol",
+        "institutional review board",
+        "subject injury",
+        "informed consent form",
+        "principal investigator",
+        "form fda 1572",
+        "publication of the study results"
+      ],
+      "negative_features": [
+        "merger",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Protocol",
+      "Study",
+      "Principal Investigator"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "21-CFR-312",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "informed-consent",
+      "data-sharing-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Protocol incorporation and amendment control",
+      "IRB approval as condition precedent",
+      "Subject-injury cost responsibility",
+      "Informed-consent form control and language",
+      "Publication rights and sponsor review window",
+      "Data ownership, access, and § 1572 obligations",
+      "Financial disclosure and debarment certification"
+    ]
+  },
+  {
     "id": "code-of-conduct",
     "version": "1.0.0",
     "name": "Code of Conduct / Ethics",
@@ -1491,6 +2420,57 @@
       "Self-proving affidavit",
       "Testator signature",
       "Witness signatures"
+    ]
+  },
+  {
+    "id": "cohabitation-agreement",
+    "version": "1.0.0",
+    "name": "Cohabitation Agreement",
+    "description": "Non-marital cohabitation agreement, reviewed for the property, support, and consideration terms Marvin-line cases turn on. Selects the EST-426..430 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "cohabitation agreement",
+        "domestic partnership agreement",
+        "living together agreement",
+        "non-marital agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the parties are not married",
+        "separate property",
+        "jointly acquired property",
+        "support obligations",
+        "meretricious",
+        "upon separation of the parties"
+      ],
+      "negative_features": [
+        "prenuptial",
+        "postnuptial",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Separate Property",
+      "Joint Property"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-FAMILY-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "prenuptial-agreement",
+      "postnuptial-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Non-marital status recital",
+      "Separate vs. jointly acquired property",
+      "Support / no-support agreement and consideration",
+      "Independent counsel and financial disclosure",
+      "Termination on marriage or separation"
     ]
   },
   {
@@ -1677,6 +2657,59 @@
     ]
   },
   {
+    "id": "commission-plan",
+    "version": "1.0.0",
+    "name": "Sales Commission Plan",
+    "description": "Sales incentive plan, reviewed for the earning trigger, post-termination commissions, and state wage-law exposure. Selects the EMP-109..114 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "commission plan",
+        "sales compensation plan",
+        "incentive compensation plan",
+        "sales commission agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "quota",
+        "accelerator",
+        "commission is earned when",
+        "clawback of commissions",
+        "draw against commissions",
+        "on-target earnings"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "merger",
+        "purchase and sale"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Quota",
+      "Commission",
+      "Plan Year"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-WAGE-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "offer-letter",
+      "bonus-plan"
+    ],
+    "compliance_matrix_columns": [
+      "When a commission is earned vs. paid",
+      "Post-termination / trailing commissions",
+      "Chargebacks and clawbacks",
+      "Unilateral modification of quotas and rates",
+      "Recoverable vs. non-recoverable draw",
+      "Dispute and reconciliation procedure"
+    ]
+  },
+  {
     "id": "committee-charter",
     "version": "1.0.0",
     "name": "Board Committee Charter (audit / comp / nominating)",
@@ -1802,6 +2835,55 @@
       "Cal. Civ. § 1542 waiver",
       "IRC § 162(q) (harassment / abuse)",
       "Tax allocation (1099 / W-2)"
+    ]
+  },
+  {
+    "id": "consent-judgment",
+    "version": "1.0.0",
+    "name": "Stipulated / Consent Judgment",
+    "description": "Agreed judgment submitted for court entry, reviewed for the jurisdiction-retention, admission, and enforcement terms. Selects the SET-101..105 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "consent judgment",
+        "stipulated judgment",
+        "agreed judgment",
+        "stipulation for entry of judgment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the court retains jurisdiction",
+        "judgment is hereby entered",
+        "stipulate and agree",
+        "without admission of liability",
+        "enforcement of this judgment"
+      ],
+      "negative_features": [
+        "this agreement is entered into by and between the parties as of",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Judgment",
+      "Stipulation"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-58",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "confidential-settlement",
+      "stipulation-of-dismissal"
+    ],
+    "compliance_matrix_columns": [
+      "Court, caption, and case number",
+      "Retention of jurisdiction to enforce",
+      "Admission / no-admission recital",
+      "Amount, payment terms, and default acceleration",
+      "Vacatur or satisfaction on performance"
     ]
   },
   {
@@ -2170,6 +3252,269 @@
     ]
   },
   {
+    "id": "covenant-not-to-sue",
+    "version": "1.0.0",
+    "name": "Covenant Not to Sue",
+    "description": "Covenant not to sue as distinct from a release, reviewed for scope, third-party effect, and the joint-tortfeasor consequence. Selects the SET-106..110 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "covenant not to sue",
+        "covenant not to execute",
+        "forbearance from suit"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "covenants not to sue",
+        "this is a covenant not to sue and not a release",
+        "joint tortfeasor",
+        "shall not institute any action",
+        "released parties"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Covenantor",
+      "Covenantee",
+      "Claims"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-SETTLEMENT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "mutual-release",
+      "confidential-settlement"
+    ],
+    "compliance_matrix_columns": [
+      "Covenant vs. release characterization",
+      "Scope of claims and time boundary",
+      "Effect on joint tortfeasors and contribution",
+      "Assignment and successors",
+      "Breach remedy (damages vs. bar to suit)"
+    ]
+  },
+  {
+    "id": "credit-card-agreement",
+    "version": "1.0.0",
+    "name": "Consumer Credit Card Agreement",
+    "description": "Consumer card agreement measured against TILA / Regulation Z (12 C.F.R. Part 1026) and the CARD Act disclosure duties. Selects the BNK-132..138 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "credit card agreement",
+        "cardholder agreement",
+        "card member agreement",
+        "consumer credit card"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "annual percentage rate",
+        "grace period",
+        "minimum payment",
+        "penalty apr",
+        "billing rights summary",
+        "how we calculate your balance",
+        "regulation z"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Account",
+      "APR",
+      "Billing Cycle"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "TILA-REG-Z",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "auto-renewal-terms"
+    ],
+    "compliance_matrix_columns": [
+      "APR types, ranges, and variable-rate index",
+      "Fee schedule and penalty pricing",
+      "Grace period and balance-computation method",
+      "45-day advance notice of adverse changes",
+      "Billing-rights and error-resolution summary",
+      "Payment allocation to highest-APR balances",
+      "Arbitration clause and opt-out mechanics"
+    ]
+  },
+  {
+    "id": "cyber-insurance-policy",
+    "version": "1.0.0",
+    "name": "Cyber Liability Policy Review",
+    "description": "Cyber policy, reviewed for first- vs third-party coverage, the war/infrastructure exclusion, and incident-response panel constraints. Selects the INS-108..113 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "cyber liability policy",
+        "cyber insurance",
+        "network security and privacy policy",
+        "data breach policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "security failure",
+        "privacy event",
+        "business interruption",
+        "ransomware",
+        "panel provider",
+        "waiting period",
+        "war exclusion"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Security Failure",
+      "Privacy Event",
+      "Period of Restoration"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-INSURANCE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "insurance-policy-summary",
+      "vendor-security-addendum"
+    ],
+    "compliance_matrix_columns": [
+      "First-party vs. third-party coverage grants",
+      "Business-interruption waiting period and measurement",
+      "Ransomware sublimit and consent requirement",
+      "Panel-provider / pre-approval constraints",
+      "War, infrastructure, and nation-state exclusions",
+      "Retroactive date and prior-knowledge exclusion"
+    ]
+  },
+  {
+    "id": "data-license-agreement",
+    "version": "1.0.0",
+    "name": "Data License Agreement",
+    "description": "License of a dataset or data feed, covering permitted use, derived data, redistribution, and AI training rights. Selects the COMM-213..218 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "data license agreement",
+        "data licensing agreement",
+        "data feed agreement",
+        "dataset license"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "licensed data",
+        "derived data",
+        "redistribution",
+        "train any machine learning",
+        "data source attribution",
+        "usage reporting"
+      ],
+      "negative_features": [
+        "personal data of the data subject shall be processed",
+        "employment",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Licensed Data",
+      "Derived Data",
+      "Permitted Use"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "api-terms",
+      "ip-assignment"
+    ],
+    "compliance_matrix_columns": [
+      "Scope of permitted use and field of use",
+      "Derived-data and model-training rights",
+      "Redistribution and sublicensing",
+      "Source warranties and rights-to-license",
+      "Attribution and audit obligations",
+      "Post-termination deletion vs. perpetual rights"
+    ]
+  },
+  {
+    "id": "data-sharing-agreement",
+    "version": "1.0.0",
+    "name": "Data Sharing Agreement (Research / Inter-Agency)",
+    "description": "Controller-to-controller or research data sharing agreement, reviewed for purpose limitation, de-identification, and re-identification bans. Selects the PRV-118..123 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "data sharing agreement",
+        "data use agreement",
+        "information sharing agreement",
+        "data transfer agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "limited data set",
+        "de-identified",
+        "re-identification",
+        "permitted purposes of the data",
+        "the recipient shall not",
+        "irb approval"
+      ],
+      "negative_features": [
+        "merger",
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Shared Data",
+      "Recipient",
+      "Permitted Purpose"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-PRIVACY",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "dpa-multi-state-us",
+      "phi-authorization"
+    ],
+    "compliance_matrix_columns": [
+      "Data elements shared and purpose limitation",
+      "De-identification standard applied",
+      "Re-identification prohibition",
+      "Onward-transfer and publication limits",
+      "Security safeguards and breach notice",
+      "Destruction / return at end of purpose"
+    ]
+  },
+  {
     "id": "deed-of-trust",
     "version": "1.0.0",
     "name": "Deed of Trust / Mortgage",
@@ -2303,6 +3648,108 @@
     ]
   },
   {
+    "id": "deposit-account-control-agreement",
+    "version": "1.0.0",
+    "name": "Deposit Account Control Agreement (DACA)",
+    "description": "Three-party control agreement perfecting a security interest in a deposit account under UCC § 9-104. Selects the BNK-127..131 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "deposit account control agreement",
+        "daca",
+        "account control agreement",
+        "blocked account agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "control of the deposit account",
+        "shifting control",
+        "notice of exclusive control",
+        "the depositary bank",
+        "section 9-104",
+        "bank's prior rights"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Deposit Account",
+      "Secured Party",
+      "Bank"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9-104",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "security-agreement",
+      "revolving-credit-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Control language satisfying § 9-104(a)(2)",
+      "Springing vs. hard control",
+      "Notice of exclusive control mechanics and timing",
+      "Bank's setoff and prior-rights subordination",
+      "Termination and successor-bank provisions"
+    ]
+  },
+  {
+    "id": "design-build-agreement",
+    "version": "1.0.0",
+    "name": "Design-Build Agreement",
+    "description": "Owner-design-builder agreement on a DBIA/AIA A141-style baseline, reviewed for the single-point-of-responsibility and standard-of-care terms. Selects the CON-101..106 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "design-build agreement",
+        "design build agreement",
+        "owner and design-builder"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "design-builder",
+        "single point of responsibility",
+        "basis of design documents",
+        "owner's program",
+        "design standard of care",
+        "guaranteed maximum price"
+      ],
+      "negative_features": [
+        "employment offer",
+        "purchase and sale agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Design-Builder",
+      "Owner's Program",
+      "Work"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "DBIA-AIA-A141",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "construction-contract",
+      "architect-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Single point of responsibility recital",
+      "Owner's program and basis-of-design documents",
+      "Design standard of care vs. performance warranty",
+      "Pricing model (GMP / lump sum) and contingency",
+      "Design review and owner approval rights",
+      "Insurance including professional liability"
+    ]
+  },
+  {
     "id": "disclosure-schedules",
     "version": "1.0.0",
     "name": "Disclosure Schedules",
@@ -2376,6 +3823,55 @@
     ]
   },
   {
+    "id": "dissolution-plan",
+    "version": "1.0.0",
+    "name": "Plan of Dissolution / Winding Up",
+    "description": "Plan of dissolution and winding up for a US entity, reviewed against the statutory claims and distribution sequence. Selects the GOV-123..127 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "plan of dissolution",
+        "plan of liquidation",
+        "dissolution and winding up",
+        "articles of dissolution"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "winding up",
+        "notice to known claimants",
+        "certificate of dissolution",
+        "final distribution",
+        "reserve for contingent liabilities",
+        "bar date"
+      ],
+      "negative_features": [
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Plan",
+      "Dissolution Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "MBCA-14",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "charter-incorporation"
+    ],
+    "compliance_matrix_columns": [
+      "Approval and adoption authority",
+      "Notice to known and unknown claimants",
+      "Contingent-liability reserve",
+      "Distribution priority (creditors before owners)",
+      "Final tax filings and certificate of dissolution"
+    ]
+  },
+  {
     "id": "distribution-agreement",
     "version": "1.0.0",
     "name": "Reseller / Distribution Agreement",
@@ -2427,6 +3923,61 @@
       "Term & termination (dealer statutes)",
       "Trademark license & quality control",
       "Post-termination inventory / cease-use"
+    ]
+  },
+  {
+    "id": "do-policy",
+    "version": "1.0.0",
+    "name": "D&O Liability Policy Review",
+    "description": "Directors and officers liability policy, reviewed for Side A/B/C structure, the insured-vs-insured exclusion, and severability. Selects the INS-101..107 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "directors and officers liability",
+        "d&o policy",
+        "management liability policy",
+        "directors & officers"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "side a",
+        "insured versus insured",
+        "wrongful act",
+        "claims made and reported",
+        "severability of the application",
+        "final adjudication",
+        "entity coverage"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Wrongful Act",
+      "Claim",
+      "Insured Person"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-INSURANCE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "insurance-policy-summary",
+      "indemnification-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Side A / B / C structure and limits",
+      "Claims-made-and-reported trigger and notice",
+      "Insured-vs-insured exclusion and carve-backs",
+      "Conduct exclusions with final-adjudication wording",
+      "Severability of application and exclusions",
+      "Defense-cost treatment (duty to defend vs. reimburse)",
+      "Run-off / tail on change of control"
     ]
   },
   {
@@ -3143,6 +4694,57 @@
     ]
   },
   {
+    "id": "employee-stock-purchase-plan",
+    "version": "1.0.0",
+    "name": "Employee Stock Purchase Plan (ESPP)",
+    "description": "§ 423 employee stock purchase plan, reviewed against the qualification conditions in 26 U.S.C. § 423(b). Selects the EQT-108..113 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "employee stock purchase plan",
+        "espp",
+        "stock purchase plan"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "offering period",
+        "purchase period",
+        "lookback",
+        "85% of the fair market value",
+        "$25,000 limit",
+        "section 423"
+      ],
+      "negative_features": [
+        "restricted stock unit",
+        "option grant notice",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Offering Period",
+      "Purchase Date",
+      "Eligible Employee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-423",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "equity-incentive-plan"
+    ],
+    "compliance_matrix_columns": [
+      "§ 423 qualification election",
+      "Equal-rights and eligibility conditions",
+      "$25,000 per-calendar-year limit",
+      "Purchase price floor (85%) and lookback",
+      "5% shareholder exclusion",
+      "Withdrawal and termination-of-employment rules"
+    ]
+  },
+  {
     "id": "employment-restrictive-covenant",
     "version": "1.0.0",
     "name": "Employment Restrictive Covenant Agreement",
@@ -3185,6 +4787,169 @@
     "compliance_matrix_columns": [
       "16 C.F.R. § 910 (FTC NCR)",
       "State non-compete law (CA / MA / WA / NY / CO)"
+    ]
+  },
+  {
+    "id": "equipment-finance-agreement",
+    "version": "1.0.0",
+    "name": "Equipment Finance Agreement",
+    "description": "Equipment finance agreement (a loan, not a lease), reviewed for the security interest, hell-or-high-water payment, and disclosure posture. Selects the BNK-139..143 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "equipment finance agreement",
+        "equipment financing agreement",
+        "efa",
+        "conditional sale contract"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "grants a security interest in the equipment",
+        "unconditional obligation to pay",
+        "prepayment",
+        "ucc-1 financing statement",
+        "the equipment cost",
+        "title to the equipment passes"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "employment offer",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Equipment",
+      "Financed Amount",
+      "Payment Schedule"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "equipment-lease",
+      "security-agreement",
+      "ucc-1-financing-statement"
+    ],
+    "compliance_matrix_columns": [
+      "Loan vs. true-lease characterization",
+      "Security interest grant and UCC-1 filing",
+      "Payment schedule, rate, and prepayment terms",
+      "Insurance and casualty risk",
+      "Default, acceleration, and disposition of collateral"
+    ]
+  },
+  {
+    "id": "equipment-lease",
+    "version": "1.0.0",
+    "name": "Equipment Lease (UCC Article 2A)",
+    "description": "Lease of goods under UCC Article 2A, including finance-lease and hell-or-high-water treatment. Selects the COMM-112..117 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "equipment lease",
+        "master lease agreement",
+        "lease of equipment",
+        "equipment schedule"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "hell or high water",
+        "finance lease",
+        "lessee's obligations are absolute",
+        "equipment schedule",
+        "quiet enjoyment",
+        "return of the equipment"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "real property",
+        "square feet",
+        "landlord"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Equipment",
+      "Lessee",
+      "Lessor",
+      "Rent"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-2A",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "equipment-finance-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Finance-lease designation and § 2A-407 waiver",
+      "Rent, term, and end-of-term options",
+      "Maintenance, insurance, and casualty risk",
+      "Warranty pass-through / disclaimer",
+      "Default and remedies",
+      "Return condition and location"
+    ]
+  },
+  {
+    "id": "equity-incentive-plan",
+    "version": "1.0.0",
+    "name": "Omnibus Equity Incentive Plan",
+    "description": "Omnibus stock plan reviewed for the share reserve, § 422 ISO limits, adjustment, and change-of-control mechanics. Selects the EQT-101..107 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "equity incentive plan",
+        "stock incentive plan",
+        "omnibus incentive plan",
+        "stock plan"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "share reserve",
+        "incentive stock options",
+        "nonstatutory stock options",
+        "evergreen",
+        "administrator",
+        "change in control",
+        "adjustment upon changes in capitalization"
+      ],
+      "negative_features": [
+        "this grant notice",
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Plan",
+      "Award",
+      "Administrator",
+      "Share Reserve"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-422",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "stock-option-grant",
+      "rsu-grant"
+    ],
+    "compliance_matrix_columns": [
+      "Share reserve and evergreen mechanics",
+      "ISO $100,000 limit and 10-year term",
+      "Administrator authority and repricing limits",
+      "Capitalization adjustment provisions",
+      "Change-in-control treatment",
+      "Amendment and stockholder-approval triggers",
+      "Clawback policy hook"
     ]
   },
   {
@@ -3425,6 +5190,164 @@
     ]
   },
   {
+    "id": "expert-witness-retention",
+    "version": "1.0.0",
+    "name": "Expert Witness Retention Agreement",
+    "description": "Retention of a testifying or consulting expert, reviewed for the FRCP 26(b)(4) draft-report protection and independence terms. Selects the SET-128..132 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "expert witness agreement",
+        "expert retention agreement",
+        "consulting expert agreement",
+        "retention of expert"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "testifying expert",
+        "consulting expert",
+        "draft reports",
+        "rule 26",
+        "the expert's opinions",
+        "hourly rate for deposition testimony"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Expert",
+      "Engagement",
+      "Report"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-26b4",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "engagement-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Testifying vs. consulting designation",
+      "Rule 26(b)(4) draft-report and communication protection",
+      "Independence and no-contingent-fee recital",
+      "Rates, retainer, and deposition-fee responsibility",
+      "Document retention and return of case materials"
+    ]
+  },
+  {
+    "id": "export-control-policy",
+    "version": "1.0.0",
+    "name": "Export Control / Sanctions Policy (ITAR / EAR / OFAC)",
+    "description": "Export compliance policy, reviewed against the EAR (15 C.F.R. Parts 730-774), ITAR (22 C.F.R. Parts 120-130), and OFAC program duties. Selects the POL-113..119 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "export control policy",
+        "export compliance policy",
+        "trade compliance policy",
+        "sanctions policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "export administration regulations",
+        "international traffic in arms",
+        "deemed export",
+        "restricted party screening",
+        "specially designated nationals",
+        "eccn",
+        "license exception"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Controlled Technology",
+      "Restricted Party"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "EAR-ITAR-OFAC",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "anti-bribery-policy",
+      "aml-policy"
+    ],
+    "compliance_matrix_columns": [
+      "Classification (ECCN / USML) procedure",
+      "Restricted-party and SDN screening",
+      "Deemed-export controls for foreign nationals",
+      "License determination and recordkeeping",
+      "Red-flag escalation and voluntary disclosure",
+      "Training and audit cadence",
+      "Sanctioned-jurisdiction prohibitions"
+    ]
+  },
+  {
+    "id": "factoring-agreement",
+    "version": "1.0.0",
+    "name": "Accounts Receivable Factoring Agreement",
+    "description": "Sale of receivables, reviewed for the true-sale vs. secured-loan characterization, recourse, and notification terms. Selects the BNK-121..126 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "factoring agreement",
+        "accounts receivable purchase agreement",
+        "receivables purchase agreement",
+        "invoice factoring"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "purchased accounts",
+        "true sale",
+        "recourse",
+        "advance rate",
+        "reserve account",
+        "notification to account debtors",
+        "chargeback"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Purchased Accounts",
+      "Advance Rate",
+      "Reserve"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-9",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "security-agreement",
+      "ucc-1-financing-statement"
+    ],
+    "compliance_matrix_columns": [
+      "True-sale intent and protective security interest",
+      "Recourse vs. non-recourse and dispute chargebacks",
+      "Advance rate, discount fee, and reserve release",
+      "Notification / verification of account debtors",
+      "UCC-1 filing and lien priority",
+      "Effective cost-of-funds disclosure"
+    ]
+  },
+  {
     "id": "family-msa",
     "version": "1.0.0",
     "name": "Family-Law MSA (Separation / Marital Settlement)",
@@ -3477,6 +5400,159 @@
       "QDRO retirement division",
       "Incorporation / merger",
       "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "far-subcontract-flowdown",
+    "version": "1.0.0",
+    "name": "FAR Flow-Down Rider (Federal Subcontract)",
+    "description": "Rider imposing mandatory FAR/DFARS clauses on a subcontractor under a federal prime contract. Selects the COMM-157..162 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "flow-down",
+        "flowdown",
+        "far clauses",
+        "federal subcontract rider",
+        "government contract rider"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "52.222-26",
+        "52.204-21",
+        "dfars",
+        "the contracting officer",
+        "incorporated by reference",
+        "prime contract number"
+      ],
+      "negative_features": [
+        "software as a service",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Prime Contract",
+      "Contracting Officer"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FAR",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "teaming-agreement",
+      "gsa-schedule-contract"
+    ],
+    "compliance_matrix_columns": [
+      "Mandatory clause list and incorporation by reference",
+      "Audit and records access (FAR 52.215-2)",
+      "Termination for convenience of the government",
+      "Cybersecurity (DFARS 252.204-7012 / NIST 800-171)",
+      "Small-business and socioeconomic clauses",
+      "Payment / prompt-payment flow-down"
+    ]
+  },
+  {
+    "id": "fiscal-sponsorship-agreement",
+    "version": "1.0.0",
+    "name": "Fiscal Sponsorship Agreement",
+    "description": "Model A or C fiscal sponsorship between a 501(c)(3) sponsor and a sponsored project. Selects the GOV-128..132 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "fiscal sponsorship agreement",
+        "fiscal sponsorship",
+        "sponsored project agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "fiscal sponsor",
+        "sponsored project",
+        "variance power",
+        "charitable purposes",
+        "administrative fee",
+        "grantor restricted funds"
+      ],
+      "negative_features": [
+        "employment agreement",
+        "merger",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Sponsor",
+      "Project",
+      "Project Fund"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "IRC-501C3",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "nonprofit-bylaws",
+      "grant-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Model A vs. Model C characterization",
+      "Variance power retained by the sponsor",
+      "Administrative fee and fund accounting",
+      "Charitable-purpose limitation on use",
+      "Termination and transfer of the project fund"
+    ]
+  },
+  {
+    "id": "forbearance-agreement",
+    "version": "1.0.0",
+    "name": "Forbearance Agreement",
+    "description": "Lender forbearance following default, reviewed for the default acknowledgment, no-waiver, and release terms. Selects the BNK-115..120 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "forbearance agreement",
+        "forbearance and modification agreement",
+        "standstill and forbearance"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "existing defaults",
+        "forbearance period",
+        "the lender does not waive",
+        "reaffirmation of the loan documents",
+        "borrower releases the lender",
+        "forbearance termination event"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Existing Defaults",
+      "Forbearance Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-LENDING",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "loan-agreement",
+      "security-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Existing defaults acknowledged and specified",
+      "Forbearance period and termination events",
+      "No-waiver and reservation of rights",
+      "Reaffirmation by borrower and guarantors",
+      "Borrower release of lender claims",
+      "Conditions, milestones, and new consideration"
     ]
   },
   {
@@ -3653,6 +5729,216 @@
     ]
   },
   {
+    "id": "franchise-agreement",
+    "version": "1.0.0",
+    "name": "Franchise Agreement",
+    "description": "Franchise agreement under the FTC Franchise Rule (16 C.F.R. Part 436) and state franchise relationship laws. Selects the COMM-134..139 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "franchise agreement",
+        "franchising agreement",
+        "area development agreement",
+        "unit franchise agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "franchisee",
+        "franchisor",
+        "initial franchise fee",
+        "royalty fee",
+        "system standards",
+        "operations manual",
+        "protected territory"
+      ],
+      "negative_features": [
+        "distributor",
+        "reseller",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Franchisee",
+      "Franchisor",
+      "System",
+      "Territory"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FTC-FRANCHISE-RULE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "franchise-disclosure-document"
+    ],
+    "compliance_matrix_columns": [
+      "Grant, territory, and exclusivity",
+      "Initial fee, royalty, and advertising fund",
+      "System standards and manual compliance",
+      "Term, renewal, and transfer",
+      "Termination and post-term covenants",
+      "State franchise-relationship law overrides"
+    ]
+  },
+  {
+    "id": "franchise-disclosure-document",
+    "version": "1.0.0",
+    "name": "Franchise Disclosure Document (FDD)",
+    "description": "FDD prose reviewed against the 23 items the FTC Franchise Rule requires (16 C.F.R. § 436.5). Selects the COMM-140..145 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "franchise disclosure document",
+        "fdd",
+        "disclosure document"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "item 19",
+        "financial performance representation",
+        "item 20",
+        "outlets and franchisee information",
+        "receipt page",
+        "franchisor's litigation history"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "witnesseth"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Franchisor",
+      "Franchisee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FTC-FRANCHISE-RULE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "franchise-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Item 1–5 franchisor, litigation, bankruptcy, fees",
+      "Item 7 estimated initial investment",
+      "Item 19 financial performance representation",
+      "Item 20 outlet tables",
+      "Item 21 audited financial statements",
+      "Receipt page and 14-day disclosure timing"
+    ]
+  },
+  {
+    "id": "freight-transportation-agreement",
+    "version": "1.0.0",
+    "name": "Freight / Transportation Agreement",
+    "description": "Motor-carrier or broker transportation agreement under 49 U.S.C. and the Carmack Amendment. Selects the COMM-118..123 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "transportation agreement",
+        "motor carrier agreement",
+        "freight agreement",
+        "broker-carrier agreement",
+        "transportation services agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "bill of lading",
+        "carmack",
+        "cargo liability",
+        "motor carrier",
+        "freight charges",
+        "detention and demurrage"
+      ],
+      "negative_features": [
+        "warehouse",
+        "software as a service",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Carrier",
+      "Shipper",
+      "Shipment"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "49-USC-14706",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "warehousing-3pl-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Carmack cargo-liability standard and limits",
+      "Bill of lading terms and precedence",
+      "Insurance and certificates",
+      "Freight charges, accessorials, and payment",
+      "Indemnity and independent-contractor status",
+      "Claims filing and suit deadlines"
+    ]
+  },
+  {
+    "id": "grant-agreement",
+    "version": "1.0.0",
+    "name": "Grant Agreement (Foundation / Government)",
+    "description": "Grant award agreement from a foundation or government funder, reviewed for the restricted-purpose, reporting, and clawback terms. Selects the GOV-133..138 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "grant agreement",
+        "grant award",
+        "notice of award",
+        "subaward agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "grant funds",
+        "restricted purpose",
+        "unexpended funds",
+        "reporting requirements",
+        "the grantee shall",
+        "return of grant funds",
+        "no lobbying"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger agreement",
+        "purchase and sale"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Grant",
+      "Grantee",
+      "Grant Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "2-CFR-200",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "fiscal-sponsorship-agreement",
+      "nonprofit-bylaws"
+    ],
+    "compliance_matrix_columns": [
+      "Grant amount, period, and payment schedule",
+      "Restricted purpose and budget deviation limits",
+      "Narrative and financial reporting deadlines",
+      "Unexpended-funds and clawback terms",
+      "Lobbying, political-activity, and use restrictions",
+      "Audit, records access, and retention (2 C.F.R. § 200 for federal funds)"
+    ]
+  },
+  {
     "id": "ground-lease",
     "version": "1.0.0",
     "name": "Ground Lease",
@@ -3689,6 +5975,54 @@
     "compliance_matrix_columns": [
       "State recording acts",
       "Leasehold mortgage practice"
+    ]
+  },
+  {
+    "id": "gsa-schedule-contract",
+    "version": "1.0.0",
+    "name": "GSA Schedule / MAS Contract Terms",
+    "description": "GSA Multiple Award Schedule contract terms, including Price Reductions and Trade Agreements Act compliance. Selects the COMM-163..167 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "gsa schedule",
+        "multiple award schedule",
+        "mas contract",
+        "federal supply schedule"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "price reductions clause",
+        "basis of award customer",
+        "trade agreements act",
+        "commercial sales practices",
+        "industrial funding fee"
+      ],
+      "negative_features": [
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Schedule Contract",
+      "Basis of Award"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "GSA-MAS",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "far-subcontract-flowdown"
+    ],
+    "compliance_matrix_columns": [
+      "Basis-of-award customer and price reductions",
+      "Industrial funding fee and 72A reporting",
+      "Trade Agreements Act country of origin",
+      "Ordering procedures and order-level terms",
+      "Option periods and extensions"
     ]
   },
   {
@@ -4095,6 +6429,114 @@
     ]
   },
   {
+    "id": "influencer-agreement",
+    "version": "1.0.0",
+    "name": "Influencer / Endorsement Agreement",
+    "description": "Creator endorsement agreement measured against the FTC Endorsement Guides (16 C.F.R. Part 255) disclosure duties. Selects the COMM-178..183 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "influencer agreement",
+        "endorsement agreement",
+        "creator agreement",
+        "brand ambassador agreement",
+        "talent agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "material connection",
+        "#ad",
+        "endorsement",
+        "sponsored content",
+        "deliverables per month",
+        "usage rights"
+      ],
+      "negative_features": [
+        "employment agreement",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Influencer",
+      "Brand",
+      "Content"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FTC-ENDORSEMENT-GUIDES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "media-release",
+      "sponsorship-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Clear and conspicuous #ad disclosure duty",
+      "Substantiation of claims made",
+      "Content ownership and usage license",
+      "Exclusivity and competing brands",
+      "Morals clause and takedown right",
+      "FTC compliance training / monitoring"
+    ]
+  },
+  {
+    "id": "information-security-policy",
+    "version": "1.0.0",
+    "name": "Information Security Policy",
+    "description": "Enterprise information security policy, reviewed against the NIST Cybersecurity Framework 2.0 and SP 800-53 control families. Selects the POL-101..107 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "information security policy",
+        "cybersecurity policy",
+        "infosec policy",
+        "security policy"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "access control",
+        "least privilege",
+        "encryption at rest",
+        "vulnerability management",
+        "incident response",
+        "asset inventory",
+        "policy exceptions"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "purchase order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Information Assets",
+      "Policy Owner"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NIST-CSF-2.0",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "acceptable-use-policy",
+      "security-incident-response-plan"
+    ],
+    "compliance_matrix_columns": [
+      "Scope, ownership, and review cadence",
+      "Access control and least privilege",
+      "Data classification and encryption standards",
+      "Vulnerability and patch management",
+      "Logging, monitoring, and retention",
+      "Third-party / vendor security requirements",
+      "Exception process and enforcement"
+    ]
+  },
+  {
     "id": "informed-consent",
     "version": "1.0.0",
     "name": "Informed Consent (Research / Clinical)",
@@ -4475,6 +6917,56 @@
     ]
   },
   {
+    "id": "internship-agreement",
+    "version": "1.0.0",
+    "name": "Internship Agreement",
+    "description": "Internship agreement, reviewed against the FLSA primary-beneficiary test for unpaid interns and the IP/confidentiality terms. Selects the EMP-130..134 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "internship agreement",
+        "intern agreement",
+        "internship offer"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "intern",
+        "academic credit",
+        "unpaid internship",
+        "primary beneficiary",
+        "the internship period",
+        "no guarantee of employment"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "merger",
+        "purchase and sale"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Intern",
+      "Internship Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FLSA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "offer-letter",
+      "piia"
+    ],
+    "compliance_matrix_columns": [
+      "Paid vs. unpaid and FLSA primary-beneficiary factors",
+      "Academic-credit and educational-benefit recitals",
+      "No-promise-of-employment statement",
+      "IP assignment and confidentiality",
+      "Workers' compensation and insurance coverage"
+    ]
+  },
+  {
     "id": "investor-rights-agreement",
     "version": "1.0.0",
     "name": "Investor Rights Agreement (NVCA)",
@@ -4570,6 +7062,167 @@
       "17 U.S.C. § 204 (copyright transfer writing)",
       "Right to sue past infringement",
       "Recordation cooperation + POA"
+    ]
+  },
+  {
+    "id": "irrevocable-trust",
+    "version": "1.0.0",
+    "name": "Irrevocable Trust",
+    "description": "Irrevocable trust instrument, reviewed for the irrevocability recital, spendthrift clause, trustee powers, and tax-sensitive terms. Selects the EST-401..407 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "irrevocable trust",
+        "irrevocable trust agreement",
+        "trust agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "this trust shall be irrevocable",
+        "spendthrift",
+        "the trustee shall have the power",
+        "hemms",
+        "ascertainable standard",
+        "crummey",
+        "trust protector"
+      ],
+      "negative_features": [
+        "revocable",
+        "may be amended or revoked by the settlor at any time",
+        "last will and testament"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Trust",
+      "Trustee",
+      "Settlor",
+      "Beneficiary"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UTC",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "revocable-living-trust",
+      "special-needs-trust"
+    ],
+    "compliance_matrix_columns": [
+      "Express irrevocability recital",
+      "Spendthrift clause",
+      "Distribution standard (HEMS / ascertainable)",
+      "Trustee powers, succession, and removal",
+      "Crummey withdrawal rights where applicable",
+      "Grantor-trust powers and tax reimbursement",
+      "Situs, governing law, and decanting"
+    ]
+  },
+  {
+    "id": "joint-development-agreement",
+    "version": "1.0.0",
+    "name": "Joint Development Agreement",
+    "description": "Collaborative R&D agreement, reviewed for background/foreground IP allocation, joint-inventorship default, and publication control. Selects the IPL-116..121 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "joint development agreement",
+        "collaborative research agreement",
+        "co-development agreement",
+        "research and development agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "background intellectual property",
+        "foreground intellectual property",
+        "jointly developed",
+        "project plan",
+        "joint inventions",
+        "publication rights"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Background IP",
+      "Foreground IP",
+      "Project"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "35-USC-262",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "technology-transfer-agreement",
+      "patent-license"
+    ],
+    "compliance_matrix_columns": [
+      "Background IP identified and licensed",
+      "Foreground / joint IP ownership rule",
+      "§ 262 joint-owner default addressed",
+      "Prosecution and enforcement control",
+      "Publication review and delay period",
+      "Exclusivity and field-of-use limits"
+    ]
+  },
+  {
+    "id": "joint-venture-agreement",
+    "version": "1.0.0",
+    "name": "Joint Venture Agreement",
+    "description": "Contractual or entity joint venture between US parties, covering governance, capital, deadlock, and exit. Selects the COMM-146..151 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "joint venture agreement",
+        "joint venture",
+        "jv agreement",
+        "collaboration agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the venture",
+        "capital contributions of the members",
+        "deadlock",
+        "buy-sell",
+        "jv company",
+        "exclusivity of the venture"
+      ],
+      "negative_features": [
+        "merger",
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Venture",
+      "Member",
+      "Capital Contribution"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "operating-agreement-llc",
+      "partnership-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Scope and exclusivity of the venture",
+      "Capital contributions and funding calls",
+      "Governance, reserved matters, deadlock",
+      "Profit and loss allocation",
+      "Transfer restrictions and exit / buy-sell",
+      "IP ownership and background IP"
     ]
   },
   {
@@ -4691,6 +7344,164 @@
     ],
     "companion_playbooks": [],
     "compliance_matrix_columns": []
+  },
+  {
+    "id": "letter-of-intent-lease",
+    "version": "1.0.0",
+    "name": "Lease Letter of Intent",
+    "description": "Non-binding lease LOI, reviewed for the binding/non-binding split, exclusivity, and economic terms. Selects the RE-107..111 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "letter of intent",
+        "lease letter of intent",
+        "loi for lease",
+        "term sheet for lease"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "non-binding",
+        "rentable square feet",
+        "tenant improvement allowance",
+        "free rent",
+        "this letter of intent",
+        "subject to a mutually acceptable lease"
+      ],
+      "negative_features": [
+        "purchase and sale agreement",
+        "employment agreement",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Premises",
+      "Base Rent",
+      "Term"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-REAL-ESTATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "lease-commercial-multitenant",
+      "tenant-improvement-work-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Binding vs. non-binding provisions identified",
+      "Premises, term, and base rent",
+      "TI allowance and free rent",
+      "Exclusivity / no-shop period",
+      "Expiration of the LOI"
+    ]
+  },
+  {
+    "id": "listing-agreement",
+    "version": "1.0.0",
+    "name": "Real Estate Listing Agreement",
+    "description": "Broker listing agreement, reviewed for the commission trigger, protection period, and agency-disclosure duties. Selects the RE-118..122 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "listing agreement",
+        "exclusive right to sell",
+        "exclusive listing agreement",
+        "brokerage agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "exclusive right to sell",
+        "commission",
+        "protection period",
+        "multiple listing service",
+        "dual agency",
+        "ready, willing and able buyer"
+      ],
+      "negative_features": [
+        "lease of the premises shall commence",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Broker",
+      "Seller",
+      "Listing Price",
+      "Commission"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-REAL-ESTATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "real-estate-psa",
+      "residential-purchase-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Listing type and exclusivity",
+      "Commission rate and earning trigger",
+      "Protection / tail period and registered buyers",
+      "Agency disclosure and dual-agency consent",
+      "MLS and marketing authorizations"
+    ]
+  },
+  {
+    "id": "litigation-funding-agreement",
+    "version": "1.0.0",
+    "name": "Litigation Funding Agreement",
+    "description": "Third-party litigation funding agreement, reviewed for control, privilege/work-product, champerty, and disclosure-rule exposure. Selects the SET-138..143 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "litigation funding agreement",
+        "litigation finance agreement",
+        "funding agreement",
+        "legal funding agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the funder",
+        "funded claim",
+        "proceeds waterfall",
+        "the funder shall have no right to control",
+        "work product",
+        "champerty",
+        "return on the funded amount"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Funder",
+      "Funded Claim",
+      "Proceeds"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-LITIGATION-FINANCE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "assignment-of-claim",
+      "engagement-letter"
+    ],
+    "compliance_matrix_columns": [
+      "No funder control over litigation or settlement",
+      "Proceeds waterfall and multiple/return cap",
+      "Privilege and work-product protection recital",
+      "Champerty / maintenance and usury posture",
+      "Disclosure obligations under local rules or D.N.J./Del. standing orders",
+      "Termination, budget overrun, and case-abandonment terms"
+    ]
   },
   {
     "id": "litigation-hold",
@@ -4950,6 +7761,57 @@
     ]
   },
   {
+    "id": "loyalty-program-terms",
+    "version": "1.0.0",
+    "name": "Loyalty / Rewards Program Terms",
+    "description": "Consumer loyalty program terms, reviewed for points expiration, unilateral devaluation, and state gift-card overlaps. Selects the COMM-219..223 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "loyalty program terms",
+        "rewards program terms",
+        "membership rewards terms",
+        "points program"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "points expire",
+        "reward tier",
+        "program currency",
+        "we may modify or terminate the program",
+        "redemption",
+        "no cash value"
+      ],
+      "negative_features": [
+        "employment",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Points",
+      "Member",
+      "Program"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-CONSUMER",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "website-terms-of-use"
+    ],
+    "compliance_matrix_columns": [
+      "Points expiration and forfeiture terms",
+      "Unilateral devaluation / program termination",
+      "Redemption mechanics and blackout limits",
+      "Gift-card / stored-value law interaction",
+      "Account closure and transfer on death"
+    ]
+  },
+  {
     "id": "ma-restrictive-covenant",
     "version": "1.0.0",
     "name": "M&A Restrictive Covenant Agreement",
@@ -5102,6 +7964,267 @@
       "CAN-SPAM (email)",
       "Ownership of deliverables",
       "Claims substantiation (FTC § 5)"
+    ]
+  },
+  {
+    "id": "master-purchase-agreement",
+    "version": "1.0.0",
+    "name": "Master Purchase Agreement (Goods)",
+    "description": "Master agreement for recurring purchases of goods under UCC Article 2, with releases or orders issued against it. Selects the COMM-106..111 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "master purchase agreement",
+        "master supply and purchase",
+        "goods purchase agreement",
+        "master goods agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "releases issued under this agreement",
+        "risk of loss",
+        "f.o.b.",
+        "inspection and rejection",
+        "warranty of merchantability",
+        "conforming goods"
+      ],
+      "negative_features": [
+        "software as a service",
+        "professional services",
+        "lease of the premises",
+        "employment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Goods",
+      "Order",
+      "Specifications"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-2",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "purchase-order-terms",
+      "manufacturing-supply-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Quantity / requirements commitment",
+      "Price, price adjustment, and payment",
+      "F.O.B. point, title, risk of loss",
+      "Express warranty and disclaimer form",
+      "Inspection, rejection, revocation",
+      "Excuse / force majeure (§ 2-615)"
+    ]
+  },
+  {
+    "id": "media-release",
+    "version": "1.0.0",
+    "name": "Model / Talent Release",
+    "description": "Release of name, image, and likeness for commercial use, measured against state right-of-publicity statutes. Selects the COMM-184..188 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "model release",
+        "talent release",
+        "appearance release",
+        "photo release",
+        "likeness release"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "name, image and likeness",
+        "right of publicity",
+        "irrevocably grants",
+        "in all media now known or hereafter devised",
+        "no further compensation"
+      ],
+      "negative_features": [
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Release",
+      "Likeness"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-RIGHT-OF-PUBLICITY",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "influencer-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Scope of media, territory, and duration",
+      "Consideration recited",
+      "Minor's parent/guardian signature",
+      "Revocability and moral-rights waiver",
+      "Post-mortem right-of-publicity treatment"
+    ]
+  },
+  {
+    "id": "medical-director-agreement",
+    "version": "1.0.0",
+    "name": "Medical Director Agreement",
+    "description": "Medical directorship contract, the classic Stark/Anti-Kickback exposure, reviewed for the personal-services-arrangement conditions. Selects the HC-108..113 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "medical director agreement",
+        "medical directorship",
+        "director of medical services agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "medical director",
+        "time records",
+        "fair market value",
+        "aggregate services",
+        "anti-kickback",
+        "commercially reasonable",
+        "one year term"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Medical Director",
+      "Services",
+      "Compensation"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "AKS-42-USC-1320a-7b",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "physician-employment-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Written, signed, one-year minimum term",
+      "Services specified and aggregate hours set in advance",
+      "Compensation set in advance at FMV",
+      "No variation with referrals",
+      "Time-record substantiation requirement",
+      "Personal-services safe-harbor recital"
+    ]
+  },
+  {
+    "id": "meeting-minutes",
+    "version": "1.0.0",
+    "name": "Board / Shareholder Meeting Minutes",
+    "description": "Minutes of a directors' or shareholders' meeting, reviewed for the notice, quorum, vote, and adjournment record that makes the minutes evidence. Selects the GOV-111..116 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "minutes of the meeting",
+        "meeting minutes",
+        "minutes of a regular meeting",
+        "minutes of the annual meeting"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "a quorum was present",
+        "notice of the meeting",
+        "called to order",
+        "the motion carried",
+        "there being no further business",
+        "abstained"
+      ],
+      "negative_features": [
+        "this agreement is entered into by and between",
+        "witnesseth"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Meeting",
+      "Chair",
+      "Secretary"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "MBCA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "board-resolution",
+      "written-consent"
+    ],
+    "compliance_matrix_columns": [
+      "Notice or waiver of notice recited",
+      "Quorum recited",
+      "Attendance and who presided",
+      "Motions, votes, and abstentions",
+      "Conflict-of-interest recusals",
+      "Adjournment and secretary signature"
+    ]
+  },
+  {
+    "id": "membership-interest-purchase-agreement",
+    "version": "1.0.0",
+    "name": "Membership Interest Purchase Agreement (LLC)",
+    "description": "Purchase of LLC membership interests, the LLC analog to a stock purchase agreement, with tax-treatment and 754-election terms. Selects the MNA-101..107 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "membership interest purchase agreement",
+        "mipa",
+        "unit purchase agreement",
+        "purchase of membership interests"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "membership interests",
+        "the company's operating agreement",
+        "section 754 election",
+        "closing date",
+        "purchase price adjustment",
+        "seller's representations"
+      ],
+      "negative_features": [
+        "shares of common stock",
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Membership Interests",
+      "Seller",
+      "Buyer",
+      "Closing"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-MA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "stock-purchase-agreement",
+      "operating-agreement-llc"
+    ],
+    "compliance_matrix_columns": [
+      "Interests conveyed and capitalization rep",
+      "Purchase price and working-capital adjustment",
+      "Tax treatment and § 754 / § 338 elections",
+      "Operating-agreement consents and admission",
+      "Indemnity, caps, and survival",
+      "Non-compete / non-solicit from sellers",
+      "Closing conditions and deliverables"
     ]
   },
   {
@@ -5731,6 +8854,60 @@
     ]
   },
   {
+    "id": "oem-agreement",
+    "version": "1.0.0",
+    "name": "OEM / White-Label Agreement",
+    "description": "OEM or white-label agreement embedding one party's product in another's branded offering. Selects the COMM-237..242 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "oem agreement",
+        "white label agreement",
+        "white-label",
+        "original equipment manufacturer agreement",
+        "embedded license agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "embedded in the oem product",
+        "rebrand",
+        "under the oem's brand",
+        "end user license",
+        "minimum purchase commitment",
+        "support tiers"
+      ],
+      "negative_features": [
+        "employment",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "OEM Product",
+      "Licensed Technology",
+      "End User"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "distribution-agreement",
+      "eula"
+    ],
+    "compliance_matrix_columns": [
+      "Embedded license scope and branding rights",
+      "End-user license pass-through",
+      "Support tiering (L1 / L2 / L3)",
+      "IP indemnity and defense control",
+      "Minimum commitments and pricing",
+      "Source-code escrow / continuity"
+    ]
+  },
+  {
     "id": "offer-letter",
     "version": "1.0.0",
     "name": "Offer Letter",
@@ -5817,6 +8994,55 @@
       "DE LLC Act § 18-702",
       "DE LLC Act § 18-1101",
       "IRC § 704(b)"
+    ]
+  },
+  {
+    "id": "option-to-purchase-real-estate",
+    "version": "1.0.0",
+    "name": "Option to Purchase Real Estate",
+    "description": "Option agreement over real property, reviewed for consideration, exercise mechanics, and recordation. Selects the RE-123..127 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "option to purchase",
+        "purchase option agreement",
+        "option agreement for real property"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "option period",
+        "option consideration",
+        "exercise the option",
+        "memorandum of option",
+        "the option price",
+        "time is of the essence"
+      ],
+      "negative_features": [
+        "lease of the premises shall commence",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Option",
+      "Option Period",
+      "Option Price"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-REAL-ESTATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "real-estate-psa"
+    ],
+    "compliance_matrix_columns": [
+      "Option consideration recited and non-refundable",
+      "Exercise notice mechanics and deadline",
+      "Purchase price or pricing formula",
+      "Memorandum of option / recordation",
+      "Rule against perpetuities savings"
     ]
   },
   {
@@ -5952,6 +9178,57 @@
     ]
   },
   {
+    "id": "patent-assignment",
+    "version": "1.0.0",
+    "name": "Patent Assignment",
+    "description": "Assignment of patents and applications for USPTO recordation under 35 U.S.C. § 261. Selects the IPL-101..105 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "patent assignment",
+        "assignment of patent",
+        "patent assignment agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the entire right, title and interest",
+        "patent applications",
+        "the commissioner for patents",
+        "is hereby authorized to record",
+        "continuations, divisionals",
+        "prior sales"
+      ],
+      "negative_features": [
+        "trademark",
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Assigned Patents",
+      "Assignor",
+      "Assignee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "35-USC-261",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "ip-assignment",
+      "patent-license"
+    ],
+    "compliance_matrix_columns": [
+      "Patents and applications listed by number",
+      "Continuations, divisionals, and foreign counterparts",
+      "Recordation authorization to the USPTO",
+      "Nunc pro tunc effective date",
+      "Further-assurances and power of attorney"
+    ]
+  },
+  {
     "id": "patent-license",
     "version": "1.0.0",
     "name": "Patent License Agreement",
@@ -5995,6 +9272,61 @@
       "Brulotte / Kimble post-expiration",
       "35 U.S.C. § 287 (marking)",
       "Royalty mechanics + audit"
+    ]
+  },
+  {
+    "id": "payer-provider-agreement",
+    "version": "1.0.0",
+    "name": "Payer / Provider Participation Agreement",
+    "description": "Managed-care participating provider agreement, reviewed for the fee schedule, claims/appeals, and prompt-pay terms. Selects the HC-121..126 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "participating provider agreement",
+        "provider agreement",
+        "payer agreement",
+        "managed care agreement",
+        "network participation agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "covered services",
+        "fee schedule",
+        "clean claim",
+        "prompt payment",
+        "credentialing",
+        "utilization management",
+        "hold harmless the member"
+      ],
+      "negative_features": [
+        "merger",
+        "lease of the premises",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Covered Services",
+      "Member",
+      "Fee Schedule"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-MANAGED-CARE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "baa",
+      "physician-employment-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Fee schedule attached and amendment notice",
+      "Clean-claim definition and prompt-pay deadline",
+      "Member hold-harmless / balance-billing ban",
+      "Credentialing and re-credentialing terms",
+      "Utilization review and appeal rights",
+      "Termination notice and continuity of care"
     ]
   },
   {
@@ -6340,6 +9672,61 @@
     ]
   },
   {
+    "id": "physician-employment-agreement",
+    "version": "1.0.0",
+    "name": "Physician Employment Agreement",
+    "description": "Physician employment contract, reviewed for the Stark bona-fide-employment conditions, malpractice tail, and restrictive covenants. Selects the HC-101..107 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "physician employment agreement",
+        "physician employment",
+        "provider employment agreement",
+        "medical staff employment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the physician shall",
+        "professional liability insurance",
+        "tail coverage",
+        "medical staff privileges",
+        "productivity compensation",
+        "wrvu",
+        "stark law"
+      ],
+      "negative_features": [
+        "lease of the premises",
+        "merger",
+        "purchase and sale of the assets"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Physician",
+      "Practice",
+      "Compensation"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STARK-42-USC-1395nn",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "medical-director-agreement",
+      "employment-restrictive-covenant"
+    ],
+    "compliance_matrix_columns": [
+      "Fair market value and commercial reasonableness recital",
+      "No compensation varying with referral volume/value",
+      "wRVU or productivity formula",
+      "Malpractice coverage and tail responsibility",
+      "Medical staff privileges condition",
+      "Restrictive covenant scope and state limits",
+      "Termination, cure, and licensure triggers"
+    ]
+  },
+  {
     "id": "piia",
     "version": "1.0.0",
     "name": "Proprietary Information and Inventions Agreement (PIIA)",
@@ -6592,6 +9979,58 @@
       "Tax considerations",
       "State blue-sky + selling agents",
       "Prose-only disclaimer (REG-040)"
+    ]
+  },
+  {
+    "id": "preliminary-lien-notice",
+    "version": "1.0.0",
+    "name": "Preliminary Notice / Notice of Intent to Lien",
+    "description": "Statutory preliminary notice or notice of intent to lien, reviewed for the parties, property description, and statutory deadlines. Selects the CON-113..117 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "preliminary notice",
+        "notice of intent to lien",
+        "notice to owner",
+        "prelien notice",
+        "20-day preliminary notice"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "mechanic's lien",
+        "the estimated total price",
+        "the person furnishing labor or materials",
+        "legal description of the property",
+        "you are hereby notified",
+        "within the time required by law"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Claimant",
+      "Owner",
+      "Property"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-MECHANICS-LIEN",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "construction-lien-waiver",
+      "construction-contract"
+    ],
+    "compliance_matrix_columns": [
+      "Claimant, hiring party, and owner identified",
+      "Property description sufficient to identify",
+      "Description of labor/materials and estimated value",
+      "Statutory warning language",
+      "Service method and deadline recital"
     ]
   },
   {
@@ -7166,6 +10605,60 @@
     ]
   },
   {
+    "id": "profits-interest-award",
+    "version": "1.0.0",
+    "name": "LLC Profits Interest Award",
+    "description": "Profits-interest grant in an LLC or partnership under Rev. Procs. 93-27 and 2001-43. Selects the EQT-114..119 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "profits interest",
+        "profits interest award",
+        "incentive units",
+        "class b units award"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "threshold amount",
+        "distribution threshold",
+        "rev. proc. 93-27",
+        "capital account",
+        "83(b) election",
+        "vesting of the units",
+        "safe harbor"
+      ],
+      "negative_features": [
+        "shares of common stock",
+        "incentive stock option",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Units",
+      "Threshold Amount",
+      "Participant"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "REV-PROC-93-27",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "operating-agreement-llc",
+      "section-83b-election"
+    ],
+    "compliance_matrix_columns": [
+      "Threshold / hurdle amount set at grant-date value",
+      "Rev. Proc. 93-27 safe-harbor recitals",
+      "§ 83(b) election direction and deadline",
+      "Vesting, forfeiture, and repurchase",
+      "Capital-account and distribution mechanics",
+      "Partner (not employee) tax treatment warning"
+    ]
+  },
+  {
     "id": "promissory-note",
     "version": "1.0.0",
     "name": "Promissory Note",
@@ -7209,6 +10702,316 @@
       "State usury savings",
       "Default + acceleration",
       "Presentment / dishonor waivers"
+    ]
+  },
+  {
+    "id": "property-management-agreement",
+    "version": "1.0.0",
+    "name": "Property Management Agreement",
+    "description": "Owner-manager agreement for commercial or residential property, covering authority limits, trust accounts, and licensing. Selects the RE-112..117 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "property management agreement",
+        "management agreement for the property",
+        "asset management agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the manager shall",
+        "management fee",
+        "trust account",
+        "operating account",
+        "owner's approval for expenditures",
+        "leasing commissions"
+      ],
+      "negative_features": [
+        "purchase and sale agreement",
+        "employment agreement",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Manager",
+      "Owner",
+      "Property",
+      "Management Fee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-REAL-ESTATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "lease-commercial-multitenant"
+    ],
+    "compliance_matrix_columns": [
+      "Scope of authority and expenditure limits",
+      "Management fee and leasing commissions",
+      "Segregated trust / operating accounts",
+      "Real-estate broker licensing recital",
+      "Insurance, indemnity, and standard of care",
+      "Termination rights and transition of records"
+    ]
+  },
+  {
+    "id": "protective-order-stipulated",
+    "version": "1.0.0",
+    "name": "Stipulated Protective Order",
+    "description": "Agreed confidentiality order under FRCP 26(c), reviewed for the designation, challenge, and sealing procedure courts require. Selects the SET-116..122 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "protective order",
+        "stipulated protective order",
+        "confidentiality order",
+        "agreed protective order"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "confidential",
+        "attorneys' eyes only",
+        "designating party",
+        "clawback",
+        "inadvertent production",
+        "the court's file",
+        "good cause"
+      ],
+      "negative_features": [
+        "employment offer",
+        "purchase and sale agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Protected Material",
+      "Designating Party",
+      "Receiving Party"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-26c",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "litigation-hold",
+      "privilege-log"
+    ],
+    "compliance_matrix_columns": [
+      "Tiers of designation and their criteria",
+      "Designation and de-designation procedure",
+      "Challenge procedure with the burden on the designator",
+      "FRE 502(d) non-waiver / clawback order",
+      "Filing under seal and public-access recital",
+      "Permitted disclosure list and acknowledgments",
+      "Post-litigation return or destruction"
+    ]
+  },
+  {
+    "id": "proxy-statement-narrative",
+    "version": "1.0.0",
+    "name": "Proxy Statement Narrative (DEF 14A)",
+    "description": "Annual-meeting proxy prose reviewed against the Schedule 14A disclosure items. Selects the GOV-117..122 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "proxy statement",
+        "notice of annual meeting of stockholders",
+        "def 14a",
+        "notice of annual meeting and proxy statement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "record date",
+        "broker non-vote",
+        "say-on-pay",
+        "beneficial ownership",
+        "compensation discussion and analysis",
+        "audit committee report"
+      ],
+      "negative_features": [
+        "this agreement is entered into by and between",
+        "the parties agree as follows"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Record Date",
+      "Annual Meeting"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "SEC-SCHEDULE-14A",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "committee-charter",
+      "insider-trading-policy"
+    ],
+    "compliance_matrix_columns": [
+      "Record date, quorum, and vote standards",
+      "Broker non-vote and abstention treatment",
+      "Director nominee biographies and independence",
+      "Executive compensation tables and CD&A",
+      "Beneficial ownership table",
+      "Auditor fees and ratification"
+    ]
+  },
+  {
+    "id": "purchase-order-terms",
+    "version": "1.0.0",
+    "name": "Purchase Order Terms and Conditions",
+    "description": "Buyer-form purchase order terms for a sale of goods under UCC Article 2, including the battle-of-the-forms posture under § 2-207. Selects the COMM-101..105 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "purchase order terms",
+        "purchase order",
+        "standard terms of purchase",
+        "po terms"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "this purchase order",
+        "acknowledgment of this order",
+        "additional or different terms",
+        "goods conforming",
+        "shipment shall constitute acceptance"
+      ],
+      "negative_features": [
+        "statement of work",
+        "software as a service",
+        "master services agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Purchase Order",
+      "Goods",
+      "Seller"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-2",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "master-purchase-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Acceptance limited to PO terms (§ 2-207)",
+      "Price and payment terms",
+      "Delivery, title, and risk of loss",
+      "Warranty and inspection/rejection",
+      "Cancellation for convenience"
+    ]
+  },
+  {
+    "id": "qdro",
+    "version": "1.0.0",
+    "name": "Qualified Domestic Relations Order (QDRO)",
+    "description": "Domestic relations order measured against the ERISA § 206(d)(3) / 26 U.S.C. § 414(p) qualification requirements. Selects the EST-419..425 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "qualified domestic relations order",
+        "qdro",
+        "domestic relations order"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "alternate payee",
+        "the plan administrator",
+        "participant",
+        "shall not require the plan to provide any type or form of benefit",
+        "separate interest",
+        "shared payment",
+        "earnings and losses"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Alternate Payee",
+      "Participant",
+      "Plan"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ERISA-206d3",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "family-msa"
+    ],
+    "compliance_matrix_columns": [
+      "Plan named and participant/alternate payee identified",
+      "Amount or percentage and valuation date",
+      "No increased-benefit requirement",
+      "Separate-interest vs. shared-payment method",
+      "Survivor-benefit (QPSA/QJSA) treatment",
+      "Earnings/losses allocation",
+      "Court entry and plan-administrator qualification"
+    ]
+  },
+  {
+    "id": "quitclaim-deed",
+    "version": "1.0.0",
+    "name": "Quitclaim Deed",
+    "description": "Quitclaim conveyance, reviewed for the granting words, legal description, and the absence of any title warranty. Selects the RE-128..132 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "quitclaim deed",
+        "quit claim deed",
+        "quitclaim"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "does hereby remise, release and quitclaim",
+        "without any covenants of warranty",
+        "legal description",
+        "grantor",
+        "grantee",
+        "notary public"
+      ],
+      "negative_features": [
+        "warranty deed",
+        "lease of the premises",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Grantor",
+      "Grantee",
+      "Property"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-CONVEYANCING",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "warranty-deed"
+    ],
+    "compliance_matrix_columns": [
+      "Granting words appropriate to a quitclaim",
+      "Legal description of the property",
+      "No-warranty recital",
+      "Consideration recital and transfer-tax statement",
+      "Notarial acknowledgment and recording block"
     ]
   },
   {
@@ -7341,6 +11144,212 @@
     ]
   },
   {
+    "id": "relocation-agreement",
+    "version": "1.0.0",
+    "name": "Relocation / Repayment Agreement",
+    "description": "Relocation benefit and repayment agreement, reviewed for the repayment trigger, wage-deduction limits, and tax gross-up. Selects the EMP-120..124 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "relocation agreement",
+        "relocation repayment agreement",
+        "relocation assistance agreement",
+        "sign-on repayment agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "relocation expenses",
+        "repayment obligation",
+        "if you voluntarily resign within",
+        "gross-up",
+        "prorated repayment",
+        "deduct from your final paycheck"
+      ],
+      "negative_features": [
+        "lease of the premises shall commence",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Relocation Benefits",
+      "Repayment Period"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-WAGE-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "offer-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Benefits provided and dollar cap",
+      "Repayment trigger and proration schedule",
+      "Wage-deduction authorization and state limits",
+      "Tax gross-up treatment",
+      "Involuntary-termination carve-out"
+    ]
+  },
+  {
+    "id": "remote-work-agreement",
+    "version": "1.0.0",
+    "name": "Remote Work Agreement",
+    "description": "Telework agreement, reviewed for the multi-state tax and wage exposure, expense reimbursement, and equipment/security terms. Selects the EMP-125..129 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "remote work agreement",
+        "telework agreement",
+        "work from home agreement",
+        "flexible work arrangement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "designated work location",
+        "the employee's home office",
+        "expense reimbursement",
+        "company equipment",
+        "work hours and availability",
+        "may revoke this arrangement"
+      ],
+      "negative_features": [
+        "lease of the premises shall commence",
+        "merger",
+        "purchase and sale"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Remote Work Location",
+      "Equipment"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-WAGE-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "employee-handbook",
+      "employment-at-will-us"
+    ],
+    "compliance_matrix_columns": [
+      "Designated work location and change notice",
+      "Business-expense reimbursement (CA Lab. § 2802-type)",
+      "Timekeeping and off-the-clock controls for non-exempt staff",
+      "Equipment, security, and data handling",
+      "Revocation and return-to-office rights"
+    ]
+  },
+  {
+    "id": "reservation-of-rights-letter",
+    "version": "1.0.0",
+    "name": "Reservation of Rights Letter",
+    "description": "Insurer reservation-of-rights letter, reviewed for the specificity, independent-counsel trigger, and coverage-position clarity. Selects the INS-114..118 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "reservation of rights",
+        "reservation of rights letter",
+        "coverage position letter"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "reserves all rights",
+        "under a full reservation of rights",
+        "the policy provides",
+        "independent counsel",
+        "declaratory relief",
+        "we may disclaim coverage"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Policy",
+      "Claim",
+      "Insured"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-INSURANCE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "insurance-policy-summary"
+    ],
+    "compliance_matrix_columns": [
+      "Specific policy provisions cited",
+      "Facts giving rise to each reservation",
+      "Defense provided vs. denied",
+      "Independent-counsel (Cumis-type) trigger",
+      "Right to seek declaratory relief reserved"
+    ]
+  },
+  {
+    "id": "residential-purchase-agreement",
+    "version": "1.0.0",
+    "name": "Residential Purchase Agreement",
+    "description": "One-to-four-family residential purchase contract, reviewed for the financing, inspection, and disclosure contingencies US residential practice requires. Selects the RE-138..145 ruleset (8 checks).",
+    "match_features": {
+      "title_keywords": [
+        "residential purchase agreement",
+        "residential real estate purchase",
+        "purchase and sale agreement for residential",
+        "offer to purchase real estate"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "earnest money",
+        "inspection contingency",
+        "financing contingency",
+        "lead-based paint",
+        "closing costs",
+        "appraisal contingency",
+        "seller's disclosure"
+      ],
+      "negative_features": [
+        "commercial property",
+        "employment agreement",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Buyer",
+      "Seller",
+      "Property",
+      "Earnest Money"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-RESIDENTIAL-RE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "listing-agreement",
+      "warranty-deed"
+    ],
+    "compliance_matrix_columns": [
+      "Earnest money and escrow holder",
+      "Financing and appraisal contingencies",
+      "Inspection contingency and repair procedure",
+      "Lead-based paint disclosure (pre-1978)",
+      "Seller property-condition disclosure",
+      "Title, survey, and permitted exceptions",
+      "Closing date, possession, and prorations",
+      "Default remedies and liquidated damages"
+    ]
+  },
+  {
     "id": "revocable-living-trust",
     "version": "1.0.0",
     "name": "Revocable Living Trust",
@@ -7391,6 +11400,62 @@
       "Lifetime + death distributions",
       "Pour-over coordination",
       "Execution-formality disclaimer (EST-060)"
+    ]
+  },
+  {
+    "id": "revolving-credit-agreement",
+    "version": "1.0.0",
+    "name": "Revolving Credit Agreement",
+    "description": "Revolving credit facility on LSTA-style architecture, reviewed for the borrowing base, financial covenants, and benchmark-replacement terms. Selects the BNK-101..108 ruleset (8 checks).",
+    "match_features": {
+      "title_keywords": [
+        "revolving credit agreement",
+        "credit agreement",
+        "revolving loan agreement",
+        "revolving facility"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "borrowing base",
+        "revolving commitment",
+        "sofr",
+        "benchmark replacement",
+        "financial covenants",
+        "administrative agent",
+        "unused commitment fee"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Commitment",
+      "Borrowing Base",
+      "Applicable Margin"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "LSTA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "security-agreement",
+      "intercreditor-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Commitment, availability, and borrowing base",
+      "Interest rate, benchmark, and replacement waterfall",
+      "Financial covenants and testing dates",
+      "Conditions precedent to each borrowing",
+      "Events of default and cure rights",
+      "Collateral and guarantor package",
+      "Agent authority and assignment/participation",
+      "Prepayment, fees, and yield protection"
     ]
   },
   {
@@ -7827,6 +11892,59 @@
     ]
   },
   {
+    "id": "sba-loan-agreement",
+    "version": "1.0.0",
+    "name": "SBA 7(a) / 504 Loan Agreement",
+    "description": "SBA-guaranteed loan documents, reviewed against the SOP 50 10 program requirements including personal guaranties and use of proceeds. Selects the BNK-109..114 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "sba loan agreement",
+        "sba 7(a)",
+        "sba 504",
+        "small business administration loan"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "small business administration",
+        "sba form 148",
+        "unconditional guarantee",
+        "use of proceeds",
+        "sop 50 10",
+        "eligible passive company",
+        "life insurance assignment"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Loan",
+      "Guarantor",
+      "Borrower"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "SBA-SOP-50-10",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "loan-agreement",
+      "guaranty"
+    ],
+    "compliance_matrix_columns": [
+      "SBA authorization incorporated",
+      "Use-of-proceeds restrictions",
+      "Personal guaranty of 20%+ owners",
+      "Collateral and hazard insurance",
+      "Life-insurance assignment where required",
+      "Prepayment penalties and program limits"
+    ]
+  },
+  {
     "id": "scc-module-2",
     "version": "1.0.0",
     "name": "EU Standard Contractual Clauses — Module 2 (Controller to Processor)",
@@ -7952,6 +12070,59 @@
     ]
   },
   {
+    "id": "secondary-stock-transfer",
+    "version": "1.0.0",
+    "name": "Secondary Stock Transfer Agreement",
+    "description": "Private secondary sale of shares by an existing holder, covering ROFR clearance, transfer restrictions, and Rule 144 / § 4(a)(7) posture. Selects the EQT-125..130 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "stock transfer agreement",
+        "secondary purchase agreement",
+        "share transfer agreement",
+        "stock sale agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "right of first refusal",
+        "the company's consent to transfer",
+        "transfer restrictions",
+        "rule 144",
+        "section 4(a)(7)",
+        "selling stockholder"
+      ],
+      "negative_features": [
+        "merger",
+        "employment agreement",
+        "the company hereby issues"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Seller",
+      "Purchaser",
+      "Shares"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-SECURITIES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "stockholders-agreement",
+      "rofr-co-sale"
+    ],
+    "compliance_matrix_columns": [
+      "ROFR / co-sale waiver evidence",
+      "Company consent and transfer-agent instruction",
+      "Securities-law exemption relied on",
+      "Seller representations on title and liens",
+      "Information asymmetry / big-boy acknowledgment",
+      "409A and tax reporting responsibility"
+    ]
+  },
+  {
     "id": "section-83b-election",
     "version": "1.0.0",
     "name": "§ 83(b) Election Form",
@@ -8074,6 +12245,62 @@
     ]
   },
   {
+    "id": "security-incident-response-plan",
+    "version": "1.0.0",
+    "name": "Security Incident Response Plan",
+    "description": "Incident response plan, reviewed against NIST SP 800-61r3 lifecycle phases and the notification-clock triggers US breach laws impose. Selects the POL-126..132 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "incident response plan",
+        "security incident response plan",
+        "cyber incident response plan",
+        "irp"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "detection and analysis",
+        "containment",
+        "eradication and recovery",
+        "post-incident",
+        "severity classification",
+        "incident commander",
+        "notification timeline"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "purchase order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Incident",
+      "Severity",
+      "Incident Commander"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NIST-SP-800-61",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "incident-notification",
+      "business-continuity-plan",
+      "information-security-policy"
+    ],
+    "compliance_matrix_columns": [
+      "Preparation, detection, containment, recovery phases",
+      "Severity classification and escalation matrix",
+      "Roles: incident commander, legal, comms",
+      "Evidence preservation and forensic chain of custody",
+      "Regulatory notification clocks and owners",
+      "Third-party / vendor incident coordination",
+      "Post-incident review and plan update"
+    ]
+  },
+  {
     "id": "separation-agreement",
     "version": "1.0.0",
     "name": "Separation / Severance Agreement",
@@ -8117,6 +12344,105 @@
       "NLRB McLaren Macomb (2023)",
       "SEC Rule 21F-17",
       "Cal. Civ. § 1542"
+    ]
+  },
+  {
+    "id": "side-letter",
+    "version": "1.0.0",
+    "name": "Investor Side Letter",
+    "description": "Side letter granting an investor rights outside the main documents, reviewed for MFN, precedence, and disclosure of the modification. Selects the MNA-124..128 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "side letter",
+        "letter agreement regarding",
+        "investor side letter"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "most favored nation",
+        "notwithstanding anything to the contrary in the purchase agreement",
+        "information rights",
+        "board observer",
+        "pro rata rights",
+        "this letter shall terminate upon"
+      ],
+      "negative_features": [
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Side Letter",
+      "Investor"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-VENTURE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "investor-rights-agreement",
+      "subscription-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Rights granted beyond the main documents",
+      "Precedence over the principal agreement",
+      "MFN scope and disclosure obligation",
+      "Termination on IPO / transfer / threshold drop",
+      "Amendment mechanics and other-investor consent"
+    ]
+  },
+  {
+    "id": "sms-consent-disclosure",
+    "version": "1.0.0",
+    "name": "SMS / Telemarketing Consent Disclosure",
+    "description": "Express written consent capture for SMS or autodialed calls under the TCPA and 47 C.F.R. § 64.1200. Selects the PRV-113..117 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "sms consent",
+        "text message consent",
+        "telemarketing consent",
+        "mobile messaging terms"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "message and data rates may apply",
+        "reply stop to opt out",
+        "consent is not a condition of purchase",
+        "autodialed",
+        "prerecorded",
+        "message frequency"
+      ],
+      "negative_features": [
+        "merger",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Consent",
+      "Messages"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "TCPA-47-USC-227",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "website-terms-of-use",
+      "privacy-notice-us"
+    ],
+    "compliance_matrix_columns": [
+      "Express written consent language",
+      "Consent-not-a-condition-of-purchase statement",
+      "Autodialer / prerecorded disclosure",
+      "Message frequency and rates disclosure",
+      "STOP/HELP opt-out mechanism"
     ]
   },
   {
@@ -8230,6 +12556,266 @@
       "FTC endorsement disclosure",
       "Reg FD compliance",
       "Brand voice + personal disclaimer"
+    ]
+  },
+  {
+    "id": "source-code-escrow-agreement",
+    "version": "1.0.0",
+    "name": "Source Code Escrow Agreement",
+    "description": "Three-party escrow of source code, reviewed for the release conditions and the § 365(n) bankruptcy protection. Selects the IPL-129..133 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "source code escrow",
+        "escrow agreement for source code",
+        "technology escrow agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "deposit materials",
+        "release condition",
+        "escrow agent",
+        "verification of the deposit",
+        "section 365(n)",
+        "update the deposit"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Deposit Materials",
+      "Escrow Agent",
+      "Release Condition"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "11-USC-365n",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "oem-agreement",
+      "saas-customer"
+    ],
+    "compliance_matrix_columns": [
+      "Deposit contents and update cadence",
+      "Verification / integrity testing rights",
+      "Release conditions and dispute procedure",
+      "§ 365(n) election preserved in bankruptcy",
+      "License scope after release"
+    ]
+  },
+  {
+    "id": "special-needs-trust",
+    "version": "1.0.0",
+    "name": "Special Needs Trust",
+    "description": "First- or third-party special needs trust, reviewed for the supplemental-needs language, payback, and sole-benefit terms Medicaid/SSI require. Selects the EST-408..413 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "special needs trust",
+        "supplemental needs trust",
+        "d4a trust",
+        "snt"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "supplemental to and not in place of",
+        "public benefits",
+        "medicaid",
+        "supplemental security income",
+        "payback",
+        "sole benefit of the beneficiary",
+        "42 u.s.c. 1396p"
+      ],
+      "negative_features": [
+        "last will and testament",
+        "merger",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Trust",
+      "Beneficiary",
+      "Trustee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "42-USC-1396p",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "irrevocable-trust",
+      "revocable-living-trust"
+    ],
+    "compliance_matrix_columns": [
+      "Supplemental, not supplanting, benefits language",
+      "First- vs. third-party characterization",
+      "Medicaid payback provision (first-party)",
+      "Sole-benefit and age-65 conditions",
+      "Trustee discretion — no support obligation",
+      "Distribution limits on cash and ISM"
+    ]
+  },
+  {
+    "id": "sponsorship-agreement",
+    "version": "1.0.0",
+    "name": "Sponsorship Agreement",
+    "description": "Event, team, or property sponsorship agreement covering rights, category exclusivity, and activation. Selects the COMM-173..177 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "sponsorship agreement",
+        "sponsorship",
+        "title sponsor agreement",
+        "partnership marketing agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "category exclusivity",
+        "sponsorship fee",
+        "activation rights",
+        "official sponsor",
+        "naming rights",
+        "hospitality"
+      ],
+      "negative_features": [
+        "employment agreement",
+        "lease of the premises",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Sponsor",
+      "Property",
+      "Rights"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "venue-rental-agreement",
+      "influencer-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Rights granted and category exclusivity",
+      "Sponsorship fee and payment schedule",
+      "Trademark license and approval rights",
+      "Event cancellation / force majeure remedy",
+      "Morals clause and reputational termination"
+    ]
+  },
+  {
+    "id": "staffing-services-agreement",
+    "version": "1.0.0",
+    "name": "Staffing / Contingent Labor Agreement",
+    "description": "Staffing-agency agreement supplying contingent workers, including co-employment allocation and conversion fees. Selects the COMM-129..133 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "staffing agreement",
+        "staffing services agreement",
+        "contingent labor",
+        "temporary staffing",
+        "managed service provider agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "assigned employees",
+        "co-employment",
+        "conversion fee",
+        "bill rate",
+        "the agency is the employer of record",
+        "background check"
+      ],
+      "negative_features": [
+        "software as a service",
+        "goods",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Assigned Employee",
+      "Client",
+      "Bill Rate"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-EMPLOYMENT",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "independent-contractor",
+      "employment-at-will-us"
+    ],
+    "compliance_matrix_columns": [
+      "Employer-of-record allocation",
+      "Wage, hour, and benefits responsibility",
+      "Conversion / buyout fee",
+      "Workers' compensation and insurance",
+      "Background check and screening consents"
+    ]
+  },
+  {
+    "id": "stipulation-of-dismissal",
+    "version": "1.0.0",
+    "name": "Stipulation of Dismissal",
+    "description": "FRCP 41(a)(1)(A)(ii) stipulated dismissal, reviewed for the with/without-prejudice election, signatures, and fee allocation. Selects the SET-133..137 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "stipulation of dismissal",
+        "stipulation and order of dismissal",
+        "notice of dismissal",
+        "joint stipulation of dismissal"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "with prejudice",
+        "without prejudice",
+        "rule 41",
+        "each party to bear its own costs",
+        "all parties who have appeared",
+        "hereby stipulate"
+      ],
+      "negative_features": [
+        "this agreement is entered into by and between the parties as of",
+        "employment offer"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Action",
+      "Dismissal"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-41",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "consent-judgment",
+      "confidential-settlement"
+    ],
+    "compliance_matrix_columns": [
+      "Rule 41 basis and signatures of all appearing parties",
+      "With- vs. without-prejudice election",
+      "Scope: which claims and which parties",
+      "Costs and attorneys' fees allocation",
+      "Retention of jurisdiction to enforce settlement"
     ]
   },
   {
@@ -8425,6 +13011,59 @@
     ]
   },
   {
+    "id": "sublease-agreement",
+    "version": "1.0.0",
+    "name": "Sublease Agreement",
+    "description": "Sublease of leased premises, reviewed for prime-lease incorporation, landlord consent, and the recapture risk. Selects the RE-101..106 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "sublease agreement",
+        "sublease",
+        "sublet agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the prime lease",
+        "master lease",
+        "sublandlord",
+        "subtenant",
+        "landlord's consent to sublease",
+        "recapture"
+      ],
+      "negative_features": [
+        "assignment of lease and consent",
+        "purchase and sale",
+        "employment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Prime Lease",
+      "Sublandlord",
+      "Subtenant",
+      "Subleased Premises"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-REAL-ESTATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "lease-commercial-multitenant",
+      "lease-assignment"
+    ],
+    "compliance_matrix_columns": [
+      "Prime-lease incorporation and precedence",
+      "Landlord consent condition precedent",
+      "Recapture / termination risk allocation",
+      "Rent, escalations, and pass-throughs",
+      "Surrender condition and holdover",
+      "Direct-lease attornment on prime-lease termination"
+    ]
+  },
+  {
     "id": "subordination-agreement",
     "version": "1.0.0",
     "name": "Subordination Agreement",
@@ -8473,6 +13112,318 @@
     ]
   },
   {
+    "id": "subscription-agreement",
+    "version": "1.0.0",
+    "name": "Securities Subscription Agreement",
+    "description": "Investor subscription for privately-placed securities, reviewed for the Reg D exemption representations and transfer legend. Selects the MNA-117..123 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "subscription agreement",
+        "securities subscription agreement",
+        "investor subscription"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "accredited investor",
+        "regulation d",
+        "rule 506",
+        "the securities have not been registered",
+        "investment intent",
+        "restrictive legend",
+        "suitability"
+      ],
+      "negative_features": [
+        "merger",
+        "employment agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Subscriber",
+      "Securities",
+      "Purchase Price"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "REG-D",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "ppm-narrative",
+      "side-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Accredited-investor status and verification",
+      "Exemption relied on (506(b) vs. 506(c))",
+      "Investment-intent and no-resale representation",
+      "Restrictive legend and transfer limits",
+      "Risk-factor acknowledgment",
+      "Bad-actor (Rule 506(d)) representations",
+      "Acceptance/rejection and escrow of funds"
+    ]
+  },
+  {
+    "id": "sweepstakes-official-rules",
+    "version": "1.0.0",
+    "name": "Sweepstakes / Contest Official Rules",
+    "description": "Official rules for a US promotion, checked for the no-purchase-necessary, odds, AMOE, and eligibility disclosures state lottery law requires. Selects the COMM-224..230 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "official rules",
+        "sweepstakes rules",
+        "contest rules",
+        "giveaway official rules"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "no purchase necessary",
+        "a purchase will not increase your chances",
+        "odds of winning",
+        "void where prohibited",
+        "approximate retail value",
+        "alternate method of entry"
+      ],
+      "negative_features": [
+        "this agreement is entered into by and between",
+        "employment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Sponsor",
+      "Entrant",
+      "Prize"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-LOTTERY-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "website-terms-of-use"
+    ],
+    "compliance_matrix_columns": [
+      "No-purchase-necessary and AMOE statement",
+      "Odds of winning disclosure",
+      "Eligibility, age, and geographic limits",
+      "Start/end dates and entry period",
+      "Prize ARV and winner tax responsibility",
+      "Sponsor identity and rules availability",
+      "Winner list and publicity release"
+    ]
+  },
+  {
+    "id": "teaming-agreement",
+    "version": "1.0.0",
+    "name": "Teaming Agreement (Government Contracting)",
+    "description": "Prime/subcontractor teaming agreement for a federal procurement, including FAR 9.6 treatment and the enforceability problem. Selects the COMM-152..156 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "teaming agreement",
+        "team agreement",
+        "prime-subcontractor teaming"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the prime contractor",
+        "the solicitation",
+        "contemplated subcontract",
+        "far 9.6",
+        "if the prime is awarded",
+        "workshare"
+      ],
+      "negative_features": [
+        "merger",
+        "lease of the premises",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Prime",
+      "Team Member",
+      "Program"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FAR-9.6",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "far-subcontract-flowdown"
+    ],
+    "compliance_matrix_columns": [
+      "Identified program / solicitation",
+      "Workshare and scope commitment",
+      "Exclusivity and duration",
+      "Agreement-to-agree / enforceability recital",
+      "Proposal data and confidentiality"
+    ]
+  },
+  {
+    "id": "technology-transfer-agreement",
+    "version": "1.0.0",
+    "name": "University Technology Transfer License",
+    "description": "University or federal-lab license, reviewed against the Bayh-Dole obligations (35 U.S.C. §§ 200-212; 37 C.F.R. Part 401). Selects the IPL-122..128 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "technology transfer agreement",
+        "university license agreement",
+        "exclusive license agreement with the university",
+        "inter-institutional agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "bayh-dole",
+        "government license rights",
+        "march-in rights",
+        "substantially manufactured in the united states",
+        "diligence milestones",
+        "sponsored research",
+        "licensed patents"
+      ],
+      "negative_features": [
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Licensed Patents",
+      "Licensed Product",
+      "Field of Use"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "BAYH-DOLE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "patent-license",
+      "joint-development-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Licensed patents and field of use",
+      "Government license and march-in reservation",
+      "US-manufacturing preference (§ 204)",
+      "Diligence milestones and termination for failure",
+      "Royalties, sublicense income, and reporting",
+      "Publication and academic-use reservation",
+      "Indemnity and insurance from the licensee"
+    ]
+  },
+  {
+    "id": "telehealth-consent",
+    "version": "1.0.0",
+    "name": "Telehealth Informed Consent",
+    "description": "Telehealth consent form, reviewed for the modality, limitations, privacy, and emergency disclosures state telehealth statutes require. Selects the HC-127..132 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "telehealth consent",
+        "telemedicine consent",
+        "consent to telehealth services"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "telehealth",
+        "the limitations of a remote evaluation",
+        "technology failure",
+        "in-person examination",
+        "you may withdraw your consent",
+        "the location of the patient"
+      ],
+      "negative_features": [
+        "merger",
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Telehealth Services",
+      "Patient"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-TELEHEALTH",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "informed-consent",
+      "hipaa-npp"
+    ],
+    "compliance_matrix_columns": [
+      "Description of telehealth modality",
+      "Limitations and risks of remote evaluation",
+      "Right to withdraw and receive in-person care",
+      "Emergency and technology-failure protocol",
+      "Privacy, recording, and who may be present",
+      "Licensure / patient-location recital"
+    ]
+  },
+  {
+    "id": "tenant-improvement-work-letter",
+    "version": "1.0.0",
+    "name": "Tenant Improvement Work Letter",
+    "description": "Work letter exhibit governing landlord and tenant construction obligations and the TI allowance. Selects the RE-146..150 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "work letter",
+        "tenant improvement work letter",
+        "construction rider",
+        "landlord work letter"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "tenant improvement allowance",
+        "landlord's work",
+        "tenant's work",
+        "space plan",
+        "substantial completion of the premises",
+        "tenant delay"
+      ],
+      "negative_features": [
+        "purchase and sale agreement",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Landlord's Work",
+      "Tenant's Work",
+      "Allowance"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-REAL-ESTATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "lease-commercial-multitenant",
+      "letter-of-intent-lease"
+    ],
+    "compliance_matrix_columns": [
+      "Allowance amount, draw process, and deadline",
+      "Scope split (landlord's vs. tenant's work)",
+      "Plan approval timeline and deemed approval",
+      "Tenant-delay definition and rent commencement",
+      "Change orders and cost overruns"
+    ]
+  },
+  {
     "id": "tolling-agreement",
     "version": "1.0.0",
     "name": "Tolling Agreement",
@@ -8514,6 +13465,107 @@
       "Tolling period defined",
       "No revival of barred claims",
       "Termination on notice"
+    ]
+  },
+  {
+    "id": "trademark-assignment",
+    "version": "1.0.0",
+    "name": "Trademark Assignment",
+    "description": "Assignment of trademarks with the goodwill, as 15 U.S.C. § 1060 requires, for USPTO recordation. Selects the IPL-106..110 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "trademark assignment",
+        "assignment of trademark",
+        "assignment of marks"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "together with the goodwill of the business",
+        "registration no.",
+        "the assigned marks",
+        "intent-to-use application",
+        "recordation with the united states patent and trademark office"
+      ],
+      "negative_features": [
+        "patent",
+        "employment offer",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Assigned Marks",
+      "Goodwill"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "15-USC-1060",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "trademark-license",
+      "ip-assignment"
+    ],
+    "compliance_matrix_columns": [
+      "Marks and registrations listed",
+      "Goodwill expressly assigned (§ 1060)",
+      "Intent-to-use restriction respected",
+      "Recordation authorization",
+      "Quality-control transition and phase-out license"
+    ]
+  },
+  {
+    "id": "trademark-coexistence-agreement",
+    "version": "1.0.0",
+    "name": "Trademark Coexistence Agreement",
+    "description": "Coexistence or consent agreement between mark owners, reviewed for the goods/channel boundaries and the consumer-confusion posture. Selects the IPL-111..115 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "coexistence agreement",
+        "trademark coexistence",
+        "consent agreement",
+        "concurrent use agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "likelihood of confusion",
+        "the respective marks",
+        "goods and services listed",
+        "geographic territory",
+        "consent to registration",
+        "shall not oppose"
+      ],
+      "negative_features": [
+        "employment offer",
+        "merger",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Party A Mark",
+      "Party B Mark",
+      "Field"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "15-USC-1052d",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "trademark-license",
+      "trademark-assignment"
+    ],
+    "compliance_matrix_columns": [
+      "Goods / services boundary for each party",
+      "Geographic and channel limits",
+      "Consent to registration and non-opposition",
+      "Confusion-avoidance and complaint procedure",
+      "Term, assignability, and successor binding"
     ]
   },
   {
@@ -8817,6 +13869,55 @@
     ]
   },
   {
+    "id": "trust-amendment",
+    "version": "1.0.0",
+    "name": "Trust Amendment / Restatement",
+    "description": "Amendment or complete restatement of a revocable trust, reviewed for the power-to-amend citation, execution formalities, and integration. Selects the EST-414..418 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "trust amendment",
+        "amendment to trust",
+        "restatement of trust",
+        "first amendment to the trust"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the settlor reserved the right to amend",
+        "the trust is hereby amended",
+        "in all other respects the trust is ratified",
+        "restated in its entirety",
+        "dated"
+      ],
+      "negative_features": [
+        "last will and testament",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Trust",
+      "Amendment"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UTC-602",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "revocable-living-trust",
+      "codicil"
+    ],
+    "compliance_matrix_columns": [
+      "Original trust identified by name and date",
+      "Power to amend cited and method followed",
+      "Amended provisions restated in full",
+      "Ratification of unamended terms",
+      "Settlor and trustee execution / notarization"
+    ]
+  },
+  {
     "id": "ucc-1-financing-statement",
     "version": "1.0.0",
     "name": "UCC-1 Financing Statement (prose)",
@@ -9071,6 +14172,60 @@
     ]
   },
   {
+    "id": "union-cba",
+    "version": "1.0.0",
+    "name": "Collective Bargaining Agreement",
+    "description": "Union contract, reviewed for the recognition, grievance/arbitration, no-strike, and management-rights architecture the NLRA presumes. Selects the EMP-135..141 ruleset (7 checks).",
+    "match_features": {
+      "title_keywords": [
+        "collective bargaining agreement",
+        "labor agreement",
+        "union contract",
+        "cba"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "bargaining unit",
+        "grievance procedure",
+        "no strike",
+        "management rights",
+        "union security",
+        "seniority",
+        "dues checkoff"
+      ],
+      "negative_features": [
+        "at-will employment",
+        "merger",
+        "purchase and sale"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Bargaining Unit",
+      "Union",
+      "Grievance"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "NLRA",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "employee-handbook"
+    ],
+    "compliance_matrix_columns": [
+      "Recognition and bargaining-unit description",
+      "Union security and dues checkoff (right-to-work states)",
+      "Grievance and arbitration steps with deadlines",
+      "No-strike / no-lockout clause",
+      "Management-rights reservation",
+      "Seniority, layoff, and recall",
+      "Term, reopener, and evergreen clause"
+    ]
+  },
+  {
     "id": "vendor-security-addendum",
     "version": "1.0.0",
     "name": "Vendor Security Addendum",
@@ -9245,6 +14400,58 @@
     ]
   },
   {
+    "id": "venue-rental-agreement",
+    "version": "1.0.0",
+    "name": "Venue / Event Space Rental Agreement",
+    "description": "Short-term venue or event-space rental, including attrition, force majeure, and alcohol-liability allocation. Selects the COMM-243..247 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "venue rental agreement",
+        "event space agreement",
+        "facility rental agreement",
+        "banquet event order",
+        "event contract"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "room block",
+        "attrition",
+        "food and beverage minimum",
+        "load-in",
+        "cancellation fee schedule",
+        "dram shop"
+      ],
+      "negative_features": [
+        "term of the lease shall commence",
+        "employment",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Venue",
+      "Event",
+      "Event Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "sponsorship-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Cancellation and attrition fee schedule",
+      "Force majeure and impossibility standard",
+      "Insurance and additional-insured status",
+      "Alcohol service and dram-shop allocation",
+      "Damage deposit and restoration"
+    ]
+  },
+  {
     "id": "voting-agreement",
     "version": "1.0.0",
     "name": "Voting Agreement (NVCA)",
@@ -9282,6 +14489,264 @@
       "DGCL § 218",
       "DGCL § 212",
       "NVCA Model Voting Agreement"
+    ]
+  },
+  {
+    "id": "warehousing-3pl-agreement",
+    "version": "1.0.0",
+    "name": "Warehousing / 3PL Agreement",
+    "description": "Third-party logistics and warehousing agreement, including warehouse receipts and warehouse liens under UCC Article 7. Selects the COMM-124..128 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "warehousing agreement",
+        "third party logistics",
+        "3pl agreement",
+        "fulfillment services agreement",
+        "storage agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "warehouse receipt",
+        "warehouseman",
+        "stored goods",
+        "inventory shrinkage",
+        "warehouse lien",
+        "pick and pack"
+      ],
+      "negative_features": [
+        "motor carrier",
+        "lease of the premises",
+        "employment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Goods",
+      "Facility",
+      "Services"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "UCC-7",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "freight-transportation-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Warehouse receipt / documents of title",
+      "Standard of care and liability limit",
+      "Warehouse lien and enforcement",
+      "Inventory accuracy and shrinkage allowance",
+      "Insurance and risk of loss"
+    ]
+  },
+  {
+    "id": "warn-notice",
+    "version": "1.0.0",
+    "name": "WARN Act Notice",
+    "description": "Plant-closing or mass-layoff notice measured against the federal WARN Act content requirements (29 U.S.C. § 2102; 20 C.F.R. § 639.7). Selects the EMP-142..147 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "warn notice",
+        "worker adjustment and retraining",
+        "notice of plant closing",
+        "notice of mass layoff"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "worker adjustment and retraining notification",
+        "60 days",
+        "bumping rights",
+        "expected date of separation",
+        "permanent or temporary",
+        "the name and telephone number of a company official"
+      ],
+      "negative_features": [
+        "this agreement is entered into by and between",
+        "merger"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Affected Employees",
+      "Separation Date"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "WARN-29-USC-2101",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "separation-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "60-day advance timing",
+      "Permanent vs. temporary and expected date",
+      "Bumping-rights statement",
+      "Job titles and number of affected employees",
+      "Company contact for further information",
+      "State mini-WARN overlay (CA, NY, NJ, and others)"
+    ]
+  },
+  {
+    "id": "warrant-agreement",
+    "version": "1.0.0",
+    "name": "Warrant to Purchase Stock",
+    "description": "Stand-alone warrant, reviewed for exercise mechanics, anti-dilution, and expiration/termination events. Selects the EQT-120..124 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "warrant to purchase",
+        "warrant agreement",
+        "common stock purchase warrant",
+        "preferred stock warrant"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "exercise price",
+        "net exercise",
+        "cashless exercise",
+        "warrant shares",
+        "expiration date of this warrant",
+        "anti-dilution adjustment"
+      ],
+      "negative_features": [
+        "option grant notice",
+        "restricted stock unit",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Warrant",
+      "Exercise Price",
+      "Warrant Shares"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-SECURITIES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "convertible-note",
+      "safe-yc"
+    ],
+    "compliance_matrix_columns": [
+      "Number of shares, class, and exercise price",
+      "Cashless / net exercise mechanics",
+      "Anti-dilution and capitalization adjustments",
+      "Expiration and automatic-exercise trigger",
+      "Termination on acquisition and notice period"
+    ]
+  },
+  {
+    "id": "warranty-deed",
+    "version": "1.0.0",
+    "name": "Warranty Deed",
+    "description": "General or special warranty deed, reviewed for the covenants of title, legal description, and acknowledgment. Selects the RE-133..137 ruleset (5 checks).",
+    "match_features": {
+      "title_keywords": [
+        "warranty deed",
+        "general warranty deed",
+        "special warranty deed",
+        "grant deed"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "does hereby grant, bargain, sell and convey",
+        "covenants of warranty",
+        "free and clear of all encumbrances except",
+        "legal description",
+        "warrant and defend the title"
+      ],
+      "negative_features": [
+        "quitclaim",
+        "lease of the premises",
+        "employment agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Grantor",
+      "Grantee",
+      "Property"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-CONVEYANCING",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "quitclaim-deed",
+      "real-estate-psa"
+    ],
+    "compliance_matrix_columns": [
+      "Granting words and warranty covenants",
+      "Permitted exceptions schedule",
+      "Legal description of the property",
+      "Consideration and transfer-tax declaration",
+      "Notarial acknowledgment and recording block"
+    ]
+  },
+  {
+    "id": "website-terms-of-use",
+    "version": "1.0.0",
+    "name": "Website Terms of Use",
+    "description": "Public website terms of use, reviewed for assent mechanics, the modification-by-posting problem, and consumer-arbitration disclosure. Selects the COMM-201..206 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "terms of use",
+        "website terms",
+        "terms and conditions of use",
+        "site terms"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "by using this site",
+        "we may modify these terms",
+        "user-generated content",
+        "dmca",
+        "acceptable use",
+        "governs your use of the site"
+      ],
+      "negative_features": [
+        "subscription fee",
+        "the services will be provided as described in an order form",
+        "employment"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Site",
+      "User",
+      "Content"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-CONSUMER",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "saas-tos",
+      "privacy-policy-lint"
+    ],
+    "compliance_matrix_columns": [
+      "Assent mechanism (clickwrap vs browsewrap)",
+      "Unilateral modification and notice",
+      "DMCA agent designation",
+      "User-content license scope",
+      "Arbitration / class waiver conspicuousness",
+      "Disclaimer and liability cap conspicuousness"
     ]
   },
   {

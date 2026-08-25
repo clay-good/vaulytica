@@ -1,0 +1,40 @@
+{
+  "id": "childrens-privacy-notice",
+  "version": "1.0.0",
+  "name": "Children's Privacy Notice (COPPA)",
+  "description": "Directed-to-children privacy notice measured against the COPPA Rule (16 C.F.R. § 312.4) direct-notice and consent items. Selects the PRV-107..112 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "children's privacy",
+      "children's privacy notice",
+      "coppa notice",
+      "privacy policy for children"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "under 13",
+      "verifiable parental consent",
+      "children's online privacy protection",
+      "parent may review",
+      "operator's contact information",
+      "we do not condition participation"
+    ],
+    "negative_features": ["merger", "employment offer"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Child", "Parent", "Personal Information"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "COPPA-16-CFR-312",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["privacy-notice-us", "website-terms-of-use"],
+  "compliance_matrix_columns": [
+    "Operator identity and contact details",
+    "Categories collected and how used",
+    "Verifiable parental consent mechanism",
+    "Parental review, deletion, and revocation rights",
+    "No conditioning participation on excess collection",
+    "Third-party disclosure and retention limits"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "api-terms",
+  "version": "1.0.0",
+  "name": "API Terms of Service / Developer Agreement",
+  "description": "Developer-facing API terms covering license scope, rate limits, deprecation, and data use. Selects the COMM-207..212 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "api terms",
+      "developer agreement",
+      "api license agreement",
+      "developer terms of service"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "api key",
+      "rate limit",
+      "deprecation policy",
+      "your application",
+      "we may suspend access",
+      "api call",
+      "sandbox"
+    ],
+    "negative_features": ["employment", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["API", "Developer Application", "API Key"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["saas-vendor", "data-license-agreement"],
+  "compliance_matrix_columns": [
+    "License scope and permitted use",
+    "Rate limits, quotas, and suspension",
+    "Deprecation / breaking-change notice period",
+    "End-user data handling and privacy flow-down",
+    "Branding and attribution requirements",
+    "Termination and wind-down of live integrations"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "security-incident-response-plan",
+  "version": "1.0.0",
+  "name": "Security Incident Response Plan",
+  "description": "Incident response plan, reviewed against NIST SP 800-61r3 lifecycle phases and the notification-clock triggers US breach laws impose. Selects the POL-126..132 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "incident response plan",
+      "security incident response plan",
+      "cyber incident response plan",
+      "irp"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "detection and analysis",
+      "containment",
+      "eradication and recovery",
+      "post-incident",
+      "severity classification",
+      "incident commander",
+      "notification timeline"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Incident", "Severity", "Incident Commander"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NIST-SP-800-61",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": [
+    "incident-notification",
+    "business-continuity-plan",
+    "information-security-policy"
+  ],
+  "compliance_matrix_columns": [
+    "Preparation, detection, containment, recovery phases",
+    "Severity classification and escalation matrix",
+    "Roles: incident commander, legal, comms",
+    "Evidence preservation and forensic chain of custody",
+    "Regulatory notification clocks and owners",
+    "Third-party / vendor incident coordination",
+    "Post-incident review and plan update"
+  ]
+}

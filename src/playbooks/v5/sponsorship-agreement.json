@@ -1,0 +1,39 @@
+{
+  "id": "sponsorship-agreement",
+  "version": "1.0.0",
+  "name": "Sponsorship Agreement",
+  "description": "Event, team, or property sponsorship agreement covering rights, category exclusivity, and activation. Selects the COMM-173..177 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "sponsorship agreement",
+      "sponsorship",
+      "title sponsor agreement",
+      "partnership marketing agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "category exclusivity",
+      "sponsorship fee",
+      "activation rights",
+      "official sponsor",
+      "naming rights",
+      "hospitality"
+    ],
+    "negative_features": ["employment agreement", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Sponsor", "Property", "Rights"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["venue-rental-agreement", "influencer-agreement"],
+  "compliance_matrix_columns": [
+    "Rights granted and category exclusivity",
+    "Sponsorship fee and payment schedule",
+    "Trademark license and approval rights",
+    "Event cancellation / force majeure remedy",
+    "Morals clause and reputational termination"
+  ]
+}

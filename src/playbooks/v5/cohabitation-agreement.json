@@ -1,0 +1,39 @@
+{
+  "id": "cohabitation-agreement",
+  "version": "1.0.0",
+  "name": "Cohabitation Agreement",
+  "description": "Non-marital cohabitation agreement, reviewed for the property, support, and consideration terms Marvin-line cases turn on. Selects the EST-426..430 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "cohabitation agreement",
+      "domestic partnership agreement",
+      "living together agreement",
+      "non-marital agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the parties are not married",
+      "separate property",
+      "jointly acquired property",
+      "support obligations",
+      "meretricious",
+      "upon separation of the parties"
+    ],
+    "negative_features": ["prenuptial", "postnuptial", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Separate Property", "Joint Property"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-FAMILY-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["prenuptial-agreement", "postnuptial-agreement"],
+  "compliance_matrix_columns": [
+    "Non-marital status recital",
+    "Separate vs. jointly acquired property",
+    "Support / no-support agreement and consideration",
+    "Independent counsel and financial disclosure",
+    "Termination on marriage or separation"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "special-needs-trust",
+  "version": "1.0.0",
+  "name": "Special Needs Trust",
+  "description": "First- or third-party special needs trust, reviewed for the supplemental-needs language, payback, and sole-benefit terms Medicaid/SSI require. Selects the EST-408..413 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": ["special needs trust", "supplemental needs trust", "d4a trust", "snt"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "supplemental to and not in place of",
+      "public benefits",
+      "medicaid",
+      "supplemental security income",
+      "payback",
+      "sole benefit of the beneficiary",
+      "42 u.s.c. 1396p"
+    ],
+    "negative_features": ["last will and testament", "merger", "employment offer"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Trust", "Beneficiary", "Trustee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "42-USC-1396p",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["irrevocable-trust", "revocable-living-trust"],
+  "compliance_matrix_columns": [
+    "Supplemental, not supplanting, benefits language",
+    "First- vs. third-party characterization",
+    "Medicaid payback provision (first-party)",
+    "Sole-benefit and age-65 conditions",
+    "Trustee discretion — no support obligation",
+    "Distribution limits on cash and ISM"
+  ]
+}

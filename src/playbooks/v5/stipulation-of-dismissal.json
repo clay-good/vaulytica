@@ -1,0 +1,42 @@
+{
+  "id": "stipulation-of-dismissal",
+  "version": "1.0.0",
+  "name": "Stipulation of Dismissal",
+  "description": "FRCP 41(a)(1)(A)(ii) stipulated dismissal, reviewed for the with/without-prejudice election, signatures, and fee allocation. Selects the SET-133..137 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "stipulation of dismissal",
+      "stipulation and order of dismissal",
+      "notice of dismissal",
+      "joint stipulation of dismissal"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "with prejudice",
+      "without prejudice",
+      "rule 41",
+      "each party to bear its own costs",
+      "all parties who have appeared",
+      "hereby stipulate"
+    ],
+    "negative_features": [
+      "this agreement is entered into by and between the parties as of",
+      "employment offer"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Action", "Dismissal"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-41",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["consent-judgment", "confidential-settlement"],
+  "compliance_matrix_columns": [
+    "Rule 41 basis and signatures of all appearing parties",
+    "With- vs. without-prejudice election",
+    "Scope: which claims and which parties",
+    "Costs and attorneys' fees allocation",
+    "Retention of jurisdiction to enforce settlement"
+  ]
+}

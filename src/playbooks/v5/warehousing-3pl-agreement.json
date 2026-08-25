@@ -1,0 +1,40 @@
+{
+  "id": "warehousing-3pl-agreement",
+  "version": "1.0.0",
+  "name": "Warehousing / 3PL Agreement",
+  "description": "Third-party logistics and warehousing agreement, including warehouse receipts and warehouse liens under UCC Article 7. Selects the COMM-124..128 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "warehousing agreement",
+      "third party logistics",
+      "3pl agreement",
+      "fulfillment services agreement",
+      "storage agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "warehouse receipt",
+      "warehouseman",
+      "stored goods",
+      "inventory shrinkage",
+      "warehouse lien",
+      "pick and pack"
+    ],
+    "negative_features": ["motor carrier", "lease of the premises", "employment"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Goods", "Facility", "Services"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-7",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["freight-transportation-agreement"],
+  "compliance_matrix_columns": [
+    "Warehouse receipt / documents of title",
+    "Standard of care and liability limit",
+    "Warehouse lien and enforcement",
+    "Inventory accuracy and shrinkage allowance",
+    "Insurance and risk of loss"
+  ]
+}

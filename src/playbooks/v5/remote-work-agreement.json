@@ -1,0 +1,39 @@
+{
+  "id": "remote-work-agreement",
+  "version": "1.0.0",
+  "name": "Remote Work Agreement",
+  "description": "Telework agreement, reviewed for the multi-state tax and wage exposure, expense reimbursement, and equipment/security terms. Selects the EMP-125..129 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "remote work agreement",
+      "telework agreement",
+      "work from home agreement",
+      "flexible work arrangement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "designated work location",
+      "the employee's home office",
+      "expense reimbursement",
+      "company equipment",
+      "work hours and availability",
+      "may revoke this arrangement"
+    ],
+    "negative_features": ["lease of the premises shall commence", "merger", "purchase and sale"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Remote Work Location", "Equipment"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-WAGE-LAW",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["employee-handbook", "employment-at-will-us"],
+  "compliance_matrix_columns": [
+    "Designated work location and change notice",
+    "Business-expense reimbursement (CA Lab. § 2802-type)",
+    "Timekeeping and off-the-clock controls for non-exempt staff",
+    "Equipment, security, and data handling",
+    "Revocation and return-to-office rights"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "cyber-insurance-policy",
+  "version": "1.0.0",
+  "name": "Cyber Liability Policy Review",
+  "description": "Cyber policy, reviewed for first- vs third-party coverage, the war/infrastructure exclusion, and incident-response panel constraints. Selects the INS-108..113 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "cyber liability policy",
+      "cyber insurance",
+      "network security and privacy policy",
+      "data breach policy"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "security failure",
+      "privacy event",
+      "business interruption",
+      "ransomware",
+      "panel provider",
+      "waiting period",
+      "war exclusion"
+    ],
+    "negative_features": ["employment offer", "lease of the premises", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Security Failure", "Privacy Event", "Period of Restoration"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-INSURANCE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["insurance-policy-summary", "vendor-security-addendum"],
+  "compliance_matrix_columns": [
+    "First-party vs. third-party coverage grants",
+    "Business-interruption waiting period and measurement",
+    "Ransomware sublimit and consent requirement",
+    "Panel-provider / pre-approval constraints",
+    "War, infrastructure, and nation-state exclusions",
+    "Retroactive date and prior-knowledge exclusion"
+  ]
+}

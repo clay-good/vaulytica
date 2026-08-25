@@ -1,0 +1,43 @@
+{
+  "id": "revolving-credit-agreement",
+  "version": "1.0.0",
+  "name": "Revolving Credit Agreement",
+  "description": "Revolving credit facility on LSTA-style architecture, reviewed for the borrowing base, financial covenants, and benchmark-replacement terms. Selects the BNK-101..108 ruleset (8 checks).",
+  "match_features": {
+    "title_keywords": [
+      "revolving credit agreement",
+      "credit agreement",
+      "revolving loan agreement",
+      "revolving facility"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "borrowing base",
+      "revolving commitment",
+      "sofr",
+      "benchmark replacement",
+      "financial covenants",
+      "administrative agent",
+      "unused commitment fee"
+    ],
+    "negative_features": ["employment offer", "lease of the premises", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Commitment", "Borrowing Base", "Applicable Margin"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "LSTA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["security-agreement", "intercreditor-agreement"],
+  "compliance_matrix_columns": [
+    "Commitment, availability, and borrowing base",
+    "Interest rate, benchmark, and replacement waterfall",
+    "Financial covenants and testing dates",
+    "Conditions precedent to each borrowing",
+    "Events of default and cure rights",
+    "Collateral and guarantor package",
+    "Agent authority and assignment/participation",
+    "Prepayment, fees, and yield protection"
+  ]
+}

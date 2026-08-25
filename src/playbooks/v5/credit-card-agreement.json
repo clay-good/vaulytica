@@ -1,0 +1,42 @@
+{
+  "id": "credit-card-agreement",
+  "version": "1.0.0",
+  "name": "Consumer Credit Card Agreement",
+  "description": "Consumer card agreement measured against TILA / Regulation Z (12 C.F.R. Part 1026) and the CARD Act disclosure duties. Selects the BNK-132..138 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "credit card agreement",
+      "cardholder agreement",
+      "card member agreement",
+      "consumer credit card"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "annual percentage rate",
+      "grace period",
+      "minimum payment",
+      "penalty apr",
+      "billing rights summary",
+      "how we calculate your balance",
+      "regulation z"
+    ],
+    "negative_features": ["merger agreement", "employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Account", "APR", "Billing Cycle"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "TILA-REG-Z",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["auto-renewal-terms"],
+  "compliance_matrix_columns": [
+    "APR types, ranges, and variable-rate index",
+    "Fee schedule and penalty pricing",
+    "Grace period and balance-computation method",
+    "45-day advance notice of adverse changes",
+    "Billing-rights and error-resolution summary",
+    "Payment allocation to highest-APR balances",
+    "Arbitration clause and opt-out mechanics"
+  ]
+}

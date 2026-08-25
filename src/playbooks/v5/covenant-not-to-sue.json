@@ -1,0 +1,33 @@
+{
+  "id": "covenant-not-to-sue",
+  "version": "1.0.0",
+  "name": "Covenant Not to Sue",
+  "description": "Covenant not to sue as distinct from a release, reviewed for scope, third-party effect, and the joint-tortfeasor consequence. Selects the SET-106..110 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": ["covenant not to sue", "covenant not to execute", "forbearance from suit"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "covenants not to sue",
+      "this is a covenant not to sue and not a release",
+      "joint tortfeasor",
+      "shall not institute any action",
+      "released parties"
+    ],
+    "negative_features": ["employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Covenantor", "Covenantee", "Claims"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-SETTLEMENT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["mutual-release", "confidential-settlement"],
+  "compliance_matrix_columns": [
+    "Covenant vs. release characterization",
+    "Scope of claims and time boundary",
+    "Effect on joint tortfeasors and contribution",
+    "Assignment and successors",
+    "Breach remedy (damages vs. bar to suit)"
+  ]
+}

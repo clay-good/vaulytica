@@ -1,0 +1,42 @@
+{
+  "id": "physician-employment-agreement",
+  "version": "1.0.0",
+  "name": "Physician Employment Agreement",
+  "description": "Physician employment contract, reviewed for the Stark bona-fide-employment conditions, malpractice tail, and restrictive covenants. Selects the HC-101..107 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "physician employment agreement",
+      "physician employment",
+      "provider employment agreement",
+      "medical staff employment"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the physician shall",
+      "professional liability insurance",
+      "tail coverage",
+      "medical staff privileges",
+      "productivity compensation",
+      "wrvu",
+      "stark law"
+    ],
+    "negative_features": ["lease of the premises", "merger", "purchase and sale of the assets"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Physician", "Practice", "Compensation"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STARK-42-USC-1395nn",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["medical-director-agreement", "employment-restrictive-covenant"],
+  "compliance_matrix_columns": [
+    "Fair market value and commercial reasonableness recital",
+    "No compensation varying with referral volume/value",
+    "wRVU or productivity formula",
+    "Malpractice coverage and tail responsibility",
+    "Medical staff privileges condition",
+    "Restrictive covenant scope and state limits",
+    "Termination, cure, and licensure triggers"
+  ]
+}

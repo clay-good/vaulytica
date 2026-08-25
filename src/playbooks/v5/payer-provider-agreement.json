@@ -1,0 +1,42 @@
+{
+  "id": "payer-provider-agreement",
+  "version": "1.0.0",
+  "name": "Payer / Provider Participation Agreement",
+  "description": "Managed-care participating provider agreement, reviewed for the fee schedule, claims/appeals, and prompt-pay terms. Selects the HC-121..126 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "participating provider agreement",
+      "provider agreement",
+      "payer agreement",
+      "managed care agreement",
+      "network participation agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "covered services",
+      "fee schedule",
+      "clean claim",
+      "prompt payment",
+      "credentialing",
+      "utilization management",
+      "hold harmless the member"
+    ],
+    "negative_features": ["merger", "lease of the premises", "employment offer"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Covered Services", "Member", "Fee Schedule"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-MANAGED-CARE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["baa", "physician-employment-agreement"],
+  "compliance_matrix_columns": [
+    "Fee schedule attached and amendment notice",
+    "Clean-claim definition and prompt-pay deadline",
+    "Member hold-harmless / balance-billing ban",
+    "Credentialing and re-credentialing terms",
+    "Utilization review and appeal rights",
+    "Termination notice and continuity of care"
+  ]
+}

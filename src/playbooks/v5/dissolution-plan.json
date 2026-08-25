@@ -1,0 +1,39 @@
+{
+  "id": "dissolution-plan",
+  "version": "1.0.0",
+  "name": "Plan of Dissolution / Winding Up",
+  "description": "Plan of dissolution and winding up for a US entity, reviewed against the statutory claims and distribution sequence. Selects the GOV-123..127 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "plan of dissolution",
+      "plan of liquidation",
+      "dissolution and winding up",
+      "articles of dissolution"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "winding up",
+      "notice to known claimants",
+      "certificate of dissolution",
+      "final distribution",
+      "reserve for contingent liabilities",
+      "bar date"
+    ],
+    "negative_features": ["employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Plan", "Dissolution Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "MBCA-14",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["charter-incorporation"],
+  "compliance_matrix_columns": [
+    "Approval and adoption authority",
+    "Notice to known and unknown claimants",
+    "Contingent-liability reserve",
+    "Distribution priority (creditors before owners)",
+    "Final tax filings and certificate of dissolution"
+  ]
+}

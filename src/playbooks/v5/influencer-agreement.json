@@ -1,0 +1,41 @@
+{
+  "id": "influencer-agreement",
+  "version": "1.0.0",
+  "name": "Influencer / Endorsement Agreement",
+  "description": "Creator endorsement agreement measured against the FTC Endorsement Guides (16 C.F.R. Part 255) disclosure duties. Selects the COMM-178..183 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "influencer agreement",
+      "endorsement agreement",
+      "creator agreement",
+      "brand ambassador agreement",
+      "talent agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "material connection",
+      "#ad",
+      "endorsement",
+      "sponsored content",
+      "deliverables per month",
+      "usage rights"
+    ],
+    "negative_features": ["employment agreement", "lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Influencer", "Brand", "Content"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FTC-ENDORSEMENT-GUIDES",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["media-release", "sponsorship-agreement"],
+  "compliance_matrix_columns": [
+    "Clear and conspicuous #ad disclosure duty",
+    "Substantiation of claims made",
+    "Content ownership and usage license",
+    "Exclusivity and competing brands",
+    "Morals clause and takedown right",
+    "FTC compliance training / monitoring"
+  ]
+}

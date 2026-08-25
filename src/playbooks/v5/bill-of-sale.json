@@ -1,0 +1,32 @@
+{
+  "id": "bill-of-sale",
+  "version": "1.0.0",
+  "name": "Bill of Sale",
+  "description": "Conveyance of personal property at an asset closing, reviewed for the title warranty and free-and-clear recital. Selects the MNA-113..116 ruleset (4 checks).",
+  "match_features": {
+    "title_keywords": ["bill of sale", "general bill of sale", "bill of sale and assignment"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "hereby sells, transfers and delivers",
+      "free and clear of all liens",
+      "as is, where is",
+      "the purchased assets",
+      "good and marketable title"
+    ],
+    "negative_features": ["lease of the premises", "employment agreement", "shares of common stock"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Purchased Assets", "Seller", "Buyer"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-2",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["asset-purchase-agreement", "assignment-and-assumption-agreement"],
+  "compliance_matrix_columns": [
+    "Assets conveyed with schedule reference",
+    "Title warranty and lien-free recital",
+    "As-is disclaimer consistency with the APA",
+    "Effective time and further assurances"
+  ]
+}

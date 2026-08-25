@@ -1,0 +1,38 @@
+{
+  "id": "assignment-and-assumption-agreement",
+  "version": "1.0.0",
+  "name": "Assignment and Assumption Agreement",
+  "description": "Assignment of contracts and assumption of liabilities, typically a closing deliverable. Selects the MNA-108..112 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "assignment and assumption agreement",
+      "assignment and assumption",
+      "assumption agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "hereby assigns",
+      "assumes and agrees to perform",
+      "assumed liabilities",
+      "excluded liabilities",
+      "assigned contracts",
+      "effective as of the closing"
+    ],
+    "negative_features": ["lease of the premises shall commence", "employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Assigned Contracts", "Assumed Liabilities", "Assignor", "Assignee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-MA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["asset-purchase-agreement", "bill-of-sale"],
+  "compliance_matrix_columns": [
+    "Schedule of assigned contracts",
+    "Assumed vs. excluded liabilities",
+    "Third-party consent carve-out",
+    "Effective time tied to closing",
+    "Further-assurances and power of attorney"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "membership-interest-purchase-agreement",
+  "version": "1.0.0",
+  "name": "Membership Interest Purchase Agreement (LLC)",
+  "description": "Purchase of LLC membership interests, the LLC analog to a stock purchase agreement, with tax-treatment and 754-election terms. Selects the MNA-101..107 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "membership interest purchase agreement",
+      "mipa",
+      "unit purchase agreement",
+      "purchase of membership interests"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "membership interests",
+      "the company's operating agreement",
+      "section 754 election",
+      "closing date",
+      "purchase price adjustment",
+      "seller's representations"
+    ],
+    "negative_features": ["shares of common stock", "employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Membership Interests", "Seller", "Buyer", "Closing"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-MA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["stock-purchase-agreement", "operating-agreement-llc"],
+  "compliance_matrix_columns": [
+    "Interests conveyed and capitalization rep",
+    "Purchase price and working-capital adjustment",
+    "Tax treatment and § 754 / § 338 elections",
+    "Operating-agreement consents and admission",
+    "Indemnity, caps, and survival",
+    "Non-compete / non-solicit from sellers",
+    "Closing conditions and deliverables"
+  ]
+}

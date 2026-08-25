@@ -1,0 +1,40 @@
+{
+  "id": "medical-director-agreement",
+  "version": "1.0.0",
+  "name": "Medical Director Agreement",
+  "description": "Medical directorship contract, the classic Stark/Anti-Kickback exposure, reviewed for the personal-services-arrangement conditions. Selects the HC-108..113 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "medical director agreement",
+      "medical directorship",
+      "director of medical services agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "medical director",
+      "time records",
+      "fair market value",
+      "aggregate services",
+      "anti-kickback",
+      "commercially reasonable",
+      "one year term"
+    ],
+    "negative_features": ["lease of the premises", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Medical Director", "Services", "Compensation"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "AKS-42-USC-1320a-7b",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["physician-employment-agreement"],
+  "compliance_matrix_columns": [
+    "Written, signed, one-year minimum term",
+    "Services specified and aggregate hours set in advance",
+    "Compensation set in advance at FMV",
+    "No variation with referrals",
+    "Time-record substantiation requirement",
+    "Personal-services safe-harbor recital"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "union-cba",
+  "version": "1.0.0",
+  "name": "Collective Bargaining Agreement",
+  "description": "Union contract, reviewed for the recognition, grievance/arbitration, no-strike, and management-rights architecture the NLRA presumes. Selects the EMP-135..141 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "collective bargaining agreement",
+      "labor agreement",
+      "union contract",
+      "cba"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "bargaining unit",
+      "grievance procedure",
+      "no strike",
+      "management rights",
+      "union security",
+      "seniority",
+      "dues checkoff"
+    ],
+    "negative_features": ["at-will employment", "merger", "purchase and sale"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Bargaining Unit", "Union", "Grievance"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NLRA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["employee-handbook"],
+  "compliance_matrix_columns": [
+    "Recognition and bargaining-unit description",
+    "Union security and dues checkoff (right-to-work states)",
+    "Grievance and arbitration steps with deadlines",
+    "No-strike / no-lockout clause",
+    "Management-rights reservation",
+    "Seniority, layoff, and recall",
+    "Term, reopener, and evergreen clause"
+  ]
+}

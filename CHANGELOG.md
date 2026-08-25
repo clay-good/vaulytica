@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **The US catalog: 105 more American document families, 605 more checks
+  ([`spec-v45.md`](docs/spec-v45.md)).** v4 took the catalog from "contracts" to
+  "every logically-operative legal document" across sixteen sub-domains, and
+  stopped one layer short of what a US practice handles all day. v5 goes deep
+  inside those same sixteen: the purchase order and the master purchase
+  agreement under the UCC, the franchise agreement and its FDD, the FAR
+  flow-down rider, the sublease and the work letter, the WARN notice and the
+  FCRA background-check disclosure, the stipulated protective order and its
+  Rule 502(d) clawback, the QDRO, the first- and third-party special needs
+  trust, the preliminary lien notice, the D&O and cyber policies, the deposit
+  account control agreement, and the incident response plan. Every family is
+  US, and every check cites US law — the UCC as the states enacted it, an FTC
+  trade regulation rule, the FAR, ERISA, Bayh-Dole, a state mechanic's lien
+  statute — or says plainly that it rests on customary drafting practice
+  rather than a rule that compels the clause. The catalog was authored
+  **column-first**: each family's compliance matrix is the design, and each
+  column ships as exactly one check, with a guard test asserting the two never
+  diverge. Totals: **250 document types** and **1,716 single-document rules**,
+  up from 145 and 1,111.
+- **A title-vacuity guard for presence rules
+  ([`title-vacuity.test.ts`](src/engine/rules/v5/title-vacuity.test.ts)).** A
+  clause-presence rule fires when *none* of its patterns match, so a rule whose
+  pattern is a word from its own document family's title can never fire — a
+  column the compliance matrix shows as reviewed that reports nothing on any
+  document, forever. The new probe hands every ungated check the emptiest
+  document its family admits (the title plus execution boilerplate) and
+  requires it to fire. It caught **27 real instances** on first run, including
+  the irrevocability recital satisfied by the words "Irrevocable Trust", the
+  UCC § 9-104 control language satisfied by the word "Control" in "Deposit
+  Account Control Agreement", and the FCRA written authorization satisfied by
+  the word "signature" in an ordinary signature block. Rules carrying an
+  applicability gate are excluded, and the gated set is *derived* rather than
+  hand-maintained so a stale id cannot widen the exclusion.
+
+### Changed
+- **Two new bundle chunks (`v5-rules-corp`, `v5-rules-reg`).** The v5 catalog is
+  ~285 KB raw; left in the shared `rules-core` chunk it pushed that chunk to
+  883 KB, past the 600 KB per-chunk cap. It now splits on the same
+  corporate/regulatory line v4 uses. Nothing moves onto the first-paint path.
+
+### Added
 - **Production-QA now works in the browser bundle, not just the CLI.** Drop a
   privilege-log `.csv` alongside the produced documents (multi-file or folder
   drop) and the bundle report reconciles Bates numbering (from the document

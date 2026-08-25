@@ -1,0 +1,39 @@
+{
+  "id": "trademark-coexistence-agreement",
+  "version": "1.0.0",
+  "name": "Trademark Coexistence Agreement",
+  "description": "Coexistence or consent agreement between mark owners, reviewed for the goods/channel boundaries and the consumer-confusion posture. Selects the IPL-111..115 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "coexistence agreement",
+      "trademark coexistence",
+      "consent agreement",
+      "concurrent use agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "likelihood of confusion",
+      "the respective marks",
+      "goods and services listed",
+      "geographic territory",
+      "consent to registration",
+      "shall not oppose"
+    ],
+    "negative_features": ["employment offer", "merger", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Party A Mark", "Party B Mark", "Field"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "15-USC-1052d",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["trademark-license", "trademark-assignment"],
+  "compliance_matrix_columns": [
+    "Goods / services boundary for each party",
+    "Geographic and channel limits",
+    "Consent to registration and non-opposition",
+    "Confusion-avoidance and complaint procedure",
+    "Term, assignability, and successor binding"
+  ]
+}

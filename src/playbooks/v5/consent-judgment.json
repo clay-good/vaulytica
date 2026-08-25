@@ -1,0 +1,41 @@
+{
+  "id": "consent-judgment",
+  "version": "1.0.0",
+  "name": "Stipulated / Consent Judgment",
+  "description": "Agreed judgment submitted for court entry, reviewed for the jurisdiction-retention, admission, and enforcement terms. Selects the SET-101..105 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "consent judgment",
+      "stipulated judgment",
+      "agreed judgment",
+      "stipulation for entry of judgment"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the court retains jurisdiction",
+      "judgment is hereby entered",
+      "stipulate and agree",
+      "without admission of liability",
+      "enforcement of this judgment"
+    ],
+    "negative_features": [
+      "this agreement is entered into by and between the parties as of",
+      "employment offer"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Judgment", "Stipulation"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-58",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["confidential-settlement", "stipulation-of-dismissal"],
+  "compliance_matrix_columns": [
+    "Court, caption, and case number",
+    "Retention of jurisdiction to enforce",
+    "Admission / no-admission recital",
+    "Amount, payment terms, and default acceleration",
+    "Vacatur or satisfaction on performance"
+  ]
+}

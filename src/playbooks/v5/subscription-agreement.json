@@ -1,0 +1,41 @@
+{
+  "id": "subscription-agreement",
+  "version": "1.0.0",
+  "name": "Securities Subscription Agreement",
+  "description": "Investor subscription for privately-placed securities, reviewed for the Reg D exemption representations and transfer legend. Selects the MNA-117..123 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "subscription agreement",
+      "securities subscription agreement",
+      "investor subscription"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "accredited investor",
+      "regulation d",
+      "rule 506",
+      "the securities have not been registered",
+      "investment intent",
+      "restrictive legend",
+      "suitability"
+    ],
+    "negative_features": ["merger", "employment agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Subscriber", "Securities", "Purchase Price"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "REG-D",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["ppm-narrative", "side-letter"],
+  "compliance_matrix_columns": [
+    "Accredited-investor status and verification",
+    "Exemption relied on (506(b) vs. 506(c))",
+    "Investment-intent and no-resale representation",
+    "Restrictive legend and transfer limits",
+    "Risk-factor acknowledgment",
+    "Bad-actor (Rule 506(d)) representations",
+    "Acceptance/rejection and escrow of funds"
+  ]
+}

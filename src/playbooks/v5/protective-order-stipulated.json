@@ -1,0 +1,42 @@
+{
+  "id": "protective-order-stipulated",
+  "version": "1.0.0",
+  "name": "Stipulated Protective Order",
+  "description": "Agreed confidentiality order under FRCP 26(c), reviewed for the designation, challenge, and sealing procedure courts require. Selects the SET-116..122 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "protective order",
+      "stipulated protective order",
+      "confidentiality order",
+      "agreed protective order"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "confidential",
+      "attorneys' eyes only",
+      "designating party",
+      "clawback",
+      "inadvertent production",
+      "the court's file",
+      "good cause"
+    ],
+    "negative_features": ["employment offer", "purchase and sale agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Protected Material", "Designating Party", "Receiving Party"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-26c",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["litigation-hold", "privilege-log"],
+  "compliance_matrix_columns": [
+    "Tiers of designation and their criteria",
+    "Designation and de-designation procedure",
+    "Challenge procedure with the burden on the designator",
+    "FRE 502(d) non-waiver / clawback order",
+    "Filing under seal and public-access recital",
+    "Permitted disclosure list and acknowledgments",
+    "Post-litigation return or destruction"
+  ]
+}

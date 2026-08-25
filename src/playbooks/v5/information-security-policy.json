@@ -1,0 +1,42 @@
+{
+  "id": "information-security-policy",
+  "version": "1.0.0",
+  "name": "Information Security Policy",
+  "description": "Enterprise information security policy, reviewed against the NIST Cybersecurity Framework 2.0 and SP 800-53 control families. Selects the POL-101..107 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "information security policy",
+      "cybersecurity policy",
+      "infosec policy",
+      "security policy"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "access control",
+      "least privilege",
+      "encryption at rest",
+      "vulnerability management",
+      "incident response",
+      "asset inventory",
+      "policy exceptions"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Information Assets", "Policy Owner"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "NIST-CSF-2.0",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["acceptable-use-policy", "security-incident-response-plan"],
+  "compliance_matrix_columns": [
+    "Scope, ownership, and review cadence",
+    "Access control and least privilege",
+    "Data classification and encryption standards",
+    "Vulnerability and patch management",
+    "Logging, monitoring, and retention",
+    "Third-party / vendor security requirements",
+    "Exception process and enforcement"
+  ]
+}

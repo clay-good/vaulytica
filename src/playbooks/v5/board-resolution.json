@@ -1,0 +1,39 @@
+{
+  "id": "board-resolution",
+  "version": "1.0.0",
+  "name": "Board Resolution (Standalone)",
+  "description": "Standalone resolution of a board of directors, reviewed for the recitals, quorum, and authorization language a corporate record needs. Selects the GOV-106..110 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "board resolution",
+      "resolution of the board",
+      "resolutions of the board of directors",
+      "corporate resolution"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "resolved, that",
+      "whereas",
+      "the board of directors of",
+      "further resolved",
+      "duly adopted",
+      "authorized officer"
+    ],
+    "negative_features": ["this agreement is entered into by and between", "employment"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Corporation", "Board"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "MBCA",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["written-consent", "meeting-minutes"],
+  "compliance_matrix_columns": [
+    "Recitals establishing the purpose",
+    "Quorum / adoption recital",
+    "Specific authorization granted",
+    "Officer delegation and further-acts clause",
+    "Date, secretary certification, and effectiveness"
+  ]
+}

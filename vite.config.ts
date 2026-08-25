@@ -46,6 +46,24 @@ export function pdfWorkerPath(): string | null {
  * it has no effect on which rules run. Keep the two buckets roughly
  * balanced so neither crosses Vite's 600 KB warning threshold.
  */
+/**
+ * The v5 sub-domain files that join the corporate/finance bucket
+ * (spec-v45.md §12). Mirrors the v4 split for the same reason: v5 adds
+ * ~285 KB of rule catalog, which pushed the shared `rules-core` chunk
+ * past Vite's 600 KB threshold. v5 is one file per sub-domain rather
+ * than one directory, so the split keys off the file name.
+ */
+const V5_CORP_FILES = new Set([
+  "m-and-a",
+  "governance",
+  "equity",
+  "trust-estate",
+  "banking",
+  "ip-licensing",
+  "commercial",
+  "commercial-digital",
+]);
+
 const V4_CORP_FAMILIES = new Set([
   "m-and-a",
   "governance",
@@ -531,6 +549,13 @@ export default defineConfig({
           if (id.includes("/engine/rules/v4/")) {
             const family = id.match(/\/engine\/rules\/v4\/([^/]+)\//)?.[1];
             return family && V4_CORP_FAMILIES.has(family) ? "v4-rules-corp" : "v4-rules-reg";
+          }
+          // The v5 US-catalog wave splits the same way, and for the same
+          // reason: left in `rules-core` its ~285 KB pushed that chunk to
+          // 883 KB raw. A v5 file joins the regulatory bucket by default.
+          if (id.includes("/engine/rules/v5/")) {
+            const file = id.match(/\/engine\/rules\/v5\/([^/]+)\.[tj]s$/)?.[1];
+            return file && V5_CORP_FILES.has(file) ? "v5-rules-corp" : "v5-rules-reg";
           }
           if (id.includes("/engine/rules/")) return "rules-core";
           return undefined;

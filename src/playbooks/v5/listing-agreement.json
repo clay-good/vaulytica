@@ -1,0 +1,39 @@
+{
+  "id": "listing-agreement",
+  "version": "1.0.0",
+  "name": "Real Estate Listing Agreement",
+  "description": "Broker listing agreement, reviewed for the commission trigger, protection period, and agency-disclosure duties. Selects the RE-118..122 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "listing agreement",
+      "exclusive right to sell",
+      "exclusive listing agreement",
+      "brokerage agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "exclusive right to sell",
+      "commission",
+      "protection period",
+      "multiple listing service",
+      "dual agency",
+      "ready, willing and able buyer"
+    ],
+    "negative_features": ["lease of the premises shall commence", "employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Broker", "Seller", "Listing Price", "Commission"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-REAL-ESTATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["real-estate-psa", "residential-purchase-agreement"],
+  "compliance_matrix_columns": [
+    "Listing type and exclusivity",
+    "Commission rate and earning trigger",
+    "Protection / tail period and registered buyers",
+    "Agency disclosure and dual-agency consent",
+    "MLS and marketing authorizations"
+  ]
+}

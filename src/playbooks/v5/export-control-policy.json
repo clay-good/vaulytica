@@ -1,0 +1,42 @@
+{
+  "id": "export-control-policy",
+  "version": "1.0.0",
+  "name": "Export Control / Sanctions Policy (ITAR / EAR / OFAC)",
+  "description": "Export compliance policy, reviewed against the EAR (15 C.F.R. Parts 730-774), ITAR (22 C.F.R. Parts 120-130), and OFAC program duties. Selects the POL-113..119 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "export control policy",
+      "export compliance policy",
+      "trade compliance policy",
+      "sanctions policy"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "export administration regulations",
+      "international traffic in arms",
+      "deemed export",
+      "restricted party screening",
+      "specially designated nationals",
+      "eccn",
+      "license exception"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Controlled Technology", "Restricted Party"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "EAR-ITAR-OFAC",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["anti-bribery-policy", "aml-policy"],
+  "compliance_matrix_columns": [
+    "Classification (ECCN / USML) procedure",
+    "Restricted-party and SDN screening",
+    "Deemed-export controls for foreign nationals",
+    "License determination and recordkeeping",
+    "Red-flag escalation and voluntary disclosure",
+    "Training and audit cadence",
+    "Sanctioned-jurisdiction prohibitions"
+  ]
+}

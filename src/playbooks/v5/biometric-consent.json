@@ -1,0 +1,40 @@
+{
+  "id": "biometric-consent",
+  "version": "1.0.0",
+  "name": "Biometric Data Consent (BIPA-style)",
+  "description": "Written biometric release measured against Illinois BIPA § 15(b) and the Texas/Washington analogs. Selects the PRV-101..106 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "biometric consent",
+      "biometric release",
+      "biometric information consent",
+      "fingerprint consent"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "biometric identifier",
+      "biometric information",
+      "retention schedule",
+      "the specific purpose",
+      "the length of term",
+      "written release"
+    ],
+    "negative_features": ["merger", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Biometric Data", "Retention Schedule"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "BIPA-740-ILCS-14",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["privacy-notice-us", "employee-handbook"],
+  "compliance_matrix_columns": [
+    "Written release before collection",
+    "Specific purpose stated",
+    "Length of term stated",
+    "Publicly available retention and destruction schedule",
+    "No sale/lease/trade of biometric data",
+    "Reasonable standard of care recital"
+  ]
+}

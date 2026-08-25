@@ -1,0 +1,35 @@
+{
+  "id": "sublease-agreement",
+  "version": "1.0.0",
+  "name": "Sublease Agreement",
+  "description": "Sublease of leased premises, reviewed for prime-lease incorporation, landlord consent, and the recapture risk. Selects the RE-101..106 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": ["sublease agreement", "sublease", "sublet agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the prime lease",
+      "master lease",
+      "sublandlord",
+      "subtenant",
+      "landlord's consent to sublease",
+      "recapture"
+    ],
+    "negative_features": ["assignment of lease and consent", "purchase and sale", "employment"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Prime Lease", "Sublandlord", "Subtenant", "Subleased Premises"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-REAL-ESTATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["lease-commercial-multitenant", "lease-assignment"],
+  "compliance_matrix_columns": [
+    "Prime-lease incorporation and precedence",
+    "Landlord consent condition precedent",
+    "Recapture / termination risk allocation",
+    "Rent, escalations, and pass-throughs",
+    "Surrender condition and holdover",
+    "Direct-lease attornment on prime-lease termination"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "tenant-improvement-work-letter",
+  "version": "1.0.0",
+  "name": "Tenant Improvement Work Letter",
+  "description": "Work letter exhibit governing landlord and tenant construction obligations and the TI allowance. Selects the RE-146..150 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "work letter",
+      "tenant improvement work letter",
+      "construction rider",
+      "landlord work letter"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "tenant improvement allowance",
+      "landlord's work",
+      "tenant's work",
+      "space plan",
+      "substantial completion of the premises",
+      "tenant delay"
+    ],
+    "negative_features": ["purchase and sale agreement", "employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Landlord's Work", "Tenant's Work", "Allowance"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-REAL-ESTATE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["lease-commercial-multitenant", "letter-of-intent-lease"],
+  "compliance_matrix_columns": [
+    "Allowance amount, draw process, and deadline",
+    "Scope split (landlord's vs. tenant's work)",
+    "Plan approval timeline and deemed approval",
+    "Tenant-delay definition and rent commencement",
+    "Change orders and cost overruns"
+  ]
+}

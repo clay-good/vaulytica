@@ -1,0 +1,39 @@
+{
+  "id": "telehealth-consent",
+  "version": "1.0.0",
+  "name": "Telehealth Informed Consent",
+  "description": "Telehealth consent form, reviewed for the modality, limitations, privacy, and emergency disclosures state telehealth statutes require. Selects the HC-127..132 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "telehealth consent",
+      "telemedicine consent",
+      "consent to telehealth services"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "telehealth",
+      "the limitations of a remote evaluation",
+      "technology failure",
+      "in-person examination",
+      "you may withdraw your consent",
+      "the location of the patient"
+    ],
+    "negative_features": ["merger", "employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Telehealth Services", "Patient"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-TELEHEALTH",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["informed-consent", "hipaa-npp"],
+  "compliance_matrix_columns": [
+    "Description of telehealth modality",
+    "Limitations and risks of remote evaluation",
+    "Right to withdraw and receive in-person care",
+    "Emergency and technology-failure protocol",
+    "Privacy, recording, and who may be present",
+    "Licensure / patient-location recital"
+  ]
+}

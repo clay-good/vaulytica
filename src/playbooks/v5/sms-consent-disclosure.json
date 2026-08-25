@@ -1,0 +1,39 @@
+{
+  "id": "sms-consent-disclosure",
+  "version": "1.0.0",
+  "name": "SMS / Telemarketing Consent Disclosure",
+  "description": "Express written consent capture for SMS or autodialed calls under the TCPA and 47 C.F.R. § 64.1200. Selects the PRV-113..117 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "sms consent",
+      "text message consent",
+      "telemarketing consent",
+      "mobile messaging terms"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "message and data rates may apply",
+      "reply stop to opt out",
+      "consent is not a condition of purchase",
+      "autodialed",
+      "prerecorded",
+      "message frequency"
+    ],
+    "negative_features": ["merger", "employment offer"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Consent", "Messages"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "TCPA-47-USC-227",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["website-terms-of-use", "privacy-notice-us"],
+  "compliance_matrix_columns": [
+    "Express written consent language",
+    "Consent-not-a-condition-of-purchase statement",
+    "Autodialer / prerecorded disclosure",
+    "Message frequency and rates disclosure",
+    "STOP/HELP opt-out mechanism"
+  ]
+}

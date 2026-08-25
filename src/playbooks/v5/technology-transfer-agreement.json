@@ -1,0 +1,42 @@
+{
+  "id": "technology-transfer-agreement",
+  "version": "1.0.0",
+  "name": "University Technology Transfer License",
+  "description": "University or federal-lab license, reviewed against the Bayh-Dole obligations (35 U.S.C. §§ 200-212; 37 C.F.R. Part 401). Selects the IPL-122..128 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": [
+      "technology transfer agreement",
+      "university license agreement",
+      "exclusive license agreement with the university",
+      "inter-institutional agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "bayh-dole",
+      "government license rights",
+      "march-in rights",
+      "substantially manufactured in the united states",
+      "diligence milestones",
+      "sponsored research",
+      "licensed patents"
+    ],
+    "negative_features": ["employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Licensed Patents", "Licensed Product", "Field of Use"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "BAYH-DOLE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["patent-license", "joint-development-agreement"],
+  "compliance_matrix_columns": [
+    "Licensed patents and field of use",
+    "Government license and march-in reservation",
+    "US-manufacturing preference (§ 204)",
+    "Diligence milestones and termination for failure",
+    "Royalties, sublicense income, and reporting",
+    "Publication and academic-use reservation",
+    "Indemnity and insurance from the licensee"
+  ]
+}

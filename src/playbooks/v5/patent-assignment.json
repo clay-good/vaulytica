@@ -1,0 +1,34 @@
+{
+  "id": "patent-assignment",
+  "version": "1.0.0",
+  "name": "Patent Assignment",
+  "description": "Assignment of patents and applications for USPTO recordation under 35 U.S.C. § 261. Selects the IPL-101..105 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": ["patent assignment", "assignment of patent", "patent assignment agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the entire right, title and interest",
+      "patent applications",
+      "the commissioner for patents",
+      "is hereby authorized to record",
+      "continuations, divisionals",
+      "prior sales"
+    ],
+    "negative_features": ["trademark", "employment offer", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Assigned Patents", "Assignor", "Assignee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "35-USC-261",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["ip-assignment", "patent-license"],
+  "compliance_matrix_columns": [
+    "Patents and applications listed by number",
+    "Continuations, divisionals, and foreign counterparts",
+    "Recordation authorization to the USPTO",
+    "Nunc pro tunc effective date",
+    "Further-assurances and power of attorney"
+  ]
+}

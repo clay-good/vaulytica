@@ -1,0 +1,40 @@
+{
+  "id": "preliminary-lien-notice",
+  "version": "1.0.0",
+  "name": "Preliminary Notice / Notice of Intent to Lien",
+  "description": "Statutory preliminary notice or notice of intent to lien, reviewed for the parties, property description, and statutory deadlines. Selects the CON-113..117 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "preliminary notice",
+      "notice of intent to lien",
+      "notice to owner",
+      "prelien notice",
+      "20-day preliminary notice"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "mechanic's lien",
+      "the estimated total price",
+      "the person furnishing labor or materials",
+      "legal description of the property",
+      "you are hereby notified",
+      "within the time required by law"
+    ],
+    "negative_features": ["employment offer", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Claimant", "Owner", "Property"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-MECHANICS-LIEN",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["construction-lien-waiver", "construction-contract"],
+  "compliance_matrix_columns": [
+    "Claimant, hiring party, and owner identified",
+    "Property description sufficient to identify",
+    "Description of labor/materials and estimated value",
+    "Statutory warning language",
+    "Service method and deadline recital"
+  ]
+}

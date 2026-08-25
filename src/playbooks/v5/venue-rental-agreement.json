@@ -1,0 +1,40 @@
+{
+  "id": "venue-rental-agreement",
+  "version": "1.0.0",
+  "name": "Venue / Event Space Rental Agreement",
+  "description": "Short-term venue or event-space rental, including attrition, force majeure, and alcohol-liability allocation. Selects the COMM-243..247 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "venue rental agreement",
+      "event space agreement",
+      "facility rental agreement",
+      "banquet event order",
+      "event contract"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "room block",
+      "attrition",
+      "food and beverage minimum",
+      "load-in",
+      "cancellation fee schedule",
+      "dram shop"
+    ],
+    "negative_features": ["term of the lease shall commence", "employment", "merger"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Venue", "Event", "Event Date"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["sponsorship-agreement"],
+  "compliance_matrix_columns": [
+    "Cancellation and attrition fee schedule",
+    "Force majeure and impossibility standard",
+    "Insurance and additional-insured status",
+    "Alcohol service and dram-shop allocation",
+    "Damage deposit and restoration"
+  ]
+}

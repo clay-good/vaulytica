@@ -1,0 +1,40 @@
+{
+  "id": "equipment-lease",
+  "version": "1.0.0",
+  "name": "Equipment Lease (UCC Article 2A)",
+  "description": "Lease of goods under UCC Article 2A, including finance-lease and hell-or-high-water treatment. Selects the COMM-112..117 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "equipment lease",
+      "master lease agreement",
+      "lease of equipment",
+      "equipment schedule"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "hell or high water",
+      "finance lease",
+      "lessee's obligations are absolute",
+      "equipment schedule",
+      "quiet enjoyment",
+      "return of the equipment"
+    ],
+    "negative_features": ["lease of the premises", "real property", "square feet", "landlord"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Equipment", "Lessee", "Lessor", "Rent"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-2A",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["equipment-finance-agreement"],
+  "compliance_matrix_columns": [
+    "Finance-lease designation and § 2A-407 waiver",
+    "Rent, term, and end-of-term options",
+    "Maintenance, insurance, and casualty risk",
+    "Warranty pass-through / disclaimer",
+    "Default and remedies",
+    "Return condition and location"
+  ]
+}

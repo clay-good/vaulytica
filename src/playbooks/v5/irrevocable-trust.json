@@ -1,0 +1,41 @@
+{
+  "id": "irrevocable-trust",
+  "version": "1.0.0",
+  "name": "Irrevocable Trust",
+  "description": "Irrevocable trust instrument, reviewed for the irrevocability recital, spendthrift clause, trustee powers, and tax-sensitive terms. Selects the EST-401..407 ruleset (7 checks).",
+  "match_features": {
+    "title_keywords": ["irrevocable trust", "irrevocable trust agreement", "trust agreement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "this trust shall be irrevocable",
+      "spendthrift",
+      "the trustee shall have the power",
+      "hemms",
+      "ascertainable standard",
+      "crummey",
+      "trust protector"
+    ],
+    "negative_features": [
+      "revocable",
+      "may be amended or revoked by the settlor at any time",
+      "last will and testament"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Trust", "Trustee", "Settlor", "Beneficiary"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UTC",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["revocable-living-trust", "special-needs-trust"],
+  "compliance_matrix_columns": [
+    "Express irrevocability recital",
+    "Spendthrift clause",
+    "Distribution standard (HEMS / ascertainable)",
+    "Trustee powers, succession, and removal",
+    "Crummey withdrawal rights where applicable",
+    "Grantor-trust powers and tax reimbursement",
+    "Situs, governing law, and decanting"
+  ]
+}

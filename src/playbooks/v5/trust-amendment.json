@@ -1,0 +1,38 @@
+{
+  "id": "trust-amendment",
+  "version": "1.0.0",
+  "name": "Trust Amendment / Restatement",
+  "description": "Amendment or complete restatement of a revocable trust, reviewed for the power-to-amend citation, execution formalities, and integration. Selects the EST-414..418 ruleset (5 checks).",
+  "match_features": {
+    "title_keywords": [
+      "trust amendment",
+      "amendment to trust",
+      "restatement of trust",
+      "first amendment to the trust"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the settlor reserved the right to amend",
+      "the trust is hereby amended",
+      "in all other respects the trust is ratified",
+      "restated in its entirety",
+      "dated"
+    ],
+    "negative_features": ["last will and testament", "merger agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Trust", "Amendment"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UTC-602",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["revocable-living-trust", "codicil"],
+  "compliance_matrix_columns": [
+    "Original trust identified by name and date",
+    "Power to amend cited and method followed",
+    "Amended provisions restated in full",
+    "Ratification of unamended terms",
+    "Settlor and trustee execution / notarization"
+  ]
+}

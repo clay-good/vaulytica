@@ -1,0 +1,35 @@
+{
+  "id": "employee-stock-purchase-plan",
+  "version": "1.0.0",
+  "name": "Employee Stock Purchase Plan (ESPP)",
+  "description": "§ 423 employee stock purchase plan, reviewed against the qualification conditions in 26 U.S.C. § 423(b). Selects the EQT-108..113 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": ["employee stock purchase plan", "espp", "stock purchase plan"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "offering period",
+      "purchase period",
+      "lookback",
+      "85% of the fair market value",
+      "$25,000 limit",
+      "section 423"
+    ],
+    "negative_features": ["restricted stock unit", "option grant notice", "employment agreement"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Offering Period", "Purchase Date", "Eligible Employee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "IRC-423",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["equity-incentive-plan"],
+  "compliance_matrix_columns": [
+    "§ 423 qualification election",
+    "Equal-rights and eligibility conditions",
+    "$25,000 per-calendar-year limit",
+    "Purchase price floor (85%) and lookback",
+    "5% shareholder exclusion",
+    "Withdrawal and termination-of-employment rules"
+  ]
+}

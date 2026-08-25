@@ -1,0 +1,40 @@
+{
+  "id": "auto-renewal-terms",
+  "version": "1.0.0",
+  "name": "Automatic Renewal / Negative Option Terms",
+  "description": "Subscription auto-renewal disclosures under ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws. Selects the COMM-231..236 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "automatic renewal terms",
+      "auto-renewal",
+      "subscription terms",
+      "negative option"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "will automatically renew",
+      "cancel at any time",
+      "renewal price",
+      "before the renewal date",
+      "cancellation instructions",
+      "recurring charge"
+    ],
+    "negative_features": ["employment", "merger", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Subscription", "Renewal Term"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ROSCA-15-USC-8403",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["saas-tos", "website-terms-of-use"],
+  "compliance_matrix_columns": [
+    "Clear and conspicuous renewal disclosure",
+    "Affirmative consent to the recurring charge",
+    "Simple cancellation mechanism",
+    "Advance renewal / price-increase notice",
+    "Post-cancellation confirmation",
+    "State ARL overlays (CA, NY, and others)"
+  ]
+}

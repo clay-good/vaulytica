@@ -1,0 +1,45 @@
+{
+  "id": "master-purchase-agreement",
+  "version": "1.0.0",
+  "name": "Master Purchase Agreement (Goods)",
+  "description": "Master agreement for recurring purchases of goods under UCC Article 2, with releases or orders issued against it. Selects the COMM-106..111 ruleset (6 checks).",
+  "match_features": {
+    "title_keywords": [
+      "master purchase agreement",
+      "master supply and purchase",
+      "goods purchase agreement",
+      "master goods agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "releases issued under this agreement",
+      "risk of loss",
+      "f.o.b.",
+      "inspection and rejection",
+      "warranty of merchantability",
+      "conforming goods"
+    ],
+    "negative_features": [
+      "software as a service",
+      "professional services",
+      "lease of the premises",
+      "employment"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Goods", "Order", "Specifications"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "UCC-2",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["purchase-order-terms", "manufacturing-supply-agreement"],
+  "compliance_matrix_columns": [
+    "Quantity / requirements commitment",
+    "Price, price adjustment, and payment",
+    "F.O.B. point, title, risk of loss",
+    "Express warranty and disclaimer form",
+    "Inspection, rejection, revocation",
+    "Excuse / force majeure (§ 2-615)"
+  ]
+}
