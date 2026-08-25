@@ -51,18 +51,21 @@ function cardDoc(overrides: {
 }
 
 describe("renderState", () => {
-  it("renders empty state with the v3 §63 headline + family-mentioning sub", () => {
+  it("renders empty state with the v3 §63 headline + sub", () => {
     const dz = document.createElement("div");
     renderState(dz, { kind: "empty" });
     expect(dz.getAttribute("data-state")).toBe("empty");
     expect(dz.querySelector(".dropzone-title")?.textContent).toMatch(/Drop a PDF/);
     expect(dz.querySelector(".dropzone-title")?.textContent).toMatch(/four/);
     const sub = dz.querySelector(".dropzone-sub")!.textContent ?? "";
-    // Spec-v3 §63: empty-state mentions the new families.
-    expect(sub).toMatch(/BAA/);
-    expect(sub).toMatch(/DPA/);
-    expect(sub).toMatch(/SCC/);
+    // Spec-v3 §63 asked the empty state to name the families it understands.
+    // The families now live in the landing page's document-type index, which
+    // names all 145 rather than the handful that fit in a drop-zone caption —
+    // guarded by tests/integration/site-document-types.test.ts. What the sub
+    // still owes the reader at this moment is the two facts that bear on
+    // whether to drop a file at all.
     expect(sub).toMatch(/nothing is uploaded/);
+    expect(sub).toMatch(/pair/);
   });
 
   it("renders error state with structured title + detail when an error code is passed (spec-v3 §63)", () => {

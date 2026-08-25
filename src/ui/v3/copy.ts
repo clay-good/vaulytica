@@ -9,7 +9,7 @@
 
 export const EMPTY_STATE_COPY = {
   headline: "Drop a PDF or DOCX — up to four at once.",
-  sub: "Vaulytica understands BAAs, DPAs, NDAs, MSAs, EU SCCs, the UK Addendum, vendor security exhibits, AI addenda, and certificates of insurance — and can compare pairs against each other. Analysis runs locally; nothing is uploaded.",
+  sub: "Read locally in this tab — nothing is uploaded. Drop a pair and they are also checked against each other.",
 } as const;
 
 export type V3ErrorCode =

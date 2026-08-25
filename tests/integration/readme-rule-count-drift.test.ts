@@ -143,6 +143,17 @@ describe("README rule counts", () => {
 });
 
 describe("landing-page rule counts", () => {
+  it("quotes the live catalog total in the hero facts strip", () => {
+    // The hero states the headline number before anything else on the page.
+    // It is the first thing a reader checks and the first thing to age.
+    const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
+    const quoted = [...landing.matchAll(/data-rule-total>([\d,]+)</g)].map((m) =>
+      Number(m[1]!.replace(/,/g, "")),
+    );
+    expect(quoted.length, "no data-rule-total count on the page").toBeGreaterThan(0);
+    for (const n of quoted) expect(n).toBe(total);
+  });
+
   it("quotes the live launch set, v4 addend, and total", () => {
     const total = LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length;
     expect(landing).toContain(

@@ -830,16 +830,128 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
       await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
     );
     // Anchor ordering on the per-finding severity badges, which appear only in
-    // the findings sections (the counts tables use the plain words), so the
-    // order reflects the findings grouping, not an incidental earlier mention.
-    const crit = xml.indexOf("[CRITICAL]");
-    const warn = xml.indexOf("[WARNING]");
-    const info = xml.indexOf("[INFO]");
+    // the findings sections (the counts tables and the findings index use the
+    // bare word), so the order reflects the findings grouping, not an
+    // incidental earlier mention.
+    const crit = xml.indexOf("CRITICAL ·");
+    const warn = xml.indexOf("WARNING ·");
+    const info = xml.indexOf("INFO ·");
     expect(crit).toBeGreaterThan(-1);
     expect(warn).toBeGreaterThan(crit);
     expect(info).toBeGreaterThan(warn);
     expect(xml).toContain("Critical Findings");
     expect(xml).toContain("Warnings");
+  });
+
+  it("names the rule and version that fired, inline on the finding", async () => {
+    // Traceability: a reader who disagrees with a finding must be able to
+    // look the rule up without cross-referencing the audit trail at the back.
+    const xml = await docXmlOf(
+      await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("CRITICAL · STRUCT-001 v1.0.0");
+  });
+
+  it("shows the excerpt as evidence, under a label carrying the exact locator", async () => {
+    const xml = await docXmlOf(
+      await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("Evidence — s1, characters 0–12");
+    expect(xml).toContain("excerpt text");
+  });
+
+  it("groups character offsets so long spans stay readable", async () => {
+    const run = makeRun();
+    run.findings = [
+      {
+        ...finding("c1", "critical"),
+        excerpt: {
+          text: "the auto-renewal clause",
+          section_id: "§ 7.2",
+          start_offset: 12433,
+          end_offset: 12590,
+        },
+      },
+    ];
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("§ 7.2, characters 12,433–12,590");
+  });
+
+  it("states an absence finding as an absence, never as a quotation", async () => {
+    // An absence rule records a zero-length excerpt whose text is a marker the
+    // rule wrote, not words from the contract. Presenting that under a
+    // "quoted from the document" label at characters 0-0 is the one thing a
+    // proof-carrying report must never do.
+    const run = makeRun();
+    run.findings = [
+      {
+        ...finding("c1", "critical"),
+        excerpt: {
+          text: "(no IP-ownership clause)",
+          section_id: "s1",
+          start_offset: 0,
+          end_offset: 0,
+        },
+      },
+    ];
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("this finding is about what is absent");
+    expect(xml).not.toContain("Evidence — ");
+    expect(xml).not.toContain("characters 0–0");
+    // And the index row says the same thing rather than a meaningless span.
+    expect(xml).toContain("absent — nothing to quote");
+  });
+
+  it("renders a findings index with one row per finding, in report order", async () => {
+    const xml = await docXmlOf(
+      await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("Findings Index");
+    // The index precedes every findings section.
+    expect(xml.indexOf("Findings Index")).toBeLessThan(xml.indexOf("Critical Findings"));
+  });
+
+  it("omits the findings index entirely when nothing fired", async () => {
+    const run = makeRun();
+    run.findings = [];
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).not.toContain("Findings Index");
+  });
+
+  it("collapses empty severities into one line instead of a page each", async () => {
+    const run = makeRun();
+    run.findings = [finding("w1", "warning")];
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("Warnings");
+    // No heading + blank page for the two severities that produced nothing.
+    expect(xml).not.toContain("Critical Findings");
+    expect(xml).toContain("No critical or informational findings.");
+  });
+
+  it("says so plainly when no severity fired at all", async () => {
+    const run = makeRun();
+    run.findings = [];
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("No critical, warning, or informational findings.");
+  });
+
+  it("marks a custom-playbook finding as coming from your standard, not the catalog", async () => {
+    const run = makeRun();
+    run.findings = [{ ...finding("c1", "critical"), source: "custom-playbook" }];
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("your playbook");
   });
 
   it("DOCX renders a Sources line for cited findings plus a Bibliography section", async () => {

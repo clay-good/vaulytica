@@ -191,11 +191,15 @@ describe("v4 surface a11y (LAUNCH row v4-h)", () => {
     expect(h3s.length, "no <h3> tile headings found inside #what-it-checks").toBeGreaterThan(0);
   });
 
-  it('hero <h1> reads "Drop legal docs."', () => {
-    // spec-v4 §18 item 1: tagline updated to "Drop legal docs."
-    // The h1 may contain additional lines after the period; we assert the
-    // opening phrase is present.
-    expect(html).toMatch(/Drop legal docs\./);
+  it("hero <h1> names the product in the words people search for", () => {
+    // The headline is the page's primary keyword surface and its plainest
+    // statement of what this is. Both halves are load-bearing: what it does
+    // ("legal contract reviewer") and the one property that distinguishes it
+    // from everything else in the category ("deterministic", "no AI").
+    const h1 = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(html)?.[1] ?? "";
+    expect(h1).toMatch(/free legal contract reviewer/i);
+    expect(h1).toMatch(/deterministic/i);
+    expect(h1).toMatch(/no ai/i);
   });
 
   it("drop-zone visible label mentions PDF or DOCX", () => {

@@ -802,6 +802,46 @@ All notable changes to this project will be documented in this file. Format adap
   discipline as the docs-link and case-sensitivity tests), with a one-line fix in the failure
   message: re-run `npm run accuracy`. It deliberately pins only the catalog counts, not the
   hash or the precision/recall metrics, which legitimately move with the corpus.
+- **An absence finding no longer reads as a quotation in the Word report.** Rules
+  that fire on what a contract *lacks* record a zero-length excerpt whose text is
+  a marker the rule wrote — `(no IP-ownership clause)` — not words from the
+  document. The report printed that under an excerpt label at `characters 0–0`,
+  which read as a quotation of words the contract never contained. Such findings
+  now state plainly that they are about an absence, and their index row reads
+  `absent — nothing to quote` instead of a meaningless span.
+- **The landing page's document-type claims can no longer go stale.** The FAQ
+  advertised "twelve playbooks" against 145 shipped. The page now lists every
+  shipped playbook by name and states the count from one place, both pinned to
+  `playbooks/` by `tests/integration/site-document-types.test.ts`; the hero's
+  rule total is pinned to the live rule arrays, and the static drop-zone caption
+  is pinned to the copy the app repaints it with on boot.
+
+### Changed
+- **The front page is down to the tool and the list.** The headline states what
+  this is in the words people search for — *free legal contract reviewer,
+  deterministic, no AI* — above the drop zone and a four-item facts line. Below
+  it, one section: the full index of all 145 document types, grouped by practice
+  area. Everything else an attorney may want to audit — what it checks, how it
+  works, why there is no AI, what it will not do, privacy and how to verify it,
+  court and ethics compliance, sources, and the FAQ — is folded into labelled
+  disclosures: present in the markup for search engines, one click away for
+  readers, and out of the way of the drop zone.
+- **The Word report leads with proof.** Every finding now names the rule and
+  version that fired inline (`CRITICAL · RISK-004 v1.2.0`), then shows its
+  evidence before its argument: the contract text behind the finding, set as an
+  indented quotation under the exact character range it matched at
+  (`§ 7.2, characters 12,433–12,590`), with offsets grouped so they can be read.
+  A finding produced by a custom playbook says so on its own line, so "our
+  standard flagged this" is never mistaken for "Vaulytica's catalog flagged this".
+- **A Findings Index opens the report.** One row per finding, in report order —
+  severity, rule and version, title, and location — so a reviewer can triage the
+  whole run before reading a word of prose. A pure projection of the findings the
+  engine already produced: it computes nothing and cannot disagree with the
+  sections below it. Absent when nothing fired.
+- **Empty severities cost a line, not a page.** "No critical findings" used to
+  take a heading and a full sheet of paper each, and three of them could stand
+  between the cover and the first real finding. They now collapse into one
+  closing line that points at the Audit Trail.
 
 ### Security
 - **Cleared three high-severity advisories via `npm audit fix` (semver-compatible, no

@@ -6,7 +6,14 @@
  *   Page 1   — Cover (title, filename, dates, fingerprint, versions,
  *              playbook, determinism statement, mint wordmark)
  *   Page 2   — Executive summary
- *   Page 3+  — Findings, Critical → Warning → Info
+ *   Page 3   — Findings Index — one row per finding: severity, the rule and
+ *              version that fired, and where in the document it fired, so the
+ *              whole report can be triaged before any prose is read
+ *   Page 4+  — Findings, Critical → Warning → Info. Each finding leads with
+ *              its evidence: the contract text behind it under the exact
+ *              character range it matched at, or a plain statement that the
+ *              finding is about an absence. Severities that produced nothing
+ *              collapse to one line rather than taking a page each
  *   Page N+  — Obligations Ledger (table)
  *   Page N+  — Extracted Data Appendix (compact tables)
  *   Page N+  — Audit Trail (rules executed + bibliography)
@@ -113,9 +120,9 @@ export async function buildDocxReport(
     // v3 §54 — compliance matrix sits between the executive summary and
     // the findings list. Conditional on `v3.matrix` being present.
     ...(v3?.matrix ? renderComplianceMatrix(v3.matrix) : []),
-    ...renderFindingsSection("Critical Findings", "critical", run.findings, bibliography),
-    ...renderFindingsSection("Warnings", "warning", run.findings, bibliography),
-    ...renderFindingsSection("Informational", "info", run.findings, bibliography),
+    // Triage table before the prose: what fired, how bad, which rule, where.
+    ...renderFindingsIndex(run.findings),
+    ...renderAllFindings(run.findings, bibliography),
     // spec-v9 "Last Look" surfaces — render-side, outside result_hash. Each
     // renderer returns [] when its surface is absent/empty, so a v8-era
     // document produces a byte-identical report.
@@ -301,24 +308,129 @@ function renderExecutiveSummary(run: EngineRun, playbook: Playbook): Paragraph[]
 // ---------------------------------------------------------------------------
 // Findings
 
-function renderFindingsSection(
-  heading: string,
-  severity: "critical" | "warning" | "info",
+const SEVERITY_SECTIONS = [
+  { severity: "critical", heading: "Critical Findings", label: "critical" },
+  { severity: "warning", heading: "Warnings", label: "warning" },
+  { severity: "info", heading: "Informational", label: "informational" },
+] as const;
+
+/** "critical", "critical or warning", "critical, warning, or informational". */
+function joinLabels(labels: string[]): string {
+  if (labels.length === 1) return labels[0]!;
+  if (labels.length === 2) return `${labels[0]} or ${labels[1]}`;
+  return `${labels.slice(0, -1).join(", ")}, or ${labels[labels.length - 1]}`;
+}
+
+/**
+ * The three severity sections, Critical → Warning → Info. A severity that
+ * produced nothing used to consume a heading plus a whole sheet of paper;
+ * three of them stood between the cover and the first real finding on a
+ * clean document. Now the empty ones collapse into a single closing line,
+ * so every page of this part of the report carries an actual finding.
+ */
+function renderAllFindings(
   findings: Finding[],
   bibliography: BibliographyEntry[],
 ): (Paragraph | Table)[] {
-  const filtered = findings.filter((f) => f.severity === severity);
-  const out: (Paragraph | Table)[] = [h1(heading)];
-  if (filtered.length === 0) {
-    out.push(para({ text: `No ${severity} findings.`, italics: true }));
+  const out: (Paragraph | Table)[] = [];
+  const empty: string[] = [];
+  for (const { severity, heading, label } of SEVERITY_SECTIONS) {
+    const filtered = findings.filter((f) => f.severity === severity);
+    if (filtered.length === 0) {
+      empty.push(label);
+      continue;
+    }
+    out.push(h1(heading));
+    for (const f of filtered) out.push(...renderFinding(f, bibliography));
     out.push(pageBreak());
-    return out;
   }
-  for (const f of filtered) {
-    out.push(...renderFinding(f, bibliography));
+  if (empty.length > 0) {
+    out.push(
+      para({ text: `No ${joinLabels(empty)} findings.`, italics: true }),
+      para({
+        text: "Every rule that ran, including the ones that produced nothing, is listed in the Audit Trail.",
+        italics: true,
+      }),
+      pageBreak(),
+    );
   }
-  out.push(pageBreak());
   return out;
+}
+
+/**
+ * True when the finding points at actual text in the document.
+ *
+ * An absence rule ("no limitation-of-liability clause detected") has nothing
+ * to point at, and records a zero-length excerpt whose `text` is a marker the
+ * rule wrote — `(no IP-ownership clause)` — not words from the contract. A
+ * zero-length span cannot be a quotation, which makes this the exact test.
+ */
+function hasSpan(f: Finding): boolean {
+  return f.excerpt.end_offset > f.excerpt.start_offset;
+}
+
+/**
+ * Where a finding came from, stated precisely enough to check by hand: the
+ * section the excerpt sits in and the exact character span within the extracted
+ * text. Offsets are grouped (`12,433`) because these are read by people, and
+ * the span is what makes the evidence checkable rather than merely shown —
+ * anyone can re-run the engine and land on the same range.
+ *
+ * A finding with no span says so, rather than printing `characters 0–0` and
+ * sending the reader to look for something that was never there.
+ */
+function findingLocator(f: Finding): string {
+  if (!hasSpan(f)) return "absent — nothing to quote";
+  const span = `characters ${f.excerpt.start_offset.toLocaleString("en-US")}–${f.excerpt.end_offset.toLocaleString("en-US")}`;
+  return f.excerpt.section_id ? `${f.excerpt.section_id}, ${span}` : span;
+}
+
+/**
+ * The proof for one finding. Two honest shapes, never blurred:
+ *
+ * - the rule fired **on** text — show that text under the character range it
+ *   matched at;
+ * - the rule fired on an **absence** — say that plainly. It used to print the
+ *   rule's own marker string under a "quoted from the document" label at
+ *   `characters 0–0`, which read as a quotation of words the contract never
+ *   contained. On a report whose entire claim is that findings are provable,
+ *   that was the worst line in it.
+ *
+ * The label says "Evidence", not "Quoted", deliberately. Most excerpts are
+ * verbatim contract text, but a rule may widen its excerpt to the surrounding
+ * sentence or narrow it to the matched value, so the two are not always the
+ * same length. "Evidence at this range" is true of every finding; "quoted" is
+ * not, and a report that overclaims once is worth less than one that never
+ * does.
+ */
+function renderProof(f: Finding): Paragraph[] {
+  if (!hasSpan(f)) {
+    return [
+      para({
+        text: "Basis — the document contains no matching clause; this finding is about what is absent.",
+        bold: true,
+        size: 20,
+      }),
+    ];
+  }
+  return [
+    para({ text: `Evidence — ${findingLocator(f)}`, bold: true, size: 20 }),
+    quote(truncate(f.excerpt.text, 900)),
+  ];
+}
+
+/**
+ * The rule behind a finding, named so it can be looked up, re-run, or
+ * disagreed with: id, the exact version that fired, and — for the rules an
+ * attorney has signed — the legal-confidence tier. Findings from a
+ * user-supplied playbook say so, so "your standard flagged this" is never
+ * confused with "Vaulytica's catalog flagged this".
+ */
+function findingProvenance(f: Finding): string {
+  const parts = [`${f.rule_id} v${f.rule_version}`];
+  if (f.tier) parts.push(f.tier);
+  if (f.source === "custom-playbook") parts.push("your playbook");
+  return parts.join(" · ");
 }
 
 function renderFinding(f: Finding, bibliography: BibliographyEntry[]): Paragraph[] {
@@ -330,14 +442,15 @@ function renderFinding(f: Finding, bibliography: BibliographyEntry[]): Paragraph
   return [
     para({ text: f.title, bold: true, size: 26 }),
     para({
-      text: `[${f.severity.toUpperCase()}] ${f.description}`,
+      text: `${f.severity.toUpperCase()} · ${findingProvenance(f)}`,
       color: badgeColor,
       bold: true,
     }),
-    para({
-      text: `Excerpt (${f.excerpt.section_id ?? "doc"} @ ${f.excerpt.start_offset}–${f.excerpt.end_offset}): "${truncate(f.excerpt.text, 480)}"`,
-      italics: true,
-    }),
+    para({ text: f.description }),
+    // Proof before argument. Where there is text behind the finding, the
+    // label carries the exact range so it can be checked against the source
+    // file without hunting for it.
+    ...renderProof(f),
     para({ text: f.explanation }),
     ...(f.recommendation
       ? [para({ text: `Recommendation: ${f.recommendation}`, bold: true })]
@@ -347,6 +460,45 @@ function renderFinding(f: Finding, bibliography: BibliographyEntry[]): Paragraph
       : []),
     ...renderModelClauseReference(f),
     spacer(),
+  ];
+}
+
+/**
+ * Findings index (spec §22 refinement). One row per finding, in the exact
+ * order the findings sections render them, so a reader can triage the whole
+ * report — what fired, how bad, which rule, and where in the document — on a
+ * single page before reading any prose. Purely a projection of `run.findings`;
+ * it computes nothing and so cannot disagree with the sections below it.
+ */
+function renderFindingsIndex(findings: Finding[]): (Paragraph | Table)[] {
+  if (findings.length === 0) return [];
+  const ordered: Finding[] = [
+    ...findings.filter((f) => f.severity === "critical"),
+    ...findings.filter((f) => f.severity === "warning"),
+    ...findings.filter((f) => f.severity === "info"),
+  ];
+  return [
+    h1("Findings Index"),
+    para({
+      text: "Every finding this run produced, in report order. Each row names the rule and version that fired and the exact place it fired on — a character range into the document's extracted text, which the same engine and Knowledge Base versions will reproduce exactly.",
+    }),
+    spacer(),
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      rows: [
+        headerRow(["#", "Severity", "Rule", "Finding", "Where"]),
+        ...ordered.map((f, i) =>
+          bodyRow([
+            String(i + 1),
+            f.severity.toUpperCase(),
+            `${f.rule_id} v${f.rule_version}`,
+            truncate(f.title, 120),
+            findingLocator(f),
+          ]),
+        ),
+      ],
+    }),
+    pageBreak(),
   ];
 }
 
@@ -1088,6 +1240,21 @@ function wrappingPara(opts: ParaOpts): Paragraph {
     heading: opts.heading,
     alignment: opts.alignment,
     children: breakLongTokens(opts.text).map((seg) => new TextRun({ ...base, text: seg })),
+  });
+}
+
+/**
+ * Text taken from the reviewed document: indented, with a rule down the left
+ * margin, so it is unmistakably the contract's words and not Vaulytica's. The
+ * old renderer folded the excerpt into an italic sentence alongside the raw
+ * offsets, which read as commentary — the one thing evidence must never look
+ * like.
+ */
+function quote(text: string): Paragraph {
+  return new Paragraph({
+    indent: { left: 360 },
+    border: { left: { style: BorderStyle.SINGLE, size: 12, color: MINT, space: 8 } },
+    children: [new TextRun({ text, font: DEFAULT_FONT, size: BODY_SIZE })],
   });
 }
 

@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Vaulytica — Free Contract Review in Your Browser (No AI, No Upload)</title>
+    <title>Vaulytica — Free Legal Contract Reviewer (Deterministic, No AI)</title>
     <meta
       name="description"
-      content="Drop a contract — NDA, MSA, SaaS, DPA (GDPR / CCPA), HIPAA BAA, employment, lease — and get a Word report with cited findings in seconds. 1,000+ deterministic checks run entirely in your browser. Free, open source, no AI, no account, no upload."
+      content="Free legal contract reviewer that is deterministic, not AI. Drop an NDA, MSA, SaaS agreement, DPA (GDPR/CCPA), HIPAA BAA, employment agreement, lease, M&A or estate document and get a Word report where every finding quotes the clause and cites its rule and source. 1,111 checks across 145 document types, run entirely in your browser. Open source, MIT, no account, no upload."
     />
     <meta
       name="keywords"
-      content="contract review, contract linter, deterministic contract checker, free contract analysis, open source legal tech, NDA review, MSA review, DPA GDPR review, CCPA service provider, HIPAA BAA checker, SaaS contract review, employment contract review, lease review, no AI legal tool, browser-based contract analysis, privacy-first legal software, contract compliance checker, MIT licensed legal tool"
+      content="free legal contract reviewer, contract review, contract review software, deterministic contract checker, no AI contract review, contract linter, legal document review, free contract analysis, open source legal tech, NDA review, MSA review, SOW review, SaaS agreement review, DPA GDPR review, CCPA service provider, HIPAA BAA checker, EU standard contractual clauses, UK IDTA, employment agreement review, commercial lease review, residential lease review, M&A agreement review, SAFE and convertible note review, will and trust review, court filing format check, privacy notice linter, compliance policy review, browser-based contract analysis, privacy-first legal software, MIT licensed legal tool"
     />
     <meta name="author" content="Vaulytica" />
     <meta name="creator" content="Clay Good" />
@@ -36,19 +36,16 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Vaulytica" />
     <meta property="og:locale" content="en_US" />
-    <meta
-      property="og:title"
-      content="Vaulytica — Free Contract Review in Your Browser (No AI, No Upload)"
-    />
+    <meta property="og:title" content="Vaulytica — Free Legal Contract Reviewer (Deterministic, No AI)" />
     <meta
       property="og:description"
-      content="Drop an NDA, MSA, SaaS, DPA, HIPAA BAA, employment contract, or lease. Get a cited Word report in seconds — 1,000+ deterministic checks, free, open source, nothing uploaded."
+      content="Free legal contract reviewer — deterministic, no AI. Every finding quotes the clause and cites its rule and source. 145 document types, 1,111 checks, entirely in your browser."
     />
     <meta property="og:url" content="https://vaulytica.com/" />
     <!-- Primary share image: PNG (Twitter / LinkedIn / Slack prefer raster). -->
     <meta property="og:image" content="https://vaulytica.com/og-image.png" />
     <meta property="og:image:secure_url" content="https://vaulytica.com/og-image.png" />
-    <meta property="og:image:alt" content="Vaulytica — deterministic, free contract review utility" />
+    <meta property="og:image:alt" content="Vaulytica — free, deterministic legal contract reviewer" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -58,13 +55,13 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Vaulytica — Free Contract Review in Your Browser (No AI, No Upload)" />
+    <meta name="twitter:title" content="Vaulytica — Free Legal Contract Reviewer (Deterministic, No AI)" />
     <meta
       name="twitter:description"
-      content="Drop a contract. Get a cited Word report in seconds — 1,000+ deterministic checks run entirely in your browser. Free, open source, no AI, no upload."
+      content="Free legal contract reviewer — deterministic, no AI. Every finding quotes the clause it came from and cites its rule and source. Runs entirely in your browser."
     />
     <meta name="twitter:image" content="https://vaulytica.com/og-image.png" />
-    <meta name="twitter:image:alt" content="Vaulytica — deterministic, free contract review utility" />
+    <meta name="twitter:image:alt" content="Vaulytica — free, deterministic legal contract reviewer" />
 
     <style>
       /* ------------------------------------------------------------------
@@ -1857,6 +1854,109 @@
           transition-duration: 0ms !important;
         }
       }
+
+      /* ------------------------------------------------------------------
+         Minimal front page (2026-08): hero + drop zone + document types,
+         with every supporting section folded into a disclosure so nothing
+         stands between an attorney and the tool.
+         ------------------------------------------------------------------ */
+
+      /* At-a-glance facts under the drop zone. Four short claims, no chrome. */
+      .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 28px;
+        margin: 28px 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 14.5px;
+        color: var(--muted);
+      }
+      .facts strong {
+        color: var(--heading);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .section-lead {
+        max-width: 720px;
+      }
+
+      /* A heading inside a <summary> is the disclosure's own title: it must
+         not inherit the block margins that would push the +/- marker out of
+         line with the text. */
+      details > summary > h3,
+      details > summary > h4 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+        color: inherit;
+      }
+
+      /* The disclosure stack. Each child <section> exists to give the
+         disclosure a stable anchor id; it adds no spacing of its own. */
+      #details > section {
+        margin: 0;
+        padding: 0;
+        border-top: 0;
+      }
+      #details h2 {
+        margin-bottom: 12px;
+      }
+
+      /* Document-type index. Multi-column so 145 entries read as a
+         reference list rather than an endless scroll. */
+      .doc-types-disclosure > summary > span {
+        font-weight: 600;
+      }
+      .doc-groups {
+        columns: 3 240px;
+        column-gap: 32px;
+        margin-top: 8px;
+      }
+      .doc-group {
+        break-inside: avoid;
+        margin: 0 0 22px;
+      }
+      .doc-group h3 {
+        margin: 0 0 8px;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .doc-group h3 span {
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      .doc-group ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .doc-group li {
+        font-size: 14.5px;
+        line-height: 1.5;
+        margin: 0 0 5px;
+        color: var(--body);
+      }
+
+      /* Questions, inside their disclosure. */
+      .faq-body h4 {
+        margin: 22px 0 6px;
+        font-size: 16px;
+        color: var(--heading);
+      }
+      .faq-body h4:first-child {
+        margin-top: 0;
+      }
+      .faq-body p {
+        margin: 0;
+        max-width: 760px;
+      }
     </style>
 
     <!-- schema.org structured data -->
@@ -1873,7 +1973,7 @@
           "width": 1200,
           "height": 630
         },
-        "description": "Free, deterministic, open-source contract review and compliance utility. Runs entirely in the user's browser. No AI, no server, no telemetry.",
+        "description": "Free legal contract reviewer — deterministic, open source, and run entirely in the user's browser. No AI, no server, no telemetry.",
         "founder": {
           "@type": "Person",
           "name": "Clay Good",
@@ -1891,7 +1991,7 @@
         "@id": "https://vaulytica.com/#website",
         "url": "https://vaulytica.com/",
         "name": "Vaulytica",
-        "description": "Free, deterministic contract review and compliance checker. NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease.",
+        "description": "Free legal contract reviewer. Deterministic, no AI. NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease, M&A, estate, court filings.",
         "inLanguage": "en-US",
         "publisher": { "@id": "https://vaulytica.com/#organization" },
         "license": "https://opensource.org/licenses/MIT"
@@ -1903,7 +2003,7 @@
         "@type": "WebApplication",
         "@id": "https://vaulytica.com/#webapp",
         "name": "Vaulytica",
-        "alternateName": "Vaulytica Contract Checker",
+        "alternateName": "Vaulytica Free Legal Contract Reviewer",
         "url": "https://vaulytica.com",
         "operatingSystem": "Any (web browser)",
         "applicationCategory": "BusinessApplication",
@@ -1920,9 +2020,11 @@
         "softwareVersion": "1.0",
         "softwareRequirements": "Any modern web browser",
         "permissions": "No permissions required; runs entirely client-side.",
-        "description": "A deterministic contract review and compliance utility. Drop a PDF or DOCX — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease — and get a Microsoft Word report with findings, regulator citations, and a full audit trail. No AI, no account, no server, no telemetry.",
+        "description": "A free legal contract reviewer. Deterministic, not AI. Drop a PDF or DOCX — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease, M&A, estate, court filing — and get a Microsoft Word report in which every finding quotes the clause it came from, gives its exact position, and cites the rule and source behind it. 1,111 checks across 145 document types. No AI, no account, no server, no telemetry.",
         "featureList": [
-          "Deterministic rule engine — 1,000+ rules across launch + v3 + v4 rulesets",
+          "Deterministic rule engine — 1,111 rules across launch + v3 + v4 rulesets",
+          "145 document-type playbooks — only the checks that belong to your document run",
+          "Every finding quotes the clause it fired on, with its exact character range in the document",
           "Cited findings — rules that assert what the law is cite a regulator or statute; drafting-practice rules cite their practice source",
           "Reviewed copy export — your own DOCX with findings as anchored Word comments (never a generated redline)",
           "NDA / MSA / SaaS / Employment / Lease playbooks",
@@ -1958,8 +2060,8 @@
           {
             "@type": "ListItem",
             "position": 3,
-            "name": "Sources",
-            "item": "https://vaulytica.com/#sources"
+            "name": "What it reviews",
+            "item": "https://vaulytica.com/#document-types"
           },
           {
             "@type": "ListItem",
@@ -1975,7 +2077,7 @@
         "@context": "https://schema.org",
         "@type": "HowTo",
         "name": "How to review a contract with Vaulytica",
-        "description": "Drop a PDF or DOCX into Vaulytica and download a Microsoft Word report with cited findings — entirely in your browser.",
+        "description": "Drop a PDF or DOCX into Vaulytica and download a Microsoft Word report in which every finding quotes the clause it came from and cites its rule — entirely in your browser.",
         "totalTime": "PT30S",
         "supply": [
           { "@type": "HowToSupply", "name": "A PDF or DOCX contract" }
@@ -2006,7 +2108,7 @@
             "@type": "HowToStep",
             "position": 4,
             "name": "Download the Word report",
-            "text": "Click the .docx download button. The report includes findings grouped by severity, an obligations ledger, a citations appendix, and a full audit trail."
+            "text": "Click the .docx download button. The report opens with a findings index — what fired, how severe, which rule, and where — then each finding in full, quoted against the document, followed by an obligations ledger, a citations appendix, and a full audit trail."
           }
         ]
       }
@@ -2016,7 +2118,7 @@
         "@context": "https://schema.org",
         "@type": "TechArticle",
         "headline": "How Vaulytica works",
-        "description": "Vaulytica is a static webpage. The user's contract enters the page, is parsed by PDF.js or mammoth.js, passes through extractors and a deterministic rule engine of 1,000+ rules backed by the Deterministic Knowledge Base, and is emitted as a Microsoft Word document. No data ever leaves the browser.",
+        "description": "Vaulytica is a static webpage. The user's contract enters the page, is parsed by PDF.js or mammoth.js, passes through extractors and a deterministic rule engine of 1,111 rules backed by the Deterministic Knowledge Base, and is emitted as a Microsoft Word document. No data ever leaves the browser.",
         "url": "https://vaulytica.com#how-it-works",
         "author": {
           "@type": "Organization",
@@ -2043,7 +2145,7 @@
             "name": "Can I trust the report?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The report is the output of a deterministic rule engine, not a model. Given the same input file, the same engine version, and the same Deterministic Knowledge Base version, you will get the same report. Every finding cites a rule by id; findings that assert what the law is cite a statute or regulator by URL, and drafting-practice findings cite their practice source instead. The audit trail at the end of every report names every rule that ran, including the silent ones."
+              "text": "The report is the output of a deterministic rule engine, not a model. Given the same input file, the same engine version, and the same Deterministic Knowledge Base version, you will get the same report. Every finding quotes the clause it fired on, names the rule by id and version, gives the exact character range in the document, and cites its source; findings that assert what the law is cite a statute or regulator by URL, and drafting-practice findings cite their practice source instead. The audit trail at the end of every report names every rule that ran, including the silent ones."
             }
           },
           {
@@ -2072,10 +2174,10 @@
           },
           {
             "@type": "Question",
-            "name": "What contract types are supported?",
+            "name": "What document types are supported?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "At launch, twelve playbooks: Mutual NDA, Unilateral NDA, US Employment (at-will, exempt), Independent Contractor, SaaS Customer-side, SaaS Vendor-side, MSA, SOW, Commercial Lease (multi-tenant), Residential Lease (US), Consulting Agreement, and a Generic Fallback. The structural and financial rules run against any contract."
+              "text": "145 document types, each with its own playbook: NDAs, MSAs and SOWs, SaaS agreements, DPAs and EU SCCs, HIPAA BAAs, employment agreements, commercial and residential leases, M&A documents, equity and financing instruments, wills and trusts, court filings, and compliance policies. The full list is on the home page under 'What it reviews'. The structural and financial rules run against any agreement."
             }
           },
           {
@@ -2141,13 +2243,12 @@
     <main id="main" class="wrap">
       <!-- Hero -->
       <section class="hero" aria-labelledby="hero-h1">
-        <h1 id="hero-h1">Drop legal docs.<br />Get a cited report.<br /><span class="accent-line">Nothing leaves your browser.</span></h1>
+        <h1 id="hero-h1">Free legal contract reviewer.<br /><span class="accent-line">Deterministic. No AI.</span></h1>
         <p class="lead">
-          Vaulytica checks contracts the way a spell-checker checks prose — no chatbot, no
-          guessing. It runs 1,000+ identical, deterministic checks against your document, the
-          boring exhaustive ones a tired human misses at 1&nbsp;a.m., and hands back a Word report
-          where every finding cites its rule and source. Free. Open source. MIT. No account, no AI,
-          no upload. Drop something on me.
+          Drop a contract and get a Word report in seconds. Every finding quotes the clause it
+          came from, gives its exact position in the document, and names the rule and the statute
+          or practice source behind it. Same file in, same report out — on any machine, at any
+          time. Nothing is uploaded. Free and open source under MIT.
         </p>
 
         <!--
@@ -2169,7 +2270,7 @@
             </svg>
           </span>
           <div class="dropzone-title" id="dropzone-title">Drop a PDF or DOCX — up to four at once.</div>
-          <div class="dropzone-sub" id="dropzone-sub">Vaulytica understands BAAs, DPAs, NDAs, MSAs, EU SCCs, the UK Addendum, vendor security exhibits, AI addenda, and certificates of insurance — and can compare pairs against each other. Analysis runs locally; nothing is uploaded.</div>
+          <div class="dropzone-sub" id="dropzone-sub">Read locally in this tab — nothing is uploaded. Drop a pair and they are also checked against each other.</div>
         </div>
         <p class="dropzone-extras" id="dropzone-extras">
           Multiple files? Drop a folder or
@@ -2178,16 +2279,278 @@
         <div class="playbook-panel dropzone-extras" id="playbook-panel" role="group" aria-label="Bring your own playbook"></div>
         <div class="regime-panel dropzone-extras" id="regime-panel" role="group" aria-label="Assert privacy-notice regimes"></div>
         <div class="regime-panel dropzone-extras" id="estate-panel" role="group" aria-label="Assert estate checks"></div>
+
+        <ul class="facts" aria-label="At a glance">
+          <li><strong data-rule-total>1,111</strong> deterministic rules</li>
+          <li><strong data-doc-types>145</strong> document types</li>
+          <li><strong>0</strong> servers</li>
+          <li><strong>0</strong> AI</li>
+        </ul>
       </section>
 
-      <!-- What it checks -->
-      <section aria-labelledby="checks-h2" id="what-it-checks">
-        <h2 id="checks-h2">What I check.</h2>
-        <p>
-          120 rules at launch across ten categories — 220 more in v3, 771 more in v4 (1,111 in
-          total). Every finding cites the rule by id; legal assertions cite a statute or regulator by URL, drafting-practice findings cite their practice source.
+      <!-- What it reviews -->
+      <section id="document-types" aria-labelledby="types-h2">
+        <h2 id="types-h2">What it reviews.</h2>
+        <p class="section-lead">
+          <strong><span data-doc-types>145</span> document types</strong>, each with its own
+          playbook. The checks that run are the ones that belong to the document in front of you,
+          so a plain NDA is never flagged for missing GDPR clauses — and a document matching none
+          of them is reported as unmatched rather than given a confidently wrong verdict.
+        </p>
+        <details class="doc-types-disclosure">
+          <summary><span>See every document type</span></summary>
+          <div>
+            <div class="doc-groups">
+          <div class="doc-group">
+            <h3>Confidentiality &amp; IP <span>12</span></h3>
+            <ul>
+              <li>Mutual Non-Disclosure Agreement</li>
+              <li>Unilateral Non-Disclosure Agreement</li>
+              <li>Mutual NDA — Deep Analysis</li>
+              <li>Unilateral NDA — Deep Analysis</li>
+              <li>Proprietary Information and Inventions Agreement (PIIA)</li>
+              <li>IP Assignment Agreement</li>
+              <li>Work-for-Hire Agreement</li>
+              <li>Patent License Agreement</li>
+              <li>Trademark License Agreement</li>
+              <li>Copyright License Agreement</li>
+              <li>Contributor License Agreement (CLA)</li>
+              <li>OSS Compliance Audit Document</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Commercial &amp; services <span>14</span></h3>
+            <ul>
+              <li>Master Services Agreement (General)</li>
+              <li>MSA — Customer-Side Deep Analysis</li>
+              <li>MSA — Vendor-Side Deep Analysis</li>
+              <li>Statement of Work</li>
+              <li>Consulting Agreement</li>
+              <li>Independent Contractor Agreement</li>
+              <li>Subcontractor Agreement</li>
+              <li>Reseller / Distribution Agreement</li>
+              <li>Channel Partner / Referral Agreement</li>
+              <li>Manufacturing / Supply Agreement</li>
+              <li>Marketing Services Agreement</li>
+              <li>Transition Services Agreement (TSA)</li>
+              <li>Change Order</li>
+              <li>Generic Fallback</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>SaaS &amp; technology <span>6</span></h3>
+            <ul>
+              <li>SaaS Agreement (Customer Side)</li>
+              <li>SaaS Agreement (Vendor Side)</li>
+              <li>SaaS Terms of Service (Consumer-Facing)</li>
+              <li>End-User License Agreement (EULA)</li>
+              <li>AI Usage Addendum</li>
+              <li>AI Acceptable Use Policy</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Privacy &amp; data protection <span>16</span></h3>
+            <ul>
+              <li>DPA — Controller to Processor (EU/UK)</li>
+              <li>DPA — Processor to Sub-Processor (EU/UK GDPR)</li>
+              <li>DPA — CCPA Service Provider (CPRA-aligned)</li>
+              <li>DPA — Multi-State US (CCPA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, DPDPA)</li>
+              <li>EU Standard Contractual Clauses — Module 2 (Controller to Processor)</li>
+              <li>EU Standard Contractual Clauses — Module 3 (Processor to Processor)</li>
+              <li>UK International Data Transfer Addendum / IDTA</li>
+              <li>Privacy Notice (GDPR)</li>
+              <li>Privacy Notice (US / CCPA)</li>
+              <li>Privacy Policy Linter</li>
+              <li>Cookie / Tracking Notice</li>
+              <li>Data Protection Impact Assessment (GDPR Art. 35)</li>
+              <li>Records of Processing Activities (GDPR Art. 30)</li>
+              <li>Data-Incident Notification Template</li>
+              <li>Vendor Security Addendum</li>
+              <li>Vendor Security Questionnaire (SIG / CAIQ)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Healthcare <span>6</span></h3>
+            <ul>
+              <li>Business Associate Agreement (HIPAA)</li>
+              <li>BAA — Business Associate to Subcontractor (HIPAA)</li>
+              <li>HIPAA Notice of Privacy Practices</li>
+              <li>Notice of Privacy Practices Acknowledgment</li>
+              <li>Patient Authorization for Release of PHI</li>
+              <li>Informed Consent (Research / Clinical)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Employment <span>7</span></h3>
+            <ul>
+              <li>Employment Agreement, US, at-will, exempt</li>
+              <li>Executive Employment Agreement</li>
+              <li>Offer Letter</li>
+              <li>Employee Handbook</li>
+              <li>Employment Restrictive Covenant Agreement</li>
+              <li>Separation / Severance Agreement</li>
+              <li>Performance Improvement Plan (PIP)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Corporate &amp; governance <span>10</span></h3>
+            <ul>
+              <li>Certificate / Articles of Incorporation</li>
+              <li>Corporate Bylaws</li>
+              <li>Nonprofit Bylaws (501(c)(3))</li>
+              <li>LLC Operating Agreement</li>
+              <li>Partnership / LP Agreement</li>
+              <li>Stockholders' Agreement</li>
+              <li>Voting Agreement (NVCA)</li>
+              <li>Written Consent in Lieu of Meeting</li>
+              <li>Board Committee Charter (audit / comp / nominating)</li>
+              <li>Code of Conduct / Ethics</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Equity &amp; financing <span>14</span></h3>
+            <ul>
+              <li>Simple Agreement for Future Equity (Y Combinator SAFE)</li>
+              <li>Convertible Promissory Note</li>
+              <li>Stock Option Grant Notice + Agreement</li>
+              <li>Restricted Stock Unit (RSU) Grant</li>
+              <li>Restricted Stock Purchase Agreement</li>
+              <li>§ 83(b) Election Form</li>
+              <li>Investor Rights Agreement (NVCA)</li>
+              <li>ROFR / Co-Sale Agreement (NVCA)</li>
+              <li>Promissory Note</li>
+              <li>Loan Agreement</li>
+              <li>Security Agreement</li>
+              <li>Intercreditor Agreement</li>
+              <li>Subordination Agreement</li>
+              <li>Guaranty</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>M&amp;A <span>8</span></h3>
+            <ul>
+              <li>Merger Agreement</li>
+              <li>Asset Purchase Agreement (APA)</li>
+              <li>Stock Purchase Agreement (SPA)</li>
+              <li>Letter of Intent / Term Sheet</li>
+              <li>Earnout Agreement</li>
+              <li>M&amp;A Escrow Agreement</li>
+              <li>Disclosure Schedules</li>
+              <li>M&amp;A Restrictive Covenant Agreement</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Real estate <span>11</span></h3>
+            <ul>
+              <li>Commercial Real Estate Lease (Multi-Tenant Office, US)</li>
+              <li>Residential Lease (US)</li>
+              <li>Ground Lease</li>
+              <li>Single-Tenant Net Lease (NNN)</li>
+              <li>Assignment of Lease</li>
+              <li>Estoppel Certificate</li>
+              <li>SNDA (Subordination, Non-Disturbance, Attornment)</li>
+              <li>Deed of Trust / Mortgage</li>
+              <li>Easement Agreement</li>
+              <li>CC&amp;Rs (Declaration of Covenants, Conditions, and Restrictions)</li>
+              <li>Real-Estate Purchase and Sale Agreement (PSA)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Construction <span>3</span></h3>
+            <ul>
+              <li>Construction Contract (AIA-style)</li>
+              <li>Construction Lien Waiver</li>
+              <li>Payment / Performance Bond</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Insurance &amp; indemnity <span>5</span></h3>
+            <ul>
+              <li>Certificate of Insurance (COI) Check</li>
+              <li>Insurance Endorsement Review</li>
+              <li>Insurance Policy Summary / Declarations</li>
+              <li>Hold-Harmless Agreement</li>
+              <li>Indemnification Agreement (standalone)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Disputes &amp; settlement <span>6</span></h3>
+            <ul>
+              <li>Confidential Settlement Agreement</li>
+              <li>Mutual / General Release</li>
+              <li>Tolling Agreement</li>
+              <li>Demand Letter</li>
+              <li>Cease-and-Desist Letter</li>
+              <li>Litigation Hold Notice</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Court filings <span>3</span></h3>
+            <ul>
+              <li>Appellate Brief (filing-format)</li>
+              <li>Trial Motion (filing-format)</li>
+              <li>Petition (filing-format)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Estate &amp; family <span>9</span></h3>
+            <ul>
+              <li>Last Will and Testament</li>
+              <li>Codicil (Will Amendment)</li>
+              <li>Revocable Living Trust</li>
+              <li>Durable Power of Attorney (Financial)</li>
+              <li>Healthcare Proxy / POA for Healthcare</li>
+              <li>Advance Directive / Living Will</li>
+              <li>Prenuptial Agreement</li>
+              <li>Postnuptial Agreement</li>
+              <li>Family-Law MSA (Separation / Marital Settlement)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Securities &amp; disclosure <span>7</span></h3>
+            <ul>
+              <li>10-K Risk Factors (prose only)</li>
+              <li>S-1 Risk Factors (prose only)</li>
+              <li>Form ADV Part 2A Brochure</li>
+              <li>Form D Narrative</li>
+              <li>Private Placement Memorandum (PPM) Narrative</li>
+              <li>Reg A+ Offering Circular</li>
+              <li>UCC-1 Financing Statement (prose)</li>
+            </ul>
+          </div>
+          <div class="doc-group">
+            <h3>Compliance policies <span>8</span></h3>
+            <ul>
+              <li>Anti-Money-Laundering Policy</li>
+              <li>Anti-Bribery / Anti-Corruption Policy (FCPA / UKBA)</li>
+              <li>Conflict of Interest Policy</li>
+              <li>Document Retention Policy</li>
+              <li>Insider Trading Policy</li>
+              <li>Lobbying / Political Contribution Policy</li>
+              <li>Social Media / External Communications Policy</li>
+              <li>Whistleblower Policy</li>
+            </ul>
+          </div>            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- Details -->
+      <section id="details" aria-labelledby="details-h2">
+        <h2 id="details-h2">Details.</h2>
+        <p class="section-lead">
+          Everything below is here because an attorney evaluating this tool will want it — and
+          folded away because nobody should have to scroll past it to use the thing.
         </p>
 
+        <section id="what-it-checks" aria-labelledby="checks-h3">
+          <details>
+            <summary><h3 id="checks-h3">What it checks in every document</h3></summary>
+            <div>
+              <p>
+                120 rules at launch across ten categories — 220 more in v3, 771 more in v4 (1,111 in
+                total). Every finding cites the rule by id; legal assertions cite a statute or regulator by URL, drafting-practice findings cite their practice source.
+              </p>
         <div class="grid grid-3" style="margin-top: 28px">
           <div class="card">
             <h3>Structural &amp; formal</h3>
@@ -2252,380 +2615,378 @@
             </div>
           </div>
         </div>
-      </section>
+            </div>
+          </details>
+        </section>
 
-      <!-- How it works -->
-      <section id="how-it-works" aria-labelledby="how-h2">
-        <h2 id="how-h2">How this works.</h2>
-        <p>
-          Your file goes in on the left, runs through a deterministic rule engine fed by the
-          Knowledge Base, comes back out on the right as a Word document. Nothing else moves.
-        </p>
+        <section id="how-it-works" aria-labelledby="how-h3">
+          <details>
+            <summary><h3 id="how-h3">How it works</h3></summary>
+            <div>
+              <p>
+                Your file goes in on the left, runs through a deterministic rule engine fed by the
+                Knowledge Base, comes back out on the right as a Word document. Nothing else moves.
+              </p>
+          <div class="diagram" role="img" aria-label="Architecture diagram: a contract file flows left to right through read and extract, then a deterministic rule engine fed by the Knowledge Base, then out as a Word report. Everything happens inside the user's browser.">
+            <svg viewBox="0 0 1120 520" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker
+                  id="arrowhead"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="11"
+                  markerHeight="11"
+                  orient="auto-start-reverse"
+                >
+                  <path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color: var(--muted);" />
+                </marker>
+              </defs>
+  
+              <!-- Browser frame -->
+              <g class="box accent">
+                <rect x="20" y="20" width="1080" height="480" rx="20" />
+                <text class="label" x="48" y="60" style="font-weight: 600">The user's browser — nothing leaves the tab</text>
+              </g>
+  
+              <!-- Stage 1: Input -->
+              <g class="box">
+                <rect x="56" y="124" width="220" height="148" rx="14" />
+                <text class="label" x="166" y="192" text-anchor="middle">Your file</text>
+                <text x="166" y="228" text-anchor="middle">PDF or DOCX</text>
+              </g>
+  
+              <!-- Stage 2: Read & extract -->
+              <g class="box">
+                <rect x="324" y="124" width="220" height="148" rx="14" />
+                <text class="label" x="434" y="192" text-anchor="middle">Read &amp; extract</text>
+                <text x="434" y="228" text-anchor="middle">parties, dates, clauses</text>
+              </g>
+  
+              <!-- Stage 3: Rules -->
+              <g class="box">
+                <rect x="592" y="124" width="240" height="148" rx="14" />
+                <text class="label" x="712" y="192" text-anchor="middle">Cited rule engine</text>
+                <text x="712" y="228" text-anchor="middle">deterministic, no AI</text>
+              </g>
+  
+              <!-- Stage 4: Output -->
+              <g class="box">
+                <rect x="880" y="124" width="180" height="148" rx="14" />
+                <text class="label" x="970" y="192" text-anchor="middle">Word report</text>
+                <text x="970" y="228" text-anchor="middle">.docx download</text>
+              </g>
+  
+              <!-- Knowledge Base feeder -->
+              <g class="box accent">
+                <rect x="488" y="356" width="448" height="116" rx="14" />
+                <text class="label" x="712" y="398" text-anchor="middle">Knowledge Base</text>
+                <text x="712" y="436" text-anchor="middle">statutes · clauses · playbooks · dark patterns</text>
+              </g>
+  
+              <!-- Arrows: left → right through main row -->
+              <path class="arrow" d="M276,198 L324,198" />
+              <path class="arrow" d="M544,198 L592,198" />
+              <path class="arrow" d="M832,198 L880,198" />
+  
+              <!-- Arrow: Knowledge Base feeds the rule engine -->
+              <path class="arrow" d="M712,356 L712,272" />
+            </svg>
+            <!-- Stacked equivalent for narrow viewports (see .diagram-steps
+                 CSS). Presentational — the container's aria-label describes
+                 the flow for assistive tech. -->
+            <ol class="diagram-steps">
+              <li>
+                <div>
+                  <div class="step-title">Your file</div>
+                  <div class="step-sub">PDF or DOCX, dropped in the tab</div>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <div class="step-title">Read &amp; extract</div>
+                  <div class="step-sub">parties, dates, clauses</div>
+                </div>
+              </li>
+              <li class="is-feeder">
+                <div>
+                  <div class="step-title">Knowledge Base</div>
+                  <div class="step-sub">statutes · clauses · playbooks · dark patterns</div>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <div class="step-title">Cited rule engine</div>
+                  <div class="step-sub">deterministic, no AI</div>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <div class="step-title">Word report</div>
+                  <div class="step-sub">.docx download</div>
+                </div>
+              </li>
+            </ol>
+            <p class="diagram-note">Everything runs in your browser — nothing leaves the tab.</p>
+          </div>
+            </div>
+          </details>
+        </section>
 
-        <div class="diagram" role="img" aria-label="Architecture diagram: a contract file flows left to right through read and extract, then a deterministic rule engine fed by the Knowledge Base, then out as a Word report. Everything happens inside the user's browser.">
-          <svg viewBox="0 0 1120 520" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <marker
-                id="arrowhead"
-                viewBox="0 0 10 10"
-                refX="9"
-                refY="5"
-                markerWidth="11"
-                markerHeight="11"
-                orient="auto-start-reverse"
-              >
-                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color: var(--muted);" />
-              </marker>
-            </defs>
+        <section id="no-ai" aria-labelledby="why-h3">
+          <details>
+            <summary><h3 id="why-h3">Why there is no AI in it</h3></summary>
+            <div>
+              <p>
+                Every other contract tool leans on a language model: paste your contract, the AI
+                summarizes, the AI flags risk, the AI suggests redlines. The output is fluent,
+                confident, and different every time you run it. A junior associate can use that for
+                research. A senior partner cannot sign off on it, an auditor cannot trace it, and a
+                client cannot reproduce it. It is, by construction, uncitable.
+              </p>
+              <p>
+                Vaulytica does the work those tools cannot: exhaustive, identical, cited checking.
+                The professional failure mode in contract review is not "I did not understand the
+                indemnity clause." It is "I read eighty pages at midnight and missed that the
+                auto-renewal triggers sixty days before expiry rather than thirty." A deterministic
+                checklist runner catches that failure mode every time.
+              </p>
+            </div>
+          </details>
+        </section>
 
-            <!-- Browser frame -->
-            <g class="box accent">
-              <rect x="20" y="20" width="1080" height="480" rx="20" />
-              <text class="label" x="48" y="60" style="font-weight: 600">The user's browser — nothing leaves the tab</text>
-            </g>
+        <section id="limits" aria-labelledby="not-h3">
+          <details>
+            <summary><h3 id="not-h3">What it does not do</h3></summary>
+            <div>
+              <ul class="bullets-large" style="padding-left: 0">
+                <li>It does not give legal advice. It is a software tool. If something here matters, hire a lawyer.</li>
+                <li>It does not replace your judgment. It finds mechanical things consistently. The hard calls are still yours.</li>
+                <li>
+                  It does not use AI. Not a model, not a copilot, not "powered by." A probabilistic
+                  answer cannot be cited. The whole point of this is the opposite.
+                </li>
+                <li>
+                  It does not draft for you. Where a rule has an attributed public model clause, the
+                  report shows that clause as a reference — never a generated redline.
+                </li>
+                <li>
+                  It does not see your data. There is no server. Your contract never leaves the tab.
+                </li>
+              </ul>
+            </div>
+          </details>
+        </section>
 
-            <!-- Stage 1: Input -->
-            <g class="box">
-              <rect x="56" y="124" width="220" height="148" rx="14" />
-              <text class="label" x="166" y="192" text-anchor="middle">Your file</text>
-              <text x="166" y="228" text-anchor="middle">PDF or DOCX</text>
-            </g>
+        <section id="privacy" aria-labelledby="privacy-h3">
+          <details>
+            <summary><h3 id="privacy-h3">Your privacy, and how to verify it</h3></summary>
+            <div>
+              <p>
+                Vaulytica runs entirely in your browser. There is no server to send your file to,
+                because there is no server. The site is a static page on Cloudflare Pages, the code
+                is on GitHub under MIT, and there is no analytics, no telemetry, no error reporting,
+                and no fonts from CDNs. Every byte your browser fetches comes from vaulytica.com.
+              </p>
+              <p><strong>Verify it in about thirty seconds:</strong></p>
+              <ol>
+                <li>Open this page in Chrome, Firefox, or Safari.</li>
+                <li>Press <kbd>F12</kbd> (or <kbd>⌥⌘I</kbd> on macOS) to open DevTools.</li>
+                <li>Click the <strong>Network</strong> tab and check "Disable cache."</li>
+                <li>Reload once to capture the initial asset loads, then click <strong>Clear</strong>.</li>
+                <li>
+                  Drop a contract and watch the tab during analysis. You may see the app fetch its
+                  own rule data and playbooks from this same origin — every request is a GET with no
+                  body, and nothing from your document appears in any of them.
+                </li>
+              </ol>
+            </div>
+          </details>
+        </section>
 
-            <!-- Stage 2: Read & extract -->
-            <g class="box">
-              <rect x="324" y="124" width="220" height="148" rx="14" />
-              <text class="label" x="434" y="192" text-anchor="middle">Read &amp; extract</text>
-              <text x="434" y="228" text-anchor="middle">parties, dates, clauses</text>
-            </g>
+        <section id="court-compliance" aria-labelledby="compliance-h3">
+          <details>
+            <summary><h3 id="compliance-h3">For court and ethics compliance</h3></summary>
+            <div>
+              <p>
+                Courts increasingly regulate generative-AI use in filings: the Ropes &amp; Gray AI
+                Court Order Tracker lists 300+ judge- and court-level directives, and the Legal AI
+                Governance tracker counts roughly 113 orders that bind attorney filings — most
+                requiring disclosure of AI use, verification of AI output, or a certification that
+                neither occurred (New York's court-system-wide 22 NYCRR Part 161 took effect
+                June 1, 2026). Privilege case law on consumer AI tools is diverging, not settled —
+                compare <em>United States v. Heppner</em> (S.D.N.Y. 2026, no privilege for material
+                run through a public generative-AI tool) with <em>Warner v. Gilbarco</em>
+                (E.D. Mich. 2026, no waiver) — and ABA Formal Opinion 512 puts the verification duty
+                on the lawyer.
+              </p>
+              <p>
+                Vaulytica can make the no-generative-AI certification provable rather than asserted:
+                every report can ship with a one-page <strong>verification certificate</strong>
+                (Word&nbsp;+ JSON) stating the engine and knowledge-base versions, the input's
+                SHA-256, the result hash, and that the analysis was a deterministic rule evaluation
+                with no generative-AI, machine-learning, or probabilistic component — performed
+                locally, with no document content transmitted. The certificate carries its own
+                tamper-evident hash, and anyone can re-run
+                <code>vaulytica verify &lt;report&gt; &lt;file&gt;</code> to reproduce the analysis
+                exactly. It certifies what this tool did — never your overall compliance; the
+                reviewing attorney remains responsible for verifying findings and meeting the
+                applicable orders and professional-conduct rules.
+              </p>
+            </div>
+          </details>
+        </section>
 
-            <!-- Stage 3: Rules -->
-            <g class="box">
-              <rect x="592" y="124" width="240" height="148" rx="14" />
-              <text class="label" x="712" y="192" text-anchor="middle">1,000+ cited rules</text>
-              <text x="712" y="228" text-anchor="middle">deterministic engine</text>
-            </g>
+        <section id="sources" aria-labelledby="sources-h3">
+          <details>
+            <summary><h3 id="sources-h3">Where the rules come from</h3></summary>
+            <div>
+              <p>
+                Every rule cites at least one of these. Every source is free and public. A citation
+                is not the same as a lawyer vouching for the rule: separately, a legal-basis ledger
+                records which rules a licensed attorney has independently signed off on —
+                <strong><span data-ledger-signed>0</span> so far.</strong> That is the honest
+                starting point, published so you can watch the number climb rather than take a
+                marketing claim on faith.
+              </p>
+          <div class="source-grid" style="margin-top: 24px">
+            <div class="source-card">
+              <h4>SEC EDGAR <span>public domain</span></h4>
+              <p>Real-world clause corpus sampled from EX-10 attachments to 10-K, 10-Q, 8-K, and S-1 filings.</p>
+              <a href="https://efts.sec.gov/LATEST/search-index" rel="noopener">efts.sec.gov</a>
+            </div>
+            <div class="source-card">
+              <h4>Cornell LII <span>free use</span></h4>
+              <p>Cross-references between the UCC and each state's enacted version, and state-code lookups.</p>
+              <a href="https://www.law.cornell.edu/" rel="noopener">law.cornell.edu</a>
+            </div>
+            <div class="source-card">
+              <h4>Common Paper <span>CC BY 4.0</span></h4>
+              <p>Canonical balanced-default reference clauses for NDA, SaaS, MSA, SOW, DPA, and more.</p>
+              <a href="https://commonpaper.com/standards/" rel="noopener">commonpaper.com</a>
+            </div>
+            <div class="source-card">
+              <h4>CUAD <span>CC BY 4.0</span></h4>
+              <p>510 contracts, 13,000+ expert annotations, 41 clause categories. Trains the deterministic classifier.</p>
+              <a href="https://www.atticusprojectai.org/cuad" rel="noopener">atticusprojectai.org</a>
+            </div>
+            <div class="source-card">
+              <h4>LEDGAR <span>CC BY 4.0</span></h4>
+              <p>80,000+ provisions across 100 clause categories. Broader training set for the classifier.</p>
+              <a href="https://huggingface.co/datasets/coastalcph/lex_glue" rel="noopener">huggingface.co/lex_glue</a>
+            </div>
+            <div class="source-card">
+              <h4>US Code (LRC) <span>public domain</span></h4>
+              <p>Official US Code in USLM XML: Titles 9, 11, 15, 17, 18, 28, 35, and 41.</p>
+              <a href="https://uscode.house.gov/download/" rel="noopener">uscode.house.gov</a>
+            </div>
+            <div class="source-card">
+              <h4>eCFR <span>public domain</span></h4>
+              <p>Electronic Code of Federal Regulations: FTC (16), CFTC (17), IRS (26), Labor (29), HIPAA (45).</p>
+              <a href="https://www.ecfr.gov/api/versioner/v1/" rel="noopener">ecfr.gov</a>
+            </div>
+            <div class="source-card">
+              <h4>govinfo <span>public domain</span></h4>
+              <p>Bulk Federal Register, CFR, Public Laws, and Statute Compilations in XML.</p>
+              <a href="https://www.govinfo.gov/bulkdata/" rel="noopener">govinfo.gov</a>
+            </div>
+            <div class="source-card">
+              <h4>Uniform Law Commission <span>free use</span></h4>
+              <p>UETA, UCC, UTSA, RUFADAA, and other uniform-act citations.</p>
+              <a href="https://www.uniformlaws.org/" rel="noopener">uniformlaws.org</a>
+            </div>
+            <div class="source-card">
+              <h4>awesome-legal <span>CC0</span></h4>
+              <p>Curated set of public legal templates: GitHub's BEIPA, Cooley offer letters, YC SAFEs.</p>
+              <a href="https://github.com/ankane/awesome-legal" rel="noopener">github.com/ankane/awesome-legal</a>
+            </div>
+            <div class="source-card">
+              <h4>Atticus Project <span>CC BY 4.0</span></h4>
+              <p>Clause-type definitions and the broader Open Contract Dataset.</p>
+              <a href="https://www.atticusprojectai.org/" rel="noopener">atticusprojectai.org</a>
+            </div>
+            <div class="source-card">
+              <h4>Open-Agreements <span>MIT + CC BY</span></h4>
+              <p>Fillable DOCX builds of Common Paper, Bonterms, and OpenAgreements templates.</p>
+              <a href="https://github.com/open-agreements/open-agreements" rel="noopener">github.com/open-agreements</a>
+            </div>
+          </div>
+            </div>
+          </details>
+        </section>
 
-            <!-- Stage 4: Output -->
-            <g class="box">
-              <rect x="880" y="124" width="180" height="148" rx="14" />
-              <text class="label" x="970" y="192" text-anchor="middle">Word report</text>
-              <text x="970" y="228" text-anchor="middle">.docx download</text>
-            </g>
-
-            <!-- Knowledge Base feeder -->
-            <g class="box accent">
-              <rect x="488" y="356" width="448" height="116" rx="14" />
-              <text class="label" x="712" y="398" text-anchor="middle">Knowledge Base</text>
-              <text x="712" y="436" text-anchor="middle">statutes · clauses · playbooks · dark patterns</text>
-            </g>
-
-            <!-- Arrows: left → right through main row -->
-            <path class="arrow" d="M276,198 L324,198" />
-            <path class="arrow" d="M544,198 L592,198" />
-            <path class="arrow" d="M832,198 L880,198" />
-
-            <!-- Arrow: Knowledge Base feeds the rule engine -->
-            <path class="arrow" d="M712,356 L712,272" />
-          </svg>
-          <!-- Stacked equivalent for narrow viewports (see .diagram-steps
-               CSS). Presentational — the container's aria-label describes
-               the flow for assistive tech. -->
-          <ol class="diagram-steps">
-            <li>
-              <div>
-                <div class="step-title">Your file</div>
-                <div class="step-sub">PDF or DOCX, dropped in the tab</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div class="step-title">Read &amp; extract</div>
-                <div class="step-sub">parties, dates, clauses</div>
-              </div>
-            </li>
-            <li class="is-feeder">
-              <div>
-                <div class="step-title">Knowledge Base</div>
-                <div class="step-sub">statutes · clauses · playbooks · dark patterns</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div class="step-title">1,000+ cited rules</div>
-                <div class="step-sub">deterministic engine</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <div class="step-title">Word report</div>
-                <div class="step-sub">.docx download</div>
-              </div>
-            </li>
-          </ol>
-          <p class="diagram-note">Everything runs in your browser — nothing leaves the tab.</p>
-        </div>
-      </section>
-
-      <!-- What it does not do -->
-      <section aria-labelledby="not-h2">
-        <h2 id="not-h2">What I do not do.</h2>
-        <ul class="bullets-large" style="padding-left: 0; max-width: 760px">
-          <li>I do not give you legal advice. I am a software tool. If something here matters, hire a lawyer.</li>
-          <li>I do not replace your judgment. I find mechanical things consistently. The hard calls are still yours.</li>
-          <li>
-            I do not use AI. Not a model, not a copilot, not "powered by." A probabilistic answer
-            cannot be cited. The whole point of this is the opposite.
-          </li>
-          <li>
-            I do not see your data. There is no server. Your contract never leaves the tab. Open
-            DevTools if you want to confirm: the only requests you will see are same-origin GETs of
-            my own static assets — rule data, playbooks, code — and none of them carries a byte of
-            your document.
-          </li>
-        </ul>
-      </section>
-
-      <!-- Why no AI -->
-      <section aria-labelledby="why-h2">
-        <h2 id="why-h2">Why no AI?</h2>
-        <p style="max-width: 760px">
-          Every other contract tool you can find right now leans on a language model. The pitch is
-          the same everywhere: paste your contract, the AI summarizes, the AI flags risk, the AI
-          suggests redlines. The output is fluent and confident and changes every time you run it. A
-          junior associate can use that for research. A senior partner cannot sign off on it. An
-          auditor cannot trace it. A client cannot reproduce it. The output is, by construction,
-          uncitable.
-        </p>
-        <p style="max-width: 760px">
-          Vaulytica is for the work the AI tools cannot do: exhaustive, identical, cited checking.
-          The professional failure mode in contract review is not "I did not understand the
-          indemnity clause." It is "I read eighty pages at midnight and missed that the
-          auto-renewal triggers sixty days before expiry rather than thirty." A deterministic
-          checklist runner catches that failure mode every time. A chatbot is neither exhaustive
-          nor reproducible. If you want to chat with an AI about your contract, do; it is fine, just
-          do not do it here.
-        </p>
-      </section>
-
-      <!-- Privacy -->
-      <section aria-labelledby="privacy-h2" id="privacy">
-        <h2 id="privacy-h2">Your privacy.</h2>
-        <p style="max-width: 760px">
-          Vaulytica runs entirely in your browser. There is no server to send your file to, because
-          there is no server. Open DevTools, open the Network tab, drop your contract, and confirm
-          it: the only requests are same-origin fetches of the app's own static assets — rule data,
-          playbooks, code — and not one of them carries a byte of your document. Verify it yourself. The site is a static page on Cloudflare Pages, the
-          code is on GitHub under MIT, and there is no analytics, no telemetry, no error reporting,
-          no fonts from CDNs. Every byte your browser fetches comes from vaulytica.com.
-        </p>
-
-        <details class="verify-disclosure">
-          <summary><strong>Verify in DevTools</strong> &middot; 30 seconds</summary>
-          <ol>
-            <li>Open this page in Chrome, Firefox, or Safari.</li>
-            <li>Press <kbd>F12</kbd> (or <kbd>⌥⌘I</kbd> on macOS) to open DevTools.</li>
-            <li>Click the <strong>Network</strong> tab and check "Disable cache."</li>
-            <li>Reload the page once to capture initial asset loads, then click <strong>Clear</strong>.</li>
-            <li>
-              Drop a contract onto the drop zone. Watch the network tab during analysis. You may
-              see the app fetch its own rule data and playbooks from this same origin — every
-              request is a GET with no body, and nothing from your document appears in any of
-              them.
-            </li>
-          </ol>
-        </details>
-      </section>
-
-      <!-- Court & ethics compliance -->
-      <section aria-labelledby="compliance-h2" id="court-compliance">
-        <h2 id="compliance-h2">For court and ethics compliance.</h2>
-        <p style="max-width: 760px">
-          Courts increasingly regulate generative-AI use in filings: the Ropes &amp; Gray AI Court
-          Order Tracker lists 300+ judge- and court-level directives, and the Legal AI Governance
-          tracker counts roughly 113 orders that bind attorney filings — most requiring disclosure
-          of AI use, verification of AI output, or a certification that neither occurred (New
-          York's court-system-wide 22 NYCRR Part 161 took effect June 1, 2026). Privilege case law
-          on consumer AI tools is diverging, not settled — compare
-          <em>United States v. Heppner</em> (S.D.N.Y. 2026, no privilege for material run through
-          a public generative-AI tool) with <em>Warner v. Gilbarco</em> (E.D. Mich. 2026, no
-          waiver) — and ABA Formal Opinion 512 puts the verification duty on the lawyer.
-        </p>
-        <p style="max-width: 760px">
-          Vaulytica can make the no-generative-AI certification provable rather than asserted:
-          every report can ship with a one-page <strong>verification certificate</strong>
-          (Word&nbsp;+ JSON) stating the engine and knowledge-base versions, the input's SHA-256,
-          the result hash, and that the analysis was a deterministic rule evaluation with no
-          generative-AI, machine-learning, or probabilistic component — performed locally, with no
-          document content transmitted. The certificate carries its own tamper-evident hash, and
-          anyone can re-run <code>vaulytica verify &lt;report&gt; &lt;file&gt;</code> to reproduce
-          the analysis exactly. It certifies what this tool did — never your overall compliance;
-          the reviewing attorney remains responsible for verifying findings and meeting the
-          applicable orders and professional-conduct rules.
-        </p>
-      </section>
-
-      <!-- Sources -->
-      <section aria-labelledby="sources-h2">
-        <h2 id="sources-h2">Where the rules come from.</h2>
-        <p>Every rule cites at least one of these. Every source is free and public.</p>
-        <p style="max-width: 760px; margin-top: 16px">
-          A citation is not the same as a lawyer vouching for the rule. Separately, a
-          legal-basis ledger records which rules a licensed attorney has independently signed
-          off on &mdash; <strong><span data-ledger-signed>0</span> so far.</strong> That is the
-          honest starting point, published so you can watch the number climb rather than take a
-          marketing claim on faith.
-        </p>
-        <div class="source-grid" style="margin-top: 24px">
-          <div class="source-card">
-            <h3>SEC EDGAR <span>public domain</span></h3>
-            <p>Real-world clause corpus sampled from EX-10 attachments to 10-K, 10-Q, 8-K, and S-1 filings.</p>
-            <a href="https://efts.sec.gov/LATEST/search-index" rel="noopener">efts.sec.gov</a>
-          </div>
-          <div class="source-card">
-            <h3>Cornell LII <span>free use</span></h3>
-            <p>Cross-references between the UCC and each state's enacted version, and state-code lookups.</p>
-            <a href="https://www.law.cornell.edu/" rel="noopener">law.cornell.edu</a>
-          </div>
-          <div class="source-card">
-            <h3>Common Paper <span>CC BY 4.0</span></h3>
-            <p>Canonical balanced-default reference clauses for NDA, SaaS, MSA, SOW, DPA, and more.</p>
-            <a href="https://commonpaper.com/standards/" rel="noopener">commonpaper.com</a>
-          </div>
-          <div class="source-card">
-            <h3>CUAD <span>CC BY 4.0</span></h3>
-            <p>510 contracts, 13,000+ expert annotations, 41 clause categories. Trains the deterministic classifier.</p>
-            <a href="https://www.atticusprojectai.org/cuad" rel="noopener">atticusprojectai.org</a>
-          </div>
-          <div class="source-card">
-            <h3>LEDGAR <span>CC BY 4.0</span></h3>
-            <p>80,000+ provisions across 100 clause categories. Broader training set for the classifier.</p>
-            <a href="https://huggingface.co/datasets/coastalcph/lex_glue" rel="noopener">huggingface.co/lex_glue</a>
-          </div>
-          <div class="source-card">
-            <h3>US Code (LRC) <span>public domain</span></h3>
-            <p>Official US Code in USLM XML: Titles 9, 11, 15, 17, 18, 28, 35, and 41.</p>
-            <a href="https://uscode.house.gov/download/" rel="noopener">uscode.house.gov</a>
-          </div>
-          <div class="source-card">
-            <h3>eCFR <span>public domain</span></h3>
-            <p>Electronic Code of Federal Regulations: FTC (16), CFTC (17), IRS (26), Labor (29), HIPAA (45).</p>
-            <a href="https://www.ecfr.gov/api/versioner/v1/" rel="noopener">ecfr.gov</a>
-          </div>
-          <div class="source-card">
-            <h3>govinfo <span>public domain</span></h3>
-            <p>Bulk Federal Register, CFR, Public Laws, and Statute Compilations in XML.</p>
-            <a href="https://www.govinfo.gov/bulkdata/" rel="noopener">govinfo.gov</a>
-          </div>
-          <div class="source-card">
-            <h3>Uniform Law Commission <span>free use</span></h3>
-            <p>UETA, UCC, UTSA, RUFADAA, and other uniform-act citations.</p>
-            <a href="https://www.uniformlaws.org/" rel="noopener">uniformlaws.org</a>
-          </div>
-          <div class="source-card">
-            <h3>awesome-legal <span>CC0</span></h3>
-            <p>Curated set of public legal templates: GitHub's BEIPA, Cooley offer letters, YC SAFEs.</p>
-            <a href="https://github.com/ankane/awesome-legal" rel="noopener">github.com/ankane/awesome-legal</a>
-          </div>
-          <div class="source-card">
-            <h3>Atticus Project <span>CC BY 4.0</span></h3>
-            <p>Clause-type definitions and the broader Open Contract Dataset.</p>
-            <a href="https://www.atticusprojectai.org/" rel="noopener">atticusprojectai.org</a>
-          </div>
-          <div class="source-card">
-            <h3>Open-Agreements <span>MIT + CC BY</span></h3>
-            <p>Fillable DOCX builds of Common Paper, Bonterms, and OpenAgreements templates.</p>
-            <a href="https://github.com/open-agreements/open-agreements" rel="noopener">github.com/open-agreements</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- FAQ -->
-      <section aria-labelledby="faq-h2" id="faq">
-        <h2 id="faq-h2">FAQ.</h2>
-
-        <details>
-          <summary>Is this legal advice?</summary>
-          <div>
-            No. Vaulytica is a software tool. It is not a lawyer, it does not give legal advice, and
-            using it does not create an attorney-client relationship with anyone. If something here
-            matters, hire a lawyer.
-          </div>
-        </details>
-        <details>
-          <summary>Can I trust the report?</summary>
-          <div>
-            The report is the output of a deterministic rule engine, not a model. Given the same
-            input file, the same engine version, and the same Deterministic Knowledge Base version,
-            you will get the same report. Every finding cites a rule by id; findings that assert what the law is cite a statute or regulator by URL, and drafting-practice findings cite their practice source instead. The
-            audit trail at the end of every report names every rule that ran, including the silent
-            ones.
-          </div>
-        </details>
-        <details>
-          <summary>Do you train models on my data?</summary>
-          <div>
-            There is no server. Your contract never leaves the tab. Nothing is logged, nothing is
-            uploaded, nothing is retained. Open DevTools, open the Network tab, and confirm zero
-            requests during analysis.
-          </div>
-        </details>
-        <details>
-          <summary>Why no AI?</summary>
-          <div>
-            Probabilistic answers cannot be cited. A senior partner cannot sign off on a chatbot
-            output. An auditor cannot trace it. A client cannot reproduce it. Vaulytica does the
-            work AI tools cannot do: exhaustive, identical, cited checking.
-          </div>
-        </details>
-        <details>
-          <summary>How is the data kept current?</summary>
-          <div>
-            The Deterministic Knowledge Base is rebuilt weekly via a public GitHub Action that
-            fetches from SEC EDGAR, the US Code, the eCFR, govinfo, Common Paper, CUAD, LEDGAR, and
-            other free public sources. Every entry records its source URL, retrieval date, and
-            license. The current DKB version is shown in the footer.
-          </div>
-        </details>
-        <details>
-          <summary>What contract types are supported?</summary>
-          <div>
-            At launch, twelve playbooks: Mutual NDA, Unilateral NDA, US Employment (at-will,
-            exempt), Independent Contractor, SaaS Customer-side, SaaS Vendor-side, MSA, SOW,
-            Commercial Lease (multi-tenant), Residential Lease (US), Consulting Agreement, and a
-            Generic Fallback. The structural and financial rules run against any contract.
-          </div>
-        </details>
-        <details>
-          <summary>What if I find a bug?</summary>
-          <div>
-            Open an issue on GitHub. The repository is public and MIT-licensed. Reproducible bugs
-            with a redacted fixture contract are fixed fast.
-          </div>
-        </details>
-        <details>
-          <summary>Can I add a rule?</summary>
-          <div>
-            Yes. See <code>docs/adding-a-rule.md</code> in the repository. Every new rule must cite
-            at least one DKB entry by id, include a positive and negative test fixture, and pass the
-            deterministic regression check.
-          </div>
-        </details>
-        <details>
-          <summary>Why MIT license?</summary>
-          <div>
-            MIT is the most permissive license most attorneys recognize on sight and removes any
-            friction for someone who wants to fork the project, run it internally at a firm, or
-            build a paid wrapper around it. The license invites that.
-          </div>
-        </details>
-        <details>
-          <summary>What about other languages?</summary>
-          <div>
-            English at launch. Legal language is jurisdiction-specific and "just translate it" is
-            wrong. A future contributor with the right expertise can add another
-            jurisdiction-language pair as a complete unit.
-          </div>
-        </details>
+        <section id="faq" aria-labelledby="faq-h3">
+          <details>
+            <summary><h3 id="faq-h3">Questions</h3></summary>
+            <div class="faq-body">
+              <h4>Is this legal advice?</h4>
+              <p>
+                No. Vaulytica is a software tool. It is not a lawyer, it does not give legal advice,
+                and using it does not create an attorney-client relationship with anyone. If
+                something here matters, hire a lawyer.
+              </p>
+              <h4>Can I trust the report?</h4>
+              <p>
+                The report is the output of a deterministic rule engine, not a model. Given the same
+                input file, the same engine version, and the same Deterministic Knowledge Base
+                version, you will get the same report. Every finding quotes the clause it fired on,
+                names the rule by id and version, and cites its source; findings that assert what
+                the law is cite a statute or regulator by URL, and drafting-practice findings cite
+                their practice source instead. The audit trail at the end of every report names
+                every rule that ran, including the silent ones.
+              </p>
+              <h4>Do you train models on my data?</h4>
+              <p>
+                There is no server. Your contract never leaves the tab. Nothing is logged, nothing
+                is uploaded, nothing is retained.
+              </p>
+              <h4>What document types are supported?</h4>
+              <p>
+                <span data-doc-types>145</span>, listed in full under "What it reviews" above —
+                NDAs, MSAs and SOWs, SaaS agreements, DPAs and SCCs, HIPAA BAAs, employment
+                agreements, commercial and residential leases, M&amp;A documents, equity and
+                financing instruments, wills and trusts, court filings, and compliance policies.
+                The structural and financial rules run against any agreement.
+              </p>
+              <h4>How is the data kept current?</h4>
+              <p>
+                The Deterministic Knowledge Base is rebuilt weekly via a public GitHub Action that
+                fetches from SEC EDGAR, the US Code, the eCFR, govinfo, Common Paper, CUAD, LEDGAR,
+                and other free public sources. Every entry records its source URL, retrieval date,
+                and license. The current version is stamped on every report.
+              </p>
+              <h4>Can I use my firm's own standard?</h4>
+              <p>
+                Yes. Load a custom playbook and its rules run alongside the catalog; findings from
+                your standard are marked as yours in the report, so "our standard flagged this" is
+                never confused with "Vaulytica's catalog flagged this."
+              </p>
+              <h4>Can I add a rule?</h4>
+              <p>
+                Yes. See <code>docs/adding-a-rule.md</code> in the repository. Every new rule must
+                cite at least one Knowledge Base entry by id, include a positive and negative test
+                fixture, and pass the deterministic regression check.
+              </p>
+              <h4>What if I find a bug?</h4>
+              <p>
+                Open an issue on GitHub. The repository is public and MIT-licensed. Reproducible
+                bugs with a redacted fixture contract are fixed fast.
+              </p>
+              <h4>Why MIT license?</h4>
+              <p>
+                MIT is the most permissive license most attorneys recognize on sight, and it removes
+                any friction for someone who wants to fork the project, run it internally at a firm,
+                or build a paid wrapper around it. The license invites that.
+              </p>
+              <h4>What about other languages?</h4>
+              <p>
+                English today. Legal language is jurisdiction-specific and "just translate it" is
+                wrong. A future contributor with the right expertise can add another
+                jurisdiction-language pair as a complete unit.
+              </p>
+            </div>
+          </details>
+        </section>
       </section>
 
       <!-- Closing -->
