@@ -46,6 +46,21 @@ All notable changes to this project will be documented in this file. Format adap
   that says "stand-alone disclosure" rather than "clear and conspicuous".
 
 ### Added
+- **End-to-end catalog routing coverage
+  ([`catalog-routing.test.ts`](tests/integration/catalog-routing.test.ts)).**
+  Every other guard on the two new waves is structural — the rules exist, they
+  are gated, they fire on an empty document, they stay silent on a compliant
+  clause. None proved the thing a user actually depends on: that dropping the
+  document in front of them **reaches** the new family at all. A playbook whose
+  match features never win is 605 checks that never run, and adding 120
+  playbooks to a matcher that scores every playbook against every document is
+  exactly how a new family loses to an older sibling on a document that is
+  plainly its own. The test drops a short realistic instance of a representative
+  family from each wave, requires the matcher to pick it with a real margin above
+  its own 0.5 floor, and separately asserts that every playbook the v5/v6 rules
+  are gated to actually made it into the served bundle — because a playbook
+  missing from `playbooks/extended.json` leaves its whole ruleset dead in the
+  deployed product while every unit test still passes.
 - **A vacated-authority drift guard
   ([`vacated-authority.test.ts`](tests/integration/vacated-authority.test.ts)).**
   Every drift guard in this repo compares the repo against itself, and an
