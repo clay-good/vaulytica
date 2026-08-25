@@ -1,0 +1,40 @@
+{
+  "id": "privilege-log",
+  "version": "1.0.0",
+  "name": "Privilege Log (FRCP 26(b)(5))",
+  "description": "Privilege log checked against Rule 26(b)(5)(A): an express claim and a description sufficient to assess it. Selects the DISC-024..029 ruleset.",
+  "match_features": {
+    "title_keywords": ["privilege log", "log of withheld documents", "privilege and redaction log"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "attorney-client privilege",
+      "work product",
+      "withheld",
+      "author",
+      "recipients",
+      "bates",
+      "date"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Log Entry", "Withheld Document"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-26",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["discovery-responses", "protective-order-stipulated"],
+  "compliance_matrix_columns": [
+    "Express claim of privilege or protection",
+    "Description sufficient to assess the claim",
+    "Author, recipients, and copyees",
+    "Date of each document",
+    "Attorneys identified as such",
+    "Bates or control number for each entry"
+  ]
+}

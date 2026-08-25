@@ -1,0 +1,45 @@
+{
+  "id": "discovery-responses",
+  "version": "1.0.0",
+  "name": "Responses and Objections to Discovery",
+  "description": "Discovery responses checked against the 2015 FRCP amendments: specific objections, the withholding statement, and a stated production date. Selects the DISC-017..023 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "responses and objections",
+      "responses to requests for production",
+      "answers and objections",
+      "objections and responses"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "objects to this request",
+      "subject to and without waiving",
+      "will produce",
+      "no documents are being withheld",
+      "general objections",
+      "verification"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Responding Party", "Request", "Objection"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-34",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["document-requests", "privilege-log"],
+  "compliance_matrix_columns": [
+    "Objections stated with specificity",
+    "Whether responsive material is being withheld",
+    "No 'subject to and without waiving' boilerplate",
+    "Production completion date",
+    "Signature of counsel",
+    "Verification for interrogatory answers",
+    "Certificate of service"
+  ]
+}

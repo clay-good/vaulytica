@@ -1,0 +1,48 @@
+{
+  "id": "engagement-letter",
+  "version": "1.0.0",
+  "name": "Engagement Letter (Law Firm)",
+  "description": "Law-firm engagement letter measured against the ABA Model Rules on scope, fees, conflicts, and file return. Selects the ENG-001..008 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "engagement letter",
+      "retainer agreement",
+      "legal services agreement",
+      "letter of engagement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "scope of the representation",
+      "our fees",
+      "conflicts of interest",
+      "attorney-client",
+      "hourly rate",
+      "we represent",
+      "trust account"
+    ],
+    "negative_features": [
+      "purchase and sale",
+      "merger agreement",
+      "lease of the premises",
+      "software as a service"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Client", "Matter", "Fees"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ABA-MRPC",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["contingency-fee-agreement", "termination-of-representation"],
+  "compliance_matrix_columns": [
+    "Scope of the representation",
+    "Identity of the client",
+    "Fee basis and rates",
+    "Costs and expenses",
+    "Billing frequency and payment terms",
+    "Retainer or advance fee and where it is held",
+    "Conflicts and future-conflict consent",
+    "Termination, withdrawal, and file return"
+  ]
+}

@@ -72,6 +72,11 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   DDL: "deadline-computation",
   PROD: "production-qa",
   PNOT: "privacy-notice",
+  // v6 law-practice packs (spec-v46.md). The first families Vaulytica reads
+  // that the lawyer, rather than the lawyer's client, is the author of.
+  ENG: "law-practice-engagement",
+  DISC: "discovery-instruments",
+  PLDG: "pleadings",
 } as const;
 
 /**
@@ -175,6 +180,67 @@ export const SCOPE_OF_REVIEW: Readonly<Record<string, ScopeStatement>> = {
       "table-of-authorities page-number accuracy (the flattened text carries no page boundaries; reconciliation is by authority, not page)",
       "filing-format limits (type-volume, pages, required blocks) unless a court profile is selected (--court)",
       "typeface, point size, line spacing, margins, and the substance of the argument",
+    ],
+  }),
+  ...scopeForIds(
+    [
+      "engagement-letter",
+      "contingency-fee-agreement",
+      "flat-fee-agreement",
+      "joint-representation-waiver",
+      "limited-scope-representation",
+      "termination-of-representation",
+    ],
+    {
+      pack: "Law-Practice Engagement Documents",
+      reviewed_for: [
+        "presence of the terms the ABA Model Rules of Professional Conduct contemplate for an engagement — scope, client identity, fee basis and rates, expenses, advance-fee handling, conflicts consent, and termination and file return",
+        "the specific elements Model Rule 1.5(c) enumerates for a contingent fee: the percentage method, whether expenses come off before or after the fee, expenses owed if there is no recovery, and the closing statement",
+      ],
+      not_reviewed_for: [
+        "whether any fee is reasonable under Rule 1.5(a), which is a judgment about the matter and the market that no deterministic check can make",
+        "whether a conflict exists, whether it is consentable, or whether consent given was informed — the checks read for the disclosure, never for its sufficiency",
+        "compliance with any jurisdiction's rules: the ABA Model Rules bind nobody, every state adopts its own version, and several differ materially on fee-agreement writing requirements and advance-fee handling",
+        "any conclusion that a lawyer has satisfied or breached a professional duty",
+      ],
+    },
+  ),
+  ...scopeForIds(
+    [
+      "document-requests",
+      "interrogatories",
+      "requests-for-admission",
+      "discovery-responses",
+      "privilege-log",
+      "rule-26f-report",
+      "deposition-notice",
+    ],
+    {
+      pack: "Discovery Instruments",
+      reviewed_for: [
+        "presence of the formal elements the Federal Rules require of the instrument — response deadlines, numbering, the Rule 34(b)(1)(C) production form, the Rule 33 numerical limit, the Rule 36 deemed-admitted warning, oath and signature blocks, and certificates of service",
+        "the Rule 34(b)(2)(B)-(C) response requirements the 2015 amendments added: objections stated with specificity, an express statement of whether responsive material is being withheld, and a stated production completion date",
+        "the Rule 26(b)(5)(A) privilege-log elements: an express claim, a description sufficient to assess it, participants, and dates",
+      ],
+      not_reviewed_for: [
+        "whether any request is relevant or proportional, whether any objection is meritorious, or whether any privilege claim is sound — every one of those is a judgment on the facts of the case",
+        "whether a production is complete, or whether anything responsive was missed",
+        "local rules and standing orders, which routinely modify response formats, privilege-log requirements, and deposition practice, and which govern over the national rule",
+        "state-court procedure, which differs from the Federal Rules in every state",
+      ],
+    },
+  ),
+  ...scopeForIds(["complaint", "answer"], {
+    pack: "Pleadings",
+    reviewed_for: [
+      "presence of the structural elements the pleading rules require — the Rule 10(a) caption, the Rule 8(a)(1) jurisdictional statement, venue, numbered paragraphs, the Rule 8(a)(3) demand for relief, the Rule 11(a) signature block, and the Rule 38(b) jury demand",
+      "for an answer: a paragraph-by-paragraph response, the Rule 8(b)(5) lack-of-knowledge formulation, affirmative defenses, and preservation of the Rule 12(b)(2)-(5) defenses that Rule 12(h)(1) waives if omitted",
+    ],
+    not_reviewed_for: [
+      "whether any claim is plausible, any defense available, or any allegation true — the checks read form, never merit",
+      "whether a Rule 9(b) allegation is particular enough, or whether every applicable affirmative defense was identified; the checks confirm the section exists, not that it is complete",
+      "whether every paragraph of a complaint was in fact answered — the check reads for a paragraph-by-paragraph structure, not for a paragraph-level reconciliation",
+      "local rules and standing orders on caption format, paragraph numbering, jury-demand placement, and page limits, which govern over the national rule",
     ],
   }),
 };

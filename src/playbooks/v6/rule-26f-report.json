@@ -1,0 +1,44 @@
+{
+  "id": "rule-26f-report",
+  "version": "1.0.0",
+  "name": "Rule 26(f) Report and Discovery Plan",
+  "description": "Joint Rule 26(f) report checked for the six subjects Rule 26(f)(3) enumerates plus the Rule 16(b)(3) deadlines. Selects the DISC-030..035 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "rule 26(f) report",
+      "joint discovery plan",
+      "report of parties planning meeting",
+      "case management statement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "discovery plan",
+      "initial disclosures",
+      "electronically stored information",
+      "502(d)",
+      "dispositive motions",
+      "settlement"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Discovery Plan", "Scheduling Order"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-26",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["document-requests", "protective-order-stipulated"],
+  "compliance_matrix_columns": [
+    "Proposed discovery plan with the required subjects",
+    "ESI preservation and production form",
+    "FRE 502(d) order requested",
+    "Initial disclosure timing",
+    "Proposed limits and case-management deadlines",
+    "Settlement and ADR posture"
+  ]
+}

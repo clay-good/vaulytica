@@ -533,6 +533,60 @@
     ]
   },
   {
+    "id": "answer",
+    "version": "1.0.0",
+    "name": "Answer and Affirmative Defenses",
+    "description": "Answer checked for the paragraph-by-paragraph response, the Rule 8(b)(5) formulation, and the defenses Rules 8(c) and 12(h) require be raised now. Selects the PLDG-009..016 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "answer and affirmative defenses",
+        "answer to complaint",
+        "defendant's answer",
+        "answer, affirmative defenses"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "admits",
+        "denies",
+        "lacks knowledge or information sufficient",
+        "affirmative defense",
+        "wherefore",
+        "paragraph"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Defendant",
+      "Answer",
+      "Affirmative Defense"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-8",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "complaint"
+    ],
+    "compliance_matrix_columns": [
+      "Caption and pleading designation",
+      "Response to each numbered allegation",
+      "Rule 8(b)(5) lack-of-knowledge formulation",
+      "Affirmative defenses pleaded",
+      "Rule 12(b) defenses preserved",
+      "Prayer for relief",
+      "Rule 11 signature block",
+      "Certificate of service"
+    ]
+  },
+  {
     "id": "anti-bribery-policy",
     "version": "1.0.0",
     "name": "Anti-Bribery / Anti-Corruption Policy (FCPA / UKBA)",
@@ -2788,6 +2842,63 @@
     ]
   },
   {
+    "id": "complaint",
+    "version": "1.0.0",
+    "name": "Complaint (Civil Pleading)",
+    "description": "Civil complaint checked for the structural elements Rules 8, 9, 10, 11, and 38 require. Selects the PLDG-001..008 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "complaint",
+        "verified complaint",
+        "first amended complaint",
+        "petition for damages"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "plaintiff",
+        "jurisdiction",
+        "venue",
+        "wherefore",
+        "cause of action",
+        "demands judgment",
+        "jury"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises",
+        "software as a service"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Plaintiff",
+      "Defendant",
+      "Claim"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-8",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "answer",
+      "trial-motion"
+    ],
+    "compliance_matrix_columns": [
+      "Caption naming the court and all parties",
+      "Short and plain statement of the grounds for jurisdiction",
+      "Venue allegation",
+      "Numbered paragraphs limited to a single set of circumstances",
+      "Rule 9(b) particularity for fraud or mistake",
+      "Demand for relief",
+      "Rule 11 signature block",
+      "Jury demand where a jury is wanted"
+    ]
+  },
+  {
     "id": "confidential-settlement",
     "version": "1.0.0",
     "name": "Confidential Settlement Agreement",
@@ -3026,6 +3137,60 @@
       "Conditional payment condition",
       "Carve-outs (retention / disputed)",
       "Signature + statutory form"
+    ]
+  },
+  {
+    "id": "contingency-fee-agreement",
+    "version": "1.0.0",
+    "name": "Contingency Fee Agreement",
+    "description": "Contingent fee agreement measured against ABA Model Rule 1.5(c). Selects the ENG-009..015 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "contingency fee agreement",
+        "contingent fee agreement",
+        "contingency fee",
+        "fee agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "contingent fee",
+        "percentage of the recovery",
+        "no recovery",
+        "net recovery",
+        "gross recovery",
+        "closing statement",
+        "settlement"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "software as a service"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Recovery",
+      "Client",
+      "Contingent Fee"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ABA-MRPC-1.5",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "engagement-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Signed writing stating the contingency method",
+      "Expenses deducted before or after the fee",
+      "Expenses owed if there is no recovery",
+      "Matters excluded from the contingent fee",
+      "Client's settlement authority",
+      "Statement of the outcome at conclusion",
+      "Lien and third-party payor obligations"
     ]
   },
   {
@@ -3699,6 +3864,56 @@
     ]
   },
   {
+    "id": "deposition-notice",
+    "version": "1.0.0",
+    "name": "Notice of Deposition (FRCP 30)",
+    "description": "Rule 30 deposition notice checked for time, place, deponent, recording method, and 30(b)(6) topic particularity. Selects the DISC-036..040 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "notice of deposition",
+        "notice of taking deposition",
+        "deposition notice",
+        "amended notice of deposition"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "please take notice",
+        "deponent",
+        "30(b)(6)",
+        "stenographic",
+        "commencing at",
+        "duces tecum"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Deponent",
+      "Deposition"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-30",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "document-requests"
+    ],
+    "compliance_matrix_columns": [
+      "Reasonable written notice with time and place",
+      "Deponent identified",
+      "Rule 30(b)(6) topics described with reasonable particularity",
+      "Method of recording",
+      "Documents requested with the deposition"
+    ]
+  },
+  {
     "id": "design-build-agreement",
     "version": "1.0.0",
     "name": "Design-Build Agreement",
@@ -3820,6 +4035,60 @@
     ],
     "compliance_matrix_columns": [
       "ABA Private Target Deal Points Study"
+    ]
+  },
+  {
+    "id": "discovery-responses",
+    "version": "1.0.0",
+    "name": "Responses and Objections to Discovery",
+    "description": "Discovery responses checked against the 2015 FRCP amendments: specific objections, the withholding statement, and a stated production date. Selects the DISC-017..023 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "responses and objections",
+        "responses to requests for production",
+        "answers and objections",
+        "objections and responses"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "objects to this request",
+        "subject to and without waiving",
+        "will produce",
+        "no documents are being withheld",
+        "general objections",
+        "verification"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Responding Party",
+      "Request",
+      "Objection"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-34",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "document-requests",
+      "privilege-log"
+    ],
+    "compliance_matrix_columns": [
+      "Objections stated with specificity",
+      "Whether responsive material is being withheld",
+      "No 'subject to and without waiving' boilerplate",
+      "Production completion date",
+      "Signature of counsel",
+      "Verification for interrogatory answers",
+      "Certificate of service"
     ]
   },
   {
@@ -3978,6 +4247,59 @@
       "Severability of application and exclusions",
       "Defense-cost treatment (duty to defend vs. reimburse)",
       "Run-off / tail on change of control"
+    ]
+  },
+  {
+    "id": "document-requests",
+    "version": "1.0.0",
+    "name": "Requests for Production (FRCP 34)",
+    "description": "Rule 34 document requests checked for the timing, particularity, and ESI-form elements the rule requires. Selects the DISC-001..006 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "requests for production",
+        "request for production of documents",
+        "first set of requests for production",
+        "rule 34 requests"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "all documents",
+        "produce",
+        "electronically stored information",
+        "definitions",
+        "instructions",
+        "reasonable particularity"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Documents",
+      "Requesting Party",
+      "Responding Party"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-34",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "discovery-responses",
+      "privilege-log"
+    ],
+    "compliance_matrix_columns": [
+      "Response deadline stated",
+      "Definitions and instructions",
+      "Relevant time period",
+      "Form of production for electronically stored information",
+      "Numbered requests",
+      "Certificate of service"
     ]
   },
   {
@@ -4790,6 +5112,63 @@
     ]
   },
   {
+    "id": "engagement-letter",
+    "version": "1.0.0",
+    "name": "Engagement Letter (Law Firm)",
+    "description": "Law-firm engagement letter measured against the ABA Model Rules on scope, fees, conflicts, and file return. Selects the ENG-001..008 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "engagement letter",
+        "retainer agreement",
+        "legal services agreement",
+        "letter of engagement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "scope of the representation",
+        "our fees",
+        "conflicts of interest",
+        "attorney-client",
+        "hourly rate",
+        "we represent",
+        "trust account"
+      ],
+      "negative_features": [
+        "purchase and sale",
+        "merger agreement",
+        "lease of the premises",
+        "software as a service"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Client",
+      "Matter",
+      "Fees"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ABA-MRPC",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "contingency-fee-agreement",
+      "termination-of-representation"
+    ],
+    "compliance_matrix_columns": [
+      "Scope of the representation",
+      "Identity of the client",
+      "Fee basis and rates",
+      "Costs and expenses",
+      "Billing frequency and payment terms",
+      "Retainer or advance fee and where it is held",
+      "Conflicts and future-conflict consent",
+      "Termination, withdrawal, and file return"
+    ]
+  },
+  {
     "id": "equipment-finance-agreement",
     "version": "1.0.0",
     "name": "Equipment Finance Agreement",
@@ -5503,6 +5882,56 @@
       "Administrative fee and fund accounting",
       "Charitable-purpose limitation on use",
       "Termination and transfer of the project fund"
+    ]
+  },
+  {
+    "id": "flat-fee-agreement",
+    "version": "1.0.0",
+    "name": "Flat Fee Agreement",
+    "description": "Fixed-fee legal services agreement measured against ABA Model Rules 1.5 and 1.15(c). Selects the ENG-016..020 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "flat fee agreement",
+        "fixed fee agreement",
+        "flat fee engagement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "flat fee",
+        "fixed fee",
+        "earned upon receipt",
+        "trust account",
+        "scope of the work",
+        "out of scope"
+      ],
+      "negative_features": [
+        "contingent fee",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Flat Fee",
+      "Services",
+      "Client"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ABA-MRPC-1.5",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "engagement-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Services the flat fee covers",
+      "Work outside the flat fee",
+      "Trust-account treatment of the advance",
+      "Refund of the unearned portion on early termination",
+      "Expenses treated separately from the fee"
     ]
   },
   {
@@ -6967,6 +7396,54 @@
     ]
   },
   {
+    "id": "interrogatories",
+    "version": "1.0.0",
+    "name": "Interrogatories (FRCP 33)",
+    "description": "Rule 33 interrogatories checked for the numerical limit, oath requirement, and service elements. Selects the DISC-007..011 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "interrogatories",
+        "first set of interrogatories",
+        "rule 33 interrogatories"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "interrogatory no",
+        "answer under oath",
+        "discrete subparts",
+        "definitions",
+        "state the following"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Interrogatory",
+      "Answering Party"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-33",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "discovery-responses"
+    ],
+    "compliance_matrix_columns": [
+      "Numerical limit respected or leave obtained",
+      "Response deadline stated",
+      "Answers under oath required",
+      "Definitions and relevant time period",
+      "Certificate of service"
+    ]
+  },
+  {
     "id": "investor-rights-agreement",
     "version": "1.0.0",
     "name": "Investor Rights Agreement (NVCA)",
@@ -7170,6 +7647,57 @@
       "Prosecution and enforcement control",
       "Publication review and delay period",
       "Exclusivity and field-of-use limits"
+    ]
+  },
+  {
+    "id": "joint-representation-waiver",
+    "version": "1.0.0",
+    "name": "Joint Representation Conflict Waiver",
+    "description": "Common-representation conflict waiver measured against ABA Model Rules 1.7 and 1.0(e). Selects the ENG-021..026 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "joint representation",
+        "common representation",
+        "conflict waiver",
+        "conflict of interest waiver"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "jointly represent",
+        "informed consent",
+        "no confidentiality among",
+        "withdraw from representing",
+        "independent counsel",
+        "material risks"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "purchase order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Joint Clients",
+      "Common Representation"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ABA-MRPC-1.7",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "engagement-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Identification of every jointly represented client",
+      "No confidentiality among the joint clients",
+      "Consequence if a conflict later develops",
+      "Advantages and risks of the common representation",
+      "Opportunity to consult independent counsel",
+      "Written confirmation signed by each client"
     ]
   },
   {
@@ -7395,6 +7923,57 @@
       "TI allowance and free rent",
       "Exclusivity / no-shop period",
       "Expiration of the LOI"
+    ]
+  },
+  {
+    "id": "limited-scope-representation",
+    "version": "1.0.0",
+    "name": "Limited Scope Representation Agreement",
+    "description": "Unbundled legal services agreement measured against ABA Model Rule 1.2(c). Selects the ENG-027..031 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "limited scope representation",
+        "unbundled legal services",
+        "limited scope agreement",
+        "discrete task representation"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "limited scope",
+        "unbundled",
+        "you are responsible",
+        "notice of limited appearance",
+        "discrete task",
+        "will not perform"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "purchase order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Limited Scope",
+      "Client Tasks"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ABA-MRPC-1.2",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "engagement-letter",
+      "termination-of-representation"
+    ],
+    "compliance_matrix_columns": [
+      "Tasks the lawyer will and will not perform",
+      "Reasonableness of the limitation for this matter",
+      "Client's responsibility for everything else",
+      "Court disclosure of limited-scope appearance",
+      "How and when the representation ends"
     ]
   },
   {
@@ -10605,6 +11184,58 @@
     ]
   },
   {
+    "id": "privilege-log",
+    "version": "1.0.0",
+    "name": "Privilege Log (FRCP 26(b)(5))",
+    "description": "Privilege log checked against Rule 26(b)(5)(A): an express claim and a description sufficient to assess it. Selects the DISC-024..029 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "privilege log",
+        "log of withheld documents",
+        "privilege and redaction log"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "attorney-client privilege",
+        "work product",
+        "withheld",
+        "author",
+        "recipients",
+        "bates",
+        "date"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Log Entry",
+      "Withheld Document"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-26",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "discovery-responses",
+      "protective-order-stipulated"
+    ],
+    "compliance_matrix_columns": [
+      "Express claim of privilege or protection",
+      "Description sufficient to assess the claim",
+      "Author, recipients, and copyees",
+      "Date of each document",
+      "Attorneys identified as such",
+      "Bates or control number for each entry"
+    ]
+  },
+  {
     "id": "profits-interest-award",
     "version": "1.0.0",
     "name": "LLC Profits Interest Award",
@@ -11244,6 +11875,55 @@
     ]
   },
   {
+    "id": "requests-for-admission",
+    "version": "1.0.0",
+    "name": "Requests for Admission (FRCP 36)",
+    "description": "Rule 36 requests for admission checked for the deemed-admitted warning, single-fact form, and answer requirements. Selects the DISC-012..016 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "requests for admission",
+        "request for admission",
+        "first set of requests for admission",
+        "rule 36 requests"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "admit that",
+        "deemed admitted",
+        "genuineness of the document",
+        "admit or deny",
+        "reasonable inquiry"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Request",
+      "Responding Party"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-36",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "discovery-responses"
+    ],
+    "compliance_matrix_columns": [
+      "Response deadline and the deemed-admitted consequence",
+      "One fact per request",
+      "Answer, denial, or explained inability",
+      "Document authentication requests identified",
+      "Certificate of service"
+    ]
+  },
+  {
     "id": "reservation-of-rights-letter",
     "version": "1.0.0",
     "name": "Reservation of Rights Letter",
@@ -11677,6 +12357,58 @@
       "IRC § 83",
       "IRC § 409A",
       "Treas. Reg. § 1.409A-1(b)(4)"
+    ]
+  },
+  {
+    "id": "rule-26f-report",
+    "version": "1.0.0",
+    "name": "Rule 26(f) Report and Discovery Plan",
+    "description": "Joint Rule 26(f) report checked for the six subjects Rule 26(f)(3) enumerates plus the Rule 16(b)(3) deadlines. Selects the DISC-030..035 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "rule 26(f) report",
+        "joint discovery plan",
+        "report of parties planning meeting",
+        "case management statement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "discovery plan",
+        "initial disclosures",
+        "electronically stored information",
+        "502(d)",
+        "dispositive motions",
+        "settlement"
+      ],
+      "negative_features": [
+        "this agreement is entered into",
+        "merger agreement",
+        "lease of the premises"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Discovery Plan",
+      "Scheduling Order"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "FRCP-26",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "document-requests",
+      "protective-order-stipulated"
+    ],
+    "compliance_matrix_columns": [
+      "Proposed discovery plan with the required subjects",
+      "ESI preservation and production form",
+      "FRE 502(d) order requested",
+      "Initial disclosure timing",
+      "Proposed limits and case-management deadlines",
+      "Settlement and ADR posture"
     ]
   },
   {
@@ -13421,6 +14153,56 @@
       "Plan approval timeline and deemed approval",
       "Tenant-delay definition and rent commencement",
       "Change orders and cost overruns"
+    ]
+  },
+  {
+    "id": "termination-of-representation",
+    "version": "1.0.0",
+    "name": "Closing / Termination of Representation Letter",
+    "description": "Closing letter measured against ABA Model Rules 1.16(d), 1.15(d), and 1.9. Selects the ENG-032..036 ruleset.",
+    "match_features": {
+      "title_keywords": [
+        "closing letter",
+        "termination of representation",
+        "conclusion of representation",
+        "disengagement letter"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "representation has concluded",
+        "no further obligation",
+        "your file",
+        "final statement",
+        "former client",
+        "retention period"
+      ],
+      "negative_features": [
+        "merger agreement",
+        "lease of the premises",
+        "purchase order"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Matter",
+      "Client File"
+    ],
+    "rule_overrides": {},
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "ABA-MRPC-1.16",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "engagement-letter"
+    ],
+    "compliance_matrix_columns": [
+      "Statement that the representation has ended",
+      "No continuing obligation to monitor deadlines",
+      "Return or retention of the client file",
+      "Final accounting and refund of unearned funds",
+      "Post-engagement conflicts posture"
     ]
   },
   {

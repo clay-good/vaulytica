@@ -29,7 +29,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../../_test-fixtures.js";
 import { V5_RULES } from "./index.js";
-import { GATED_V5_RULE_IDS } from "./_pack.js";
+import { GATED_PACK_RULE_IDS } from "./_pack.js";
 
 const familyName = new Map<string, string>();
 for (const file of readdirSync(join(process.cwd(), "src", "playbooks", "v5"))) {
@@ -53,7 +53,7 @@ function titleOnly(playbookId: string) {
 
 describe("v5 title-vacuity guard", () => {
   it("every ungated check fires on a document that is only its family's title", () => {
-    const vacuous = V5_RULES.filter((r) => !GATED_V5_RULE_IDS.has(r.id))
+    const vacuous = V5_RULES.filter((r) => !GATED_PACK_RULE_IDS.has(r.id))
       .filter((r) => r.check(titleOnly((r.applies_to_playbooks ?? [])[0]!)) === null)
       .map((r) => `${r.id} (${r.name})`);
     expect(
@@ -67,7 +67,7 @@ describe("v5 title-vacuity guard", () => {
     // than hand-maintained. Pin that it is non-empty and that every member
     // is a real v5 rule, so a stale id can never quietly widen the exclusion.
     const ids = new Set(V5_RULES.map((r) => r.id));
-    expect(GATED_V5_RULE_IDS.size).toBeGreaterThan(0);
-    for (const id of GATED_V5_RULE_IDS) expect(ids.has(id), `${id} is not a v5 rule`).toBe(true);
+    expect(GATED_PACK_RULE_IDS.size).toBeGreaterThan(0);
+    for (const id of GATED_PACK_RULE_IDS) expect(ids.has(id), `${id} is not a v5 rule`).toBe(true);
   });
 });

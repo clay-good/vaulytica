@@ -557,6 +557,10 @@ export default defineConfig({
             const file = id.match(/\/engine\/rules\/v5\/([^/]+)\.[tj]s$/)?.[1];
             return file && V5_CORP_FILES.has(file) ? "v5-rules-corp" : "v5-rules-reg";
           }
+          // The v6 law-practice packs are one chunk: they are small (~45 KB),
+          // they change together, and they are the only rules in the catalog
+          // that read a document the lawyer signs (spec-v46.md).
+          if (id.includes("/engine/rules/v6/")) return "v6-rules";
           if (id.includes("/engine/rules/")) return "rules-core";
           return undefined;
         },

@@ -56,6 +56,7 @@ export {
   REGULATORY_PROSE_RULES,
 } from "./rules/v4/index.js";
 export { V5_RULES } from "./rules/v5/index.js";
+export { V6_RULES } from "./rules/v6/index.js";
 
 export type {
   ConsistencyContext,

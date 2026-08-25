@@ -1,0 +1,43 @@
+{
+  "id": "deposition-notice",
+  "version": "1.0.0",
+  "name": "Notice of Deposition (FRCP 30)",
+  "description": "Rule 30 deposition notice checked for time, place, deponent, recording method, and 30(b)(6) topic particularity. Selects the DISC-036..040 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "notice of deposition",
+      "notice of taking deposition",
+      "deposition notice",
+      "amended notice of deposition"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "please take notice",
+      "deponent",
+      "30(b)(6)",
+      "stenographic",
+      "commencing at",
+      "duces tecum"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Deponent", "Deposition"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-30",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["document-requests"],
+  "compliance_matrix_columns": [
+    "Reasonable written notice with time and place",
+    "Deponent identified",
+    "Rule 30(b)(6) topics described with reasonable particularity",
+    "Method of recording",
+    "Documents requested with the deposition"
+  ]
+}

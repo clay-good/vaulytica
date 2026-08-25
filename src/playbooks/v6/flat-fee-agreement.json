@@ -1,0 +1,34 @@
+{
+  "id": "flat-fee-agreement",
+  "version": "1.0.0",
+  "name": "Flat Fee Agreement",
+  "description": "Fixed-fee legal services agreement measured against ABA Model Rules 1.5 and 1.15(c). Selects the ENG-016..020 ruleset.",
+  "match_features": {
+    "title_keywords": ["flat fee agreement", "fixed fee agreement", "flat fee engagement"],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "flat fee",
+      "fixed fee",
+      "earned upon receipt",
+      "trust account",
+      "scope of the work",
+      "out of scope"
+    ],
+    "negative_features": ["contingent fee", "merger agreement", "lease of the premises"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Flat Fee", "Services", "Client"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ABA-MRPC-1.5",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["engagement-letter"],
+  "compliance_matrix_columns": [
+    "Services the flat fee covers",
+    "Work outside the flat fee",
+    "Trust-account treatment of the advance",
+    "Refund of the unearned portion on early termination",
+    "Expenses treated separately from the fee"
+  ]
+}

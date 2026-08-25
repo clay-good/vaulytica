@@ -6,6 +6,7 @@ import { LAUNCH_RULES } from "../engine/rules/index.js";
 import { V3_RULES } from "../engine/rules/v3/index.js";
 import { V4_RULES } from "../engine/rules/v4/index.js";
 import { V5_RULES } from "../engine/rules/v5/index.js";
+import { V6_RULES } from "../engine/rules/v6/index.js";
 import { FILING_RULES, CITE_RULES } from "../engine/rules/filing/index.js";
 import { PNOT_RULES } from "../engine/rules/privacy-notice/rules.js";
 import { ESTATE_CHECK_RULES } from "../engine/rules/v4/trust-estate/estate-checks.js";
@@ -23,6 +24,7 @@ const NON_LAUNCH: readonly Rule[] = [
   ...V3_RULES,
   ...V4_RULES,
   ...V5_RULES,
+  ...V6_RULES,
   ...FILING_RULES,
   ...CITE_RULES,
   ...PNOT_RULES,

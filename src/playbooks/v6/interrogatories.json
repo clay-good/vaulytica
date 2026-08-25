@@ -1,0 +1,41 @@
+{
+  "id": "interrogatories",
+  "version": "1.0.0",
+  "name": "Interrogatories (FRCP 33)",
+  "description": "Rule 33 interrogatories checked for the numerical limit, oath requirement, and service elements. Selects the DISC-007..011 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "interrogatories",
+      "first set of interrogatories",
+      "rule 33 interrogatories"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "interrogatory no",
+      "answer under oath",
+      "discrete subparts",
+      "definitions",
+      "state the following"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Interrogatory", "Answering Party"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-33",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["discovery-responses"],
+  "compliance_matrix_columns": [
+    "Numerical limit respected or leave obtained",
+    "Response deadline stated",
+    "Answers under oath required",
+    "Definitions and relevant time period",
+    "Certificate of service"
+  ]
+}

@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Added
+- **The lawyer's own documents: engagement letters, discovery, and pleadings
+  ([`spec-v46.md`](docs/spec-v46.md)).** Every wave through v5 reads a document
+  the lawyer's *client* is a party to. v6 turns the same engine on the documents
+  the **practice itself** produces — 15 families and 92 checks across three new
+  packs. `ENG` reads engagement letters, contingency and flat fee agreements,
+  joint-representation waivers, limited-scope agreements, and closing letters
+  against the ABA Model Rules, concentrating on the enumerated requirements
+  (Model Rule 1.5(c)'s four contingent-fee elements; Rule 1.15(c) advance-fee
+  trust handling; Rule 1.16(d) file return and refund of the unearned portion)
+  rather than the evaluative ones. `DISC` reads requests, responses, privilege
+  logs, Rule 26(f) reports, and deposition notices against the FRCP, with its
+  center of gravity on the 2015 amendments practice has been slow to absorb:
+  objections stated with specificity, the Rule 34(b)(2)(C) statement of whether
+  responsive material is being withheld, the "subject to and without waiving"
+  formulation, and a stated production completion date. `PLDG` reads complaints
+  and answers for the structural elements Rules 8, 9, 10, 11, and 38 require,
+  concentrating on the four omissions that cannot be cured later — the jury
+  demand, the Rule 8(c) affirmative defenses, the Rule 12(h)(1) defenses, and
+  the Rule 8(b)(5) formulation. Totals: **265 document types** and **1,808
+  single-document rules**.
+- **Two caveats rendered into the citation, not a footnote.** These are the first
+  packs whose governing text mostly does not bind, so both caveats travel with
+  the finding onto every report surface. Every ABA Model Rule citation reads
+  "(model text; each state adopts its own version)" — a finding says a term the
+  Model Rules contemplate was not found, never that the lawyer's jurisdiction
+  requires it. Every discovery and pleading scope statement lists local rules and
+  standing orders under *not reviewed for*, because they routinely displace the
+  national rule on response formats, privilege-log contents, caption format, and
+  jury-demand placement. A guard test asserts that no rule name in the wave
+  contains a professional-duty conclusion word.
+
 - **The US catalog: 105 more American document families, 605 more checks
   ([`spec-v45.md`](docs/spec-v45.md)).** v4 took the catalog from "contracts" to
   "every logically-operative legal document" across sixteen sub-domains, and
@@ -40,10 +71,11 @@ All notable changes to this project will be documented in this file. Format adap
   hand-maintained so a stale id cannot widen the exclusion.
 
 ### Changed
-- **Two new bundle chunks (`v5-rules-corp`, `v5-rules-reg`).** The v5 catalog is
+- **Three new bundle chunks (`v5-rules-corp`, `v5-rules-reg`, `v6-rules`).** The v5 catalog is
   ~285 KB raw; left in the shared `rules-core` chunk it pushed that chunk to
   883 KB, past the 600 KB per-chunk cap. It now splits on the same
-  corporate/regulatory line v4 uses. Nothing moves onto the first-paint path.
+  corporate/regulatory line v4 uses. The v6 law-practice packs are ~45 KB and
+  ship as one chunk. Nothing moves onto the first-paint path.
 
 ### Added
 - **Production-QA now works in the browser bundle, not just the CLI.** Drop a

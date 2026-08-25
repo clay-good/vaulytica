@@ -1,0 +1,42 @@
+{
+  "id": "contingency-fee-agreement",
+  "version": "1.0.0",
+  "name": "Contingency Fee Agreement",
+  "description": "Contingent fee agreement measured against ABA Model Rule 1.5(c). Selects the ENG-009..015 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "contingency fee agreement",
+      "contingent fee agreement",
+      "contingency fee",
+      "fee agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "contingent fee",
+      "percentage of the recovery",
+      "no recovery",
+      "net recovery",
+      "gross recovery",
+      "closing statement",
+      "settlement"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "software as a service"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Recovery", "Client", "Contingent Fee"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ABA-MRPC-1.5",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["engagement-letter"],
+  "compliance_matrix_columns": [
+    "Signed writing stating the contingency method",
+    "Expenses deducted before or after the fee",
+    "Expenses owed if there is no recovery",
+    "Matters excluded from the contingent fee",
+    "Client's settlement authority",
+    "Statement of the outcome at conclusion",
+    "Lien and third-party payor obligations"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "termination-of-representation",
+  "version": "1.0.0",
+  "name": "Closing / Termination of Representation Letter",
+  "description": "Closing letter measured against ABA Model Rules 1.16(d), 1.15(d), and 1.9. Selects the ENG-032..036 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "closing letter",
+      "termination of representation",
+      "conclusion of representation",
+      "disengagement letter"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "representation has concluded",
+      "no further obligation",
+      "your file",
+      "final statement",
+      "former client",
+      "retention period"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Matter", "Client File"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ABA-MRPC-1.16",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["engagement-letter"],
+  "compliance_matrix_columns": [
+    "Statement that the representation has ended",
+    "No continuing obligation to monitor deadlines",
+    "Return or retention of the client file",
+    "Final accounting and refund of unearned funds",
+    "Post-engagement conflicts posture"
+  ]
+}

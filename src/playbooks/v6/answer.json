@@ -1,0 +1,46 @@
+{
+  "id": "answer",
+  "version": "1.0.0",
+  "name": "Answer and Affirmative Defenses",
+  "description": "Answer checked for the paragraph-by-paragraph response, the Rule 8(b)(5) formulation, and the defenses Rules 8(c) and 12(h) require be raised now. Selects the PLDG-009..016 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "answer and affirmative defenses",
+      "answer to complaint",
+      "defendant's answer",
+      "answer, affirmative defenses"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "admits",
+      "denies",
+      "lacks knowledge or information sufficient",
+      "affirmative defense",
+      "wherefore",
+      "paragraph"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Defendant", "Answer", "Affirmative Defense"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-8",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["complaint"],
+  "compliance_matrix_columns": [
+    "Caption and pleading designation",
+    "Response to each numbered allegation",
+    "Rule 8(b)(5) lack-of-knowledge formulation",
+    "Affirmative defenses pleaded",
+    "Rule 12(b) defenses preserved",
+    "Prayer for relief",
+    "Rule 11 signature block",
+    "Certificate of service"
+  ]
+}

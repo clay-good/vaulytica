@@ -70,13 +70,14 @@ export type ColumnSpec = {
 };
 
 /**
- * Rule ids whose spec carries an applicability gate (`when`). Those rules
+ * Rule ids whose spec carries an applicability gate (`when`), across every
+ * wave built on this shorthand (v5 and v6). Those rules
  * are *supposed* to be silent on a document that does not show the shape
  * they check for — a residential contract for new construction is not
  * missing a lead-based paint disclosure — so the title-vacuity guard
  * excludes them. Populated as `pack()` builds each ruleset.
  */
-export const GATED_V5_RULE_IDS = new Set<string>();
+export const GATED_PACK_RULE_IDS = new Set<string>();
 
 /**
  * Conjoin patterns into a single regex that matches only when *every*
@@ -99,7 +100,7 @@ function conjoin(patterns: readonly RegExp[]): RegExp {
  * hash-neutral for every pre-v5 document (`docs/verticals.md`).
  */
 export function pack(playbook: string, category: string, specs: readonly ColumnSpec[]): Rule[] {
-  for (const s of specs) if (s.when) GATED_V5_RULE_IDS.add(s.id);
+  for (const s of specs) if (s.when) GATED_PACK_RULE_IDS.add(s.id);
   return specs.map((s) =>
     presenceRule({
       id: s.id,

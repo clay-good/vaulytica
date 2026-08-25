@@ -1,0 +1,39 @@
+{
+  "id": "limited-scope-representation",
+  "version": "1.0.0",
+  "name": "Limited Scope Representation Agreement",
+  "description": "Unbundled legal services agreement measured against ABA Model Rule 1.2(c). Selects the ENG-027..031 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "limited scope representation",
+      "unbundled legal services",
+      "limited scope agreement",
+      "discrete task representation"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "limited scope",
+      "unbundled",
+      "you are responsible",
+      "notice of limited appearance",
+      "discrete task",
+      "will not perform"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Limited Scope", "Client Tasks"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ABA-MRPC-1.2",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["engagement-letter", "termination-of-representation"],
+  "compliance_matrix_columns": [
+    "Tasks the lawyer will and will not perform",
+    "Reasonableness of the limitation for this matter",
+    "Client's responsibility for everything else",
+    "Court disclosure of limited-scope appearance",
+    "How and when the representation ends"
+  ]
+}

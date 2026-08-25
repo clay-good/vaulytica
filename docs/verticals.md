@@ -104,9 +104,33 @@ rule uses a registered prefix.
 | DDL | deadline computation (register resolution; no rule pack yet) |
 | PROD | production QA (Bates + privilege-log reconciliation, CLI) |
 | PNOT | privacy notice (CCPA + GDPR Art. 13/14 + CO/VA/TX/OR, incl. the TX § 541.102(b)–(c) exact-wording checks) |
+| ENG | law-practice engagement and fee agreements (ABA Model Rules) — [`spec-v46.md`](spec-v46.md) |
+| DISC | discovery instruments (FRCP 26/30/33/34/36 + FRE 502(d)) — [`spec-v46.md`](spec-v46.md) |
+| PLDG | pleadings (FRCP 8/9/10/11/12/38) — [`spec-v46.md`](spec-v46.md) |
 
 The estate pack deepens the already-owned **EST** prefix rather than reserving a
 new one.
+
+### The v6 law-practice packs carry two extra caveats
+
+`ENG`, `DISC`, and `PLDG` are the first packs that read a document the **lawyer**
+signs, and their governing text mostly does not bind. Both caveats are rendered
+into the citation itself, so they travel with the finding onto every report
+surface rather than living in a footnote:
+
+- **The ABA Model Rules bind nobody.** Every state adopts its own version, and
+  several differ materially on the points `ENG` checks. Every Model Rule citation
+  reads "(model text; each state adopts its own version)". A finding says a term
+  the Model Rules contemplate was not found — never that the lawyer's
+  jurisdiction requires it.
+- **Local rules and standing orders outrank the national rule.** Discovery
+  response formats, privilege-log contents, deposition practice, caption format,
+  and jury-demand placement are routinely modified by local rule or by the
+  assigned judge. Every `DISC` and `PLDG` scope statement lists that under
+  *not reviewed for*.
+
+A guard test asserts no rule name in the wave contains a professional-duty
+conclusion word.
 
 ## Honesty posture every pack inherits
 

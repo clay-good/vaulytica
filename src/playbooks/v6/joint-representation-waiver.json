@@ -1,0 +1,40 @@
+{
+  "id": "joint-representation-waiver",
+  "version": "1.0.0",
+  "name": "Joint Representation Conflict Waiver",
+  "description": "Common-representation conflict waiver measured against ABA Model Rules 1.7 and 1.0(e). Selects the ENG-021..026 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "joint representation",
+      "common representation",
+      "conflict waiver",
+      "conflict of interest waiver"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "jointly represent",
+      "informed consent",
+      "no confidentiality among",
+      "withdraw from representing",
+      "independent counsel",
+      "material risks"
+    ],
+    "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Joint Clients", "Common Representation"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "ABA-MRPC-1.7",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["engagement-letter"],
+  "compliance_matrix_columns": [
+    "Identification of every jointly represented client",
+    "No confidentiality among the joint clients",
+    "Consequence if a conflict later develops",
+    "Advantages and risks of the common representation",
+    "Opportunity to consult independent counsel",
+    "Written confirmation signed by each client"
+  ]
+}

@@ -32,6 +32,10 @@ export const EXTENDED_SOURCE_DIRS = [
   // families, bundled from their own directory so the wave stays
   // reviewable as a unit and the v3/v4 dirs keep their spec provenance.
   join(REPO_ROOT, "src", "playbooks", "v5"),
+  // spec-v46 — the law-practice packs. Documents the firm produces itself
+  // (engagement letters, discovery, pleadings) rather than documents its
+  // client is a party to.
+  join(REPO_ROOT, "src", "playbooks", "v6"),
 ];
 export const EXTENDED_MANIFEST_PATH = join(REPO_ROOT, "playbooks", "extended.json");
 

@@ -1,0 +1,48 @@
+{
+  "id": "complaint",
+  "version": "1.0.0",
+  "name": "Complaint (Civil Pleading)",
+  "description": "Civil complaint checked for the structural elements Rules 8, 9, 10, 11, and 38 require. Selects the PLDG-001..008 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "complaint",
+      "verified complaint",
+      "first amended complaint",
+      "petition for damages"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "plaintiff",
+      "jurisdiction",
+      "venue",
+      "wherefore",
+      "cause of action",
+      "demands judgment",
+      "jury"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises",
+      "software as a service"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Plaintiff", "Defendant", "Claim"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-8",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["answer", "trial-motion"],
+  "compliance_matrix_columns": [
+    "Caption naming the court and all parties",
+    "Short and plain statement of the grounds for jurisdiction",
+    "Venue allegation",
+    "Numbered paragraphs limited to a single set of circumstances",
+    "Rule 9(b) particularity for fraud or mistake",
+    "Demand for relief",
+    "Rule 11 signature block",
+    "Jury demand where a jury is wanted"
+  ]
+}

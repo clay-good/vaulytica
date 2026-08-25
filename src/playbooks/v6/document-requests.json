@@ -1,0 +1,44 @@
+{
+  "id": "document-requests",
+  "version": "1.0.0",
+  "name": "Requests for Production (FRCP 34)",
+  "description": "Rule 34 document requests checked for the timing, particularity, and ESI-form elements the rule requires. Selects the DISC-001..006 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "requests for production",
+      "request for production of documents",
+      "first set of requests for production",
+      "rule 34 requests"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "all documents",
+      "produce",
+      "electronically stored information",
+      "definitions",
+      "instructions",
+      "reasonable particularity"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Documents", "Requesting Party", "Responding Party"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-34",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["discovery-responses", "privilege-log"],
+  "compliance_matrix_columns": [
+    "Response deadline stated",
+    "Definitions and instructions",
+    "Relevant time period",
+    "Form of production for electronically stored information",
+    "Numbered requests",
+    "Certificate of service"
+  ]
+}

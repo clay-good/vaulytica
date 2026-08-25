@@ -1,0 +1,42 @@
+{
+  "id": "requests-for-admission",
+  "version": "1.0.0",
+  "name": "Requests for Admission (FRCP 36)",
+  "description": "Rule 36 requests for admission checked for the deemed-admitted warning, single-fact form, and answer requirements. Selects the DISC-012..016 ruleset.",
+  "match_features": {
+    "title_keywords": [
+      "requests for admission",
+      "request for admission",
+      "first set of requests for admission",
+      "rule 36 requests"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "admit that",
+      "deemed admitted",
+      "genuineness of the document",
+      "admit or deny",
+      "reasonable inquiry"
+    ],
+    "negative_features": [
+      "this agreement is entered into",
+      "merger agreement",
+      "lease of the premises"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": ["Request", "Responding Party"],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "FRCP-36",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["discovery-responses"],
+  "compliance_matrix_columns": [
+    "Response deadline and the deemed-admitted consequence",
+    "One fact per request",
+    "Answer, denial, or explained inability",
+    "Document authentication requests identified",
+    "Certificate of service"
+  ]
+}
