@@ -8,11 +8,11 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "does hereby remise, release and quitclaim",
+      "remise, release and quitclaim",
       "without any covenants of warranty",
-      "legal description",
-      "grantor",
-      "grantee",
-      "notary public"
+      "without covenant or warranty",
+      "right, title, and interest, if any",
+      "makes no representation as to the state of title"
     ],
     "negative_features": ["warranty deed", "lease of the premises", "employment agreement"]
   },

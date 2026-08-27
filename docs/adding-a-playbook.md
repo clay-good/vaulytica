@@ -88,13 +88,24 @@ The criterion is one question: **does anybody sign this as a counterparty
 accepting terms?** A WARN notice does not, and is not missing its limitation
 of liability. Three answers, three profiles:
 
-| The document is                                                                                              | Profile  | Copy `rule_overrides` from                                      |
-| ------------------------------------------------------------------------------------------------------------ | -------- | --------------------------------------------------------------- |
-| an agreement (someone signs opposite someone else)                                                           | none     | leave `{}`                                                      |
-| a policy, plan, deed, trust, resolution, statutory notice, one-sided consent, disclosure document, or letter | 11 skips | [`v4/codicil.json`](../src/playbooks/v4/codicil.json)           |
-| a paper filed in or produced for a proceeding                                                                | 53 skips | [`v4/trial-motion.json`](../src/playbooks/v4/trial-motion.json) |
+| The document is                                                                                              | Profile                | Copy `rule_overrides` from                                      |
+| ------------------------------------------------------------------------------------------------------------ | ---------------------- | --------------------------------------------------------------- |
+| an agreement (someone signs opposite someone else)                                                           | none                   | leave `{}`                                                      |
+| a policy, plan, deed, trust, resolution, statutory notice, one-sided consent, disclosure document, or letter | 11 skips               | [`v4/codicil.json`](../src/playbooks/v4/codicil.json)           |
+| a paper filed in or produced for a proceeding                                                                | 53 skips               | [`v4/trial-motion.json`](../src/playbooks/v4/trial-motion.json) |
+| an agreement in a domain that does not use particular commercial columns                                     | list them individually | see the engagement families below                               |
 
-Both profiles' membership is guarded by
+The last row is for an agreement that is genuinely a bargain but whose domain
+excludes specific columns. The five v6 engagement families are the worked
+example: a law firm's engagement letter carries no IP-ownership clause and no
+indemnity, its termination column is owned by `ENG-008` in the vocabulary the
+Model Rules use, and the liability cap is the one clause the governing rule
+RESTRICTS — Model Rule 1.8(h)(1) forbids a lawyer to limit malpractice
+liability prospectively unless the client is independently represented in
+making the agreement. Skip the columns you can name a reason for, and put the
+reason in the guard.
+
+The profiles' membership is guarded by
 [`extended-playbooks.test.ts`](../tests/integration/extended-playbooks.test.ts);
 add the new id to the matching list there. The filing profile is asserted
 identical across every member, so a family cannot join it with 52 of the 53.

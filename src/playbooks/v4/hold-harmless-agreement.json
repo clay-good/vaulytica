@@ -5,6 +5,7 @@
   "description": "Standalone hold-harmless agreement (typically participant / event release) with Tunkl-factor and assumption-of-risk screen. Selects the §6.K ruleset (INS-020..INS-025).",
   "match_features": {
     "title_keywords": [
+      "hold-harmless",
       "hold harmless",
       "release and hold harmless",
       "participant release",

@@ -19,11 +19,19 @@ const C = "law-practice";
 const ENGAGEMENT = pack("engagement-letter", C, [
   {
     id: "ENG-001",
+    // 1.0.1 — the exclusion pillar read only the affirmative framings of the
+    // boundary ("this engagement is limited to", "matters not covered"). The
+    // commonest drafting states it as a negative sentence — "We will not
+    // represent the Company in any appeal, in any tax matter, or in any other
+    // matter" — which the pillar missed, so a letter that drew the boundary
+    // exactly as Rule 1.2(c) contemplates was told at `critical` that it had
+    // not drawn one.
+    ver: "1.0.1",
     name: "Scope of the representation",
     cite: modelRule("1.2(c)", "scope of representation and allocation of authority"),
     pat: [
       /(scope\s+of\s+(the\s+)?(representation|engagement)|we\s+(will|have\s+agreed\s+to)\s+represent\s+you\s+in)/i,
-      /(this\s+(engagement|representation)\s+(is\s+limited\s+to|covers|does\s+not\s+include)|matters?\s+(not\s+)?(covered|included))/i,
+      /(this\s+(engagement|representation)\s+(is\s+limited\s+to|covers|does\s+not\s+include)|matters?\s+(not\s+)?(covered|included)|we\s+(will|do|shall)\s+not\s+represent|(?:our\s+)?(?:engagement|representation|retention)\s+does\s+not\s+(?:include|extend|cover)|not\s+(?:being\s+)?(?:engaged|retained)\s+to\b|outside\s+the\s+scope\s+of\s+(?:this|our))/i,
     ],
     all: true,
     why: "Rule 1.2(c) permits limiting the scope only if the limitation is reasonable and the client gives informed consent. A letter that does not draw the boundary leaves the client believing the lawyer is handling adjacent matters — tax consequences, appeals, related claims — that the lawyer never took on.",
@@ -32,10 +40,14 @@ const ENGAGEMENT = pack("engagement-letter", C, [
   },
   {
     id: "ENG-002",
+    // 1.0.1 — the naming pillar read "we represent" but not "we will
+    // represent", which is how a letter written before the work begins says
+    // it.
+    ver: "1.0.1",
     name: "Identity of the client",
     cite: modelRule("1.13", "organization as client"),
     pat: [
-      /(our\s+client\s+(is|will\s+be)|we\s+represent|the\s+client\s+(is|for\s+purposes\s+of))/i,
+      /(our\s+client\s+(is|will\s+be)|we\s+(?:will\s+|shall\s+|have\s+agreed\s+to\s+)?represent|the\s+client\s+(is|for\s+purposes\s+of))/i,
       /(only\s+(the\s+)?(company|entity|you)|do\s+not\s+represent\s+(its|your|any)\s+(officers|directors|affiliates|shareholders|members|parent|subsidiar))/i,
     ],
     all: true,

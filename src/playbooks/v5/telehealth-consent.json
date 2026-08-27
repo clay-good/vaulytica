@@ -5,6 +5,7 @@
   "description": "Telehealth consent form, reviewed for the modality, limitations, privacy, and emergency disclosures state telehealth statutes require. Selects the HC-127..132 ruleset (6 checks).",
   "match_features": {
     "title_keywords": [
+      "telehealth informed consent",
       "telehealth consent",
       "telemedicine consent",
       "consent to telehealth services"

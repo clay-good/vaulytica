@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.42.2] — 2026-08-27
+
+### Fixed
+- **A warranty deed was told it lacked quitclaim granting words.** Two matcher
+  defects met on the same document. `warranty-deed`'s distinguishing phrases
+  were each written as one rigid clause a real deed conjugates differently —
+  "does hereby grant, bargain, sell and convey" against "grants, bargains,
+  sells, and conveys"; "warrant and defend the title" against "WARRANTS AND
+  WILL DEFEND the title"; "free and clear of all encumbrances" against "free
+  from all encumbrances" — so an ordinary warranty deed matched **none** of
+  them and scored 0.3, its title alone. `quitclaim-deed` meanwhile listed
+  "grantor", "grantee", and "notary public", which every deed ever written
+  carries: three generic words are 0.6, above the 0.5 routing threshold, with
+  no title match at all. The warranty deed routed to `quitclaim-deed` and was
+  told at `critical` that it was missing quitclaim granting words and a
+  no-warranty recital — the two things it exists not to have. Both lists are
+  rewritten around what actually distinguishes the two instruments, and a
+  routing test pins each specimen to its own family.
+- **Five families could not be reached by the title their own name gives
+  them.** A title keyword is worth 0.3, more than half the routing threshold
+  and more than any other single signal, and it is scored by plain substring.
+  The family called "WARN Act Notice" listed "warn notice" and "notice of
+  plant closing", neither of which is a substring of "WARN Act Notice", so a
+  specimen titled exactly that scored 0.4, fell to `generic-fallback`, and
+  none of its six checks ran; with the keyword present it scores 0.7 and
+  routes. Same for "Telehealth Informed Consent", "Biometric Data Consent",
+  "Expert Witness Retention Agreement", and the hyphenated
+  "Hold-Harmless Agreement". A new guard asserts that a curated list of
+  families — the ones whose `name` IS the natural title of the document, as
+  against display labels like "MSA — Customer-Side Deep Analysis" — each
+  recognize a document titled with their own name.
+- **An engagement letter that drew the scope boundary was told it had not.**
+  ENG-001's exclusion pillar read only the affirmative framings ("this
+  engagement is limited to", "matters not covered"). The commonest drafting
+  states it negatively — "We will not represent the Company in any appeal, in
+  any tax matter, or in any other matter" — so a letter that drew the boundary
+  exactly as Model Rule 1.2(c) contemplates was told at `critical` that it had
+  drawn none. ENG-002's naming pillar likewise read "we represent" but not
+  "we will represent", which is how a letter written before the work begins
+  says it. Both are 1.0.1.
+- **A lawyer's engagement letter was asked for a malpractice liability cap.**
+  The five v6 engagement families keep the contract rules — an engagement
+  letter IS an agreement — except the five that do not belong in one. A law
+  firm's engagement carries no IP-ownership clause and no indemnity; its
+  termination column is owned by ENG-008 in the vocabulary the Model Rules use
+  (withdrawal, discharge, file return) rather than "termination for cause";
+  and the liability cap is the one clause the governing rule RESTRICTS —
+  Model Rule 1.8(h)(1) forbids a lawyer to limit malpractice liability
+  prospectively unless the client is independently represented in making the
+  agreement. Measured on a full specimen, the letter goes from twelve findings
+  to six, three of which are its own ENG checks reporting terms genuinely
+  absent.
+
 ## [9.42.1] — 2026-08-27
 
 ### Fixed

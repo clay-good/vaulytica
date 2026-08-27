@@ -17,8 +17,30 @@ import {
   renderManifest,
   EXTENDED_MANIFEST_PATH,
 } from "../../tools/build-extended-playbooks.js";
-import { parsePlaybook, LAUNCH_PLAYBOOK_IDS } from "../../src/playbooks/index.js";
+import {
+  parsePlaybook,
+  LAUNCH_PLAYBOOK_IDS,
+  matchPlaybook,
+  type Playbook,
+} from "../../src/playbooks/index.js";
 import { V3_RULES, V4_RULES } from "../../src/engine/index.js";
+import { buildTree } from "../../src/extract/_fixtures.js";
+import { extractAll } from "../../src/extract/index.js";
+import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
+
+/** Route a title + body through the real matcher against the served catalog. */
+function route(title: string, body: string): string {
+  const playbooks = (JSON.parse(readFileSync(EXTENDED_MANIFEST_PATH, "utf8")) as unknown[]).map(
+    (e) => parsePlaybook(e),
+  ) as Playbook[];
+  const tree = buildTree([title, body]);
+  const dkb = loadStarterDkbSync();
+  const extracted = extractAll(tree, {
+    classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+  });
+  return matchPlaybook(extracted, extracted.classified, playbooks, { title, body_text: body })
+    .playbook_id;
+}
 
 describe("extended playbook manifest", () => {
   it("the committed manifest matches a fresh regeneration (no drift)", () => {
@@ -207,5 +229,127 @@ describe("extended playbook manifest", () => {
     ]) {
       expect(profileOf(id), `${id} is not on the filing profile`).toEqual(FILING);
     }
+  });
+
+  it("a lawyer's engagement letter is not asked for a malpractice liability cap", () => {
+    // An engagement letter IS an agreement, so it keeps most of the contract
+    // rules. Five do not belong in one: a law firm's engagement carries no
+    // IP-ownership clause and no indemnity, its termination column is owned by
+    // ENG-008 in the vocabulary the Model Rules use (withdrawal, discharge,
+    // file return) rather than "termination for cause" — and the liability cap
+    // is the one clause the governing rule RESTRICTS. Model Rule 1.8(h)(1)
+    // forbids a lawyer to limit malpractice liability prospectively unless the
+    // client is independently represented in making the agreement, so
+    // "most commercial contracts cap liability" is, on this document, advice
+    // against the authority the pack cites.
+    const raw = JSON.parse(readFileSync(EXTENDED_MANIFEST_PATH, "utf8")) as Array<{
+      id: string;
+      rule_overrides?: Record<string, { skip?: boolean }>;
+    }>;
+    for (const id of [
+      "engagement-letter",
+      "contingency-fee-agreement",
+      "flat-fee-agreement",
+      "joint-representation-waiver",
+      "limited-scope-representation",
+    ]) {
+      const pb = raw.find((p) => p.id === id);
+      expect(pb, `${id} missing from manifest`).toBeDefined();
+      const skipped = Object.entries(pb!.rule_overrides ?? {})
+        .filter(([, v]) => v.skip)
+        .map(([k]) => k)
+        .sort();
+      expect(skipped).toEqual(["IPDATA-001", "RISK-001", "RISK-005", "TERM-002", "TERM-005"]);
+    }
+  });
+
+  it("a family recognizes a document titled with its own name", () => {
+    // The matcher scores `title_keywords` by plain substring against the
+    // title corpus, and a title keyword is worth 0.3 — more than any other
+    // signal, and more than half the 0.5 routing threshold. A family whose own
+    // NAME is not one of its title keywords therefore cannot be reached by the
+    // one title every author of that document reaches for first.
+    //
+    // A WARN notice is the case that surfaced it: the family is called "WARN
+    // Act Notice", its keywords were "warn notice" / "notice of plant
+    // closing", and "warn act notice" contains neither, so a specimen titled
+    // exactly that scored 0.4, fell to `generic-fallback`, and none of its six
+    // EMP checks ran. With the keyword present it scores 0.7 and routes.
+    //
+    // The list is curated rather than derived over every playbook, because
+    // many `name` fields carry a display decoration no document's title does —
+    // "MSA — Customer-Side Deep Analysis", "Petition (filing-format)". These
+    // are the families whose name IS the natural title of the document.
+    const raw = JSON.parse(readFileSync(EXTENDED_MANIFEST_PATH, "utf8")) as Array<{
+      id: string;
+      name: string;
+      match_features: { title_keywords: string[] };
+    }>;
+    const unreachable: string[] = [];
+    for (const id of [
+      "warn-notice",
+      "telehealth-consent",
+      "biometric-consent",
+      "expert-witness-retention",
+      "hold-harmless-agreement",
+      "engagement-letter",
+      "complaint",
+      "answer",
+      "privilege-log",
+      "quitclaim-deed",
+      "warranty-deed",
+      "irrevocable-trust",
+      "special-needs-trust",
+      "meeting-minutes",
+      "board-resolution",
+    ]) {
+      const pb = raw.find((p) => p.id === id);
+      expect(pb, `${id} missing from manifest`).toBeDefined();
+      const title = pb!.name.toLowerCase();
+      if (!pb!.match_features.title_keywords.some((k) => title.includes(k.toLowerCase()))) {
+        unreachable.push(`${id} — "${pb!.name}" matches none of its own title keywords`);
+      }
+    }
+    expect(unreachable, unreachable.join("\n  ")).toEqual([]);
+  });
+
+  it("a warranty deed routes to warranty-deed, not to quitclaim-deed", () => {
+    // Both failure modes were live at once. `warranty-deed`'s distinguishing
+    // phrases were each written as one rigid clause a real deed conjugates
+    // differently — "does hereby grant, bargain, sell and convey" against
+    // "grants, bargains, sells, and conveys", "warrant and defend the title"
+    // against "WARRANTS AND WILL DEFEND the title", "free AND CLEAR of all
+    // encumbrances" against "free FROM all encumbrances" — so an ordinary
+    // warranty deed matched NONE of them and scored 0.3 on its title alone.
+    // Meanwhile `quitclaim-deed` listed "grantor", "grantee", and "notary
+    // public", which every deed ever written carries: three generic words are
+    // 0.6, above the routing threshold, with no title match at all. The
+    // warranty deed was therefore told at `critical` that it lacked quitclaim
+    // granting words and a no-warranty recital — the two things it exists not
+    // to have.
+    const warranty = [
+      'THIS WARRANTY DEED is made by Helen R. Okonkwo ("Grantor") to Samuel A. Torres ("Grantee").',
+      "Grantor hereby grants, bargains, sells, and conveys to Grantee the following described real property in the County of Tompkins, State of New York.",
+      "AND Grantor covenants that Grantor is lawfully seized of the premises in fee simple, that the premises are free from all encumbrances except those of record, and that Grantor WARRANTS AND WILL DEFEND the title against the lawful claims of all persons.",
+      "IN WITNESS WHEREOF, Grantor has executed this deed. _______________________________ Helen R. Okonkwo, Grantor. _______________________________ Notary Public",
+    ].join("\n");
+    expect(route("WARRANTY DEED", warranty)).toBe("warranty-deed");
+
+    const quitclaim = [
+      'THIS QUITCLAIM DEED is made by Helen R. Okonkwo ("Grantor") to Samuel A. Torres ("Grantee").',
+      "Grantor does hereby remise, release and quitclaim to Grantee all of Grantor's right, title, and interest, if any, in the following described real property.",
+      "This conveyance is made without any covenants of warranty, express or implied.",
+      "IN WITNESS WHEREOF, Grantor has executed this deed. _______________________________ Helen R. Okonkwo, Grantor. _______________________________ Notary Public",
+    ].join("\n");
+    expect(route("QUITCLAIM DEED", quitclaim)).toBe("quitclaim-deed");
+  });
+
+  it("a WARN notice titled with the Act's name routes to warn-notice", () => {
+    const body = [
+      "Boreal Freight LLC is providing this notice under the Worker Adjustment and Retraining Notification Act, 29 U.S.C. § 2101 et seq.",
+      "Boreal Freight LLC will permanently close its Brooklyn Terminal. Separations will begin on December 5, 2026.",
+      "There are no bumping rights under any collective bargaining agreement or company policy.",
+    ].join("\n");
+    expect(route("WARN ACT NOTICE", body)).toBe("warn-notice");
   });
 });

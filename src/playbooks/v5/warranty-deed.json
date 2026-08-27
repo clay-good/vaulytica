@@ -12,11 +12,14 @@
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "does hereby grant, bargain, sell and convey",
+      "defend the title",
+      "lawfully seized",
       "covenants of warranty",
-      "free and clear of all encumbrances except",
-      "legal description",
-      "warrant and defend the title"
+      "free from all encumbrances",
+      "free and clear of all encumbrances",
+      "grant, bargain, sell",
+      "grants, bargains, sells",
+      "legal description"
     ],
     "negative_features": ["quitclaim", "lease of the premises", "employment agreement"]
   },

@@ -2041,6 +2041,7 @@
     "description": "Written biometric release measured against Illinois BIPA § 15(b) and the Texas/Washington analogs. Selects the PRV-101..106 ruleset (6 checks).",
     "match_features": {
       "title_keywords": [
+        "biometric data consent",
         "biometric consent",
         "biometric release",
         "biometric information consent",
@@ -4119,7 +4120,23 @@
       "Client",
       "Contingent Fee"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ABA-MRPC-1.5",
@@ -6708,7 +6725,23 @@
       "Matter",
       "Fees"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ABA-MRPC",
@@ -7171,6 +7204,7 @@
     "description": "Retention of a testifying or consulting expert, reviewed for the FRCP 26(b)(4) draft-report protection and independence terms. Selects the SET-128..132 ruleset (5 checks).",
     "match_features": {
       "title_keywords": [
+        "expert witness retention agreement",
         "expert witness agreement",
         "expert retention agreement",
         "consulting expert agreement",
@@ -7546,7 +7580,23 @@
       "Services",
       "Client"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ABA-MRPC-1.5",
@@ -8345,6 +8395,7 @@
     "description": "Standalone hold-harmless agreement (typically participant / event release) with Tunkl-factor and assumption-of-risk screen. Selects the §6.K ruleset (INS-020..INS-025).",
     "match_features": {
       "title_keywords": [
+        "hold-harmless",
         "hold harmless",
         "release and hold harmless",
         "participant release",
@@ -9573,7 +9624,23 @@
       "Joint Clients",
       "Common Representation"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ABA-MRPC-1.7",
@@ -9849,7 +9916,23 @@
       "Limited Scope",
       "Client Tasks"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ABA-MRPC-1.2",
@@ -14117,11 +14200,11 @@
       "required_clauses": [],
       "distinguishing_phrases": [
         "does hereby remise, release and quitclaim",
+        "remise, release and quitclaim",
         "without any covenants of warranty",
-        "legal description",
-        "grantor",
-        "grantee",
-        "notary public"
+        "without covenant or warranty",
+        "right, title, and interest, if any",
+        "makes no representation as to the state of title"
       ],
       "negative_features": [
         "warranty deed",
@@ -17252,6 +17335,7 @@
     "description": "Telehealth consent form, reviewed for the modality, limitations, privacy, and emergency disclosures state telehealth statutes require. Selects the HC-127..132 ruleset (6 checks).",
     "match_features": {
       "title_keywords": [
+        "telehealth informed consent",
         "telehealth consent",
         "telemedicine consent",
         "consent to telehealth services"
@@ -18626,6 +18710,7 @@
     "description": "Plant-closing or mass-layoff notice measured against the federal WARN Act content requirements (29 U.S.C. § 2102; 20 C.F.R. § 639.7). Selects the EMP-142..147 ruleset (6 checks).",
     "match_features": {
       "title_keywords": [
+        "warn act notice",
         "warn notice",
         "worker adjustment and retraining",
         "notice of plant closing",
@@ -18769,11 +18854,14 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "does hereby grant, bargain, sell and convey",
+        "defend the title",
+        "lawfully seized",
         "covenants of warranty",
-        "free and clear of all encumbrances except",
-        "legal description",
-        "warrant and defend the title"
+        "free from all encumbrances",
+        "free and clear of all encumbrances",
+        "grant, bargain, sell",
+        "grants, bargains, sells",
+        "legal description"
       ],
       "negative_features": [
         "quitclaim",

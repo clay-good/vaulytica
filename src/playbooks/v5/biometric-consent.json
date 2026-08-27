@@ -5,6 +5,7 @@
   "description": "Written biometric release measured against Illinois BIPA § 15(b) and the Texas/Washington analogs. Selects the PRV-101..106 ruleset (6 checks).",
   "match_features": {
     "title_keywords": [
+      "biometric data consent",
       "biometric consent",
       "biometric release",
       "biometric information consent",

@@ -5,6 +5,7 @@
   "description": "Plant-closing or mass-layoff notice measured against the federal WARN Act content requirements (29 U.S.C. § 2102; 20 C.F.R. § 639.7). Selects the EMP-142..147 ruleset (6 checks).",
   "match_features": {
     "title_keywords": [
+      "warn act notice",
       "warn notice",
       "worker adjustment and retraining",
       "notice of plant closing",

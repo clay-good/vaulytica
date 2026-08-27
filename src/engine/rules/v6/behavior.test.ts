@@ -271,3 +271,45 @@ describe("v6 applicability gates", () => {
     ).not.toBeNull();
   });
 });
+
+describe("v6 engagement — the boundary as a negative sentence (v1.0.1)", () => {
+  it("ENG-001 reads 'we will not represent … in any appeal' as the scope boundary", () => {
+    // Rule 1.2(c) asks for the limitation, not for a particular sentence
+    // shape, and the commonest drafting states it negatively. The pillar read
+    // only the affirmative framings, so a letter that drew the boundary
+    // exactly as the rule contemplates was told at `critical` that it had not.
+    expect(
+      rule("ENG-001").check(
+        doc(
+          "Engagement Letter",
+          "SCOPE OF REPRESENTATION. We will represent the Company in the contract dispute with Boreal Freight LLC.",
+          "We will not represent the Company in any appeal, in any tax matter, or in any other matter unless we agree in writing to do so.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("ENG-001 still fires on a letter that never draws the boundary", () => {
+    expect(
+      rule("ENG-001").check(
+        doc(
+          "Engagement Letter",
+          "SCOPE OF REPRESENTATION. We will represent the Company in the contract dispute with Boreal Freight LLC.",
+          "Our fees are based on the hourly rates set out below.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("ENG-002 reads the future tense a letter written before the work uses", () => {
+    expect(
+      rule("ENG-002").check(
+        doc(
+          "Engagement Letter",
+          "We will represent Chen Manufacturing, Inc. in this matter.",
+          "We do not represent its officers, directors, shareholders, or any affiliate absent a separate engagement.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});
