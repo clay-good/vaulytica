@@ -26,7 +26,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { titleCorpus, TITLE_PREAMBLE_CHARS } from "./matcher.js";
+import { titleCorpus, TITLE_PREAMBLE_CHARS, TITLE_SUBJECT_SCAN_PARAGRAPHS } from "./matcher.js";
 
 type Tree = Parameters<typeof titleCorpus>[0];
 
@@ -72,5 +72,84 @@ describe("titleCorpus", () => {
       "fallback.txt",
     );
     expect(titleCorpus(tree([]), "empty.txt")).toBe("empty.txt");
+  });
+});
+
+describe("titleCorpus — a letter's subject line", () => {
+  /**
+   * A letter's first paragraph is the sender's letterhead, so the heading +
+   * preamble corpus reads the wrong thing entirely. A reservation-of-rights
+   * letter reached the matcher as "Meridian Casualty Insurance Company Claims
+   * Department 4400 Harbor Point Drive", matched no playbook's title keyword,
+   * and fell to `generic-fallback` at 0.4 — while the line the drafter wrote
+   * to say what the document IS was four paragraphs down.
+   */
+  const letter = (subject: string, lead: string[] = []) =>
+    tree([
+      {
+        heading: "",
+        paragraphs: [
+          "Meridian Casualty Insurance Company",
+          "August 14, 2026",
+          "Halloran Precision Castings, LLC",
+          ...lead,
+          subject,
+          "Dear Mr. Halloran:",
+        ],
+      },
+    ]);
+
+  it("reads the Re: line as the letter's title", () => {
+    expect(
+      titleCorpus(letter("Re: Reservation of Rights — Claim No. MC-2026-118447"), "l.txt"),
+    ).toContain("Reservation of Rights");
+  });
+
+  it("reads the Subject: and In re: conventions too", () => {
+    expect(titleCorpus(letter("Subject: WARN Act Notice"), "l.txt")).toContain("WARN Act Notice");
+    expect(titleCorpus(letter("In re: Estate of Dermot Halloran"), "l.txt")).toContain(
+      "Estate of Dermot Halloran",
+    );
+  });
+
+  it("still leads with the heading and preamble", () => {
+    // The subject is added to the corpus, not substituted for it — a document
+    // that has both a title and a subject line keeps both signals.
+    const t = tree([
+      { heading: "Demand Letter", paragraphs: ["Voss & Iyer LLP", "Re: Unpaid Invoices"] },
+    ]);
+    const corpus = titleCorpus(t, "d.txt");
+    expect(corpus.startsWith("Demand Letter")).toBe(true);
+    expect(corpus).toContain("Unpaid Invoices");
+  });
+
+  it("does not fire on prose that merely begins with those letters", () => {
+    // Anchored to the paragraph start and to the colon, so neither an
+    // ordinary sentence nor a defined term ending in "re" can trigger it.
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: ["Reference is made to the Credit Agreement.", "Resale: permitted."],
+      },
+    ]);
+    expect(titleCorpus(t, "x.txt")).not.toContain("permitted");
+  });
+
+  it("ignores a Re: buried deep in the body", () => {
+    // A quoted piece of correspondence or an exhibit is not the document's
+    // own subject.
+    const filler = Array.from(
+      { length: TITLE_SUBJECT_SCAN_PARAGRAPHS + 2 },
+      (_, i) => `Paragraph ${i}.`,
+    );
+    const t = tree([{ heading: "", paragraphs: [...filler, "Re: Some Other Matter"] }]);
+    expect(titleCorpus(t, "x.txt")).not.toContain("Some Other Matter");
+  });
+
+  it("leaves a document with no subject line byte-identical", () => {
+    const t = tree([
+      { heading: "Master Services Agreement", paragraphs: ["This Agreement is made…"] },
+    ]);
+    expect(titleCorpus(t, "msa.docx")).toBe("Master Services Agreement This Agreement is made…");
   });
 });

@@ -804,7 +804,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // A numbered-instrument fragment: "Change Order No. 3" captures as
       // "Change Order No" (the abbreviation's word survives, its period and
       // number don't). The fragment is part of a document NUMBER, not a term.
-      if (/\sNo$/.test(phrase) && /^\.\s*\d/.test(ctx.text.slice(m.index + phrase.length)))
+      //
+      // The number is as often alphanumeric as bare: a policy, a claim, a
+      // docket, and a purchase order all carry a prefixed identifier
+      // ("Policy No. CGL-4471982", "Claim No. MC-2026-118447"), and the
+      // digits-only test read those as an undefined "Policy No". A short
+      // letter run is admitted before the digits, which still requires a
+      // digit and so cannot swallow a sentence continuing after the
+      // abbreviation ("No. The parties …", "No. Section 5 applies").
+      if (
+        /\sNo$/.test(phrase) &&
+        /^\.\s*(?:\d|[A-Za-z]{1,6}[-\u2011\u2013]?\d)/.test(ctx.text.slice(m.index + phrase.length))
+      )
         continue;
       if (personNames.has(phraseLower)) continue;
       // A name carrying the lawyer's post-nominal ("Marcus Field, Esq.") is a

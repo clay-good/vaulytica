@@ -44,6 +44,58 @@ import {
  */
 export const TITLE_PREAMBLE_CHARS = 240;
 
+/**
+ * How far into the document a letter's subject line may sit and still be
+ * read as its title. A letter reaches its "Re:" line only after the
+ * letterhead, the date, a delivery legend, and the recipient's address
+ * block — several paragraphs, but always near the top. The bound keeps a
+ * "Re:" appearing deep in the body (a quoted piece of correspondence, an
+ * exhibit) from being mistaken for the document's own subject.
+ */
+export const TITLE_SUBJECT_SCAN_PARAGRAPHS = 12;
+
+/**
+ * A letter states its title in its subject line, not in a heading.
+ *
+ * `titleCorpus` reads the first heading plus the first paragraph, which is
+ * right for a document whose name is at the top — and exactly wrong for a
+ * letter, whose first paragraph is the sender's letterhead. A reservation-
+ * of-rights letter reached the matcher as "Meridian Casualty Insurance
+ * Company Claims Department 4400 Harbor Point Drive", matched no title
+ * keyword of any playbook, scored 0.4 on two distinguishing phrases, and
+ * fell to `generic-fallback` — while the line the drafter wrote to say what
+ * the document IS, "Re: Reservation of Rights — Claim No. …", was never
+ * looked at. Every letter-shaped family has the same hole: the WARN notice,
+ * the demand letter, the litigation hold, the preliminary lien notice, the
+ * termination-of-representation letter.
+ *
+ * "Re:" and "Subject:" are the conventions; "In re:" is the caption form.
+ * The test is anchored to the start of the paragraph so a mid-sentence
+ * "with respect to" or a defined term ending in "re" cannot trigger it.
+ */
+const SUBJECT_LINE = /^\s*(?:re|subject|in\s+re)\s*:\s*(\S.*)$/is;
+
+function subjectLine(
+  sections: readonly {
+    paragraphs: readonly { runs: readonly { text: string }[] }[];
+  }[],
+): string {
+  let seen = 0;
+  for (const section of sections) {
+    for (const paragraph of section.paragraphs) {
+      if (seen >= TITLE_SUBJECT_SCAN_PARAGRAPHS) return "";
+      seen += 1;
+      const text = paragraph.runs
+        .map((r) => r.text)
+        .join("")
+        .trim();
+      const m = SUBJECT_LINE.exec(text);
+      if (m) return m[1]!.trim().slice(0, TITLE_PREAMBLE_CHARS);
+    }
+  }
+  return "";
+}
+
 export function titleCorpus(
   tree: {
     sections: readonly {
@@ -58,7 +110,8 @@ export function titleCorpus(
   const preamble = (first?.paragraphs[0]?.runs.map((r) => r.text).join("") ?? "")
     .trim()
     .slice(0, TITLE_PREAMBLE_CHARS);
-  const parts = [heading, preamble].filter((p) => p.length > 0);
+  const subject = subjectLine(tree.sections);
+  const parts = [heading, preamble, subject].filter((p) => p.length > 0);
   return parts.length > 0 ? parts.join(" ") : fallback;
 }
 

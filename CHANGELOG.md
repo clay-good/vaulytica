@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.45.6] — 2026-08-27
+
+### Fixed
+- **A letter's subject line is its title, and the matcher never read it.**
+  `titleCorpus` reads the first heading plus the first paragraph, which is
+  right for a document whose name is at the top and exactly wrong for a
+  letter, whose first paragraph is the sender's letterhead. A hand-written
+  reservation-of-rights letter reached the matcher as "Meridian Casualty
+  Insurance Company Claims Department 4400 Harbor Point Drive", matched no
+  playbook's title keyword, scored 0.4 on two distinguishing phrases, and fell
+  to `generic-fallback` — while "Re: Reservation of Rights — Claim No. …", the
+  line the drafter wrote to say what the document IS, sat four paragraphs down
+  and was never looked at. It now routes to `reservation-of-rights-letter` at
+  0.7. Every letter-shaped family had the same hole: the WARN notice, the
+  demand letter, the litigation hold, the preliminary lien notice, the
+  termination-of-representation letter. "Re:", "Subject:", and "In re:" are
+  read, anchored to the start of a paragraph and bounded to the first twelve,
+  so a quoted piece of correspondence deep in the body is not mistaken for the
+  document's own subject. A document with no subject line is byte-identical —
+  no committed golden moved.
+- **An alphanumeric instrument number was read as an undefined defined term.**
+  "Policy No. CGL-4471982" captures as "Policy No"; the guard that recognizes
+  a numbered-instrument fragment tested for digits only, so a policy, claim,
+  docket, or purchase-order number with a letter prefix slipped through and
+  every insurance letter was told it had forgotten to define "Policy No". A
+  short letter run is now admitted before the digits, which are still
+  required — so a sentence continuing after the abbreviation ("No. The
+  parties …") is not swallowed.
+
 ## [9.45.5] — 2026-08-27
 
 ### Fixed

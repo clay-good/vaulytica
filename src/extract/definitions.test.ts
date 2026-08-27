@@ -338,6 +338,35 @@ describe("signature-block names are not undefined defined-terms", () => {
   });
 });
 
+describe("an alphanumeric instrument number is not an undefined defined-term", () => {
+  it("does not flag 'Policy No' before a prefixed identifier", () => {
+    // "Policy No. CGL-4471982" captures as "Policy No" — the abbreviation's
+    // word survives, its period and number do not. The guard tested for
+    // digits only, so a policy, claim, docket, or purchase-order number with
+    // a letter prefix slipped through and every insurance letter was told it
+    // had forgotten to define "Policy No".
+    const map = extractDefinitions(
+      buildTree([
+        "Coverage",
+        "Meridian issued Policy No. CGL-4471982 to the insured. Policy No. CGL-4471982 was in effect on the date of loss.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Policy No");
+  });
+
+  it("still flags when a sentence merely continues after the abbreviation", () => {
+    // The widened test requires a digit, so a capitalized word following the
+    // period is not mistaken for an instrument number.
+    const map = extractDefinitions(
+      buildTree([
+        "Orders",
+        "The parties executed Change Order No. The Change Order No governs. The Change Order No is attached.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Change Order No");
+  });
+});
+
 describe("the tail of a rules citation is not an undefined defined-term", () => {
   it("does not flag the authority named after 'Rules of'", () => {
     // "Ohio Rules of Professional Conduct" breaks into two Title-Case runs at
