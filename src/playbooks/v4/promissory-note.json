@@ -4,7 +4,13 @@
   "name": "Promissory Note",
   "description": "Promissory note under UCC Article 3 with state-usury savings clause. Selects the §6.L ruleset (BNK-001..BNK-006).",
   "match_features": {
-    "title_keywords": ["promissory note", "note"],
+    "title_keywords": [
+      "promissory note",
+      "demand note",
+      "term note",
+      "secured note",
+      "installment note"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "maker",
@@ -18,7 +24,13 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Maker", "Payee", "Principal Amount"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-ART-3",

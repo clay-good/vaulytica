@@ -13,11 +13,22 @@
       "qualified financing",
       "subordination"
     ],
-    "negative_features": ["simple agreement for future equity", "safe", "stock option grant"]
+    "negative_features": [
+      "simple agreement for future equity",
+      "this safe",
+      "safe preferred stock",
+      "stock option grant"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Maturity Date", "Qualified Financing", "Conversion Price"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-3",

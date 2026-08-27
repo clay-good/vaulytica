@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.47.0] — 2026-08-27
+
+### Fixed
+- **The restrictive-securities legend hid the title, and "note" was a title
+  keyword.** "THIS NOTE AND THE SECURITIES ISSUABLE UPON CONVERSION HEREOF HAVE
+  NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933 …" opens essentially
+  every note, warrant, SAFE, and stock certificate. It is a whole uppercase
+  *sentence* rather than a stamp, so the legend-line rule did not catch it, and
+  it cost a genuine convertible promissory note its routing twice over: the
+  preamble was the legend, and `promissory-note` carried the bare title keyword
+  **"note"**, which matches inside the word NOTE in that legend and inside
+  every sibling's title. The note routed to `promissory-note` and every
+  conversion check — valuation cap, discount, qualified financing,
+  change-of-control premium, the accredited-investor representation — was
+  skipped. A title is short and carries no sentence-ending period; a legend
+  paragraph is long and does, and the test is applied only to uppercase text so
+  an ordinary mixed-case preamble is untouched. `promissory-note` now lists the
+  specific forms it means (promissory / demand / term / secured / installment
+  note) instead of the bare word. Same class as `employment-at-will-us`'s
+  "Employee", one release earlier.
+- **A promissory note was measured as a bilateral bargain.** A note is signed
+  by its maker; nobody indemnifies, nobody caps liability, there is no IP, and
+  it does not "terminate". `convertible-note` and `promissory-note` had empty
+  `rule_overrides`, so the always-on packs raised five warnings on every one.
+  Skipped by name, per the fourth row of the profile table in
+  [`docs/adding-a-playbook.md`](docs/adding-a-playbook.md).
+- **`convertible-note`'s "safe" negative feature was a bare four-letter
+  substring** that would fire on "safe harbor" or "safeguard" in any note.
+  Replaced with the phrases a SAFE actually uses.
+- **A term defined by a copula and a value went unregistered.** `The "Valuation
+  Cap" is $12,000,000`, `The "Discount Rate" is twenty percent (20%)`, `The
+  "Cure Period" shall be ten (10) business days` — ordinary drafting for a term
+  whose definition is a single number, seen by none of the "means" / "refers
+  to" / "is defined as" matchers, so STRUCT-006 reported the convertible note's
+  own "Valuation Cap" as used-but-undefined. Gated three ways so a quoted usage
+  is not swept in: the term is quoted, introduced by "The", and a number has to
+  follow within a short window.
+
 ## [9.46.2] — 2026-08-27
 
 ### Fixed

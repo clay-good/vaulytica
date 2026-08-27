@@ -57,6 +57,19 @@ const DEFINITION_INLINE =
 // `is defined as` form.
 const DEFINITION_INLINE_REFERS =
   /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:collectively\s+)?(?:refers?\s+to|denotes?|(?:(?:is|are)(?:\s+hereby)?|shall\s+be|will\s+be)\s+defined\s+(?:as|to\s+(?:mean|include)\b))/gi;
+// A term defined by a plain COPULA and a value — `The "Valuation Cap" is
+// $12,000,000`, `The "Discount Rate" is twenty percent (20%)`, `The "Cure
+// Period" shall be ten (10) business days`. This is ordinary drafting for a
+// term whose definition is a single number, and none of the "means" / "refers
+// to" / "is defined as" matchers see it, so STRUCT-006 reported the term as
+// used-but-undefined on documents that define it perfectly well. Gated three
+// ways so a quoted USAGE is not swept in as a definition: the term is quoted,
+// it is introduced by "The", and a NUMBER has to follow within a short window
+// — which is what makes it a value rather than a comment about the term. `g`,
+// not `gi`: under the `i` flag `[A-Z]` matches lowercase too, so the leading
+// article is matched explicitly instead.
+const DEFINITION_INLINE_COPULA =
+  /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be)\s+(?=[^.]{0,40}?(?:[$€£¥₹]\s?\d|\b\d))/g;
 // A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
 // Period" shall begin on the Effective Date and shall continue until …`, `the
 // "Restricted Period" shall commence on the Closing`. The quoted term is the
@@ -1012,6 +1025,23 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   }
   DEFINITION_INLINE_REFERS.lastIndex = 0;
   while ((m = DEFINITION_INLINE_REFERS.exec(text)) !== null) {
+    const term = m[1]!.trim();
+    const after = text.slice(m.index + m[0].length).trim();
+    if (!after) continue;
+    out.push({
+      term,
+      definition: after,
+      defined_at: {
+        section_id: base.section_id,
+        paragraph_id: base.paragraph_id,
+        start: base.start + m.index,
+        end: base.start + m.index + m[0].length,
+      },
+      used_at: [],
+    });
+  }
+  DEFINITION_INLINE_COPULA.lastIndex = 0;
+  while ((m = DEFINITION_INLINE_COPULA.exec(text)) !== null) {
     const term = m[1]!.trim();
     const after = text.slice(m.index + m[0].length).trim();
     if (!after) continue;

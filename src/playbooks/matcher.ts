@@ -135,6 +135,19 @@ function subjectLine(
  * separators, so a title that merely contains one of the words is untouched:
  * "CONFIDENTIALITY AGREEMENT" is a title, "CONFIDENTIAL" is a legend.
  *
+ * A restrictive-securities legend hides it the same way, and is a different
+ * shape: not a stamp but a whole uppercase SENTENCE. "THIS NOTE AND THE
+ * SECURITIES ISSUABLE UPON CONVERSION HEREOF HAVE NOT BEEN REGISTERED UNDER
+ * THE SECURITIES ACT OF 1933 …" opens essentially every note, warrant, SAFE,
+ * and stock certificate. It cost a genuine convertible promissory note its
+ * routing: `promissory-note` matched the title keyword "note" — from the word
+ * "NOTE" inside the legend — while "CONVERTIBLE PROMISSORY NOTE", the line
+ * below it, was never read, so every conversion check (valuation cap,
+ * discount, qualified financing, change-of-control premium) was skipped. A
+ * document title is short and carries no sentence-ending period; a legend
+ * paragraph is long and does, so that is the test, and it is applied only to
+ * uppercase text so an ordinary mixed-case preamble is untouched.
+ *
  * A bare container marker — "EXHIBIT A", "SCHEDULE 1", "ANNEX B" — hides the
  * title the same way, and an agreement attached as an exhibit is one of the
  * commonest things a reviewer drops in. It is dropped only when the marker and
@@ -149,6 +162,23 @@ const LEGEND_LINE = new RegExp(
   "i",
 );
 
+/**
+ * Longest an uppercase, sentence-punctuated line may be and still be read as a
+ * title rather than a legend paragraph. Real titles run well under this even
+ * when they are long ("AMENDED AND RESTATED LIMITED LIABILITY COMPANY
+ * OPERATING AGREEMENT"), and they do not end in a period.
+ */
+const LEGEND_SENTENCE_CHARS = 120;
+
+function isLegendSentence(line: string): boolean {
+  return (
+    line.length > LEGEND_SENTENCE_CHARS &&
+    /[.;]$/.test(line) &&
+    /[A-Z]/.test(line) &&
+    line === line.toUpperCase()
+  );
+}
+
 const CONTAINER_MARKER =
   /^(?:exhibit|schedule|annex|appendix|attachment)\s+[A-Za-z0-9][A-Za-z0-9.-]*[\s.:—–-]*$/i;
 
@@ -157,7 +187,10 @@ function dropLegends(lines: readonly string[]): string[] {
   let i = 0;
   while (
     i < lines.length &&
-    (lines[i]!.length === 0 || LEGEND_LINE.test(lines[i]!) || CONTAINER_MARKER.test(lines[i]!))
+    (lines[i]!.length === 0 ||
+      LEGEND_LINE.test(lines[i]!) ||
+      CONTAINER_MARKER.test(lines[i]!) ||
+      isLegendSentence(lines[i]!))
   )
     i += 1;
   return lines.slice(i);

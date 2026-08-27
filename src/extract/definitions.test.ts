@@ -338,6 +338,51 @@ describe("signature-block names are not undefined defined-terms", () => {
   });
 });
 
+describe("a term defined by a copula and a value", () => {
+  it("registers 'The \"X\" is <amount>' and its shall-be / percent variants", () => {
+    // Ordinary drafting for a term whose definition is a single number. None
+    // of the "means" / "refers to" / "is defined as" matchers saw it, so
+    // STRUCT-006 reported a convertible note's own "Valuation Cap" as
+    // used-but-undefined.
+    const cap = extractDefinitions(
+      buildTree([
+        "Conversion",
+        'The "Valuation Cap" is $12,000,000. The Valuation Cap applies at conversion.',
+      ]),
+    );
+    expect(cap.entries.map((e) => e.term)).toContain("Valuation Cap");
+    expect(cap.undefined_capitalized.map((e) => e.term)).not.toContain("Valuation Cap");
+
+    const period = extractDefinitions(
+      buildTree([
+        "Cure",
+        'The "Cure Period" shall be ten (10) business days. The Cure Period applies.',
+      ]),
+    );
+    expect(period.entries.map((e) => e.term)).toContain("Cure Period");
+
+    const pct = extractDefinitions(
+      buildTree([
+        "Discount",
+        'The "Discount Rate" is twenty percent (20%). The Discount Rate applies.',
+      ]),
+    );
+    expect(pct.entries.map((e) => e.term)).toContain("Discount Rate");
+  });
+
+  it("does not read a quoted usage as a definition", () => {
+    // The gate is a NUMBER close behind the copula — that is what makes the
+    // clause a value rather than a comment about the term.
+    const m = extractDefinitions(
+      buildTree([
+        "Dispute",
+        'The "Threshold" is ambiguous and the parties disagree about what it requires of them.',
+      ]),
+    );
+    expect(m.entries.map((e) => e.term)).not.toContain("Threshold");
+  });
+});
+
 describe("an alphanumeric instrument number is not an undefined defined-term", () => {
   it("does not flag 'Policy No' before a prefixed identifier", () => {
     // "Policy No. CGL-4471982" captures as "Policy No" — the abbreviation's

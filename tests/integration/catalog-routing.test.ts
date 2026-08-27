@@ -261,3 +261,65 @@ describe("a legend above the title", () => {
     expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("mutual-nda");
   });
 });
+
+/**
+ * The restrictive-securities legend, and the title keyword that is a substring
+ * of every sibling's title.
+ *
+ * "THIS NOTE AND THE SECURITIES ISSUABLE UPON CONVERSION HEREOF HAVE NOT BEEN
+ * REGISTERED UNDER THE SECURITIES ACT OF 1933 …" opens essentially every note,
+ * warrant, SAFE, and stock certificate — and it is a whole uppercase SENTENCE
+ * rather than a stamp, so the legend-line rule did not catch it. It cost a
+ * genuine convertible promissory note its routing twice over: the preamble was
+ * the legend, and `promissory-note` carried the bare title keyword "note",
+ * which matches inside the word NOTE in the legend AND inside every sibling's
+ * title. Every conversion check — valuation cap, discount, qualified
+ * financing, change-of-control premium, the accredited-investor
+ * representation — was skipped.
+ */
+describe("a convertible note against its plainer sibling", () => {
+  it("is not routed to promissory-note", () => {
+    // The empty first element is the heading: pasted text and plain text carry
+    // no styled heading, so the legend arrives as the first PARAGRAPH — which
+    // is what made it the preamble the matcher scored.
+    const body: [string, ...string[]] = [
+      "",
+      "THIS NOTE AND THE SECURITIES ISSUABLE UPON CONVERSION HEREOF HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AS AMENDED, AND MAY NOT BE OFFERED OR SOLD EXCEPT PURSUANT TO AN EFFECTIVE REGISTRATION STATEMENT OR AN AVAILABLE EXEMPTION.",
+      "CONVERTIBLE PROMISSORY NOTE",
+      'FOR VALUE RECEIVED, Northgate Instrument Company (the "Company") promises to pay to the order of Fairhaven Seed Partners, LP the principal sum of $500,000.',
+      "All outstanding principal and accrued interest automatically convert upon a Qualified Financing at the lesser of a discount to the price per share and the price obtained by dividing the Valuation Cap by the fully diluted capitalization.",
+      "Unless earlier converted, all outstanding principal and accrued interest are due on the Maturity Date.",
+      "This Note is subordinated in right of payment to the Company's senior indebtedness. Subordination applies to each holder in the series.",
+      "This Note may be amended only with the written consent of the Company and the holders of a majority in principal amount of the notes issued in the same series.",
+    ];
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "note.txt"),
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("convertible-note");
+  });
+
+  it("a plain promissory note still reaches its own playbook", () => {
+    // The bare "note" keyword was removed, so the specific forms have to carry
+    // it: this is the check that they do.
+    const body: [string, ...string[]] = [
+      "",
+      "PROMISSORY NOTE",
+      'FOR VALUE RECEIVED, the undersigned (the "Maker") promises to pay to the order of Fairhaven Capital (the "Payee") the principal amount of $250,000.',
+      "Interest accrues at the interest rate of six percent per annum until the maturity date.",
+    ];
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "note.txt"),
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("promissory-note");
+  });
+});
