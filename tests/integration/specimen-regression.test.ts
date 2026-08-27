@@ -231,6 +231,9 @@ const EXPECTED: Record<string, Expectation> = {
   // A continuing guaranty: an instrument, and deliberately uncapped.
   "guaranty.txt": { playbook: "guaranty", findings: ["CHOICE-008", "RISK-009"] },
 
+  // A SaaS order form issued under a named master subscription agreement.
+  "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

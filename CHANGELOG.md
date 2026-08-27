@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.61.0] — 2026-08-27
+
+### Fixed
+- **An acronym feature matched inside ordinary words.** Match features are
+  plain substrings, which is right for a phrase and wrong for an acronym:
+  `change-order` lists **"co"**, which appears inside "Company", "Contract",
+  "Counsel", and "Cost", so it collected a title keyword's 0.3 from almost any
+  document. The catalog acquired the shape one acronym at a time — "sig"
+  (inside "assignment", "signature"), "spa" (inside "space"), "apa" (inside
+  "apartment"), "ccr" (inside "accrue"), "safe" (inside "safeguard"). A feature
+  of five characters or fewer is now matched on word boundaries; "CO" standing
+  alone in a change order's title still matches, "Company" no longer does, and
+  a multi-word phrase keeps its substring behaviour — that is what lets
+  "conflicts of interest" find "Conflicts of Interest Policy".
+  - On the corpus it removed exactly one hit, and it was false:
+    `msa-general`'s negative feature "lease" was matching inside **"release"**,
+    penalizing a SaaS vendor agreement 0.1 for a word it does not contain. Same
+    playbook, same twelve findings, 0.8 → 0.9.
+
+### Added
+- A SaaS order form specimen — issued under a named master subscription
+  agreement, so it exercises the subordinate-document path end to end —
+  bringing the set to twenty-seven.
+
 ## [9.60.0] — 2026-08-27
 
 ### Fixed

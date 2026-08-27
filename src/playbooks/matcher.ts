@@ -306,6 +306,38 @@ type ScoredPlaybook = {
  *
  * Ties are broken lexicographically by playbook id for determinism.
  */
+/**
+ * Longest feature string still treated as an ACRONYM for matching purposes.
+ * "psa", "eula", "g701", "daca" are the forms a document actually prints; a
+ * longer string is a phrase, and a phrase's substring match is what lets
+ * "conflicts of interest" find "Conflicts of Interest Policy".
+ */
+const ACRONYM_MAX_LENGTH = 5;
+
+/**
+ * Match a feature string against a corpus.
+ *
+ * Features are matched as plain substrings, which is right for a phrase and
+ * wrong for an acronym: `change-order` listed **"co"**, which appears inside
+ * "Company", "Contract", "Counsel", and "Cost", so it collected a title
+ * keyword's 0.3 from almost any document. The same shape sits in "sig"
+ * (inside "assignment", "signature"), "spa" (inside "space"), "apa" (inside
+ * "apartment"), "ccr" (inside "accrue"), and "safe" (inside "safeguard" and
+ * "safe harbor") — a class the catalog acquired one acronym at a time.
+ *
+ * A short feature is therefore matched on word boundaries. "CO" standing
+ * alone in a change order's title still matches; "Company" no longer does.
+ */
+function contains(corpus: string, feature: string): boolean {
+  const needle = feature.toLowerCase();
+  if (needle.length === 0) return false;
+  if (needle.length > ACRONYM_MAX_LENGTH || !/^[a-z0-9][a-z0-9.-]*$/.test(needle)) {
+    return corpus.includes(needle);
+  }
+  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?:^|[^a-z0-9])${escaped}(?![a-z0-9])`, "i").test(corpus);
+}
+
 export function matchPlaybook(
   extracted: ExtractedData,
   classified: ClassifiedParagraph[],
@@ -320,18 +352,14 @@ export function matchPlaybook(
   const scored: ScoredPlaybook[] = available.map((playbook) => {
     const f = playbook.match_features;
 
-    const matched_title_keywords = f.title_keywords.filter((kw) =>
-      title.includes(kw.toLowerCase()),
-    );
+    const matched_title_keywords = f.title_keywords.filter((kw) => contains(title, kw));
     const matched_required_clauses = f.required_clauses.filter(
       (cat) => present_categories.has(cat) || defined_terms.has(cat.toLowerCase()),
     );
     const matched_distinguishing_phrases = f.distinguishing_phrases.filter((p) =>
-      body.includes(p.toLowerCase()),
+      contains(body, p),
     );
-    const matched_negative_features = f.negative_features.filter((n) =>
-      body.includes(n.toLowerCase()),
-    );
+    const matched_negative_features = f.negative_features.filter((n) => contains(body, n));
 
     // Per-match additive scoring, with each feature category capped so
     // playbooks with many keywords don't auto-dominate playbooks with

@@ -226,3 +226,49 @@ describe("gating over the real launch + extended playbooks", () => {
     expect(match.playbook_id).toMatch(/nda/);
   });
 });
+
+describe("an acronym feature is matched on word boundaries", () => {
+  /**
+   * Features are matched as plain substrings, which is right for a phrase and
+   * wrong for an acronym. `change-order` listed **"co"**, which appears inside
+   * "Company", "Contract", "Counsel", and "Cost", so it collected a title
+   * keyword's 0.3 from almost any document. The same shape sits in "sig"
+   * (inside "assignment", "signature"), "spa" (inside "space"), "apa" (inside
+   * "apartment"), "ccr" (inside "accrue"), and "safe" (inside "safeguard").
+   *
+   * On the corpus the change removed exactly one false hit: `msa-general`'s
+   * negative feature "lease" was matching inside "release", penalizing a SaaS
+   * vendor agreement 0.1 for a word it does not contain.
+   */
+  const acronym = pb("acronym-family", {
+    title_keywords: ["co"],
+    distinguishing_phrases: ["sig", "spa"],
+  });
+
+  it("does not match an acronym inside a longer word", () => {
+    const body = "This Company Contract concerns the assignment of space and the signature blocks.";
+    const match = matchPlaybook(emptyExtracted(), [], [acronym], { title: body, body_text: body });
+    expect(match.playbook_id).toBe("generic-fallback");
+  });
+
+  it("still matches the acronym standing alone", () => {
+    const body = "CO 14 revises the work. The SIG questionnaire and the SPA are attached.";
+    const match = matchPlaybook(emptyExtracted(), [], [acronym], { title: body, body_text: body });
+    expect(match.playbook_id).toBe("acronym-family");
+  });
+
+  it("leaves a multi-word phrase matching as a substring", () => {
+    // The substring behaviour is what lets "conflicts of interest" find
+    // "Conflicts of Interest Policy"; only short features are bounded.
+    const phrase = pb("phrase-family", {
+      distinguishing_phrases: ["conflicts of interest", "trust account", "hourly rate"],
+    });
+    const body =
+      "Our Conflicts of Interest Policy applies. Funds are held in a client trust account at the hourly rates stated.";
+    const match = matchPlaybook(emptyExtracted(), [], [phrase], {
+      title: "Letter",
+      body_text: body,
+    });
+    expect(match.playbook_id).toBe("phrase-family");
+  });
+});

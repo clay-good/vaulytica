@@ -1,0 +1,57 @@
+VANTERRA ANALYTICS — ORDER FORM
+
+Order Form No. OF-2026-3391
+Effective Date: July 1, 2026
+
+This Order Form is entered into under and subject to the Master Subscription Agreement between Vanterra Analytics, Inc. ("Vanterra") and Ridgeline Aerospace Components, Inc. ("Customer") dated March 14, 2024 (the "MSA"). Capitalized terms used and not defined in this Order Form have the meanings given in the MSA. In the event of a conflict between this Order Form and the MSA, the MSA controls, except as to the pricing, quantities, and subscription term stated below.
+
+1. Subscription.
+
+Product: Vanterra Sensor Studio, Enterprise edition.
+Named Users: 240.
+Environments: one production, two non-production.
+Data retention: 24 months rolling.
+
+2. Subscription Term.
+
+Initial Term: 36 months, commencing July 1, 2026 and ending June 30, 2029. The Subscription renews for successive 12-month periods unless either party gives written notice of non-renewal at least 60 days before the end of the then-current term. Renewal pricing shall not increase by more than seven percent (7%) over the prior term's pricing.
+
+3. Fees.
+
+Annual subscription fee: $384,000, invoiced annually in advance. Year 1: $384,000. Year 2: $384,000. Year 3: $384,000. Total contract value: $1,152,000. One-time implementation and data-migration services: $65,000, invoiced on completion of the migration milestone described in Section 5.
+
+4. Payment.
+
+Invoices are due within forty-five (45) days of the invoice date. Late amounts accrue interest at one percent (1%) per month or the maximum permitted by law, whichever is less.
+
+5. Implementation Milestones.
+
+Kickoff within 10 business days of the Effective Date; sandbox environment provisioned within 20 business days; production cutover and data migration complete within 90 days. Vanterra shall credit Customer 5% of the implementation fee for each full week of delay attributable solely to Vanterra, up to 25%.
+
+6. Service Levels.
+
+The Enterprise service level applies: 99.9% monthly uptime, 24x7 support with a 1-hour response for Severity 1 incidents, as described in the Service Level Addendum to the MSA. Service credits are Customer's exclusive remedy for a failure to meet the uptime commitment.
+
+7. Order-Specific Terms.
+
+Customer's usage may exceed 240 Named Users by up to 10% in any month without additional charge; sustained excess use above that threshold is invoiced at the then-current per-user rate, prorated for the remainder of the term. Vanterra shall not reduce the functionality of the Enterprise edition during the Initial Term.
+
+8. Contacts.
+
+Customer billing contact: ap@ridgeline.example. Customer technical contact: e.krause@ridgeline.example. Vanterra account manager: s.lindqvist@vanterra.example.
+
+ACCEPTED AND AGREED:
+
+VANTERRA ANALYTICS, INC.
+
+By: /s/ Soren Lindqvist
+Name: Soren Lindqvist
+Title: VP, Revenue
+Date: July 1, 2026
+
+RIDGELINE AEROSPACE COMPONENTS, INC.
+
+By: /s/ Beatriz Sandoval
+Name: Beatriz Sandoval
+Title: Chief Financial Officer
+Date: July 1, 2026
