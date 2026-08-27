@@ -365,5 +365,12 @@ describe("CLI/API parity with the parity-proven pipeline (spec-v8 Step 143)", ()
     // runProductionQa runs a per-member HANDOFF sweep (ingest + scanDelivery of
     // each .pdf/.docx member); pdfjs worker init is far slower on cold Windows
     // CI than locally, so this multi-member ingest needs a generous timeout.
-  }, 30000);
+    //
+    // 30s was not generous enough: the members here are deliberately INVALID
+    // PDFs (the byte string "doc"), which sends pdfjs down its recovery path —
+    // "Warning: Indexing all PDF objects" — three times over, and the
+    // windows-latest runner took past 60s for it on 2026-08-27. The number is
+    // a ceiling on a known-slow path, not a budget: nothing here should take
+    // two minutes, and if it starts to, that is worth seeing as a failure.
+  }, 120000);
 });

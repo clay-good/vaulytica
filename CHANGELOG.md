@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [9.45.4] — 2026-08-27
 
+### Fixed
+- **A cross-OS matrix flake on Windows.** `runProductionQa reconciles a
+  directory production set` carried a 30-second timeout and a comment
+  explaining why it needed one — pdfjs worker init is far slower on a cold
+  Windows runner. Thirty seconds stopped being enough: the members that test
+  writes are deliberately INVALID PDFs (the byte string `"doc"`), which sends
+  pdfjs down its recovery path — "Warning: Indexing all PDF objects" — three
+  times over, and windows-latest went past sixty seconds. Raised to 120s, which
+  is a ceiling on a known-slow path rather than a budget: nothing there should
+  take two minutes, and if it starts to, that is worth seeing as a failure.
+
 ### Added
 - **A guard on the README's spec table.** The table is the README's index of
   what the tool does and when each part landed, and it is the only place a
