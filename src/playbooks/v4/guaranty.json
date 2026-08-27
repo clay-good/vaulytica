@@ -18,7 +18,10 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Guarantor", "Obligee", "Underlying Obligation"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "FIN-005": { "skip": true },
+    "RISK-009": { "severity": "info" }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "SURETYSHIP-STATUTE-OF-FRAUDS",

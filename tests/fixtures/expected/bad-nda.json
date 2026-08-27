@@ -510,7 +510,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-009",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -974,7 +974,7 @@
       "id": "RISK-009-s1.2-478",
       "recommendation": "Confirm the scope is intended. If not, add a per-claim and aggregate cap, and enumerate the carve-outs explicitly.",
       "rule_id": "RISK-009",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Uncapped or unlimited liability"
@@ -1096,11 +1096,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "7742f295eedcf6230c4a38faa5b2e448f9ecce904968bb94392229a62f360607",
+  "result_hash": "d0817d84f7b77cba8ce59c2fa98125a6b25ef8fadeb27a38ab3952b216ed9853",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",
     "size_bytes": 8974
   },
-  "version": "9.59.1"
+  "version": "9.60.0"
 }

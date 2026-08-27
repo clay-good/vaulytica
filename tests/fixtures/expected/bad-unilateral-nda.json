@@ -510,7 +510,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-009",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -869,7 +869,7 @@
       "id": "RISK-009-s1.2-436",
       "recommendation": "Confirm the scope is intended. If not, add a per-claim and aggregate cap, and enumerate the carve-outs explicitly.",
       "rule_id": "RISK-009",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Uncapped or unlimited liability"
@@ -1094,11 +1094,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "b75f7d0785d81166580ff8beb3ab9b805aff1f95e5d3a93e04c2fa91aab8ba62",
+  "result_hash": "ad72ddd5fdc38c2e78dd475576d3ef2fb391af7fc218a7afae95b40f0b3e622e",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.59.1"
+  "version": "9.60.0"
 }

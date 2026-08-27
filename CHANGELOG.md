@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.60.0] — 2026-08-27
+
+### Fixed
+- **RISK-009 read only the modal, not the present tense.** "Guarantor's
+  liability **is not limited** in amount" is the operative sentence of every
+  unlimited guaranty, and of any agreement that declines to cap; the branch
+  matched only "shall not be limited". The carve-out guard added in 9.54 still
+  holds, so an M&A fraud exception is not swept in.
+- **`guaranty` had empty `rule_overrides`.** A guaranty states no payment term
+  of its own — the credit agreement it guarantees does — and being uncapped is
+  the point of it, so the uncapped-liability finding is downgraded to `info`
+  rather than suppressed: worth seeing on the instrument, not worth a critical.
+
+### Added
+- A continuing guaranty specimen, bringing the set to twenty-six.
+
 ## [9.59.1] — 2026-08-27
 
 ### Fixed

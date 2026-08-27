@@ -46,6 +46,20 @@ describe("RISK-009 on a carve-out from the cap", () => {
     ).not.toBeNull();
   });
 
+  it("reads the present tense as well as the modal", () => {
+    // "Guarantor's liability IS NOT LIMITED in amount" is the operative
+    // sentence of every unlimited guaranty, and of any agreement that
+    // declines to cap. The branch read only "shall not be limited".
+    expect(
+      RISK_009.check(
+        buildContext([
+          "Guaranty",
+          "Guarantor's liability under this Guaranty is not limited in amount.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("still fires when the cap is removed rather than excepted", () => {
     expect(
       RISK_009.check(

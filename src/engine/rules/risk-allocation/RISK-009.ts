@@ -9,9 +9,14 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * Cross-references CUAD's "Uncapped Liability" category.
  */
 const UNCAPPED =
-  /\b(?:unlimited\s+liability|no\s+(?:limitation|cap)\s+on\s+liability|liability\b[^.;\n]{0,40}?\b(?:is|shall\s+be)\s+unlimited|without\s+(?:any\s+)?(?:cap|limitation)\s+on\s+(?:its\s+)?liability|(?:liable|responsible)\s+for\s+all\s+damages[^.]*?without\s+limitation|all\s+damages[^.]*?without\s+(?:any\s+)?(?:cap|limit(?:ation)?)|no\s+(?:limit|limitation|cap)\s+on\s+(?:the\s+[A-Za-z]+['’]?s?\s+|its\s+|any\s+|your\s+|such\s+)?liability|\bliability\s+(?:of\s+(?:the\s+)?[A-Za-z]+\s+)?shall\s+not\s+be\s+limited\b)/i;
+  /\b(?:unlimited\s+liability|no\s+(?:limitation|cap)\s+on\s+liability|liability\b[^.;\n]{0,40}?\b(?:is|shall\s+be)\s+unlimited|without\s+(?:any\s+)?(?:cap|limitation)\s+on\s+(?:its\s+)?liability|(?:liable|responsible)\s+for\s+all\s+damages[^.]*?without\s+limitation|all\s+damages[^.]*?without\s+(?:any\s+)?(?:cap|limit(?:ation)?)|no\s+(?:limit|limitation|cap)\s+on\s+(?:the\s+[A-Za-z]+['’]?s?\s+|its\s+|any\s+|your\s+|such\s+)?liability|\bliability\s+(?:of\s+(?:the\s+)?[A-Za-z]+\s+)?shall\s+not\s+be\s+limited\b|\bliability\b[^.;\n]{0,40}?\b(?:is|are)\s+not\s+limited\b)/i;
 
 /**
+ * The present tense states it as often as the modal: "Guarantor's liability
+ * IS NOT LIMITED in amount" is the operative sentence of every unlimited
+ * guaranty and of any agreement that declines to cap, and the branch above
+ * read only "shall not be limited".
+ *
  * A CARVE-OUT from the cap is not the absence of one.
  *
  * "The Sellers' aggregate liability shall not exceed the Escrow Amount, except
@@ -33,7 +38,7 @@ const CARVE_OUT_LEAD =
 
 export const rule: Rule = {
   id: "RISK-009",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Uncapped liability detection",
   category: "risk-allocation",
   default_severity: "critical",
