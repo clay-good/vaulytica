@@ -301,6 +301,61 @@ describe("v6 engagement — the boundary as a negative sentence (v1.0.1)", () =>
     ).not.toBeNull();
   });
 
+  it("ENG-001 reads the possessive limiting sentence and the undertaking not taken on (v1.0.2)", () => {
+    // Found by running the rule on a hand-written engagement letter: the
+    // limitation takes a possessive as readily as a demonstrative, and the
+    // exclusion is as often an undertaking NOT taken on as a bare "we will
+    // not represent". Both are Rule 1.2(c) drafting.
+    expect(
+      rule("ENG-001").check(
+        doc(
+          "Engagement Letter",
+          "1. Scope of the Engagement. We will represent you in the trade-secret action against Cardinal Metrology, Inc.",
+          "Our representation is limited to the Matter. We are not undertaking to advise you on tax, accounting, or regulatory matters.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("ENG-001 still fires when the letter only names the scope and never bounds it (v1.0.2)", () => {
+    // The widened pillar must not admit a letter that merely says what it
+    // covers: "limited to" and "not undertaking" are the boundary, and their
+    // absence is the finding.
+    expect(
+      rule("ENG-001").check(
+        doc(
+          "Engagement Letter",
+          "1. Scope of the Engagement. We will represent you in the trade-secret action against Cardinal Metrology, Inc.",
+          "Our representation began on March 4, 2026, and we are undertaking it on the terms below.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("ENG-002 reads the constituent disclaimer stated as an undertaking not taken on (v1.0.2)", () => {
+    expect(
+      rule("ENG-002").check(
+        doc(
+          "Engagement Letter",
+          "We will represent Northgate Instrument Company (the \u201CClient\u201D) in this matter.",
+          "We are not undertaking to represent any parent, subsidiary, affiliate, officer, director, or employee of the Client unless we agree in a separate writing.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("ENG-002 still fires when the letter names the client but never disclaims its constituents (v1.0.2)", () => {
+    expect(
+      rule("ENG-002").check(
+        doc(
+          "Engagement Letter",
+          "We will represent Northgate Instrument Company (the \u201CClient\u201D) in this matter.",
+          "We are undertaking to represent the Client on the terms set out in this letter.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
   it("ENG-002 reads the future tense a letter written before the work uses", () => {
     expect(
       rule("ENG-002").check(

@@ -338,6 +338,36 @@ describe("signature-block names are not undefined defined-terms", () => {
   });
 });
 
+describe("the tail of a rules citation is not an undefined defined-term", () => {
+  it("does not flag the authority named after 'Rules of'", () => {
+    // "Ohio Rules of Professional Conduct" breaks into two Title-Case runs at
+    // the lowercase "of": "Ohio Rules" (already excluded as a citation) and
+    // "Professional Conduct". Every engagement letter, conflicts waiver, and
+    // ethics policy cites the body repeatedly, and STRUCT-006 reported it as a
+    // term the document forgot to define.
+    const map = extractDefinitions(
+      buildTree([
+        "Confidentiality",
+        "We will not disclose it except as the Ohio Rules of Professional Conduct permit. We may withdraw to the extent permitted by the Ohio Rules of Professional Conduct.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Professional Conduct");
+  });
+
+  it("still flags an ordinary capitalized phrase that follows an 'of'", () => {
+    // The exclusion is gated on the authority noun before the "of" — a
+    // "Statement of Base Services" is exactly the sort of undefined document
+    // title STRUCT-006 exists to surface.
+    const map = extractDefinitions(
+      buildTree([
+        "Services",
+        "The work is described in the Statement of Base Services. The Statement of Base Services governs the order of precedence.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Base Services");
+  });
+});
+
 describe("place names are not undefined defined-terms", () => {
   it("does not flag a US state named in a governing-law clause", () => {
     const map = extractDefinitions(

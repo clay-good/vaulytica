@@ -75,6 +75,14 @@ The schema is enforced by [`PlaybookSchema`](../src/playbooks/types.ts). Require
 - Categories in `required_clauses` / `expected_clauses` should match the canonical taxonomy in [`dkb/build/classifier_taxonomy.json`](../dkb/build/classifier_taxonomy.json). Anything outside the taxonomy is silently ignored by the matcher until a corresponding alias lands.
 - Severities are `critical | warning | info`.
 
+### Does each distinguishing phrase actually distinguish?
+
+A `distinguishing_phrase` is worth 0.2 and the contribution caps at three, so three of them put a playbook at 0.6 — above the 0.5 threshold and level with almost anything else that scores. That makes a phrase which is merely _common in_ the family, rather than _characteristic of_ it, an active liability: it routes other families' documents here.
+
+The test is not "does this word appear in my family's documents" but "would I be surprised to find it in a document that is **not** this family". A bare `"Employee"` failed that test: it sat in `employment-at-will-us` for eight releases, and it appears in NDAs, leases, policies, and law-firm engagement letters. A hand-written engagement letter used it once, in a boilerplate list of the people the firm was _not_ representing, and that one word plus the near-universal `confidentiality-obligation` category was enough to route the letter to the employment playbook and skip every ENG check. Its siblings `"at-will"`, `"base compensation"`, `"your position"`, and `"FLSA"` all pass the test; the single common noun did not.
+
+Prefer the family's terms of art, its statutory and rule citations, and its two- and three-word collocations. Treat a single common noun as a smell. The same caution applies to `required_clauses`, which is worth _more_ (0.4) and matches a broad classifier category: `term`, `payment-terms`, and `confidentiality-obligation` are true of nearly every commercial document, so they are close to free score for whichever playbook lists them.
+
 ### Is the document an agreement?
 
 Answer this before anything else, because the answer decides `rule_overrides`.

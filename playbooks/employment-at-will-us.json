@@ -6,7 +6,7 @@
   "match_features": {
     "title_keywords": ["offer letter", "employment agreement", "employment contract", "letter of employment"],
     "required_clauses": ["confidentiality-obligation", "employee-ip-assignment", "term"],
-    "distinguishing_phrases": ["at-will", "exempt", "salary", "base compensation", "your position", "report to", "FLSA", "Employee"],
+    "distinguishing_phrases": ["at-will", "exempt", "salary", "base compensation", "your position", "report to", "FLSA"],
     "negative_features": ["independent contractor", "1099", "not an employee", "as a consultant", "scope of work", "the Customer", "the Vendor"]
   },
   "expected_clauses": [

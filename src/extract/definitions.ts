@@ -826,6 +826,20 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         /^\s*(?:of\s+[A-Z]|§|\d)/.test(ctx.text.slice(m.index + phrase.length))
       )
         continue;
+      // The MIRROR of the same citation shape: the authority's name continues
+      // AFTER an "of", and the lowercase "of" ends the Title-Case run, so the
+      // tail arrives as its own candidate. "Ohio Rules of Professional
+      // Conduct" yields "Ohio Rules" (caught above) and then "Professional
+      // Conduct" — which every engagement letter, ethics policy, and
+      // conflicts waiver cites repeatedly, and each was reported as a
+      // Title-Case term the document forgot to define. Gated on the authority
+      // noun immediately before the "of", so an ordinary "Schedule of Base
+      // Rent Adjustments" or "Statement of Base Services" still flags.
+      // "Procedures of" is deliberately NOT here: unlike Rules/Regulations/
+      // Canons it names an internal process at least as often as an
+      // authority, and the sibling guard above already excludes it whenever
+      // the citation shape actually follows.
+      if (/\b(?:Rules?|Regulations?|Canons?)\s+of\s+$/.test(ctx.text.slice(0, m.index))) continue;
       if (entityPrefixes.has(phraseLower)) continue;
       // A phrase introduced with a residence or origin ("Diego Castellanos,
       // residing at 9 Elm Row", "Lucia Ferrante, of Burlington") is a natural

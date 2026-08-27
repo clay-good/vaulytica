@@ -18,7 +18,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { matchPlaybook } from "../../src/playbooks/matcher.js";
-import { parsePlaybooks } from "../../src/playbooks/loader.js";
+import { parsePlaybook, parsePlaybooks } from "../../src/playbooks/loader.js";
+import { LAUNCH_PLAYBOOK_IDS } from "../../src/playbooks/registry.js";
 import { buildTree } from "../../src/extract/_fixtures.js";
 import { extractAll } from "../../src/extract/index.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
@@ -117,5 +118,65 @@ describe("v5 / v6 catalog routing", () => {
       missing,
       `gated to playbooks absent from the served bundle: ${missing.join(", ")}`,
     ).toEqual([]);
+  });
+});
+
+/**
+ * The competition the guard above cannot see.
+ *
+ * `PLAYBOOKS` is `playbooks/extended.json` alone — the 253 specialized
+ * families. The live pipeline matches against those **plus** the twelve
+ * launch playbooks, so a specialized family can be beaten by a launch one on
+ * a document that is plainly not its own, and no guard here would notice.
+ *
+ * A hand-written law-firm engagement letter was: `employment-at-will-us`
+ * reached 0.6 on one ubiquitous classifier category
+ * (`confidentiality-obligation`, worth 0.4) plus the bare word "Employee",
+ * which the letter used once in a boilerplate list of the people the firm is
+ * NOT representing. `engagement-letter` also scored 0.6 — five of its own
+ * distinguishing phrases, capped — and lost the tie to the lexicographic
+ * rule, because "employment-at-will-us" sorts first. Every ENG check was
+ * skipped and six generic contract warnings were raised about a document
+ * that is not a bilateral bargain.
+ *
+ * The fix was the phrase, not the scoring: a single common noun that appears
+ * in NDAs, leases, policies, and engagement letters does not distinguish an
+ * employment offer, and the playbook's seven remaining phrases ("at-will",
+ * "base compensation", "your position", "FLSA", …) all genuinely do.
+ */
+const LAUNCH = LAUNCH_PLAYBOOK_IDS.map((id) =>
+  parsePlaybook(JSON.parse(readFileSync(join(process.cwd(), "playbooks", `${id}.json`), "utf8"))),
+);
+
+describe("a specialized family against the launch playbooks", () => {
+  it("a law-firm engagement letter is not routed to the employment playbook", () => {
+    // Deliberately shaped like the real thing: a letter has no styled title,
+    // so its title corpus is the firm's letterhead and NO title keyword hits;
+    // it has a confidentiality section (the classifier category the
+    // employment playbook scores 0.4 on); and it says "employee" once, in a
+    // boilerplate list of people the firm is NOT representing.
+    const title = "Harlow & Vance LLP 1200 Bellweather Street, Suite 900 Columbus, Ohio 43215";
+    const body: [string, ...string[]] = [
+      title,
+      "Re: Engagement for Representation — Trade Secret Litigation",
+      "Thank you for asking us to represent Northgate Instrument Company (the “Client”) in the above matter.",
+      "Scope of the Engagement. We will represent you in the matter described above. Our representation is limited to the Matter. We are not undertaking to represent any parent, subsidiary, affiliate, officer, director, or employee of the Client unless we agree in a separate writing.",
+      "Our fees are based on the hourly rates in effect when the services are performed. Our current rates are $695 per hour for partners.",
+      "Conflicts of Interest. We have run a conflicts check and have identified no conflict that prevents us from undertaking the Matter. We may represent another client in an unrelated matter adverse to you provided we have not obtained confidential information from you that is material to that matter.",
+      "We will hold the retainer in our client trust account. Information you give us is protected by the attorney-client privilege and by our duty of confidentiality, and we will not disclose it except as you authorize.",
+    ];
+    const tree = buildTree(body);
+    // The DKB patterns are passed WITH their flags, as the live pipeline
+    // passes them: `confidentiality-obligation` is a case-insensitive
+    // pattern, and dropping the flag is what keeps the category — and so the
+    // tie this test exists to reproduce — from appearing at all.
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title,
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("engagement-letter");
   });
 });

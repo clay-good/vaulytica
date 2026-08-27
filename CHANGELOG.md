@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.45.5] — 2026-08-27
+
+### Fixed
+- **A law-firm engagement letter was reviewed as an employment offer.** The
+  letter matched five of `engagement-letter`'s own distinguishing phrases —
+  "our fees", "conflicts of interest", "attorney-client", "hourly rate",
+  "trust account" — which caps at 0.6. `employment-at-will-us` reached exactly
+  0.6 too, on one ubiquitous classifier category (`confidentiality-obligation`,
+  worth 0.4) plus the bare word "Employee", which the letter used once in a
+  boilerplate list of the people the firm is **not** representing. The tie fell
+  to the lexicographic tiebreak, and "employment-at-will-us" sorts before
+  "engagement-letter". Every ENG check was skipped and the always-on contract
+  packs raised six warnings about a document nobody signs as a counterparty.
+  The fix is the phrase, not the scoring: a single common noun that appears in
+  NDAs, leases, policies, and engagement letters does not distinguish an
+  employment offer, and the playbook's seven remaining phrases ("at-will",
+  "base compensation", "your position", "FLSA", …) all genuinely do. The three
+  employment fixtures route identically with identical findings; only the
+  confidence and the reasoning string moved.
+  - A tiebreak preferring the playbook with MORE matched features was written
+    first and **rejected**: it rewards the sibling with the longer keyword
+    list, and it flipped a controller-to-processor DPA to
+    `dpa-processor-subprocessor` and a covered-entity BAA to
+    `baa-subcontractor`. Recorded here because the wrong fix looked more
+    principled than the right one.
+- **Two ENG rules read only one shape of the clause they ask for.** ENG-001's
+  boundary pillar took the limitation with a demonstrative ("**this**
+  engagement is limited to") but not a possessive ("**Our** representation is
+  limited to the Matter"), and read the exclusion only as "we will not
+  represent", not as the undertaking not taken on ("we **are not undertaking**
+  to advise you on tax, accounting, or regulatory matters"). ENG-002 had the
+  mirror gap in its constituent disclaimer. Both are Rule 1.2(c) / 1.13
+  drafting; both were reported at `critical` as the clause's absence.
+- **A forum clause reached through a conjoined governing-law verb went
+  unread.** "Any dispute … will be governed by Ohio law **and resolved**
+  exclusively in the state or federal courts sitting in Franklin County, Ohio"
+  states law and forum in one sentence, which is how a great many clauses are
+  written. `VENUE_RESOLVED_IN`'s doublet slot required the two verbs to be
+  adjacent ("filed and maintained"), so the intervening "by Ohio law" broke it
+  and CHOICE-003 reported "the document does not state where disputes must be
+  brought". "governed" is not, and must not become, a forum verb in its own
+  right, so the lead-in is a bounded run before the "and" and every other
+  anchor — a real forum verb, the "in/before/by … courts" scaffold, a
+  capitalized place — still has to hold.
+- **The tail of a rules citation was reported as an undefined defined term.**
+  "Ohio Rules of Professional Conduct" breaks into two Title-Case runs at the
+  lowercase "of". The first, "Ohio Rules", was already excluded as a citation;
+  the second, "Professional Conduct", was not — so every engagement letter,
+  conflicts waiver, and ethics policy that cites the body twice was told it had
+  forgotten to define it. Gated on the authority noun before the "of"
+  (Rules/Regulations/Canons), so an ordinary "Statement of Base Services" still
+  flags. "Procedures of" is deliberately excluded from the list: it names an
+  internal process at least as often as an authority.
+
+### Added
+- **A routing guard that can see the launch playbooks.** `catalog-routing`
+  matched against `playbooks/extended.json` alone — the 253 specialized
+  families — so a specialized family losing to one of the twelve launch
+  playbooks was invisible to it, which is how the engagement letter shipped
+  mis-routed. The new case builds the candidate set the live pipeline builds
+  and passes the DKB classifier patterns **with their flags**, since dropping
+  the flag is what keeps the deciding category from appearing at all.
+
 ## [9.45.4] — 2026-08-27
 
 ### Fixed

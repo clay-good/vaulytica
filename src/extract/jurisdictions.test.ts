@@ -541,3 +541,44 @@ describe("interpretation-form governing law", () => {
     expect(withParenthetical.map((r) => r.raw_text)).toEqual(["Ohio"]);
   });
 });
+
+describe("the conjoined governing-law-and-forum sentence", () => {
+  const venuesOf = (text: string) =>
+    extractJurisdictions(buildTree(["Dispute Resolution", text]))
+      .filter((r) => r.clause_kind === "venue")
+      .map((r) => r.raw_text);
+
+  it("reads the forum when the sentence names the law first", () => {
+    // A great many clauses state the law and the forum in one sentence —
+    // "will be governed by Ohio law AND resolved exclusively in the … courts".
+    // The doublet slot required the two verbs to be adjacent ("filed and
+    // maintained"), so the intervening "by Ohio law" broke it and CHOICE-003
+    // reported "the document does not state where disputes must be brought"
+    // about a document with a textbook forum-selection clause.
+    expect(
+      venuesOf(
+        "Any other dispute arising out of or relating to this engagement will be governed by Ohio law and resolved exclusively in the state or federal courts sitting in Franklin County, Ohio, and each of us consents to the personal jurisdiction of those courts.",
+      ),
+    ).toEqual(["Ohio"]);
+    expect(
+      venuesOf(
+        "Any claim shall be construed under Illinois law and brought only in the state and federal courts located in Cook County, Illinois.",
+      ),
+    ).toEqual(["Illinois"]);
+  });
+
+  it("does not invent a forum where the sentence names none", () => {
+    // The widened lead-in still requires a real forum verb, the
+    // "in/before/by … courts" scaffold, and a capitalized place after it.
+    expect(
+      venuesOf(
+        "Any dispute shall be governed by Ohio law and resolved by binding arbitration administered by the American Arbitration Association.",
+      ),
+    ).toEqual([]);
+    expect(
+      venuesOf(
+        "Any dispute shall be governed by the laws of the State of Ohio without regard to its conflict-of-laws rules.",
+      ),
+    ).toEqual([]);
+  });
+});

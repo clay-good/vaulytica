@@ -202,8 +202,19 @@ const COURT_NAME = String.raw`(?:Superior\s+|Supreme\s+|District\s+|Circuit\s+|C
 // The forum verb is frequently a doublet — "filed AND maintained", "brought
 // AND prosecuted", "commenced AND litigated" — and the adverb slot carries
 // "only" ("brought only in") as readily as "exclusively", so both are admitted.
+// The forum verb is also reached through a CONJOINED governing-law verb, which
+// is how a great many single-sentence "governing law and forum" clauses are
+// written: "Any dispute … **will be governed by Ohio law and resolved**
+// exclusively in the state or federal courts sitting in Franklin County,
+// Ohio". The doublet slot above required the two verbs to be adjacent
+// ("filed and maintained"), so the intervening "by Ohio law" broke it, and
+// "governed" is not — and must not become — a forum verb in its own right.
+// Admitting a bounded run before the "and" reads the real shape while still
+// requiring a genuine forum verb, the "in/before/by … courts" scaffold, and a
+// capitalized place after it.
+const FORUM_VERB_LEAD_IN = String.raw`(?:\w+${RUNUP}{0,40}?\s+and\s+)?`;
 const VENUE_RESOLVED_IN = new RegExp(
-  String.raw`\b(?:${DISPUTE_NOUN})\b${RUNUP}{0,200}?\b(?:shall|must|will|may)\s+(?:be\s+(?:${FORUM_VERB})(?:\s+and\s+(?:${FORUM_VERB}))?|take\s+place|proceed|lie)\s+(?:exclusively\s+|solely\s+|finally\s+|only\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?${COURT_NAME}courts?\s+(?:of\s+competent\s+jurisdiction\s+)?(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:${DISPUTE_NOUN})\b${RUNUP}{0,200}?\b(?:shall|must|will|may)\s+(?:be\s+${FORUM_VERB_LEAD_IN}(?:${FORUM_VERB})(?:\s+and\s+(?:${FORUM_VERB}))?|take\s+place|proceed|lie)\s+(?:exclusively\s+|solely\s+|finally\s+|only\s+)?(?:in|before|by)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?${COURT_NAME}courts?\s+(?:of\s+competent\s+jurisdiction\s+)?(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)?(?:the\s+(?:State|Commonwealth)\s+of\s+)?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 
