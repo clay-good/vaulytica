@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.50.1] — 2026-08-27
+
+### Fixed
+- **A statement of work is subordinate the same way an amendment is.** An SOW
+  adds rather than changes, so it carries no ratification clause — but it opens
+  "This Statement of Work is entered into **under and subject to** the Master
+  Services Agreement dated February 12, 2024", and where the two disagree,
+  "the MSA controls". The parent supplies governing law, the liability cap, the
+  indemnity, the IP allocation, and the termination machinery, and the child
+  says so. A hand-written SOW drew the same five always-on absence warnings the
+  lease amendment did; `amendsParentAgreement` now reads both halves of the
+  shape. Nine findings became three.
+  - Both halves require a **named** parent: a capitalized instrument title, or
+    an order-of-precedence clause in which the other document controls. A
+    standalone contract never says another agreement governs it. Probed across
+    all 355 corpus fixtures before shipping — the seventeen it matches are SOWs,
+    order forms, addenda, and companion agreements, every one of them genuinely
+    subordinate, and exactly one changed: `bad-sow`, which loses six always-on
+    absence findings and keeps its nine real ones (unfilled placeholders, no
+    payment terms, a 24%/year late fee, "best efforts"). Its first sentence
+    reads "This SOW is entered into under the Master Agreement dated [TBD]".
+
 ## [9.50.0] — 2026-08-27
 
 ### Fixed

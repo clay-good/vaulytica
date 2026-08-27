@@ -4,8 +4,7 @@
   "execution_log": [
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-001-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "CHOICE-001",
       "rule_version": "1.1.0"
@@ -19,8 +18,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-003-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "CHOICE-003",
       "rule_version": "1.2.0"
@@ -253,8 +251,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-001-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "IPDATA-001",
       "rule_version": "1.6.0"
@@ -481,8 +478,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-005-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "RISK-005",
       "rule_version": "1.5.0"
@@ -801,8 +797,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TERM-002-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "TERM-002",
       "rule_version": "1.6.0"
@@ -823,8 +818,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TERM-005-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "TERM-005",
       "rule_version": "1.11.0"
@@ -896,23 +890,6 @@
       "title": "Unfilled template placeholders: 1"
     },
     {
-      "description": "Vaulytica did not find a governing-law clause.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no governing-law clause)"
-      },
-      "explanation": "A governing-law clause picks the legal system that interprets the contract. Without it, courts apply conflict-of-laws rules, which may produce unexpected results.",
-      "id": "CHOICE-001-s1-0",
-      "rule_id": "CHOICE-001",
-      "rule_version": "1.1.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No governing-law clause detected"
-    },
-    {
       "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
       "document_position": 0,
       "excerpt": {
@@ -957,57 +934,6 @@
       "title": "Late-payment rate above 18%/year: ~24.0%"
     },
     {
-      "description": "The contract does not allocate ownership of intellectual property.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no IP-ownership clause)"
-      },
-      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
-      "id": "IPDATA-001-s1-0",
-      "rule_id": "IPDATA-001",
-      "rule_version": "1.6.0",
-      "severity": "warning",
-      "source_citations": [
-        {
-          "id": "stat-17-usc-101",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "17 U.S.C. § 101 — Definitions (work made for hire)",
-          "source_url": "https://www.law.cornell.edu/uscode/text/17/101"
-        },
-        {
-          "id": "stat-17-usc-201",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "17 U.S.C. § 201",
-          "source_url": "https://www.law.cornell.edu/uscode/text/17/201"
-        }
-      ],
-      "title": "No IP-ownership clause detected"
-    },
-    {
-      "description": "Vaulytica did not find a limitation-of-liability clause.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no LoL clause)"
-      },
-      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
-      "id": "RISK-005-s1-0",
-      "rule_id": "RISK-005",
-      "rule_version": "1.5.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No limitation-of-liability clause detected"
-    },
-    {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
       "document_position": 0,
       "excerpt": {
@@ -1024,66 +950,6 @@
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
-    },
-    {
-      "description": "The contract does not state a path to terminate for material breach.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no for-cause termination)"
-      },
-      "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
-      "id": "TERM-002-s1-0",
-      "rule_id": "TERM-002",
-      "rule_version": "1.6.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No termination-for-cause clause detected"
-    },
-    {
-      "description": "The contract does not state what happens upon termination.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no effect-of-termination clause)"
-      },
-      "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
-      "id": "TERM-005-s1-0",
-      "rule_id": "TERM-005",
-      "rule_version": "1.11.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No effect-of-termination clause detected"
-    },
-    {
-      "description": "The document does not state where disputes must be brought.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no venue clause)"
-      },
-      "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
-      "id": "CHOICE-003-s1-0",
-      "rule_id": "CHOICE-003",
-      "rule_version": "1.2.0",
-      "severity": "info",
-      "source_citations": [
-        {
-          "id": "stat-28-usc-1391",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "28 U.S.C. § 1391 (venue generally)",
-          "source_url": "https://www.law.cornell.edu/uscode/text/28/1391"
-        }
-      ],
-      "title": "No venue / forum clause detected"
     },
     {
       "description": "The contract uses 'best efforts' rather than 'reasonable efforts' or 'commercially reasonable efforts'.",
@@ -1167,11 +1033,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "e473f1b97640a55321e2ae1e707d2d7d6303d8a02c3a257fde440ff1b6881385",
+  "result_hash": "a602564e349d7817d575af23856c65f6765a03612b59f4ab584db3cce838d000",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.50.0"
+  "version": "9.50.1"
 }

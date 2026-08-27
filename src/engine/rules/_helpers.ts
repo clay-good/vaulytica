@@ -442,7 +442,34 @@ export function expressDenial(topic: string): RegExp[] {
 const RATIFIES_PARENT =
   /(?:except\s+as\s+(?:expressly\s+|otherwise\s+){0,2}(?:modified|amended|changed|provided|set\s+forth)|all\s+other\s+(?:terms|provisions|covenants)\b)[^.]{0,160}?(?:remains?|shall\s+remain|continues?|shall\s+continue|are\s+unchanged|is\s+unchanged)\s+(?:unchanged\s+and\s+)?in\s+full\s+force|in\s+all\s+other\s+respects[^.]{0,100}?(?:ratified|confirmed|unchanged)/i;
 
-/** Whether the document amends a parent agreement and ratifies the rest of it. */
+/**
+ * The other half of the same shape: a document ISSUED UNDER a named parent.
+ *
+ * A statement of work, order form, addendum, or companion agreement is not an
+ * amendment — it adds rather than changes, so it carries no ratification
+ * clause — but it is subordinate in exactly the same way: "This Statement of
+ * Work is entered into under and subject to the Master Services Agreement
+ * dated February 12, 2024", and, where the two disagree, "the MSA controls".
+ * The parent supplies governing law, the liability cap, the indemnity, the IP
+ * allocation, and the termination machinery, and the child says so.
+ *
+ * Both halves require a NAMED parent — a capitalized instrument title, or an
+ * order-of-precedence clause in which the other document controls. That is
+ * what keeps it from matching an ordinary agreement: a standalone contract
+ * never says another agreement governs it.
+ */
+const ISSUED_UNDER_PARENT =
+  /\b(?:under|pursuant\s+to|issued\s+under|governed\s+by\s+the\s+terms\s+of)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)\b/;
+const PARENT_CONTROLS =
+  // Case-SENSITIVE by design: the parent has to be a NAMED instrument, which
+  // is what `[A-Z]` and the capitalized "Agreement" enforce. Only the leading
+  // conflict phrase is case-folded, by hand, because it opens a sentence.
+  /\b(?:[Ii]n\s+the\s+event\s+of\s+(?:any\s+)?(?:a\s+)?conflict|[Tt]o\s+the\s+extent\s+of\s+(?:any\s+)?conflict|[Ii]f\s+there\s+is\s+(?:any\s+)?conflict)[^.]{0,140}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Agreement|Lease|Contract|MSA)\s*(?:controls|prevails|governs|shall\s+control|shall\s+prevail|shall\s+govern|takes\s+precedence)/;
+
+/**
+ * Whether the document is subordinate to a named parent agreement — either
+ * because it amends and ratifies one, or because it is issued under one.
+ */
 export function amendsParentAgreement(ctx: RuleContext): boolean {
   const parts: string[] = [];
   const walk = (sections: RuleContext["tree"]["sections"]): void => {
@@ -452,5 +479,6 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
     }
   };
   walk(ctx.tree.sections);
-  return RATIFIES_PARENT.test(parts.join(" "));
+  const text = parts.join(" ");
+  return RATIFIES_PARENT.test(text) || ISSUED_UNDER_PARENT.test(text) || PARENT_CONTROLS.test(text);
 }

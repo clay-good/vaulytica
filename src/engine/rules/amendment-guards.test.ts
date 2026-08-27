@@ -63,6 +63,36 @@ describe("the always-on absence checks on an amending document", () => {
     },
   );
 
+  it.each(RULES.map((r) => [r.id, r] as const))(
+    "%s stays silent on a statement of work issued under a named parent",
+    (_id, rule) => {
+      // The other half of the same shape. An SOW adds rather than changes, so
+      // it carries no ratification clause — but it is subordinate in exactly
+      // the same way, and it says so in its first sentence.
+      const finding = rule.check(
+        buildContext([
+          "Statement of Work No. 4",
+          'This Statement of Work is entered into under and subject to the Master Services Agreement dated February 12, 2024 between Client and Supplier (the "MSA").',
+          ...BODY,
+        ]),
+      );
+      expect(finding, `flagged a statement of work: ${finding?.title ?? ""}`).toBeNull();
+    },
+  );
+
+  it("reads an order-of-precedence clause naming the parent as controlling", () => {
+    // A standalone contract never says another agreement controls over it.
+    expect(
+      CHOICE_001.check(
+        buildContext([
+          "Order Form",
+          ...BODY,
+          "In the event of a conflict between this Order Form and the Agreement, the Agreement controls.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
   it("is not switched off by an ordinary incorporation of exhibits", () => {
     // The narrowness matters: "the Exhibits are incorporated herein by
     // reference" is in nearly every commercial agreement, and matching it
