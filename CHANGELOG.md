@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.47.2] — 2026-08-27
+
+### Added
+- **`docs/adding-a-playbook.md` now says what `title_keywords` are matched
+  against.** The guide explained the weights and the tiebreaks but never the
+  input — and the input is no longer obvious: it is a short title corpus built
+  from the top of the document, and today it learned four new ways to find a
+  title, because **the first line of a real document is very often not its
+  title**. The new section names all five shapes that produce that (letterhead,
+  court caption, legend stamp, exhibit tab, securities legend) and tells an
+  author to write the phrases a real document puts on that line, not the
+  internal name of the playbook. Two drift guards pin it: the preamble cap and
+  the subject-line scan depth must match the constants, and the shape table
+  must have a row for every shape the matcher skips.
+
 ## [9.47.1] — 2026-08-27
 
 ### Added

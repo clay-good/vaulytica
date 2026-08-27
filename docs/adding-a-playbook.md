@@ -168,6 +168,29 @@ The schema validation test (`every file validates against the schema`) and the D
 - [ ] Every `balanced_defaults` entry cites a DKB source id present in the starter manifest
 - [ ] PR description explains the contract type and the source(s) you drew defaults from (Common Paper / ABA / a published template)
 
+## What `title_keywords` are matched against
+
+Not the filename, and not the whole document — a short **title corpus** built from the top of the document, because a keyword found in body text would match half the catalog. It is assembled in [`titleCorpus`](../src/playbooks/matcher.ts) and is the concatenation of:
+
+1. the first section's heading, when the document has a styled one;
+2. its first paragraph, capped at 240 characters;
+3. a letter's subject line — `Re:`, `Subject:`, or `In re:` — from the first twelve paragraphs;
+4. a court filing's own title, taken from below its caption.
+
+Steps 3 and 4 exist because **the first line of a real document is very often not its title**. Five shapes were found producing exactly that, each of which cost a family its routing:
+
+| The first line is   | Example                                                      | What the matcher used to read |
+| ------------------- | ------------------------------------------------------------ | ----------------------------- |
+| a letterhead        | `Meridian Casualty Insurance Company / Claims Department`    | the sender's name             |
+| a court caption     | `IN THE UNITED STATES DISTRICT COURT FOR THE …`              | the courthouse                |
+| a legend stamp      | `EXECUTION VERSION`, `PRIVILEGED AND CONFIDENTIAL`           | the stamp                     |
+| an exhibit tab      | `EXHIBIT A`                                                  | the tab                       |
+| a securities legend | `THIS NOTE … HAS NOT BEEN REGISTERED UNDER THE SECURITIES …` | the legend sentence           |
+
+Legends, exhibit tabs, and securities legends are skipped before the corpus is built. A legend has to be the **whole** line: `CONFIDENTIAL` is a legend, `CONFIDENTIALITY AGREEMENT` is a title; `EXHIBIT A` is a tab, `EXHIBIT A — FORM OF MUTUAL NDA` carries the title.
+
+When you add a playbook, write its `title_keywords` as the phrases a real document of that family puts on **that** line, not the internal name you gave the playbook. `tests/integration/catalog-routing.test.ts` sweeps every playbook against every one of its own title keywords and fails if a sibling takes the document.
+
 ## A note on selection mechanics
 
 The matcher weights are fixed and live in [`src/playbooks/matcher.ts`](../src/playbooks/matcher.ts):

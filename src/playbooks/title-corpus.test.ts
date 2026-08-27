@@ -25,6 +25,9 @@
  * appear.
  */
 
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { titleCorpus, TITLE_PREAMBLE_CHARS, TITLE_SUBJECT_SCAN_PARAGRAPHS } from "./matcher.js";
 
@@ -318,5 +321,38 @@ describe("titleCorpus — the legends above the title", () => {
       },
     ]);
     expect(titleCorpus(t, "m.txt")).toContain("MOTION TO COMPEL");
+  });
+});
+
+describe("the title corpus is documented as built", () => {
+  /**
+   * `docs/adding-a-playbook.md` tells a playbook author what `title_keywords`
+   * are matched against, and it states two numbers. Both move with the code,
+   * and a playbook authored against a stale cap is a family that silently does
+   * not route — so they are pinned here rather than left to drift.
+   */
+  const DOC = readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "..", "..", "docs", "adding-a-playbook.md"),
+    "utf8",
+  );
+
+  it("states the preamble cap and the subject-line scan depth the code uses", () => {
+    expect(DOC).toContain("capped at " + TITLE_PREAMBLE_CHARS + " characters");
+    expect(DOC).toContain("first twelve paragraphs");
+    expect(TITLE_SUBJECT_SCAN_PARAGRAPHS).toBe(12);
+  });
+
+  it("names every shape the corpus skips or reaches past", () => {
+    // A sixth shape added to the matcher with no row here leaves the author
+    // guessing; this is the cheapest thing that makes the omission visible.
+    for (const shape of [
+      "a letterhead",
+      "a court caption",
+      "a legend stamp",
+      "an exhibit tab",
+      "a securities legend",
+    ]) {
+      expect(DOC, `the shape table has no row for ${shape}`).toContain(shape);
+    }
   });
 });
