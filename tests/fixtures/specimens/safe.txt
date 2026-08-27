@@ -1,0 +1,50 @@
+THIS INSTRUMENT AND ANY SECURITIES ISSUABLE PURSUANT HERETO HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AS AMENDED, OR UNDER THE SECURITIES LAWS OF CERTAIN STATES, AND MAY NOT BE OFFERED, SOLD, OR OTHERWISE TRANSFERRED EXCEPT PURSUANT TO AN EFFECTIVE REGISTRATION STATEMENT OR AN AVAILABLE EXEMPTION.
+
+NORTHGATE INSTRUMENT COMPANY
+
+SAFE
+(Simple Agreement for Future Equity)
+
+THIS CERTIFIES THAT in exchange for the payment by Fairhaven Seed Partners, LP (the "Investor") of $250,000 (the "Purchase Amount") on or about October 3, 2026, Northgate Instrument Company, a Delaware corporation (the "Company"), issues to the Investor the right to certain shares of the Company's capital stock, subject to the terms set out below.
+
+The "Post-Money Valuation Cap" is $15,000,000. The "Discount Rate" is eighty-five percent (85%).
+
+1. Events.
+
+(a) Equity Financing. If there is an Equity Financing before the termination of this Safe, on the initial closing of such Equity Financing, this Safe will automatically convert into the number of shares of Safe Preferred Stock equal to the Purchase Amount divided by the Conversion Price.
+
+(b) Liquidity Event. If there is a Liquidity Event before the termination of this Safe, the Investor will automatically be entitled to receive a portion of Proceeds, due and payable to the Investor immediately prior to, or concurrent with, the consummation of the Liquidity Event, equal to the greater of (i) the Purchase Amount (the "Cash-Out Amount") or (ii) the amount payable on the number of shares of Common Stock equal to the Purchase Amount divided by the Liquidity Price. If any of the Investor's Cash-Out Amount would be payable to holders of Common Stock, and the Proceeds are insufficient, then all Proceeds will be distributed with equal priority among the Investor and holders of Common Stock.
+
+(c) Dissolution Event. If there is a Dissolution Event before this Safe terminates, the Company will pay the Investor an amount equal to the Purchase Amount, due and payable immediately prior to the consummation of the Dissolution Event, subject to the preferences applicable to any series of Preferred Stock.
+
+(d) Termination. This Safe will automatically terminate immediately following the earliest to occur of: (i) the issuance of Capital Stock to the Investor pursuant to Section 1(a); (ii) the payment, or setting aside for payment, of amounts due the Investor pursuant to Section 1(b) or 1(c).
+
+2. Definitions.
+
+"Capital Stock" means the Common Stock and the Preferred Stock. "Company Capitalization" is calculated as of immediately prior to the Equity Financing and includes all shares of Capital Stock issued and outstanding, all Converting Securities, and all issued and outstanding options and promised options, but excludes the shares reserved and available for future grant under any equity incentive plan. "Conversion Price" means either the Safe Price or the Discount Price, whichever calculation results in a greater number of shares. "Equity Financing" means a bona fide transaction or series of transactions with the principal purpose of raising capital, pursuant to which the Company issues and sells Preferred Stock at a fixed valuation.
+
+3. Company Representations.
+
+The Company is a corporation duly organized, validly existing, and in good standing under the laws of Delaware, and has the power and authority to own its properties and to carry on its business. The execution, delivery, and performance of this Safe is within the power of the Company and has been duly authorized. This Safe constitutes a legal, valid, and binding obligation of the Company, enforceable in accordance with its terms.
+
+4. Investor Representations.
+
+The Investor has full legal capacity, power, and authority to execute and deliver this Safe. The Investor is an accredited investor as that term is defined in Rule 501 of Regulation D under the Securities Act, and has been advised that this Safe and the underlying securities have not been registered under the Securities Act. The Investor is purchasing this Safe for its own account for investment, not as a nominee or agent, and not with a view to the resale or distribution thereof.
+
+5. Miscellaneous.
+
+Any provision of this Safe may be amended, waived, or modified only upon the written consent of the Company and the Investor. Any notice required or permitted by this Safe will be deemed sufficient when delivered personally, by email, or forty-eight hours after being deposited in the U.S. mail as certified mail. The Investor is not entitled, as a holder of this Safe, to vote or be deemed a holder of Capital Stock for any purpose, nor will anything in this Safe be construed to confer on the Investor any rights of a stockholder. This Safe is governed by the laws of the State of Delaware, without regard to the conflicts of law provisions of such jurisdiction.
+
+IN WITNESS WHEREOF, the undersigned have caused this Safe to be duly executed and delivered.
+
+NORTHGATE INSTRUMENT COMPANY
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+INVESTOR: FAIRHAVEN SEED PARTNERS, LP
+
+By: /s/ Dermot Halloran
+Name: Dermot Halloran
+Title: General Partner

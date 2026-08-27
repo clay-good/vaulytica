@@ -200,9 +200,25 @@ const CLICKWRAP_ACCEPTANCE =
  * are required to fire a "present" verdict, so a stray "Name:" inside
  * a notice clause doesn't satisfy the check.
  */
+/** A document that expressly disclaims being a contract. */
+const DISCLAIMS_CONTRACT =
+  /\b(?:is|are)\s+not\s+(?:intended\s+(?:to\s+be|as)\s+)?(?:a\s+)?(?:legally\s+binding\s+)?contracts?\b|\bdoes\s+not\s+(?:create|constitute|confer)\s+(?:any\s+)?(?:contractual|binding)\s+(?:rights?|obligations?|relationship)/i;
+
+function documentText(ctx: RuleContext): string {
+  const parts: string[] = [];
+  const walk = (sections: RuleContext["tree"]["sections"]): void => {
+    for (const section of sections) {
+      for (const p of section.paragraphs) for (const r of p.runs) parts.push(r.text);
+      walk(section.children);
+    }
+  };
+  walk(ctx.tree.sections);
+  return parts.join(" ");
+}
+
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.23.0",
+  version: "1.24.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -211,6 +227,18 @@ export const rule: Rule = {
   dkb_citations: ["stat-ueta-section-7", "stat-15-usc-7001"],
 
   check(ctx: RuleContext): Finding | null {
+    // A document that says it is not a contract does not have a signature
+    // block, and is not defective for lacking one. "This Handbook is not a
+    // contract of employment and does not create contractual rights of any
+    // kind" is the first substantive sentence of nearly every employee
+    // handbook, and it is there precisely because nobody signs it — the
+    // acknowledgment of receipt is a separate page. Reporting the absent
+    // signature block at `critical` is a finding with no answer: adding one
+    // would contradict the disclaimer.
+    //
+    // Self-declaring, so it needs no playbook to be attached to, and it
+    // matches nothing in the corpus.
+    if (DISCLAIMS_CONTRACT.test(documentText(ctx))) return null;
     type P = { start: number; text: string; sectionId: string; inExhibit: boolean };
     const paragraphs: P[] = [];
     // The printed names of the signatories, for the bare-name signature line a

@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.51.1] — 2026-08-27
+
+### Fixed
+- **A handbook was told it had no acknowledgment page, on the page that
+  acknowledges it.** EMP-050 read the noun form ("acknowledgment **of**
+  receipt") and the past participle ("acknowledge … **received** … handbook"),
+  but not the ordinary phrasing of the section itself: "Employees are asked to
+  acknowledge receipt of this Handbook."
+- **A document that says it is not a contract does not have a signature
+  block.** "This Handbook is not a contract of employment and does not create
+  contractual rights of any kind" is the first substantive sentence of nearly
+  every employee handbook, and it is there precisely because nobody signs it —
+  the acknowledgment of receipt is a separate page. STRUCT-003 reported the
+  absent signature block at `critical`, a finding with no answer: adding one
+  would contradict the disclaimer. The signal is self-declaring, so it needs no
+  playbook to be attached to, and it matches nothing in the corpus.
+- **A SAFE was measured as a bilateral bargain.** `safe-yc` had empty
+  `rule_overrides`, so an instrument with no IP, no indemnity, no liability
+  cap, no fees, and nothing to terminate for cause drew seven always-on
+  warnings. Skipped by name, as `convertible-note` and `promissory-note` were.
+  Eleven findings became four.
+
+### Added
+- Two more specimens — a post-money SAFE and an employee handbook — bringing
+  the pinned set to twelve.
+
+### Changed
+- The three sweeps added today (playbook self-reachability, boilerplate
+  reachability, and the specimen set) carry explicit 120-second budgets. Each
+  is seconds rather than milliseconds by construction — 265 playbooks against
+  every one of their title keywords, 662 rules against a document, twelve full
+  analyses — and slower again under coverage instrumentation, which is close
+  enough to the 5-second default to flake on a loaded runner.
+
 ## [9.51.0] — 2026-08-27
 
 ### Added

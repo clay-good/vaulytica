@@ -28,6 +28,7 @@ import { rule as RISK_005 } from "./risk-allocation/RISK-005.js";
 import { rule as TERM_002 } from "./termination/TERM-002.js";
 import { rule as TERM_005 } from "./termination/TERM-005.js";
 import { rule as IPDATA_001 } from "./ip-and-data/IPDATA-001.js";
+import { rule as STRUCT_003 } from "./structural/STRUCT-003.js";
 
 const RULES = [CHOICE_001, CHOICE_003, RISK_001, RISK_005, TERM_002, TERM_005, IPDATA_001];
 
@@ -105,5 +106,38 @@ describe("the always-on absence checks on an amending document", () => {
       ]),
     );
     expect(finding).not.toBeNull();
+  });
+});
+
+/**
+ * A document that says it is not a contract does not have a signature block.
+ *
+ * "This Handbook is not a contract of employment and does not create
+ * contractual rights of any kind" is the first substantive sentence of nearly
+ * every employee handbook, and it is there precisely because nobody signs it —
+ * the acknowledgment of receipt is a separate page. STRUCT-003 reported the
+ * absent signature block at `critical`, a finding with no answer: adding one
+ * would contradict the disclaimer.
+ */
+describe("STRUCT-003 on a document that disclaims being a contract", () => {
+  const BODY = [
+    "This Handbook describes the policies that apply to employees of the Company.",
+    "The Company may add to, modify, or eliminate any policy at any time.",
+  ];
+
+  it("stays silent when the document says it is not a contract", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Employee Handbook",
+          "This Handbook is not a contract of employment and does not create contractual rights of any kind.",
+          ...BODY,
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on the same body without the disclaimer", () => {
+    expect(STRUCT_003.check(buildContext(["Employee Handbook", ...BODY]))).not.toBeNull();
   });
 });

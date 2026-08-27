@@ -1205,6 +1205,14 @@ const HANDBOOK_RULES: Rule[] = [
     present_patterns: [
       /acknowledgment\s+of\s+receipt/i,
       /(employee|i).{0,40}acknowledge.{0,40}received.{0,40}handbook/is,
+      // The ordinary phrasing of the acknowledgment section itself:
+      // "Employees are asked to acknowledge receipt of this Handbook."
+      // Neither pattern above reads it — the first wants the noun form
+      // ("acknowledgment OF receipt") and the second wants the past
+      // participle ("acknowledge ... RECEIVED") — so a handbook whose last
+      // section is its acknowledgment was told at `critical` that it had
+      // none.
+      /acknowledg\w*\s+receipt\s+of\s+(?:this|the)\s+handbook/i,
     ],
   }),
 ];

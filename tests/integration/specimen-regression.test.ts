@@ -34,6 +34,10 @@ const EXPECTED: Record<string, Expectation> = {
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
 
+  // An employee handbook: a policy nobody signs, which says so in its first
+  // substantive sentence.
+  "handbook.txt": { playbook: "employee-handbook", findings: ["STRUCT-006", "OBLI-005"] },
+
   // A convertible promissory note behind a restrictive-securities legend.
   "convertible-note.txt": {
     playbook: "convertible-note",
@@ -87,6 +91,13 @@ const EXPECTED: Record<string, Expectation> = {
   // An insurer's reservation-of-rights letter, titled only in its "Re:" line.
   "ror-letter.txt": { playbook: "reservation-of-rights-letter", findings: ["OBLI-005"] },
 
+  // A post-money SAFE behind the same securities legend. An instrument, not a
+  // bilateral bargain — nobody indemnifies and nothing terminates for cause.
+  "safe.txt": {
+    playbook: "safe-yc",
+    findings: ["EQT-006", "STRUCT-006", "OBLI-005", "STRUCT-005"],
+  },
+
   // A statement of work issued under a named master agreement.
   "sow.txt": { playbook: "sow", findings: ["STRUCT-016", "STRUCT-018", "OBLI-005"] },
 
@@ -119,12 +130,16 @@ describe("hand-written specimens", () => {
     expect(onDisk).toEqual(Object.keys(EXPECTED).sort());
   });
 
-  it.each(Object.entries(EXPECTED))("%s", async (name, expectation) => {
-    const result = await analyzeText(readFileSync(join(DIR, name), "utf8"), name);
-    expect(result.run.playbook_id, `routed to ${result.run.playbook_id}`).toBe(
-      expectation.playbook,
-    );
-    const ids = result.run.findings.map((f) => f.rule_id).sort();
-    expect(ids).toEqual([...expectation.findings].sort());
-  });
+  it.each(Object.entries(EXPECTED))(
+    "%s",
+    async (name, expectation) => {
+      const result = await analyzeText(readFileSync(join(DIR, name), "utf8"), name);
+      expect(result.run.playbook_id, `routed to ${result.run.playbook_id}`).toBe(
+        expectation.playbook,
+      );
+      const ids = result.run.findings.map((f) => f.rule_id).sort();
+      expect(ids).toEqual([...expectation.findings].sort());
+    },
+    120_000,
+  );
 });

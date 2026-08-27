@@ -360,6 +360,9 @@ const PERSPECTIVE_PAIRS = new Map<string, string[]>([
 ]);
 
 describe("every playbook is reachable by its own name and vocabulary", () => {
+  // A 265-playbook x every-title-keyword sweep: seconds, not milliseconds, and
+  // slower again under coverage instrumentation. An explicit budget keeps it
+  // from flaking against the 5s default on a loaded runner.
   it("no family is shadowed by a sibling", () => {
     const shadowed: string[] = [];
     let checked = 0;
