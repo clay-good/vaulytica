@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.42.3] — 2026-08-27
+
+### Fixed
+- **A street address, a lawyer's name, and a rule citation were each reported
+  as a Title-Case term the document forgot to define.** STRUCT-006 reads the
+  extractor's `undefined_capitalized` list, which already excludes place
+  names, statute titles, officer titles, entity names, party names, and street
+  addresses. Three shapes slipped past, and all three showed up the first time
+  a WARN notice, a privilege log, and a stipulated protective order were run:
+  - the street-suffix guard listed nine suffixes and not the ones a modern
+    address uses, so "88 Harbor Way" was reported. `Way`, `Place`, `Court`,
+    `Terrace`, `Circle`, `Plaza`, `Square`, `Trail`, `Row`, `Turnpike`, and
+    `Crossing` join it — which also takes "Superior Court" and "District
+    Court" out, correctly;
+  - a privilege log, a certificate of service, and a signature block all name
+    people who are **not parties**, so the party extractor never sees them and
+    every such name used twice was reported as undefined. A name carrying the
+    post-nominal ("Marcus Field, Esq.") is now recognized as a natural person;
+  - "Federal Rule of Civil Procedure 26(c)" was reported as an undefined
+    "Federal Rule". `Act`, `Code`, and `Law` were already excluded by suffix;
+    `Rule` now is too, but only when the citation shape follows it (`of` plus
+    a capital, or a digit), because a document may genuinely define a
+    "Program Rule" — and one that does still gets flagged.
+
+  Known limitation, deliberately not fixed: a person introduced by an unquoted
+  role parenthetical ("Ana Duarte (General Counsel)") is still reported. Every
+  test that separates it from a genuine defined-term shorthand ("Grantor") also
+  separates a real defined term from itself, and personal-name detection by
+  shape alone would swallow "Contract Sum".
+
 ## [9.42.2] — 2026-08-27
 
 ### Fixed

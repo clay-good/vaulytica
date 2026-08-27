@@ -783,7 +783,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // the unambiguous street-suffix last word. Likewise a named county or
       // parish ("Pierce County") in a legal description or venue recital.
       if (
-        /\s(?:Avenue|Street|Road|Boulevard|Drive|Lane|Parkway|Highway|County|Parish|Borough)$/.test(
+        /\s(?:Avenue|Street|Road|Boulevard|Drive|Lane|Parkway|Highway|Way|Place|Court|Terrace|Circle|Plaza|Square|Trail|Row|Turnpike|Crossing|County|Parish|Borough)$/.test(
           phrase,
         )
       )
@@ -802,6 +802,23 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (/\sNo$/.test(phrase) && /^\.\s*\d/.test(ctx.text.slice(m.index + phrase.length)))
         continue;
       if (personNames.has(phraseLower)) continue;
+      // A name carrying the lawyer's post-nominal ("Marcus Field, Esq.") is a
+      // natural person. A privilege log, a certificate of service, and a
+      // signature block all name people who are not parties, so the party
+      // extractor's `personNames` never sees them, and each name used twice
+      // was reported as a Title-Case term the document forgot to define.
+      if (/^,?\s*Esq\b/.test(ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 8)))
+        continue;
+      // A rule of procedure or evidence ("Federal Rule of Civil Procedure
+      // 26(c)", "Local Rule 7.1") is a citation, not a defined term — the
+      // same reasoning as the `Act`/`Code`/`Law` suffix above, but "Rule"
+      // needs the citation shape to follow it, because a document may
+      // genuinely define a "Program Rule".
+      if (
+        /\sRules?$/.test(phrase) &&
+        /^\s*(?:of\s+[A-Z]|\d)/.test(ctx.text.slice(m.index + phrase.length))
+      )
+        continue;
       if (entityPrefixes.has(phraseLower)) continue;
       // A phrase introduced with a residence or origin ("Diego Castellanos,
       // residing at 9 Elm Row", "Lucia Ferrante, of Burlington") is a natural

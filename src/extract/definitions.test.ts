@@ -350,6 +350,53 @@ describe("place names are not undefined defined-terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("New York County");
   });
 
+  it("a street name ending in Way, Place, or Court is an address, not a defined term", () => {
+    // The street-suffix guard listed nine suffixes and not the ones a modern
+    // address actually uses. "88 Harbor Way" was reported, twice, as a
+    // Title-Case term a WARN notice had forgotten to define.
+    const map = extractDefinitions(
+      buildTree([
+        "Notice",
+        "The facility at 88 Harbor Way will close. Questions may be directed to the office at 88 Harbor Way.",
+        "The hearing is set in the Superior Court. The Superior Court will rule on the motion.",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Harbor Way");
+    expect(terms).not.toContain("Superior Court");
+  });
+
+  it("a lawyer named with the post-nominal is a person, not a defined term", () => {
+    // A privilege log, a certificate of service, and a signature block all
+    // name people who are not parties, so the party extractor never sees
+    // them and every name used twice was reported as undefined.
+    const map = extractDefinitions(
+      buildTree([
+        "Privilege Log",
+        "Author: Marcus Field, Esq. Recipients: Priya Raman.",
+        "Entry 2 was prepared by Marcus Field, Esq. for the client.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Marcus Field");
+  });
+
+  it("a rule of procedure is a citation, not a defined term", () => {
+    // "Act", "Code", and "Law" were already excluded by suffix; "Rule" needs
+    // the citation shape to follow it, because a document may genuinely
+    // define a "Program Rule".
+    const map = extractDefinitions(
+      buildTree([
+        "Order",
+        "Good cause exists under Federal Rule of Civil Procedure 26(c).",
+        "Production is governed by Federal Rule of Evidence 502(d).",
+        "Each Program Rule adopted by the committee is binding. A Program Rule may be amended.",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Federal Rule");
+    expect(terms).toContain("Program Rule");
+  });
+
   it("still flags an ordinary undefined Title-Case business term", () => {
     const map = extractDefinitions(
       buildTree([
