@@ -234,6 +234,33 @@ const TITLE_CASE_PHRASE = /\b((?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,4}))\b/g;
  * captures as multi-word candidates; the single-word states never reach the
  * multi-word phrase list.
  */
+/**
+ * A time zone is a proper noun, never a contractual defined term.
+ *
+ * Every deadline in a purchase agreement, a discovery response, and a notice
+ * clause is stated in one — "5:00 p.m. Eastern Time on the forty-fifth day" —
+ * and the Title-Case run picks it up as a phrase the document uses twice and
+ * never defines. Same class as the street-suffix and place-name guards below.
+ */
+const TIME_ZONE_NAMES = new Set([
+  "Eastern Time",
+  "Central Time",
+  "Mountain Time",
+  "Pacific Time",
+  "Eastern Standard Time",
+  "Central Standard Time",
+  "Mountain Standard Time",
+  "Pacific Standard Time",
+  "Eastern Daylight Time",
+  "Central Daylight Time",
+  "Mountain Daylight Time",
+  "Pacific Daylight Time",
+  "Coordinated Universal Time",
+  "Greenwich Mean Time",
+  "Universal Time",
+  "Local Time",
+]);
+
 const PLACE_NAMES = new Set([
   "New York",
   "New Jersey",
@@ -782,6 +809,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       if (isCompoundOfDefined(phraseLower, definedNames)) continue;
       if (COMMON_WORDS.has(phrase)) continue;
       if (PLACE_NAMES.has(phrase)) continue;
+      if (TIME_ZONE_NAMES.has(phrase)) continue;
       if (STATUTE_NAMES.has(phrase)) continue;
       // A Title-Case phrase ending in "Act", "Code", or "Law" is a statute's
       // title or a body of law ("Bank Secrecy Act", "Utah Code", "Delaware

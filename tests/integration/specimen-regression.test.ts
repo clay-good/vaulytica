@@ -211,6 +211,23 @@ const EXPECTED: Record<string, Expectation> = {
     ],
   },
 
+  // A commercial real estate purchase and sale agreement.
+  "cre-psa.txt": {
+    playbook: "real-estate-psa",
+    findings: [
+      "RE-013",
+      "RE-016",
+      "RISK-016",
+      "STRUCT-006",
+      "STRUCT-018",
+      "FIN-006",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-006",
+      "RISK-011",
+    ],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

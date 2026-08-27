@@ -1314,3 +1314,28 @@ describe("a judicial district is not an undefined defined-term", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).toContain("Base Services");
   });
 });
+
+describe("a time zone is not an undefined defined-term", () => {
+  it("does not flag the time zone in a deadline", () => {
+    // Every deadline in a purchase agreement, a discovery response, and a
+    // notice clause is stated in one, so the Title-Case run picks it up as a
+    // phrase the document uses twice and never defines.
+    const map = extractDefinitions(
+      buildTree([
+        "Due Diligence",
+        "Buyer has until 5:00 p.m. Eastern Time on the forty-fifth day to inspect the Property. Notices are effective before 5:00 p.m. Eastern Time on a business day.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Eastern Time");
+  });
+
+  it("still flags an ordinary two-word Title-Case phrase", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Due Diligence",
+        "Buyer shall review the Diligence Package before the deadline. The Diligence Package is delivered by Seller.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Diligence Package");
+  });
+});

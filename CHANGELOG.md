@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.59.1] — 2026-08-27
+
+### Fixed
+- **A time zone is not a defined term.** Every deadline in a purchase
+  agreement, a discovery response, and a notice clause is stated in one — "5:00
+  p.m. **Eastern Time** on the forty-fifth day" — and the Title-Case run picked
+  it up as a phrase the document uses twice and never defines. Same class as
+  the street-suffix and place-name guards beside it.
+- **`real-estate-psa` had empty `rule_overrides`.** A purchase and sale
+  agreement allocates no intellectual property, and it closes or the deposit is
+  retained rather than terminating for cause.
+
+### Added
+- A commercial real estate purchase and sale agreement specimen, bringing the
+  set to twenty-five.
+
 ## [9.59.0] — 2026-08-27
 
 ### Fixed
