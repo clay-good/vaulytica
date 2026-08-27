@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.48.0] — 2026-08-27
+
+### Fixed
+- **Twenty-one checks could not fire on any realistic document.** Each was a
+  rule whose own name states a conjunction — "Fee schedule attached **and**
+  amendment notice", "Written, signed agreement **with** a one-year minimum
+  term" — written as a synonym **OR**, so one generic alternative satisfied the
+  whole check. `amend` is in every amendment clause, `notice` in every notices
+  clause, `state of <x>` in every governing-law clause; and `signed`,
+  `authoriz`, `represent`, `present`, `witness`, and `author` are all inside
+  words a signature block and an execution clause already contain — "authorized
+  representatives" alone satisfies four of them. Eighteen are now conjunctions;
+  three that were already conjunctions had both pillars satisfied by
+  boilerplate and were tightened instead.
+- **HC-108 read the literal minimum instead of a term that meets it.** "The
+  term of this Agreement is three (3) years" — the commonest way a medical
+  directorship is written — was reported at `critical` as having no one-year
+  minimum term. Any stated term of a year or more now satisfies the pillar,
+  tethered to the word "term" within the sentence so the four-year
+  records-access period every such agreement carries under 42 U.S.C.
+  § 1395x(v)(1)(I) cannot stand in for the term. Its writing pillar also reads
+  the *evidence* of a signed writing: an agreement closing "IN WITNESS WHEREOF,
+  the parties have executed this Agreement" over two "/s/" blocks is one, and
+  never says "signed".
+
+### Added
+- **A boilerplate-reachability guard.** The title-vacuity probe builds a
+  document that is a family's title plus execution boilerplate and asserts
+  every ungated check fires — but that boilerplate is **sterile in a way no
+  real document is**: no entire-agreement clause, no notices clause, no
+  governing law, no "IN WITNESS WHEREOF". A check satisfied by ordinary
+  execution language passed it and was still dead in the field. The new guard
+  runs the same sweep against realistic boilerplate; it found all 21. Both
+  directions are pinned — a companion table checks each tightened rule stays
+  silent on a compliant clause written the way its own `fix` text says to write
+  it, because a check that fires on a compliant document is worse than one that
+  never fires at all.
+
 ## [9.47.2] — 2026-08-27
 
 ### Added

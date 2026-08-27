@@ -300,6 +300,9 @@ const SUBSCRIPTION = pack("subscription-agreement", C, [
   },
   {
     id: "MNA-123",
+    // 1.0.1 — written as a synonym OR, but the acceptance/rejection right and the escrow of funds are distinct pillars. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Acceptance, rejection, and escrow of funds",
     cite: practice(
       "subscription-acceptance",
@@ -309,6 +312,7 @@ const SUBSCRIPTION = pack("subscription-agreement", C, [
       /(accept(ance)?\s+(of\s+)?(this\s+)?subscription|reject\s+(any\s+)?subscription|in\s+whole\s+or\s+in\s+part)/i,
       /(escrow|held\s+(in|until)|returned\s+without\s+interest|minimum\s+offering)/i,
     ],
+    all: true,
     why: "A subscription is an offer until the issuer accepts. Without an acceptance mechanic and a treatment of funds pending acceptance, the issuer holds money on unclear terms.",
     fix: "State that the issuer may accept or reject in whole or in part, when acceptance occurs, and how funds are held and returned if the subscription is rejected or a minimum is not met.",
   },
@@ -367,6 +371,9 @@ const SIDE_LETTER = pack("side-letter", C, [
   },
   {
     id: "MNA-128",
+    // 1.0.1 — written as a synonym OR, but the amendment mechanics and the other-investor consent are distinct pillars; `amend` alone is in every amendment clause. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Amendment mechanics and other-investor consent",
     cite: practice(
       "side-letter-amendment",
@@ -376,6 +383,7 @@ const SIDE_LETTER = pack("side-letter", C, [
       /amend(ed|ment)?/i,
       /(written\s+(instrument|consent)\s+signed|only\s+by\s+(a\s+)?writing|requisite\s+(holders|investors))/i,
     ],
+    all: true,
     why: "If the principal agreement can be amended by a majority of holders, an amendment can gut a side-letter right the minority investor bargained for — unless the side letter says otherwise.",
     fix: "State that this letter may be amended only by the signatories, and whether an amendment of the principal agreement affects the rights granted here.",
   },

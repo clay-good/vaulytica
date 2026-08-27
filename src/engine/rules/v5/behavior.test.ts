@@ -218,6 +218,72 @@ describe("v5 rule EST-410 (gated on first-party evidence)", () => {
   });
 });
 
+describe("v5 rule HC-108 — a term that CLEARS the one-year minimum (v1.0.1)", () => {
+  const written = "This Agreement is signed by both parties before the Services begin.";
+
+  it("accepts a three-year term", () => {
+    // The commonest way a medical directorship is written. The pillar read
+    // only the literal minimum, so an agreement that comfortably clears the
+    // safe harbor was told at `critical` that it failed it.
+    expect(
+      rule("HC-108").check(
+        doc(
+          "Medical Director Agreement",
+          "The term of this Agreement is three (3) years commencing on the Effective Date.",
+          written,
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("accepts a term stated in months", () => {
+    expect(
+      rule("HC-108").check(
+        doc(
+          "Medical Director Agreement",
+          "The initial term is thirty-six (36) months from the Effective Date.",
+          written,
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("accepts a document that IS a signed writing without using the word", () => {
+    // The safe harbor asks for a written, signed agreement. One that closes
+    // "IN WITNESS WHEREOF, the parties have executed this Agreement" over two
+    // "/s/" blocks is one, and never says "signed" — reporting it as missing
+    // is a false accusation on the commonest execution clause there is.
+    expect(
+      rule("HC-108").check(
+        doc(
+          "Medical Director Agreement",
+          "The term of this Agreement is three (3) years commencing on the Effective Date.",
+          "IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a month-to-month arrangement that mentions a longer period elsewhere", () => {
+    // The over-suppression risk, and the reason the widened pillar is tethered
+    // to the word "term" within the sentence: every one of these agreements
+    // carries a four-year records-access period under 42 U.S.C.
+    // § 1395x(v)(1)(I), and a bare "four (4) years" must not stand in for the
+    // term of a month-to-month directorship — which is outside the safe
+    // harbor entirely.
+    expect(
+      rule("HC-108").check(
+        doc(
+          "Medical Director Agreement",
+          "The term of this Agreement is month to month and either party may terminate on thirty days' notice.",
+          "Until the expiration of four (4) years after the furnishing of the Services, Medical Director shall make the records available to the Secretary.",
+          written,
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("v5 applicability gates", () => {
   it("does not demand a Medicaid payback from a third-party special needs trust", () => {
     // EST-410 is gated on first-party evidence. A trust a parent funds has no

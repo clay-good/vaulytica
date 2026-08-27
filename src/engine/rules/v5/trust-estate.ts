@@ -114,12 +114,16 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
 const SNT = pack("special-needs-trust", C, [
   {
     id: "EST-408",
+    // 1.0.1 — written as a synonym OR, but the supplemental-not-supplanting recital and the benefits it names are distinct pillars; `ssi` alone matches inside "discussions". The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Supplemental, not supplanting, benefits language",
     cite: agency_ssa(),
     pat: [
       /(supplement(al)?\s+(to\s+and\s+not\s+in\s+place\s+of|and\s+not\s+(supplant|replace))|shall\s+not\s+(supplant|replace|substitute\s+for))/i,
       /(public\s+benefits|government\s+(assistance|benefits)|ssi|medicaid)/i,
     ],
+    all: true,
     why: "The trust's whole purpose is to add to, not replace, means-tested benefits. Without the supplemental-needs language the trust reads as available support and can disqualify the beneficiary from SSI and Medicaid.",
     fix: "State that distributions are intended to supplement and not supplant, impair, or diminish any public benefits the beneficiary receives or may become eligible to receive.",
     sev: "critical",

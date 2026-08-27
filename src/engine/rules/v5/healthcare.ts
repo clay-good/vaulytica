@@ -116,6 +116,25 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
 const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
   {
     id: "HC-108",
+    // 1.0.1 — the term pillar read only the literal MINIMUM ("one year",
+    // "twelve months"), so an agreement that comfortably clears the safe
+    // harbor was reported as failing it: "The term of this Agreement is three
+    // (3) years" is the commonest way a medical directorship is written, and
+    // it was told at `critical` that it had no one-year minimum term. Any
+    // stated term of a year or more now satisfies the pillar, tethered to the
+    // word "term" within the sentence so an unrelated duration — the four-year
+    // records-access period every one of these agreements carries under 42
+    // U.S.C. § 1395x(v)(1)(I), or a six-year retention clause — cannot stand
+    // in for the term and hide a real month-to-month arrangement.
+    //
+    // The two patterns are also distinct PILLARS — a one-year term AND a
+    // signed writing — and were written as a synonym OR, so the word "signed"
+    // in any execution clause satisfied the whole check on its own. It could
+    // not fire on a realistic document at all. The writing pillar reads the
+    // EVIDENCE of a signed writing as well as the words: an agreement that
+    // closes "IN WITNESS WHEREOF, the parties have executed this Agreement"
+    // over two "/s/" blocks is a signed writing, and never says "signed".
+    ver: "1.0.2",
     name: "Written, signed agreement with a one-year minimum term",
     cite: cfr(
       "42",
@@ -123,9 +142,10 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
       "Anti-Kickback Statute safe harbor — personal services and management contracts",
     ),
     pat: [
-      /(term\s+of\s+(at\s+least\s+)?one\s+year|one\s+\(?1\)?\s+year|twelve\s+\(?12\)?\s+months)/i,
-      /(signed|in\s+writing|written\s+agreement)/i,
+      /(term\s+of\s+(at\s+least\s+)?one\s+year|one\s+\(?1\)?\s+year|twelve\s+\(?12\)?\s+months|\bterm\b[^.]{0,60}?\(?(?:[2-9]|[1-9]\d+)\)?\s+years?\b|\bterm\b[^.]{0,60}?\(?(?:1[2-9]|[2-9]\d|\d{3,})\)?\s+months?\b)/i,
+      /(signed|in\s+writing|written\s+agreement|executed|in\s+witness\s+whereof|\/s\/)/i,
     ],
+    all: true,
     why: "The personal services safe harbor at 42 C.F.R. § 1001.952(d) requires a written, signed agreement with a term of not less than one year. A month-to-month directorship falls outside it entirely.",
     fix: "Set a term of at least one year and confirm the agreement is signed by both parties before services begin.",
     sev: "critical",
@@ -316,6 +336,9 @@ const CTA = pack("clinical-trial-agreement", C, [
 const PAYER = pack("payer-provider-agreement", C, [
   {
     id: "HC-121",
+    // 1.0.1 — written as a synonym OR, but the fee schedule and the amendment notice are distinct pillars; `amend` alone is in every amendment clause. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Fee schedule attached and amendment notice",
     cite: practice(
       "fee-schedule",
@@ -325,6 +348,7 @@ const PAYER = pack("payer-provider-agreement", C, [
       /fee\s+schedule/i,
       /(attached|exhibit|amend|change|notice\s+of\s+(any\s+)?(rate|fee)\s+change|\d+\s+days['’]?\s+(prior\s+)?notice)/i,
     ],
+    all: true,
     why: "Payer forms routinely incorporate a fee schedule by reference to a website and reserve unilateral amendment. A provider that cannot see the rates and cannot terminate on a cut has signed an open-ended discount.",
     fix: "Attach the fee schedule, require advance written notice of any change, and give the provider a termination right if it does not accept the new rates.",
     sev: "critical",
@@ -478,7 +502,12 @@ const TELEHEALTH = pack("telehealth-consent", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    //
+    // 1.2.0 — written as a synonym OR, but the licensure recital and the
+    // patient's location are distinct pillars, and `state\s+of\s+\w+` alone is
+    // satisfied by any governing-law clause. The check could not fire on any
+    // realistic document.
+    ver: "1.2.0",
     name: "Licensure and patient-location recital",
     cite: stateLaw(
       "telehealth-licensure",
@@ -489,6 +518,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
       /(licens(e|ed|ure))/i,
       /(in\s+the\s+state\s+(where|in\s+which)\s+(the\s+)?(patient|you)|patient['’]?s?[-\s]+location|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
     ],
+    all: true,
     why: "The practice of medicine occurs where the patient is, so the provider must be licensed in that state (or covered by a compact or an exception). A patient who travels can put an otherwise routine encounter outside the provider's licensure.",
     fix: "Recite the states in which the provider is licensed, require the patient to confirm their physical location at each encounter, and state that services may be unavailable outside those states.",
     sev: "critical",

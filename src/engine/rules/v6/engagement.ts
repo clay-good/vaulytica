@@ -397,9 +397,15 @@ const JOINT_REP = pack("joint-representation-waiver", C, [
     id: "ENG-026",
     name: "Written confirmation signed by each client",
     cite: modelRule("1.7(b)(4)", "conflict of interest — informed consent, confirmed in writing"),
+    // 1.0.1 — both pillars were satisfied by ordinary execution boilerplate:
+    // `agree` matches inside "entire agreement", and `signature` matches the
+    // signature block every document has. The consent pillar now has to name
+    // a consent rather than an agreement, and the signing pillar has to be
+    // about the CLIENTS signing this waiver.
+    ver: "1.0.1",
     pat: [
-      /(consent|agree|acknowledge)/i,
-      /(signature|sign(ed)?\s+below|by\s+signing|each\s+client\s+(shall\s+)?sign)/i,
+      /(informed\s+consent|consents?\s+(?:in\s+writing\s+)?to\b|each\s+client\s+(?:consents|agrees|acknowledges)|waives?\s+(?:any\s+)?conflict)/i,
+      /(sign(?:ed)?\s+below|by\s+signing\s+(?:this|below)|each\s+client\s+(?:shall\s+)?sign|signed\s+by\s+each\s+client)/i,
     ],
     all: true,
     why: "Rule 1.7(b)(4) requires informed consent confirmed in writing. An unsigned waiver in the file is not the confirmation the rule contemplates.",

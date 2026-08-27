@@ -34,6 +34,9 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
   },
   {
     id: "COMM-202",
+    // 1.0.1 — written as a synonym OR, but the modification right and the notice to users are distinct pillars; `notice` alone is in every notices clause. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Unilateral modification and notice to users",
     cite: practice(
       "unilateral-modification",
@@ -43,6 +46,7 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
       /(we\s+may\s+(modify|change|update)\s+these\s+terms|reserve\s+the\s+right\s+to\s+(modify|change))/i,
       /(notice|notify|posting\s+the\s+(revised|updated)|effective\s+date)/i,
     ],
+    all: true,
     why: "A right to change terms at any time without notice has been held illusory, taking the arbitration clause down with it in several circuits. Notice plus a prospective effective date is what saves the clause.",
     fix: "State that changes take effect only prospectively after notice, describe the notice method, and state that continued use after the effective date is acceptance.",
   },

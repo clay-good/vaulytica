@@ -573,9 +573,13 @@ const FDD = pack("franchise-disclosure-document", C, [
   },
   {
     id: "COMM-145",
+    // 1.0.1 — written as a synonym OR, but the receipt page and the 14-day timing are distinct pillars; `receipt` alone is satisfied by any notice clause ("effective upon receipt"). The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Receipt page and 14-day disclosure timing",
     cite: cfr("16", "436.2", "FTC Franchise Rule — obligation to furnish documents"),
     pat: [/receipt/i, /(14\s+calendar\s+days|fourteen\s+\(?14\)?\s+days|at\s+least\s+14\s+days)/i],
+    all: true,
     why: "§ 436.2(a) requires delivery at least 14 calendar days before signing or payment. The dual receipt pages are the franchisor's only proof of timing, and their absence defeats the defense.",
     fix: "Include both copies of the Item 23 receipt with the issuance date, the franchise seller's identity, and the 14-day statement.",
     sev: "critical",

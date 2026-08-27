@@ -311,6 +311,9 @@ const RELOCATION = pack("relocation-agreement", C, [
   },
   {
     id: "EMP-122",
+    // 1.0.1 — written as a synonym OR, but the deduction and the state-law limit are distinct pillars; `authoriz` alone is satisfied by "authorized representatives" in the signature block. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Wage-deduction authorization and state limits",
     cite: stateLaw(
       "final-pay-deduction",
@@ -321,6 +324,7 @@ const RELOCATION = pack("relocation-agreement", C, [
       /(deduct|withhold)/i,
       /(final\s+(paycheck|pay|wages)|authoriz|to\s+the\s+extent\s+permitted\s+by\s+(applicable\s+)?law)/i,
     ],
+    all: true,
     why: "Many states prohibit deducting a debt from final wages even with authorization, and California prohibits it outright. A clause that assumes the deduction is available creates a wage claim on the way out the door.",
     fix: "Obtain a written deduction authorization, limit it to what applicable state law permits, and provide an alternative repayment route where deduction is prohibited.",
     sev: "critical",
@@ -664,6 +668,9 @@ const WARN = pack("warn-notice", C, [
   },
   {
     id: "EMP-147",
+    // 1.0.1 — written as a synonym OR, but the state and the mini-WARN citation are distinct pillars; `state` alone is satisfied by "State of Delaware" in any governing-law clause. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "State mini-WARN overlay",
     cite: stateLaw(
       "mini-warn",
@@ -674,6 +681,7 @@ const WARN = pack("warn-notice", C, [
       /(state|california|new\s+york|new\s+jersey|illinois)/i,
       /(mini-?warn|state\s+(warn|plant\s+closing)|labor\s+code\s+§?\s*1400|worker\s+adjustment.{0,40}state)/i,
     ],
+    all: true,
     why: "California triggers at 50 employees regardless of percentage, New York requires 90 days, and New Jersey requires 90 days plus mandatory severance. A federal-only notice is non-compliant in those states.",
     fix: "Identify the states involved and satisfy the longest notice period and broadest content requirement among the federal and applicable state statutes.",
     sev: "critical",

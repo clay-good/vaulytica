@@ -396,9 +396,18 @@ const PRIV_LOG = pack("privilege-log", C, [
   },
   {
     id: "DISC-026",
+    // 1.0.1 — both pillars were satisfied by ordinary execution boilerplate,
+    // so the check could not fire on a real log: `author` matches inside
+    // "authorized representatives", and `to\b` matches the word "to". Each
+    // alternative now has to look like a log FIELD rather than a word that
+    // happens to appear.
+    ver: "1.0.1",
     name: "Author, recipients, and copyees",
     cite: frcp("26(b)(5)(A)(ii)", "describing the documents"),
-    pat: [/(author|from|sender)/i, /(recipient|to\b|cc|bcc|copie[ds])/i],
+    pat: [
+      /(\bauthor(?:s|ed\s+by)?\b|\bfrom\s*:|\bsender\b)/i,
+      /(\brecipients?\b|\bto\s*:|\bcc\s*:|\bbcc\s*:|copie[ds]\s+to|\bcopyees?\b)/i,
+    ],
     all: true,
     why: "Privilege turns on who was in the communication. A log without full recipient lists cannot show that no third party broke confidentiality, which is the first thing an opposing party tests.",
     fix: "List the author and every recipient and copyee for each entry, and mark which participants are attorneys.",
@@ -535,9 +544,15 @@ const DEPO = pack("deposition-notice", C, [
     id: "DISC-037",
     name: "Deponent identified",
     cite: frcp("30(b)(1)", "depositions — naming the deponent"),
+    // 1.0.1 — both pillars were satisfied by ordinary execution boilerplate:
+    // `witness` matches inside "IN WITNESS WHEREOF", which opens the
+    // execution clause of nearly every document, and `name` matches the
+    // "Name: ____" line of every signature block. The deponent pillar now
+    // requires a word that names the person to be deposed.
+    ver: "1.0.1",
     pat: [
-      /(deponent|witness|the\s+deposition\s+of)/i,
-      /(name|if\s+the\s+name\s+is\s+not\s+known|general\s+description\s+sufficient\s+to\s+identify)/i,
+      /(deponent|the\s+deposition\s+of|person\s+to\s+be\s+(deposed|examined)|witness\s+to\s+be\s+(deposed|examined))/i,
+      /(name\s+of\s+the\s+(deponent|witness)|if\s+the\s+name\s+is\s+not\s+known|general\s+description\s+sufficient\s+to\s+identify|\bname\s*:)/i,
     ],
     all: true,
     why: "The rule requires naming the deponent or, if the name is unknown, a description sufficient to identify the person or the class or group to which the person belongs.",

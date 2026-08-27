@@ -200,12 +200,16 @@ const ASSIGNMENT_OF_CLAIM = pack("assignment-of-claim", C, [
   },
   {
     id: "SET-115",
+    // 1.0.1 — written as a synonym OR, but the warranty and its subject are distinct pillars; `represent` alone matches inside "representatives". The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Warranties as to title and collectability",
     cite: practice("claim-warranties", "title and collectability warranties in claim assignments"),
     pat: [
       /(warrant|represent)/i,
       /(title\s+to\s+the\s+claim|free\s+(and\s+clear\s+)?of|no\s+(prior\s+)?(assignment|encumbrance)|makes?\s+no\s+(warranty|representation)\s+(as\s+to|regarding)\s+collect)/i,
     ],
+    all: true,
     why: "The assignee needs to know it is buying an unencumbered claim, and the assignor needs to be clear it is not guaranteeing recovery. Both directions must be stated.",
     fix: "Warrant title, no prior assignment, and no release of the claim, and disclaim any warranty of collectability or outcome.",
   },

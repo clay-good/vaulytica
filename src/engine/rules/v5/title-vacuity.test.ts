@@ -30,6 +30,18 @@
  * Three guards followed, each closing a way a check can be unreachable
  * that the first one cannot see: past a closed applicability gate, and
  * through a conjunction that drops its recognizers' regex flags.
+ *
+ * A fourth followed those, and found 21 more. The boilerplate above is
+ * STERILER THAN ANY REAL DOCUMENT — it has no entire-agreement clause, no
+ * notices clause, no governing law, and no "IN WITNESS WHEREOF" — so a
+ * check satisfied by ordinary execution language passed the vacuity probe
+ * and was still dead in the field. `amend` is in every amendment clause,
+ * `notice` in every notices clause, `state\s+of\s+\w+` in every
+ * governing-law clause; `signed` and `authoriz` and `represent` and
+ * `present` and `witness` and `author` are all inside the words a
+ * signature block and an execution clause already contain. Every one of
+ * the 21 was a rule whose own NAME states a conjunction ("Fee schedule
+ * attached AND amendment notice") written as a synonym OR.
  */
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -180,5 +192,214 @@ describe("title-vacuity guard", () => {
     expect(blind, `patterns blind to their own name's hyphen:\n  ${blind.join("\n  ")}`).toEqual(
       [],
     );
+  });
+});
+
+/**
+ * Execution language every real document carries, and nothing substantive.
+ * A check that goes silent on this cannot fire on a real document that is
+ * missing the clause it looks for.
+ */
+const REAL_BOILERPLATE = [
+  "The parties have entered into this document as of the date first written above.",
+  "This document constitutes the entire agreement between the parties and supersedes all prior discussions. It may be amended only by a written agreement signed by both parties.",
+  "Any notice under this document must be in writing and is effective upon receipt.",
+  "This document is governed by the laws of the State of Delaware. If any provision is held invalid, the remainder shall continue in full force and effect.",
+  "IN WITNESS WHEREOF, the parties have duly executed and signed this document by their authorized representatives as of the date first written above.",
+];
+
+describe("boilerplate-reachability guard", () => {
+  it("no ungated check is satisfied by ordinary execution language", () => {
+    const dead: string[] = [];
+    let checked = 0;
+    for (const r of PACK_RULES) {
+      if (GATED_PACK_RULE_IDS.has(r.id)) continue;
+      const title = familyName.get((r.applies_to_playbooks ?? [])[0]!);
+      if (!title) continue;
+      checked += 1;
+      const ctx = buildContext(
+        [title, ...REAL_BOILERPLATE],
+        ["Signatures", "By: ____ Name: ____ Title: ____ Date: ____"],
+      );
+      if (r.check(ctx) === null) dead.push(`${r.id}  ${NAME_OF.get(r.id) ?? ""}`);
+    }
+    expect(checked, "the sweep found no rules — it is broken").toBeGreaterThan(500);
+    expect(
+      dead.sort(),
+      `satisfied by boilerplate, so unable to fire:\n  ${dead.sort().join("\n  ")}`,
+    ).toEqual([]);
+  });
+});
+
+/**
+ * The other direction for the same 21 rules.
+ *
+ * Turning a synonym OR into a conjunction makes a check STRICTER, and a
+ * check that fires on a compliant document is worse than one that never
+ * fires at all. Each clause below is written the way that rule's own `fix`
+ * text says to write it — which is also the test that the recommendation is
+ * actionable.
+ */
+const COMPLIANT: Array<[string, string, string[]]> = [
+  [
+    "COMM-145",
+    "Franchise Disclosure Document",
+    [
+      "ITEM 23 RECEIPT. This disclosure document was delivered to you at least 14 calendar days before you signed any binding agreement or made any payment to the franchisor. Both copies of the receipt bear the issuance date and the franchise seller's identity.",
+    ],
+  ],
+  [
+    "COMM-202",
+    "Website Terms of Use",
+    [
+      "We may modify these terms at any time. Changes take effect only prospectively after we post the revised terms and state a new effective date, and your continued use after that effective date is acceptance.",
+    ],
+  ],
+  [
+    "DISC-026",
+    "Privilege Log",
+    [
+      "Entry 1. Author: Ana Duarte (General Counsel). Recipients: Dermot Halloran. CC: outside counsel. Copied to: none.",
+    ],
+  ],
+  [
+    "DISC-037",
+    "Notice of Deposition",
+    [
+      "PLEASE TAKE NOTICE that the deposition of Dermot Halloran will be taken. Name of the deponent: Dermot Halloran, Managing Member.",
+    ],
+  ],
+  [
+    "EMP-122",
+    "Relocation Agreement",
+    [
+      "You authorize the Company to deduct the unearned relocation amount from your final paycheck, in writing, only to the extent permitted by applicable state law, and to invoice you for any remainder.",
+    ],
+  ],
+  [
+    "EMP-147",
+    "WARN Notice",
+    [
+      "This notice is given under the federal WARN Act and the state plant closing law of California, Labor Code § 1400, whose notice period is longer.",
+    ],
+  ],
+  [
+    "ENG-026",
+    "Joint Representation Waiver",
+    [
+      "Each client consents in writing to the joint representation after being informed of the risks. Each client shall sign below and date this waiver.",
+    ],
+  ],
+  [
+    "EQT-106",
+    "Omnibus Equity Incentive Plan",
+    [
+      "The Board may amend the Plan at any time, provided that any amendment increasing the share reserve requires stockholder approval, as does any amendment to the extent required by applicable law or listing standards.",
+    ],
+  ],
+  [
+    "EQT-124",
+    "Warrant Agreement",
+    [
+      "Upon an acquisition or change of control, this Warrant shall be assumed by the successor or shall terminate upon the closing, and the Company shall give the Holder at least twenty (20) days prior written notice of the closing.",
+    ],
+  ],
+  [
+    "EST-408",
+    "Special Needs Trust",
+    [
+      "Distributions are intended to supplement and not supplant, impair, or diminish any public benefits, including SSI and Medicaid, that the beneficiary receives or may become eligible to receive.",
+    ],
+  ],
+  [
+    "GOV-112",
+    "Meeting Minutes",
+    [
+      "A quorum of the directors was present at the commencement of the meeting and a quorum was present throughout, including when each vote was taken.",
+    ],
+  ],
+  [
+    "HC-108",
+    "Medical Director Agreement",
+    [
+      "The term of this Agreement is three (3) years commencing on the Effective Date, and this Agreement is signed by both parties before the Services begin.",
+    ],
+  ],
+  [
+    "HC-121",
+    "Payer Provider Agreement",
+    [
+      "The fee schedule is attached as Exhibit B. Payer shall give Provider at least ninety (90) days' prior notice of any rate change, and Provider may terminate if it does not accept the new rates.",
+    ],
+  ],
+  [
+    "HC-132",
+    "Telehealth Consent",
+    [
+      "Your provider is licensed in the state in which the patient is located at the time of the encounter, and you must confirm your physical location at each visit.",
+    ],
+  ],
+  [
+    "IPL-103",
+    "Patent Assignment",
+    [
+      "Assignor hereby authorizes and requests the Commissioner for Patents to record this assignment against the applications and patents listed on Schedule A.",
+    ],
+  ],
+  [
+    "IPL-109",
+    "Trademark Assignment",
+    [
+      "Assignor authorizes recordation of this assignment with the United States Patent and Trademark Office and with any foreign registries, and Assignee shall bear the recordation costs.",
+    ],
+  ],
+  [
+    "IPL-112",
+    "Trademark Coexistence Agreement",
+    [
+      "Each party shall use its mark only in the territory and geographic areas described in Schedule 1 and only in the channels of trade listed there, including online and retail use.",
+    ],
+  ],
+  [
+    "IPL-115",
+    "Trademark Coexistence Agreement",
+    [
+      "This agreement is perpetual and its term continues indefinitely. It is binding upon and inures to the benefit of the parties' successors and assigns, and any assignee of the marks must assume it in writing.",
+    ],
+  ],
+  [
+    "MNA-123",
+    "Subscription Agreement",
+    [
+      "The Company may accept or reject this subscription in whole or in part. Funds are held in escrow until acceptance and are returned without interest if the subscription is rejected or the minimum offering is not met.",
+    ],
+  ],
+  [
+    "MNA-128",
+    "Side Letter",
+    [
+      "This letter may be amended only by a written instrument signed by the Company and the Investor, and an amendment of the principal agreement by the requisite holders does not alter the rights granted here.",
+    ],
+  ],
+  [
+    "SET-115",
+    "Assignment of Claim",
+    [
+      "Assignor warrants that it holds title to the claim free and clear of any prior assignment or encumbrance, and makes no warranty as to collectability or outcome.",
+    ],
+  ],
+];
+
+describe("the tightened checks stay silent on a compliant clause", () => {
+  it.each(COMPLIANT)("%s", (id, heading, paras) => {
+    const rule = PACK_RULES.find((r) => r.id === id);
+    expect(rule, `no pack rule ${id}`).toBeDefined();
+    const finding = rule!.check(
+      buildContext(
+        [heading, ...paras],
+        ["Signatures", "By: ____ Name: ____ Title: ____ Date: ____"],
+      ),
+    );
+    expect(finding, `${id} flagged a compliant clause: ${finding?.title ?? ""}`).toBeNull();
   });
 });

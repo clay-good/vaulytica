@@ -152,9 +152,13 @@ const MINUTES = pack("meeting-minutes", C, [
   },
   {
     id: "GOV-112",
+    // 1.0.1 — written as a synonym OR, but the quorum and the recital that it was present are distinct pillars; `present` alone matches inside "representatives". The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Quorum recited",
     cite: uniformAct("Model Business Corporation Act § 8.24", "quorum and voting"),
     pat: [/quorum/i, /(present|constituting|was\s+present\s+throughout)/i],
+    all: true,
     why: "Quorum must exist when the vote is taken, not only at the start. Minutes that record quorum once and then a mid-meeting departure leave later actions open to challenge.",
     fix: "Recite that a quorum was present and, where directors left, note whether a quorum remained for subsequent actions.",
     sev: "critical",

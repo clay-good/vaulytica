@@ -79,13 +79,19 @@ const PLAN = pack("equity-incentive-plan", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    //
+    // 1.2.0 — written as a synonym OR, but the amendment power and the
+    // stockholder-approval trigger are distinct pillars, and `amend` alone is
+    // in every amendment clause. The check could not fire on any realistic
+    // document.
+    ver: "1.2.0",
     name: "Amendment and stockholder-approval triggers",
     cite: irs("26 U.S.C. § 422(b)(1)", "incentive stock options — plan approval by shareholders"),
     pat: [
       /amend(ment)?/i,
       /(stockholder[-\s]+approval|shareholder\s+approval|to\s+the\s+extent\s+required\s+by\s+(applicable\s+law|listing))/i,
     ],
+    all: true,
     why: "§ 422 requires shareholder approval within twelve months of adoption, and listing standards require it for material amendments. A plan that does not name the triggers ends up amended invalidly.",
     fix: "State the amendment authority and which amendments require stockholder approval (reserve increases, ISO changes, repricing, and any change listing standards require).",
   },
@@ -316,12 +322,16 @@ const WARRANT = pack("warrant-agreement", C, [
   },
   {
     id: "EQT-124",
+    // 1.0.1 — written as a synonym OR, but the acquisition trigger and the notice period are distinct pillars; `notice` alone is in every notices clause. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Termination on acquisition and notice period",
     cite: practice("warrant-acquisition", "acquisition treatment and notice in warrants"),
     pat: [
       /(acquisition|merger|sale\s+of\s+the\s+company|change\s+of\s+control)/i,
       /(notice|assum(e|ed|ption)|terminate\s+(upon|on)|days\s+(prior|before))/i,
     ],
+    all: true,
     why: "Warrants often terminate on an acquisition if not exercised. A holder given no advance notice loses the instrument without an opportunity to act — the most common warrant dispute there is.",
     fix: "State whether the warrant is assumed or terminates on an acquisition, and require the company to give a stated number of days' advance written notice of the closing.",
   },

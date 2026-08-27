@@ -36,12 +36,16 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
   },
   {
     id: "IPL-103",
+    // 1.0.1 — written as a synonym OR, but the USPTO addressee and the recordation authorization are distinct pillars; `authoriz` alone is satisfied by "authorized representatives". The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Recordation authorization to the USPTO",
     cite: cfr("37", "3.11", "Recording of assignments and other documents affecting title"),
     pat: [
       /(commissioner\s+for\s+patents|united\s+states\s+patent\s+and\s+trademark\s+office|uspto)/i,
       /(record|authoriz|is\s+hereby\s+(requested|directed)\s+to)/i,
     ],
+    all: true,
     why: "Under 35 U.S.C. § 261 an unrecorded assignment is void against a subsequent bona fide purchaser without notice who records first. Recordation within three months protects priority.",
     fix: "Authorize and direct the Commissioner for Patents to record the assignment, and commit the assignee to record promptly.",
   },
@@ -116,12 +120,16 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
   },
   {
     id: "IPL-109",
+    // 1.0.1 — written as a synonym OR, but the USPTO addressee and the recordation authorization are distinct pillars; `authoriz` alone is satisfied by "authorized representatives". The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Recordation authorization",
     cite: cfr("37", "3.11", "Recording of assignments and other documents affecting title"),
     pat: [
       /(united\s+states\s+patent\s+and\s+trademark\s+office|uspto|commissioner\s+for\s+trademarks)/i,
       /(record|authoriz|is\s+hereby\s+(requested|directed))/i,
     ],
+    all: true,
     why: "An unrecorded trademark assignment is void against a subsequent purchaser for value without notice who records first, under the same three-month rule as patents.",
     fix: "Authorize recordation with the USPTO and any foreign registries, and allocate the recordation costs.",
   },
@@ -157,6 +165,9 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
   },
   {
     id: "IPL-112",
+    // 1.0.1 — written as a synonym OR, but the geographic limit and the channel limit are distinct pillars; `states? of` alone is satisfied by any governing-law clause. The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Geographic and channel limits",
     cite: practice(
       "coexistence-geography",
@@ -166,6 +177,7 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
       /(territory|geographic|region|states?\s+of)/i,
       /(channels?\s+of\s+trade|retail|online|distribution)/i,
     ],
+    all: true,
     why: "Coexistence built only on goods breaks down online, where every party's channel is the same. Channel and geographic limits are what make the arrangement durable.",
     fix: "State the geographic areas and trade channels each party may use, and address internet use expressly.",
   },
@@ -197,12 +209,16 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
   },
   {
     id: "IPL-115",
+    // 1.0.1 — written as a synonym OR, but the term and the successor binding are distinct pillars; `term` alone matches inside "terms". The check could not
+    // fire on any realistic document.
+    ver: "1.0.1",
     name: "Term, assignability, and successor binding",
     cite: practice("coexistence-term", "duration and successor binding in coexistence agreements"),
     pat: [
       /(term|perpetual|shall\s+continue)/i,
       /(successors?\s+and\s+assigns|binding\s+upon|assignment\s+of\s+the\s+marks)/i,
     ],
+    all: true,
     why: "Marks change hands. A coexistence agreement that does not bind successors evaporates the first time either mark is sold, which is exactly when the risk returns.",
     fix: "State the term (usually perpetual), bind successors and assigns, and require any assignee of a mark to assume the agreement in writing.",
   },
