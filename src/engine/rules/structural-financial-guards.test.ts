@@ -242,6 +242,48 @@ describe("STRUCT-003 — the pasted document (v1.21.0)", () => {
   });
 });
 
+describe("STRUCT-003 — how a board actually minutes the act (v1.23.0)", () => {
+  it("reads 'Approved by the Board of Directors on <date>' as execution", () => {
+    // The dated-adoption recital IS a policy's execution, and a board approves
+    // or ratifies at least as often as it "adopts".
+    expect(
+      STRUCT003.check(
+        doc(
+          "Acceptable Use Policy",
+          "Owner: Chief Information Security Officer. Approved by the Board of Directors on August 15, 2026. Effective October 1, 2026.",
+          "Company systems are provided for business purposes.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads a committee's dated approval too", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "Whistleblower Policy",
+          "Approved by the Audit Committee on March 2, 2026.",
+          "Reports may be made anonymously through the hotline.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when the approval carries no date", () => {
+    // The date is what separates the recital of an act from an amendment
+    // clause describing one that may happen.
+    expect(
+      STRUCT003.check(
+        doc(
+          "Acceptable Use Policy",
+          "This policy may be approved by the Board of Directors from time to time.",
+          "Company systems are provided for business purposes.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("STRUCT-003 — the court's own signature (v1.22.0)", () => {
   it("reads 'SO ORDERED … ____ Justice of the Supreme Court' as executed", () => {
     // A court order is signed by an OFFICE, never by a name. A QDRO, a consent

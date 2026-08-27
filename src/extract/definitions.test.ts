@@ -397,6 +397,23 @@ describe("place names are not undefined defined-terms", () => {
     expect(terms).toContain("Program Rule");
   });
 
+  it("a statute title longer than the capture window is still a statute", () => {
+    // TITLE_CASE_PHRASE caps at five words, so "New York Limited Liability
+    // Company Law" captures as "New York Limited Liability Company" and the
+    // Act/Code/Law suffix test cannot see the word that makes it a law. Every
+    // set of New York articles of organization names it twice.
+    const map = extractDefinitions(
+      buildTree([
+        "Articles of Organization",
+        "The undersigned files these Articles under Section 203 of the New York Limited Liability Company Law.",
+        "The company is formed for any lawful purpose under the New York Limited Liability Company Law.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain(
+      "New York Limited Liability Company",
+    );
+  });
+
   it("a revenue procedure or treasury regulation is a citation too", () => {
     // Every LLC and profits-interest agreement cites these by name, twice or
     // more, and each one was reported as a Title-Case term left undefined.

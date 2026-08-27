@@ -768,6 +768,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // genuinely defines this way ("Data Protection Law means …") is already
       // excluded as a defined term; only the undefined law reference remains.
       if (/\s(?:Act|Code|Law)$/.test(phrase)) continue;
+      // The same statute title, when it runs past the five-word cap
+      // TITLE_CASE_PHRASE imposes: "New York Limited Liability Company Law"
+      // captures as "New York Limited Liability Company", and the suffix test
+      // above cannot see the word that makes it a law. Look at what follows.
+      if (/^\s+(?:Act|Code|Law)\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
       if (OFFICER_TITLES.test(phrase)) continue;
       // A phrase immediately followed by a corporate suffix (", Inc.",
       // " LLC") is an entity NAME, not a defined term — same reasoning as

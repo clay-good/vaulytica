@@ -116,8 +116,14 @@ const CERTIFICATION = /\bcertified\s+as\s+adopted\b|\bcertif(?:y|ies)\s+that\s+t
 // policies are adopted by resolution, not signed by parties, and demanding a
 // By:/Name: block of one is a critical false positive. The DATE is required,
 // so an amendment clause's undated "may be adopted by the Board" never counts.
+//
+// A policy is APPROVED or RATIFIED at least as often as it is "adopted", and
+// by a committee at least as often as by the full board — an acceptable-use
+// policy headed "Approved by the Board of Directors on August 15, 2026" drew
+// the critical finding until the verb set matched the way boards actually
+// minute the act.
 const DATED_ADOPTION =
-  /\badopted\s+by\s+the\s+board(?:\s+of\s+directors)?\s+(?:on|as\s+of)\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
+  /\b(?:adopted|approved|ratified)\s+by\s+the\s+(?:board(?:\s+of\s+directors)?|(?:audit|compensation|nominating|governance|risk|executive|finance)\s+committee)\s+(?:on|as\s+of)\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
 
 // A delivery instrument — disclosure schedules, closing certificates,
 // officer's certificates — is DELIVERED pursuant to a parent agreement, not
@@ -196,7 +202,7 @@ const CLICKWRAP_ACCEPTANCE =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.22.0",
+  version: "1.23.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

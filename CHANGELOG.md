@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.45.1] — 2026-08-27
+
+### Fixed
+- **A policy approved by its board reported itself unsigned.** STRUCT-003
+  treats a dated adoption recital as a governance instrument's execution —
+  policies and charters are adopted by resolution, not signed by parties — but
+  the recital had to read "adopted by the board". A board approves or ratifies
+  at least as often as it adopts, and a committee acts at least as often as the
+  full board: an acceptable-use policy headed "Approved by the Board of
+  Directors on August 15, 2026" drew the `critical` finding. `approved` and
+  `ratified` join `adopted`, and the audit, compensation, nominating,
+  governance, risk, executive, and finance committees join the board. The date
+  is still required, so an amendment clause's "may be approved by the Board"
+  still does not count. Version 1.23.0.
+- **A statute title longer than the capture window read as an undefined term.**
+  `TITLE_CASE_PHRASE` caps at five words, so "New York Limited Liability
+  Company Law" captures as "New York Limited Liability Company" and the
+  `Act`/`Code`/`Law` suffix test cannot see the word that makes it a law. Every
+  set of New York articles of organization names it twice, which is the
+  threshold for reporting. The guard now also looks at what FOLLOWS the phrase.
+
 ## [9.45.0] — 2026-08-27
 
 ### Fixed
