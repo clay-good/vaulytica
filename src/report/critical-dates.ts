@@ -371,7 +371,7 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
     // Co-location: a paragraph that both states an absolute date and
     // names an anchor (via "(the 'X Date')" or a bare "X Date") binds them.
     const anchorParen =
-      /\(\s*(?:the\s+)?["“”']?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”']?\s*\)/g;
+      /\(\s*(?:the\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”'’]?\s*\)/g;
     forEachParagraph(tree, (ctx) => {
       const iso = firstAbsoluteIso(ctx.text);
       if (!iso) return;

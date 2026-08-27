@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.45.3] — 2026-08-27
+
+### Fixed
+- **Three more document-reading regexes outside the swept trees.** The
+  apostrophe sweep covered `src/engine/rules/**` and `src/extract/**`, and two
+  places that read the document live elsewhere: the cross-document consistency
+  rules (`children'?s?\s+data`, `minors?'?`) and the critical-dates scanner
+  that finds the defined date a deadline hangs off. Both are now tolerant, and
+  the guard covers them.
+
+  The two regexes it still does not cover are the point of the widening:
+  `src/report/html.ts` and `negotiation-sheet.ts` each carry a bare `/'/g` that
+  ESCAPES an apostrophe on the way OUT. Widening those would be wrong, so the
+  guard names the trees it walks and the one extra file, rather than sweeping
+  `src/` and hoping.
+
 ## [9.45.2] — 2026-08-27
 
 ### Fixed

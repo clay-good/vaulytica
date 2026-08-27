@@ -26,8 +26,16 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import ts from "typescript";
 
-/** Source trees whose regexes read the DOCUMENT, as against the tool's own output. */
-const DOCUMENT_READING_ROOTS = ["src/engine/rules", "src/extract"];
+/**
+ * Source trees whose regexes read the DOCUMENT, as against the tool's own
+ * output. The distinction matters: `src/report/html.ts` and
+ * `negotiation-sheet.ts` each carry a bare `/'/g` that ESCAPES an apostrophe
+ * on the way OUT, and widening those would be wrong — they are not listed.
+ * `critical-dates.ts` is listed by name because it does read the document, to
+ * find the defined dates a deadline hangs off.
+ */
+const DOCUMENT_READING_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
+const DOCUMENT_READING_FILES = ["src/report/critical-dates.ts"];
 
 /**
  * Walk for `.ts` sources. Deliberately not `git ls-files` with quoted globs:
@@ -52,7 +60,10 @@ function sourceFiles(dir: string, out: string[] = []): string[] {
 
 describe("apostrophe tolerance", () => {
   it("no document-reading regex admits only the straight apostrophe", () => {
-    const files = DOCUMENT_READING_ROOTS.flatMap((root) => sourceFiles(root));
+    const files = [
+      ...DOCUMENT_READING_ROOTS.flatMap((root) => sourceFiles(root)),
+      ...DOCUMENT_READING_FILES,
+    ];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];

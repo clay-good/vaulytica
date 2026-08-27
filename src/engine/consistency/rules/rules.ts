@@ -163,7 +163,7 @@ const SENSITIVE_CATEGORY_TERMS: Array<{ term: RegExp; label: string }> = [
     label: "sex life / sexual orientation",
   },
   {
-    term: /\b(children'?s?\s+data|data\s+(?:of|concerning)\s+children|minors?'?\s+data)\b/i,
+    term: /\b(children['’]?s?\s+data|data\s+(?:of|concerning)\s+children|minors?['’]?\s+data)\b/i,
     label: "children's data",
   },
   {
@@ -171,7 +171,7 @@ const SENSITIVE_CATEGORY_TERMS: Array<{ term: RegExp; label: string }> = [
     label: "financial account / payment card data",
   },
   {
-    term: /\b(government[-\s]?issued\s+identifier|social\s+security\s+number|passport\s+number|driver'?s?\s+licen[cs]e\s+number)\b/i,
+    term: /\b(government[-\s]?issued\s+identifier|social\s+security\s+number|passport\s+number|driver['’]?s?\s+licen[cs]e\s+number)\b/i,
     label: "government-issued identifiers",
   },
 ];
