@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.52.0] — 2026-08-27
+
+### Fixed
+- **Five CCPA content items a compliant privacy notice could not satisfy.**
+  Two were negated away: the PNOT pack is family-wide `negation_guarded`, which
+  is right for "nothing here limits your right to …" and wrong when the
+  negation **is** the disclosure. The regulation asks for the categories of
+  sensitive personal information collected, and a business that collects none
+  says "we do not collect or process sensitive personal information" — the
+  complete answer, thrown away and reported as unaddressed. The Do-Not-Sell
+  link is required of a business that sells or shares; one that does neither
+  says so. Both are now matched by patterns anchored at "do", the same shape
+  the "sold/shared, or none" item already uses.
+  - The other three were narrow rather than negated. A notice discloses its
+    **sources** by naming them ("we collect these directly from you", "from our
+    payment processor", "automatically through cookies"), its **purposes**
+    under a heading reading "How We Use Personal Information", and its
+    **recipients** by category ("service providers that perform hosting,
+    payment processing, and analytics on our behalf") — none of which uses the
+    words "sources", "purpose", or "third party". A hand-written, compliant
+    notice scored five warnings; it now scores none.
+- **`privacy-notice-us` and `privacy-notice-gdpr` skipped 49 rules and not one
+  STRUCT rule.** Their four siblings — `cookie-notice`, `hipaa-npp`,
+  `childrens-privacy-notice`, `sms-consent-disclosure` — all carry
+  STRUCT-001/002/004 in the standard eleven-skip profile, and a notice has no
+  parties, no effective-date recital, and no defined-terms glossary either.
+  `privacy-notice-us` also skips IPDATA-008: a US notice saying it stores data
+  in the United States is making a disclosure, not authorizing a cross-border
+  transfer without safeguards.
+
+### Added
+- A US privacy notice specimen, pinned clean — a compliant notice must produce
+  nothing — bringing the set to thirteen. Both directions are guarded for all
+  five CCPA items, because a widened recognizer's failure mode is an item that
+  can no longer fire at all.
+
 ## [9.51.1] — 2026-08-27
 
 ### Fixed

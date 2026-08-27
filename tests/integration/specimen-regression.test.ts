@@ -98,6 +98,11 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["EQT-006", "STRUCT-006", "OBLI-005", "STRUCT-005"],
   },
 
+  // A US privacy notice: no parties, no definitions section, nothing to
+  // terminate. Clean, which is the assertion — a compliant notice must
+  // produce nothing.
+  "privacy-notice.txt": { playbook: "privacy-notice-us", findings: [] },
+
   // A statement of work issued under a named master agreement.
   "sow.txt": { playbook: "sow", findings: ["STRUCT-016", "STRUCT-018", "OBLI-005"] },
 

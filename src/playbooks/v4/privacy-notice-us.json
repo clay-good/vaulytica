@@ -32,6 +32,10 @@
   "expected_clauses": [],
   "expected_defined_terms": [],
   "rule_overrides": {
+    "STRUCT-001": { "skip": true },
+    "STRUCT-002": { "skip": true },
+    "STRUCT-004": { "skip": true },
+    "IPDATA-008": { "skip": true },
     "OBLI-001": {
       "skip": true
     },
@@ -183,9 +187,7 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-PRIVACY-NOTICE",
-  "applicable_jurisdictions": [
-    "US"
-  ],
+  "applicable_jurisdictions": ["US"],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Categories collected",

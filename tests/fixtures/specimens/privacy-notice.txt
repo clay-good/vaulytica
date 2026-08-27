@@ -1,0 +1,60 @@
+VANTERRA ANALYTICS, INC.
+PRIVACY NOTICE
+
+Last updated: February 2, 2026
+
+This Privacy Notice explains how Vanterra Analytics, Inc. ("Vanterra," "we," "us") collects, uses, discloses, and retains personal information about visitors to our website and users of our services, and describes the rights you have over that information.
+
+1. Information We Collect.
+
+We collect the following categories of personal information:
+
+Identifiers, including name, email address, postal address, telephone number, account username, and IP address. We collect these directly from you when you create an account, request a demo, or contact support.
+
+Commercial information, including records of services purchased and billing history. We collect these from you and from our payment processor.
+
+Internet and network activity, including pages viewed, referring URL, session duration, and device and browser characteristics. We collect these automatically through cookies and similar technologies.
+
+Professional information, including employer, job title, and industry. We collect these directly from you and from business-contact data providers.
+
+Inferences drawn from the above, used to tailor product recommendations.
+
+We do not collect or process sensitive personal information as that term is defined under applicable state privacy law, and we do not knowingly collect personal information from children under 16.
+
+2. How We Use Personal Information.
+
+We use personal information to provide and maintain the services; to authenticate users and secure accounts; to process payments; to respond to support requests; to send administrative and transactional messages; to send marketing communications where permitted, from which you may opt out at any time; to analyze and improve the services; and to comply with legal obligations. We retain each category only as long as is reasonably necessary for these purposes, and no longer than seven years after your account is closed unless a longer period is required by law.
+
+3. How We Disclose Personal Information.
+
+We disclose personal information to service providers that perform functions on our behalf — hosting, payment processing, email delivery, analytics, and customer support — under written contracts that limit their use of the information to performing those functions. We also disclose personal information when required by law or valid legal process, and in connection with a merger, acquisition, or sale of assets.
+
+We do not sell personal information, and we do not share personal information for cross-context behavioral advertising, as those terms are defined under applicable state privacy law.
+
+4. Cookies.
+
+We use strictly necessary cookies, which cannot be disabled, and analytics and preference cookies, which you may control through the cookie banner or your browser settings. A description of each cookie, its provider, its purpose, and its duration is available in our Cookie Notice.
+
+5. Your Rights.
+
+Depending on where you live, you may have the right to know what personal information we hold about you, to access a copy of it in a portable format, to correct inaccurate information, to delete it, and to opt out of targeted advertising, sale, or profiling. You may exercise these rights by emailing privacy@vanterra.example or by using the request form on our website. We will verify your identity before responding, and we will respond within forty-five (45) days, with one extension of forty-five (45) days where reasonably necessary, and we will tell you if we take an extension. We will not discriminate against you for exercising any of these rights.
+
+If we deny your request, you may appeal by replying to our decision or by writing to privacy@vanterra.example within thirty (30) days. We will inform you in writing of our decision on appeal, with a written explanation of the reasons, within forty-five (45) days, and we will provide you with information about how to contact your state Attorney General if you have concerns about the outcome.
+
+You may designate an authorized agent to submit a request on your behalf, and we may require the agent to provide proof of authorization and may require you to verify your identity directly with us.
+
+6. Security.
+
+We maintain administrative, technical, and physical safeguards designed to protect personal information against unauthorized access, disclosure, alteration, and destruction. No system is perfectly secure, and we cannot guarantee absolute security.
+
+7. International Transfers.
+
+We store personal information in the United States. If you access the services from outside the United States, you understand that your information will be transferred to and processed in the United States.
+
+8. Changes to This Notice.
+
+We may update this Privacy Notice. When we do, we will revise the "Last updated" date above, and where the changes are material we will provide notice through the services or by email before the changes take effect.
+
+9. Contact Us.
+
+Vanterra Analytics, Inc., Attn: Privacy, 4400 Harbor Point Drive, Suite 600, Hartford, Connecticut 06103. Email: privacy@vanterra.example.

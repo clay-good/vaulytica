@@ -68,7 +68,18 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "11 CCR § 7011(e)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["categor(y|ies) of sources", "sources .{0,30}personal information"],
+    present_patterns: [
+      "categor(y|ies) of sources",
+      "sources .{0,30}personal information",
+      // A notice discloses its sources by naming them, not by using the word:
+      // "We collect these directly from you", "from our payment processor",
+      // "automatically through cookies", "from business-contact data
+      // providers". Requiring the literal "sources" reported the disclosure
+      // as absent on a notice that makes it four times.
+      "collect(ed)? .{0,40}(directly )?from (you|the|our|third|a )",
+      "(we )?(obtain|receive|gather) .{0,40}from (you|the|our|third|a )",
+      "collect(ed)? .{0,30}automatically",
+    ],
   },
   {
     key: "business-purpose",
@@ -76,7 +87,16 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "11 CCR § 7011(e)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["business.{0,5}purpose", "commercial purpose", "purpose.{0,20}collect"],
+    present_patterns: [
+      "business.{0,5}purpose",
+      "commercial purpose",
+      "purpose.{0,20}collect",
+      // The section that states the purposes is almost always headed "How We
+      // Use Personal Information" and written as a list of uses, never once
+      // saying "purpose".
+      "how we use .{0,30}information",
+      "we use .{0,30}(personal )?information to\\b",
+    ],
   },
   {
     key: "third-parties",
@@ -84,7 +104,15 @@ const CCPA_ITEMS: ContentItem[] = [
     citation: "11 CCR § 7011(e)",
     url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["third part(y|ies)", "categor(y|ies) of .{0,20}disclos"],
+    present_patterns: [
+      "third part(y|ies)",
+      "categor(y|ies) of .{0,20}disclos",
+      // The recipients are usually named by category — "service providers
+      // that perform functions on our behalf: hosting, payment processing,
+      // email delivery, analytics" — with no "third party" anywhere.
+      "(we )?(disclose|share|provide) .{0,40}(information|it) (to|with)\\b",
+      "service providers",
+    ],
   },
   {
     key: "sold-shared-or-none",
@@ -146,6 +174,13 @@ const CCPA_ITEMS: ContentItem[] = [
       "do not sell or share my personal information",
       "opt.?out .{0,10}(link|preference)",
       "limit the use",
+      // The link is required of a business that sells or shares; a business
+      // that does neither says so, and that statement is the disclosure.
+      // Phrased to start at "do", so the family-wide negation guard does not
+      // discard it — the same shape the "sold/shared, or none" item already
+      // uses.
+      "do not sell",
+      "do not share .{0,40}(cross.context|behavioral advertising)",
     ],
   },
   {
@@ -158,6 +193,14 @@ const CCPA_ITEMS: ContentItem[] = [
       "sensitive personal information",
       "right to limit",
       "limit the use of .{0,20}sensitive",
+      // The regulation asks for the categories of sensitive personal
+      // information collected. A business that collects none says so, and
+      // that IS the disclosure — but the family-wide negation guard threw the
+      // sentence away ("we do NOT collect or process sensitive personal
+      // information") and reported the item as unaddressed. Anchored at "do"
+      // so the guard sees no negator before the match.
+      "do not (collect|process|use) .{0,40}sensitive",
+      "does not (collect|process|use) .{0,40}sensitive",
     ],
   },
   {
