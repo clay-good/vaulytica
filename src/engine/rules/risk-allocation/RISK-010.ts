@@ -24,7 +24,7 @@ export const rule: Rule = {
       // $5,000" is not read as a coverage limit.
       // Abbreviations carry a `(?![-\w])` guard so "CGL-2026-447821" (a policy
       // number on a certificate of insurance) is not read as a coverage type.
-      /\b(?:commercial\s+general\s+liability|(?:CGL|E&O|D&O|EPLI)(?![-\w])|professional\s+liability|errors\s+and\s+omissions|cyber\s+liability|umbrella\s+(?:liability|insurance|policy|coverage)|excess\s+liability|workers'?\s+comp(?:ensation)?|(?:commercial\s+)?auto(?:mobile)?\s+liability|employer'?s?\s+liability|products?\s+liability|directors'?\s+and\s+officers'?|employment\s+practices\s+liability|property\s+insurance)\b[^.;\n]{0,160}?\$([\d,]+)/i,
+      /\b(?:commercial\s+general\s+liability|(?:CGL|E&O|D&O|EPLI)(?![-\w])|professional\s+liability|errors\s+and\s+omissions|cyber\s+liability|umbrella\s+(?:liability|insurance|policy|coverage)|excess\s+liability|workers['’]?\s+comp(?:ensation)?|(?:commercial\s+)?auto(?:mobile)?\s+liability|employer['’]?s?\s+liability|products?\s+liability|directors['’]?\s+and\s+officers['’]?|employment\s+practices\s+liability|property\s+insurance)\b[^.;\n]{0,160}?\$([\d,]+)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

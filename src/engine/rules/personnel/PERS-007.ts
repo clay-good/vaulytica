@@ -47,7 +47,7 @@ export const rule: Rule = {
       }
       if (
         signals.indexOf("company-equipment") < 0 &&
-        /\bcompany-?supplied\s+(?:equipment|computer|laptop|hardware|tools)|use\s+(?:the\s+)?company['s]+\s+(?:equipment|computer|laptop|systems)|company\s+shall\s+provide\s+(?:all\s+)?(?:equipment|hardware)/i.test(
+        /\bcompany-?supplied\s+(?:equipment|computer|laptop|hardware|tools)|use\s+(?:the\s+)?company['’s]+\s+(?:equipment|computer|laptop|systems)|company\s+shall\s+provide\s+(?:all\s+)?(?:equipment|hardware)/i.test(
           p.text,
         )
       ) {
@@ -84,7 +84,7 @@ export const rule: Rule = {
       }
       if (
         signals.indexOf("on-site-required") < 0 &&
-        /\bat\s+(?:company['s]+|employer['s]+|our)\s+offices\s+located\s+in|on-site\s+at\s+company['s]+\s+(?:office|premises)/i.test(
+        /\bat\s+(?:company['’s]+|employer['’s]+|our)\s+offices\s+located\s+in|on-site\s+at\s+company['’s]+\s+(?:office|premises)/i.test(
           p.text,
         )
       ) {

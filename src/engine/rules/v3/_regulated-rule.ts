@@ -39,7 +39,7 @@ export type RegulatedRuleConfig = {
 };
 
 /** Negator directly governing an upcoming match: short same-sentence window. */
-const NEGATION_PREFIX = /\b(?:no|not|cannot|can'?t|never|nor)\b[^.;\n]{0,20}$/i;
+const NEGATION_PREFIX = /\b(?:no|not|cannot|can['’]?t|never|nor)\b[^.;\n]{0,20}$/i;
 
 /** True when some match of some pattern is NOT negation-prefixed. */
 function presentUnnegated(patterns: readonly RegExp[], text: string): boolean {

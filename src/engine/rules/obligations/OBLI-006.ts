@@ -22,7 +22,7 @@ export const rule: Rule = {
     // asymmetric form this rule surfaces).
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:in|at|within|under)\s+(?:the\s+)?(?:its|his|her|their|[A-Z][A-Za-z]+'s)\s+(?:sole|absolute|unfettered|complete|exclusive)(?:\s+(?:and|&)\s+(?:absolute|exclusive|unfettered))?\s+discretion\b/i,
+      /\b(?:in|at|within|under)\s+(?:the\s+)?(?:its|his|her|their|[A-Z][A-Za-z]+['’]s)\s+(?:sole|absolute|unfettered|complete|exclusive)(?:\s+(?:and|&)\s+(?:absolute|exclusive|unfettered))?\s+discretion\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

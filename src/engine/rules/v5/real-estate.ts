@@ -32,7 +32,7 @@ const SUBLEASE = pack("sublease-agreement", C, [
     name: "Landlord consent as a condition precedent",
     cite: practice("sublease-consent", "landlord consent requirements for subleasing"),
     pat: [
-      /landlord'?s?\s+consent/i,
+      /landlord['’]?s?\s+consent/i,
       /(condition\s+precedent|shall\s+not\s+be\s+effective\s+until|if\s+consent\s+is\s+not\s+obtained)/i,
     ],
     why: "Nearly every commercial lease forbids subletting without consent, and a sublease made without it is a default that can terminate the prime lease — taking the sublease with it.",
@@ -151,7 +151,7 @@ const PROPERTY_MGMT = pack("property-management-agreement", C, [
     cite: practice("pma-authority", "authority limits in property management agreements"),
     pat: [
       /(authority|authorized\s+to)/i,
-      /(without\s+(the\s+)?owner'?s?\s+(prior\s+)?(written\s+)?(approval|consent)|expenditures?\s+(in\s+excess\s+of|exceeding)|\$)/i,
+      /(without\s+(the\s+)?owner['’]?s?\s+(prior\s+)?(written\s+)?(approval|consent)|expenditures?\s+(in\s+excess\s+of|exceeding)|\$)/i,
     ],
     why: "A manager with unbounded spending authority can commit the owner to capital work it never approved. The dollar threshold and the emergency exception are the central controls.",
     fix: "State the manager's authority, the per-item and annual expenditure limits requiring owner approval, and the emergency exception with a notice duty.",
@@ -604,7 +604,7 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
       "https://www.law.cornell.edu/wex/caveat_emptor",
     ),
     pat: [
-      /(seller'?s?\s+disclosure|property\s+condition\s+(disclosure|statement)|disclosure\s+statement)/i,
+      /(seller['’]?s?\s+disclosure|property\s+condition\s+(disclosure|statement)|disclosure\s+statement)/i,
       /(known\s+(defects|material\s+facts)|material\s+defect|as\s+is)/i,
     ],
     why: "Nearly every state mandates a seller disclosure form for residential sales, and an omitted or false disclosure survives closing as a fraud claim regardless of an as-is clause.",
@@ -670,8 +670,8 @@ const WORK_LETTER = pack("tenant-improvement-work-letter", C, [
     name: "Scope split between landlord's and tenant's work",
     cite: practice("work-letter-scope", "allocation of construction scope in work letters"),
     pat: [
-      /landlord'?s?\s+work/i,
-      /(tenant'?s?\s+work|base\s+building|turn-?key|shell\s+condition)/i,
+      /landlord['’]?s?\s+work/i,
+      /(tenant['’]?s?\s+work|base\s+building|turn-?key|shell\s+condition)/i,
     ],
     why: "Every item not assigned to one party becomes a change order. Base-building condition — HVAC capacity, sprinklers, ADA path of travel, demising walls — is where the arguments concentrate.",
     fix: "Attach the base building definition and a responsibility matrix assigning each scope item to the landlord or the tenant.",

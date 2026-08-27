@@ -28,7 +28,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:license\s+to\s+(?:use|reproduce)|right\s+to\s+(?:use|process|reproduce))[^.]{0,200}\bCustomer\s+Data[^.]{0,200}\b(?:train(?:ing)?\s+(?:Vendor's\s+)?(?:services|models|AI|machine[-\s]?learning|ML)|model[-\s]?training|fine[-\s]?tun(?:e|ed|es|ing)|machine[-\s]?learning|AI\s+models?|develop(?:ing)?\s+(?:our\s+|Vendor's\s+|Provider's\s+)?(?:AI|ML|machine[-\s]?learning))|use\s+(?:Customer\s+Data|your\s+content|your\s+data)[^.]{0,200}\b(?:train(?:ing)?|fine[-\s]?tun(?:e|ed|es|ing)|improve\s+our\s+models|develop\s+our\s+models|machine[-\s]?learning)/i,
+      /\b(?:license\s+to\s+(?:use|reproduce)|right\s+to\s+(?:use|process|reproduce))[^.]{0,200}\bCustomer\s+Data[^.]{0,200}\b(?:train(?:ing)?\s+(?:Vendor['’]s\s+)?(?:services|models|AI|machine[-\s]?learning|ML)|model[-\s]?training|fine[-\s]?tun(?:e|ed|es|ing)|machine[-\s]?learning|AI\s+models?|develop(?:ing)?\s+(?:our\s+|Vendor['’]s\s+|Provider['’]s\s+)?(?:AI|ML|machine[-\s]?learning))|use\s+(?:Customer\s+Data|your\s+content|your\s+data)[^.]{0,200}\b(?:train(?:ing)?|fine[-\s]?tun(?:e|ed|es|ing)|improve\s+our\s+models|develop\s+our\s+models|machine[-\s]?learning)/i,
     );
     if (!hit) return null;
     // "Vendor shall NOT use Customer Data to train …" disclaims the training

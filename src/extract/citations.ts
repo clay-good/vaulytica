@@ -44,7 +44,7 @@ export type ParsedCitation = {
  * Fed. R. App. P. 32") is not a case citation.
  */
 const CASE_RE =
-  /\b(\d{1,4})[ \t]+([A-Z][A-Za-z0-9.']*(?:[ ][A-Z0-9][A-Za-z0-9.']*){0,5})[ \t]+(\d+)\b/g;
+  /\b(\d{1,4})[ \t]+([A-Z][A-Za-z0-9.'’]*(?:[ ][A-Z0-9][A-Za-z0-9.'’]*){0,5})[ \t]+(\d+)\b/g;
 
 /** Federal statute: "28 U.S.C. § 1331". */
 const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+§+\s*([\d.]+[a-z0-9()]*)/g;
@@ -62,7 +62,7 @@ const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+§+\s*([\d.]+[a-z0-9()
  * ("42 Pa. Cons. Stat. § 8542") is captured when present.
  */
 const STATUTE_STATE_RE =
-  /\b(\d{1,4}\s+)?((?:(?:[A-Z][A-Za-z'.]*\.|&)\s+)+(?:Code|Codes|Stat\.|Stats\.|Statutes|Laws|Law))(\s+Ann\.)?(?:\s+(?:tit\.|ch\.)\s*[\w-]+,?)?\s*§+\s*(\d+[\d.\-a-z()]*)/g;
+  /\b(\d{1,4}\s+)?((?:(?:[A-Z][A-Za-z'’.]*\.|&)\s+)+(?:Code|Codes|Stat\.|Stats\.|Statutes|Laws|Law))(\s+Ann\.)?(?:\s+(?:tit\.|ch\.)\s*[\w-]+,?)?\s*§+\s*(\d+[\d.\-a-z()]*)/g;
 
 /**
  * Illinois Compiled Statutes, "740 ILCS 5/2" / "740 Ill. Comp. Stat. 14/15".

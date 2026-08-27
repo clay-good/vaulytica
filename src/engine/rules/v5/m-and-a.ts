@@ -251,7 +251,7 @@ const SUBSCRIPTION = pack("subscription-agreement", C, [
     name: "Investment-intent and no-resale representation",
     cite: cfr("17", "230.502(d)", "Regulation D — limitations on resale"),
     pat: [
-      /(investment[-\s]+(intent|purpose)|for\s+(its|his|her|the\s+subscriber'?s)\s+own\s+account)/i,
+      /(investment[-\s]+(intent|purpose)|for\s+(its|his|her|the\s+subscriber['’]?s)\s+own\s+account)/i,
       /(not\s+with\s+a\s+view\s+to\s+(the\s+)?(distribution|resale)|no\s+present\s+intention\s+(to|of)\s+(sell|distribut))/i,
     ],
     why: "Rule 502(d) securities are restricted, and the issuer must take reasonable care to ensure purchasers are not underwriters. The investment-intent representation is the standard evidence of that care.",

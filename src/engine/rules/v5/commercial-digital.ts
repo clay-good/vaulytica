@@ -128,7 +128,7 @@ const API_TERMS = pack("api-terms", C, [
     cite: practice("api-deprecation", "deprecation policies in API terms"),
     pat: [
       /(deprecat|sunset|end\s+of\s+life)/i,
-      /(\d+\s+(days|months)'?\s+notice|advance\s+notice|notice\s+period)/i,
+      /(\d+\s+(days|months)['’]?\s+notice|advance\s+notice|notice\s+period)/i,
     ],
     why: "A developer's whole product can rest on an endpoint. Without a committed deprecation window, the provider can break every integration overnight and be within its rights.",
     fix: "Commit to a stated notice period before breaking changes or endpoint removal, define what counts as a breaking change, and describe the migration support offered.",
@@ -514,7 +514,7 @@ const OEM = pack("oem-agreement", C, [
     cite: practice("oem-license", "embedded license scoping in OEM agreements"),
     pat: [
       /(embed|incorporate\s+(the\s+)?(licensed\s+)?(technology|software)\s+(in|into))/i,
-      /(rebrand|under\s+the\s+oem'?s?\s+(brand|name)|remove\s+(the\s+)?(supplier'?s?\s+)?marks)/i,
+      /(rebrand|under\s+the\s+oem['’]?s?\s+(brand|name)|remove\s+(the\s+)?(supplier['’]?s?\s+)?marks)/i,
     ],
     all: true,
     why: "An OEM license is a license to make the supplier's product disappear into someone else's. Whether the OEM may remove marks, and whether the supplier may be identified at all, is the core of the deal.",

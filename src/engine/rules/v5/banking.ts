@@ -427,7 +427,7 @@ const DACA = pack("deposit-account-control-agreement", C, [
     name: "Bank setoff and prior-rights subordination",
     cite: ucc("9-340", "Effectiveness of right of recoupment or set-off against deposit account"),
     pat: [
-      /(set-?off|recoupment|banker'?s\s+lien)/i,
+      /(set-?off|recoupment|banker['’]?s\s+lien)/i,
       /(subordinat|waives?|except\s+for\s+(returned\s+items|fees|chargebacks))/i,
     ],
     why: "Under § 9-340 the bank's setoff rights survive a security interest unless the bank agrees otherwise. A DACA in which the bank does not subordinate leaves the secured party behind the bank for the account's entire balance.",
@@ -443,7 +443,7 @@ const DACA = pack("deposit-account-control-agreement", C, [
     ),
     pat: [
       /terminat/i,
-      /(\d+\s+days'?\s+(prior\s+)?(written\s+)?notice|successor|transfer\s+the\s+account|closes?\s+the\s+account)/i,
+      /(\d+\s+days['’]?\s+(prior\s+)?(written\s+)?notice|successor|transfer\s+the\s+account|closes?\s+the\s+account)/i,
     ],
     why: "If the bank can resign or close the account on short notice, the secured party can lose perfection between the notice and the replacement account's DACA.",
     fix: "Require advance notice of termination or account closure to the secured party, and require the customer to establish a replacement account under a new control agreement before the old one closes.",
@@ -594,7 +594,7 @@ const EFA = pack("equipment-finance-agreement", C, [
     cite: practice("efa-insurance", "insurance and casualty allocation in equipment finance"),
     pat: [
       /insur(e|ance)/i,
-      /(loss\s+payee|casualty|stipulated\s+loss\s+value|force-?placed|lender'?s\s+loss\s+payable)/i,
+      /(loss\s+payee|casualty|stipulated\s+loss\s+value|force-?placed|lender['’]?s\s+loss\s+payable)/i,
     ],
     why: "The finance party's collateral can be destroyed in a day. Loss-payee status, a stipulated loss value, and the force-placement remedy are the standard protections.",
     fix: "Require property and liability insurance naming the finance party as loss payee and additional insured, state the casualty payment obligation, and reserve force-placement rights.",

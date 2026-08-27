@@ -110,7 +110,7 @@ const DEFINITION_ALIASED =
  * a definition.
  */
 const DEFINITION_PARENTHETICAL =
-  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * The paired collective/individual parenthetical \u2014 the party-definition idiom
@@ -129,7 +129,7 @@ const DEFINITION_PARENTHETICAL =
  * used-but-never-defined.
  */
 const DEFINITION_PAIR_PARENTHETICAL =
-  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D][\s,]+and\b[^)]*?\b(?:collectively|together|individually|each|severally)\b[^)]*?\bthe\s+["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D][\s,]+and\b[^)]*?\b(?:collectively|together|individually|each|severally)\b[^)]*?\bthe\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * A single defined term that trails a PROSE preamble inside its parenthetical:
@@ -148,7 +148,7 @@ const DEFINITION_PAIR_PARENTHETICAL =
  * and the `[^)"\u201C\u201D]*` run cannot cross another quote.
  */
 const DEFINITION_TRAILING_PARENTHETICAL =
-  /\([^)"\u201C\u201D]*,\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\([^)"\u201C\u201D]*,\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * Meaning-by-reference: a term (or a list of terms) is defined by pointing at
@@ -494,7 +494,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
           // ('"Delivery Point": the dock' → 't": the dock').
           const def = text
             .slice(glossary.index + glossary[0].length - 1)
-            .replace(/^["“”'\s]*/, "")
+            .replace(/^["“”'’\s]*/, "")
             .replace(/^[:—–]\s*/, "")
             .trim();
           const start = p.runs[0]?.start ?? 0;

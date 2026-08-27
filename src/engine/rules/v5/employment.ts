@@ -33,7 +33,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     ),
     pat: [
       /(sexual\s+(harassment|assault))/i,
-      /(at\s+the\s+(employee'?s?|claimant'?s?)\s+(election|option)|shall\s+not\s+(be\s+subject\s+to|apply)|9\s+u\.?s\.?c\.?\s*§?\s*40[12]|ending\s+forced\s+arbitration)/i,
+      /(at\s+the\s+(employee['’]?s?|claimant['’]?s?)\s+(election|option)|shall\s+not\s+(be\s+subject\s+to|apply)|9\s+u\.?s\.?c\.?\s*§?\s*40[12]|ending\s+forced\s+arbitration)/i,
     ],
     why: "Since March 2022, 9 U.S.C. § 402 makes a pre-dispute arbitration agreement unenforceable at the claimant's election for sexual harassment and sexual assault disputes. An agreement that does not reflect it is drafting to a rule that no longer exists.",
     fix: "Add an express carve-out stating that claims of sexual harassment or sexual assault are arbitrable only at the employee's election, consistent with 9 U.S.C. §§ 401-402.",
@@ -50,7 +50,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
       "cost-shifting as an unconscionability factor in employment arbitration",
     ),
     pat: [
-      /(the\s+(company|employer)\s+(shall|will)\s+pay|at\s+the\s+(company'?s?|employer'?s?)\s+(sole\s+)?(cost|expense))/i,
+      /(the\s+(company|employer)\s+(shall|will)\s+pay|at\s+the\s+(company['’]?s?|employer['’]?s?)\s+(sole\s+)?(cost|expense))/i,
       /(arbitrat(or|ion)\s+(fees|costs)|filing\s+fee|administrative\s+fees)/i,
     ],
     why: "Requiring an employee to bear forum costs they would not bear in court is the classic ground for refusing enforcement, and the AAA Employment Rules cap the employee's share at a filing fee regardless.",
@@ -82,7 +82,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     cite: practice("arbitration-remedies", "remedial parity in employment arbitration agreements"),
     pat: [
       /(same\s+remedies|all\s+remedies\s+(available|that\s+would\s+be\s+available)|any\s+relief\s+(that\s+)?(a\s+court|available))/i,
-      /(punitive|attorneys'?\s+fees|statutory\s+(damages|remedies))/i,
+      /(punitive|attorneys['’]?\s+fees|statutory\s+(damages|remedies))/i,
     ],
     why: "An agreement that strips punitive damages, statutory fee-shifting, or injunctive relief prevents the employee from vindicating statutory rights and is routinely struck.",
     fix: "State that the arbitrator may award any relief a court could award on the same claim, including statutory damages, punitive damages, and attorneys' fees.",
@@ -187,7 +187,7 @@ const COMMISSION = pack("commission-plan", C, [
     ),
     pat: [
       /(modify|change|amend|revise)\s+(the\s+)?(plan|quota|rate)/i,
-      /(prospective(ly)?|upon\s+\d+\s+days'?\s+notice|at\s+any\s+time|in\s+its\s+(sole\s+)?discretion)/i,
+      /(prospective(ly)?|upon\s+\d+\s+days['’]?\s+notice|at\s+any\s+time|in\s+its\s+(sole\s+)?discretion)/i,
     ],
     why: "Mid-year quota or rate changes applied retroactively to closed deals are wage claims. Prospective-only modification with notice is the enforceable form.",
     fix: "Reserve modification prospectively only, on stated notice, and confirm that deals closed before the effective date are paid under the prior plan.",
@@ -416,7 +416,7 @@ const REMOTE = pack("remote-work-agreement", C, [
     cite: practice("remote-revocation", "revocability of telework arrangements"),
     pat: [
       /(revoke|discontinue|terminate\s+(this\s+)?(arrangement|agreement))/i,
-      /(at\s+any\s+time|upon\s+\d+\s+days'?\s+notice|return\s+to\s+the\s+office|in\s+its\s+discretion)/i,
+      /(at\s+any\s+time|upon\s+\d+\s+days['’]?\s+notice|return\s+to\s+the\s+office|in\s+its\s+discretion)/i,
     ],
     why: "A remote arrangement described as permanent becomes an accommodation the employer cannot withdraw. Reserving revocability with notice preserves flexibility and clarifies the ADA analysis separately.",
     fix: "State that the arrangement is not permanent, may be revoked on stated notice, and is separate from any reasonable accommodation the employee may request.",
@@ -495,7 +495,7 @@ const INTERNSHIP = pack("internship-agreement", C, [
       "https://www.law.cornell.edu/wex/workers_compensation",
     ),
     pat: [
-      /(workers'?\s+compensation|insurance)/i,
+      /(workers['’]?\s+compensation|insurance)/i,
       /(covered|coverage|injur|intern\s+is\s+(not\s+)?(an\s+employee|covered))/i,
     ],
     why: "Unpaid interns are outside workers' compensation coverage in many states, which means an on-site injury is a negligence claim rather than a covered one.",

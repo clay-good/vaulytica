@@ -16,7 +16,7 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
     cite: usc("42", "1395nn", "Stark Law — limitation on certain physician referrals"),
     pat: [
       /fair\s+market\s+value/i,
-      /(commercially\s+reasonable|arm'?s\s+length|independent\s+valuation)/i,
+      /(commercially\s+reasonable|arm['’]?s\s+length|independent\s+valuation)/i,
     ],
     why: "The Stark bona fide employment exception at § 1395nn(e)(2) requires compensation consistent with fair market value and commercially reasonable even if no referrals were made. The recital is the first thing a regulator looks for.",
     fix: "Recite that compensation is consistent with fair market value and that the arrangement is commercially reasonable independent of any referrals, and document the valuation basis.",
@@ -323,7 +323,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     ),
     pat: [
       /fee\s+schedule/i,
-      /(attached|exhibit|amend|change|notice\s+of\s+(any\s+)?(rate|fee)\s+change|\d+\s+days'?\s+(prior\s+)?notice)/i,
+      /(attached|exhibit|amend|change|notice\s+of\s+(any\s+)?(rate|fee)\s+change|\d+\s+days['’]?\s+(prior\s+)?notice)/i,
     ],
     why: "Payer forms routinely incorporate a fee schedule by reference to a website and reserve unilateral amendment. A provider that cannot see the rates and cannot terminate on a cut has signed an open-ended discount.",
     fix: "Attach the fee schedule, require advance written notice of any change, and give the provider a termination right if it does not accept the new rates.",
@@ -396,7 +396,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     cite: usc("42", "300gg-113", "No Surprises Act — continuity of care"),
     pat: [
       /terminat/i,
-      /(continuity\s+of\s+care|transition(al)?\s+care|continuing\s+care\s+patient|\d+\s+days'?\s+notice|90\s+days)/i,
+      /(continuity\s+of\s+care|transition(al)?\s+care|continuing\s+care\s+patient|\d+\s+days['’]?\s+notice|90\s+days)/i,
     ],
     why: "The No Surprises Act requires up to 90 days of continued in-network terms for continuing care patients after a contract terminates. The contract has to accommodate the obligation it cannot contract out of.",
     fix: "State the termination notice period for each party and the continuity-of-care obligations, including the 90-day transitional period for continuing care patients.",
@@ -487,7 +487,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
     ),
     pat: [
       /(licens(e|ed|ure))/i,
-      /(in\s+the\s+state\s+(where|in\s+which)\s+(the\s+)?(patient|you)|patient'?s?[-\s]+location|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
+      /(in\s+the\s+state\s+(where|in\s+which)\s+(the\s+)?(patient|you)|patient['’]?s?[-\s]+location|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
     ],
     why: "The practice of medicine occurs where the patient is, so the provider must be licensed in that state (or covered by a compact or an exception). A patient who travels can put an otherwise routine encounter outside the provider's licensure.",
     fix: "Recite the states in which the provider is licensed, require the patient to confirm their physical location at each encounter, and state that services may be unavailable outside those states.",

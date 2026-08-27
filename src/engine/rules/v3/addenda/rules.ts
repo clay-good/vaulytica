@@ -327,7 +327,7 @@ export const ADDENDA_RULES: Rule[] = [
     exclude_if: [
       /\bopt[- ]?in\b/i,
       /\bnot\s+(?:be\s+)?(?:use|used|using|train|trained|training|process|processed)\b/i,
-      /\bwith\s+(?:the\s+)?(?:customer'?s?\s+)?(?:prior\s+|explicit\s+|affirmative\s+|written\s+)?(?:consent|authorization|permission)\b/i,
+      /\bwith\s+(?:the\s+)?(?:customer['’]?s?\s+)?(?:prior\s+|explicit\s+|affirmative\s+|written\s+)?(?:consent|authorization|permission)\b/i,
     ],
     default_severity: "critical",
   }),

@@ -137,7 +137,7 @@ const COVENANT = pack("covenant-not-to-sue", C, [
     cite: practice("covenant-breach", "remedies for breach of a covenant not to sue"),
     pat: [
       /(breach|violat)/i,
-      /(damages|attorneys'?\s+fees|bar\s+to\s+(the\s+)?(action|suit)|dismiss|specific\s+performance)/i,
+      /(damages|attorneys['’]?\s+fees|bar\s+to\s+(the\s+)?(action|suit)|dismiss|specific\s+performance)/i,
     ],
     why: "The classic weakness of a covenant is that breach gives a damages claim, not an automatic defense. Saying the covenant may be pleaded as a complete bar closes the gap.",
     fix: "State that the covenant may be pleaded as a complete defense and bar to any covered action, and add fee-shifting for enforcement.",
@@ -218,7 +218,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
     cite: frcp("26(c)", "protective orders"),
     pat: [
       /confidential/i,
-      /(attorneys'?\s+eyes\s+only|highly\s+confidential|outside\s+counsel\s+only|tier)/i,
+      /(attorneys['’]?\s+eyes\s+only|highly\s+confidential|outside\s+counsel\s+only|tier)/i,
     ],
     why: "Rule 26(c) requires good cause for each protection. Undifferentiated 'confidential' designation over everything is what draws judicial criticism and sua sponte narrowing of the order.",
     fix: "Define each tier with the category of information it covers and the good-cause basis, and state that designation must be made in good faith after review.",
@@ -409,7 +409,7 @@ const EXPERT = pack("expert-witness-retention", C, [
     cite: frcp("26(b)(4)(B)", "trial preparation — protection of draft reports and disclosures"),
     pat: [
       /(draft[-\s]+(report|disclosure)|rule\s+26\(b\)\(4\))/i,
-      /(protect|work[-\s]+product|communications\s+between\s+(the\s+)?(party'?s?\s+)?attorney\s+and\s+the\s+expert)/i,
+      /(protect|work[-\s]+product|communications\s+between\s+(the\s+)?(party['’]?s?\s+)?attorney\s+and\s+the\s+expert)/i,
     ],
     why: "The 2010 amendments protect draft reports and most attorney-expert communications, with three exceptions (compensation, facts or data provided that the expert considered, and assumptions supplied). Experts who do not know the exceptions create discoverable material.",
     fix: "Recite the Rule 26(b)(4)(B)-(C) protections and the three exceptions, and instruct the expert on document retention accordingly.",
@@ -493,7 +493,7 @@ const STIP_DISMISSAL = pack("stipulation-of-dismissal", C, [
     name: "Costs and attorneys' fees allocation",
     cite: frcp("54(d)", "costs and attorney's fees"),
     pat: [
-      /(costs|attorneys'?\s+fees)/i,
+      /(costs|attorneys['’]?\s+fees)/i,
       /(each\s+party\s+(to\s+)?bear|shall\s+bear\s+its\s+own|waive)/i,
     ],
     why: "Rule 54(d) presumes costs to the prevailing party. Silence in a stipulated dismissal invites a bill of costs after the case is supposedly over.",

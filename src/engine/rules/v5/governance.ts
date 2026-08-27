@@ -387,7 +387,7 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
     name: "Administrative fee and fund accounting",
     cite: practice("fiscal-sponsorship-fee", "administrative fees in fiscal sponsorship"),
     pat: [
-      /(administrative\s+fee|sponsor'?s?\s+fee|indirect\s+cost)/i,
+      /(administrative\s+fee|sponsor['’]?s?\s+fee|indirect\s+cost)/i,
       /(project\s+fund|restricted\s+fund|separate\s+account|accounting)/i,
     ],
     why: "The fee and the accounting rules are where the parties fall out. A project that cannot see its own fund balance or reconcile the fee has no way to manage its budget.",

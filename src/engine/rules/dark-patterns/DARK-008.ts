@@ -39,7 +39,7 @@ export const rule: Rule = {
       // leading "<verb> or " is accepted before "suspend". Without it the whole
       // dominant "we may terminate or suspend your account" consumer phrasing
       // was missed, because "terminate" sat between the introducer and "suspend".
-      /\b(?:Vendor|Provider|Company|Licensor|Supplier|Contractor|Licensee|we)\s+(?:may|reserves?\s+the\s+right\s+to)\s+(?:(?:terminate|disable|deactivate|cancel|revoke|block|limit|restrict)\s+or\s+)?suspend\s+(?:or\s+terminate\s+)?(?:(?:Customer's|your)\s+(?:access|account)(?:\s+to\s+)?)?(?:the\s+(?:Service|Services|Software|Platform|Application))?[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
+      /\b(?:Vendor|Provider|Company|Licensor|Supplier|Contractor|Licensee|we)\s+(?:may|reserves?\s+the\s+right\s+to)\s+(?:(?:terminate|disable|deactivate|cancel|revoke|block|limit|restrict)\s+or\s+)?suspend\s+(?:or\s+terminate\s+)?(?:(?:Customer['’]s|your)\s+(?:access|account)(?:\s+to\s+)?)?(?:the\s+(?:Service|Services|Software|Platform|Application))?[^.]{0,200}(?:immediately\s+and\s+without\s+notice|without\s+notice|at\s+any\s+time|in\s+(?:its\s+)?sole\s+discretion)/i,
     );
     if (!hit) return null;
     // The broad trigger can span a COMPLIANT clause and land on a negated phrase

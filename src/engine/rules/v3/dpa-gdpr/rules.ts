@@ -780,7 +780,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // 28(3)(g). "at the Processor's sole discretion, either delete or
       // return" hands it to the processor via "discretion" rather than
       // "option/choice" — the same defect, different word.
-      /(?:at\s+the\s+processor'?s?\s+(?:sole\s+)?discretion|in\s+the\s+processor'?s?\s+(?:sole\s+)?discretion|processor'?s?\s+(?:sole\s+)?discretion)[^.]{0,80}(?:delete|return)|(?:delete|return)[^.]{0,80}at\s+the\s+processor'?s?\s+(?:sole\s+)?discretion/is,
+      /(?:at\s+the\s+processor['’]?s?\s+(?:sole\s+)?discretion|in\s+the\s+processor['’]?s?\s+(?:sole\s+)?discretion|processor['’]?s?\s+(?:sole\s+)?discretion)[^.]{0,80}(?:delete|return)|(?:delete|return)[^.]{0,80}at\s+the\s+processor['’]?s?\s+(?:sole\s+)?discretion/is,
     ],
   }),
   language({
@@ -844,7 +844,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // "Processor may unilaterally amend or supplement the Controller's
       // instructions" arrogates that power — the verb is amend/modify/change,
       // not deviate/depart, so the branches above missed it.
-      /processor\s+may\s+(?:\w+\s+){0,3}?(?:unilaterally\s+)?(?:amend|modify|change|alter|supplement|override)\s+(?:or\s+\w+\s+)?(?:the\s+)?(?:controller'?s?\s+)?instructions/is,
+      /processor\s+may\s+(?:\w+\s+){0,3}?(?:unilaterally\s+)?(?:amend|modify|change|alter|supplement|override)\s+(?:or\s+\w+\s+)?(?:the\s+)?(?:controller['’]?s?\s+)?instructions/is,
     ],
   }),
   presence({
@@ -1064,7 +1064,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     // all-encompassing quantifier so a partial-cost split is not flagged.
     bad_patterns: [
       /controller\s+(shall|will)\s+bear\s+(all|the\s+entire|the\s+full)\s+costs?\s+of\s+(any\s+)?audit/i,
-      /audit.{0,80}(at\s+(the\s+)?controller'?s?\s+(sole\s+)?(cost|expense))/is,
+      /audit.{0,80}(at\s+(the\s+)?controller['’]?s?\s+(sole\s+)?(cost|expense))/is,
       /(?:the\s+)?controller\s+(?:shall|will|must|agrees?\s+to)\s+(?:bear|pay|cover|be\s+(?:responsible|liable)\s+for)\s+(?:all|the\s+(?:entire|full)|any)\s+costs?(?:\s+and\s+expenses?)?[^.]{0,40}audit/is,
       /(?:all\s+)?costs?(?:\s+and\s+expenses?)?\s+of\s+(?:any\s+|the\s+)*audit[^.]{0,60}(?:borne|paid)\s+(?:solely\s+|exclusively\s+)?by\s+(?:the\s+)?controller/is,
     ],

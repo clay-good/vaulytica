@@ -94,7 +94,7 @@ const COMPLAINT = pack("complaint", C, [
     cite: frcp("8(a)(3)", "claim for relief — demand for the relief sought"),
     pat: [
       /(wherefore|prayer\s+for\s+relief|demand(s)?\s+judgment|requests?\s+that\s+(this|the)\s+court)/i,
-      /(damages|injunctive|declaratory|costs|attorneys'?\s+fees|such\s+other\s+(and\s+further\s+)?relief)/i,
+      /(damages|injunctive|declaratory|costs|attorneys['’]?\s+fees|such\s+other\s+(and\s+further\s+)?relief)/i,
     ],
     all: true,
     why: "Rule 8(a)(3) requires a demand for the relief sought. A default judgment cannot exceed what the demand asked for, so an omitted or narrow prayer caps the case before it starts.",
@@ -200,7 +200,7 @@ const ANSWER = pack("answer", C, [
     cite: practice("answer-prayer", "the answer's demand for relief"),
     pat: [
       /(wherefore|prays?|requests?\s+that\s+(this|the)\s+court)/i,
-      /(dismiss|judgment\s+in\s+(its|their|defendant'?s?)\s+favor|take\s+nothing|costs|attorneys'?\s+fees)/i,
+      /(dismiss|judgment\s+in\s+(its|their|defendant['’]?s?)\s+favor|take\s+nothing|costs|attorneys['’]?\s+fees)/i,
     ],
     all: true,
     why: "The answer's prayer is where the defendant asks for dismissal, costs, and fees. Omitting it does not waive much, but it does leave the court without a stated request to grant.",

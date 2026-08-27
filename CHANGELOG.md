@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.45.0] — 2026-08-27
+
+### Fixed
+- **Eighty-two recognizers could not read the apostrophe a Word document
+  actually contains.** Word inserts U+2019 (the curly apostrophe) by default,
+  and the ingest layer does not fold it: `normalize()` collapses whitespace and
+  strips zero-width characters, deliberately leaving the drafter's own
+  punctuation alone so a finding's excerpt is the drafter's text. So
+  `landlord'?s?\s+consent` — an entirely ordinary recognizer — cannot match
+  "Landlord’s consent is required", which is what a real DOCX contains.
+
+  The failure is silent in the way this repo keeps rediscovering: every fixture
+  is hand-typed with straight quotes, so no test could see it, while every
+  document from Word carries the other character. Eighty-two recognizers across
+  forty-one files were affected, including the landlord's consent, the
+  manufacturer's warranty, workers' compensation, attorneys' fees, the
+  employee's election, the seller's disclosure, the sponsor's fee, and days'
+  notice. `['’]` costs nothing, and a new guard reads every regex in
+  `src/engine/rules/**` and `src/extract/**` through the TypeScript scanner and
+  fails on any that admits only the straight form.
+
+  The scanner matters. A first pass that found regex literals with a regex over
+  the source mistook the slashes in an ordinary string — "(e.g., '#ad' / 'paid
+  partnership')" — for delimiters and rewrote a user-visible recommendation
+  into `['’]#ad['’]`. Two goldens caught it, which is what they are for.
+
+  No corpus finding moved: the fixtures are straight-quoted, which is precisely
+  why the defect survived this long.
+
 ## [9.44.0] — 2026-08-27
 
 ### Fixed

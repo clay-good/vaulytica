@@ -18,7 +18,7 @@ export const rule: Rule = {
     // force-majeure signal. "act of God" is also written in the plural.
     const hit = firstParagraphMatch(
       ctx,
-      /\bforce\s+majeure\b|\bacts?\s+of\s+god\b|\bbeyond\s+(?:the\s+|its\s+|their\s+|a\s+party'?s?\s+|such\s+party'?s?\s+|any\s+party'?s?\s+|either\s+party'?s?\s+)?reasonable\s+control\b|\bbeyond\s+the\s+(?:reasonable\s+)?control\s+of\s+(?:the\s+|any\s+|such\s+|either\s+)?part(?:y|ies)\b/i,
+      /\bforce\s+majeure\b|\bacts?\s+of\s+god\b|\bbeyond\s+(?:the\s+|its\s+|their\s+|a\s+party['’]?s?\s+|such\s+party['’]?s?\s+|any\s+party['’]?s?\s+|either\s+party['’]?s?\s+)?reasonable\s+control\b|\bbeyond\s+the\s+(?:reasonable\s+)?control\s+of\s+(?:the\s+|any\s+|such\s+|either\s+)?part(?:y|ies)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;

@@ -604,7 +604,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     // the same negation; keying the guard on a literal "not" adjacent to the
     // phrase reported the customer-favorable clause as the overreach it denies.
     exclude_if: [
-      /\b(?:not|never)\s+(?:be\s+|the\s+|your\s+|its\s+|a\s+|customer'?s?\s+|deemed\s+)*sole\s+and\s+exclusive\s+remedy/i,
+      /\b(?:not|never)\s+(?:be\s+|the\s+|your\s+|its\s+|a\s+|customer['’]?s?\s+|deemed\s+)*sole\s+and\s+exclusive\s+remedy/i,
       /under\s+no\s+circumstances[^.]{0,80}?sole\s+and\s+exclusive\s+remedy/i,
     ],
     default_severity: "info",

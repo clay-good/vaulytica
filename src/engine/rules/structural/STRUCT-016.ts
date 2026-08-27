@@ -59,7 +59,7 @@ export const rule: Rule = {
       // and the URL must all sit in ONE sentence — otherwise the window stitched
       // an unrelated governing-law clause to a later, disclaimed support-portal
       // URL and reported it as an incorporation.
-      /\b(?:incorporated\s+(?:by|herein\s+by|into\s+this\s+Agreement\s+by)\s+reference|subject\s+to|governed\s+by|in\s+accordance\s+with|comply\s+with)\b[^.;\n]{0,200}\b(?:Acceptable\s+Use\s+Policy|Privacy\s+Policy|Cookie\s+Policy|SLA|Service\s+Level\s+Agreement|Documentation|Service\s+Description|Terms\s+of\s+Use|Terms\s+of\s+Service|Code\s+of\s+Conduct|Security\s+Policy|Data\s+Processing\s+Addendum|DPA)\b[^.;\n]{0,200}(?:https?:\/\/[^\s,)]+|located\s+at\s+[^\s,]+|available\s+at\s+[^\s,]+|on\s+(?:Vendor|Provider|Company|Licensor)'?s?\s+website|on\s+the\s+(?:Vendor|Provider|Company)\s+(?:website|portal))/i,
+      /\b(?:incorporated\s+(?:by|herein\s+by|into\s+this\s+Agreement\s+by)\s+reference|subject\s+to|governed\s+by|in\s+accordance\s+with|comply\s+with)\b[^.;\n]{0,200}\b(?:Acceptable\s+Use\s+Policy|Privacy\s+Policy|Cookie\s+Policy|SLA|Service\s+Level\s+Agreement|Documentation|Service\s+Description|Terms\s+of\s+Use|Terms\s+of\s+Service|Code\s+of\s+Conduct|Security\s+Policy|Data\s+Processing\s+Addendum|DPA)\b[^.;\n]{0,200}(?:https?:\/\/[^\s,)]+|located\s+at\s+[^\s,]+|available\s+at\s+[^\s,]+|on\s+(?:Vendor|Provider|Company|Licensor)['’]?s?\s+website|on\s+the\s+(?:Vendor|Provider|Company)\s+(?:website|portal))/i,
     ).filter((mm) => {
       // enclosingSentence splits on periods, and a URL's own dots ("vendor.com")
       // truncate the sentence before the trailing disclaimer — the natural order,

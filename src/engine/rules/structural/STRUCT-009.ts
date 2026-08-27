@@ -91,7 +91,7 @@ export function isGenericOwnUse(text: string, index: number): boolean {
  * the defined term, so these must not read as an inconsistency.
  */
 export function isContrastiveUse(text: string, index: number): boolean {
-  return /\b(?:competing|competitor'?s?|competitive|rival|similar|comparable|substitute|alternative|other|another|third[-\s]?party)\s+$/i.test(
+  return /\b(?:competing|competitor['’]?s?|competitive|rival|similar|comparable|substitute|alternative|other|another|third[-\s]?party)\s+$/i.test(
     text.slice(Math.max(0, index - 20), index),
   );
 }

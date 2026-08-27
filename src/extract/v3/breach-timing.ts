@@ -64,7 +64,7 @@ const ADDRESSEES: { rx: RegExp; addressee: BreachAddressee }[] = [
   { rx: /\bcontroller\b/i, addressee: "controller" },
   { rx: /\bcovered entity\b/i, addressee: "controller" },
   {
-    rx: /\bcustomer(?:'s)? (?:named|designated) contact\b|\bdesignated contact\b/i,
+    rx: /\bcustomer(?:['’]s)? (?:named|designated) contact\b|\bdesignated contact\b/i,
     addressee: "customer-named-contact",
   },
 ];

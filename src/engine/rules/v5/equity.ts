@@ -352,7 +352,7 @@ const SECONDARY = pack("secondary-stock-transfer", C, [
       "company consent and stock-ledger updates in secondary transfers",
     ),
     pat: [
-      /(consent\s+of\s+the\s+company|company'?s?\s+(written\s+)?(consent|approval))/i,
+      /(consent\s+of\s+the\s+company|company['’]?s?\s+(written\s+)?(consent|approval))/i,
       /(transfer[-\s]+agent|stock\s+ledger|book\s+entry|record\s+the\s+transfer)/i,
     ],
     why: "A private company's shares transfer on its books, not by delivery of a certificate. Without the company's consent and ledger entry, the buyer holds nothing enforceable.",

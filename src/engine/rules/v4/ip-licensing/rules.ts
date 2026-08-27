@@ -539,7 +539,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
       // by title — '"Work" means the illustrated book titled "…", as described
       // on Exhibit A' — as it is called "licensed works" verbatim. This rule is
       // copyright-scoped, so a defined "Work" IS the identification of the work.
-      /["“']works?["”']\s+means\b/i,
+      /["“'’]works?["”'’]\s+means\b/i,
     ],
   }),
   presence({

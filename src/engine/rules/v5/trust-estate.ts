@@ -130,7 +130,7 @@ const SNT = pack("special-needs-trust", C, [
     cite: usc("42", "1396p", "Medicaid — liens, adjustments, recoveries, and transfers of assets"),
     pat: [
       /(first-?party|self-?settled|d4a|\(d\)\(4\)\(a\)|third-?party)/i,
-      /(funded\s+with\s+(the\s+)?beneficiary'?s?\s+(own\s+)?(assets|funds)|funded\s+by\s+(a\s+)?(parent|grandparent|third[-\s]+party))/i,
+      /(funded\s+with\s+(the\s+)?beneficiary['’]?s?\s+(own\s+)?(assets|funds)|funded\s+by\s+(a\s+)?(parent|grandparent|third[-\s]+party))/i,
     ],
     why: "A first-party trust under § 1396p(d)(4)(A) must be for a disabled person under 65, established by the proper party, and carry a Medicaid payback. A third-party trust carries none of those constraints — but only if it truly holds no beneficiary assets.",
     fix: "State whose assets fund the trust and characterize it expressly as first-party (d)(4)(A) or third-party, and align the payback and age provisions accordingly.",
@@ -147,7 +147,7 @@ const SNT = pack("special-needs-trust", C, [
     why: "§ 1396p(d)(4)(A) requires the state to receive all amounts remaining at the beneficiary's death up to the total medical assistance paid. A first-party trust without the payback is not an exempt trust at all.",
     fix: "Include the payback provision naming each state that provided medical assistance, before any remainder distribution.",
     when: [
-      /(first-?party|self-?settled|d4a|\(d\)\(4\)\(a\)|beneficiary'?s?\s+own\s+(assets|funds)|personal\s+injury\s+(settlement|recovery))/i,
+      /(first-?party|self-?settled|d4a|\(d\)\(4\)\(a\)|beneficiary['’]?s?\s+own\s+(assets|funds)|personal\s+injury\s+(settlement|recovery))/i,
     ],
     sev: "critical",
   },
@@ -300,7 +300,7 @@ const QDRO = pack("qdro", C, [
     cite: usc("29", "1056", "ERISA § 206(d)(3) — form of benefit to the alternate payee"),
     pat: [
       /(separate[-\s]+interest|shared[-\s]+payment)/i,
-      /(alternate\s+payee'?s?\s+(own\s+)?life|when\s+the\s+participant\s+(begins|commences)|actuarially\s+adjusted)/i,
+      /(alternate\s+payee['’]?s?\s+(own\s+)?life|when\s+the\s+participant\s+(begins|commences)|actuarially\s+adjusted)/i,
     ],
     why: "A separate interest is payable over the alternate payee's own lifetime; a shared payment depends on the participant's election and ends at the participant's death. The choice is the practical difference between security and dependence.",
     fix: "State whether the award is a separate interest or a shared payment, and for a separate interest, the actuarial adjustment and the alternate payee's own commencement rights.",

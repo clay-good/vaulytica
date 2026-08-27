@@ -29,8 +29,8 @@ const LINE_PATTERNS: { line: InsuranceLine; rx: RegExp }[] = [
     rx: /\bcyber liabilit(?:y|ies)\b|\bcyber insurance\b|\bcyber risk\b/i,
   },
   { line: "umbrella-excess", rx: /\bumbrella\b|\bexcess liabilit(?:y|ies)\b/i },
-  { line: "workers-compensation", rx: /\bworkers'?\s*compensation\b|\bworker[s']*\s*comp\b/i },
-  { line: "employers-liability", rx: /\bemployers'?\s+liabilit(?:y|ies)\b/i },
+  { line: "workers-compensation", rx: /\bworkers['’]?\s*compensation\b|\bworker[s'’]*\s*comp\b/i },
+  { line: "employers-liability", rx: /\bemployers['’]?\s+liabilit(?:y|ies)\b/i },
   {
     line: "automobile-liability",
     rx: /\bauto(?:mobile)?\s+liabilit(?:y|ies)\b|\bbusiness auto\b/i,

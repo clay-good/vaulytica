@@ -276,3 +276,28 @@ describe("v5 applicability gates", () => {
     ).toBeNull();
   });
 });
+
+describe("v5 — the apostrophe a Word document actually contains", () => {
+  // Word inserts U+2019 by default and the ingest layer leaves the drafter's
+  // punctuation alone, so a recognizer written with the straight apostrophe
+  // reads nothing on a real DOCX. `tests/integration/apostrophe-tolerance.test.ts`
+  // proves no recognizer has that shape; this proves the behavior end to end
+  // on the rule that first showed it.
+  it("RE-102 reads \u201cLandlord\u2019s consent\u201d", () => {
+    const r = V5_RULES.find((x) => x.id === "RE-102")!;
+    const straight = r.check(
+      buildContext([
+        "Sublease",
+        "This Sublease has no effect until Landlord's consent is delivered in the form the Prime Lease requires.",
+      ]),
+    );
+    const curly = r.check(
+      buildContext([
+        "Sublease",
+        "This Sublease has no effect until Landlord\u2019s consent is delivered in the form the Prime Lease requires.",
+      ]),
+    );
+    expect(straight).toBeNull();
+    expect(curly).toBeNull();
+  });
+});

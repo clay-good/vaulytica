@@ -52,7 +52,7 @@ const ALLCAPS_FIELD_PLACEHOLDER =
 
 const PATTERNS: Array<{ re: RegExp; label: string }> = [
   { re: /\[insert[^\]]{0,80}\]/gi, label: "[insert …] placeholder" },
-  { re: /\[[A-Z][A-Za-z\s/&'-]{1,60}\s+[Nn]ame\]/g, label: "[Title-Case name] placeholder" },
+  { re: /\[[A-Z][A-Za-z\s/&'’-]{1,60}\s+[Nn]ame\]/g, label: "[Title-Case name] placeholder" },
   {
     re: new RegExp(
       `\\[[A-Z][a-zA-Z]+(?:\\s+[A-Z][a-zA-Z]+){0,3}\\s+(?:${FIELD_LABEL_SUFFIXES})\\]`,

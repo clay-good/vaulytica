@@ -178,7 +178,7 @@ export const CATEGORY_CATALOG: CategoryDef[] = [
     slug: "ccpa-driver-license",
     label: "driver's license / state-id / passport",
     group: "ccpa-sensitive",
-    rx: /\b(?:driver'?s? license|state identification|passport number)/i,
+    rx: /\b(?:driver['’]?s? license|state identification|passport number)/i,
   },
   {
     slug: "ccpa-financial-account",

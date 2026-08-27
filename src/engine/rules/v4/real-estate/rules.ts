@@ -1046,11 +1046,11 @@ const ESTOPPEL_RULES: Rule[] = [
     recommendation:
       "Add 'Knowledge Qualifier' stating that reps are to the knowledge of the signing officer.",
     present_patterns: [
-      /to\s+(the\s+)?(undersigned|signer|signing\s+officer)('s)?\s+knowledge/is,
+      /to\s+(the\s+)?(undersigned|signer|signing\s+officer)(['’]s)?\s+knowledge/is,
       /knowledge\s+of\s+the\s+undersigned/i,
       // The standard form qualifies by the PARTY ROLE — "to Tenant's actual
       // knowledge", "to Seller's knowledge" — not by "the undersigned".
-      /[Tt]o\s+(?:the\s+)?[A-Z]\w+[''\u2019]s\s+(?:actual\s+)?knowledge/,
+      /[Tt]o\s+(?:the\s+)?[A-Z]\w+['’'’\u2019]s\s+(?:actual\s+)?knowledge/,
     ],
     default_severity: "warning",
   }),

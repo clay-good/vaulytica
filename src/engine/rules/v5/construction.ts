@@ -35,7 +35,7 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
       "https://dbia.org/contract-documents/",
     ),
     pat: [
-      /(owner'?s?\s+program|owner'?s?\s+criteria|basis\s+of\s+design)/i,
+      /(owner['’]?s?\s+program|owner['’]?s?\s+criteria|basis\s+of\s+design)/i,
       /(attached|exhibit|incorporated|performance\s+(criteria|specification))/i,
     ],
     why: "Everything the owner did not put in the program is a change order. The line between prescriptive criteria (which the owner warrants under Spearin) and performance criteria (which the design-builder owns) is the contract's central risk allocation.",
@@ -87,7 +87,7 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
     cite: practice("db-insurance", "professional liability insurance in design-build"),
     pat: [
       /insur(e|ance)/i,
-      /(professional\s+liability|errors\s+and\s+omissions|e&o|contractors?\s+professional|builder'?s\s+risk)/i,
+      /(professional\s+liability|errors\s+and\s+omissions|e&o|contractors?\s+professional|builder['’]?s\s+risk)/i,
     ],
     why: "A CGL policy excludes professional services. A design-builder carrying only CGL and builder's risk has no coverage for the design half of its own single-point obligation.",
     fix: "Require contractor's professional liability or design-build professional coverage at stated limits with a stated extended reporting period, in addition to CGL, builder's risk, and umbrella.",
@@ -252,7 +252,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     ),
     pat: [
       /(notice\s+to\s+(property\s+)?owner|you\s+are\s+hereby\s+notified|important\s+notice)/i,
-      /(mechanic'?s\s+lien|may\s+be\s+placed\s+against\s+your\s+property|even\s+(if|though)\s+you\s+have\s+paid)/i,
+      /(mechanic['’]?s\s+lien|may\s+be\s+placed\s+against\s+your\s+property|even\s+(if|though)\s+you\s+have\s+paid)/i,
     ],
     why: "Several states require a bold or capitalized warning in prescribed words. Paraphrasing the statutory text invalidates the notice in those states.",
     fix: "Reproduce the state's warning language verbatim, in the typeface, size, and emphasis the statute prescribes.",

@@ -577,7 +577,7 @@ const APA_RULES: Rule[] = [
       /required\s+consents/i,
       /(assignment|transfer).{0,40}(third.party\s+consent|consent\s+to\s+assign)/is,
       /non.assignable/i,
-      /(?:assignment|assign|transfer)[^.]{0,120}?\b(?:landlord|lessor|licensor|lender|counterpart(?:y|ies)|third\s+part(?:y|ies))(?:'s)?\s+(?:prior\s+)?written\s+consent/is,
+      /(?:assignment|assign|transfer)[^.]{0,120}?\b(?:landlord|lessor|licensor|lender|counterpart(?:y|ies)|third\s+part(?:y|ies))(?:['’]s)?\s+(?:prior\s+)?written\s+consent/is,
     ],
   }),
   presence({

@@ -23,7 +23,7 @@ export const rule: Rule = {
     // all; no non-indemnity word carries either stem.
     const hit = firstParagraphMatch(
       ctx,
-      /\bindemnif\w*|\bindemnit(?:y|ies|ee|ees|or|ors)\b|\bhold\s+(?:[\w'-]+\s+){0,4}?harmless\b/i,
+      /\bindemnif\w*|\bindemnit(?:y|ies|ee|ees|or|ors)\b|\bhold\s+(?:[\w'’-]+\s+){0,4}?harmless\b/i,
     );
     if (hit) return null;
     return emit(ctx, rule, {
