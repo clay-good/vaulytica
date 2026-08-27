@@ -25,7 +25,23 @@ const ATTACH_KINDS = "Exhibit|Schedule|Annex|Annexure|Appendix|Attachment|Addend
 // Decimal designators ("Schedule 3.7") are the disclosure-schedule norm —
 // the integer-only capture truncated them to "Schedule 3" and reconciled a
 // reference the document never makes.
-const REF_RE = new RegExp(String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])\b`, "g");
+// A hyphenated suffix belongs to the designator: "Exhibit A-1" is one
+// attachment, not a reference to "Exhibit A". Capturing only the head both
+// named the wrong attachment and reconciled a reference the document never
+// made.
+const REF_RE = new RegExp(
+  String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])(-\d{1,2})?\b`,
+  "g",
+);
+
+/**
+ * IRS partnership and S-corporation forms, which every LLC, partnership, and
+ * profits-interest agreement names in its tax provisions — "reporting the
+ * Participant's distributive share on Schedule K-1". They are forms the IRS
+ * issues, never attachments to the contract, and the head-only capture read
+ * them as a referenced "Schedule K" that was missing from the document.
+ */
+const IRS_FORM = /^Schedule K-[123]$/i;
 // A heading / title line that *is* the attachment: "Exhibit C — Data Terms".
 // A title line may carry a leading clause number ("3. Schedule 3.7 —
 // Litigation" in a flat-paste layout) — the attachment is present. The
@@ -33,13 +49,13 @@ const REF_RE = new RegExp(String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})
 // ("Exhibit No. 3"); without tolerating those, the heading went unrecognized
 // and a plainly attached exhibit read as referenced-but-absent.
 const TITLE_RE = new RegExp(
-  String.raw`^\s*(?:\d+(?:\.\d+)*\.\s+)?(${ATTACH_KINDS})\s+(?:No\.?\s+|Number\s+)?["'“”‘’]?(\d{1,2}(?:\.\d{1,2})*|[A-Z])(?:["'“”‘’]|\b)`,
+  String.raw`^\s*(?:\d+(?:\.\d+)*\.\s+)?(${ATTACH_KINDS})\s+(?:No\.?\s+|Number\s+)?["'“”‘’]?(\d{1,2}(?:\.\d{1,2})*|[A-Z])(-\d{1,2})?(?:["'“”‘’]|\b)`,
   "i",
 );
 
 export const rule: Rule = {
   id: "STRUCT-018",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Attachment completeness",
   category: "structural",
   default_severity: "warning",
@@ -54,21 +70,23 @@ export const rule: Rule = {
     // Present attachments: section headings that name one.
     forEachSection(ctx.tree, (s) => {
       const m = TITLE_RE.exec(s.heading);
-      if (m) present.add(key(m[1]!, m[2]!));
+      if (m) present.add(key(m[1]!, `${m[2]!}${m[3] ?? ""}`));
     });
 
     forEachParagraph(ctx.tree, (p) => {
       // A title line at the start of a paragraph also marks presence.
       const title = TITLE_RE.exec(p.text);
-      if (title) present.add(key(title[1]!, title[2]!));
+      if (title) present.add(key(title[1]!, `${title[2]!}${title[3] ?? ""}`));
       // Collect references (skip the title-line self-reference).
       REF_RE.lastIndex = 0;
       let m: RegExpExecArray | null;
       while ((m = REF_RE.exec(p.text)) !== null) {
-        const k = key(m[1]!, m[2]!);
+        const id = `${m[2]!}${m[3] ?? ""}`;
+        if (IRS_FORM.test(`${m[1]!} ${id}`)) continue;
+        const k = key(m[1]!, id);
         if (!referenced.has(k)) {
           referenced.set(k, {
-            label: `${nice(m[1]!)} ${m[2]!.toUpperCase()}`,
+            label: `${nice(m[1]!)} ${id.toUpperCase()}`,
             section: p.section.id,
             start: p.start + m.index,
           });

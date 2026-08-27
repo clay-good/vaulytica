@@ -397,6 +397,23 @@ describe("place names are not undefined defined-terms", () => {
     expect(terms).toContain("Program Rule");
   });
 
+  it("a revenue procedure or treasury regulation is a citation too", () => {
+    // Every LLC and profits-interest agreement cites these by name, twice or
+    // more, and each one was reported as a Title-Case term left undefined.
+    const map = extractDefinitions(
+      buildTree([
+        "Award",
+        "The Units are intended to be profits interests under Revenue Procedure 93-27.",
+        "The Company and the Participant intend that the Units qualify under Revenue Procedure 93-27 and Revenue Ruling 99-5.",
+        "Capital accounts are maintained as permitted by Treasury Regulation § 1.704-1(b)(2)(iv)(f), and the Company will follow Treasury Regulation § 1.704-1 in all events.",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Revenue Procedure");
+    expect(terms).not.toContain("Revenue Ruling");
+    expect(terms).not.toContain("Treasury Regulation");
+  });
+
   it("still flags an ordinary undefined Title-Case business term", () => {
     const map = extractDefinitions(
       buildTree([

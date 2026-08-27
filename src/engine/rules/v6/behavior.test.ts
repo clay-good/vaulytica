@@ -326,6 +326,31 @@ describe("v6 discovery — the verb a Rule 34 request actually uses (v1.0.1)", (
     ).toBeNull();
   });
 
+  it("DISC-020 reads the completion date written 'on or before'", () => {
+    expect(
+      rule("DISC-020").check(
+        doc(
+          "Responses and Objections to Requests for Production",
+          "Defendant will complete its production of responsive documents on or before December 15, 2026.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("DISC-020 does not accept a relevant-period bound as a completion date", () => {
+    // Its first pillar is satisfied by every discovery response ever written,
+    // so the date pillar is carrying the whole check: a bare "before <date>"
+    // must not count.
+    expect(
+      rule("DISC-020").check(
+        doc(
+          "Responses and Objections to Requests for Production",
+          "Defendant will produce responsive documents created before January 1, 2026.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
   it("DISC-001 still fires when no deadline is stated at all", () => {
     expect(
       rule("DISC-001").check(

@@ -298,11 +298,21 @@ const RESPONSES = pack("discovery-responses", C, [
   },
   {
     id: "DISC-020",
+    // 1.0.1 — the date pillar read only "by <Month> <D>, <YYYY>", and the
+    // formulation a discovery response actually uses is "on or before" (or
+    // "no later than"). "Defendant will complete its production of responsive
+    // documents on or before December 15, 2026" is the Rule 34(b)(2)(B) date
+    // stated exactly as the rule asks, and the check reported it missing at
+    // `critical`. A bare "before" is deliberately NOT admitted: "documents
+    // created before January 1, 2026" is a relevant-period bound, not a
+    // production date, and the first pillar is satisfied by every discovery
+    // response ever written.
+    ver: "1.0.1",
     name: "Production completion date",
     cite: frcp("34(b)(2)(B)", "responding to document requests — time for production"),
     pat: [
       /(produc(e|tion))/i,
-      /(by\s+\w+\s+\d{1,2},?\s+\d{4}|on\s+a\s+rolling\s+basis|complete[d]?\s+by|within\s+\d+\s+days\s+of)/i,
+      /((?:by|on\s+or\s+before|no[t]?\s+later\s+than)\s+\w+\s+\d{1,2},?\s+\d{4}|on\s+a\s+rolling\s+basis|complete[d]?\s+by|within\s+\d+\s+days\s+of)/i,
     ],
     all: true,
     why: "Rule 34(b)(2)(B) permits production by a stated later date but requires that date to be stated. 'Will produce responsive documents' with no date is not a compliant response and gives the requesting party nothing to enforce.",

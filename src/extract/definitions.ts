@@ -809,14 +809,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // was reported as a Title-Case term the document forgot to define.
       if (/^,?\s*Esq\b/.test(ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 8)))
         continue;
-      // A rule of procedure or evidence ("Federal Rule of Civil Procedure
-      // 26(c)", "Local Rule 7.1") is a citation, not a defined term — the
-      // same reasoning as the `Act`/`Code`/`Law` suffix above, but "Rule"
-      // needs the citation shape to follow it, because a document may
-      // genuinely define a "Program Rule".
+      // A citation to an issued authority — "Federal Rule of Civil Procedure
+      // 26(c)", "Local Rule 7.1", "Revenue Procedure 93-27", "Treasury
+      // Regulation § 1.704-1", "Revenue Ruling 99-5" — names the authority,
+      // not a term this document defines. Same reasoning as the
+      // `Act`/`Code`/`Law` suffix above, but these nouns need the citation
+      // shape to follow them, because a document may genuinely define a
+      // "Program Rule" or a "Special Procedure".
       if (
-        /\sRules?$/.test(phrase) &&
-        /^\s*(?:of\s+[A-Z]|\d)/.test(ctx.text.slice(m.index + phrase.length))
+        /\s(?:Rules?|Procedures?|Regulations?|Ruling|Bulletin|Notice|Circular)$/.test(phrase) &&
+        /^\s*(?:of\s+[A-Z]|§|\d)/.test(ctx.text.slice(m.index + phrase.length))
       )
         continue;
       if (entityPrefixes.has(phraseLower)) continue;

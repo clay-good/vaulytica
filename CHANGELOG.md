@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.43.4] — 2026-08-27
+
+### Fixed
+- **A discovery response that stated its production completion date was told at
+  `critical` that it had not.** DISC-020's date pillar read only
+  "by &lt;Month&gt; &lt;D&gt;, &lt;YYYY&gt;", and the formulation a response
+  actually uses is "on or before" (or "no later than"): "Defendant will
+  complete its production of responsive documents on or before December 15,
+  2026" is the Rule 34(b)(2)(B) date stated exactly as the rule asks. Both join
+  the pillar. A bare "before" is deliberately not admitted — "documents created
+  before January 1, 2026" is a relevant-period bound, and the rule's first
+  pillar is satisfied by every discovery response ever written, so the date
+  pillar carries the whole check. Version 1.0.1.
+- **`Schedule K-1` was reconciled as a missing attachment.** STRUCT-018 sweeps
+  every Exhibit / Schedule / Annex reference and reports the ones the document
+  does not contain. Its designator capture stopped at the first word boundary,
+  so "reporting the Participant's distributive share on Schedule K-1" — which
+  every LLC, partnership, and profits-interest agreement says — was read as a
+  reference to a "Schedule K" that was missing. The IRS partnership forms are
+  now recognized as forms rather than attachments, and the capture takes the
+  hyphenated suffix with the designator, so "Exhibit A-1" is one attachment
+  rather than a reference to "Exhibit A". Version 1.3.0.
+- **`Revenue Procedure 93-27` was reported as an undefined Title-Case term.**
+  The citation guard added in 9.42.3 covered `Rule`; the same shape appears
+  with `Procedure`, `Regulation`, `Ruling`, `Bulletin`, `Notice`, and
+  `Circular`, and a section symbol counts as the citation shape alongside a
+  digit or "of &lt;Capital&gt;" — "Treasury Regulation § 1.704-1". A document
+  that genuinely defines a "Program Rule" or a "Special Procedure" still gets
+  flagged.
+
 ## [9.43.3] — 2026-08-27
 
 ### Fixed
