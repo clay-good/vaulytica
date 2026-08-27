@@ -617,7 +617,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-007",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1010,7 +1010,7 @@
       "id": "STRUCT-007-s1.1-287",
       "recommendation": "Update each broken reference to point to the correct section, or delete it if it is no longer applicable.",
       "rule_id": "STRUCT-007",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Unresolved cross-references: 1"
@@ -1096,11 +1096,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "ecc964d179eb68283e21a5d61a887c761bda6923298d422356b2319ae1ccfd1a",
+  "result_hash": "857d6825103934a5f384e75dc4ce63d08bfd069537b02d4f5e9ac76905a9639b",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",
     "size_bytes": 8974
   },
-  "version": "9.52.1"
+  "version": "9.53.0"
 }

@@ -98,6 +98,11 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["EQT-006", "STRUCT-006", "OBLI-005", "STRUCT-005"],
   },
 
+  // An EEA/UK privacy notice: names its controller with a non-US corporate
+  // suffix, cites the regulation's articles by bare number, and is signed by
+  // nobody.
+  "gdpr-notice.txt": { playbook: "privacy-notice-gdpr", findings: [] },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

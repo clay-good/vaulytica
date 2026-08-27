@@ -29,6 +29,7 @@ import { rule as TERM_002 } from "./termination/TERM-002.js";
 import { rule as TERM_005 } from "./termination/TERM-005.js";
 import { rule as IPDATA_001 } from "./ip-and-data/IPDATA-001.js";
 import { rule as STRUCT_003 } from "./structural/STRUCT-003.js";
+import { rule as STRUCT_007 } from "./structural/STRUCT-007.js";
 
 const RULES = [CHOICE_001, CHOICE_003, RISK_001, RISK_005, TERM_002, TERM_005, IPDATA_001];
 
@@ -139,5 +140,38 @@ describe("STRUCT-003 on a document that disclaims being a contract", () => {
 
   it("still fires on the same body without the disclaimer", () => {
     expect(STRUCT_003.check(buildContext(["Employee Handbook", ...BODY]))).not.toBeNull();
+  });
+});
+
+/**
+ * A GDPR notice cites the regulation's articles by bare number.
+ *
+ * "Processors acting on our instructions under Article 28 agreements",
+ * "Article 6(1)(f)" — in a document that names the regulation, the regulation
+ * is the only thing called an Article. `crossrefs.ts` already reads "Article 32
+ * GDPR" and "Article 28 of the Regulation" as external citations; the bare form
+ * carries no qualifier to read, so STRUCT-007 reported it as a reference to a
+ * section the notice does not have.
+ */
+describe("STRUCT-007 on a document that cites the GDPR", () => {
+  const NOTICE: [string, ...string[]] = [
+    "Privacy Notice",
+    "This notice explains how we process personal data under the General Data Protection Regulation.",
+    "We disclose personal data to processors acting on our instructions under Article 28 agreements.",
+  ];
+
+  it("does not report a bare GDPR article as a broken internal reference", () => {
+    expect(STRUCT_007.check(buildContext(NOTICE))).toBeNull();
+  });
+
+  it("still reports a broken reference to the document's own division", () => {
+    // Narrow on both sides: only an ARABIC article number, and only in a
+    // document that names the regulation. An agreement's own divisions are
+    // "Article III", and a broken reference to one still reports.
+    expect(
+      STRUCT_007.check(
+        buildContext([...NOTICE, "The obligations in Article IX survive termination."]),
+      ),
+    ).not.toBeNull();
   });
 });

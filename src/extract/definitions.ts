@@ -790,8 +790,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // A phrase immediately followed by a corporate suffix (", Inc.",
       // " LLC") is an entity NAME, not a defined term — same reasoning as
       // the street-address guard, keyed on the unambiguous suffix.
+      // The list covers the non-US forms too: a European controller is named
+      // "Halewood Data Systems B.V." in the notice that names it, and every
+      // use of the name was reported as a Title-Case term the document forgot
+      // to define.
       if (
-        /^,?\s*(?:Inc|LLC|L\.L\.C|Ltd|Corp|Co|N\.A|P\.C|GmbH|S\.A)\b/.test(
+        /^,?\s*(?:Inc|LLC|L\.L\.C|Ltd|Corp|Co|N\.A|P\.C|GmbH|S\.A|B\.?V|N\.?V|A\.?G|PLC|LLP|PLLC|L\.P|LP|S\.p\.A|Pty|Pte|SARL)\b/.test(
           ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 12),
         )
       )

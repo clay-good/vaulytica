@@ -17,9 +17,35 @@ import { makeFinding } from "../../finding.js";
 // three findings for one drafting fact.
 const ATTACHMENT_REF = /^(?:Exhibit|Schedule|Attachment)\b/i;
 
+// A document that names the General Data Protection Regulation cites its
+// articles by bare number — "processors acting on our instructions under
+// Article 28 agreements", "Article 6(1)(f)" — because in that document the
+// regulation is the only thing called an Article. `crossrefs.ts` already reads
+// "Article 32 GDPR" and "Article 28 of the Regulation" as external; the bare
+// form carries no qualifier to read, and every GDPR privacy notice and DPA
+// writes it that way.
+//
+// Narrow on both sides: only in a document that names the regulation, and only
+// for an ARABIC article number. An agreement's own internal divisions are
+// "Article III", and a genuinely broken reference to one still reports.
+const NAMES_GDPR = /\b(?:general\s+data\s+protection\s+regulation|GDPR)\b/i;
+const GDPR_ARTICLE_REF = /^Articles?\s+\d/i;
+
+function documentText(ctx: RuleContext): string {
+  const parts: string[] = [];
+  const walk = (sections: RuleContext["tree"]["sections"]): void => {
+    for (const section of sections) {
+      for (const p of section.paragraphs) for (const r of p.runs) parts.push(r.text);
+      walk(section.children);
+    }
+  };
+  walk(ctx.tree.sections);
+  return parts.join(" ");
+}
+
 export const rule: Rule = {
   id: "STRUCT-007",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Cross-reference resolution",
   category: "structural",
   default_severity: "warning",
@@ -27,8 +53,12 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
+    const citesGdpr = NAMES_GDPR.test(documentText(ctx));
     const broken = ctx.extracted.crossrefs.filter(
-      (c) => c.unresolved && !ATTACHMENT_REF.test(c.raw_text),
+      (c) =>
+        c.unresolved &&
+        !ATTACHMENT_REF.test(c.raw_text) &&
+        !(citesGdpr && GDPR_ARTICLE_REF.test(c.raw_text)),
     );
     if (broken.length === 0) return null;
     const first = broken[0]!;

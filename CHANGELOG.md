@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.53.0] — 2026-08-27
+
+### Fixed
+- **A GDPR notice's legal bases are plural, and the item read only the
+  singular.** Every GDPR notice has more than one legal basis, so its section
+  is headed "Purposes and Legal **Bases**" and cites Article 6(1)(b), (c), (f),
+  and (a) — and `legal basis` matched none of it. Article 14(1)(d)'s categories
+  item had the neighbouring gap: a notice lists them under "Personal Data We
+  Process", because the word "categories" is the regulation's, not the
+  drafter's.
+- **`STRUCT-007` reported a bare GDPR article as a broken internal reference.**
+  "Processors acting on our instructions under Article 28 agreements" cites the
+  regulation; `crossrefs.ts` already reads "Article 32 GDPR" and "Article 28 of
+  the Regulation" as external, but the bare form carries no qualifier to read,
+  and every GDPR notice and DPA writes it that way. Narrow on both sides: only
+  in a document that names the regulation, and only for an arabic article
+  number — an agreement's own divisions are "Article III", and a broken
+  reference to one still reports.
+- **The corporate-suffix guard knew only US forms.** A European controller is
+  named "Halewood Data Systems **B.V.**" in the notice that names it, and every
+  use of the name was reported as a Title-Case term the document forgot to
+  define. B.V., N.V., A.G., PLC, LLP, PLLC, L.P., S.p.A., Pty, Pte, and SARL
+  join the list.
+- **A privacy notice is signed by nobody.** STRUCT-003 reported the absent
+  signature block at `critical` on both notice playbooks, which now skip it —
+  the handbook's self-declaring "is not a contract" signal does not reach a
+  notice, which never says that about itself.
+
+### Added
+- An EEA/UK privacy notice specimen, pinned clean under both GDPR article
+  regimes, bringing the set to fourteen.
+
 ## [9.52.1] — 2026-08-27
 
 ### Fixed

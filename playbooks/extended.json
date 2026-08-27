@@ -12796,6 +12796,9 @@
     "expected_clauses": [],
     "expected_defined_terms": [],
     "rule_overrides": {
+      "STRUCT-003": {
+        "skip": true
+      },
       "STRUCT-001": {
         "skip": true
       },
@@ -13003,6 +13006,9 @@
     "expected_clauses": [],
     "expected_defined_terms": [],
     "rule_overrides": {
+      "STRUCT-003": {
+        "skip": true
+      },
       "STRUCT-001": {
         "skip": true
       },

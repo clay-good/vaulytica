@@ -112,6 +112,44 @@ describe("state-act content items a compliant notice must be able to satisfy", (
   });
 });
 
+/**
+ * The GDPR items had their own two: a notice with more than one legal basis —
+ * which every GDPR notice has — heads the section "Purposes and Legal **Bases**"
+ * and cites Article 6(1)(b), (c), (f), and (a); the item read only the
+ * singular. And Article 14(1)(d) asks what CATEGORIES are processed, which a
+ * notice answers by listing them under "Personal Data We Process" — the word
+ * "categories" is the regulation's, not the drafter's.
+ */
+const GDPR_CASES: Array<[string, string]> = [
+  [
+    "PNOT-GDPR13-003",
+    "Purposes and Legal Bases. We process personal data on the following legal bases: Article 6(1)(b), performance of a contract, and Article 6(1)(f), our legitimate interests.",
+  ],
+  [
+    "PNOT-GDPR14-003",
+    "Purposes and Legal Bases. We process personal data on the following legal bases: Article 6(1)(b), performance of a contract, and Article 6(1)(f), our legitimate interests.",
+  ],
+  [
+    "PNOT-GDPR14-011",
+    "Personal Data We Process. We process identification and contact data, account data, usage and device data, and billing data.",
+  ],
+];
+
+describe("GDPR content items a compliant notice must be able to satisfy", () => {
+  it.each(GDPR_CASES)("%s is satisfied by the disclosure a real notice makes", (id, disclosure) => {
+    const finding = rule(id).check(buildContext([...BARE, disclosure]));
+    expect(
+      finding,
+      `flagged a notice that makes the disclosure: ${finding?.title ?? ""}`,
+    ).toBeNull();
+  });
+
+  it.each(GDPR_CASES)("%s still fires on a notice that makes none of them", (id) => {
+    const finding = rule(id).check(buildContext(BARE));
+    expect(finding, "the widened patterns made the item unfireable").not.toBeNull();
+  });
+});
+
 describe("CCPA content items a compliant notice must be able to satisfy", () => {
   it.each(CASES)("%s is satisfied by the disclosure a real notice makes", (id, disclosure) => {
     const finding = rule(id).check(buildContext([...BARE, disclosure]));

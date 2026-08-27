@@ -1,0 +1,56 @@
+HALEWOOD DATA SYSTEMS B.V.
+PRIVACY NOTICE (EEA AND UNITED KINGDOM)
+
+Last updated: 2 February 2026
+
+This Privacy Notice explains how Halewood Data Systems B.V. handles personal data about visitors to our website, users of our services, and business contacts, and sets out the rights available to you under the General Data Protection Regulation.
+
+1. Who We Are.
+
+Halewood Data Systems B.V. of Keizersgracht 240, 1016 EA Amsterdam, the Netherlands, is the controller of the personal data described in this Notice. Our data protection officer can be reached at dpo@halewood.example or at the postal address above. Our UK representative is Halewood UK Ltd, 14 Finsbury Circus, London EC2M 7EB.
+
+2. Personal Data We Process, and Where It Comes From.
+
+We process identification and contact data (name, business email, telephone number), account and authentication data, usage and device data collected automatically through our services, billing data, and correspondence you send us. Where we did not obtain the data from you, we obtained it from your employer, from publicly accessible business directories, or from our resellers.
+
+3. Purposes and Legal Bases.
+
+We process personal data for the following purposes, on the following legal bases:
+
+To provide and administer the services, and to perform our contract with you or your employer — Article 6(1)(b), performance of a contract.
+
+To secure our systems, prevent fraud, and improve the services — Article 6(1)(f), our legitimate interests in operating a secure and effective service. We have balanced those interests against your rights and have concluded that our processing does not override them; you may object at any time, as described in Section 6.
+
+To send marketing communications about related services — Article 6(1)(f), our legitimate interests, or Article 6(1)(a), your consent where consent is required. Where we rely on consent, you may withdraw it at any time without affecting the lawfulness of processing carried out before withdrawal.
+
+To comply with accounting, tax, and other legal obligations — Article 6(1)(c), compliance with a legal obligation.
+
+We do not use personal data for automated decision-making that produces legal effects concerning you or similarly significantly affects you, and we do not carry out profiling for those purposes.
+
+4. Recipients.
+
+We disclose personal data to processors acting on our instructions under Article 28 agreements: cloud hosting providers, payment processors, email delivery providers, analytics providers, and customer support tooling. We also disclose personal data to our professional advisers, to auditors, and to public authorities where required by law.
+
+5. International Transfers.
+
+Some of our processors are established outside the European Economic Area, including in the United States and India. Where we transfer personal data outside the EEA or the United Kingdom, we rely on the European Commission's Standard Contractual Clauses (Decision 2021/914), together with the UK International Data Transfer Addendum where the UK GDPR applies, and we carry out a transfer impact assessment for each such transfer. A copy of the relevant safeguards is available on request from dpo@halewood.example.
+
+6. Your Rights.
+
+You have the right of access to your personal data, the right to rectification, the right to erasure, the right to restriction of processing, the right to data portability, and the right to object to processing carried out on the basis of our legitimate interests, including objecting to direct marketing at any time. Where processing is based on consent, you have the right to withdraw consent at any time.
+
+To exercise any of these rights, write to dpo@halewood.example. We will respond within one month, which we may extend by two further months where necessary, in which case we will tell you within one month and explain why.
+
+You also have the right to lodge a complaint with a supervisory authority, in particular in the Member State of your habitual residence, place of work, or place of the alleged infringement. Our lead supervisory authority is the Autoriteit Persoonsgegevens in the Netherlands. In the United Kingdom, you may complain to the Information Commissioner's Office.
+
+7. Retention.
+
+We retain identification and contact data for the duration of the business relationship and for six years afterwards, to meet Dutch statutory retention requirements. We retain usage and device data for thirteen months. We retain billing records for seven years. Where no statutory period applies, we retain personal data only for as long as is necessary for the purposes described in Section 3, and we review our retention schedule annually.
+
+8. Whether You Must Provide the Data.
+
+Providing identification and contact data is a contractual requirement and is necessary to enter into a contract with us; if you do not provide it, we cannot provide the services. Providing marketing preferences is optional and has no consequence for the services.
+
+9. Changes.
+
+We will update this Notice when our processing changes, and where the change is material we will notify you before it takes effect.

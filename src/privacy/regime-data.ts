@@ -249,7 +249,17 @@ const GDPR_13_ITEMS: ContentItem[] = [
     citation: "GDPR Art. 13(1)(c)",
     url: "https://gdpr-info.eu/art-13-gdpr/",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["legal basis", "purpose(s)? of (the )?processing", "lawful basis"],
+    present_patterns: [
+      // "bases" is the plural a notice with more than one legal basis
+      // actually uses — and a GDPR notice always has more than one. A section
+      // headed "Purposes and Legal Bases" that cites Article 6(1)(b), (c),
+      // (f), and (a) was reported as addressing neither.
+      "legal bas(is|es)",
+      "lawful bas(is|es)",
+      "purpose(s)? of (the )?processing",
+      "article 6\\(1\\)",
+      "purposes and legal",
+    ],
   },
   {
     key: "legitimate-interests",
@@ -349,7 +359,15 @@ const GDPR_14_EXTRA_ITEMS: ContentItem[] = [
     citation: "GDPR Art. 14(1)(d)",
     url: "https://gdpr-info.eu/art-14-gdpr/",
     retrieved_at: RETRIEVED_AT,
-    present_patterns: ["categor(y|ies) of (personal )?data"],
+    present_patterns: [
+      "categor(y|ies) of (personal )?data",
+      // Article 14(1)(d) asks what categories are processed. A notice answers
+      // by listing them under a heading naming the data — "Personal Data We
+      // Process": the word "categories" is the regulation's, not the
+      // drafter's.
+      "(personal )?data we (process|collect|hold)",
+      "we process .{0,40}(identification|contact|account|usage|billing|device) data",
+    ],
   },
   {
     key: "data-source",
