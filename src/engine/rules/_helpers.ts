@@ -414,3 +414,43 @@ export function expressDenial(topic: string): RegExp[] {
     ),
   ];
 }
+
+/**
+ * A document that amends a parent agreement, recognized by its ratification
+ * clause.
+ *
+ * An amendment, addendum, or amended-and-restated schedule changes named terms
+ * and leaves everything else where it was: "Except as expressly modified by
+ * this Amendment, the Lease remains in full force and effect and is ratified
+ * and confirmed." That sentence is the drafting convention for saying so, and
+ * it is the whole reason the document does not restate governing law, the
+ * liability cap, the indemnity, the IP allocation, or the termination
+ * machinery — the parent still supplies all of them.
+ *
+ * Reporting those as absent is a false accusation with no answer: the only
+ * drafting change that would satisfy it is restating the parent agreement
+ * inside its own amendment, which no one does and no reviewer wants. The
+ * always-on absence checks consult this and stay silent.
+ *
+ * Deliberately narrow. It is NOT "the document mentions another agreement" —
+ * every commercial contract incorporates exhibits by reference, and a DPA
+ * incorporates the Standard Contractual Clauses; matching those would switch
+ * the checks off across the catalog. It is the ratification sentence
+ * specifically, which only an amending document carries. No corpus fixture
+ * contains one.
+ */
+const RATIFIES_PARENT =
+  /(?:except\s+as\s+(?:expressly\s+|otherwise\s+){0,2}(?:modified|amended|changed|provided|set\s+forth)|all\s+other\s+(?:terms|provisions|covenants)\b)[^.]{0,160}?(?:remains?|shall\s+remain|continues?|shall\s+continue|are\s+unchanged|is\s+unchanged)\s+(?:unchanged\s+and\s+)?in\s+full\s+force|in\s+all\s+other\s+respects[^.]{0,100}?(?:ratified|confirmed|unchanged)/i;
+
+/** Whether the document amends a parent agreement and ratifies the rest of it. */
+export function amendsParentAgreement(ctx: RuleContext): boolean {
+  const parts: string[] = [];
+  const walk = (sections: RuleContext["tree"]["sections"]): void => {
+    for (const section of sections) {
+      for (const p of section.paragraphs) for (const r of p.runs) parts.push(r.text);
+      walk(section.children);
+    }
+  };
+  walk(ctx.tree.sections);
+  return RATIFIES_PARENT.test(parts.join(" "));
+}

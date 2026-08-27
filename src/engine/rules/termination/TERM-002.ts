@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
 /**
  * A termination-for-cause path. The rule wanted the exact phrase "for cause"
@@ -86,13 +86,20 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
   description: "Verifies the contract has a termination-for-cause path.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
+    // An amendment does not restate what the parent agreement already
+    // says. Its ratification clause — "Except as expressly modified by
+    // this Amendment, the Lease remains in full force and effect" — is
+    // the drafting convention for saying exactly that, and reporting
+    // this clause as absent has no answer short of restating the parent
+    // inside its own amendment.
+    if (amendsParentAgreement(ctx)) return null;
     if (firstParagraphMatch(ctx, FOR_CAUSE)) return null;
     return emit(ctx, rule, {
       title: "No termination-for-cause clause detected",

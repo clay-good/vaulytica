@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
 /**
  * The trigger a wind-down clause opens with. Requiring the bare "upon
@@ -132,13 +132,20 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",
   description: "Verifies the contract explains what happens upon termination.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
+    // An amendment does not restate what the parent agreement already
+    // says. Its ratification clause — "Except as expressly modified by
+    // this Amendment, the Lease remains in full force and effect" — is
+    // the drafting convention for saying exactly that, and reporting
+    // this clause as absent has no answer short of restating the parent
+    // inside its own amendment.
+    if (amendsParentAgreement(ctx)) return null;
     if (firstParagraphMatch(ctx, EFFECT_OF_TERMINATION)) return null;
     return emit(ctx, rule, {
       title: "No effect-of-termination clause detected",

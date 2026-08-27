@@ -1,16 +1,23 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, topPosition } from "../_helpers.js";
+import { amendsParentAgreement, emit, topPosition } from "../_helpers.js";
 
 /** CHOICE-003 — Venue clause present (info). */
 export const rule: Rule = {
   id: "CHOICE-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Venue clause present",
   category: "choice-and-venue",
   default_severity: "info",
   description: "Detects a venue / forum clause.",
   dkb_citations: ["stat-28-usc-1391"],
   check(ctx: RuleContext): Finding | null {
+    // An amendment does not restate what the parent agreement already
+    // says. Its ratification clause — "Except as expressly modified by
+    // this Amendment, the Lease remains in full force and effect" — is
+    // the drafting convention for saying exactly that, and reporting
+    // this clause as absent has no answer short of restating the parent
+    // inside its own amendment.
+    if (amendsParentAgreement(ctx)) return null;
     // An arbitration clause IS a forum selection — it states where disputes are
     // resolved (before the named tribunal at its seat). A contract that routes
     // disputes to arbitration has stated its forum, so reporting "no venue /

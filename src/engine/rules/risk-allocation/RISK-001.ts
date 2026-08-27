@@ -1,16 +1,23 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
 /** RISK-001 — Indemnification clause present (warning). */
 export const rule: Rule = {
   id: "RISK-001",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Indemnification clause present",
   category: "risk-allocation",
   default_severity: "warning",
   description: "Detects indemnification language; fires when absent.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
+    // An amendment does not restate what the parent agreement already
+    // says. Its ratification clause — "Except as expressly modified by
+    // this Amendment, the Lease remains in full force and effect" — is
+    // the drafting convention for saying exactly that, and reporting
+    // this clause as absent has no answer short of restating the parent
+    // inside its own amendment.
+    if (amendsParentAgreement(ctx)) return null;
     // "hold harmless" is routinely written with the indemnitee between the
     // verb and the adverb — "hold Client harmless", "hold the other party
     // harmless" — so requiring the two words adjacent reported a plainly

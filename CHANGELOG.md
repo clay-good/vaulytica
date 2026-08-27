@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.50.0] — 2026-08-27
+
+### Fixed
+- **An amendment was measured as though it were the whole agreement.** A
+  hand-written third amendment to an office lease drew eight warnings, five of
+  them the always-on absence checks reporting that it had no governing law, no
+  venue, no indemnity, no liability cap, no termination-for-cause, no
+  effect-of-termination, and no IP allocation. It has none of those because the
+  Lease has all of them, and its Section 13 says so: "Except as expressly
+  modified by this Amendment, the Lease remains in full force and effect and is
+  ratified and confirmed." That sentence is the drafting convention for saying
+  it, and the findings it drew had no answer — the only change that would
+  satisfy them is restating the parent agreement inside its own amendment.
+  CHOICE-001, CHOICE-003, RISK-001, RISK-005, TERM-002, TERM-005, and
+  IPDATA-001 now consult a shared `amendsParentAgreement` helper. Twelve
+  findings became five, and every one that remains is answerable.
+  - The signal is deliberately narrow. It is **not** "the document mentions
+    another agreement" — every commercial contract incorporates its exhibits by
+    reference and a DPA incorporates the Standard Contractual Clauses, and
+    matching those would switch these checks off across the catalog. It is the
+    ratification sentence specifically, which only an amending document
+    carries. No corpus fixture contains one, and no committed finding changed.
+
 ## [9.49.0] — 2026-08-27
 
 ### Fixed
