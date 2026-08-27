@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.48.2] — 2026-08-27
+
+### Fixed
+- **A construction subcontract was reviewed as a code of conduct.**
+  `code-of-conduct` listed four bare nouns as distinguishing phrases —
+  "directors", "officers", "employees", "waiver" — and all four appear in the
+  indemnity clause of essentially every commercial contract, so it reached 0.6
+  with **no title match at all**. `subcontractor-agreement` scored 0.7 on its
+  own title and vocabulary and then lost 0.1 to a negative feature that is
+  backwards: "lien waiver", which a subcontract almost always contains. The
+  0.6 tie went to the alphabet, and the subcontract was told at `critical` that
+  it was missing its SOX § 406 elements clause and its non-retaliation channel.
+  Third instance of the same class today, after `employment-at-will-us`'s
+  "Employee" and `promissory-note`'s "note".
+
+### Added
+- **The mirror of the self-reachability sweep: no family may claim a document
+  that is nobody's.** Self-reachability asks whether a family can win its OWN
+  document; it cannot see the opposite failure, a family whose "distinguishing"
+  phrases are so common it wins somebody else's. The new guard scores every
+  playbook against a document that names no family and carries only the clauses
+  every commercial agreement has — indemnity, insurance, notices, entire
+  agreement, governing law, severability, execution — and fails if anything
+  reaches the 0.5 threshold. Proven by restoring `code-of-conduct`'s old
+  phrases and watching it name them.
+
 ## [9.48.1] — 2026-08-27
 
 ### Fixed

@@ -14,7 +14,7 @@
       "pay-if-paid",
       "prime contract"
     ],
-    "negative_features": ["construction contract", "lien waiver", "performance bond"]
+    "negative_features": ["performance bond only", "this lien waiver is given"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Subcontractor", "General Contractor", "Prime Contract"],

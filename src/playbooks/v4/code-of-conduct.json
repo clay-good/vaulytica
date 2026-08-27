@@ -4,25 +4,18 @@
   "name": "Code of Conduct / Ethics",
   "description": "Code of business conduct / ethics under NYSE 303A / Nasdaq 5610 / SOX \u00a7 406. Selects the \u00a76.O ruleset (POL-001..POL-005).",
   "match_features": {
-    "title_keywords": [
-      "code of conduct",
-      "code of ethics",
-      "code of business conduct"
-    ],
+    "title_keywords": ["code of conduct", "code of ethics", "code of business conduct"],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "directors",
-      "officers",
-      "employees",
-      "waiver",
       "ethical conduct",
-      "compliance with law"
+      "compliance with law",
+      "conflicts of interest",
+      "gifts and entertainment",
+      "reporting violations",
+      "waiver of this code",
+      "our values"
     ],
-    "negative_features": [
-      "anti-bribery",
-      "aml",
-      "whistleblower"
-    ]
+    "negative_features": ["anti-bribery", "aml", "whistleblower"]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
@@ -64,13 +57,8 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "NYSE-NASDAQ-SOX",
-  "applicable_jurisdictions": [
-    "US"
-  ],
-  "companion_playbooks": [
-    "whistleblower-policy",
-    "coi-policy"
-  ],
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["whistleblower-policy", "coi-policy"],
   "compliance_matrix_columns": [
     "NYSE 303A / Nasdaq 5610 scope",
     "SOX \u00a7 406 financial-officer elements",

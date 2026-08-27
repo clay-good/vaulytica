@@ -2917,12 +2917,13 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "directors",
-        "officers",
-        "employees",
-        "waiver",
         "ethical conduct",
-        "compliance with law"
+        "compliance with law",
+        "conflicts of interest",
+        "gifts and entertainment",
+        "reporting violations",
+        "waiver of this code",
+        "our values"
       ],
       "negative_features": [
         "anti-bribery",
@@ -17001,9 +17002,8 @@
         "prime contract"
       ],
       "negative_features": [
-        "construction contract",
-        "lien waiver",
-        "performance bond"
+        "performance bond only",
+        "this lien waiver is given"
       ]
     },
     "expected_clauses": [],

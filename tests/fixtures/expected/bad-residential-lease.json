@@ -1197,11 +1197,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-residential-us (score 1). Title matched: \"residential rental agreement\", \"rental agreement\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"residential\".",
-  "result_hash": "34647e3734c46a0d8611301c6c4d2af21b215fcf2aeb4df3b200a8358c512248",
+  "result_hash": "60e3d8512613768023128ba9c31d772007ac894f0c1159b54919bcb083512e60",
   "source_file": {
     "name": "bad-residential-lease.docx",
     "sha256": "e9329baa96e35c934a6bdbb32721f88752314e62fbcce83220e7bfa5c353c638",
     "size_bytes": 9203
   },
-  "version": "9.48.1"
+  "version": "9.48.2"
 }
