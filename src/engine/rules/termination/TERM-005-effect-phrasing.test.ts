@@ -78,3 +78,35 @@ describe("TERM-005 effect-of-termination phrasing", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-005 — the consequence stated with 'in which case' (v1.10.0)", () => {
+  it("reads a purchase order's termination-for-convenience effect", () => {
+    // Buyer-side PO terms state the effect in the same sentence as the
+    // termination right, with a verb no branch admits: "pays for conforming
+    // goods delivered" is not a wind-down verb, and "pay" is deliberately
+    // outside CONSEQUENCE so a failure-to-pay TRIGGER cannot read as an
+    // effect. The connective is what identifies the clause.
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Termination",
+          "Buyer may terminate this order for convenience on written notice, in which case Buyer pays for conforming goods delivered and Seller's reasonable unavoidable costs, and Seller shall mitigate.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not read 'in which case' from an unrelated sentence", () => {
+    // The connective has to share a sentence with the termination word; the
+    // branch is bounded by `[^.]` for exactly that reason.
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Term",
+          "Either party may terminate this Agreement for convenience on 30 days notice.",
+          "Seller may dispute an invoice within ten days. Buyer may audit the disputed amount, in which case Seller shall provide supporting records.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.43.2] — 2026-08-27
+
+### Fixed
+- **A purchase order that said what termination costs was told it said
+  nothing.** TERM-005 recognizes an effect-of-termination clause through a
+  dozen branches, and buyer-side PO terms state the effect in the same sentence
+  as the right: "Buyer may terminate this order for convenience on written
+  notice, in which case Buyer pays for conforming goods delivered and Seller's
+  reasonable unavoidable costs." No branch admitted it — "pays for goods
+  delivered" is not a wind-down verb, and `pay` is deliberately outside the
+  consequence set so a failure-to-pay TRIGGER cannot read as an effect. The
+  connective does the work instead: "in which case" introduces a consequence
+  and nothing else, so pairing it with a termination word in the same sentence
+  is specific without enumerating the verb at all. No corpus finding
+  disappeared. Version 1.9.0 → 1.10.0.
+- **The mutation job runs two test-runner children, not four.** Three complete
+  runs on August 17 took about seven minutes each; both runs since were killed
+  part-way — SIGTERM at four minutes on the 24th, a runner cancel at nineteen
+  on the 27th — with nothing in the repo to explain it. Four test-runner
+  children plus the Stryker parent on a four-core hosted runner is the resource
+  pressure that fits. Concurrency changes only how long a run takes, never what
+  it measures, and reliability is worth more than wall time on a weekly job off
+  the push path. Local runs keep the config default.
+
 ## [9.43.1] — 2026-08-27
 
 ### Fixed

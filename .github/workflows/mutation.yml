@@ -41,9 +41,19 @@ jobs:
         # is the runner going away, and says nothing about the suite. The
         # first fails the job; the second annotates it and lets the job pass,
         # which is what the header always claimed.
+        #
+        # `--concurrency 2` rather than the config's 4. Three complete runs on
+        # 2026-08-17 took about seven minutes each; the two runs after that
+        # were both killed part-way (SIGTERM at four minutes on 08-24, a
+        # runner cancel at nineteen on 08-27) with nothing in the repo to
+        # explain it. Four test-runner children plus the Stryker parent on a
+        # four-core hosted runner is the resource pressure that fits, and
+        # concurrency changes only how long the run takes, never what it
+        # measures. Reliability is worth more here than wall time: this job is
+        # weekly and off the push path. Local runs keep the config default.
         run: |
           set +e
-          npm run mutation
+          npm run mutation -- --concurrency 2
           code=$?
           set -e
           if [ "$code" -eq 0 ]; then exit 0; fi

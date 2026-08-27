@@ -114,14 +114,25 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // discriminator, and "complete the Work" / "liable for … costs" the effect —
     // neither verb is in CONSEQUENCE (a "fails to complete" trigger must not read
     // as an effect), so the for-default qualifier is required.
-    String.raw`|\bterminat\w+\b[^.]{0,80}?\bfor\s+(?:default|cause)\b[^.]{0,120}?\b(?:complete\s+(?:the\s+)?work|liable\s+for\b[^.]{0,40}?\bcosts?)\b`,
+    String.raw`|\bterminat\w+\b[^.]{0,80}?\bfor\s+(?:default|cause)\b[^.]{0,120}?\b(?:complete\s+(?:the\s+)?work|liable\s+for\b[^.]{0,40}?\bcosts?)\b` +
+    // "Buyer may terminate this order for convenience on written notice, in
+    // which case Buyer pays for conforming goods delivered and Seller's
+    // reasonable unavoidable costs" — a purchase order states the effect with
+    // the connective "in which case" and a verb none of the branches above
+    // admit ("pays for goods delivered" is not a wind-down verb, and "pay" is
+    // deliberately outside CONSEQUENCE so a failure-to-pay TRIGGER cannot read
+    // as an effect). The connective is doing the work here: "in which case"
+    // introduces a consequence and nothing else, so pairing it with a
+    // termination word in the same sentence is specific without needing to
+    // enumerate the consequence verb at all.
+    String.raw`|\bterminat(?:e|es|ed|ing|ion)\b[^.]{0,120}?\bin\s+which\s+case\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",
