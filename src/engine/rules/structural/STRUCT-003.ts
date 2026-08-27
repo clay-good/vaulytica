@@ -26,8 +26,14 @@ const ATTESTATION =
 // sign this way, and the label-anchored tokens alone read a certified set of
 // bylaws as unsigned (a critical false positive on a well-formed document).
 // "/s/ Name" at a line start OR right after a label ("By: /s/ Jane Smith",
-// "Authorized Representative: /s/ Margaret Hale" on an ACORD certificate).
-const CONFORMED_SIG = /(?:^|:)\s*\/s\/\s+\S/m;
+// "Authorized Representative: /s/ Margaret Hale" on an ACORD certificate) —
+// or after the comma of the valediction it follows ("Respectfully submitted,
+// /s/ Dana Reyes"). That last case is not a stylistic variant: pasted and
+// plain-text ingest joins the lines of a block with SPACES, so a signature
+// laid out on three lines arrives as one paragraph and a line-start anchor
+// can never reach the "/s/". The anchor still holds against a URL path
+// ("example.com/s/thing"), where the mark is glued to a word character.
+const CONFORMED_SIG = /(?:^|[:,.])\s*\/s\/\s+\S/m;
 // A signature line that names its signatory by office rather than by a
 // "By:/Name:/Title:" grid — "____________ Jordan Ellis, Director". Board /
 // member / partner consents, resolutions, and certificates sign this way: an
@@ -122,13 +128,37 @@ const DELIVERY_RECITAL =
 const PUBLICATION_STAMP =
   /\blast\s+(?:updated|revised|modified|amended)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
 
-// A formal valediction on its own line — "Very truly yours,", "Sincerely,",
+// A formal valediction opening a line — "Very truly yours,", "Sincerely,",
 // "Respectfully submitted," — is the execution of CORRESPONDENCE (a demand
 // letter, a cease-and-desist, an opinion letter): the signer's name follows
-// the closing, not a By:/underscore block. Anchored to its own line so a
-// mid-sentence "sincerely" is not a false signal.
-const LETTER_CLOSING =
-  /^\s*(?:very\s+truly\s+yours|sincerely(?:\s+yours)?|respectfully(?:\s+submitted|\s+yours)?|yours\s+(?:truly|faithfully|sincerely)|best\s+regards|warm\s+regards|kind\s+regards|cordially)\s*,?\s*$/im;
+// the closing, not a By:/underscore block.
+//
+// What follows the closing must be the end of the line OR a capitalized word,
+// which is the signer's name. Requiring end-of-line ALONE (the first form of
+// this pattern) meant the closing had to be alone on its line, and on the
+// paste and plain-text path it never is: that ingest joins the lines of a
+// block with spaces, so "Very truly yours, / Dana Reyes / Reyes & Hall LLP"
+// arrives as one paragraph and every pasted letter reported itself unsigned,
+// at `critical`.
+//
+// The capital-letter requirement keeps a mid-prose "Respectfully submitted,
+// this motion should be granted" out, and it has to be applied OUTSIDE the
+// case-insensitive match: `[A-Z]` under `i` matches a lowercase letter too, so
+// spelling it inside the pattern admitted exactly the prose it was written to
+// exclude.
+const LETTER_CLOSING_WORDS =
+  /^\s*(?:very\s+truly\s+yours|sincerely(?:\s+yours)?|respectfully(?:\s+submitted|\s+yours)?|yours\s+(?:truly|faithfully|sincerely)|best\s+regards|warm\s+regards|kind\s+regards|cordially)\s*,?[ \t]*/i;
+
+/** True when a line of `text` is a valediction followed by nothing or by a name. */
+function hasLetterClosing(text: string): boolean {
+  for (const line of text.split("\n")) {
+    const m = LETTER_CLOSING_WORDS.exec(line);
+    if (!m) continue;
+    const rest = line.slice(m[0].length);
+    if (rest === "" || /^[A-Z]/.test(rest)) return true;
+  }
+  return false;
+}
 
 // A click-wrap / browse-wrap acceptance — "By installing or using the Software,
 // you agree to be bound by this EULA", "By accessing the Service you accept
@@ -158,7 +188,7 @@ const CLICKWRAP_ACCEPTANCE =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.20.0",
+  version: "1.21.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -232,7 +262,7 @@ export const rule: Rule = {
           (DATED_ADOPTION.test(text) ||
             DELIVERY_RECITAL.test(text) ||
             PUBLICATION_STAMP.test(text) ||
-            LETTER_CLOSING.test(text) ||
+            hasLetterClosing(text) ||
             CLICKWRAP_ACCEPTANCE.test(text))
         ) {
           certified = true;

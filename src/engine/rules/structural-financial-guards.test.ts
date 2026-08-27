@@ -167,6 +167,81 @@ describe("FIN-002 — inconsistent named amounts", () => {
   });
 });
 
+describe("STRUCT-003 — the pasted document (v1.21.0)", () => {
+  // Every fixture above hands the rule a signature laid out one line per
+  // paragraph, because that is what a DOCX produces and what `buildTree`
+  // makes. The paste and plain-text path does not: `ingestPaste` joins the
+  // lines of a block with SPACES, so a three-line signature arrives as ONE
+  // paragraph. Both escape hatches this rule grew for documents that are not
+  // signed on a By:/Name:/Title: grid — the conformed "/s/" of a court filing
+  // and the valediction of a letter — were anchored to the start or the end of
+  // a line, and neither anchor survives the join. The result: every pasted
+  // letter and every pasted filing reported itself unsigned, at `critical`,
+  // and no unit test could see it because the fixtures were line-structured.
+
+  it("reads the conformed signature of a filing pasted as one block", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "Complaint",
+          "Plaintiff demands judgment against Defendant for damages and costs.",
+          "Respectfully submitted, /s/ Dana Reyes Dana Reyes, Bar No. 5512280, counsel for Plaintiff 100 Broad Street, New York, NY 10004",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads the valediction of a letter pasted as one block", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "Demand Letter",
+          "Acme demands payment of $412,000 within fourteen days of the date of this letter.",
+          "Very truly yours, Dana Reyes Reyes & Hall LLP counsel for Acme Logistics, Inc.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a pasted document that closes with neither", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "Demand Letter",
+          "Acme demands payment of $412,000 within fourteen days of the date of this letter.",
+          "Acme reserves every right and remedy available to it at law and in equity.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("a valediction continuing into prose is not a signature", () => {
+    // The capital-letter requirement is what separates the closing of a letter
+    // from a sentence that happens to open with the same words.
+    expect(
+      STRUCT003.check(
+        doc(
+          "Motion",
+          "Respectfully submitted, this motion should be granted because the record supports it.",
+          "The Court should so order.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("a URL path is not a conformed signature", () => {
+    expect(
+      STRUCT003.check(
+        doc(
+          "Terms",
+          "The current schedule is published at https://example.com/s/ schedule and may change.",
+          "No other notice will be given.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("STRUCT-003 — the individual signatory (v1.1.0)", () => {
   it("attestation formula plus a single By: line is an executed signature page", () => {
     // An individual signs with a bare typed name — no By/Name/Title labels —
