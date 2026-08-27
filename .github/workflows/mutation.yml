@@ -5,7 +5,9 @@ name: Mutation testing
 # the test suite once per mutant, so it is slow — it runs on a weekly schedule
 # and on demand, NEVER on the per-push critical path (that stays ci.yml's
 # typecheck + lint + coverage + build). The regression-only `break` threshold in
-# stryker.config.json fails this job if the score drops below the floor.
+# stryker.config.json fails this job if the score drops below the floor — and
+# ONLY that: a run the runner kills before it reports is annotated, not failed,
+# because a red job nobody can act on is a red job nobody looks at.
 
 on:
   schedule:
@@ -15,8 +17,11 @@ on:
 jobs:
   mutation:
     runs-on: ubuntu-latest
-    # Don't fail forks / scheduled runs on transient infra; the score gate is
-    # the signal, surfaced in the job log + uploaded HTML report.
+    # Bounded explicitly so a hang reports as a timeout rather than running to
+    # the six-hour default. Generous on purpose: complete runs in August took
+    # about seven minutes, and a run on 2026-08-27 took over fifty on the same
+    # scope, so this bound exists to stop a hang, not to police duration.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -25,7 +30,33 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Run Stryker (scoped to extractors)
-        run: npm run mutation
+        # The header says the score gate is the signal and transient infra is
+        # not — but nothing implemented that, so a runner reclaimed mid-run
+        # (2026-08-24: SIGTERM at four minutes, exit 143) reported as a score
+        # regression and sat red until someone went looking. `gh run list`
+        # shows push workflows first, and this one runs only on a schedule.
+        #
+        # Stryker exits 1 when the score falls below `break`. A signal death —
+        # 130 (SIGINT), 137 (SIGKILL, the shape an OOM takes), 143 (SIGTERM) —
+        # is the runner going away, and says nothing about the suite. The
+        # first fails the job; the second annotates it and lets the job pass,
+        # which is what the header always claimed.
+        run: |
+          set +e
+          npm run mutation
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then exit 0; fi
+          case "$code" in
+            130|137|143)
+              echo "::warning title=Mutation run did not finish::Stryker was killed by a signal (exit $code) before it could report. This is the runner going away, not the mutation score. Re-run the workflow to get a reading."
+              exit 0
+              ;;
+            *)
+              echo "::error title=Mutation score below the floor::Stryker exited $code. If the score is below the \`break\` threshold in stryker.config.json, kill the surviving mutants or move the floor deliberately."
+              exit "$code"
+              ;;
+          esac
       - name: Upload mutation report
         if: always()
         uses: actions/upload-artifact@v7

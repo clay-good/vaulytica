@@ -313,3 +313,27 @@ describe("v6 engagement — the boundary as a negative sentence (v1.0.1)", () =>
     ).toBeNull();
   });
 });
+
+describe("v6 discovery — the verb a Rule 34 request actually uses (v1.0.1)", () => {
+  it("DISC-001 reads a deadline stated on a production demand", () => {
+    expect(
+      rule("DISC-001").check(
+        doc(
+          "Plaintiff's First Requests for Production of Documents",
+          "Pursuant to Rule 34, Plaintiff requests that Defendant produce the following documents for inspection and copying at the offices of undersigned counsel within 30 days of service.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("DISC-001 still fires when no deadline is stated at all", () => {
+    expect(
+      rule("DISC-001").check(
+        doc(
+          "Plaintiff's First Requests for Production of Documents",
+          "Pursuant to Rule 34, Plaintiff requests that Defendant produce the following documents for inspection and copying at the offices of undersigned counsel.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

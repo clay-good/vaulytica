@@ -21,10 +21,17 @@ const C = "discovery";
 const RFP = pack("document-requests", C, [
   {
     id: "DISC-001",
+    // 1.0.1 — Rule 34 asks for PRODUCTION, and that is the verb the requests
+    // themselves use: "produce the following documents for inspection and
+    // copying within 30 days of service" states the deadline the rule wants
+    // and contains none of respond/response/answer, so the deadline pillar
+    // missed it and the check fired at `critical` on a request that had
+    // stated its deadline.
+    ver: "1.0.1",
     name: "Response deadline stated",
     cite: frcp("34(b)(2)(A)", "producing documents — time to respond"),
     pat: [
-      /(respond|response|answer)/i,
+      /(respond|response|answer|produce|production)/i,
       /(30\s+days|thirty\s+\(?30\)?\s+days|within\s+\d+\s+days|no\s+later\s+than)/i,
     ],
     all: true,

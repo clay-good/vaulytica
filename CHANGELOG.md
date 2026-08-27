@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.43.1] — 2026-08-27
+
+### Fixed
+- **A weekly workflow had been red since August 24 and nobody could have seen
+  it.** The scheduled mutation-testing run was killed by the runner four
+  minutes in — `The runner has received a shutdown signal`, exit 143 — and
+  reported as a plain job failure. Nothing distinguished that from the one
+  failure the job exists to report, a mutation score below the `break`
+  threshold, and `gh run list` shows push workflows first, so a workflow that
+  runs only on a schedule sits red unnoticed. The header comment had claimed
+  since it was written that transient infra should not fail the job and the
+  score gate is the signal; nothing implemented it. Now the step reads the exit
+  code: 1 (and anything else) fails with an annotation naming the score floor;
+  130, 137, and 143 — the signal deaths, 137 being the shape an OOM takes —
+  annotate the run as unfinished and let it pass, because a red job nobody can
+  act on is a red job nobody looks at. The job also carries an explicit
+  `timeout-minutes: 120` — generous on purpose, since complete runs in August
+  took about seven minutes and one on August 27 took over fifty on the same
+  scope: the bound exists to stop a hang, not to police duration.
+- **A Rule 34 request that stated its deadline was told at `critical` that it
+  had not.** DISC-001 requires a deadline AND a response word, and its response
+  pillar read only `respond`, `response`, and `answer`. Rule 34 asks for
+  PRODUCTION, and that is the verb the requests themselves use — "produce the
+  following documents for inspection and copying within 30 days of service"
+  states exactly the deadline the rule wants and contains none of the three.
+  `produce` and `production` join them; a request with no day count at all
+  still fires. Version 1.0.1.
+- **A timing-ratio test flaked under load.** `_helpers.test.ts` guards the
+  shared clause scan against a quadratic regression it once had by
+  comparing one measurement at 47k characters against one at 190k. A ratio of
+  two single samples is a ratio of two worst cases — vitest runs files in
+  parallel, so either sample can be interrupted — and one unlucky small sample
+  read a linear scan as 39x. Each side is now the BEST of five runs, which
+  estimates the algorithm's own cost (scheduling noise only ever adds time)
+  without weakening the signal: a quadratic scan's best case is still ~16x its
+  best case at a quarter of the input.
+
 ## [9.43.0] — 2026-08-27
 
 ### Added

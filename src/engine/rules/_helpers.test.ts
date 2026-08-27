@@ -254,15 +254,27 @@ describe("the clause scan stays linear on a large, densely-matching paragraph", 
   });
 
   it("scales sub-quadratically between 47k and 190k characters", () => {
-    const time = (reps: number): number => {
+    // BEST of five, not a single sample. A ratio of two single measurements is
+    // a ratio of two worst cases: vitest runs files in parallel, so either
+    // sample can be interrupted by another worker, and one unlucky `small`
+    // sample turns a linear scan into a 39x reading. The MINIMUM over repeats
+    // estimates the algorithm's own cost — scheduling noise only ever adds
+    // time — and it does not weaken the signal this test exists for: a
+    // quadratic scan's best case is still ~16x its best case at a quarter of
+    // the input.
+    const bestOf = (reps: number): number => {
       const ctx = ctxWith(unit.repeat(reps));
-      const t0 = performance.now();
-      firstUnnegatedParagraphMatch(ctx, /automatically renew/i);
-      return performance.now() - t0;
+      let best = Infinity;
+      for (let i = 0; i < 5; i++) {
+        const t0 = performance.now();
+        firstUnnegatedParagraphMatch(ctx, /automatically renew/i);
+        best = Math.min(best, performance.now() - t0);
+      }
+      return best;
     };
-    time(400); // warm the JIT so the first timed run is not the slow one
-    const small = Math.max(time(800), 1);
-    const large = time(3200);
+    bestOf(400); // warm the JIT so the first timed run is not the slow one
+    const small = Math.max(bestOf(800), 0.05);
+    const large = bestOf(3200);
     // 4x the input. Linear predicts ~4x; quadratic predicts ~16x. Anything at
     // or under 10x is comfortably not quadratic, with room for timer noise.
     expect(large / small).toBeLessThan(10);
