@@ -5,7 +5,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { stateLaw, practice, standardForm } from "./_helpers.js";
+import { expressDenial, practice, standardForm, stateLaw } from "./_helpers.js";
 
 const C = "construction";
 
@@ -80,6 +80,9 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
   },
   {
     id: "CON-106",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Insurance including professional liability",
     cite: practice("db-insurance", "professional liability insurance in design-build"),
     pat: [
@@ -88,6 +91,7 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
     ],
     why: "A CGL policy excludes professional services. A design-builder carrying only CGL and builder's risk has no coverage for the design half of its own single-point obligation.",
     fix: "Require contractor's professional liability or design-build professional coverage at stated limits with a stated extended reporting period, in addition to CGL, builder's risk, and umbrella.",
+    denied: expressDenial(String.raw`professional\s+liability\s+insurance`),
     sev: "critical",
   },
 ]);

@@ -5,7 +5,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, cfr, irs, stateLaw, practice, agency } from "./_helpers.js";
+import { agency, cfr, expressDenial, irs, practice, stateLaw, usc } from "./_helpers.js";
 
 const C = "employment";
 
@@ -41,6 +41,9 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
   },
   {
     id: "EMP-103",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Employer payment of arbitration costs",
     cite: practice(
       "arbitration-costs",
@@ -52,6 +55,14 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     ],
     why: "Requiring an employee to bear forum costs they would not bear in court is the classic ground for refusing enforcement, and the AAA Employment Rules cap the employee's share at a filing fee regardless.",
     fix: "State that the employer pays all arbitrator and administrative fees beyond any filing fee the employee would pay in court.",
+    // The topic is the EMPLOYER'S UNDERTAKING, not the cost itself. A bare
+    // "arbitration costs" makes the frames subject-blind, and the compliant
+    // drafting is itself a negation about those costs — "the employee shall
+    // not be required to bear arbitration costs beyond a court filing fee" —
+    // which then reads as a denial of the very clause it satisfies.
+    denied: expressDenial(
+      String.raw`(?:pay|pays|paying|payment\s+of)\s+(?:any\s+|all\s+)?(?:the\s+)?(?:arbitrator'?s?\s+|administrative\s+)?(?:arbitration\s+)?(?:fees|costs)`,
+    ),
     sev: "critical",
   },
   {
@@ -689,6 +700,9 @@ const FCRA = pack("background-check-disclosure", C, [
   },
   {
     id: "EMP-150",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Clear written authorization",
     cite: usc("15", "1681b", "FCRA § 604(b)(2)(A)(ii) — written authorization"),
     pat: [
@@ -698,6 +712,7 @@ const FCRA = pack("background-check-disclosure", C, [
     all: true,
     why: "The report may not be procured without the consumer's written authorization. A disclosure without a signature line is a compliance failure that also leaves the employer without evidence of consent.",
     fix: "Include a clear authorization statement and a signature and date line, and retain the signed original.",
+    denied: expressDenial(String.raw`written\s+authorization`),
     sev: "critical",
   },
   {
@@ -727,6 +742,9 @@ const FCRA = pack("background-check-disclosure", C, [
   },
   {
     id: "EMP-153",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Pre-adverse and adverse action sequence",
     cite: usc("15", "1681m", "FCRA § 615 — requirements on users of consumer reports"),
     pat: [
@@ -735,6 +753,7 @@ const FCRA = pack("background-check-disclosure", C, [
     ],
     why: "§ 1681b(b)(3) requires a pre-adverse notice with a copy of the report and the Summary of Rights, a reasonable interval to respond, then a separate adverse-action notice. Compressing the two steps is the classic violation, and several cities' fair-chance ordinances add more.",
     fix: "Describe the two-step sequence with the intervening waiting period, the documents delivered at each step, and the individualized-assessment requirement any applicable fair-chance ordinance imposes.",
+    denied: expressDenial(String.raw`pre[- ]adverse\s+action\s+(?:notice|letter)?`),
     sev: "critical",
   },
 ]);

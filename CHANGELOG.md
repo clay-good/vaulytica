@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.42.5] — 2026-08-27
+
+### Fixed
+- **The catalog read an express disclaimer as compliance.** A clause-presence
+  check fires when none of its patterns match, so a document that
+  AFFIRMATIVELY DISCLAIMS the term — "the Company performs no restricted-party
+  screening", "IRB approval is not required before enrollment", "an online
+  cancellation mechanism is not provided" — is silent: every topic word is
+  present, and the column scores as satisfied. That is backwards. An omission
+  may be an oversight; a disclaimer is a decision, and it is the one the check
+  must not miss.
+
+  `expressDenial()` was built for exactly this in 9.31.0 and wired into 27 v4
+  rules. **None of the 697 rules the v5/v6 shorthand builds used it**, though
+  `pack()` has accepted a `denied` field since the wave shipped. Fourteen
+  columns now do: BIPA's written release and retention schedule, COPPA's
+  verifiable parental consent, the TCPA's prior express written consent and
+  STOP/HELP opt-out, malpractice tail coverage, IRB approval, restricted-party
+  screening, the auto-renewal cancellation mechanism, the influencer
+  material-connection disclosure, employer payment of arbitration costs, the
+  FCRA written authorization and pre-adverse-action notice, and an architect's
+  professional liability insurance. A column whose required clause is ITSELF a
+  negation or ban is disqualified and left alone — PRV-114
+  (consent-not-a-condition-of-purchase) and HC-123 (balance-billing ban) are
+  checked by their absence, and a "denial" of them is unreadable.
+
+  `pack()` now generates the denial's own title and description, so a
+  disclaimer reports as "— expressly disclaimed" rather than "— not found".
+  The title is what reaches the findings index, the compliance matrix, and the
+  execution log, where the description never does.
+
+  Both directions are pinned, and the adversarial half is load-bearing: every
+  decoy is compliant drafting that puts the topic words inside a negation.
+  EMP-103 broke on the first attempt — "the employee shall not be required to
+  bear arbitration costs beyond a court filing fee" is the clause the rule
+  exists to bless, and a bare "arbitration costs" topic read it as a denial,
+  because the frames cannot see WHOSE obligation is negated. The topic is now
+  the employer's undertaking (paying), not the cost.
+
 ## [9.42.4] — 2026-08-27
 
 ### Fixed

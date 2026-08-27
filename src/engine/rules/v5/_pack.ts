@@ -76,7 +76,20 @@ export type ColumnSpec = {
   sev?: Severity;
   /** Gate: skip the check entirely unless the document shows this shape. */
   when?: RegExp[];
-  /** Express-denial frames — a document that disclaims the term is worse than one that omits it. */
+  /**
+   * Express-denial frames, built with `expressDenial(topic)`.
+   *
+   * A presence check reads the document for the words the required clause
+   * would use, so a document that AFFIRMATIVELY DISCLAIMS the term — "the
+   * Company performs no restricted-party screening" — is silent: every topic
+   * word is there, and the column scores as satisfied. That is backwards. An
+   * express denial is strictly worse than an omission, because the omission
+   * may be an oversight and the denial is a decision.
+   *
+   * Keep the topic SPECIFIC. A bare topic swallows the governing law: with
+   * `consent` alone, "strictly necessary cookies do not require consent"
+   * reads as a denial of the consent clause.
+   */
   denied?: readonly RegExp[];
   /** Overrides the generated `missing_description` when the default is too thin. */
   missing?: string;
@@ -130,6 +143,15 @@ export function pack(playbook: string, category: string, specs: readonly ColumnS
       require_all_present: s.all,
       applicable_if: s.when,
       denied_if: s.denied,
+      // A denial is a different finding from an absence and has to say so:
+      // the title is what reaches the findings index, the compliance matrix,
+      // and the execution log, where the description never does.
+      ...(s.denied
+        ? {
+            denied_title: `${s.name} — expressly disclaimed`,
+            denied_description: `This document states that ${s.name.toLowerCase()} does not apply, is not required, or will not be provided. An express disclaimer is not an omission: the term is absent by decision, and the sentence below is where the document says so.`,
+          }
+        : {}),
       default_severity: s.sev ?? "warning",
     }),
   );

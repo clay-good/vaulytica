@@ -10,7 +10,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { ucc, usc, cfr, stateLaw, standardForm, practice } from "./_helpers.js";
+import { cfr, expressDenial, practice, standardForm, stateLaw, ucc, usc } from "./_helpers.js";
 
 const C = "commercial";
 
@@ -996,6 +996,9 @@ const SPONSORSHIP = pack("sponsorship-agreement", C, [
 const INFLUENCER = pack("influencer-agreement", C, [
   {
     id: "COMM-178",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Clear and conspicuous material-connection disclosure duty",
     cite: cfr("16", "255.5", "FTC Endorsement Guides — disclosure of material connections"),
     pat: [
@@ -1004,6 +1007,7 @@ const INFLUENCER = pack("influencer-agreement", C, [
     ],
     why: "16 C.F.R. § 255.5 requires disclosure of a material connection between endorser and advertiser. Since the 2023 Guides revision and the Rule on Consumer Reviews, both the brand and the creator carry exposure, and the brand is liable for failing to instruct and monitor.",
     fix: 'Require a clear and conspicuous disclosure in the post itself (not only in a bio or "more" fold), specify the accepted formats, and require it on every platform and every re-post.',
+    denied: expressDenial(String.raw`material[- ]connection\s+disclosure`),
     sev: "critical",
   },
   {

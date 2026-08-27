@@ -5,7 +5,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, cfr, stateLaw, practice, agency } from "./_helpers.js";
+import { agency, cfr, expressDenial, practice, stateLaw, usc } from "./_helpers.js";
 
 const C = "healthcare";
 
@@ -51,6 +51,9 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
   },
   {
     id: "HC-104",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Malpractice coverage and tail responsibility",
     cite: practice(
       "malpractice-tail",
@@ -62,6 +65,9 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
     ],
     why: "A claims-made policy leaves no coverage for claims reported after the physician leaves. Tail premiums run into six figures, and who buys the tail is the single most valuable term after compensation.",
     fix: "State the policy type and limits, and state expressly who purchases and pays for tail coverage on each type of termination.",
+    denied: expressDenial(
+      String.raw`tail\s+coverage|extended\s+reporting\s+(?:period\s+)?(?:endorsement|coverage)`,
+    ),
     sev: "critical",
   },
   {
@@ -207,6 +213,9 @@ const CTA = pack("clinical-trial-agreement", C, [
   },
   {
     id: "HC-115",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "IRB approval as a condition precedent",
     cite: cfr("21", "56.103", "FDA — circumstances in which IRB review is required"),
     pat: [
@@ -215,6 +224,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     ],
     why: "21 C.F.R. Part 56 requires IRB review and approval before the study begins and continuing review at least annually. Enrollment before approval is a serious finding.",
     fix: "Condition the start of study activities on documented IRB approval, and require notice of any suspension, termination, or condition imposed on continuing review.",
+    denied: expressDenial(String.raw`IRB\s+approval|institutional\s+review\s+board\s+approval`),
     sev: "critical",
   },
   {

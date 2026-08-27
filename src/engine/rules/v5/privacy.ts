@@ -5,13 +5,16 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, cfr, stateLaw, practice, agency } from "./_helpers.js";
+import { agency, cfr, expressDenial, practice, stateLaw, usc } from "./_helpers.js";
 
 const C = "privacy";
 
 const BIOMETRIC = pack("biometric-consent", C, [
   {
     id: "PRV-101",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Written release obtained before collection",
     cite: stateLaw(
       "biometric-privacy",
@@ -25,6 +28,7 @@ const BIOMETRIC = pack("biometric-consent", C, [
     all: true,
     why: "BIPA § 15(b) requires informed written consent before collection, and it carries a private right of action with statutory damages per violation — the only US biometric statute that does.",
     fix: "Obtain a signed written release before any collection, and retain proof of the date it was signed.",
+    denied: expressDenial(String.raw`written\s+release`),
     sev: "critical",
   },
   {
@@ -62,6 +66,9 @@ const BIOMETRIC = pack("biometric-consent", C, [
   },
   {
     id: "PRV-104",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Publicly available retention and destruction schedule",
     cite: stateLaw(
       "biometric-retention",
@@ -74,6 +81,9 @@ const BIOMETRIC = pack("biometric-consent", C, [
     ],
     why: "§ 15(a) requires a publicly available written policy establishing a retention schedule and destruction guidelines — destroying the data when the purpose is satisfied or within three years of the last interaction, whichever is first.",
     fix: "Publish a written retention and destruction policy and reference it in the consent, stating the destruction trigger.",
+    denied: expressDenial(
+      String.raw`(?:retention|destruction)\s+(?:and\s+destruction\s+)?(?:schedule|policy)`,
+    ),
     sev: "critical",
   },
   {
@@ -133,6 +143,9 @@ const COPPA = pack("childrens-privacy-notice", C, [
   },
   {
     id: "PRV-109",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Verifiable parental consent mechanism",
     cite: cfr("16", "312.5", "COPPA Rule — parental consent"),
     pat: [
@@ -141,6 +154,7 @@ const COPPA = pack("childrens-privacy-notice", C, [
     ],
     why: "§ 312.5(b) enumerates the approved consent methods, and the method must be reasonably calculated to ensure the person giving consent is the parent. Email-plus alone is permitted only for internal use.",
     fix: "Describe the verifiable consent method used and, where email-plus is used, confirm the information is used only internally and describe the additional confirmation step.",
+    denied: expressDenial(String.raw`verifiable\s+parental\s+consent`),
     sev: "critical",
   },
   {
@@ -189,6 +203,9 @@ const COPPA = pack("childrens-privacy-notice", C, [
 const SMS = pack("sms-consent-disclosure", C, [
   {
     id: "PRV-113",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Express written consent language",
     cite: cfr("47", "64.1200(f)(9)", "TCPA rules — prior express written consent"),
     pat: [
@@ -198,6 +215,7 @@ const SMS = pack("sms-consent-disclosure", C, [
     all: true,
     why: "Marketing texts and autodialed marketing calls require prior express written consent that identifies the seller, the number, and the fact that consent authorizes the messages. A checkbox with no disclosure is not consent.",
     fix: "Use a consent statement identifying the seller, the telephone number consent applies to, and the fact that the consumer agrees to receive autodialed or prerecorded marketing messages.",
+    denied: expressDenial(String.raw`(?:prior\s+)?express\s+written\s+consent`),
     sev: "critical",
   },
   {
@@ -244,6 +262,9 @@ const SMS = pack("sms-consent-disclosure", C, [
   },
   {
     id: "PRV-117",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "STOP and HELP opt-out mechanism",
     cite: cfr("47", "64.1200(a)(10)", "TCPA rules — revocation of consent"),
     pat: [
@@ -252,6 +273,7 @@ const SMS = pack("sms-consent-disclosure", C, [
     ],
     why: "Since the FCC's 2024 revocation order, any reasonable method of revocation is effective and must be honored within 10 business days. STOP/HELP keyword handling is also a carrier requirement.",
     fix: 'Disclose "Reply STOP to opt out, HELP for help," and confirm that any reasonable revocation method will be honored within 10 business days.',
+    denied: expressDenial(String.raw`opt[- ]?out\s+(?:mechanism|instructions?)?`),
     sev: "critical",
   },
 ]);

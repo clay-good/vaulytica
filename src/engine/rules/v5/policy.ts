@@ -11,7 +11,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, cfr, agency, stateLaw, practice } from "./_helpers.js";
+import { agency, cfr, expressDenial, practice, stateLaw, usc } from "./_helpers.js";
 
 const C = "policy";
 
@@ -197,6 +197,9 @@ const EXPORT = pack("export-control-policy", C, [
   },
   {
     id: "POL-114",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Restricted-party and SDN screening",
     cite: cfr("31", "501", "OFAC — Reporting, Procedures and Penalties Regulations"),
     pat: [
@@ -205,6 +208,9 @@ const EXPORT = pack("export-control-policy", C, [
     ],
     why: "OFAC liability is strict — no knowledge is required — and the 50 Percent Rule extends blocking to entities majority-owned by blocked persons. Screening at onboarding only misses designations that happen later.",
     fix: "State which lists are screened, when screening occurs (onboarding, before each transaction, and on list updates), the ownership analysis applied, and how hits are escalated.",
+    denied: expressDenial(
+      String.raw`(?:SDN|restricted[- ]party|denied[- ]party|sanctions)\s+screening`,
+    ),
     sev: "critical",
   },
   {

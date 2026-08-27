@@ -11,7 +11,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, ucc, stateLaw, practice, agency } from "./_helpers.js";
+import { agency, expressDenial, practice, stateLaw, ucc, usc } from "./_helpers.js";
 
 const C = "commercial";
 
@@ -425,6 +425,9 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
   },
   {
     id: "COMM-233",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Simple cancellation mechanism",
     cite: usc("15", "8403", "ROSCA — simple mechanisms for stopping recurring charges"),
     pat: [
@@ -433,6 +436,7 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     ],
     why: "ROSCA requires a simple mechanism to stop recurring charges, and California and several other states require cancellation in the same medium as enrollment. Phone-only cancellation of an online signup is the paradigm violation.",
     fix: "Provide online, self-service cancellation available in the same medium as enrollment, and describe it in the terms with the exact steps.",
+    denied: expressDenial(String.raw`(?:online\s+)?cancellation\s+(?:mechanism|method|option)?`),
     sev: "critical",
   },
   {

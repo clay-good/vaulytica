@@ -148,6 +148,7 @@ describe("title-vacuity guard", () => {
     // is a real v5 rule, so a stale id can never quietly widen the exclusion.
     const ids = new Set(PACK_RULES.map((r) => r.id));
     expect(GATED_PACK_RULE_IDS.size).toBeGreaterThan(0);
-    for (const id of GATED_PACK_RULE_IDS) expect(ids.has(id), `${id} is not a pack rule`).toBe(true);
+    for (const id of GATED_PACK_RULE_IDS)
+      expect(ids.has(id), `${id} is not a pack rule`).toBe(true);
   });
 });
