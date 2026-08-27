@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.58.1] — 2026-08-27
+
+### Fixed
+- **`operating-agreement-llc` had empty `rule_overrides`.** An LLC operating
+  agreement is a governance instrument, not a commercial bargain: it allocates
+  no IP, caps no liability between members (the indemnity in favour of the
+  managers is the mechanism, and it is uncapped by design), and it dissolves
+  rather than terminating for cause. Those three are skipped and the
+  uncapped-indemnity note is downgraded to `info`. Eight findings became five.
+
+### Added
+- A Delaware LLC operating agreement specimen, bringing the set to
+  twenty-three.
+
 ## [9.58.0] — 2026-08-27
 
 ### Fixed

@@ -1,0 +1,103 @@
+OPERATING AGREEMENT
+OF
+HARBOR POINT VENTURES LLC
+a Delaware limited liability company
+
+Dated as of April 20, 2026
+
+This Operating Agreement (this "Agreement") of Harbor Point Ventures LLC (the "Company") is entered into by the Persons listed on Schedule A as Members.
+
+ARTICLE I — FORMATION
+
+1.1 Formation. The Company was formed on April 14, 2026 by filing a Certificate of Formation with the Secretary of State of Delaware under the Delaware Limited Liability Company Act, 6 Del. C. § 18-101 et seq. (the "Act").
+
+1.2 Name; Purpose. The name of the Company is Harbor Point Ventures LLC. The Company may engage in any lawful business permitted under the Act.
+
+1.3 Term. The Company continues until dissolved under Article IX.
+
+1.4 Registered Office. The registered office and registered agent are as stated in the Certificate of Formation.
+
+ARTICLE II — MEMBERS AND UNITS
+
+2.1 Units. Membership Interests are denominated in Units. The Company is authorized to issue Class A Units (voting) and Class B Units (non-voting). The Units outstanding, and the Member holding each, are set out on Schedule A, which the Company shall update on any issuance or Transfer.
+
+2.2 Capital Contributions. Each Member has contributed the amount set out on Schedule A. No Member is obligated to make additional Capital Contributions. If the Managers determine that additional capital is needed, they may offer each Member the right to contribute pro rata; a Member who declines is not in default, but the non-contributing Member's Percentage Interest is diluted in accordance with Section 2.3.
+
+2.3 Dilution. Additional Units issued for capital are issued at Fair Market Value determined in good faith by the Managers, and each Member's Percentage Interest is recalculated accordingly.
+
+2.4 No Liability. Except as required by the Act, no Member is personally liable for any debt or obligation of the Company.
+
+ARTICLE III — MANAGEMENT
+
+3.1 Manager-Managed. The Company is managed by one or more Managers. The initial Managers are Priya Raghunathan and Dermot Halloran.
+
+3.2 Authority. The Managers have full authority to conduct the Company's business, except that the following require the approval of Members holding a majority of the Class A Units: (a) a merger, sale of all or substantially all assets, or dissolution; (b) the admission of a new Member; (c) the incurrence of indebtedness exceeding $500,000; (d) any transaction with a Manager or an affiliate of a Manager; and (e) any amendment to this Agreement.
+
+3.3 Standard of Conduct. Each Manager shall discharge their duties in good faith and in a manner the Manager reasonably believes to be in the best interests of the Company. To the fullest extent permitted by Section 18-1101(c) of the Act, the fiduciary duties of a Manager are limited to the implied contractual covenant of good faith and fair dealing, which may not be eliminated.
+
+3.4 Indemnification. The Company shall indemnify each Manager and Member against any loss arising from an act or omission in that capacity, except for a breach of the implied covenant of good faith and fair dealing, a knowing violation of law, or a transaction from which the person derived an improper personal benefit. The Company shall advance expenses upon receipt of an undertaking to repay if indemnification is ultimately unavailable.
+
+ARTICLE IV — DISTRIBUTIONS AND ALLOCATIONS
+
+4.1 Distributions. The Managers may make distributions to Members pro rata in accordance with their Percentage Interests, subject to Section 18-607 of the Act.
+
+4.2 Tax Distributions. The Company shall distribute to each Member, no later than March 15 of each year, an amount at least equal to that Member's allocated taxable income for the prior year multiplied by the Assumed Tax Rate.
+
+4.3 Allocations. Profits and Losses are allocated among the Members in proportion to their Percentage Interests, subject to the regulatory allocations required by Treasury Regulation § 1.704-1(b)(2)(ii)(d), including a qualified income offset and a minimum gain chargeback.
+
+4.4 Capital Accounts. A Capital Account is maintained for each Member in accordance with Treasury Regulation § 1.704-1(b)(2)(iv).
+
+ARTICLE V — TRANSFERS
+
+5.1 Restriction. No Member may Transfer any Unit except as permitted by this Article. A purported Transfer in violation of this Article is void.
+
+5.2 Right of First Refusal. A Member who receives a bona fide written offer shall give the Company and the other Members notice of the offer, and the Company for thirty (30) days, and then the other Members pro rata for a further thirty (30) days, may elect to purchase the offered Units on the same terms.
+
+5.3 Tag-Along. If Members holding a majority of the Units propose to Transfer to a third party, each other Member may participate pro rata on the same terms.
+
+5.4 Drag-Along. If Members holding at least seventy-five percent (75%) of the Units approve a sale of the Company, each other Member shall vote for it, shall Transfer their Units on the same terms, and shall not exercise appraisal or dissenters' rights.
+
+5.5 Permitted Transfers. A Member may Transfer Units to a trust for estate planning or to an affiliate, provided the transferee agrees in writing to be bound by this Agreement.
+
+ARTICLE VI — BOOKS, RECORDS, AND INFORMATION
+
+6.1 Books. The Company shall keep books and records at its principal office. Each Member may inspect them for a purpose reasonably related to the Member's interest, on five (5) business days notice, as provided in Section 18-305 of the Act.
+
+6.2 Financial Statements. The Company shall deliver unaudited annual financial statements within one hundred twenty (120) days after each fiscal year end, and a Schedule K-1 to each Member no later than March 15.
+
+ARTICLE VII — TAX MATTERS
+
+7.1 Classification. The Company is treated as a partnership for federal income tax purposes, and no Member shall take a contrary position.
+
+7.2 Partnership Representative. Priya Raghunathan is designated as the Partnership Representative under Section 6223 of the Internal Revenue Code, and may make elections under the centralized partnership audit rules, including the push-out election under Section 6226.
+
+ARTICLE VIII — DISSOCIATION
+
+8.1 Withdrawal. A Member may not withdraw before dissolution without the consent of the Managers.
+
+8.2 Death or Incapacity. On the death or incapacity of a Member, the Member's successor holds the Units as an assignee with economic rights only, and is admitted as a Member only with the consent of Members holding a majority of the Class A Units.
+
+ARTICLE IX — DISSOLUTION
+
+9.1 Events. The Company dissolves on the approval of Members holding a majority of the Class A Units, on the sale of all or substantially all of its assets, or on entry of a decree of judicial dissolution.
+
+9.2 Winding Up. On dissolution, the Managers shall wind up the Company's affairs and distribute assets first to creditors, then to Members in accordance with their positive Capital Account balances.
+
+ARTICLE X — GENERAL
+
+10.1 Amendment. This Agreement may be amended only by a writing approved by Members holding a majority of the Class A Units, provided that no amendment may increase a Member's obligation to contribute capital or reduce a Member's Percentage Interest without that Member's consent.
+
+10.2 Governing Law. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules. Any action arising out of this Agreement shall be brought exclusively in the Court of Chancery of the State of Delaware.
+
+10.3 Entire Agreement; Counterparts. This Agreement is the entire agreement among the Members concerning the Company and supersedes all prior understandings. It may be executed in counterparts, and electronic signatures have the same effect as originals.
+
+IN WITNESS WHEREOF, the Members have executed this Agreement as of the date first written above.
+
+/s/ Priya Raghunathan
+Priya Raghunathan, Member and Manager
+
+/s/ Dermot Halloran
+Dermot Halloran, Member and Manager
+
+/s/ Ana Petrosyan
+Ana Petrosyan, Member

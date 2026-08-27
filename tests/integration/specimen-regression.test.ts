@@ -188,6 +188,13 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["ADDENDA-018", "OBLI-005", "RISK-007", "TERM-007"],
   },
 
+  // A Delaware LLC operating agreement: a governance instrument, not a
+  // commercial bargain.
+  "operating-agreement.txt": {
+    playbook: "operating-agreement-llc",
+    findings: ["STRUCT-006", "STRUCT-018", "OBLI-005", "RISK-011", "RISK-015"],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

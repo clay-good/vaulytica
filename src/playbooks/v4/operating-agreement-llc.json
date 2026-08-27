@@ -17,7 +17,12 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Member", "Manager", "Capital Contribution", "Membership Interest"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "TERM-002": { "skip": true },
+    "RISK-015": { "severity": "info" }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "DE-LLC-Act",
