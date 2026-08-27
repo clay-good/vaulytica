@@ -1,0 +1,86 @@
+CLINICAL TRIAL AGREEMENT
+
+This Clinical Trial Agreement (this "Agreement") is entered into as of August 3, 2026 by and between Northgate Therapeutics, Inc., a Delaware corporation with offices at 500 Kendall Way, Cambridge, Massachusetts ("Sponsor"), and Ridgeline Community Hospital, an Ohio nonprofit corporation ("Institution"), and is acknowledged by Amara Osei, M.D. ("Principal Investigator").
+
+RECITALS
+
+Sponsor is developing NTX-4180, an investigational product, and wishes to have Institution conduct a clinical study of it. Institution has the facilities and personnel to conduct the study, and Principal Investigator is qualified by training and experience to direct it.
+
+1. The Study.
+
+Institution shall conduct the clinical study described in Protocol NTX-4180-302, "A Randomized, Double-Blind, Placebo-Controlled Study of NTX-4180 in Adults with Chronic Refractory Cough" (the "Protocol"), as it may be amended by Sponsor with any required IRB approval. Institution shall conduct the Study in accordance with the Protocol, the applicable requirements of 21 C.F.R. Parts 50, 54, 56, and 312, the ICH E6(R2) Good Clinical Practice guideline, and all other applicable laws.
+
+2. Principal Investigator.
+
+Principal Investigator shall personally direct the Study and shall not delegate responsibilities except to qualified individuals listed on the delegation of authority log. If Principal Investigator becomes unable to continue, Institution shall promptly notify Sponsor and propose a successor acceptable to Sponsor; if no acceptable successor is proposed within thirty (30) days, Sponsor may terminate this Agreement.
+
+3. IRB Review.
+
+Institution shall obtain review and approval of the Protocol and the informed consent form from an Institutional Review Board that complies with 21 C.F.R. Part 56, shall obtain continuing review at intervals appropriate to the degree of risk and not less than once per year, and shall promptly report to Sponsor any suspension or termination of IRB approval.
+
+4. Informed Consent.
+
+Institution shall obtain legally effective informed consent from each subject, or the subject's legally authorized representative, in accordance with 21 C.F.R. Part 50, using the consent form approved by the IRB and by Sponsor, before any study procedure is performed. Institution shall retain the signed consent forms and shall provide each subject with a copy.
+
+5. Subject Injury.
+
+Sponsor shall pay the reasonable and necessary costs of medical treatment for any physical injury to a subject that is directly caused by the administration of the investigational product or by a procedure required by the Protocol and performed properly, to the extent such costs are not covered by the subject's insurance or by a third-party payer and are not the result of the negligence or willful misconduct of Institution or Principal Investigator, or of the subject's failure to follow study directions. Sponsor's obligation under this Section is not conditioned on a finding of fault. Nothing in this Section waives any right the subject may have.
+
+6. Indemnification.
+
+Sponsor shall indemnify, defend, and hold harmless Institution, Principal Investigator, and their trustees, officers, and employees from and against any third-party claim arising out of the administration of the investigational product in accordance with the Protocol, except to the extent the claim arises from the negligence or willful misconduct of an indemnified party or from a failure to conduct the Study in accordance with the Protocol. The indemnified party shall give Sponsor prompt written notice of any claim, shall permit Sponsor to control the defense with counsel reasonably acceptable to the indemnified party, and shall cooperate. Sponsor shall not settle any claim that imposes a non-monetary obligation on an indemnified party without that party's consent.
+
+7. Insurance.
+
+Sponsor shall maintain clinical trial liability insurance of not less than $5,000,000 per occurrence and in the aggregate, and shall furnish a certificate on request. Institution shall maintain professional and general liability coverage, which may be through a program of self-insurance, in amounts customary for academic medical centers.
+
+8. Budget and Payments.
+
+Sponsor shall pay Institution in accordance with the budget attached as Exhibit A, on a per-subject basis upon completion and monitoring of each visit, within forty-five (45) days after receipt of a proper invoice. Payments are made at fair market value for the services performed, are not determined in a manner that takes into account the volume or value of referrals or other business generated between the parties, and are not payment for prescribing, recommending, or purchasing any product. Sponsor shall separately reimburse pre-approved pass-through costs.
+
+9. Confidentiality.
+
+Institution and Principal Investigator shall hold Sponsor's Confidential Information in confidence and use it only for the Study. Confidential Information does not include information that is or becomes public through no fault of the receiving party, was known without restriction before disclosure, is received from a third party without restriction, or is independently developed. This Section does not restrict Institution from complying with law or from disclosures required by the IRB, and it survives for seven (7) years after the end of the Study. Nothing in this Section limits the publication rights in Section 11.
+
+10. Data and Inventions.
+
+Sponsor owns the Study Data. Institution retains ownership of the subjects' medical records. Any invention conceived in the course of the Study that relates directly to the investigational product is assigned to Sponsor; any other invention belongs to the party whose personnel made it, and Institution grants Sponsor a non-exclusive, royalty-free license to use it for internal research.
+
+11. Publication.
+
+Institution and Principal Investigator may publish the results of the Study, subject to the following. They shall provide Sponsor a copy of any proposed publication at least thirty (30) days before submission. Sponsor may request a delay of up to sixty (60) additional days to seek patent protection, and may require the removal of its Confidential Information other than Study Data. Sponsor shall not require any change to the scientific content or conclusions. For a multi-site study, single-site publication may be deferred until the multi-site publication or twelve (12) months after the completion of the multi-site study, whichever occurs first. The Study will be registered on ClinicalTrials.gov and results posted as required by 42 U.S.C. § 282(j).
+
+12. Records; Inspection.
+
+Institution shall retain Study records for at least two (2) years after the FDA approves the investigational product or two (2) years after the investigation is discontinued, and shall permit Sponsor and the FDA to inspect them, subject to applicable privacy law.
+
+13. Debarment.
+
+Institution certifies that neither it nor Principal Investigator nor any person engaged in the Study is debarred under 21 U.S.C. § 335a or excluded from any federal health care program, and shall notify Sponsor immediately if that changes.
+
+14. Term and Termination.
+
+This Agreement continues until the Study is completed or terminated. Either party may terminate for material breach not cured within thirty (30) days after written notice, and Sponsor may terminate immediately for safety reasons or upon withdrawal of IRB approval. On termination, Institution shall stop enrolling subjects, follow Sponsor's and the IRB's directions for the safe transition of enrolled subjects, and be paid for work properly performed and non-cancelable commitments through the termination date. Sections 5, 6, 9, 10, 11, 12, and this Section survive.
+
+15. Governing Law.
+
+This Agreement is governed by the laws of the State of Ohio, without regard to its conflict-of-laws rules, and any action arising out of it shall be brought exclusively in the state and federal courts sitting in Franklin County, Ohio.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+NORTHGATE THERAPEUTICS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Medical Officer
+
+RIDGELINE COMMUNITY HOSPITAL
+
+By: /s/ Beatriz Sandoval
+Name: Beatriz Sandoval
+Title: Chief Executive Officer
+
+ACKNOWLEDGED:
+
+/s/ Amara Osei, M.D.
+Amara Osei, M.D., Principal Investigator

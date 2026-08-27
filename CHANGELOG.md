@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.56.1] — 2026-08-27
+
+### Fixed
+- **One hyphen hid a payment term.** FIN-005's active-voice branch lets the
+  run-up between "shall pay" and the deadline contain letters, digits, commas,
+  parentheses, currency and quote marks — but not a hyphen, and hyphenated
+  words are everywhere in that run-up. "Sponsor shall pay Institution in
+  accordance with the budget attached as Exhibit A, on a **per-subject** basis
+  upon completion and monitoring of each visit, within forty-five (45) days
+  after receipt of a proper invoice" is a plainly stated term, reported as
+  none.
+- **A survival clause spread over two paragraphs was read from the wrong one.**
+  `expandSurvivalSectionRefs` took the FIRST section list in the survival text,
+  and the earlier paragraph carried an unrelated cross-reference — "Nothing in
+  this Section limits the publication rights in **Section 11**" — which became
+  the whole incorporated list. The operative enumeration ("Sections 5, 6, 9,
+  10, 11, 12 … survive") was never read, so TEMP-012 reported the indemnity as
+  unnamed in a clause that names it by number. Every list is now unioned.
+
+### Added
+- A clinical trial agreement specimen, bringing the set to nineteen.
+
 ## [9.56.0] — 2026-08-27
 
 ### Fixed

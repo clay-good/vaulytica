@@ -331,11 +331,23 @@ export function topPosition(ctx: RuleContext): DocPosition {
 export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string): string {
   // The separator must absorb the Oxford ", and" — a single-token separator
   // stopped the capture at "8" in "Sections 4, 5, 7, 8, and 15".
-  const m = /\bSections?\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/i.exec(
-    survivalText,
-  );
-  if (!m) return survivalText;
-  const nums = new Set(m[1]!.split(/[^0-9.]+/).filter(Boolean));
+  // EVERY section list in the survival text, not just the first. A survival
+  // clause is frequently spread over more than one paragraph — the
+  // confidentiality section says "this Section survives for seven years", the
+  // termination section says "Sections 5, 6, 9, 10, 11, 12 … survive" — and
+  // the joined text is scanned in document order. Taking the first match meant
+  // an unrelated cross-reference in the earlier paragraph ("Nothing in this
+  // Section limits the publication rights in Section 11") became the whole
+  // incorporated list, so the operative enumeration was never read and
+  // TEMP-012 reported the indemnity as unnamed in a clause that names it.
+  const LIST = /\bSections?\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
+  const nums = new Set<string>();
+  LIST.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = LIST.exec(survivalText)) !== null) {
+    for (const n of m[1]!.split(/[^0-9.]+/).filter(Boolean)) nums.add(n);
+  }
+  if (nums.size === 0) return survivalText;
   const named: string[] = [];
   forEachParagraph(ctx.tree, (p) => {
     const label = /^\s*(\d+(?:\.\d+)*)[.)]\s+/.exec(p.text)?.[1];

@@ -52,6 +52,21 @@ const EXPECTED: Record<string, Expectation> = {
     ],
   },
 
+  // A clinical trial agreement: a payment term behind a hyphenated qualifier,
+  // and a survival clause that names its sections by number.
+  "cta.txt": {
+    playbook: "clinical-trial-agreement",
+    findings: [
+      "RISK-005",
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-016",
+      "STRUCT-018",
+      "OBLI-005",
+      "TEMP-006",
+    ],
+  },
+
   // A convertible promissory note behind a restrictive-securities legend.
   "convertible-note.txt": {
     playbook: "convertible-note",

@@ -37,7 +37,13 @@ const PAYMENT_TERMS = new RegExp(
     // Meridian's counsel within thirty (30) days" names the amount as a
     // quoted defined term and routes the payment before stating the
     // deadline, and the old 80-char quote-free window never reached it.
-    `\\bshall\\s+pay\\b[\\s\\w,()$."'“”’]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    // The window's character class omitted the HYPHEN, and hyphenated words
+    // are everywhere in the run-up to the deadline: "shall pay Institution in
+    // accordance with the budget attached as Exhibit A, on a PER-SUBJECT basis
+    // upon completion and monitoring of each visit, within forty-five (45)
+    // days after receipt of a proper invoice" is a plainly stated payment
+    // term, and one hyphen stopped the branch from reaching it.
+    `\\bshall\\s+pay\\b[\\s\\w,()$."'“”’\\-/:;&%–—]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     // A recurring charge states its term as a DUE DATE, not an interval from
     // an invoice: "Base Rent: $20,000 per month, payable in advance on the
     // first of each month" is a payment term, and every branch above is
@@ -109,7 +115,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.6.4",
+  version: "1.7.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",
