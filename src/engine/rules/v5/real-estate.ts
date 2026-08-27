@@ -6,7 +6,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, stateLaw, practice } from "./_helpers.js";
+import { expressDenial, practice, stateLaw, usc } from "./_helpers.js";
 
 const C = "real-estate";
 
@@ -166,6 +166,9 @@ const PROPERTY_MGMT = pack("property-management-agreement", C, [
   },
   {
     id: "RE-114",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Segregated trust and operating accounts",
     cite: stateLaw(
       "broker-trust-account",
@@ -178,6 +181,7 @@ const PROPERTY_MGMT = pack("property-management-agreement", C, [
     ],
     why: "Commingling owner funds is a licensing violation in every state and a conversion claim. Security deposits are separately regulated and often must sit in their own account.",
     fix: "Require segregated operating and security-deposit accounts in the owner's name, prohibit commingling, and state the reserve balance and disbursement authority.",
+    denied: expressDenial(String.raw`segregated\s+(?:trust\s+)?account|separate\s+trust\s+account`),
   },
   {
     id: "RE-115",
@@ -256,6 +260,9 @@ const LISTING = pack("listing-agreement", C, [
   },
   {
     id: "RE-121",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Agency disclosure and dual-agency consent",
     cite: stateLaw(
       "agency-disclosure",
@@ -268,6 +275,7 @@ const LISTING = pack("listing-agreement", C, [
     ],
     why: "Every state mandates agency disclosure, and dual agency requires informed written consent (and is prohibited outright in a few states). Undisclosed dual agency forfeits the commission and supports a fiduciary claim.",
     fix: "Include the state-mandated agency disclosure and, where dual or designated agency is possible, obtain informed written consent describing the limits on the broker's duties.",
+    denied: expressDenial(String.raw`agency\s+disclosure|dual[- ]agency\s+consent`),
     sev: "critical",
   },
   {
@@ -569,6 +577,9 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
   },
   {
     id: "RE-142",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Seller property-condition disclosure",
     cite: stateLaw(
       "seller-disclosure",
@@ -581,6 +592,9 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
     ],
     why: "Nearly every state mandates a seller disclosure form for residential sales, and an omitted or false disclosure survives closing as a fraud claim regardless of an as-is clause.",
     fix: "Attach the state-mandated disclosure statement, confirm its delivery date, and state the buyer's rights if it is delivered late.",
+    denied: expressDenial(
+      String.raw`(?:property[- ]condition|seller'?s?\s+property)\s+disclosure(?:\s+statement)?`,
+    ),
     sev: "critical",
   },
   {

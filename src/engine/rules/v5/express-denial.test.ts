@@ -10,8 +10,8 @@
  * and a denial is a decision.
  *
  * `expressDenial()` was built for the v4 packs and wired into 27 of their
- * rules; none of the 697 rules the v5/v6 shorthand builds used it. Fourteen
- * columns now do — the ones where a denial is realistic drafting and the
+ * rules; none of the 697 rules the v5/v6 shorthand builds used it.
+ * Twenty-seven columns now do — the ones where a denial is realistic drafting and the
  * required clause is an affirmative undertaking rather than a prohibition. A
  * column whose required clause is ITSELF a negation, waiver, or ban is
  * disqualified: PRV-114 (consent not a condition of purchase) and HC-123
@@ -31,6 +31,7 @@
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../../_test-fixtures.js";
 import { V5_RULES } from "./index.js";
+import { expressDenial } from "../_helpers.js";
 
 const rule = (id: string) => {
   const r = V5_RULES.find((x) => x.id === id);
@@ -111,6 +112,72 @@ const CASES: Array<[string, string, string]> = [
     "The Architect does not maintain professional liability insurance for this project.",
     "The Architect shall not commence services without professional liability insurance in the amounts stated below.",
   ],
+  // Second wave — the sub-domains the first pass did not reach.
+  [
+    "RE-114",
+    "Manager does not maintain a segregated trust account for owner funds.",
+    "Manager shall not disburse owner funds without depositing them into a segregated trust account.",
+  ],
+  [
+    "RE-121",
+    "An agency disclosure is not provided to the seller before the listing is signed.",
+    "Broker shall not act for both parties without a written agency disclosure and dual-agency consent.",
+  ],
+  [
+    "RE-142",
+    "Seller does not provide a property-condition disclosure; the property is sold as is.",
+    "Buyer shall not waive inspection without receiving the property-condition disclosure statement.",
+  ],
+  [
+    "IPL-128",
+    "Licensee is not required to maintain product liability insurance under this license.",
+    "Licensee shall not distribute Licensed Products without product liability insurance in the amounts stated.",
+  ],
+  [
+    "EST-402",
+    "This trust contains no spendthrift provision.",
+    "A beneficiary may not assign an interest in violation of the spendthrift clause.",
+  ],
+  [
+    "EST-418",
+    "Notarization is not required for this amendment to take effect.",
+    "This amendment shall not take effect without notarization by a notary public.",
+  ],
+  [
+    "EST-429",
+    "The parties have not exchanged financial disclosures before signing.",
+    "This agreement shall not be enforceable unless each party has made a full financial disclosure.",
+  ],
+  [
+    "GOV-129",
+    "The Sponsor does not retain variance power over the granted funds.",
+    "The Sponsor shall not disburse funds except in the exercise of its variance power.",
+  ],
+  [
+    "BNK-140",
+    "The Lender will not file a UCC-1 financing statement against the collateral.",
+    "Debtor shall not encumber the collateral before the Secured Party files a UCC-1 financing statement.",
+  ],
+  [
+    "POL-129",
+    "The team maintains no chain of custody for collected evidence.",
+    "No image shall be analyzed without a documented chain of custody.",
+  ],
+  [
+    "POL-130",
+    "Regulatory notification is not performed by the incident response team.",
+    "No incident shall be closed until regulatory notification deadlines have been met.",
+  ],
+  [
+    "HC-112",
+    "The Medical Director does not maintain time records for services performed.",
+    "No invoice shall be paid without time records substantiating the hours performed.",
+  ],
+  [
+    "HC-118",
+    "The Investigator has no publication rights in the study results.",
+    "Sponsor shall not withhold publication rights beyond the stated review window.",
+  ],
 ];
 
 describe("v5 express-denial guards", () => {
@@ -128,6 +195,29 @@ describe("v5 express-denial guards", () => {
       expect(rule(id).check(doc(decoy))?.title ?? "").not.toContain("expressly disclaimed");
     });
   }
+
+  it("a negated WITHHOLDING verb is an affirmation, not a denial", () => {
+    // "Sponsor shall not withhold publication rights" GRANTS the rights. The
+    // frames read the negation and then the topic and cannot see the verb
+    // between them, so the blocked-word list has to name it — the same reason
+    // `without`, `unless`, and `prevent` are already there. HC-118's decoy
+    // above is that sentence; this pins the mechanism directly.
+    const frames = expressDenial(String.raw`publication\s+rights?`);
+    const grant = "Sponsor shall not withhold publication rights beyond the review window.";
+    const denial = "Sponsor does not provide publication rights to the Investigator.";
+    expect(frames.some((f) => f.test(grant))).toBe(false);
+    expect(frames.some((f) => f.test(denial))).toBe(true);
+  });
+
+  it("an instrument denies carrying a clause with 'contains no'", () => {
+    // The verb set was written for a PARTY denying conduct ("performs no OFAC
+    // screening"). An instrument denies differently: "this trust contains no
+    // spendthrift provision" is the natural disclaimer, and it matched
+    // nothing.
+    const frames = expressDenial(String.raw`spendthrift\s+(?:clause|provision)`);
+    expect(frames.some((f) => f.test("This trust contains no spendthrift provision."))).toBe(true);
+    expect(frames.some((f) => f.test("The instrument includes no spendthrift clause."))).toBe(true);
+  });
 
   it("every wired column carries a distinct denial title", () => {
     // The title is generated once in `pack()`, from the column name, so a

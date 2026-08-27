@@ -5,7 +5,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { uniformAct, cfr, irs, practice, agency } from "./_helpers.js";
+import { agency, cfr, expressDenial, irs, practice, uniformAct } from "./_helpers.js";
 
 const C = "governance";
 
@@ -360,6 +360,9 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
   },
   {
     id: "GOV-129",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Variance power retained by the sponsor",
     cite: cfr("26", "1.507-2(a)(8)", "Treasury regulations — variance power in a component fund"),
     pat: [
@@ -368,6 +371,7 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
     ],
     why: "Without express variance power the sponsor is a conduit and the donor's deduction is at risk; the IRS treats earmarked pass-throughs as gifts to the ultimate recipient.",
     fix: "State that the sponsor retains complete discretion and control over the funds, including the power to redirect them to a similar charitable purpose.",
+    denied: expressDenial(String.raw`variance\s+power`),
     sev: "critical",
   },
   {

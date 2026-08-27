@@ -5,7 +5,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, cfr, practice } from "./_helpers.js";
+import { cfr, expressDenial, practice, usc } from "./_helpers.js";
 
 const C = "ip-licensing";
 
@@ -362,6 +362,9 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
   },
   {
     id: "IPL-128",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Indemnity and insurance from the licensee",
     cite: practice(
       "university-indemnity",
@@ -373,6 +376,9 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     ],
     why: "The university transfers the product-liability risk entirely; the indemnity and the insurance requirement, with stated limits triggered at first commercial sale, are always in the template.",
     fix: "Provide a broad indemnity in favor of the university, its trustees, and its inventors, backed by product-liability insurance at stated limits naming them as additional insureds.",
+    denied: expressDenial(
+      String.raw`(?:commercial\s+general\s+liability|product\s+liability|liability)\s+insurance`,
+    ),
   },
 ]);
 

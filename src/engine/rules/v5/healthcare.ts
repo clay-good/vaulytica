@@ -172,6 +172,9 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
   },
   {
     id: "HC-112",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Time-record substantiation requirement",
     cite: practice(
       "directorship-time-records",
@@ -183,6 +186,7 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
     ],
     why: "Enforcement actions against medical directorships almost always rest on the absence of any evidence the services were performed. Contemporaneous time records are the single most valuable defensive control.",
     fix: "Require contemporaneous time records describing the services performed, submitted as a condition of payment and retained for the record-retention period.",
+    denied: expressDenial(String.raw`time\s+(?:records?|sheets?|logs?)`),
     sev: "critical",
   },
   {
@@ -252,6 +256,9 @@ const CTA = pack("clinical-trial-agreement", C, [
   },
   {
     id: "HC-118",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Publication rights and sponsor review window",
     cite: agency(
       "ICMJE",
@@ -264,6 +271,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     ],
     why: "Academic sites will not sign an agreement that gives the sponsor a veto over publication, and ICMJE requires that investigators have access to the data and control over publication decisions.",
     fix: "Give the sponsor a stated review window with a short delay for patent filing and removal of confidential information, and confirm the sponsor has no right to suppress or alter the results.",
+    denied: expressDenial(String.raw`publication\s+rights?`),
     sev: "critical",
   },
   {

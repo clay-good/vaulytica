@@ -6,7 +6,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, uniformAct, irs, practice } from "./_helpers.js";
+import { expressDenial, irs, practice, uniformAct, usc } from "./_helpers.js";
 
 const C = "trust-estate";
 
@@ -26,6 +26,9 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
   },
   {
     id: "EST-402",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Spendthrift clause",
     cite: uniformAct("Uniform Trust Code § 502", "spendthrift provision"),
     pat: [
@@ -34,6 +37,7 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
     ],
     why: "UTC § 502 makes a spendthrift provision valid only if it restrains both voluntary and involuntary transfer. A clause restraining only one is ineffective as a spendthrift provision.",
     fix: "Add a spendthrift clause restraining both voluntary and involuntary transfer of a beneficiary's interest.",
+    denied: expressDenial(String.raw`spendthrift\s+(?:clause|provision|protection)`),
     sev: "critical",
   },
   {
@@ -227,6 +231,9 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
   },
   {
     id: "EST-418",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Settlor and trustee execution and notarization",
     cite: practice("trust-execution", "execution formalities for trust amendments"),
     pat: [
@@ -236,6 +243,9 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
     all: true,
     why: "Trust amendments do not require witnesses in most states, but notarization is nearly always used and is what a financial institution will demand before honoring the amended terms.",
     fix: "Add settlor and trustee signature blocks with the date and a notarial acknowledgment, matching the formality used on the original instrument.",
+    denied: expressDenial(
+      String.raw`notariz(?:ation|ed)|acknowledg(?:e?ment)\s+before\s+a\s+notary`,
+    ),
     sev: "critical",
   },
 ]);
@@ -375,6 +385,9 @@ const COHABITATION = pack("cohabitation-agreement", C, [
   },
   {
     id: "EST-429",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Independent counsel and financial disclosure",
     cite: practice(
       "cohabitation-procedure",
@@ -386,6 +399,7 @@ const COHABITATION = pack("cohabitation-agreement", C, [
     ],
     why: "Courts scrutinize agreements between intimate partners for overreaching. Independent counsel and full asset disclosure are the two facts that most reliably defeat an unconscionability challenge.",
     fix: "Recite that each party had the opportunity for independent counsel (naming counsel or recording the waiver) and attach a schedule of each party's assets, debts, and income.",
+    denied: expressDenial(String.raw`(?:independent|separate)\s+counsel|financial\s+disclosure`),
     sev: "critical",
   },
   {

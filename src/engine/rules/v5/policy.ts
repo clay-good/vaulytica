@@ -414,6 +414,9 @@ const IRP = pack("security-incident-response-plan", C, [
   },
   {
     id: "POL-129",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Evidence preservation and forensic chain of custody",
     cite: agency(
       "NIST",
@@ -426,10 +429,14 @@ const IRP = pack("security-incident-response-plan", C, [
     ],
     why: "The reflex to reimage a compromised host destroys the evidence needed to scope the incident and to defend the litigation that follows. The plan has to say so before the incident.",
     fix: "Require memory and disk preservation before remediation on in-scope systems, describe chain-of-custody handling, and connect the plan to the litigation-hold process.",
+    denied: expressDenial(String.raw`chain\s+of\s+custody|evidence\s+preservation`),
     sev: "critical",
   },
   {
     id: "POL-130",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Regulatory notification clocks and owners",
     cite: stateLaw(
       "breach-notification",
@@ -443,6 +450,9 @@ const IRP = pack("security-incident-response-plan", C, [
     all: true,
     why: "The clocks are short and they differ: GDPR is 72 hours, the SEC cyber rule is four business days after materiality, HIPAA is 60 days, and the state statutes run from 30 to 90 days with different triggers. Nobody can reconstruct them mid-incident.",
     fix: "Tabulate the applicable notification obligations with their triggers, deadlines, content requirements, and the named owner of each.",
+    denied: expressDenial(
+      String.raw`regulatory\s+notification|notification\s+(?:clock|deadline|timeline)s?`,
+    ),
     sev: "critical",
   },
   {

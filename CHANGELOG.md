@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.43.0] — 2026-08-27
+
+### Added
+- **Express-denial frames on thirteen more catalog columns**, reaching the
+  sub-domains 9.42.5 did not: a property manager's segregated trust account,
+  the agency and dual-agency disclosure, the seller's property-condition
+  disclosure, a licensee's product-liability insurance, the spendthrift clause,
+  a trust amendment's notarization, the cohabitation agreement's independent
+  counsel and financial disclosure, a fiscal sponsor's variance power, the
+  UCC-1 filing, the incident-response chain of custody and regulatory
+  notification clocks, a medical director's time records, and an
+  investigator's publication rights. Twenty-seven columns now report a
+  disclaimer AS a disclaimer.
+
+### Fixed
+- **A negated withholding verb was read as a denial.** "Sponsor shall not
+  withhold publication rights beyond the stated review window" GRANTS the
+  rights — it is the clause HC-118 exists to bless — and the frames read it as
+  a disclaimer of them. The frames match a negation and then the topic; they
+  cannot see the verb in between, which is why the gap already refuses to cross
+  `without`, `unless`, `prevent`, `preclude`, `restrict`. `withhold`, `deny`,
+  `refuse`, `impair`, `delay`, `obstruct`, and `interfere` join them: negating a
+  verb that BLOCKS the term is an affirmation of it.
+- **An instrument could not deny carrying a clause.** The verb set was written
+  for a party denying conduct ("performs no OFAC screening"). An instrument
+  denies differently — "this trust contains no spendthrift provision" — and
+  that matched nothing. `contain` and `include` join the set.
+
+  Both changes are to the shared helper, so they reach the 27 v4 rules wired in
+  9.31.0 as well. No corpus finding moved.
+
 ## [9.42.5] — 2026-08-27
 
 ### Fixed

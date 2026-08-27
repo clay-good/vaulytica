@@ -5,7 +5,16 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { usc, cfr, ucc, agency, stateLaw, practice, standardForm } from "./_helpers.js";
+import {
+  agency,
+  cfr,
+  expressDenial,
+  practice,
+  standardForm,
+  stateLaw,
+  ucc,
+  usc,
+} from "./_helpers.js";
 
 const C = "banking";
 
@@ -528,6 +537,9 @@ const EFA = pack("equipment-finance-agreement", C, [
   },
   {
     id: "BNK-140",
+    // 1.1.0 — an express disclaimer of this column is now reported as a
+    // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
+    ver: "1.1.0",
     name: "Security interest grant and UCC-1 filing",
     cite: ucc("9-203", "Attachment and enforceability of security interest"),
     pat: [
@@ -536,6 +548,7 @@ const EFA = pack("equipment-finance-agreement", C, [
     ],
     why: "§ 9-203 requires a security agreement authenticated by the debtor describing the collateral, and § 9-509 requires authorization for the financing statement. Both are usually in this one document.",
     fix: "Include an express grant of a security interest with a collateral description, and the debtor's authorization to file financing statements.",
+    denied: expressDenial(String.raw`UCC[- ]?1(?:\s+financing\s+statement)?|financing\s+statement`),
     sev: "critical",
   },
   {
