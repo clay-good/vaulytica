@@ -228,3 +228,36 @@ describe("a discovery response against the request it answers", () => {
     expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("discovery-responses");
   });
 });
+
+/**
+ * The legend above the title.
+ *
+ * "EXECUTION VERSION" and "CONFIDENTIAL" sit on the first line of a very large
+ * share of real negotiated documents, and they were what the matcher scored.
+ * A mutual NDA carrying them routed to `unilateral-nda` — the mutual
+ * playbook's title keyword never hit, and the unilateral one won on "the
+ * Disclosing Party" / "the Receiving Party", which a mutual NDA uses too
+ * because each party is both. This is the launch families' own routing, so it
+ * is the widest of the three title-corpus holes found here.
+ */
+describe("a legend above the title", () => {
+  it("a mutual NDA stamped EXECUTION VERSION is not routed to the unilateral playbook", () => {
+    const body: [string, ...string[]] = [
+      "EXECUTION VERSION",
+      "CONFIDENTIAL",
+      "MUTUAL NON-DISCLOSURE AGREEMENT",
+      'This Mutual Non-Disclosure Agreement (this "Agreement") is entered into by Northgate Instrument Company ("Northgate") and Cardinal Metrology, Inc. ("Cardinal"), each a "Party".',
+      "Each Party may disclose Confidential Information to the other. The Receiving Party shall protect the Disclosing Party's Confidential Information and shall not disclose it to any third party.",
+      "Each Party is both a Disclosing Party and a Receiving Party under this Agreement.",
+    ];
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "nda.txt"),
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("mutual-nda");
+  });
+});

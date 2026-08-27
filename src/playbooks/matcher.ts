@@ -120,6 +120,36 @@ function subjectLine(
 }
 
 /**
+ * A negotiated agreement wears its legends above its title.
+ *
+ * "EXECUTION VERSION", "CONFIDENTIAL", "PRIVILEGED AND CONFIDENTIAL —
+ * ATTORNEY WORK PRODUCT", "DRAFT — FOR DISCUSSION PURPOSES ONLY": these sit on
+ * the first line of a very large share of real deal documents, and the
+ * preamble the matcher read was therefore the legend. A **mutual** NDA
+ * carrying "EXECUTION VERSION" over "MUTUAL NON-DISCLOSURE AGREEMENT" routed
+ * to `unilateral-nda` — the mutual playbook's title keyword never hit, and the
+ * unilateral one won on "the Disclosing Party" / "the Receiving Party", which
+ * a mutual NDA uses too because each party is both.
+ *
+ * A legend is recognized as a WHOLE line built only of legend tokens and
+ * separators, so a title that merely contains one of the words is untouched:
+ * "CONFIDENTIALITY AGREEMENT" is a title, "CONFIDENTIAL" is a legend.
+ */
+const LEGEND_TOKEN =
+  /execution\s+(?:version|copy)|conformed\s+copy|final\s+(?:version|form)|drafts?|confidential(?:ity)?|privileged|proprietary|trade\s+secrets?|attorney[-\s]work[-\s]product|attorney[-\s]client\s+privileged?|work\s+product|for\s+(?:discussion|settlement|negotiation)\s+purposes\s+only|subject\s+to\s+(?:protective\s+order|review|contract|revision)|confidential\s+treatment\s+requested|do\s+not\s+(?:copy|distribute|file)|not\s+for\s+distribution/;
+const LEGEND_LINE = new RegExp(
+  String.raw`^[\s\-–—*|/[\]()]*(?:(?:${LEGEND_TOKEN.source})[\s\-–—*|/,;:[\]()]*(?:and[\s\-–—*|/,;:]*)?)+$`,
+  "i",
+);
+
+/** Drop the leading legend lines so the document's own title is first. */
+function dropLegends(lines: readonly string[]): string[] {
+  let i = 0;
+  while (i < lines.length && (lines[i]!.length === 0 || LEGEND_LINE.test(lines[i]!))) i += 1;
+  return lines.slice(i);
+}
+
+/**
  * A court filing names itself BELOW its caption.
  *
  * The first paragraph of a filing is the court ("IN THE UNITED STATES
@@ -173,11 +203,15 @@ export function titleCorpus(
 ): string {
   const first = tree.sections[0];
   const heading = (first?.heading ?? "").trim();
-  const preamble = (first?.paragraphs[0]?.runs.map((r) => r.text).join("") ?? "")
-    .trim()
-    .slice(0, TITLE_PREAMBLE_CHARS);
+  const paragraphs = (first?.paragraphs ?? []).slice(0, TITLE_SUBJECT_SCAN_PARAGRAPHS).map((p) =>
+    p.runs
+      .map((r) => r.text)
+      .join("")
+      .trim(),
+  );
+  const preamble = (dropLegends(paragraphs)[0] ?? "").slice(0, TITLE_PREAMBLE_CHARS);
   const subject = subjectLine(tree.sections);
-  const caption = captionTitle(leadingLines(tree.sections));
+  const caption = captionTitle(dropLegends(leadingLines(tree.sections)));
   const parts = [heading, preamble, subject, caption].filter((p) => p.length > 0);
   return parts.length > 0 ? parts.join(" ") : fallback;
 }

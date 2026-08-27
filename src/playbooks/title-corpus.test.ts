@@ -225,3 +225,81 @@ describe("titleCorpus — a court filing's title below the caption", () => {
     );
   });
 });
+
+describe("titleCorpus — the legends above the title", () => {
+  /**
+   * "EXECUTION VERSION", "CONFIDENTIAL", "PRIVILEGED AND CONFIDENTIAL —
+   * ATTORNEY WORK PRODUCT" sit on the first line of a very large share of real
+   * deal documents, and the preamble the matcher read was therefore the
+   * legend. A mutual NDA carrying "EXECUTION VERSION" over "MUTUAL
+   * NON-DISCLOSURE AGREEMENT" routed to `unilateral-nda`: the mutual
+   * playbook's title keyword never hit, and the unilateral one won on "the
+   * Disclosing Party" / "the Receiving Party", which a mutual NDA uses too
+   * because each party is both.
+   */
+  it("reads past a stack of legends to the document's title", () => {
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "EXECUTION VERSION",
+          "CONFIDENTIAL",
+          "MUTUAL NON-DISCLOSURE AGREEMENT",
+          "This Mutual Non-Disclosure Agreement is entered into as of September 2, 2026.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "nda.txt")).toContain("MUTUAL NON-DISCLOSURE AGREEMENT");
+  });
+
+  it("reads a compound legend line", () => {
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "PRIVILEGED AND CONFIDENTIAL — ATTORNEY WORK PRODUCT",
+          "DRAFT — FOR DISCUSSION PURPOSES ONLY",
+          "SETTLEMENT AGREEMENT AND MUTUAL RELEASE",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "s.txt")).toContain("SETTLEMENT AGREEMENT AND MUTUAL RELEASE");
+  });
+
+  it("does not mistake a title that merely contains a legend word", () => {
+    // The whole line must be legend tokens. "CONFIDENTIAL" is a legend;
+    // "CONFIDENTIALITY AGREEMENT" is a title, and dropping it would lose the
+    // only signal the document has.
+    const t = tree([{ heading: "", paragraphs: ["CONFIDENTIALITY AGREEMENT", "Body text."] }]);
+    expect(titleCorpus(t, "c.txt")).toBe("CONFIDENTIALITY AGREEMENT");
+    const draft = tree([{ heading: "", paragraphs: ["DRAFTING CONVENTIONS", "Body text."] }]);
+    expect(titleCorpus(draft, "d.txt")).toBe("DRAFTING CONVENTIONS");
+  });
+
+  it("leaves a document that opens on its title byte-identical", () => {
+    const t = tree([
+      { heading: "", paragraphs: ["Master Services Agreement", "This Agreement is made…"] },
+    ]);
+    expect(titleCorpus(t, "msa.docx")).toBe("Master Services Agreement");
+  });
+
+  it("reads a caption that sits under a legend", () => {
+    // The legends are dropped before the caption walk, so a filing stamped
+    // "CONFIDENTIAL — SUBJECT TO PROTECTIVE ORDER" still has its title found.
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "CONFIDENTIAL — SUBJECT TO PROTECTIVE ORDER",
+          "IN THE UNITED STATES DISTRICT COURT FOR THE DISTRICT OF DELAWARE",
+          "ACME INC.,",
+          "Plaintiff,",
+          "v. Case No. 1:26-cv-00114",
+          "Defendant.",
+          "PLAINTIFF'S MOTION TO COMPEL",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "m.txt")).toContain("MOTION TO COMPEL");
+  });
+});

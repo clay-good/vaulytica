@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.46.1] — 2026-08-27
+
+### Fixed
+- **A negotiated agreement wears its legends above its title, and the legend is
+  what the matcher scored.** "EXECUTION VERSION", "CONFIDENTIAL", "PRIVILEGED
+  AND CONFIDENTIAL — ATTORNEY WORK PRODUCT", "DRAFT — FOR DISCUSSION PURPOSES
+  ONLY" sit on the first line of a very large share of real deal documents. A
+  **mutual** NDA stamped "EXECUTION VERSION" over "MUTUAL NON-DISCLOSURE
+  AGREEMENT" routed to `unilateral-nda`: the mutual playbook's title keyword
+  never hit, and the unilateral one won on "the Disclosing Party" / "the
+  Receiving Party" — which a mutual NDA uses too, because each party is both.
+  This is the launch families' own routing, so it is the widest of the three
+  title-corpus holes found today (the letterhead and the court caption were the
+  other two). A legend is recognized as a WHOLE line built only of legend
+  tokens and separators, so a title that merely contains one of the words is
+  untouched: "CONFIDENTIAL" is a legend, "CONFIDENTIALITY AGREEMENT" is a
+  title. The legends are dropped before the caption walk too, so a filing
+  stamped "CONFIDENTIAL — SUBJECT TO PROTECTIVE ORDER" still has its title
+  found.
+
 ## [9.46.0] — 2026-08-27
 
 ### Fixed
