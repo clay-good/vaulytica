@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { extractCrossRefs } from "./crossrefs.js";
 import { extractSections } from "./sections.js";
 import { normalize } from "../ingest/normalize.js";
+import { buildTree } from "./_fixtures.js";
 import type { DocumentTree } from "../ingest/types.js";
 
 const tree: DocumentTree = normalize({
@@ -584,5 +585,50 @@ describe("external citations are never reported as broken internal references", 
     expect(unresolved("The parties comply with Section 12 in all respects.")).toEqual([
       "Section 12",
     ]);
+  });
+});
+
+describe("an arabic-numbered article reference", () => {
+  it("resolves against the article the document declares", () => {
+    // "Article 9" reached `normalizeLabel` as the bare number "9", which
+    // normalizes to `section:9` and can never match the `article:9` the
+    // declaration indexed. Only the roman form took the article branch,
+    // because it is recognizable without its keyword — so every reference to
+    // an arabic-numbered article was reported as broken. That is the numbering
+    // a union contract, a policy, and most EU-style instruments use.
+    const tree = buildTree([
+      "Collective Bargaining Agreement",
+      "ARTICLE 7 — HOURS AND OVERTIME",
+      "Double time is paid for hours worked on the holidays listed in Article 9.",
+      "ARTICLE 9 — HOLIDAYS AND VACATION",
+      "Employees receive eleven paid holidays per contract year.",
+    ]);
+    const refs = extractCrossRefs(tree, extractSections(tree));
+    const ref = refs.find((r) => r.raw_text === "Article 9");
+    expect(ref, "the reference was not extracted at all").toBeDefined();
+    expect(ref!.unresolved).toBe(false);
+  });
+
+  it("still reports a reference to an article the document does not have", () => {
+    const tree = buildTree([
+      "Collective Bargaining Agreement",
+      "ARTICLE 7 — HOURS AND OVERTIME",
+      "Double time is paid for the holidays listed in Article 9.",
+    ]);
+    const refs = extractCrossRefs(tree, extractSections(tree));
+    expect(refs.find((r) => r.raw_text === "Article 9")?.unresolved).toBe(true);
+  });
+
+  it("does not link an article reference to a section that shares its number", () => {
+    // Before the keyword reached the normalizer, "Article 9" resolved to
+    // `section:9` — a wrong-entity link, the same class the Exhibit/Schedule
+    // guard exists to prevent.
+    const tree = buildTree([
+      "Agreement",
+      "9. Confidentiality",
+      "The obligations in Article 9 survive termination.",
+    ]);
+    const refs = extractCrossRefs(tree, extractSections(tree));
+    expect(refs.find((r) => r.raw_text === "Article 9")?.unresolved).toBe(true);
   });
 });

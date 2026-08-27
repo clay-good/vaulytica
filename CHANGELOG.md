@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.56.0] — 2026-08-27
+
+### Fixed
+- **Every reference to an arabic-numbered article was reported as broken.**
+  "Article 9" reached the label normalizer as the bare number "9", which
+  normalizes to `section:9` and can never match the `article:9` the
+  declaration indexed — only the roman form ("Article II") took the article
+  branch, because it is recognizable without its keyword. That is the numbering
+  a union contract, a policy, and most EU-style instruments use. Where the
+  document also had a Section 9, the reference linked to the **wrong entity**
+  instead of failing, which is the same class the Exhibit/Schedule guard exists
+  to prevent. The keyword is known at the call site; it is now passed.
+- **`union-cba` had empty `rule_overrides`.** A collective bargaining agreement
+  states no governing law (LMRA § 301 supplies it), no venue (the grievance
+  procedure ends in arbitration), no IP allocation, no liability cap, and no
+  payment terms, and it expires rather than terminating for cause. Fifteen
+  findings became seven.
+
+### Added
+- A union collective bargaining agreement specimen, bringing the set to
+  eighteen.
+
 ## [9.55.0] — 2026-08-27
 
 ### Fixed

@@ -38,6 +38,20 @@ const EXPECTED: Record<string, Expectation> = {
   // substantive sentence.
   "handbook.txt": { playbook: "employee-handbook", findings: ["STRUCT-006", "OBLI-005"] },
 
+  // A union collective bargaining agreement, with arabic-numbered articles.
+  "cba.txt": {
+    playbook: "union-cba",
+    findings: [
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-016",
+      "STRUCT-018",
+      "CHOICE-006",
+      "OBLI-005",
+      "RISK-011",
+    ],
+  },
+
   // A convertible promissory note behind a restrictive-securities legend.
   "convertible-note.txt": {
     playbook: "convertible-note",

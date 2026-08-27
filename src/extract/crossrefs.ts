@@ -241,7 +241,19 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // into a namespace absent from the section index, so they surface as
       // unresolved for STRUCT-007 instead of a wrong-entity link.
       const isAttachment = /^(?:Exhibit|Schedule|Attachment)$/i.test(keyword);
-      const normalized = isAttachment ? undefined : normalizeLabel(label);
+      // An ARABIC-numbered article reference — "Article 9", "Articles 3 and 4"
+      // — reaches `normalizeLabel` as the bare number "9", which normalizes to
+      // `section:9` and can never match the `article:9` the declaration
+      // indexed. Only the roman form ("Article II") took the article branch,
+      // because it is recognizable without its keyword. So every reference to
+      // an arabic-numbered article was reported as broken — the numbering a
+      // union contract, a policy, and most EU-style instruments use — and,
+      // where the document also had a Section 9, it linked to the wrong
+      // entity instead. The keyword is known here; pass it.
+      const isArticle = /^Articles?$/i.test(keyword);
+      const normalized = isAttachment
+        ? undefined
+        : normalizeLabel(isArticle ? `article ${label}` : label);
       const resolved = normalized ? labelIndex.get(normalized) : undefined;
       // Capture any trailing parenthetical sub-reference chain
       // ("(a)(ii)") that follows the matched label, without disturbing
