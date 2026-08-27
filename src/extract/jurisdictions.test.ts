@@ -646,3 +646,36 @@ describe("venue stated in a civil division", () => {
     expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("Illinois");
   });
 });
+
+describe("a venue in a named federal court", () => {
+  const venuesOf = (text: string) =>
+    extractJurisdictions(buildTree(["Dispute Resolution", text]))
+      .filter((r) => r.clause_kind === "venue")
+      .map((r) => r.raw_text);
+
+  it("reads a court named in full, with a district preposition", () => {
+    // A federal forum names the court and its district: "brought exclusively
+    // in the United States District Court for the Northern District of
+    // Illinois". The court-name run did not admit the sovereign before the
+    // court type, and the locality preposition set had no "for the … District
+    // of" — so a settlement agreement that names its enforcement forum in the
+    // ordinary way was reported as stating none.
+    expect(
+      venuesOf(
+        "Any action to enforce this Agreement shall be brought exclusively in the United States District Court for the Northern District of Illinois.",
+      ),
+    ).toEqual(["Illinois"]);
+  });
+
+  it("still reads the plain locality form", () => {
+    expect(
+      venuesOf(
+        "Any action shall be brought in the state and federal courts located in Cook County, Illinois.",
+      ),
+    ).toEqual(["Illinois"]);
+  });
+
+  it("does not invent a forum from a court named with no place", () => {
+    expect(venuesOf("The Court shall retain jurisdiction to enforce this Agreement.")).toEqual([]);
+  });
+});

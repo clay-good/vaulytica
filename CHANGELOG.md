@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.57.1] — 2026-08-27
+
+### Fixed
+- **A venue in a named federal court went unread.** "Any action to enforce this
+  Agreement shall be brought exclusively in the **United States District Court
+  for the Northern District of Illinois**" names its forum in the ordinary way,
+  and was reported as naming none: the court-name run did not admit the
+  sovereign before the court type, and the locality preposition set had no "for
+  the … District of".
+- **The judicial district inside that court's name was read as an undefined
+  term.** The Title-Case run stops at the lowercase "of", so "Northern
+  District" arrived as its own candidate — in a document that names one in
+  every recital.
+- **`confidential-settlement` had empty `rule_overrides`.** A settlement and
+  mutual release allocates no IP, contains no indemnity (each party releases
+  the other), caps no liability, and does not terminate — it is performed and
+  done. Nine findings became two, and both are real: no tax allocation of the
+  payment, and the negative covenants.
+
+### Added
+- A confidential settlement agreement specimen, bringing the set to
+  twenty-one.
+
 ## [9.57.0] — 2026-08-27
 
 ### Fixed

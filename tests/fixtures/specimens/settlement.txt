@@ -1,0 +1,73 @@
+CONFIDENTIAL SETTLEMENT AGREEMENT AND MUTUAL RELEASE
+
+This Confidential Settlement Agreement and Mutual Release (this "Agreement") is entered into as of December 8, 2026 by and between Ridgeline Aerospace Components, Inc., a Delaware corporation ("Ridgeline"), and Halloran Precision Castings, LLC, an Ohio limited liability company ("Halloran"). Ridgeline and Halloran are each a "Party" and together the "Parties."
+
+RECITALS
+
+A. Ridgeline filed an action against Halloran in the United States District Court for the Northern District of Illinois, Case No. 1:26-cv-04412 (the "Action"), asserting claims for breach of contract, breach of warranty, negligent misrepresentation, and negligence arising from turbine housings Halloran supplied between March and July 2025.
+
+B. Halloran denies the allegations and asserts that the housings conformed to specification.
+
+C. The Parties wish to resolve the Action without further expense or the uncertainty of litigation, and without any admission of liability by either Party.
+
+NOW, THEREFORE, in consideration of the mutual promises below, the sufficiency of which is acknowledged, the Parties agree as follows.
+
+1. Settlement Payment.
+
+Halloran shall pay Ridgeline One Million Six Hundred Thousand Dollars ($1,600,000) (the "Settlement Payment") by wire transfer to the trust account of Ridgeline's counsel within thirty (30) days after the Effective Date. Time is of the essence. If Halloran fails to pay when due and does not cure within ten (10) business days after written notice, Ridgeline may file the stipulated judgment described in Section 8.
+
+2. Dismissal.
+
+Within five (5) business days after the Settlement Payment clears, the Parties shall file a stipulation of dismissal of the Action with prejudice, each Party to bear its own costs and attorneys' fees. The Court shall retain jurisdiction to enforce this Agreement.
+
+3. Release by Ridgeline.
+
+Ridgeline, on behalf of itself and its subsidiaries, affiliates, successors, and assigns, releases and forever discharges Halloran and its members, officers, employees, agents, insurers, successors, and assigns from all claims, demands, causes of action, damages, and liabilities of every kind, whether known or unknown, suspected or unsuspected, arising from or relating to the housings described in the Recitals or the Action, from the beginning of time through the Effective Date.
+
+4. Release by Halloran.
+
+Halloran, on behalf of itself and its members, successors, and assigns, releases and forever discharges Ridgeline and its subsidiaries, affiliates, officers, employees, agents, insurers, successors, and assigns from all claims, demands, causes of action, damages, and liabilities of every kind, whether known or unknown, arising from or relating to the housings described in the Recitals or the Action, from the beginning of time through the Effective Date.
+
+5. Waiver of Unknown Claims.
+
+Each Party acknowledges that it may later discover facts different from or in addition to those it now believes to be true, and agrees that the releases in Sections 3 and 4 remain effective notwithstanding. Each Party expressly waives any statute or rule that would limit a general release to claims known at the time of execution, including California Civil Code § 1542, which provides: "A general release does not extend to claims that the creditor or releasing party does not know or suspect to exist in his or her favor at the time of executing the release and that, if known by him or her, would have materially affected his or her settlement with the debtor or released party."
+
+6. No Admission.
+
+This Agreement is a compromise of disputed claims. Nothing in it is an admission of liability or wrongdoing by either Party, and it may not be offered in any proceeding except to enforce its terms.
+
+7. Confidentiality.
+
+The Parties shall keep the terms of this Agreement confidential and shall not disclose them except to their attorneys, accountants, auditors, insurers, and lenders, as required by law or valid legal process, or to enforce this Agreement. If a Party is compelled to disclose, it shall give the other Party prompt notice, to the extent legally permitted, so that the other Party may seek a protective order. If asked about the Action, a Party may state only that the matter has been resolved. This Section does not restrict either Party from communicating with any government agency or from participating in any government investigation.
+
+8. Stipulated Judgment.
+
+Concurrently with this Agreement, Halloran shall execute a stipulation for entry of judgment in favor of Ridgeline in the amount of $2,000,000, less any amounts paid, which Ridgeline may file only upon an uncured payment default under Section 1. Halloran waives any defense to entry of that judgment other than payment.
+
+9. Representations.
+
+Each Party represents that it has full authority to enter into this Agreement, that it has not assigned any released claim, that it has been represented by counsel of its choosing, and that it has read this Agreement and understands it.
+
+10. Miscellaneous.
+
+This Agreement is the entire agreement between the Parties concerning its subject matter and supersedes all prior negotiations, including any settlement communications protected by Federal Rule of Evidence 408. It may be amended only by a writing signed by both Parties. It is governed by the laws of the State of Illinois, and any action to enforce it shall be brought exclusively in the United States District Court for the Northern District of Illinois. It may be executed in counterparts, and signatures delivered electronically have the same effect as originals. If any provision is held unenforceable, the remainder continues in effect.
+
+11. Effective Date.
+
+This Agreement is effective on the date the last Party signs it (the "Effective Date").
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement.
+
+RIDGELINE AEROSPACE COMPONENTS, INC.
+
+By: /s/ Beatriz Sandoval
+Name: Beatriz Sandoval
+Title: General Counsel
+Date: December 8, 2026
+
+HALLORAN PRECISION CASTINGS, LLC
+
+By: /s/ Dermot Halloran
+Name: Dermot Halloran
+Title: Managing Member
+Date: December 8, 2026

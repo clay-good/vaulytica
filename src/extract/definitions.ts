@@ -881,6 +881,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // authority, and the sibling guard above already excludes it whenever
       // the citation shape actually follows.
       if (/\b(?:Rules?|Regulations?|Canons?)\s+of\s+$/.test(ctx.text.slice(0, m.index))) continue;
+      // A judicial district or division is a place inside a court's name — "the
+      // United States District Court for the Northern District of Illinois" —
+      // and every settlement, pleading, and forum clause names one. The
+      // Title-Case run stops at the lowercase "of", so "Northern District"
+      // arrived as its own candidate and was reported as a term the document
+      // forgot to define.
+      if (
+        /\b(?:District|Circuit|Division|Department)$/.test(phrase) &&
+        /^\s*of\s+[A-Z]/.test(ctx.text.slice(m.index + phrase.length))
+      )
+        continue;
       if (entityPrefixes.has(phraseLower)) continue;
       // A phrase introduced with a residence or origin ("Diego Castellanos,
       // residing at 9 Elm Row", "Lucia Ferrante, of Burlington") is a natural

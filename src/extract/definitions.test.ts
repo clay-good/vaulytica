@@ -1292,3 +1292,25 @@ describe("entity short forms", () => {
     expect(map.undefined_capitalized.map((u) => u.term)).not.toContain("Granite Peak");
   });
 });
+
+describe("a judicial district is not an undefined defined-term", () => {
+  it("does not flag the district inside a court's name", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Recitals",
+        "Ridgeline filed an action in the United States District Court for the Northern District of Illinois. The action is pending in the Northern District of Illinois.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Northern District");
+  });
+
+  it("still flags an ordinary Title-Case phrase followed by 'of'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Services",
+        "The work is described in the Statement of Base Services. The Statement of Base Services governs.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Base Services");
+  });
+});

@@ -179,6 +179,9 @@ const EXPECTED: Record<string, Expectation> = {
   // (EST-060 is the standing disclosure, not a defect in the will.)
   "will.txt": { playbook: "last-will-and-testament", findings: ["EST-060"] },
 
+  // A confidential settlement agreement enforceable in a named federal court.
+  "settlement.txt": { playbook: "confidential-settlement", findings: ["SET-009", "OBLI-005"] },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.
