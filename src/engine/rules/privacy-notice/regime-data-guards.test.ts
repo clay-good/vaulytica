@@ -37,8 +37,15 @@ const BARE: [string, ...string[]] = [
   "We collect identifiers, commercial information, and internet activity.",
   "We maintain safeguards designed to protect personal information.",
   "You may have the right to know, to access, to correct, and to delete.",
-  "Acme Inc., 1 Main Street.",
+  // Deliberately names no corporate suffix: OR-007 is satisfied by one,
+  // and a "bare" fixture that carries the answer proves nothing.
+  "Written questions may be sent to 1 Main Street.",
 ];
+
+const PURPOSES =
+  "How We Use Personal Information. We use personal information to provide and maintain the services and to process payments.";
+const RECIPIENTS =
+  "We disclose personal information to service providers that perform hosting, payment processing, email delivery, and analytics on our behalf.";
 
 const CASES: Array<[string, string]> = [
   [
@@ -62,6 +69,48 @@ const CASES: Array<[string, string]> = [
     "We do not collect or process sensitive personal information as that term is defined under applicable state privacy law.",
   ],
 ];
+
+/**
+ * The same two item types repeat in every state act, with their own pattern
+ * arrays copied four times over — so the same compliant notice scored nine
+ * more warnings under CO, VA, TX, and OR. Oregon's third-party item asks for
+ * more detail than the others, and the notice gives more detail, by naming the
+ * functions each recipient performs.
+ *
+ * OR-007 was a different defect: `\b(inc\.|llc|ltd\.?|corporation)\b` carried a
+ * trailing `\b` after a literal period, which demands a word character
+ * immediately next — and a company name ends "Inc." at a comma, a newline, or
+ * a sentence end every time. That alternative could not match any real notice.
+ */
+const STATE_CASES: Array<[string, string]> = [
+  ["PNOT-CO-002", PURPOSES],
+  ["PNOT-VA-002", PURPOSES],
+  ["PNOT-TX-002", PURPOSES],
+  ["PNOT-OR-002", PURPOSES],
+  ["PNOT-CO-005", RECIPIENTS],
+  ["PNOT-VA-005", RECIPIENTS],
+  ["PNOT-TX-005", RECIPIENTS],
+  ["PNOT-OR-005", RECIPIENTS],
+  ["PNOT-OR-007", "Vanterra Analytics, Inc., Attn: Privacy, 4400 Harbor Point Drive."],
+];
+
+describe("state-act content items a compliant notice must be able to satisfy", () => {
+  it.each(STATE_CASES)(
+    "%s is satisfied by the disclosure a real notice makes",
+    (id, disclosure) => {
+      const finding = rule(id).check(buildContext([...BARE, disclosure]));
+      expect(
+        finding,
+        `flagged a notice that makes the disclosure: ${finding?.title ?? ""}`,
+      ).toBeNull();
+    },
+  );
+
+  it.each(STATE_CASES)("%s still fires on a notice that makes none of them", (id) => {
+    const finding = rule(id).check(buildContext(BARE));
+    expect(finding, "the widened patterns made the item unfireable").not.toBeNull();
+  });
+});
 
 describe("CCPA content items a compliant notice must be able to satisfy", () => {
   it.each(CASES)("%s is satisfied by the disclosure a real notice makes", (id, disclosure) => {

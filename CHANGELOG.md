@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.52.1] — 2026-08-27
+
+### Fixed
+- **Nine more state-act content items the same compliant notice could not
+  satisfy.** Two item types repeat in every state act with their own pattern
+  arrays copied four times over, and both had the CCPA gap: a notice states its
+  **purposes** under a heading reading "How We Use Personal Information" and
+  names its **recipients** by category ("service providers that perform
+  hosting, payment processing, email delivery, and analytics on our behalf"),
+  using neither "purpose" nor "third party". Oregon's third-party item asks for
+  more detail than the others — what kind of entity each is and how it may
+  process the data — and the notice gives more detail, by naming the functions;
+  it too reported the disclosure as absent.
+- **`\b(inc\.|llc|ltd\.?|corporation)\b` could not match any real notice.** The
+  trailing `\b` sits after a literal period, so it demands a word character
+  immediately next — and a company name ends "Inc." at a comma, a newline, or a
+  sentence end every time. Oregon's controller-identity item was blind to
+  exactly the names it exists to find.
+- The specimen now scores clean under all five US regimes at once
+  (`--regime ccpa,co,va,tx,or`). All fourteen items are pinned in both
+  directions.
+
 ## [9.52.0] — 2026-08-27
 
 ### Fixed

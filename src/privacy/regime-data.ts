@@ -406,6 +406,11 @@ const CO_ITEMS: ContentItem[] = [
       "purpose(s)? (for|of) .{0,30}process",
       "purpose.{0,20}(collect|process)",
       "why we (collect|process|use)",
+      // The section that states the purposes is headed "How We Use Personal
+      // Information" and written as a list of uses, never once saying
+      // "purpose" or "why". Same gap as the CCPA business-purpose item.
+      "how we use .{0,30}(data|information)",
+      "we use .{0,30}(personal )?(data|information) to\\b",
     ],
   },
   {
@@ -438,7 +443,15 @@ const CO_ITEMS: ContentItem[] = [
     citation: "C.R.S. § 6-1-1308(1)(a)(V)",
     url: CO_URL,
     retrieved_at: STATE_RETRIEVED_AT,
-    present_patterns: ["categor(y|ies) of third part", "third part(y|ies)"],
+    present_patterns: [
+      "categor(y|ies) of third part",
+      "third part(y|ies)",
+      // The recipients are named by category — "service providers that
+      // perform hosting, payment processing, email delivery, and analytics on
+      // our behalf" — with no "third party" anywhere in the notice.
+      "(we )?(disclose|share|provide) .{0,40}(data|information) (to|with)\\b",
+      "service providers",
+    ],
   },
   // CPA regulation items (4 CCR 904-3 Rule 6.03, eff. 2023-07-01) that add
   // content beyond the statutory list above. The rule's CONDITIONAL items —
@@ -516,6 +529,11 @@ const VA_ITEMS: ContentItem[] = [
       "purpose(s)? (for|of) .{0,30}process",
       "purpose.{0,20}(collect|process)",
       "why we (collect|process|use)",
+      // The section that states the purposes is headed "How We Use Personal
+      // Information" and written as a list of uses, never once saying
+      // "purpose" or "why". Same gap as the CCPA business-purpose item.
+      "how we use .{0,30}(data|information)",
+      "we use .{0,30}(personal )?(data|information) to\\b",
     ],
   },
   {
@@ -548,7 +566,15 @@ const VA_ITEMS: ContentItem[] = [
     citation: "Va. Code § 59.1-578(C)(5)",
     url: VA_URL,
     retrieved_at: STATE_RETRIEVED_AT,
-    present_patterns: ["categor(y|ies) of third part", "third part(y|ies)"],
+    present_patterns: [
+      "categor(y|ies) of third part",
+      "third part(y|ies)",
+      // The recipients are named by category — "service providers that
+      // perform hosting, payment processing, email delivery, and analytics on
+      // our behalf" — with no "third party" anywhere in the notice.
+      "(we )?(disclose|share|provide) .{0,40}(data|information) (to|with)\\b",
+      "service providers",
+    ],
   },
   // § 59.1-578(E) — beyond the (C)(1)-(5) content list: the controller must
   // "establish, and ... describe in a privacy notice, one or more secure and
@@ -604,6 +630,11 @@ const TX_ITEMS: ContentItem[] = [
       "purpose(s)? (for|of) .{0,30}process",
       "purpose.{0,20}(collect|process)",
       "why we (collect|process|use)",
+      // The section that states the purposes is headed "How We Use Personal
+      // Information" and written as a list of uses, never once saying
+      // "purpose" or "why". Same gap as the CCPA business-purpose item.
+      "how we use .{0,30}(data|information)",
+      "we use .{0,30}(personal )?(data|information) to\\b",
     ],
   },
   {
@@ -636,7 +667,15 @@ const TX_ITEMS: ContentItem[] = [
     citation: "Tex. Bus. & Com. Code § 541.102(a)(5)",
     url: TX_URL,
     retrieved_at: STATE_RETRIEVED_AT,
-    present_patterns: ["categor(y|ies) of third part", "third part(y|ies)"],
+    present_patterns: [
+      "categor(y|ies) of third part",
+      "third part(y|ies)",
+      // The recipients are named by category — "service providers that
+      // perform hosting, payment processing, email delivery, and analytics on
+      // our behalf" — with no "third party" anywhere in the notice.
+      "(we )?(disclose|share|provide) .{0,40}(data|information) (to|with)\\b",
+      "service providers",
+    ],
   },
   {
     key: "request-methods",
@@ -678,6 +717,11 @@ const OR_ITEMS: ContentItem[] = [
       "purpose(s)? (for|of) .{0,30}process",
       "purpose.{0,20}(collect|process)",
       "why we (collect|process|use)",
+      // The section that states the purposes is headed "How We Use Personal
+      // Information" and written as a list of uses, never once saying
+      // "purpose" or "why". Same gap as the CCPA business-purpose item.
+      "how we use .{0,30}(data|information)",
+      "we use .{0,30}(personal )?(data|information) to\\b",
     ],
   },
   {
@@ -715,6 +759,15 @@ const OR_ITEMS: ContentItem[] = [
       "categor(y|ies) of third part.{0,80}(type|kind) of",
       "third part(y|ies).{0,60}(process|use) .{0,20}(personal )?(data|information)",
       "type of entity",
+      // Oregon's bar is higher than the other states': the notice has to say
+      // what KIND of entity each recipient is and how it may process the
+      // data. A notice meets it by naming the functions — "service providers
+      // that perform functions on our behalf: hosting, payment processing,
+      // email delivery, analytics, and customer support" — which is more
+      // detail than "categories of third parties", not less, and the item
+      // reported it as absent. Requiring a named function keeps a bare "we
+      // share with service providers" from satisfying it.
+      "(service providers?|vendors?|sub.?processors?)[^.]{0,140}(hosting|payment|analytic|support|marketing|delivery|advertis)",
     ],
   },
   {
@@ -735,7 +788,11 @@ const OR_ITEMS: ContentItem[] = [
       "who we are",
       "doing business as",
       "registered .{0,40}secretary of state",
-      "\\b(inc\\.|llc|ltd\\.?|corporation)\\b",
+      // `inc\\.` carried a trailing `\\b`, which after a literal period demands a
+      // word character immediately next — and a company name ends "Inc." at a
+      // comma, a newline, or a sentence end every time. The alternative could
+      // not match any real notice.
+      "\\b(inc|l\\.?l\\.?c|ltd|corporation)\\b\\.?",
     ],
   },
   {
