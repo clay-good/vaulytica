@@ -613,7 +613,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-006",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -774,7 +774,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-010",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1094,11 +1094,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "b7a13331f3243f9dd21031f9c58b73799f39e9c0dd82aab8183464b771c223ba",
+  "result_hash": "df53ac525c1d974cb1120e0102c7c24b930e9fba5342aa825edafd94599604d9",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.48.2"
+  "version": "9.49.0"
 }

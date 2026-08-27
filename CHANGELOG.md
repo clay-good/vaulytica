@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.49.0] — 2026-08-27
+
+### Fixed
+- **An amendment was told its own terms were undefined.** "Capitalized terms
+  used and not defined in this Amendment have the meanings given in the Lease"
+  is the standard incorporation clause, and it appears in every amendment,
+  addendum, statement of work, side letter, and order form — documents whose
+  whole point is that the parent defines the vocabulary. A third amendment to
+  an office lease was told that Base Rent, Base Year, Proportionate Share, Fair
+  Market Rental Value, and Security Deposit were undefined, in a document whose
+  Section 1 says exactly where they are defined, and there is no drafting
+  change that would answer it short of restating the parent lease. STRUCT-006
+  now recognizes the clause on its two load-bearing halves — capitalized terms
+  not defined **here**, and their meanings given **there** — so a sentence that
+  merely mentions defined terms does not switch the check off.
+- **TEMP-010 read the expiry an amendment replaces as the one that governs.**
+  It took the first paragraph naming an expiration, and an amendment recites
+  the old date before stating the new one: "The Term of the Lease is scheduled
+  to expire on August 31, 2026, and the parties wish to extend the Term" is a
+  recital, and the operative section two paragraphs later reads "commencing
+  September 1, 2026 and expiring August 31, 2031". Every date in the extension
+  — including its own commencement date — was reported as falling after the
+  contract's expiration. Every stated expiration is now collected and the
+  latest governs, and "expiring" is admitted alongside "expires" because that
+  is how an operative term clause is written.
+
 ## [9.48.2] — 2026-08-27
 
 ### Fixed

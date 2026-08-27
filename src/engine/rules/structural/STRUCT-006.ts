@@ -8,9 +8,29 @@ import { makeFinding } from "../../finding.js";
  * defined-term list. Party names and a small set of common words are
  * filtered out by the extractor.
  */
+/**
+ * The incorporation-by-reference clause: capitalized terms not defined in THIS
+ * document take their meanings from a named parent one. Both halves are
+ * required, and the gap between them is bounded to a single sentence.
+ */
+const INCORPORATES_DEFINITIONS =
+  /\b(?:capitali[sz]ed|defined)\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,120}?\b(?:have|has|shall\s+have|shall\s+bear|are\s+given)\s+the\s+(?:respective\s+)?meanings?\b/i;
+
+function documentText(ctx: RuleContext): string {
+  const parts: string[] = [];
+  const walk = (sections: RuleContext["tree"]["sections"]): void => {
+    for (const s of sections) {
+      for (const p of s.paragraphs) for (const r of p.runs) parts.push(r.text);
+      walk(s.children);
+    }
+  };
+  walk(ctx.tree.sections);
+  return parts.join(" ");
+}
+
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -18,6 +38,23 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
+    // A document that imports its definitions is not missing them.
+    //
+    // "Capitalized terms used and not defined in this Amendment have the
+    // meanings given in the Lease" is the standard incorporation clause, and
+    // it appears in every amendment, addendum, statement of work, side letter,
+    // and order form — documents whose whole point is that the parent defines
+    // the vocabulary. A third amendment to an office lease was told that Base
+    // Rent, Base Year, Proportionate Share, Fair Market Rental Value, and
+    // Security Deposit were undefined, in a document whose Section 1 says
+    // exactly where they are defined. Every one of those is a false
+    // accusation, and there is no drafting change that would answer it short
+    // of restating the parent lease.
+    //
+    // The clause is recognized on its two load-bearing halves — capitalized
+    // terms not defined HERE, and their meanings given THERE — so an ordinary
+    // sentence that merely mentions defined terms does not disable the check.
+    if (INCORPORATES_DEFINITIONS.test(documentText(ctx))) return null;
     // A party's defined ROLE is introduced in the preamble exactly like any
     // other defined term — `… the individual or entity accepting this EULA
     // ("End User")` — so the body's later use of "End User" is defined, not

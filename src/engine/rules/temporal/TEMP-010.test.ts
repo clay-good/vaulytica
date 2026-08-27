@@ -46,3 +46,35 @@ describe("TEMP-010 — specific dates after expiry", () => {
     ).toBeNull();
   });
 });
+
+describe("TEMP-010 — an amendment recites the expiry it replaces (v1.2.0)", () => {
+  it("takes the LATEST stated expiration, not the first", () => {
+    // The recital of an amendment states the expiry being replaced, and the
+    // operative section states the new one. Taking the first made every date
+    // in the extension — including its own commencement date — read as
+    // falling after the contract's expiration, which is a false statement
+    // about the document.
+    expect(
+      TEMP_010.check(
+        doc(
+          "Third Amendment to Office Lease",
+          "The Term of the Lease is scheduled to expire on August 31, 2026, and the parties wish to extend the Term.",
+          "The Term is extended for sixty months, commencing September 1, 2026 and expiring August 31, 2031.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a date after the latest stated expiration", () => {
+    expect(
+      TEMP_010.check(
+        doc(
+          "Third Amendment to Office Lease",
+          "The Term of the Lease is scheduled to expire on August 31, 2026, and the parties wish to extend the Term.",
+          "The Term is extended, commencing September 1, 2026 and expiring August 31, 2031.",
+          "Tenant shall deliver the final reconciliation statement by March 15, 2032.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
