@@ -323,3 +323,84 @@ describe("a convertible note against its plainer sibling", () => {
     expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("promissory-note");
   });
 });
+
+/**
+ * Self-reachability: every family must win on a document that names itself and
+ * speaks its own vocabulary.
+ *
+ * The three routing defects fixed on 2026-08-27 were each a family that could
+ * not be reached — an engagement letter beaten by an employment playbook, a
+ * convertible note beaten by `promissory-note`, a discovery response beaten by
+ * the request it answers — and each was found by hand, one document at a time.
+ * This is the mechanical version: for every playbook, a document titled with
+ * its first title keyword whose body carries three of its own distinguishing
+ * phrases. If that does not reach it, some sibling is taking its documents.
+ *
+ * It is deliberately a weak document (a title and three phrases, nothing
+ * else), because the point is the FLOOR: a family that cannot win on its own
+ * vocabulary cannot win on a real document either.
+ */
+const PERSPECTIVE_PAIRS = new Map<string, string[]>([
+  // A document does not say which SIDE of it you are on, and it does not say
+  // whether you want the launch pack or its deep successor. Both are the
+  // user's choice (`--role`, `--playbook`), not the document's, so these
+  // legitimately lose to a sibling that reads the same text. Every OTHER
+  // playbook must reach itself.
+  //
+  // The two MSA-deep entries also list "master subscription agreement", which
+  // is the canonical title of a SaaS agreement — a document so titled reaching
+  // `saas-customer` is the right answer, not a shadow.
+  ["msa-customer-deep", ["saas-customer"]],
+  ["msa-vendor-deep", ["msa-general", "saas-customer"]],
+  ["mutual-nda-deep", ["mutual-nda"]],
+  ["saas-vendor", ["saas-customer"]],
+  ["scc-module-3", ["scc-module-2"]],
+  ["unilateral-nda", ["unilateral-nda-deep"]],
+]);
+
+describe("every playbook is reachable by its own name and vocabulary", () => {
+  it("no family is shadowed by a sibling", () => {
+    const shadowed: string[] = [];
+    let checked = 0;
+    for (const pb of [...LAUNCH, ...PLAYBOOKS]) {
+      if (pb.id === "generic-fallback") continue;
+      const phrases = pb.match_features.distinguishing_phrases.slice(0, 3);
+      // Every playbook in the catalog has at least one title keyword and three
+      // distinguishing phrases; asserting it here keeps the sweep from
+      // silently shrinking if one ever does not.
+      expect(
+        pb.match_features.title_keywords.length,
+        `${pb.id} has no title keyword`,
+      ).toBeGreaterThan(0);
+      expect(phrases.length, `${pb.id} has fewer than three distinguishing phrases`).toBe(3);
+      checked += 1;
+      // EVERY title keyword, not just the first. `convertible-note` reached
+      // itself under "convertible note" and lost under "convertible
+      // promissory note", because the longer title is the one that also
+      // contains a sibling's keyword — which is exactly the defect this sweep
+      // exists to catch.
+      for (const kw of pb.match_features.title_keywords) {
+        const body: [string, ...string[]] = [
+          "",
+          kw.toUpperCase(),
+          `This document is made as of January 1, 2026. ${phrases.join(". ")}.`,
+        ];
+        const tree = buildTree(body);
+        const extracted = extractAll(tree, {
+          classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+        });
+        const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+          title: titleCorpus(tree, "d.txt"),
+          body_text: body.join("\n"),
+        });
+        if (match.playbook_id === pb.id) continue;
+        if (PERSPECTIVE_PAIRS.get(pb.id)?.includes(match.playbook_id)) continue;
+        shadowed.push(`${pb.id} -> ${match.playbook_id} @${match.confidence} (title "${kw}")`);
+      }
+    }
+    expect(checked, "the sweep found no playbooks — it is broken").toBeGreaterThan(250);
+    expect(shadowed.sort(), `shadowed by a sibling:\n  ${shadowed.sort().join("\n  ")}`).toEqual(
+      [],
+    );
+  });
+});

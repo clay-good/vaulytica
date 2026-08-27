@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.47.1] — 2026-08-27
+
+### Added
+- **A self-reachability sweep over all 265 playbooks.** The three routing
+  defects fixed today were each a family that could not be reached — an
+  engagement letter beaten by an employment playbook, a convertible note beaten
+  by `promissory-note`, a discovery response beaten by the request it answers —
+  and each was found by hand, one document at a time. This is the mechanical
+  version: for every playbook, and for **every one of its title keywords**, a
+  document titled with that keyword whose body carries three of the playbook's
+  own distinguishing phrases. If that does not reach it, some sibling is taking
+  its documents. Deliberately a weak document, because the point is the floor:
+  a family that cannot win on its own vocabulary cannot win on a real one.
+  Six perspective pairs are recorded as legitimate exceptions with their
+  reasons — a document does not say which SIDE of it you are on, or whether you
+  want the launch pack or its deep successor. Proven by restoring
+  `promissory-note`'s old title keywords and watching the sweep name the
+  convertible note.
+  - Testing only the FIRST title keyword was not enough: `convertible-note`
+    reaches itself under "convertible note" and loses under "convertible
+    promissory note", because the longer title is the one that also contains a
+    sibling's keyword. That near-miss is why the sweep iterates all of them.
+
 ## [9.47.0] — 2026-08-27
 
 ### Fixed
