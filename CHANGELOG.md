@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.46.2] — 2026-08-27
+
+### Fixed
+- **A bare container marker hides the title exactly as a legend does.** An
+  agreement attached as an exhibit is one of the commonest things a reviewer
+  drops in, and "EXHIBIT A" over "MUTUAL NON-DISCLOSURE AGREEMENT" cost the
+  same mis-route to `unilateral-nda` that "EXECUTION VERSION" did. "EXHIBIT",
+  "SCHEDULE", "ANNEX", "APPENDIX", and "ATTACHMENT" are dropped only when the
+  marker and its designator are the WHOLE line — "EXHIBIT A — FORM OF MUTUAL
+  NDA" carries the title and is kept. No playbook's title keywords begin with
+  one of these words, so nothing loses a signal.
+
 ## [9.46.1] — 2026-08-27
 
 ### Fixed

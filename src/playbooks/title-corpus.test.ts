@@ -276,6 +276,23 @@ describe("titleCorpus — the legends above the title", () => {
     expect(titleCorpus(draft, "d.txt")).toBe("DRAFTING CONVENTIONS");
   });
 
+  it("reads past a bare container marker", () => {
+    // An agreement attached as an exhibit is one of the commonest things a
+    // reviewer drops in, and "EXHIBIT A" hid the title exactly as a legend
+    // does.
+    const t = tree([
+      { heading: "", paragraphs: ["EXHIBIT A", "MUTUAL NON-DISCLOSURE AGREEMENT", "Body."] },
+    ]);
+    expect(titleCorpus(t, "ex.txt")).toContain("MUTUAL NON-DISCLOSURE AGREEMENT");
+  });
+
+  it("keeps a container marker that carries the title on the same line", () => {
+    const t = tree([
+      { heading: "", paragraphs: ["EXHIBIT A — FORM OF MUTUAL NON-DISCLOSURE AGREEMENT", "Body."] },
+    ]);
+    expect(titleCorpus(t, "ex.txt")).toContain("MUTUAL NON-DISCLOSURE AGREEMENT");
+  });
+
   it("leaves a document that opens on its title byte-identical", () => {
     const t = tree([
       { heading: "", paragraphs: ["Master Services Agreement", "This Agreement is made…"] },

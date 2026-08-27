@@ -134,6 +134,13 @@ function subjectLine(
  * A legend is recognized as a WHOLE line built only of legend tokens and
  * separators, so a title that merely contains one of the words is untouched:
  * "CONFIDENTIALITY AGREEMENT" is a title, "CONFIDENTIAL" is a legend.
+ *
+ * A bare container marker — "EXHIBIT A", "SCHEDULE 1", "ANNEX B" — hides the
+ * title the same way, and an agreement attached as an exhibit is one of the
+ * commonest things a reviewer drops in. It is dropped only when the marker and
+ * its designator are the WHOLE line: "EXHIBIT A — FORM OF MUTUAL NDA" carries
+ * the title and is kept. No playbook's title keywords begin with one of these
+ * words, so nothing loses a signal.
  */
 const LEGEND_TOKEN =
   /execution\s+(?:version|copy)|conformed\s+copy|final\s+(?:version|form)|drafts?|confidential(?:ity)?|privileged|proprietary|trade\s+secrets?|attorney[-\s]work[-\s]product|attorney[-\s]client\s+privileged?|work\s+product|for\s+(?:discussion|settlement|negotiation)\s+purposes\s+only|subject\s+to\s+(?:protective\s+order|review|contract|revision)|confidential\s+treatment\s+requested|do\s+not\s+(?:copy|distribute|file)|not\s+for\s+distribution/;
@@ -142,10 +149,17 @@ const LEGEND_LINE = new RegExp(
   "i",
 );
 
+const CONTAINER_MARKER =
+  /^(?:exhibit|schedule|annex|appendix|attachment)\s+[A-Za-z0-9][A-Za-z0-9.-]*[\s.:—–-]*$/i;
+
 /** Drop the leading legend lines so the document's own title is first. */
 function dropLegends(lines: readonly string[]): string[] {
   let i = 0;
-  while (i < lines.length && (lines[i]!.length === 0 || LEGEND_LINE.test(lines[i]!))) i += 1;
+  while (
+    i < lines.length &&
+    (lines[i]!.length === 0 || LEGEND_LINE.test(lines[i]!) || CONTAINER_MARKER.test(lines[i]!))
+  )
+    i += 1;
   return lines.slice(i);
 }
 
