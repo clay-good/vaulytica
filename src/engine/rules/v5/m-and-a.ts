@@ -85,11 +85,21 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
   },
   {
     id: "MNA-106",
+    // 1.0.1 — both pillars required the verb to sit immediately after the
+    // modal, and a sale-of-business covenant states its SCOPE in between:
+    // "each Seller shall not, within the states in which the Company
+    // conducted business as of the Closing, engage in a business competitive
+    // with the Business, or solicit for employment any employee". That is the
+    // covenant this rule asks for, drafted the way its own `fix` text says to
+    // draft it — with a defined scope and geography — and it was reported as
+    // absent. A bounded run now separates the modal from the verb, and the
+    // second pillar reads the "or solicit" continuation of the same sentence.
+    ver: "1.0.1",
     name: "Seller non-compete and non-solicit",
     cite: practice("seller-noncompete", "sale-of-business restrictive covenants"),
     pat: [
-      /(non-?compet|shall\s+not\s+(directly\s+or\s+indirectly\s+)?(compete|engage))/i,
-      /(non-?solicit|shall\s+not\s+(solicit|hire))/i,
+      /(non-?compet|shall\s+not[^.]{0,90}?\b(compete|engage\s+in))/i,
+      /(non-?solicit|shall\s+not[^.]{0,120}?\b(solicit|hire)\b)/i,
     ],
     why: "Sale-of-business covenants get materially more latitude than employment covenants in most states — including California, where § 16601 permits them only in connection with a sale of goodwill. Without one, the buyer has paid for goodwill the seller can rebuild.",
     fix: "Add non-compete and non-solicit covenants tied to the sale of goodwill, with a defined scope, geography, and duration, and allocate consideration to them.",

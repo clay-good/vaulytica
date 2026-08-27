@@ -43,7 +43,7 @@ const INCORP_DISCLAIMER =
  */
 export const rule: Rule = {
   id: "STRUCT-016",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Incorporation by reference to external / unattached document",
   category: "structural",
   default_severity: "warning",
@@ -86,9 +86,15 @@ export const rule: Rule = {
 
     // Pass B: exhibit-based incorporation pointing at a missing /
     // empty exhibit.
+    //
+    // The number accepts a DECIMAL and a lettered suffix. The old bound
+    // stopped at the first digit of "Schedule 2.3" — the numbering every
+    // purchase agreement uses to tie a schedule to the representation it
+    // qualifies — so the finding named a "Schedule 2" the document never
+    // mentions, while STRUCT-018 named "Schedule 2.3" correctly.
     const exhibitRefs = allMatches(
       ctx,
-      /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|specified\s+in|incorporated\s+(?:into|by\s+reference\s+(?:in|from))|provided\s+in|listed\s+in)\s+(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z]|\d{1,2})\b/i,
+      /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|specified\s+in|incorporated\s+(?:into|by\s+reference\s+(?:in|from))|provided\s+in|listed\s+in)\s+(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z](?:-\d{1,2})?|\d{1,2}(?:\.(?:\d{1,2}))*)/i,
     );
     if (exhibitRefs.length === 0) return null;
 
@@ -96,9 +102,10 @@ export const rule: Rule = {
     const anchors = new Set<string>();
     const anchorParaCounts = new Map<string, number>();
     forEachSection(ctx.tree, (s) => {
-      const m = /^\s*(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z]|\d{1,2})\b/i.exec(
-        s.heading,
-      );
+      const m =
+        /^\s*(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z](?:-\d{1,2})?|\d{1,2}(?:\.(?:\d{1,2}))*)/i.exec(
+          s.heading,
+        );
       if (m) {
         const key = `${m[1]!.toLowerCase()}:${m[2]!.toLowerCase()}`;
         anchors.add(key);

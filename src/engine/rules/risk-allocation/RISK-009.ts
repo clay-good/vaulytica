@@ -11,9 +11,29 @@ import { forEachParagraph } from "../../../extract/walk.js";
 const UNCAPPED =
   /\b(?:unlimited\s+liability|no\s+(?:limitation|cap)\s+on\s+liability|liability\b[^.;\n]{0,40}?\b(?:is|shall\s+be)\s+unlimited|without\s+(?:any\s+)?(?:cap|limitation)\s+on\s+(?:its\s+)?liability|(?:liable|responsible)\s+for\s+all\s+damages[^.]*?without\s+limitation|all\s+damages[^.]*?without\s+(?:any\s+)?(?:cap|limit(?:ation)?)|no\s+(?:limit|limitation|cap)\s+on\s+(?:the\s+[A-Za-z]+['’]?s?\s+|its\s+|any\s+|your\s+|such\s+)?liability|\bliability\s+(?:of\s+(?:the\s+)?[A-Za-z]+\s+)?shall\s+not\s+be\s+limited\b)/i;
 
+/**
+ * A CARVE-OUT from the cap is not the absence of one.
+ *
+ * "The Sellers' aggregate liability shall not exceed the Escrow Amount, except
+ * that liability for Fraud is unlimited" is the single most standard sentence
+ * in M&A indemnification, and every professional agreement — buyer-favorable
+ * and seller-favorable alike — carves fraud, wilful misconduct, and the
+ * indemnity out of the cap. Reading the carve-out as uncapped liability
+ * reports the presence of a cap as its absence, at `critical`.
+ *
+ * The test is what the unlimited language is ABOUT: a named carve-out subject
+ * within the clause, not liability at large. A clause that really does leave a
+ * party's liability uncapped names no exception.
+ */
+const CARVE_OUT_SUBJECT =
+  /\b(?:fraud|fraudulent|wil[l]?ful\s+misconduct|gross\s+negligence|intentional\s+(?:breach|misconduct)|criminal|bodily\s+injury|death|indemnification\s+obligations?|confidentiality\s+obligations?|fundamental\s+representations?|misappropriation)\b/i;
+/** The connective that introduces an exception to the cap just stated. */
+const CARVE_OUT_LEAD =
+  /\b(?:except|excluding|other\s+than|save\s+for|provided\s+that|but\s+not)\b/i;
+
 export const rule: Rule = {
   id: "RISK-009",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Uncapped liability detection",
   category: "risk-allocation",
   default_severity: "critical",
@@ -35,6 +55,11 @@ export const rule: Rule = {
       if (firstHit) return;
       const m = UNCAPPED.exec(p.text);
       if (!m) return;
+      // Look back from the match to the start of its clause: an exception
+      // connective plus a named carve-out subject means the sentence is
+      // stating the cap's exception, not the absence of a cap.
+      const lead = p.text.slice(Math.max(0, m.index - 160), m.index + m[0].length);
+      if (CARVE_OUT_LEAD.test(lead) && CARVE_OUT_SUBJECT.test(lead)) return;
       firstHit = {
         text: p.text,
         raw: m[0],

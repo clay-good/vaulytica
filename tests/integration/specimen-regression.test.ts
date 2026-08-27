@@ -98,6 +98,22 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["EQT-006", "STRUCT-006", "OBLI-005", "STRUCT-005"],
   },
 
+  // A membership interest purchase agreement, stamped EXECUTION VERSION, with
+  // decimal-numbered schedules and a fraud carve-out from the indemnity cap.
+  "mipa.txt": {
+    playbook: "membership-interest-purchase-agreement",
+    findings: [
+      "MNA-103",
+      "FIN-005",
+      "STRUCT-006",
+      "STRUCT-016",
+      "STRUCT-018",
+      "TEMP-012",
+      "OBLI-005",
+      "TEMP-006",
+    ],
+  },
+
   // An EEA/UK privacy notice: names its controller with a non-US corporate
   // suffix, cites the regulation's articles by bare number, and is signed by
   // nobody.

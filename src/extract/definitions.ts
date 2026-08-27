@@ -69,7 +69,7 @@ const DEFINITION_INLINE_REFERS =
 // not `gi`: under the `i` flag `[A-Z]` matches lowercase too, so the leading
 // article is matched explicitly instead.
 const DEFINITION_INLINE_COPULA =
-  /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be)\s+(?=[^.]{0,40}?(?:[$€£¥₹]\s?\d|\b\d))/g;
+  /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be)\s+(?=[^.]{0,60}?(?:[$€£¥₹]\s?\d|\b\d))/g;
 // A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
 // Period" shall begin on the Effective Date and shall continue until …`, `the
 // "Restricted Period" shall commence on the Closing`. The quoted term is the

@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.54.0] — 2026-08-27
+
+### Fixed
+- **A carve-out from the cap is not the absence of one.** "The Sellers'
+  aggregate liability shall not exceed the Escrow Amount, **except that**
+  liability for Fraud is unlimited" is the single most standard sentence in M&A
+  indemnification — every professional purchase agreement, buyer-favorable and
+  seller-favorable alike, carves fraud, wilful misconduct, and the indemnity
+  out of the cap — and RISK-009 reported the presence of a cap as its absence,
+  at `critical`. The test is what the unlimited language is *about*: an
+  exception connective plus a named carve-out subject in the same clause. A
+  clause that really does leave liability uncapped names no exception, and
+  still fires.
+- **MNA-106 could not read the covenant its own `fix` text asks for.** A
+  sale-of-business covenant states its scope between the modal and the verb —
+  "each Seller shall not, **within the states in which the Company conducted
+  business as of the Closing**, engage in a business competitive with the
+  Business, or solicit for employment any employee" — and both pillars required
+  the verb to sit immediately after "shall not".
+- **STRUCT-016 named a "Schedule 2" the agreement never mentions.** Its number
+  bound stopped at the first digit of "Schedule 2.3", the numbering every
+  purchase agreement uses to tie a schedule to the representation it qualifies.
+  STRUCT-018 named it correctly two findings below.
+- **The copula definition window was forty characters, and the value is often
+  spelled before it is figured.** `The "Escrow Amount" is One Million Eight
+  Hundred Thousand Dollars ($1,800,000)` puts the first digit forty-three
+  characters past the copula, so the agreement's own defined term was reported
+  as undefined.
+
+### Added
+- A membership interest purchase agreement specimen, bringing the set to
+  fifteen.
+
+### Changed
+- The README's suite-size floor now reads 7,000+ (the suite is 7,050); it had
+  drifted 350 behind.
+
 ## [9.53.0] — 2026-08-27
 
 ### Fixed

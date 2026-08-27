@@ -1,0 +1,95 @@
+EXECUTION VERSION
+
+MEMBERSHIP INTEREST PURCHASE AGREEMENT
+
+This Membership Interest Purchase Agreement (this "Agreement") is entered into as of November 12, 2026 by and among Ridgeline Holdings, Inc., a Delaware corporation ("Buyer"), Dermot Halloran and Ana Petrosyan (each a "Seller" and together the "Sellers"), and Vanterra Mechanical Services, LLC, an Ohio limited liability company (the "Company").
+
+RECITALS
+
+The Sellers own all of the issued and outstanding membership interests of the Company (the "Interests"). The Sellers wish to sell, and Buyer wishes to purchase, the Interests on the terms set out in this Agreement.
+
+ARTICLE I — PURCHASE AND SALE
+
+1.1 Purchase and Sale. At the Closing, the Sellers shall sell, and Buyer shall purchase, the Interests, free and clear of all Liens other than restrictions on transfer arising under applicable securities laws.
+
+1.2 Purchase Price. The aggregate purchase price for the Interests is Eighteen Million Dollars ($18,000,000) (the "Base Purchase Price"), subject to adjustment under Section 1.4, plus the Earnout Consideration payable under Section 1.5.
+
+1.3 Payment at Closing. At the Closing, Buyer shall pay (a) the Base Purchase Price minus the Escrow Amount and minus estimated Indebtedness, by wire transfer of immediately available funds, and (b) the Escrow Amount to the Escrow Agent to be held under the Escrow Agreement.
+
+1.4 Working Capital Adjustment. Not later than sixty (60) days after the Closing Date, Buyer shall deliver to the Sellers a statement setting out Closing Working Capital, Indebtedness, and Cash, each determined in accordance with the Accounting Principles applied consistently with the Company's audited financial statements. The Sellers shall have thirty (30) days to object in writing, specifying each item in dispute and the basis for the objection. Items not objected to are final. If the parties do not resolve a disputed item within twenty (20) days, either party may submit the remaining items to an independent accounting firm, whose determination is final and binding absent manifest error, with its fees allocated in proportion to the amounts unsuccessfully disputed.
+
+1.5 Earnout. Buyer shall pay the Sellers up to Four Million Dollars ($4,000,000) based on the Company's EBITDA for the twelve months ending December 31, 2027, calculated in accordance with the Accounting Principles. During the earnout period, Buyer shall operate the Company in good faith and in a manner consistent with past practice, shall not take any action the primary purpose of which is to reduce the Earnout Consideration, and shall deliver an earnout statement within sixty (60) days after the end of the earnout period, subject to the same dispute mechanism as Section 1.4.
+
+1.6 Escrow. The "Escrow Amount" is One Million Eight Hundred Thousand Dollars ($1,800,000), held for eighteen (18) months after the Closing as the sole source of recovery for breaches of the Sellers' representations other than Fundamental Representations and Fraud.
+
+ARTICLE II — REPRESENTATIONS AND WARRANTIES OF THE SELLERS
+
+2.1 Ownership. Each Seller owns the Interests set out opposite that Seller's name on Schedule 2.1, free and clear of all Liens, and has full power and authority to transfer them.
+
+2.2 Organization. The Company is duly organized, validly existing, and in good standing under the laws of Ohio, and has all requisite power to own its assets and carry on its business.
+
+2.3 Financial Statements. The Financial Statements attached as Schedule 2.3 were prepared in accordance with GAAP applied consistently and fairly present in all material respects the financial condition and results of operations of the Company.
+
+2.4 No Undisclosed Liabilities. The Company has no liabilities required by GAAP to be reflected on a balance sheet except as reflected in the Financial Statements or incurred in the ordinary course since the Balance Sheet Date.
+
+2.5 Compliance; Permits. The Company is in compliance in all material respects with applicable Laws and holds all material Permits necessary to conduct its business.
+
+2.6 Taxes. The Company has filed all material Tax Returns when due and has paid all Taxes shown as due on them.
+
+2.7 Material Contracts. Schedule 2.7 lists each Material Contract. Each is in full force and effect, and neither the Company nor, to the Sellers' Knowledge, any counterparty is in material breach.
+
+2.8 Litigation. Except as set out on Schedule 2.8, there is no Action pending or, to the Sellers' Knowledge, threatened against the Company.
+
+2.9 No Other Representations. Except for the representations expressly set out in this Article II, the Sellers make no representation or warranty of any kind, and Buyer acknowledges that it has not relied on any other representation. Nothing in this Section limits any claim for Fraud.
+
+ARTICLE III — COVENANTS
+
+3.1 Conduct Pending Closing. Between the date of this Agreement and the Closing, the Company shall conduct its business in the ordinary course and shall not, without Buyer's consent, incur Indebtedness, sell material assets, or amend its organizational documents.
+
+3.2 Restrictive Covenants. For three (3) years after the Closing, each Seller shall not, within the states in which the Company conducted business as of the Closing, engage in a business competitive with the Business, or solicit for employment any employee of the Company. Each Seller acknowledges that these covenants are reasonable in scope, geography, and duration, are given in connection with the sale of a business and the goodwill associated with it, and are supported by adequate consideration. If a court holds any covenant unenforceable, the covenant shall be reformed to the maximum enforceable extent.
+
+ARTICLE IV — INDEMNIFICATION
+
+4.1 Survival. The representations in Article II survive the Closing for eighteen (18) months, except that the Fundamental Representations survive until sixty (60) days after the expiration of the applicable statute of limitations, and claims for Fraud survive indefinitely.
+
+4.2 Indemnification by the Sellers. Subject to this Article IV, the Sellers shall indemnify Buyer against Losses arising from a breach of the Sellers' representations or covenants.
+
+4.3 Limitations. The Sellers have no obligation under Section 4.2 until Losses exceed One Hundred Eighty Thousand Dollars ($180,000), after which the Sellers are liable for all Losses from the first dollar. The Sellers' aggregate liability under Section 4.2 shall not exceed the Escrow Amount, except that liability for breaches of Fundamental Representations shall not exceed the Base Purchase Price and liability for Fraud is unlimited.
+
+4.4 Procedure. A party seeking indemnification shall give the indemnifying party prompt written notice of the claim, describing it in reasonable detail. The indemnifying party may assume and control the defense with counsel reasonably acceptable to the indemnified party, and shall not settle any claim without the indemnified party's consent, which shall not be unreasonably withheld, unless the settlement is solely for money that the indemnifying party pays in full and includes an unconditional release.
+
+4.5 Exclusive Remedy. Except for Fraud and for claims for specific performance, indemnification under this Article IV is the sole and exclusive remedy of the parties for breaches of this Agreement.
+
+ARTICLE V — MISCELLANEOUS
+
+5.1 Governing Law; Venue. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules. Any action arising out of or relating to this Agreement shall be brought exclusively in the Court of Chancery of the State of Delaware, and each party consents to the personal jurisdiction of that court and waives any objection to venue there.
+
+5.2 Notices. Notices must be in writing and are effective on personal delivery, on confirmed email transmission, or one business day after deposit with a nationally recognized overnight courier, addressed as set out on Schedule 5.2.
+
+5.3 Entire Agreement; Amendment. This Agreement, together with the Schedules and the Escrow Agreement, is the entire agreement between the parties concerning its subject matter and supersedes all prior understandings. It may be amended only by a writing signed by Buyer and the Sellers.
+
+5.4 Assignment. No party may assign this Agreement without the other parties' prior written consent, except that Buyer may assign to an affiliate or to a lender as collateral, in each case without releasing Buyer.
+
+5.5 Expenses. Each party bears its own expenses, except that the Sellers bear the Company's transaction expenses to the extent unpaid at Closing.
+
+5.6 Counterparts. This Agreement may be executed in counterparts, and signatures delivered electronically have the same effect as originals.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+RIDGELINE HOLDINGS, INC.
+
+By: /s/ Beatriz Sandoval
+Name: Beatriz Sandoval
+Title: President
+
+/s/ Dermot Halloran
+Dermot Halloran
+
+/s/ Ana Petrosyan
+Ana Petrosyan
+
+VANTERRA MECHANICAL SERVICES, LLC
+
+By: /s/ Emil Krause
+Name: Emil Krause
+Title: Managing Member
