@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.45.4] — 2026-08-27
+
+### Added
+- **A guard on the README's spec table.** The table is the README's index of
+  what the tool does and when each part landed, and it is the only place a
+  reader looks for "what is v46?" — but it is maintained by hand, so it drifted:
+  it ended at v44 while v45, v46, and v47 had shipped, which meant the three
+  waves that took the catalog from 145 document families to 265 were absent
+  from the one place that lists them. Every count in the README already had a
+  guard and all of them were current. The table had none, which is exactly why
+  it was the thing that drifted. The new check is deliberately shallow — a row
+  exists and links its own spec — because the row's prose is a judgment no test
+  can make; what a test can do is refuse to let a spec ship without one. Proven
+  by deleting a row and watching it fail.
+
 ## [9.45.3] — 2026-08-27
 
 ### Fixed
