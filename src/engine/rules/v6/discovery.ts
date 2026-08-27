@@ -77,6 +77,10 @@ const RFP = pack("document-requests", C, [
   },
   {
     id: "DISC-005",
+    // 1.0.1 — the `m` flag on the numbered-paragraph recognizer used to be
+    // dropped when the pillars were conjoined, so this column read only the
+    // very start of the document (`v5/_pack.ts`).
+    ver: "1.0.1",
     name: "Numbered requests",
     cite: frcp("34(b)(1)(A)", "producing documents — each item or category must be described"),
     pat: [
@@ -183,6 +187,10 @@ const RFA = pack("requests-for-admission", C, [
   },
   {
     id: "DISC-013",
+    // 1.0.1 — the `m` flag on the numbered-paragraph recognizer used to be
+    // dropped when the pillars were conjoined, so this column read only the
+    // very start of the document (`v5/_pack.ts`).
+    ver: "1.0.1",
     name: "One fact per request",
     cite: frcp("36(a)(2)", "requests for admission — each matter must be separately stated"),
     pat: [

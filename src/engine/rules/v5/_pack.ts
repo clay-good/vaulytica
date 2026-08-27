@@ -33,6 +33,12 @@ import { presenceRule } from "./_helpers.js";
 export type ColumnSpec = {
   /** `PREFIX-NNN`, unique across the whole catalog. */
   id: string;
+  /**
+   * Defaults to `1.0.0`. Bumped when a shipped column's behavior changes,
+   * so a reader comparing two reports can tell a re-run from a repair —
+   * the version travels with every finding the rule emits.
+   */
+  ver?: string;
   /** The column, phrased as the thing the document should carry. */
   name: string;
   /** The authority behind the expectation. */
@@ -52,7 +58,14 @@ export type ColumnSpec = {
    * word from the document's own title ("control" in a Deposit Account
    * Control Agreement, "irrevocab" in an Irrevocable Trust) is satisfied
    * by the title page and never fires. `title-vacuity.test.ts` proves no
-   * ungated rule has that shape.
+   * rule has that shape, gated or not.
+   *
+   * The conjunction is evaluated pattern by pattern, so each keeps its own
+   * flags. Composing the pillars into one anchored lookahead regex — the
+   * first implementation — could not: it dropped every source flag, so a
+   * pillar written `/^\s*\d+\.\s/m` to find a numbered paragraph became a
+   * start-of-DOCUMENT match, and PLDG-004 reported a properly numbered
+   * complaint as carrying no numbered paragraphs, at `critical`.
    */
   all?: boolean;
   /** Why an attorney cares that this term is present. */
@@ -80,19 +93,14 @@ export type ColumnSpec = {
 export const GATED_PACK_RULE_IDS = new Set<string>();
 
 /**
- * Conjoin patterns into a single regex that matches only when *every*
- * pattern matches somewhere in the text.
- *
- * Implemented as zero-width lookaheads anchored at position 0, so the
- * whole conjunction is one `test()` with the same asymptotic cost as
- * testing each pattern separately, and no `lastIndex` state to reset.
- * Flags on the source patterns are dropped deliberately: `i` is applied
- * to the whole conjunction, and `g`/`y` would break the anchoring.
+ * Every column spec this shorthand has built, by rule id, with the two
+ * fields that decide whether the check can fire at all: its recognizer
+ * patterns and their conjunction mode. The reachability guards read this
+ * so they can probe a rule's patterns DIRECTLY, which is the only way to
+ * reach a rule whose applicability gate would otherwise short-circuit the
+ * check before the patterns are ever consulted.
  */
-function conjoin(patterns: readonly RegExp[]): RegExp {
-  const heads = patterns.map((p) => `(?=[\\s\\S]*(?:${p.source}))`).join("");
-  return new RegExp(`^${heads}`, "i");
-}
+export const PACK_SPECS = new Map<string, { playbook: string; pat: RegExp[]; all: boolean }>();
 
 /**
  * Build one playbook's ruleset from its compliance-matrix columns. Every
@@ -100,10 +108,14 @@ function conjoin(patterns: readonly RegExp[]): RegExp {
  * hash-neutral for every pre-v5 document (`docs/verticals.md`).
  */
 export function pack(playbook: string, category: string, specs: readonly ColumnSpec[]): Rule[] {
-  for (const s of specs) if (s.when) GATED_PACK_RULE_IDS.add(s.id);
+  for (const s of specs) {
+    if (s.when) GATED_PACK_RULE_IDS.add(s.id);
+    PACK_SPECS.set(s.id, { playbook, pat: [...s.pat], all: s.all === true });
+  }
   return specs.map((s) =>
     presenceRule({
       id: s.id,
+      version: s.ver,
       name: s.name,
       category,
       description: `${s.name} — a compliance-matrix column of the ${playbook} playbook.`,
@@ -114,7 +126,8 @@ export function pack(playbook: string, category: string, specs: readonly ColumnS
         s.missing ?? `No clause addressing "${s.name.toLowerCase()}" was found in this document.`,
       explanation: s.why,
       recommendation: s.fix,
-      present_patterns: s.all ? [conjoin(s.pat)] : [...s.pat],
+      present_patterns: [...s.pat],
+      require_all_present: s.all,
       applicable_if: s.when,
       denied_if: s.denied,
       default_severity: s.sev ?? "warning",

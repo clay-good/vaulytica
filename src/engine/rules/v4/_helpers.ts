@@ -72,6 +72,23 @@ export type V4PresenceSpec = {
   recommendation: string;
   present_patterns: RegExp[];
   /**
+   * Require EVERY `present_patterns` entry to match rather than any one.
+   *
+   * The default OR is right for a synonym set — any spelling of the same
+   * term satisfies the column. It is wrong for a *pillar* set, where each
+   * pattern recognizes a distinct element the clause must carry, and the
+   * document is only compliant when all of them are there.
+   *
+   * The conjunction is evaluated pattern by pattern, so each one keeps its
+   * own flags. That matters: an earlier implementation composed the pillars
+   * into one anchored lookahead regex, which necessarily dropped the source
+   * flags, and a multiline `^` silently became a start-of-document `^` —
+   * see the note on `pack()` in `v5/_pack.ts`. `g` and `y` are not
+   * supported here (their `lastIndex` state makes `test()` alternate); no
+   * caller uses them, and `title-vacuity.test.ts` proves it.
+   */
+  require_all_present?: boolean;
+  /**
    * Applicability gate. When provided and NONE of these patterns match the
    * document, the rule is inapplicable and its absence is not a defect — a
    * New York commercial settlement is not missing a California § 1542
@@ -141,7 +158,10 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
           });
         }
       }
-      if (spec.present_patterns.some((re) => re.test(text))) return null;
+      const present = spec.require_all_present
+        ? spec.present_patterns.every((re) => re.test(text))
+        : spec.present_patterns.some((re) => re.test(text));
+      if (present) return null;
       return makeFinding({
         rule: this as Rule,
         title: spec.missing_title,

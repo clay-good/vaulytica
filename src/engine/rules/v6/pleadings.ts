@@ -59,6 +59,10 @@ const COMPLAINT = pack("complaint", C, [
   },
   {
     id: "PLDG-004",
+    // 1.0.1 — the `m` flag on the numbered-paragraph recognizer used to be
+    // dropped when the pillars were conjoined, so this column read only the
+    // very start of the document (`v5/_pack.ts`).
+    ver: "1.0.1",
     name: "Numbered paragraphs limited to a single set of circumstances",
     cite: frcp("10(b)", "form of pleadings — paragraphs and separate statements"),
     pat: [
