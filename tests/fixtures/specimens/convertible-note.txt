@@ -1,0 +1,40 @@
+THIS NOTE AND THE SECURITIES ISSUABLE UPON CONVERSION HEREOF HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AS AMENDED, AND MAY NOT BE OFFERED OR SOLD EXCEPT PURSUANT TO AN EFFECTIVE REGISTRATION STATEMENT OR AN AVAILABLE EXEMPTION.
+
+CONVERTIBLE PROMISSORY NOTE
+
+$500,000                                                              September 15, 2026
+                                                                      Wilmington, Delaware
+
+FOR VALUE RECEIVED, Northgate Instrument Company, a Delaware corporation (the "Company"), promises to pay to the order of Fairhaven Seed Partners, LP (the "Holder") the principal sum of Five Hundred Thousand Dollars ($500,000), together with interest, on the terms below.
+
+1. Interest. Interest accrues on the outstanding principal at a simple rate of five percent (5%) per annum, computed on the basis of a 365-day year for the actual number of days elapsed. Interest is payable at maturity or upon conversion.
+
+2. Maturity Date. Unless earlier converted, all outstanding principal and accrued interest are due and payable on September 15, 2028 (the "Maturity Date"), or on such earlier date as the obligations are accelerated under Section 7.
+
+3. Automatic Conversion. If the Company issues and sells shares of preferred stock in a single transaction or series of related transactions with aggregate gross proceeds of at least $3,000,000 (a "Qualified Financing"), all outstanding principal and accrued interest automatically convert into the securities issued in the Qualified Financing at a conversion price equal to the lesser of (a) eighty percent (80%) of the price per share paid by the other investors and (b) the price per share obtained by dividing the Valuation Cap by the Company's fully diluted capitalization immediately before the closing.
+
+4. Valuation Cap; Discount. The "Valuation Cap" is $12,000,000. The discount rate is twenty percent (20%). If both the Valuation Cap and the discount would apply, the conversion price is the lower of the two results.
+
+5. Optional Conversion at Maturity. If the Note has not converted under Section 3 before the Maturity Date, the Holder may elect, by written notice delivered on or before the Maturity Date, to convert all outstanding principal and accrued interest into shares of the Company's Common Stock at a price per share equal to the Valuation Cap divided by the Company's fully diluted capitalization.
+
+6. Change of Control. If a Change of Control occurs before conversion or repayment, the Holder may elect either (a) repayment of the outstanding principal plus accrued interest plus a premium equal to one hundred percent (100%) of the outstanding principal, or (b) conversion into Common Stock at the Valuation Cap price.
+
+7. Events of Default; Acceleration. Each of the following is an Event of Default: (a) the Company fails to pay any amount when due and does not cure within ten (10) business days after written notice; (b) the Company breaches any material covenant in this Note and does not cure within thirty (30) days after written notice; (c) the Company makes an assignment for the benefit of creditors; or (d) a bankruptcy proceeding is commenced by or against the Company and, if against, is not dismissed within sixty (60) days. Upon an Event of Default, the Holder may declare all outstanding principal and accrued interest immediately due and payable.
+
+8. Prepayment. The Company may not prepay this Note in whole or in part without the Holder's prior written consent.
+
+9. Subordination. This Note is subordinated in right of payment to the Company's senior indebtedness for borrowed money owing to a commercial bank or other institutional lender.
+
+10. Rank; No Security. This Note is a general unsecured obligation of the Company and ranks equally with the Company's other unsecured convertible notes issued in the same series.
+
+11. Amendment. This Note may be amended, and any provision waived, only with the written consent of the Company and the holders of a majority in principal amount of the notes issued in the same series, and any such amendment binds all holders.
+
+12. Governing Law. This Note is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules.
+
+13. Notices. Notices must be in writing and are effective upon personal delivery, upon confirmed email transmission, or one business day after deposit with a nationally recognized overnight courier.
+
+NORTHGATE INSTRUMENT COMPANY
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer

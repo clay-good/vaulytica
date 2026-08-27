@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.51.0] — 2026-08-27
+
+### Added
+- **Ten hand-written documents, and the findings each is allowed to produce.**
+  Every routing and rule defect fixed today was found the same way: write a
+  realistic document, run the CLI on it, and read what comes back. None was
+  reachable from the suite — the fixtures are shorter, cleaner, and more
+  cooperative than anything a lawyer would actually drop in. A letter puts its
+  title in a "Re:" line; a filing puts it under a caption; a negotiated
+  agreement stamps "EXECUTION VERSION" above it; an amendment defines nothing
+  and points at its parent; a discovery response carries the name of the
+  request it answers. `tests/integration/specimen-regression.test.ts` pins the
+  playbook and the exact rule ids for each, in both directions — a new false
+  finding fails, and so does a real one that stops firing — which makes the
+  method permanent instead of a session's worth of throwaway probes. The
+  specimens themselves live in `tests/fixtures/specimens/`: a state-court
+  complaint, a convertible note, a law-firm engagement letter, responses and
+  objections to interrogatories, a lease amendment, a mutual NDA, a medical
+  director agreement, a reservation-of-rights letter, a statement of work, and
+  a construction subcontract.
+
 ## [9.50.1] — 2026-08-27
 
 ### Fixed

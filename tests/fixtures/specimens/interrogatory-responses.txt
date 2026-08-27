@@ -1,0 +1,81 @@
+IN THE UNITED STATES DISTRICT COURT
+FOR THE NORTHERN DISTRICT OF ILLINOIS
+EASTERN DIVISION
+
+RIDGELINE AEROSPACE COMPONENTS, INC.,
+
+                         Plaintiff,
+
+v.                                                    Case No. 1:26-cv-04412
+                                                      Hon. Marisol Aguirre-Vance
+HALLORAN PRECISION CASTINGS, LLC,                     Magistrate Judge Peter Lindqvist
+
+                         Defendant.
+
+DEFENDANT'S RESPONSES AND OBJECTIONS TO PLAINTIFF'S FIRST SET OF INTERROGATORIES
+
+Pursuant to Rules 26 and 33 of the Federal Rules of Civil Procedure, Defendant Halloran Precision Castings, LLC ("Halloran") responds and objects to Plaintiff Ridgeline Aerospace Components, Inc.'s ("Ridgeline") First Set of Interrogatories as follows.
+
+PRELIMINARY STATEMENT
+
+Halloran's investigation and discovery in this action are continuing. These responses are based on information reasonably available to Halloran as of this date. Halloran reserves the right to supplement or amend these responses pursuant to Rule 26(e) as additional information becomes known.
+
+GENERAL OBJECTIONS
+
+1. Halloran objects to each interrogatory to the extent it seeks information protected by the attorney-client privilege, the work-product doctrine, or any other applicable privilege or immunity. Halloran will produce a privilege log in accordance with Rule 26(b)(5)(A) and the parties' agreed protocol.
+
+2. Halloran objects to each interrogatory to the extent it seeks information not relevant to any party's claim or defense or not proportional to the needs of the case, considering the factors set out in Rule 26(b)(1).
+
+3. Halloran objects to the definitions and instructions to the extent they purport to impose obligations broader than those imposed by the Federal Rules of Civil Procedure or the Local Rules of this Court.
+
+INTERROGATORIES AND RESPONSES
+
+INTERROGATORY NO. 1: Identify each person with knowledge of the dimensional inspection of the turbine housings identified in the Complaint.
+
+RESPONSE: Halloran objects to this interrogatory as overbroad and unduly burdensome to the extent it is not limited to the housings at issue or to the relevant time period. Subject to and without waiving the foregoing objections and the General Objections, Halloran responds: Dermot Halloran (Managing Member), Ana Petrosyan (Quality Manager), and Emil Krause (Inspection Technician), each of whom may be contacted through undersigned counsel.
+
+INTERROGATORY NO. 2: State whether Halloran performed a first-article inspection on each production lot of the turbine housings.
+
+RESPONSE: Subject to and without waiving the General Objections, Halloran responds: Yes. Halloran performed a first-article inspection on each production lot in accordance with AS9102 and retained the resulting reports.
+
+INTERROGATORY NO. 3: Describe in detail all quality-control procedures Halloran applied to the turbine housings between March 1, 2025 and July 31, 2025.
+
+RESPONSE: Halloran objects that this interrogatory is compound and contains discrete subparts that, counted separately, exceed the twenty-five-interrogatory limit of Rule 33(a)(1). Halloran further objects that "describe in detail" is vague and that the burden of deriving the answer from Halloran's business records is substantially the same for Ridgeline as for Halloran. Pursuant to Rule 33(d), Halloran will specify and produce the records from which the answer may be derived, in a reasonably usable form. Subject to and without waiving the foregoing, Halloran responds: Halloran applied incoming material verification, in-process coordinate-measuring-machine inspection at a rate of one part per twenty, first-article inspection per lot, and final dimensional inspection before shipment.
+
+INTERROGATORY NO. 4: Identify all communications between Halloran and any third party concerning the recall described in the Complaint.
+
+RESPONSE: Halloran objects that this interrogatory seeks information protected by the attorney-client privilege and the work-product doctrine, and that it is not proportional to the needs of the case insofar as it is unlimited as to time and custodian. Subject to and without waiving the foregoing, Halloran responds that it will produce non-privileged responsive communications and will log privileged communications.
+
+INTERROGATORY NO. 5: State the total revenue Halloran received from Ridgeline in each of calendar years 2024, 2025, and 2026.
+
+RESPONSE: Subject to and without waiving the General Objections, and subject to the Stipulated Protective Order entered in this action, Halloran responds: 2024 — $4,180,000; 2025 — $5,420,000; 2026 (through June 30) — $1,110,000.
+
+VERIFICATION
+
+I, Dermot Halloran, am the Managing Member of Halloran Precision Castings, LLC. I have read the foregoing responses to interrogatories. The factual answers are true and correct to the best of my knowledge, information, and belief, formed after a reasonable inquiry. The objections are stated by counsel.
+
+I declare under penalty of perjury under the laws of the United States that the foregoing is true and correct.
+
+Executed on August 21, 2026.
+
+/s/ Dermot Halloran
+Dermot Halloran
+
+Dated: August 21, 2026
+
+                                        Respectfully submitted,
+
+                                        /s/ Yusuf Adeyemi
+                                        Yusuf Adeyemi (ARDC No. 6301882)
+                                        KEARNS & WHITLOCK LLP
+                                        330 North Wabash Avenue, Suite 2100
+                                        Chicago, Illinois 60611
+                                        (312) 555-0148
+                                        yadeyemi@kearnswhitlock.com
+                                        Counsel for Defendant
+
+CERTIFICATE OF SERVICE
+
+I certify that on August 21, 2026, I served the foregoing on all counsel of record via the Court's CM/ECF system.
+
+                                        /s/ Yusuf Adeyemi

@@ -1,0 +1,46 @@
+EXECUTION VERSION
+CONFIDENTIAL
+
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement (this "Agreement") is entered into as of September 2, 2026 (the "Effective Date") by and between Northgate Instrument Company, an Ohio corporation ("Northgate"), and Cardinal Metrology, Inc., a Delaware corporation ("Cardinal"). Northgate and Cardinal are referred to individually as a "Party" and collectively as the "Parties."
+
+1. Purpose. The Parties wish to explore a potential commercial relationship concerning coordinate-measurement calibration services (the "Purpose"), and in connection with the Purpose each Party may disclose to the other certain confidential and proprietary information.
+
+2. Confidential Information. "Confidential Information" means all non-public information disclosed by a Party (the "Disclosing Party") to the other Party (the "Receiving Party"), whether orally, in writing, or in any other form, that is designated as confidential or that a reasonable person would understand to be confidential given its nature and the circumstances of disclosure.
+
+3. Exclusions. Confidential Information does not include information that: (a) is or becomes publicly available through no act or omission of the Receiving Party; (b) was rightfully known to the Receiving Party without restriction before disclosure; (c) is rightfully received from a third party without restriction; or (d) is independently developed by the Receiving Party without use of or reference to the Disclosing Party's Confidential Information.
+
+4. Obligations. The Receiving Party shall use the Disclosing Party's Confidential Information solely for the Purpose, shall protect it with at least the same degree of care it uses for its own confidential information of like importance and in no event less than a reasonable degree of care, and shall not disclose it to any third party except to its employees, officers, and professional advisors who have a need to know for the Purpose and who are bound by confidentiality obligations no less protective than those in this Agreement.
+
+5. Compelled Disclosure. If the Receiving Party is required by law, regulation, or valid legal process to disclose any Confidential Information, it shall, to the extent legally permitted, give the Disclosing Party prompt written notice so the Disclosing Party may seek a protective order, and shall disclose only that portion legally required.
+
+6. Term. This Agreement commences on the Effective Date and continues for two (2) years. The confidentiality obligations in Section 4 survive for three (3) years after the date of disclosure, and with respect to any Confidential Information that constitutes a trade secret under the Defend Trade Secrets Act, 18 U.S.C. § 1836, or applicable state law, for so long as it remains a trade secret.
+
+7. No License. Nothing in this Agreement grants either Party any right, title, interest, or license, by implication or otherwise, in or to the other Party's Confidential Information or intellectual property.
+
+8. Return or Destruction. Upon the Disclosing Party's written request, the Receiving Party shall promptly return or destroy all Confidential Information, except that the Receiving Party may retain one archival copy in its legal files and copies in routine backups, which remain subject to this Agreement.
+
+9. No Warranty. All Confidential Information is provided "AS IS." Neither Party makes any warranty, express or implied, as to its accuracy or completeness.
+
+10. Remedies. The Parties agree that a breach of this Agreement may cause irreparable harm for which monetary damages are inadequate, and that the non-breaching Party is entitled to seek injunctive relief in addition to any other remedies available at law or in equity.
+
+11. Notice of Immunity. Under the Defend Trade Secrets Act, an individual shall not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made in confidence to a federal, state, or local government official or to an attorney solely for the purpose of reporting or investigating a suspected violation of law, or that is made in a complaint or other document filed under seal in a lawsuit or other proceeding.
+
+12. Governing Law and Venue. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules. Any dispute arising out of or relating to this Agreement shall be brought exclusively in the state and federal courts located in Wilmington, Delaware, and each Party consents to the personal jurisdiction of those courts.
+
+13. Entire Agreement; Amendment. This Agreement is the entire agreement between the Parties concerning its subject matter and supersedes all prior understandings. It may be amended only by a writing signed by both Parties.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+NORTHGATE INSTRUMENT COMPANY
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+CARDINAL METROLOGY, INC.
+
+By: /s/ Soren Lindqvist
+Name: Soren Lindqvist
+Title: President

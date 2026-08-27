@@ -1,0 +1,59 @@
+IN THE CIRCUIT COURT OF COOK COUNTY, ILLINOIS
+COUNTY DEPARTMENT, LAW DIVISION
+
+RIDGELINE AEROSPACE COMPONENTS, INC.,
+
+                         Plaintiff,
+
+v.                                                    Case No. 2026 L 009812
+
+HALLORAN PRECISION CASTINGS, LLC,
+
+                         Defendant.
+
+COMPLAINT AT LAW AND DEMAND FOR JURY TRIAL
+
+Plaintiff Ridgeline Aerospace Components, Inc., by its attorneys, complains of Defendant Halloran Precision Castings, LLC as follows.
+
+PARTIES
+
+1. Plaintiff Ridgeline Aerospace Components, Inc. is a Delaware corporation with its principal place of business in Rockford, Illinois.
+
+2. Defendant Halloran Precision Castings, LLC is a Connecticut limited liability company with its principal place of business in Waterbury, Connecticut.
+
+JURISDICTION AND VENUE
+
+3. This Court has jurisdiction over Defendant because Defendant transacted business within Illinois and the claims arise from that business, pursuant to 735 ILCS 5/2-209.
+
+4. Venue is proper in Cook County under 735 ILCS 5/2-101 because the transaction giving rise to the claims occurred in substantial part in this county.
+
+FACTUAL ALLEGATIONS
+
+5. Between March and July 2025, Defendant supplied Plaintiff with 4,200 turbine housings under Purchase Order No. RA-2025-0148.
+
+6. The housings were required to conform to dimensional tolerances stated in drawing RA-88412, revision C.
+
+7. In August 2025, Plaintiff's customer reported dimensional nonconformity in assemblies incorporating the housings.
+
+8. Plaintiff conducted a recall of the affected assemblies at a cost of $2,340,000.
+
+COUNT I — BREACH OF CONTRACT
+
+9. Plaintiff realleges paragraphs 1 through 8 as though fully set forth herein.
+
+10. Defendant breached the Purchase Order by delivering nonconforming goods.
+
+11. As a direct and proximate result, Plaintiff has been damaged in an amount exceeding $2,340,000.
+
+WHEREFORE, Plaintiff Ridgeline Aerospace Components, Inc. respectfully requests that this Court enter judgment in its favor and against Defendant Halloran Precision Castings, LLC in an amount in excess of $2,340,000, together with costs and such other relief as the Court deems just.
+
+JURY DEMAND
+
+Plaintiff demands trial by jury on all issues so triable.
+
+                                        Respectfully submitted,
+
+                                        /s/ Yusuf Adeyemi
+                                        Yusuf Adeyemi
+                                        KEARNS & WHITLOCK LLP
+                                        Counsel for Plaintiff

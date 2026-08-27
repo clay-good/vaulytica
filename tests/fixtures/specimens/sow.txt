@@ -1,0 +1,57 @@
+STATEMENT OF WORK NO. 4
+
+This Statement of Work No. 4 ("SOW") is entered into as of June 1, 2026 under and subject to the Master Services Agreement dated February 12, 2024 between Vanterra Analytics, Inc. ("Client") and Halewood Data Systems LLC ("Supplier") (the "MSA"). Capitalized terms used and not defined in this SOW have the meanings given in the MSA.
+
+1. Services.
+
+Supplier shall design, build, and deploy a telemetry ingestion pipeline for Client's manufacturing sensors, comprising: (a) a streaming ingest service; (b) a schema registry and validation layer; (c) a retention and archival tier; and (d) two operational dashboards. Supplier shall provide the Services in accordance with the specifications in Attachment 1.
+
+2. Deliverables and Acceptance.
+
+Supplier shall deliver each Deliverable listed in Attachment 2 on the dates stated there. Client shall have fifteen (15) business days after delivery to test each Deliverable against the acceptance criteria in Attachment 1 and to give Supplier written notice of acceptance or of any material non-conformity. If Client gives notice of non-conformity, Supplier shall correct it within ten (10) business days and resubmit. If Client does not give notice within the review period, the Deliverable is deemed accepted.
+
+3. Term.
+
+This SOW commences on June 1, 2026 and continues until the last Deliverable is accepted or the SOW is terminated in accordance with the MSA.
+
+4. Fees.
+
+Fees are time and materials at the rates in Attachment 3, with a not-to-exceed amount of Six Hundred Eighty Thousand Dollars ($680,000) for the Services. Supplier shall notify Client in writing when cumulative fees reach eighty percent (80%) of the not-to-exceed amount, and shall not exceed it without Client's prior written approval.
+
+5. Invoicing.
+
+Supplier shall invoice monthly in arrears for hours worked and pre-approved expenses. Payment terms are as stated in the MSA.
+
+6. Key Personnel.
+
+Emil Krause shall serve as technical lead and Ana Petrosyan as delivery manager. Supplier shall not remove or reassign either individual without Client's prior written consent, except on death, disability, or resignation, in which case Supplier shall propose a replacement of comparable qualification within ten (10) business days.
+
+7. Client Responsibilities.
+
+Client shall provide access to a non-production sensor environment, sample data sets, and a named business owner available for weekly review sessions. Supplier's obligations are subject to Client's timely performance of these responsibilities, and any delay by Client extends Supplier's dates day for day.
+
+8. Change Control.
+
+Any change to the scope, Deliverables, dates, or fees must be documented in a written change order signed by both parties before Supplier performs the changed work.
+
+9. Location.
+
+Supplier shall perform the Services remotely, except that Supplier's technical lead shall be on site at Client's Hartford facility for the two integration weeks identified in Attachment 2.
+
+10. Order of Precedence.
+
+In the event of a conflict between this SOW and the MSA, the MSA controls, except with respect to the scope, Deliverables, fees, and schedule stated in this SOW, which control over any inconsistent provision of the MSA.
+
+ACCEPTED AND AGREED:
+
+VANTERRA ANALYTICS, INC.
+
+By: /s/ Soren Lindqvist
+Name: Soren Lindqvist
+Title: Chief Financial Officer
+
+HALEWOOD DATA SYSTEMS LLC
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Managing Director
