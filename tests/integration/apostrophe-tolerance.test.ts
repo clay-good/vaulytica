@@ -21,22 +21,39 @@
  * user-visible recommendation.
  */
 
-import { readFileSync } from "node:fs";
-import { execSync } from "node:child_process";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import ts from "typescript";
 
-/** Source files whose regexes read the DOCUMENT, as against the tool's own output. */
-const DOCUMENT_READING_GLOBS = "'src/engine/rules/**/*.ts' 'src/extract/*.ts'";
+/** Source trees whose regexes read the DOCUMENT, as against the tool's own output. */
+const DOCUMENT_READING_ROOTS = ["src/engine/rules", "src/extract"];
+
+/**
+ * Walk for `.ts` sources. Deliberately not `git ls-files` with quoted globs:
+ * cmd.exe does not strip single quotes, so git receives them literally and
+ * returns nothing — the guard then passed vacuously on Windows while failing
+ * its own "more than 50 files" floor, which is why that floor is here.
+ *
+ * The walk is also strictly more complete: `git ls-files` with a `**` pathspec
+ * does not match a file sitting directly in that directory, so the original
+ * sweep never looked at `rules/_helpers.ts` or `rules/index.ts` at all.
+ */
+function sourceFiles(dir: string, out: string[] = []): string[] {
+  for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
+    a.name.localeCompare(b.name, "en"),
+  )) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) sourceFiles(path, out);
+    else if (entry.name.endsWith(".ts") && !entry.name.includes(".test.")) out.push(path);
+  }
+  return out;
+}
 
 describe("apostrophe tolerance", () => {
   it("no document-reading regex admits only the straight apostrophe", () => {
-    const files = execSync(`git ls-files ${DOCUMENT_READING_GLOBS}`)
-      .toString()
-      .trim()
-      .split("\n")
-      .filter((f) => f && !f.includes(".test."));
-    expect(files.length).toBeGreaterThan(50);
+    const files = DOCUMENT_READING_ROOTS.flatMap((root) => sourceFiles(root));
+    expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
     for (const file of files) {

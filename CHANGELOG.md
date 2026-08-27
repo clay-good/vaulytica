@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.45.2] — 2026-08-27
+
+### Fixed
+- **The apostrophe guard passed vacuously on Windows.** It listed its inputs
+  with `git ls-files` and single-quoted globs; `cmd.exe` does not strip single
+  quotes, so git received them literally and returned nothing, and the guard
+  asserted an empty list contained no offenders. Its own "more than 50 files"
+  floor is what turned that into a red cross-OS matrix rather than a silent
+  pass — which is the entire reason such a floor belongs in a guard that
+  enumerates its own inputs. It now walks the two source trees with `readdirSync`,
+  which needs no shell. The walk is also strictly more complete: a `**`
+  pathspec does not match a file sitting directly in the named directory, so
+  the original sweep never looked at `src/engine/rules/_helpers.ts` or
+  `index.ts` at all. Both are clean.
+
 ## [9.45.1] — 2026-08-27
 
 ### Fixed
