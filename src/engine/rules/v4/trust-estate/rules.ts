@@ -107,7 +107,7 @@ const WILL_RULES: Rule[] = [
   }),
   presence({
     id: "EST-004",
-    version: "1.1.1",
+    version: "1.1.2",
     name: "Bond waiver for fiduciaries",
     description:
       "Will should waive bond / surety for executor and other fiduciaries unless state law requires.",
@@ -136,7 +136,14 @@ const WILL_RULES: Rule[] = [
       // back for the negation anywhere in the clause. A separate
       // surety-only frame without this guard accused exactly that waiver.
       /(?<!\bno\b[^.]{0,40})(?<!\bwithout\b[^.]{0,40})\b(?:bond|surety)\b[^.]{0,60}?\b(?:shall|will|must)\s+be\s+required/i,
-      /\b(?:shall|will|must)\s+(?:be\s+required\s+to\s+)?(?:post|furnish|provide)\s+(?:a\s+)?bond/i,
+      // 1.1.2 — this frame carried no negation guard, unlike its sibling
+      // above, so the STANDARD waiver — "No fiduciary serving under this
+      // Will shall be required to post bond in any jurisdiction" — was
+      // reported as a will that affirmatively REQUIRES bond, which is the
+      // reverse of what it says. The subject carries the negation here
+      // ("No fiduciary … shall be required"), so the lookbehind has to scan
+      // back past it.
+      /(?<!\bno\b[^.]{0,60})(?<!\bwithout\b[^.]{0,60})(?<!\bnot\b[^.]{0,60})\b(?:shall|will|must)\s+(?:be\s+required\s+to\s+)?(?:post|furnish|provide)\s+(?:a\s+)?bond/i,
       /\bno\s+bond\s+is\s+waived/i,
       /\bbond\b[^.]{0,40}?\b(?:is|are)\s+not\s+waived/i,
     ],

@@ -138,6 +138,12 @@ const EXPECTED: Record<string, Expectation> = {
   // nobody.
   "gdpr-notice.txt": { playbook: "privacy-notice-gdpr", findings: [] },
 
+  // An Ohio will with a conformed signature, an attestation clause, and a
+  // self-proving affidavit. Clean under the estate checks — the one info is
+  // the disclosure that execution formalities cannot be verified from text.
+  // (EST-060 is the standing disclosure, not a defect in the will.)
+  "will.txt": { playbook: "last-will-and-testament", findings: ["EST-060"] },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

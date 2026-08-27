@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.55.0] — 2026-08-27
+
+### Fixed
+- **A will's bond waiver was reported as a bond requirement.** EST-004's second
+  express-denial frame carried no negation guard, unlike its sibling, so the
+  standard waiver — "**No** fiduciary serving under this Will shall be required
+  to post bond in any jurisdiction" — was read as a will that affirmatively
+  requires bond, the reverse of what it says. The subject carries the negation
+  here, so the lookbehind has to scan back past it.
+- **EST-104 and EST-105 recognized only ruled signature lines.** A will that is
+  pasted, typed, or e-signed carries the conformed signature instead — "/s/
+  Dermot Aloysius Halloran" over "Dermot Aloysius Halloran, Testator", and an
+  attestation clause reciting that the witnesses "subscribed our names as
+  witnesses" — so a properly executed will was told nobody had signed it and
+  that it had no witnesses. STRUCT-003 learned the same lesson in 9.42. The
+  pre-existing `witnesseth` / `witness whereof` guard still holds: "IN WITNESS
+  WHEREOF, I have signed" is the testator signing, and EST-105 still fires.
+- **A will names its family throughout, and has no parties.** "My wife Priya
+  Raghunathan Halloran", "my son Emil Halloran", "my brother Cormac Halloran" —
+  natural persons, reported as Title-Case terms the will forgot to define,
+  because the party extractor finds no parties in a will for the person-name
+  filter to use. A relationship-introduced name is now collected as a person,
+  which also covers the bare list form. And "Last Will" — the front half of the
+  document's own title, split at the lowercase "and" — is what the instrument
+  *is*, not a term it defines.
+
+### Added
+- An Ohio will specimen with an attestation clause and a self-proving
+  affidavit, pinned clean, bringing the set to seventeen.
+
 ## [9.54.1] — 2026-08-27
 
 ### Fixed

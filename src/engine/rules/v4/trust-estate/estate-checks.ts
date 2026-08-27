@@ -156,11 +156,18 @@ const EST_104: Rule = absenceRule({
   id: "EST-104",
   name: "Testator signature block present",
   severity: "warning",
+  // A will that is pasted, typed, or e-signed carries the CONFORMED
+  // signature rather than a ruled line: "/s/ Dermot Aloysius Halloran"
+  // over "Dermot Aloysius Halloran, Testator". Only the underscore forms
+  // were recognized, so a properly executed will was told its testator had
+  // not signed it. (STRUCT-003 learned the same lesson in 9.42.)
   patterns: [
     /signature of.{0,20}testator/,
     /testator.{0,30}signature/,
     /_{3,}\s*(the )?testator/,
     /by:?\s*_{3,}/,
+    /\/s\/[^.]{0,80}?testator/i,
+    /testator[^.]{0,40}?\/s\//i,
   ],
   missingTitle: "No testator signature block detected",
   missingDescription: "No signature block for the testator was found in the document text.",
@@ -172,7 +179,7 @@ const EST_104: Rule = absenceRule({
 
 const SPEC_105: AbsenceSpec = {
   id: "EST-105",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Witness signature blocks present",
   severity: "warning",
   // Presence-only — EST-106 below does the count comparison against the
@@ -183,6 +190,14 @@ const SPEC_105: AbsenceSpec = {
     /_{3,}\s*witness/,
     /witness(?!eth)(?!\s+whereof).{0,20}(signature|sign|_{3,})/,
     /signature of.{0,20}witness/,
+    // The attestation clause every witnessed will carries, and the
+    // conformed signature that follows it. A pasted will has no ruled
+    // lines, so the underscore forms above saw nothing and a will with a
+    // full attestation clause and two witness signatures was told it had
+    // none. The `witnesseth` / `witness whereof` guard above still holds:
+    // neither of these matches testator-side boilerplate.
+    /subscribed\s+(?:our|their)\s+names?\s+as\s+witness/i,
+    /witness(?!eth)(?!\s+whereof)[^.]{0,60}?\/s\//i,
   ],
   missingTitle: "No witness signature blocks detected",
   missingDescription: "No witness signature blocks were found in the document text.",

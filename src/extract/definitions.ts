@@ -657,6 +657,15 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // Title-Case words after the rule so a bare "Signature of X" label form
       // (single leading word before a lowercase connector) is not swept in.
       /_{6,}\s*([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,3})\b/g,
+      // A person introduced by their relationship to the drafter — "my wife
+      // Priya Raghunathan Halloran", "my son Emil Halloran", "my brother
+      // Cormac Halloran" — is a natural person, and a will names its family
+      // this way throughout. A will has no "parties" for the party extractor
+      // to find, so every family member was reported as a Title-Case term
+      // the will forgot to define. Collecting them here also covers the bare
+      // list form ("my children: Ana Halloran, Emil Halloran, and Soren
+      // Halloran"), because the set is matched against every later use.
+      /\b(?:my|his|her|their|our)\s+(?:beloved\s+|late\s+|step-?|former\s+)?(?:wife|husband|spouse|partner|son|daughter|child|brother|sister|mother|father|grandson|granddaughter|grandchild|niece|nephew|cousin|uncle|aunt|executor|trustee|guardian)\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
     ]) {
       re.lastIndex = 0;
       let pm: RegExpExecArray | null;
@@ -810,6 +819,10 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // "Last Will" is the front half of the document's own title, split at
+      // the lowercase "and" in "my Last Will and Testament". The title is not
+      // a term the instrument defines — it is what the instrument IS.
+      if (/^\s*and\s+Testament\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
       // An ordinal instrument name ("First Amendment", "Second Addendum") is
       // the TITLE of a companion document, not a term this one defines.
       if (
