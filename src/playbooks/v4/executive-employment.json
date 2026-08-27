@@ -22,7 +22,10 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Cause", "Good Reason", "Change in Control", "Disability"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "RISK-005": { "skip": true },
+    "RISK-015": { "severity": "info" }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "IRC-409A-280G",

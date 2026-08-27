@@ -7,7 +7,7 @@
     "title_keywords": ["offer letter", "employment agreement", "employment contract", "letter of employment"],
     "required_clauses": ["confidentiality-obligation", "employee-ip-assignment", "term"],
     "distinguishing_phrases": ["at-will", "exempt", "salary", "base compensation", "your position", "report to", "FLSA"],
-    "negative_features": ["independent contractor", "1099", "not an employee", "as a consultant", "scope of work", "the Customer", "the Vendor"]
+    "negative_features": ["independent contractor", "1099", "not an employee", "as a consultant", "scope of work", "the Customer", "the Vendor", "section 409a", "section 280g", "good reason", "change of control", "change in control"]
   },
   "expected_clauses": [
     {"category": "confidentiality-obligation", "severity_if_missing": "critical"},

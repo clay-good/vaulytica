@@ -317,7 +317,14 @@ const ARBITRATION_SEAT = new RegExp(
     // institution-first: "administered by JAMS in X", "before the ICC in X",
     // "under the ICC Rules in X" — the named arbitral body fixes the clause as an
     // arbitration seat, so the locality after "in"/"at" is the seat.
-    String.raw`(?:administered|conducted|held|resolved|settled|before|under)\s+(?:by\s+|the\s+)?(?:the\s+)?(?:${ARB_PROVIDER})\b(?:\s+(?:rules|arbitration))?\s+(?:in|at)\s+` +
+    //
+    // The rule set is usually NAMED between the provider and the locality —
+    // "under the JAMS EMPLOYMENT ARBITRATION Rules in Columbus, Ohio" — and
+    // the optional group admitted only a bare "Rules" or "Arbitration"
+    // immediately after the provider, so the seat of an ordinary employment
+    // arbitration clause went unread and CHOICE-006 reported "seat not
+    // specified" on a clause that specifies one.
+    String.raw`(?:administered|conducted|held|resolved|settled|before|under)\s+(?:by\s+|the\s+)?(?:the\s+)?(?:${ARB_PROVIDER})\b(?:(?:\s+\w+){0,3}\s+rules|\s+arbitration)?\s+(?:in|at)\s+` +
     String.raw`)([A-Z][A-Za-z\s&\-]+?)(?=[.,;)]|\s+under|\s+pursuant|$)`,
   "gi",
 );

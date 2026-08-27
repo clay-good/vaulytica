@@ -1,0 +1,70 @@
+EXECUTIVE EMPLOYMENT AGREEMENT
+
+This Executive Employment Agreement (this "Agreement") is entered into as of February 17, 2026 between Northgate Instrument Company, an Ohio corporation (the "Company"), and Soren Lindqvist ("Executive").
+
+1. Position and Duties.
+
+Executive shall serve as Chief Financial Officer, reporting to the Chief Executive Officer, and shall perform the duties customary to that office and such other duties as the Board reasonably assigns. Executive shall devote substantially all business time to the Company, except that Executive may serve on one outside for-profit board with the Board's prior written consent, and may manage personal investments and participate in charitable activities so long as those do not materially interfere.
+
+2. Term; At-Will Employment.
+
+Employment begins March 16, 2026 and continues until terminated. Employment is at will: either party may terminate at any time, with or without Cause or Good Reason, subject to the payments described in Section 6.
+
+3. Base Salary and Bonus.
+
+Executive's initial base salary is Four Hundred Twenty Thousand Dollars ($420,000) per year, payable in accordance with the Company's regular payroll practices, and reviewed annually by the Compensation Committee. Executive is eligible for an annual bonus with a target of forty percent (40%) of base salary, based on Company and individual performance as determined by the Compensation Committee, payable no later than March 15 of the year following the performance year.
+
+4. Equity.
+
+Subject to Board approval, Executive will receive an option to purchase 240,000 shares of Common Stock at an exercise price equal to fair market value on the grant date, vesting twenty-five percent (25%) on the first anniversary of the vesting commencement date and the remainder in equal monthly installments over the following thirty-six (36) months, subject to continued service and to the terms of the Company's equity incentive plan and the award agreement.
+
+5. Benefits; Expenses.
+
+Executive is eligible for the benefit plans the Company offers its senior executives, four (4) weeks of paid vacation per year, and reimbursement of reasonable business expenses in accordance with Company policy and applicable state law, submitted within sixty (60) days.
+
+6. Termination Payments.
+
+If the Company terminates Executive without Cause, or Executive resigns for Good Reason, and in either case Executive signs and does not revoke a general release of claims within sixty (60) days after the termination date, the Company shall pay Executive (a) twelve (12) months of base salary, paid in accordance with regular payroll over twelve months beginning on the first payroll date after the release becomes effective; (b) any earned but unpaid bonus for a completed performance year; and (c) if Executive elects COBRA, the employer portion of the premium for up to twelve (12) months or until Executive becomes eligible for other group coverage. If a termination without Cause or resignation for Good Reason occurs within twelve (12) months after a Change of Control, the salary component increases to eighteen (18) months, the bonus component to the target bonus, and all outstanding equity awards vest in full.
+
+7. Definitions.
+
+"Cause" means, after written notice and a thirty (30) day opportunity to cure if curable: a material breach of this Agreement or of a written Company policy; conviction of, or a plea of guilty or nolo contendere to, a felony or a crime involving dishonesty; gross negligence or willful misconduct materially injurious to the Company; or a material and knowing violation of law in connection with the Company's business. "Good Reason" means, without Executive's consent: a material reduction in base salary other than a reduction of ten percent (10%) or less applied to all senior executives; a material diminution in duties, authority, or reporting line; or a relocation of Executive's principal work location by more than fifty (50) miles; provided that Executive gives notice within ninety (90) days after the event, the Company has thirty (30) days to cure, and Executive resigns within thirty (30) days after the cure period ends.
+
+8. Section 409A.
+
+The payments under Section 6 are intended to be exempt from or comply with Section 409A of the Internal Revenue Code, and each installment is a separate payment. If Executive is a "specified employee" on the termination date, any payment that is deferred compensation subject to Section 409A and payable on separation from service is delayed until the earlier of six (6) months and one day after separation or Executive's death. Reimbursements are made no later than the end of the year following the year the expense is incurred.
+
+9. Section 280G.
+
+If any payment would be subject to the excise tax under Section 4999 of the Internal Revenue Code, the payments will be reduced to the largest amount that would not trigger the tax, but only if the reduction leaves Executive better off on an after-tax basis.
+
+10. Restrictive Covenants.
+
+During employment and for twelve (12) months afterward, Executive shall not solicit any employee of the Company with whom Executive worked in the final twelve months of employment, or solicit any customer of the Company for a competing product. Executive shall not use or disclose the Company's confidential information at any time. Nothing in this Agreement prohibits Executive from reporting possible violations of law to any government agency, from participating in an agency investigation, or from making disclosures protected under whistleblower provisions, and Executive need not notify the Company beforehand. Under the Defend Trade Secrets Act, Executive may not be held criminally or civilly liable for disclosing a trade secret in confidence to a government official or an attorney solely for the purpose of reporting or investigating a suspected violation of law, or in a document filed under seal in a lawsuit.
+
+11. Assignment of Inventions.
+
+Executive assigns to the Company all inventions conceived during employment that relate to the Company's business or that result from work performed for the Company. This assignment does not apply to an invention that Executive developed entirely on their own time without using Company equipment, supplies, facilities, or trade secret information, except for inventions that relate to the Company's business or actual or demonstrably anticipated research or development, or that result from work performed for the Company, as provided by applicable state law.
+
+12. Indemnification; Insurance.
+
+The Company shall indemnify Executive to the fullest extent permitted by Ohio law and its charter documents for acts taken in Executive's capacity as an officer, shall advance expenses, and shall cover Executive under its directors and officers liability policy on the same terms as other senior executives during employment and for six (6) years afterward.
+
+13. Dispute Resolution.
+
+Any dispute arising out of this Agreement or Executive's employment shall be resolved by binding arbitration before a single arbitrator under the JAMS Employment Arbitration Rules in Columbus, Ohio. The Company shall pay all arbitration fees and the arbitrator's compensation. Each party bears its own attorneys' fees, except that the arbitrator may award fees to the extent a statute provides for them. This Section does not apply to a claim that cannot be arbitrated as a matter of law, or to a request for injunctive relief in aid of arbitration.
+
+14. General.
+
+This Agreement is governed by the laws of the State of Ohio. It is the entire agreement between the parties concerning Executive's employment and supersedes all prior understandings, including any offer letter. It may be amended only by a writing signed by both parties. It binds the Company's successors, and the Company shall require any successor to assume it.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement.
+
+NORTHGATE INSTRUMENT COMPANY
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+/s/ Soren Lindqvist
+Soren Lindqvist

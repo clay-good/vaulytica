@@ -195,6 +195,22 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["STRUCT-006", "STRUCT-018", "OBLI-005", "RISK-011", "RISK-015"],
   },
 
+  // An executive employment agreement — 409A, 280G, Good Reason, and an
+  // arbitration seat behind a named rule set.
+  "executive-employment.txt": {
+    playbook: "executive-employment",
+    findings: [
+      "EMP-007",
+      "TERM-005",
+      "CHOICE-006",
+      "OBLI-005",
+      "PERS-002",
+      "RISK-011",
+      "RISK-015",
+      "TEMP-008",
+    ],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

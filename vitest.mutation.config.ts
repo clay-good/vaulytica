@@ -56,6 +56,9 @@ export const EXCLUDED_COVERING_SUITES: Record<string, string> = {
 export default defineConfig({
   test: {
     include: [
+      // A rule guard that reaches into a mutated extractor: its arbitration-seat
+      // cases exercise `src/extract/jurisdictions.ts`, so its kills count.
+      "src/engine/rules/exec-employment-guards.test.ts",
       "src/extract/amount-postfix-currency.test.ts",
       "src/extract/amounts.test.ts",
       "src/extract/arbitration-seat-phrasing.test.ts",

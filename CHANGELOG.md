@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.59.0] — 2026-08-27
+
+### Fixed
+- **An executive employment agreement routed to the generic at-will
+  playbook.** It matched `executive-employment`'s own name **and** four of its
+  own distinguishing phrases (409A, 280G, CFO, CEO) — and still lost, because
+  `employment-at-will-us` collects 0.8 from `required_clauses`, a feature kind
+  worth 0.4 per hit against a phrase's 0.2 that only the twelve launch
+  playbooks carry. `confidentiality-obligation`, `employee-ip-assignment`, and
+  `term` are in every executive agreement ever written. Fixed the way
+  `docs/adding-a-playbook.md` recommends — with negative features rather than
+  by inflating the other side's keywords: an at-will offer letter does not
+  mention Section 409A, Section 280G, Good Reason, or a Change of Control. The
+  three offer-letter fixtures route unchanged, with unchanged findings.
+- **IPDATA-001 required the word "hereby".** "Executive **assigns to** the
+  Company all inventions conceived during employment" is a complete
+  assignment, and the rule reported that the agreement does not allocate
+  ownership of intellectual property. The "to" is what keeps the plural noun
+  ("successors and assigns") out.
+- **The arbitration seat sat behind a named rule set.** "under the JAMS
+  **Employment Arbitration** Rules in Columbus, Ohio" — the institution-first
+  branch admitted only a bare "Rules" immediately after the provider, so
+  CHOICE-006 reported "seat not specified" on a clause that specifies one and
+  CHOICE-003 reported no forum at all.
+- **`executive-employment` had empty `rule_overrides`**: an employment
+  agreement caps no liability, and the company's indemnity of its officer is
+  uncapped by design.
+
+### Added
+- An executive employment agreement specimen, bringing the set to twenty-four.
+
 ## [9.58.1] — 2026-08-27
 
 ### Fixed
