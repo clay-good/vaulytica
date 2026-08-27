@@ -116,7 +116,41 @@
       "Company Systems",
       "User"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-EMPLOYMENT",
@@ -565,7 +599,167 @@
       "Answer",
       "Affirmative Defense"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-8",
@@ -1024,7 +1218,167 @@
       "Respondent",
       "Demand"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "AAA-JAMS",
@@ -1127,7 +1481,41 @@
       "Company",
       "Registered Agent"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "RULLCA",
@@ -1544,7 +1932,41 @@
       "Consumer Report",
       "Applicant"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FCRA-15-USC-1681b",
@@ -1643,7 +2065,41 @@
       "Biometric Data",
       "Retention Schedule"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "BIPA-740-ILCS-14",
@@ -1694,7 +2150,41 @@
       "Corporation",
       "Board"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "MBCA",
@@ -1745,7 +2235,41 @@
       "Target Bonus",
       "Performance Period"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRC-409A",
@@ -1798,7 +2322,41 @@
       "RPO",
       "Critical Function"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ISO-22301",
@@ -2237,7 +2795,41 @@
       "Parent",
       "Personal Information"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "COPPA-16-CFR-312",
@@ -2743,7 +3335,41 @@
       "Commission",
       "Plan Year"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-WAGE-LAW",
@@ -2876,7 +3502,167 @@
       "Defendant",
       "Claim"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-8",
@@ -2978,7 +3764,167 @@
       "Judgment",
       "Stipulation"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-58",
@@ -3553,7 +4499,41 @@
       "Privacy Event",
       "Period of Restoration"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-INSURANCE",
@@ -3895,7 +4875,167 @@
       "Deponent",
       "Deposition"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-30",
@@ -4070,7 +5210,167 @@
       "Request",
       "Objection"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-34",
@@ -4122,7 +5422,41 @@
       "Plan",
       "Dissolution Date"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "MBCA-14",
@@ -4228,7 +5562,41 @@
       "Claim",
       "Insured Person"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-INSURANCE",
@@ -4282,7 +5650,167 @@
       "Requesting Party",
       "Responding Party"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-34",
@@ -5047,7 +6575,41 @@
       "Purchase Date",
       "Eligible Employee"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRC-423",
@@ -5310,7 +6872,41 @@
       "Administrator",
       "Share Reserve"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRC-422",
@@ -5651,7 +7247,41 @@
       "Controlled Technology",
       "Restricted Party"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "EAR-ITAR-OFAC",
@@ -6241,7 +7871,41 @@
       "Franchisor",
       "Franchisee"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FTC-FRANCHISE-RULE",
@@ -6944,7 +8608,41 @@
       "Information Assets",
       "Policy Owner"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "NIST-CSF-2.0",
@@ -7425,7 +9123,167 @@
       "Interrogatory",
       "Answering Party"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-33",
@@ -7575,7 +9433,41 @@
       "Settlor",
       "Beneficiary"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UTC",
@@ -8630,7 +10522,41 @@
       "Release",
       "Likeness"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-RIGHT-OF-PUBLICITY",
@@ -8731,7 +10657,41 @@
       "Chair",
       "Secretary"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "MBCA",
@@ -10593,7 +12553,41 @@
       "Owner",
       "Property"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-MECHANICS-LIEN",
@@ -11215,7 +13209,167 @@
       "Log Entry",
       "Withheld Document"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-26",
@@ -11420,7 +13574,167 @@
       "Designating Party",
       "Receiving Party"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-26c",
@@ -11472,7 +13786,41 @@
       "Record Date",
       "Annual Meeting"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "SEC-SCHEDULE-14A",
@@ -11575,7 +13923,167 @@
       "Participant",
       "Plan"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ERISA-206d3",
@@ -11627,7 +14135,41 @@
       "Grantee",
       "Property"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-CONVEYANCING",
@@ -11905,7 +14447,167 @@
       "Request",
       "Responding Party"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-36",
@@ -11954,7 +14656,41 @@
       "Claim",
       "Insured"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-INSURANCE",
@@ -12391,7 +15127,167 @@
       "Discovery Plan",
       "Scheduling Order"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-26",
@@ -13010,7 +15906,41 @@
       "Severity",
       "Incident Commander"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "NIST-SP-800-61",
@@ -13158,7 +16088,41 @@
       "Consent",
       "Messages"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "TCPA-47-USC-227",
@@ -13375,7 +16339,41 @@
       "Beneficiary",
       "Trustee"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "42-USC-1396p",
@@ -13531,7 +16529,167 @@
       "Action",
       "Dismissal"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-002": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "CHOICE-004": {
+        "skip": true
+      },
+      "CHOICE-005": {
+        "skip": true
+      },
+      "CHOICE-006": {
+        "skip": true
+      },
+      "CHOICE-007": {
+        "skip": true
+      },
+      "CHOICE-008": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "FIN-006": {
+        "skip": true
+      },
+      "FIN-007": {
+        "skip": true
+      },
+      "FIN-008": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "IPDATA-002": {
+        "skip": true
+      },
+      "IPDATA-003": {
+        "skip": true
+      },
+      "IPDATA-004": {
+        "skip": true
+      },
+      "IPDATA-005": {
+        "skip": true
+      },
+      "IPDATA-006": {
+        "skip": true
+      },
+      "OBLI-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "OBLI-003": {
+        "skip": true
+      },
+      "OBLI-004": {
+        "skip": true
+      },
+      "OBLI-005": {
+        "skip": true
+      },
+      "OBLI-006": {
+        "skip": true
+      },
+      "PERS-001": {
+        "skip": true
+      },
+      "PERS-002": {
+        "skip": true
+      },
+      "PERS-003": {
+        "skip": true
+      },
+      "PERS-004": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-003": {
+        "skip": true
+      },
+      "RISK-004": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-006": {
+        "skip": true
+      },
+      "RISK-007": {
+        "skip": true
+      },
+      "RISK-008": {
+        "skip": true
+      },
+      "RISK-010": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-012": {
+        "skip": true
+      },
+      "RISK-013": {
+        "skip": true
+      },
+      "RISK-014": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TEMP-002": {
+        "skip": true
+      },
+      "TERM-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-003": {
+        "skip": true
+      },
+      "TERM-004": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TERM-006": {
+        "skip": true
+      },
+      "TERM-007": {
+        "skip": true
+      },
+      "TERM-008": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FRCP-41",
@@ -13929,7 +17087,41 @@
       "Entrant",
       "Prize"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-LOTTERY-LAW",
@@ -14084,7 +17276,41 @@
       "Telehealth Services",
       "Patient"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-TELEHEALTH",
@@ -14187,7 +17413,41 @@
       "Matter",
       "Client File"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ABA-MRPC-1.16",
@@ -14680,7 +17940,41 @@
       "Trust",
       "Amendment"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UTC-602",
@@ -15356,7 +18650,41 @@
       "Affected Employees",
       "Separation Date"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "WARN-29-USC-2101",
@@ -15459,7 +18787,41 @@
       "Grantee",
       "Property"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STATE-CONVEYANCING",

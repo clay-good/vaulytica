@@ -84,6 +84,11 @@ describe("extended playbook manifest", () => {
       "RISK-005",
       "STRUCT-001",
       "STRUCT-002",
+      // A document with no bargained terms has no defined-term glossary
+      // either; every member of the cohort already skips this one, and
+      // listing it keeps a new member from being admitted with ten of the
+      // eleven.
+      "STRUCT-004",
       "TERM-002",
       "TERM-005",
     ];
@@ -113,12 +118,94 @@ describe("extended playbook manifest", () => {
       "vendor-security-questionnaire",
       "demand-letter",
       "cease-and-desist",
+      // The v5 catalog and the v6 law-practice packs shipped 135 new families
+      // with empty `rule_overrides`, so every one of these — a policy, a plan,
+      // a deed, a trust, a statutory notice, a one-sided consent, a closing
+      // letter — drew the same false positives the cohort above exists to
+      // suppress. A well-formed WARN notice is not missing its limitation of
+      // liability.
+      "acceptable-use-policy",
+      "articles-of-organization",
+      "background-check-disclosure",
+      "biometric-consent",
+      "board-resolution",
+      "bonus-plan",
+      "business-continuity-plan",
+      "childrens-privacy-notice",
+      "commission-plan",
+      "cyber-insurance-policy",
+      "dissolution-plan",
+      "do-policy",
+      "employee-stock-purchase-plan",
+      "equity-incentive-plan",
+      "export-control-policy",
+      "franchise-disclosure-document",
+      "information-security-policy",
+      "irrevocable-trust",
+      "media-release",
+      "meeting-minutes",
+      "preliminary-lien-notice",
+      "proxy-statement-narrative",
+      "quitclaim-deed",
+      "reservation-of-rights-letter",
+      "security-incident-response-plan",
+      "sms-consent-disclosure",
+      "special-needs-trust",
+      "sweepstakes-official-rules",
+      "telehealth-consent",
+      "trust-amendment",
+      "warn-notice",
+      "warranty-deed",
+      "termination-of-representation",
     ]) {
       const pb = raw.find((p) => p.id === id);
       expect(pb, `${id} missing from manifest`).toBeDefined();
       for (const rule of GENERIC) {
         expect(pb!.rule_overrides?.[rule]?.skip, `${id} should skip ${rule}`).toBe(true);
       }
+    }
+  });
+
+  it("litigation papers suppress the contract rules the filing cohort already suppresses", () => {
+    // A pleading, a discovery instrument, and a stipulated order are not
+    // agreements at all: nobody signs them as a counterparty accepting terms,
+    // and the whole commercial vocabulary — governing law, indemnity,
+    // liability cap, termination, IP ownership, payment terms — is absent by
+    // construction. `trial-motion`, `petition`, and `appellate-brief` already
+    // held that line; the v5/v6 waves added fourteen more documents of the
+    // same species and did not. Measured on a well-formed complaint, the
+    // report was eleven findings, one of them critical, none of them about
+    // the complaint.
+    const raw = JSON.parse(readFileSync(EXTENDED_MANIFEST_PATH, "utf8")) as Array<{
+      id: string;
+      rule_overrides?: Record<string, { skip?: boolean }>;
+    }>;
+    const profileOf = (id: string) =>
+      Object.entries(raw.find((p) => p.id === id)?.rule_overrides ?? {})
+        .filter(([, v]) => v.skip)
+        .map(([k]) => k)
+        .sort();
+    const FILING = profileOf("trial-motion");
+    expect(FILING.length).toBe(53);
+    for (const id of [
+      "petition",
+      "appellate-brief",
+      "complaint",
+      "answer",
+      "interrogatories",
+      "document-requests",
+      "requests-for-admission",
+      "discovery-responses",
+      "privilege-log",
+      "deposition-notice",
+      "rule-26f-report",
+      "arbitration-demand",
+      "stipulation-of-dismissal",
+      "protective-order-stipulated",
+      "consent-judgment",
+      "qdro",
+    ]) {
+      expect(profileOf(id), `${id} is not on the filing profile`).toEqual(FILING);
     }
   });
 });
