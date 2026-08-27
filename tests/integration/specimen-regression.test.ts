@@ -98,6 +98,25 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["EQT-006", "STRUCT-006", "OBLI-005", "STRUCT-005"],
   },
 
+  // A syndicated credit agreement: venue laid in a borough inside a city.
+  "loan-agreement.txt": {
+    playbook: "loan-agreement",
+    findings: [
+      "IPDATA-001",
+      "RISK-001",
+      "RISK-005",
+      "RISK-016",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TERM-005",
+      "CHOICE-008",
+      "FIN-009",
+      "OBLI-003",
+      "OBLI-005",
+      "STRUCT-005",
+    ],
+  },
+
   // A membership interest purchase agreement, stamped EXECUTION VERSION, with
   // decimal-numbered schedules and a fraud carve-out from the indemnity cap.
   "mipa.txt": {

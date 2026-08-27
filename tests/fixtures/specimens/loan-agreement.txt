@@ -1,0 +1,87 @@
+EXECUTION VERSION
+
+CREDIT AGREEMENT
+
+This Credit Agreement (this "Agreement") is dated as of July 9, 2026 among Vanterra Mechanical Services, LLC, an Ohio limited liability company (the "Borrower"), the Guarantors party hereto, the Lenders party hereto, and Buckeye Fifth Bank, N.A., as Administrative Agent.
+
+ARTICLE I — DEFINITIONS
+
+1.1 Defined Terms. "Applicable Margin" means, for any day, the rate per annum set out in the pricing grid in Schedule 1.1 opposite the Consolidated Total Leverage Ratio in effect on that day. "Consolidated EBITDA" means, for any period, Consolidated Net Income plus, to the extent deducted in computing it, interest expense, income taxes, depreciation, and amortization, in each case determined in accordance with GAAP. "Maturity Date" means July 9, 2031.
+
+ARTICLE II — THE CREDITS
+
+2.1 Revolving Commitments. Each Lender severally agrees to make revolving loans to the Borrower from time to time in an aggregate principal amount not to exceed its Revolving Commitment, provided that the aggregate Revolving Exposure shall not exceed Twenty-Five Million Dollars ($25,000,000).
+
+2.2 Interest. Each Loan bears interest at Term SOFR plus the Applicable Margin, or at the Alternate Base Rate plus the Applicable Margin, as the Borrower elects. Interest on SOFR Loans is payable at the end of each Interest Period and, for Interest Periods longer than three months, quarterly. Upon the occurrence and during the continuance of an Event of Default under Section 8.1(a), all outstanding amounts bear interest at two percent (2%) above the rate otherwise applicable.
+
+2.3 Fees. The Borrower shall pay a commitment fee equal to 0.35% per annum on the daily unused portion of the Revolving Commitments, payable quarterly in arrears. The Borrower shall pay the Administrative Agent an annual agency fee as separately agreed.
+
+2.4 Prepayment. The Borrower may prepay Loans at any time without premium or penalty, subject to SOFR breakage costs. The Borrower shall prepay Loans with the net cash proceeds of asset dispositions outside the ordinary course exceeding One Million Dollars ($1,000,000) in any fiscal year, and with fifty percent (50%) of Excess Cash Flow for each fiscal year.
+
+2.5 Increased Costs; Taxes. If any Change in Law increases a Lender's cost of making or maintaining a Loan, the Borrower shall compensate that Lender for the additional cost. All payments are made free and clear of withholding taxes, and the Borrower shall gross up for any required deduction, subject to each Lender's delivery of the applicable tax forms.
+
+ARTICLE III — CONDITIONS
+
+3.1 Conditions to Closing. The obligation of each Lender to make the initial Loan is subject to delivery of executed loan documents, certified organizational documents and good standing certificates, a customary legal opinion, UCC-1 financing statements, evidence of insurance naming the Administrative Agent as loss payee and additional insured, and a solvency certificate.
+
+ARTICLE IV — REPRESENTATIONS AND WARRANTIES
+
+4.1 Organization; Power. The Borrower is duly organized, validly existing, and in good standing, and has the power to own its assets and to enter into and perform the Loan Documents.
+
+4.2 Financial Statements; No Material Adverse Effect. The audited financial statements delivered to the Administrative Agent fairly present the financial condition of the Borrower in accordance with GAAP, and since the date of those statements no event has occurred that has had or would reasonably be expected to have a Material Adverse Effect.
+
+4.3 Title; Liens. The Borrower has good title to its property, free and clear of all Liens other than Permitted Liens.
+
+4.4 Compliance with Laws. The Borrower is in compliance in all material respects with applicable Laws, including ERISA, environmental laws, and anti-corruption and sanctions laws. Neither the Borrower nor any of its subsidiaries is a Sanctioned Person, and no part of any Loan will be used, directly or indirectly, to fund any activity with a Sanctioned Person or in a Sanctioned Country.
+
+ARTICLE V — AFFIRMATIVE COVENANTS
+
+5.1 Financial Statements and Reporting. The Borrower shall deliver audited consolidated financial statements within one hundred twenty (120) days after each fiscal year end, unaudited quarterly statements within forty-five (45) days after each of the first three fiscal quarters, and a compliance certificate with each delivery, together with an annual budget within thirty (30) days after the start of each fiscal year.
+
+5.2 Notices. The Borrower shall notify the Administrative Agent promptly, and in any event within five (5) Business Days, of any Default or Event of Default, any Material Adverse Effect, and any material litigation.
+
+5.3 Insurance; Inspection. The Borrower shall maintain insurance customary for its industry and shall permit the Administrative Agent to inspect its books and properties on reasonable notice, not more than twice per fiscal year absent an Event of Default.
+
+ARTICLE VI — NEGATIVE COVENANTS
+
+6.1 Indebtedness; Liens. The Borrower shall not incur Indebtedness or create Liens except as permitted by Sections 6.1(a) through (j).
+
+6.2 Restricted Payments. The Borrower shall not make any Restricted Payment except that, so long as no Default exists and the Borrower is in pro forma compliance with Section 6.4, it may make distributions to members in an amount not to exceed their tax liability attributable to the Borrower's income.
+
+6.3 Fundamental Changes. The Borrower shall not merge, dissolve, or dispose of all or substantially all of its assets.
+
+6.4 Financial Covenants. The Borrower shall maintain, tested quarterly on a rolling four-quarter basis, a Consolidated Total Leverage Ratio not greater than 3.50 to 1.00 and a Fixed Charge Coverage Ratio not less than 1.20 to 1.00. The Borrower may cure a failure of either covenant by an Equity Cure contributed within ten (10) Business Days after the compliance certificate is due, not more than twice in any four consecutive quarters and not more than four times over the term.
+
+ARTICLE VII — SECURITY
+
+7.1 Collateral. The Obligations are secured by a first-priority security interest in substantially all personal property of the Borrower and each Guarantor, perfected by UCC-1 financing statements and by control agreements over deposit accounts, and by mortgages over owned real property.
+
+ARTICLE VIII — DEFAULT
+
+8.1 Events of Default. Each of the following is an Event of Default: (a) failure to pay principal when due, or interest or fees within three (3) Business Days after due; (b) breach of Section 6.4, or of any other covenant not cured within thirty (30) days after notice; (c) a representation proving materially incorrect when made; (d) cross-default to Indebtedness exceeding Five Hundred Thousand Dollars ($500,000); (e) a bankruptcy proceeding not dismissed within sixty (60) days; or (f) a Change of Control.
+
+8.2 Remedies. Upon an Event of Default, the Administrative Agent may, and at the direction of the Required Lenders shall, terminate the Commitments, declare the Obligations immediately due and payable, and exercise all rights under the Loan Documents and applicable law. Upon a bankruptcy Event of Default, the Commitments terminate and the Obligations become due automatically.
+
+ARTICLE IX — MISCELLANEOUS
+
+9.1 Governing Law; Jurisdiction. This Agreement is governed by the laws of the State of New York. Any action arising out of or relating to this Agreement shall be brought exclusively in the state and federal courts sitting in the Borough of Manhattan, City of New York, and each party consents to the personal jurisdiction of those courts and waives any objection to venue.
+
+9.2 Waiver of Jury Trial. EACH PARTY IRREVOCABLY WAIVES ANY RIGHT TO TRIAL BY JURY IN ANY ACTION ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE TRANSACTIONS CONTEMPLATED BY IT.
+
+9.3 Assignment. No Lender may assign its Loans except in accordance with Section 9.3, which requires the Borrower's consent (not to be unreasonably withheld) except during an Event of Default or for assignments to another Lender or an Approved Fund.
+
+9.4 Amendments. No amendment is effective without the written consent of the Required Lenders and the Borrower, provided that no amendment may reduce the principal of, or the interest rate on, any Loan, or extend any scheduled payment date, without the consent of each affected Lender.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+VANTERRA MECHANICAL SERVICES, LLC
+
+By: /s/ Emil Krause
+Name: Emil Krause
+Title: Managing Member
+
+BUCKEYE FIFTH BANK, N.A., as Administrative Agent and a Lender
+
+By: /s/ Beatriz Sandoval
+Name: Beatriz Sandoval
+Title: Senior Vice President

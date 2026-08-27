@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.54.1] — 2026-08-27
+
+### Fixed
+- **A venue laid in a borough, city, or county went unread.** The forum
+  scaffold accepted only "the **State**/Commonwealth of" ahead of the locality,
+  and the capture requires a capital letter, so the lowercase "the" in "the
+  state and federal courts sitting in **the Borough of** Manhattan, City of New
+  York" stopped the clause dead — as it did for "the City of Chicago,
+  Illinois", "the County of Cook, Illinois", and the consent form. Four of five
+  real phrasings failed, and a New York credit agreement with a textbook
+  forum-selection clause was told it did not state where disputes must be
+  brought.
+  - Widening it alone traded one false finding for **four**: the venue resolved
+    to a bare city, and the law-versus-venue comparisons then reported
+    "Manhattan" as a different jurisdiction from the governing law, with
+    CHOICE-005 calling it a foreign forum with no enforceability treaty. The
+    state can sit behind a civil-division preposition of its own — "the Borough
+    of Manhattan, **City of New York**" names New York — so the locality
+    resolver consumes the division word before reading the state. The
+    preposition is widened for venue only; a governing law is a state or a
+    country.
+
+### Added
+- A syndicated credit agreement specimen, bringing the set to sixteen.
+
 ## [9.54.0] — 2026-08-27
 
 ### Fixed

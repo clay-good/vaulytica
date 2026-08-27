@@ -582,3 +582,67 @@ describe("the conjoined governing-law-and-forum sentence", () => {
     ).toEqual([]);
   });
 });
+
+describe("venue stated in a civil division", () => {
+  const venuesOf = (text: string) =>
+    extractJurisdictions(buildTree(["Dispute Resolution", text]))
+      .filter((r) => r.clause_kind === "venue")
+      .map((r) => r.raw_text);
+
+  it("reads a venue laid in a borough, city, or county", () => {
+    // The scaffold accepted only "the State/Commonwealth of", and the capture
+    // requires a capital letter, so the lowercase "the" ahead of the division
+    // stopped these dead. A New York credit agreement with a textbook
+    // forum-selection clause was reported as not stating where disputes must
+    // be brought.
+    expect(
+      venuesOf(
+        "Any action arising out of or relating to this Agreement shall be brought exclusively in the state and federal courts sitting in the Borough of Manhattan, City of New York.",
+      ),
+    ).toEqual(["New York"]);
+    expect(
+      venuesOf(
+        "Any action shall be brought in the courts located in the City of Chicago, Illinois.",
+      ),
+    ).toEqual(["Illinois"]);
+    expect(
+      venuesOf("Any action shall be brought in the courts of the County of Cook, Illinois."),
+    ).toEqual(["Illinois"]);
+    expect(
+      venuesOf(
+        "The parties consent to the exclusive jurisdiction of the courts located in the Borough of Manhattan, New York.",
+      ),
+    ).toEqual(["New York"]);
+  });
+
+  it("resolves the state behind a second civil-division preposition", () => {
+    // Reading the locality alone left the venue as a bare city, which the
+    // law-versus-venue comparisons then reported as a different jurisdiction
+    // from the governing law — and CHOICE-005 as a foreign forum with no
+    // enforceability treaty. One false finding became four.
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "This Agreement is governed by the laws of the State of New York. Any action shall be brought exclusively in the state and federal courts sitting in the Borough of Manhattan, City of New York.",
+      ]),
+    );
+    expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("New York");
+    expect(refs.find((r) => r.clause_kind === "governing-law")?.raw_text).toBe("New York");
+  });
+
+  it("leaves the governing-law patterns alone", () => {
+    // The preposition was widened for VENUE only: a governing law is a state
+    // or a country, and the `the <division> of` token is deliberately absent
+    // from the `laws of X` patterns. Pinned by showing an ordinary
+    // governing-law clause is unaffected, alongside a venue laid in a county
+    // in the same document.
+    const refs = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "This Agreement is governed by the laws of the State of Illinois. Any action shall be brought in the courts of the County of Cook, Illinois.",
+      ]),
+    );
+    expect(refs.find((r) => r.clause_kind === "governing-law")?.raw_text).toBe("Illinois");
+    expect(refs.find((r) => r.clause_kind === "venue")?.raw_text).toBe("Illinois");
+  });
+});
