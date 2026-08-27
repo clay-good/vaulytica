@@ -2,6 +2,75 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.42.1] — 2026-08-27
+
+### Fixed
+- **A well-formed civil complaint scored worse than any contract in the
+  catalog.** Run one through the CLI — proper caption, jurisdiction and venue
+  allegations, numbered paragraphs, counts, prayer for relief, jury demand,
+  Rule 11 signature block — and the report was eleven findings, one of them
+  `critical`, none of them about the complaint: no governing-law clause, no
+  indemnity, no liability cap, no IP-ownership clause, no
+  termination-for-cause clause, no defined-term glossary, no "Effective Date".
+  A pleading has none of those because a pleading is not an agreement.
+  Meanwhile all eight `PLDG` checks passed silently, so the one document shape
+  the family exists to bless read as the catalog's worst.
+
+  The repo already knew the answer. Fifty v3/v4 playbooks carry an
+  eleven-rule `rule_overrides` block for instruments nobody signs as a
+  counterparty — wills, codicils, powers of attorney, corporate policies,
+  statutory notices, one-sided consents, demand letters — and three court
+  filings carry a wider fifty-three. The v5 catalog and the v6 law-practice
+  packs then shipped 135 families with `rule_overrides: {}`, and the existing
+  guard could not see it: it asserts what is IN the cohort and has no way to
+  know what should have been. Forty-seven families join a profile — fourteen
+  litigation papers on the filing profile, thirty-three policies, plans,
+  deeds, trusts, statutory notices, consents, disclosure documents, and
+  letters on the non-agreement one. The criterion is one question: does
+  anybody sign this as a counterparty accepting terms? A WARN notice does
+  not, and is not missing its limitation of liability. The complaint goes
+  from eleven findings to none; a Rule 34 document request from fourteen to
+  four, all of them its own `DISC` checks reporting terms genuinely absent.
+  The guard now derives the filing profile from `trial-motion` and asserts it
+  identical across all sixteen members, so a new member cannot be admitted
+  with fifty-two of the fifty-three.
+- **Every pasted letter and court filing reported itself unsigned, at
+  `critical`.** STRUCT-003 grew two escape hatches for documents not signed on
+  a `By:/Name:/Title:` grid — the conformed `/s/ Dana Reyes` of a court
+  filing, and the valediction that closes correspondence. Both were anchored
+  to the start or end of a LINE, and neither anchor survives the ingest path
+  most likely to carry them: `ingestPaste` reconstructs a paragraph by joining
+  its lines with SPACES, so a three-line signature arrives as one block with
+  no line breaks in it, `^` means the start of that whole block, and `$` its
+  end. All twelve existing fixtures hand the rule one line per paragraph —
+  what a DOCX produces and what `buildTree` makes — so no unit test could see
+  it; it surfaced by running `bin/vaulytica.mjs analyze` on a plain-text
+  letter and complaint written for the occasion. The conformed mark is now
+  recognized after a valediction comma or a sentence period too (still
+  anchored against a URL path), and the valediction is matched by words with
+  what follows it — end of line, or the capital letter beginning the signer's
+  name — checked separately in code. That last part is the trap inside the
+  trap: spelling the requirement as `(?:$|[A-Z])` inside the existing
+  case-insensitive pattern matches a lowercase letter too, and admitted
+  "Respectfully submitted, this motion should be granted" as a signature.
+- **A properly numbered complaint was told to number its paragraphs.**
+  `pack()`'s `all: true` conjunction composed its pillar patterns into one
+  anchored lookahead regex, which cannot carry per-pattern flags. The loss is
+  silent for a pattern whose flags do not change what it matches — true of 691
+  of the 697 pack patterns, false of exactly three. PLDG-004 recognizes a
+  numbered pleading paragraph with `/^\s*\d+\.\s/m`; without `m`, `^` is the
+  start of the DOCUMENT, and paragraph 1 of a real complaint is never the
+  first character of the file. The check fired at `critical` on precisely the
+  complaints it exists to bless. DISC-005 and DISC-013 carried the same
+  recognizer behind an alternation that could still match "Request No. 1", so
+  they misread only the requests numbered "1." alone. The conjunction is now
+  evaluated pattern by pattern (`require_all_present` on the presence
+  builder), so no rewriting step exists to lose a flag in. Three guards
+  followed: the title-vacuity probe now covers v6 as well as v5, a gated
+  rule's recognizers are read straight out of its spec (reaching past the
+  closed gate that made the gated set a blind spot its own size), and the flag
+  contract itself is pinned.
+
 ## [9.42.0] — 2026-08-25
 
 ### Fixed
