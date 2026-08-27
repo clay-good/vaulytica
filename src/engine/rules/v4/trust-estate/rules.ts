@@ -48,6 +48,11 @@ const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
 const WILL_RULES: Rule[] = [
   presence({
     id: "EST-001",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: the testator's identity and the domicile are distinct pillars, and `state\s+of` alone is satisfied by any governing-law clause.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Testator identification + domicile",
     description: "Will must identify the testator and the testator's domicile.",
     citation: upc("2-501", "Who may make a will"),
@@ -59,9 +64,13 @@ const WILL_RULES: Rule[] = [
     recommendation:
       "Add 'Testator and Domicile' identifying the testator (full legal name, address) and stating the state of domicile.",
     present_patterns: [
-      /(testator|i,\s+the\s+undersigned|my\s+name\s+is)/i,
+      // Broadened with the conjunction: a will almost never uses the word
+      // "testator" about its own maker — it opens "I, Dermot Halloran, a
+      // resident of Franklin County, Ohio, declare this to be my Last Will".
+      /(testator|i,\s+the\s+undersigned|my\s+name\s+is|\bI,\s+[A-Z][A-Za-z.'’-]+)/,
       /(domicile|reside|resident|state\s+of)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "EST-002",
@@ -928,6 +937,11 @@ const PRENUP_RULES: Rule[] = [
 const POSTNUP_RULES: Rule[] = [
   presence({
     id: "EST-046",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: the spouses and the during-marriage recital are distinct pillars, and `(spouses|husband\s+and\s+wife|married\s+couple|parties)` alone is satisfied by the word "parties".
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Parties + during-marriage recital",
     description:
       "Postnup must identify the spouses and recite the agreement is made during the marriage.",
@@ -943,6 +957,7 @@ const POSTNUP_RULES: Rule[] = [
       /(spouses|husband\s+and\s+wife|married\s+couple|parties)/i,
       /(during\s+the\s+marriage|during\s+our\s+marriage)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "EST-047",

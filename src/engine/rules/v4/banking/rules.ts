@@ -516,6 +516,11 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-019",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: the ownership representation and the no-liens representation are distinct pillars, and `(own(s|ership)|title)` alone is satisfied by the word "title" in a signature block.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Debtor representations as to ownership / no liens",
     description: "Debtor must represent it owns the collateral free of competing liens.",
     citation: ucc("9-203(b)(2)", "Debtor rights"),
@@ -528,10 +533,17 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add 'Representations and Warranties' covering ownership, no competing liens, and authority to grant the security interest.",
     present_patterns: [
-      /(representations?\s+(and|&)\s+warranties|reps?\s+and\s+warranties)/i,
+      // Broadened with the conjunction: the pillar was a section-HEADING
+      // marker, and the representation is as often made in the verb form
+      // ("Debtor represents that it owns the Collateral free of liens") as
+      // under a "Representations and Warranties" heading.
+      /(representations?\s+(and|&)\s+warranties|reps?\s+and\s+warranties|represents?\s+(and\s+warrants?\s+)?(that|to)\b)/i,
       /(own(s|ership)|title)/i,
-      /(no\s+(competing\s+)?liens|free\s+of\s+(any\s+)?liens?)/i,
+      // "free AND CLEAR of all liens" is the standard phrase; `free of` alone
+      // missed it, which only became visible once the pillars were conjoined.
+      /(no\s+(competing\s+)?liens|free\s+(and\s+clear\s+)?of\s+(any\s+|all\s+)?liens?)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "BNK-020",

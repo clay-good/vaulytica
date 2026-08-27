@@ -133,6 +133,11 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
   }),
   presence({
     id: "POL-005",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: laws and regulations are distinct pillars, and `(laws|regulations|rules|statutes)` alone is satisfied by any governing-law clause.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Compliance with laws + regulations",
     description: "Code must require compliance with applicable laws and regulations.",
     citation: nyse303A(),
@@ -145,6 +150,7 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
     recommendation:
       "Add 'Compliance with Laws' requiring conformance with all applicable laws, rules, and regulations.",
     present_patterns: [/(compliance\s+with|comply\s+with)/i, /(laws|regulations|rules|statutes)/i],
+    require_all_present: true,
   }),
 ];
 

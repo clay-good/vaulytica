@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.48.1] — 2026-08-27
+
+### Fixed
+- **Nine v3/v4 presence rules whose own sentence asserted a conjunction the
+  code did not enforce.** The same shape as the 21 pack rules one release
+  earlier, found in a catalog that needed a different signal: most v3/v4
+  multi-pattern presence rules are deliberate synonym sets, and their own
+  `missing_description` says so ("No signature / date / statutory-form recital
+  was found"). Nine said **"and"** instead — "stating position, start date,
+  **and** base compensation", "identifying the testator **and** domicile",
+  "identifying the assignor **and** assignee" — while any one pattern satisfied
+  the check. Each was satisfied by a document made of nothing but execution
+  boilerplate: the "Title: ____" line of a signature block answered the offer
+  letter's position/start-date/compensation check, "State of Delaware" in a
+  governing-law clause answered the will's domicile check, and the word
+  "parties" in any recital answered the assignment's assignor/assignee check.
+  The rest were left alone deliberately — widening a real synonym set invents
+  findings.
+- **Two recognizers the conjunction exposed.** Making the pillars mandatory
+  immediately produced false positives on compliant clauses, which is the
+  reason both directions are pinned: a security agreement's ownership
+  representation is as often in the verb form ("Debtor **represents that** it
+  owns the Collateral") as under a "Representations and Warranties" heading,
+  and "**free and clear of** all liens" — the standard phrase — did not match
+  `free of liens`. A will almost never uses the word "testator" about its own
+  maker; it opens "**I, Dermot Halloran**, a resident of …".
+
+### Added
+- **`conjunction-guards.test.ts`** pins all three directions for the nine:
+  silent when every pillar is present, firing when one is missing, and firing
+  on execution boilerplate alone. Zero finding changed anywhere in the corpus —
+  only the version hashes moved.
+
 ## [9.48.0] — 2026-08-27
 
 ### Fixed

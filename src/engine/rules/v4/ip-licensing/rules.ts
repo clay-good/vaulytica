@@ -59,6 +59,11 @@ const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
 const IP_ASSIGNMENT_RULES: Rule[] = [
   presence({
     id: "IPL-001",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: the assignor and the assignee are distinct pillars, and `(party|parties)` alone is satisfied by the word "parties" in any recital.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Assignor / assignee identified",
     description: "IP assignment must identify assignor and assignee with full legal names.",
     citation: iplPractice(
@@ -74,6 +79,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     recommendation:
       "Identify the assignor and assignee with full legal names, jurisdictions of formation, and addresses.",
     present_patterns: [/(assignor|assignee)/i, /(party|parties)/i],
+    require_all_present: true,
   }),
   presence({
     id: "IPL-002",

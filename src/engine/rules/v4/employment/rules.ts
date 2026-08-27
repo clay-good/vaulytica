@@ -56,6 +56,11 @@ const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
 const EXEC_EMPLOYMENT_RULES: Rule[] = [
   presence({
     id: "EMP-001",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: title, duties, and the reporting line are distinct pillars, and `(title|position|role)` alone is satisfied by the "Title: ____" line of a signature block.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Title, duties, and reporting line",
     description:
       "Executive agreement must state title, duties, and reporting line (CEO / Board / supervising executive).",
@@ -75,6 +80,7 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
       /(duties|responsibilities)/i,
       /(report(s|ing)?\s+to|reporting\s+line)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "EMP-002",
@@ -199,6 +205,11 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
 const OFFER_LETTER_RULES: Rule[] = [
   presence({
     id: "EMP-009",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: position, start date, and base compensation are distinct pillars, and `(position|title)` alone is satisfied by the "Title: ____" line of a signature block.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Position, start date, base compensation",
     description: "Offer letter must state position, start date, and base compensation.",
     citation: empPractice(
@@ -212,6 +223,7 @@ const OFFER_LETTER_RULES: Rule[] = [
     explanation: "These three terms are universal — without them the offer is incomplete.",
     recommendation: "Add 'Position', 'Start Date', and 'Base Compensation' lines.",
     present_patterns: [/(position|title)/i, /start\s+date/i, /base\s+(salary|compensation)/i],
+    require_all_present: true,
   }),
   presence({
     id: "EMP-010",

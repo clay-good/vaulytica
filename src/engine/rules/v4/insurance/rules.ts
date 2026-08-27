@@ -320,6 +320,11 @@ const ENDORSEMENT_RULES: Rule[] = [
 const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "INS-013",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: the indemnitor and the indemnitee are distinct pillars, and `(parties|affiliate|officer|director|agent)` alone is satisfied by the word "parties" in any recital.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Indemnitor / indemnitee identified",
     description:
       "Indemnification agreement must identify indemnitor and indemnitee (and any third-party beneficiaries).",
@@ -335,6 +340,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
       /(indemnit(or|ee|y|or)|indemnif(y|ies|ied))/i,
       /(parties|affiliate|officer|director|agent)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "INS-014",
@@ -425,6 +431,11 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "INS-017",
+    // 1.0.1 — the rule's own `missing_description` asserts a conjunction
+    // ("and"), but the patterns were a synonym OR: notice, tender, and cooperation are distinct pillars, and `(notice|tender)` alone is satisfied by any notices clause.
+    // The check could not fire on a document that carried nothing but
+    // execution boilerplate.
+    version: "1.0.1",
     name: "Notice + tender + cooperation procedure",
     description:
       "Agreement must establish notice, tender, and cooperation procedure for indemnification claims.",
@@ -446,6 +457,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
       /cooperat/i,
       /(consent\s+to\s+settle|right\s+to\s+control)/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
   presence({
