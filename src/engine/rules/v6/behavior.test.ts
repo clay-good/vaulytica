@@ -369,6 +369,61 @@ describe("v6 engagement — the boundary as a negative sentence (v1.0.1)", () =>
   });
 });
 
+describe("v6 pleadings — the state-court complaint (v1.0.1)", () => {
+  it("PLDG-002 reads jurisdiction pleaded under a state long-arm statute", () => {
+    // Every alternative in the grounds pillar was federal, and most complaints
+    // in the United States are filed in state court.
+    expect(
+      rule("PLDG-002").check(
+        doc(
+          "Complaint at Law and Demand for Jury Trial",
+          "JURISDICTION AND VENUE",
+          "3. This Court has jurisdiction over Defendant because Defendant transacted business within Illinois and the claims arise from that business, pursuant to 735 ILCS 5/2-209.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("PLDG-002 still fires on a complaint that pleads the conclusion and not the grounds", () => {
+    // Rule 8(a)(1) asks for the GROUNDS. A bare assertion is what the rule
+    // exists to catch, so the state-court form is admitted only with a
+    // because / pursuant to / under.
+    expect(
+      rule("PLDG-002").check(
+        doc(
+          "Complaint at Law",
+          "JURISDICTION",
+          "3. This Court has jurisdiction. Plaintiff seeks damages in an unspecified sum.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("PLDG-003 reads venue pleaded in a county under a state statute", () => {
+    expect(
+      rule("PLDG-003").check(
+        doc(
+          "Complaint at Law",
+          "JURISDICTION AND VENUE",
+          "4. Venue is proper in Cook County under 735 ILCS 5/2-101 because the transaction giving rise to the claims occurred in substantial part in this county.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("PLDG-003 still fires on a complaint that never alleges venue", () => {
+    expect(
+      rule("PLDG-003").check(
+        doc(
+          "Complaint at Law",
+          "JURISDICTION",
+          "3. This Court has jurisdiction over the subject matter because the amount in controversy exceeds the statutory minimum. Venue was discussed with opposing counsel.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("v6 discovery — the verb a Rule 34 request actually uses (v1.0.1)", () => {
   it("DISC-001 reads a deadline stated on a production demand", () => {
     expect(

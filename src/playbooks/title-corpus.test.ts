@@ -153,3 +153,75 @@ describe("titleCorpus — a letter's subject line", () => {
     expect(titleCorpus(t, "msa.docx")).toBe("Master Services Agreement This Agreement is made…");
   });
 });
+
+describe("titleCorpus — a court filing's title below the caption", () => {
+  /**
+   * A filing opens on the court, then the party block, the docket number, and
+   * the judge; only then does it say what it is. So the preamble the matcher
+   * read was the name of a courthouse — identical for a complaint, an answer,
+   * a motion to compel, and a set of interrogatory responses.
+   */
+  const filing = (title: string) =>
+    tree([
+      {
+        heading: "",
+        paragraphs: [
+          "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS EASTERN DIVISION",
+          "RIDGELINE AEROSPACE COMPONENTS, INC.,",
+          "Plaintiff,",
+          "v. Case No. 1:26-cv-04412 Hon. Marisol Aguirre-Vance HALLORAN PRECISION CASTINGS, LLC, Magistrate Judge Peter Lindqvist",
+          "Defendant.",
+          title,
+          "Pursuant to Rules 26 and 33 of the Federal Rules of Civil Procedure, Defendant responds as follows.",
+        ],
+      },
+    ]);
+
+  it("skips the caption scaffolding and reads the filing's own title", () => {
+    const corpus = titleCorpus(
+      filing("DEFENDANT'S RESPONSES AND OBJECTIONS TO PLAINTIFF'S FIRST SET OF INTERROGATORIES"),
+      "resp.txt",
+    );
+    expect(corpus).toContain("RESPONSES AND OBJECTIONS");
+    expect(corpus).toContain("INTERROGATORIES");
+  });
+
+  it("keeps the court line too", () => {
+    expect(titleCorpus(filing("COMPLAINT AT LAW AND DEMAND FOR JURY TRIAL"), "c.txt")).toContain(
+      "DISTRICT COURT",
+    );
+  });
+
+  it("does not engage on a document that does not open on a court line", () => {
+    // The caption walk is gated on the first paragraph naming a court, so an
+    // ordinary agreement is untouched — its second paragraph is body text,
+    // not a title.
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "Master Services Agreement",
+          "This Agreement is entered into by Acme Inc. and Globex Inc.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "msa.txt")).toBe("Master Services Agreement");
+  });
+
+  it("does not mistake a sentence mentioning a court for a caption", () => {
+    // The court test requires a paragraph with no sentence-ending period, so
+    // an indemnity clause naming a court cannot start the caption walk.
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "Any suit shall be brought in a court of competent jurisdiction.",
+          "Indemnification. Each party shall indemnify the other.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "x.txt")).toBe(
+      "Any suit shall be brought in a court of competent jurisdiction.",
+    );
+  });
+});

@@ -5658,7 +5658,11 @@
       "negative_features": [
         "this agreement is entered into",
         "merger agreement",
-        "lease of the premises"
+        "lease of the premises",
+        "subject to and without waiving",
+        "without waiving the foregoing",
+        "general objections",
+        "objects to this request"
       ]
     },
     "expected_clauses": [],
@@ -9166,7 +9170,11 @@
       "negative_features": [
         "this agreement is entered into",
         "merger agreement",
-        "lease of the premises"
+        "lease of the premises",
+        "subject to and without waiving",
+        "without waiving the foregoing",
+        "general objections",
+        "objects to this interrogatory"
       ]
     },
     "expected_clauses": [],
@@ -14522,7 +14530,11 @@
       "negative_features": [
         "this agreement is entered into",
         "merger agreement",
-        "lease of the premises"
+        "lease of the premises",
+        "subject to and without waiving",
+        "without waiving the foregoing",
+        "general objections",
+        "objects to this request for admission"
       ]
     },
     "expected_clauses": [],

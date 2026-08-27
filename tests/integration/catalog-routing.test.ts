@@ -17,7 +17,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { matchPlaybook } from "../../src/playbooks/matcher.js";
+import { matchPlaybook, titleCorpus } from "../../src/playbooks/matcher.js";
 import { parsePlaybook, parsePlaybooks } from "../../src/playbooks/loader.js";
 import { LAUNCH_PLAYBOOK_IDS } from "../../src/playbooks/registry.js";
 import { buildTree } from "../../src/extract/_fixtures.js";
@@ -178,5 +178,53 @@ describe("a specialized family against the launch playbooks", () => {
       body_text: body.join("\n"),
     });
     expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("engagement-letter");
+  });
+});
+
+/**
+ * A court filing names itself BELOW its caption, and the response to a
+ * discovery request necessarily carries the request's own name in its title.
+ *
+ * Both cost this document its routing. A defendant's responses and objections
+ * to interrogatories reached the matcher as "IN THE UNITED STATES DISTRICT
+ * COURT FOR THE NORTHERN DISTRICT OF ILLINOIS" — the name of a courthouse,
+ * the same for every filing — matched no title keyword, scored 0.6 on
+ * "plaintiff", "venue", and "jury", and routed to `complaint`, which reported
+ * at `critical` that it had no jurisdictional statement, no demand for relief,
+ * and no jury demand. It is a discovery response; it is not supposed to have
+ * any of them.
+ *
+ * With the caption title read it routed to `interrogatories` instead — the
+ * PROPOUNDING family, whose title keywords ("interrogatories", "first set of
+ * interrogatories") are a literal substring of the response's title. The
+ * propounding playbooks now carry the response-only language as negative
+ * features: no set of interrogatories contains "subject to and without
+ * waiving", "general objections", or "objects to this interrogatory".
+ */
+describe("a discovery response against the request it answers", () => {
+  it("responses and objections route to discovery-responses, not to the request or the complaint", () => {
+    const body: [string, ...string[]] = [
+      "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS EASTERN DIVISION",
+      "RIDGELINE AEROSPACE COMPONENTS, INC.,",
+      "Plaintiff,",
+      "v. Case No. 1:26-cv-04412 Hon. Marisol Aguirre-Vance HALLORAN PRECISION CASTINGS, LLC,",
+      "Defendant.",
+      "DEFENDANT'S RESPONSES AND OBJECTIONS TO PLAINTIFF'S FIRST SET OF INTERROGATORIES",
+      "Pursuant to Rules 26 and 33 of the Federal Rules of Civil Procedure, Defendant responds and objects as follows.",
+      "GENERAL OBJECTIONS",
+      "Halloran objects to each interrogatory to the extent it seeks information protected by the attorney-client privilege. Venue and jurisdiction are not disputed.",
+      "INTERROGATORY NO. 1: Identify each person with knowledge of the dimensional inspection.",
+      "RESPONSE: Halloran objects to this interrogatory as overbroad. Subject to and without waiving the foregoing objections, Halloran responds: Dermot Halloran and Ana Petrosyan.",
+      "VERIFICATION. I have read the foregoing responses to interrogatories. Plaintiff may demand a jury.",
+    ];
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "responses.txt"),
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("discovery-responses");
   });
 });

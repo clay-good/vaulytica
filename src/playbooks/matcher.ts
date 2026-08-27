@@ -75,23 +75,89 @@ export const TITLE_SUBJECT_SCAN_PARAGRAPHS = 12;
  */
 const SUBJECT_LINE = /^\s*(?:re|subject|in\s+re)\s*:\s*(\S.*)$/is;
 
+/**
+ * The document's first lines, in order, bounded and trimmed.
+ *
+ * A section's heading is emitted ahead of its paragraphs because a filing's
+ * caption may arrive either way: pasted or plain text puts the court line in
+ * the first paragraph, while a DOCX that styles it reaches the tree as a
+ * heading. Both are the document's first line, and the caption walk has to
+ * see it in both shapes.
+ */
+function leadingLines(
+  sections: readonly {
+    heading?: string;
+    paragraphs: readonly { runs: readonly { text: string }[] }[];
+  }[],
+): string[] {
+  const out: string[] = [];
+  const push = (text: string): boolean => {
+    if (out.length >= TITLE_SUBJECT_SCAN_PARAGRAPHS) return false;
+    out.push(text.trim());
+    return true;
+  };
+  for (const section of sections) {
+    const heading = (section.heading ?? "").trim();
+    if (heading.length > 0 && !push(heading)) return out;
+    for (const paragraph of section.paragraphs) {
+      if (!push(paragraph.runs.map((r) => r.text).join(""))) return out;
+    }
+  }
+  return out;
+}
+
 function subjectLine(
   sections: readonly {
+    heading?: string;
     paragraphs: readonly { runs: readonly { text: string }[] }[];
   }[],
 ): string {
-  let seen = 0;
-  for (const section of sections) {
-    for (const paragraph of section.paragraphs) {
-      if (seen >= TITLE_SUBJECT_SCAN_PARAGRAPHS) return "";
-      seen += 1;
-      const text = paragraph.runs
-        .map((r) => r.text)
-        .join("")
-        .trim();
-      const m = SUBJECT_LINE.exec(text);
-      if (m) return m[1]!.trim().slice(0, TITLE_PREAMBLE_CHARS);
-    }
+  for (const text of leadingLines(sections)) {
+    const m = SUBJECT_LINE.exec(text);
+    if (m) return m[1]!.trim().slice(0, TITLE_PREAMBLE_CHARS);
+  }
+  return "";
+}
+
+/**
+ * A court filing names itself BELOW its caption.
+ *
+ * The first paragraph of a filing is the court ("IN THE UNITED STATES
+ * DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS"), followed by the
+ * party block, the docket number, and the judge — and only then the line that
+ * says what the document is. So the preamble the matcher reads is the name of
+ * a courthouse, which is identical for a complaint, an answer, a motion to
+ * compel, and a set of interrogatory responses.
+ *
+ * The cost is the same as the letterhead's: a defendant's responses and
+ * objections to interrogatories matched no title keyword, scored 0.6 on
+ * "plaintiff", "venue", and "jury" — three words every filing contains — and
+ * routed to `complaint`, which then reported at `critical` that the document
+ * had no jurisdictional statement, no demand for relief, and no jury demand.
+ * It is a discovery response. It is not supposed to have any of them.
+ *
+ * The caption's shape is a strong convention, so the scaffolding is skipped
+ * rather than the title guessed: a party name (an uppercase line ending in a
+ * comma), a bare role designation, and the docket/judge line are each
+ * recognizable, and the first paragraph that is none of them is the filing's
+ * title. Engaged only when the document opens on a court line, so nothing that
+ * is not a filing is touched.
+ */
+const CAPTION_COURT = /^[^.]{0,160}\bcourt\b[^.]{0,80}$/i;
+const CAPTION_ROLE =
+  /^\s*(?:v\.|vs\.|-v-|plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?|cross-?(?:claimants?|defendants?)|third-?party\s+(?:plaintiffs?|defendants?))\b[\s,.:;)-]*$/i;
+const CAPTION_DOCKET =
+  /\b(?:case|civil\s+action|index|docket|cause|file)\s+no\b|\bhon\.|\bjudge\b/i;
+
+function captionTitle(paragraphs: readonly string[]): string {
+  if (paragraphs.length === 0 || !CAPTION_COURT.test(paragraphs[0]!)) return "";
+  for (const text of paragraphs.slice(1)) {
+    if (text.length === 0) continue;
+    if (CAPTION_ROLE.test(text)) continue;
+    if (CAPTION_DOCKET.test(text)) continue;
+    // A party name in the caption block: an uppercase line ending in a comma.
+    if (text.endsWith(",") && text === text.toUpperCase()) continue;
+    return text.slice(0, TITLE_PREAMBLE_CHARS);
   }
   return "";
 }
@@ -111,7 +177,8 @@ export function titleCorpus(
     .trim()
     .slice(0, TITLE_PREAMBLE_CHARS);
   const subject = subjectLine(tree.sections);
-  const parts = [heading, preamble, subject].filter((p) => p.length > 0);
+  const caption = captionTitle(leadingLines(tree.sections));
+  const parts = [heading, preamble, subject, caption].filter((p) => p.length > 0);
   return parts.length > 0 ? parts.join(" ") : fallback;
 }
 

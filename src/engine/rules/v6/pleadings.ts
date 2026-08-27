@@ -34,11 +34,23 @@ const COMPLAINT = pack("complaint", C, [
   },
   {
     id: "PLDG-002",
+    // 1.0.1 — every alternative in the grounds pillar was FEDERAL (28 U.S.C.
+    // §§ 1331/1332, diversity, federal question, amount in controversy), and
+    // most complaints in the United States are filed in state court, where
+    // jurisdiction is pleaded under a state long-arm statute: "This Court has
+    // jurisdiction over Defendant because Defendant transacted business
+    // within Illinois …, pursuant to 735 ILCS 5/2-209" is Rule 8(a)(1)'s
+    // short and plain statement, and the check reported it missing at
+    // `critical`. The state-court form is admitted only WITH its grounds
+    // (because / pursuant to / under / by virtue of), so a bare "This Court
+    // has jurisdiction." — which pleads the conclusion and not the grounds —
+    // still flags, which is the whole point of the rule.
+    ver: "1.0.1",
     name: "Short and plain statement of the grounds for jurisdiction",
     cite: frcp("8(a)(1)", "claim for relief — grounds for the court's jurisdiction"),
     pat: [
       /jurisdiction/i,
-      /(28\s+u\.?s\.?c\.?\s*§?\s*13[23]\d|diversity|federal\s+question|amount\s+in\s+controversy|supplemental\s+jurisdiction)/i,
+      /(28\s+u\.?s\.?c\.?\s*§?\s*13[23]\d|diversity|federal\s+question|amount\s+in\s+controversy|supplemental\s+jurisdiction|long[-\s]?arm\s+statute|(?:this\s+)?court\s+has\s+(?:subject[-\s]matter\s+|personal\s+|general\s+|specific\s+)?jurisdiction[^.]{0,140}?\b(?:because|pursuant\s+to|under|by\s+virtue\s+of|based\s+(?:on|upon))\b)/i,
     ],
     all: true,
     why: "Rule 8(a)(1) requires a short and plain statement of the grounds for jurisdiction. Federal courts raise subject-matter jurisdiction on their own, and a complaint that does not plead it invites a sua sponte dismissal before anyone reaches the merits.",
@@ -47,11 +59,16 @@ const COMPLAINT = pack("complaint", C, [
   },
   {
     id: "PLDG-003",
+    // 1.0.1 — the same federal-only blind spot as PLDG-002. A state-court
+    // complaint pleads "Venue is proper in Cook County under 735 ILCS
+    // 5/2-101 because the transaction … occurred in substantial part in this
+    // county", which names neither § 1391 nor a "district".
+    ver: "1.0.1",
     name: "Venue allegation",
     cite: frcp("12(b)(3)", "defenses — improper venue"),
     pat: [
       /venue/i,
-      /(28\s+u\.?s\.?c\.?\s*§?\s*1391|proper\s+in\s+this\s+district|substantial\s+part\s+of\s+the\s+events|resides\s+in\s+this)/i,
+      /(28\s+u\.?s\.?c\.?\s*§?\s*1391|proper\s+in\s+this\s+district|venue\s+(?:is|lies|is\s+properly\s+laid)\s+(?:proper\s+)?in\s+\S|substantial\s+part\s+of\s+the\s+(?:events|transaction)|resides\s+in\s+this)/i,
     ],
     all: true,
     why: "Venue is waivable but a Rule 12(b)(3) motion is cheap to make and expensive to answer. Pleading the venue basis forecloses it at the outset.",

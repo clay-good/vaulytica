@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.46.0] — 2026-08-27
+
+### Fixed
+- **A court filing names itself below its caption, and the matcher only ever
+  read the courthouse.** The first paragraph of a filing is the court, then the
+  party block, the docket number, and the judge; only then the line saying what
+  the document is. So the preamble the matcher scored was "IN THE UNITED STATES
+  DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS" — identical for a
+  complaint, an answer, a motion to compel, and a set of interrogatory
+  responses. A hand-written set of responses and objections matched no title
+  keyword, scored 0.6 on "plaintiff", "venue", and "jury" — three words every
+  filing contains — and routed to `complaint`, which then reported at
+  `critical` that it had no jurisdictional statement, no demand for relief, and
+  no jury demand. It is a discovery response. It is not supposed to have any of
+  them. The caption's scaffolding is now skipped rather than the title guessed:
+  a party name (an uppercase line ending in a comma), a bare role designation,
+  and the docket/judge line are each recognizable, and the first line that is
+  none of them is the filing's title. Engaged only when the document opens on a
+  court line, and the court line is read whether it arrives as a paragraph
+  (pasted text) or a styled heading (DOCX).
+- **A discovery response was routed to the request it answers.** With the
+  caption title read, the responses went to `interrogatories` instead — the
+  propounding family, whose title keywords ("interrogatories", "first set of
+  interrogatories") are a literal substring of every response's title, and
+  whose Rule 33 checks then reported a missing response deadline on a document
+  that *is* the response. `interrogatories`, `document-requests`, and
+  `requests-for-admission` now carry the response-only language as negative
+  features: no set of interrogatories contains "subject to and without
+  waiving", "without waiving the foregoing", "general objections", or "objects
+  to this request".
+- **PLDG-002 and PLDG-003 could only read a federal complaint.** Every
+  alternative in the jurisdiction pillar was federal (28 U.S.C. §§ 1331/1332,
+  diversity, federal question, amount in controversy) and every alternative in
+  the venue pillar named § 1391 or a "district" — while most complaints in the
+  United States are filed in state court, where jurisdiction is pleaded under a
+  long-arm statute and venue in a county. "This Court has jurisdiction over
+  Defendant because Defendant transacted business within Illinois …, pursuant
+  to 735 ILCS 5/2-209" is Rule 8(a)(1)'s short and plain statement, and it was
+  reported missing at `critical`. The state-court form is admitted only *with*
+  its grounds (because / pursuant to / under / by virtue of), so a bare "This
+  Court has jurisdiction." — the conclusion without the grounds, which is what
+  the rule exists to catch — still flags.
+
 ## [9.45.6] — 2026-08-27
 
 ### Fixed
