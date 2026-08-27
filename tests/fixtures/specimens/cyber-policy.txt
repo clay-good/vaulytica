@@ -1,0 +1,65 @@
+MERIDIAN CASUALTY INSURANCE COMPANY
+
+CYBER LIABILITY AND DATA BREACH RESPONSE POLICY
+
+Policy No. CYB-2026-40118
+Named Insured: Vanterra Analytics, Inc.
+Policy Period: From January 1, 2026 to January 1, 2027, 12:01 a.m. at the address of the Named Insured
+Retroactive Date: January 1, 2022
+Continuity Date: January 1, 2022
+
+THIS IS A CLAIMS-MADE AND REPORTED POLICY. EXCEPT AS OTHERWISE PROVIDED, COVERAGE APPLIES ONLY TO CLAIMS FIRST MADE AGAINST THE INSURED DURING THE POLICY PERIOD AND REPORTED TO THE INSURER IN ACCORDANCE WITH SECTION VI. DEFENSE COSTS ARE INCLUDED WITHIN AND REDUCE THE LIMIT OF LIABILITY. PLEASE READ THE ENTIRE POLICY CAREFULLY.
+
+SECTION I — INSURING AGREEMENTS
+
+A. Privacy and Network Security Liability. The Insurer shall pay on behalf of the Insured all Damages and Defense Costs that the Insured becomes legally obligated to pay because of a Claim first made during the Policy Period arising from a Privacy Event or a Network Security Event.
+
+B. Regulatory Proceedings. The Insurer shall pay Defense Costs and any Regulatory Fine that is insurable under applicable law arising from a Regulatory Proceeding first made during the Policy Period.
+
+C. Breach Response Costs. The Insurer shall reimburse Breach Response Costs incurred with the Insurer's prior written consent, including forensic investigation, legal advice, notification to affected individuals, credit monitoring for twelve (12) months, and public relations services.
+
+D. Business Interruption. The Insurer shall pay the Income Loss and Extra Expense the Insured sustains during the Period of Restoration, in excess of the Waiting Period of eight (8) hours, directly resulting from a Network Security Event.
+
+E. Cyber Extortion. The Insurer shall reimburse Extortion Payments and related expenses incurred with the Insurer's prior written consent.
+
+SECTION II — LIMITS OF LIABILITY AND RETENTION
+
+The Aggregate Limit of Liability is $5,000,000 for all Claims and Loss. Sublimits apply as follows: Regulatory Fines $1,000,000; Breach Response Costs $2,000,000; Business Interruption $1,000,000; Cyber Extortion $500,000. Each sublimit is part of, and not in addition to, the Aggregate Limit. Defense Costs are included within and reduce the Aggregate Limit. The Retention is $50,000 each Claim, and applies to Damages, Defense Costs, and Breach Response Costs.
+
+SECTION III — DEFINITIONS
+
+"Claim" means a written demand for monetary or non-monetary relief, a civil proceeding, an arbitration, or a Regulatory Proceeding. "Damages" means compensatory sums the Insured is legally obligated to pay, including judgments and settlements, but not fines or penalties except a Regulatory Fine that is insurable under applicable law. "Defense Costs" means reasonable fees, costs, and expenses incurred in the defense of a Claim, including the premium for an appeal bond, but not the Insured's salaries. "Privacy Event" means the loss, theft, or unauthorized disclosure of Personally Identifiable Information or Confidential Corporate Information in the Insured's care, custody, or control. "Network Security Event" means a failure of Computer System security that results in unauthorized access, a denial-of-service attack, or the transmission of malicious code. "Period of Restoration" begins twelve (12) hours after the Network Security Event and ends when the Computer System is restored, and in no event exceeds one hundred twenty (120) days.
+
+SECTION IV — EXCLUSIONS
+
+This Policy does not apply to any Claim: (a) arising from any fact or circumstance that any Control Group member knew before the Continuity Date and that a reasonable person would expect to give rise to a Claim; (b) arising from bodily injury or property damage, except mental anguish resulting from a Privacy Event; (c) arising from the Insured's failure to maintain the minimum security standards described in the Application; (d) for any fine or penalty that is uninsurable under applicable law; (e) arising from war, invasion, or an act of a sovereign state, except that this exclusion does not apply to a cyber operation whose attribution to a sovereign state has not been established by a competent authority; (f) arising from prior or pending litigation commenced before the Continuity Date; or (g) arising from any deliberately fraudulent or criminal act, but only after a final and non-appealable adjudication in the underlying proceeding establishes such conduct.
+
+SECTION V — DEFENSE AND SETTLEMENT
+
+The Insurer has the right and duty to defend any Claim covered by this Policy, even if groundless, false, or fraudulent. The Insured may not admit liability, settle any Claim, or incur Defense Costs without the Insurer's prior written consent, which shall not be unreasonably withheld. If the Insured refuses to consent to a settlement the Insurer recommends and the claimant accepts, the Insurer's liability is limited to the amount for which the Claim could have been settled plus Defense Costs incurred to that date. The Insured may select independent counsel from the Insurer's panel; where a conflict of interest exists such that appointed counsel could control the outcome of a coverage issue, the Insured may select independent counsel at the Insurer's expense.
+
+SECTION VI — NOTICE
+
+The Insured shall give the Insurer written notice of a Claim as soon as practicable, and in no event later than sixty (60) days after the end of the Policy Period. Notice of a circumstance that may reasonably give rise to a Claim may be given during the Policy Period, in which case any later Claim arising from it is deemed first made when the circumstance was reported. Notice must be sent to claims@meridiancasualty.example or to the address stated in the Declarations.
+
+SECTION VII — EXTENDED REPORTING PERIOD
+
+If this Policy is cancelled or non-renewed for any reason other than non-payment of premium, the Named Insured may purchase an Extended Reporting Period of twelve (12) months for 100% of the annual premium, twenty-four (24) months for 150%, or thirty-six (36) months for 200%, by written request and payment within sixty (60) days after the end of the Policy Period. The Extended Reporting Period does not increase the Limit of Liability.
+
+SECTION VIII — OTHER INSURANCE
+
+This Policy is excess over any other valid and collectible insurance, except insurance written specifically as excess of this Policy.
+
+SECTION IX — CANCELLATION
+
+The Named Insured may cancel this Policy by written notice. The Insurer may cancel only for non-payment of premium, on ten (10) days written notice, or as otherwise permitted by applicable law, on sixty (60) days written notice.
+
+SECTION X — GENERAL CONDITIONS
+
+The Insured shall cooperate with the Insurer in the investigation and defense of any Claim. The Insurer is subrogated to the Insured's rights of recovery. This Policy may be amended only by written endorsement issued by the Insurer. This Policy is governed by the laws of the state of the Named Insured's address stated in the Declarations, and any dispute shall be resolved in the state and federal courts sitting in that state.
+
+IN WITNESS WHEREOF, the Insurer has caused this Policy to be signed by its authorized officer.
+
+/s/ Adaeze Nwosu
+Adaeze Nwosu, President
+Meridian Casualty Insurance Company

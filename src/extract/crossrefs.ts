@@ -159,6 +159,15 @@ const LEADING_SUBSECTION_RE = /^\s*(\d+(?:\.\d+)+)\.?\s+[A-Z(]/;
 // document as a broken cross-reference).
 const LEADING_ARTICLE_RE = /^\s*(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/;
 
+// The same shape for SECTION, which `LEADING_SECTION_RE` above cannot see: it
+// requires an ARABIC number followed by a period ("Section 2.1. Annual
+// Meeting"), and an insurance policy writes "SECTION VI — NOTICE" — roman, no
+// period, an em dash. Every one of those headings was BOTH unregistered and
+// re-read as a broken reference to itself, and the real "Section VI" reference
+// in the body failed too. Exactly the defect the ARTICLE comment above
+// describes, left unfixed for the sibling keyword.
+const LEADING_SECTION_ROMAN_RE = /^\s*(?:SECTION|Section)\s+([IVXLCDM]+|\d+)\s*(?:[—–-]|$)/;
+
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
   const labelIndex = buildLabelIndex(outline);
@@ -195,6 +204,9 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     const a = LEADING_ARTICLE_RE.exec(ctx.text);
     const aNorm = a ? normalizeLabel(`article ${a[1]!}`) : undefined;
     if (aNorm && !labelIndex.has(aNorm)) labelIndex.set(aNorm, ctx.paragraph.id);
+    const sr = LEADING_SECTION_ROMAN_RE.exec(ctx.text);
+    const srNorm = sr ? normalizeLabel(`section ${sr[1]!}`) : undefined;
+    if (srNorm && !labelIndex.has(srNorm)) labelIndex.set(srNorm, ctx.paragraph.id);
     // A first subsection sharing the article-heading paragraph.
     const ats = ARTICLE_THEN_SECTION_RE.exec(ctx.text);
     const atsNorm = ats ? normalizeLabel(ats[1]!) : undefined;
@@ -203,7 +215,8 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
 
   forEachParagraph(tree, (ctx) => {
     const leadingArticle = LEADING_ARTICLE_RE.exec(ctx.text);
-    const leadingSection = LEADING_SECTION_RE.exec(ctx.text);
+    const leadingSection =
+      LEADING_SECTION_RE.exec(ctx.text) ?? LEADING_SECTION_ROMAN_RE.exec(ctx.text);
     const articleThenSection = ARTICLE_THEN_SECTION_RE.exec(ctx.text);
     REF_RE.lastIndex = 0;
     let m: RegExpExecArray | null;
@@ -250,10 +263,14 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // union contract, a policy, and most EU-style instruments use — and,
       // where the document also had a Section 9, it linked to the wrong
       // entity instead. The keyword is known here; pass it.
-      const isArticle = /^Articles?$/i.test(keyword);
+      const namespace = /^Articles?$/i.test(keyword)
+        ? "article"
+        : /^(?:Sections?|§§?)$/i.test(keyword)
+          ? "section"
+          : undefined;
       const normalized = isAttachment
         ? undefined
-        : normalizeLabel(isArticle ? `article ${label}` : label);
+        : normalizeLabel(namespace ? `${namespace} ${label}` : label);
       const resolved = normalized ? labelIndex.get(normalized) : undefined;
       // Capture any trailing parenthetical sub-reference chain
       // ("(a)(ii)") that follows the matched label, without disturbing
@@ -298,6 +315,20 @@ function normalizeLabel(label: string): string | undefined {
       return n ? `article:${n}` : undefined;
     }
     if (/^\d+$/.test(tail)) return `article:${tail}`;
+  }
+  // The SECTION namespace, qualified the same way. A ROMAN-numbered section —
+  // "SECTION VI — NOTICE", and the "Section VI" that refers to it — took the
+  // bare-roman branch above and normalized into the ARTICLE namespace, so it
+  // could never match its own declaration and, in a document with an Article
+  // VI, linked to the wrong one. Insurance policies number their sections in
+  // roman throughout.
+  if (label.toLowerCase().startsWith("section ")) {
+    const tail = label.slice(8).trim();
+    if (/^[IVXLCDM]+$/i.test(tail)) {
+      const n = romanToInt(tail.toUpperCase());
+      return n ? `section:${n}` : undefined;
+    }
+    if (/^\d+(?:\.\d+)*$/.test(tail)) return `section:${tail}`;
   }
   if (/^[0-9]+(?:\.[0-9]+)*$/.test(label)) return `section:${label}`;
   return undefined;

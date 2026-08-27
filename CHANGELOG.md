@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.57.0] — 2026-08-27
+
+### Fixed
+- **A roman-numbered SECTION was invisible to itself.** `LEADING_SECTION_RE`
+  requires an arabic number followed by a period ("Section 2.1. Annual
+  Meeting"), and an insurance policy writes "SECTION VI — NOTICE": roman, no
+  period, an em dash. Every one of those headings was **both** unregistered and
+  re-read as a broken reference to itself, and the real "Section VI" in the
+  body failed too — eleven findings on one cyber policy. That is exactly the
+  defect the ARTICLE declaration comment describes, left unfixed for the
+  sibling keyword.
+  - And a roman section label normalized into the **article** namespace, so it
+    could not have matched even once indexed — and in a document with an
+    Article VI it would have linked to the wrong one. `normalizeLabel` now has
+    a section branch, and the call site passes the keyword's namespace for
+    `Section`, `Sections`, and `§` as it already did for `Article`.
+
+### Added
+- A cyber liability policy specimen, bringing the set to twenty.
+
 ## [9.56.1] — 2026-08-27
 
 ### Fixed

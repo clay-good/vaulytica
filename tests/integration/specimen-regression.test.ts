@@ -67,6 +67,12 @@ const EXPECTED: Record<string, Expectation> = {
     ],
   },
 
+  // A cyber liability policy with roman-numbered sections.
+  "cyber-policy.txt": {
+    playbook: "cyber-insurance-policy",
+    findings: ["STRUCT-006", "CHOICE-006", "OBLI-005"],
+  },
+
   // A convertible promissory note behind a restrictive-securities legend.
   "convertible-note.txt": {
     playbook: "convertible-note",

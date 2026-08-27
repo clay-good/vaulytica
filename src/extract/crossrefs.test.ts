@@ -632,3 +632,57 @@ describe("an arabic-numbered article reference", () => {
     expect(refs.find((r) => r.raw_text === "Article 9")?.unresolved).toBe(true);
   });
 });
+
+describe("a roman-numbered SECTION", () => {
+  const refsOf = (paras: [string, ...string[]]) => {
+    const tree = buildTree(paras);
+    return extractCrossRefs(tree, extractSections(tree));
+  };
+
+  it("resolves a reference to the section the policy declares", () => {
+    // `LEADING_SECTION_RE` requires an ARABIC number followed by a period
+    // ("Section 2.1. Annual Meeting"), and an insurance policy writes "SECTION
+    // VI — NOTICE": roman, no period, an em dash. Every one of those headings
+    // was BOTH unregistered and re-read as a broken reference to itself, and
+    // the real reference in the body failed too — eleven findings on one
+    // policy. And a roman section label normalized into the ARTICLE
+    // namespace, so it could not have matched even once indexed.
+    const refs = refsOf([
+      "Cyber Liability Policy",
+      "SECTION V — DEFENSE AND SETTLEMENT",
+      "The Insured shall give notice in accordance with Section VI.",
+      "SECTION VI — NOTICE",
+      "The Insured shall give the Insurer written notice as soon as practicable.",
+    ]);
+    const ref = refs.find((r) => r.raw_text === "Section VI");
+    expect(ref, "the reference was not extracted").toBeDefined();
+    expect(ref!.unresolved).toBe(false);
+  });
+
+  it("does not read the heading itself as a reference", () => {
+    const refs = refsOf([
+      "Cyber Liability Policy",
+      "SECTION VI — NOTICE",
+      "The Insured shall give the Insurer written notice as soon as practicable.",
+    ]);
+    expect(refs.map((r) => r.raw_text)).toEqual([]);
+  });
+
+  it("still reports a reference to a section the policy does not have", () => {
+    const refs = refsOf([
+      "Cyber Liability Policy",
+      "SECTION V — DEFENSE AND SETTLEMENT",
+      "The Insured shall give notice in accordance with Section VI.",
+    ]);
+    expect(refs.find((r) => r.raw_text === "Section VI")?.unresolved).toBe(true);
+  });
+
+  it("does not link a roman section reference to an article that shares its number", () => {
+    const refs = refsOf([
+      "Agreement",
+      "ARTICLE VI — CONFIDENTIALITY",
+      "The obligations in Section VI survive termination.",
+    ]);
+    expect(refs.find((r) => r.raw_text === "Section VI")?.unresolved).toBe(true);
+  });
+});
