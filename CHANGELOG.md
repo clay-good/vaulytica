@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.43.3] — 2026-08-27
+
+### Fixed
+- **The published accuracy scoreboard named an engine three releases old.**
+  `tools/accuracy/SCOREBOARD.md` is a trust artifact whose whole claim is that
+  the same `(corpus, dkb, engine)` triple reproduces the same
+  `scoreboard_hash` — and it was published naming engine `9.42.0` while
+  `9.43.2` shipped. The guard that keeps it current pinned the rule and
+  playbook counts and deliberately left everything else alone, on the reasoning
+  that the remaining fields "legitimately move with the corpus". The engine
+  version does not: it moves with the release, it is deterministic, and it is
+  one third of the reproducibility triple the artifact asserts. It is now
+  pinned to `package.json` in both the JSON and the Markdown, with the same
+  one-line fix the counts have — `npm run accuracy`. Proven by de-syncing the
+  artifact and watching the guard fail.
+- **The legal-basis review queue was stale for the same reason**, and its guard
+  — which compares the whole committed file against a fresh generation — caught
+  it as soon as a release moved the engine version. Regenerated. Two published
+  artifacts carry the engine version; only one of them had a guard that could
+  see it go stale.
+- **The clause-scan timing test flakes no more.** Best-of-five over single
+  scans was still not enough: the 47k measurement takes a fraction of a
+  millisecond, so most of it is timer quantization. Each side now times a batch
+  of twenty identical scans — the same batch on both sides, so the ratio is
+  unchanged — which puts every reading in the milliseconds, and takes the best
+  of three batches, since scheduling noise only ever adds time.
+
 ## [9.43.2] — 2026-08-27
 
 ### Fixed

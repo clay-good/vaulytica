@@ -254,26 +254,34 @@ describe("the clause scan stays linear on a large, densely-matching paragraph", 
   });
 
   it("scales sub-quadratically between 47k and 190k characters", () => {
-    // BEST of five, not a single sample. A ratio of two single measurements is
-    // a ratio of two worst cases: vitest runs files in parallel, so either
-    // sample can be interrupted by another worker, and one unlucky `small`
-    // sample turns a linear scan into a 39x reading. The MINIMUM over repeats
-    // estimates the algorithm's own cost — scheduling noise only ever adds
-    // time — and it does not weaken the signal this test exists for: a
-    // quadratic scan's best case is still ~16x its best case at a quarter of
-    // the input.
+    // Two things make a ratio of two single measurements unusable here, and
+    // both had to be fixed before this stopped flaking.
+    //
+    //  1. The 47k scan takes a fraction of a millisecond, so a single sample
+    //     is mostly timer quantization. Each measurement therefore times a
+    //     BATCH of identical scans — the same batch size on both sides, so
+    //     the ratio is unchanged — which puts every reading in the
+    //     milliseconds where it means something.
+    //  2. vitest runs files in parallel, so any one batch can be interrupted
+    //     by another worker. The MINIMUM over repeated batches estimates the
+    //     algorithm's own cost, because scheduling noise only ever ADDS time.
+    //
+    // Neither weakens the signal this test exists for: a quadratic scan's
+    // best case is still ~16x its best case at a quarter of the input, and
+    // the bound is 10.
+    const BATCH = 20;
     const bestOf = (reps: number): number => {
       const ctx = ctxWith(unit.repeat(reps));
       let best = Infinity;
-      for (let i = 0; i < 5; i++) {
+      for (let round = 0; round < 3; round++) {
         const t0 = performance.now();
-        firstUnnegatedParagraphMatch(ctx, /automatically renew/i);
+        for (let i = 0; i < BATCH; i++) firstUnnegatedParagraphMatch(ctx, /automatically renew/i);
         best = Math.min(best, performance.now() - t0);
       }
       return best;
     };
     bestOf(400); // warm the JIT so the first timed run is not the slow one
-    const small = Math.max(bestOf(800), 0.05);
+    const small = bestOf(800);
     const large = bestOf(3200);
     // 4x the input. Linear predicts ~4x; quadratic predicts ~16x. Anything at
     // or under 10x is comfortably not quadratic, with room for timer noise.

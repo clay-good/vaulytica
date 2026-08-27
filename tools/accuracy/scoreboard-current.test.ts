@@ -10,9 +10,18 @@
  * same discipline as the docs-link and case-sensitivity integrity guards),
  * with a one-line fix: `npm run accuracy`.
  *
- * It deliberately pins ONLY the catalog counts, not the scoreboard hash or
- * the precision/recall metrics — those legitimately move with the corpus and
- * are not part of "did someone forget to regenerate after a rule change."
+ * It pins the catalog counts and the ENGINE VERSION, not the scoreboard hash
+ * or the precision/recall metrics — those legitimately move with the corpus
+ * and are not part of "did someone forget to regenerate after a rule change."
+ *
+ * The engine version belongs here for the same reason the counts do, and its
+ * absence showed: the artifact's whole claim is that the same `(corpus, dkb,
+ * engine)` triple reproduces the same `scoreboard_hash`, and it was published
+ * naming engine 9.42.0 while 9.43.2 shipped — three releases stale, because
+ * nothing failed when a release did not re-run the harness. A version is not
+ * a metric; it is deterministic, it is part of the reproducibility triple, and
+ * a trust artifact that names the wrong one is the dishonesty this scoreboard
+ * exists to refuse.
  */
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -21,6 +30,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import { loadAccuracyDeps } from "./pipeline.js";
+import pkg from "../../package.json" with { type: "json" };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -29,11 +39,24 @@ describe("committed scoreboard is current with the live catalog", () => {
     const deps = await loadAccuracyDeps();
     const scoreboard = JSON.parse(await readFile(join(__dirname, "scoreboard.json"), "utf8")) as {
       catalog: { rules: number; playbooks: number };
+      engine_version?: string;
     };
 
     expect(scoreboard.catalog.rules).toBe(deps.rules.length);
     expect(scoreboard.catalog.playbooks).toBe(
       deps.launchPlaybooks.length + deps.extendedPlaybooks.length,
     );
+  });
+
+  it("scoreboard.json names the engine version that ships (run `npm run accuracy` if this fails)", async () => {
+    const raw = JSON.parse(await readFile(join(__dirname, "scoreboard.json"), "utf8")) as {
+      engine_version: string;
+    };
+    expect(raw.engine_version).toBe(pkg.version);
+  });
+
+  it("SCOREBOARD.md names the same engine version", async () => {
+    const md = await readFile(join(__dirname, "SCOREBOARD.md"), "utf8");
+    expect(md).toContain(`**Engine:** \`${pkg.version}\``);
   });
 });
