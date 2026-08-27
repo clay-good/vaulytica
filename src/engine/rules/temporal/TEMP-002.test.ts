@@ -191,3 +191,56 @@ describe("TEMP-002 — same-day dates sort deterministically", () => {
     expect(new Set(results).size).toBe(1);
   });
 });
+
+/**
+ * A date the document reports about a PAST EVENT — the day work began, the
+ * day an instrument was recorded — is not this document's effective date, so
+ * the gap between it and the document's own date is not back-dating. Both
+ * cases came from running the tool on a preliminary lien notice and a warranty
+ * deed for the first time.
+ */
+describe("TEMP-002 — a reported past event is not a back-date (v1.5.0)", () => {
+  it("stays silent on a preliminary lien notice's first-furnishing date", () => {
+    // The notice EXISTS to state that labor began before the notice was
+    // served; the 45-day gap is the statute's requirement, not an anomaly.
+    expect(
+      TEMP_002.check(
+        buildContext([
+          "Preliminary Notice",
+          "Date of this notice: October 2, 2026.",
+          "FIRST DATE LABOR OR MATERIALS WERE FURNISHED: August 18, 2026.",
+          "This notice was served on the owner by certified mail on October 2, 2026.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("stays silent on a deed's recorded subdivision map", () => {
+    // Every deed's legal description cites a decades-old map, so the rule read
+    // an ordinary conveyance as back-dated by twenty-eight years.
+    expect(
+      TEMP_002.check(
+        buildContext([
+          "Warranty Deed",
+          "THIS WARRANTY DEED is made on October 2, 2026, by Helen R. Okonkwo to Samuel A. Torres.",
+          "Being Lot 14 of the Cedar Ridge Subdivision as shown on a map filed in the Tompkins County Clerk's Office on June 3, 1998.",
+          "Grantor has executed this deed on October 2, 2026.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports a contract whose own date sits a year before everything else", () => {
+    // The suppression must not reach an unlabelled outlier: this is the shape
+    // the rule exists for.
+    expect(
+      TEMP_002.check(
+        buildContext([
+          "Services Agreement",
+          "This Agreement is effective January 5, 2025.",
+          "The first invoice is due March 3, 2026 and the term ends March 3, 2027.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

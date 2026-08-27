@@ -59,6 +59,25 @@ const CITATION_DATE = /\(\s*(?:[A-Z0-9][\w.]*\s+){0,4}$/;
 const REGULATION_DATE =
   /\b(?:(?:Regulation|Directive|Decision)\b[^.;]{0,50}?\bof|Act\s+\d{4}\b[^.;]{0,20}?\b(?:on|of|dated))\s+$/i;
 
+/**
+ * A field label naming a PAST EVENT the document reports — "First date labor
+ * or materials were furnished:", "Date of loss:", "Document date:" — dates the
+ * event, not this document. A preliminary lien notice exists to state that
+ * labor began before the notice was served, so the gap this rule measures is
+ * the statute's requirement rather than evidence of anything.
+ */
+const PAST_EVENT_LABEL =
+  /\b(?:first\s+date\b[^.;]{0,60}|date\s+(?:of\s+(?:loss|injury|incident|death|service|first\s+\w+)|first\s+(?:furnished|performed|delivered|provided))|document\s+date)\s*:?\s*$/i;
+
+/**
+ * A recording or filing reference — "as shown on a map filed in the Tompkins
+ * County Clerk's Office on June 3, 1998", "recorded in Liber 2210 at Page 118
+ * on …" — dates the RECORDED instrument. Every deed's legal description cites
+ * a decades-old subdivision map, so the rule read an ordinary conveyance as
+ * back-dated by twenty-eight years.
+ */
+const RECORDED_INSTRUMENT_DATE = /\b(?:recorded|filed|entered)\b[^.;]{0,90}?\bon\s+$/i;
+
 /** Absolute-date start offsets whose text reads as another instrument's date. */
 function referencedDateStarts(ctx: RuleContext): Set<number> {
   const out = new Set<number>();
@@ -74,7 +93,9 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
         PERIOD_START_DATE.test(before) ||
         BIRTHDATE.test(before) ||
         CITATION_DATE.test(before) ||
-        REGULATION_DATE.test(before)
+        REGULATION_DATE.test(before) ||
+        PAST_EVENT_LABEL.test(before) ||
+        RECORDED_INSTRUMENT_DATE.test(before)
       ) {
         out.add(start);
       }
@@ -86,7 +107,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",

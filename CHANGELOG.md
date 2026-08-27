@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.42.4] — 2026-08-27
+
+### Fixed
+- **A preliminary lien notice and a warranty deed were both read as
+  back-dated.** TEMP-002 flags the earliest absolute date in a document when it
+  sits more than 30 days before the next one and apart from the rest — the
+  shape a back-dated contract has. It never checks that the earliest date IS
+  the document's effective date, so it grew a list of guards for dates that
+  belong to something else: a referenced instrument, a stated period, a
+  birthdate, a case citation, a regulation. Two more shapes were missing, and
+  each is definitional to the document it appears in, not incidental:
+  - a **reported past event** — "FIRST DATE LABOR OR MATERIALS WERE FURNISHED:
+    August 18, 2026" on a notice served October 2. A preliminary lien notice
+    exists to state that work began before the notice was served; the 45-day
+    gap is what the statute requires, not an anomaly;
+  - a **recorded instrument** — "Lot 14 of the Cedar Ridge Subdivision as shown
+    on a map filed in the Tompkins County Clerk's Office on June 3, 1998". Every
+    deed's legal description cites a decades-old subdivision map or a prior
+    liber-and-page, so an ordinary conveyance read as back-dated by
+    twenty-eight years.
+
+  The suppression is checked in both directions: a contract whose own effective
+  date sits a year before every other date in it still fires, and no corpus
+  finding disappeared — every golden diff is a one-line hash replacement.
+  Version 1.4.0 → 1.5.0.
+
 ## [9.42.3] — 2026-08-27
 
 ### Fixed
