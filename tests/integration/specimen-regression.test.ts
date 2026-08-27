@@ -182,6 +182,12 @@ const EXPECTED: Record<string, Expectation> = {
   // A confidential settlement agreement enforceable in a named federal court.
   "settlement.txt": { playbook: "confidential-settlement", findings: ["SET-009", "OBLI-005"] },
 
+  // A desktop EULA that recites FAR 12.212's quoted phrase.
+  "eula.txt": {
+    playbook: "eula",
+    findings: ["ADDENDA-018", "OBLI-005", "RISK-007", "TERM-007"],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

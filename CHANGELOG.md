@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.58.0] — 2026-08-27
+
+### Fixed
+- **A quoted phrase is a quotation, not a miscapitalized defined term.** Every
+  EULA sold to the US government recites FAR 12.212: the Software is
+  `"commercial computer software"` — the regulation's own defined phrase,
+  written in lowercase and in quotation marks *because it is being quoted*.
+  STRUCT-009 read the "software" inside it as a lowercase use of the
+  agreement's defined "Software" and reported an inconsistency the drafter
+  cannot fix without misquoting the regulation. The check is bounded to a
+  single quoted span near the match, so an ordinary paragraph that happens to
+  contain a quotation elsewhere is unaffected, and a genuine lowercase use
+  still reports.
+- **`eula` had empty `rule_overrides`.** A consumer or desktop end-user licence
+  contains no indemnity — the licensor does not indemnify the user, and asking
+  the user to indemnify is a term the tool flags elsewhere as a dark pattern.
+
+### Added
+- A desktop EULA specimen, pinned clean, bringing the set to twenty-two.
+
 ## [9.57.1] — 2026-08-27
 
 ### Fixed

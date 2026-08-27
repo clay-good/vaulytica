@@ -7150,7 +7150,11 @@
       "Licensee",
       "Licensor"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "RISK-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [
       {

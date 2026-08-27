@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -43,7 +43,8 @@ export const rule: Rule = {
             p.start + m.index >= def.defined_at.start &&
             !isGenericOwnUse(text, m.index) &&
             !isContrastiveUse(text, m.index) &&
-            !isStatutoryIdiomUse(text, m.index, target, m[0].length)
+            !isStatutoryIdiomUse(text, m.index, target, m[0].length) &&
+            !isQuotedIdiomUse(text, m.index, m[0].length)
           ) {
             foundLower = true;
             break;
@@ -128,4 +129,34 @@ export function isStatutoryIdiomUse(
   if (lower !== "personal data") return false;
   if (/^\s+breach/i.test(text.slice(index + matchLength, index + matchLength + 10))) return true;
   return /\bspecial\s+categories\s+of\s+$/i.test(text.slice(Math.max(0, index - 30), index));
+}
+
+/**
+ * A lowercase occurrence INSIDE a quoted phrase is a quotation, not a
+ * miscapitalized use of the defined term.
+ *
+ * Every EULA sold to the US government recites FAR 12.212: the Software "is
+ * `commercial computer software`", which is the regulation's own defined
+ * phrase, written in lowercase and in quotation marks because it is being
+ * quoted. STRUCT-009 read the "software" inside it as a lowercase use of the
+ * agreement's defined "Software" and reported an inconsistency the drafter
+ * cannot fix without misquoting the regulation. The same shape covers a
+ * quoted statutory definition, a quoted contractual phrase from another
+ * instrument, and a quoted product name.
+ *
+ * Bounded to a single quoted span near the match, so an ordinary paragraph
+ * that happens to contain a quotation elsewhere is unaffected.
+ */
+export function isQuotedIdiomUse(text: string, index: number, length: number): boolean {
+  const before = text.slice(Math.max(0, index - 120), index);
+  const after = text.slice(index + length, index + length + 120);
+  const opensBefore = (before.match(/["\u201C]/g) ?? []).length;
+  const closesBefore = (before.match(/["\u201D]/g) ?? []).length;
+  // A straight quote is both opener and closer, so count parity: an odd number
+  // of quote characters between the window start and the match means the match
+  // sits inside a quoted span. A curly opener is counted only as an opener.
+  const insideStraight = (before.match(/"/g) ?? []).length % 2 === 1;
+  const insideCurly = opensBefore > closesBefore;
+  if (!insideStraight && !insideCurly) return false;
+  return /["\u201D]/.test(after);
 }

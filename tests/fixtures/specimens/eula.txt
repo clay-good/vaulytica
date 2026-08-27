@@ -1,0 +1,61 @@
+VANTERRA ANALYTICS DESKTOP END-USER LICENSE AGREEMENT
+
+Version 4.2 — Effective January 1, 2026
+
+IMPORTANT: READ CAREFULLY BEFORE INSTALLING. BY INSTALLING OR USING THE SOFTWARE YOU AGREE TO BE BOUND BY THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT INSTALL OR USE THE SOFTWARE, AND YOU MAY OBTAIN A REFUND UNDER SECTION 12.
+
+This End-User License Agreement (this "Agreement") is between Vanterra Analytics, Inc. ("Vanterra") and you, the individual or entity that installs or uses the Software ("You").
+
+1. Definitions.
+
+"Software" means the Vanterra Sensor Studio desktop application, including any updates Vanterra provides under this Agreement, and the accompanying documentation. "Device" means a single computer You own or control. "Feedback" means any suggestion or comment You give Vanterra about the Software.
+
+2. License Grant.
+
+Vanterra grants You a personal, non-exclusive, non-transferable, revocable license to install and use one copy of the Software on up to three Devices, solely for Your internal business purposes, for the term of Your subscription. The Software is licensed, not sold.
+
+3. Restrictions.
+
+You may not: (a) copy the Software except for one archival copy; (b) rent, lease, lend, sell, sublicense, or provide it as a service to a third party; (c) modify or create derivative works; (d) reverse engineer, decompile, or disassemble the Software, except to the extent that applicable law expressly permits despite this restriction, and then only after You have given Vanterra written notice and a reasonable opportunity to provide the necessary information; (e) remove any proprietary notice; or (f) use the Software to build a competing product.
+
+4. Ownership.
+
+Vanterra and its licensors retain all right, title, and interest in the Software, including all intellectual property rights. No rights are granted except as expressly stated in this Agreement. You grant Vanterra a perpetual, irrevocable, royalty-free license to use Feedback without obligation to You.
+
+5. Third-Party Components.
+
+The Software includes open-source components listed in the NOTICES file, each licensed under its own terms, which control over this Agreement to the extent of any conflict. Nothing in this Agreement limits Your rights under those licenses.
+
+6. Data and Privacy.
+
+The Software sends Vanterra diagnostic and usage telemetry described in the Privacy Notice at vanterra.example/privacy. You may disable optional telemetry in the application settings. Vanterra does not collect the contents of the files You process with the Software.
+
+7. Updates.
+
+Vanterra may provide updates, which are governed by this Agreement unless accompanied by separate terms. Vanterra may discontinue a version twelve (12) months after a successor version is released, and will continue to provide security fixes for that period.
+
+8. Term and Termination.
+
+This Agreement is effective until terminated. It terminates automatically if You materially breach it and do not cure within thirty (30) days after Vanterra gives You written notice. You may terminate at any time by uninstalling the Software and destroying all copies. On termination, the licenses in Section 2 end and You shall destroy all copies; Sections 3, 4, 9, 10, 11, and 13 survive.
+
+9. Limited Warranty.
+
+Vanterra warrants that for ninety (90) days after You first install the Software it will perform substantially in accordance with the documentation. Your exclusive remedy for breach of this warranty is, at Vanterra's option, repair, replacement, or a refund of the fees You paid for the Software. EXCEPT FOR THE LIMITED WARRANTY IN THIS SECTION, THE SOFTWARE IS PROVIDED "AS IS" AND VANTERRA DISCLAIMS ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. Some jurisdictions do not allow the exclusion of implied warranties, so this exclusion may not apply to You, and You may have other rights that vary by jurisdiction.
+
+10. Limitation of Liability.
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, VANTERRA WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR LOST PROFITS OR LOST DATA, EVEN IF ADVISED OF THE POSSIBILITY. VANTERRA'S TOTAL LIABILITY UNDER THIS AGREEMENT WILL NOT EXCEED THE GREATER OF THE FEES YOU PAID IN THE TWELVE MONTHS BEFORE THE CLAIM AND ONE HUNDRED DOLLARS ($100). Nothing in this Section limits liability for death or personal injury caused by negligence, for fraud, or for any other liability that cannot be limited under applicable law. Some jurisdictions do not allow these limitations, so they may not apply to You.
+
+11. Export and Government Use.
+
+You shall comply with all applicable export control and sanctions laws and shall not export the Software to any embargoed country or restricted party. If You are a U.S. government end user, the Software is "commercial computer software" under FAR 12.212 and DFARS 227.7202, licensed with only the rights granted here.
+
+12. Refunds.
+
+If You do not agree to this Agreement, or if the Software does not meet the limited warranty in Section 9, You may request a refund within thirty (30) days of purchase by contacting support@vanterra.example.
+
+13. General.
+
+This Agreement is governed by the laws of the State of Connecticut, without regard to its conflict-of-laws rules, and the United Nations Convention on Contracts for the International Sale of Goods does not apply. Any dispute shall be brought exclusively in the state and federal courts sitting in Hartford County, Connecticut, and You consent to their jurisdiction; nothing in this Section prevents either party from seeking injunctive relief in any court of competent jurisdiction. If any provision is unenforceable, the remainder continues in effect. This Agreement is the entire agreement between You and Vanterra about the Software and supersedes all prior understandings. Vanterra may assign this Agreement; You may not, except to a successor to all of Your business, on notice to Vanterra.
+
+Questions: legal@vanterra.example. Vanterra Analytics, Inc., 4400 Harbor Point Drive, Suite 600, Hartford, Connecticut 06103.
