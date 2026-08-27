@@ -426,6 +426,10 @@ const REMOTE = pack("remote-work-agreement", C, [
 const INTERNSHIP = pack("internship-agreement", C, [
   {
     id: "EMP-130",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Paid or unpaid status and the FLSA primary-beneficiary factors",
     cite: agency(
       "US Department of Labor Wage and Hour Division",
@@ -434,7 +438,7 @@ const INTERNSHIP = pack("internship-agreement", C, [
     ),
     pat: [
       /(unpaid|paid\s+internship|compensation)/i,
-      /(primary\s+beneficiary|educational|academic|training\s+similar\s+to)/i,
+      /(primary[-\s]+beneficiary|educational|academic|training\s+similar\s+to)/i,
     ],
     why: "Since 2018 the DOL applies the primary-beneficiary test: if the employer is the primary beneficiary, the intern is an employee owed minimum wage and overtime. An unpaid internship that does not address the factors is an exposure.",
     fix: "State whether the internship is paid, and if unpaid, recite the facts supporting the primary-beneficiary factors (educational integration, academic calendar, no entitlement to a job, no displacement of paid staff).",
@@ -502,11 +506,15 @@ const INTERNSHIP = pack("internship-agreement", C, [
 const CBA = pack("union-cba", C, [
   {
     id: "EMP-135",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Recognition and bargaining-unit description",
     cite: usc("29", "159", "National Labor Relations Act § 9 — representatives and elections"),
     pat: [
       /recogni(z|s)e/i,
-      /(bargaining\s+unit|exclusive\s+(bargaining\s+)?representative|all\s+(full-?time\s+and\s+regular\s+part-?time\s+)?employees)/i,
+      /(bargaining[-\s]+unit|exclusive\s+(bargaining\s+)?representative|all\s+(full-?time\s+and\s+regular\s+part-?time\s+)?employees)/i,
     ],
     why: "The recognition clause and unit description define who the contract covers. Disputes about whether a classification is in the unit are the most common day-one grievance.",
     fix: "State the recognition and describe the bargaining unit by classification with the exclusions (supervisors, guards, confidential employees).",
@@ -553,12 +561,16 @@ const CBA = pack("union-cba", C, [
   },
   {
     id: "EMP-139",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Management-rights reservation",
     cite: practice(
       "management-rights",
       "management rights clauses in collective bargaining agreements",
     ),
-    pat: [/management\s+rights/i, /(retains?|reserves?|exclusive\s+right\s+to)/i],
+    pat: [/management[-\s]+rights/i, /(retains?|reserves?|exclusive\s+right\s+to)/i],
     why: "Every right not reserved is a mandatory subject the employer must bargain before changing. A thin management-rights clause turns routine operational decisions into unfair labor practice charges.",
     fix: "Enumerate the reserved rights (direction of the workforce, staffing levels, scheduling, technology, subcontracting, discipline) and state that the enumeration is not exhaustive.",
   },

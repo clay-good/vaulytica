@@ -28,11 +28,15 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
   },
   {
     id: "MNA-102",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Purchase price and working-capital adjustment",
     cite: practice("working-capital", "working capital adjustments in private acquisitions"),
     pat: [
       /purchase\s+price/i,
-      /(working\s+capital|adjustment|estimated\s+closing|true-?up|net\s+debt)/i,
+      /(working[-\s]+capital|adjustment|estimated\s+closing|true-?up|net\s+debt)/i,
     ],
     why: "Post-closing adjustment disputes are the most common M&A litigation. The target, the accounting principles, and the dispute mechanism have to be complete or the true-up becomes an arbitration.",
     fix: "State the price, the working-capital target and its calculation principles, the estimate-and-true-up timetable, and the independent-accountant dispute procedure.",
@@ -51,13 +55,17 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
   },
   {
     id: "MNA-104",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Operating-agreement consents and admission of the buyer",
     cite: practice(
       "llc-admission",
       "member admission and transfer consents under an operating agreement",
     ),
     pat: [
-      /(operating\s+agreement|llc\s+agreement)/i,
+      /(operating[-\s]+agreement|llc\s+agreement)/i,
       /(consent|admit(ted)?\s+as\s+a\s+member|substitute\s+member|amend(ed|ment)\s+to\s+(the\s+)?(operating|llc)\s+agreement)/i,
     ],
     why: "An assignee of an LLC interest gets economic rights only; admission as a member requires the consent the operating agreement specifies. Without it the buyer has bought distributions, not control.",
@@ -208,10 +216,14 @@ const BILL_OF_SALE = pack("bill-of-sale", C, [
 const SUBSCRIPTION = pack("subscription-agreement", C, [
   {
     id: "MNA-117",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Accredited-investor status and verification",
     cite: cfr("17", "230.501", "Regulation D — Rule 501 definitions, accredited investor"),
     pat: [
-      /accredited\s+investor/i,
+      /accredited[-\s]+investor/i,
       /(rule\s+501|net\s+worth|income\s+in\s+each\s+of\s+the\s+two\s+most\s+recent|verif)/i,
     ],
     why: "Rule 506(b) permits up to 35 non-accredited purchasers with full disclosure; 506(c) permits general solicitation only if the issuer takes reasonable steps to verify accreditation. The representation alone is not verification under 506(c).",
@@ -232,10 +244,14 @@ const SUBSCRIPTION = pack("subscription-agreement", C, [
   },
   {
     id: "MNA-119",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Investment-intent and no-resale representation",
     cite: cfr("17", "230.502(d)", "Regulation D — limitations on resale"),
     pat: [
-      /(investment\s+(intent|purpose)|for\s+(its|his|her|the\s+subscriber'?s)\s+own\s+account)/i,
+      /(investment[-\s]+(intent|purpose)|for\s+(its|his|her|the\s+subscriber'?s)\s+own\s+account)/i,
       /(not\s+with\s+a\s+view\s+to\s+(the\s+)?(distribution|resale)|no\s+present\s+intention\s+(to|of)\s+(sell|distribut))/i,
     ],
     why: "Rule 502(d) securities are restricted, and the issuer must take reasonable care to ensure purchasers are not underwriters. The investment-intent representation is the standard evidence of that care.",
@@ -254,10 +270,14 @@ const SUBSCRIPTION = pack("subscription-agreement", C, [
   },
   {
     id: "MNA-121",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Risk-factor acknowledgment",
     cite: cfr("17", "230.502(b)", "Regulation D — information requirements"),
     pat: [
-      /(risk\s+factors?|risks\s+(of|associated\s+with)\s+(the\s+)?investment)/i,
+      /(risk[-\s]+factors?|risks\s+(of|associated\s+with)\s+(the\s+)?investment)/i,
       /(acknowledg|has\s+(reviewed|received)|able\s+to\s+bear\s+the\s+(economic\s+)?(risk|loss))/i,
     ],
     why: "Rule 502(b) requires specified information for non-accredited purchasers, and the anti-fraud rules apply regardless. The acknowledgment is the record that the risk disclosure was delivered and read.",
@@ -265,10 +285,14 @@ const SUBSCRIPTION = pack("subscription-agreement", C, [
   },
   {
     id: "MNA-122",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Bad-actor representations",
     cite: cfr("17", "230.506(d)", "Regulation D — disqualifying events (bad actor)"),
     pat: [
-      /(bad\s+actor|rule\s+506\(d\)|disqualif)/i,
+      /(bad[-\s]+actor|rule\s+506\(d\)|disqualif)/i,
       /(covered\s+person|no\s+(disqualifying\s+)?event|felony|injunction|regulatory\s+order)/i,
     ],
     why: "A disqualifying event affecting any covered person destroys the Rule 506 exemption for the entire offering. Issuers must exercise reasonable care to determine no covered person is disqualified.",

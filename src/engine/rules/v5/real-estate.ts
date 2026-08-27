@@ -13,10 +13,14 @@ const C = "real-estate";
 const SUBLEASE = pack("sublease-agreement", C, [
   {
     id: "RE-101",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Prime-lease incorporation and precedence",
     cite: practice("sublease-incorporation", "incorporation of the prime lease into a sublease"),
     pat: [
-      /(prime\s+lease|master\s+lease|overlease)/i,
+      /(prime[-\s]+lease|master\s+lease|overlease)/i,
       /(incorporated\s+by\s+reference|subject\s+(and\s+subordinate)?\s+to|terms\s+of\s+the\s+(prime|master)\s+lease\s+(shall\s+)?(apply|govern))/i,
     ],
     why: "A subtenant is bound by prime-lease obligations it cannot read unless the sublease attaches and incorporates it. Incorporation without a copy attached is the most common sublease defect.",
@@ -41,7 +45,7 @@ const SUBLEASE = pack("sublease-agreement", C, [
     cite: practice("sublease-recapture", "recapture rights in commercial leases"),
     pat: [
       /recapture/i,
-      /(terminate\s+the\s+(prime|master)\s+lease|landlord\s+may\s+elect|prime\s+lease\s+terminates)/i,
+      /(terminate\s+the\s+(prime|master)\s+lease|landlord\s+may\s+elect|prime[-\s]+lease\s+terminates)/i,
     ],
     why: "Many leases let the landlord recapture the space instead of consenting, and the subtenant's whole deal disappears. A subtenant investing in improvements needs to know the risk before it spends.",
     fix: "Disclose any recapture right, state what happens to the subtenant if it is exercised or if the prime lease terminates early, and allocate the cost of improvements.",
@@ -176,12 +180,14 @@ const PROPERTY_MGMT = pack("property-management-agreement", C, [
       "https://www.law.cornell.edu/wex/escrow",
     ),
     pat: [
-      /(trust\s+account|separate\s+account|segregated)/i,
+      /(trust[-\s]+account|separate\s+account|segregated)/i,
       /(operating\s+account|security\s+deposits?|shall\s+not\s+(be\s+)?commingle)/i,
     ],
     why: "Commingling owner funds is a licensing violation in every state and a conversion claim. Security deposits are separately regulated and often must sit in their own account.",
     fix: "Require segregated operating and security-deposit accounts in the owner's name, prohibit commingling, and state the reserve balance and disbursement authority.",
-    denied: expressDenial(String.raw`segregated\s+(?:trust\s+)?account|separate\s+trust\s+account`),
+    denied: expressDenial(
+      String.raw`segregated\s+(?:trust\s+)?account|separate\s+trust[-\s]+account`,
+    ),
   },
   {
     id: "RE-115",
@@ -262,7 +268,10 @@ const LISTING = pack("listing-agreement", C, [
     id: "RE-121",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.2.0",
     name: "Agency disclosure and dual-agency consent",
     cite: stateLaw(
       "agency-disclosure",
@@ -270,7 +279,7 @@ const LISTING = pack("listing-agreement", C, [
       "https://www.law.cornell.edu/wex/agency",
     ),
     pat: [
-      /(agency\s+(disclosure|relationship)|dual\s+agen|designated\s+agen)/i,
+      /(agency\s+(disclosure|relationship)|dual[-\s]+agen|designated\s+agen)/i,
       /(consent|acknowledge|informed\s+written\s+consent)/i,
     ],
     why: "Every state mandates agency disclosure, and dual agency requires informed written consent (and is prohibited outright in a few states). Undisclosed dual agency forfeits the commission and supports a fiduciary claim.",
@@ -411,6 +420,10 @@ const QUITCLAIM = pack("quitclaim-deed", C, [
   },
   {
     id: "RE-131",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Consideration recital and transfer-tax statement",
     cite: stateLaw(
       "transfer-tax",
@@ -419,7 +432,7 @@ const QUITCLAIM = pack("quitclaim-deed", C, [
     ),
     pat: [
       /(consideration|in\s+consideration\s+of|\$)/i,
-      /(transfer\s+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps)/i,
+      /(transfer[-\s]+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps)/i,
     ],
     why: "Recorders reject deeds without the consideration recital or the transfer-tax declaration, and intra-family quitclaims need the exemption stated to avoid the tax.",
     fix: "Recite the consideration (or the nominal amount for an exempt transfer) and include the transfer-tax declaration or exemption citation the county requires.",
@@ -489,6 +502,10 @@ const WARRANTY_DEED = pack("warranty-deed", C, [
   },
   {
     id: "RE-136",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Consideration and transfer-tax declaration",
     cite: stateLaw(
       "transfer-tax",
@@ -497,7 +514,7 @@ const WARRANTY_DEED = pack("warranty-deed", C, [
     ),
     pat: [
       /(consideration|\$)/i,
-      /(transfer\s+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps|affidavit\s+of\s+consideration)/i,
+      /(transfer[-\s]+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps|affidavit\s+of\s+consideration)/i,
     ],
     why: "Transfer-tax declarations are a recording prerequisite in most counties, and an understated consideration is a tax matter separate from the conveyance.",
     fix: "Recite the consideration and complete the transfer-tax declaration or exemption statement the recording jurisdiction requires.",
@@ -672,10 +689,14 @@ const WORK_LETTER = pack("tenant-improvement-work-letter", C, [
   },
   {
     id: "RE-149",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Tenant-delay definition and rent commencement",
     cite: practice("tenant-delay", "tenant delay and rent commencement in work letters"),
     pat: [
-      /tenant\s+delay/i,
+      /tenant[-\s]+delay/i,
       /(rent\s+commencement|substantial\s+completion|deemed\s+(delivered|substantially\s+complete)|day-?for-?day)/i,
     ],
     why: "Tenant delay accelerates rent commencement to the date the space would have been ready. An open-ended definition lets the landlord charge rent on a space the tenant cannot occupy.",

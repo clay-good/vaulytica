@@ -152,7 +152,7 @@ const SBA = pack("sba-loan-agreement", C, [
     ),
     pat: [
       /use\s+of\s+proceeds/i,
-      /(shall\s+(only\s+)?be\s+used|ineligible|working\s+capital|may\s+not\s+be\s+used\s+(to|for))/i,
+      /(shall\s+(only\s+)?be\s+used|ineligible|working[-\s]+capital|may\s+not\s+be\s+used\s+(to|for))/i,
     ],
     why: "SBA proceeds may not be used to repay owner debt, fund passive investment, or refinance ineligible obligations. Misuse is a guaranty-repair event and can be a false statement to the government.",
     fix: "State the permitted uses line by line consistent with the Authorization, and prohibit the ineligible uses expressly.",
@@ -160,6 +160,10 @@ const SBA = pack("sba-loan-agreement", C, [
   },
   {
     id: "BNK-111",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Personal guaranty of twenty-percent owners",
     cite: agency(
       "US Small Business Administration",
@@ -168,7 +172,7 @@ const SBA = pack("sba-loan-agreement", C, [
     ),
     pat: [
       /guarant/i,
-      /(20%|twenty\s+percent|unconditional\s+guarantee|sba\s+form\s+148|owners?\s+of)/i,
+      /(20%|twenty[-\s]+percent|unconditional\s+guarantee|sba\s+form\s+148|owners?\s+of)/i,
     ],
     why: "SBA requires an unconditional personal guaranty from every owner of 20% or more, on SBA Form 148. A missing guaranty is one of the most common guaranty-repair findings.",
     fix: "Identify every 20%-or-more owner and obtain the SBA-form unconditional guaranty from each, with spousal guaranties where ownership is held jointly.",
@@ -191,6 +195,10 @@ const SBA = pack("sba-loan-agreement", C, [
   },
   {
     id: "BNK-113",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Life-insurance assignment where required",
     cite: agency(
       "US Small Business Administration",
@@ -198,12 +206,14 @@ const SBA = pack("sba-loan-agreement", C, [
       "https://www.sba.gov/document/sop-50-10-lender-development-company-loan-programs",
     ),
     pat: [
-      /life\s+insurance/i,
+      /life[-\s]+insurance/i,
       /(assign|collateral\s+assignment|key\s+(person|man)|sole\s+(owner|proprietor))/i,
     ],
     why: "SBA requires collateral assignment of life insurance where the business depends on one owner. Closing without it is a documented repair risk.",
     fix: "Require a collateral assignment of life insurance in the required amount where the borrower is owner-dependent, with the carrier's acknowledgment.",
-    when: [/(life\s+insurance|sole\s+(owner|proprietor|shareholder|member)|key\s+(person|man))/i],
+    when: [
+      /(life[-\s]+insurance|sole\s+(owner|proprietor|shareholder|member)|key\s+(person|man))/i,
+    ],
   },
   {
     id: "BNK-114",
@@ -301,10 +311,14 @@ const FORBEARANCE = pack("forbearance-agreement", C, [
 const FACTORING = pack("factoring-agreement", C, [
   {
     id: "BNK-121",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "True-sale intent and protective security interest",
     cite: ucc("9-109", "Scope — sales of accounts and chattel paper"),
     pat: [
-      /(true\s+sale|sale\s+and\s+not\s+(as\s+)?a\s+loan|absolute\s+(sale|assignment))/i,
+      /(true[-\s]+sale|sale\s+and\s+not\s+(as\s+)?a\s+loan|absolute\s+(sale|assignment))/i,
       /(protective|out\s+of\s+an\s+abundance\s+of\s+caution|grants?\s+a\s+security\s+interest)/i,
     ],
     why: "Article 9 covers outright sales of accounts, so the factor must file to perfect either way. If a court recharacterizes the sale as a loan, the protective security interest is what keeps the factor secured rather than unsecured.",
@@ -462,11 +476,15 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
   },
   {
     id: "BNK-134",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Grace period and balance-computation method",
     cite: cfr("12", "1026.6(b)(4)", "Regulation Z — grace period and balance computation method"),
     pat: [
       /grace\s+period/i,
-      /(balance\s+computation|average\s+daily\s+balance|how\s+we\s+calculate|interest\s+charge)/i,
+      /(balance[-\s]+computation|average\s+daily\s+balance|how\s+we\s+calculate|interest\s+charge)/i,
     ],
     why: "Whether a grace period applies, and what happens to it when a balance is carried, is the single most misunderstood term in a card agreement — and § 1026.6(b)(4) requires the method be explained.",
     fix: "State the grace period and the conditions for keeping it, and name and describe the balance-computation method.",
@@ -489,10 +507,14 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
   },
   {
     id: "BNK-136",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Billing-rights and error-resolution summary",
     cite: usc("15", "1666", "Fair Credit Billing Act — correction of billing errors"),
     pat: [
-      /(billing\s+(rights|error)|your\s+rights\s+if\s+you\s+(are\s+dissatisfied|think))/i,
+      /(billing[-\s]+(rights|error)|your\s+rights\s+if\s+you\s+(are\s+dissatisfied|think))/i,
       /(60\s+days|written\s+notice|investigat|resolve)/i,
     ],
     why: "The FCBA long-form billing rights summary must be provided at account opening and annually. It carries the 60-day dispute window and the claims-and-defenses right for disputed purchases.",
@@ -500,11 +522,15 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
   },
   {
     id: "BNK-137",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Payment allocation to highest-APR balances",
     cite: cfr("12", "1026.53", "Regulation Z — allocation of payments"),
     pat: [
       /(payment\s+allocation|how\s+we\s+apply\s+your\s+payments|amounts?\s+in\s+excess\s+of\s+the\s+minimum)/i,
-      /(highest\s+(annual\s+percentage\s+rate|apr)|balance\s+with\s+the\s+highest)/i,
+      /(highest[-\s]+(annual\s+percentage\s+rate|apr)|balance\s+with\s+the\s+highest)/i,
     ],
     why: "§ 1026.53 requires amounts above the minimum payment to be allocated first to the highest-APR balance. Agreements describing the pre-CARD Act allocation are both non-compliant and misleading.",
     fix: "State that payments above the minimum are applied first to the balance with the highest APR, and describe the minimum-payment allocation.",

@@ -189,11 +189,15 @@ const COPPA = pack("childrens-privacy-notice", C, [
   },
   {
     id: "PRV-112",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Third-party disclosure and retention limits",
     cite: cfr("16", "312.10", "COPPA Rule — data retention and deletion requirements"),
     pat: [
       /(retain|retention)/i,
-      /(only\s+as\s+long\s+as\s+is\s+reasonably\s+necessary|delete|third\s+part(y|ies)|service\s+providers)/i,
+      /(only\s+as\s+long\s+as\s+is\s+reasonably\s+necessary|delete|third[-\s]+part(y|ies)|service\s+providers)/i,
     ],
     why: "§ 312.10 permits retention only as long as reasonably necessary for the purpose collected, and requires deletion using reasonable measures against unauthorized access.",
     fix: "State the retention limit tied to the collection purpose, the deletion practice, and the categories of third parties that receive the information and why.",
@@ -301,7 +305,7 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
     ),
     pat: [
       /(de-?identif|limited\s+data\s+set|anonymi|pseudonymi)/i,
-      /(safe\s+harbor|expert\s+determination|18\s+identifiers|hipaa|aggregated)/i,
+      /(safe[-\s]+harbor|expert\s+determination|18\s+identifiers|hipaa|aggregated)/i,
     ],
     why: "De-identification means something specific under HIPAA (safe harbor or expert determination) and something looser under state privacy laws. Naming the standard is what makes the claim checkable.",
     fix: "Name the de-identification standard applied and, for health data, whether safe harbor or expert determination was used and by whom.",
@@ -321,13 +325,17 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
   },
   {
     id: "PRV-121",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Onward-transfer and publication limits",
     cite: practice(
       "dsa-onward",
       "onward transfer and publication controls in data sharing agreements",
     ),
     pat: [
-      /(onward\s+transfer|further\s+disclos|redisclos|share\s+(the\s+data\s+)?with\s+(any\s+)?third)/i,
+      /(onward[-\s]+transfer|further\s+disclos|redisclos|share\s+(the\s+data\s+)?with\s+(any\s+)?third)/i,
       /(publication|publish|aggregate|cell\s+size|small\s+cell)/i,
     ],
     why: "Publication from a shared dataset can re-identify individuals through small cells even when the underlying data is de-identified. Onward transfers move the data outside the agreement entirely.",

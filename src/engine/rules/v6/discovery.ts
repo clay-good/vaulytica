@@ -181,11 +181,15 @@ const ROGS = pack("interrogatories", C, [
 const RFA = pack("requests-for-admission", C, [
   {
     id: "DISC-012",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Response deadline and the deemed-admitted consequence",
     cite: frcp("36(a)(3)", "requests for admission — time to respond and the effect of failing to"),
     pat: [
       /(30\s+days|thirty\s+\(?30\)?\s+days|within\s+\d+\s+days)/i,
-      /(deemed\s+admitted|admitted\s+if\s+(you\s+)?(fail|do\s+not)|automatically\s+admitted)/i,
+      /(deemed[-\s]+admitted|admitted\s+if\s+(you\s+)?(fail|do\s+not)|automatically\s+admitted)/i,
     ],
     all: true,
     why: "Rule 36(a)(3) deems a matter admitted if no timely written answer or objection is served — the only discovery device with an automatic, case-dispositive default. Stating it removes any argument that the responding party did not understand the stakes.",
@@ -366,7 +370,7 @@ const PRIV_LOG = pack("privilege-log", C, [
       "claiming privilege or protecting trial-preparation materials — expressly making the claim",
     ),
     pat: [
-      /(privileg|work\s+product|attorney-?client|common\s+interest)/i,
+      /(privileg|work[-\s]+product|attorney-?client|common\s+interest)/i,
       /(claim|assert|withheld\s+(on\s+the\s+basis|pursuant)|basis\s+for\s+(the\s+)?withholding)/i,
     ],
     all: true,

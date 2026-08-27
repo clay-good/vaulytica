@@ -242,6 +242,38 @@ describe("STRUCT-003 — the pasted document (v1.21.0)", () => {
   });
 });
 
+describe("STRUCT-003 — the court's own signature (v1.22.0)", () => {
+  it("reads 'SO ORDERED … ____ Justice of the Supreme Court' as executed", () => {
+    // A court order is signed by an OFFICE, never by a name. A QDRO, a consent
+    // judgment, and a stipulated protective order all close this way, and each
+    // reported "No signature block detected" at `critical`.
+    expect(
+      STRUCT003.check(
+        doc(
+          "Qualified Domestic Relations Order",
+          "This Order is not effective until the Plan Administrator determines it to be a qualified domestic relations order.",
+          "SO ORDERED this ____ day of __________, 2026.",
+          "_______________________________ Justice of the Supreme Court",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not read the word 'Court' in ordinary prose as a signature", () => {
+    // The underscore rule is the whole guard: these words are everywhere in a
+    // pleading's body and never after a signature line.
+    expect(
+      STRUCT003.check(
+        doc(
+          "Motion",
+          "The Court should grant the motion. The Clerk of Court has docketed the papers, and the Judge has set a hearing.",
+          "Movant respectfully requests that the Court so order.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("STRUCT-003 — the individual signatory (v1.1.0)", () => {
   it("attestation formula plus a single By: line is an executed signature page", () => {
     // An individual signs with a bare typed name — no By/Name/Title labels —

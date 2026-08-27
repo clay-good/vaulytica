@@ -56,6 +56,10 @@ const DO = pack("do-policy", C, [
   },
   {
     id: "INS-104",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Conduct exclusions with final-adjudication wording",
     cite: practice(
       "conduct-exclusion",
@@ -63,7 +67,7 @@ const DO = pack("do-policy", C, [
     ),
     pat: [
       /(fraud|dishonest|personal\s+profit|deliberate\s+criminal)/i,
-      /(final\s+(and\s+non-?appealable\s+)?adjudication|non-?appealable|in\s+the\s+underlying\s+(action|proceeding))/i,
+      /(final[-\s]+(and\s+non-?appealable\s+)?adjudication|non-?appealable|in\s+the\s+underlying\s+(action|proceeding))/i,
     ],
     why: "A conduct exclusion triggered by allegation, or by a finding in any proceeding including a coverage action, lets the carrier cut off defense costs mid-case. Final, non-appealable adjudication in the underlying action is the policyholder standard.",
     fix: "Confirm the conduct exclusions apply only on a final, non-appealable adjudication in the underlying action, and that defense costs are advanced until then.",
@@ -85,10 +89,14 @@ const DO = pack("do-policy", C, [
   },
   {
     id: "INS-106",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Defense-cost treatment",
     cite: practice("defense-costs", "duty to defend versus duty to advance in D&O policies"),
     pat: [
-      /defen(se|ce)\s+costs?/i,
+      /defen(se|ce)[-\s]+costs?/i,
       /(duty\s+to\s+defend|advance|within\s+\d+\s+days|allocation|reimburse)/i,
     ],
     why: "Most D&O is non-duty-to-defend with an advancement obligation. Whether costs are advanced as incurred or reimbursed later, and how mixed covered/uncovered matters are allocated, determines whether the policy funds the defense in real time.",
@@ -117,7 +125,7 @@ const CYBER = pack("cyber-insurance-policy", C, [
     ),
     pat: [
       /(first[- ]party|third[- ]party)/i,
-      /(insuring\s+agreement|breach\s+response|privacy\s+liability|network\s+security\s+liability|business\s+interruption|extortion)/i,
+      /(insuring\s+agreement|breach\s+response|privacy\s+liability|network\s+security\s+liability|business[-\s]+interruption|extortion)/i,
     ],
     why: "Cyber policies are a bundle of narrow grants, not one broad promise. A loss that falls between two grants — say, a vendor's outage with no security failure — is uncovered even though the policy is titled cyber.",
     fix: "Enumerate each insuring agreement with its sublimit: breach response, business interruption, extortion, data restoration, privacy liability, network security liability, and media liability.",
@@ -125,13 +133,17 @@ const CYBER = pack("cyber-insurance-policy", C, [
   },
   {
     id: "INS-109",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Business-interruption waiting period and measurement",
     cite: practice(
       "cyber-bi",
       "waiting periods and loss measurement in cyber business interruption coverage",
     ),
     pat: [
-      /(business\s+interruption|income\s+loss|period\s+of\s+(restoration|indemnity))/i,
+      /(business[-\s]+interruption|income\s+loss|period\s+of\s+(restoration|indemnity))/i,
       /(waiting\s+period|\d+\s+hours|hourly|actual\s+loss\s+sustained|contingent)/i,
     ],
     why: "The waiting period — commonly 8 to 12 hours — is a deductible measured in time, and most outages resolve inside it. How the income loss is measured and whether dependent business interruption is included decide whether the grant pays anything.",
@@ -175,11 +187,15 @@ const CYBER = pack("cyber-insurance-policy", C, [
   },
   {
     id: "INS-113",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Retroactive date and prior-knowledge exclusion",
     cite: practice("cyber-retro", "retroactive dates and prior knowledge conditions"),
     pat: [
       /(retroactive\s+date|prior\s+acts)/i,
-      /(prior\s+knowledge|known\s+(to|by)|before\s+the\s+inception|continuity\s+date)/i,
+      /(prior[-\s]+knowledge|known\s+(to|by)|before\s+the\s+inception|continuity\s+date)/i,
     ],
     why: "Dwell time in an intrusion is routinely measured in months. A retroactive date at the current policy inception excludes the compromise that has already happened but has not been found.",
     fix: "Confirm the retroactive date reaches back to first placement, and read the prior-knowledge condition to see whose knowledge and what level of awareness triggers it.",
@@ -228,6 +244,10 @@ const ROR = pack("reservation-of-rights-letter", C, [
   },
   {
     id: "INS-117",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Independent-counsel trigger",
     cite: stateLaw(
       "independent-counsel",
@@ -235,7 +255,7 @@ const ROR = pack("reservation-of-rights-letter", C, [
       "https://www.law.cornell.edu/wex/insurance_law",
     ),
     pat: [
-      /(independent\s+counsel|cumis)/i,
+      /(independent[-\s]+counsel|cumis)/i,
       /(conflict\s+of\s+interest|entitled\s+to\s+(select|retain)|rate|civil\s+code\s+§?\s*2860)/i,
     ],
     why: "In California and several other states, a reservation that creates a conflict entitles the insured to independent counsel at the insurer's expense, subject to rate limits. Carriers that do not address it invite a demand and a fee fight.",

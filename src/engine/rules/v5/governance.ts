@@ -115,11 +115,15 @@ const BOARD_RESOLUTION = pack("board-resolution", C, [
   },
   {
     id: "GOV-109",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Officer delegation and further-acts clause",
     cite: practice("further-acts", "omnibus further-acts resolutions"),
     pat: [
       /(any\s+officer|the\s+(chief\s+executive|president|treasurer|secretary))/i,
-      /(further\s+(acts|assurances)|take\s+all\s+(such\s+)?actions|execute\s+and\s+deliver)/i,
+      /(further[-\s]+(acts|assurances)|take\s+all\s+(such\s+)?actions|execute\s+and\s+deliver)/i,
     ],
     why: "Closings require documents nobody enumerated in advance. The omnibus further-acts resolution is what lets an officer sign them without reconvening the board.",
     fix: "Authorize the officers to execute and deliver all further documents and take all further actions the officer deems necessary to carry out the resolutions.",
@@ -261,7 +265,7 @@ const PROXY = pack("proxy-statement-narrative", C, [
     ),
     pat: [
       /beneficial\s+(owner|ownership)/i,
-      /(5%|five\s+percent|directors\s+and\s+executive\s+officers\s+as\s+a\s+group)/i,
+      /(5%|five[-\s]+percent|directors\s+and\s+executive\s+officers\s+as\s+a\s+group)/i,
     ],
     why: "Item 403 requires ownership of 5% holders, each director and named executive officer, and the group total, computed on the § 13d-3 beneficial-ownership standard including exercisable options.",
     fix: "Include the beneficial ownership table with 5% holders, individual directors and NEOs, the group total, and the 60-day exercisable-securities footnote.",
@@ -311,9 +315,13 @@ const DISSOLUTION = pack("dissolution-plan", C, [
   },
   {
     id: "GOV-125",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Contingent-liability reserve",
     cite: practice("dissolution-reserve", "reserves for contingent liabilities in winding up"),
-    pat: [/reserve/i, /(contingent\s+(liabilit|claim)|unknown\s+liabilit|holdback)/i],
+    pat: [/reserve/i, /(contingent[-\s]+(liabilit|claim)|unknown\s+liabilit|holdback)/i],
     why: "Distributing without an adequate reserve exposes directors and receiving shareholders to clawback for the amount distributed. The reserve is the directors' principal protection.",
     fix: "State the amount and basis of the reserve for contingent and unknown liabilities and the conditions on which the remainder is released.",
   },
@@ -387,13 +395,17 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
   },
   {
     id: "GOV-131",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Charitable-purpose limitation on use",
     cite: irs(
       "26 U.S.C. § 501(c)(3)",
       "exemption for organizations operated exclusively for charitable purposes",
     ),
     pat: [
-      /(charitable\s+purpose|exempt\s+purpose|501\(c\)\(3\))/i,
+      /(charitable[-\s]+purpose|exempt\s+purpose|501\(c\)\(3\))/i,
       /(may\s+not\s+be\s+used|shall\s+be\s+used\s+(only|exclusively)|prohibited\s+(use|activit))/i,
     ],
     why: "Funds must be used exclusively for § 501(c)(3) purposes; private benefit, substantial lobbying, or political intervention through the project jeopardizes the sponsor's own exemption.",

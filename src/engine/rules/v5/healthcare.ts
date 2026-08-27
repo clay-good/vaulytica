@@ -174,14 +174,17 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
     id: "HC-112",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.2.0",
     name: "Time-record substantiation requirement",
     cite: practice(
       "directorship-time-records",
       "time records as evidence that directorship services were rendered",
     ),
     pat: [
-      /(time\s+(record|log|sheet)|document\s+the\s+(hours|services))/i,
+      /(time[-\s]+(record|log|sheet)|document\s+the\s+(hours|services))/i,
       /(submit|maintain|as\s+a\s+condition\s+of\s+payment|monthly)/i,
     ],
     why: "Enforcement actions against medical directorships almost always rest on the absence of any evidence the services were performed. Contemporaneous time records are the single most valuable defensive control.",
@@ -191,10 +194,14 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
   },
   {
     id: "HC-113",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Personal-services safe-harbor recital",
     cite: cfr("42", "1001.952(d)", "AKS safe harbor — personal services and management contracts"),
     pat: [
-      /(safe\s+harbor|1001\.952|personal\s+services\s+and\s+management)/i,
+      /(safe[-\s]+harbor|1001\.952|personal\s+services\s+and\s+management)/i,
       /(anti-?kickback|stark|intended\s+to\s+(comply|satisfy)|42\s+c\.?f\.?r)/i,
     ],
     why: "Reciting the intended safe harbor is not itself compliance, but it documents intent and disciplines the drafting to the elements — which is why the elements are usually all present when the recital is.",
@@ -233,10 +240,14 @@ const CTA = pack("clinical-trial-agreement", C, [
   },
   {
     id: "HC-116",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Subject-injury cost responsibility",
     cite: cfr("21", "50.25", "FDA — elements of informed consent, compensation for injury"),
     pat: [
-      /(subject\s+injury|research-?related\s+injur|study-?related\s+injur)/i,
+      /(subject[-\s]+injury|research-?related\s+injur|study-?related\s+injur)/i,
       /(sponsor\s+(shall|will)\s+(pay|reimburse|be\s+responsible)|cost\s+of\s+(treatment|medical\s+care)|insurance)/i,
     ],
     why: "§ 50.25(a)(6) requires the consent form to explain whether compensation and medical treatment are available for injury. The CTA has to fund whatever the consent form promises — a mismatch between the two is a routine and serious defect.",
@@ -320,6 +331,10 @@ const PAYER = pack("payer-provider-agreement", C, [
   },
   {
     id: "HC-122",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Clean-claim definition and prompt-pay deadline",
     cite: stateLaw(
       "prompt-pay",
@@ -327,14 +342,18 @@ const PAYER = pack("payer-provider-agreement", C, [
       "https://www.law.cornell.edu/wex/insurance_law",
     ),
     pat: [
-      /clean\s+claim/i,
-      /(within\s+\d+\s+days|prompt\s+pay|interest\s+(on|shall\s+accrue)|adjudicat)/i,
+      /clean[-\s]+claim/i,
+      /(within\s+\d+\s+days|prompt[-\s]+pay|interest\s+(on|shall\s+accrue)|adjudicat)/i,
     ],
     why: "Every state has a prompt-pay statute with a clean-claim definition and an interest penalty. A contract that defines clean claim more narrowly than the statute is unenforceable to that extent, but providers rarely notice.",
     fix: "Define clean claim consistent with the governing state's statute, state the payment deadline and interest, and describe the process for pended and denied claims.",
   },
   {
     id: "HC-123",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Member hold-harmless and balance-billing ban",
     cite: usc(
       "42",
@@ -342,8 +361,8 @@ const PAYER = pack("payer-provider-agreement", C, [
       "No Surprises Act — balance billing in cases of emergency services",
     ),
     pat: [
-      /hold\s+harmless/i,
-      /(balance\s+bill|shall\s+not\s+(bill|collect)\s+(the\s+)?(member|enrollee|patient)|except\s+for\s+(copayments|deductibles|coinsurance))/i,
+      /hold[-\s]+harmless/i,
+      /(balance[-\s]+bill|shall\s+not\s+(bill|collect)\s+(the\s+)?(member|enrollee|patient)|except\s+for\s+(copayments|deductibles|coinsurance))/i,
     ],
     why: "Hold-harmless clauses are required by state insurance law and by Medicare Advantage rules, and the No Surprises Act now bans balance billing in emergency and certain non-emergency settings regardless of the contract.",
     fix: "State the member hold-harmless covering insolvency and non-payment, permit collection only of cost-sharing amounts, and confirm the No Surprises Act obligations.",
@@ -426,6 +445,10 @@ const TELEHEALTH = pack("telehealth-consent", C, [
   },
   {
     id: "HC-130",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Emergency and technology-failure protocol",
     cite: practice(
       "telehealth-emergency",
@@ -433,7 +456,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
     ),
     pat: [
       /(emergenc|911|urgent)/i,
-      /(technology\s+(failure|disruption)|connection\s+(is\s+)?lost|call\s+back|nearest\s+emergency)/i,
+      /(technology[-\s]+(failure|disruption)|connection\s+(is\s+)?lost|call\s+back|nearest\s+emergency)/i,
     ],
     why: "The provider often does not know where the patient physically is. Confirming the patient's location and stating what happens if the connection drops is both a safety measure and a licensure issue.",
     fix: "State the protocol if the connection fails, instruct the patient to call emergency services for urgent symptoms, and confirm the patient's physical location at the start of the encounter.",
@@ -452,6 +475,10 @@ const TELEHEALTH = pack("telehealth-consent", C, [
   },
   {
     id: "HC-132",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Licensure and patient-location recital",
     cite: stateLaw(
       "telehealth-licensure",
@@ -460,7 +487,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
     ),
     pat: [
       /(licens(e|ed|ure))/i,
-      /(in\s+the\s+state\s+(where|in\s+which)\s+(the\s+)?(patient|you)|patient'?s?\s+location|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
+      /(in\s+the\s+state\s+(where|in\s+which)\s+(the\s+)?(patient|you)|patient'?s?[-\s]+location|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
     ],
     why: "The practice of medicine occurs where the patient is, so the provider must be licensed in that state (or covered by a compact or an exception). A patient who travels can put an otherwise routine encounter outside the provider's licensure.",
     fix: "Recite the states in which the provider is licensed, require the patient to confirm their physical location at each encounter, and state that services may be unavailable outside those states.",

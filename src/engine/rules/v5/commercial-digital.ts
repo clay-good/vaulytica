@@ -61,11 +61,15 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
   },
   {
     id: "COMM-204",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "User-content license scope",
     cite: practice("ugc-license", "user-generated content licenses in online terms"),
     pat: [
       /(you\s+grant\s+(us|the\s+company)|license\s+to\s+(use|reproduce|display))/i,
-      /(user\s+content|your\s+content|submissions)/i,
+      /(user[-\s]+content|your\s+content|submissions)/i,
     ],
     why: "Without a license, a platform has no right to display, cache, or transcode what users post. Overbroad grants — perpetual, sublicensable, for any purpose — are the recurring source of user backlash and state AG attention.",
     fix: "Grant the narrowest license the service needs (host, display, reformat, and promote), state that the user retains ownership, and say what happens to the license on deletion.",
@@ -180,11 +184,15 @@ const DATA_LICENSE = pack("data-license-agreement", C, [
   },
   {
     id: "COMM-214",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Derived data and model-training rights",
     cite: practice("derived-data", "derived data and AI training rights in data licenses"),
     pat: [
       /(derived\s+data|derivative\s+works?\s+of\s+the\s+data|insights\s+derived)/i,
-      /(train(ing)?\s+(any\s+)?(machine\s+learning|model|artificial\s+intelligence)|model\s+training)/i,
+      /(train(ing)?\s+(any\s+)?(machine\s+learning|model|artificial\s+intelligence)|model[-\s]+training)/i,
     ],
     why: "Whether a licensee may train a model on licensed data, and who owns the model and its outputs, is now the most contested term in data licensing. Silence guarantees a dispute.",
     fix: "Define derived data, state whether training AI or ML models is permitted, and allocate ownership of the trained model, its weights, and its outputs.",
@@ -272,6 +280,10 @@ const LOYALTY = pack("loyalty-program-terms", C, [
   },
   {
     id: "COMM-222",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Gift-card and stored-value law interaction",
     cite: usc(
       "15",
@@ -280,7 +292,7 @@ const LOYALTY = pack("loyalty-program-terms", C, [
     ),
     pat: [
       /(no\s+cash\s+value|not\s+redeemable\s+for\s+cash|have\s+no\s+monetary\s+value)/i,
-      /(gift\s+card|stored\s+value|prepaid)/i,
+      /(gift[-\s]+card|stored[-\s]+value|prepaid)/i,
     ],
     why: "Points earned through purchase can be treated as stored value in some states, pulling in expiration limits and escheat duties. The 'no cash value' recital is the standard defense against that characterization.",
     fix: "State that points have no cash value, are not property, and are not transferable, and confirm the treatment of any points purchased for money.",
@@ -400,10 +412,14 @@ const SWEEPSTAKES = pack("sweepstakes-official-rules", C, [
 const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
   {
     id: "COMM-231",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Clear and conspicuous automatic-renewal disclosure",
     cite: usc("15", "8403", "Restore Online Shoppers' Confidence Act — negative option marketing"),
     pat: [
-      /(automatic(ally)?\s+renew|auto-?renew)/i,
+      /(automatic(ally)?[-\s]+renew|auto-?renew)/i,
       /(clear(ly)?\s+and\s+conspicuous|before\s+(obtaining|charging)|prior\s+to\s+(the\s+)?(charge|purchase))/i,
     ],
     all: true,
@@ -441,6 +457,10 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
   },
   {
     id: "COMM-234",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Advance renewal and price-increase notice",
     cite: stateLaw(
       "automatic-renewal",
@@ -449,7 +469,7 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     ),
     pat: [
       /(reminder|notice\s+(before|prior\s+to)\s+(the\s+)?renewal|renewal\s+notice)/i,
-      /(price\s+(increase|change)|amount\s+of\s+the\s+charge|\d+\s+days\s+before)/i,
+      /(price[-\s]+(increase|change)|amount\s+of\s+the\s+charge|\d+\s+days\s+before)/i,
     ],
     why: "California, New York, and others require a renewal reminder for longer terms and advance notice of any material price change. The notice windows differ by state and by term length.",
     fix: "Commit to a renewal reminder within the statutory window for terms that require it, and to advance notice of any price increase before it takes effect.",
@@ -479,7 +499,7 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     ),
     pat: [
       /(california|new\s+york|state\s+(law|residents))/i,
-      /(automatic\s+renewal\s+law|additional\s+(rights|disclosures)|if\s+you\s+(are\s+a\s+)?reside)/i,
+      /(automatic[-\s]+renewal\s+law|additional\s+(rights|disclosures)|if\s+you\s+(are\s+a\s+)?reside)/i,
     ],
     why: "State ARLs impose different windows, notice contents, and remedies than ROSCA, and several make an unauthorized renewal an unconditional gift to the consumer.",
     fix: "Add a state-specific supplement for the ARL states where the service is sold, or apply the strictest standard nationwide.",
@@ -541,11 +561,15 @@ const OEM = pack("oem-agreement", C, [
   },
   {
     id: "COMM-242",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Source-code escrow or continuity",
     cite: practice("oem-continuity", "business-continuity protection in embedded-technology deals"),
     pat: [
       /(escrow|continuity)/i,
-      /(source\s+code|bankruptcy|cease(s)?\s+(to\s+)?(do\s+business|support))/i,
+      /(source[-\s]+code|bankruptcy|cease(s)?\s+(to\s+)?(do\s+business|support))/i,
     ],
     why: "An OEM whose shipping product embeds a supplier's code cannot survive that supplier's failure. Escrow with defined release conditions is the standard mitigation.",
     fix: "Add a source-code escrow with release conditions (insolvency, cessation of support, uncured material breach) and a post-release license to maintain the product.",
@@ -578,17 +602,25 @@ const VENUE = pack("venue-rental-agreement", C, [
   },
   {
     id: "COMM-245",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Insurance and additional-insured status",
     cite: practice("venue-insurance", "insurance requirements in venue rental agreements"),
     pat: [
       /insur(e|ance)/i,
-      /(additional\s+insured|certificate\s+of\s+insurance|general\s+liability|\$\d)/i,
+      /(additional[-\s]+insured|certificate\s+of\s+insurance|general\s+liability|\$\d)/i,
     ],
     why: "Venues require event liability coverage naming them as additional insured; a licensee that does not carry it is personally exposed for every guest injury.",
     fix: "State the required coverages and limits, require additional-insured status and a certificate before load-in, and add waivers of subrogation.",
   },
   {
     id: "COMM-246",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Alcohol service and dram-shop allocation",
     cite: stateLaw(
       "dram-shop",
@@ -597,7 +629,7 @@ const VENUE = pack("venue-rental-agreement", C, [
     ),
     pat: [
       /(alcohol|liquor|bar\s+service|beverage\s+service)/i,
-      /(dram\s+shop|licensed\s+server|liquor\s+liability|no\s+outside\s+alcohol)/i,
+      /(dram[-\s]+shop|licensed\s+server|liquor\s+liability|no\s+outside\s+alcohol)/i,
     ],
     why: "Dram-shop statutes impose liability on the server, and social-host statutes can reach the host. Which party holds the license and the liquor-liability coverage decides who is exposed.",
     fix: "State who holds the liquor license, that only licensed servers may serve, and require liquor-liability coverage from the serving party.",

@@ -261,6 +261,10 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
   },
   {
     id: "SET-120",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Filing under seal and public-access recital",
     cite: practice(
       "sealing",
@@ -268,7 +272,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
     ),
     pat: [
       /(under\s+seal|sealing)/i,
-      /(local\s+rule|motion\s+to\s+seal|public\s+(access|right)|the\s+court\s+(will|shall)\s+determine)/i,
+      /(local\s+rule|motion\s+to\s+seal|public[-\s]+(access|right)|the\s+court\s+(will|shall)\s+determine)/i,
     ],
     why: "A stipulated order cannot itself authorize sealing; courts require a separate showing that overcomes the presumption of public access. Orders that assume automatic sealing get rejected.",
     fix: "State that designation does not entitle a party to file under seal, and describe the local-rule motion required for each sealing request.",
@@ -397,11 +401,15 @@ const EXPERT = pack("expert-witness-retention", C, [
   },
   {
     id: "SET-129",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Rule 26(b)(4) draft-report and communication protection",
     cite: frcp("26(b)(4)(B)", "trial preparation — protection of draft reports and disclosures"),
     pat: [
-      /(draft\s+(report|disclosure)|rule\s+26\(b\)\(4\))/i,
-      /(protect|work\s+product|communications\s+between\s+(the\s+)?(party'?s?\s+)?attorney\s+and\s+the\s+expert)/i,
+      /(draft[-\s]+(report|disclosure)|rule\s+26\(b\)\(4\))/i,
+      /(protect|work[-\s]+product|communications\s+between\s+(the\s+)?(party'?s?\s+)?attorney\s+and\s+the\s+expert)/i,
     ],
     why: "The 2010 amendments protect draft reports and most attorney-expert communications, with three exceptions (compensation, facts or data provided that the expert considered, and assumptions supplied). Experts who do not know the exceptions create discoverable material.",
     fix: "Recite the Rule 26(b)(4)(B)-(C) protections and the three exceptions, and instruct the expert on document retention accordingly.",
@@ -457,9 +465,13 @@ const STIP_DISMISSAL = pack("stipulation-of-dismissal", C, [
   },
   {
     id: "SET-134",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "With- or without-prejudice election",
     cite: frcp("41(a)(1)(B)", "voluntary dismissal — effect"),
-    pat: [/(with\s+prejudice|without\s+prejudice)/i, /(dismiss)/i],
+    pat: [/(with\s+prejudice|without[-\s]+prejudice)/i, /(dismiss)/i],
     all: true,
     why: "Rule 41(a)(1)(B) makes an unspecified dismissal without prejudice, and the two-dismissal rule can turn a second one into an adjudication on the merits. The election has to be conscious.",
     fix: "State expressly whether the dismissal is with or without prejudice, for each claim and each party.",
@@ -537,10 +549,14 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
   },
   {
     id: "SET-140",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Privilege and work-product protection",
     cite: fre("502", "attorney-client privilege and work product — limitations on waiver"),
     pat: [
-      /(privileg|work\s+product)/i,
+      /(privileg|work[-\s]+product)/i,
       /(common\s+interest|shall\s+not\s+(waive|constitute\s+a\s+waiver)|confidential)/i,
     ],
     why: "Diligence materials shared with a funder are the standard target of a discovery motion. Most courts protect them as work product where a confidentiality or common-interest agreement exists; without one, the argument is much weaker.",

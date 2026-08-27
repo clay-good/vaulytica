@@ -45,8 +45,16 @@ const OFFICE_SIG_LINE =
   /_{4,}\s*[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Trustee|Grantor|Settlor|Authorized\s+Signatory|Its\b)\b/g;
 // A standalone signatory office on a signature line — "____ Notary Public",
 // "____ Witness", "____ Testator" — with no personal name attached.
+//
+// The judicial offices are here because a COURT ORDER is signed by an office
+// and never by a name: a QDRO, a consent judgment, and a stipulated order all
+// close with "SO ORDERED … _____________ Justice of the Supreme Court", and
+// without them every one of them reported "No signature block detected" at
+// `critical`. The `_{4,}` prefix is what keeps the words safe: "the Court"
+// and "the Clerk" appear in ordinary prose constantly, and never after a
+// signature rule.
 const STANDALONE_SIGNATORY_ROLE =
-  /_{4,}\s*(?:\/s\/\s*)?(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant)\b/i;
+  /_{4,}\s*(?:\/s\/\s*)?(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Judge|Justice|Magistrate(?:\s+Judge)?|Chief\s+Judge|Referee|Hearing\s+Officer|Administrative\s+Law\s+Judge|Clerk(?:\s+of\s+(?:the\s+)?Court)?)\b/i;
 
 // A template / field-label token that must NOT appear in a string accepted as
 // a printed personal name — "____ Company Name", "____ Insert Party" are
@@ -188,7 +196,7 @@ const CLICKWRAP_ACCEPTANCE =
  */
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.21.0",
+  version: "1.22.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

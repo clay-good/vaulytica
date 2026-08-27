@@ -146,6 +146,10 @@ const ARCHITECT = pack("architect-agreement", C, [
   },
   {
     id: "CON-110",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Construction-phase duties and site visits",
     cite: standardForm(
       "AIA Document B101",
@@ -153,7 +157,7 @@ const ARCHITECT = pack("architect-agreement", C, [
       "https://www.aiacontracts.com/",
     ),
     pat: [
-      /(construction\s+(phase|administration)|site\s+visits?)/i,
+      /(construction[-\s]+(phase|administration)|site\s+visits?)/i,
       /(not\s+(required\s+)?to\s+(make\s+exhaustive|be\s+continuously\s+present)|means\s+and\s+methods|general\s+conformance)/i,
     ],
     why: "The architect's site visits are for general conformance, not inspection, and the contractor owns means and methods. Blurring the line converts an architect into a guarantor of the contractor's work.",

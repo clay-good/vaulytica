@@ -159,10 +159,14 @@ const AUP = pack("acceptable-use-policy", C, [
   },
   {
     id: "POL-111",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "NLRA § 7 protected-activity savings clause",
     cite: usc("29", "157", "National Labor Relations Act § 7 — rights of employees"),
     pat: [
-      /(section\s+7|nlra|national\s+labor\s+relations|protected\s+(concerted\s+)?activity)/i,
+      /(section\s+7|nlra|national\s+labor\s+relations|protected[-\s]+(concerted\s+)?activity)/i,
       /(nothing\s+in\s+this\s+policy|shall\s+not\s+be\s+(construed|interpreted)\s+to\s+(prohibit|restrict)|wages,?\s+hours,?\s+(and|or)\s+(other\s+)?(terms|working\s+conditions))/i,
     ],
     why: "The Board's Stericycle standard treats a work rule as presumptively unlawful if a reasonable employee could read it to chill § 7 activity. A savings clause does not cure every rule, but its absence is a standing exposure for confidentiality and communications rules.",
@@ -199,11 +203,14 @@ const EXPORT = pack("export-control-policy", C, [
     id: "POL-114",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.2.0",
     name: "Restricted-party and SDN screening",
     cite: cfr("31", "501", "OFAC — Reporting, Procedures and Penalties Regulations"),
     pat: [
-      /(restricted\s+part(y|ies)|denied\s+persons|entity\s+list|specially\s+designated\s+nationals|sdn)/i,
+      /(restricted[-\s]+part(y|ies)|denied\s+persons|entity\s+list|specially\s+designated\s+nationals|sdn)/i,
       /(screen|check\s+against|prior\s+to\s+(shipment|transaction|onboarding)|re-?screen)/i,
     ],
     why: "OFAC liability is strict — no knowledge is required — and the 50 Percent Rule extends blocking to entities majority-owned by blocked persons. Screening at onboarding only misses designations that happen later.",
@@ -215,10 +222,14 @@ const EXPORT = pack("export-control-policy", C, [
   },
   {
     id: "POL-115",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Deemed-export controls for foreign nationals",
     cite: cfr("15", "734.13", "EAR — definition of export, deemed exports"),
     pat: [
-      /deemed\s+export/i,
+      /deemed[-\s]+export/i,
       /(foreign\s+national|foreign\s+person|release\s+of\s+technology|within\s+the\s+united\s+states)/i,
     ],
     why: "Releasing controlled technology to a foreign national inside the US is an export to that person's country. Engineering teams and cloud repositories are where this is most often missed.",
@@ -235,10 +246,14 @@ const EXPORT = pack("export-control-policy", C, [
   },
   {
     id: "POL-117",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Red-flag escalation and voluntary disclosure",
     cite: cfr("15", "732 Supp. 3", "EAR — BIS 'Know Your Customer' guidance and red flags"),
     pat: [
-      /red\s+flag/i,
+      /red[-\s]+flag/i,
       /(escalat|inquire|resolve|voluntary\s+(self-?)?disclosure|stop\s+the\s+transaction)/i,
     ],
     why: "BIS's Know Your Customer guidance requires that red flags be resolved, not ignored — self-blinding is itself a violation. Voluntary self-disclosure is the principal mitigation once something has gone wrong.",
@@ -258,6 +273,10 @@ const EXPORT = pack("export-control-policy", C, [
   },
   {
     id: "POL-119",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Sanctioned-jurisdiction prohibitions",
     cite: cfr(
       "31",
@@ -265,7 +284,7 @@ const EXPORT = pack("export-control-policy", C, [
       "OFAC — Iranian Transactions and Sanctions Regulations (as an example of a comprehensive program)",
     ),
     pat: [
-      /(embargo|comprehensive(ly)?\s+sanction|sanctioned\s+(countr|jurisdiction|region))/i,
+      /(embargo|comprehensive(ly)?\s+sanction|sanctioned[-\s]+(countr|jurisdiction|region))/i,
       /(cuba|iran|north\s+korea|syria|crimea|donetsk|luhansk|prohibited)/i,
     ],
     why: "Comprehensive programs prohibit essentially all transactions with the jurisdiction, including services delivered online. Software and SaaS companies routinely discover users in embargoed regions only after the fact.",

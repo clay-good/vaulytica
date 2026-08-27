@@ -6,12 +6,20 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * A date that belongs to a DIFFERENT, referenced instrument — "incorporated
  * into the Master Services Agreement between the parties dated January 1,
  * 2026" — is not this document's effective date, so it cannot evidence that
- * THIS document was back-dated. Requiring the determiner "the" (never "this")
- * before the instrument keeps the document's own "This Agreement, dated …"
- * out of the exclusion.
+ * THIS document was back-dated. The determiner is the discriminator, and
+ * "this" is the one that must NOT match: a document's own date is written
+ * "This Agreement, dated …".
+ *
+ * The indefinite article belongs here beside the definite one. A sublease
+ * introduces its prime lease as "from Prime Landlord under A LEASE dated June
+ * 1, 2023", and an assignment, an SNDA, and an estoppel certificate all do the
+ * same — the instrument has not been named yet, so the definite article would
+ * be wrong English. Accepting only "the" reported every one of them as
+ * back-dated by however old the underlying lease is; the specimen that found
+ * it was off by 1,219 days.
  */
 const REFERENCED_INSTRUMENT_DATE =
-  /\bthe\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|indenture)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
+  /\b(?:the|a|an)\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|indenture)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
 
 /**
  * A header-field label naming another instrument's date — "Original Contract
@@ -107,7 +115,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",

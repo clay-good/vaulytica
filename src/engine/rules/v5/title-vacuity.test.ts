@@ -42,6 +42,7 @@ import { GATED_PACK_RULE_IDS, PACK_SPECS } from "./_pack.js";
 
 /** Every rule this shorthand has built — v5's catalog and v6's law-practice packs. */
 const PACK_RULES = [...V5_RULES, ...V6_RULES].filter((r) => PACK_SPECS.has(r.id));
+const NAME_OF = new Map(PACK_RULES.map((r) => [r.id, r.name]));
 
 const familyName = new Map<string, string>();
 for (const wave of ["v5", "v6"]) {
@@ -150,5 +151,34 @@ describe("title-vacuity guard", () => {
     expect(GATED_PACK_RULE_IDS.size).toBeGreaterThan(0);
     for (const id of GATED_PACK_RULE_IDS)
       expect(ids.has(id), `${id} is not a pack rule`).toBe(true);
+  });
+
+  it("recognizes the hyphenated spelling of a compound its own name hyphenates", () => {
+    // A QDRO says "This is a separate-interest order". EST-422's recognizer
+    // was `separate\s+interest`, so the hyphen — the ordinary spelling when
+    // the compound is used as an adjective, and the spelling the rule's OWN
+    // NAME uses — did not match, and the check reported the method missing at
+    // `critical` on a document that had stated it.
+    //
+    // The rule name is the oracle here, and a good one: an author who writes
+    // "Separate-interest or shared-payment method" has already decided the
+    // compound is hyphenated. Seventy-six distinct compounds across
+    // ninety-seven patterns were blind to their own spelling. `[-\s]+` costs
+    // nothing — a compound means the same thing hyphenated or spaced — and
+    // this guard keeps the next one from shipping.
+    const blind: string[] = [];
+    for (const [id, spec] of PACK_SPECS) {
+      for (const m of (NAME_OF.get(id) ?? "").matchAll(/\b([A-Za-z]{3,})-([A-Za-z]{3,})\b/g)) {
+        const spaced = `${m[1]!} ${m[2]!}`;
+        const hyphenated = `${m[1]!}-${m[2]!}`;
+        for (const p of spec.pat) {
+          const re = new RegExp(p.source, "i");
+          if (re.test(spaced) && !re.test(hyphenated)) blind.push(`${id} — "${hyphenated}"`);
+        }
+      }
+    }
+    expect(blind, `patterns blind to their own name's hyphen:\n  ${blind.join("\n  ")}`).toEqual(
+      [],
+    );
   });
 });

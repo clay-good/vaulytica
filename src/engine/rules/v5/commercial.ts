@@ -151,10 +151,14 @@ const MASTER_PURCHASE = pack("master-purchase-agreement", C, [
 const EQUIPMENT_LEASE = pack("equipment-lease", C, [
   {
     id: "COMM-112",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Finance-lease designation and hell-or-high-water covenant",
     cite: ucc("2A-407", "Irrevocable promises: finance leases"),
     pat: [
-      /(finance\s+lease|hell\s+or\s+high\s+water)/i,
+      /(finance[-\s]+lease|hell\s+or\s+high\s+water)/i,
       /(lessee'?s?\s+obligations?\s+(are|shall\s+be)\s+absolute\s+and\s+unconditional)/i,
     ],
     why: "§ 2A-407 makes the lessee's promises irrevocable and independent only in a finance lease of goods that is not a consumer lease. Without the designation and the supporting language, the lessee keeps setoff and abatement rights the lessor's pricing assumed away.",
@@ -219,6 +223,10 @@ const EQUIPMENT_LEASE = pack("equipment-lease", C, [
 const FREIGHT = pack("freight-transportation-agreement", C, [
   {
     id: "COMM-118",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Carmack cargo-liability standard and limitation",
     cite: usc(
       "49",
@@ -227,7 +235,7 @@ const FREIGHT = pack("freight-transportation-agreement", C, [
     ),
     pat: [
       /(carmack|49\s+u\.?s\.?c\.?\s*§?\s*14706)/i,
-      /(cargo\s+liability|liability\s+for\s+loss\s+or\s+damage\s+to\s+the\s+(cargo|freight|shipment))/i,
+      /(cargo[-\s]+liability|liability\s+for\s+loss\s+or\s+damage\s+to\s+the\s+(cargo|freight|shipment))/i,
     ],
     why: "The Carmack Amendment preempts state-law cargo claims against interstate motor carriers and makes the carrier liable for actual loss. A limitation of liability binds the shipper only if the carrier gave a fair opportunity to choose between levels of liability and rates.",
     fix: "State the cargo-liability standard, any released-value limitation with the alternative full-value rate offered, and the excepted causes.",
@@ -268,9 +276,13 @@ const FREIGHT = pack("freight-transportation-agreement", C, [
   },
   {
     id: "COMM-122",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Indemnity and independent-contractor status",
     cite: practice("carrier-status", "independent-contractor status in motor-carrier agreements"),
-    pat: [/independent\s+contractor/i, /indemnif/i],
+    pat: [/independent[-\s]+contractor/i, /indemnif/i],
     why: "Shippers are increasingly named in negligent-selection and vicarious-liability suits after catastrophic accidents. The independent-contractor recital and a broad carrier indemnity are the shipper's principal contractual defenses.",
     fix: "State that the carrier is an independent contractor with exclusive control over drivers and equipment, and require indemnity for bodily injury and property damage arising from the carrier's operations.",
   },
@@ -781,6 +793,10 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
   },
   {
     id: "COMM-162",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Payment and prompt-payment flow-down",
     cite: cfr(
       "48",
@@ -788,7 +804,7 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
       "FAR — providing accelerated payments to small business subcontractors",
     ),
     pat: [
-      /(prompt\s+payment|accelerated\s+payment)/i,
+      /(prompt[-\s]+payment|accelerated\s+payment)/i,
       /(52\.232|payment\s+within\s+\d+\s+days|pay\s+when\s+paid|pay\s+if\s+paid)/i,
     ],
     why: "FAR 52.232-40 requires primes to accelerate payments to small-business subcontractors after receiving accelerated payment themselves. Pay-if-paid clauses are separately unenforceable in many states.",
@@ -998,12 +1014,15 @@ const INFLUENCER = pack("influencer-agreement", C, [
     id: "COMM-178",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.2.0",
     name: "Clear and conspicuous material-connection disclosure duty",
     cite: cfr("16", "255.5", "FTC Endorsement Guides — disclosure of material connections"),
     pat: [
       /(#ad\b|#sponsored|paid\s+partnership)/i,
-      /(clearly?\s+and\s+conspicuous|material\s+connection|disclose\s+the\s+relationship)/i,
+      /(clearly?\s+and\s+conspicuous|material[-\s]+connection|disclose\s+the\s+relationship)/i,
     ],
     why: "16 C.F.R. § 255.5 requires disclosure of a material connection between endorser and advertiser. Since the 2023 Guides revision and the Rule on Consumer Reviews, both the brand and the creator carry exposure, and the brand is liable for failing to instruct and monitor.",
     fix: 'Require a clear and conspicuous disclosure in the post itself (not only in a bio or "more" fold), specify the accepted formats, and require it on every platform and every re-post.',

@@ -127,10 +127,14 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
   },
   {
     id: "IPL-110",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Quality-control transition and phase-out license",
     cite: usc("15", "1055", "Lanham Act § 5 — use by related companies"),
     pat: [
-      /(quality\s+control|standards\s+of\s+quality)/i,
+      /(quality[-\s]+control|standards\s+of\s+quality)/i,
       /(transition|phase-?out|wind-?down|license\s+back|sell-?off\s+period)/i,
     ],
     why: "The assignor usually keeps selling branded inventory after closing. Without a short license back with quality control, that use is infringing and can support a naked-licensing attack on the mark.",
@@ -231,10 +235,14 @@ const JDA = pack("joint-development-agreement", C, [
   },
   {
     id: "IPL-118",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Section 262 joint-owner default addressed",
     cite: usc("35", "262", "Joint owners of patents"),
     pat: [
-      /(joint(ly)?\s+own|co-?owner)/i,
+      /(joint(ly)?[-\s]+own|co-?owner)/i,
       /(262|without\s+the\s+consent\s+of|accounting\s+to\s+the\s+other|may\s+(not\s+)?license\s+independently)/i,
     ],
     why: "Under 35 U.S.C. § 262 each joint owner may make, use, and license the patent without the other's consent and without accounting — which usually destroys the exclusivity both parties assumed.",
@@ -372,7 +380,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     ),
     pat: [
       /indemnif/i,
-      /(insur(e|ance)|product\s+liability|name\s+the\s+university\s+as\s+an\s+additional\s+insured|\$\d)/i,
+      /(insur(e|ance)|product\s+liability|name\s+the\s+university\s+as\s+an\s+additional[-\s]+insured|\$\d)/i,
     ],
     why: "The university transfers the product-liability risk entirely; the indemnity and the insurance requirement, with stated limits triggered at first commercial sale, are always in the template.",
     fix: "Provide a broad indemnity in favor of the university, its trustees, and its inventors, backed by product-liability insurance at stated limits naming them as additional insureds.",

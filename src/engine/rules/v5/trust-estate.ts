@@ -74,20 +74,26 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
     why: "The annual exclusion requires a present interest, which a Crummey withdrawal right supplies — but only with real notice and a real window. Lapses above the 5-or-5 amount are themselves taxable gifts by the beneficiary.",
     fix: "Grant withdrawal rights with a stated notice procedure and window, and address the lapse using a 5-or-5 limit or a hanging power.",
     when: [
-      /(crummey|withdrawal\s+right|annual\s+exclusion|life\s+insurance\s+trust|ilit|gift\s+to\s+the\s+trust)/i,
+      /(crummey|withdrawal\s+right|annual\s+exclusion|life[-\s]+insurance\s+trust|ilit|gift\s+to\s+the\s+trust)/i,
     ],
   },
   {
     id: "EST-406",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Grantor-trust powers and tax reimbursement",
     cite: irs("26 U.S.C. §§ 671-679", "grantor trust rules"),
     pat: [
-      /(grantor\s+trust|section\s+67[1-9]|substitut(e|ion)\s+of\s+(assets|property)|non-?adverse\s+party)/i,
+      /(grantor[-\s]+trust|section\s+67[1-9]|substitut(e|ion)\s+of\s+(assets|property)|non-?adverse\s+party)/i,
       /(reimburse|pay\s+the\s+income\s+tax|discretion\s+of\s+(an\s+)?independent\s+trustee)/i,
     ],
     why: "Intentional grantor-trust status lets the settlor pay the trust's income tax as an additional tax-free gift, but a mandatory reimbursement right causes estate inclusion. Discretionary reimbursement by an independent trustee is the safe form.",
     fix: "State the grantor-trust power relied on (typically a § 675(4)(C) substitution power) and make any tax reimbursement discretionary with an independent trustee, never mandatory.",
-    when: [/(grantor\s+trust|67[1-9]|idgit|intentionally\s+defective|substitution\s+of\s+assets)/i],
+    when: [
+      /(grantor[-\s]+trust|67[1-9]|idgit|intentionally\s+defective|substitution\s+of\s+assets)/i,
+    ],
   },
   {
     id: "EST-407",
@@ -124,7 +130,7 @@ const SNT = pack("special-needs-trust", C, [
     cite: usc("42", "1396p", "Medicaid — liens, adjustments, recoveries, and transfers of assets"),
     pat: [
       /(first-?party|self-?settled|d4a|\(d\)\(4\)\(a\)|third-?party)/i,
-      /(funded\s+with\s+(the\s+)?beneficiary'?s?\s+(own\s+)?(assets|funds)|funded\s+by\s+(a\s+)?(parent|grandparent|third\s+party))/i,
+      /(funded\s+with\s+(the\s+)?beneficiary'?s?\s+(own\s+)?(assets|funds)|funded\s+by\s+(a\s+)?(parent|grandparent|third[-\s]+party))/i,
     ],
     why: "A first-party trust under § 1396p(d)(4)(A) must be for a disabled person under 65, established by the proper party, and carry a Medicaid payback. A third-party trust carries none of those constraints — but only if it truly holds no beneficiary assets.",
     fix: "State whose assets fund the trust and characterize it expressly as first-party (d)(4)(A) or third-party, and align the payback and age provisions accordingly.",
@@ -255,7 +261,7 @@ const QDRO = pack("qdro", C, [
     id: "EST-419",
     name: "Plan named and participant and alternate payee identified",
     cite: usc("29", "1056", "ERISA § 206(d)(3) — qualified domestic relations orders"),
-    pat: [/(the\s+plan|plan\s+name|plan\s+administrator)/i, /(alternate\s+payee|participant)/i],
+    pat: [/(the\s+plan|plan\s+name|plan[-\s]+administrator)/i, /(alternate\s+payee|participant)/i],
     why: "§ 1056(d)(3)(C) requires the order to name the plan and give the name and last known mailing address of the participant and each alternate payee. An order missing any of these cannot be qualified.",
     fix: "Name the plan exactly as it appears in the plan documents and give each party's name and last known mailing address.",
     sev: "critical",
@@ -286,10 +292,14 @@ const QDRO = pack("qdro", C, [
   },
   {
     id: "EST-422",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Separate-interest or shared-payment method",
     cite: usc("29", "1056", "ERISA § 206(d)(3) — form of benefit to the alternate payee"),
     pat: [
-      /(separate\s+interest|shared\s+payment)/i,
+      /(separate[-\s]+interest|shared[-\s]+payment)/i,
       /(alternate\s+payee'?s?\s+(own\s+)?life|when\s+the\s+participant\s+(begins|commences)|actuarially\s+adjusted)/i,
     ],
     why: "A separate interest is payable over the alternate payee's own lifetime; a shared payment depends on the participant's election and ends at the participant's death. The choice is the practical difference between security and dependence.",
@@ -298,6 +308,10 @@ const QDRO = pack("qdro", C, [
   },
   {
     id: "EST-423",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Survivor-benefit treatment",
     cite: usc(
       "29",
@@ -305,7 +319,7 @@ const QDRO = pack("qdro", C, [
       "ERISA § 205 — requirement of joint and survivor annuity and preretirement survivor annuity",
     ),
     pat: [
-      /(survivor\s+(benefit|annuity)|qpsa|qjsa|pre-?retirement\s+survivor)/i,
+      /(survivor[-\s]+(benefit|annuity)|qpsa|qjsa|pre-?retirement\s+survivor)/i,
       /(alternate\s+payee\s+(shall\s+be\s+)?(treated\s+as\s+)?(the\s+)?(surviving\s+)?spouse|former\s+spouse)/i,
     ],
     why: "The order may treat the alternate payee as the surviving spouse for QPSA and QJSA purposes. If it does not, the alternate payee's interest in a defined benefit plan can vanish if the participant dies before retirement.",
@@ -329,11 +343,15 @@ const QDRO = pack("qdro", C, [
   },
   {
     id: "EST-425",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Court entry and plan-administrator qualification",
     cite: usc("29", "1056", "ERISA § 206(d)(3)(G) — plan administrator determination"),
     pat: [
       /(entered\s+by\s+the\s+court|so\s+ordered|it\s+is\s+(hereby\s+)?ordered|submitted\s+to\s+the\s+court)/i,
-      /(plan\s+administrator|retains?\s+jurisdiction|reserves?\s+jurisdiction)/i,
+      /(plan[-\s]+administrator|retains?\s+jurisdiction|reserves?\s+jurisdiction)/i,
     ],
     all: true,
     why: "A DRO becomes a QDRO only when the plan administrator determines it qualifies. Courts should retain jurisdiction so the order can be amended if the administrator rejects it.",

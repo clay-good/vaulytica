@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.44.0] — 2026-08-27
+
+### Fixed
+- **Seventy-six compounds across the catalog could not recognize their own
+  hyphen.** A QDRO says "This is a separate-interest order". EST-422's
+  recognizer was `separate\s+interest`, so the hyphen — the ordinary spelling
+  when a compound is used as an adjective, and the spelling the rule's OWN NAME
+  uses — did not match, and the check reported the method missing at
+  `critical` on the document that had stated it.
+
+  The rule name turns out to be a good oracle: an author who writes
+  "Separate-interest or shared-payment method" has already decided the compound
+  is hyphenated. Probing every pack rule for a compound its name hyphenates
+  that its patterns cannot match found **97 patterns across 76 distinct
+  compounds** — prime-lease, safe-harbor, restricted-party, material-connection,
+  working-capital, hold-harmless, third-party, dual-agency, tail coverage's
+  siblings, and seventy more. `[-\s]+` costs nothing, because a compound means
+  the same thing hyphenated or spaced, and the probe is now a permanent guard
+  beside the title-vacuity one. No corpus finding moved.
+- **Every court order reported itself unsigned.** A court order is signed by an
+  OFFICE, never by a name: a QDRO, a consent judgment, and a stipulated order
+  all close with "SO ORDERED … \_\_\_\_ Justice of the Supreme Court".
+  STRUCT-003's standalone-signatory list covered the notary, the witness, and
+  the testator but no judicial office, so each of them drew "No signature block
+  detected" at `critical`. The `_{4,}` rule prefix is what keeps the words
+  safe — "the Court" and "the Clerk" are everywhere in a pleading's body and
+  never after a signature line. Version 1.22.0.
+- **A sublease's prime-lease date read as back-dating.** TEMP-002 excludes a
+  date belonging to a referenced instrument, and required the definite article
+  before it. A sublease introduces its prime lease as "under **a** lease dated
+  June 1, 2023" — the instrument has not been named yet, so the definite
+  article would be wrong English — and an assignment, an SNDA, and an estoppel
+  certificate all do the same. The indefinite article now qualifies;
+  "**this** Agreement, dated …" still does not, which is the whole point of
+  the discriminator. The specimen that found it was off by 1,219 days.
+  Version 1.6.0.
+
 ## [9.43.4] — 2026-08-27
 
 ### Fixed

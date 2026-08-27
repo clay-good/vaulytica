@@ -76,11 +76,15 @@ const PLAN = pack("equity-incentive-plan", C, [
   },
   {
     id: "EQT-106",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Amendment and stockholder-approval triggers",
     cite: irs("26 U.S.C. § 422(b)(1)", "incentive stock options — plan approval by shareholders"),
     pat: [
       /amend(ment)?/i,
-      /(stockholder\s+approval|shareholder\s+approval|to\s+the\s+extent\s+required\s+by\s+(applicable\s+law|listing))/i,
+      /(stockholder[-\s]+approval|shareholder\s+approval|to\s+the\s+extent\s+required\s+by\s+(applicable\s+law|listing))/i,
     ],
     why: "§ 422 requires shareholder approval within twelve months of adoption, and listing standards require it for material amendments. A plan that does not name the triggers ends up amended invalidly.",
     fix: "State the amendment authority and which amendments require stockholder approval (reserve increases, ISO changes, repricing, and any change listing standards require).",
@@ -144,17 +148,21 @@ const ESPP = pack("employee-stock-purchase-plan", C, [
     cite: irs("26 U.S.C. § 423(b)(6)", "employee stock purchase plans — option price"),
     pat: [
       /(purchase\s+price|option\s+price)/i,
-      /(85%|eighty-?five\s+percent|lower\s+of|lookback|offering\s+date)/i,
+      /(85%|eighty-?five[-\s]+percent|lower\s+of|lookback|offering\s+date)/i,
     ],
     why: "§ 423(b)(6) permits a price no lower than 85% of the fair market value at grant or exercise. The lookback to the lower of the two dates is what makes the discount valuable and must be stated to apply.",
     fix: "State the purchase price as a percentage (not below 85%) of the lower of the fair market value on the offering date and the purchase date.",
   },
   {
     id: "EQT-112",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Five-percent shareholder exclusion",
     cite: irs("26 U.S.C. § 423(b)(3)", "employee stock purchase plans — 5% shareholder exclusion"),
     pat: [
-      /(5%|five\s+percent)/i,
+      /(5%|five[-\s]+percent)/i,
       /(shareholder|stockholder|own(s|ing)?\s+(stock\s+)?possessing|attribution)/i,
     ],
     why: "An employee owning 5% or more of the voting power may not be granted an ESPP right at all, applying the § 424(d) attribution rules. Granting to one is a qualification defect.",
@@ -191,6 +199,10 @@ const PROFITS_INTEREST = pack("profits-interest-award", C, [
   },
   {
     id: "EQT-115",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Rev. Proc. 93-27 safe-harbor recitals",
     cite: irs(
       "Rev. Proc. 2001-43",
@@ -198,7 +210,7 @@ const PROFITS_INTEREST = pack("profits-interest-award", C, [
     ),
     pat: [
       /(rev\.?\s*proc\.?\s*93-27|revenue\s+procedure\s+93-27|2001-43)/i,
-      /(safe\s+harbor|profits\s+interest\s+for\s+services|no\s+(taxable\s+)?income\s+(on|upon)\s+(receipt|grant))/i,
+      /(safe[-\s]+harbor|profits\s+interest\s+for\s+services|no\s+(taxable\s+)?income\s+(on|upon)\s+(receipt|grant))/i,
     ],
     why: "The safe harbors require that the interest not relate to a substantially certain income stream, that it not be disposed of within two years, and that the partnership not be a publicly traded partnership. Reciting them documents the intended treatment.",
     fix: "Recite the parties' intent that the award be a profits interest under Rev. Procs. 93-27 and 2001-43, the two-year disposition limitation, and consistent tax reporting by both parties.",
@@ -225,10 +237,14 @@ const PROFITS_INTEREST = pack("profits-interest-award", C, [
   },
   {
     id: "EQT-118",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Capital-account and distribution mechanics",
     cite: cfr("26", "1.704-1(b)(2)(iv)", "Treasury regulations — capital account maintenance"),
     pat: [
-      /capital\s+account/i,
+      /capital[-\s]+account/i,
       /(book-?up|revalu|distribution\s+waterfall|allocations?\s+of\s+(profit|income))/i,
     ],
     why: "A profits interest only works if the operating agreement books up capital accounts at grant and maintains them under the § 704(b) regulations. Without the book-up the holder shares in pre-grant value.",
@@ -285,11 +301,15 @@ const WARRANT = pack("warrant-agreement", C, [
   },
   {
     id: "EQT-123",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Expiration and automatic-exercise trigger",
     cite: practice("warrant-expiration", "expiration and automatic exercise in warrants"),
     pat: [
       /(expir(e|ation|es)|terminate)/i,
-      /(automatic(ally)?\s+exercis|deemed\s+exercised|forfeit)/i,
+      /(automatic(ally)?[-\s]+exercis|deemed\s+exercised|forfeit)/i,
     ],
     why: "In-the-money warrants expire unexercised more often than any other instrument, usually because the holder was not tracking the date. Automatic net exercise at expiry solves it.",
     fix: "State the expiration date and add automatic net exercise immediately before expiration if the warrant is then in the money.",
@@ -322,6 +342,10 @@ const SECONDARY = pack("secondary-stock-transfer", C, [
   },
   {
     id: "EQT-126",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Company consent and transfer-agent instruction",
     cite: practice(
       "transfer-consent",
@@ -329,7 +353,7 @@ const SECONDARY = pack("secondary-stock-transfer", C, [
     ),
     pat: [
       /(consent\s+of\s+the\s+company|company'?s?\s+(written\s+)?(consent|approval))/i,
-      /(transfer\s+agent|stock\s+ledger|book\s+entry|record\s+the\s+transfer)/i,
+      /(transfer[-\s]+agent|stock\s+ledger|book\s+entry|record\s+the\s+transfer)/i,
     ],
     why: "A private company's shares transfer on its books, not by delivery of a certificate. Without the company's consent and ledger entry, the buyer holds nothing enforceable.",
     fix: "Condition closing on the company's written consent and its instruction to record the transfer on the stock ledger or with the transfer agent.",

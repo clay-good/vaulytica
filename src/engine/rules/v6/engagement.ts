@@ -98,12 +98,12 @@ const ENGAGEMENT = pack("engagement-letter", C, [
     cite: modelRule("1.15(c)", "safekeeping property — advance fees and expenses"),
     pat: [
       /(retainer|advance\s+(fee|payment)|deposit)/i,
-      /(trust\s+account|iolta|client\s+funds|withdraw|applied\s+(to|against))/i,
+      /(trust[-\s]+account|iolta|client\s+funds|withdraw|applied\s+(to|against))/i,
     ],
     all: true,
     why: "Rule 1.15(c) requires advance fees and expenses to be held in a client trust account and withdrawn only as earned or incurred. Treating an advance as the firm's own money on receipt is one of the most common disciplinary findings in the country.",
     fix: "State the retainer amount, that it is held in the firm's trust account, when it is applied, and whether an unearned balance is refundable.",
-    when: [/(retainer|advance\s+(fee|payment)|deposit|trust\s+account)/i],
+    when: [/(retainer|advance\s+(fee|payment)|deposit|trust[-\s]+account)/i],
     sev: "critical",
   },
   {
@@ -262,11 +262,15 @@ const FLAT_FEE = pack("flat-fee-agreement", C, [
   },
   {
     id: "ENG-018",
+    // Also accepts the HYPHENATED spelling of the compound this rule's own
+    // name hyphenates — the ordinary spelling when it is used as an
+    // adjective (`v5/title-vacuity.test.ts`).
+    ver: "1.1.0",
     name: "Trust-account treatment of the advance",
     cite: modelRule("1.15(c)", "safekeeping property — advance fees"),
     pat: [
       /(flat\s+fee|advance|paid\s+(in\s+advance|up\s+front))/i,
-      /(trust\s+account|iolta|earned\s+upon\s+receipt|deemed\s+earned|held\s+until)/i,
+      /(trust[-\s]+account|iolta|earned\s+upon\s+receipt|deemed\s+earned|held\s+until)/i,
     ],
     all: true,
     why: "Whether a flat fee paid in advance may be deposited in the operating account is one of the sharpest state-to-state splits in the Model Rules' adoption. Several states prohibit 'earned upon receipt' outright, and some require specific disclosure language.",
@@ -355,7 +359,7 @@ const JOINT_REP = pack("joint-representation-waiver", C, [
     cite: modelRule("1.0(e)", "terminology — informed consent"),
     pat: [
       /(advantage|benefit|risk)/i,
-      /(common\s+representation|joint\s+representation|separate\s+counsel|independent\s+counsel)/i,
+      /(common\s+representation|joint\s+representation|separate\s+counsel|independent[-\s]+counsel)/i,
     ],
     all: true,
     why: "Rule 1.0(e) defines informed consent as agreement after the lawyer explains the material risks and reasonably available alternatives. A waiver reciting consent without describing risk is form without substance.",
@@ -500,7 +504,7 @@ const TERMINATION = pack("termination-of-representation", C, [
     cite: modelRule("1.15(d)", "safekeeping property — prompt accounting and delivery"),
     pat: [
       /(final\s+(invoice|statement|accounting)|balance)/i,
-      /(refund|remit|unearned|trust\s+account|enclosed\s+is)/i,
+      /(refund|remit|unearned|trust[-\s]+account|enclosed\s+is)/i,
     ],
     all: true,
     why: "Rules 1.15(d) and 1.16(d) require a prompt accounting and return of any unearned advance. Trust-account balances left after a matter closes are a recurring source of discipline.",

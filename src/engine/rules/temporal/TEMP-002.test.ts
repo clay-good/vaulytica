@@ -244,3 +244,32 @@ describe("TEMP-002 — a reported past event is not a back-date (v1.5.0)", () =>
     ).not.toBeNull();
   });
 });
+
+describe("TEMP-002 — the indefinite article introduces a referenced instrument (v1.6.0)", () => {
+  it("stays silent on a sublease's prime-lease date", () => {
+    expect(
+      TEMP_002.check(
+        buildContext([
+          "Sublease",
+          'This Sublease is made as of October 2, 2026, between Harborlight Analytics, Inc. ("Sublandlord") and Cedar Ridge Labs LLC ("Subtenant").',
+          'Sublandlord leases the premises from Tompkins Retail Holdings LLC under a lease dated June 1, 2023 (the "Prime Lease").',
+          "The term commences on December 1, 2026 and expires on May 31, 2029.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports the document's OWN date sitting apart from the rest", () => {
+    // "This Agreement, dated …" must not reach the exclusion — that is the
+    // date the rule exists to check.
+    expect(
+      TEMP_002.check(
+        buildContext([
+          "Services Agreement",
+          "This Agreement, dated January 5, 2025, is between the parties.",
+          "The first invoice is due March 3, 2026 and the term ends March 3, 2027.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
