@@ -820,7 +820,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -916,7 +916,7 @@
       "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
       "id": "TERM-005-s1-0",
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0",
+      "rule_version": "1.12.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1002,11 +1002,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "f1a7a7515f2ee3aaee2cfc7fec96f8af7bb3bfd1e2d87487159bd7d4fd148352",
+  "result_hash": "9d36c3b06726ea2e3d0bc1d349dfb6a1eed2acf83d894e4db68b267bc02ba9c6",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.86.0"
+  "version": "9.87.0"
 }

@@ -631,3 +631,48 @@ describe("the SNDA covenants as an SNDA actually writes them (v1.1.0)", () => {
     ).toBe(true);
   });
 });
+
+describe("RE-028 maintains whatever the easement exists for (v1.2.0)", () => {
+  /**
+   * The object of an easement's maintenance covenant is the thing the easement
+   * is for. A utility easement maintains its FACILITIES, and the recognized
+   * objects were "easement / premises / property / area / improvements /
+   * surface", so a section headed "Maintenance and Standard of Work" reading
+   * "Grantee shall maintain the facilities in good repair at its sole expense"
+   * was reported missing — at `critical`.
+   */
+  const EASEMENT_PB2: Playbook = { id: "easement-agreement", version: "1.0.0" };
+  const fired = async (body: string) => {
+    const ctx = withPb(buildContext(["Easement", body]), EASEMENT_PB2);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads the covenant when its object is the facilities", async () => {
+    expect(
+      (
+        await fired("Grantee shall maintain the facilities in good repair at its sole expense.")
+      ).has("RE-028"),
+    ).toBe(false);
+  });
+
+  it("reads it for a pipeline, a road, and a system", async () => {
+    for (const clause of [
+      "Grantee shall maintain the pipeline and appurtenances at its own cost.",
+      "The Grantee agrees to maintain the access road in a passable condition.",
+      "Grantee shall keep the system in good working order.",
+    ]) {
+      expect((await fired(clause)).has("RE-028"), clause).toBe(false);
+    }
+  });
+
+  it("still fires on an easement that allocates no maintenance", async () => {
+    expect(
+      (
+        await fired(
+          "Grantor grants to Grantee a permanent non-exclusive easement over the strip described on Exhibit B for the purpose of ingress and egress.",
+        )
+      ).has("RE-028"),
+    ).toBe(true);
+  });
+});

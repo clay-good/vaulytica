@@ -820,7 +820,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -968,7 +968,7 @@
       "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
       "id": "TERM-005-s1-0",
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0",
+      "rule_version": "1.12.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1020,11 +1020,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "aa8d00bedcf2c3e13cc4f122110c031db2a9b0b6dbad177b3cf91e716b2d5dda",
+  "result_hash": "0c074654b12c6dfb329faeaeb2ca15ce76e2d8503dba5980c5ffa95661228c87",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.86.0"
+  "version": "9.87.0"
 }

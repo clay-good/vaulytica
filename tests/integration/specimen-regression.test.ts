@@ -408,6 +408,29 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A permanent utility easement. RE-028 reported the maintenance allocation
+  // missing at `critical` on the section headed "Maintenance and Standard of
+  // Work", because the object of an easement's maintenance covenant is
+  // whatever the easement exists for — "Grantee shall maintain the FACILITIES
+  // in good repair at its sole expense" — and the recognized objects were
+  // "easement / premises / property / area / improvements / surface".
+  "easement.txt": {
+    playbook: "easement-agreement",
+    findings: ["OBLI-005", "RISK-010", "RISK-011", "STRUCT-006", "STRUCT-018"],
+  },
+
+  // A tolling agreement suspending a limitations period pending settlement
+  // talks. TERM-005 reported no effect-of-termination clause on "On
+  // termination, the Tolling Period ENDS and any applicable limitations period
+  // RESUMES running" — the plainest consequence there is, and one the
+  // recognized-consequence list did not hold. TEMP-002 is correct and expected
+  // here: the loss predates the agreement by 627 days, which is the reason a
+  // tolling agreement exists.
+  "tolling-agreement.txt": {
+    playbook: "tolling-agreement",
+    findings: ["STRUCT-006", "TEMP-002"],
+  },
+
   // A patent assignment for USPTO recordation. Two defects, both about a
   // conveyance's own vocabulary. IPDATA-001's assignment branch allowed one
   // adverb between "hereby" and "assigns", and a conveyance never uses one

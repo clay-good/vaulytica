@@ -38,6 +38,12 @@ const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transit
 const EFFECT_OF_TERMINATION = new RegExp(
   String.raw`\b(?:effect|consequences)\s+of\s+termination\b` +
     `|\\b${TERMINATION_TRIGGER}\\b[^.]{0,220}\\b(?:${CONSEQUENCE})\\b` +
+    // The plainest consequence there is, and one the noun list did not hold:
+    // "On termination, the Tolling Period ENDS and any applicable limitations
+    // period RESUMES running." Admitted only AFTER the trigger, never before
+    // it — "This Agreement ends upon expiration of the Initial Term" defines a
+    // term, it does not state what termination does.
+    `|\\b${TERMINATION_TRIGGER}\\b[^.]{0,220}\\b(?:ends?|ended|expires?|lapses?|resumes?|is\\s+released|are\\s+released|becomes?\\s+(?:void|null))\\b` +
     `|\\b(?:${CONSEQUENCE})\\b[^.]{0,120}\\b${TERMINATION_TRIGGER}\\b` +
     // "Customer shall pay for all Services performed … through the
     // termination date" — the pay-for-work-performed wind-down consequence
@@ -132,7 +138,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

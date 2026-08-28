@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.87.0] — 2026-08-28
+
+A permanent utility easement and a tolling agreement.
+
+### Fixed
+- **RE-028 maintains only what it was told to look for.** The object of an
+  easement's maintenance covenant is whatever the easement exists for, and a
+  utility easement maintains its **facilities** — "Grantee shall maintain the
+  facilities in good repair at its sole expense". The recognized objects were
+  "easement / premises / property / area / improvements / surface", so a
+  section headed "Maintenance and Standard of Work" was reported missing, at
+  `critical`. The pipeline, the road, the system, and the "in good repair"
+  formulation are all recognized now.
+- **TERM-005 did not know the plainest consequence there is.** "On
+  termination, the Tolling Period **ends** and any applicable limitations
+  period **resumes** running" is a textbook effect-of-termination clause, and
+  the recognized-consequence list held return / destroy / surrender / survive
+  but not "ends". Admitted only after the trigger, so "This Agreement ends upon
+  expiration of the Initial Term" still reads as a term definition rather than
+  an effect clause.
+- **`easement-agreement` and `tolling-agreement` shipped with an empty
+  `rule_overrides`.** A recorded conveyance and a two-page standstill were each
+  told they allocated no IP, capped no liability, and stated no termination for
+  cause.
+
+### Added
+- Two specimens, bringing the set to fifty.
+
 ## [9.86.0] — 2026-08-28
 
 A patent assignment and a subordination, non-disturbance and attornment

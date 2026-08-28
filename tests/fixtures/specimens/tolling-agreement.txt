@@ -1,0 +1,65 @@
+TOLLING AGREEMENT
+
+This Tolling Agreement (this "Agreement") is entered into as of December 1, 2026, between SEVERN RIDGE MUTUAL INSURANCE COMPANY, a Maryland corporation ("Severn Ridge"), and PALADIN STRUCTURAL ENGINEERING, PLLC, a Virginia professional limited liability company ("Paladin"). Severn Ridge and Paladin are each a "Party" and together the "Parties."
+
+RECITALS
+
+A. Severn Ridge insured the owner of a mixed-use building at 1120 Rockfish Gap Turnpike, Charlottesville, Virginia (the "Building"), and paid claims arising from the partial collapse of a parking deck at the Building on March 14, 2025 (the "Loss").
+
+B. Severn Ridge asserts that it is subrogated to its insured's claims and contends that Paladin's structural design services contributed to the Loss. Paladin denies any liability and denies that its services were deficient in any respect.
+
+C. The Parties wish to explore resolution of the dispute without the expense of litigation, and to preserve their respective positions while they do so, and therefore agree to suspend the running of any applicable limitations period on the terms below.
+
+NOW, THEREFORE, in consideration of the mutual promises below, the Parties agree as follows.
+
+1. Tolled Claims.
+
+The claims tolled by this Agreement (the "Tolled Claims") are all claims, counterclaims, cross-claims, third-party claims, causes of action, and demands that either Party has or may have against the other arising out of or relating to the Loss, the Building, or Paladin's services in connection with the Building, whether sounding in contract, tort, statute, contribution, indemnity, or subrogation, and whether presently known or unknown.
+
+2. Tolling Period.
+
+The running of any statute of limitations, statute of repose, laches, or other time-based defense applicable to any Tolled Claim is suspended and tolled from December 1, 2026 (the "Tolling Commencement Date") through and including the date this Agreement terminates under Section 4 (the "Tolling Period"). The Tolling Period is excluded from the computation of any such period. This Agreement does not revive any Tolled Claim that was already barred as of the Tolling Commencement Date, and does not shorten any period that would otherwise expire after the Tolling Period ends.
+
+3. No Admission; Defenses Preserved.
+
+Neither the execution of this Agreement nor any statement or exchange of information under it is an admission of liability, of the existence or validity of any claim or defense, or of the applicability of any limitations period. Except for the time-based defenses expressly suspended by Section 2, each Party reserves all claims, defenses, objections, and rights, including any objection to jurisdiction, venue, or the sufficiency of process, and including Paladin's contention that Severn Ridge's claims are barred on grounds unrelated to timing.
+
+4. Termination.
+
+Either Party may terminate this Agreement at any time by giving thirty (30) days' prior written notice to the other Party. This Agreement terminates on the thirtieth day after that notice is given, or on December 1, 2027, whichever occurs first, unless the Parties extend it in a writing signed by both. On termination, the Tolling Period ends and any applicable limitations period resumes running, with the Tolling Period excluded from its computation, and each Party is free to commence any proceeding on any Tolled Claim.
+
+5. Confidentiality and Settlement Privilege.
+
+All communications, documents, and information exchanged by the Parties in connection with the settlement discussions this Agreement facilitates are made in furtherance of compromise and are inadmissible to prove or disprove the validity or amount of a disputed claim under Federal Rule of Evidence 408 and any comparable state rule. Neither Party shall disclose the existence or terms of this Agreement to any person other than its counsel, insurers, reinsurers, auditors, and, in Paladin's case, its professional liability carrier, each of whom shall be bound by this Section, except as required by law or court order or as necessary to enforce this Agreement.
+
+6. No Waiver of Insurance Coverage Positions.
+
+Nothing in this Agreement waives, modifies, or affects any coverage position, reservation of rights, or defense under any policy of insurance issued to either Party, and no insurer is required by this Agreement to fund any settlement.
+
+7. Notices.
+
+Every notice under this Agreement shall be in writing and given by email with confirmation of receipt, and by overnight courier, to counsel identified below each Party's signature, and is effective on the earlier of confirmed email receipt and actual delivery by courier.
+
+8. Authority.
+
+Each person signing this Agreement represents that the person is duly authorized to execute it on behalf of the Party for whom the person signs, and that no consent of any third party is required.
+
+9. Governing Law; Entire Agreement; Counterparts.
+
+This Agreement is governed by the laws of the Commonwealth of Virginia, without regard to its conflict-of-laws principles. This Agreement is the entire agreement of the Parties concerning tolling and supersedes any prior understanding on that subject. It may be amended only in a writing signed by both Parties, may be executed in counterparts, and an electronic signature has the same effect as an original.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the date first written above.
+
+SEVERN RIDGE MUTUAL INSURANCE COMPANY
+
+By: /s/ Aurelia Kowalski-Mbeki
+Name: Aurelia Kowalski-Mbeki
+Title: Vice President, Subrogation
+Counsel: Harlow & Vance LLP, 400 East Main Street, Richmond, Virginia
+
+PALADIN STRUCTURAL ENGINEERING, PLLC
+ 
+By: /s/ Rasmus Delacroix-Nwosu
+Name: Rasmus Delacroix-Nwosu
+Title: Managing Member
+Counsel: Stroud Beaumont PC, 900 Preston Avenue, Charlottesville, Virginia

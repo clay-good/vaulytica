@@ -821,7 +821,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -988,7 +988,7 @@
       "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
       "id": "TERM-005-s1-0",
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0",
+      "rule_version": "1.12.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1048,11 +1048,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.7). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\".",
-  "result_hash": "80c8ab6c64424a44989b5994b37fcd432be6af6881dfa037bfd1ad94a04944a3",
+  "result_hash": "a71462e379fec0cd3113d97156aa4933903de45d50be14cf0966e7bd783367b6",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.86.0"
+  "version": "9.87.0"
 }

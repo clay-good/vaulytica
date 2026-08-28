@@ -221,3 +221,35 @@ describe("the purchase-agreement 'terminate this Agreement … refund' form (v1.
     ).toBeNull();
   });
 });
+
+describe("TERM-005 — the plainest consequence of all (v1.12.0)", () => {
+  /**
+   * "On termination, the Tolling Period ENDS and any applicable limitations
+   * period RESUMES running." That is a textbook effect-of-termination clause,
+   * and the recognized-consequence list held return / destroy / surrender /
+   * survive but not "ends".
+   */
+  it("reads a consequence stated as ending or resuming", () => {
+    for (const clause of [
+      "On termination, the Tolling Period ends and any applicable limitations period resumes running, with the Tolling Period excluded from its computation.",
+      "Upon termination of this Agreement, the license granted in Section 2 lapses and Licensee's rights expire.",
+      "Upon expiration or termination, all obligations of the parties become void except those in Section 9.",
+    ]) {
+      expect(TERM_005.check(buildContext(["Term", clause])), clause).toBeNull();
+    }
+  });
+
+  it("does not read a term definition as an effect-of-termination clause", () => {
+    // The new branch is admitted only AFTER the trigger. "This Agreement ends
+    // upon expiration of the Initial Term" defines a term; it does not state
+    // what termination does.
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Term",
+          "This Agreement ends upon expiration of the Initial Term unless renewed.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

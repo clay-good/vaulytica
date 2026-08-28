@@ -823,7 +823,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -921,7 +921,7 @@
       "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
       "id": "TERM-005-s1-0",
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0",
+      "rule_version": "1.12.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1076,11 +1076,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Customer Data\", \"uptime\". Negative features penalized: \"Premises\".",
-  "result_hash": "ef83b3204cf50ee5bf4e0e60ee31bcf0dc0623d4669eceadd4a8d35d019827c2",
+  "result_hash": "63dd9e48fbd93b2ce43d99c3cc3e9a4b821490b07d0bc16708ba106ff90a9244",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.86.0"
+  "version": "9.87.0"
 }

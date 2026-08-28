@@ -651,7 +651,7 @@ const EASEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "RE-028",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Maintenance and repair allocation",
     description: "Easement should allocate maintenance and repair costs.",
     citation: easementLaw(),
@@ -665,9 +665,16 @@ const EASEMENT_RULES: Rule[] = [
     // Restoration — the Grantee shall maintain the Easement Area … and restore
     // the surface" as "maintenance and repair": admit the restoration/upkeep
     // synonyms and the verb form "shall maintain the <area/improvements>".
+    // 1.2.0 — the OBJECT of the covenant is whatever the easement exists for,
+    // and a utility easement maintains its FACILITIES, not its "area": "Grantee
+    // shall maintain the facilities in good repair at its sole expense" is the
+    // allocation, written the ordinary way, and the check reported it missing
+    // at `critical`. The "in good repair" formulation gets its own branch
+    // because it names the standard rather than the noun.
     present_patterns: [
       /maintenance\s+(?:and|or)\s+(?:repair|restoration|upkeep)/i,
-      /(?:shall|must|will|agrees?\s+to)\s+maintain\b[^.]{0,40}\b(?:easement|premises|property|area|improvements|surface)/i,
+      /(?:shall|must|will|agrees?\s+to)\s+maintain\b[^.]{0,60}\b(?:easement|premises|property|area|improvements|surface|facilit(?:y|ies)|lines?|pipelines?|mains?|roads?|driveways?|utilit(?:y|ies)|systems?|structures?|equipment)/i,
+      /(?:shall|must|will|agrees?\s+to)\s+(?:maintain|keep|repair)\b[^.]{0,80}?\bin\s+good\s+(?:repair|condition|order|working\s+order)/i,
     ],
   }),
   presence({

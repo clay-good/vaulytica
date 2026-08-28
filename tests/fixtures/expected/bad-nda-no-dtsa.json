@@ -820,7 +820,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -967,7 +967,7 @@
       "explanation": "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
       "id": "TERM-005-s1-0",
       "rule_id": "TERM-005",
-      "rule_version": "1.11.0",
+      "rule_version": "1.12.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1019,11 +1019,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "ef42624097e9105898dabab35f2c744fd3fc58680b0dca19940d3bcc6c925ed5",
+  "result_hash": "9b691a872eeacc05c900946ca374bd9764ed7aa66e2c26ad24119dcdc6c8dc6e",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",
     "size_bytes": 9006
   },
-  "version": "9.86.0"
+  "version": "9.87.0"
 }
