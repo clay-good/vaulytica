@@ -1368,3 +1368,33 @@ describe("a conformed signature doubled by the paste join", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).toContain("Percentage Interest");
   });
 });
+
+describe("a sentence-initial 'Every' fused onto a defined term", () => {
+  // "Every" sat beside "Each" in every drafter's vocabulary and not in the
+  // leading-stopword set, so "Every Owner is a member of the Association" was
+  // reported as a use of an undefined term "Every Owner" — on a declaration
+  // that defines "Owner" in its first article.
+  const undefinedTerms = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Declaration", ...paras])).undefined_capitalized.map(
+      (e) => e.term,
+    );
+
+  it("does not report 'Every Owner' as an undefined term", () => {
+    expect(
+      undefinedTerms(
+        '"Owner" means the record owner of the fee simple title to any Lot.',
+        "Every Owner is a member of the Association.",
+        "Every Owner has a right and easement of enjoyment in and to the Common Area.",
+      ),
+    ).not.toContain("Every Owner");
+  });
+
+  it("still reports a genuinely undefined multi-word term", () => {
+    expect(
+      undefinedTerms(
+        "The Special Reserve Fund shall be maintained by the Board.",
+        "Withdrawals from the Special Reserve Fund require a two-thirds vote.",
+      ),
+    ).toContain("Special Reserve Fund");
+  });
+});

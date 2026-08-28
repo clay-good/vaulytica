@@ -102,6 +102,13 @@ const PAYMENT_TERMS = new RegExp(
     // plainly stated billing term warned that it has none.
     `\\b(?:billed|charged|invoiced)\\s+in\\s+(?:advance|arrears)\\b`,
     `\\b(?:billed|charged|invoiced)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
+    // An installment schedule with named due dates — "payable in two equal
+    // installments due on January 15 and July 15 of each year", how every
+    // homeowners-association assessment and many purchase prices are stated.
+    // The cadence-word branch below needs "monthly"/"quarterly"; the due-date
+    // branches above need an ordinal day of a recurring period. Between them
+    // an assessment schedule as plain as this read as no payment term at all.
+    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?installments\\s+(?:due|payable)\\s+on\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
     // The installment count is optional: a lease states "annual base rent …
     // payable in equal monthly installments" with no number, and that cadence

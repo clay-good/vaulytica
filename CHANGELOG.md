@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.101.0] — 2026-08-28
+
+A recorded declaration of covenants, conditions, and restrictions.
+
+### Fixed
+- **A pair of decimal-numbered statutory sections read as a broken internal
+  reference.** Texas, California, and Florida number their statutes with a
+  decimal and documents cite them in pairs — "Sections 202.010 and 202.007 of
+  the Texas Property Code". The connective run in the external-citation trailer
+  admitted only whole numbers, so the second section stopped the run, the "of
+  the … Code" qualifier was never reached, and STRUCT-007 reported the citation
+  as pointing at a section the declaration does not have.
+- **"Every" was missing from the leading-stopword set.** It sits beside "Each"
+  in every drafter's vocabulary, so "Every Owner is a member of the
+  Association" was reported as a use of an undefined term "Every Owner" — on a
+  declaration that defines "Owner" in its first article. "Certain", "Several",
+  "Various", "Most", and "Many" are added for the same reason.
+- **FIN-005 could not read an installment schedule with named due dates.**
+  "payable in two equal installments due on January 15 and July 15 of each
+  year" is how every homeowners-association assessment is stated: the cadence
+  branch needs "monthly"/"quarterly" and the due-date branches need an ordinal
+  day of a recurring period, so between them this read as no payment term.
+- **`ccrs` shipped with an empty `rule_overrides`.** A declaration is not a
+  bargain between two parties — the declarant subjects land to covenants that
+  bind whoever buys it — and it drew six findings for having no indemnity, no
+  liability cap, no IP allocation, no venue, and no termination clause.
+
+### Added
+- One specimen, bringing the set to seventy-three.
+
 ## [9.100.0] — 2026-08-28
 
 A general warranty deed — and the sixth thing that sits above a title.

@@ -785,6 +785,12 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "warranty-deed",
     findings: ["STRUCT-018", "TEMP-002"],
   },
+
+  // A recorded declaration of covenants, conditions, and restrictions. Not a
+  // bargain between two parties: the declarant subjects land to covenants that
+  // bind whoever buys it. Its statutory citations are decimal-numbered and
+  // come in pairs, which is where the external-citation run stopped reading.
+  "ccrs.txt": { playbook: "ccrs", findings: ["OBLI-005", "TEMP-004", "TEMP-008"] },
 };
 
 describe("hand-written specimens", () => {

@@ -33,6 +33,13 @@ const REF_RE =
 // after the article, with no "of the", so the "of the …" form alone missed
 // every "Article NN GDPR" — 140+ in the corpus — and STRUCT-007 reported each
 // as a broken internal reference to an "Article 32" the document never has.
+// A state statute numbers its sections with a DECIMAL — "Sections 202.010 and
+// 202.007 of the Texas Property Code", "Sections 1798.100 and 1798.105 of the
+// CCPA" — and the connective run below admitted only whole numbers, so the
+// second section of every such pair stopped the run and the whole citation
+// read as a broken internal reference. Texas, California, and Florida all
+// number this way, and a Declaration of Covenants cites them by the dozen.
+//
 // The qualifier can trail a sub-reference and a list or range of further
 // numbers before it lands — "Article 28(4) of the … Regulation", "Articles 33
 // and 34 GDPR", "Articles 32 to 36 of the GDPR". Skip that connective run, then
@@ -61,7 +68,7 @@ const REF_RE =
 // the optional statute-name phrase is `[A-Za-z]` rather than `[A-Z]` to say
 // what it means under the flag, since `[A-Z]` matches lowercase under `i`.
 const EXTERNAL_TRAILER_RE =
-  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
+  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s*(?:to|through|and|or|,)\s*\d+(?:\.\d+)*[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 // The statutory qualifier can also PRECEDE the section: "Treasury Regulations

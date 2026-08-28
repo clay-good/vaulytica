@@ -315,3 +315,25 @@ describe("FIN-005 — a subscription is billed, not 'due'", () => {
     expect(FIN_005.check(ctx)).not.toBeNull();
   });
 });
+
+describe("FIN-005 — an installment schedule with named due dates", () => {
+  // "payable in two equal installments due on January 15 and July 15 of each
+  // year" is how every homeowners-association assessment is stated. The
+  // cadence branch needs "monthly"/"quarterly"; the due-date branches need an
+  // ordinal day of a recurring period. Between them this read as no term.
+  it("reads 'payable in two equal installments due on January 15 and July 15'", () => {
+    const ctx = buildContext([
+      "4.3 Annual Assessment",
+      "The annual assessment for the calendar year 2027 is $1,150 per Lot, payable in two equal installments due on January 15 and July 15 of each year.",
+    ]);
+    expect(FIN_005.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a fee with no schedule at all", () => {
+    const ctx = buildContext([
+      "4.3 Fees",
+      "The Owner shall pay a transfer fee of $1,150 per Lot to the Association.",
+    ]);
+    expect(FIN_005.check(ctx)).not.toBeNull();
+  });
+});

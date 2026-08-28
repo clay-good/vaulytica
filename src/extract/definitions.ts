@@ -409,6 +409,16 @@ const OFFICER_TITLES =
  */
 const TITLE_CASE_LEADING_STOPWORDS = new Set([
   "Each",
+  // "Every" sat beside "Each" in every drafter's vocabulary and not in this
+  // list: "Every Owner is a member of the Association" was reported as a use
+  // of an undefined term "Every Owner", on a declaration that defines "Owner"
+  // in its first article. Its siblings are here for the same reason.
+  "Every",
+  "Certain",
+  "Several",
+  "Various",
+  "Most",
+  "Many",
   "If",
   "Neither",
   "Either",

@@ -795,3 +795,41 @@ describe("a reference into a companion governance instrument", () => {
     ]);
   });
 });
+
+describe("a pair of decimal-numbered statutory sections", () => {
+  /**
+   * Texas, California, and Florida number their statutes with a decimal, and a
+   * document cites them in pairs: "Sections 202.010 and 202.007 of the Texas
+   * Property Code". The connective run in the external-citation trailer
+   * admitted only whole numbers, so the second section stopped the run, the
+   * "of the … Code" qualifier was never reached, and the whole citation read as
+   * a broken internal reference.
+   */
+  const unresolved = (...paras: string[]) => {
+    const t = buildTree(["Body", ...paras]);
+    return extractCrossRefs(t, extractSections(t))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+  };
+
+  it("reads a decimal-numbered pair as external", () => {
+    expect(
+      unresolved(
+        "An Owner may install a solar energy device except as permitted by Sections 202.010 and 202.007 of the Texas Property Code.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("reads a decimal-numbered range as external", () => {
+    expect(
+      unresolved("The disclosures required by Sections 1798.100 to 1798.130 of the CCPA apply."),
+    ).toEqual([]);
+  });
+
+  it("still reports a broken internal reference to a decimal section", () => {
+    expect(unresolved("The indemnity in Section 12.4 and Section 12.5 survives.")).toEqual([
+      "Section 12.4",
+      "Section 12.5",
+    ]);
+  });
+});
