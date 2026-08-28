@@ -1,9 +1,9 @@
 /**
- * A table of contents is not a clause.
+ * Front matter is not a clause.
  *
- * Every negotiated agreement long enough to need one has one, and it lists
- * exactly the clause names the presence rules look for. Reading it as
- * document text let the front matter answer for the body.
+ * A table of contents lists the clauses an agreement is supposed to contain;
+ * recitals say what the parties want it to do. Neither is operative, and both
+ * were being read as document text by the presence rules.
  *
  * Appending nothing but a ten-line TOC to an agreement that contains neither
  * clause silenced RISK-001, RISK-005, IPDATA-001, TERM-002, and TERM-005 —
@@ -12,7 +12,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../_test-fixtures.js";
-import { isTableOfContents } from "./_helpers.js";
+import { isRecital, isTableOfContents } from "./_helpers.js";
 import { rule as RISK_001 } from "./risk-allocation/RISK-001.js";
 import { rule as RISK_005 } from "./risk-allocation/RISK-005.js";
 import { rule as IPDATA_001 } from "./ip-and-data/IPDATA-001.js";
@@ -64,6 +64,40 @@ describe("a table of contents does not satisfy a presence rule", () => {
       "See Schedule 1 ..... 4 for the fee table. Provider shall indemnify, defend, and hold harmless Customer from and against any and all third-party claims arising out of Provider's negligence, and shall pay all resulting damages and reasonable attorneys' fees.",
     ]);
     expect(RISK_001.check(ctx)).toBeNull();
+  });
+});
+
+describe("a recital does not satisfy a presence rule", () => {
+  // Recitals state what the parties WANT the agreement to do. They are not
+  // operative and create no obligation, so a presence rule must not read one
+  // as the clause it recites.
+  const RECITALS = [
+    "WHEREAS, Provider desires to grant Customer a limitation of liability and to indemnify Customer against third-party claims;",
+    "WHEREAS, the parties intend that all intellectual property created under this Agreement be owned by Customer;",
+    "WHEREAS, the parties wish to provide for termination for cause and for the effect of termination;",
+  ];
+
+  for (const [id, rule] of RULES) {
+    it(`${id} still fires when a recital promises its clause`, () => {
+      const ctx = buildContext([...BODY, ...RECITALS]);
+      expect(rule.check(ctx), `${id} was silenced by the recitals`).not.toBeNull();
+    });
+  }
+
+  it("an operative clause is not mistaken for a recital", () => {
+    const ctx = buildContext([
+      "Services Agreement",
+      "Provider shall indemnify, defend, and hold harmless Customer from and against any and all third-party claims arising out of Provider's negligence.",
+    ]);
+    expect(RISK_001.check(ctx)).toBeNull();
+  });
+
+  it("only a leading WHEREAS marks a recital", () => {
+    expect(isRecital("WHEREAS, the parties desire to enter into this Agreement;")).toBe(true);
+    expect(isRecital("  whereas the Buyer has agreed to purchase the Property;")).toBe(true);
+    expect(
+      isRecital("The Agreement is void whereas the condition precedent was never satisfied."),
+    ).toBe(false);
   });
 });
 

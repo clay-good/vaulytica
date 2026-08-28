@@ -45,12 +45,37 @@ export function isTableOfContents(text: string): boolean {
   return entries >= 2 || (entries === 1 && text.length <= TOC_SHORT_PARAGRAPH);
 }
 
+/**
+ * A recital: "WHEREAS, the parties intend that all intellectual property
+ * created under this Agreement be owned by Customer".
+ *
+ * Recitals state what the parties WANT the agreement to do. They are not
+ * operative and create no obligation, which is exactly why a presence rule
+ * must not read one as the clause it recites. Three whereas-clauses promising
+ * an indemnity, an IP allocation, a liability cap, and a termination regime
+ * silenced RISK-001, IPDATA-001, RISK-005, TERM-002, and TERM-005 on an
+ * agreement whose body contained none of them.
+ *
+ * "WHEREAS" at the head of the paragraph is the marker, and it is
+ * unambiguous — no operative clause opens with it.
+ */
+const RECITAL_OPENER = /^\s*["'‘’“”(]?\s*WHEREAS\b/i;
+
+export function isRecital(text: string): boolean {
+  return RECITAL_OPENER.test(text);
+}
+
+/** Front matter that lists clauses instead of stating them. */
+export function isNonOperative(text: string): boolean {
+  return isTableOfContents(text) || isRecital(text);
+}
+
 /** Find the first paragraph where `re` matches; returns the match + position. */
 export function firstParagraphMatch(ctx: RuleContext, re: RegExp): ParagraphHit | null {
   let hit: ParagraphHit | null = null;
   forEachParagraph(ctx.tree, (p) => {
     if (hit) return;
-    if (isTableOfContents(p.text)) return;
+    if (isNonOperative(p.text)) return;
     const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
     r.lastIndex = 0;
     const m = r.exec(p.text);
