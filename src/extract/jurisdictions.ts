@@ -374,6 +374,21 @@ const ARBITRATION_SEAT = new RegExp(
     // branch above wants "the arbitration shall be seated in".
     String.raw`(?:arbitrators?|tribunal|arbitration)\s+(?:sitting|seated|located)\s+in\s+` +
     String.raw`|` +
+    // The bare locative, with no participle at all: "submitted to binding
+    // arbitration before a single ARBITRATOR IN Spokane County, Washington",
+    // "arbitration in Chicago, Illinois". This is how a US employment or
+    // commercial arbitration clause is ordinarily written — the place comes
+    // right after the arbitrator and BEFORE the provider — and every branch
+    // above wants either a participle or the provider first, so CHOICE-006
+    // reported "seat not specified" on a clause that names one.
+    //
+    // The excluded words are the non-places a bare "in" can otherwise reach:
+    // a cross-reference ("arbitration in Section 11"), a container, or a
+    // language. A wrong seat is worse than a missing one — it reconciles
+    // against the venue clause — so the exclusion is explicit rather than
+    // left to the capture's shape.
+    String.raw`(?:arbitrators?|tribunal|arbitration)\s+in\s+(?!(?:Section|Article|Exhibit|Schedule|Annex|Appendix|Rule|Rules|English|Spanish|French|German|Mandarin|Portuguese|Accordance)\b)` +
+    String.raw`|` +
     // institution-first: "administered by JAMS in X", "before the ICC in X",
     // "under the ICC Rules in X" — the named arbitral body fixes the clause as an
     // arbitration seat, so the locality after "in"/"at" is the seat.

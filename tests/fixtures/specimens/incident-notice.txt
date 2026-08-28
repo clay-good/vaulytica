@@ -1,0 +1,45 @@
+NORTHFIELD PATHOLOGY ASSOCIATES, P.C.
+1220 Sherman Avenue, Suite 400
+Evanston, Illinois 60202
+
+August 21, 2026
+
+Ms. Deborah Mainwaring
+517 Custer Street, Apartment 2B
+Evanston, Illinois 60202
+
+Re: Notice of a Data Security Incident Affecting Your Information
+
+Dear Ms. Mainwaring:
+
+We are writing to tell you about a security incident at Northfield Pathology Associates, P.C. that involved some of your information, to explain what we have done about it, and to tell you what you can do to protect yourself. We take the protection of your information seriously, and we are sorry this happened.
+
+What Happened
+
+On July 29, 2026, we learned that an unauthorized person had gained access to one of our employee email accounts. We immediately disabled the account, reset credentials across the practice, and engaged an outside cybersecurity firm to investigate. The investigation determined that the account was accessible to the unauthorized person between July 12, 2026 and July 29, 2026, and that the person viewed or may have viewed messages and attachments in that account. On August 8, 2026, the investigation confirmed that your information was among the data in the account.
+
+What Information Was Involved
+
+The information involved for you was: your name, date of birth, home address, health insurance member number, and the type and date of a laboratory test performed by our practice, together with the result of that test. Our records indicate that your Social Security number and your financial account information were not in the affected account.
+
+What We Are Doing
+
+We disabled the affected account on the day we learned of the access and forced a password reset for every user. We have enabled multi-factor authentication on all email accounts, shortened our email retention period, and added monitoring for unusual access patterns. We reported the incident to the Federal Bureau of Investigation and are cooperating with its inquiry. We are notifying the Secretary of the U.S. Department of Health and Human Services and the Illinois Attorney General as required by law, and we are providing this notice to you without unreasonable delay and within 60 days of the discovery of the incident, as required by 45 C.F.R. Section 164.404.
+
+We are offering you 24 months of credit monitoring and identity-protection services through Sentinel Identity, at no cost to you. To enroll, visit www.sentinelidentity.com/northfield and enter the activation code NP-4417-2026 by November 30, 2026. Enrolling does not require you to release any claim.
+
+What You Can Do
+
+You may review the statements you receive from your health insurer and from your health care providers, and report any service you did not receive to your insurer and to us. You may place a fraud alert or a security freeze on your credit file at no charge by contacting any one of the three nationwide credit reporting agencies: Equifax (1-800-685-1111, www.equifax.com), Experian (1-888-397-3742, www.experian.com), and TransUnion (1-888-909-8872, www.transunion.com). You may obtain a free copy of your credit report from each agency once every 12 months at www.annualcreditreport.com or by calling 1-877-322-8228.
+
+You may also report suspected identity theft to the Federal Trade Commission at www.identitytheft.gov or 1-877-438-4338, and to the Illinois Attorney General's Identity Theft Hotline at 1-866-999-5630. You have the right to file a police report and to obtain a copy of it.
+
+For More Information
+
+If you have questions, please call our dedicated line at 1-855-555-0177, weekdays from 8:00 a.m. to 8:00 p.m. Central Time, or write to us at the address above, Attention: Privacy Officer. We will answer your questions and help you understand what happened.
+
+Sincerely,
+
+/s/ Anita Rasmussen
+Anita Rasmussen, M.D.
+President, Northfield Pathology Associates, P.C.

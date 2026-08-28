@@ -8733,7 +8733,9 @@
         "data breach notification",
         "incident notification",
         "breach notice",
-        "notification of data breach"
+        "notification of data breach",
+        "notice of data breach",
+        "data security incident"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -8742,7 +8744,13 @@
         "likely consequences",
         "measures taken",
         "without undue delay",
-        "72 hours"
+        "72 hours",
+        "what happened",
+        "what information was involved",
+        "what we are doing",
+        "what you can do",
+        "credit monitoring",
+        "security freeze"
       ],
       "negative_features": [
         "business associate agreement",
@@ -12779,7 +12787,14 @@
       "Practice",
       "Compensation"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-015": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "STARK-42-USC-1395nn",

@@ -742,3 +742,38 @@ describe("the federal-first governing-law clause", () => {
     expect(govLaw("This Agreement is governed by federal law.")).toEqual([]);
   });
 });
+
+describe("the arbitration seat in its bare locative form", () => {
+  /**
+   * A US employment or commercial arbitration clause puts the place right
+   * after the arbitrator and BEFORE the provider — "submitted to binding
+   * arbitration before a single arbitrator in Spokane County, Washington,
+   * administered by the American Arbitration Association". Every branch wanted
+   * either a participle ("seated in") or the provider first, so CHOICE-006
+   * reported "seat not specified" on a clause that names one.
+   */
+  const seat = (text: string) =>
+    extractJurisdictions(buildTree(["Dispute Resolution", text]))
+      .filter((j) => j.clause_kind === "arbitration-seat")
+      .map((j) => j.raw_text);
+
+  it("reads the place after a bare 'arbitrator in'", () => {
+    expect(
+      seat(
+        "A dispute not resolved that way shall be submitted to binding arbitration before a single arbitrator in Spokane County, Washington, administered by the American Arbitration Association.",
+      ),
+    ).toEqual(["Spokane County"]);
+  });
+
+  it("does not read a cross-reference as a seat", () => {
+    expect(seat("The arbitration in Section 11 governs any dispute under this Agreement.")).toEqual(
+      [],
+    );
+  });
+
+  it("does not read a language as a seat", () => {
+    expect(seat("The arbitration in English shall be conducted by a single arbitrator.")).toEqual(
+      [],
+    );
+  });
+});

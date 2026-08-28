@@ -24,7 +24,14 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Physician", "Practice", "Compensation"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "RISK-005": {
+      "skip": true
+    },
+    "RISK-015": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STARK-42-USC-1395nn",

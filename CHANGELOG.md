@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.105.0] — 2026-08-28
+
+A breach notification letter and a physician employment agreement.
+
+### Fixed
+- **The commonest breach-notification document there is scored 0.1.** A HIPAA /
+  state-law notice to an affected individual is written to five model headings
+  every state attorney general recommends — "What Happened", "What Information
+  Was Involved", "What We Are Doing", "What You Can Do", "For More
+  Information". `incident-notification`'s whole vocabulary was GDPR Article 33
+  ("nature of the incident", "likely consequences", "72 hours"), so the letter
+  matched nothing and fell to `generic-fallback`. It now routes at 0.9.
+- **An arbitration seat named in the bare locative went unread.** "submitted to
+  binding arbitration before a single arbitrator in Spokane County,
+  Washington, administered by the American Arbitration Association" is how a US
+  employment or commercial arbitration clause is ordinarily written: the place
+  comes right after the arbitrator and before the provider. Every branch wanted
+  either a participle ("seated in") or the provider first, so CHOICE-006
+  reported "seat not specified" and CHOICE-003 reported no forum at all. The
+  bare "in" excludes cross-references, containers, and languages explicitly —
+  a wrong seat reconciles against the venue clause and is worse than a missing
+  one.
+- **`physician-employment-agreement` shipped with an empty `rule_overrides`.**
+  It now carries the profile of its nearest sibling, `executive-employment`:
+  an employment agreement has no liability cap, and the indemnity a group
+  gives its physicians is uncapped by design.
+
+### Added
+- Two specimens, bringing the set to seventy-nine.
+
+### Known limitation
+- PRV-035 and PRV-040 are `incident-notification`'s TEMPLATE checks — a record
+  count and a state-AG notification threshold. An issued letter to one person
+  has neither and is not supposed to. Splitting the template from the issued
+  notice is a catalog change; the specimen records the gap.
+
 ## [9.104.0] — 2026-08-28
 
 A UCC-1 financing statement on the national form.

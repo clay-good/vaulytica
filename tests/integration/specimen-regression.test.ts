@@ -827,6 +827,50 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "ucc-1-financing-statement",
     findings: ["BNK-049", "STRUCT-006"],
   },
+
+  // A HIPAA / state-law breach notification letter to one individual, written
+  // to the five model headings every state attorney general recommends. The
+  // playbook's vocabulary was entirely GDPR Article 33 ("nature of the
+  // incident", "likely consequences", "72 hours"), so the commonest breach
+  // document there is scored 0.1 and fell to generic-fallback.
+  //
+  // PRV-035 and PRV-040 are the family's TEMPLATE checks — a record count and
+  // a state-AG notification threshold. An issued letter to one person has
+  // neither and is not supposed to. Recorded here rather than papered over:
+  // splitting the template from the issued notice is a catalog change.
+  "incident-notice.txt": {
+    playbook: "incident-notification",
+    findings: ["PRV-035", "PRV-040", "STRUCT-006"],
+  },
+
+  // A gastroenterologist's employment agreement, with the Stark and
+  // anti-kickback recitals a group practice writes. Its arbitration clause
+  // names the seat in the bare locative — "before a single arbitrator in
+  // Spokane County, Washington" — which is where the seat extractor stopped
+  // reading, so CHOICE-006 reported "seat not specified" and CHOICE-003
+  // reported no forum at all.
+  "physician-employment.txt": {
+    playbook: "physician-employment-agreement",
+    findings: [
+      "CHOICE-006",
+      "DARK-002",
+      "IPDATA-001",
+      "OBLI-005",
+      "PERS-001",
+      "PERS-002",
+      "PERS-005",
+      "RISK-010",
+      "STRUCT-006",
+      "TEMP-004",
+      "TEMP-005",
+      "TEMP-006",
+      "TEMP-007",
+      "TEMP-008",
+      "TEMP-012",
+      "TERM-001",
+      "TERM-007",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

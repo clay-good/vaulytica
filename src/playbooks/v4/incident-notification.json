@@ -8,7 +8,9 @@
       "data breach notification",
       "incident notification",
       "breach notice",
-      "notification of data breach"
+      "notification of data breach",
+      "notice of data breach",
+      "data security incident"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
@@ -17,7 +19,13 @@
       "likely consequences",
       "measures taken",
       "without undue delay",
-      "72 hours"
+      "72 hours",
+      "what happened",
+      "what information was involved",
+      "what we are doing",
+      "what you can do",
+      "credit monitoring",
+      "security freeze"
     ],
     "negative_features": [
       "business associate agreement",
