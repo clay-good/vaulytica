@@ -329,7 +329,7 @@
         "output",
         "hallucination",
         "human review",
-        "prompt"
+        "prompts"
       ],
       "negative_features": [
         "protected health information",
@@ -5188,7 +5188,6 @@
       "distinguishing_phrases": [
         "general notes",
         "qualifies",
-        "section",
         "schedule",
         "data room"
       ],
@@ -9181,7 +9180,6 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "intern",
         "academic credit",
         "unpaid internship",
         "primary beneficiary",
@@ -13404,10 +13402,8 @@
         "attorney-client privilege",
         "work product",
         "withheld",
-        "author",
         "recipients",
-        "bates",
-        "date"
+        "bates"
       ],
       "negative_features": [
         "this agreement is entered into",
@@ -16423,7 +16419,7 @@
       "distinguishing_phrases": [
         "subordinate",
         "non-disturbance",
-        "attorn",
+        "attornment",
         "mortgagee",
         "lender"
       ],
@@ -19280,7 +19276,6 @@
         "work made for hire",
         "section 101",
         "specially commissioned",
-        "to the extent",
         "hereby assigns",
         "dtsa"
       ],

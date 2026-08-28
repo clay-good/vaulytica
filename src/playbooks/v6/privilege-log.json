@@ -10,10 +10,8 @@
       "attorney-client privilege",
       "work product",
       "withheld",
-      "author",
       "recipients",
-      "bates",
-      "date"
+      "bates"
     ],
     "negative_features": [
       "this agreement is entered into",

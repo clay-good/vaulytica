@@ -21,7 +21,7 @@
       "output",
       "hallucination",
       "human review",
-      "prompt"
+      "prompts"
     ],
     "negative_features": ["protected health information", "non-disclosure agreement", "this nda"]
   },

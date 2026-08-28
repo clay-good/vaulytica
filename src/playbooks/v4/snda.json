@@ -6,7 +6,7 @@
   "match_features": {
     "title_keywords": ["subordination", "non-disturbance", "attornment", "snda"],
     "required_clauses": [],
-    "distinguishing_phrases": ["subordinate", "non-disturbance", "attorn", "mortgagee", "lender"],
+    "distinguishing_phrases": ["subordinate", "non-disturbance", "attornment", "mortgagee", "lender"],
     "negative_features": []
   },
   "expected_clauses": [],
