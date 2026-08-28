@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.100.0] — 2026-08-28
+
+A general warranty deed — and the sixth thing that sits above a title.
+
+### Fixed
+- **The recorder's block hid the title of every recorded instrument.** A deed,
+  a deed of trust, an easement, a lien, and a release all open on the same
+  scaffolding: who requested the recording, where to mail the instrument back,
+  an escrow or parcel number, and the reserved white space. The matcher read
+  the title company's address as the document's name, so a general warranty
+  deed — the commonest recorded instrument there is — matched no title keyword
+  of any playbook, scored 0.2, and fell to `generic-fallback`. Not one deed
+  check ran on it. It now routes to `warranty-deed` at 0.9.
+
+  This is the sixth shape of one defect. The letterhead, the court caption,
+  the execution stamp, the exhibit marker, and the securities legend each hid
+  a title the same way. Like the caption walk, this one engages only when the
+  document OPENS on a recording line, and skips only lines it can recognize as
+  scaffolding.
+
+### Added
+- One specimen, bringing the set to seventy-two.
+
 ## [9.99.0] — 2026-08-28
 
 Developer-facing API terms — and the liability cap the engine could not read.

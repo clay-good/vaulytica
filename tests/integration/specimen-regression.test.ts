@@ -776,6 +776,15 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-007",
     ],
   },
+
+  // A general warranty deed, under the recorder's block every recorded
+  // instrument opens on. The matcher read the title company's address as the
+  // document's title: the commonest recorded instrument there is scored 0.2
+  // and fell to generic-fallback, so not one deed check ran on it.
+  "warranty-deed.txt": {
+    playbook: "warranty-deed",
+    findings: ["STRUCT-018", "TEMP-002"],
+  },
 };
 
 describe("hand-written specimens", () => {

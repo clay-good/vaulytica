@@ -443,3 +443,58 @@ describe("titleCorpus — a header line above the document's own title", () => {
     expect(titleCorpus(t, "s.txt")).toBe("SETTLEMENT AGREEMENT");
   });
 });
+
+describe("a recorded instrument's title, below the recorder's block", () => {
+  /**
+   * Every deed, deed of trust, easement, lien, and release that goes to a
+   * county recorder opens on the same scaffolding: who requested the
+   * recording, where to mail the instrument back, an escrow or parcel number,
+   * and the reserved white space. The matcher read the title company's address
+   * as the document's title, so a general warranty deed — the commonest
+   * recorded instrument there is — matched no title keyword of any playbook,
+   * scored 0.2, and fell to generic-fallback.
+   */
+  it("reads the title under the recorder's block", () => {
+    const t = tree([
+      {
+        paragraphs: [
+          "Recording requested by and when recorded return to:",
+          "Ashfield Title Company, 1900 Wazee Street, Suite 500, Denver, Colorado 80202",
+          "Space above this line for recorder's use",
+          "GENERAL WARRANTY DEED",
+          "THIS DEED, made this 14th day of August, 2026, between Harold J. Pike and Cedarbrook Holdings LLC.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "deed.txt").toLowerCase()).toContain("general warranty deed");
+  });
+
+  it("reads the title under an 'After recording, return to' block", () => {
+    const t = tree([
+      {
+        paragraphs: [
+          "After recording, return to: Pinnacle Escrow, P.O. Box 4410, Reno, Nevada 89501",
+          "DEED OF TRUST AND ASSIGNMENT OF RENTS",
+          "THIS DEED OF TRUST is made as of March 2, 2026.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "dot.txt").toLowerCase()).toContain("deed of trust");
+  });
+
+  it("does not engage on a document that opens on anything else", () => {
+    // The walk is gated on the FIRST line being a recording line. Without that
+    // gate it would lift a title-shaped line out of the middle of any
+    // document's opening.
+    const t = tree([
+      {
+        paragraphs: [
+          "This Agreement is entered into as of March 2, 2026 between Alpha LLC and Beta Inc.",
+          "Ashfield Title Company, 1900 Wazee Street, Suite 500, Denver, Colorado 80202",
+          "GENERAL WARRANTY DEED",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "agreement.txt").toLowerCase()).not.toContain("warranty deed");
+  });
+});

@@ -258,6 +258,51 @@ function captionTitle(paragraphs: readonly string[]): string {
 const TITLE_LINE_CHARS = 120;
 
 /**
+ * A RECORDED instrument names itself below the recorder's block.
+ *
+ * Every deed, deed of trust, easement, lien, and release that goes to a county
+ * recorder opens on the same scaffolding — who asked for the recording, where
+ * to mail the instrument back, an escrow or parcel number, and the reserved
+ * white space:
+ *
+ *   Recording requested by and when recorded return to:
+ *   Ashfield Title Company, 1900 Wazee Street, Suite 500, Denver, CO 80202
+ *   Space above this line for recorder's use
+ *   GENERAL WARRANTY DEED
+ *
+ * The matcher read the title-company address as the document's title. A
+ * general warranty deed — the commonest recorded instrument there is — matched
+ * no title keyword of any playbook, scored 0.2, and fell to
+ * `generic-fallback`, so not one of the deed checks ran on it. This is the
+ * sixth shape of the same defect the letterhead, the court caption, the
+ * execution stamp, the exhibit marker, and the securities legend each had.
+ *
+ * Like the caption walk, it is engaged only when the document OPENS on a
+ * recording line, and it skips only lines it can recognize as scaffolding —
+ * the recorder's reserved space and anything address-shaped — before taking
+ * the first title-shaped line as the instrument's name.
+ */
+const RECORDING_HEADER =
+  /^\s*(?:(?:when\s+)?recorded?\s*[,:]?\s*(?:please\s+)?return\s+to|recording\s+requested\s+by|after\s+recording\s*,?\s*(?:please\s+)?return\s+to|mail\s+(?:tax\s+statements?|recorded\s+\w+)\s+to|prepared\s+by\s+and\s+return\s+to)\b/i;
+const RECORDER_RESERVED_SPACE =
+  /space\s+(?:above|below)\s+this\s+line|for\s+recorder'?s?\s+use|reserved\s+for\s+(?:the\s+)?recorder/i;
+const ADDRESS_SHAPED =
+  /\b\d{5}(?:-\d{4})?\b|\b(?:street|st\.|avenue|ave\.|road|rd\.|drive|dr\.|boulevard|blvd\.|suite|ste\.|floor|parkway|pkwy|lane|highway|hwy)\b|\bp\.?\s?o\.?\s+box\b|\battn\b|\bescrow\s+(?:no|number)\b|\bapn\b|\b(?:assessor'?s?\s+)?parcel\s+(?:no|number|id)\b/i;
+
+function recordedInstrumentTitle(paragraphs: readonly string[]): string {
+  if (paragraphs.length === 0 || !RECORDING_HEADER.test(paragraphs[0]!)) return "";
+  for (const text of paragraphs.slice(1)) {
+    if (text.length === 0) continue;
+    if (RECORDING_HEADER.test(text)) continue;
+    if (RECORDER_RESERVED_SPACE.test(text)) continue;
+    if (ADDRESS_SHAPED.test(text)) continue;
+    if (titleShaped(text)) return text.slice(0, TITLE_PREAMBLE_CHARS);
+    return "";
+  }
+  return "";
+}
+
+/**
  * True if `line` is shaped like a document title: short, two or more words,
  * no sentence-ending punctuation, and set in caps or Title Case. Used to
  * decide whether the line UNDER the preamble is the document's own name or
@@ -313,7 +358,10 @@ export function titleCorpus(
   const subtitle = titleShaped(stripped[1]) ? stripped[1]!.slice(0, TITLE_PREAMBLE_CHARS) : "";
   const subject = subjectLine(tree.sections);
   const caption = captionTitle(dropLegends(leadingLines(tree.sections)));
-  const parts = [heading, preamble, subtitle, subject, caption].filter((p) => p.length > 0);
+  const recorded = recordedInstrumentTitle(dropLegends(leadingLines(tree.sections)));
+  const parts = [heading, preamble, subtitle, subject, caption, recorded].filter(
+    (p) => p.length > 0,
+  );
   return parts.length > 0 ? parts.join(" ") : fallback;
 }
 
