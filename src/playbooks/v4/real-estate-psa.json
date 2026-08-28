@@ -10,7 +10,9 @@
       "earnest money",
       "title commitment",
       "due diligence period",
-      "closing"
+      "close of escrow",
+      "closing statement",
+      "permitted exceptions"
     ],
     "negative_features": ["stock purchase agreement", "asset purchase agreement"]
   },

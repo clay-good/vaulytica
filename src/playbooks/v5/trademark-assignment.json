@@ -13,7 +13,12 @@
       "intent-to-use application",
       "recordation with the united states patent and trademark office"
     ],
-    "negative_features": ["patent", "employment offer", "lease of the premises"]
+    "negative_features": [
+      "patent application",
+      "letters patent",
+      "employment offer",
+      "lease of the premises"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Assigned Marks", "Goodwill"],

@@ -232,8 +232,21 @@ function captionTitle(paragraphs: readonly string[]): string {
     if (text.length === 0) continue;
     if (CAPTION_ROLE.test(text)) continue;
     if (CAPTION_DOCKET.test(text)) continue;
-    // A party name in the caption block: an uppercase line ending in a comma.
-    if (text.endsWith(",") && text === text.toUpperCase()) continue;
+    // A party name in the caption block. The test used to also require the
+    // line to be entirely uppercase, which a caption with more than one party
+    // on a side is not: "CORVUS SYSTEMS CORPORATION and MARISOL ANDRADE,"
+    // carries a lowercase "and", so the walk stopped there and handed the
+    // matcher the defendants' names as the filing's title. A stipulated
+    // protective order captioned that way routed to `mutual-nda` at 0.9 and
+    // was told it had no governing law, no liability cap, no IP allocation,
+    // and no termination-for-cause clause. It is a court order.
+    //
+    // The comma alone is the test now: a document's title never ends in one,
+    // and a party line, a role designation, and an entity descriptor ("ACME
+    // CORP., a Delaware corporation,") all do. The walk is engaged only under
+    // a court line, and skipping every line still lands on the first line that
+    // is not caption scaffolding — the title.
+    if (text.endsWith(",")) continue;
     return text.slice(0, TITLE_PREAMBLE_CHARS);
   }
   return "";

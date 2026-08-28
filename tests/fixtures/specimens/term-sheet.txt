@@ -1,0 +1,95 @@
+CONFIDENTIAL — FOR DISCUSSION PURPOSES ONLY
+
+SUMMARY OF TERMS FOR THE PROPOSED SERIES B PREFERRED STOCK FINANCING
+OF THALASSA MARINE ROBOTICS, INC.
+
+August 3, 2026
+
+This Summary of Terms is a non-binding term sheet. Except for the sections captioned "Exclusivity," "Confidentiality," "Expenses," and "Governing Law," which are binding on the parties, this Summary of Terms does not constitute a legally binding obligation of any party, creates no duty to negotiate, and is superseded in its entirety by the Definitive Agreements if and when they are executed. No party is obligated to proceed with the financing unless and until the Definitive Agreements are executed and delivered.
+
+THE OFFERING
+
+Issuer: Thalassa Marine Robotics, Inc., a Delaware corporation (the "Company").
+
+Securities: Series B Preferred Stock of the Company (the "Series B Preferred").
+
+Amount: $28,000,000, of which $20,000,000 is to be purchased by the Lead Investor.
+
+Lead Investor: Kestrel Deepwater Partners III, L.P. ("Kestrel").
+
+Other Investors: Existing investors and such additional investors as the Company and Kestrel mutually agree.
+
+Pre-Money Valuation: $112,000,000, calculated on a fully diluted basis including an unallocated option pool equal to twelve percent (12%) of the post-closing fully diluted capitalization.
+
+Price Per Share: The price per share of Series B Preferred is the Original Issue Price, determined by dividing the Pre-Money Valuation by the Company's fully diluted capitalization immediately prior to the Closing.
+
+Closing: On or about September 30, 2026, subject to the conditions below (the "Closing"). The parties contemplate a single closing, with a subsequent closing for up to $4,000,000 permitted within sixty (60) days after the Closing at the same price and on the same terms.
+
+TERMS OF THE SERIES B PREFERRED
+
+Dividends: Non-cumulative dividends at the rate of eight percent (8%) of the Original Issue Price per annum, payable when, as, and if declared by the Board. No dividend may be paid on the Common Stock unless a dividend is paid first on the Series B Preferred on an as-converted basis.
+
+Liquidation Preference: One times (1x) the Original Issue Price plus declared and unpaid dividends, payable before any distribution to the holders of Common Stock and pari passu with the Series A Preferred. After payment of the preference, the remaining assets are distributed to the holders of Common Stock; the Series B Preferred is non-participating.
+
+Conversion: Convertible at any time at the option of the holder into Common Stock at an initial ratio of 1:1, subject to adjustment.
+
+Automatic Conversion: Automatically converts upon (i) the closing of a firm-commitment underwritten public offering with aggregate gross proceeds of at least $75,000,000, or (ii) the written consent of the holders of a majority of the outstanding Series B Preferred (the "Requisite Holders").
+
+Anti-Dilution: Broad-based weighted-average adjustment to the conversion price on the issuance of additional shares below the Original Issue Price, with customary carve-outs for option pool shares, shares issued on conversion, equipment lease and lender warrants approved by the Board, and shares issued in Board-approved acquisitions and strategic transactions.
+
+Redemption: The Series B Preferred is not redeemable.
+
+Voting Rights: Votes together with the Common Stock on an as-converted basis, except as required by law and as set out under "Protective Provisions."
+
+Protective Provisions: So long as at least 3,000,000 shares of Series B Preferred remain outstanding, the consent of the Requisite Holders is required for the Company to: (a) amend the Certificate of Incorporation or Bylaws in a manner adverse to the Series B Preferred; (b) create or authorize any security senior to or pari passu with the Series B Preferred; (c) redeem or repurchase any shares other than from service providers at cost on termination of service; (d) declare or pay any dividend; (e) effect a Deemed Liquidation Event; (f) increase or decrease the authorized number of directors; or (g) incur indebtedness in excess of $5,000,000 in the aggregate.
+
+Board of Directors: Five members. The holders of Series B Preferred, voting as a separate class, elect one director. The holders of Series A Preferred elect one director. The holders of Common Stock elect two directors. The fifth director is an independent director designated by the mutual agreement of the Series B director and the Common directors.
+
+Pay-to-Play: On a Qualified Financing, any holder of Preferred Stock that does not purchase its pro rata share has its Preferred Stock converted into Common Stock.
+
+INVESTOR RIGHTS
+
+Registration Rights: Customary demand, S-3, and piggyback registration rights, with expenses borne by the Company and a market-standard lock-up of 180 days following the Company's initial public offering.
+
+Information Rights: Audited annual and unaudited quarterly and monthly financial statements, an annual budget approved by the Board, and inspection rights, in each case for each holder of at least 1,000,000 shares (a "Major Investor").
+
+Right of First Refusal and Co-Sale: The Company, then the Major Investors, have a right of first refusal on proposed transfers by holders of Common Stock holding at least 500,000 shares, together with a co-sale right.
+
+Preemptive Rights: Each Major Investor has a pro rata right to participate in subsequent issuances of equity securities, with customary exclusions.
+
+Drag-Along: Holders of Common Stock and Preferred Stock agree to vote for a Deemed Liquidation Event approved by the Board, the Requisite Holders, and the holders of a majority of the Common Stock.
+
+Founder Vesting: Each founder's outstanding Common Stock is subject to four-year vesting with a one-year cliff, measured from the founder's original service commencement date, with credit for service already rendered as of the Closing and full acceleration of the unvested shares on a double-trigger change of control.
+
+CONDITIONS AND PROCESS
+
+Conditions to Closing: Completion of legal, technical, and financial due diligence to the Lead Investor's satisfaction; execution of the Definitive Agreements; delivery of a customary legal opinion; the Company's capitalization table as represented; execution of confidential information and invention assignment agreements by all employees and consultants; and no material adverse change.
+
+Definitive Agreements: A Series B Preferred Stock Purchase Agreement, an Amended and Restated Investors' Rights Agreement, an Amended and Restated Right of First Refusal and Co-Sale Agreement, an Amended and Restated Voting Agreement, and an Amended and Restated Certificate of Incorporation, each in a form customary for a transaction of this kind and reasonably satisfactory to the Company and the Lead Investor.
+
+Exclusivity: For forty-five (45) days from the date this Summary of Terms is countersigned (the "Exclusivity Period"), the Company shall not, and shall cause its officers, directors, employees, stockholders, and agents not to, solicit, initiate, encourage, entertain, or engage in discussions or negotiations with any third party regarding the sale of equity securities of the Company, the sale of all or substantially all of its assets, or any merger or similar transaction, and shall notify Kestrel promptly of any such approach received. This paragraph is binding and survives the termination of the other provisions of this Summary of Terms. The Exclusivity Period terminates automatically if Kestrel notifies the Company in writing that it will not proceed with the financing.
+
+Confidentiality: The existence and terms of this Summary of Terms are confidential and may not be disclosed by the Company to any person other than its officers, directors, accountants, and counsel, and to existing investors on a need-to-know basis, in each case bound to keep them confidential, except as required by law. This paragraph is binding.
+
+Expenses: The Company shall reimburse the reasonable and documented fees and expenses of one counsel to the Lead Investor at the Closing, not to exceed $60,000. If the financing does not close, each party bears its own expenses. This paragraph is binding.
+
+Governing Law: This Summary of Terms is governed by the laws of the State of Delaware, without regard to its conflict-of-laws principles. This paragraph is binding.
+
+Expiration: This Summary of Terms expires and is of no further force or effect if it is not countersigned by the Company on or before August 14, 2026.
+
+ACCEPTED AND AGREED:
+
+THALASSA MARINE ROBOTICS, INC.
+
+By: /s/ Océane Lefèvre
+Name: Océane Lefèvre
+Title: Chief Executive Officer
+Date: August 6, 2026
+
+KESTREL DEEPWATER PARTNERS III, L.P.
+By: Kestrel Deepwater GP III, LLC, its general partner
+
+By: /s/ Anand Bhattacharya
+Name: Anand Bhattacharya
+Title: Managing Member
+Date: August 6, 2026

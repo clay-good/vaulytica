@@ -657,10 +657,16 @@ const WARN = pack("warn-notice", C, [
   },
   {
     id: "EMP-146",
+    // 1.0.1 — a notice that names its official and gives a number, but writes
+    // "Please direct any questions about this notice to Rosalie Dumont,
+    // Director of Human Resources, at (775) 555-0148", used neither the word
+    // "contact" nor the word "telephone" and was told it had no contact
+    // official. The regulation requires a name and a number, not a vocabulary.
+    ver: "1.0.1",
     name: "Company contact for further information",
     cite: cfr("20", "639.7(d)(4)", "WARN regulations — company official to contact"),
     pat: [
-      /(contact|for\s+(further|more)\s+information)/i,
+      /(contact|for\s+(further|more)\s+information|direct\s+(?:any\s+)?questions|questions\s+(?:about|regarding)[^.]{0,80}\bto\b|may\s+be\s+reached)/i,
       /(telephone|phone|name\s+and\s+(title|telephone))/i,
     ],
     why: "§ 639.7(d)(4) requires the name and telephone number of a company official who can supply further information. A notice without it fails on its face.",
@@ -670,7 +676,17 @@ const WARN = pack("warn-notice", C, [
     id: "EMP-147",
     // 1.0.1 — written as a synonym OR, but the state and the mini-WARN citation are distinct pillars; `state` alone is satisfied by "State of Delaware" in any governing-law clause. The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    //
+    // 1.0.2 — the two pillars were never independent. The bare `state` pillar
+    // carried no information the citation pillar did not already carry, and
+    // conjoining them made the check demand a word: a Nevada notice reciting
+    // "Nevada Revised Statutes Chapter 613 to the extent they apply" was told
+    // at `critical` that it addressed no state overlay, because it happened
+    // not to use the word "state" near it. One pillar, tightened: a state
+    // mini-WARN statute is cited by its own code name, and the federal-only
+    // notice this check exists to catch cites the U.S. Code and the C.F.R.
+    // and none of these.
+    ver: "1.0.2",
     name: "State mini-WARN overlay",
     cite: stateLaw(
       "mini-warn",
@@ -678,10 +694,8 @@ const WARN = pack("warn-notice", C, [
       "https://www.law.cornell.edu/wex/labor_law",
     ),
     pat: [
-      /(state|california|new\s+york|new\s+jersey|illinois)/i,
-      /(mini-?warn|state\s+(warn|plant\s+closing)|labor\s+code\s+§?\s*1400|worker\s+adjustment.{0,40}state)/i,
+      /(mini-?warn|state\s+(warn|plant[-\s]closing)|labor\s+code\s+§?\s*1400|worker\s+adjustment.{0,40}state|revised\s+statutes|compiled\s+statutes|statutes\s+annotated|code\s+annotated|general\s+business\s+law|labor\s+(?:code|law)\s+§|consolidated\s+laws)/i,
     ],
-    all: true,
     why: "California triggers at 50 employees regardless of percentage, New York requires 90 days, and New Jersey requires 90 days plus mandatory severance. A federal-only notice is non-compliant in those states.",
     fix: "Identify the states involved and satisfy the longest notice period and broadest content requirement among the federal and applicable state statutes.",
     sev: "critical",

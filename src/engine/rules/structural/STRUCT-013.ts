@@ -81,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -150,16 +150,59 @@ export const rule: Rule = {
 };
 
 /**
+ * The offices a signature line may name instead of using a "By:/Name:/Title:"
+ * grid. Board / member / partner consents, resolutions, certificates, and
+ * court orders all sign this way: a rule (or `/s/`), a person's name, and the
+ * office they hold.
+ *
+ * The bench titles were missing, so a court order's own signature line —
+ * "____________  Hon. Jeffrey S. Whitcombe, United States District Judge" —
+ * was reported at `critical` as an unfilled template placeholder on every
+ * order, judgment, and writ. They run longer than a corporate office, so the
+ * qualifiers are optional prefixes rather than separate alternatives.
+ */
+const SIGNATORY_OFFICE = [
+  "Director",
+  "President",
+  "Vice\\s+President",
+  "Secretary",
+  "Treasurer",
+  "Chief\\s+[A-Za-z]+\\s+Officer",
+  "CEO",
+  "CFO",
+  "COO",
+  "CTO",
+  "Manager",
+  "Managing\\s+Member",
+  "Member",
+  "Trustee",
+  "Grantor",
+  "Settlor",
+  "General\\s+Partner",
+  "Partner",
+  "(?:Sole\\s+)?Incorporator",
+  "Testat(?:or|rix)",
+  "Principal",
+  "Execut(?:or|rix)",
+  "Personal\\s+Representative",
+  "Attorney-in-Fact",
+  "Patient",
+  "Participant",
+  "Authorized\\s+Signatory",
+  "(?:United\\s+States\\s+|U\\.S\\.\\s+|Chief\\s+|Presiding\\s+|Associate\\s+|Senior\\s+|District\\s+|Circuit\\s+|Superior\\s+Court\\s+|Bankruptcy\\s+|Magistrate\\s+|Administrative\\s+Law\\s+)*(?:Judge|Justice|Magistrate|Referee|Special\\s+Master|Clerk(?:\\s+of\\s+(?:the\\s+)?Court)?)",
+  "Its\\b",
+].join("|");
+
+/**
  * A signature line that names its signatory by office rather than by a
  * "By:/Name:/Title:" grid — "____________  Jordan Ellis, Director",
- * "/s/ Morgan Lee, Chief Financial Officer". Board / member / partner
- * consents, resolutions, and certificates sign this way: an underscore rule
- * (or `/s/`) followed by a person's name and a signatory office. The blank is
- * a place to sign, not an unfilled template field. Anchoring on an underscore
- * run + name + office keeps this off an inline prose blank.
+ * "/s/ Morgan Lee, Chief Financial Officer". The blank is a place to sign, not
+ * an unfilled template field. Anchoring on an underscore run + name + office
+ * keeps this off an inline prose blank.
  */
-const SIGNATURE_LINE_BY_OFFICE =
-  /(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:Director|President|Vice\s+President|Secretary|Treasurer|Chief\s+[A-Za-z]+\s+Officer|CEO|CFO|COO|CTO|Manager|Managing\s+Member|Member|Trustee|Grantor|Settlor|General\s+Partner|Partner|(?:Sole\s+)?Incorporator|Testat(?:or|rix)|Principal|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Authorized\s+Signatory|Its\b)\b/;
+const SIGNATURE_LINE_BY_OFFICE = new RegExp(
+  String.raw`(?:_{4,}|\/s\/)\s*(?:\/s\/\s*)?[A-Z][A-Za-z.'’-]+(?:\s+[A-Z][A-Za-z.'’-]+){0,3},?\s+(?:${SIGNATORY_OFFICE})\b`,
+);
 
 // A signatory office that stands alone on a signature line, no personal name
 // attached — "____ Notary Public", "____ Witness". These are signature

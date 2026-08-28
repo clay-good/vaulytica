@@ -333,6 +333,68 @@ const EXPECTED: Record<string, Expectation> = {
   // produce nothing.
   "privacy-notice.txt": { playbook: "privacy-notice-us", findings: [] },
 
+  // A stipulated protective order under FRCP 26(c), captioned with two
+  // defendants. The caption walk stopped on "CORVUS SYSTEMS CORPORATION and
+  // MARISOL ANDRADE," because the lowercase "and" broke its all-uppercase
+  // test, so the matcher was handed the defendants' names as the title: the
+  // order routed to `mutual-nda` at 0.9 and was told it had no governing law,
+  // no liability cap, no IP allocation, and no termination-for-cause clause.
+  // The judge's own signature line was reported at `critical` as an unfilled
+  // template placeholder. What is left is real — an Exhibit A that is
+  // referenced and not attached, and three Title-Case terms used undefined.
+  "protective-order.txt": {
+    playbook: "protective-order-stipulated",
+    findings: ["OBLI-008", "STRUCT-006", "STRUCT-009", "STRUCT-014", "STRUCT-016", "STRUCT-018"],
+  },
+
+  // A DGCL § 141(f) unanimous written consent of the board. The playbook
+  // listed "bylaws" as a negative feature — the recital every such consent
+  // opens on ("pursuant to ... the Bylaws of the Corporation").
+  "written-consent.txt": {
+    playbook: "written-consent",
+    findings: ["STRUCT-006", "STRUCT-016", "STRUCT-018"],
+  },
+
+  // A Series B financing term sheet, titled "Summary of Terms" — the standard
+  // title, and one no title keyword recognized. It lost to `mutual-nda`.
+  // `loi-term-sheet` also listed "definitive agreement" as BOTH a
+  // distinguishing phrase and a negative feature, and shipped with an empty
+  // `rule_overrides`: a non-binding term sheet was told it allocated no IP,
+  // capped no liability, indemnified nobody, and could not be terminated for
+  // cause. MNA-004 reported at `critical` that a document stating a
+  // $28,000,000 round, a $112,000,000 pre-money valuation, and a per-share
+  // price stated no price — it knew only the M&A vocabulary.
+  "term-sheet.txt": {
+    playbook: "loi-term-sheet",
+    findings: ["CHOICE-003", "OBLI-005", "STRUCT-006", "TEMP-006"],
+  },
+
+  // A WARN Act plant-closing notice, titled only in its "Re:" line. Two
+  // checks accused a compliant notice: EMP-147 recognized a state mini-WARN
+  // overlay only in four states and the literal phrase "mini-WARN", so a
+  // notice reciting "Nevada Revised Statutes Chapter 613" was told at
+  // `critical` that it addressed no state law; EMP-146 wanted the WORD
+  // "contact" or "telephone" from a notice that names its HR director and
+  // gives her number.
+  "warn-notice.txt": { playbook: "warn-notice", findings: ["STRUCT-006", "TERM-006"] },
+
+  // An Oregon revocable living trust. The family shipped with an EMPTY
+  // `rule_overrides` while its two nearest siblings — the will and the
+  // irrevocable trust — share an identical eleven-skip estate profile, so a
+  // trust instrument was told it had no payment terms, no IP allocation, no
+  // indemnity, no liability cap, and nothing to terminate for cause.
+  // (Its sibling `irrevocable-trust` had the substring bug in its purest
+  // form: the negative feature "revocable" is inside "irrevocable", so every
+  // irrevocable trust was penalized on its own name.)
+  // IPDATA-005 reported "references personal data but does not cite GDPR /
+  // CCPA / HIPAA" on the paragraph that cites the Health Insurance
+  // Portability and Accountability Act by name and 45 C.F.R. Parts 160 and
+  // 164 by number.
+  "revocable-trust.txt": {
+    playbook: "revocable-living-trust",
+    findings: ["EST-060", "OBLI-005", "STRUCT-005", "STRUCT-006"],
+  },
+
   // A statement of work issued under a named master agreement.
   "sow.txt": { playbook: "sow", findings: ["STRUCT-016", "STRUCT-018", "OBLI-005"] },
 

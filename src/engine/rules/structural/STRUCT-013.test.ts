@@ -63,6 +63,31 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     expect(f?.title).toMatch(/\b3\b/);
   });
 
+  it("silent on a judicial signature line", () => {
+    // A court order ends in a rule and the judge's name. The bench titles were
+    // missing from the recognized offices, so every order, judgment, and writ
+    // reported its own signature line at `critical` as an unfilled template
+    // placeholder — the one critical finding on a stipulated protective order.
+    for (const line of [
+      "_______________________________ Hon. Jeffrey S. Whitcombe United States District Judge",
+      "_______________________________ Marisol Aguirre-Vance, United States Magistrate Judge",
+      "____________ Peter Lindqvist, Judge of the Superior Court",
+      "____________ Alice Nakamura, Chief Justice",
+      "____________ Dermot Halloran, Clerk of the Court",
+    ]) {
+      expect(STRUCT_013.check(buildContext(["Signatures", line])), line).toBeNull();
+    }
+  });
+
+  it("still fires on a template blank that names no signatory", () => {
+    // The judicial broadening must not swallow a genuine unfilled field.
+    expect(
+      STRUCT_013.check(
+        buildContext(["Signatures", "_______________________________ [Judge Name]"]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("silent on an office signature line ('____ Jordan Ellis, Director')", () => {
     expect(
       STRUCT_013.check(

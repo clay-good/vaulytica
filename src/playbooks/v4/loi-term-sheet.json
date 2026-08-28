@@ -4,7 +4,16 @@
   "name": "Letter of Intent / Term Sheet",
   "description": "Pre-definitive-agreement LOI or term sheet outlining commercial terms with binding / non-binding demarcation. Selects the §6.D M&A ruleset (MNA-001..MNA-009).",
   "match_features": {
-    "title_keywords": ["letter of intent", "loi", "term sheet"],
+    "title_keywords": [
+      "letter of intent",
+      "loi",
+      "term sheet",
+      "summary of terms",
+      "summary of principal terms",
+      "memorandum of understanding",
+      "heads of terms",
+      "indication of interest"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "non-binding",
@@ -13,11 +22,20 @@
       "due diligence",
       "definitive agreement"
     ],
-    "negative_features": ["definitive agreement", "stock purchase agreement"]
+    "negative_features": []
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "FIN-005": { "skip": true },
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "TEMP-007": { "skip": true },
+    "TEMP-012": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "Common-Law",

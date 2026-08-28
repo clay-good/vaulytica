@@ -367,3 +367,61 @@ describe("v5 — the apostrophe a Word document actually contains", () => {
     expect(curly).toBeNull();
   });
 });
+
+describe("v5 — the WARN notice a real plant closing produces", () => {
+  /**
+   * Both checks accused a compliant notice, and both for the same reason: the
+   * recognizer knew one way of saying the thing.
+   *
+   * EMP-147 wanted the literal phrase "mini-WARN" or one of four states, so a
+   * Nevada notice reciting "Nevada Revised Statutes Chapter 613" was told at
+   * `critical` that it addressed no state overlay. EMP-146 wanted the word
+   * "contact" or "telephone" from a notice whose section 10 names the HR
+   * director and gives her number — 20 C.F.R. § 639.7(d)(4) requires a name
+   * and a number, not a vocabulary.
+   */
+  const notice = (...body: string[]) =>
+    doc(
+      "Notice of Plant Closing Under the Worker Adjustment and Retraining Notification Act",
+      ...body,
+    );
+
+  it("EMP-147 reads a state mini-WARN statute cited by its own code name", () => {
+    for (const cite of [
+      "This letter is also intended to satisfy Nevada Revised Statutes Chapter 613 to the extent it applies.",
+      "The Company has also complied with the Illinois Compiled Statutes provisions on plant closings.",
+      "Notice is also given under the New York General Business Law.",
+      "The Company has complied with the Tennessee Code Annotated notification requirements.",
+    ]) {
+      expect(rule("EMP-147").check(notice(cite)), cite).toBeNull();
+    }
+  });
+
+  it("EMP-147 still fires on a federal-only notice", () => {
+    expect(
+      rule("EMP-147").check(
+        notice(
+          "This notice is given under 29 U.S.C. §§ 2101-2109 and 20 C.F.R. Part 639. Separations begin on November 5, 2026.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("EMP-146 reads a contact official named without the word 'contact'", () => {
+    expect(
+      rule("EMP-146").check(
+        notice(
+          "Please direct any questions about this notice to Rosalie Dumont, Director of Human Resources, at (775) 555-0148.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("EMP-146 still fires on a notice that names no one to ask", () => {
+    expect(
+      rule("EMP-146").check(
+        notice("Separations will begin on November 5, 2026, and there are no bumping rights."),
+      ),
+    ).not.toBeNull();
+  });
+});

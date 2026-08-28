@@ -124,7 +124,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Purchase price / consideration outline",
     description: "LOI should outline purchase price and consideration mix.",
     citation: dealPoints("loi-price", "LOI price outline"),
@@ -141,6 +141,17 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
       /(?:aggregate|total)\s+consideration/i,
       /enterprise\s+value/i,
       /\beva?\b/i,
+      // A FINANCING term sheet is the commonest term sheet there is, and it
+      // never says "purchase price". It states the round size, the valuation,
+      // and the per-share price — "Amount: $28,000,000", "Pre-Money
+      // Valuation: $112,000,000", "Price Per Share ... Original Issue Price".
+      // On the M&A vocabulary alone this check reported, at `critical`, that a
+      // Series B term sheet stating its price three ways stated no price.
+      /(?:pre|post)[-\s]?money/i,
+      /price\s+per\s+share/i,
+      /original\s+issue\s+price/i,
+      /\bvaluation\b/i,
+      /(?:investment|subscription|purchase)\s+amount/i,
     ],
   }),
   presence({

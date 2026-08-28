@@ -4750,7 +4750,6 @@
         "legal description"
       ],
       "negative_features": [
-        "security agreement",
         "promissory note",
         "loan agreement"
       ]
@@ -9574,7 +9573,7 @@
         "trust protector"
       ],
       "negative_features": [
-        "revocable",
+        "revocable living trust",
         "may be amended or revoked by the settlor at any time",
         "last will and testament"
       ]
@@ -10384,7 +10383,12 @@
       "title_keywords": [
         "letter of intent",
         "loi",
-        "term sheet"
+        "term sheet",
+        "summary of terms",
+        "summary of principal terms",
+        "memorandum of understanding",
+        "heads of terms",
+        "indication of interest"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -10394,14 +10398,36 @@
         "due diligence",
         "definitive agreement"
       ],
-      "negative_features": [
-        "definitive agreement",
-        "stock purchase agreement"
-      ]
+      "negative_features": []
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TEMP-007": {
+        "skip": true
+      },
+      "TEMP-012": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "Common-Law",
@@ -14448,7 +14474,9 @@
         "earnest money",
         "title commitment",
         "due diligence period",
-        "closing"
+        "close of escrow",
+        "closing statement",
+        "permitted exceptions"
       ],
       "negative_features": [
         "stock purchase agreement",
@@ -15054,7 +15082,41 @@
       "Trustee",
       "Trust Property"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UTC-STATE-TRUST-CODES",
@@ -17807,7 +17869,8 @@
         "recordation with the united states patent and trademark office"
       ],
       "negative_features": [
-        "patent",
+        "patent application",
+        "letters patent",
         "employment offer",
         "lease of the premises"
       ]
@@ -19342,7 +19405,7 @@
         "constituting all of the directors"
       ],
       "negative_features": [
-        "bylaws",
+        "these bylaws",
         "operating agreement"
       ]
     },

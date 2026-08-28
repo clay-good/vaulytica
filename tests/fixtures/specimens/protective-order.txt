@@ -1,0 +1,119 @@
+UNITED STATES DISTRICT COURT
+NORTHERN DISTRICT OF CALIFORNIA
+SAN FRANCISCO DIVISION
+
+BRIGHTFIELD ANALYTICS, INC.,
+
+                              Plaintiff,
+
+v.                                                    Case No. 3:26-cv-02214-JSW
+
+CORVUS SYSTEMS CORPORATION and
+MARISOL ANDRADE,
+
+                              Defendants.
+
+
+STIPULATED PROTECTIVE ORDER
+
+The parties, by and through their respective counsel of record, having met and conferred and having stipulated to the entry of this Order, and the Court finding good cause under Federal Rule of Civil Procedure 26(c) for the protection of confidential information produced in this action, IT IS HEREBY ORDERED as follows.
+
+1. Purposes and Limitations.
+
+Discovery in this action is likely to involve production of confidential, proprietary, or private information for which special protection may be warranted. This Order does not confer blanket protection on all disclosures or responses to discovery, and the protection it affords from public disclosure and use extends only to the limited information or items that are entitled to confidential treatment under the applicable legal principles. This Order does not entitle the parties to file confidential information under seal; Civil Local Rule 79-5 sets forth the procedures that must be followed and the standards that will be applied when a party seeks permission from the Court to file material under seal.
+
+2. Definitions.
+
+2.1 "Challenging Party" means a Party or Non-Party that challenges the designation of information or items under this Order.
+
+2.2 "CONFIDENTIAL" Information or Items means information (regardless of how it is generated, stored, or maintained) or tangible things that qualify for protection under Federal Rule of Civil Procedure 26(c), and as specified above in the Good Cause Statement.
+
+2.3 "HIGHLY CONFIDENTIAL — ATTORNEYS' EYES ONLY" Information or Items means extremely sensitive "Confidential Information or Items," disclosure of which to another Party or Non-Party would create a substantial risk of serious harm that could not be avoided by less restrictive means.
+
+2.4 "Designating Party" means a Party or Non-Party that designates information or items that it produces in disclosures or in responses to discovery as "CONFIDENTIAL" or "HIGHLY CONFIDENTIAL — ATTORNEYS' EYES ONLY."
+
+2.5 "Expert" means a person with specialized knowledge or experience in a matter pertinent to the litigation who has been retained by a Party or its counsel to serve as an expert witness or as a consultant in this action.
+
+2.6 "Producing Party" means a Party or Non-Party that produces Disclosure or Discovery Material in this action.
+
+2.7 "Protected Material" means any Disclosure or Discovery Material that is designated as "CONFIDENTIAL" or as "HIGHLY CONFIDENTIAL — ATTORNEYS' EYES ONLY."
+
+2.8 "Receiving Party" means a Party that receives Disclosure or Discovery Material from a Producing Party.
+
+3. Scope.
+
+The protections conferred by this Order cover not only Protected Material, but also (a) any information copied or extracted from Protected Material, (b) all copies, excerpts, summaries, or compilations of Protected Material, and (c) any testimony, conversations, or presentations by Parties or their counsel that might reveal Protected Material. Any use of Protected Material at trial shall be governed by the orders of the trial judge. This Order does not govern the use of Protected Material at trial.
+
+4. Duration.
+
+Even after final disposition of this litigation, the confidentiality obligations imposed by this Order shall remain in effect until a Designating Party agrees otherwise in writing or a court order otherwise directs. Final disposition shall be deemed to be the later of (1) dismissal of all claims and defenses in this action, with or without prejudice, and (2) final judgment herein after the completion and exhaustion of all appeals, rehearings, remands, trials, or reviews of this action, including the time limits for filing any motions or applications for extension of time pursuant to applicable law.
+
+5. Designating Protected Material.
+
+5.1 Each Party or Non-Party that designates information or items for protection under this Order must take care to limit any such designation to specific material that qualifies under the appropriate standards. The Designating Party must designate for protection only those parts of material, documents, items, or oral or written communications that qualify, so that other portions of the material, documents, items, or communications for which protection is not warranted are not swept unjustifiably within the ambit of this Order.
+
+5.2 Mass, indiscriminate, or routinized designations are prohibited. Designations that are shown to be clearly unjustified or that have been made for an improper purpose (e.g., to unnecessarily encumber the case development process or to impose unnecessary expenses and burdens on other parties) may expose the Designating Party to sanctions.
+
+5.3 Documents produced in this action shall be designated by affixing the legend "CONFIDENTIAL" or "HIGHLY CONFIDENTIAL — ATTORNEYS' EYES ONLY" to each page that contains protected material. Testimony given at a deposition may be designated on the record before the close of the deposition, or by written notice to all counsel within thirty (30) days after receipt of the final transcript.
+
+6. Challenging Confidentiality Designations.
+
+6.1 Any Party or Non-Party may challenge a designation of confidentiality at any time that is consistent with the Court's Scheduling Order.
+
+6.2 The Challenging Party shall initiate the dispute resolution process under Local Rule 37-1 et seq. The burden of persuasion in any such challenge proceeding shall be on the Designating Party. Frivolous challenges, and those made for an improper purpose, may expose the Challenging Party to sanctions. Unless the Designating Party has waived or withdrawn the confidentiality designation, all parties shall continue to afford the material in question the level of protection to which it is entitled under the Producing Party's designation until the Court rules on the challenge.
+
+7. Access to and Use of Protected Material.
+
+7.1 A Receiving Party may use Protected Material that is disclosed or produced by another Party or by a Non-Party in connection with this action only for prosecuting, defending, or attempting to settle this litigation. Protected Material may be disclosed only to the categories of persons and under the conditions described in this Order. When the litigation has been terminated, a Receiving Party must comply with the provisions of Section 12 below.
+
+7.2 Unless otherwise ordered by the Court or permitted in writing by the Designating Party, a Receiving Party may disclose any information or item designated "CONFIDENTIAL" only to: (a) the Receiving Party's Outside Counsel of Record in this action, as well as employees of said Outside Counsel of Record to whom it is reasonably necessary to disclose the information for this litigation; (b) the officers, directors, and employees of the Receiving Party to whom disclosure is reasonably necessary for this litigation and who have signed the "Acknowledgment and Agreement to Be Bound" attached as Exhibit A; (c) Experts of the Receiving Party to whom disclosure is reasonably necessary for this litigation and who have signed the Acknowledgment; (d) the Court and its personnel; (e) court reporters and their staff; (f) professional jury or trial consultants and mock jurors who have signed the Acknowledgment; and (g) the author or recipient of a document containing the information or a custodian or other person who otherwise possessed or knew the information.
+
+7.3 Unless otherwise ordered by the Court or permitted in writing by the Designating Party, a Receiving Party may disclose any information or item designated "HIGHLY CONFIDENTIAL — ATTORNEYS' EYES ONLY" only to the persons described in subsections (a), (c), (d), (e), (f), and (g) of Section 7.2. No such information or item may be disclosed to an officer, director, or employee of a Party.
+
+8. Protected Material Subpoenaed or Ordered Produced in Other Litigation.
+
+If a Party is served with a subpoena or a court order issued in other litigation that compels disclosure of any information or items designated in this action as protected, that Party must so notify the Designating Party in writing promptly and in no event more than three court days after receiving the subpoena or order, must promptly notify in writing the party who caused the subpoena or order to issue in the other litigation that some or all of the material covered by the subpoena or order is subject to this Order, and must cooperate with respect to all reasonable procedures sought to be pursued by the Designating Party whose Protected Material may be affected. The purpose of imposing these duties is to alert the interested parties to the existence of this Order and to afford the Designating Party in this case an opportunity to try to protect its confidentiality interests in the court from which the subpoena or order issued.
+
+9. Unauthorized Disclosure of Protected Material.
+
+If a Receiving Party learns that, by inadvertence or otherwise, it has disclosed Protected Material to any person or in any circumstance not authorized under this Order, the Receiving Party must immediately (a) notify in writing the Designating Party of the unauthorized disclosures, (b) use its best efforts to retrieve all unauthorized copies of the Protected Material, (c) inform the person or persons to whom unauthorized disclosures were made of all the terms of this Order, and (d) request that such person or persons execute the Acknowledgment attached as Exhibit A.
+
+10. Inadvertent Production of Privileged Material.
+
+When a Producing Party gives notice to Receiving Parties that certain inadvertently produced material is subject to a claim of privilege or other protection, the obligations of the Receiving Parties are those set forth in Federal Rule of Civil Procedure 26(b)(5)(B). This provision is not intended to modify whatever procedure may be established in an e-discovery order that provides for production without prior privilege review. Pursuant to Federal Rule of Evidence 502(d), insofar as the parties reach an agreement on the effect of disclosure of a communication or information covered by the attorney-client privilege or work product protection, the parties may incorporate their agreement in the stipulated protective order submitted to the Court.
+
+11. Miscellaneous.
+
+11.1 Nothing in this Order abridges the right of any person to seek its modification by the Court in the future.
+
+11.2 By stipulating to the entry of this Order, no Party waives any right it otherwise would have to object to disclosing or producing any information or item on any ground not addressed in this Order. Similarly, no Party waives any right to object on any ground to use in evidence of any of the material covered by this Order.
+
+11.3 Without written permission from the Designating Party or a court order secured after appropriate notice to all interested persons, a Party may not file in the public record in this action any Protected Material. A Party that seeks to file under seal any Protected Material must comply with Civil Local Rule 79-5.
+
+12. Final Disposition.
+
+Within sixty (60) days after the final disposition of this action, as defined in Section 4, each Receiving Party must return all Protected Material to the Producing Party or destroy such material. As used in this subdivision, "all Protected Material" includes all copies, abstracts, compilations, summaries, and any other format reproducing or capturing any Protected Material. Whether the Protected Material is returned or destroyed, the Receiving Party must submit a written certification to the Producing Party by the sixty (60) day deadline that (1) identifies (by category, where appropriate) all the Protected Material that was returned or destroyed and (2) affirms that the Receiving Party has not retained any copies, abstracts, compilations, summaries, or any other format reproducing or capturing any of the Protected Material. Notwithstanding this provision, Counsel are entitled to retain an archival copy of all pleadings, motion papers, trial, deposition, and hearing transcripts, legal memoranda, correspondence, deposition and trial exhibits, expert reports, attorney work product, and consultant and expert work product, even if such materials contain Protected Material.
+
+IT IS SO STIPULATED, THROUGH COUNSEL OF RECORD.
+
+Dated: June 12, 2026        LOWENSTEIN HAAS LLP
+
+                            By: /s/ Priya Raghunathan
+                            Priya Raghunathan (SBN 241886)
+                            Attorneys for Plaintiff
+                            Brightfield Analytics, Inc.
+
+Dated: June 12, 2026        DENHOLM & OYELARAN PC
+
+                            By: /s/ Tobias Denholm
+                            Tobias Denholm (SBN 198042)
+                            Attorneys for Defendants
+                            Corvus Systems Corporation and Marisol Andrade
+
+PURSUANT TO STIPULATION, IT IS SO ORDERED.
+
+Dated: June 16, 2026
+
+                            _______________________________
+                            Hon. Jeffrey S. Whitcombe
+                            United States District Judge

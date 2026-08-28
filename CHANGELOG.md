@@ -2,6 +2,83 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.82.0] — 2026-08-28
+
+Five more hand-written specimens — a stipulated protective order, a board's
+written consent, a Series B term sheet, a WARN Act plant-closing notice, and a
+revocable living trust — and the eleven defects they found. As in every prior
+wave, none was reachable from the suite.
+
+### Fixed
+- **A court caption with two defendants hid the filing's title.** The caption
+  walk skipped a party line only when it was entirely uppercase, and
+  "CORVUS SYSTEMS CORPORATION and MARISOL ANDRADE," carries a lowercase "and".
+  The walk stopped there and handed the matcher the defendants' names as the
+  document's title, so a stipulated protective order routed to `mutual-nda` at
+  0.9 and was told it had no governing law, no liability cap, no IP
+  allocation, and no termination-for-cause clause. The trailing comma is the
+  test now: a title never ends in one, and a party line, a role designation,
+  and an entity descriptor ("ACME CORP., a Delaware corporation,") all do.
+- **A judge's signature line was an "unfilled template placeholder" at
+  `critical`.** The offices a signature line may name did not include the
+  bench, so every order, judgment, and writ reported its own execution block
+  as a drafting accident.
+- **Four playbooks penalized their own vocabulary.** `irrevocable-trust`
+  listed the negative feature "revocable", which is inside "irrevocable" —
+  every irrevocable trust took the penalty on its own name, printed on every
+  page. `loi-term-sheet` listed "definitive agreement" as both a
+  distinguishing phrase and a negative feature. `trademark-assignment` listed
+  "patent" while its own longest distinguishing phrase names the United States
+  Patent and Trademark Office. `deed-of-trust` listed "security agreement",
+  which is inside its own title keyword "mortgage and security agreement".
+  `written-consent` listed "bylaws" — the recital every DGCL § 141(f) consent
+  opens on.
+- **A term sheet titled "Summary of Terms" was not a term sheet.** The
+  standard title of a venture financing term sheet matched no title keyword,
+  so a Series B summary lost to `mutual-nda`. Added the titles the family
+  actually carries, including "Summary of Principal Terms", "Memorandum of
+  Understanding", and "Heads of Terms".
+- **MNA-004 knew only the M&A price vocabulary.** A financing term sheet
+  never says "purchase price"; it states the round size, the pre-money
+  valuation, and the per-share price. A Series B term sheet stating its price
+  three ways was told at `critical` that it stated none.
+- **EMP-147 recognized a state mini-WARN statute in four states.** A Nevada
+  plant-closing notice reciting "Nevada Revised Statutes Chapter 613" was told
+  at `critical` that it addressed no state overlay. The two conjoined pillars
+  were never independent — the bare `state` pillar carried nothing the
+  citation pillar did not — so the check is one tightened pillar that reads a
+  state code by its own name.
+- **EMP-146 wanted the word, not the contact.** 20 C.F.R. § 639.7(d)(4)
+  requires the name and telephone number of a company official; the check
+  required the word "contact" or "telephone" from a notice that names its HR
+  director and gives her number.
+- **IPDATA-005 could not read HIPAA cited in full.** An estate instrument
+  writes "the Health Insurance Portability and Accountability Act of 1996 and
+  45 C.F.R. Parts 160 and 164" and never the acronym. Neither the spelled-out
+  act nor the Part range was recognized, so the paragraph citing HIPAA twice
+  was reported as citing no regime at all.
+- **`revocable-living-trust` shipped with an empty `rule_overrides`** while
+  its two nearest siblings — the will and the irrevocable trust — share an
+  identical eleven-skip estate profile. A trust instrument was told it had no
+  payment terms, no IP allocation, no indemnity, no liability cap, and nothing
+  to terminate for cause. Six corpus fixtures lose nine false findings each
+  and keep every real one.
+- **`loi-term-sheet` shipped with an empty `rule_overrides`** too. A
+  non-binding term sheet allocates no IP, caps no liability, indemnifies
+  nobody, and has nothing to terminate for cause.
+- **`real-estate-psa` listed "closing" as a distinguishing phrase**, which
+  appears in a third of the specimen corpus. Replaced with the family's own
+  register: "close of escrow", "closing statement", "permitted exceptions".
+
+### Added
+- Five specimens, bringing the set to thirty-nine, each pinned to the exact
+  finding set it may produce.
+- `tests/integration/self-penalizing-features.test.ts` — a playbook may not
+  list a negative feature drawn from its own name, title keywords,
+  distinguishing phrases, or required clauses. Mechanical, and needs no
+  judgment: whatever a playbook offers as evidence for itself cannot also be
+  evidence against.
+
 ## [9.65.0] — 2026-08-27
 
 ### Fixed

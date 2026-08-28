@@ -189,6 +189,50 @@ describe("titleCorpus — a court filing's title below the caption", () => {
     expect(corpus).toContain("INTERROGATORIES");
   });
 
+  it("skips a party line that names more than one party on a side", () => {
+    // The party-line test used to require the line to be entirely uppercase,
+    // which a caption with two defendants is not — the "and" that joins them
+    // is lowercase. The walk stopped there and handed the matcher the
+    // defendants' names as the filing's title, so a stipulated protective
+    // order routed to `mutual-nda` and was told it had no governing law, no
+    // liability cap, and no termination-for-cause clause. It is a court order.
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "UNITED STATES DISTRICT COURT NORTHERN DISTRICT OF CALIFORNIA",
+          "BRIGHTFIELD ANALYTICS, INC.,",
+          "Plaintiff,",
+          "v. Case No. 3:26-cv-02214-JSW",
+          "CORVUS SYSTEMS CORPORATION and MARISOL ANDRADE,",
+          "Defendants.",
+          "STIPULATED PROTECTIVE ORDER",
+          "The parties, having met and conferred, stipulate as follows.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "po.txt")).toContain("STIPULATED PROTECTIVE ORDER");
+  });
+
+  it("skips an entity descriptor in apposition to a party name", () => {
+    // The other shape the uppercase test could not see: "ACME CORP., a
+    // Delaware corporation,". The comma is the discriminator now — a
+    // document's title never ends in one.
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "IN THE COURT OF CHANCERY OF THE STATE OF DELAWARE",
+          "ACME HOLDINGS CORP., a Delaware corporation,",
+          "Petitioner,",
+          "VERIFIED PETITION FOR APPRAISAL OF STOCK",
+          "Petitioner alleges as follows.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "pet.txt")).toContain("VERIFIED PETITION FOR APPRAISAL");
+  });
+
   it("keeps the court line too", () => {
     expect(titleCorpus(filing("COMPLAINT AT LAW AND DEMAND FOR JURY TRIAL"), "c.txt")).toContain(
       "DISTRICT COURT",

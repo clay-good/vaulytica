@@ -81,4 +81,29 @@ describe("IPDATA-005 — HIPAA terms of art count as a regime reference", () => 
       ).toBeNull();
     }
   });
+
+  it("recognizes HIPAA spelled out and cited by C.F.R. Part (v1.5.0)", () => {
+    // An estate instrument authorizing a successor trustee to receive medical
+    // records names the statute in full and cites the regulation as a Part
+    // range. Neither the spelled-out act nor "45 C.F.R. Parts 160 and 164"
+    // was recognized, so the paragraph that cites HIPAA twice was reported as
+    // citing no regime at all.
+    for (const cite of [
+      "This paragraph is intended to be a valid authorization under the Health Insurance Portability and Accountability Act of 1996 and 45 C.F.R. Parts 160 and 164.",
+      "The parties comply with 45 C.F.R. Part 164.",
+      "Disclosure is governed by 45 CFR 160 and 164.",
+    ]) {
+      expect(
+        IPDATA005.check(
+          buildContext([
+            "Health Information",
+            "The Trustees may receive protected health information about a Trustee.",
+            "Compliance",
+            cite,
+          ]),
+        ),
+        cite,
+      ).toBeNull();
+    }
+  });
 });

@@ -684,3 +684,41 @@ describe("MNA-074 — non-compete durations of 20 years and up (v1.3.0)", () => 
     expect(await fires(b)).toBe(false);
   });
 });
+
+describe("MNA-004 — a financing term sheet states its price too", () => {
+  /**
+   * The commonest term sheet in the world is a venture financing round, and it
+   * never says "purchase price". It states the amount, the pre-money
+   * valuation, and the per-share price. On the M&A vocabulary alone this check
+   * reported, at `critical`, that a Series B term sheet stating its price
+   * three separate ways stated no price at all.
+   */
+  const mna004 = M_AND_A_RULES.find((r) => r.id === "MNA-004")!;
+
+  it("is silent on the financing round's own price vocabulary", () => {
+    for (const clause of [
+      "Amount: $28,000,000, of which $20,000,000 is to be purchased by the Lead Investor.\nPre-Money Valuation: $112,000,000, calculated on a fully diluted basis.",
+      "Price Per Share: the Original Issue Price, determined by dividing the valuation by the fully diluted capitalization.",
+      "Investment Amount: $5,000,000 in a single closing.",
+    ]) {
+      expect(
+        mna004.check(withPb(buildContext(["Summary of Terms", clause]), LOI_PB)),
+        clause,
+      ).toBeNull();
+    }
+  });
+
+  it("still fires on a term sheet that names no price at all", () => {
+    expect(
+      mna004.check(
+        withPb(
+          buildContext([
+            "Letter of Intent",
+            "Buyer proposes to acquire the Company. Exclusivity runs for 45 days. The parties will negotiate definitive documentation.",
+          ]),
+          LOI_PB,
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
