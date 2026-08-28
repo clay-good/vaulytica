@@ -48,6 +48,13 @@ const REF_RE =
 // Corporation Law of the State of Delaware" is a statutory cite, and its
 // absence made STRUCT-007 report a broken internal reference to a
 // "Section 220" every set of Delaware bylaws cites externally.
+// A UCC ARTICLE cite carries the hyphen on BOTH sides of the connective —
+// "Sections 2A-508 through 2A-522 of the Uniform Commercial Code" — and the
+// sub-reference can run to more than one level: "Section 2A-103(1)(g)". The
+// leading-suffix skip took a single paren group and the connective run took no
+// hyphen at all, so every UCC Article 2A/9 citation in an equipment lease or a
+// security agreement read as a broken internal reference to a "Section 2A".
+//
 // Uniform-act sections carry a HYPHENATED number — "Section 17-303 of the
 // Act", "Section 17-1101(d) of the Act" (Delaware LP/LLC Acts, UCC). REF_RE
 // stops the label at the hyphen ("Section 17"), so the trailer text opens with
@@ -68,7 +75,7 @@ const REF_RE =
 // the optional statute-name phrase is `[A-Za-z]` rather than `[A-Z]` to say
 // what it means under the flag, since `[A-Z]` matches lowercase under `i`.
 const EXTERNAL_TRAILER_RE =
-  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s*(?:to|through|and|or|,)\s*\d+(?:\.\d+)*[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
+  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))*)?(?:\(\d+[a-z]?\))*(?:\s*(?:to|through|and|or|,)\s*\d+(?:\.\d+)*[A-Za-z]?(?:-\d+[a-z]?)?(?:\([a-z0-9]+\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 // The statutory qualifier can also PRECEDE the section: "Treasury Regulations

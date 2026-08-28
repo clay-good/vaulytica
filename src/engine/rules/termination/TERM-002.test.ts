@@ -210,3 +210,24 @@ describe("TERM-002 — the termination verb in the consumer register", () => {
     expect(TERM_002.check(ctx)).not.toBeNull();
   });
 });
+
+describe("TERM-002 — 'On a default, Lessor may terminate'", () => {
+  // The remedies sentence of every equipment lease and secured-lending
+  // document opens on "On a default" / "On an Event of Default", and the
+  // fronted-condition branch had only if / upon / in the event of.
+  it("reads the on-a-default remedies sentence", () => {
+    const ctx = buildContext([
+      "14. Remedies",
+      "On a default, Lessor may, in addition to any remedy available at law, terminate any or all Schedules and take possession of the Equipment.",
+    ]);
+    expect(TERM_002.check(ctx)).toBeNull();
+  });
+
+  it("does not read an ordinary 'on delivery' as a for-cause path", () => {
+    const ctx = buildContext([
+      "6. Acceptance",
+      "On delivery, Lessee shall inspect each item of Equipment and shall sign an acceptance certificate. The lease may be terminated at the end of the term.",
+    ]);
+    expect(TERM_002.check(ctx)).not.toBeNull();
+  });
+});

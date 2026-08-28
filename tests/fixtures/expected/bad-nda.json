@@ -802,7 +802,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1027,7 +1027,7 @@
       "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
       "id": "TERM-002-s1-0",
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1096,11 +1096,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "8445870ba09abae6ea662fa8f88d180d3399e995a585df8f144ae340ebf4cb6e",
+  "result_hash": "002277f0a03f22f3ad6e3dfc28bcd336769fdcec455aefdbc8b620de3cb16cd6",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",
     "size_bytes": 8974
   },
-  "version": "9.112.0"
+  "version": "9.113.0"
 }

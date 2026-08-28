@@ -807,7 +807,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1113,7 +1113,7 @@
       "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
       "id": "TERM-002-s1-0",
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1216,11 +1216,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Landlord\", \"Tenant\", \"Premises\", \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "601a5406a224635b4c8880e3d7ccde80abd168b07a33f3f988eec4a5fea4a913",
+  "result_hash": "9c858327e17be9838856881c0fade0426f633dda6b0dc72a4c7e244e28135ec8",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.112.0"
+  "version": "9.113.0"
 }

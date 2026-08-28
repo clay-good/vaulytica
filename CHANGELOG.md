@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.113.0] — 2026-08-28
+
+A master equipment lease that routed to `complaint`.
+
+### Fixed
+- **An equipment lease was audited as a civil complaint.** It scored 0.6 on
+  "jurisdiction", "venue", and "jury" — the three words of its own
+  governing-law section — and was told at `critical` that it has no caption, no
+  jurisdictional statement, no numbered paragraphs, and no demand for relief.
+  Two things did it, and both are fixed:
+  - **`equipment-lease` penalized its own vocabulary.** It listed "real
+    property" and "landlord" as negative features; a lease of goods says
+    "remains personal property regardless of how it is attached to real
+    property" and "Lessee shall obtain a landlord's waiver" — the fixture
+    clause and the landlord-waiver covenant every such lease carries.
+  - **`complaint` could not recognize a contract preamble.** Its negative
+    feature was the literal "this agreement is entered into", which no real
+    preamble writes — the instrument names itself first. It is now "by and
+    between", which appears in essentially every contract and in no filing.
+- **Every UCC Article 2A and Article 9 citation read as a broken internal
+  reference.** "Sections 2A-508 through 2A-522 of the Uniform Commercial Code"
+  carries the hyphen on both sides of the connective, and "Section
+  2A-103(1)(g)" runs its sub-reference to two levels; the leading-suffix skip
+  took a single paren group and the connective run took no hyphen at all.
+- **TERM-002 could not read "On a default, Lessor may terminate".** That is the
+  remedies sentence of every equipment lease and secured-lending document, and
+  the fronted-condition branch had only if / upon / in the event of.
+
+### Added
+- One specimen, bringing the set to eighty-five.
+
 ## [9.112.0] — 2026-08-28
 
 A first-party supplemental needs trust.

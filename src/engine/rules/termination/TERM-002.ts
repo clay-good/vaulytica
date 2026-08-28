@@ -72,7 +72,12 @@ const FOR_CAUSE = new RegExp(
     // termination verb, so the fronted condition — as ordinary as the trailing
     // one — was reported as no for-cause path at all.
     "|" +
-    String.raw`\b(?:if|upon|in\s+the\s+event\s+(?:of|that))\b[^.]{0,80}?${BREACH}[^.]{0,120}?${TERMINATE}` +
+    // "ON a default, Lessor may terminate any or all Schedules" is the
+    // remedies sentence of every equipment lease and secured-lending document,
+    // and the connector set had only if / upon / in the event of. The article
+    // is required after "on" so an ordinary "on delivery" / "on notice" cannot
+    // open the branch.
+    String.raw`\b(?:if|upon|in\s+the\s+event\s+(?:of|that)|on\s+(?:a|an|any|the))\b[^.]{0,80}?${BREACH}[^.]{0,120}?${TERMINATE}` +
     // The "Event of Default" idiom splits the for-cause path across sentences: a
     // Default section defines "Event of Default" (a rent/obligation failure not
     // cured within a notice period), and a separate Remedies section says "Upon
@@ -102,7 +107,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

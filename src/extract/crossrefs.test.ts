@@ -833,3 +833,44 @@ describe("a pair of decimal-numbered statutory sections", () => {
     ]);
   });
 });
+
+describe("a UCC article citation, hyphenated on both sides", () => {
+  /**
+   * "Sections 2A-508 through 2A-522 of the Uniform Commercial Code" carries
+   * the hyphen on both sides of the connective, and "Section 2A-103(1)(g)"
+   * runs its sub-reference to two levels. The leading-suffix skip took a
+   * single paren group and the connective run took no hyphen at all, so every
+   * Article 2A and Article 9 citation in an equipment lease or a security
+   * agreement read as a broken internal reference to a "Section 2A".
+   */
+  const unresolved = (...paras: string[]) => {
+    const t = buildTree(["Body", ...paras]);
+    return extractCrossRefs(t, extractSections(t))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+  };
+
+  it("reads a hyphenated range as external", () => {
+    expect(
+      unresolved(
+        "Lessee waives the rights conferred by Sections 2A-508 through 2A-522 of the Uniform Commercial Code.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("reads a two-level sub-reference as external", () => {
+    expect(
+      unresolved(
+        'Each Schedule is a "finance lease" as defined in Section 2A-103(1)(g) of the Uniform Commercial Code.',
+      ),
+    ).toEqual([]);
+  });
+
+  it("still reports a broken internal reference alongside one", () => {
+    expect(
+      unresolved(
+        "The remedies in Section 2A-508 of the Uniform Commercial Code are waived, and Section 21.4 governs.",
+      ),
+    ).toEqual(["Section 21.4"]);
+  });
+});

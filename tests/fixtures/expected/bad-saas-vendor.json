@@ -809,7 +809,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1086,7 +1086,7 @@
       "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
       "id": "TERM-002-s1-0",
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1241,11 +1241,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "fcac57c70b445dde588f8f1c215b0a22b8bf4bfc726bd7b7ba1d609bd73f482b",
+  "result_hash": "e4734831fdf58f58320724a77405e470b5831b16c71e83e04c0caa40f40ffde4",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.112.0"
+  "version": "9.113.0"
 }

@@ -3536,7 +3536,7 @@
         "jury"
       ],
       "negative_features": [
-        "this agreement is entered into",
+        "by and between",
         "merger agreement",
         "lease of the premises",
         "software as a service"
@@ -7081,9 +7081,8 @@
       ],
       "negative_features": [
         "lease of the premises",
-        "real property",
         "square feet",
-        "landlord"
+        "landlord shall deliver"
       ]
     },
     "expected_clauses": [],

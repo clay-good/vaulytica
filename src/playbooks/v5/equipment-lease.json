@@ -19,7 +19,7 @@
       "quiet enjoyment",
       "return of the equipment"
     ],
-    "negative_features": ["lease of the premises", "real property", "square feet", "landlord"]
+    "negative_features": ["lease of the premises", "square feet", "landlord shall deliver"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Equipment", "Lessee", "Lessor", "Rent"],

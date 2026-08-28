@@ -800,7 +800,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -952,7 +952,7 @@
       "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
       "id": "TERM-002-s1-0",
       "rule_id": "TERM-002",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1064,11 +1064,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\", \"Provider\", \"Customer\".",
-  "result_hash": "2053db5500bc592600b5d2c2bd25bcd78781dbf827bba3a54594dbc322cf09be",
+  "result_hash": "4e2536a31681e944c5efb9a13aae4e8f8edb588e575703305365cc8c09f0477c",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.112.0"
+  "version": "9.113.0"
 }

@@ -916,6 +916,32 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "special-needs-trust",
     findings: ["OBLI-005", "OBLI-006", "STRUCT-006", "STRUCT-018"],
   },
+
+  // A master equipment lease under UCC Article 2A. It routed to `complaint` at
+  // 0.6 — on "jurisdiction", "venue", and "jury", the three words of its own
+  // governing-law section — and was told at critical that it has no caption,
+  // no jurisdictional statement, no numbered paragraphs, and no demand for
+  // relief. Two things did it: `equipment-lease` penalized its own fixture and
+  // landlord-waiver vocabulary ("real property", "landlord"), and `complaint`
+  // could not recognize a contract preamble.
+  "equipment-lease.txt": {
+    playbook: "equipment-lease",
+    findings: [
+      "CHOICE-008",
+      "FIN-009",
+      "IPDATA-001",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-005",
+      "RISK-010",
+      "RISK-011",
+      "RISK-015",
+      "TEMP-006",
+      "TEMP-007",
+      "TEMP-008",
+      "TERM-007",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {
