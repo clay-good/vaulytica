@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.85.0] — 2026-08-28
+
+### Added
+- **The DGCL § 145 director-and-officer indemnification agreement.** Every
+  VC-backed company signs one per director, and it is the document a director
+  reads before joining a board — yet the catalog had no family for it. The
+  family it did have, `indemnification-agreement`, is the COMMERCIAL
+  anti-indemnity one (NY Gen. Oblig. § 5-322.1, Cal. Civ. Code § 2782, Tex.
+  Ins. Code ch. 151) and applies the construction Type I / II / III taxonomy:
+  a real D&O agreement routed there and was told to add a recital identifying
+  its indemnity Type.
+
+  New family `director-indemnification-agreement`, ten checks (`GOV-139..148`),
+  one per compliance-matrix column:
+
+  | Column | Authority |
+  | --- | --- |
+  | Fullest extent permitted, and the standard of conduct it is measured against | DGCL § 145(a) |
+  | Mandatory indemnification on success on the merits | § 145(c) |
+  | Advancement of expenses before final disposition (`critical`) | § 145(e) |
+  | Undertaking to repay — unsecured, and without regard to ability to pay | § 145(e) |
+  | Derivative-proceeding limit and the court's saving determination | § 145(b) |
+  | Determination of entitlement, and Independent Counsel after a change in control | § 145(d) |
+  | Presumption of entitlement and burden of proof | practice |
+  | Non-exclusivity, and D&O liability insurance | § 145(f), (g) |
+  | Survival after service ends and against a later charter amendment | practice |
+  | Notice, defense, and settlement-consent procedure | practice |
+
+  Advancement is the only `critical`: defense costs are incurred for years
+  before any determination of entitlement, so a director who must fund them
+  personally is unprotected in the only period that matters.
+
+  265 → 266 document types; 1,808 → 1,818 rules. Additive by construction —
+  every check is gated to the new family alone, and all 365 golden fixtures
+  are byte-identical in their findings.
+
+### Fixed
+- **The new pack's own advancement check could not read a real clause.** Its
+  deadline window was `within \w+ days`, and every real clause writes "within
+  twenty (20) days after receipt of a written request", so GOV-141 reported the
+  advancement clause missing — at `critical`, on the paragraph that grants it.
+  Found on the specimen's first run, which is what the specimen is for.
+
+### Added (tests)
+- All ten checks pinned in both directions in `behavior.test.ts`. The "fires"
+  direction hands each check a document carrying the other nine clauses, so it
+  is proven to discriminate its own column rather than responding to an empty
+  document.
+- One specimen, bringing the set to forty-six.
+
 ## [9.84.0] — 2026-08-28
 
 A restricted stock unit agreement and a director indemnification agreement.

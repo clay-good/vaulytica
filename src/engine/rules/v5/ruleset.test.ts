@@ -27,9 +27,14 @@ const v5PlaybookIds = new Set(
 );
 
 describe("v5 ruleset shape", () => {
-  it("ships 605 rules across 105 US document families", () => {
-    expect(V5_RULES.length).toBe(605);
-    expect(v5PlaybookIds.size).toBe(105);
+  it("ships 615 rules across 106 US document families", () => {
+    // 605 across 105 shipped in 9.42.0. The DGCL § 145 director-and-officer
+    // indemnification agreement (GOV-139..148) was added in 9.85.0 — the
+    // catalog's only family for a document every VC-backed company signs
+    // once per director, and one that had been routing to the COMMERCIAL
+    // anti-indemnity family and being asked for its Type I / II / III recital.
+    expect(V5_RULES.length).toBe(615);
+    expect(v5PlaybookIds.size).toBe(106);
   });
 
   it("has unique rule ids", () => {

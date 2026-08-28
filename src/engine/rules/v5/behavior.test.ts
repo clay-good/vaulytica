@@ -425,3 +425,73 @@ describe("v5 — the WARN notice a real plant closing produces", () => {
     ).not.toBeNull();
   });
 });
+
+describe("v5 — the DGCL § 145 indemnification agreement, in both directions", () => {
+  /**
+   * The reachability guards prove each check CAN fire; this proves each one is
+   * silent on the clause it exists to find, written the way a real agreement
+   * writes it. The advancement check already needed that: its deadline window
+   * was `within \w+ days`, and every real clause writes "within twenty (20)
+   * days", so it reported the advancement clause missing — at `critical`, on
+   * the paragraph that grants it.
+   */
+  const DO_PB = "director-indemnification-agreement";
+  const CLAUSES: Array<[id: string, clause: string]> = [
+    [
+      "GOV-139",
+      "The Company shall indemnify Indemnitee to the fullest extent permitted by applicable law, if Indemnitee acted in good faith and in a manner Indemnitee reasonably believed to be in or not opposed to the best interests of the Company.",
+    ],
+    [
+      "GOV-140",
+      "To the extent Indemnitee is successful, on the merits or otherwise, in defense of any Proceeding, the Company shall indemnify Indemnitee against all Expenses actually and reasonably incurred.",
+    ],
+    [
+      "GOV-141",
+      "The Company shall advance all Expenses incurred by Indemnitee in connection with any Proceeding within twenty (20) days after receipt of a written request.",
+    ],
+    [
+      "GOV-142",
+      "Indemnitee's written undertaking to repay advanced Expenses is accepted without security and without reference to Indemnitee's financial ability to make repayment.",
+    ],
+    [
+      "GOV-143",
+      "In any Proceeding by or in the right of the Company, no indemnification is made in respect of any claim as to which Indemnitee is adjudged liable to the Company, unless the Court of Chancery determines that Indemnitee is fairly and reasonably entitled to indemnity.",
+    ],
+    [
+      "GOV-144",
+      "On a written request, the determination of entitlement to indemnification shall be made by Independent Counsel selected by Indemnitee following a Change in Control.",
+    ],
+    [
+      "GOV-145",
+      "Indemnitee is presumed to be entitled to indemnification, and the Company bears the burden of proving otherwise by clear and convincing evidence.",
+    ],
+    [
+      "GOV-146",
+      "The rights under this Agreement are non-exclusive of any other rights Indemnitee may have. The Company shall maintain directors' and officers' liability insurance covering Indemnitee.",
+    ],
+    [
+      "GOV-147",
+      "This Agreement continues for so long as Indemnitee may be subject to any Proceeding, notwithstanding that Indemnitee has ceased to serve, and survives any amendment or repeal of the Certificate of Incorporation or Bylaws.",
+    ],
+    [
+      "GOV-148",
+      "Indemnitee shall notify the Company in writing of any Proceeding. The Company is entitled to assume the defense with counsel reasonably satisfactory to Indemnitee. The Company shall not settle any Proceeding that imposes liability on Indemnitee without Indemnitee's prior written consent.",
+    ],
+  ];
+
+  for (const [id, clause] of CLAUSES) {
+    it(`${id} is silent on the clause it checks for`, () => {
+      expect(rule(id).check(doc("Indemnification Agreement", clause))).toBeNull();
+    });
+    it(`${id} fires on an agreement that omits it`, () => {
+      const others = CLAUSES.filter(([other]) => other !== id).map(([, c]) => c);
+      expect(rule(id).check(doc("Indemnification Agreement", ...others))).not.toBeNull();
+    });
+  }
+
+  it("every check is scoped to the new family alone", () => {
+    for (const [id] of CLAUSES) {
+      expect(rule(id).applies_to_playbooks, id).toEqual([DO_PB]);
+    }
+  });
+});

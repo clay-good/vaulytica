@@ -1,0 +1,82 @@
+INDEMNIFICATION AGREEMENT
+
+This Indemnification Agreement (this "Agreement") is made as of January 8, 2026, between Aurora Grid Holdings, Inc., a Delaware corporation (the "Company"), and Sunniva Rekdal-Owusu ("Indemnitee").
+
+RECITALS
+
+A. Indemnitee serves the Company as a director and is willing to continue to do so in reliance on the protections this Agreement provides.
+
+B. The Company's Certificate of Incorporation and Bylaws permit indemnification of directors and officers to the fullest extent permitted by law, and Section 145 of the Delaware General Corporation Law ("DGCL") authorizes agreements of this kind.
+
+C. The Company has determined that the ability to attract and retain qualified directors depends on providing them contractual indemnification and advancement rights that cannot be reduced by later amendment of the Certificate of Incorporation or Bylaws.
+
+NOW, THEREFORE, the parties agree as follows.
+
+1. Indemnification — Third-Party Proceedings.
+
+The Company shall indemnify Indemnitee against all Expenses, judgments, fines, penalties, and amounts paid in settlement actually and reasonably incurred by Indemnitee in connection with any Proceeding, other than a Proceeding by or in the right of the Company, to which Indemnitee is or is threatened to be made a party by reason of Indemnitee's Corporate Status, if Indemnitee acted in good faith and in a manner Indemnitee reasonably believed to be in or not opposed to the best interests of the Company and, with respect to a criminal Proceeding, had no reasonable cause to believe the conduct was unlawful.
+
+2. Indemnification — Derivative Proceedings.
+
+The Company shall indemnify Indemnitee against all Expenses actually and reasonably incurred in connection with any Proceeding by or in the right of the Company to which Indemnitee is or is threatened to be made a party by reason of Indemnitee's Corporate Status, if Indemnitee acted in good faith and in a manner Indemnitee reasonably believed to be in or not opposed to the best interests of the Company. No indemnification is made in respect of any claim as to which Indemnitee is adjudged liable to the Company, unless the Court of Chancery or the court in which the Proceeding was brought determines that Indemnitee is fairly and reasonably entitled to indemnity for the expenses the court deems proper.
+
+3. Mandatory Indemnification on Success.
+
+To the extent Indemnitee is successful, on the merits or otherwise, in defense of any Proceeding or any claim, issue, or matter in it, the Company shall indemnify Indemnitee against all Expenses actually and reasonably incurred, without any determination of entitlement being required.
+
+4. Advancement of Expenses.
+
+The Company shall advance all Expenses incurred by Indemnitee in connection with any Proceeding within twenty (20) days after receipt of a written request, which need not be accompanied by supporting documentation beyond a reasonable description of the Expenses. Advancement is unconditional, is not subject to any determination of entitlement, and shall be made without regard to Indemnitee's ability to repay. Indemnitee shall repay advanced Expenses only if and to the extent it is ultimately determined by final judicial decision from which there is no further right of appeal that Indemnitee is not entitled to be indemnified. Indemnitee's written undertaking to repay is accepted without security and without reference to Indemnitee's financial ability.
+
+5. Notice and Defense.
+
+Indemnitee shall notify the Company in writing of any Proceeding as soon as reasonably practicable after Indemnitee becomes aware of it, but a failure or delay in giving notice relieves the Company of its obligations only to the extent the Company is actually and materially prejudiced. The Company is entitled to assume the defense of any Proceeding with counsel reasonably satisfactory to Indemnitee. Indemnitee is entitled to separate counsel at the Company's expense if Indemnitee reasonably concludes that there is a conflict of interest between Indemnitee and the Company, or that the Company has failed to assume the defense within a reasonable time. The Company shall not settle any Proceeding in a manner that imposes any liability, penalty, or admission of fault on Indemnitee without Indemnitee's prior written consent, which shall not be unreasonably withheld. Indemnitee shall not settle any Proceeding without the Company's prior written consent, which shall not be unreasonably withheld.
+
+6. Determination of Entitlement.
+
+On a written request for indemnification, entitlement shall be determined by Independent Counsel selected by Indemnitee and approved by the Company, whose approval shall not be unreasonably withheld, and the Company shall pay the reasonable fees of Independent Counsel. Following a Change in Control, Independent Counsel shall be selected by Indemnitee alone. Indemnitee is presumed to be entitled to indemnification, and the Company bears the burden of proving otherwise by clear and convincing evidence. The termination of a Proceeding by judgment, order, settlement, or plea of nolo contendere does not of itself create a presumption that Indemnitee failed to meet any applicable standard of conduct.
+
+7. Remedies of Indemnitee.
+
+If a determination is not made within sixty (60) days after a request, entitlement is deemed established. Indemnitee may bring an action in the Court of Chancery of the State of Delaware to enforce this Agreement, in which the Company bears the burden of proof, and shall be paid the Expenses of that action if Indemnitee prevails in whole or in part.
+
+8. No Cap on Indemnification.
+
+The obligations of the Company under this Agreement are not subject to any cap, deductible, retention, or aggregate limit, and are not reduced by any limitation of liability appearing in any other agreement between the parties. Any provision purporting to limit the amount of indemnification or advancement available to Indemnitee is of no effect.
+
+9. Liability Insurance.
+
+The Company shall maintain directors' and officers' liability insurance covering Indemnitee on terms no less favorable than the coverage provided to any other director or officer, for so long as Indemnitee may be subject to any Proceeding, and shall give Indemnitee notice of any cancellation or material reduction in coverage.
+
+10. Non-Exclusivity; Subrogation; No Duplication.
+
+The rights under this Agreement are in addition to any rights Indemnitee has under the Certificate of Incorporation, the Bylaws, the DGCL, or otherwise. In the event of any payment, the Company is subrogated to Indemnitee's rights of recovery against third parties. The Company is not liable to make any payment to the extent Indemnitee has otherwise actually received payment for the same Expenses.
+
+11. Duration and Survival.
+
+This Agreement continues for so long as Indemnitee may be subject to any Proceeding by reason of Indemnitee's Corporate Status, notwithstanding that Indemnitee has ceased to serve. The rights conferred survive any termination of Indemnitee's service and any amendment or repeal of the Certificate of Incorporation or Bylaws, and bind any successor to the Company by merger, consolidation, or sale of substantially all assets.
+
+12. Definitions.
+
+"Corporate Status" means the status of a person who is or was a director, officer, employee, or agent of the Company or who is or was serving at the Company's request as a director, officer, employee, or agent of another enterprise. "Expenses" means all reasonable attorneys' fees, retainers, court costs, transcript costs, expert fees, travel expenses, and all other disbursements or expenses incurred in connection with a Proceeding, including the costs of appeal and of any bond. "Independent Counsel" means a law firm that has not, within the preceding five years, represented either the Company or Indemnitee in any material matter. "Proceeding" means any threatened, pending, or completed action, suit, arbitration, alternative dispute resolution proceeding, administrative hearing, or investigation, whether civil, criminal, administrative, or investigative.
+
+13. Governing Law and Forum.
+
+This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws principles. The parties submit to the exclusive jurisdiction of the Court of Chancery of the State of Delaware for any dispute arising under this Agreement.
+
+14. Severability; Amendment; Counterparts.
+
+If any provision is held invalid, the remaining provisions continue in effect and the invalid provision is to be construed to give the broadest indemnification permitted by law. This Agreement may be amended only by a writing signed by both parties. It may be executed in counterparts.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+AURORA GRID HOLDINGS, INC.
+
+By: /s/ Casimir Wojciechowski
+Name: Casimir Wojciechowski
+Title: Chief Executive Officer
+
+INDEMNITEE
+
+/s/ Sunniva Rekdal-Owusu
+Sunniva Rekdal-Owusu

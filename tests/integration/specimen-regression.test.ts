@@ -408,6 +408,19 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A DGCL § 145 director indemnification agreement — the document every
+  // VC-backed company signs once per director, and the family the catalog
+  // did not have. It routed to `indemnification-agreement`, which is the
+  // COMMERCIAL anti-indemnity family, and was asked to add a recital
+  // identifying its construction indemnity Type (I / II / III). Nine of the
+  // ten new checks are silent on it, which is what makes it the compliant
+  // direction for the pack; RISK-016 is fair (the D&O covenant is pegged to
+  // parity with other directors and states no dollar minimum).
+  "do-indemnification.txt": {
+    playbook: "director-indemnification-agreement",
+    findings: ["OBLI-005", "RISK-016", "TEMP-006"],
+  },
+
   // A restricted stock unit award agreement, under the same plan-header shape
   // as the option grant. `rsu-grant` was the third unilateral equity award
   // shipping with an empty `rule_overrides`. What is left is real: EQT-033 is

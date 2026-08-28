@@ -6,6 +6,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, irs, practice, uniformAct } from "./_helpers.js";
+import { dgcl } from "../v4/governance/_helpers.js";
 
 const C = "governance";
 
@@ -501,6 +502,162 @@ const GRANT = pack("grant-agreement", C, [
   },
 ]);
 
+/**
+ * The DGCL § 145 director-and-officer indemnification agreement.
+ *
+ * Every VC-backed company signs one per director, and it is the document a
+ * director actually reads before joining a board — yet the catalog had no
+ * family for it. The family it did have, `indemnification-agreement`, is the
+ * COMMERCIAL anti-indemnity one (NY Gen. Oblig. § 5-322.1, Cal. Civ. Code
+ * § 2782, Tex. Ins. Code ch. 151) and applies the construction Type I / II /
+ * III taxonomy, which a D&O agreement has nothing to do with. A real one
+ * routed there and was told to add a recital identifying its indemnity Type.
+ *
+ * The columns below are the ones the statute makes available and the ones a
+ * director's counsel negotiates: whether advancement is mandatory and
+ * unconditional, who decides entitlement and under what presumption, and
+ * whether the protection survives both the director's service and a later
+ * board's change of heart. Every one is a term that is either in the document
+ * or is not.
+ */
+const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
+  {
+    id: "GOV-139",
+    name: "Indemnification to the fullest extent permitted by law",
+    cite: dgcl("145(a)"),
+    pat: [
+      /fullest\s+extent\s+(?:permitted|authorized|allowed)/i,
+      /good\s+faith|best\s+interests\s+of\s+the\s+(?:corporation|company)/i,
+    ],
+    all: true,
+    why: "§ 145(a) permits indemnification only where the person acted in good faith and in a manner reasonably believed to be in or not opposed to the corporation's best interests. An agreement that omits the standard of conduct, or that grants less than the fullest extent the law allows, gives the director less than the charter already does.",
+    fix: "Grant indemnification to the fullest extent permitted by applicable law, and state the § 145(a) standard of conduct the grant is measured against.",
+  },
+  {
+    id: "GOV-140",
+    name: "Mandatory indemnification on success on the merits",
+    cite: dgcl("145(c)"),
+    pat: [
+      /success(?:ful)?[^.;]{0,60}?(?:on\s+the\s+merits|or\s+otherwise)/i,
+      /(?:shall|must|is\s+entitled\s+to\s+be)\s+indemnif\w+/i,
+    ],
+    all: true,
+    why: "§ 145(c) makes indemnification MANDATORY, not permissive, where the director succeeds on the merits or otherwise in defense of a proceeding or of any claim in it. Restating it contractually removes the argument that a dismissal without prejudice or a favorable settlement was not a 'success'.",
+    fix: "State that on success on the merits or otherwise, in whole or in part, the corporation shall indemnify against all expenses actually and reasonably incurred, with no determination of entitlement required.",
+  },
+  {
+    id: "GOV-141",
+    name: "Advancement of expenses before final disposition",
+    cite: dgcl("145(e)"),
+    pat: [
+      /advance(?:ment|d|s)?\s+(?:of\s+)?(?:all\s+|the\s+)?expenses|expenses[^.;]{0,60}?shall\s+be\s+advanced/i,
+      // The deadline is written with the numeral in a parenthetical —
+      // "within twenty (20) days after receipt of a written request" — which
+      // a `\w+ days` window does not span. The check reported the advancement
+      // clause missing, at `critical`, on the paragraph that grants it.
+      /(?:in\s+advance\s+of|prior\s+to|before)\s+(?:the\s+)?final\s+disposition|within\s+[\w\s()-]{1,30}?days/i,
+    ],
+    all: true,
+    why: "Advancement is the term that decides whether the protection is real: defense costs are incurred for years before any determination of entitlement, and a director who must fund them personally is unprotected in the only period that matters. § 145(e) authorizes advancement in advance of the final disposition of the proceeding.",
+    fix: "Make advancement mandatory and unconditional, state the deadline for payment after a written request, and state that no determination of entitlement is a precondition.",
+    sev: "critical",
+  },
+  {
+    id: "GOV-142",
+    name: "Undertaking to repay, unsecured and without regard to ability to pay",
+    cite: dgcl("145(e)"),
+    pat: [
+      /undertaking\s+(?:to\s+repay|by\s+or\s+on\s+behalf)|agrees?\s+to\s+repay/i,
+      /unsecured|without\s+(?:security|bond|interest|reference\s+to|regard\s+to)/i,
+    ],
+    all: true,
+    why: "§ 145(e) conditions advancement on an undertaking to repay if it is ultimately determined the person is not entitled to be indemnified. An undertaking that must be secured, or that is measured against the director's ability to repay, converts the right into one only a wealthy director can use.",
+    fix: "Require only a written undertaking to repay, and state that it is accepted without security, without interest, and without regard to the Indemnitee's financial ability to make repayment.",
+  },
+  {
+    id: "GOV-143",
+    name: "Derivative-proceeding limit and the court's saving determination",
+    cite: dgcl("145(b)"),
+    pat: [
+      /by\s+or\s+in\s+the\s+right\s+of\s+the\s+(?:corporation|company)|derivative/i,
+      /adjudged[^.;]{0,80}?liable|(?:court\s+of\s+chancery|the\s+court\s+in\s+which)[^.;]{0,100}?(?:determin|deem)/i,
+    ],
+    all: true,
+    why: "In a proceeding by or in the right of the corporation, § 145(b) bars indemnification for a person adjudged liable to the corporation unless the Court of Chancery, or the court in which the proceeding was brought, determines the person is fairly and reasonably entitled to indemnity. An agreement silent on the limit purports to grant more than the statute allows and is unenforceable to that extent.",
+    fix: "Address derivative proceedings separately: indemnify expenses, state the adjudged-liable bar, and preserve the court's authority to award indemnity notwithstanding.",
+  },
+  {
+    id: "GOV-144",
+    name: "Determination of entitlement and who makes it",
+    cite: dgcl("145(d)"),
+    pat: [
+      /independent\s+counsel|disinterested\s+directors|special\s+legal\s+counsel|by\s+the\s+stockholders/i,
+      /determination\s+of\s+entitlement|determin\w+[^.;]{0,80}?entitle/i,
+    ],
+    all: true,
+    why: "§ 145(d) requires a determination that indemnification is proper, made by disinterested directors, by independent legal counsel, or by the stockholders. Who decides is the whole question after a change in control, when the directors making the determination are the ones the Indemnitee may be adverse to.",
+    fix: "Name the decision-maker and the process, and provide that following a Change in Control the determination is made by Independent Counsel selected by the Indemnitee.",
+  },
+  {
+    id: "GOV-145",
+    name: "Presumption of entitlement and burden of proof",
+    cite: practice(
+      "do-indemnification-presumption",
+      "Presumption of entitlement and allocation of the burden of proof in a director indemnification agreement",
+    ),
+    pat: [
+      /presum\w+[^.;]{0,80}?entitle|entitle\w+[^.;]{0,60}?presum/i,
+      /burden\s+of\s+(?:proof|persuasion)|clear\s+and\s+convincing/i,
+    ],
+    all: true,
+    why: "Without a stated presumption the Indemnitee bears the practical burden of proving entitlement against the corporation that holds the records. The negotiated term reverses it: the Indemnitee is presumed entitled and the corporation must overcome the presumption, often by clear and convincing evidence.",
+    fix: "State that the Indemnitee is presumed entitled to indemnification on submitting a request, that the corporation bears the burden of overcoming the presumption, and that a settlement or nolo plea creates no adverse presumption.",
+  },
+  {
+    id: "GOV-146",
+    name: "Non-exclusivity and directors' and officers' liability insurance",
+    cite: dgcl("145(f)"),
+    pat: [
+      /non-?exclusiv|in\s+addition\s+to\s+(?:any\s+)?(?:other\s+)?rights/i,
+      /(?:d\s*&\s*o|directors[’']?\s+and\s+officers[’']?)[^.;]{0,40}?insurance|liability\s+insurance/i,
+    ],
+    all: true,
+    why: "§ 145(f) preserves rights under the certificate, the bylaws, and any agreement, and § 145(g) authorizes insurance whether or not the corporation could indemnify. Insurance is the source of actual payment in most cases, so a covenant to maintain it — and to give notice of cancellation — is the term that makes the rest collectible.",
+    fix: "State that the rights granted are not exclusive of any other rights, and covenant to maintain D&O liability insurance on terms no less favorable than those provided to any other director or officer.",
+  },
+  {
+    id: "GOV-147",
+    name: "Survival after service ends and against later amendment",
+    cite: practice(
+      "do-indemnification-survival",
+      "Contractual survival of indemnification rights against a later charter or bylaw amendment",
+    ),
+    pat: [
+      /(?:continue|survive)[^.;]{0,100}?(?:ceas\w+\s+to\s+serve|termination\s+of[^.;]{0,40}?service|no\s+longer\s+(?:serves|a\s+director|an\s+officer))/i,
+      /(?:amendment|repeal|modification|alteration)[^.;]{0,100}?(?:certificate\s+of\s+incorporation|by-?laws|charter)|binds?\s+(?:any\s+)?successors?|successors?[^.;]{0,80}?(?:merger|consolidation)/i,
+    ],
+    all: true,
+    why: "The reason a director takes a contract rather than relying on the bylaws is that a later board can amend the bylaws and a successor can disclaim them. Both halves are needed: the rights must outlive the service, and they must outlive a change to the charter or a change of control.",
+    fix: "State that the rights continue for so long as the Indemnitee may be subject to any proceeding by reason of Corporate Status, notwithstanding that service has ended, and that they survive any amendment or repeal of the certificate or bylaws and bind any successor by merger, consolidation, or sale of assets.",
+  },
+  {
+    id: "GOV-148",
+    name: "Notice, defense, and settlement-consent procedure",
+    cite: practice(
+      "do-indemnification-procedure",
+      "Notice, assumption of the defense, and consent to settlement in a director indemnification agreement",
+    ),
+    pat: [
+      /(?:notif\w+|written\s+notice)[^.;]{0,140}?(?:proceeding|claim|action)/i,
+      /assume\s+(?:the\s+)?defen[sc]e|separate\s+counsel|counsel\s+(?:reasonably\s+)?satisfactory/i,
+      /shall\s+not\s+settle|consent\s+to\s+(?:any\s+)?settlement|settle[^.;]{0,120}?prior\s+written\s+consent/i,
+    ],
+    all: true,
+    why: "Late notice is the corporation's standard defense to a claim for indemnity, and control of the defense decides whether the Indemnitee gets counsel of their own where interests diverge. A settlement that imposes liability or an admission on the Indemnitee without consent is the outcome the clause exists to prevent.",
+    fix: "State the notice obligation and that a delay relieves the corporation only to the extent it is actually prejudiced; state who may assume the defense and when the Indemnitee is entitled to separate counsel at the corporation's expense; and require consent before either party settles in a way that binds the other.",
+  },
+]);
+
 /** 31 U.S.C. § 1352 — the Byrd Amendment lobbying restriction. */
 function byrdAmendment() {
   return agency(
@@ -518,4 +675,5 @@ export const V5_GOVERNANCE_RULES: readonly Rule[] = [
   ...DISSOLUTION,
   ...FISCAL_SPONSORSHIP,
   ...GRANT,
+  ...DO_INDEMNIFICATION,
 ];
