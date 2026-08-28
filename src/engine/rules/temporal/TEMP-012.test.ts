@@ -76,3 +76,58 @@ describe("numbered survival lists and distributed survival (v1.1.0)", () => {
     expect(TEMP_012.check(ctx)?.description).toContain("IP ownership");
   });
 });
+
+describe("TEMP-012 — the survival clause that names sections, not topics (v1.2.0)", () => {
+  /**
+   * "Sections 2 through 5 and Section 7 survive termination indefinitely" is
+   * the commonest survival drafting there is. Two things defeated it: the
+   * enumeration expander read only the first endpoint of a RANGE, and the
+   * indemnity test used the stem `indemnif`, which does not match the word a
+   * section is HEADED with — "Indemnity".
+   */
+  it("reads an indemnity section incorporated by a range", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Hold Harmless Agreement",
+          "2. Indemnity.",
+          "Indemnitor shall indemnify, defend, and hold harmless Indemnitee from and against any and all claims.",
+          "5. No Cap.",
+          "The obligations of Indemnitor are not subject to any cap.",
+          "9. Term and Survival.",
+          "Sections 2 through 5 and Section 7 survive termination indefinitely.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads a section headed 'Indemnity' named by number", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Agreement",
+          "7. Indemnity.",
+          "Each party shall indemnify the other against third-party claims.",
+          "12. Survival.",
+          "Sections 7 and 11 survive any termination of this Agreement.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when the survival clause names a section that is not the indemnity", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Agreement",
+          "7. Indemnity.",
+          "Each party shall indemnify the other against third-party claims.",
+          "12. Survival.",
+          "Section 3 survives any termination of this Agreement.",
+          "3. Notices.",
+          "Notices must be in writing.",
+        ]),
+      )?.description,
+    ).toContain("indemnification");
+  });
+});

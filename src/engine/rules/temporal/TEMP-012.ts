@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "TEMP-012",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Survival clause silent on confidentiality / IP / indemnity",
   category: "temporal",
   default_severity: "warning",
@@ -79,7 +79,11 @@ export const rule: Rule = {
       !/(?:intellectual\s+property|ip\s+|work\s+for\s+hire|ownership)/i.test(text)
     )
       missing.push("IP ownership / assignment");
-    if (hasIndemnity && !/(?:indemnif|hold\s+\w+\s+harmless)/i.test(text))
+    // "Indemnity" is what a section is HEADED, and the stem `indemnif` does
+    // not match it: a survival clause reading "Sections 2 through 5 … survive",
+    // whose Section 2 is headed "Indemnity", was told it does not name the
+    // indemnity. `indemnit` covers Indemnity / Indemnitor / Indemnitee.
+    if (hasIndemnity && !/(?:indemnif|indemnit|hold\s+\w+\s+harmless)/i.test(text))
       missing.push("indemnification");
 
     if (missing.length === 0) return null;

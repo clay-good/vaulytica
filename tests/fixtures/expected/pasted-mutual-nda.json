@@ -781,7 +781,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-012",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -982,11 +982,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.8). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "f4ddd217df43daa727088b23f9fc95228a3e7a7e988e96edef2414e74f2e44e7",
+  "result_hash": "95edfc5bb40001d017b65b3d61a791ead24c7111179f6cae814c4e0ddf2ea945",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",
     "size_bytes": 1565
   },
-  "version": "9.93.0"
+  "version": "9.94.0"
 }

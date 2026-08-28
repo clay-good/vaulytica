@@ -54,7 +54,6 @@ const KNOWN_BROAD = new Map<string, string>([
   ["exclusive", "the operative grant word of a copyright license"],
   ["indemnify", "the operative verb of a standalone indemnification agreement"],
   ["authorize", "the operative verb of a background-check disclosure"],
-  ["acknowledge", "the operative verb of a hold-harmless acknowledgment"],
   ["received", "the operative verb of a notice-of-privacy-practices acknowledgment"],
   ["confidential", "the subject of a stipulated protective order"],
   ["assignment", "the operative act of a PIIA"],

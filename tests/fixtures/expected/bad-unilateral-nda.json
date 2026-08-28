@@ -788,7 +788,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-012",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -991,7 +991,7 @@
       "id": "TEMP-012-s1.3-491",
       "recommendation": "Add explicit named references to the missing obligation(s): confidentiality. Standard drafting names every sticky section by number or category in the survival clause.",
       "rule_id": "TEMP-012",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Survival clause does not name 1 sticky obligation"
@@ -1094,11 +1094,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "9ec2eb926fc9aac2c6a0d73637d4d3d2a2683507d136691faea76862ed81c2b8",
+  "result_hash": "ba5844b38f932f240fb1e38c7971822028ae5d7ea87cc5c65c8da717ed26eb29",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.93.0"
+  "version": "9.94.0"
 }

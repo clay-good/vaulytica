@@ -429,11 +429,26 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // incorporated list, so the operative enumeration was never read and
   // TEMP-012 reported the indemnity as unnamed in a clause that names it.
   const LIST = /\bSections?\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
+  // A RANGE is as common as an enumeration — "Sections 2 through 5 and Section
+  // 7 survive", "Sections 9-12 survive" — and the enumeration pattern reads
+  // only its first endpoint, so the sections in between were never
+  // incorporated.
+  const RANGE = /\bSections?\s+(\d+)\s*(?:through|thru|to|[-–—])\s*(\d+)\b/gi;
   const nums = new Set<string>();
   LIST.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = LIST.exec(survivalText)) !== null) {
     for (const n of m[1]!.split(/[^0-9.]+/).filter(Boolean)) nums.add(n);
+  }
+  RANGE.lastIndex = 0;
+  let r: RegExpExecArray | null;
+  while ((r = RANGE.exec(survivalText)) !== null) {
+    const from = Number(r[1]);
+    const to = Number(r[2]);
+    // Bounded so a malformed or reversed range cannot spin.
+    if (Number.isFinite(from) && Number.isFinite(to) && to > from && to - from <= 60) {
+      for (let n = from; n <= to; n += 1) nums.add(String(n));
+    }
   }
   if (nums.size === 0) return survivalText;
   const named: string[] = [];

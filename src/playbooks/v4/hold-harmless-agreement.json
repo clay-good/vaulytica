@@ -15,15 +15,20 @@
     "distinguishing_phrases": [
       "hold harmless",
       "assumption of risk",
-      "acknowledge",
-      "voluntary",
-      "release"
+      "indemnitor",
+      "indemnitee",
+      "voluntary"
     ],
-    "negative_features": ["indemnification agreement", "declarations", "endorsement"]
+    "negative_features": ["indemnification agreement", "declarations page"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Activity", "Participant"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "RISK-015": { "skip": true },
+    "TERM-002": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-HOLD-HARMLESS-LAW",

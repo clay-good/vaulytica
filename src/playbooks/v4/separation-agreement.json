@@ -11,7 +11,14 @@
       "release of claims"
     ],
     "required_clauses": [],
-    "distinguishing_phrases": ["release", "21 days", "45 days", "seven days", "revocation", "adea"],
+    "distinguishing_phrases": [
+      "general release of all claims",
+      "21 days",
+      "45 days",
+      "seven days",
+      "revocation",
+      "adea"
+    ],
     "negative_features": ["offer letter", "executive employment agreement"]
   },
   "expected_clauses": [],

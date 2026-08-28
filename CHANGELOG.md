@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.94.0] — 2026-08-28
+
+A recreational-use hold harmless and indemnity agreement.
+
+### Fixed
+- **TEMP-012 could not read the commonest survival drafting there is.**
+  "Sections 2 through 5 and Section 7 survive termination indefinitely", whose
+  Section 2 is headed "Indemnity", was reported as a survival clause that does
+  not name the indemnity. Two things defeated it: the enumeration expander read
+  only the first endpoint of a RANGE ("2 through 5", "9-12"), and the indemnity
+  test used the stem `indemnif`, which does not match the word a section is
+  actually headed with — "Indemnity".
+- **"release" is not a distinguishing phrase.** It appears in seventeen of the
+  fifty-nine specimens: an escrow releases funds, an easement releases itself
+  on abandonment, a covenant not to sue says it is not a release, a security
+  agreement releases its termination statement. `escrow-agreement`,
+  `hold-harmless-agreement`, and `separation-agreement` all leaned on it, and
+  each now uses its own register instead.
+- **`hold-harmless-agreement` listed "endorsement" as a negative feature** —
+  what its own insurance covenant requires the indemnitor to furnish. Caught by
+  the specimen guard added in 9.90.1, on the first document written for that
+  family.
+- **`hold-harmless-agreement` shipped with an empty `rule_overrides`.** The
+  document IS the indemnity: it allocates no IP, and its own Section 5 is
+  headed "No Cap".
+
+### Added
+- One specimen, bringing the set to fifty-nine.
+
 ## [9.93.0] — 2026-08-28
 
 An assignment and assumption of a commercial lease, with the landlord's

@@ -414,6 +414,18 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A recreational-use hold harmless and indemnity agreement. TEMP-012
+  // reported that its survival clause does not name the indemnity, on
+  // "Sections 2 through 5 and Section 7 survive termination indefinitely" —
+  // whose Section 2 is headed "Indemnity". Two things defeated it: the
+  // enumeration expander read only the first endpoint of a RANGE, and the
+  // indemnity test used the stem `indemnif`, which does not match the word a
+  // section is actually headed with.
+  "hold-harmless.txt": {
+    playbook: "hold-harmless-agreement",
+    findings: ["OBLI-005", "RISK-010", "STRUCT-006", "TEMP-006", "TEMP-007"],
+  },
+
   // An assignment and assumption of a commercial lease, with the landlord's
   // consent and estoppel statements. It routed to `estoppel-certificate`,
   // whose distinguishing phrases were "no default", "full force and effect",
