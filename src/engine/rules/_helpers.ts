@@ -16,11 +16,41 @@ export type ParagraphHit = {
   position: DocPosition;
 };
 
+/**
+ * A table-of-contents entry: heading text, dot leaders, page number.
+ *
+ * A TOC is not a clause, and every negotiated agreement long enough to need
+ * one has one. Reading it as document text let the TOC SATISFY presence
+ * rules: appending nothing but
+ *
+ *   ARTICLE 4 INDEMNIFICATION ..................... 15
+ *   ARTICLE 5 LIMITATION OF LIABILITY ............. 21
+ *
+ * to an agreement that contains neither clause silenced RISK-001, RISK-005,
+ * IPDATA-001, TERM-002, and TERM-005 at once — five clauses reported present
+ * because the front matter lists them.
+ *
+ * The dot leader is the signal, and it is one no prose produces: four dots
+ * or more, so an ellipsis before a number ("shall indemnify Customer ... 30
+ * days after notice") is not mistaken for one. Two entries
+ * are required, or one in a short paragraph, so that a paragraph carrying a
+ * real clause alongside a stray leader is still read.
+ */
+const TOC_ENTRY = /\.{4,}\s*\d+\s*(?=$|[^\w])/g;
+const TOC_SHORT_PARAGRAPH = 160;
+
+export function isTableOfContents(text: string): boolean {
+  TOC_ENTRY.lastIndex = 0;
+  const entries = text.match(TOC_ENTRY)?.length ?? 0;
+  return entries >= 2 || (entries === 1 && text.length <= TOC_SHORT_PARAGRAPH);
+}
+
 /** Find the first paragraph where `re` matches; returns the match + position. */
 export function firstParagraphMatch(ctx: RuleContext, re: RegExp): ParagraphHit | null {
   let hit: ParagraphHit | null = null;
   forEachParagraph(ctx.tree, (p) => {
     if (hit) return;
+    if (isTableOfContents(p.text)) return;
     const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
     r.lastIndex = 0;
     const m = r.exec(p.text);

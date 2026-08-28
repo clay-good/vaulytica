@@ -20,16 +20,30 @@ import type { Finding, Rule, RuleContext, Severity } from "../../finding.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
-import { enclosingSentence } from "../_helpers.js";
+import { enclosingSentence, isTableOfContents } from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
 
-/** Concatenate every section heading + paragraph text. */
+/**
+ * Concatenate every section heading + paragraph text, MINUS the table of
+ * contents.
+ *
+ * A TOC lists the clauses a long agreement is supposed to contain, and every
+ * v4/v5 presence rule reads this string, so the front matter was answering
+ * for the body: an IP assignment stripped of its recordation-cooperation and
+ * power-of-attorney clauses scored clean on IPL-004 and IPL-005 once a TOC
+ * naming them was appended. See {@link isTableOfContents}.
+ *
+ * Used only for boolean `.test()` — never for offsets — so dropping
+ * paragraphs cannot move a reported position.
+ */
 export function fullText(ctx: RuleContext): string {
   const parts: string[] = [];
   forEachSection(ctx.tree, (s) => {
     if (s.heading) parts.push(s.heading);
   });
-  forEachParagraph(ctx.tree, (p) => parts.push(p.text));
+  forEachParagraph(ctx.tree, (p) => {
+    if (!isTableOfContents(p.text)) parts.push(p.text);
+  });
   return parts.join("\n");
 }
 
