@@ -1,0 +1,45 @@
+INTELLECTUAL PROPERTY ASSIGNMENT AGREEMENT
+
+This Intellectual Property Assignment Agreement (this "Assignment") is made as of March 14, 2026 (the "Effective Date") by and between Halloran Instruments, LLC, a Delaware limited liability company ("Assignor"), and Vanterra Diagnostics, Inc., a Delaware corporation ("Assignee").
+
+RECITALS
+
+A. Assignor is the owner of certain patents, patent applications, trademarks, copyrights, and trade secrets relating to a benchtop immunoassay reader marketed as the "LumaRead" instrument.
+
+B. Assignee has agreed to purchase, and Assignor has agreed to sell, all of Assignor's right, title, and interest in and to the Assigned IP, pursuant to that certain Asset Purchase Agreement dated March 14, 2026 between the parties (the "Purchase Agreement").
+
+NOW, THEREFORE, in consideration of the mutual covenants set forth herein and the consideration recited in the Purchase Agreement, the receipt and sufficiency of which are hereby acknowledged, the parties agree as follows:
+
+1. DEFINITIONS. Capitalized terms used but not defined in this Assignment have the meanings given to them in the Purchase Agreement. "Assigned IP" means all of the Patents, Marks, Copyrights, and Trade Secrets listed on Schedule A, together with all goodwill associated with the Marks, all rights to sue and recover for past, present, and future infringement, and all rights to claim priority.
+
+2. ASSIGNMENT. Assignor hereby irrevocably sells, assigns, transfers, and conveys to Assignee all of Assignor's right, title, and interest, throughout the world, in and to the Assigned IP, free and clear of all liens, security interests, and encumbrances. The Assigned IP is and shall remain the sole and exclusive property of Assignee.
+
+3. MORAL RIGHTS. To the extent any moral rights, droit moral, or similar rights exist in any Copyrights and are not assignable under applicable law, Assignor hereby irrevocably waives and agrees never to assert such rights against Assignee, its successors, or its licensees.
+
+4. FURTHER ASSURANCES. Assignor shall, at Assignee's request and expense, execute and deliver all documents and take all actions reasonably necessary to record this Assignment with the United States Patent and Trademark Office and the United States Copyright Office and with any corresponding foreign registry. Assignor hereby appoints Assignee as its attorney-in-fact, coupled with an interest, to execute such documents if Assignor fails to do so within ten (10) business days after written request.
+
+5. REPRESENTATIONS AND WARRANTIES. Assignor represents and warrants that (a) Assignor is the sole and exclusive owner of the Assigned IP; (b) the Assigned IP is free and clear of all liens and encumbrances; (c) Assignor has not granted any license, covenant not to sue, or other right in the Assigned IP to any third party; (d) to Assignor's knowledge, the Assigned IP does not infringe the intellectual property rights of any third party; and (e) no claim, action, or proceeding is pending or, to Assignor's knowledge, threatened that challenges the validity, enforceability, or ownership of the Assigned IP.
+
+6. NO OTHER WARRANTIES. EXCEPT AS EXPRESSLY SET FORTH IN SECTION 5, THE ASSIGNED IP IS ASSIGNED "AS IS," AND ASSIGNOR DISCLAIMS ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+7. INDEMNIFICATION. Assignor shall indemnify, defend, and hold harmless Assignee and its officers, directors, and employees from and against any and all losses, damages, liabilities, and reasonable attorneys' fees arising out of any breach of the representations and warranties in Section 5. Assignor's aggregate liability under this Section 7 shall not exceed the Purchase Price, except in the case of fraud or willful misconduct.
+
+8. CONFIDENTIALITY. Each party shall keep confidential the terms of this Assignment and any Trade Secrets disclosed in connection with it, and shall not disclose the same except to its attorneys, accountants, and lenders who are bound by obligations of confidentiality. This Section 8 shall survive for five (5) years after the Effective Date.
+
+9. GOVERNING LAW. This Assignment is governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict-of-laws principles. Any action arising out of this Assignment shall be brought exclusively in the state or federal courts located in New Castle County, Delaware, and each party irrevocably consents to the jurisdiction of those courts.
+
+10. ENTIRE AGREEMENT. This Assignment, together with the Purchase Agreement and Schedule A, constitutes the entire agreement between the parties with respect to the subject matter hereof and supersedes all prior agreements and understandings, whether written or oral. This Assignment may be amended only by a writing signed by both parties.
+
+11. COUNTERPARTS. This Assignment may be executed in counterparts, each of which is deemed an original, and delivered by electronic transmission.
+
+IN WITNESS WHEREOF, the parties have executed this Assignment as of the Effective Date.
+
+HALLORAN INSTRUMENTS, LLC
+By: /s/ Dermot Halloran
+Name: Dermot Halloran
+Title: Manager
+
+VANTERRA DIAGNOSTICS, INC.
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer

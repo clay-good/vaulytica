@@ -9514,7 +9514,17 @@
       "Assignee",
       "Assigned IP"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
+      "TEMP-012": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "USPTO-COPYRIGHT-OFFICE",

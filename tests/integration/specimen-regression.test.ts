@@ -1,5 +1,6 @@
 /**
- * Ten hand-written documents, and the findings each is allowed to produce.
+ * The hand-written specimen corpus, and the findings each document is allowed
+ * to produce.
  *
  * Every routing and rule defect fixed on 2026-08-27 was found the same way:
  * write a realistic document, run the CLI on it, and read what comes back.
@@ -264,6 +265,17 @@ const EXPECTED: Record<string, Expectation> = {
   "promissory-note.txt": {
     playbook: "promissory-note",
     findings: ["STRUCT-006", "FIN-009", "STRUCT-005"],
+  },
+
+  // An assignment is a completed conveyance: it has no term, nothing to
+  // terminate, and nothing that "survives" a termination that cannot happen.
+  // TERM-002 / TERM-005 / TEMP-012 are skipped for this playbook. What is
+  // left is real — the Schedule A that enumerates the Assigned IP is
+  // referenced and not attached, and the indemnity states no notice,
+  // defense-control, or settlement-consent mechanics.
+  "ip-assignment.txt": {
+    playbook: "ip-assignment",
+    findings: ["STRUCT-018", "OBLI-002", "OBLI-005", "RISK-011"],
   },
 
   // A US privacy notice: no parties, no definitions section, nothing to
