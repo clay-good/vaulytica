@@ -4,7 +4,7 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 /** IPDATA-001 — IP ownership clause present (warning). */
 export const rule: Rule = {
   id: "IPDATA-001",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "IP ownership clause present",
   category: "ip-and-data",
   default_severity: "warning",
@@ -33,6 +33,13 @@ export const rule: Rule = {
         // standard invention-assignment sentence, and requiring the two words
         // to be adjacent made the rule report that the contract "does not
         // allocate ownership of intellectual property".
+        // The adverb slot also has to hold a VERB SERIES, because a
+        // conveyance instrument never uses one verb: "Each Assignor hereby
+        // irrevocably SELLS, ASSIGNS, TRANSFERS, AND CONVEYS to Assignee all
+        // of that Assignor's entire right, title, and interest in and to the
+        // Patents" is the operative sentence of a patent assignment, and on a
+        // single-adverb slot it did not match — so a document whose entire
+        // purpose is to allocate IP ownership was told it allocates none.
         // "hereby" is conventional, not required: "Executive ASSIGNS TO the
         // Company all inventions conceived during employment" is a complete
         // assignment, and an executive employment agreement writes it that way
@@ -65,7 +72,7 @@ export const rule: Rule = {
         // sole and exclusive owner of all Work Product"), by the "is the
         // exclusive property of" form (no "and remain"), and by "own … Data /
         // IP / Work Product" (objects the assignment-anchored branch lacked).
-        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|copyright\s+ownership|retains?\s+(?:all\s+)?(?:ownership\b|right,?\s+title\b)|title\s+(?:to|in)\b[^.]{0,60}?\bvest(?:s|ed)?\s+in\b|(?:sole\s+and\s+exclusive|exclusive|sole)\s+owner\s+of\b|(?:owns|owned|(?:shall|will|hereby|to|must)\s+own)\b[^.]{0,40}?\b(?:data|IP\b|work\s+product)\b|(?:are|is|shall\s+be)\s+the\s+(?:sole\s+)?(?:and\s+exclusive\s+)?property\s+of|(?:is|are|shall\s+be)\s+the\s+(?:sole\s+(?:and\s+exclusive\s+)?|exclusive\s+)property\s+of|all\s+rights\s+not\s+expressly\s+granted\s+are\s+reserved|reserves\s+all\s+(?:its\s+)?rights|acquires?\s+no\s+(?:ownership|right|title)|own(?:s|ed|ership\s+of)?\b[^.]{0,40}?\b(?:licensed\s+)?(?:patents?|copyrights?|trademarks?|inventions?|improvements?|intellectual\s+property|trade\s+secrets?|works?\s+of\s+authorship|deliverables?)\b|goodwill\b[^.]{0,60}?\binures?\s+(?:solely\s+)?to\s+the\s+benefit\s+of|(?:hereby\s+(?:\w+ly\s+)?assigns?|assigns?\s+(?:and\s+transfers?\s+)?to\b)[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b|(?:work\s+product|deliverables?|inventions?|copyrights?|patents?|trademarks?|trade\s+secrets?|works?\s+of\s+authorship|intellectual\s+property|moral\s+rights?)\b[^.]{0,60}?\b(?:belongs?\s+to|owned\s+by)\b)/i,
+        /\b(?:work(?:s)?\s+made\s+for\s+hire|intellectual\s+property|IP\s+ownership|copyright\s+ownership|retains?\s+(?:all\s+)?(?:ownership\b|right,?\s+title\b)|title\s+(?:to|in)\b[^.]{0,60}?\bvest(?:s|ed)?\s+in\b|(?:sole\s+and\s+exclusive|exclusive|sole)\s+owner\s+of\b|(?:owns|owned|(?:shall|will|hereby|to|must)\s+own)\b[^.]{0,40}?\b(?:data|IP\b|work\s+product)\b|(?:are|is|shall\s+be)\s+the\s+(?:sole\s+)?(?:and\s+exclusive\s+)?property\s+of|(?:is|are|shall\s+be)\s+the\s+(?:sole\s+(?:and\s+exclusive\s+)?|exclusive\s+)property\s+of|all\s+rights\s+not\s+expressly\s+granted\s+are\s+reserved|reserves\s+all\s+(?:its\s+)?rights|acquires?\s+no\s+(?:ownership|right|title)|own(?:s|ed|ership\s+of)?\b[^.]{0,40}?\b(?:licensed\s+)?(?:patents?|copyrights?|trademarks?|inventions?|improvements?|intellectual\s+property|trade\s+secrets?|works?\s+of\s+authorship|deliverables?)\b|goodwill\b[^.]{0,60}?\binures?\s+(?:solely\s+)?to\s+the\s+benefit\s+of|(?:hereby\s+(?:[\w-]+[,\s]+){0,6}?assigns?|assigns?\s+(?:and\s+transfers?\s+)?to\b)[^.]{0,120}?\b(?:inventions?|work\s+product|works?\s+of\s+authorship|copyrights?|patents?|trademarks?|trade\s+secrets?|deliverables?|intellectual\s+property|moral\s+rights?|IP)\b|(?:work\s+product|deliverables?|inventions?|copyrights?|patents?|trademarks?|trade\s+secrets?|works?\s+of\s+authorship|intellectual\s+property|moral\s+rights?)\b[^.]{0,60}?\b(?:belongs?\s+to|owned\s+by)\b)/i,
       )
     )
       return null;

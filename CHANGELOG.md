@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.86.0] — 2026-08-28
+
+A patent assignment and a subordination, non-disturbance and attornment
+agreement. Both are conveyancing instruments, and both found rules that could
+not read the family's own operative sentence.
+
+### Fixed
+- **A conveyance never uses one verb.** IPDATA-001's assignment branch allowed
+  a single adverb between "hereby" and "assigns", so "Each Assignor hereby
+  irrevocably **sells, assigns, transfers, and conveys** to Assignee all of
+  that Assignor's entire right, title, and interest in and to the Patents" —
+  the operative sentence of a patent assignment — did not match, and a
+  document whose entire purpose is to allocate IP ownership was told it
+  allocates none.
+- **RE-047, the N in SNDA, reported the non-disturbance covenant missing** at
+  `critical` on the section headed "Non-Disturbance". The covenant is written
+  actively and as an enumerated list — "Lender shall not (a) name Tenant as a
+  defendant …, (b) terminate or **disturb** Tenant's leasehold estate or
+  Tenant's **possession**, use, and quiet enjoyment" — and every branch wanted
+  the passive "shall not be disturbed" or the two words adjacent. The survival
+  sentence with foreclosure named last was invisible for the same reason.
+- **RE-051 missed the no-prepayment covenant** in both the places an SNDA
+  states it: inside the enumerated list of things the tenant may not do
+  without the lender's consent, and in the lender's mirror of it ("bound by
+  any rent … paid more than one month in advance").
+- **`patent-assignment` penalized itself out of its own family.** It listed
+  "trademark" as a negative feature, which is inside the name of the office
+  every patent assignment asks to record it — the United States Patent and
+  Trademark Office — and its distinguishing phrases were written without the
+  serial comma and in forms drafters do not use ("the entire right, title and
+  interest", "is hereby authorized to record"). It scored 0.4, lost to the
+  general `ip-assignment`, and its five 35 U.S.C. § 261 checks never ran.
+- **`patent-assignment` and `snda` shipped with an empty `rule_overrides`.**
+  A completed conveyance and a three-party lender instrument were each told
+  they stated no payment terms, allocated no IP, indemnified nobody, capped no
+  liability, and could not be terminated for cause.
+
+### Added
+- Two specimens, bringing the set to forty-eight.
+
 ## [9.85.0] — 2026-08-28
 
 ### Added

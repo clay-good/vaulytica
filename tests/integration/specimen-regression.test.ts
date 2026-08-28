@@ -408,6 +408,31 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A patent assignment for USPTO recordation. Two defects, both about a
+  // conveyance's own vocabulary. IPDATA-001's assignment branch allowed one
+  // adverb between "hereby" and "assigns", and a conveyance never uses one
+  // verb — "hereby irrevocably SELLS, ASSIGNS, TRANSFERS, AND CONVEYS" — so a
+  // document whose entire purpose is to allocate IP ownership was told it
+  // allocates none. And `patent-assignment` listed "trademark" as a negative
+  // feature, which is inside the name of the office every patent assignment
+  // asks to record it: the United States Patent and Trademark Office. It
+  // scored 0.4, lost to the general `ip-assignment`, and its five 35 U.S.C.
+  // § 261 checks never ran.
+  "patent-assignment.txt": {
+    playbook: "patent-assignment",
+    findings: ["OBLI-005", "STRUCT-006", "STRUCT-018"],
+  },
+
+  // A subordination, non-disturbance and attornment agreement. RE-047 —
+  // the N in SNDA — reported the non-disturbance covenant missing at
+  // `critical` on the section headed "Non-Disturbance", because the covenant
+  // is written actively and as an enumerated list ("Lender shall not (a) …,
+  // (b) terminate or disturb Tenant's leasehold estate") and every branch
+  // wanted the passive "shall not be disturbed". RE-051 missed the
+  // no-prepayment covenant for the same reason, and again in the lender's
+  // mirror of it ("bound by any rent … paid more than one month in advance").
+  "snda.txt": { playbook: "snda", findings: ["OBLI-005", "STRUCT-006"] },
+
   // A DGCL § 145 director indemnification agreement — the document every
   // VC-backed company signs once per director, and the family the catalog
   // did not have. It routed to `indemnification-agreement`, which is the

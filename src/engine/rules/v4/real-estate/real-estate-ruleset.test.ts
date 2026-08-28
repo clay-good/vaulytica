@@ -556,3 +556,78 @@ describe("RE-003 — the denial frame is bound to the tenant", () => {
     expect(res.findings.filter((f) => f.rule_id === "RE-003").map((f) => f.title)).toEqual([]);
   });
 });
+
+describe("the SNDA covenants as an SNDA actually writes them (v1.1.0)", () => {
+  /**
+   * RE-047 is the N in SNDA, and it reported the non-disturbance covenant
+   * missing — at `critical` — on the section headed "Non-Disturbance". The
+   * covenant is written ACTIVELY and as an enumerated list, which is how every
+   * SNDA writes it, and every branch wanted the passive "shall not be
+   * disturbed". RE-051 missed the no-prepayment covenant the same way, and
+   * again in the lender's mirror of it.
+   */
+  const SNDA_PB3: Playbook = { id: "snda", version: "1.0.0" };
+  const fired = async (body: string) => {
+    const ctx = withPb(buildContext(["SNDA", body]), SNDA_PB3);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("RE-047 reads the active, enumerated non-disturbance covenant", async () => {
+    expect(
+      (
+        await fired(
+          "So long as no Event of Default has occurred, Lender shall not (a) name Tenant as a defendant in any foreclosure except where joinder is required by law, or (b) terminate or disturb Tenant's leasehold estate or Tenant's possession, use, and quiet enjoyment of the premises.",
+        )
+      ).has("RE-047"),
+    ).toBe(false);
+  });
+
+  it("RE-047 reads the survival sentence with foreclosure named last", async () => {
+    expect(
+      (
+        await fired(
+          "Tenant's rights under the Lease shall continue in full force in accordance with its terms notwithstanding any foreclosure, deed in lieu of foreclosure, or exercise of the power of sale.",
+        )
+      ).has("RE-047"),
+    ).toBe(false);
+  });
+
+  it("RE-047 still fires on a subordination-only agreement", async () => {
+    expect(
+      (
+        await fired(
+          "The Lease is and shall remain subject and subordinate to the lien of the Security Instrument and to all renewals and extensions of it.",
+        )
+      ).has("RE-047"),
+    ).toBe(true);
+  });
+
+  it("RE-051 reads the covenant inside an enumerated list", async () => {
+    expect(
+      (
+        await fired(
+          "Tenant shall not, without Lender's prior written consent, (a) amend the Lease in a manner that reduces rent, (b) terminate the Lease except as expressly permitted, or (c) prepay rent more than one month in advance.",
+        )
+      ).has("RE-051"),
+    ).toBe(false);
+  });
+
+  it("RE-051 reads the successor-landlord mirror of the covenant", async () => {
+    expect(
+      (
+        await fired(
+          "A Successor Landlord shall not be bound by any rent or additional rent paid more than one month in advance.",
+        )
+      ).has("RE-051"),
+    ).toBe(false);
+  });
+
+  it("RE-051 still fires when nothing restricts prepayment", async () => {
+    expect(
+      (
+        await fired("Tenant shall attorn to and recognize the Successor Landlord as the landlord.")
+      ).has("RE-051"),
+    ).toBe(true);
+  });
+});

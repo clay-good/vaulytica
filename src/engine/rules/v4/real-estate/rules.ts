@@ -1106,6 +1106,7 @@ const SNDA_RULES: Rule[] = [
   }),
   presence({
     id: "RE-047",
+    version: "1.1.0",
     name: "Non-disturbance covenant",
     description: "Lender's non-disturbance covenant protects tenant on foreclosure.",
     citation: rePractice(
@@ -1126,6 +1127,20 @@ const SNDA_RULES: Rule[] = [
       /\bshall\s+not\s+disturb\b[^.]{0,80}?\b(?:possession|tenant|tenancy|leasehold)\b/is,
       /\bnot\s+(?:be\s+)?(?:terminated?|extinguished|disturbed|affected)\b[^.]{0,100}?\b(?:foreclosure|foreclos\w+|power\s+of\s+sale)\b/is,
       /\bforeclos\w+[^.]{0,100}?\b(?:lease|tenancy|leasehold)\b[^.]{0,60}?\b(?:shall\s+)?(?:continue|remain|survive)\b/is,
+      // The covenant is written ACTIVELY and as an enumerated list, which is
+      // how every SNDA writes it: "Lender shall not (a) name Tenant as a
+      // defendant …, (b) terminate or DISTURB Tenant's leasehold estate or
+      // Tenant's POSSESSION, use, and quiet enjoyment". The passive branches
+      // above want "shall not BE disturbed", and the "shall not disturb"
+      // branch wants the two words adjacent, so the N of an SNDA reported the
+      // non-disturbance covenant missing — at `critical`, on the section
+      // headed "Non-Disturbance".
+      /\bshall\s+not\b[^.]{0,140}?\bdisturb\b[^.]{0,90}?\b(?:possession|tenant|tenancy|leasehold|quiet\s+enjoyment)\b/is,
+      // The survival sentence with its clauses in the other order: "Tenant's
+      // rights under the Lease shall CONTINUE in full force … notwithstanding
+      // any FORECLOSURE, deed in lieu of foreclosure, or exercise of the
+      // power of sale."
+      /\b(?:lease|tenancy|leasehold|tenant['’]?s?\s+rights?)\b[^.]{0,100}?\b(?:shall\s+)?(?:continue|remain|survive)\b[^.]{0,140}?\b(?:foreclos\w+|power\s+of\s+sale|deed\s+in\s+lieu)\b/is,
     ],
   }),
   presence({
@@ -1207,6 +1222,7 @@ const SNDA_RULES: Rule[] = [
   }),
   presence({
     id: "RE-051",
+    version: "1.1.0",
     name: "No prepayment of rent (more than one month)",
     description: "Lender wants tenant to covenant not to prepay more than one month rent.",
     citation: rePractice(
@@ -1222,7 +1238,17 @@ const SNDA_RULES: Rule[] = [
     recommendation: "Add 'No Prepayment' restricting rent prepayments beyond one month.",
     present_patterns: [
       /no\s+prepay(ment)?\s+of\s+rent/i,
-      /not.{0,40}prepay.{0,40}(more\s+than\s+one\s+month|rent)/is,
+      // The prohibition sits inside an enumerated list of things the tenant
+      // may not do without the lender's consent, so "not" and "prepay" are a
+      // clause apart, not forty characters: "Tenant shall not, without
+      // Lender's prior written consent, (a) amend the Lease …, (c) PREPAY
+      // rent more than one month in advance".
+      /not[^.]{0,160}?prepay[^.]{0,60}?(?:more\s+than\s+one\s+month|rent)/is,
+      // The lender's mirror of the same covenant, written as a limitation on
+      // the successor landlord: "bound by any rent or additional rent PAID
+      // MORE THAN ONE MONTH IN ADVANCE".
+      /\b(?:rent|rents)\b[^.]{0,80}?\bpaid\b[^.]{0,60}?more\s+than\s+one\s+month\s+in\s+advance/is,
+      /prepa(?:y|id|yment)[^.]{0,80}?more\s+than\s+one\s+month/is,
     ],
     default_severity: "warning",
   }),

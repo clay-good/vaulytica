@@ -116,3 +116,34 @@ describe("IPDATA-001 — IP ownership clause present", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-001 — a conveyance never uses one verb (v1.8.0)", () => {
+  /**
+   * "Each Assignor hereby irrevocably SELLS, ASSIGNS, TRANSFERS, AND CONVEYS
+   * to Assignee all of that Assignor's entire right, title, and interest in
+   * and to the Patents" is the operative sentence of a patent assignment. The
+   * assignment branch allowed a single adverb between "hereby" and "assigns",
+   * so a document whose entire purpose is to allocate IP ownership was told it
+   * allocates none.
+   */
+  it("is silent on an assignment written as a verb series", () => {
+    for (const clause of [
+      "Each Assignor hereby irrevocably sells, assigns, transfers, and conveys to Assignee all of that Assignor's entire right, title, and interest in and to the Patents.",
+      "Seller does hereby sell, assign and transfer unto Buyer all of Seller's right, title and interest in the Trademarks.",
+      "Consultant hereby grants, conveys, and assigns to Company all inventions conceived in the course of the Services.",
+    ]) {
+      expect(IPDATA_001.check(buildContext(["Assignment", clause])), clause).toBeNull();
+    }
+  });
+
+  it("still fires on a document that allocates nothing", () => {
+    expect(
+      IPDATA_001.check(
+        buildContext([
+          "Services",
+          "Consultant shall perform the Services described on Exhibit A and invoice monthly.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

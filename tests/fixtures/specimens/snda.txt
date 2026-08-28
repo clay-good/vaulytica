@@ -1,0 +1,73 @@
+SUBORDINATION, NON-DISTURBANCE AND ATTORNMENT AGREEMENT
+
+THIS SUBORDINATION, NON-DISTURBANCE AND ATTORNMENT AGREEMENT (this "Agreement") is made as of July 17, 2026, among MERIDIAN LIFE INSURANCE COMPANY, an Iowa corporation ("Lender"), HAWTHORNE RIDGE PROPERTIES LLC, a Delaware limited liability company ("Landlord"), and BRINDLEWOOD ANALYTICS CORP., a Delaware corporation ("Tenant").
+
+RECITALS
+
+A. Landlord is the owner of the real property described on Exhibit A, commonly known as 700 Ashgrove Boulevard, Charlotte, North Carolina (the "Property").
+
+B. Lender has made or has agreed to make a loan to Landlord in the original principal amount of $46,200,000 (the "Loan"), secured by a Deed of Trust, Assignment of Leases and Rents, Security Agreement and Fixture Filing recorded in the office of the Register of Deeds of Mecklenburg County, North Carolina (the "Security Instrument"), and by an Assignment of Leases and Rents (the "Assignment of Leases").
+
+C. Tenant is the tenant under a Lease Agreement with Landlord dated March 2, 2026, covering approximately 84,000 rentable square feet on floors 6 through 9 of the building on the Property (the "Lease").
+
+D. Tenant and Lender wish to establish the priority of the Security Instrument relative to the Lease, and the rights of Tenant if Lender succeeds to Landlord's interest.
+
+NOW, THEREFORE, in consideration of the mutual covenants below, the parties agree as follows.
+
+1. Subordination.
+
+The Lease, and all of Tenant's right, title, and interest in the Property under it, including any purchase option, right of first refusal, and right of first offer, are and shall at all times remain subject and subordinate to the lien of the Security Instrument and to all advances made under it, and to all renewals, modifications, consolidations, replacements, and extensions of the Security Instrument, with the same force and effect as if the Security Instrument had been executed and recorded before the Lease.
+
+2. Non-Disturbance.
+
+So long as no Event of Default by Tenant beyond any applicable notice and cure period has occurred and is continuing under the Lease, Lender shall not (a) name Tenant as a defendant in any foreclosure of the Security Instrument except where joinder is required by law and then solely for that purpose and without seeking affirmative relief against Tenant, (b) terminate or disturb Tenant's leasehold estate or Tenant's possession, use, and quiet enjoyment of the premises under the Lease, or (c) disturb Tenant's rights under any purchase option or right of first refusal that Tenant has expressly reserved and that Lender has approved in writing. Tenant's rights under the Lease shall continue in full force in accordance with its terms notwithstanding any foreclosure, deed in lieu of foreclosure, or exercise of the power of sale.
+
+3. Attornment.
+
+If Lender or any other purchaser at foreclosure, or any grantee under a deed in lieu of foreclosure, succeeds to Landlord's interest in the Property (each, a "Successor Landlord"), Tenant shall attorn to and recognize the Successor Landlord as the landlord under the Lease for the remainder of its term, on all of the terms of the Lease, without the need for any further instrument. Tenant shall execute and deliver, within ten (10) business days after written request, an instrument confirming the attornment.
+
+4. Limitations on the Successor Landlord.
+
+A Successor Landlord shall not be: (a) liable for any act or omission of any prior landlord, except for a continuing default of which the Successor Landlord has received written notice and a reasonable opportunity to cure; (b) subject to any offset, defense, or counterclaim that Tenant may have against any prior landlord, except one arising from a continuing default of which notice was given as described above; (c) bound by any rent or additional rent paid more than one month in advance; (d) bound by any amendment to the Lease made without Lender's prior written consent, other than an amendment exercising a right expressly granted in the Lease; (e) liable for the return of any security deposit not actually received by the Successor Landlord; (f) obligated to complete any construction or improvement, or to pay any allowance, that was to be performed or paid by a prior landlord, except to the extent the Lease permits Tenant to offset the unpaid amount against rent; or (g) liable for any obligation beyond its interest in the Property, and Tenant shall look solely to that interest for the satisfaction of any judgment.
+
+5. Notice and Cure Rights of Lender.
+
+Tenant shall give Lender written notice of any default by Landlord under the Lease at the same time Tenant gives notice to Landlord, and no notice to Landlord shall be effective against Lender unless that copy is given. Tenant shall not exercise any right to terminate the Lease, to abate or offset rent, or to claim a constructive eviction on account of a Landlord default until Lender has had thirty (30) days after receipt of that notice to cure, or, if the default cannot reasonably be cured in thirty days, such longer period as Lender diligently pursues a cure, not to exceed one hundred twenty (120) days, plus any additional time reasonably required for Lender to obtain possession of the Property if possession is necessary to effect the cure.
+
+6. Assignment of Rents.
+
+Tenant acknowledges the Assignment of Leases and agrees that, on written notice from Lender that an event of default has occurred under the Loan, Tenant shall pay all rent and other sums due under the Lease directly to Lender until Lender notifies Tenant otherwise. Landlord irrevocably authorizes and directs Tenant to comply with any such notice without inquiry into whether the default has in fact occurred, and Landlord releases Tenant from any liability to Landlord for payments made in compliance with the notice. No such notice or payment shall relieve Landlord of any obligation under the Lease.
+
+7. No Modification Without Consent.
+
+Tenant shall not, without Lender's prior written consent, (a) amend the Lease in a manner that reduces rent, shortens the term, or materially reduces Tenant's obligations, (b) terminate the Lease except as expressly permitted by its terms, (c) prepay rent more than one month in advance, or (d) subordinate the Lease to any lien other than the Security Instrument.
+
+8. Notices.
+
+Every notice under this Agreement shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses stated below each party's signature, and is effective on receipt or refusal of delivery.
+
+9. Governing Law; Successors; Counterparts.
+
+This Agreement is governed by the laws of the State of North Carolina, without regard to its conflict-of-laws principles, and the parties consent to the exclusive jurisdiction of the state and federal courts located in Mecklenburg County, North Carolina. This Agreement binds and benefits the parties and their respective successors and assigns, including any Successor Landlord. It may be executed in counterparts, and this Agreement shall be recorded in the office of the Register of Deeds of Mecklenburg County, North Carolina.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+LENDER: MERIDIAN LIFE INSURANCE COMPANY
+
+By: /s/ Anneliese Thorvald
+Name: Anneliese Thorvald
+Title: Vice President, Commercial Mortgage
+
+LANDLORD: HAWTHORNE RIDGE PROPERTIES LLC
+
+By: /s/ Ignatius Mbeki-Sørheim
+Name: Ignatius Mbeki-Sørheim
+Title: Manager
+
+TENANT: BRINDLEWOOD ANALYTICS CORP.
+
+By: /s/ Perpetua Lindqvist-Aranda
+Name: Perpetua Lindqvist-Aranda
+Title: Chief Financial Officer
+
+Exhibit A — Legal Description of the Property
