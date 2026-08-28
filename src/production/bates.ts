@@ -21,6 +21,14 @@ export type BatesId = {
    */
   end_number?: number;
   padding: number;
+  /**
+   * The separator the production actually uses between prefix and number —
+   * "_", "-", or "" when the two run together. Carried so a report names a
+   * Bates number the reader can search for: a production of VAN000001,
+   * VAN000002, VAN000005 had its gap reported as "VAN_000003-VAN_000004",
+   * which appears nowhere in the production.
+   */
+  separator: string;
   filename: string;
 };
 
@@ -59,6 +67,19 @@ const BATES_RANGE_RE = /^(.*?)[_-]?(\d{2,})[-–](\d{2,})$/;
  * HIDES a real gap rather than reporting a false one. Where the two readings
  * are genuinely ambiguous, the single-number reading wins.
  */
+/**
+ * The separator sitting between the prefix and the first digit run — the
+ * trailing "_" or "-" the prefix cleanup strips, or "" when there is none.
+ */
+function separatorOf(prefixRaw: string, stem: string, digits: string): string {
+  const trailing = /([_-]+)$/.exec(prefixRaw);
+  if (trailing) return trailing[1]!;
+  const at = stem.indexOf(digits);
+  if (at <= 0) return "";
+  const before = stem[at - 1]!;
+  return before === "_" || before === "-" ? before : "";
+}
+
 export function parseBates(filename: string): BatesId | null {
   const stem = stripExtension(filename);
   const range = BATES_RANGE_RE.exec(stem);
@@ -79,6 +100,7 @@ export function parseBates(filename: string): BatesId | null {
         number: start,
         end_number: end,
         padding: startDigits.length,
+        separator: separatorOf(range[1] ?? "", stem, startDigits),
         filename,
       };
     }
@@ -95,6 +117,7 @@ export function parseBates(filename: string): BatesId | null {
     prefix,
     number,
     padding: digits.length,
+    separator: separatorOf(prefixRaw, stem, digits),
     filename,
   };
 }

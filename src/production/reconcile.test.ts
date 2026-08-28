@@ -263,3 +263,32 @@ describe("reconcileProduction — output ordering", () => {
     expect(codes).toEqual(sorted);
   });
 });
+
+describe("the reported Bates number is one the production actually contains", () => {
+  // The separator was a hardcoded "_". A production of VAN000001, VAN000002,
+  // VAN000005 had its gap reported as "VAN_000003–VAN_000004" — a Bates
+  // number that appears nowhere in it, so an attorney searching for the
+  // missing documents finds nothing while the two that are actually missing
+  // keep their real names.
+  const cases: Array<[string, string[], string]> = [
+    ["no separator", ["VAN000001.pdf", "VAN000002.pdf", "VAN000005.pdf"], "VAN000003–VAN000004"],
+    [
+      "underscore",
+      ["ACME_000001.pdf", "ACME_000002.pdf", "ACME_000005.pdf"],
+      "ACME_000003–ACME_000004",
+    ],
+    [
+      "hyphen",
+      ["ACME-000001.pdf", "ACME-000002.pdf", "ACME-000005.pdf"],
+      "ACME-000003–ACME-000004",
+    ],
+  ];
+
+  for (const [label, files, expected] of cases) {
+    it(`names the gap the way a ${label} production names its documents`, () => {
+      const findings = reconcileProduction({ bates: extractBatesSet(files), log: EMPTY_LOG });
+      const gap = findings.find((f) => f.code === "PROD-001");
+      expect(gap?.detail, `PROD-001 detail: ${gap?.detail}`).toContain(expected);
+    });
+  }
+});

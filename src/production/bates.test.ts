@@ -9,6 +9,7 @@ describe("parseBates", () => {
       prefix: "ACME",
       number: 123,
       padding: 6,
+      separator: "_",
       filename: "ACME_000123.pdf",
     });
   });
@@ -19,6 +20,7 @@ describe("parseBates", () => {
       prefix: "SMITH",
       number: 42,
       padding: 5,
+      separator: "-",
       filename: "SMITH-00042.docx",
     });
   });
@@ -29,6 +31,7 @@ describe("parseBates", () => {
       prefix: "ACME",
       number: 123,
       padding: 6,
+      separator: "",
       filename: "ACME000123.pdf",
     });
   });
@@ -66,6 +69,7 @@ describe("parseBates — range filenames", () => {
       number: 123,
       end_number: 145,
       padding: 6,
+      separator: "_",
       filename: "ACME_000123-000145.pdf",
     });
   });
