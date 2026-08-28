@@ -18,7 +18,7 @@
  * A check that cannot fire is not a check. This sweep is what keeps the
  * next one from shipping.
  */
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../../src/engine/_test-fixtures.js";
@@ -31,17 +31,12 @@ import {
 
 const familyName = new Map<string, string>();
 for (const wave of ["v3", "v4", "v5", "v6"]) {
-  let files: string[] = [];
-  try {
-    files = readdirSync(join(process.cwd(), "src", "playbooks", wave));
-  } catch {
-    continue;
-  }
+  const dir = join(process.cwd(), "src", "playbooks", wave);
+  if (!existsSync(dir)) continue;
+  const files = readdirSync(dir);
   for (const file of files) {
     if (!file.endsWith(".json")) continue;
-    const pb = JSON.parse(
-      readFileSync(join(process.cwd(), "src", "playbooks", wave, file), "utf8"),
-    ) as { id: string; name: string };
+    const pb = JSON.parse(readFileSync(join(dir, file), "utf8")) as { id: string; name: string };
     familyName.set(pb.id, pb.name);
   }
 }
