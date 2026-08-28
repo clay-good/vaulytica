@@ -14,9 +14,6 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "by using the service",
-      "you agree",
-      "we may modify",
-      "your account",
       "subscription",
       "cancel",
       "auto-renew",
@@ -39,7 +36,11 @@
     "Acceptable Use"
   ],
   "expected_defined_terms": ["Service", "User", "Account", "Subscription"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "STRUCT-001": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [
     {

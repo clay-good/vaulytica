@@ -1,0 +1,69 @@
+LUMENFOLD TERMS OF SERVICE
+
+Last updated: April 21, 2026
+
+These Terms of Service (these "Terms") govern your use of the Lumenfold hosted photo-editing service (the "Service") provided by Lumenfold Software, Inc. ("Lumenfold", "we", or "us"). By creating an account, clicking "I agree", or otherwise using the Service, you agree to these Terms.
+
+1. Your Account.
+
+You must provide accurate registration information and keep it current. You are responsible for all activity under your account and for maintaining the confidentiality of your password. You must be at least 16 years old to create an account.
+
+2. Subscription Plans and Free Trial.
+
+The Service is offered on Free, Studio, and Business plans described at lumenfold.com/pricing. A new Studio or Business subscription begins with a 14-day free trial. If you do not cancel before the trial ends, your paid subscription begins automatically and the plan fee is charged to the payment method on file.
+
+3. Billing and Automatic Renewal.
+
+Subscription fees are billed in advance, monthly or annually depending on the plan you select, and are non-refundable except as stated in Section 5 or as required by law. YOUR SUBSCRIPTION WILL AUTOMATICALLY RENEW at the end of each billing period for a further period of the same length, at the then-current plan rate, unless you cancel before the renewal date. We will send you an email reminder at least 7 days before an annual renewal, stating the renewal date and the amount to be charged. We may change plan rates on at least 30 days' notice by email; a rate change takes effect at your next renewal, and if you do not accept it you may cancel before that renewal.
+
+4. Cancellation.
+
+You may cancel your subscription at any time from the Billing page in your account settings, in the same number of steps it took to subscribe, or by emailing billing@lumenfold.com. Cancellation takes effect at the end of the current billing period, and you keep access to paid features until then. We do not charge a cancellation fee.
+
+5. Refunds.
+
+If you cancel within 14 days of your first paid charge on a plan, we will refund that charge in full on request. Beyond that period, fees already paid are not refundable except where required by law.
+
+6. Your Content.
+
+You retain all rights in the images and other material you upload ("Your Content"). You grant us a limited, non-exclusive, worldwide, royalty-free license to store, process, transmit, and display Your Content solely to provide the Service to you. We do not use Your Content to train machine-learning models. You may export Your Content at any time in a standard format, and we will retain it for 30 days after your account closes so you can export it before deletion.
+
+7. Acceptable Use.
+
+You may not use the Service to store or transmit unlawful material, to infringe another person's rights, to attempt to gain unauthorized access to our systems, or to interfere with other customers' use of the Service. We may remove material that violates this section.
+
+8. Service Availability and Support.
+
+We target 99.9% monthly availability for the Studio and Business plans and provide support by email during business hours. If availability falls below the target in a month, you may request a service credit equal to 10% of that month's fee.
+
+9. Suspension and Termination.
+
+We may suspend or terminate your account if you materially breach these Terms and do not cure the breach within 10 days after we notify you, or immediately if your use presents an imminent security or legal risk, in which case we will tell you why as soon as we reasonably can. You may close your account at any time. On termination, Sections 6, 10, 11, 12, 13, and 14 survive.
+
+10. Changes to These Terms.
+
+We may update these Terms. If a change is material, we will notify you by email and post the revised Terms at least 30 days before they take effect, and the notice will describe the change. If you do not accept the revised Terms, you may cancel before they take effect and we will refund any prepaid fees for the unused portion of your term.
+
+11. Privacy and Security.
+
+Our handling of personal data is described in our Privacy Policy. We encrypt Your Content in transit and at rest, and we will notify you without undue delay if we become aware of a breach of security affecting Your Content.
+
+12. Warranties and Disclaimers.
+
+We warrant that the Service will perform materially as described in our documentation. EXCEPT AS STATED IN THIS SECTION, THE SERVICE IS PROVIDED "AS IS" AND WE DISCLAIM ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+13. Limitation of Liability.
+
+NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR PUNITIVE DAMAGES. EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THESE TERMS IS LIMITED TO THE FEES YOU PAID IN THE TWELVE MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM. These limits do not apply to your payment obligations, to either party's gross negligence or willful misconduct, or to our indemnification obligation in Section 14.
+
+14. Indemnification.
+
+We will indemnify, defend, and hold you harmless from any third-party claim that the Service infringes a patent, copyright, or trademark, and will pay any damages finally awarded, provided that you give us prompt written notice of the claim, allow us to control the defense, and cooperate at our expense. We will not settle any claim in a way that imposes an obligation on you without your prior written consent. You will indemnify us on the same terms for any claim arising from Your Content.
+
+15. Governing Law and Disputes.
+
+These Terms are governed by the laws of the State of Washington, without regard to conflict of laws rules. Any dispute shall be brought exclusively in the state or federal courts located in King County, Washington, and each party consents to the jurisdiction of those courts. Nothing here prevents either party from seeking injunctive relief.
+
+16. General.
+
+These Terms are the entire agreement between you and Lumenfold about the Service. If a provision is unenforceable, the rest remains in effect. You may not assign these Terms without our consent; we may assign them in connection with a merger or sale of assets. Notices to you will be sent to the email address on your account; notices to us go to legal@lumenfold.com.

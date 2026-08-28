@@ -24,9 +24,16 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
       "online-assent",
       "clickwrap versus browsewrap assent in US contract-formation cases",
     ),
+    ver: "1.1.0",
     pat: [
-      /(by\s+(clicking|checking|creating\s+an\s+account|registering)|you\s+agree\s+to\s+these\s+terms)/i,
-      /(by\s+(using|accessing|continuing\s+to\s+use)\s+(this\s+)?(site|service)|constitutes?\s+(your\s+)?acceptance)/i,
+      // "you agree to BE BOUND BY these Terms" is the commoner spelling, and
+      // the browsewrap recital names the WEBSITE (or the app, or the platform)
+      // at least as often as "the site" — and names it after a compound verb,
+      // "By accessing or using …". Both patterns required an adjacency no real
+      // terms page keeps, so a document whose first substantive sentence IS
+      // the assent mechanism was reported at `critical` as stating none.
+      /(by\s+(clicking|checking|creating\s+an\s+account|registering)|you\s+agree\s+to\s+(be\s+bound\s+by\s+)?(these|this|the)\s+terms)/i,
+      /(by\s+(using|accessing|visiting|browsing|continuing\s+to\s+use)(\s+or\s+\w+)?\s+(the\s+|this\s+|our\s+)?(site|website|service|platform|application|app)\b|constitutes?\s+(your\s+)?acceptance)/i,
     ],
     why: "US courts enforce clickwrap almost uniformly and browsewrap almost never. Terms that state no assent mechanism at all are the weakest position of the three: there is no record that any user ever agreed.",
     fix: "State the assent mechanism, and back it with an interface that requires an affirmative act (checkbox or button) adjacent to a conspicuous link to these terms.",
@@ -36,14 +43,18 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
     id: "COMM-202",
     // 1.0.1 — written as a synonym OR, but the modification right and the notice to users are distinct pillars; `notice` alone is in every notices clause. The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    // 1.1.0 — "We may ALSO change these Terms" is the same sentence with one
+    // adverb in it, and the adjacency could not read it. The modification verb
+    // takes up to two intervening words now, and the synonym set matches the
+    // one the fix recommends.
+    ver: "1.1.0",
     name: "Unilateral modification and notice to users",
     cite: practice(
       "unilateral-modification",
       "illusory-promise problem in unilateral online modification clauses",
     ),
     pat: [
-      /(we\s+may\s+(modify|change|update)\s+these\s+terms|reserve\s+the\s+right\s+to\s+(modify|change))/i,
+      /(we\s+may\s+(\w+\s+){0,2}?(modify|change|update|revise|amend)\s+(these|this|the)\s+terms|reserve\s+the\s+right\s+to\s+(modify|change|update|revise|amend))/i,
       /(notice|notify|posting\s+the\s+(revised|updated)|effective\s+date)/i,
     ],
     all: true,

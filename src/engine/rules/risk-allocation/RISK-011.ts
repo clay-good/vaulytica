@@ -3,7 +3,17 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 import { isStatutoryDandOIndemnity } from "./RISK-015.js";
 
 const PROCEDURE = [
-  ["notice", /prompt(?:ly)?\s+notice|written\s+notice/i],
+  // The notice element is stated with the VERB at least as often as the noun
+  // — "we will notify you of any such claim", "Buyer shall promptly notify
+  // Seller of any claim for which it seeks indemnification". A noun-only
+  // pattern reported this element missing on an indemnity that spells the
+  // obligation out. Anchored on a claim word inside the sentence, so an
+  // unrelated "notify the other party of a change of address" in the same
+  // section is not read as the claims-notice term.
+  [
+    "notice",
+    /prompt(?:ly)?\s+notice|written\s+notice|\bnotice\s+of\s+(?:any|the|such|each)\b|\bnotif(?:y|ies|ied)\b[^.]{0,80}?\b(?:claim|demand|action|proceeding|suit)\b/i,
+  ],
   // "defense control" must be tied to the defense/claim — a bare "sole control"
   // matched an unrelated clause ("sole control over its own systems") and
   // wrongly reported this element as present.
@@ -35,7 +45,7 @@ const OPERATIVE_INDEMNITY =
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",

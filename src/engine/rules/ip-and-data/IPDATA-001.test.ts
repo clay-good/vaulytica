@@ -147,3 +147,26 @@ describe("IPDATA-001 — a conveyance never uses one verb (v1.8.0)", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-001 — ownership allocated by retaining rights in named content", () => {
+  // Consumer terms allocate ownership of user content by retention: "You
+  // retain all rights in the images and other material you upload." The
+  // retention branch read only "retains ownership" and "retains all right,
+  // title", so a terms page with a dedicated Your Content section was told it
+  // allocates no intellectual property at all.
+  it("reads 'You retain all rights in the images and other material you upload'", () => {
+    const ctx = buildContext([
+      "6. Your Content",
+      'You retain all rights in the images and other material you upload ("Your Content"). You grant us a limited licence to store and display Your Content solely to provide the Service.',
+    ]);
+    expect(IPDATA_001.check(ctx)).toBeNull();
+  });
+
+  it("still fires on terms that allocate nothing", () => {
+    const ctx = buildContext([
+      "6. Your Content",
+      "You may upload images and other material to the Service, subject to the acceptable use rules below.",
+    ]);
+    expect(IPDATA_001.check(ctx)).not.toBeNull();
+  });
+});

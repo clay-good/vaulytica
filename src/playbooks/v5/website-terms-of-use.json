@@ -16,6 +16,10 @@
       "we may modify these terms",
       "user-generated content",
       "dmca",
+      "digital millennium copyright act",
+      "these terms of use",
+      "repeat infringer",
+      "by accessing or using",
       "acceptable use",
       "governs your use of the site"
     ],
@@ -27,7 +31,11 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Site", "User", "Content"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "STRUCT-001": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-CONSUMER",

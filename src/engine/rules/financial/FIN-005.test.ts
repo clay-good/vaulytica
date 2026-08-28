@@ -292,3 +292,26 @@ describe("FIN-005 — the deadline fronted ahead of the verb (v1.8.0)", () => {
     ).not.toBeNull();
   });
 });
+
+describe("FIN-005 — a subscription is billed, not 'due'", () => {
+  // Every branch leads on due / payable / paid. A consumer subscription states
+  // its term as "Subscription fees are billed in advance, monthly or
+  // annually" — a plainly stated payment term the rule reported as none.
+  it("reads 'billed in advance, monthly or annually'", () => {
+    const ctx = buildContext([
+      "3. Billing and Automatic Renewal",
+      "Subscription fees are billed in advance, monthly or annually depending on the plan you select, and are non-refundable except as required by law.",
+    ]);
+    expect(FIN_005.check(ctx)).toBeNull();
+  });
+
+  it("reads 'charged monthly'", () => {
+    const ctx = buildContext(["3. Billing", "Your payment method is charged monthly."]);
+    expect(FIN_005.check(ctx)).toBeNull();
+  });
+
+  it("still fires when fees are mentioned with no term at all", () => {
+    const ctx = buildContext(["3. Fees", "The plan fee is $12 per seat."]);
+    expect(FIN_005.check(ctx)).not.toBeNull();
+  });
+});

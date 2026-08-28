@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.96.0] — 2026-08-28
+
+A public website's terms of use and a consumer SaaS terms of service — two
+documents that share a title register and belong to different families.
+
+### Fixed
+- **The website terms of use routed to `saas-tos`.** That playbook leaned on
+  "you agree", "we may modify", and "your account", none of which distinguish a
+  subscription service from any consumer terms page; `website-terms-of-use`
+  meanwhile listed phrases a real terms page does not carry. Both now match
+  their own register, and the pair of specimens pins the boundary in both
+  directions.
+- **COMM-201 reported a terms page that opens with its assent mechanism as
+  stating none**, at `critical`. It wanted "you agree to these terms" or "by
+  using the site"; a terms page writes "By accessing or using the website …
+  you agree to be bound by these Terms of Use" — a compound verb, an inserted
+  "be bound by", and the noun "website".
+- **COMM-202 could not read the same sentence with one adverb in it.** "We may
+  also change these Terms" did not match `we may change these terms`.
+- **RISK-011 read the notice element only as a noun.** "We will notify you of
+  any such claim" is the notice term, and an indemnity that spells the
+  obligation out was told it states no notice procedure.
+- **IPDATA-001 could not read ownership allocated by retention of a named
+  object.** "You retain all rights in the images and other material you upload"
+  is how consumer terms allocate user content; the retention branch read only
+  "retains ownership" and "retains all right, title", so a terms page with a
+  dedicated Your Content section was told it allocates no IP at all.
+- **FIN-005 could not read a subscription's payment term.** Every branch leads
+  on due / payable / paid; a subscription is *billed* — "Subscription fees are
+  billed in advance, monthly or annually".
+- **`saas-tos` and `website-terms-of-use` shipped with empty
+  `rule_overrides`.** Published terms name one entity and "you", so both drew a
+  warning for having no parties.
+
+### Added
+- Two specimens, bringing the set to sixty-six.
+
 ## [9.95.0] — 2026-08-28
 
 Five documents that are not two-party bargains: a QDRO, board minutes, a

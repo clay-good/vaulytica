@@ -16022,9 +16022,6 @@
       "required_clauses": [],
       "distinguishing_phrases": [
         "by using the service",
-        "you agree",
-        "we may modify",
-        "your account",
         "subscription",
         "cancel",
         "auto-renew",
@@ -16052,7 +16049,11 @@
       "Account",
       "Subscription"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "STRUCT-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [
       {
@@ -19625,6 +19626,10 @@
         "we may modify these terms",
         "user-generated content",
         "dmca",
+        "digital millennium copyright act",
+        "these terms of use",
+        "repeat infringer",
+        "by accessing or using",
         "acceptable use",
         "governs your use of the site"
       ],
@@ -19640,7 +19645,11 @@
       "User",
       "Content"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "STRUCT-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-CONSUMER",

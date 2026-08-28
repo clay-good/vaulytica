@@ -95,6 +95,13 @@ const PAYMENT_TERMS = new RegExp(
     // none. Same window and same character class as the "shall pay … within"
     // branch, read the other way.
     `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()$."'“”’\\-/:;&%–—]{0,160}?\\bshall\\s+(?:pay|remit)\\b`,
+    // A subscription states its payment term with "billed", not with
+    // "due"/"payable"/"paid" — "Subscription fees are billed in advance,
+    // monthly or annually", "you will be charged monthly". Every branch above
+    // leads on the due/payable/paid verbs, so a consumer terms page with a
+    // plainly stated billing term warned that it has none.
+    `\\b(?:billed|charged|invoiced)\\s+in\\s+(?:advance|arrears)\\b`,
+    `\\b(?:billed|charged|invoiced)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
     // The installment count is optional: a lease states "annual base rent …
     // payable in equal monthly installments" with no number, and that cadence
@@ -122,7 +129,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

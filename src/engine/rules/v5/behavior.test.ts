@@ -658,3 +658,53 @@ describe("v5 — the entry line a state-court order carries", () => {
     ).not.toBeNull();
   });
 });
+
+describe("v5 — the assent and modification recitals a real terms page carries", () => {
+  /**
+   * COMM-201 wanted "you agree to these terms" or "by using the site". A terms
+   * page writes "By accessing or using the website … you agree to be bound by
+   * these Terms of Use" — a compound verb, an inserted "be bound by", and the
+   * noun "website". COMM-202 wanted "we may change these terms" and could not
+   * read the same sentence with one adverb in it: "We may also change these
+   * Terms."
+   */
+  const byId = (id: string) => V5_RULES.find((x) => x.id === id)!;
+
+  it("COMM-201 reads the browsewrap recital as written", () => {
+    expect(
+      byId("COMM-201").check(
+        buildContext([
+          "Terms of Use",
+          "By accessing or using the website located at www.example.com, you agree to be bound by these Terms of Use.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("COMM-201 still fires on a terms page that states no assent mechanism", () => {
+    expect(
+      byId("COMM-201").check(
+        buildContext(["Terms of Use", "These Terms govern the operation of the website."]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("COMM-202 reads the modification right through an adverb", () => {
+    expect(
+      byId("COMM-202").check(
+        buildContext([
+          "Terms of Use",
+          "We may also change these Terms. If we make a material change, we will post the revised Terms with a new Last updated date and, where required by law, provide additional notice. Changes are effective 30 days after posting.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("COMM-202 still fires when the terms reserve no modification right", () => {
+    expect(
+      byId("COMM-202").check(
+        buildContext(["Terms of Use", "These Terms are the entire agreement between you and us."]),
+      ),
+    ).not.toBeNull();
+  });
+});

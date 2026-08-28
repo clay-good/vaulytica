@@ -692,6 +692,40 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-001",
     ],
   },
+
+  // A public website's terms of use: browsewrap assent in its first sentence,
+  // a DMCA agent, and no subscription anywhere in it.
+  "website-terms.txt": {
+    playbook: "website-terms-of-use",
+    findings: [
+      "DARK-008",
+      "DARK-009",
+      "IPDATA-005",
+      "IPDATA-010",
+      "OBLI-005",
+      "RISK-007",
+      "RISK-011",
+      "TEMP-006",
+      "TEMP-007",
+    ],
+  },
+
+  // A consumer SaaS terms of service, with a free trial, automatic renewal,
+  // and a cancellation path. Its neighbour above shares the title register, so
+  // the pair pins the boundary between the two families in both directions.
+  "saas-tos.txt": {
+    playbook: "saas-tos",
+    findings: [
+      "IPDATA-005",
+      "OBLI-005",
+      "RISK-007",
+      "RISK-015",
+      "TEMP-004",
+      "TEMP-005",
+      "TEMP-006",
+      "TEMP-008",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {
