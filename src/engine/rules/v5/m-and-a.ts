@@ -212,12 +212,23 @@ const BILL_OF_SALE = pack("bill-of-sale", C, [
   },
   {
     id: "MNA-116",
+    ver: "1.1.0",
     name: "Effective time and further assurances",
     cite: practice("bos-effective", "effective time and further assurances in a bill of sale"),
     pat: [
-      /(effective\s+(as\s+of|time)|as\s+of\s+the\s+closing|dated)/i,
+      // A bill of sale states its effective time in the execution clause —
+      // "executed this Bill of Sale AS OF October 20, 2026" — which the
+      // adjacent "effective as of" / "as of the closing" forms could not
+      // read. Conjoining the two pillars without this would have reported a
+      // dated instrument as undated.
+      /(effective\s+(as\s+of|time)|as\s+of\s+(?:the\s+closing|[A-Z][a-z]+\s+\d|\d)|dated)/i,
       /(further\s+assurances?|execute\s+(and\s+deliver\s+)?such)/i,
     ],
+    // Both halves, as the rationale requires: certain assets "need SEPARATE
+    // instruments the bill of sale does not effect", so a document with
+    // further assurances and no effective time — or an effective time and no
+    // further assurances — answers only half the question.
+    all: true,
     why: "Certain assets — titled vehicles, registered IP, permits — need separate instruments the bill of sale does not effect. Further assurances is how they get delivered after the wire.",
     fix: "State the effective time and add a further-assurances covenant for assets requiring separate transfer instruments.",
   },

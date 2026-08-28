@@ -318,6 +318,7 @@ const CTA = pack("clinical-trial-agreement", C, [
   },
   {
     id: "HC-120",
+    ver: "1.1.0",
     name: "Financial disclosure and debarment certification",
     cite: cfr(
       "21",
@@ -328,6 +329,13 @@ const CTA = pack("clinical-trial-agreement", C, [
       /(financial\s+(disclosure|interest)|form\s+fda\s+3455|3454)/i,
       /(debar|21\s+u\.?s\.?c\.?\s*§?\s*335a|excluded|not\s+been\s+debarred)/i,
     ],
+    // The rationale is a conjunction — "Part 54 requires the sponsor to
+    // collect investigator financial disclosures, AND § 335a bars using a
+    // debarred person in any capacity" — and `pat` defaults to an OR, so a
+    // clinical trial agreement carrying a debarment certification and no
+    // Part 54 financial-disclosure obligation scored clean. Two separate
+    // certifications, two separate statutes.
+    all: true,
     why: "Part 54 requires the sponsor to collect investigator financial disclosures, and § 335a bars using a debarred person in any capacity in an application. Both are certifications the sponsor makes to FDA on the site's word.",
     fix: "Require investigator financial disclosure at startup and on change, and a certification that no debarred or excluded person will work on the study.",
   },

@@ -56,7 +56,7 @@ Institution shall retain Study records for at least two (2) years after the FDA 
 
 13. Debarment.
 
-Institution certifies that neither it nor Principal Investigator nor any person engaged in the Study is debarred under 21 U.S.C. § 335a or excluded from any federal health care program, and shall notify Sponsor immediately if that changes.
+Institution certifies that neither it nor Principal Investigator nor any person engaged in the Study is debarred under 21 U.S.C. § 335a or excluded from any federal health care program, and shall notify Sponsor immediately if that changes. Principal Investigator shall complete and deliver a financial disclosure on Form FDA 3455 before enrollment of the first subject, shall promptly update it for any change in financial interest during the Study and for one (1) year thereafter, and Institution shall retain those disclosures as required by 21 C.F.R. Part 54.
 
 14. Term and Termination.
 
