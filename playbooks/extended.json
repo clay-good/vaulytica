@@ -7211,10 +7211,11 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "no default",
-        "full force and effect",
-        "current rent",
-        "security deposit"
+        "estoppel",
+        "the undersigned certifies",
+        "hereby certifies to",
+        "may be relied upon by",
+        "current rent"
       ],
       "negative_features": []
     },
@@ -10033,14 +10034,18 @@
     "match_features": {
       "title_keywords": [
         "assignment of lease",
-        "lease assignment"
+        "lease assignment",
+        "assignment and assumption of lease",
+        "assignment and assumption",
+        "consent to assignment"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
         "assignor",
         "assignee",
-        "landlord consent",
-        "assumption of obligations"
+        "landlord consents",
+        "assumes and agrees to perform",
+        "arising on and after the effective date"
       ],
       "negative_features": []
     },
@@ -10050,7 +10055,29 @@
       "Assignee",
       "Effective Date"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-002": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-015": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "Common-Law-Property",

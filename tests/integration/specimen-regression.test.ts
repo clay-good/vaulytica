@@ -414,6 +414,21 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // An assignment and assumption of a commercial lease, with the landlord's
+  // consent and estoppel statements. It routed to `estoppel-certificate`,
+  // whose distinguishing phrases were "no default", "full force and effect",
+  // and "security deposit" — what every lease amendment, SNDA, and assignment
+  // consent says about the lease it touches. `lease-assignment`'s own title
+  // keywords were "assignment of lease" and "lease assignment", and the title
+  // a real one carries is "Assignment and Assumption of Lease", which contains
+  // neither. RE-057 then reported the release / continuing-liability clause
+  // missing on a section headed "Assignor's Continuing Liability" that says
+  // "Assignor is not released … Assignor remains liable".
+  "lease-assignment.txt": {
+    playbook: "lease-assignment",
+    findings: ["OBLI-005", "RE-060", "STRUCT-006", "TEMP-002"],
+  },
+
   // A patent covenant not to sue. Its playbook's distinguishing phrases were
   // written as verbatim sentences nobody writes — "this is a covenant not to
   // sue and not a release", "shall not institute any action" — so a document

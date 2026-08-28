@@ -1369,6 +1369,7 @@ const LEASE_ASSIGNMENT_RULES: Rule[] = [
   }),
   presence({
     id: "RE-057",
+    version: "1.1.0",
     name: "Release of assignor (or continuing liability)",
     description: "Assignment should address whether assignor is released or remains liable.",
     citation: rePractice(
@@ -1383,9 +1384,14 @@ const LEASE_ASSIGNMENT_RULES: Rule[] = [
     explanation:
       "Default: assignor remains liable; many assignments release if landlord approves; the document must address.",
     recommendation: "Add 'Release of Assignor' or 'Continuing Liability' as appropriate.",
+    // 1.1.0 — the recognizers wanted "release of assignor" or "assignor
+    // continuing liable", and the clause is written the other two ways: as the
+    // NOUN in its own heading ("Assignor's Continuing Liability") and as
+    // "Assignor is not released … Assignor REMAINS LIABLE to Landlord". A
+    // section that states the point twice was reported as missing.
     present_patterns: [
-      /release\s+of\s+assignor/i,
-      /assignor.{0,80}(continue|continuing)\s+(to\s+be\s+)?liable/is,
+      /release\s+of\s+assignor|assignor\s+is\s+(?:hereby\s+)?(?:released|relieved)/i,
+      /assignor[^.]{0,120}?(?:remains?|shall\s+remain|continues?\s+to\s+be|shall\s+continue\s+to\s+be)\s+liable|continuing\s+liabilit(?:y|ies)|assignor\s+is\s+not\s+(?:released|relieved)|(?:does\s+not|shall\s+not)\s+(?:release|relieve)\s+(?:the\s+)?assignor/is,
     ],
     default_severity: "warning",
   }),

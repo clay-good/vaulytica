@@ -676,3 +676,54 @@ describe("RE-028 maintains whatever the easement exists for (v1.2.0)", () => {
     ).toBe(true);
   });
 });
+
+describe("RE-057 reads the continuing-liability clause both ways (v1.1.0)", () => {
+  /**
+   * The recognizers wanted "release of assignor" or "assignor continuing
+   * liable". The clause is written the other two ways: as the NOUN in its own
+   * heading, and as "Assignor is not released … Assignor REMAINS LIABLE to
+   * Landlord". A section that states the point twice was reported as missing.
+   */
+  const ASSIGN_PB: Playbook = { id: "lease-assignment", version: "1.0.0" };
+  const fired = async (body: string) => {
+    const ctx = withPb(buildContext(["Assignment and Assumption of Lease", body]), ASSIGN_PB);
+    const run = await runEngine({ rules: REAL_ESTATE_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("reads 'Assignor is not released … remains liable'", async () => {
+    expect(
+      (
+        await fired(
+          "Assignor is not released from its obligations under the Lease. Assignor remains liable to Landlord for the full performance of the tenant's obligations for the balance of the Term.",
+        )
+      ).has("RE-057"),
+    ).toBe(false);
+  });
+
+  it("reads the noun form in the heading", async () => {
+    expect(
+      (await fired("Assignor's Continuing Liability. Landlord may proceed against Assignor.")).has(
+        "RE-057",
+      ),
+    ).toBe(false);
+  });
+
+  it("reads an express release too", async () => {
+    expect(
+      (
+        await fired("Release of Assignor. Landlord releases Assignor from all further liability.")
+      ).has("RE-057"),
+    ).toBe(false);
+  });
+
+  it("still fires on an assignment that addresses neither", async () => {
+    expect(
+      (
+        await fired(
+          "Assignor assigns to Assignee all of Assignor's right, title, and interest in the Lease, and Assignee assumes the tenant's obligations.",
+        )
+      ).has("RE-057"),
+    ).toBe(true);
+  });
+});

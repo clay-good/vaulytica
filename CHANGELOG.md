@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.93.0] — 2026-08-28
+
+An assignment and assumption of a commercial lease, with the landlord's
+consent and estoppel statements.
+
+### Fixed
+- **It routed to `estoppel-certificate`.** That playbook's distinguishing
+  phrases were "no default", "full force and effect", and "security deposit" —
+  what every lease amendment, SNDA, and assignment consent says about the lease
+  it touches. Replaced with the certificate's own register: "estoppel", "the
+  undersigned certifies", "may be relied upon by".
+- **`lease-assignment` did not know its own title.** Its title keywords were
+  "assignment of lease" and "lease assignment"; the title a real one carries is
+  "Assignment and Assumption of Lease", which contains neither. Its
+  distinguishing phrases had the same problem — "landlord consent" and
+  "assumption of obligations" for a document that says "Landlord consents" and
+  "assumes and agrees to perform".
+- **RE-057 reported the continuing-liability clause missing** on a section
+  headed "Assignor's Continuing Liability" that says "Assignor is not released
+  … Assignor **remains liable** to Landlord". The recognizers wanted "release
+  of assignor" or "assignor continuing liable" and knew neither the noun form
+  nor "remains liable".
+- **`lease-assignment` shipped with an empty `rule_overrides`.** RISK-002 is
+  skipped with it: a three-party assignment in which the landlord never
+  indemnifies will always read as asymmetric, however the cross-indemnity is
+  drafted.
+
+### Added
+- One specimen, bringing the set to fifty-eight.
+
 ## [9.92.1] — 2026-08-28
 
 ### Added
