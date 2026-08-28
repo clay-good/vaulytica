@@ -299,6 +299,35 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["STRUCT-018", "OBLI-003", "OBLI-005", "RISK-010"],
   },
 
+  // A 50/50 Delaware joint venture, drafted to be complete: purpose and
+  // exclusivity, capital contributions and a no-further-calls covenant,
+  // board and reserved matters and a deadlock ladder, allocation AND
+  // distribution AND a tax distribution, transfer restrictions AND a
+  // buy-sell, and background AND foreground IP. All six COMM-146..151
+  // checks are silent on it — which is what makes it the compliant
+  // direction for the conjunctions they became.
+  "joint-venture.txt": {
+    playbook: "joint-venture-agreement",
+    findings: [
+      "CHOICE-006",
+      "OBLI-005",
+      "PERS-001",
+      "PERS-005",
+      "RISK-004",
+      "RISK-006",
+      "RISK-007",
+      "RISK-010",
+      "RISK-015",
+      "STRUCT-005",
+      "STRUCT-006",
+      "STRUCT-017",
+      "STRUCT-018",
+      "TEMP-006",
+      "TEMP-007",
+      "TEMP-008",
+    ],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

@@ -1,0 +1,47 @@
+JOINT VENTURE AGREEMENT
+
+This Joint Venture Agreement (this "Agreement") is entered into as of March 14, 2026 (the "Effective Date") by and between HALLORAN INSTRUMENTS, LLC, a Delaware limited liability company ("Halloran"), and MERIDIAN OPTICS CORP., a Massachusetts corporation ("Meridian"). Halloran and Meridian are each a "Member" and together the "Members."
+
+1. FORMATION AND PURPOSE. The Members hereby form Lumen Diagnostics JV, LLC, a Delaware limited liability company (the "Venture"), for the sole purpose of developing, manufacturing, and commercializing a combined immunoassay-and-imaging platform in North America (the "Business"). The Venture shall not engage in any other business without the unanimous written consent of the Members.
+
+2. CAPITAL CONTRIBUTIONS. On the Effective Date, Halloran shall contribute $6,000,000 in cash and a non-exclusive license to the LumaRead firmware, and Meridian shall contribute $6,000,000 in cash and the optical subassembly designs listed on Schedule 2.1. No Member shall be required to make any additional capital contribution, and no Member shall be personally liable for the debts of the Venture beyond its contribution.
+
+3. OWNERSHIP, ALLOCATIONS, AND DISTRIBUTIONS. Each Member holds a fifty percent (50%) membership interest. Profits and losses of the Venture shall be allocated to the Members pro rata in accordance with their membership interests. Distributable Cash shall be distributed to the Members pro rata, no less frequently than quarterly, after the Board reserves amounts it determines in good faith are necessary for working capital. The Venture shall make a mandatory tax distribution to each Member, within seventy-five (75) days after the end of each fiscal year, sufficient to cover the federal and state income tax on the income allocated to that Member at the highest marginal rate.
+
+4. GOVERNANCE. The Venture shall be managed by a board of four managers (the "Board"), two appointed by each Member. Each manager has one vote. The following actions require the unanimous approval of the Board: (a) any amendment to the certificate of formation; (b) any borrowing in excess of $500,000; (c) any sale of all or substantially all of the assets of the Venture; (d) admission of a new member; and (e) any transaction with a Member or its affiliate.
+
+5. DEADLOCK. If the Board fails to approve a matter requiring unanimous approval at two consecutive meetings, either Member may deliver a Deadlock Notice. The chief executive officers of the Members shall meet within twenty (20) days after the Deadlock Notice and attempt in good faith to resolve the matter. If the deadlock remains unresolved sixty (60) days after the Deadlock Notice, either Member may initiate the buy-sell procedure in Section 6.
+
+6. TRANSFER RESTRICTIONS; BUY-SELL. No Member shall sell, assign, pledge, or otherwise transfer all or any part of its membership interest without the prior written consent of the other Member, except pursuant to this Section 6. Before any permitted transfer to a third party, the transferring Member shall first offer the interest to the other Member on the same terms by written notice, and the other Member shall have a right of first refusal exercisable within thirty (30) days. A Member initiating the buy-sell (the "Offeror") shall deliver a notice stating a price per one percent (1%) of membership interest. The other Member (the "Offeree") shall, within thirty (30) days, elect either to sell its entire interest to the Offeror or to buy the Offeror's entire interest, in each case at the stated price. Closing shall occur within sixty (60) days after the election.
+
+7. EXCLUSIVITY AND NON-COMPETE. During the term and for two (2) years thereafter, neither Member nor any of its affiliates shall, within North America, develop, manufacture, or sell any product that competes with the Business. This Section does not restrict either Member's activities in its own legacy product lines identified on Schedule 7.1.
+
+8. INTELLECTUAL PROPERTY. Each Member retains sole ownership of all intellectual property it owned before the Effective Date and all improvements it makes independently of the Venture. All intellectual property conceived or reduced to practice in the course of the Business is owned by the Venture. Upon dissolution, the Venture's intellectual property shall be licensed to each Member on a perpetual, non-exclusive, royalty-free basis.
+
+9. CONFIDENTIALITY. Each Member shall keep confidential all non-public information of the Venture and of the other Member and shall not use it except for the Business. This Section 9 survives termination for five (5) years.
+
+10. TERM AND TERMINATION. This Agreement continues until the earlier of (a) the seventh anniversary of the Effective Date, unless extended by written agreement, or (b) dissolution under Section 11. Either Member may terminate this Agreement upon written notice if the other Member materially breaches and fails to cure the breach within thirty (30) days after written notice of the breach.
+
+11. DISSOLUTION AND WINDING UP. Upon termination, the Board shall wind up the Venture: it shall liquidate the assets, pay creditors, and distribute the remainder to the Members pro rata. Sections 8, 9, 12, and 13 survive termination.
+
+12. INDEMNIFICATION. Each Member shall indemnify, defend, and hold harmless the other Member and the Venture from and against any and all losses, damages, liabilities, and reasonable attorneys' fees arising out of the indemnifying Member's breach of this Agreement or its gross negligence or willful misconduct. The indemnified party shall give prompt written notice of any claim, the indemnifying party shall control the defense with counsel reasonably acceptable to the indemnified party, and no settlement imposing any obligation on the indemnified party shall be made without its prior written consent.
+
+13. LIMITATION OF LIABILITY. Except for a breach of Section 7 or Section 9, and except for indemnification obligations under Section 12, neither Member shall be liable to the other for indirect, incidental, consequential, special, or punitive damages, and each Member's aggregate liability under this Agreement shall not exceed the amount of its capital contributions.
+
+14. INSURANCE. The Venture shall maintain commercial general liability insurance with limits of not less than $2,000,000 per occurrence and $5,000,000 in the aggregate, and product liability insurance of not less than $5,000,000, naming each Member as an additional insured.
+
+15. GOVERNING LAW; DISPUTE RESOLUTION. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws principles. Any dispute not resolved under Section 5 shall be finally settled by binding arbitration administered by the American Arbitration Association under its Commercial Arbitration Rules, before three arbitrators sitting in Wilmington, Delaware. Judgment on the award may be entered in any court of competent jurisdiction.
+
+16. NOTICES. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses set forth on the signature page.
+
+17. ENTIRE AGREEMENT; AMENDMENT. This Agreement, together with the Schedules, constitutes the entire agreement between the Members with respect to the subject matter hereof. This Agreement may be amended only by a writing signed by both Members.
+
+IN WITNESS WHEREOF, the Members have executed this Agreement as of the Effective Date.
+
+HALLORAN INSTRUMENTS, LLC
+By: /s/ Dermot Halloran
+Dermot Halloran, Manager
+
+MERIDIAN OPTICS CORP.
+By: /s/ Priya Raghunathan
+Priya Raghunathan, Chief Executive Officer

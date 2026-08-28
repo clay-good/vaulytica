@@ -590,68 +590,118 @@ const FDD = pack("franchise-disclosure-document", C, [
 const JOINT_VENTURE = pack("joint-venture-agreement", C, [
   {
     id: "COMM-146",
+    ver: "1.1.0",
     name: "Scope and exclusivity of the venture",
     cite: practice("jv-scope", "scope and exclusivity definition in joint ventures"),
     pat: [
-      /(purpose\s+of\s+the\s+(venture|jv)|scope\s+of\s+the\s+venture|business\s+of\s+the\s+venture)/i,
-      /(exclusiv|shall\s+not\s+(compete|engage)|outside\s+the\s+scope)/i,
+      /(purpose\s+of\s+the\s+(venture|jv)|scope\s+of\s+the\s+venture|business\s+of\s+the\s+venture|(?:sole|exclusive|limited|only)\s+purpose\s+of\b|formed\s+(?:solely\s+)?(?:to|for\s+the\s+purpose)\b)/i,
+      // "Neither Member shall compete with the Business" is how an
+      // exclusivity covenant is actually written — the negation sits in
+      // "Neither", not on the verb, and `shall not compete` missed it.
+      /(exclusiv|shall\s+not\s+(compete|engage)|neither\s+\w+(?:\s+\w+){0,3}\s+shall\s+(?:compete|engage|develop|manufacture|sell)|outside\s+the\s+scope)/i,
     ],
+    // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
+    // to an OR, so either half alone scored the document clean. See the
+    // pack-wide note on `all`.
+    all: true,
     why: "A venture with no scope boundary makes every adjacent opportunity a corporate-opportunity dispute between the members, and an unbounded exclusivity is an antitrust exposure between competitors.",
     fix: "Define the venture's business, its geographic and field boundaries, what each member may do outside it, and any corporate-opportunity waiver.",
     sev: "critical",
   },
   {
     id: "COMM-147",
+    ver: "1.1.0",
     name: "Capital contributions and funding calls",
     cite: practice("jv-capital", "capital contribution and dilution mechanics in joint ventures"),
     pat: [
       /(capital\s+contribution|initial\s+contribution)/i,
       /(additional\s+(capital|funding)|capital\s+call|dilut)/i,
     ],
+    // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
+    // to an OR, so either half alone scored the document clean. See the
+    // pack-wide note on `all`.
+    all: true,
     why: "Deadlocked ventures usually fail at the second funding round. The consequence of a member declining a call — dilution, member loan, or default — is the term that decides who controls the venture in year three.",
     fix: "State initial contributions, the procedure for additional calls, and the consequence of a failure to fund (dilution formula, member loan terms, or forced transfer).",
   },
   {
     id: "COMM-148",
+    ver: "1.1.0",
     name: "Governance, reserved matters, and deadlock",
     cite: practice("jv-deadlock", "deadlock resolution in 50/50 joint ventures"),
     pat: [
       /(board|management\s+committee|steering\s+committee)/i,
       /(reserved\s+matters|supermajority|deadlock|unanimous\s+(consent|approval))/i,
     ],
+    // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
+    // to an OR, so either half alone scored the document clean. See the
+    // pack-wide note on `all`.
+    all: true,
     why: "A 50/50 venture with reserved matters and no deadlock breaker is a dissolution petition waiting to be filed. The escalation-then-exit ladder is the whole governance design.",
     fix: "State board composition, the list of reserved matters, and a deadlock ladder: executive escalation, then mediation, then a buy-sell or dissolution trigger.",
   },
   {
     id: "COMM-149",
+    ver: "1.1.0",
     name: "Profit and loss allocation",
     cite: practice("jv-allocation", "profit and loss allocation in joint ventures"),
     pat: [
       /(profits?\s+and\s+losses|allocation\s+of\s+(profits|income))/i,
       /(distribut|tax\s+distribution)/i,
     ],
+    // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
+    // to an OR, so either half alone scored the document clean. See the
+    // pack-wide note on `all`.
+    all: true,
     why: "Allocation and distribution are different decisions; a member allocated taxable income with no distribution to pay the tax on it has a real grievance from year one.",
     fix: "State the profit and loss sharing ratios, the distribution policy, and a mandatory tax distribution sufficient to cover allocated income.",
   },
   {
     id: "COMM-150",
+    ver: "1.1.0",
     name: "Transfer restrictions and exit or buy-sell",
     cite: practice("jv-exit", "transfer restrictions and buy-sell mechanics in joint ventures"),
     pat: [
-      /(transfer\s+(of\s+)?(interests?|units?|shares?)|right\s+of\s+first\s+refusal)/i,
+      // "No Member shall transfer ITS MEMBERSHIP interest" — the possessive
+      // and the noun sit between the verb and its object, which the adjacent
+      // form could not read.
+      /(transfer\b[^.]{0,40}?\b(interests?|units?|shares?|membership)|right\s+of\s+first\s+refusal)/i,
       /(buy-?sell|put\s+(option|right)|call\s+(option|right)|exit)/i,
     ],
+    // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
+    // to an OR, so either half alone scored the document clean. See the
+    // pack-wide note on `all`.
+    all: true,
     why: "Without a priced exit, a minority member in a private venture holds an illiquid interest with no way out short of litigation. A buy-sell converts the dispute into a transaction.",
     fix: "Add transfer restrictions with a ROFR, and an exit mechanism — Texas shootout, Dutch auction, or appraised put/call — with a stated valuation method and payment terms.",
   },
   {
     id: "COMM-151",
+    ver: "1.1.0",
     name: "IP ownership and background IP",
     cite: practice("jv-ip", "background and foreground IP allocation in joint ventures"),
+    // 1.1.0 — the patterns required the JARGON ("background IP",
+    // "foreground") while a drafted clause says what the jargon MEANS:
+    //
+    //   Each Member retains sole ownership of all intellectual property it
+    //   owned BEFORE THE EFFECTIVE DATE and all improvements it makes
+    //   independently of the Venture. All intellectual property CONCEIVED OR
+    //   REDUCED TO PRACTICE in the course of the Business is OWNED BY THE
+    //   VENTURE. Upon dissolution, the Venture's intellectual property shall
+    //   be licensed to each Member on a perpetual, non-exclusive,
+    //   royalty-free basis.
+    //
+    // — which is the whole of what this rule's own recommendation asks for,
+    // and it was reported as not found. "Background" and "foreground" are
+    // terms lawyers use ABOUT the clause more often than inside it.
     pat: [
-      /(background\s+(ip|intellectual\s+property)|pre-?existing\s+intellectual\s+property)/i,
-      /(developed\s+by\s+the\s+venture|foreground|jointly\s+developed|ownership\s+of\s+intellectual\s+property)/i,
+      /(background\s+(ip|intellectual\s+property)|pre-?existing\s+intellectual\s+property|intellectual\s+property\b[^.]{0,120}?\b(?:before|prior\s+to)\s+the\s+(?:effective\s+date|closing|formation))/i,
+      /(developed\s+by\s+the\s+venture|foreground|jointly\s+developed|ownership\s+of\s+intellectual\s+property|intellectual\s+property\s+(?:conceived|developed|created|invented|reduced)\b|intellectual\s+property\b[^.]{0,120}?\bowned\s+by\s+the\s+(?:venture|joint\s+venture|company))/i,
     ],
+    // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
+    // to an OR, so either half alone scored the document clean. See the
+    // pack-wide note on `all`.
+    all: true,
     why: "Each member arrives with IP the venture needs and leaves wanting rights to what the venture built. Silence produces joint ownership, whose default rules (each owner may license without accounting) rarely match the deal.",
     fix: "Identify background IP and the license granted to the venture, state who owns venture-developed IP, and set license-back rights on dissolution.",
   },
