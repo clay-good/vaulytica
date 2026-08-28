@@ -176,6 +176,7 @@ const FCPA_RULES: Rule[] = [
       /(prohibit|forbid|may\s+not)/i,
       /(foreign\s+official|government\s+official|bribe)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "POL-007",
@@ -255,6 +256,7 @@ const FCPA_RULES: Rule[] = [
       /(uk\s+bribery\s+act|ukba|bribery\s+act\s+2010)/i,
       /(failure\s+to\s+prevent|cross.border|adequate\s+procedures)/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
   presence({
@@ -307,6 +309,7 @@ const AML_RULES: Rule[] = [
       /(compliance\s+officer|aml\s+officer)/i,
       /(training|testing|cdd|customer\s+due\s+diligence)/i,
     ],
+    require_all_present: true,
     denied_if: expressDenial(String.raw`aml\s+program|anti.?money.?laundering\s+program`),
     denied_title: "BSA five-pillar AML program expressly disclaimed",
     denied_description:
@@ -463,6 +466,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
       /(insider\s+trading|trad(e|ing)\s+(while|on)\s+the\s+basis)/i,
       /(prohibit|forbid|may\s+not)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "POL-019",
@@ -486,6 +490,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
       /(pre.?clearance|pre.?approval|trading\s+window)/i,
       /(section\s+16|insider|director|officer)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "POL-020",
@@ -726,6 +731,7 @@ const DOC_RETENTION_RULES: Rule[] = [
       /(esi|electronically\s+stored\s+information|email|cloud|mobile)/i,
       /(retention|destruction|deletion)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "POL-031",
@@ -796,6 +802,7 @@ const COI_POLICY_RULES: Rule[] = [
       /(conflict\s+of\s+interest|coi)/i,
       /(financial\s+interest|related\s+party|family\s+member|business\s+(interest|relationship))/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "POL-034",
@@ -1134,6 +1141,7 @@ const LOBBYING_POLICY_RULES: Rule[] = [
       /(pre.?approval|pre.?approve|prior\s+approval)/i,
       /(lobby|lobbying|covered\s+official)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "POL-048",
@@ -1157,6 +1165,7 @@ const LOBBYING_POLICY_RULES: Rule[] = [
       /(corporate|pac|individual)/i,
       /(feca|federal\s+election\s+campaign\s+act)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "POL-049",
