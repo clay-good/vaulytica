@@ -101,6 +101,37 @@ describe("a recital does not satisfy a presence rule", () => {
   });
 });
 
+describe("an index of defined terms is a list, not a clause", () => {
+  const INDEX =
+    "Indemnified Party Section 7.1 Cap on Liability Section 8.2 " +
+    "Work Product Section 5.1 Termination for Cause Section 9.3";
+
+  for (const [id, rule] of RULES) {
+    it(`${id} still fires when the index names its clause`, () => {
+      const ctx = buildContext([...BODY, INDEX]);
+      expect(rule.check(ctx), `${id} was silenced by the index`).not.toBeNull();
+    });
+  }
+
+  it("a clause that lists three cross-references is still read", () => {
+    // It ends in a period, which an index does not.
+    const ctx = buildContext([
+      "Services Agreement",
+      "Provider shall indemnify Customer as set forth in Section 7.1, Section 8.2, and Section 9.3.",
+    ]);
+    expect(
+      isTableOfContents(
+        "Provider shall indemnify Customer as set forth in Section 7.1, Section 8.2, and Section 9.3.",
+      ),
+    ).toBe(false);
+    expect(RISK_001.check(ctx)).toBeNull();
+  });
+
+  it("two entries are not enough", () => {
+    expect(isTableOfContents("Indemnified Party Section 7.1 Work Product Section 5.1")).toBe(false);
+  });
+});
+
 describe("isTableOfContents", () => {
   it("needs two entries, or one in a short paragraph", () => {
     expect(isTableOfContents("ARTICLE 4 INDEMNIFICATION ......... 15")).toBe(true);

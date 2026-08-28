@@ -39,10 +39,36 @@ export type ParagraphHit = {
 const TOC_ENTRY = /\.{4,}\s*\d+\s*(?=$|[^\w])/g;
 const TOC_SHORT_PARAGRAPH = 160;
 
+/**
+ * The same list with a SECTION locator instead of a page number — the index
+ * of defined terms a large agreement carries alongside its TOC:
+ *
+ *   Indemnified Party        Section 7.1
+ *   Termination for Cause    Section 9.3
+ *
+ * which silenced RISK-001 and TERM-002. Three entries are required, and the
+ * paragraph must carry no sentence punctuation once section numbers are set
+ * aside — a real clause listing three cross-references ("as set forth in
+ * Section 7.1, Section 8.2, and Section 9.3.") ends in a period and is read
+ * normally.
+ */
+const SECTION_LOCATOR = /\bSection\s+\d+(?:\.\d+)*\b/g;
+const SECTION_NUMBER = /\d+(?:\.\d+)+|\d+/g;
+const TOC_MIN_SECTION_ENTRIES = 3;
+
+function isLocatorIndex(text: string): boolean {
+  SECTION_LOCATOR.lastIndex = 0;
+  const entries = text.match(SECTION_LOCATOR)?.length ?? 0;
+  if (entries < TOC_MIN_SECTION_ENTRIES) return false;
+  SECTION_NUMBER.lastIndex = 0;
+  return !/[.,;:!?]/.test(text.replace(SECTION_NUMBER, ""));
+}
+
 export function isTableOfContents(text: string): boolean {
   TOC_ENTRY.lastIndex = 0;
   const entries = text.match(TOC_ENTRY)?.length ?? 0;
-  return entries >= 2 || (entries === 1 && text.length <= TOC_SHORT_PARAGRAPH);
+  if (entries >= 2 || (entries === 1 && text.length <= TOC_SHORT_PARAGRAPH)) return true;
+  return isLocatorIndex(text);
 }
 
 /**
