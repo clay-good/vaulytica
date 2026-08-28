@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit } from "../_helpers.js";
+import { emit, excerptWindow } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 import type { DocPosition } from "../../../extract/types.js";
 
@@ -189,7 +189,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Non-solicit duration ${h.months} months ${tier} the consensus 12-month bound`,
       description: `${h.raw} — non-solicit duration ${h.months} months`,
-      excerpt: h.text.slice(Math.max(0, h.matchIndex - 20), h.matchIndex + 280),
+      excerpt: excerptWindow(h.text, h.matchIndex, 20, 280),
       explanation:
         h.months >= 24
           ? "Non-solicit durations of 24 months or longer are routinely struck down or narrowed by US courts. California Bus. & Prof. Code §§ 16600 / 16600.5 voids most non-solicits regardless of duration; Massachusetts G.L. c. 149 § 24L caps individual post-employment restrictions at 12 months; New York courts (e.g., *BDO Seidman v. Hirshberg*) require a strong legitimate-business-interest showing for anything past 12 months. A 24+ month restriction is unlikely to be enforced as written."

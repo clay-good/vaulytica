@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * DARK-005 — Class-action waiver (critical, dark-patterns).
@@ -51,7 +51,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Class-action waiver present",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 240),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 240),
       explanation:
         "A class-action waiver — typically paired with mandatory arbitration — prevents the affected party from joining other similarly-situated claimants. It is enforceable under the Federal Arbitration Act in most US contexts but materially limits practical recourse: small individual claims that would not be cost-effective to litigate solo often only see remedy through collective action. Confirm this waiver is intended and that the affected party (consumer, employee, contractor) understood the trade-off.",
       recommendation:

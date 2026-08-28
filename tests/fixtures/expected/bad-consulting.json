@@ -1134,7 +1134,7 @@
         "end_offset": 1256,
         "section_id": "s1.7",
         "start_offset": 1234,
-        "text": "ay terminate this Agreement at any time in its sole discretion."
+        "text": "may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       "id": "OBLI-006-s1.7-1234",
@@ -1175,11 +1175,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "6fceb15be61d1035e5b5462fc1b6875be5da6c012f5110dd8703516d5a407d7c",
+  "result_hash": "e1e8f105f7542a017da73f1458c8d4aca0e5f411cee2c06a886750544dd7a504",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

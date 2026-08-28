@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * OBLI-009 — Residuals clause swallows confidentiality (warning,
@@ -38,7 +38,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Residuals clause present",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 40), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 40, 280),
       explanation:
         "A residuals clause lets the recipient (or its representatives) use information retained in 'unaided memory' regardless of the underlying confidentiality obligation. In practice the clause is a near-total carve-out — the discloser cannot easily prove the use fell *outside* the residuals safe harbor, and trade secrets can be transferred via human memory. Particularly dangerous in M&A diligence NDAs where executives review competitive information and then return to their day jobs.",
       recommendation:

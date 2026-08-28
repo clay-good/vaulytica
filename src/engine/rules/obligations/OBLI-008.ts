@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -61,7 +61,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Efforts standard "${phrase}" undefined`,
       description: `The contract uses "${phrase}" without defining it.`,
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "Efforts-standard phrases carry different obligation strengths in commercial drafting. *Bloor v. Falstaff* (2d Cir. 1979) and its progeny treat `best efforts` as the most demanding, `commercially reasonable efforts` as the middle term, and `reasonable efforts` as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
       recommendation: `Either delete the qualifier (let the obligation be absolute) or add an explicit definition of "${phrase}" — typically a list of required actions ("including obtaining all consents, devoting professional staff, and absorbing reasonable costs") plus carve-outs ("but not requiring litigation, financial harm, etc.").`,

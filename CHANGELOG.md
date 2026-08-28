@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.64.0] — 2026-08-27
+
+### Fixed
+- **Excerpts cut mid-word.** The excerpt is what a reader actually sees — in
+  the fix list, the HTML report, and the DOCX — and a raw
+  `slice(index - 30, index + 280)` cuts whatever happens to be at the edge.
+  Sweeping the twenty-eight banked specimens found it on nine of them: "**n**
+  (11) paid holidays per contract year", "**perty** in the ordinary course",
+  "**ter** requires, and we will use reasonable efforts", "**al** Statements.
+  The Financial Statements attached as Schedule". The committed fixtures had
+  shipped the same defect for as long as they have existed — "**ay** terminate
+  this Agreement", "**ll** disputes shall be resolved on an individual basis".
+  A finding that quotes half a word reads as a broken tool, whatever it says
+  next.
+  - Thirty-one slicing sites across twenty-seven rules now share one
+    `excerptWindow` helper that snaps each edge outward to the nearest word
+    boundary, bounded so a pathological unbroken run cannot drag the window.
+    The window is widened, never narrowed, so no matched text is lost. Every
+    golden that moved moved only its excerpt text — no title, rule id, or
+    severity changed anywhere.
+
 ## [9.63.0] — 2026-08-27
 
 ### Fixed

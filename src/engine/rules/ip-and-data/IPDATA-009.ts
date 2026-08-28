@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed, clauseStartBefore } from "../_helpers.js";
+import {
+  clauseStartBefore,
+  emit,
+  excerptWindow,
+  firstParagraphMatch,
+  isPresenceDisclaimed,
+} from "../_helpers.js";
 
 /**
  * IPDATA-009 — AI / ML training rights over Customer Data (critical,
@@ -59,7 +65,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "AI / model-training rights over Customer Data",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 40), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 40, 280),
       explanation:
         "Granting the vendor a license to train ML / AI models on Customer Data creates several distinct problems: (1) under GDPR, training is processing that requires a lawful basis the customer typically cannot grant on behalf of the data subjects; (2) the right-to-erasure under Art. 17 is practically impossible because a trained model cannot unlearn specific training examples; (3) under HIPAA, GLBA, FERPA the training-license breaches the customer's downstream regulatory obligations; (4) downstream IP exposure from training-data litigation (*Andersen v. Stability AI*, *Getty Images*) flows back via indemnity.",
       recommendation:

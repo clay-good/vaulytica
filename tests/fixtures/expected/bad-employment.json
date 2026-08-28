@@ -874,7 +874,7 @@
         "end_offset": 1337,
         "section_id": "s1.8",
         "start_offset": 1310,
-        "text": "ll disputes shall be resolved on an individual basis only and not as part of any class action or representative action."
+        "text": "All disputes shall be resolved on an individual basis only and not as part of any class action or representative action."
       },
       "explanation": "A class-action waiver — typically paired with mandatory arbitration — prevents the affected party from joining other similarly-situated claimants. It is enforceable under the Federal Arbitration Act in most US contexts but materially limits practical recourse: small individual claims that would not be cost-effective to litigate solo often only see remedy through collective action. Confirm this waiver is intended and that the affected party (consumer, employee, contractor) understood the trade-off.",
       "id": "DARK-005-s1.8-1310",
@@ -1015,7 +1015,7 @@
         "end_offset": 804,
         "section_id": "s1.5",
         "start_offset": 764,
-        "text": "ment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
+        "text": "employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       "id": "PERS-005-s1.5-764",
@@ -1243,7 +1243,7 @@
         "end_offset": 1123,
         "section_id": "s1.7",
         "start_offset": 1101,
-        "text": "ay terminate this Agreement at any time in its sole discretion."
+        "text": "may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       "id": "OBLI-006-s1.7-1101",
@@ -1352,11 +1352,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\".",
-  "result_hash": "74a90ecc014a2a65e5821d6830d855fecc94b6fcab92ee571f09924e61961071",
+  "result_hash": "d70ab1f0f76637609544a20aa110de0702c5b71d44fbac0fd32fe61a00973d7b",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

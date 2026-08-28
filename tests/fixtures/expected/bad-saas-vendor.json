@@ -870,7 +870,7 @@
         "end_offset": 345,
         "section_id": "s1.1",
         "start_offset": 342,
-        "text": "ptime each calendar month, measured by [TBD methodology]."
+        "text": "uptime each calendar month, measured by [TBD methodology]."
       },
       "explanation": "Template placeholders such as [insert] or TBD are draft markers that should be filled before signing. Leaving them in is a serious drafting defect.",
       "id": "STRUCT-011-s1.1-342",
@@ -1055,7 +1055,7 @@
         "end_offset": 978,
         "section_id": "s1.5",
         "start_offset": 956,
-        "text": "scription Term: one (1) year, renewing automatically for successive one-year terms unless either party provides 20 days written notice of non-renewal."
+        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless either party provides 20 days written notice of non-renewal."
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
       "id": "TEMP-004-s1.5-956",
@@ -1241,11 +1241,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "f02baf41affb6ca1932130fddf2bd4eb2b955ee2abb17f9bf5d16ffe88e19967",
+  "result_hash": "2350fd62f9ecfa9bc76b07e0f6d5082db03298da3582ccf475a9bd3548a1b8b9",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

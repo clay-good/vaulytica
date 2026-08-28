@@ -862,7 +862,7 @@
         "end_offset": 876,
         "section_id": "s1.2",
         "start_offset": 662,
-        "text": "l, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning models, and related products."
+        "text": "perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning models, and related products."
       },
       "explanation": "Granting the vendor a license to train ML / AI models on Customer Data creates several distinct problems: (1) under GDPR, training is processing that requires a lawful basis the customer typically cannot grant on behalf of the data subjects; (2) the right-to-erasure under Art. 17 is practically impossible because a trained model cannot unlearn specific training examples; (3) under HIPAA, GLBA, FERPA the training-license breaches the customer's downstream regulatory obligations; (4) downstream IP exposure from training-data litigation (*Andersen v. Stability AI*, *Getty Images*) flows back via indemnity.",
       "id": "IPDATA-009-s1.2-662",
@@ -1110,11 +1110,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "5af7c28d435e5c1dd4b7346177d02d29acbdb03ce121a763d9b1ad81a825c3df",
+  "result_hash": "0c017f45254dadd6e6f7a93ac8bd6dbe00b2d1fca7b45c0fa32ac22f355e90cc",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

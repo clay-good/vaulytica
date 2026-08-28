@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * DARK-011 — Residential self-help eviction / lockout clause (critical,
@@ -53,7 +53,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Self-help eviction / lockout clause",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "Nearly every state prohibits self-help eviction of a residential tenant: the landlord must use the judicial summary-process / unlawful-detainer procedure and may not change the locks, remove the tenant or their belongings, or shut off utilities to force a move-out. A lease term authorizing self-help is void and often exposes the landlord to statutory damages.",
       recommendation:

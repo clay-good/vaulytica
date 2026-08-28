@@ -1028,7 +1028,7 @@
         "end_offset": 272,
         "section_id": "s1.1",
         "start_offset": 260,
-        "text": "Advisor shall use best efforts to provide strategic, capital-raising, and M&A advisory services on a non-exclusive basis. Advisor shall al"
+        "text": "Advisor shall use best efforts to provide strategic, capital-raising, and M&A advisory services on a non-exclusive basis. Advisor shall also"
       },
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
       "id": "OBLI-004-s1.1-260",
@@ -1094,11 +1094,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "92f8d677d1babc1e2ff347fb6265abee25ec4951f6be72f61f9295080c5156ce",
+  "result_hash": "94759917bfd44ee40a55e2d8b8fe315dda37e9e8c01d87834e5403085448a7b6",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

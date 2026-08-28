@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * DARK-013 — Residential waiver of non-waivable statutory tenant rights
@@ -43,7 +43,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Waiver of non-waivable statutory tenant rights",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "The residential landlord-tenant acts make the core tenant protections — the statutory rights and remedies, the covenant of quiet enjoyment, and the right to notice before eviction — non-waivable. A lease term purporting to waive them is void and, in several states, an unconscionable term the court may refuse to enforce or penalize.",
       recommendation:

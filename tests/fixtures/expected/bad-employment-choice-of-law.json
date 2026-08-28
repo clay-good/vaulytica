@@ -887,7 +887,7 @@
         "end_offset": 744,
         "section_id": "s1.2",
         "start_offset": 704,
-        "text": "llowing termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
+        "text": "following termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       "id": "PERS-005-s1.2-704",
@@ -1048,11 +1048,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.7). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\".",
-  "result_hash": "a222cc0b6f314c34152a1eb31ee345005930809da13b75ad2e072daf315ab7d5",
+  "result_hash": "65d4f7cc048f5134cb07335736b32e953964ae169e9ff6d61530874fe5060645",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

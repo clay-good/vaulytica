@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
 
 /**
  * DARK-008 — Unilateral suspension without notice or cure (warning,
@@ -56,7 +56,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Unilateral suspension without notice or cure",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "Broad suspension rights without notice or a cure period are widely recognized as a collection-leverage dark pattern in SaaS: a single disputed invoice can shut down a customer's production systems. Best-practice drafting limits suspension to material, unremedied breach after written notice and a defined cure window, and excludes invoices the customer is disputing in good faith.",
       recommendation:

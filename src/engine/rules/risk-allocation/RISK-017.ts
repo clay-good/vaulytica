@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
 
 /**
  * RISK-017 — One-way attorneys'-fees clause (warning).
@@ -84,7 +84,7 @@ export const rule: Rule = {
       return emit(ctx, rule, {
         title: `Asymmetric attorneys'-fees clause (${altHit[1]} → ${altHit[2]})`,
         description: altHit[0],
-        excerpt: para.slice(Math.max(0, altHit.index - 30), altHit.index + 280),
+        excerpt: excerptWindow(para, altHit.index, 30, 280),
         explanation:
           "An attorneys'-fees award flowing in only one direction is enforceable in most US jurisdictions but is widely recognized as an unbalanced drafting choice. A small group of states (California Civ. Code § 1717, Florida Stat. § 57.105(7), Oregon ORS 20.096, Washington RCW 4.84.330) automatically convert one-way fee clauses into mutual ones, which itself tells you the asymmetry is broadly viewed as unfair.",
         recommendation:
@@ -97,7 +97,7 @@ export const rule: Rule = {
       return emit(ctx, rule, {
         title: `Asymmetric attorneys'-fees award (only to ${(asymHit[1] ?? "").replace(/^the\s+/i, "")})`,
         description: m.match[0],
-        excerpt: para.slice(Math.max(0, m.match.index - 30), m.match.index + 280),
+        excerpt: excerptWindow(para, m.match.index, 30, 280),
         explanation:
           "An attorneys'-fees award flowing in only one direction is enforceable in most US jurisdictions but is widely recognized as unbalanced drafting. A handful of states (California Civ. Code § 1717, Florida Stat. § 57.105(7), Oregon ORS 20.096, Washington RCW 4.84.330) statutorily convert one-way clauses into mutual ones — a sign that the legislative consensus treats one-way fee shifters as inherently unfair.",
         recommendation:

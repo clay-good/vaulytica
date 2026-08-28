@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 // The sentiment adjective a gag clause uses to bar the review. "derogatory" and
 // "adverse" (and "poor") are as common as "negative"/"disparaging" and were
@@ -63,7 +63,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Consumer anti-review gag clause",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "The Consumer Review Fairness Act of 2016 (15 U.S.C. § 45b) makes void any provision in a consumer form contract that restricts the consumer's ability to post an honest review, rating, or assessment of the seller's goods, services, or conduct, or that penalizes doing so. Such a 'gag clause' is unenforceable and offering it is an unfair practice the FTC and state attorneys general enforce.",
       recommendation:

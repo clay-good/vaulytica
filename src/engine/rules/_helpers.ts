@@ -494,3 +494,35 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
   const text = parts.join(" ");
   return RATIFIES_PARENT.test(text) || ISSUED_UNDER_PARENT.test(text) || PARENT_CONTROLS.test(text);
 }
+
+/**
+ * A context window around a match, snapped to word boundaries.
+ *
+ * The excerpt is what a reader actually sees — in the fix list, the HTML
+ * report, and the DOCX — and a raw `slice(index - 30, index + 280)` cuts
+ * whatever happens to be there: "n (11) paid holidays per contract year",
+ * "perty in the ordinary course", "ter requires, and we will use reasonable
+ * efforts", "al Statements. The Financial Statements attached as Schedule".
+ * Sweeping the twenty-eight specimens found that on nine of them. A finding
+ * that quotes half a word reads as a broken tool, whatever it says next.
+ *
+ * The window is widened, never narrowed: each edge moves outward to the
+ * nearest boundary, by at most a word's length, so no matched text is lost.
+ */
+const WORD_SNAP_MAX = 24;
+
+export function excerptWindow(text: string, index: number, before: number, after: number): string {
+  let start = Math.max(0, index - before);
+  let end = Math.min(text.length, index + after);
+  // Move the start LEFT off a partial word.
+  const limitStart = Math.max(0, start - WORD_SNAP_MAX);
+  while (start > limitStart && /\w/.test(text[start - 1] ?? "") && /\w/.test(text[start] ?? "")) {
+    start -= 1;
+  }
+  // Move the end RIGHT off a partial word.
+  const limitEnd = Math.min(text.length, end + WORD_SNAP_MAX);
+  while (end < limitEnd && /\w/.test(text[end - 1] ?? "") && /\w/.test(text[end] ?? "")) {
+    end += 1;
+  }
+  return text.slice(start, end).trim();
+}

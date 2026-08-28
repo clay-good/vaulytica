@@ -1019,7 +1019,7 @@
         "end_offset": 1197,
         "section_id": "s1.4",
         "start_offset": 1175,
-        "text": "scription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than ninety (90) days prior to the re"
+        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than ninety (90) days prior to the renewal"
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
       "id": "TEMP-004-s1.4-1175",
@@ -1128,11 +1128,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Title matched: \"subscription agreement\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"uptime\".",
-  "result_hash": "c2d98521314d00e86e2e4d2bc6fd224f86ebd79ff5d2923f391b6da75f1dae62",
+  "result_hash": "533f4a30fafd8fd1e10e1d0ca54634fa4bc406fb3e331a93492139c1059e5583",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

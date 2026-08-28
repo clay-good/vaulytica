@@ -864,7 +864,7 @@
         "end_offset": 1299,
         "section_id": "s1.4",
         "start_offset": 1208,
-        "text": "ules then in effect. Employee waives any right to bring or participate in any class, collective, or representative action."
+        "text": "Rules then in effect. Employee waives any right to bring or participate in any class, collective, or representative action."
       },
       "explanation": "A class-action waiver — typically paired with mandatory arbitration — prevents the affected party from joining other similarly-situated claimants. It is enforceable under the Federal Arbitration Act in most US contexts but materially limits practical recourse: small individual claims that would not be cost-effective to litigate solo often only see remedy through collective action. Confirm this waiver is intended and that the affected party (consumer, employee, contractor) understood the trade-off.",
       "id": "DARK-005-s1.4-1208",
@@ -891,7 +891,7 @@
         "end_offset": 538,
         "section_id": "s1.2",
         "start_offset": 280,
-        "text": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cos"
+        "text": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cost"
       },
       "explanation": "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024) declared 'stay-or-pay' provisions presumptively unlawful under §8(a)(1) of the NLRA as restraints on Section 7 rights. The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated; New York's 'Trapped at Work Act' (Dec. 2025) bans employment promissory notes for non-transferable training. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
       "id": "PERS-008-s1.2-280",
@@ -1147,11 +1147,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\".",
-  "result_hash": "1c4155f826b95a04ce5ba13712895afc06966a87cfedf4c22d3c595580fd9806",
+  "result_hash": "a2e52df82f13d396804d6f92b9bc67000622264949febfe63272be3265f5817d",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

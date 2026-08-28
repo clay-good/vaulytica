@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, enclosingSentence, firstParagraphMatch } from "../_helpers.js";
+import { emit, enclosingSentence, excerptWindow, firstParagraphMatch } from "../_helpers.js";
 
 /**
  * IPDATA-010 — Perpetual / irrevocable license over user-side content
@@ -86,7 +86,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "License grant is perpetual / irrevocable / royalty-free / sublicensable",
       description: hit.match[0].slice(0, 240),
-      excerpt: para.slice(Math.max(0, hit.match.index - 40), hit.match.index + 320),
+      excerpt: excerptWindow(para, hit.match.index, 40, 320),
       explanation:
         "License grants that pile up perpetual / irrevocable / royalty-free / worldwide / sublicensable / transferable / fully paid-up modifiers over Feedback, Customer Data, User Content, or likeness surrender every lever a customer would ordinarily retain. The scope is often broader than the vendor needs and broader than the customer realizes. Especially for Feedback, the broadly-scoped grant means anything the customer ever says to support — even suggestions for entirely separate products — becomes free fodder for the vendor's roadmap, transferable to acquirers, and unrecoverable.",
       recommendation:

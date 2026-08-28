@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** TEMP-004 — Auto-renewal present and parseable (warning). */
 export const rule: Rule = {
@@ -30,7 +30,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Auto-renewal clause present",
       description: "The contract contains automatic-renewal language.",
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 200),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 200),
       explanation:
         "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
       position: hit.position,

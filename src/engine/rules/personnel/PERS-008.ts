@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * PERS-008 — Training-Repayment ("TRAP") / Stay-or-Pay clause
@@ -41,7 +41,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Training-repayment / stay-or-pay clause",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024) declared 'stay-or-pay' provisions presumptively unlawful under §8(a)(1) of the NLRA as restraints on Section 7 rights. The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated; New York's 'Trapped at Work Act' (Dec. 2025) bans employment promissory notes for non-transferable training. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
       recommendation:

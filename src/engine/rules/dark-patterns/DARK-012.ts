@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * DARK-012 — Residential security-deposit forfeiture / non-return
@@ -55,7 +55,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Security-deposit forfeiture / non-return clause",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "A residential security deposit is the tenant's money: the landlord must return it, less an itemized statement of lawful deductions, within the statutory window. Declaring it non-refundable, forfeiting it on breach, or waiving the itemized-return right is void in most states and often triggers statutory penalties (multiple damages for a bad-faith retention in several jurisdictions).",
       recommendation:

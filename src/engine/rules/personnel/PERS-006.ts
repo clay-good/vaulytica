@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 
 /**
  * PERS-006 — Mandatory non-disparagement on separation (warning,
@@ -49,7 +49,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Non-disparagement clause present",
       description: hit.match[0],
-      excerpt: hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 280),
+      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's *McLaren Macomb* decision (Feb 2023) held that broad non-disparagement language in severance agreements can be unlawful as to NLRA-protected concerted activity. The SEC's Rule 21F-17 separately voids clauses that would prevent whistleblowing to the Commission. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible.",
       recommendation:

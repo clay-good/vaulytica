@@ -893,7 +893,7 @@
         "end_offset": 706,
         "section_id": "s1.2",
         "start_offset": 697,
-        "text": "hall be free to use for any purpose the Residuals resulting from access to or work with Confidential Information, where \"Residuals\" means information in non-tangible form which may be retained in the unaided memory of persons who have had access to the Confidential Information."
+        "text": "shall be free to use for any purpose the Residuals resulting from access to or work with Confidential Information, where \"Residuals\" means information in non-tangible form which may be retained in the unaided memory of persons who have had access to the Confidential Information."
       },
       "explanation": "A residuals clause lets the recipient (or its representatives) use information retained in 'unaided memory' regardless of the underlying confidentiality obligation. In practice the clause is a near-total carve-out — the discloser cannot easily prove the use fell *outside* the residuals safe harbor, and trade secrets can be transferred via human memory. Particularly dangerous in M&A diligence NDAs where executives review competitive information and then return to their day jobs.",
       "id": "OBLI-009-s1.2-697",
@@ -1020,11 +1020,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Recipient\", \"Confidential Information\".",
-  "result_hash": "501828ba6810bbcb5a5a37651185c79e79194fa8704e093bc7b8ca35e99c9a6f",
+  "result_hash": "9e768e0bd66ebfd5fc58e95d328a776598e6e0c362e45a591ffc03184029c61c",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

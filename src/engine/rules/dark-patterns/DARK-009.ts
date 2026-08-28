@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
 
 /**
  * DARK-009 — Unilateral amendment by posting to a URL (warning,
@@ -63,7 +63,7 @@ export const rule: Rule = {
       return emit(ctx, rule, {
         title: "Unilateral amendment by posting to a URL",
         description: a.match[0],
-        excerpt: a.text.slice(Math.max(0, a.match.index - 30), a.match.index + 320),
+        excerpt: excerptWindow(a.text, a.match.index, 30, 320),
         explanation:
           "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. The FTC has called out 'post-and-pray' amendment in enforcement actions under Section 5 and ROSCA (15 U.S.C. § 8403), and California's automatic renewal law (Bus. & Prof. Code § 17600 et seq.) requires affirmative consent to material changes in a consumer subscription. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
         recommendation:
@@ -98,7 +98,7 @@ export const rule: Rule = {
       return emit(ctx, rule, {
         title: "Continued-use-as-acceptance amendment clause",
         description: b2.match[0],
-        excerpt: b2.text.slice(Math.max(0, b2.match.index - 30), b2.match.index + 320),
+        excerpt: excerptWindow(b2.text, b2.match.index, 30, 320),
         explanation:
           "A clause that deems continued use of the service to be acceptance of unilateral amendments has been criticized as illusory: the party 'consenting' has no real notice and no real ability to refuse without disrupting their business. FTC guidance and courts increasingly require affirmative consent for material contract changes.",
         recommendation:

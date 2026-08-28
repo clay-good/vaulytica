@@ -860,7 +860,7 @@
         "end_offset": 84,
         "section_id": "s1",
         "start_offset": 79,
-        "text": "d into under the Master Agreement dated [TBD] between Provider and Customer."
+        "text": "entered into under the Master Agreement dated [TBD] between Provider and Customer."
       },
       "explanation": "Template placeholders such as [insert] or TBD are draft markers that should be filled before signing. Leaving them in is a serious drafting defect.",
       "id": "STRUCT-011-s1-79",
@@ -975,7 +975,7 @@
         "end_offset": 329,
         "section_id": "s1.2",
         "start_offset": 300,
-        "text": " detailed by Customer from time to time at Customer's sole discretion."
+        "text": "detailed by Customer from time to time at Customer's sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       "id": "OBLI-006-s1.2-300",
@@ -1033,11 +1033,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "cba2988898903987c670546e7631ff03a6d8ee78295d3e4534ac705a8c19cce5",
+  "result_hash": "232d114939cb11d8460939f9af7d15153f2b55fa3ec20fd4986b6e7b19db6e85",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }

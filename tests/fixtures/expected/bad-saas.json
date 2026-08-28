@@ -921,7 +921,7 @@
         "end_offset": 992,
         "section_id": "s1.3",
         "start_offset": 941,
-        "text": "vised version on its website; continued use of the Service constitutes acceptance."
+        "text": "revised version on its website; continued use of the Service constitutes acceptance."
       },
       "explanation": "Browsewrap acceptance — `by using the Service you agree`, `continued use constitutes acceptance`, `you are deemed to have agreed` — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. *Specht v. Netscape* (2d Cir. 2002), *Nguyen v. Barnes & Noble* (9th Cir. 2014), and *Berkson v. Gogo* (E.D.N.Y. 2015) are the modern canon. For consumer-facing contracts, the FTC's *.com Disclosures* guidance treats hidden or passive consent as a deceptive practice.",
       "id": "DARK-007-s1.3-941",
@@ -1249,11 +1249,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "845e797657e474b569f133391c9886eed29e479fc4fe9a9d0f69eccfe68e6319",
+  "result_hash": "ca1feb5e7f24f3bab91e874dfa3f3e45a1453d6037da0463a6ed8dfd49c0e64f",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.63.0"
+  "version": "9.64.0"
 }
