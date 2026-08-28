@@ -59,6 +59,38 @@ function buildTreeFromText(text: string): DocumentTree {
   const looksLikeHeading = (line: string): boolean =>
     line.length > 0 && line.length <= 80 && !/[.;:,]$/.test(line);
 
+  /**
+   * Text copied out of a PDF keeps its line breaks and loses its blank lines,
+   * and paragraphs here are separated by blank lines alone — so such a
+   * document arrives as ONE paragraph. A mutual release that reads as 35
+   * paragraphs normally became a single 6,000-character block, and every
+   * internal cross-reference in it was reported unresolved: with no paragraph
+   * boundaries there is no numbered-clause label left to resolve against.
+   * Every paragraph-scoped rule degrades the same way — the negation window,
+   * the excerpt, the section scope.
+   *
+   * When the document has NO blank line anywhere, a line that OPENS a numbered
+   * clause or reads as an all-caps heading starts a new paragraph instead.
+   * Both markers are unambiguous in legal text, and the fallback is engaged
+   * only where the alternative is a single block, so a document that separates
+   * its paragraphs normally is untouched.
+   */
+  const hasBlankLine = /\n[ \t]*\n/.test(text);
+  const CLAUSE_OPENER =
+    /^(?:\d+(?:\.\d+)*\.?\s|\([a-z0-9]{1,4}\)\s|(?:ARTICLE|SECTION|EXHIBIT|SCHEDULE|ANNEX|APPENDIX)\s+[0-9IVXLC]|[A-Z]\.\s)/;
+  // An all-caps LINE is a heading only in a document that offers case
+  // contrast. An old-form guaranty is set in capitals throughout, so this test
+  // matched every line and made every line its own paragraph — which destroyed
+  // the structure far more thoroughly than the single block it was meant to
+  // fix, and cost the document its title.
+  const documentHasCaseContrast = text !== text.toUpperCase();
+  const ALL_CAPS_HEADING = (line: string): boolean =>
+    documentHasCaseContrast &&
+    line.length <= 80 &&
+    /[A-Z]/.test(line) &&
+    line === line.toUpperCase() &&
+    !/[.;:,]$/.test(line);
+
   let currentParaLines: string[] = [];
   const flushParagraph = (): void => {
     if (currentParaLines.length === 0) return;
@@ -129,6 +161,21 @@ function buildTreeFromText(text: string): DocumentTree {
     if (trimmed.length === 0) {
       flushParagraph();
       continue;
+    }
+    if (!hasBlankLine && ALL_CAPS_HEADING(trimmed)) {
+      // A heading stands ALONE: flush what came before it and flush it too, so
+      // the line that follows does not join onto it. Without the second flush
+      // the title of a privacy notice arrived glued to its "Last updated" line
+      // and the whole first paragraph of the body.
+      flushParagraph();
+      currentParaLines.push(trimmed);
+      flushParagraph();
+      continue;
+    }
+    if (!hasBlankLine && CLAUSE_OPENER.test(trimmed)) {
+      // A numbered clause opens a paragraph and the rest of the clause joins
+      // onto it, which is what a blank-line-separated document produces.
+      flushParagraph();
     }
     currentParaLines.push(trimmed);
   }

@@ -130,14 +130,36 @@ function leadingLines(
   return out;
 }
 
+/**
+ * The subject line as a FALLBACK, found anywhere in the opening block.
+ *
+ * Both readers above are anchored to the start of a paragraph, and a letter's
+ * "Re:" line is only at the start of one when the ingest happens to split it
+ * there. Text copied out of a PDF keeps its line breaks and loses its blank
+ * lines, so the letterhead, the addressee, the "Re:" line, and the salutation
+ * arrive as ONE paragraph — and an offer letter whose subject line says
+ * "Re: Offer of Employment — Director, Assay Development" lost it.
+ *
+ * "Re" is matched case-SENSITIVELY and must be followed by a colon, which is
+ * what keeps it off "more:", "therefore:", and an ordinary mid-sentence word.
+ * The capture stops at the salutation or the first sentence break, so it takes
+ * the subject and not the letter.
+ */
+const SUBJECT_ANYWHERE = /(?:^|[\s\n])Re\s*:\s*([^\n]{1,120}?)(?=\s+Dear\b|\s*[.;]|$)/;
+
 function subjectLine(
   sections: readonly {
     heading?: string;
     paragraphs: readonly { runs: readonly { text: string }[] }[];
   }[],
 ): string {
-  for (const text of leadingLines(sections)) {
+  const lines = leadingLines(sections);
+  for (const text of lines) {
     const m = SUBJECT_LINE.exec(text) ?? MEMO_HEADER_SUBJECT.exec(text);
+    if (m) return m[1]!.trim().slice(0, TITLE_PREAMBLE_CHARS);
+  }
+  for (const text of lines) {
+    const m = SUBJECT_ANYWHERE.exec(text);
     if (m) return m[1]!.trim().slice(0, TITLE_PREAMBLE_CHARS);
   }
   return "";
@@ -247,6 +269,7 @@ function dropLegends(lines: readonly string[]): string[] {
 const CAPTION_COURT = /^[^.]{0,160}\bcourt\b[^.]{0,80}$/i;
 const CAPTION_ROLE =
   /^\s*(?:v\.|vs\.|-v-|plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?|cross-?(?:claimants?|defendants?)|third-?party\s+(?:plaintiffs?|defendants?))\b[\s,.:;)-]*$/i;
+const CAPTION_COURT_DIVISION = /^\s*(?:[A-Za-z]+\s+)?district\s+of\b|\bdivision\s*$/i;
 const CAPTION_DOCKET =
   /\b(?:case|civil\s+action|index|docket|cause|file)\s+no\b|\bhon\.|\bjudge\b/i;
 
@@ -256,6 +279,12 @@ function captionTitle(paragraphs: readonly string[]): string {
     if (text.length === 0) continue;
     if (CAPTION_ROLE.test(text)) continue;
     if (CAPTION_DOCKET.test(text)) continue;
+    // The court block runs over several lines — "UNITED STATES DISTRICT COURT"
+    // / "NORTHERN DISTRICT OF CALIFORNIA" / "SAN FRANCISCO DIVISION" — and only
+    // the first names a "court". When each line is its own paragraph the walk
+    // stopped on the district line and handed the matcher a venue as the
+    // filing's title.
+    if (CAPTION_COURT_DIVISION.test(text)) continue;
     // A party name in the caption block. The test used to also require the
     // line to be entirely uppercase, which a caption with more than one party
     // on a side is not: "CORVUS SYSTEMS CORPORATION and MARISOL ANDRADE,"
@@ -337,6 +366,12 @@ function titleShaped(line: string | undefined): boolean {
   const t = line.trim();
   if (t.length === 0 || t.length > TITLE_LINE_CHARS) return false;
   if (/[.;:,]$/.test(t)) return false;
+  // A document's title is not a street address. "Ashfield Title Company, 1900
+  // Wazee Street, Suite 500, Denver, Colorado 80202" is Title Case throughout,
+  // carries no terminal punctuation, and reads as a title to every other test
+  // here — and it is the line directly above the name of every recorded
+  // instrument and below the letterhead of every letter.
+  if (ADDRESS_SHAPED.test(t)) return false;
   const words = t.split(/\s+/);
   if (words.length < 2) return false;
   if (!/[A-Za-z]/.test(t)) return false;
@@ -379,7 +414,18 @@ export function titleCorpus(
   //
   // Only a title-SHAPED second line is taken, so an ordinary agreement whose
   // second paragraph is body prose contributes nothing.
-  const subtitle = titleShaped(stripped[1]) ? stripped[1]!.slice(0, TITLE_PREAMBLE_CHARS) : "";
+  // A RUN of title-shaped lines, not just one. The identity can be three lines
+  // deep — "HALCYON INSTRUMENTS, INC." / "2026 EQUITY INCENTIVE PLAN" /
+  // "NOTICE OF STOCK OPTION GRANT" — and it arrives that way whenever the
+  // ingest gives each line its own paragraph, which is what a document with no
+  // blank lines does. Reading only the second line lost the grant notice's own
+  // name and routed it to the Plan.
+  const subtitleLines: string[] = [];
+  for (let i = 1; i <= 2; i += 1) {
+    if (!titleShaped(stripped[i])) break;
+    subtitleLines.push(stripped[i]!.slice(0, TITLE_PREAMBLE_CHARS));
+  }
+  const subtitle = subtitleLines.join(" ");
   const subject = subjectLine(tree.sections);
   const caption = captionTitle(dropLegends(leadingLines(tree.sections)));
   const recorded = recordedInstrumentTitle(dropLegends(leadingLines(tree.sections)));

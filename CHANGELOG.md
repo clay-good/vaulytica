@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.121.0] — 2026-08-28
+
+The same documents, pasted out of a PDF.
+
+Text copied from a PDF keeps its line breaks and loses its blank lines, and it
+is one of the commonest things a reviewer pastes in. Paragraphs in the paste
+path were separated by blank lines ALONE, so such a document arrived as ONE
+paragraph: a mutual release that reads as thirty-five paragraphs became a
+single six-thousand-character block.
+
+Run every specimen that way and **only twenty-seven of ninety-two came back
+unchanged**. Two were mis-routed outright — an all-caps guaranty to `complaint`,
+a GDPR privacy notice to `dpa-controller-processor` with eighty-three findings.
+It is now **seventy-eight of ninety-two, and the routing is invariant for all
+ninety-two**.
+
+### Fixed
+- **A blank-line-free paste is segmented at its clause markers.** A line that
+  opens a numbered clause starts a paragraph; an all-caps heading gets one of
+  its own. Engaged only where the alternative is a single block, so a document
+  that separates its paragraphs normally is untouched — and gated on the
+  document having case contrast, because in an all-caps instrument every line
+  is an "all-caps heading".
+- **A letter's "Re:" line is found anywhere in the opening block.** Both
+  subject readers were anchored to the start of a paragraph, and a letterhead,
+  addressee, subject line, and salutation arrive as one paragraph. "Re" is
+  matched case-sensitively and must carry a colon; the capture stops at the
+  salutation.
+- **The document's identity can be three lines deep.** "HALCYON INSTRUMENTS,
+  INC." / "2026 EQUITY INCENTIVE PLAN" / "NOTICE OF STOCK OPTION GRANT" —
+  reading only the second line lost the grant notice's own name and routed it
+  to the Plan.
+- **A caption's court block runs over several lines** and only the first names
+  a court, so the caption walk stopped on "NORTHERN DISTRICT OF CALIFORNIA" and
+  handed the matcher a venue as the filing's title.
+- **A street address is not a title.** "Ashfield Title Company, 1900 Wazee
+  Street, Suite 500, Denver, Colorado 80202" is Title Case throughout and
+  carries no terminal punctuation — it read as a title to every other test, and
+  it is the line directly above the name of every recorded instrument and below
+  the letterhead of every letter.
+
+### Added
+- A guard: **stripping a document's blank lines must not change what the engine
+  says about it.** Routing is asserted for every specimen with no exceptions;
+  the finding set is asserted for all but fourteen, and that list may only
+  shrink.
+
 ## [9.120.0] — 2026-08-28
 
 The same guaranty, in capitals.
