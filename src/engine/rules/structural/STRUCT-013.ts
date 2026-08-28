@@ -81,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -223,6 +223,16 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
   const after = text.replace(/_{6,}/g, " ").replace(/\/s\//g, " ").trim();
   if (!after) return false;
   if (STANDALONE_SIGNATORY_ROLE.test(after)) return true;
+  // A signature line labeled by OFFICE ALONE, with no name printed beneath it
+  // — "_______________________  Judge        Date" is how a proposed order,
+  // decree, or QDRO leaves room for the bench to sign, and a corporate
+  // consent sometimes prints only "________ Secretary". `SIGNATURE_LINE_BY_OFFICE`
+  // requires a name before the office, so every such order reported its own
+  // signature line at `critical` as an unfilled template placeholder.
+  // Anchored to the WHOLE remainder so a genuine "____ [Insert Judge Name]"
+  // placeholder, which carries template text the office alone never does, is
+  // untouched.
+  if (STANDALONE_OFFICE_LINE.test(after.replace(/\s+/g, " ").trim())) return true;
   // A signature line labeled by role beneath the rule — "____ Signature of
   // Subject", "____ Signed by Applicant", "____ Print Name of Witness" — as a
   // consent form, affidavit, or application signs. A genuine "[Insert
@@ -262,6 +272,18 @@ const NON_NAME_TOKEN =
 // name test so the title's trailing period does not break the Title-Case run.
 const HONORIFIC_PREFIX =
   /^(?:Dr|Mr|Mrs|Ms|Mx|Prof(?:essor)?|Hon|Rev|Sir|Dame|Fr|Sr|Capt|Col|Gen|Lt|Sgt|Rabbi|Pastor|Judge)\.?\s+/i;
+
+/**
+ * A signature line whose entire remainder is one signatory office, optionally
+ * followed by the short field labels that share the line ("Judge     Date",
+ * "Trustee  Date"). Built from {@link SIGNATORY_OFFICE} so the bench titles,
+ * corporate offices, and fiduciary roles already enumerated there are all
+ * covered exactly once.
+ */
+const STANDALONE_OFFICE_LINE = new RegExp(
+  String.raw`^(?:${SIGNATORY_OFFICE})(?:\s+(?:Date|Name|Title|Signature))*$`,
+  "i",
+);
 
 /**
  * True if `s` is a bare printed personal name — 2–4 Title-Case words, each with

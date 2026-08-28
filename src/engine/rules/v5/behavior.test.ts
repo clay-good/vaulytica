@@ -583,3 +583,78 @@ describe("v5 — the commonest covenant not to sue is a patent one", () => {
     ).not.toBeNull();
   });
 });
+
+describe("v5 — the consent a real sublease actually asks for", () => {
+  /**
+   * No sublease writes the bare adjacency "Landlord's consent". It asks for
+   * the landlord's PRIOR WRITTEN consent, or conditions itself on "the written
+   * consent of Master Landlord" — the genitive reversed. RE-102 matched only
+   * the bare form, so a sublease with a section headed "Consent of Master
+   * Landlord" was reported at `critical` as having no such clause.
+   */
+  const re102 = () => V5_RULES.find((x) => x.id === "RE-102")!;
+
+  it("reads the prior-written form", () => {
+    expect(
+      re102().check(
+        buildContext([
+          "Sublease",
+          "This Sublease is conditioned on Landlord's prior written consent.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads the reversed genitive with the master landlord named", () => {
+    expect(
+      re102().check(
+        buildContext([
+          "Sublease",
+          "This Sublease is expressly conditioned on the written consent of Master Landlord.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a sublease that never mentions the landlord's consent", () => {
+    expect(
+      re102().check(
+        buildContext(["Sublease", "Sublandlord subleases the Subleased Premises to Subtenant."]),
+      ),
+    ).not.toBeNull();
+  });
+});
+
+describe("v5 — the entry line a state-court order carries", () => {
+  /**
+   * EST-425 wanted "so ordered" or "entered by the court". Most state-court
+   * QDROs write neither: the entry line is the bare "ENTERED:" above the
+   * judge's signature. An order that recited its own entry, named the plan
+   * administrator, and retained jurisdiction to amend was still reported at
+   * `critical` for having none of the three.
+   */
+  const est425 = () => V5_RULES.find((x) => x.id === "EST-425")!;
+
+  it("reads the bare ENTERED: line", () => {
+    expect(
+      est425().check(
+        buildContext([
+          "Qualified Domestic Relations Order",
+          "The Court retains jurisdiction to amend this Order to secure its qualified status.",
+          "ENTERED:",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on an order with neither entry nor retained jurisdiction", () => {
+    expect(
+      est425().check(
+        buildContext([
+          "Qualified Domestic Relations Order",
+          "The Alternate Payee is assigned fifty percent of the Participant's Accrued Benefit.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

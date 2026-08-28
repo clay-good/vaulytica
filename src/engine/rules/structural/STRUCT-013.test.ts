@@ -286,3 +286,35 @@ describe("STRUCT-013 — unfilled template placeholders", () => {
     }
   });
 });
+
+describe("STRUCT-013 — a signature line labeled by office alone", () => {
+  /**
+   * A proposed order, decree, or QDRO leaves the bench a rule to sign over and
+   * a label under it — "_______________________  Judge        Date" — with no
+   * name to print until the judge signs. The by-office suppression required a
+   * personal name BEFORE the office, so every such order reported its own
+   * signature line at `critical` as an unfilled template placeholder.
+   */
+  it("does not fire on '____ Judge   Date'", () => {
+    const ctx = buildContext([
+      "Qualified Domestic Relations Order",
+      "The Court retains jurisdiction to amend this Order.",
+      "_______________________________ Judge                                    Date",
+    ]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+  });
+
+  it("does not fire on a consent signed '____ Secretary'", () => {
+    const ctx = buildContext([
+      "Written Consent",
+      "The foregoing is adopted.",
+      "______________________ Secretary",
+    ]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a template blank that names a field rather than an office", () => {
+    const ctx = buildContext(["Order", "______________________ Company Name"]);
+    expect(STRUCT_013.check(ctx)).not.toBeNull();
+  });
+});

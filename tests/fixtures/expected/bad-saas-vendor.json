@@ -667,7 +667,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-013",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -894,7 +894,7 @@
       "id": "STRUCT-013-s1.1-341",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
-      "rule_version": "1.11.0",
+      "rule_version": "1.12.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Unfilled template placeholders: 1"
@@ -1241,11 +1241,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "ac38e36385031b9155c794df9d2d53b4eb9793c2bac5ee3bbc533175f4e56428",
+  "result_hash": "a1a38191305d72f86909beaec51aee977dab44b24cb166a119e7dd30290a0c4e",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.94.0"
+  "version": "9.95.0"
 }

@@ -27,7 +27,14 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Purchase Order", "Goods", "Seller"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-003": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-2",

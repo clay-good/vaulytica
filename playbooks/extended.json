@@ -14411,7 +14411,14 @@
       "Goods",
       "Seller"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-003": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UCC-2",
@@ -18640,7 +18647,7 @@
         "the trust is hereby amended",
         "in all other respects the trust is ratified",
         "restated in its entirety",
-        "dated"
+        "trust dated"
       ],
       "negative_features": [
         "last will and testament",

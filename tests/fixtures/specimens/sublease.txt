@@ -1,0 +1,101 @@
+SUBLEASE AGREEMENT
+
+This Sublease Agreement (this "Sublease") is entered into as of September 1, 2026 (the "Effective Date"), by and between Northgate Design Studio, LLC, a Washington limited liability company ("Sublandlord"), and Corvid Robotics, Inc., a Delaware corporation ("Subtenant").
+
+RECITALS
+
+A. Sublandlord is the tenant under that certain Office Lease dated March 15, 2022 (the "Master Lease") between Pioneer Square Holdings LP, as landlord ("Master Landlord"), and Sublandlord, as tenant, covering approximately 14,000 rentable square feet on the fourth floor of the building located at 1201 Second Avenue, Seattle, Washington 98101 (the "Building").
+
+B. Subtenant desires to sublease a portion of those premises from Sublandlord, and Sublandlord is willing to sublease that portion to Subtenant, on the terms set forth in this Sublease.
+
+NOW, THEREFORE, in consideration of the mutual covenants contained in this Sublease, and other good and valuable consideration, the receipt and sufficiency of which are acknowledged, the parties agree as follows:
+
+1. Sublease of Premises.
+
+Sublandlord subleases to Subtenant, and Subtenant subleases from Sublandlord, approximately 5,200 rentable square feet on the fourth floor of the Building, as shown on the floor plan attached as Exhibit A (the "Subleased Premises").
+
+2. Term.
+
+The term of this Sublease (the "Sublease Term") commences on October 1, 2026 (the "Commencement Date") and expires on February 28, 2029, unless sooner terminated in accordance with this Sublease. In no event shall the Sublease Term extend beyond the day immediately preceding the expiration or earlier termination of the Master Lease. Subtenant has no right to extend or renew the Sublease Term.
+
+3. Rent.
+
+Subtenant shall pay to Sublandlord base rent of $23,400 per month, payable in advance on the first day of each calendar month, without demand, deduction, or offset. Base rent for any partial month shall be prorated on a per diem basis. Rent not paid within five (5) days after it is due shall bear interest at the rate of one percent (1%) per month, or the maximum rate permitted by applicable law, whichever is less.
+
+4. Additional Rent.
+
+Subtenant shall pay to Sublandlord, as additional rent, 37.1% of all operating expenses, taxes, and other charges payable by Sublandlord under the Master Lease with respect to the premises demised by the Master Lease, within twenty (20) days after Sublandlord delivers to Subtenant an invoice and a copy of the corresponding statement received from Master Landlord.
+
+5. Security Deposit.
+
+On execution of this Sublease, Subtenant shall deposit with Sublandlord the sum of $46,800 as a security deposit. Sublandlord shall return the security deposit, less any amounts properly applied to cure Subtenant's defaults, within thirty (30) days after the expiration or earlier termination of the Sublease Term and Subtenant's surrender of the Subleased Premises.
+
+6. Use.
+
+Subtenant shall use the Subleased Premises solely for general office and research and development purposes, and for no other purpose. Subtenant shall not use the Subleased Premises in any manner that would violate the Master Lease, constitute a nuisance, or increase the premiums for any insurance carried by Sublandlord or Master Landlord.
+
+7. Condition of the Subleased Premises.
+
+Subtenant accepts the Subleased Premises in their "as is, where is" condition as of the Commencement Date. Sublandlord has no obligation to perform any alterations, improvements, or repairs to the Subleased Premises, except that Sublandlord shall deliver the Subleased Premises broom clean and with the base building systems serving the Subleased Premises in good working order as of the Commencement Date.
+
+8. Incorporation of the Master Lease.
+
+Except as otherwise expressly provided in this Sublease, the terms of the Master Lease are incorporated into this Sublease, and Subtenant assumes and agrees to perform, with respect to the Subleased Premises, all obligations of Sublandlord as tenant under the Master Lease. Sublandlord shall not amend the Master Lease in any manner that materially and adversely affects Subtenant's rights under this Sublease without Subtenant's prior written consent. Sublandlord shall perform its obligations under the Master Lease and shall not commit any act or omission that would cause a default under the Master Lease.
+
+9. Consent of Master Landlord.
+
+This Sublease is expressly conditioned on the written consent of Master Landlord pursuant to Section 14.2 of the Master Lease. If Master Landlord's written consent is not obtained within forty-five (45) days after the Effective Date, either party may terminate this Sublease by written notice to the other, whereupon Sublandlord shall return the security deposit to Subtenant and neither party shall have any further obligation to the other.
+
+10. Alterations.
+
+Subtenant shall not make any alterations, additions, or improvements to the Subleased Premises without the prior written consent of Sublandlord and, to the extent required by the Master Lease, of Master Landlord. Sublandlord shall not unreasonably withhold, condition, or delay its consent.
+
+11. Assignment and Subletting.
+
+Subtenant shall not assign this Sublease or further sublet all or any portion of the Subleased Premises without the prior written consent of Sublandlord and Master Landlord, which consent Sublandlord may withhold in its sole and absolute discretion.
+
+12. Insurance.
+
+Subtenant shall maintain commercial general liability insurance with limits of not less than $2,000,000 per occurrence and $4,000,000 in the aggregate, property insurance covering Subtenant's personal property and improvements, and workers' compensation insurance as required by law. Subtenant shall name Sublandlord and Master Landlord as additional insureds on the commercial general liability policy and shall deliver certificates of insurance to Sublandlord before the Commencement Date and on each renewal.
+
+13. Indemnity.
+
+Subtenant shall indemnify, defend, and hold harmless Sublandlord and Master Landlord from and against all claims, damages, liabilities, and reasonable attorneys' fees arising out of Subtenant's use or occupancy of the Subleased Premises or any breach of this Sublease by Subtenant, except to the extent caused by the negligence or willful misconduct of the party seeking indemnification. Sublandlord shall indemnify, defend, and hold harmless Subtenant from and against all claims, damages, liabilities, and reasonable attorneys' fees arising out of Sublandlord's breach of the Master Lease, except to the extent that breach results from Subtenant's act or omission.
+
+14. Default and Remedies.
+
+Subtenant is in default under this Sublease if Subtenant fails to pay any rent within five (5) days after written notice that the payment is past due, or fails to perform any other obligation under this Sublease within thirty (30) days after written notice of the failure, provided that if the failure cannot reasonably be cured within thirty (30) days, Subtenant is not in default so long as Subtenant begins the cure within that period and diligently pursues it to completion. On a default, Sublandlord may exercise all remedies available to a landlord under the laws of the State of Washington, including termination of this Sublease and recovery of damages.
+
+15. Surrender.
+
+On the expiration or earlier termination of the Sublease Term, Subtenant shall surrender the Subleased Premises to Sublandlord in the condition required by the Master Lease, ordinary wear and tear and casualty excepted, and shall remove Subtenant's personal property and any alterations Sublandlord required to be removed at the time consent was given.
+
+16. Notices.
+
+All notices under this Sublease must be in writing and are effective on personal delivery, on the next business day after deposit with a nationally recognized overnight courier, or on the third business day after deposit in the United States mail, certified, postage prepaid, addressed to Sublandlord at 1201 Second Avenue, Suite 400, Seattle, Washington 98101, and to Subtenant at 1201 Second Avenue, Suite 420, Seattle, Washington 98101, or to such other address as a party designates by notice.
+
+17. Governing Law.
+
+This Sublease is governed by the laws of the State of Washington, without regard to its conflict of laws principles. Any action arising out of this Sublease shall be brought exclusively in the state or federal courts located in King County, Washington, and each party consents to the jurisdiction of those courts.
+
+18. Entire Agreement; Amendment.
+
+This Sublease, together with the Master Lease as incorporated, constitutes the entire agreement of the parties with respect to the Subleased Premises and supersedes all prior negotiations and understandings. This Sublease may be amended only by a written instrument signed by both parties.
+
+19. Counterparts.
+
+This Sublease may be executed in counterparts, each of which is an original and all of which together constitute one instrument. Signatures delivered electronically have the same effect as original signatures.
+
+IN WITNESS WHEREOF, the parties have executed this Sublease as of the Effective Date.
+
+NORTHGATE DESIGN STUDIO, LLC
+
+By: /s/ Rebecca Lindqvist
+Name: Rebecca Lindqvist
+Title: Managing Member
+
+CORVID ROBOTICS, INC.
+
+By: /s/ Amit Desai
+Name: Amit Desai
+Title: Chief Executive Officer

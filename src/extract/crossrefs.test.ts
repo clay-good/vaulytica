@@ -731,3 +731,67 @@ describe("a reference into another instrument the document names", () => {
     ).toEqual(["Section 12.4"]);
   });
 });
+
+describe("a statutory citation inside an ALL-CAPS caption", () => {
+  /**
+   * A § 83(b) election is titled "ELECTION TO INCLUDE IN GROSS INCOME … OF
+   * PROPERTY PURSUANT TO SECTION 83(b) OF THE INTERNAL REVENUE CODE". The
+   * external-citation trailer was case-sensitive, so "OF THE" never matched
+   * "of the" and the statutory cite in the caption of the very instrument it
+   * defines was reported by STRUCT-007 as a broken internal reference to a
+   * "SECTION 83(b)" the election never has. Titles are all-caps far too often
+   * for that to be an edge case.
+   */
+  const unresolved = (...paras: string[]) => {
+    const t = buildTree(["Body", ...paras]);
+    return extractCrossRefs(t, extractSections(t))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+  };
+
+  it("reads an all-caps statutory citation as external", () => {
+    expect(
+      unresolved("ELECTION OF PROPERTY PURSUANT TO SECTION 83(b) OF THE INTERNAL REVENUE CODE"),
+    ).toEqual([]);
+  });
+
+  it("reads the all-caps spelling of an act citation as external", () => {
+    expect(unresolved("NOTICE UNDER SECTION 5 OF THE FAIR LABOR STANDARDS ACT")).toEqual([]);
+  });
+
+  it("still reports an all-caps reference to this document's own outline", () => {
+    expect(unresolved("THE INDEMNITY IN SECTION 12.4 SURVIVES CLOSING.")).toEqual(["SECTION 12.4"]);
+  });
+});
+
+describe("a reference into a companion governance instrument", () => {
+  /**
+   * Minutes recite notice given "in accordance with Section 3.6 of the
+   * Company's bylaws"; an option grant points at "Section 5.2 of the Plan".
+   * Neither section belongs to the document doing the citing, but the
+   * instrument vocabulary listed only the commercial agreements, so both were
+   * reported as broken internal references.
+   */
+  const unresolved = (...paras: string[]) => {
+    const t = buildTree(["Body", ...paras]);
+    return extractCrossRefs(t, extractSections(t))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+  };
+
+  it("reads a lowercase, possessive bylaws reference as external", () => {
+    expect(
+      unresolved("Notice was given in accordance with Section 3.6 of the Company's bylaws."),
+    ).toEqual([]);
+  });
+
+  it("reads a reference into an equity plan as external", () => {
+    expect(unresolved("The option is granted subject to Section 5.2 of the Plan.")).toEqual([]);
+  });
+
+  it("keeps a reference to THESE bylaws internal, and reports it when broken", () => {
+    expect(unresolved("Quorum is determined under Section 3.6 of these Bylaws.")).toEqual([
+      "Section 3.6",
+    ]);
+  });
+});

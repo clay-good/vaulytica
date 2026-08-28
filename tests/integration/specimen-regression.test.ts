@@ -646,6 +646,52 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-011",
     ],
   },
+
+  // A qualified domestic relations order, under a domestic-relations caption.
+  // Its entry line is the bare "ENTERED:" every state-court order carries, and
+  // its signature line is labeled by office alone — "______  Judge   Date" —
+  // with no name to print until the bench signs it.
+  "qdro.txt": { playbook: "qdro", findings: ["STRUCT-006"] },
+
+  // Minutes of a board meeting: not a contract, no parties, and its only
+  // cross-reference points into the company's bylaws.
+  "minutes.txt": { playbook: "meeting-minutes", findings: ["STRUCT-016", "STRUCT-018"] },
+
+  // A § 83(b) election, whose statutory citation lives in an ALL-CAPS caption.
+  "83b-election.txt": { playbook: "section-83b-election", findings: ["OBLI-005"] },
+
+  // A commercial sublease conditioned on the master landlord's written
+  // consent — the genitive reversed, the adjective inserted.
+  "sublease.txt": {
+    playbook: "sublease-agreement",
+    findings: [
+      "OBLI-005",
+      "OBLI-006",
+      "RE-103",
+      "RISK-010",
+      "RISK-011",
+      "RISK-015",
+      "STRUCT-016",
+      "STRUCT-018",
+    ],
+  },
+
+  // Buyer-form purchase order terms: standing terms nobody signs and no two
+  // parties execute, accepted by the supplier's performance.
+  "po-terms.txt": {
+    playbook: "purchase-order-terms",
+    findings: [
+      "FIN-007",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "RISK-010",
+      "RISK-013",
+      "RISK-015",
+      "TEMP-012",
+      "TERM-001",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

@@ -151,6 +151,37 @@ describe("EQT-048 — 83(b) filing recitals in IRS-model wording (v1.1.0)", () =
   });
 });
 
+describe("EQT-043 — the caption a real election carries (v1.1.0)", () => {
+  // The rule required BOTH "section 83(b)" AND the phrase "83(b) election".
+  // They are alternative spellings of one fact, and a real election writes only
+  // the first: its caption is "ELECTION TO INCLUDE IN GROSS INCOME … PURSUANT
+  // TO SECTION 83(b) OF THE INTERNAL REVENUE CODE". The header this rule's own
+  // recommendation asks the drafter to add did not satisfy the rule.
+  it("does not fire on the statutory caption alone", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Election to Include in Gross Income Pursuant to Section 83(b) of the Internal Revenue Code",
+        "The undersigned taxpayer hereby elects, pursuant to Section 83(b) of the Internal Revenue Code of 1986, as amended, to include in gross income the excess of the fair market value of the property over the amount paid for it.",
+      ]),
+      E83B_PB,
+    );
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EQT-043")).toBe(false);
+  });
+
+  it("still fires on an election that never cites the section", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Election",
+        "The undersigned elects to include in gross income the value of the restricted shares transferred on July 8, 2026.",
+      ]),
+      E83B_PB,
+    );
+    const run = await runEngine({ rules: EQUITY_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "EQT-043")).toBe(true);
+  });
+});
+
 describe("Voting agreement — election covenant & termination in real wording", () => {
   const VOTING_PB: Playbook = { id: "voting-agreement", version: "1.0.0" };
   const run1 = async (body: string) => {

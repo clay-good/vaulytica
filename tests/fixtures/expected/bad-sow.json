@@ -660,7 +660,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-013",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -884,7 +884,7 @@
       "id": "STRUCT-013-s1-79",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
-      "rule_version": "1.11.0",
+      "rule_version": "1.12.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Unfilled template placeholders: 1"
@@ -1033,11 +1033,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "675d2f0fd7c8ea2694f9902d853f1f56b9ac9849cc66051779e35f5e8408a2b3",
+  "result_hash": "ba550e9204de425644fba588294b6775e60fdad53a0cf308c95b3384d00f7969",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.94.0"
+  "version": "9.95.0"
 }

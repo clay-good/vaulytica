@@ -1,0 +1,85 @@
+PURCHASE ORDER TERMS AND CONDITIONS
+
+Effective January 5, 2026
+
+These Purchase Order Terms and Conditions (these "Terms") govern each purchase order issued by Meridian Instruments Corporation ("Buyer") to a supplier ("Seller") that references these Terms. Each purchase order issued by Buyer and accepted by Seller is a separate contract (an "Order").
+
+1. Acceptance; Exclusive Terms.
+
+Seller accepts an Order by acknowledging it in writing, by beginning performance, or by shipping any of the goods described in it, whichever occurs first. Each Order is Buyer's offer to purchase and is expressly limited to acceptance of these Terms. Buyer objects to and rejects any additional or different terms proposed by Seller, whether in an acknowledgment, invoice, or other form, and no such term becomes part of the Order unless Buyer agrees to it in a writing signed by Buyer's authorized representative. Any course of dealing, course of performance, or usage of trade inconsistent with these Terms is rejected.
+
+2. Prices.
+
+The price stated in an Order is firm for the duration of that Order and includes all packaging, handling, and shipping charges to the delivery point stated in the Order, except as the Order expressly provides otherwise. Seller shall separately state any tax it is required by law to collect. Seller warrants that the prices charged to Buyer are no less favorable than those Seller charges other customers of comparable volume for the same goods.
+
+3. Delivery; Time of the Essence.
+
+Time is of the essence in the performance of each Order. Seller shall deliver the goods at the place and on the date stated in the Order, DDP (Incoterms 2020) unless the Order states otherwise. If Seller has reason to believe that a delivery will be late, Seller shall notify Buyer in writing within one (1) business day after Seller learns of the delay, stating the cause and the revised delivery date. Buyer may reject any delivery made more than five (5) days after the date stated in the Order and may purchase substitute goods, in which case Seller shall reimburse Buyer for the excess cost of the substitute goods.
+
+4. Inspection and Rejection.
+
+Payment does not constitute acceptance. Buyer may inspect the goods within thirty (30) days after delivery and may reject any goods that do not conform to the Order. Buyer shall notify Seller of a rejection in writing and shall hold the rejected goods at Seller's risk and expense pending Seller's instructions. At Buyer's election, Seller shall promptly repair or replace the rejected goods or refund the price paid for them, and shall bear the cost of return shipment.
+
+5. Title and Risk of Loss.
+
+Title to and risk of loss of the goods pass to Buyer on delivery at the destination stated in the Order.
+
+6. Payment Terms.
+
+Buyer shall pay each correct and undisputed invoice within forty-five (45) days after the later of Buyer's receipt of the invoice and Buyer's acceptance of the goods. Buyer may withhold payment of any amount it disputes in good faith, and shall notify Seller in writing of the basis for the dispute within fifteen (15) days after receipt of the invoice. Buyer may set off against any amount owed to Seller any amount Seller owes to Buyer under any Order.
+
+7. Warranties.
+
+Seller warrants to Buyer that all goods delivered under an Order will (a) conform to the specifications, drawings, and samples stated or referenced in the Order, (b) be new, merchantable, and fit for the particular purpose Buyer has made known to Seller, (c) be free from defects in design, material, and workmanship, and (d) be delivered free of any lien or encumbrance. These warranties survive inspection, acceptance, and payment and run for twenty-four (24) months after delivery, or the period stated in the Order if longer. These warranties are in addition to, and not in limitation of, any warranty implied by law or provided elsewhere.
+
+8. Compliance with Law.
+
+Seller shall comply with all laws applicable to its performance under each Order, including the Fair Labor Standards Act, the Occupational Safety and Health Act, applicable export control and economic sanctions laws, and the anti-bribery provisions of the Foreign Corrupt Practices Act. Seller shall not, directly or indirectly, offer or give anything of value to any government official to obtain or retain business for Buyer.
+
+9. Confidentiality.
+
+Seller shall keep confidential all non-public information Buyer discloses in connection with an Order, shall use it only to perform the Order, and shall return or destroy it at Buyer's request. This obligation continues for five (5) years after the expiration or termination of the Order, and indefinitely as to any trade secret.
+
+10. Intellectual Property.
+
+Any invention, work of authorship, or other deliverable that Seller creates specifically for Buyer under an Order is a work made for hire owned by Buyer, and Seller assigns to Buyer all right, title, and interest in it. Seller retains ownership of its pre-existing intellectual property and grants Buyer a non-exclusive, worldwide, royalty-free, perpetual, irrevocable license to use that pre-existing intellectual property to the extent necessary to use the deliverables.
+
+11. Indemnification.
+
+Seller shall indemnify, defend, and hold harmless Buyer and its affiliates, and their officers, directors, and employees, from and against all claims, losses, damages, liabilities, costs, and reasonable attorneys' fees arising out of (a) any defect in the goods, (b) Seller's breach of these Terms or an Order, (c) Seller's negligence or willful misconduct, or (d) any claim that the goods infringe a patent, copyright, trademark, or trade secret. Buyer shall give Seller prompt written notice of any claim for which it seeks indemnification, shall permit Seller to control the defense with counsel reasonably acceptable to Buyer, and shall cooperate at Seller's expense. Seller shall not settle any claim in a manner that imposes any obligation or admission on Buyer without Buyer's prior written consent, which Buyer shall not unreasonably withhold.
+
+12. Insurance.
+
+Seller shall maintain, at its own expense, commercial general liability insurance with limits of not less than $2,000,000 per occurrence and $5,000,000 in the aggregate, workers' compensation insurance as required by law, and, if the Order involves shipment by Seller, automobile liability insurance with a combined single limit of not less than $1,000,000. Seller shall name Buyer as an additional insured on the commercial general liability policy and shall furnish certificates of insurance on Buyer's request.
+
+13. Limitation of Liability.
+
+Neither party is liable to the other for any indirect, incidental, consequential, special, or punitive damages arising out of an Order, even if advised of the possibility of those damages. This limitation does not apply to Seller's indemnification obligations under Section 11, to a party's breach of Section 9, or to a party's gross negligence, willful misconduct, or fraud.
+
+14. Termination.
+
+Buyer may terminate any Order, in whole or in part, for convenience on ten (10) days' written notice, in which case Buyer shall pay Seller for goods delivered and accepted before the effective date of termination and for Seller's reasonable, documented, unavoidable costs of work in process, but not for lost profits on undelivered goods. Buyer may terminate any Order immediately for cause if Seller fails to deliver on time, breaches a warranty, or fails to cure any other breach within ten (10) days after written notice.
+
+15. Force Majeure.
+
+Neither party is liable for a failure or delay in performance caused by an event beyond its reasonable control, including fire, flood, earthquake, war, terrorism, epidemic, or governmental action, provided that the affected party gives prompt written notice and uses commercially reasonable efforts to resume performance. Seller's inability to obtain materials or labor at the prices it anticipated is not a force majeure event. If a force majeure event continues for more than thirty (30) days, Buyer may terminate the affected Order without liability.
+
+16. Independent Contractor.
+
+Seller is an independent contractor. Nothing in these Terms creates a partnership, joint venture, agency, or employment relationship between the parties.
+
+17. Assignment.
+
+Seller shall not assign an Order or delegate its performance, in whole or in part, without Buyer's prior written consent. Buyer may assign an Order to an affiliate or to a successor to the business to which the Order relates.
+
+18. Governing Law; Venue.
+
+Each Order is governed by the laws of the State of Ohio, without regard to its conflict of laws principles and excluding the United Nations Convention on Contracts for the International Sale of Goods. Any action arising out of or relating to an Order shall be brought exclusively in the state or federal courts located in Hamilton County, Ohio, and each party consents to the personal jurisdiction of those courts and waives any objection based on inconvenient forum.
+
+19. Notices.
+
+All notices under these Terms must be in writing and are effective on personal delivery, on the next business day after deposit with a nationally recognized overnight courier, or on the third business day after mailing by certified mail, addressed to the party at the address stated in the Order.
+
+20. Entire Agreement; Amendment; Severability.
+
+An Order, together with these Terms and any documents the Order expressly incorporates, is the entire agreement of the parties with respect to its subject matter and supersedes all prior proposals and understandings. An Order may be amended only by a written change order issued by Buyer and accepted by Seller. If any provision of these Terms is held unenforceable, the remaining provisions remain in full force and effect.

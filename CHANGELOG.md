@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.95.0] — 2026-08-28
+
+Five documents that are not two-party bargains: a QDRO, board minutes, a
+§ 83(b) election, a sublease, and a set of buyer-form purchase order terms.
+
+### Fixed
+- **A signature line labeled by office alone read as an unfilled template
+  placeholder.** A proposed order leaves the bench a rule and a label —
+  `_______________  Judge        Date` — with no name to print until the judge
+  signs. STRUCT-013 suppressed the by-office form only when a personal name
+  came first, so every such order drew a `critical` placeholder finding on its
+  own signature line.
+- **A statutory citation inside an ALL-CAPS caption read as a broken internal
+  reference.** The external-citation trailer was case-sensitive, so `OF THE`
+  never matched `of the`, and a § 83(b) election's own caption — "PURSUANT TO
+  SECTION 83(b) OF THE INTERNAL REVENUE CODE" — was reported as pointing at a
+  section the election does not have. Titles are all-caps too often for that to
+  be an edge case.
+- **A reference into a companion governance instrument did the same.** Minutes
+  recite notice given "in accordance with Section 3.6 of the Company's
+  bylaws"; an option grant points at "Section 5.2 of the Plan". The
+  cross-instrument vocabulary listed only the commercial agreements, and did
+  not admit a lowercase or possessive qualifier. `of this Agreement` and `of
+  these Bylaws` stay internal, and a broken reference in one still reports.
+- **EST-425 wanted a court-entry phrase most orders do not write.** A QDRO's
+  entry line is the bare `ENTERED:` above the judge's signature. An order that
+  recited its own entry, named the plan administrator, and retained
+  jurisdiction to amend was still reported at `critical` for having none of
+  the three.
+- **EQT-043 required both spellings of one fact.** "Section 83(b)" AND the
+  phrase "83(b) election" — so the caption the rule's own recommendation asks
+  the drafter to add did not satisfy the rule. The second spelling was also
+  answered by the family's own name ("§ 83(b) Election Form"), so it is
+  replaced rather than merely OR-ed: both alternatives now carry operative
+  text the title does not.
+- **RE-102 read only the bare adjacency "Landlord's consent".** No sublease
+  writes it that way — it asks for the landlord's *prior written* consent, or
+  conditions itself on "the written consent of Master Landlord". A sublease
+  with a section headed "Consent of Master Landlord" was reported as having no
+  such clause at all.
+- **`purchase-order-terms` shipped with an empty `rule_overrides`.** Standing
+  terms are published, not executed: nobody signs them and they name one party
+  and a class. They drew `critical` for having no signature block and a
+  warning for having no parties.
+- **"dated" is not a distinguishing phrase.** `trust-amendment` leaned on it;
+  it matches eighteen of the sixty-four specimens. It now uses the recital a
+  trust amendment actually carries, "trust dated".
+
+### Added
+- Five specimens, bringing the set to sixty-four.
+
 ## [9.94.0] — 2026-08-28
 
 A recreational-use hold harmless and indemnity agreement.

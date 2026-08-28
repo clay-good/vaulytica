@@ -52,8 +52,16 @@ const REF_RE =
 // Act" / "of the Code" name the statute with the keyword itself — a required
 // preceding word made the [A-Z] swallow the keyword's own first letter and the
 // bare form never matched.
+// Case-INSENSITIVE, because a document routinely cites a statute inside an
+// ALL-CAPS title: "ELECTION … PURSUANT TO SECTION 83(b) OF THE INTERNAL
+// REVENUE CODE" is the caption every § 83(b) election carries, and the
+// case-sensitive "of the" never matched "OF THE" — so the reference in the
+// title of the very instrument the citation defines read as a broken internal
+// reference to a "SECTION 83(b)" the election never has. The leading letter of
+// the optional statute-name phrase is `[A-Za-z]` rather than `[A-Z]` to say
+// what it means under the flag, since `[A-Z]` matches lowercase under `i`.
 const EXTERNAL_TRAILER_RE =
-  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/;
+  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))?)?(?:\(\d+[a-z]?\))*(?:\s+(?:to|through|and|or|,)\s+\d+[A-Za-z]?(?:\(\d+[a-z]?\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
 const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
 
 // The statutory qualifier can also PRECEDE the section: "Treasury Regulations
@@ -79,8 +87,18 @@ const EXTERNAL_REG_LEADING_RE =
 // appendix forms that drop it ("of Annex I") are caught; "of this Agreement" is
 // still self-reference that resolves internally, because "this" is neither
 // "the" nor a capitalized instrument word, so the branch does not match it.
+// The governance instruments were missing from that list, and a company's own
+// records cite them constantly: board minutes recite notice given "in
+// accordance with Section 3.6 of the Company's bylaws", an option grant points
+// at "Section 5.2 of the Plan", a deed at "Article VII of the Declaration".
+// Each read as a broken internal reference to a section the minutes never had.
+// The instrument noun is matched case-insensitively — "bylaws" is lowercase as
+// often as not — and the qualifying words may carry a possessive ("the
+// Company's bylaws"). `(?!th(?:is|ese)\b)` keeps SELF-reference internal: "of
+// this Agreement" and "of these Bylaws" are the document talking about itself,
+// and a broken reference in one still reports.
 const EXTERNAL_INSTRUMENT_RE =
-  /^(?:\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?:[A-Z][\w]*\s+){0,4}(?:Agreement|Lease|Note|Indenture|MSA|SPA|DPA|BAA|Contract|Annex|Appendix)\b|thereof\b)/;
+  /^(?:\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?)\b|thereof\b)/i;
 
 // A four-digit-or-longer flat section number ("Section 4999", "Section 1798")
 // is statutory: no contract numbers its own sections past three digits.

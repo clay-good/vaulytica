@@ -917,6 +917,7 @@ const RSPA_RULES: Rule[] = [
 const ELECTION_83B_RULES: Rule[] = [
   presence({
     id: "EQT-043",
+    version: "1.1.0",
     name: "Election cites § 83(b)",
     description: "§ 83(b) election must reference IRC § 83(b).",
     citation: irc("83(b)"),
@@ -926,8 +927,21 @@ const ELECTION_83B_RULES: Rule[] = [
     explanation: "Treas. Reg. § 1.83-2 requires the election to be 'an election under § 83(b)'.",
     recommendation:
       "Add the header 'Election to Include in Gross Income in Year of Transfer Pursuant to Section 83(b) of the Internal Revenue Code'.",
-    present_patterns: [/section\s+83\s*\(\s*b\s*\)/i, /83\s*\(\s*b\s*\)\s+election/i],
-    require_all_present: true,
+    // Two alternative SPELLINGS of one fact, not two facts. Requiring BOTH
+    // meant the caption this rule's own recommendation asks the drafter to add
+    // — "… Pursuant to Section 83(b) of the Internal Revenue Code" — did not
+    // satisfy the rule: a real election carries the statutory citation and
+    // never the words "83(b) election".
+    //
+    // The dropped alternative was also the reason the AND was load-bearing:
+    // this family is named "§ 83(b) Election Form", so /83\(b\) election/
+    // was answered by the title alone (`v34-title-vacuity.test.ts`). Both
+    // spellings kept here carry operative text the title does not — the word
+    // "Section", or the name of the Code.
+    present_patterns: [
+      /section\s+83\s*\(\s*b\s*\)/i,
+      /83\s*\(\s*b\s*\)\s+of\s+the\s+internal\s+revenue\s+code/i,
+    ],
   }),
   presence({
     id: "EQT-044",

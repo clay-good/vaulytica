@@ -363,11 +363,16 @@ const QDRO = pack("qdro", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Court entry and plan-administrator qualification",
     cite: usc("29", "1056", "ERISA § 206(d)(3)(G) — plan administrator determination"),
     pat: [
-      /(entered\s+by\s+the\s+court|so\s+ordered|it\s+is\s+(hereby\s+)?ordered|submitted\s+to\s+the\s+court)/i,
+      // "ENTER:" / "ENTERED:" — the bare entry line an order carries above the
+      // judge's signature, and the only form of court entry most state-court
+      // QDROs write. Without it, an order that recites its own entry, names
+      // the plan administrator, and retains jurisdiction to amend was still
+      // reported at `critical` for having none of the three.
+      /(entered\s+by\s+the\s+court|so\s+ordered|it\s+is\s+(hereby\s+)?ordered|submitted\s+to\s+the\s+court|(?:^|\s)enter(?:ed)?\s*:|this\s+order\s+is\s+entered|the\s+court\s+(?:hereby\s+)?(?:enters|adjudges|decrees))/i,
       /(plan[-\s]+administrator|retains?\s+jurisdiction|reserves?\s+jurisdiction)/i,
     ],
     all: true,
