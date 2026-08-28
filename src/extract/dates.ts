@@ -107,6 +107,26 @@ const NUMBER_WORDS: Record<string, number> = {
 // The count word itself is bounded (`\w{1,40}`, not `\w+`): an unbounded `\w+`
 // overlaps the later `(\d+)` over a long digit run (`\w` matches digits), which
 // is O(n^2) on a giant pasted number; no count word/numeral exceeds 40 chars.
+/**
+ * "N <unit> of X" is a deadline only in the fixed idiom "WITHIN N days of the
+ * invoice date". Bare, it is an entitlement or a duration and no deadline at
+ * all — "four (4) weeks of paid vacation per year", "twelve (12) months of
+ * base salary", "the final twelve months of employment", "eighteen years of
+ * age or older" — and the critical-dates register published each of those as
+ * a date to compute, with an unresolvable "anchor" of `paid vacation per
+ * year`. The capitalized-anchor guard the pattern was written around does not
+ * hold these out: the pattern carries the `i` flag, under which `[A-Z]`
+ * matches lowercase too.
+ *
+ * The other connectors ("after", "before", "from", "following", "prior to")
+ * are temporal on their own and are untouched.
+ */
+function isBareOfDuration(raw: string, anchor: string): boolean {
+  if (anchor.length === 0) return false;
+  const connector = raw.slice(0, raw.lastIndexOf(anchor));
+  return /\bof\s+(?:the\s+)?$/i.test(connector) && !/\bwithin\b/i.test(connector);
+}
+
 const RANGE_RELATIVE = new RegExp(
   String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
@@ -229,6 +249,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const unit = (m[5] ?? "").toLowerCase().replace(/\s+/g, " ").trim();
       const anchor = trimAnchorQualifier((m[6] ?? "").trim());
       if (lower === null || upper === null) continue;
+      if (isBareOfDuration(m[0], m[6] ?? "")) continue;
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
       const lo = lower * unitToDays(unit) * direction;
       const hi = upper * unitToDays(unit) * direction;
@@ -300,6 +321,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const numericCount = m[2] ? parseInt(m[2], 10) : null;
       const unit = (m[3] ?? "").toLowerCase().replace(/\s+/g, " ").trim();
       const anchor = trimAnchorQualifier((m[4] ?? "").trim());
+      if (isBareOfDuration(m[0], m[4] ?? "")) continue;
       const count = numericCount ?? wordCount;
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
       // An hours window ("within 72 hours") is sub-day: it carries NO

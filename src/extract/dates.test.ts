@@ -377,3 +377,38 @@ describe("extractDates — spelled-out relative counts", () => {
     expect(daysFor(`Notice must be given ${phrase} after the Effective Date.`)).toContain(days);
   });
 });
+
+describe("a duration stated with 'of' is not a deadline", () => {
+  // "N <unit> of X" is temporal only in the fixed idiom "within N days of the
+  // invoice date". Bare, it is an entitlement or a duration, and the
+  // critical-dates register was publishing each of these as a date to compute
+  // against an anchor of "paid vacation per year".
+  const notDates = [
+    "The Executive is entitled to four (4) weeks of paid vacation per year.",
+    "Severance equal to twelve (12) months of base salary shall be paid.",
+    "The restriction applies to the final twelve months of employment.",
+    "Any beneficiary then eighteen years of age or older may petition.",
+  ];
+  for (const text of notDates) {
+    it(`does not record a relative date in ${JSON.stringify(text.slice(0, 44))}`, () => {
+      const dates = extractDates(buildTree(["Agreement", text]));
+      expect(dates.filter((d) => d.type === "relative")).toHaveLength(0);
+    });
+  }
+
+  const stillDates: Array<[string, string]> = [
+    ["Payment is due within thirty (30) days of the invoice date.", "invoice date"],
+    ["Kickoff occurs within 10 business days of the Effective Date.", "Effective Date"],
+    ["The record is kept for seven (7) years after the end of the Study.", "end"],
+    [
+      "Notice is due within thirty (30) days after receipt of an approved time log.",
+      "receipt of an approved time log",
+    ],
+  ];
+  for (const [text, anchor] of stillDates) {
+    it(`still records ${JSON.stringify(anchor)}`, () => {
+      const dates = extractDates(buildTree(["Agreement", text]));
+      expect(dates.filter((d) => d.type === "relative").map((d) => d.anchor)).toContain(anchor);
+    });
+  }
+});
