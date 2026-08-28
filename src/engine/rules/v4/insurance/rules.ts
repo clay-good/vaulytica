@@ -123,6 +123,7 @@ const POLICY_SUMMARY_RULES: Rule[] = [
       /(form\s+(no\.?|number)|cg\s+\d|cp\s+\d|aaic|aais)/i,
       /(edition|ed\.?|\(\d{2}\/\d{2}\))/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
   presence({
@@ -173,6 +174,7 @@ const ENDORSEMENT_RULES: Rule[] = [
       /(cg\s+\d|cp\s+\d|cu\s+\d|aais|iso)\s*\d/i,
       /(edition|ed\.?|\(\d{2}\/\d{2}\))/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "INS-008",
@@ -261,6 +263,7 @@ const ENDORSEMENT_RULES: Rule[] = [
       /(additional\s+insured|cg\s+20\s+10|cg\s+20\s+37|cg\s+20\s+38)/i,
       /(edition|ed\.?|04\s*13|11\s*85|10\s*01|04\s*13)/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
   presence({
@@ -526,6 +529,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
       /(hold\s+harmless|holds?\s+(.{0,40}\s+)?harmless)/i,
       /(parties|protected\s+party|protecting\s+party)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "INS-021",

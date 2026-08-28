@@ -278,6 +278,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
     recommendation:
       "Add 'Revocation and Amendment' stating settlor may revoke or amend at any time by written instrument.",
     present_patterns: [/(revoke|revocation|revocable)/i, /(amend|amendment|alter)/i],
+    require_all_present: true,
   }),
   presence({
     id: "EST-012",
@@ -521,6 +522,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
       /(principal|grantor|i,\s+the\s+undersigned)/i,
       /(agent|attorney.in.fact|proxy|surrogate)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "EST-025",
@@ -651,7 +653,7 @@ const DURABLE_POA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-032",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Durable language — survives incapacity",
     description: "POA must include durable language stating it survives principal's incapacity.",
     citation: upoaa("104", "Power of attorney is durable"),
@@ -663,12 +665,21 @@ const DURABLE_POA_RULES: Rule[] = [
     recommendation:
       "Add 'Durability' stating the POA is not affected by principal's subsequent incapacity or disability.",
     present_patterns: [
-      /durabl/i,
+      // 1.3.0 — the bare /durabl/i is GONE, not conjoined. It was a word from
+      // this family's own title ("Durable Power of Attorney (Financial)"), so
+      // the check could never fire on the only document it runs on. But
+      // conjoining it would have been wrong in the other direction: a power
+      // IS durable if it says the authority survives incapacity, whether or
+      // not it uses the word, and the ruleset test asserts exactly that.
+      //
+      // A document that says "durable" and nothing else is not durable in any
+      // event, so nothing of value is lost by requiring the substance.
+      //
       // "not\s+affected" missed the statutory "shall not BE affected by …
       // incapacity" (the "be" breaks adjacency); "not terminated / revoked by …
-      // incapacity" is the equally-standard Uniform-POA durability form. The
-      // "/durabl/" branch above still covers a POA titled "Durable".
+      // incapacity" is the equally-standard Uniform-POA durability form.
       /(survives?|not\s+(?:be\s+)?(?:affected|terminated|revoked)\s+by|notwithstanding).{0,40}(incapacity|disability|incompet)/is,
+      /\bdurabl\w*\b[^.]{0,80}?\b(incapacity|disability|incompet\w*)/is,
     ],
     denied_if: expressDenial(String.raw`durable|durability`),
     denied_title: "Durability expressly denied — the power terminates on incapacity",

@@ -50,6 +50,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
       /(purpose|objective)/i,
       /(duration|time\s+commitment|expected\s+to\s+(last|take))/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "HC-002",
@@ -232,6 +233,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
       /(information|records|phi|protected\s+health\s+information)/i,
       /(use|disclos)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "HC-011",
@@ -422,6 +424,7 @@ const NPP_ACK_RULES: Rule[] = [
       /(acknowledg(e|ment|ing)?\s+(of\s+)?receipt|i\s+(have|hereby)\s+receiv)/i,
       /(notice\s+of\s+privacy\s+practices|npp)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "HC-020",

@@ -73,20 +73,6 @@ const KNOWN_VACUOUS = new Set([
   "PRV-016",
   "PRV-023",
   "PRV-040",
-  "HC-001",
-  "HC-010",
-  "HC-019",
-  "INS-005",
-  "INS-007",
-  "INS-011",
-  "INS-020",
-  "CON-008",
-  "CON-014",
-  "CON-016",
-  "CON-021",
-  "EST-011",
-  "EST-024",
-  "EST-032",
 ]);
 
 describe("v3/v4 presence checks can fire on their own family", () => {

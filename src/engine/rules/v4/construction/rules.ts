@@ -194,6 +194,7 @@ const SUBCONTRACTOR_RULES: Rule[] = [
       /(subcontractor)/i,
       /(project|prime\s+contract|underlying)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "CON-009",
@@ -332,6 +333,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
       /(progress|final)/i,
       /(waiver\s+and\s+release|lien\s+waiver)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "CON-015",
@@ -368,6 +370,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
     recommendation:
       "Add 'Scope' limiting the waiver to the amount paid and through the through-date specified.",
     present_patterns: [/(amount\s+of\s+\$|through\s+(the\s+)?date)/i, /(waives?|releases?)/i],
+    require_all_present: true,
   }),
   presence({
     id: "CON-017",
@@ -471,6 +474,7 @@ const BOND_RULES: Rule[] = [
       /(payment\s+bond|performance\s+bond)/i,
       /(aia\s+a312|miller\s+act|little\s+miller)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "CON-022",
