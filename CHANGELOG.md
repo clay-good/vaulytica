@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.63.0] — 2026-08-27
+
+### Fixed
+- **A fronted adverbial was swallowed into the subject.** "Within five (5)
+  business days after the Effective Date, **Seller** shall file the
+  stipulation", "For three (3) years after the Closing, **each Seller** shall
+  not compete", "Until the expiration of four (4) years after the furnishing of
+  the Services, **Medical Director** shall make the records available" — the
+  subject capture reaches back to the start of the clause, so the whole
+  adverbial came with it, and the obligor was published as "days after the
+  Effective Date, Seller". Across the twenty-eight specimens that produced
+  **24 wrong obligors on 8 documents**, in the findings and in the
+  critical-dates register. Keyed on the opening subordinator, so a genuinely
+  comma-bearing subject ("Seller, Buyer, and the Company shall") is untouched.
+- **The register published guesses as parties.** `resolveObligor` falls back to
+  the last few words of the subject when it matches no party and no role —
+  reasonable as an input to a rule, bad to print: "AND FITNESS FOR A PARTICULAR
+  PURPOSE", "effective each January 1, and we", "in Section 2 end and You",
+  "the determination". A party's name is short, carries no comma, and ends on a
+  capitalized word; anything else, and the register now says nothing. Across
+  the specimens: 62 rows, 36 named, every name a real party, zero anomalies.
+
 ## [9.62.0] — 2026-08-27
 
 ### Fixed

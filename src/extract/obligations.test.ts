@@ -396,3 +396,42 @@ describe("extractObligations", () => {
     expect(obs.map((o) => o.obligor)).toEqual(["Provider", "Customer"]);
   });
 });
+
+describe("a sentence that opens with a fronted adverbial", () => {
+  const obligorsOf = (text: string) => {
+    const tree = buildTree(["Body", text]);
+    return extractObligations(tree, extractParties(tree)).map((o) => o.obligor);
+  };
+
+  it("takes the subject after the comma, not the whole adverbial", () => {
+    // The subject capture reaches back to the start of the clause, so the
+    // adverbial came with it and the last-resort branch published "days after
+    // the Effective Date, Seller" as the party who owes the duty — in the
+    // findings and in the critical-dates register.
+    expect(
+      obligorsOf(
+        "Within five (5) business days after the Effective Date, Seller shall deliver the rent roll to Buyer.",
+      ),
+    ).toContain("Seller");
+    expect(
+      obligorsOf(
+        "For three (3) years after the Closing, each Seller shall not solicit any employee of the Company.",
+      ),
+    ).toContain("each Seller");
+    expect(
+      obligorsOf(
+        "Until the expiration of four (4) years after the furnishing of the Services, Medical Director shall make the records available.",
+      ),
+    ).toContain("Medical Director");
+  });
+
+  it("leaves a genuinely comma-bearing subject alone", () => {
+    // Keyed on the opening subordinator: a compound subject does not start
+    // with one, so its commas are not treated as the end of an adverbial.
+    // The subject keeps all three names rather than being cut back to the
+    // text after its last comma.
+    expect(
+      obligorsOf("Seller, Buyer, and the Company shall each bear their own expenses."),
+    ).toContain("Seller, Buyer, and the Company");
+  });
+});

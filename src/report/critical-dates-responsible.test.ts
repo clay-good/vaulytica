@@ -62,3 +62,26 @@ describe("the register's responsible party", () => {
     for (const r of rows) expect(r.responsible).not.toContain("direction of");
   });
 });
+
+describe("the register publishes a name only if it looks like one", () => {
+  // `resolveObligor` falls back to the last few words of the subject when it
+  // matches no party and no role. That is a reasonable input to a rule and a
+  // bad thing to print: across the twenty-eight specimens it produced "the
+  // determination" and "AND FITNESS FOR A PARTICULAR PURPOSE". A party's name
+  // is short, carries no comma, and ends on a capitalized word.
+  it("does not publish a lowercase noun phrase as the responsible party", async () => {
+    const rows = await register([
+      "Lease Amendment",
+      "If the parties do not agree on Fair Market Rental Value within thirty (30) days after exercise, the determination shall be made by three appraisers.",
+    ]);
+    for (const r of rows) expect(r.responsible).not.toBe("the determination");
+  });
+
+  it("does not publish a run of words from a warranty disclaimer", async () => {
+    const rows = await register([
+      "Warranty",
+      "Supplier warrants the Products for twelve (12) months from delivery. THIS WARRANTY IS IN LIEU OF ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.",
+    ]);
+    for (const r of rows) expect(r.responsible.split(/\s+/).length).toBeLessThanOrEqual(4);
+  });
+});

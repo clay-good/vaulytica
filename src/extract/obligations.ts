@@ -338,8 +338,33 @@ function splitSentences(text: string): { text: string; start: number }[] {
   return out;
 }
 
+/**
+ * A sentence that opens with a fronted adverbial puts its SUBJECT after the
+ * comma: "Within five (5) business days after the Effective Date, **Seller**
+ * shall file the stipulation", "For three (3) years after the Closing, **each
+ * Seller** shall not compete", "Until the expiration of four (4) years after
+ * the furnishing of the Services, **Medical Director** shall make the records
+ * available". The subject capture reaches back to the start of the clause, so
+ * the whole adverbial came with it — and the last-resort branch below then
+ * published "days after the Effective Date, Seller" as the party who owes the
+ * duty, in the findings and in the critical-dates register.
+ *
+ * Keyed on the opening subordinator, so a genuinely comma-bearing subject is
+ * untouched: "Seller, Buyer, and the Company shall" does not start with one.
+ */
+const FRONTED_ADVERBIAL =
+  /^(?:within|for|if|upon|on|before|after|during|notwithstanding|subject\s+to|in\s+the\s+event|at|unless|when|while|except|to\s+the\s+extent|provided|in\s+connection\s+with|in\s+accordance\s+with|from|until|as\s+of|beginning|commencing|so\s+long\s+as|concurrently|promptly|immediately|thereafter|not\s+later\s+than|no\s+later\s+than|between\s+the)\b/i;
+
+function stripFrontedAdverbial(subject: string): string {
+  if (!FRONTED_ADVERBIAL.test(subject.trimStart())) return subject;
+  const lastComma = subject.lastIndexOf(",");
+  if (lastComma < 0) return subject;
+  const tail = subject.slice(lastComma + 1).trim();
+  return tail.length > 0 ? tail : subject;
+}
+
 function resolveObligor(subject: string, partyNames: Set<string>, partyRoles: Set<string>): string {
-  const trimmed = trimEdges(subject, /[,;.\s]/);
+  const trimmed = trimEdges(stripFrontedAdverbial(subject), /[,;.\s]/);
   const lower = trimmed.toLowerCase();
   // A compound subject naming TWO parties ("The Provider and the Customer shall
   // each …", "Acme Corp. and Globex Inc. shall jointly …") states a MUTUAL

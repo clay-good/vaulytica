@@ -461,17 +461,21 @@ function responsibleFor(ref: DateReference, obligations: readonly Obligation[]):
   const obligor = chosen.obligor.trim();
   // A bare "each party" / generic obligor is not a named responsible party.
   if (!obligor || /^(?:each|either|both|the)\s+part/i.test(obligor)) return "";
-  // Nor is a prepositional fragment. "the Administrative Agent may, and at the
-  // direction of the Required Lenders shall, terminate the Commitments" yields
-  // an obligor of "the direction of the Required Lenders" — the object of "at
-  // the direction of", not the party who owes anything. Publishing that in the
-  // register names the wrong person in an attorney-facing artifact.
-  if (
-    /^(?:the\s+)?(?:direction|request|instruction|option|discretion|election|behalf|account|expense|cost)s?\s+of\b/i.test(
-      obligor,
-    )
-  )
-    return "";
+  // Beyond that, the register publishes a name only if it LOOKS like one.
+  //
+  // `resolveObligor` falls back to the last few words of the subject when it
+  // matches no party and no role, which is a reasonable input to a rule and a
+  // bad thing to print: across the twenty-eight specimens it produced "AND
+  // FITNESS FOR A PARTICULAR PURPOSE", "effective each January 1, and we",
+  // "in Section 2 end and You", "required or permitted by this Safe", and
+  // "the direction of the Required Lenders" (the object of "at the direction
+  // of", not the party who owes anything). A party's name is short, carries no
+  // comma, and ends on a capitalized word — "The Borrower", "Medical
+  // Director", "each Seller", "Executive". Anything else is a guess, and the
+  // register says nothing rather than naming the wrong person.
+  const words = obligor.split(/\s+/).filter(Boolean);
+  if (words.length > 4 || obligor.includes(",")) return "";
+  if (!/^[A-Z]/.test(words[words.length - 1] ?? "")) return "";
   return obligor;
 }
 
