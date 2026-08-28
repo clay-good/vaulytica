@@ -180,3 +180,33 @@ describe("TERM-002 — failure-to-pay / perform default triggers", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-002 — the termination verb in the consumer register", () => {
+  // A card agreement, a rewards program, and a subscription page do not
+  // "terminate this Agreement" — they close the account, end the membership,
+  // cancel the subscription. Every branch keyed on `terminat\w+`, so a Default
+  // section that states a for-cause path was reported as stating none.
+  it("reads 'we may close the Account' as a for-cause path", () => {
+    const ctx = buildContext([
+      "8. Default",
+      "You are in default if you fail to make a required payment when due. If you are in default, we may close the Account and require you to pay the full balance immediately.",
+    ]);
+    expect(TERM_002.check(ctx)).toBeNull();
+  });
+
+  it("reads 'we may close your account for … a material violation'", () => {
+    const ctx = buildContext([
+      "6. Ending Your Membership",
+      "We may close your account for fraud, abuse, or a material violation of these Program Terms, on notice and, where the violation is curable, an opportunity to cure within 14 days.",
+    ]);
+    expect(TERM_002.check(ctx)).toBeNull();
+  });
+
+  it("still fires where the only exit is suspension for instability", () => {
+    const ctx = buildContext([
+      "6. Suspension",
+      "We may suspend your API key if your use threatens the stability or security of the API, and we will tell you why as soon as we reasonably can.",
+    ]);
+    expect(TERM_002.check(ctx)).not.toBeNull();
+  });
+});

@@ -29,12 +29,21 @@ const BREACH = String.raw`\b(?:(?:breach|default|non-?compliance|non-?performanc
 // Uncured: also the present-tense "does not cure" (a lease writes "and does not
 // cure within ten days"), not just the past-tense "not cured".
 const UNCURED = String.raw`\b(?:(?:does\s+|has\s+|is\s+|are\s+)?not\s+(?:been\s+)?cured?|fails?\s+to\s+cure|uncured|not\s+(?:been\s+)?remedied|fails?\s+to\s+remedy|remains?\s+uncured)\b`;
+// The termination VERB, in the consumer register as well as the commercial
+// one. A card agreement, a rewards program, and an API terms page do not
+// "terminate this Agreement" — they "close the Account", "end your
+// membership", "cancel your subscription". Every branch below keyed on
+// `terminat\w+` alone, so a document whose Default section says "we may close
+// the Account and require you to pay the full balance immediately" was
+// reported as stating no path to terminate for material breach.
+const TERMINATE = String.raw`\b(?:terminat\w+|clos(?:e|es|ed|ing)\s+(?:the\s+|your\s+)?(?:account|membership)|end(?:s|ed|ing)?\s+(?:the\s+|your\s+)?membership|cancel(?:s|led|ling|ed|ing)?\s+(?:the\s+|your\s+)?(?:account|membership|subscription))`;
+
 const FOR_CAUSE = new RegExp(
-  String.raw`\bterminat\w+\b[^.]{0,120}\bfor\s+cause\b` +
+  String.raw`${TERMINATE}[^.]{0,120}\bfor\s+cause\b` +
     "|" +
     String.raw`\bmaterial(?:ly)?\s+breach` +
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,140}${BREACH}[^.]{0,80}${UNCURED}` +
+    String.raw`${TERMINATE}[^.]{0,140}${BREACH}[^.]{0,80}${UNCURED}` +
     "|" +
     String.raw`${BREACH}[^.]{0,120}${UNCURED}[^.]{0,120}\bterminat` +
     // Immediate termination on a MATERIAL breach/default/failure, with no cure
@@ -46,9 +55,9 @@ const FOR_CAUSE = new RegExp(
     // the same sentence, so a convenience termination or a bare "material
     // terms" mention does not satisfy it.
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,140}\bmaterial(?:ly)?\b[^.]{0,80}${BREACH}` +
+    String.raw`${TERMINATE}[^.]{0,140}\bmaterial(?:ly)?\b[^.]{0,80}${BREACH}` +
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,140}${BREACH}[^.]{0,80}\bmaterial\b` +
+    String.raw`${TERMINATE}[^.]{0,140}${BREACH}[^.]{0,80}\bmaterial\b` +
     // The STRICT for-cause form: immediate termination on ANY breach, with no
     // materiality qualifier and no cure period — "the Licensor may terminate
     // this EULA immediately if the Licensee breaches any of its terms". A
@@ -56,7 +65,14 @@ const FOR_CAUSE = new RegExp(
     // termination verb and the breach — within one sentence — marks it as a
     // for-cause CONDITION, not an incidental mention.
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,60}?\b(?:if|upon|for|in\s+the\s+event\s+(?:of|that))\b[^.]{0,50}?${BREACH}` +
+    String.raw`${TERMINATE}[^.]{0,60}?\b(?:if|upon|for|in\s+the\s+event\s+(?:of|that))\b[^.]{0,50}?${BREACH}` +
+    // The same condition written FIRST — "If you are in default, we may close
+    // the Account", "In the event of a breach by Tenant, Landlord may
+    // terminate". Every conditional branch above reads left to right from the
+    // termination verb, so the fronted condition — as ordinary as the trailing
+    // one — was reported as no for-cause path at all.
+    "|" +
+    String.raw`\b(?:if|upon|in\s+the\s+event\s+(?:of|that))\b[^.]{0,80}?${BREACH}[^.]{0,120}?${TERMINATE}` +
     // The "Event of Default" idiom splits the for-cause path across sentences: a
     // Default section defines "Event of Default" (a rent/obligation failure not
     // cured within a notice period), and a separate Remedies section says "Upon
@@ -67,9 +83,9 @@ const FOR_CAUSE = new RegExp(
     // pairing it with a termination verb in one sentence is an unambiguous
     // for-cause path (a mere mention of the phrase without "terminate" is not).
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,80}\bEvent\s+of\s+Default\b` +
+    String.raw`${TERMINATE}[^.]{0,80}\bEvent\s+of\s+Default\b` +
     "|" +
-    String.raw`\bEvent\s+of\s+Default\b[^.]{0,80}\bterminat\w+` +
+    String.raw`\bEvent\s+of\s+Default\b[^.]{0,80}${TERMINATE}` +
     // The ENUMERATED termination-grounds list puts the for-cause ground far from
     // the "terminated" verb: "This Agreement may be terminated … (a) by mutual
     // consent; (b) if the Closing has not occurred by …; or (c) by either party
@@ -79,14 +95,14 @@ const FOR_CAUSE = new RegExp(
     // sentence (the list is semicolon-separated), so `[^.]` keeps it from
     // stitching across a period; the wider windows reach the enumerated ground.
     "|" +
-    String.raw`\bterminat\w+\b[^.]{0,280}?${BREACH}[^.]{0,150}?${UNCURED}`,
+    String.raw`${TERMINATE}[^.]{0,280}?${BREACH}[^.]{0,150}?${UNCURED}`,
   "i",
 );
 
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

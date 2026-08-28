@@ -748,6 +748,15 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "credit-card-agreement",
     findings: ["CHOICE-006", "CHOICE-008", "DARK-005", "OBLI-005", "STRUCT-006"],
   },
+
+  // Sweepstakes official rules: published, unsigned, and addressed to a class
+  // of entrants. Its playbook carried the policy skip profile, which never
+  // needed STRUCT-003 — a policy carries a dated adoption recital and official
+  // rules do not, so this drew a critical for having no signature block.
+  "sweepstakes.txt": {
+    playbook: "sweepstakes-official-rules",
+    findings: ["OBLI-005", "OBLI-006", "STRUCT-006"],
+  },
 };
 
 describe("hand-written specimens", () => {

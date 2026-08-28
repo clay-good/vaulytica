@@ -897,7 +897,11 @@
       "Developer Application",
       "API Key"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "STRUCT-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-COMMERCIAL",
@@ -4546,9 +4550,6 @@
         "skip": true
       },
       "STRUCT-001": {
-        "skip": true
-      },
-      "TERM-002": {
         "skip": true
       },
       "TERM-005": {
@@ -10666,7 +10667,17 @@
       "Member",
       "Program"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-003": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-CONSUMER",
@@ -17815,6 +17826,9 @@
         "skip": true
       },
       "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-003": {
         "skip": true
       },
       "STRUCT-002": {

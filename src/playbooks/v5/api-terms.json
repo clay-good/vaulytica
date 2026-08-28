@@ -24,7 +24,11 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["API", "Developer Application", "API Key"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "STRUCT-001": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-COMMERCIAL",

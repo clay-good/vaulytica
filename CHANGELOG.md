@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.98.0] — 2026-08-28
+
+Sweepstakes official rules, and the published-terms cohort behind them.
+
+### Fixed
+- **TERM-002 could not read a termination path written in the consumer
+  register.** A card agreement, a rewards program, and a subscription page do
+  not "terminate this Agreement" — they close the account, end the membership,
+  cancel the subscription. Every branch keyed on `terminat\w+`, so a Default
+  section that plainly states a for-cause path was reported as stating none.
+- **TERM-002 also could not read the FRONTED condition.** "If you are in
+  default, we may close the Account" — every conditional branch read left to
+  right from the termination verb, so the condition-first form, as ordinary as
+  the trailing one, matched nothing.
+- **`sweepstakes-official-rules` carried the policy skip profile, which never
+  needed STRUCT-003.** A policy carries a dated adoption recital; official
+  rules do not, so a well-formed set of rules drew a `critical` for having no
+  signature block.
+- **`api-terms` and `loyalty-program-terms` shipped with empty
+  `rule_overrides`.** Published terms name one operator and "you"; a points
+  program allocates no intellectual property and nobody signs it.
+
+### Changed
+- **The clause-scan performance guard no longer flakes under a full-suite
+  run.** It compared a fixed-size batch at two input sizes, so the larger
+  batch was exposed to scheduler interruption four times as long and the ratio
+  drifted upward on a loaded machine (it failed at 20.0 against a bound of 10
+  while passing in isolation). The batch size now scales inversely with the
+  input, so both measurement windows are the same length, and the comparison
+  is per-iteration cost. The bound is unchanged.
+
+### Added
+- One specimen, bringing the set to seventy.
+
 ## [9.97.0] — 2026-08-28
 
 An advance health care directive, a bank forbearance agreement, and a consumer
