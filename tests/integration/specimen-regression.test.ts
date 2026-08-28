@@ -287,6 +287,18 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["STRUCT-006", "OBLI-005"],
   },
 
+  // A North Carolina deed of trust with an assignment of rents, a power of
+  // sale, and a notarial acknowledgment. A security instrument states no
+  // payment terms (they are in the Note it secures), allocates no IP, caps
+  // nobody's liability, and ends by reconveyance rather than termination.
+  // Its notary block — "My commission expires: October 31, 2028" — was read
+  // as the instrument's own expiration, which made the Note's 2036 maturity
+  // a date after the document expired.
+  "deed-of-trust.txt": {
+    playbook: "deed-of-trust",
+    findings: ["STRUCT-018", "OBLI-003", "OBLI-005", "RISK-010"],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

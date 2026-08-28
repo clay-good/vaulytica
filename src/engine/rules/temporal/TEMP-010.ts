@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** TEMP-010 — Specific dates near or after expiry (info). */
 export const rule: Rule = {
   id: "TEMP-010",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Specific dates after expiry",
   category: "temporal",
   default_severity: "info",
@@ -34,11 +34,21 @@ export const rule: Rule = {
     // clause is written ("commencing ... and expiring ..."), and without it
     // the only expiration such a document states is the recited one.
     const EXPIRY_KEYWORD = /\b(?:expires?|expiring|expiration\s+date)\b/gi;
+    const NON_CONTRACT_EXPIRY =
+      /\b(?:commission|notar\w*|licen[sc]e|registration|permit|passport)\b[^.]{0,40}$/i;
     const expiryIsos: string[] = [];
     forEachParagraph(ctx.tree, (p) => {
       EXPIRY_KEYWORD.lastIndex = 0;
       let m: RegExpExecArray | null;
       while ((m = EXPIRY_KEYWORD.exec(p.text)) !== null) {
+        // Not every "expires" in a document is the DOCUMENT's expiration. A
+        // notarial certificate ends "My commission expires: October 31, 2028",
+        // and it sits at the bottom of every recorded deed, mortgage, will,
+        // and affidavit in the country. A deed of trust securing a note that
+        // matures in 2036 was reported as containing a date after its own
+        // expiration in 2028 — the notary's, not the instrument's. Licenses,
+        // registrations, permits, and passports are named for the same reason.
+        if (NON_CONTRACT_EXPIRY.test(p.text.slice(0, m.index))) continue;
         const afterKeyword = p.text.slice(m.index);
         const ref = ctx.extracted.dates.find((d) => {
           if (d.type !== "absolute" || !d.iso) return false;

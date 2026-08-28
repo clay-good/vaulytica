@@ -78,3 +78,31 @@ describe("TEMP-010 — an amendment recites the expiry it replaces (v1.2.0)", ()
     ).not.toBeNull();
   });
 });
+
+describe("a notary's commission is not the document's expiration", () => {
+  // A notarial certificate ends "My commission expires: October 31, 2028",
+  // and it sits at the bottom of every recorded deed, mortgage, will, and
+  // affidavit. A deed of trust securing a note that matures in 2036 was
+  // reported as containing a date after its own expiration in 2028.
+  it("does not read the notary block as an expiration", () => {
+    const f = TEMP_010.check(
+      doc(
+        "Deed of Trust",
+        "This Deed of Trust secures a Promissory Note in the principal amount of $4,750,000, with a maturity date of March 14, 2036.",
+        "Aoife Brennan, Notary Public. My commission expires: October 31, 2028.",
+      ),
+    );
+    expect(f).toBeNull();
+  });
+
+  it("still reads a real expiration in the same document", () => {
+    const f = TEMP_010.check(
+      doc(
+        "Deed of Trust",
+        "This Deed of Trust expires on October 31, 2028. Beneficiary may exercise the option at any time before March 14, 2036.",
+        "Aoife Brennan, Notary Public. My commission expires: December 31, 2040.",
+      ),
+    );
+    expect(f?.title).toContain("2036-03-14");
+  });
+});
