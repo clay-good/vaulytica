@@ -85,3 +85,22 @@ describe("the register publishes a name only if it looks like one", () => {
     for (const r of rows) expect(r.responsible.split(/\s+/).length).toBeLessThanOrEqual(4);
   });
 });
+
+describe("an anaphoric pronoun is not a responsible party", () => {
+  it("does not publish 'They' as the party who owes a deadline", async () => {
+    const rows = await register([
+      "Clinical Trial Agreement",
+      "Institution and Principal Investigator may publish the results of the Study. They shall provide Sponsor a copy of any proposed publication at least thirty (30) days before submission.",
+    ]);
+    expect(rows.length).toBeGreaterThan(0);
+    for (const r of rows) expect(r.responsible).not.toBe("They");
+  });
+
+  it("still publishes a named party from the same shape", async () => {
+    const rows = await register([
+      "Clinical Trial Agreement",
+      "Institution and Principal Investigator may publish the results of the Study. Institution shall provide Sponsor a copy of any proposed publication at least thirty (30) days before submission.",
+    ]);
+    expect(rows.map((r) => r.responsible)).toContain("Institution");
+  });
+});

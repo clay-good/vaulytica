@@ -473,6 +473,13 @@ function responsibleFor(ref: DateReference, obligations: readonly Obligation[]):
   // comma, and ends on a capitalized word — "The Borrower", "Medical
   // Director", "each Seller", "Executive". Anything else is a guess, and the
   // register says nothing rather than naming the wrong person.
+  // An anaphoric pronoun is not a name. "They shall provide Sponsor a copy of
+  // any proposed publication at least thirty (30) days before submission"
+  // owes a real deadline, but the register row is read on its own, away from
+  // the sentence that supplies the antecedent, and "They" tells the reader
+  // nothing. First and second person are different: a letter-style agreement
+  // DEFINES them ("we" the firm, "you" the client), so those stay.
+  if (/^(?:they|it|he|she|the\s+same)$/i.test(obligor)) return "";
   const words = obligor.split(/\s+/).filter(Boolean);
   if (words.length > 4 || obligor.includes(",")) return "";
   if (!/^[A-Z]/.test(words[words.length - 1] ?? "")) return "";
