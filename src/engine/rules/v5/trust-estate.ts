@@ -28,13 +28,26 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
     id: "EST-402",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Spendthrift clause",
     cite: uniformAct("Uniform Trust Code § 502", "spendthrift provision"),
     pat: [
+      // 1.2.0 — three pillars, conjoined, because the rule's own rationale
+      // is a conjunction the patterns did not enforce: UTC § 502 makes a
+      // spendthrift provision valid ONLY IF it restrains both voluntary and
+      // involuntary transfer, and `pat` defaults to an OR. A trust whose
+      // "Spendthrift" article restrained the beneficiary alone — leaving
+      // every creditor free to reach the interest, which is precisely the
+      // clause § 502 says is ineffective — scored clean on a CRITICAL check,
+      // as did one that barred creditors and let the beneficiary assign.
+      //
+      // The word itself, then the beneficiary-side restraint, then the
+      // creditor-side restraint.
       /spendthrift/i,
-      /(shall\s+not\s+be\s+(subject\s+to|liable\s+for)|voluntary\s+(and|or)\s+involuntary\s+(transfer|alienation)|creditors?\s+of\s+(any\s+)?beneficiar)/i,
+      /(voluntar\w+|assign\w*|alienat\w+|anticipat\w+|encumber\w*|pledge\w*|hypothecat\w+)/i,
+      /(involuntar\w+|creditors?|attach(?:ment|ed)?|garnish\w+|execution|legal\s+process|bankrupt\w+|claims?\s+of\s+(?:any\s+)?credit)/i,
     ],
+    all: true,
     why: "UTC § 502 makes a spendthrift provision valid only if it restrains both voluntary and involuntary transfer. A clause restraining only one is ineffective as a spendthrift provision.",
     fix: "Add a spendthrift clause restraining both voluntary and involuntary transfer of a beneficiary's interest.",
     denied: expressDenial(String.raw`spendthrift\s+(?:clause|provision|protection)`),
