@@ -15,9 +15,8 @@
  * were spelled /subordinat/i, /non.disturbance/i, and /attorn/i, the latter
  * also matching every "attorney" in the document.
  *
- * The rest are listed below with the title word that satisfies them. The
- * list may only SHRINK. Adding to it means shipping a check that cannot
- * fire.
+ * A check that cannot fire is not a check. This sweep is what keeps the
+ * next one from shipping.
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -53,27 +52,18 @@ for (const wave of ["v3", "v4", "v5", "v6"]) {
  * OPERATIVE shape, then add a both-directions test beside the rules file.
  * This list may only shrink.
  */
-const KNOWN_VACUOUS = new Set([
-  "COMM-008",
-  "COMM-019",
-  "GOV-071",
-  "EQT-043",
-  "EQT-066",
-  "MNA-039",
-  "MNA-055",
-  "RE-001",
-  "RE-032",
-  "EMP-032",
-  "SET-021",
-  "SET-025",
-  "IPL-021",
-  "IPL-025",
-  "IPL-031",
-  "IPL-036",
-  "PRV-016",
-  "PRV-023",
-  "PRV-040",
-]);
+/**
+ * Known-vacuous checks, each satisfied by a word in its own family's name.
+ *
+ * Now EMPTY. All 51 were repaired across four commits: the SNDA trio, the
+ * nine compliance policies, the six securities filings, the fourteen
+ * construction / insurance / estate / healthcare checks, and the nineteen
+ * remaining. Every repair is paired with a compliant-direction case in
+ * `v34-vacuity-repairs.test.ts` or beside its own rules file.
+ *
+ * Adding to this list means shipping a check that cannot fire. Don't.
+ */
+const KNOWN_VACUOUS = new Set<string>([]);
 
 describe("v3/v4 presence checks can fire on their own family", () => {
   it("no ungated presence check is satisfied by its family's title alone", () => {

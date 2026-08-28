@@ -1551,6 +1551,7 @@ const NONPROFIT_RULES: Rule[] = [
       /tax.exempt\s+purpose/i,
       /charitable\s+purposes?/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "GOV-072",

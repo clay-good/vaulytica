@@ -100,6 +100,120 @@ const CASES: Array<{ id: string; title: string; compliant: string }> = [
       "This authorization applies specifically to the following protected health information: laboratory results and imaging records from January 2025 to the present, which may be used and disclosed as described below.",
   },
   {
+    id: "COMM-008",
+    title: "Reseller / Distribution Agreement",
+    compliant:
+      "Supplier appoints Distributor as its non-exclusive distributor of the Products in the Territory, which comprises the United States and Canada.",
+  },
+  {
+    id: "COMM-019",
+    title: "Marketing Services Agreement",
+    compliant:
+      "Agency shall provide the marketing services described in each statement of work. The scope of services and the deliverables for each campaign are set out in the applicable SOW, and services to be performed outside it require a change order.",
+  },
+  {
+    id: "GOV-071",
+    title: "Nonprofit Bylaws (501(c)(3))",
+    compliant:
+      "The Corporation is organized exclusively for charitable purposes within the meaning of Section 501(c)(3) of the Internal Revenue Code, and its tax-exempt purpose is to advance public health research.",
+  },
+  {
+    id: "EQT-043",
+    title: "§ 83(b) Election Form",
+    compliant:
+      "The undersigned taxpayer hereby makes an election under Section 83(b) of the Internal Revenue Code of 1986, as amended. This 83(b) election is filed with respect to the restricted shares described below.",
+  },
+  {
+    id: "EQT-066",
+    title: "ROFR / Co-Sale Agreement (NVCA)",
+    compliant:
+      "Each Investor has a co-sale right: if a Key Holder proposes to transfer shares, each Investor may participate in the transfer on a tag-along basis, pro rata to its holdings.",
+  },
+  {
+    id: "MNA-039",
+    title: "Disclosure Schedules",
+    compliant:
+      "These disclosure schedules are delivered pursuant to the Purchase Agreement. General notes: the section headings are for convenience only, and disclosure in any section qualifies every other section to the extent reasonably apparent.",
+  },
+  {
+    id: "MNA-055",
+    title: "Transition Services Agreement (TSA)",
+    compliant:
+      "Seller shall provide the transition services set out in the schedule of services attached hereto. Each service description states the service level, the duration, and the monthly fee.",
+  },
+  {
+    id: "RE-001",
+    title: "Single-Tenant Net Lease (NNN)",
+    compliant:
+      "This is a triple-net lease. Tenant shall pay all real estate taxes and assessments levied against the Premises, together with all common area maintenance and operating expenses, in addition to Base Rent.",
+  },
+  {
+    id: "RE-032",
+    title: "CC&Rs (Declaration of Covenants, Conditions, and Restrictions)",
+    compliant:
+      "This Declaration of Covenants, Conditions, and Restrictions was recorded on March 14, 2026 in Book 4821 at Page 117 of the official records of the Register of Deeds of Mecklenburg County.",
+  },
+  {
+    id: "EMP-032",
+    title: "Proprietary Information and Inventions Agreement (PIIA)",
+    compliant:
+      "Employee shall hold all Confidential Information and proprietary information of the Company in strict confidence, and this non-disclosure obligation continues after employment ends.",
+  },
+  {
+    id: "SET-021",
+    title: "Tolling Agreement",
+    compliant:
+      "The parties agree that the statute of limitations and any limitations period applicable to the claims and causes of action described in Exhibit A are tolled from the Effective Date through the Termination Date.",
+  },
+  {
+    id: "SET-025",
+    title: "Litigation Hold Notice",
+    compliant:
+      "The Company is a party to a pending litigation matter and reasonably anticipates further claims arising from the same investigation. Preserve all documents described below.",
+  },
+  {
+    id: "IPL-021",
+    title: "Copyright License Agreement",
+    compliant:
+      "Licensor grants Licensee the right to reproduce, distribute, publicly display, publicly perform, and prepare derivative works of the Licensed Works, being the exclusive rights enumerated in 17 U.S.C. § 106.",
+  },
+  {
+    id: "IPL-025",
+    title: "Contributor License Agreement (CLA)",
+    compliant:
+      "If you are an individual, you represent that you are legally entitled to grant this license. If your employer is a corporation or other entity with rights in your Contribution, you represent that it has authorized the grant.",
+  },
+  {
+    id: "IPL-031",
+    title: "OSS Compliance Audit Document",
+    compliant:
+      "Each component is listed with its SPDX license identifier: openssl (Apache-2.0), zlib (Zlib), libxml2 (MIT), and readline (GPL-3.0-or-later).",
+  },
+  {
+    id: "IPL-036",
+    title: "Work-for-Hire Agreement",
+    compliant:
+      "The Work is a work made for hire under 17 U.S.C. § 101, specially ordered or commissioned for use as a contribution to a collective work and as a supplementary work.",
+  },
+  {
+    id: "PRV-016",
+    title: "Records of Processing Activities (GDPR Art. 30)",
+    compliant:
+      "This record of processing activities states, for each activity, the purposes of the processing: payroll administration, customer support, and security monitoring.",
+  },
+  {
+    id: "PRV-023",
+    title: "Data Protection Impact Assessment (GDPR Art. 35)",
+    compliant:
+      "The assessment evaluates the risks to the rights and freedoms of data subjects, scoring each by likelihood and by the severity of its impact.",
+  },
+  {
+    id: "PRV-040",
+    title: "Data-Incident Notification Template",
+    compliant:
+      "Where the incident affects 500 or more residents of a state, notice must be given to the state attorney general and to the supervisory authority, and substitute notice through statewide media may be required.",
+  },
+  {
     id: "HC-019",
     title: "Notice of Privacy Practices Acknowledgment",
     compliant:

@@ -69,11 +69,18 @@ const NET_LEASE_RULES: Rule[] = [
     recommendation:
       "Add 'Additional Rent' clauses identifying real-estate taxes, property insurance, and CAM / operating expenses as tenant's responsibility.",
     present_patterns: [
-      /triple.net/i,
-      /\bnnn\b/i,
-      /real\s+estate\s+taxes?.{0,80}(tenant)/is,
+      // "NNN" is in this family's own title ("Single-Tenant Net Lease
+      // (NNN)"), so it and its spelled-out twin are one pillar, and the
+      // allocation itself is the rest.
+      /(triple.net|\bnnn\b)/i,
+      // Either order. "TENANT shall pay all real estate taxes" is at least as
+      // common as "real estate taxes ... payable by Tenant", and the
+      // one-directional form flagged the standard drafting once the pillars
+      // were conjoined.
+      /(real\s+estate\s+taxes?.{0,80}tenant|tenant.{0,80}real\s+estate\s+taxes?)/is,
       /(cam|common\s+area\s+maintenance|operating\s+expenses)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "RE-002",
@@ -749,10 +756,15 @@ const CCR_RULES: Rule[] = [
       "State HOA statutes (e.g., Davis-Stirling Act in CA) require specific naming conventions for the recorded declaration.",
     recommendation: "Title the document 'Declaration of Covenants, Conditions, and Restrictions'.",
     present_patterns: [
-      /covenants,?\s+conditions(,?\s+and)?\s+restrictions/i,
-      /\bcc.?rs?\b/i,
-      /declaration\s+of\s+covenants/i,
+      // All three of these are words in this family's own name — "CC&Rs
+      // (Declaration of Covenants, Conditions, and Restrictions)" — so
+      // conjoining them would still have been vacuous. The check is about
+      // IDENTIFICATION, and a declaration is identified by its recording
+      // data.
+      /(covenants,?\s+conditions(,?\s+and)?\s+restrictions|\bcc.?rs?\b|declaration\s+of\s+covenants)/i,
+      /(recorded|recording|book\s+\d|page\s+\d|instrument\s+(no|number)|document\s+(no|number)|official\s+records|register\s+of\s+deeds)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "RE-033",

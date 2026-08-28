@@ -577,9 +577,12 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
     recommendation:
       "Add 'Rights Granted' enumerating which of reproduction, distribution, public display, public performance, and preparation of derivative works are licensed.",
     present_patterns: [
-      /(reproduc|copy|distribut|display|perform|derivative\s+works?)/i,
+      // "copy" matched "Copyright" in this family's own title. The § 106
+      // rights are named in full instead, so the pillar reads the GRANT.
+      /(reproduc\w+|distribut\w+|publicly\s+(?:display|perform)\w*|display\w*|perform\w*|derivative\s+works?)/i,
       /(section\s+106|17\s+u\.?s\.?c\.?\s+§?\s*106)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "IPL-022",
@@ -661,6 +664,7 @@ const CLA_RULES: Rule[] = [
     recommendation:
       "Add 'Contributor' / 'You' definition with disambiguation between individual ICLA and corporate CCLA.",
     present_patterns: [/(contributor|you|i\b)/i, /(individual|corporat(e|ion)|entity|employer)/i],
+    require_all_present: true,
   }),
   presence({
     id: "IPL-026",
@@ -815,6 +819,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
     recommendation:
       "Add a 'Licenses' column / sub-section using SPDX identifiers (e.g., MIT, Apache-2.0, GPL-3.0-only, AGPL-3.0-only, BSD-3-Clause).",
     present_patterns: [/(mit|apache.?2|bsd|gpl|agpl|lgpl|mpl|isc|cc.?by)/i, /(license|spdx)/i],
+    require_all_present: true,
   }),
   presence({
     id: "IPL-032",
@@ -919,6 +924,7 @@ const WFH_RULES: Rule[] = [
       /(work\s+made\s+for\s+hire|work.?for.?hire|17\s+u\.?s\.?c\.?\s+§?\s*101|section\s+101)/i,
       /(motion\s+picture|audiovisual|collective\s+work|translation|supplementary|compilation|instructional\s+text|test|atlas)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "IPL-037",

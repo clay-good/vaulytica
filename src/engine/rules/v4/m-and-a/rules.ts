@@ -859,6 +859,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
     recommendation:
       "Add 'General Notes' at the front of the schedules covering cross-section qualification and materiality disclaimers.",
     present_patterns: [/disclosure\s+schedule/i, /general\s+(notes|provisions|preamble)/i],
+    require_all_present: true,
   }),
   language({
     id: "MNA-040",
@@ -1246,6 +1247,7 @@ const TSA_RULES: Rule[] = [
       /schedule\s+(of\s+)?services/i,
       /service\s+description/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "MNA-056",

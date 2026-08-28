@@ -129,10 +129,15 @@ describe("v4 Commercial — reseller / distribution agreement (A.8)", () => {
       DIST,
       "Supplier appoints Distributor as reseller of the Products in the Territory.",
     );
-    // Appointment/territory present (COMM-008 silent); pricing & trademark are
-    // gated and inapplicable here; the min-purchase, term, and post-termination
-    // clauses are genuinely absent.
-    expect(bare.has("COMM-008")).toBe(false);
+    // Appointment and territory are present, but the sentence says nothing
+    // about EXCLUSIVITY — whether the appointment is exclusive or
+    // non-exclusive is the single most important term of a distribution
+    // agreement, and COMM-008 is named for it. The check used to be an OR, so
+    // "appoints" alone answered it; it is a conjunction now and correctly
+    // reports the third pillar missing. Pricing & trademark are gated and
+    // inapplicable here; the min-purchase, term, and post-termination clauses
+    // are genuinely absent.
+    expect(bare.has("COMM-008")).toBe(true);
     for (const id of ["COMM-009", "COMM-011", "COMM-013"]) {
       expect(bare.has(id), id).toBe(true);
     }

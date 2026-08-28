@@ -791,6 +791,7 @@ const PIIA_RULES: Rule[] = [
     recommendation:
       "Add 'Proprietary Information' obligation with standard carve-outs (publicly available, independently developed).",
     present_patterns: [/(confidential|proprietary)\s+information/i, /non.?disclosure/i],
+    require_all_present: true,
   }),
   presence({
     id: "EMP-033",

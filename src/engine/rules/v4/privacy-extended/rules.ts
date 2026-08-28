@@ -397,8 +397,11 @@ const ROPA_RULES: Rule[] = [
       "Add 'Purposes of Processing' with each distinct purpose (HR / payroll, customer support, marketing, etc.).",
     present_patterns: [
       /(purpose|purposes\s+of\s+(the\s+)?processing)/i,
-      /(art\.?\s*30|article\s+30)/i,
+      // A record of processing activities is not obliged to cite the
+      // article it is kept under; naming itself is enough.
+      /(art\.?\s*30|article\s+30|records?\s+of\s+processing|\bropa\b)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "PRV-017",
@@ -536,6 +539,7 @@ const DPIA_RULES: Rule[] = [
       /(risk(s)?\s+(to|assessment)|rights\s+and\s+freedoms)/i,
       /(likelihood|severity|impact)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "PRV-024",
@@ -868,9 +872,12 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
       "Add 'Regulator Notification' covering state-AG triggers (typically 500 / 1,000+), HIPAA 500-resident media notice, and EU supervisory-authority notification under Art. 33.",
     present_patterns: [
       /(state\s+(ag|attorney\s+general)|supervisory\s+authority)/i,
-      /(500|1,?000|threshold)/i,
+      // A template may state any threshold, not only the two that happened
+      // to be written here.
+      /(\d{2,5}\s+(?:or\s+more\s+)?(?:residents?|individuals?|persons?|consumers?)|more\s+than\s+\d|threshold)/i,
       /(media|notice|notification)/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
 ];

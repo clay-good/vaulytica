@@ -927,6 +927,7 @@ const ELECTION_83B_RULES: Rule[] = [
     recommendation:
       "Add the header 'Election to Include in Gross Income in Year of Transfer Pursuant to Section 83(b) of the Internal Revenue Code'.",
     present_patterns: [/section\s+83\s*\(\s*b\s*\)/i, /83\s*\(\s*b\s*\)\s+election/i],
+    require_all_present: true,
   }),
   presence({
     id: "EQT-044",
@@ -1344,6 +1345,7 @@ const ROFR_RULES: Rule[] = [
     recommendation:
       "Add 'Co-Sale Right' allowing investors to participate pro rata when transferring stockholder elects to sell.",
     present_patterns: [/co.sale/i, /tag.along/i],
+    require_all_present: true,
   }),
   presence({
     id: "EQT-067",

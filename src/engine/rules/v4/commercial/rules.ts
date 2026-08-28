@@ -298,6 +298,7 @@ const DISTRIBUTION_RULES: Rule[] = [
       /(exclusive|non.?exclusive|sole)\s+(distributor|reseller|right)/i,
       /(distributor|reseller)\b/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "COMM-009",
@@ -820,11 +821,15 @@ const MARKETING_RULES: Rule[] = [
     recommendation:
       "Add a 'Services' / 'Scope of Work' clause (or reference an SOW) describing the services, the deliverables, the channels, and the campaign timeline.",
     present_patterns: [
-      /(scope\s+of\s+(services|work)|statement\s+of\s+work|\bsow\b)/i,
+      // "services to be provided" is a SYNONYM of "scope of services", not a
+      // separate requirement, and keeping it as its own pillar made the
+      // conjunction flag a complete marketing services agreement that
+      // happened to phrase the scope the other way.
+      /(scope\s+of\s+(services|work)|statement\s+of\s+work|\bsow\b|services\s+to\s+be\s+(provided|performed))/i,
       /\bdeliverables?\b/i,
       /marketing\s+services|\bcampaign\b/i,
-      /services\s+to\s+be\s+(provided|performed)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "COMM-020",

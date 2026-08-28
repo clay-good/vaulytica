@@ -668,6 +668,7 @@ const TOLLING_RULES: Rule[] = [
       /(claims?|causes?\s+of\s+action)/i,
       /(statute\s+of\s+limitations?|limitations?\s+period)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "SET-022",
@@ -763,6 +764,7 @@ const LIT_HOLD_RULES: Rule[] = [
       /(litigation|investigation|claim|dispute|matter)/i,
       /(anticipated|pending|reasonably\s+(expected|anticipated))/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "SET-026",
