@@ -183,6 +183,7 @@ const FORM_ADV_RULES: Rule[] = [
     recommendation:
       "Add 'Cover Page' (firm + contact + date) and 'Item 2 — Material Changes' summary.",
     present_patterns: [/(cover\s+page|brochure|part\s+2a)/i, /(material\s+changes|item\s+2)/i],
+    require_all_present: true,
   }),
   presence({
     id: "REG-009",
@@ -322,7 +323,14 @@ const RISK_FACTORS_RULES: Rule[] = [
     explanation: "Reg S-K Item 105 requires a separately captioned 'Risk Factors' section.",
     recommendation:
       "Add a 'Risk Factors' section with introductory paragraph framing the risks discussed.",
-    present_patterns: [/risk\s+factors/i, /(material\s+risks?|principal\s+risks?)/i],
+    present_patterns: [
+      /risk\s+factors/i,
+      // The conventional S-1 introduction is "You should carefully consider
+      // the risks described below"; requiring the words "material risks"
+      // would have flagged the standard drafting.
+      /(material\s+risks?|principal\s+risks?|carefully\s+consider|risks?\s+described\s+(?:below|herein)|materially\s+(?:and\s+)?adversely\s+affect)/i,
+    ],
+    require_all_present: true,
   }),
   presence({
     id: "REG-017",
@@ -484,6 +492,7 @@ const RISK_FACTORS_RULES: Rule[] = [
       /(cybersecurity|cyber\s+attack|data\s+breach|ransomware|item\s+106|item\s+1\.05)/i,
       /(risk|incident|exposure)/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
   presence({
@@ -507,6 +516,7 @@ const RISK_FACTORS_RULES: Rule[] = [
       /(climate|environmental|esg|sustainability)/i,
       /(risk|emissions?|transition|physical)/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
   presence({
@@ -526,6 +536,7 @@ const RISK_FACTORS_RULES: Rule[] = [
       /(update|new\s+(risk|risk\s+factor)|changes\s+since)/i,
       /(prior\s+(year|period)|10.?k|annual\s+report)/i,
     ],
+    require_all_present: true,
     default_severity: "warning",
   }),
 ];
@@ -737,6 +748,7 @@ const REG_A_RULES: Rule[] = [
       /(form\s+1.?a|part\s+i|part\s+ii)/i,
       /(notification|offering\s+circular|exhibits)/i,
     ],
+    require_all_present: true,
   }),
   presence({
     id: "REG-035",

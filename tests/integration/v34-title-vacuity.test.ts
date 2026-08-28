@@ -87,12 +87,6 @@ const KNOWN_VACUOUS = new Set([
   "EST-011",
   "EST-024",
   "EST-032",
-  "REG-008",
-  "REG-016",
-  "REG-022",
-  "REG-023",
-  "REG-024",
-  "REG-034",
 ]);
 
 describe("v3/v4 presence checks can fire on their own family", () => {
