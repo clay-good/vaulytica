@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.90.0] — 2026-08-28
+
+Three more instruments: a UCC § 9-104 deposit account control agreement, a
+venture-lender warrant, and a trademark assignment. All three routed
+correctly — what they found was the last of the empty `rule_overrides` in
+their cohort.
+
+### Fixed
+- **`deposit-account-control-agreement`, `warrant-agreement`, and
+  `trademark-assignment` shipped with an empty `rule_overrides`.** A
+  three-party control agreement, a unilateral equity instrument, and a
+  completed conveyance were each told they allocated no IP, capped no
+  liability, and could not be terminated for cause.
+
+  RISK-005 on the control agreement is the interesting one: the Bank excludes
+  its liability except for gross negligence and waives consequential damages,
+  and the rule deliberately does not read a bare consequential-damages waiver
+  as a monetary cap. That is right as a general rule and wrong for this
+  family, because no bank's control agreement states a dollar cap — so it is
+  skipped here rather than loosened everywhere.
+
+### Added
+- Three specimens, bringing the set to fifty-five.
+
 ## [9.89.0] — 2026-08-28
 
 ### Added

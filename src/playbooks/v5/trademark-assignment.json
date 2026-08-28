@@ -22,7 +22,15 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Assigned Marks", "Goodwill"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "STRUCT-002": { "skip": true },
+    "TEMP-012": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "15-USC-1060",

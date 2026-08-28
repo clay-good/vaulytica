@@ -1,0 +1,70 @@
+THIS WARRANT AND THE SHARES ISSUABLE UPON EXERCISE HEREOF HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AS AMENDED, OR UNDER THE SECURITIES LAWS OF ANY STATE, AND MAY NOT BE OFFERED, SOLD, PLEDGED, OR OTHERWISE TRANSFERRED EXCEPT PURSUANT TO AN EFFECTIVE REGISTRATION STATEMENT OR AN AVAILABLE EXEMPTION FROM REGISTRATION.
+
+WARRANT TO PURCHASE SHARES OF SERIES A PREFERRED STOCK
+
+Warrant No. W-14
+Issue Date: June 1, 2026
+
+THIS CERTIFIES THAT, for value received, WESTFORD VENTURE LENDING II, LLC, a Delaware limited liability company, and its permitted assigns (the "Holder"), is entitled to purchase from LUMENARC MATERIALS, INC., a Delaware corporation (the "Company"), up to Two Hundred Eighteen Thousand Seven Hundred Fifty (218,750) shares of the Company's Series A Preferred Stock (the "Warrant Shares"), at the Exercise Price and on the terms set forth below.
+
+1. Exercise Price.
+
+The exercise price is $1.60 per share, subject to adjustment under Section 6 (the "Exercise Price").
+
+2. Term.
+
+This Warrant is exercisable in whole or in part at any time and from time to time from the Issue Date until the earlier of (a) 5:00 p.m. Pacific time on June 1, 2036, and (b) the closing of a Deemed Liquidation Event, after which this Warrant terminates and is of no further force or effect. The Company shall give the Holder at least fifteen (15) days' written notice before the closing of a Deemed Liquidation Event.
+
+3. Method of Exercise.
+
+The Holder may exercise this Warrant by delivering to the Company a completed Notice of Exercise in the form of Exhibit A, together with payment of the aggregate Exercise Price in cash or by wire transfer. Exercise is effective on the Company's receipt of both. Within ten (10) business days after effective exercise, the Company shall issue and deliver to the Holder a certificate or book-entry statement for the Warrant Shares purchased, together with a new warrant of like tenor for any unexercised portion.
+
+4. Net Issuance Exercise.
+
+In lieu of paying the Exercise Price in cash, the Holder may elect to receive Warrant Shares equal in value to the difference between the aggregate fair market value of the shares as to which the Warrant is being exercised and the aggregate Exercise Price for those shares, divided by the fair market value of one share. For this purpose, fair market value is (a) the closing price on the principal exchange if the shares are then publicly traded, (b) the price per share paid in a Deemed Liquidation Event if the exercise occurs in connection with one, and (c) otherwise, the fair market value determined in good faith by the Board.
+
+5. No Fractional Shares.
+
+No fractional share is issued on exercise. The Company shall pay cash equal to the fair market value of any fractional share that would otherwise be issuable.
+
+6. Adjustments.
+
+If the Company subdivides or combines its outstanding shares, pays a dividend in shares, or effects a reclassification, recapitalization, or similar transaction, the number of Warrant Shares and the Exercise Price shall be proportionately adjusted so that the Holder receives what the Holder would have received had the Warrant been exercised immediately before the event. If the Company effects a merger or consolidation in which the shares are converted into other securities or property and the transaction is not a Deemed Liquidation Event, this Warrant becomes exercisable for the securities or property the Holder would have received on exercise immediately before the transaction. The Company shall promptly deliver to the Holder a certificate of its Chief Financial Officer setting forth each adjustment, the method of calculation, and the resulting Exercise Price and number of Warrant Shares.
+
+7. No Rights as a Stockholder.
+
+Until this Warrant is exercised, the Holder has no rights as a stockholder of the Company, including no right to vote, to receive dividends, or to receive notice of any meeting, except as expressly stated in this Warrant.
+
+8. Representations of the Holder.
+
+The Holder represents that it is acquiring this Warrant and the Warrant Shares for its own account for investment and not with a view to distribution, that it is an "accredited investor" as defined in Rule 501(a) under the Securities Act of 1933, and that it has had the opportunity to ask questions of the Company and to obtain the information it considers necessary.
+
+9. Transfer.
+
+This Warrant may not be transferred except in compliance with applicable securities laws and, prior to a public offering, only to an affiliate of the Holder or with the Company's prior written consent, not to be unreasonably withheld. Any permitted transferee takes subject to this Warrant's terms, and the Company shall issue a replacement warrant to the transferee on surrender of this one.
+
+10. Reservation of Shares.
+
+The Company shall at all times reserve and keep available out of its authorized shares a number of shares sufficient to permit the exercise of this Warrant in full, and shall take all action necessary to increase its authorized shares if at any time the reserved number is insufficient.
+
+11. Lost Warrant.
+
+On receipt of evidence reasonably satisfactory to the Company of the loss, theft, destruction, or mutilation of this Warrant, and of an unsecured indemnity reasonably satisfactory to the Company, the Company shall issue a replacement warrant of like tenor.
+
+12. Notices.
+
+Every notice under this Warrant shall be in writing and delivered by hand, overnight courier, or email with confirmed receipt to the addresses on the Company's books, and is effective on receipt.
+
+13. Amendment; Governing Law.
+
+This Warrant may be amended only by a writing signed by the Company and the Holder. This Warrant is governed by the laws of the State of Delaware, without regard to its conflict-of-laws principles, and the parties submit to the exclusive jurisdiction of the Court of Chancery of the State of Delaware.
+
+IN WITNESS WHEREOF, the Company has caused this Warrant to be executed by its duly authorized officer as of the Issue Date.
+
+LUMENARC MATERIALS, INC.
+
+By: /s/ Anselm Vukovic-Achebe
+Name: Anselm Vukovic-Achebe
+Title: Chief Executive Officer
+
+Exhibit A — Form of Notice of Exercise

@@ -414,6 +414,29 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A UCC § 9-104(a)(2) deposit account control agreement. RISK-005 reported
+  // no limitation-of-liability clause on a document that excludes the Bank's
+  // liability except for gross negligence and waives consequential damages —
+  // which is correct as the rule is deliberately written (a bare
+  // consequential-damages waiver is not a monetary cap), and wrong for this
+  // family, because no bank's control agreement states a dollar cap.
+  "daca.txt": {
+    playbook: "deposit-account-control-agreement",
+    findings: ["OBLI-005", "RISK-007", "STRUCT-006", "STRUCT-018", "TEMP-006", "TEMP-007"],
+  },
+
+  // A venture-lender warrant behind the same restrictive-securities legend as
+  // the SAFE and the convertible note. It routes correctly; what it found was
+  // the empty `rule_overrides` — a unilateral instrument with no payment
+  // terms, no IP allocation, no indemnity, no cap, and nothing to terminate.
+  "warrant.txt": { playbook: "warrant-agreement", findings: ["OBLI-005", "STRUCT-006"] },
+
+  // A trademark assignment with the goodwill, the § 1060(a) intent-to-use
+  // limitation, and a transition-period quality-control covenant. All five of
+  // its § 1060 checks are silent on it, which is the compliant direction for
+  // that pack.
+  "trademark-assignment.txt": { playbook: "trademark-assignment", findings: ["STRUCT-006"] },
+
   // An M&A indemnity escrow. Its playbook listed "stock purchase agreement"
   // as a negative feature — the agreement every escrow of this kind names in
   // its first recital as the one it secures — and RISK-002 reported the

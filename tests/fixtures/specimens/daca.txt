@@ -1,0 +1,85 @@
+DEPOSIT ACCOUNT CONTROL AGREEMENT
+
+THIS DEPOSIT ACCOUNT CONTROL AGREEMENT (this "Agreement") is entered into as of November 2, 2026, among THISTLEDOWN BIOLOGICS, INC., a Delaware corporation ("Debtor"), CALDERA CAPITAL PARTNERS III, LLC, a Delaware limited liability company, as agent for the Lenders ("Secured Party"), and CASCADE PACIFIC BANK, a Washington state-chartered bank ("Bank").
+
+RECITALS
+
+A. Debtor maintains with Bank the deposit accounts identified on Schedule A (each an "Account" and collectively the "Accounts").
+
+B. Debtor has granted Secured Party a security interest in the Accounts under a Loan and Security Agreement dated November 2, 2026.
+
+C. The parties are entering into this Agreement to perfect Secured Party's security interest in the Accounts by control under Section 9-104(a)(2) of the Uniform Commercial Code as in effect in the State of Washington.
+
+NOW, THEREFORE, the parties agree as follows.
+
+1. The Accounts.
+
+Bank confirms that: (a) it maintains each Account for Debtor; (b) the Accounts are demand deposit accounts as described on Schedule A; (c) Bank has not entered into any other agreement with any person by which Bank is obligated to comply with instructions from that person directing disposition of funds in any Account; and (d) Bank has received no notice of any other lien on or claim to any Account, other than statutory liens for customary fees and returned items.
+
+2. Control.
+
+Bank shall comply with instructions originated by Secured Party directing disposition of the funds in each Account without further consent by Debtor. Bank shall so comply whether or not Debtor objects, and shall not be required to investigate the circumstances of any instruction or to determine whether any default has occurred.
+
+3. Debtor's Access Before Notice of Exclusive Control.
+
+Until Bank receives a Notice of Exclusive Control, Debtor may operate each Account in the ordinary course, including making withdrawals and transfers. On and after Bank's receipt of a Notice of Exclusive Control, Bank shall cease honoring instructions from Debtor and shall comply solely with instructions originated by Secured Party.
+
+4. Notice of Exclusive Control.
+
+A "Notice of Exclusive Control" is a written notice from Secured Party to Bank, substantially in the form of Exhibit A, stating that Secured Party is exercising exclusive control over the Accounts. Bank shall have two (2) Business Days after receipt of a Notice of Exclusive Control during which to implement it, and shall have no liability for any transaction it initiated or completed before that period expires.
+
+5. Subordination by Bank.
+
+Bank subordinates to Secured Party's security interest each security interest, lien, encumbrance, claim, and right of setoff or recoupment that Bank has or may have against any Account or the funds in it, except for: (a) Bank's customary fees, charges, and expenses for maintaining the Accounts; (b) the face amount of items deposited in an Account and returned unpaid or otherwise not collected, together with associated fees; and (c) reversals of provisional credits.
+
+6. Statements and Information.
+
+Bank shall send to Secured Party a duplicate of each periodic statement for each Account, at the address stated below, at the same time it sends the statement to Debtor, and Debtor authorizes Bank to disclose to Secured Party any information concerning any Account that Secured Party requests.
+
+7. Bank's Responsibility.
+
+Bank has no duty to Secured Party except as expressly stated in this Agreement, and no implied duty may be read into this Agreement. Bank is not liable to any party for any action or omission except to the extent it results from Bank's gross negligence or willful misconduct, and in no event is Bank liable for any indirect, special, consequential, or punitive damages, whether or not Bank has been advised of the possibility of such damages. Bank is not responsible for verifying the authority of any person purporting to act for Secured Party beyond comparing the signature to the incumbency certificate delivered under Section 11.
+
+8. Indemnity.
+
+Debtor and Secured Party shall jointly and severally indemnify, defend, and hold harmless Bank and its officers, directors, employees, and agents from and against any claim, loss, liability, cost, or expense, including reasonable attorneys' fees, arising out of this Agreement or any Account, except to the extent caused by Bank's gross negligence or willful misconduct. Bank shall give prompt written notice of any claim for which it seeks indemnity, shall permit the indemnifying parties to control the defense with counsel reasonably satisfactory to Bank, and shall not settle any such claim without their prior written consent, which shall not be unreasonably withheld. As between Debtor and Secured Party, Debtor bears the entire obligation. This Section survives termination.
+
+9. Fees.
+
+Debtor shall pay Bank's customary fees for maintaining the Accounts and for the services provided under this Agreement, as set out on Schedule B, within thirty (30) days after each invoice. Bank may debit the Accounts for those fees notwithstanding Section 5, but only to the extent of the exception in Section 5(a).
+
+10. Termination.
+
+This Agreement terminates on (a) Bank's receipt of written notice from Secured Party that Secured Party's security interest in the Accounts has been released, or (b) the closing of all Accounts in accordance with Bank's customary practice and this Agreement. Bank may terminate this Agreement on thirty (30) days' prior written notice to Debtor and Secured Party, except that Bank may not terminate while a Notice of Exclusive Control is in effect without Secured Party's written consent. Debtor may not terminate this Agreement without Secured Party's prior written consent. On termination, Bank has no further duty to Secured Party, and Sections 7, 8, and 9 survive.
+
+11. Notices and Authorized Persons.
+
+Every notice under this Agreement shall be in writing and delivered by hand, overnight courier, or email with confirmed receipt to the addresses stated below each party's signature, and is effective on actual receipt by the officer identified there. Each of Debtor and Secured Party shall deliver to Bank an incumbency certificate identifying the persons authorized to give instructions, and Bank may rely on the most recent certificate it has received.
+
+12. Governing Law; Jurisdiction; Counterparts.
+
+This Agreement is governed by the laws of the State of Washington, without regard to its conflict-of-laws principles, and for purposes of the Uniform Commercial Code the State of Washington is Bank's jurisdiction under Section 9-304. Each party submits to the exclusive jurisdiction of the state and federal courts located in King County, Washington. This Agreement may be executed in counterparts and may be amended only by a writing signed by all three parties.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+DEBTOR: THISTLEDOWN BIOLOGICS, INC.
+
+By: /s/ Oleander Vasquez-Kimura
+Name: Oleander Vasquez-Kimura
+Title: Chief Financial Officer
+
+SECURED PARTY: CALDERA CAPITAL PARTNERS III, LLC
+
+By: /s/ Hyacinth Brennan-Oduya
+Name: Hyacinth Brennan-Oduya
+Title: Managing Director
+
+BANK: CASCADE PACIFIC BANK
+
+By: /s/ Fitzgerald Nakamura
+Name: Fitzgerald Nakamura
+Title: Senior Vice President, Treasury Management
+
+Schedule A — The Accounts
+Schedule B — Bank Fee Schedule
+Exhibit A — Form of Notice of Exclusive Control
