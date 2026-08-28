@@ -495,3 +495,36 @@ describe("v5 — the DGCL § 145 indemnification agreement, in both directions",
     }
   });
 });
+
+describe("v5 — MNA-128 reads the amendment clause a side letter writes", () => {
+  /**
+   * "This letter may be amended only IN a writing SIGNED BY the Company and
+   * Kestrel" is the standard drafting; the check wanted "only BY a writing" or
+   * "written instrument signed", and told a side letter carrying the clause
+   * that it had none.
+   *
+   * "written AGREEMENT signed" is deliberately NOT admitted — that is the
+   * entire-agreement boilerplate every document carries, and admitting it
+   * makes the check unable to fire at all (`title-vacuity.test.ts` proves it).
+   */
+  it("is silent on the clause as drafters write it", () => {
+    for (const clause of [
+      "This letter may be amended only in a writing signed by the Company and Kestrel.",
+      "No amendment is effective unless made by a written instrument signed by both signatories.",
+      "This letter may be amended only by a writing executed by the parties, or with the consent of the Requisite Holders.",
+    ]) {
+      expect(rule("MNA-128").check(doc("Side Letter", clause)), clause).toBeNull();
+    }
+  });
+
+  it("still fires on a side letter that states no amendment mechanic", () => {
+    expect(
+      rule("MNA-128").check(
+        doc(
+          "Side Letter",
+          "Kestrel may designate one representative to attend all meetings of the Board in a non-voting observer capacity.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

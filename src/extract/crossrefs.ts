@@ -104,6 +104,26 @@ const STATUTE_LABEL_DECLARATION =
 const STATUTE_ACRONYM_DEFINITION =
   /\b[A-Z][A-Za-z]+(?:\s+(?:[A-Z][A-Za-z]+|of|and|the))*\s+(?:Code|Acts?|Laws?|Regulations?)\b(?:\s+of\s+\d{4})?\s*\(\s*(?:the\s+)?["“]([A-Z][A-Za-z]{1,10})["”]\s*\)/g;
 
+/**
+ * An acronym the document defines for ANOTHER INSTRUMENT — 'the Amended and
+ * Restated Investors’ Rights Agreement of even date (the "IRA")', 'the
+ * Loan and Security Agreement (the "Loan Agreement")'.
+ *
+ * `EXTERNAL_INSTRUMENT_RE` already reads "Section 3.7 of the Agreement" and
+ * the three-letter forms the catalog happened to list (MSA, SPA, DPA, BAA) as
+ * references into another document's numbering. It cannot read an acronym the
+ * document invents, and a side letter, an amendment, a statement of work, a
+ * guaranty, and an SNDA all cite their parent's sections that way: "Section
+ * 3.5 of the IRA" was reported as a broken reference to a section this
+ * document never had.
+ *
+ * Mirrors {@link STATUTE_ACRONYM_DEFINITION}, with the defining phrase ending
+ * in an instrument word rather than a statute word. Both apostrophes are
+ * admitted because Word inserts the curly one.
+ */
+const INSTRUMENT_ACRONYM_DEFINITION =
+  /\b[A-Z][A-Za-z’']*(?:\s+(?:[A-Z][A-Za-z’']*|of|and|the))*\s+(?:Agreements?|Leases?|Notes?|Indentures?|Plans?|Polic(?:y|ies)|Contracts?|Charters?|By-?laws?|Declarations?|Orders?|Certificates?)\b(?:\s+of\s+even\s+date(?:\s+herewith)?)?\s*\(\s*(?:the\s+)?["“]([A-Za-z][A-Za-z\s'’-]{1,40})["”]\s*\)/g;
+
 // A section reference trailed by "of (the) <ACRONYM>" — "Section 262 of the
 // DGCL". Checked against the collected / seeded statute-acronym set.
 const EXTERNAL_ACRONYM_TAIL = /^(?:\(\d+[a-z]?\))*\s+of\s+(?:the\s+)?([A-Za-z]{2,10})\b/;
@@ -175,6 +195,8 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
   const statutoryLabels = new Set<string>();
   // Acronyms of statutes cited into another authority's numbering.
   const statuteAcronyms = new Set<string>(SEED_STATUTE_ACRONYMS);
+  // Short names the document gives to OTHER instruments it cites into.
+  const instrumentAcronyms = new Set<string>();
   forEachParagraph(tree, (ctx) => {
     STATUTE_LABEL_DECLARATION.lastIndex = 0;
     let sm: RegExpExecArray | null;
@@ -185,6 +207,11 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     let am: RegExpExecArray | null;
     while ((am = STATUTE_ACRONYM_DEFINITION.exec(ctx.text)) !== null) {
       statuteAcronyms.add(am[1]!.toUpperCase());
+    }
+    INSTRUMENT_ACRONYM_DEFINITION.lastIndex = 0;
+    let im: RegExpExecArray | null;
+    while ((im = INSTRUMENT_ACRONYM_DEFINITION.exec(ctx.text)) !== null) {
+      instrumentAcronyms.add(im[1]!.trim().toUpperCase());
     }
   });
   // A second pass: with the acronym set complete, a "Section N of the <acronym>"
@@ -241,7 +268,9 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         EXTERNAL_REG_LEADING_RE.test(before) ||
         STATUTE_SECTION_LABEL.test(m[2] ?? "") ||
         statutoryLabels.has((m[2] ?? "").toUpperCase()) ||
-        (acronymTail != null && statuteAcronyms.has(acronymTail[1]!.toUpperCase()))
+        (acronymTail != null &&
+          (statuteAcronyms.has(acronymTail[1]!.toUpperCase()) ||
+            instrumentAcronyms.has(acronymTail[1]!.toUpperCase())))
       ) {
         continue;
       }

@@ -414,6 +414,19 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A Series B side letter. Two defects about citing a parent document.
+  // STRUCT-007 reported "Section 3.5 of the IRA" as a broken reference to a
+  // section this letter never had — the extractor reads "Section 3.7 of the
+  // Agreement" and the three-letter forms the catalog happened to list, but
+  // not a short name the document itself invents, which is how every side
+  // letter, amendment, SOW, guaranty, and SNDA cites its parent. And MNA-128
+  // wanted "only BY a writing" from a letter that says "amended only IN a
+  // writing signed by the Company and Kestrel".
+  "side-letter.txt": {
+    playbook: "side-letter",
+    findings: ["FIN-007", "OBLI-005", "OBLI-008"],
+  },
+
   // A UCC § 9-104(a)(2) deposit account control agreement. RISK-005 reported
   // no limitation-of-liability clause on a document that excludes the Bank's
   // liability except for gross negligence and waives consequential damages —

@@ -686,3 +686,48 @@ describe("a roman-numbered SECTION", () => {
     expect(refs.find((r) => r.raw_text === "Section VI")?.unresolved).toBe(true);
   });
 });
+
+describe("a reference into another instrument the document names", () => {
+  /**
+   * A side letter, an amendment, a statement of work, a guaranty, and an SNDA
+   * all cite their parent's sections. `EXTERNAL_INSTRUMENT_RE` reads "Section
+   * 3.7 of the Agreement" and the three-letter forms the catalog happened to
+   * list, but not an acronym the document invents — so "Section 3.5 of the
+   * IRA", after 'the Amended and Restated Investors’ Rights Agreement (the
+   * "IRA")', was reported by STRUCT-007 as a broken reference to a section
+   * this document never had.
+   */
+  const unresolved = (...paras: string[]) => {
+    const t = buildTree(["Body", ...paras]);
+    return extractCrossRefs(t, extractSections(t))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+  };
+
+  it("reads a section of an instrument the document gave a short name", () => {
+    expect(
+      unresolved(
+        'Reference is made to the Amended and Restated Investors’ Rights Agreement of even date (the "IRA").',
+        "Kestrel shall keep confidential all information it receives, subject to Section 3.5 of the IRA.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("reads the straight-apostrophe spelling of the same definition", () => {
+    expect(
+      unresolved(
+        'Reference is made to the Investors\' Rights Agreement (the "IRA").',
+        "The exceptions in Section 3.5 of the IRA apply.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("still reports a broken reference to this document's own outline", () => {
+    expect(
+      unresolved(
+        'Reference is made to the Investors’ Rights Agreement (the "IRA").',
+        "The indemnity in Section 12.4 applies.",
+      ),
+    ).toEqual(["Section 12.4"]);
+  });
+});

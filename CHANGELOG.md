@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.91.0] — 2026-08-28
+
+A Series B side letter — a document whose whole job is to point at another
+one.
+
+### Fixed
+- **A reference into a parent document was reported as broken.** The crossref
+  extractor already reads "Section 3.7 of the Agreement", and the three-letter
+  forms the catalog happened to list (MSA, SPA, DPA, BAA), as references into
+  another instrument's numbering. It could not read a short name the document
+  itself invents — and after 'the Amended and Restated Investors' Rights
+  Agreement of even date (the "IRA")', "Section 3.5 of the IRA" was reported by
+  STRUCT-007 as a broken reference to a section this letter never had. Every
+  side letter, amendment, statement of work, order form, guaranty, and SNDA
+  cites its parent that way. The extractor now collects instrument short names
+  the same way it already collects statute acronyms.
+- **MNA-128 wanted "only BY a writing".** The standard drafting is "amended
+  only **in** a writing **signed by** the Company and Kestrel", and a side
+  letter carrying the clause was told it had none. "Written **agreement**
+  signed" is deliberately still excluded: that is the entire-agreement
+  boilerplate every document carries, and admitting it makes the check unable
+  to fire at all — which the boilerplate-reachability guard caught on the
+  first attempt at this fix.
+
+### Added
+- One specimen, bringing the set to fifty-six.
+
 ## [9.90.1] — 2026-08-28
 
 ### Added

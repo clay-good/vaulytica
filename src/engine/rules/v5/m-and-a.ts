@@ -394,7 +394,11 @@ const SIDE_LETTER = pack("side-letter", C, [
     id: "MNA-128",
     // 1.0.1 — written as a synonym OR, but the amendment mechanics and the other-investor consent are distinct pillars; `amend` alone is in every amendment clause. The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    //
+    // 1.0.2 — the second pillar then wanted "only BY a writing", and the
+    // standard drafting is "amended only IN a writing SIGNED BY the Company
+    // and Kestrel". A side letter with the clause was told it had none.
+    ver: "1.0.2",
     name: "Amendment mechanics and other-investor consent",
     cite: practice(
       "side-letter-amendment",
@@ -402,7 +406,10 @@ const SIDE_LETTER = pack("side-letter", C, [
     ),
     pat: [
       /amend(ed|ment)?/i,
-      /(written\s+(instrument|consent)\s+signed|only\s+by\s+(a\s+)?writing|requisite\s+(holders|investors))/i,
+      // NOT "written AGREEMENT signed" — that is the entire-agreement
+      // boilerplate every document carries, and admitting it makes the check
+      // unable to fire (`boilerplate-reachability` proves as much).
+      /(?:written\s+(?:instrument|consent)\s+signed|(?:writing|instrument)\s+signed\s+by|only\s+(?:by|in)\s+(?:a\s+)?writing|requisite\s+(?:holders|investors))/i,
     ],
     all: true,
     why: "If the principal agreement can be amended by a majority of holders, an amendment can gut a side-letter right the minority investor bargained for — unless the side letter says otherwise.",
