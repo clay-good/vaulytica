@@ -1339,3 +1339,32 @@ describe("a time zone is not an undefined defined-term", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).toContain("Diligence Package");
   });
 });
+
+describe("a conformed signature doubled by the paste join", () => {
+  // The paste path joins a block's lines with spaces, so the "/s/" line and
+  // the printed name beneath it arrive as one string. The person collector
+  // captured "Priya Raghunathan Priya Raghunathan", matched no use of the
+  // name, and every mention of a member who SIGNS the agreement was reported
+  // as a term the document forgot to define.
+  it("does not flag a signer whose name is doubled by the join", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Operating Agreement",
+        "The initial Manager is Priya Raghunathan. Priya Raghunathan may bind the Company.",
+        "/s/ Priya Raghunathan Priya Raghunathan, Member and Manager",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Priya Raghunathan");
+  });
+
+  it("still flags a Title-Case term that merely repeats", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Operating Agreement",
+        "Each Member holds a Percentage Interest. The Percentage Interest is fixed.",
+        "/s/ Priya Raghunathan Priya Raghunathan, Member and Manager",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Percentage Interest");
+  });
+});

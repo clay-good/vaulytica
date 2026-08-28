@@ -696,7 +696,23 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     ]) {
       re.lastIndex = 0;
       let pm: RegExpExecArray | null;
-      while ((pm = re.exec(ctx.text)) !== null) personNames.add(pm[1]!.toLowerCase());
+      while ((pm = re.exec(ctx.text)) !== null) {
+        const captured = pm[1]!.toLowerCase();
+        personNames.add(captured);
+        // The paste path joins a block's lines with spaces, so a conformed
+        // signature and the printed name beneath it arrive as one string:
+        // "/s/ Priya Raghunathan Priya Raghunathan, Member and Manager". The
+        // capture then holds the name TWICE, matches no later use of it, and
+        // every use was reported as a Title-Case term the document forgot to
+        // define — on a document that names her four times and where she
+        // signs it.
+        const halves = captured.split(/\s+/);
+        if (halves.length % 2 === 0) {
+          const half = halves.length / 2;
+          const first = halves.slice(0, half).join(" ");
+          if (first === halves.slice(half).join(" ")) personNames.add(first);
+        }
+      }
     }
     const ENTITY_NAME =
       /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,4}),?\s+(?:LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLP|PLLC|N\.A\.|GmbH)(?![\w])/g;
