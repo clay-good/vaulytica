@@ -597,6 +597,7 @@ export async function buildCriticalDates(
 ): Promise<CriticalDatesRegister> {
   const anchors = resolveAnchors(extracted, tree);
   const sectionText = tree ? buildSectionText(tree) : new Map<string, string>();
+  const paragraphText = tree ? buildParagraphText(tree) : new Map<string, string>();
 
   const rows: CriticalDate[] = [];
   for (const ref of extracted.dates) {
@@ -605,7 +606,10 @@ export async function buildCriticalDates(
     if (ref.offset_count === undefined && ref.offset_days === undefined) continue;
     const anchorIso = ref.anchor ? (anchors.get(normalizeAnchor(ref.anchor)) ?? null) : null;
     const derived = deriveDate(ref, anchorIso);
-    const context = sectionText.get(ref.position.section_id ?? "") ?? "";
+    const context =
+      paragraphText.get(ref.position.paragraph_id ?? "") ??
+      sectionText.get(ref.position.section_id ?? "") ??
+      "";
     const kind = classifyDeadline(ref, context);
     const responsible = responsibleFor(ref, extracted.obligations);
     const base: CriticalDate = {
@@ -660,6 +664,26 @@ function buildSectionText(tree: DocumentTree): Map<string, string> {
   forEachParagraph(tree, (ctx) => {
     const prev = map.get(ctx.section.id) ?? "";
     map.set(ctx.section.id, prev ? `${prev} ${ctx.text}` : ctx.text);
+  });
+  return map;
+}
+
+/**
+ * The clause text around each date, keyed by paragraph.
+ *
+ * {@link classifyDeadline} is documented as reading "the clause text around
+ * it" and was handed the whole SECTION instead. A pasted document is one
+ * section, so every date in it saw the same haystack and every entry in the
+ * register carried the same kind: an employment agreement's vacation
+ * entitlement, its severance window, and its Change-of-Control window were
+ * all "auto-renewal-notice" because the word "anniversary" appeared once,
+ * somewhere. A DOCX section spanning several pages had the same problem more
+ * quietly.
+ */
+function buildParagraphText(tree: DocumentTree): Map<string, string> {
+  const map = new Map<string, string>();
+  forEachParagraph(tree, (ctx) => {
+    map.set(ctx.paragraph.id, ctx.text);
   });
   return map;
 }
