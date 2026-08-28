@@ -422,7 +422,14 @@ function classifyDeadline(ref: DateReference, contextText: string): CriticalDate
   return "notice-period";
 }
 
-/** Find the responsible party for a date from obligations in its section. */
+/**
+ * How far from a date an obligation may sit and still be read as the one that
+ * owes it. A clause and its deadline are in the same sentence or the next one;
+ * beyond that the association is a guess.
+ */
+const RESPONSIBLE_PROXIMITY_CHARS = 400;
+
+/** Find the responsible party for a date from the obligation that owes it. */
 function responsibleFor(ref: DateReference, obligations: readonly Obligation[]): string {
   const section = ref.position.section_id;
   const inSection = obligations.filter((o) => o.position.section_id === section);
@@ -431,10 +438,40 @@ function responsibleFor(ref: DateReference, obligations: readonly Obligation[]):
   const overlap = inSection.find(
     (o) => ref.raw_text.length > 0 && o.raw_text.includes(ref.raw_text.slice(0, 24)),
   );
-  const chosen = overlap ?? inSection[0]!;
+  // Otherwise the NEAREST obligation, and only if it is close enough to be
+  // the one that owes this date.
+  //
+  // The old fallback took `inSection[0]` — the first obligation in the
+  // section. That is fine for a DOCX with real headings and wrong for
+  // everything else: a pasted or plain-text document is a single section, so
+  // the filter above admits the whole document and the fallback attributes
+  // every unmatched date to whatever the document happens to say first. A
+  // credit agreement's equity cure ("the Borrower may cure ... within ten
+  // Business Days") was published in the register as owed by "Each Lender
+  // severally" — a fragment of the revolving-commitment sentence forty
+  // paragraphs earlier. The register is an attorney-facing artifact; a wrong
+  // name in it is worse than no name, which the type already contemplates.
+  const nearest = inSection.reduce<{ o: Obligation; d: number } | null>((best, o) => {
+    const d = Math.abs(o.position.start - ref.position.start);
+    return best === null || d < best.d ? { o, d } : best;
+  }, null);
+  const chosen =
+    overlap ?? (nearest && nearest.d <= RESPONSIBLE_PROXIMITY_CHARS ? nearest.o : undefined);
+  if (!chosen) return "";
   const obligor = chosen.obligor.trim();
   // A bare "each party" / generic obligor is not a named responsible party.
   if (!obligor || /^(?:each|either|both|the)\s+part/i.test(obligor)) return "";
+  // Nor is a prepositional fragment. "the Administrative Agent may, and at the
+  // direction of the Required Lenders shall, terminate the Commitments" yields
+  // an obligor of "the direction of the Required Lenders" — the object of "at
+  // the direction of", not the party who owes anything. Publishing that in the
+  // register names the wrong person in an attorney-facing artifact.
+  if (
+    /^(?:the\s+)?(?:direction|request|instruction|option|discretion|election|behalf|account|expense|cost)s?\s+of\b/i.test(
+      obligor,
+    )
+  )
+    return "";
   return obligor;
 }
 

@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.62.0] — 2026-08-27
+
+### Fixed
+- **The critical-dates register named the wrong party.** When no obligation's
+  clause overlapped a date, it fell back to the FIRST obligation in the date's
+  section. That is fine for a DOCX with real headings and wrong for everything
+  else: a pasted or plain-text document is a **single section**, so the section
+  filter admits the whole document and every unmatched date is attributed to
+  whatever the document happens to say first. A credit agreement's equity cure
+  — "the Borrower may cure … within ten (10) Business Days" — was published as
+  owed by "**Each Lender severally**", a fragment of the revolving-commitment
+  sentence many paragraphs earlier. The fallback is now the *nearest*
+  obligation, and only within 400 characters; beyond that the register says
+  nothing, which the type already contemplates.
+- **And it published prepositional fragments as parties.** "the Administrative
+  Agent may, and **at the direction of the Required Lenders** shall, declare
+  the Obligations due" yields an obligor of "the direction of the Required
+  Lenders" — the object of "at the direction of", not the party who owes
+  anything. The register is an attorney-facing artifact; a wrong name in it is
+  worse than no name.
+
 ## [9.61.1] — 2026-08-27
 
 ### Fixed
