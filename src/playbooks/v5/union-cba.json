@@ -20,7 +20,7 @@
       "seniority",
       "dues checkoff"
     ],
-    "negative_features": ["at-will employment", "merger", "purchase and sale"]
+    "negative_features": ["at-will employment", "merger agreement", "purchase and sale"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Bargaining Unit", "Union", "Grievance"],

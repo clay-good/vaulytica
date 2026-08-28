@@ -27,6 +27,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parsePlaybook, parsePlaybooks } from "../../src/playbooks/loader.js";
 import { LAUNCH_PLAYBOOK_IDS } from "../../src/playbooks/registry.js";
+import { EXPECTED } from "./specimen-regression.test.js";
 
 const PLAYBOOKS = [
   ...parsePlaybooks(
@@ -62,4 +63,41 @@ describe("negative features", () => {
       expect(offending, `${playbook.id} penalizes itself: ${offending.join("; ")}`).toEqual([]);
     },
   );
+});
+
+/**
+ * The second half of the same invariant, and the half the substring test
+ * cannot see.
+ *
+ * Seven of the negative features fixed on 2026-08-28 were not substrings of
+ * their own playbook's features — they were phrases from the family's own
+ * BOILERPLATE, which no amount of reading the playbook can reveal:
+ * `written-consent` listed "bylaws", the recital every DGCL § 141(f) consent
+ * opens on; `prenuptial-agreement` listed "during the marriage", which is what
+ * a premarital agreement is about (it scored 0.4 and routed to a DIVORCE
+ * settlement); `security-agreement`, `escrow-agreement`, and
+ * `payment-performance-bond` each listed the instrument they exist to secure
+ * or serve; `patent-assignment` listed "trademark", which is inside the name
+ * of the office it asks to record it.
+ *
+ * The specimens are what make this checkable: each is a realistic document of
+ * a known family, so a negative feature appearing in one is, by definition, a
+ * penalty the family charges itself.
+ */
+describe("negative features against the family's own specimen", () => {
+  const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
+  const byId = new Map(PLAYBOOKS.map((p) => [p.id, p]));
+
+  it.each(Object.entries(EXPECTED))("%s", (file, expectation) => {
+    const playbook = byId.get(expectation.playbook);
+    if (!playbook) return; // a launch playbook not in the extended bundle
+    const text = readFileSync(join(DIR, file), "utf8").toLowerCase();
+    const offending = playbook.match_features.negative_features.filter((n) =>
+      text.includes(n.toLowerCase()),
+    );
+    expect(
+      offending,
+      `${expectation.playbook} penalizes its own document for: ${offending.join(", ")}`,
+    ).toEqual([]);
+  });
 });

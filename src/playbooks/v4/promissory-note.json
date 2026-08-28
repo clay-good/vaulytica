@@ -20,7 +20,7 @@
       "interest rate",
       "maturity"
     ],
-    "negative_features": ["security agreement", "deed of trust", "guaranty"]
+    "negative_features": ["guaranty"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Maker", "Payee", "Principal Amount"],

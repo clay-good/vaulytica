@@ -8,9 +8,8 @@
       "ip assignment",
       "intellectual property assignment",
       "assignment of intellectual property",
-      "patent assignment",
-      "trademark assignment",
-      "copyright assignment"
+      "copyright assignment",
+      "assignment of copyright"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
@@ -21,7 +20,7 @@
       "further assurances",
       "recordation"
     ],
-    "negative_features": ["license", "royalty", "field of use"]
+    "negative_features": ["license agreement", "royalty", "field of use"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Assignor", "Assignee", "Assigned IP"],

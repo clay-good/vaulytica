@@ -4749,10 +4749,7 @@
         "due on sale",
         "legal description"
       ],
-      "negative_features": [
-        "promissory note",
-        "loan agreement"
-      ]
+      "negative_features": []
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -6623,7 +6620,7 @@
         "scope of use"
       ],
       "negative_features": [
-        "lease",
+        "lease of the premises",
         "purchase agreement"
       ]
     },
@@ -9607,9 +9604,8 @@
         "ip assignment",
         "intellectual property assignment",
         "assignment of intellectual property",
-        "patent assignment",
-        "trademark assignment",
-        "copyright assignment"
+        "copyright assignment",
+        "assignment of copyright"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -9621,7 +9617,7 @@
         "recordation"
       ],
       "negative_features": [
-        "license",
+        "license agreement",
         "royalty",
         "field of use"
       ]
@@ -9940,7 +9936,7 @@
         "codicil"
       ],
       "negative_features": [
-        "trust",
+        "revocable living trust",
         "advance directive",
         "power of attorney",
         "prenuptial"
@@ -13924,8 +13920,6 @@
         "maturity"
       ],
       "negative_features": [
-        "security agreement",
-        "deed of trust",
         "guaranty"
       ]
     },
@@ -18903,7 +18897,7 @@
       ],
       "negative_features": [
         "at-will employment",
-        "merger",
+        "merger agreement",
         "purchase and sale"
       ]
     },

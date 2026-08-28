@@ -15,7 +15,7 @@
       "due on sale",
       "legal description"
     ],
-    "negative_features": ["promissory note", "loan agreement"]
+    "negative_features": []
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Grantor", "Trustee", "Beneficiary"],

@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.89.0] — 2026-08-28
+
+### Added
+- **The guard for the half of the self-penalizing class that reading a
+  playbook cannot reveal.** The substring test added in 9.82.0 catches a
+  negative feature drawn from the playbook's own features. It cannot catch one
+  drawn from the family's own BOILERPLATE — and seven of the eight fixed by
+  hand were that kind. The specimens make it mechanical: each is a realistic
+  document of a known family, so a negative feature appearing in one is by
+  definition a penalty the family charges itself.
+
+  It found seven more on its first run, and one is the substring bug again:
+  `easement-agreement` listed **"lease"**, which is inside "**re**lease", and
+  an easement releases itself on abandonment.
+
+### Fixed
+- `mutual-nda` listed **"shall not disclose"** — a mutual NDA's own operative
+  covenant — and "employee", which appears in every NDA's permitted-recipients
+  clause. Removing them cost the tie-break that had been separating a one-way
+  NDA, so `mutual-nda` now distinguishes on MUTUALITY ("each party", "either
+  party", "both parties") rather than on "Recipient" and "Confidential
+  Information", which every NDA and every protective order contains. That is
+  the same magnet that pulled a stipulated protective order into `mutual-nda`
+  in 9.82.0, removed at the source.
+- `deed-of-trust` listed the promissory note and loan agreement it secures;
+  `promissory-note` listed the security agreement and deed of trust securing
+  it; `ip-assignment` listed "license", which appears in an assignment's own
+  "Assignor retains no … license" clause; `last-will-and-testament` listed
+  "trust", and almost every will creates a testamentary one; `union-cba`
+  listed "merger", which is the entire-agreement clause every contract carries.
+- **`ip-assignment` no longer claims the specific families' titles.** It
+  listed "patent assignment" and "trademark assignment" as title keywords,
+  which took a patent assignment away from the dedicated `patent-assignment`
+  family and its five 35 U.S.C. § 261 checks.
+
 ## [9.88.0] — 2026-08-28
 
 An M&A indemnity escrow and an Idaho payment and performance bond.

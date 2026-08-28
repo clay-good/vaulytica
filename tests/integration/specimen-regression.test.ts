@@ -27,9 +27,15 @@ import { analyzeText } from "../../tools/cli/api.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
-type Expectation = { playbook: string; findings: string[] };
+export type Expectation = { playbook: string; findings: string[] };
 
-const EXPECTED: Record<string, Expectation> = {
+/**
+ * Exported so `self-penalizing-features.test.ts` can read the family each
+ * specimen belongs to. The routing is the thing being asserted here, so it is
+ * the right source for "which playbook's vocabulary is this document written
+ * in".
+ */
+export const EXPECTED: Record<string, Expectation> = {
   // A civil complaint filed in state court. Pleads jurisdiction under an
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
