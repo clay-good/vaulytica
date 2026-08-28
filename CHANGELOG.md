@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.103.0] — 2026-08-28
+
+A privilege log and a Form ADV Part 2A brochure.
+
+### Fixed
+- **Eight disclosure filings carried the policy skip profile, which never
+  needed STRUCT-003.** A policy escapes the signature-block check on its dated
+  adoption recital ("Approved by the Board on August 15, 2026"); a filing has
+  no such recital and nobody signs it. A well-formed Form ADV brochure drew a
+  `critical` for having no signature block, and `form-d-narrative`,
+  `10-k-risk-factors`, `s-1-risk-factors`, `ppm-narrative`,
+  `reg-a-plus-circular`, `proxy-statement-narrative`, and
+  `franchise-disclosure-document` all had the same omission. Same defect found
+  in `sweepstakes-official-rules` in 9.98.0.
+
+### Added
+- Two specimens, bringing the set to seventy-six.
+
+### Known limitation
+- STRUCT-006 reports a repeated personal name as an undefined Title-Case term.
+  A privilege log names its custodians in every entry, so it draws ten. The
+  shape of a person's name is not distinguishable from the shape of a defined
+  term ("Base Rent", "Marcus Bell"), so this is recorded rather than papered
+  over.
+
 ## [9.102.0] — 2026-08-28
 
 A FAR flowdown exhibit — one of the commonest things a reviewer uploads on its

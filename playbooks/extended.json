@@ -49,6 +49,9 @@
       "STRUCT-001": {
         "skip": true
       },
+      "STRUCT-003": {
+        "skip": true
+      },
       "STRUCT-002": {
         "skip": true
       },
@@ -7973,6 +7976,9 @@
       "STRUCT-001": {
         "skip": true
       },
+      "STRUCT-003": {
+        "skip": true
+      },
       "STRUCT-002": {
         "skip": true
       },
@@ -8057,6 +8063,9 @@
         "skip": true
       },
       "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-003": {
         "skip": true
       },
       "STRUCT-002": {
@@ -8196,6 +8205,9 @@
         "skip": true
       },
       "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-003": {
         "skip": true
       },
       "STRUCT-002": {
@@ -13009,6 +13021,9 @@
       "STRUCT-001": {
         "skip": true
       },
+      "STRUCT-003": {
+        "skip": true
+      },
       "STRUCT-002": {
         "skip": true
       },
@@ -14401,6 +14416,9 @@
       "STRUCT-001": {
         "skip": true
       },
+      "STRUCT-003": {
+        "skip": true
+      },
       "STRUCT-002": {
         "skip": true
       },
@@ -14892,6 +14910,9 @@
         "skip": true
       },
       "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-003": {
         "skip": true
       },
       "STRUCT-002": {
@@ -16025,6 +16046,9 @@
         "skip": true
       },
       "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-003": {
         "skip": true
       },
       "STRUCT-002": {

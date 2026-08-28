@@ -803,6 +803,19 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "far-subcontract-flowdown",
     findings: ["COMM-159", "COMM-162", "STRUCT-006", "STRUCT-009"],
   },
+
+  // A privilege log under a federal caption. Every entry names its author and
+  // recipients, which is why STRUCT-006 has ten capitalized phrases to report:
+  // half of them are people. The routing and the filing skip profile are what
+  // this pins.
+  "privilege-log.txt": { playbook: "privilege-log", findings: ["STRUCT-006"] },
+
+  // A Form ADV Part 2A firm brochure. Its playbook carried the policy skip
+  // profile, which never needed STRUCT-003 — a policy is adopted by a dated
+  // board resolution and a brochure is simply filed, so a well-formed brochure
+  // drew a critical for having no signature block. Seven sibling disclosure
+  // filings had the same omission.
+  "form-adv.txt": { playbook: "form-adv-brochure", findings: ["REG-040", "STRUCT-006"] },
 };
 
 describe("hand-written specimens", () => {

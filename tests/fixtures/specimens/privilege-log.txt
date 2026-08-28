@@ -1,0 +1,61 @@
+IN THE UNITED STATES DISTRICT COURT
+FOR THE DISTRICT OF MASSACHUSETTS
+
+ORINDA BIOSCIENCES, INC.,          )
+                Plaintiff,         )
+                                   )   Civil Action No. 1:25-cv-11947-DJC
+        v.                         )
+                                   )
+HALSTEAD LABORATORIES LLC,         )
+                Defendant.         )
+
+DEFENDANT HALSTEAD LABORATORIES LLC'S PRIVILEGE LOG
+
+Pursuant to Federal Rule of Civil Procedure 26(b)(5)(A) and Paragraph 9 of the Stipulated Protective Order entered on March 12, 2026 (ECF No. 41), Defendant Halstead Laboratories LLC ("Halstead") submits this log of documents withheld or redacted from its production in response to Plaintiff's First Set of Requests for Production.
+
+SCOPE AND METHODOLOGY
+
+This log covers documents responsive to Request Nos. 1 through 24 that were collected from the custodians identified in the parties' Rule 26(f) report and that were withheld in whole or in part on the basis of the attorney-client privilege, the work-product doctrine, or both. Consistent with Paragraph 12 of the Stipulated Protective Order, communications with counsel dated on or after May 4, 2025 — the date this action was filed — are not individually logged.
+
+Entries are numbered sequentially. For each entry this log states the Bates number or placeholder, the date, the document type, each author, each recipient (including copyees), a description of the subject matter sufficient to assess the claim without revealing privileged information, the privilege asserted, and whether the document was withheld in full or produced in redacted form.
+
+LOG ENTRIES
+
+Entry 1. HAL-PRIV-00001. Date: 2024-11-08. Type: Email. Author: Dana Okwuosa (Associate General Counsel, Halstead). Recipients: Peter Vance (VP Regulatory Affairs, Halstead); cc: Renata Silva (Paralegal, Halstead). Description: Email providing legal advice regarding the sufficiency of the 510(k) submission for the HL-220 assay. Privilege: Attorney-Client. Disposition: Withheld in full.
+
+Entry 2. HAL-PRIV-00002. Date: 2024-11-08. Type: Email attachment (draft memorandum). Author: Dana Okwuosa (Associate General Counsel, Halstead). Recipients: Peter Vance (VP Regulatory Affairs, Halstead). Description: Draft memorandum prepared by counsel analyzing regulatory risk of the HL-220 assay labeling. Privilege: Attorney-Client; Work Product. Disposition: Withheld in full.
+
+Entry 3. HAL-PRIV-00003. Date: 2025-01-22. Type: Email. Author: Marcus Bell (Outside Counsel, Fenner & Kwan LLP). Recipients: Dana Okwuosa (Associate General Counsel, Halstead); Alicia Brand (Chief Executive Officer, Halstead). Description: Email from outside counsel providing legal advice regarding the scope of the Orinda license and the risk of an infringement claim. Privilege: Attorney-Client. Disposition: Withheld in full.
+
+Entry 4. HAL-PRIV-00004. Date: 2025-02-14. Type: Memorandum. Author: Marcus Bell (Outside Counsel, Fenner & Kwan LLP). Recipients: Dana Okwuosa (Associate General Counsel, Halstead). Description: Memorandum prepared in anticipation of litigation analyzing potential claims and defenses relating to the Orinda license. Privilege: Work Product. Disposition: Withheld in full.
+
+Entry 5. HAL-PRIV-00005. Date: 2025-03-03. Type: Email thread. Authors: Peter Vance (VP Regulatory Affairs, Halstead); Dana Okwuosa (Associate General Counsel, Halstead). Recipients: Same. Description: Email thread requesting and providing legal advice regarding disclosure obligations to the FDA; non-privileged scheduling text produced in redacted form. Privilege: Attorney-Client. Disposition: Produced in redacted form at HAL-0034117.
+
+Entry 6. HAL-PRIV-00006. Date: 2025-04-19. Type: Presentation. Author: Renata Silva (Paralegal, Halstead), at the direction of Dana Okwuosa (Associate General Counsel, Halstead). Recipients: Board of Directors, Halstead. Description: Presentation prepared at counsel's direction summarizing legal risk of the Orinda dispute for the board's April 2025 meeting. Privilege: Attorney-Client; Work Product. Disposition: Withheld in full.
+
+Entry 7. HAL-PRIV-00007. Date: 2025-04-28. Type: Email. Author: Alicia Brand (Chief Executive Officer, Halstead). Recipients: Marcus Bell (Outside Counsel, Fenner & Kwan LLP); Dana Okwuosa (Associate General Counsel, Halstead). Description: Email requesting legal advice regarding a proposed communication to Orinda. Privilege: Attorney-Client. Disposition: Withheld in full.
+
+RESERVATION OF RIGHTS
+
+Halstead's production of any document does not waive any privilege or protection as to that document or as to any other document, and Halstead reserves the right to demand the return of any privileged document produced inadvertently, in accordance with Federal Rule of Evidence 502(d) and Paragraph 15 of the Stipulated Protective Order. Halstead reserves the right to supplement or amend this log, including to add entries for documents identified in a continuing review.
+
+Dated: June 30, 2026
+
+Respectfully submitted,
+
+/s/ Colleen Marchetti
+Colleen Marchetti (BBO No. 662104)
+FENNER & KWAN LLP
+100 Federal Street, 32nd Floor
+Boston, Massachusetts 02110
+(617) 555-0134
+cmarchetti@fennerkwan.com
+
+Attorneys for Defendant Halstead Laboratories LLC
+
+CERTIFICATE OF SERVICE
+
+I certify that on June 30, 2026 a copy of the foregoing was served on counsel of record for Plaintiff by electronic mail, pursuant to the parties' agreement on service.
+
+/s/ Colleen Marchetti
+Colleen Marchetti
