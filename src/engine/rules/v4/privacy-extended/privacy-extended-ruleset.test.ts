@@ -297,3 +297,54 @@ describe("PRV-002 / PRV-005 — a right denied after the noun, not before", () =
     ).toBe(false);
   });
 });
+
+describe("PRV-035 / PRV-040 — a template check on an issued letter (v1.1.0)", () => {
+  // A record count and a state-AG notification threshold belong in the
+  // organization's notification TEMPLATE, not in the letter it sends to one
+  // affected person. Every real breach letter was told it omits both.
+  const LETTER = [
+    "Notice of a Data Security Incident Affecting Your Information",
+    "Dear Ms. Mainwaring:",
+    "What Happened. On July 29, 2026, we learned that an unauthorized person had gained access to one of our employee email accounts.",
+    "What Information Was Involved. The information involved for you was: your name, date of birth, and home address.",
+    "What We Are Doing. We are offering you 24 months of credit monitoring at no cost to you.",
+    "What You Can Do. You may place a fraud alert or a security freeze on your credit file at no charge.",
+  ] as const;
+
+  const TEMPLATE = [
+    "Data Breach Notification Template",
+    "This template is maintained by the Privacy Office and is used to prepare the notice sent to affected individuals.",
+    "Dear [Recipient Name]:",
+    "Instructions: confirm the categories of data subjects and the approximate number of affected individuals and records, and confirm whether notice is required to a state attorney general. Most states set the trigger at 500 or more residents; HIPAA requires media notice at 500 or more residents in a state.",
+  ] as const;
+
+  it("stays silent on a letter addressed to a named individual", async () => {
+    const ctx = withPb(buildContext([...LETTER]), INCIDENT_PB);
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).not.toContain("PRV-035");
+    expect(ids).not.toContain("PRV-040");
+  });
+
+  it("still evaluates both on a template, which states them", async () => {
+    const ctx = withPb(buildContext([...TEMPLATE]), INCIDENT_PB);
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).not.toContain("PRV-035");
+    expect(ids).not.toContain("PRV-040");
+  });
+
+  it("still fires on a template that states neither", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Data Breach Notification Template",
+        "Dear [Recipient Name]: we are writing to tell you about a security incident.",
+      ]),
+      INCIDENT_PB,
+    );
+    const run = await runEngine({ rules: PRIVACY_EXTENDED_RULES, ctx, source_file: SRC });
+    const ids = run.findings.map((f) => f.rule_id);
+    expect(ids).toContain("PRV-035");
+    expect(ids).toContain("PRV-040");
+  });
+});

@@ -781,10 +781,21 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
       "GDPR Art. 33(3)(a) and US state breach laws require disclosure of categories of records / number of affected individuals (often a state-specific threshold for AG notification).",
     recommendation:
       "Add 'Affected Individuals' with categories of data subjects, types of personal data, and approximate numbers (including state-AG thresholds for US notice).",
+    version: "1.1.0",
     present_patterns: [
       /(categor(y|ies)\s+of\s+data\s+subjects?|affected\s+(individuals?|records?))/i,
       /(approximately|approximate|number\s+of)/i,
     ],
+    // These two are TEMPLATE checks: a record count and a state-AG
+    // notification threshold belong in the organization's notification
+    // template or incident-response plan, not in the letter it sends to one
+    // affected person. An issued letter names its addressee — "Dear Ms.
+    // Mainwaring:" — and a template does not (it carries a placeholder), so
+    // that salutation is what tells the two apart. Without the gate, every
+    // real breach letter was told it omits an approximate number of records
+    // and a state-AG trigger threshold, neither of which it is supposed to
+    // state.
+    applicable_if: [/^(?![\s\S]*\bDear\s+(?:Mr|Mrs|Ms|Mx|Dr|Prof|Hon|Rev)\b)/],
   }),
   presence({
     id: "PRV-036",
@@ -878,6 +889,17 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
       /(media|notice|notification)/i,
     ],
     require_all_present: true,
+    // These two are TEMPLATE checks: a record count and a state-AG
+    // notification threshold belong in the organization's notification
+    // template or incident-response plan, not in the letter it sends to one
+    // affected person. An issued letter names its addressee — "Dear Ms.
+    // Mainwaring:" — and a template does not (it carries a placeholder), so
+    // that salutation is what tells the two apart. Without the gate, every
+    // real breach letter was told it omits an approximate number of records
+    // and a state-AG trigger threshold, neither of which it is supposed to
+    // state.
+    applicable_if: [/^(?![\s\S]*\bDear\s+(?:Mr|Mrs|Ms|Mx|Dr|Prof|Hon|Rev)\b)/],
+    version: "1.1.0",
     default_severity: "warning",
   }),
 ];

@@ -835,12 +835,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // document there is scored 0.1 and fell to generic-fallback.
   //
   // PRV-035 and PRV-040 are the family's TEMPLATE checks — a record count and
-  // a state-AG notification threshold. An issued letter to one person has
-  // neither and is not supposed to. Recorded here rather than papered over:
-  // splitting the template from the issued notice is a catalog change.
+  // a state-AG notification threshold — and both are now gated off a letter
+  // that names its addressee, because an issued notice has neither and is not
+  // supposed to.
   "incident-notice.txt": {
     playbook: "incident-notification",
-    findings: ["PRV-035", "PRV-040", "STRUCT-006"],
+    findings: ["STRUCT-006"],
   },
 
   // A gastroenterologist's employment agreement, with the Stark and

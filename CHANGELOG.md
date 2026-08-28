@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.106.0] — 2026-08-28
+
+### Fixed
+- **Two template checks accused every issued breach letter.** PRV-035 wants an
+  approximate number of affected records and PRV-040 wants a state-AG
+  notification threshold. Both belong in the organization's notification
+  template or incident-response plan, not in the letter it sends to one
+  affected person — which has neither and is not supposed to. Both are now
+  gated off a document that names its addressee ("Dear Ms. Mainwaring:"); a
+  template carries a placeholder there and is still measured against both.
+
 ## [9.105.0] — 2026-08-28
 
 A breach notification letter and a physician employment agreement.
@@ -31,12 +42,6 @@ A breach notification letter and a physician employment agreement.
 
 ### Added
 - Two specimens, bringing the set to seventy-nine.
-
-### Known limitation
-- PRV-035 and PRV-040 are `incident-notification`'s TEMPLATE checks — a record
-  count and a state-AG notification threshold. An issued letter to one person
-  has neither and is not supposed to. Splitting the template from the issued
-  notice is a catalog change; the specimen records the gap.
 
 ## [9.104.0] — 2026-08-28
 
