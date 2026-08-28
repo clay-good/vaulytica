@@ -414,6 +414,22 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A patent covenant not to sue. Its playbook's distinguishing phrases were
+  // written as verbatim sentences nobody writes — "this is a covenant not to
+  // sue and not a release", "shall not institute any action" — so a document
+  // titled COVENANT NOT TO SUE scored 0.3, fell below the threshold to
+  // `generic-fallback`, and none of its five checks ran. Once they did, two
+  // fired at `critical` on the sections that state exactly what they check
+  // for: SET-106 knew only the not-a-RELEASE characterization, and the
+  // commonest covenant not to sue is a patent one that says it is not a
+  // LICENSE; SET-107 wanted "claims arising from" adjacent, and the drafting
+  // puts the subject matter in between. SET-108 is real — a patent covenant
+  // states no joint-tortfeasor effect, and this one does not either.
+  "covenant-not-to-sue.txt": {
+    playbook: "covenant-not-to-sue",
+    findings: ["OBLI-005", "SET-108", "STRUCT-006", "STRUCT-018"],
+  },
+
   // A Series B side letter. Two defects about citing a parent document.
   // STRUCT-007 reported "Section 3.5 of the IRA" as a broken reference to a
   // section this letter never had — the extractor reads "Section 3.7 of the

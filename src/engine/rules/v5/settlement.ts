@@ -79,6 +79,13 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
 const COVENANT = pack("covenant-not-to-sue", C, [
   {
     id: "SET-106",
+    // 1.0.1 — the second pillar knew only the RELEASE contrast, and the
+    // commonest covenant not to sue is a PATENT one, whose operative
+    // characterization is "this Covenant is a covenant not to sue and is not a
+    // license". Same column — which instrument this is and which it is not —
+    // and the check reported it missing, at `critical`, on the section that
+    // states it.
+    ver: "1.0.1",
     name: "Covenant versus release characterization",
     cite: practice(
       "covenant-vs-release",
@@ -86,7 +93,7 @@ const COVENANT = pack("covenant-not-to-sue", C, [
     ),
     pat: [
       /covenants?\s+not\s+to\s+sue/i,
-      /(is\s+not\s+a\s+release|rather\s+than\s+a\s+release|does\s+not\s+release|shall\s+not\s+be\s+construed\s+as\s+a\s+release)/i,
+      /is\s+not\s+a\s+(?:release|license)|rather\s+than\s+a\s+(?:release|license)|does\s+not\s+release|(?:shall|will)\s+not\s+be\s+construed\s+as\s+a\s+(?:release|license)|not\s+a\s+license\b/i,
     ],
     all: true,
     why: "A release extinguishes the claim; a covenant not to sue leaves it alive but promises not to assert it. In joint-tortfeasor states the difference decides whether other defendants get a credit.",
@@ -95,11 +102,18 @@ const COVENANT = pack("covenant-not-to-sue", C, [
   },
   {
     id: "SET-107",
+    // 1.0.1 — both pillars wanted an adjacency the drafting does not have.
+    // The claims phrase carries its subject matter first ("any claim, demand,
+    // or cause of action for infringement of the Patents ARISING FROM the
+    // manufacture …"), and the time boundary is as often stated as the conduct
+    // window ("whether such acts occurred BEFORE OR occur AFTER the date of
+    // this Covenant") as by the "known and unknown" formula a release uses.
+    ver: "1.0.1",
     name: "Scope of claims and time boundary",
     cite: practice("release-scope", "temporal and subject-matter scope of releases and covenants"),
     pat: [
-      /(claims?\s+(arising|relating|based)\s+(out\s+of|from|on))/i,
-      /(from\s+the\s+beginning\s+of\s+time|through\s+the\s+(date|effective\s+date)|known\s+(and|or)\s+unknown)/i,
+      /(?:claims?|causes?\s+of\s+action|demands?)\b[^.;]{0,140}?\b(?:arising|relating|based)\s+(?:out\s+of|from|on|to)/i,
+      /from\s+the\s+beginning\s+of\s+time|through\s+the\s+(?:date|effective\s+date)|known\s+(?:and|or)\s+unknown|(?:occurr\w+|acts?)\s+(?:on\s+or\s+)?(?:before|prior\s+to)\b|before\s+or\s+(?:occur\s+)?after\s+the\s+date/i,
     ],
     why: "A covenant with no temporal boundary bars claims that had not arisen when it was signed — which is usually more than either party intended and, for some statutory claims, is not permitted.",
     fix: "Define the covered claims by subject matter and bound them to conduct occurring on or before the effective date.",

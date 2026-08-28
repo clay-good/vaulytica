@@ -528,3 +528,58 @@ describe("v5 — MNA-128 reads the amendment clause a side letter writes", () =>
     ).not.toBeNull();
   });
 });
+
+describe("v5 — the commonest covenant not to sue is a patent one", () => {
+  /**
+   * SET-106's second pillar knew only the RELEASE contrast, and SET-107's two
+   * pillars wanted an adjacency the drafting does not have. Both fired at
+   * `critical` on the sections that state exactly what they check for.
+   */
+  const cov = (...body: string[]) => doc("Covenant Not to Sue", ...body);
+
+  it("SET-106 reads the not-a-LICENSE characterization", () => {
+    expect(
+      rule("SET-106").check(
+        cov(
+          "Covenantor irrevocably covenants not to sue Covenantee for infringement of the Patents.",
+          "This Covenant is a covenant not to sue and is not a license. Covenantee acquires no right, title, or interest in the Patents.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("SET-106 still reads the not-a-release characterization", () => {
+    expect(
+      rule("SET-106").check(
+        cov(
+          "Covenantor covenants not to sue the Covenantee.",
+          "This instrument is a covenant not to sue and is not a release of any claim.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("SET-106 still fires when the instrument characterizes itself as neither", () => {
+    expect(
+      rule("SET-106").check(
+        cov("Covenantor covenants not to sue Covenantee on the claims described on Schedule A."),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("SET-107 reads the claims phrase with its subject matter first", () => {
+    expect(
+      rule("SET-107").check(
+        cov(
+          "Covenantor will not pursue any claim, demand, or cause of action for infringement of the Patents arising from the manufacture, use, or sale of the Covered Products, whether such acts occurred before or occur after the date of this Covenant.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("SET-107 still fires on a covenant with neither a scope nor a boundary", () => {
+    expect(
+      rule("SET-107").check(cov("Covenantor covenants not to sue Covenantee.")),
+    ).not.toBeNull();
+  });
+});

@@ -4444,11 +4444,13 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "covenants not to sue",
-        "this is a covenant not to sue and not a release",
+        "covenantor",
+        "covenantee",
+        "not to sue",
+        "will not sue",
+        "and not a release",
         "joint tortfeasor",
-        "shall not institute any action",
-        "released parties"
+        "shall not institute any action"
       ],
       "negative_features": [
         "employment offer",
@@ -4461,7 +4463,20 @@
       "Covenantee",
       "Claims"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-SETTLEMENT",

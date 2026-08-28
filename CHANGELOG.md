@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.92.0] — 2026-08-28
+
+A patent covenant not to sue — and the first family this method has found that
+could not reach its own checks at all.
+
+### Fixed
+- **`covenant-not-to-sue` fell below the matching threshold on its own
+  document.** Its distinguishing phrases were written as verbatim sentences
+  nobody writes — "this is a covenant not to sue and not a release", "shall not
+  institute any action" — so a document titled COVENANT NOT TO SUE scored 0.3
+  against a 0.5 threshold, routed to `generic-fallback`, and none of its five
+  SET-106..110 checks ran. Replaced with the family's actual register:
+  "covenantor", "covenantee", "not to sue", "will not sue".
+- **SET-106 knew only the not-a-RELEASE characterization.** The commonest
+  covenant not to sue is a patent one, and its operative characterization is
+  "this Covenant is a covenant not to sue and is not a **license**". Same
+  column — which instrument this is and which it is not — reported missing at
+  `critical` on the section that states it.
+- **SET-107 wanted "claims arising from" adjacent.** The drafting puts the
+  subject matter in between ("any claim, demand, or cause of action **for
+  infringement of the Patents** arising from the manufacture …"), and the time
+  boundary is as often the conduct window ("whether such acts occurred before
+  or occur after the date of this Covenant") as the "known and unknown" formula
+  a release uses.
+- **`covenant-not-to-sue` shipped with an empty `rule_overrides`.** A one-way
+  promise that is irrevocable and perpetual by design was told it stated no
+  termination for cause and no effect of termination.
+
+### Added
+- One specimen, bringing the set to fifty-seven.
+
 ## [9.91.0] — 2026-08-28
 
 A Series B side letter — a document whose whole job is to point at another
