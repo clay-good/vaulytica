@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.65.0] — 2026-08-27
+
+### Fixed
+- **A flat late charge was reported as a rate with no stated period.** A note
+  writes its numeral in a parenthetical — "a late charge equal to five percent
+  **(5%)** of the overdue installment" — and the closing paren sat between the
+  "%" and the "of", so the one-time-fee branch missed it. The period pattern in
+  the same rule already carried that allowance; now both do. The finding turns
+  from "Late-payment rate of 5% has no stated period" into "One-time late fee
+  of 5% (not annualized)", which is what the clause says.
+- **`promissory-note` now skips the venue check too.** A note states its
+  governing law and names no forum; that is the instrument, not an omission.
+
+### Added
+- A fixed-rate promissory note specimen, bringing the set to thirty.
+
 ## [9.64.1] — 2026-08-27
 
 ### Fixed

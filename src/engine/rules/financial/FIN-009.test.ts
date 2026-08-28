@@ -133,3 +133,42 @@ describe("FIN-009 — net interest margin is a metric, not a charge (v1.3.0)", (
     expect(f).not.toBeNull();
   });
 });
+
+/**
+ * A note writes its numeral in a parenthetical — "a late charge equal to five
+ * percent (5%) OF the overdue installment" — and the closing paren sat between
+ * the "%" and the "of", so the flat-fee branch missed it and a plainly
+ * one-time charge was reported as a rate whose period the drafter had failed
+ * to state. The period pattern in the same rule already carried the allowance.
+ */
+describe("FIN-009 — a flat late charge written with a parenthetical numeral", () => {
+  it("reads it as a one-time fee, not a period-less rate", () => {
+    const finding = FIN_009.check(
+      buildContext([
+        "Late Charge",
+        "If any installment is not paid within ten (10) days after its due date, Maker shall pay a late charge equal to five percent (5%) of the overdue installment.",
+      ]),
+    );
+    expect(finding).not.toBeNull();
+    expect(finding!.title).toContain("One-time late fee");
+  });
+
+  it("still reports a rate whose period is genuinely unstated", () => {
+    const finding = FIN_009.check(
+      buildContext(["Late Charge", "Overdue amounts bear interest at a late-payment rate of 5%."]),
+    );
+    expect(finding).not.toBeNull();
+    expect(finding!.title).toContain("no stated period");
+  });
+
+  it("still annualizes and reports a stated period above the benchmark", () => {
+    const finding = FIN_009.check(
+      buildContext([
+        "Late Charge",
+        "Overdue amounts accrue interest at two percent (2%) per month.",
+      ]),
+    );
+    expect(finding).not.toBeNull();
+    expect(finding!.title).toContain("24");
+  });
+});

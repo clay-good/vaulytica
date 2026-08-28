@@ -260,6 +260,12 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["RISK-015", "STRUCT-018", "OBLI-002", "RISK-011"],
   },
 
+  // A fixed-rate promissory note with a flat late charge.
+  "promissory-note.txt": {
+    playbook: "promissory-note",
+    findings: ["STRUCT-006", "FIN-009", "STRUCT-005"],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

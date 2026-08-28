@@ -25,6 +25,7 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Maker", "Payee", "Principal Amount"],
   "rule_overrides": {
+    "CHOICE-003": { "skip": true },
     "IPDATA-001": { "skip": true },
     "RISK-001": { "skip": true },
     "RISK-005": { "skip": true },

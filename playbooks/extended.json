@@ -13680,6 +13680,9 @@
       "Principal Amount"
     ],
     "rule_overrides": {
+      "CHOICE-003": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },

@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -68,8 +68,15 @@ export const rule: Rule = {
       // amount / invoice / balance") is a liquidated charge, not a rate —
       // it has no period and does not annualize. Excluded from the usury
       // comparison by design.
+      //
+      // The `\)?` after the percent sign is the same allowance the period
+      // pattern above already carries: a note writes the numeral in a
+      // parenthetical — "a late charge equal to five percent (5%) OF the
+      // overdue installment" — and the closing paren sat between the "%" and
+      // the "of", so a plainly one-time charge was reported as a rate whose
+      // period the drafter had failed to state.
       const flatFee =
-        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))[^.]{0,80}?\d+(?:\.\d+)?\s*%\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced)\b/i.test(
+        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))[^.]{0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced)\b/i.test(
           hit.text,
         );
 
