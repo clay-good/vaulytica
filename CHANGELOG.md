@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.61.1] — 2026-08-27
+
+### Fixed
+- **An ICC seat stated in the participle went unread.** "finally resolved by
+  arbitration under the Rules of Arbitration of the International Chamber of
+  Commerce by three **arbitrators seated in** London, England" names the
+  arbitrators rather than the arbitration and carries no modal, and the
+  verb-first branch wants "the arbitration shall be seated in". CHOICE-006
+  reported "seat not specified" and CHOICE-003 reported no forum.
+- **A regime cited by its number was read as no citation at all.** A European
+  distribution agreement writes "shall comply with **EU Regulation 2016/679**"
+  and never says "GDPR", so IPDATA-005 reported that a contract naming the
+  governing regime precisely cites none. The UK GDPR, the Data Protection Act
+  2018, and the e-Privacy Directive join the alternation for the same reason.
+
+### Added
+- A cross-border exclusive distribution agreement specimen, bringing the set to
+  twenty-eight.
+
 ## [9.61.0] — 2026-08-27
 
 ### Fixed

@@ -234,6 +234,26 @@ const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A cross-border exclusive distribution agreement: an ICC seat stated in the
+  // participle, and the GDPR cited by its regulation number.
+  "distribution.txt": {
+    playbook: "distribution-agreement",
+    findings: [
+      "COMM-026",
+      "COMM-038",
+      "COMM-039",
+      "IPDATA-007",
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-005",
+      "CHOICE-006",
+      "FIN-008",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-007",
+    ],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.

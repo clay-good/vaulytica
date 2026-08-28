@@ -679,3 +679,33 @@ describe("a venue in a named federal court", () => {
     expect(venuesOf("The Court shall retain jurisdiction to enforce this Agreement.")).toEqual([]);
   });
 });
+
+describe("the arbitrators as the subject of the seat", () => {
+  const seatOf = (text: string) =>
+    extractJurisdictions(buildTree(["Disputes", text]))
+      .filter((r) => r.clause_kind === "arbitration-seat")
+      .map((r) => r.raw_text);
+
+  it("reads a seat stated in the participle form", () => {
+    // An ICC clause names the arbitrators, not the arbitration, and uses no
+    // modal: "finally resolved by arbitration under the Rules of Arbitration
+    // of the International Chamber of Commerce by three arbitrators SEATED IN
+    // London, England". The verb-first branch wants "the arbitration shall be
+    // seated in", so the seat went unread and CHOICE-006 reported none.
+    expect(
+      seatOf(
+        "Any dispute shall be finally resolved by arbitration under the Rules of Arbitration of the International Chamber of Commerce by three arbitrators seated in London, England, in the English language.",
+      ),
+      // The seat records as the LOCALITY; country resolution is a separate
+      // concern and unchanged by this branch.
+    ).toEqual(["London"]);
+  });
+
+  it("still reads the modal form", () => {
+    expect(seatOf("The arbitration shall be seated in Stockholm, Sweden.")).toEqual(["Stockholm"]);
+  });
+
+  it("does not invent a seat where the clause names no place", () => {
+    expect(seatOf("Any dispute shall be finally resolved by three arbitrators.")).toEqual([]);
+  });
+});

@@ -1,0 +1,73 @@
+EXCLUSIVE DISTRIBUTION AGREEMENT
+
+This Exclusive Distribution Agreement (this "Agreement") is made as of March 2, 2026 between Northgate Instrument Company, an Ohio corporation ("Supplier"), and Vanterra Instrumentation GmbH, a German limited liability company ("Distributor").
+
+1. Appointment; Territory.
+
+Supplier appoints Distributor as its exclusive distributor of the products listed on Exhibit A (the "Products") in Germany, Austria, and Switzerland (the "Territory"), and Distributor accepts the appointment. Distributor shall not actively solicit customers outside the Territory, but nothing in this Agreement restricts Distributor from making passive sales in response to unsolicited requests from outside the Territory, or restricts Distributor's freedom to determine its own resale prices.
+
+2. Purchase and Resale.
+
+Distributor purchases Products from Supplier for its own account and resells them in its own name and at its own risk. Distributor is an independent contractor and not Supplier's agent, employee, or joint venturer, and has no authority to bind Supplier.
+
+3. Prices; Minimum Advertised Price.
+
+Prices are those in Supplier's price list in effect when Supplier accepts an order, less the discount stated on Exhibit B. Supplier may change list prices on sixty (60) days notice, and the prior prices apply to orders accepted before the change takes effect. Supplier may publish a suggested resale price, which is a recommendation only, and Distributor remains free to sell at any price it determines.
+
+4. Minimum Purchase Commitment.
+
+Distributor shall purchase Products with an aggregate invoice value of at least €1,400,000 in the first contract year, €1,750,000 in the second, and €2,100,000 in the third. If Distributor fails to meet a minimum in any contract year, Supplier's sole remedy is to convert the appointment to non-exclusive on sixty (60) days notice.
+
+5. Orders; Delivery.
+
+Distributor submits purchase orders specifying quantities, requested delivery dates, and destination. Supplier shall acknowledge or reject each order within five (5) business days. Delivery is FCA Supplier's Waterbury facility (Incoterms 2020). Title and risk of loss pass to Distributor on delivery to the carrier.
+
+6. Payment.
+
+Payment terms are net sixty (60) days from the invoice date. Amounts not paid when due accrue interest at the lesser of one percent (1%) per month and the maximum permitted by applicable law. Distributor shall not offset any amount against sums owed to Supplier without Supplier's written consent.
+
+7. Warranty.
+
+Supplier warrants the Products against defects in material and workmanship for twelve (12) months from delivery to the end customer, and not more than eighteen (18) months from delivery to Distributor. Supplier's sole obligation is repair, replacement, or refund at its option. THIS WARRANTY IS IN LIEU OF ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, EXCEPT AS THOSE MAY NOT BE EXCLUDED UNDER MANDATORY LAW.
+
+8. Trademarks.
+
+Supplier grants Distributor a non-exclusive, non-transferable right to use Supplier's trademarks solely to promote and resell the Products in the Territory, in accordance with Supplier's brand guidelines. All goodwill in the trademarks inures solely to the benefit of Supplier. Distributor shall not register any Supplier trademark or a confusingly similar mark, and shall assign any such registration to Supplier on request.
+
+9. Compliance.
+
+Each party shall comply with applicable anti-corruption laws, including the U.S. Foreign Corrupt Practices Act and the UK Bribery Act, and with applicable export control and sanctions laws. Distributor shall not resell any Product to a Sanctioned Person or into a Sanctioned Country, and shall screen its customers accordingly. Distributor shall comply with EU Regulation 2016/679 in handling any personal data it receives from Supplier.
+
+10. Product Liability; Indemnity.
+
+Supplier shall indemnify, defend, and hold harmless Distributor against third-party claims for bodily injury or property damage caused by a defect in a Product as delivered, except to the extent caused by Distributor's modification, misuse, or failure to follow Supplier's instructions. Distributor shall indemnify Supplier against third-party claims arising from Distributor's representations beyond those Supplier authorizes, or from Distributor's breach of Section 9. The indemnified party shall give prompt written notice, allow the indemnifying party to control the defense, and cooperate; the indemnifying party shall not settle a claim imposing a non-monetary obligation on the indemnified party without consent.
+
+11. Limitation of Liability.
+
+Neither party is liable for indirect, incidental, or consequential damages, or for lost profits. Each party's aggregate liability arising out of this Agreement is limited to the amounts Distributor paid Supplier in the twelve months before the event giving rise to the claim. These limits do not apply to a party's indemnity obligations under Section 10, to breach of Section 9, or to liability that may not be limited under mandatory law, including liability for death or personal injury caused by negligence.
+
+12. Term and Termination.
+
+The initial term is three (3) years, renewing for successive one-year terms unless either party gives written notice of non-renewal at least one hundred eighty (180) days before the end of the then-current term. Either party may terminate for material breach not cured within thirty (30) days after written notice, and immediately on the other party's insolvency. On termination, Supplier shall repurchase Distributor's unsold, undamaged Product inventory at the price Distributor paid, less a ten percent (10%) restocking charge, and Distributor shall cease using Supplier's trademarks. The parties acknowledge that mandatory local law may confer termination-indemnity rights on a distributor, and nothing in this Agreement waives any right that may not be waived in advance.
+
+13. Governing Law; Disputes.
+
+This Agreement is governed by the laws of the State of Ohio, excluding the United Nations Convention on Contracts for the International Sale of Goods. Any dispute shall be finally resolved by arbitration under the Rules of Arbitration of the International Chamber of Commerce by three arbitrators seated in London, England, in the English language. Either party may seek interim or injunctive relief from any court of competent jurisdiction.
+
+14. General.
+
+Neither party may assign this Agreement without the other's consent, except to a successor to all of its business. This Agreement is the entire agreement between the parties and supersedes all prior understandings, and may be amended only by a writing signed by both parties. Notices must be in writing and are effective on receipt. If any provision is unenforceable, the remainder continues in effect.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement.
+
+NORTHGATE INSTRUMENT COMPANY
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+VANTERRA INSTRUMENTATION GMBH
+
+By: /s/ Emil Krause
+Name: Emil Krause
+Title: Geschäftsführer

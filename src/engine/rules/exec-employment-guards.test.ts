@@ -26,6 +26,7 @@
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../_test-fixtures.js";
 import { rule as IPDATA_001 } from "./ip-and-data/IPDATA-001.js";
+import { rule as IPDATA_005 } from "./ip-and-data/IPDATA-005.js";
 import { extractJurisdictions } from "../../extract/jurisdictions.js";
 import { buildTree } from "../../extract/_fixtures.js";
 
@@ -81,5 +82,35 @@ describe("the arbitration seat behind a named rule set", () => {
         "Any dispute shall be resolved by binding arbitration under the JAMS Employment Arbitration Rules.",
       ),
     ).toEqual([]);
+  });
+});
+
+/**
+ * The regime is as often cited by its NUMBER as by its acronym. A European
+ * distribution agreement writes "shall comply with EU Regulation 2016/679" and
+ * never says "GDPR", so IPDATA-005 reported that a contract naming the
+ * governing regime precisely cites none.
+ */
+describe("IPDATA-005 — a regime cited by its regulation number", () => {
+  it("reads EU Regulation 2016/679 as the GDPR", () => {
+    expect(
+      IPDATA_005.check(
+        buildContext([
+          "Compliance",
+          "Distributor shall comply with EU Regulation 2016/679 in handling any personal data it receives from Supplier.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a contract that names a regime nowhere", () => {
+    expect(
+      IPDATA_005.check(
+        buildContext([
+          "Compliance",
+          "Distributor shall handle any personal data it receives from Supplier with reasonable care.",
+        ]),
+      ),
+    ).not.toBeNull();
   });
 });

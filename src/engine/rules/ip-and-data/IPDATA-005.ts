@@ -4,7 +4,11 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
   id: "IPDATA-005",
-  version: "1.3.0",
+  version: "1.4.0",
+  // The regime is as often cited by its NUMBER as by its acronym — a European
+  // distribution agreement writes "shall comply with EU Regulation 2016/679"
+  // and never says "GDPR" — so a contract that names the governing regime
+  // precisely was reported as citing none.
   name: "Data regime reference (GDPR / CCPA / HIPAA)",
   category: "ip-and-data",
   default_severity: "info",
@@ -32,7 +36,7 @@ export const rule: Rule = {
         // (VCDPA, Colorado Privacy Act), and the current EU→US transfer
         // instruments (Data Privacy Framework, Privacy Shield) are recognized.
         // All are unambiguous data-protection references (unlike a bare "CPA").
-        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s+C\.?F\.?R\.?\s*(?:§\s*)?164|GLBA|Gramm[- ]Leach[- ]Bliley|FERPA|COPPA|VCDPA|Virginia\s+Consumer\s+Data\s+Protection\s+Act|Colorado\s+Privacy\s+Act|Data\s+Privacy\s+Framework|Privacy\s+Shield|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs)\b/i,
+        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s+C\.?F\.?R\.?\s*(?:§\s*)?164|GLBA|Gramm[- ]Leach[- ]Bliley|FERPA|COPPA|VCDPA|Virginia\s+Consumer\s+Data\s+Protection\s+Act|Colorado\s+Privacy\s+Act|Data\s+Privacy\s+Framework|Privacy\s+Shield|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs|Regulation\s*\(?:EU\s*\)?\s*2016\/679|EU\s+Regulation\s+2016\/679|Directive\s+2002\/58|e[- ]?Privacy\s+Directive|UK\s+GDPR|Data\s+Protection\s+Act\s+2018)\b/i,
       )
     )
       return null;

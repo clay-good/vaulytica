@@ -314,6 +314,12 @@ const ARBITRATION_SEAT = new RegExp(
     // verb-first: "(the) (arbitral) arbitration/tribunal shall take place/be seated/conducted/held/sit in X"
     String.raw`(?:the\s+)?(?:arbitral\s+)?(?:arbitration|tribunal)\s+(?:shall|will|must)\s+(?:take\s+place\s+in|be\s+(?:seated|conducted|held)\s+in|sit\s+in)\s+` +
     String.raw`|` +
+    // The participle form, with the ARBITRATORS as the subject and no modal:
+    // "finally resolved by arbitration ... by three arbitrators SEATED IN
+    // London, England" is how an ICC clause is written, and the verb-first
+    // branch above wants "the arbitration shall be seated in".
+    String.raw`(?:arbitrators?|tribunal|arbitration)\s+(?:sitting|seated|located)\s+in\s+` +
+    String.raw`|` +
     // institution-first: "administered by JAMS in X", "before the ICC in X",
     // "under the ICC Rules in X" — the named arbitral body fixes the clause as an
     // arbitration seat, so the locality after "in"/"at" is the seat.
