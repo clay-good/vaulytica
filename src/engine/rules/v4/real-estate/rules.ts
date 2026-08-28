@@ -1078,7 +1078,19 @@ const SNDA_RULES: Rule[] = [
       "The S in SNDA — the lease is subordinated to the lien of the mortgage / deed of trust.",
     recommendation:
       "Add 'Subordination' subordinating the lease to the mortgage and any future advances.",
-    present_patterns: [/subordinat/i, /lease.{0,40}subordinated\s+to/is],
+    present_patterns: [
+      // The bare /subordinat/i was a word from this family's own TITLE —
+      // "SNDA (Subordination, Non-Disturbance, Attornment)" — so the check
+      // could never fire on an SNDA, which is the only document it runs on.
+      // The clause is a RELATIONSHIP: the lease yields to the security
+      // instrument.
+      // "subordinate TO <instrument>", not merely the two words near each
+      // other: every SNDA names the Mortgage on every page, so proximity
+      // alone would have restored the vacuity the title created.
+      /\bsubordinat\w+\s+(?:to|in\s+right\s+of)\b[^.]{0,80}?\b(?:mortgage|deed\s+of\s+trust|security\s+instrument|lien|ground\s+lease)\b/is,
+      /\b(?:mortgage|deed\s+of\s+trust|security\s+instrument)\b[^.]{0,60}?\bis\s+(?:and\s+shall\s+(?:at\s+all\s+times\s+)?(?:be|remain)\s+)?(?:senior|prior|superior)\s+to\b/is,
+      /lease[^.]{0,60}?\b(?:is|shall\s+be|are)\b[^.]{0,40}?\bsub(?:ject\s+and\s+sub)?ordinate/is,
+    ],
   }),
   presence({
     id: "RE-047",
@@ -1096,8 +1108,12 @@ const SNDA_RULES: Rule[] = [
       "The N in SNDA — lender covenants that on foreclosure tenant's possession will not be disturbed if not in default.",
     recommendation: "Add 'Non-Disturbance' covenant from the lender / successor mortgagee.",
     present_patterns: [
-      /non.disturbance/i,
-      /(possession|quiet\s+enjoyment).{0,40}not\s+be\s+disturbed/is,
+      // "Non-Disturbance" is in this family's own title. The covenant is the
+      // promise: the tenant's possession survives a foreclosure.
+      /(possession|quiet\s+enjoyment|tenancy|leasehold)[^.]{0,80}?\bnot\s+be\s+disturbed/is,
+      /\bshall\s+not\s+disturb\b[^.]{0,80}?\b(?:possession|tenant|tenancy|leasehold)\b/is,
+      /\bnot\s+(?:be\s+)?(?:terminated?|extinguished|disturbed|affected)\b[^.]{0,100}?\b(?:foreclosure|foreclos\w+|power\s+of\s+sale)\b/is,
+      /\bforeclos\w+[^.]{0,100}?\b(?:lease|tenancy|leasehold)\b[^.]{0,60}?\b(?:shall\s+)?(?:continue|remain|survive)\b/is,
     ],
   }),
   presence({
@@ -1116,7 +1132,17 @@ const SNDA_RULES: Rule[] = [
     explanation:
       "The A in SNDA — tenant attorns to the successor landlord after foreclosure, accepting it as landlord.",
     recommendation: "Add 'Attornment' from tenant to lender / successor.",
-    present_patterns: [/attorn/i],
+    present_patterns: [
+      // /attorn/i was a word from this family's own title, and it matched
+      // "attorney" besides — every attorneys'-fees clause satisfied the
+      // attornment check. The word boundary excludes "attorney"/"attorneys",
+      // and the clause is an ACT directed at a successor landlord.
+      // The target noun is required. Without it the title's own "Attornment"
+      // reached forward across the join to the first "to" in the body, so an
+      // attorneys'-fees clause satisfied the check all over again.
+      /\battorn(?:s|ed|ing|ment)?\b[^.]{0,80}?\bto\b[^.]{0,60}?\b(?:lender|mortgagee|beneficiary|purchaser|successor|transferee|landlord|lessor|owner)\b/is,
+      /\brecogniz\w+[^.]{0,80}?\bas\s+(?:the\s+)?(?:landlord|lessor|successor)\b/is,
+    ],
     denied_if: expressDenial(String.raw`attorn(?:s|ment|ed|ing)?`),
     denied_title: "Tenant attornment expressly denied",
     denied_description:

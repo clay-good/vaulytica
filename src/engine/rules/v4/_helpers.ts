@@ -140,7 +140,24 @@ export type V4PresenceSpec = {
 // the v4 packs' existing import path keeps working.
 export { expressDenial } from "../_helpers.js";
 
+/**
+ * Every presence check built through this factory, and the subset whose
+ * `applicable_if` gate legitimately keeps it silent on a document that does
+ * not concern it.
+ *
+ * A presence check that CANNOT FIRE is invisible: it reports nothing on a
+ * document that contains nothing, which is indistinguishable from a document
+ * that is clean. The v5/v6 packs have had a boilerplate-reachability guard
+ * since the title-vacuity sweep; these registries are what let the same guard
+ * reach the 991 v3/v4 rules, where a bad-pattern rule staying silent on
+ * boilerplate is CORRECT and only a presence rule staying silent is a defect.
+ */
+export const V4_PRESENCE_RULE_IDS = new Set<string>();
+export const V4_GATED_PRESENCE_RULE_IDS = new Set<string>();
+
 export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
+  V4_PRESENCE_RULE_IDS.add(spec.id);
+  if (spec.applicable_if) V4_GATED_PRESENCE_RULE_IDS.add(spec.id);
   return {
     id: spec.id,
     version: spec.version ?? "1.0.0",
