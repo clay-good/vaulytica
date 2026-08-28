@@ -129,11 +129,19 @@ const SNT = pack("special-needs-trust", C, [
     id: "EST-408",
     // 1.0.1 — written as a synonym OR, but the supplemental-not-supplanting recital and the benefits it names are distinct pillars; `ssi` alone matches inside "discussions". The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    ver: "1.1.0",
     name: "Supplemental, not supplanting, benefits language",
     cite: agency_ssa(),
     pat: [
-      /(supplement(al)?\s+(to\s+and\s+not\s+in\s+place\s+of|and\s+not\s+(supplant|replace))|shall\s+not\s+(supplant|replace|substitute\s+for))/i,
+      // The recital is almost never written with the verb adjacent to "shall
+      // not": "the Trustee shall not MAKE ANY DISTRIBUTION THAT WOULD supplant,
+      // reduce, or replace any benefit the Beneficiary receives" is how a
+      // first-party trust states it, and the adjacency read none of it — so a
+      // trust whose section is headed "Supplemental, Not Substitute" drew a
+      // `critical` for having no supplemental-needs language. The window is
+      // bounded to one sentence and must land on a benefits object, which is
+      // what keeps it off an unrelated prohibition.
+      /(supplement(al)?\s+(to\s+and\s+not\s+in\s+place\s+of|and\s+not\s+(supplant|replace|impair|diminish))|shall\s+not\s+(supplant|replace|substitute\s+for)|(?:shall|will|must)\s+not\b[^.]{0,80}?\b(?:supplant|replace|substitute\s+for|impair|diminish|reduce)\b[^.]{0,60}?\b(?:benefit|assistance|eligibilit))/i,
       /(public\s+benefits|government\s+(assistance|benefits)|ssi|medicaid)/i,
     ],
     all: true,

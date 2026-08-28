@@ -906,6 +906,16 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "telehealth-consent",
     findings: ["OBLI-005", "STRUCT-006"],
   },
+
+  // A first-party (d)(4)(A) supplemental needs trust with a Medicaid payback.
+  // EST-408 wanted "shall not supplant" as three adjacent words; the recital a
+  // real trust writes is "the Trustee shall not MAKE ANY DISTRIBUTION THAT
+  // WOULD supplant, reduce, or replace any benefit", so a trust whose section
+  // is headed "Supplemental, Not Substitute" drew a critical for having none.
+  "snt.txt": {
+    playbook: "special-needs-trust",
+    findings: ["OBLI-005", "OBLI-006", "STRUCT-006", "STRUCT-018"],
+  },
 };
 
 describe("hand-written specimens", () => {

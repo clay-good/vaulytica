@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.112.0] — 2026-08-28
+
+A first-party supplemental needs trust.
+
+### Fixed
+- **EST-408 wanted "shall not supplant" as three adjacent words.** A
+  first-party (d)(4)(A) trust writes "the Trustee shall not make any
+  distribution that would supplant, reduce, or replace any benefit the
+  Beneficiary receives", so a trust whose section is headed "Supplemental, Not
+  Substitute" drew a `critical` for having no supplemental-needs language at
+  all. The window is bounded to one sentence and must land on a benefits
+  object, which keeps it off an unrelated prohibition.
+
+### Changed
+- **Two tests were load-sensitive, not wrong.** The clause-scan performance
+  bound moves from 10 to 12 and takes the minimum over nine rounds rather than
+  five: a quadratic scan's BEST case is ~16x, so the bound only has to sit
+  between 4 and 16, and a full-suite run at six times its usual wall clock read
+  10.56 where an unloaded one reads 4.0. The bundle production-QA cases move
+  from a fixed 30s to 120s — they are correctness tests that run the whole
+  browser pipeline over four members, and nothing in them measures elapsed
+  time.
+
+### Added
+- One specimen, bringing the set to eighty-four.
+
 ## [9.111.0] — 2026-08-28
 
 A telehealth consent, addressed to the patient as "you".

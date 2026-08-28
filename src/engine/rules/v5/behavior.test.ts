@@ -742,3 +742,36 @@ describe("v5 — the licensure recital a patient-facing consent writes", () => {
     ).not.toBeNull();
   });
 });
+
+describe("v5 — the supplemental-needs recital a real trust writes", () => {
+  /**
+   * EST-408 wanted "shall not supplant" as three adjacent words. A first-party
+   * trust writes "the Trustee shall not make any distribution that would
+   * supplant, reduce, or replace any benefit the Beneficiary receives", so a
+   * trust whose section is headed "Supplemental, Not Substitute" drew a
+   * `critical` for having no supplemental-needs language at all.
+   */
+  const est408 = () => V5_RULES.find((x) => x.id === "EST-408")!;
+
+  it("reads the recital through its intervening clause", () => {
+    expect(
+      est408().check(
+        buildContext([
+          "2.1 Supplemental, Not Substitute",
+          "The Trustee shall not make any distribution that would supplant, reduce, or replace any benefit the Beneficiary receives or is eligible to receive from any federal, state, or local program, including Supplemental Security Income and Medicaid.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a trust that says nothing about public benefits", () => {
+    expect(
+      est408().check(
+        buildContext([
+          "2.1 Distributions",
+          "The Trustee shall distribute income and principal to the Beneficiary in the Trustee's sole and absolute discretion.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
