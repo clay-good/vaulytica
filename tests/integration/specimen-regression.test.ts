@@ -1023,6 +1023,17 @@ export const EXPECTED: Record<string, Expectation> = {
       "TEMP-004",
     ],
   },
+
+  // A continuing guaranty set in CAPITALS from the caption to the signature,
+  // as old-form guaranties, bonds, and powers of attorney are. It is the same
+  // document as `guaranty.txt` in a different case, and it drew EIGHT extra
+  // findings: the parenthetical-definition lead-in, the role-labeled party
+  // pattern, the conformed "/s/", and the named-parent tests were all
+  // case-sensitive, so an all-caps instrument registered no defined terms, no
+  // parties, no signature, and no parent agreement.
+  //
+  // Capitalization is evidence only where the document offers case contrast.
+  "allcaps-guaranty.txt": { playbook: "guaranty", findings: ["CHOICE-008", "OBLI-005"] },
 };
 
 describe("hand-written specimens", () => {

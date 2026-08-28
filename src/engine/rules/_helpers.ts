@@ -666,12 +666,38 @@ const BORROWS_DEFINITIONS_FROM_PARENT =
  * Whether the document is subordinate to a named parent agreement — either
  * because it amends and ratifies one, or because it is issued under one.
  */
+/**
+ * Capitalization is evidence only in a document that uses mixed case.
+ *
+ * Three of the parent tests are case-SENSITIVE by design: the parent has to be
+ * a NAMED instrument, and `[A-Z]` plus a capitalized "Agreement" is what
+ * enforces that. An old-form guaranty, bond, or power of attorney is set in
+ * capitals from the caption to the signature — "UNDER A LOAN AND SECURITY
+ * AGREEMENT DATED AS OF SEPTEMBER 30, 2026" — so every one of them lost the
+ * signal and was reported for having no IP allocation, no indemnity, no
+ * termination-for-cause path, and no effect-of-termination clause. All four
+ * live in the loan agreement it guarantees.
+ *
+ * Where the document offers no case contrast, the case-sensitive form cannot
+ * be satisfied and the case-blind twin is used instead. A mixed-case document
+ * still gets the strict test.
+ */
+function isAllCaps(text: string): boolean {
+  return /[A-Z]/.test(text) && text === text.toUpperCase();
+}
+
+function caseBlind(re: RegExp): RegExp {
+  return new RegExp(re.source, re.flags.includes("i") ? re.flags : `${re.flags}i`);
+}
+
 export function amendsParentAgreement(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
+  const named = isAllCaps(text)
+    ? [caseBlind(ISSUED_UNDER_PARENT), caseBlind(PARENT_CONTROLS)]
+    : [ISSUED_UNDER_PARENT, PARENT_CONTROLS];
   return (
     RATIFIES_PARENT.test(text) ||
-    ISSUED_UNDER_PARENT.test(text) ||
-    PARENT_CONTROLS.test(text) ||
+    named.some((re) => re.test(text)) ||
     INCORPORATED_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text)
   );

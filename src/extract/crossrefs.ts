@@ -103,6 +103,14 @@ const EXTERNAL_LEADING_RE =
 // 1.704-1" — with no "under"/"pursuant to" connector and no "of the … Regulation"
 // trailer, so both guards above missed it and STRUCT-007 reported "Section 1.704"
 // as a broken internal reference to a section the operating agreement never has.
+// The statute NAMED immediately before the section, with no connector at all:
+// "Minnesota Statutes Section 582.30", "Texas Property Code Section 202.010",
+// "the Delaware General Corporation Law Section 262". The "under"/"pursuant
+// to" guard needs a connector and the trailing "of the … Code" guard needs the
+// qualifier to follow, so this — the plainest citation form there is — was
+// read as a broken internal reference.
+const EXTERNAL_NAMED_CODE_LEADING_RE = /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)\s+$/i;
+
 const EXTERNAL_REG_LEADING_RE =
   /\b(?:Treasury\s+Regulations?|Treas\.?\s+Reg(?:ulation)?s?\.?)\s+$/i;
 
@@ -319,6 +327,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         EXTERNAL_LEADER_RE.test(before) ||
         EXTERNAL_LEADING_RE.test(before) ||
         EXTERNAL_REG_LEADING_RE.test(before) ||
+        EXTERNAL_NAMED_CODE_LEADING_RE.test(before) ||
         STATUTE_SECTION_LABEL.test(bareLabel) ||
         statutoryLabels.has(bareLabel.toUpperCase()) ||
         (acronymTail != null &&

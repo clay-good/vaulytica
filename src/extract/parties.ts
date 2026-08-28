@@ -240,6 +240,29 @@ const ROLE_LABELED_PARTY = new RegExp(
 );
 
 /**
+ * The same shape in an ALL-CAPS instrument.
+ *
+ * Old-form guaranties, bonds, and powers of attorney are set in capitals from
+ * the caption to the signature: `BY MARTIN R. ODEGAARD … (THE "GUARANTOR"), IN
+ * FAVOR OF NORTHLAND MERCANTILE BANK, N.A. (THE "LENDER")`. The pattern above
+ * is case-SENSITIVE — its lead-in "the" and its Title-Case role names — so an
+ * all-caps document registered no parties at all and STRUCT-001 reported "could
+ * not identify the parties" about a preamble that names both.
+ *
+ * Used ONLY when the document offers no case contrast, and the NAME capture is
+ * restricted to all-caps, so nothing a mixed-case document produces can change.
+ */
+const ROLE_LABELED_PARTY_CAPS = new RegExp(
+  String.raw`([A-Z][A-Z&.,'’\d-]{0,80}(?:\s+[A-Z][A-Z&.,'’\d-]{0,80}){0,5})\s*\(\s*(?:THE\s+)?["“”'](${ONE_SIDED_ROLE})["“”'][^)]{0,60}\)`,
+  "gi",
+);
+
+/** True when the text offers no case contrast, so capitalization is not evidence. */
+function isAllCapsText(text: string): boolean {
+  return /[A-Z]/.test(text) && text === text.toUpperCase();
+}
+
+/**
  * A role-first preamble names the party as `<Role>, <Legal Name>`: "between
  * Covered Entity, Acme Health LLC, a Delaware limited liability company
  * (\"Covered Entity\"), and Business Associate, Globex Services Inc." The
@@ -326,9 +349,10 @@ export function extractParties(tree: DocumentTree): Party[] {
         position: pos(m.index, m.index + m[0].length),
       });
     }
-    ROLE_LABELED_PARTY.lastIndex = 0;
+    const roleLabeled = isAllCapsText(text) ? ROLE_LABELED_PARTY_CAPS : ROLE_LABELED_PARTY;
+    roleLabeled.lastIndex = 0;
     let rm: RegExpExecArray | null;
-    while ((rm = ROLE_LABELED_PARTY.exec(text)) !== null) {
+    while ((rm = roleLabeled.exec(text)) !== null) {
       const name = cleanPartyName(rm[1] ?? "");
       const role = rm[2];
       if (!name || isBoilerplateName(name)) continue;

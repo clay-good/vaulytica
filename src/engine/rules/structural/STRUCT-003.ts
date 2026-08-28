@@ -34,7 +34,10 @@ const ATTESTATION =
 // laid out on three lines arrives as one paragraph and a line-start anchor
 // can never reach the "/s/". The anchor still holds against a URL path
 // ("example.com/s/thing"), where the mark is glued to a word character.
-const CONFORMED_SIG = /(?:^|[:,.])\s*\/s\/\s+\S/m;
+// Case-INSENSITIVE: an all-caps instrument signs "/S/ MARTIN R. ODEGAARD",
+// and old-form guaranties, bonds, and powers of attorney are set in capitals
+// throughout.
+const CONFORMED_SIG = /(?:^|[:,.])\s*\/s\/\s+\S/im;
 // A signature line that names its signatory by office rather than by a
 // "By:/Name:/Title:" grid — "____________ Jordan Ellis, Director". Board /
 // member / partner consents, resolutions, and certificates sign this way: an

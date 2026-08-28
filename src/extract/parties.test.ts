@@ -291,3 +291,34 @@ describe("extractParties", () => {
     expect(parties.map((p) => p.name)).toEqual(["Maria De La Cruz Fernandez Ibanez", "John Doe"]);
   });
 });
+
+describe("an all-caps instrument's parties", () => {
+  /**
+   * Old-form guaranties, bonds, and powers of attorney are set in capitals
+   * from the caption to the signature: `BY MARTIN R. ODEGAARD … (THE
+   * "GUARANTOR"), IN FAVOR OF NORTHLAND MERCANTILE BANK, N.A. (THE "LENDER")`.
+   * The role-labeled pattern is case-sensitive — its lead-in "the" and its
+   * Title-Case role names — so an all-caps document registered no parties and
+   * STRUCT-001 reported "could not identify the parties" about a preamble that
+   * names both.
+   */
+  it("reads both roles out of an all-caps preamble", () => {
+    const parties = extractParties(
+      buildTree([
+        "CONTINUING GUARANTY",
+        'THIS CONTINUING GUARANTY IS MADE AS OF SEPTEMBER 30, 2026 BY MARTIN R. ODEGAARD (THE "GUARANTOR"), IN FAVOR OF NORTHLAND MERCANTILE BANK, N.A. (THE "LENDER").',
+      ]),
+    );
+    expect(parties.map((p) => p.role).sort()).toEqual(["GUARANTOR", "LENDER"]);
+  });
+
+  it("still reads a mixed-case preamble the same way", () => {
+    const parties = extractParties(
+      buildTree([
+        "Continuing Guaranty",
+        'This Continuing Guaranty is made as of September 30, 2026 by Martin R. Odegaard (the "Guarantor"), in favor of Northland Mercantile Bank, N.A. (the "Lender").',
+      ]),
+    );
+    expect(parties.map((p) => p.role).sort()).toEqual(["Guarantor", "Lender"]);
+  });
+});

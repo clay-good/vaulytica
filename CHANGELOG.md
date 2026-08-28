@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.120.0] — 2026-08-28
+
+The same guaranty, in capitals.
+
+An old-form guaranty, bond, or power of attorney is set in CAPITALS from the
+caption to the signature. Running one through the engine beside its mixed-case
+twin — the same document, the same words — produced **eight extra findings**.
+Every one was a case-sensitive recognizer, and each is fixed:
+
+### Fixed
+- **The parenthetical-definition lead-in was lowercase-only.** `(THE
+  "GUARANTOR")` registered nothing, so an all-caps instrument had NO defined
+  terms at all and STRUCT-004 reported none on a guaranty that defines six. The
+  uppercase spellings of the lead-in words are admitted; the term capture is
+  unchanged, so nothing a mixed-case document produces can change.
+- **The role-labeled party pattern was case-sensitive** in both its lead-in and
+  its role names, so STRUCT-001 reported "could not identify the parties" about
+  a preamble that names both. The all-caps variant is used only where the
+  document offers no case contrast, and its NAME capture is restricted to
+  all-caps.
+- **The conformed signature `/S/` did not match.** STRUCT-003 reported no
+  signature block at `critical`.
+- **The named-parent tests lost their signal.** "UNDER A LOAN AND SECURITY
+  AGREEMENT DATED AS OF SEPTEMBER 30, 2026" is the recital that says the
+  guaranty is subordinate, and the capitalization that identifies a NAMED
+  instrument carries no information in a document that capitalizes everything.
+  Four findings followed — no IP allocation, no indemnity, no
+  termination-for-cause path, no effect-of-termination clause — all of which
+  live in the loan agreement it guarantees.
+- **A statute named immediately before its section read as a broken internal
+  reference.** "MINNESOTA STATUTES SECTION 582.30" — the plainest citation form
+  there is, and the two existing guards need either a connector ("under",
+  "pursuant to") or a trailing "of the … Code".
+- **`guaranty` listed "loan agreement" and "security agreement" as negative
+  features** — the instruments every guaranty exists to guarantee, and names in
+  its first recital. Replaced with the operative clauses only the underlying
+  instrument carries.
+
+The principle behind four of the six: **capitalization is evidence only where
+the document offers case contrast.**
+
+### Added
+- One specimen, bringing the set to ninety-two — the same guaranty as
+  `guaranty.txt`, in capitals, so the pair fails if any recognizer starts
+  depending on case again.
+
 ## [9.119.0] — 2026-08-28
 
 A notification, recourse accounts-receivable factoring facility.

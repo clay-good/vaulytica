@@ -8461,9 +8461,9 @@
         "reinstatement"
       ],
       "negative_features": [
-        "promissory note",
-        "loan agreement",
-        "security agreement"
+        "promises to pay to the order of",
+        "hereby grants a security interest",
+        "agrees to make advances"
       ]
     },
     "expected_clauses": [],
