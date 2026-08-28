@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.108.0] — 2026-08-28
+
+An internal litigation hold memorandum — and a seventh thing above the title.
+
+### Fixed
+- **A memorandum's RE: line was unreachable.** A memo states its title in "RE:"
+  like a letter, but at the bottom of a four-line TO/FROM/DATE/RE block. Plain-
+  text and pasted ingest joins the lines of a block with spaces, so the whole
+  header arrives as ONE paragraph beginning "TO:" and the subject-line reader,
+  anchored to the start of the paragraph, never reaches it. A litigation hold
+  notice scored 0.4 and fell to `generic-fallback`, where it was told at
+  `critical` that it has no signature block. Every memo-shaped family had the
+  hole. It now routes at 0.7.
+- **`litigation-hold` listed "release" as a negative feature** — what a hold
+  says about itself ("until I notify you in writing that it has been
+  released"). Narrowed to "release of all claims".
+- **`litigation-hold` carried the policy skip profile without STRUCT-003.** A
+  memorandum is not signed. Same omission as the nine filings before it.
+
+### Added
+- One specimen, bringing the set to eighty-one.
+
 ## [9.107.0] — 2026-08-28
 
 A board resolution — and a check that was reading a text its own subject had

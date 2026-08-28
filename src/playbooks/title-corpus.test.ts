@@ -498,3 +498,41 @@ describe("a recorded instrument's title, below the recorder's block", () => {
     expect(titleCorpus(t, "agreement.txt").toLowerCase()).not.toContain("warranty deed");
   });
 });
+
+describe("a memorandum's subject line, inside its header block", () => {
+  /**
+   * An internal memorandum states its title in "RE:" like a letter, but at the
+   * bottom of a four-line TO/FROM/DATE/RE block. Plain-text and pasted ingest
+   * joins the lines of a block with spaces, so the whole header arrives as one
+   * paragraph beginning "TO:" and the start-anchored subject-line reader never
+   * reaches the "RE:". A litigation hold notice scored 0.4 and fell to
+   * generic-fallback, where it was told at critical that it has no signature
+   * block.
+   */
+  it("reads the RE: line out of a joined memo header", () => {
+    const t = tree([
+      {
+        paragraphs: [
+          "MEMORANDUM",
+          "TO: All employees of the Commercial Lending Group FROM: Deirdre Salazar, General Counsel DATE: July 6, 2026 RE: Litigation Hold Notice — Ridgeway Partners LLC v. Broadmoor Financial, Inc.",
+          "ACTION REQUIRED. Do not delete, discard, alter, or overwrite any document described below.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "memo.txt").toLowerCase()).toContain("litigation hold notice");
+  });
+
+  it("does not read a mid-sentence 'more: ' as a subject line", () => {
+    const t = tree([
+      {
+        paragraphs: [
+          "This Agreement is entered into as of March 2, 2026 between Alpha LLC and Beta Inc.",
+          "The parties agree to nothing more: the Agreement is complete as written.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "agreement.txt").toLowerCase()).not.toContain(
+      "the agreement is complete",
+    );
+  });
+});

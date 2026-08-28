@@ -1,0 +1,51 @@
+PRIVILEGED AND CONFIDENTIAL
+ATTORNEY-CLIENT COMMUNICATION / ATTORNEY WORK PRODUCT
+
+MEMORANDUM
+
+TO:      All employees of the Commercial Lending Group; IT Operations; Records Management
+FROM:    Deirdre Salazar, General Counsel
+DATE:    July 6, 2026
+RE:      Litigation Hold Notice — Ridgeway Partners LLC v. Broadmoor Financial, Inc.
+
+ACTION REQUIRED. Do not delete, discard, alter, or overwrite any document or data described below. This notice supersedes the Company's ordinary document-retention schedule and any automatic deletion setting.
+
+1. Why you are receiving this notice.
+
+On June 29, 2026, Ridgeway Partners LLC filed a complaint against Broadmoor Financial, Inc. in the United States District Court for the Southern District of New York, Case No. 1:26-cv-05114. You are receiving this notice because you are likely to have documents or data relevant to that case. The law requires the Company to preserve relevant material once litigation is reasonably anticipated, and failure to do so can result in sanctions against the Company under Federal Rule of Civil Procedure 37(e), and in adverse findings at trial.
+
+2. What you must preserve.
+
+Preserve everything, in any form, relating to any of the following, created or received at any time from January 1, 2023 to the present:
+
+(a) the Ridgeway credit facility, including the term sheet, the commitment letter, the credit agreement, all amendments, and all closing documents;
+
+(b) the Company's underwriting, credit approval, risk rating, and covenant monitoring of Ridgeway Partners LLC;
+
+(c) any communication with Ridgeway Partners LLC or its representatives, and any internal communication about Ridgeway Partners LLC;
+
+(d) the events of June 2025 through May 2026 concerning the alleged covenant default and the Company's exercise of remedies; and
+
+(e) any document referring to this dispute or to Ridgeway's counsel.
+
+3. What counts as a document.
+
+Everything, regardless of medium or location: email and attachments; instant and chat messages, including Slack and Teams; text messages and messages on any personal device used for Company business; documents on network drives, SharePoint, OneDrive, and local hard drives; voicemail; handwritten notes; calendar entries; databases and reports; photographs; and backup media. Drafts count. Duplicates count. Personal notes count.
+
+4. What you must not do.
+
+Do not delete, move, rename, compress, or archive any material described above. Do not empty deleted-items folders. Do not run any clean-up utility. Do not dispose of any device or media without first contacting me. If you receive an auto-delete prompt, do not accept it and tell IT Operations at once.
+
+5. What IT Operations must do.
+
+IT Operations shall, within five (5) business days: suspend auto-deletion for the mailboxes and chat accounts of each recipient; suspend the 90-day retention policy applicable to the Commercial Lending Group's file shares; preserve the June 2025 through May 2026 backup sets rather than allowing them to rotate; and confirm each step to me in writing.
+
+6. Acknowledgment.
+
+Reply to this memorandum by July 13, 2026 confirming that you have read it and will comply. I will keep a record of acknowledgments.
+
+7. Duration and questions.
+
+This hold remains in effect until I notify you in writing that it has been released. Do not assume it has expired. If you are unsure whether something is covered, preserve it and ask me. If you leave the Company or change roles while this hold is in effect, tell me before you do so that your material can be preserved.
+
+Direct all questions to me at dsalazar@broadmoorfin.com or (212) 555-0148. Do not discuss this matter, or this notice, with anyone outside the Company.

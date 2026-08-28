@@ -877,6 +877,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // default rule input strips every recital out of, so it reported none on a
   // document whose second paragraph is a whereas clause.
   "board-resolution.txt": { playbook: "board-resolution", findings: [] },
+
+  // An internal litigation hold memorandum. Its title is in the "RE:" line at
+  // the bottom of a TO/FROM/DATE/RE block, which plain-text ingest joins into
+  // one paragraph beginning "TO:" — so the subject-line reader, anchored to
+  // the start of the paragraph, never reached it. The notice scored 0.4 and
+  // fell to generic-fallback. Its playbook also listed "release" as a negative
+  // feature, which is what a hold says about itself ("until I notify you that
+  // it has been released").
+  "litigation-hold.txt": {
+    playbook: "litigation-hold",
+    findings: ["OBLI-005", "STRUCT-006", "TEMP-002"],
+  },
 };
 
 describe("hand-written specimens", () => {

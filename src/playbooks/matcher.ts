@@ -76,6 +76,30 @@ export const TITLE_SUBJECT_SCAN_PARAGRAPHS = 12;
 const SUBJECT_LINE = /^\s*(?:re|subject|in\s+re)\s*:\s*(\S.*)$/is;
 
 /**
+ * The same subject line, inside a MEMO HEADER BLOCK.
+ *
+ * An internal memorandum states its title in "RE:" like a letter, but puts it
+ * at the bottom of a four-line block:
+ *
+ *   TO:    All employees of the Commercial Lending Group
+ *   FROM:  Deirdre Salazar, General Counsel
+ *   DATE:  July 6, 2026
+ *   RE:    Litigation Hold Notice — Ridgeway Partners LLC v. Broadmoor …
+ *
+ * Pasted and plain-text ingest joins the lines of a block with spaces, so the
+ * whole header arrives as ONE paragraph beginning "TO:" — and {@link
+ * SUBJECT_LINE}, anchored to the start of the paragraph, never reaches the
+ * "RE:". A litigation hold notice scored 0.4 and fell to `generic-fallback`,
+ * where it was told at `critical` that it has no signature block. Every memo
+ * -shaped family has the hole: the litigation hold, the internal escalation,
+ * the compliance advisory.
+ *
+ * Anchored on a preceding memo field label, so a mid-sentence "with respect
+ * to" or a defined term ending in "re" still cannot trigger it.
+ */
+const MEMO_HEADER_SUBJECT = /^\s*(?:to|from|date|cc|bcc)\s*:[\s\S]{0,400}?\bre\s*:\s*(\S[^\n]*)/i;
+
+/**
  * The document's first lines, in order, bounded and trimmed.
  *
  * A section's heading is emitted ahead of its paragraphs because a filing's
@@ -113,7 +137,7 @@ function subjectLine(
   }[],
 ): string {
   for (const text of leadingLines(sections)) {
-    const m = SUBJECT_LINE.exec(text);
+    const m = SUBJECT_LINE.exec(text) ?? MEMO_HEADER_SUBJECT.exec(text);
     if (m) return m[1]!.trim().slice(0, TITLE_PREAMBLE_CHARS);
   }
   return "";
