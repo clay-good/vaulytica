@@ -63,10 +63,17 @@ const ARTICLES = pack("articles-of-organization", C, [
   },
   {
     id: "GOV-105",
+    ver: "1.1.0",
     name: "Organizer signature and effective date",
     cite: uniformAct("RULLCA § 201", "signing of the certificate of organization"),
     pat: [
-      /(organizer|authorized\s+(person|representative))/i,
+      // States name the filer in their own statutory words, and "organizer" is
+      // only one of them: Colorado's form says "the true name and mailing
+      // address of the PERSON FORMING the limited liability company", and its
+      // perjury notice names "the INDIVIDUAL CAUSING this document to be
+      // delivered". A correctly prepared certificate carried neither of the
+      // two spellings this pillar knew.
+      /(organizer|authorized\s+(person|representative|signator\w*)|person\s+forming\s+the\s+(limited\s+liability\s+)?company|individual\s+causing\s+(this\s+)?(document|record))/i,
       /(effective\s+(date|upon\s+filing)|effective\s+on\s+(the\s+date\s+of\s+)?filing)/i,
     ],
     all: true,

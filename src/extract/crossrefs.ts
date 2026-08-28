@@ -55,6 +55,12 @@ const REF_RE =
 // hyphen at all, so every UCC Article 2A/9 citation in an equipment lease or a
 // security agreement read as a broken internal reference to a "Section 2A".
 //
+// A STATE code numbers a section with more than one hyphen — "Section 7-80-204
+// of the Colorado Limited Liability Company Act", "Section 13-11-101" — and the
+// leading-suffix skip took exactly one hyphen group, so every Colorado,
+// Georgia, Maryland, and Utah statutory cite stopped at the second hyphen and
+// read as a broken internal reference.
+//
 // Uniform-act sections carry a HYPHENATED number — "Section 17-303 of the
 // Act", "Section 17-1101(d) of the Act" (Delaware LP/LLC Acts, UCC). REF_RE
 // stops the label at the hyphen ("Section 17"), so the trailer text opens with
@@ -75,8 +81,14 @@ const REF_RE =
 // the optional statute-name phrase is `[A-Za-z]` rather than `[A-Z]` to say
 // what it means under the flag, since `[A-Z]` matches lowercase under `i`.
 const EXTERNAL_TRAILER_RE =
-  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))*)?(?:\(\d+[a-z]?\))*(?:\s*(?:to|through|and|or|,)\s*\d+(?:\.\d+)*[A-Za-z]?(?:-\d+[a-z]?)?(?:\([a-z0-9]+\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
-const EXTERNAL_LEADER_RE = /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$/;
+  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))*)*(?:\(\d+[a-z]?\))*(?:\s*(?:to|through|and|or|,)\s*\d+(?:\.\d+)*[A-Za-z]?(?:-\d+[a-z]?)?(?:\([a-z0-9]+\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
+// "Title 7, Article 80" — a state code and the United States Code both number
+// their divisions that way, and a reference under a Title is part of the
+// citation, not a division of this document. Colorado's articles of
+// organization cite "C.R.S. Title 7, Article 80" on their first page, and
+// STRUCT-007 reported it as a broken internal reference to an "Article 80".
+const EXTERNAL_LEADER_RE =
+  /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$|\bTitle\s+\d+[A-Za-z]?\s*,\s*$/;
 
 // The statutory qualifier can also PRECEDE the section: "Treasury Regulations
 // under Section 704(b)", "the Internal Revenue Code pursuant to Section 409A".

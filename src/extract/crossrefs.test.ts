@@ -910,3 +910,40 @@ describe("a statutory cite whose subsection is part of its label", () => {
     ]);
   });
 });
+
+describe("a state code's multi-hyphen section number", () => {
+  /**
+   * "Section 7-80-204 of the Colorado Limited Liability Company Act" carries
+   * TWO hyphens, and the leading-suffix skip took exactly one — so every
+   * Colorado, Georgia, Maryland, and Utah statutory cite stopped at the second
+   * hyphen and read as a broken internal reference. "C.R.S. Title 7, Article
+   * 80" had a different hole: a division cited under a Title is part of the
+   * citation, not a division of this document.
+   */
+  const unresolved = (...paras: string[]) => {
+    const t = buildTree(["Body", ...paras]);
+    return extractCrossRefs(t, extractSections(t))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+  };
+
+  it("reads a two-hyphen state-code section as external", () => {
+    expect(
+      unresolved(
+        "Filed pursuant to Section 7-80-204 of the Colorado Limited Liability Company Act.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("reads a division cited under a Title as external", () => {
+    expect(unresolved("This company is organized under C.R.S. Title 7, Article 80.")).toEqual([]);
+  });
+
+  it("still reports a broken internal reference beside them", () => {
+    expect(
+      unresolved(
+        "Filed pursuant to Section 7-80-204 of the Colorado Limited Liability Company Act, and subject to Section 9.2.",
+      ),
+    ).toEqual(["Section 9.2"]);
+  });
+});

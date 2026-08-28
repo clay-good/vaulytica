@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.116.0] — 2026-08-28
+
+Colorado articles of organization, filed electronically.
+
+### Fixed
+- **A state code's section number carries more than one hyphen.** "Section
+  7-80-204 of the Colorado Limited Liability Company Act" — the leading-suffix
+  skip took exactly one hyphen group, so every Colorado, Georgia, Maryland, and
+  Utah statutory cite stopped at the second hyphen and read as a broken
+  internal reference.
+- **A division cited under a Title is part of the citation.** "C.R.S. Title 7,
+  Article 80" appears on the first page of every Colorado charter filing and
+  was reported as a broken internal reference to an "Article 80".
+- **GOV-105 wanted the word "organizer".** Colorado's form says "the true name
+  and mailing address of the PERSON FORMING the limited liability company", and
+  its perjury notice names "the INDIVIDUAL CAUSING this document to be
+  delivered" — a correctly prepared certificate carried neither spelling the
+  pillar knew.
+- **`articles-of-organization` and `charter-incorporation` carried the policy
+  skip profile without STRUCT-003.** A charter delivered to a Secretary of
+  State is not signed in the By:/Name:/Title: sense, and GOV-105 owns the
+  organizer-signature question for those families anyway.
+
+### Added
+- One specimen, bringing the set to eighty-eight.
+
 ## [9.115.0] — 2026-08-28
 
 A senior/subordinated intercreditor agreement.

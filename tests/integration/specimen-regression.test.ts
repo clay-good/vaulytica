@@ -975,6 +975,16 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "intercreditor-agreement",
     findings: ["BNK-031", "CHOICE-008", "FIN-005", "OBLI-005"],
   },
+
+  // Colorado articles of organization, filed electronically. Its statutory
+  // cites carry TWO hyphens ("Section 7-80-204 of the Colorado Limited
+  // Liability Company Act") where the leading-suffix skip took one, and its
+  // Title/Article citation ("C.R.S. Title 7, Article 80") read as a broken
+  // internal reference to an "Article 80". GOV-105 wanted the word "organizer"
+  // where Colorado's form says "the person forming the limited liability
+  // company". STRUCT-006 remains: the organizer is named three times and a
+  // person's name is not distinguishable in shape from a defined term.
+  "articles-org.txt": { playbook: "articles-of-organization", findings: ["STRUCT-006"] },
 };
 
 describe("hand-written specimens", () => {
