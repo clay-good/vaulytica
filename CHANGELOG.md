@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.104.0] — 2026-08-28
+
+A UCC-1 financing statement on the national form.
+
+### Fixed
+- **BNK-045 could not read § 9-503 in the form's own words.** The national UCC1
+  form prints the requirement above box 1a — "Provide only one Debtor name …
+  Do not omit, modify, or abbreviate any part of the Debtor's name" — over a
+  box labeled "ORGANIZATION'S NAME". None of that is the phrase "exact legal
+  name", so a correctly prepared form was told it states none.
+- **`ucc-1-financing-statement` listed "security agreement" and "loan
+  agreement" as negative features** — what a collateral description routinely
+  names ("more fully described in the Loan and Security Agreement dated …").
+  They are replaced by the granting clause and the default section, which a
+  security agreement has and a financing statement never does; the security
+  agreement specimen still routes to its own family.
+
+### Changed
+- **BNK-049 is `info` rather than `warning`.** No UCC1 form has a box for a
+  lapse date and no realistic filing carries one: the § 9-515 calendar lives in
+  the filer's docketing system, which is what the rule's own description
+  ("UCC-1 *documentation* should reference …") and recommendation ("so the
+  filing party tracks calendar deadlines") are about. At `warning` it accused
+  every correctly prepared form of a defect it cannot cure.
+
+### Added
+- One specimen, bringing the set to seventy-seven.
+
 ## [9.103.0] — 2026-08-28
 
 A privilege log and a Form ADV Part 2A brochure.

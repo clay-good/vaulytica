@@ -816,6 +816,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // drew a critical for having no signature block. Seven sibling disclosure
   // filings had the same omission.
   "form-adv.txt": { playbook: "form-adv-brochure", findings: ["REG-040", "STRUCT-006"] },
+
+  // A UCC-1 financing statement on the national form. The form states § 9-503
+  // in its OWN words — "Do not omit, modify, or abbreviate any part of the
+  // Debtor's name" above a box labeled "ORGANIZATION'S NAME" — which is not
+  // the phrase BNK-045 was looking for. BNK-049 remains, at `info`: no UCC1
+  // form has a box for the lapse date, and the § 9-515 calendar lives in the
+  // filer's docketing system.
+  "ucc-1.txt": {
+    playbook: "ucc-1-financing-statement",
+    findings: ["BNK-049", "STRUCT-006"],
+  },
 };
 
 describe("hand-written specimens", () => {

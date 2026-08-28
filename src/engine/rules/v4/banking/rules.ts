@@ -1147,9 +1147,17 @@ const UCC1_RULES: Rule[] = [
       "§ 9-503 requires the financing statement to use the debtor's exact legal name — for registered organizations, the name on the most recent public organic record. Errors are seriously misleading and can defeat perfection (§ 9-506).",
     recommendation:
       "State debtor's exact legal name from the public organic record (Secretary of State filing) and identify the type / jurisdiction of organization.",
+    // The national UCC1 form states § 9-503 in its OWN words, in the
+    // instruction printed above box 1a: "Provide only one Debtor name … Do not
+    // omit, modify, or abbreviate any part of the Debtor's name", and labels
+    // the box "ORGANIZATION'S NAME". None of that is the phrase "exact legal
+    // name", so a correctly prepared form was told it states none.
+    version: "1.1.0",
     present_patterns: [
       /(exact\s+legal\s+name|registered\s+(name|organization))/i,
       /(secretary\s+of\s+state|public\s+organic\s+record)/i,
+      /do\s+not\s+omit,?\s+modify,?\s+or\s+abbreviate/i,
+      /organization['’]?s?\s+name\s*:/i,
     ],
   }),
   presence({
@@ -1221,7 +1229,15 @@ const UCC1_RULES: Rule[] = [
       /(5\s+years?|five\s+years?|lapse|expir)/i,
       /(continuation|6\s+months?|six\s+months?)/i,
     ],
-    default_severity: "warning",
+    // `info`, not `warning`. The national UCC1 form has no box for a lapse
+    // date and no realistic filing carries one — the § 9-515 calendar lives in
+    // the filer's docketing system, which is what this rule's own description
+    // ("UCC-1 DOCUMENTATION should reference …") and recommendation ("so the
+    // filing party tracks calendar deadlines") are about. At `warning` it
+    // accused every correctly prepared form of a defect it cannot cure without
+    // adding text the form does not have.
+    version: "1.1.0",
+    default_severity: "info",
   }),
   presence({
     id: "BNK-050",
