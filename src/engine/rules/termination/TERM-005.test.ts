@@ -253,3 +253,25 @@ describe("TERM-005 — the plainest consequence of all (v1.12.0)", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-005 — the active voice of release", () => {
+  // "On termination, Factor shall release its security interest and file a
+  // termination statement within ten days" is the wind-down clause of every
+  // secured facility, and the consequence list held only the passive "is
+  // released".
+  it("reads 'shall release its security interest' as a consequence", () => {
+    const ctx = buildContext([
+      "8. Term and Termination",
+      "On termination, Client shall pay all obligations then outstanding, and Factor shall release its security interest and file a termination statement within ten (10) days after Client's obligations are paid in full.",
+    ]);
+    expect(TERM_005.check(ctx)).toBeNull();
+  });
+
+  it("does not read a settlement's mutual release as a termination effect", () => {
+    const ctx = buildContext([
+      "5. Release",
+      "The parties exchange mutual releases of all claims arising before the date of this Agreement.",
+    ]);
+    expect(TERM_005.check(ctx)).not.toBeNull();
+  });
+});

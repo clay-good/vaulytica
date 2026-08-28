@@ -1,0 +1,79 @@
+ACCOUNTS RECEIVABLE FACTORING AGREEMENT
+
+This Accounts Receivable Factoring Agreement (this "Agreement") is made as of July 22, 2026 between Cascade Commercial Funding, Inc., a Washington corporation ("Factor"), and Thornhill Industrial Supply LLC, an Idaho limited liability company ("Client").
+
+1. Purchase and Sale of Accounts.
+
+Client offers, and Factor may in its sole discretion purchase, accounts receivable of Client arising from the sale of goods or the rendering of services in the ordinary course (each, an "Account"). Each purchase is a true sale and absolute assignment of the Account, and not a loan secured by it. "Purchased Account" means an Account that Factor has purchased under this Agreement. Factor acquires all of Client's right, title, and interest in each Purchased Account, including the right to collect it, and Client retains no reversionary interest in it.
+
+2. Notification.
+
+This is a notification facility. Client shall place a notice on every invoice for a Purchased Account directing the account debtor to pay Factor, in the form Factor provides, and Client irrevocably authorizes Factor to notify any account debtor of the assignment.
+
+3. Purchase Price and Reserve.
+
+3.1 Advance. On purchase, Factor shall pay Client eighty-five percent (85%) of the face amount of the Purchased Account (the "Advance").
+
+3.2 Reserve. Factor shall hold the remaining fifteen percent (15%) as a reserve (the "Reserve"), and shall release the Reserve for a Purchased Account, less the Factoring Fee and any amount chargeable to Client under this Agreement, within two (2) business days after Factor receives payment in full of that Account.
+
+3.3 Factoring Fee. Client shall pay Factor a factoring fee (the "Factoring Fee") equal to one and one-half percent (1.5%) of the face amount of each Purchased Account for the first thirty (30) days after purchase, and an additional one-half percent (0.5%) for each fifteen (15) day period or part of one thereafter, until the Account is paid in full or repurchased.
+
+3.4 Misdirected Payment Fee. If Client receives a payment on a Purchased Account, Client shall hold it in trust for Factor, shall not commingle it, and shall deliver it to Factor within one (1) business day, endorsed as necessary. A payment not delivered within that period bears a misdirected payment fee of fifteen percent (15%) of the amount received.
+
+4. Recourse and Repurchase.
+
+This is a recourse facility. Client shall repurchase a Purchased Account, at its face amount less any payment Factor has received on it, plus accrued Factoring Fees, within five (5) business days after Factor's written demand, if: the Account remains unpaid ninety (90) days after its invoice date; the account debtor asserts any dispute, offset, counterclaim, or deduction; any representation in Section 5 proves untrue as to that Account; or the account debtor becomes the subject of an insolvency proceeding. Factor's recourse for credit risk is limited to the repurchase obligation in this Section.
+
+5. Representations as to Each Account.
+
+As to each Account offered, Client represents that: the Account arises from a bona fide sale or rendering of services completed in the ordinary course; the goods have been delivered or the services performed and accepted; the Account is not subject to any dispute, offset, counterclaim, or contingency; the account debtor is not an affiliate of Client; the Account is not evidenced by an instrument or chattel paper unless delivered to Factor; and Client has good title to the Account, free of any lien other than in favor of Factor.
+
+6. Security Interest.
+
+Although each purchase is a true sale, to secure Client's obligations under this Agreement and to protect Factor's interest if a purchase is recharacterized, Client grants Factor a security interest in all of Client's accounts, chattel paper, instruments, documents, general intangibles, inventory, equipment, deposit accounts, and the proceeds of each. Client authorizes Factor to file financing statements describing that collateral.
+
+7. Covenants.
+
+Client shall: maintain its books so that Purchased Accounts are identifiable; deliver monthly agings of accounts receivable and accounts payable within fifteen (15) days after each month end; deliver annual financial statements within one hundred twenty (120) days after each fiscal year end; permit Factor to inspect its books on reasonable notice during business hours; not grant any lien on accounts to any other party; and not change its legal name, entity type, or state of organization without thirty (30) days' prior written notice to Factor.
+
+8. Term and Termination.
+
+The initial term is twenty-four (24) months and renews automatically for successive twelve (12) month terms unless either party gives written notice of non-renewal at least sixty (60) days before the end of the then-current term. Factor may terminate immediately on written notice if Client breaches any obligation under this Agreement, if any representation proves untrue in a material respect, or if Client becomes the subject of an insolvency proceeding. On termination, Client shall pay all obligations then outstanding, Factor may continue to collect Purchased Accounts until they are paid or repurchased, and Factor shall release its security interest and file a termination statement within ten (10) days after Client's obligations are paid in full.
+
+9. Early Termination Fee.
+
+If Client terminates before the end of the initial term, Client shall pay Factor an early termination fee equal to the average monthly Factoring Fees for the three (3) months before termination, multiplied by the number of months remaining in the initial term, up to a maximum of six (6) months' fees. This is a reasonable estimate of Factor's damages and not a penalty.
+
+10. Power of Attorney.
+
+Client irrevocably appoints Factor as its attorney-in-fact, coupled with an interest, to endorse Client's name on any payment on a Purchased Account, to receive and open mail addressed to Client at any address Factor designates for that purpose, to notify account debtors of the assignment, and to file financing statements. Factor shall exercise this power only with respect to Purchased Accounts and the collateral described in Section 6.
+
+11. Indemnification.
+
+Client shall indemnify, defend, and hold harmless Factor and its officers, directors, and employees from all claims, losses, and reasonable attorneys' fees arising out of any breach of this Agreement by Client, any dispute between Client and an account debtor, or any claim that goods sold or services rendered were defective, except to the extent caused by Factor's gross negligence or willful misconduct. Factor shall give Client prompt written notice of any such claim, shall permit Client to control the defense with counsel reasonably acceptable to Factor, and shall cooperate at Client's expense. Client shall not settle any claim imposing an obligation on Factor without Factor's prior written consent.
+
+12. Limitation of Liability.
+
+Factor's aggregate liability arising out of this Agreement shall not exceed the total Factoring Fees Factor received in the twelve (12) months before the event giving rise to the claim. Neither party is liable for indirect, incidental, consequential, or punitive damages. These limits do not apply to Client's obligation to pay amounts due, to Client's indemnification obligations under Section 11, or to either party's gross negligence or willful misconduct.
+
+13. Governing Law; Venue; Jury Waiver.
+
+This Agreement is governed by the laws of the State of Washington, without regard to its conflict of laws principles. Any action arising out of this Agreement shall be brought exclusively in the state or federal courts located in King County, Washington, and each party consents to the jurisdiction of those courts. EACH PARTY WAIVES ANY RIGHT TO A TRIAL BY JURY IN ANY ACTION ARISING OUT OF THIS AGREEMENT.
+
+14. Miscellaneous.
+
+This Agreement is the entire agreement of the parties on its subject matter and supersedes all prior discussions. It may be amended only by a writing signed by both parties. Client may not assign it without Factor's consent; Factor may assign it. If any provision is unenforceable, the remainder remains in effect. It may be executed in counterparts.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+CASCADE COMMERCIAL FUNDING, INC.
+
+By: /s/ Yolanda Prieto
+Name: Yolanda Prieto
+Title: Senior Vice President
+
+THORNHILL INDUSTRIAL SUPPLY LLC
+
+By: /s/ Gerald Mankiewicz
+Name: Gerald Mankiewicz
+Title: Managing Member

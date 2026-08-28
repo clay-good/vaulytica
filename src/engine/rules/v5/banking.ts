@@ -349,9 +349,16 @@ const FACTORING = pack("factoring-agreement", C, [
     id: "BNK-124",
     name: "Notification and verification of account debtors",
     cite: ucc("9-406", "Discharge of account debtor; notification of assignment"),
+    // The clause names the debtor with a determiner — "authorizes Factor to
+    // notify ANY account debtor of the assignment", "shall notify EACH account
+    // debtor" — and directs payment without the preposition the second pillar
+    // wanted ("directing the account debtor to PAY FACTOR"). A facility whose
+    // Section 2 is headed "Notification" and says so in its first sentence
+    // matched neither.
+    ver: "1.1.0",
     pat: [
-      /(notif(y|ication)\s+(of|to)\s+(the\s+)?account\s+debtor|notice\s+of\s+assignment)/i,
-      /(verif|pay\s+(directly\s+)?to\s+the\s+factor|lockbox|non-?notification)/i,
+      /(notif(y|ies|ication)\s+(of\s+|to\s+)?(any\s+|each\s+|every\s+|all\s+|the\s+)?account\s+debtors?|notice\s+of\s+(the\s+)?assignment|notification\s+facility)/i,
+      /(verif|pay\s+(directly\s+)?(to\s+)?(the\s+)?factor\b|lockbox|non-?notification)/i,
     ],
     why: "Under § 9-406 an account debtor is discharged by paying the assignor until it receives notification of the assignment. Non-notification factoring leaves the factor exposed to payments made to the client.",
     fix: "State whether the facility is notification or non-notification, the form of notice to account debtors, verification rights, and the lockbox or payment-direction arrangements.",

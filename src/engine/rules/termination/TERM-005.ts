@@ -26,7 +26,12 @@ const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+|such\s+)
  * ("Sections 3-7 shall survive termination of this Agreement") was reported as
  * having no effect-of-termination clause at all.
  */
-const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|revert|discontinue|surrenders?|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
+// "release" in the ACTIVE voice — "Factor shall release its security interest
+// and file a termination statement", "Lender shall release the collateral" —
+// which the passive "is/are released" branch below could not read. It is a
+// consequence only when it follows a termination trigger inside one sentence,
+// so a settlement's "mutual release of claims" is untouched.
+const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|revert|discontinue|surrenders?|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
 
 /**
  * Either order, within one sentence. A consequence drafted BEFORE its trigger
@@ -138,7 +143,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.12.0",
+  version: "1.13.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

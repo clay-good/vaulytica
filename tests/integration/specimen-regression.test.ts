@@ -206,16 +206,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // arbitration seat behind a named rule set.
   "executive-employment.txt": {
     playbook: "executive-employment",
-    findings: [
-      "EMP-007",
-      "TERM-005",
-      "CHOICE-006",
-      "OBLI-005",
-      "PERS-002",
-      "RISK-011",
-      "RISK-015",
-      "TEMP-008",
-    ],
+    // TERM-005 came off this row in 9.119.0: the agreement has a full
+    // severance clause — "If the Company terminates Executive without Cause …
+    // the Company shall pay Executive twelve (12) months of base salary" —
+    // and was being told it does not state what happens on termination.
+    findings: ["EMP-007", "CHOICE-006", "OBLI-005", "PERS-002", "RISK-011", "RISK-015", "TEMP-008"],
   },
 
   // A commercial real estate purchase and sale agreement.
@@ -1002,6 +997,32 @@ export const EXPECTED: Record<string, Expectation> = {
   // ______" and a bare "______ Printed name" — were reported at critical as
   // unfilled template placeholders.
   "media-release.txt": { playbook: "media-release", findings: ["IPDATA-010", "OBLI-005"] },
+
+  // A notification, recourse factoring facility. BNK-124 wanted "notify the
+  // account debtor" without a determiner and "pay to the factor" with the
+  // preposition; the clause writes "notify ANY account debtor of the
+  // assignment" and "directing the account debtor to PAY FACTOR". TERM-005
+  // could not read the active voice of release — "Factor shall release its
+  // security interest and file a termination statement" — where its
+  // consequence list held only the passive "is released". BNK-126 stays: the
+  // facility states its fee schedule and no effective-APR equivalent, which is
+  // the disclosure the rule is about.
+  "factoring.txt": {
+    playbook: "factoring-agreement",
+    findings: [
+      "BNK-126",
+      "CHOICE-008",
+      "IPDATA-001",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-006",
+      "RISK-002",
+      "RISK-004",
+      "RISK-007",
+      "RISK-015",
+      "TEMP-004",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

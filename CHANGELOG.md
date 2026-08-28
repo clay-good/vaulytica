@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.119.0] — 2026-08-28
+
+A notification, recourse accounts-receivable factoring facility.
+
+### Fixed
+- **TERM-005 could not read the active voice of release.** "On termination,
+  Factor shall release its security interest and file a termination statement
+  within ten (10) days" is the wind-down clause of every secured facility, and
+  the consequence list held only the passive "is released". The same repair
+  takes TERM-005 off the executive employment specimen, which has a full
+  severance clause and was being told it does not state what happens on
+  termination.
+- **BNK-124 wanted a determiner-free "notify the account debtor".** A
+  notification facility writes "authorizes Factor to notify ANY account debtor
+  of the assignment" and "directing the account debtor to PAY FACTOR" — without
+  the preposition the second pillar required. A facility whose Section 2 is
+  headed "Notification" and says so in its first sentence matched neither.
+
+### Added
+- One specimen, bringing the set to ninety-one.
+
 ## [9.118.0] — 2026-08-28
 
 A nonprofit's photograph, video, and voice release.
