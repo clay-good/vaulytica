@@ -25,6 +25,8 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import ts from "typescript";
+import { matchesFeature } from "../../src/playbooks/matcher.js";
+import { parsePlaybooks } from "../../src/playbooks/loader.js";
 
 /**
  * Source trees whose regexes read the DOCUMENT, as against the tool's own
@@ -85,6 +87,66 @@ describe("apostrophe tolerance", () => {
     expect(
       blind,
       `these recognizers cannot match a Word document's apostrophe — write ['’]:\n  ${blind.join("\n  ")}`,
+    ).toEqual([]);
+  });
+});
+
+/**
+ * The same invariant, for the half of the codebase this file's regex sweep
+ * cannot see: the CATALOG's match features.
+ *
+ * A playbook's title keywords and distinguishing phrases are plain strings,
+ * compared as substrings — not regexes — so the sweep above never looked at
+ * them. Thirty of them carry a straight apostrophe: "investors' rights
+ * agreement", "attorneys' eyes only", "finder's fee", "defendant's answer".
+ * Every one is invisible on a Word document, which writes U+2019.
+ *
+ * A second spelling problem hides in the same place: the possessive is
+ * optional in the drafter's own vocabulary. California's lien statute and the
+ * statutory notice it prescribes both write "mechanics lien"; Texas writes
+ * "mechanic's lien". Only one of the two could match.
+ *
+ * The matcher settles both by dropping apostrophes on both sides before
+ * comparing. This proves it, end to end, over the whole shipped catalog — a
+ * feature must find a document that spells it either way.
+ */
+describe("catalog features tolerate every apostrophe", () => {
+  const PLAYBOOKS = parsePlaybooks(
+    JSON.parse(readFileSync(join(process.cwd(), "playbooks", "extended.json"), "utf8")),
+  );
+
+  it("the catalog is loaded", () => {
+    expect(PLAYBOOKS.length).toBeGreaterThan(200);
+  });
+
+  it("every apostrophe-bearing feature matches the curly and bare spellings", () => {
+    const blind: string[] = [];
+    let checked = 0;
+    for (const p of PLAYBOOKS) {
+      const f = p.match_features;
+      const features = [
+        ...f.title_keywords.map((v) => ["title_keywords", v] as const),
+        ...f.distinguishing_phrases.map((v) => ["distinguishing_phrases", v] as const),
+        ...f.negative_features.map((v) => ["negative_features", v] as const),
+      ];
+      for (const [where, feature] of features) {
+        if (!/['’]/.test(feature)) continue;
+        checked += 1;
+        const spellings = [feature, feature.replace(/'/g, "’"), feature.replace(/['’]/g, "")];
+        for (const spelling of spellings) {
+          if (!matchesFeature(spelling.toLowerCase(), feature)) {
+            blind.push(`${p.id} ${where} "${feature}" does not match "${spelling}"`);
+          }
+        }
+      }
+    }
+    expect(
+      checked,
+      "the sweep found no apostrophe-bearing features — it is broken",
+    ).toBeGreaterThan(20);
+    expect(
+      blind,
+      `these catalog features cannot match every spelling of their own apostrophe:\n  ${blind.join("\n  ")}`,
     ).toEqual([]);
   });
 });

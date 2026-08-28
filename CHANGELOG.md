@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.109.0] — 2026-08-28
+
+A California preliminary notice — and thirty catalog features Word could not
+match.
+
+### Fixed
+- **Thirty catalog match features carry a straight apostrophe and none of them
+  can match a Word document.** "investors' rights agreement", "attorneys' eyes
+  only", "finder's fee", "defendant's answer" — Word writes U+2019, and a
+  playbook's features are plain substrings, so `apostrophe-tolerance`'s regex
+  sweep never looked at them. A second spelling problem hid in the same place:
+  the possessive is optional in the drafter's own vocabulary. California's lien
+  statute and the statutory notice it prescribes both write "mechanics lien";
+  Texas writes "mechanic's lien". Only one of the two could match. The matcher
+  now drops apostrophes on both sides before comparing, which settles both.
+- **`preliminary-lien-notice` matched almost nothing a real notice says.** Its
+  phrases were generic-form-shaped, so a California preliminary notice carrying
+  the statutory NOTICE TO PROPERTY OWNER block verbatim scored 0.4 and fell to
+  `generic-fallback`. It now routes at 0.9 on the statutory language itself.
+
+### Added
+- A guard over the whole shipped catalog: **every apostrophe-bearing feature
+  must match the curly, straight, and bare spellings of its own apostrophe.**
+  Proven load-bearing — without the normalization it reports all thirty.
+- One specimen, bringing the set to eighty-two.
+
 ## [9.108.0] — 2026-08-28
 
 An internal litigation hold memorandum — and a seventh thing above the title.

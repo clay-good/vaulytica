@@ -454,8 +454,37 @@ const ACRONYM_MAX_LENGTH = 5;
  * A short feature is therefore matched on word boundaries. "CO" standing
  * alone in a change order's title still matches; "Company" no longer does.
  */
-function contains(corpus: string, feature: string): boolean {
-  const needle = feature.toLowerCase();
+/**
+ * Drop apostrophes so a feature and the document can be compared.
+ *
+ * Two things defeat a plain substring match, and both are invisible:
+ *
+ *  - **Word writes the CURLY apostrophe.** Thirty catalog features carry the
+ *    straight one — "investors' rights agreement", "attorneys' eyes only",
+ *    "finder's fee", "defendant's answer" — and none of them can match a DOCX,
+ *    which spells it U+2019. `apostrophe-tolerance.test.ts` has fenced the
+ *    RECOGNIZER regexes against this since it was found there; the catalog's
+ *    features are plain strings and were never swept.
+ *  - **The possessive is optional in the drafter's own spelling.** California's
+ *    lien statute and the statutory notice it prescribes both write "mechanics
+ *    lien"; Texas writes "mechanic's lien". Only one of the two could match.
+ *
+ * Removing the apostrophe entirely settles both: "mechanic's" and "mechanics"
+ * normalize to the same token, and the curly and straight spellings do too.
+ */
+function stripApostrophes(text: string): string {
+  return text.replace(/['’‘\u02BC]/g, "");
+}
+
+/**
+ * Exported for `apostrophe-tolerance.test.ts`, which sweeps the whole shipped
+ * catalog for a feature that cannot match its own spelling. The guard has to
+ * probe the comparison itself: a one-feature document scores below the routing
+ * threshold, so the match result names no features to assert on.
+ */
+export function matchesFeature(corpusRaw: string, feature: string): boolean {
+  const corpus = stripApostrophes(corpusRaw);
+  const needle = stripApostrophes(feature.toLowerCase());
   if (needle.length === 0) return false;
   if (needle.length > ACRONYM_MAX_LENGTH || !/^[a-z0-9][a-z0-9.-]*$/.test(needle)) {
     return corpus.includes(needle);
@@ -478,14 +507,14 @@ export function matchPlaybook(
   const scored: ScoredPlaybook[] = available.map((playbook) => {
     const f = playbook.match_features;
 
-    const matched_title_keywords = f.title_keywords.filter((kw) => contains(title, kw));
+    const matched_title_keywords = f.title_keywords.filter((kw) => matchesFeature(title, kw));
     const matched_required_clauses = f.required_clauses.filter(
       (cat) => present_categories.has(cat) || defined_terms.has(cat.toLowerCase()),
     );
     const matched_distinguishing_phrases = f.distinguishing_phrases.filter((p) =>
-      contains(body, p),
+      matchesFeature(body, p),
     );
-    const matched_negative_features = f.negative_features.filter((n) => contains(body, n));
+    const matched_negative_features = f.negative_features.filter((n) => matchesFeature(body, n));
 
     // Per-match additive scoring, with each feature category capped so
     // playbooks with many keywords don't auto-dominate playbooks with

@@ -889,6 +889,12 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "litigation-hold",
     findings: ["OBLI-005", "STRUCT-006", "TEMP-002"],
   },
+
+  // A California preliminary notice, carrying the statutory NOTICE TO PROPERTY
+  // OWNER block verbatim. Its family's one matching phrase was written
+  // "mechanic's lien", and California's statute spells it "mechanics lien" —
+  // one of thirty catalog features whose apostrophe made them invisible.
+  "lien-notice.txt": { playbook: "preliminary-lien-notice", findings: [] },
 };
 
 describe("hand-written specimens", () => {
