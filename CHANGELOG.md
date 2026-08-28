@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.118.0] — 2026-08-28
+
+A nonprofit's photograph, video, and voice release.
+
+### Fixed
+- **A blank the reader is meant to fill in was reported at `critical` as
+  unfilled template content.** "Program: ______  Date of event: ______" is the
+  top of every consent form, release, application, and intake sheet, and the
+  "By:/Name:/Title:" grid the signature test knows is only one shape of it. The
+  label is what makes the difference: a placeholder stands alone where content
+  belongs, and a form field is announced by the words that say what to write
+  there. Two or more labeled blanks in a row are a form; one is left to the
+  signature tests, so "Signed: ______" is unchanged.
+- **A bare field label under a signature rule had the same problem.** "______
+  Printed name" carries one signature token where the test wants two.
+- **`media-release` knew only the COMMERCIAL model-release register** — "in all
+  media now known or hereafter devised", "irrevocably grants". The commonest
+  release there is, a nonprofit's consent form, matched none of it and scored
+  0.2. It now routes at 0.9 on the language a real release uses.
+
+### Added
+- One specimen, bringing the set to ninety.
+
 ## [9.117.0] — 2026-08-28
 
 An earnout agreement ancillary to a membership interest purchase.

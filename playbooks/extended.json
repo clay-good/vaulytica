@@ -10962,6 +10962,11 @@
         "talent release",
         "appearance release",
         "photo release",
+        "photograph release",
+        "video release",
+        "media release",
+        "publicity release",
+        "voice release",
         "likeness release"
       ],
       "required_clauses": [],
@@ -10970,7 +10975,10 @@
         "right of publicity",
         "irrevocably grants",
         "in all media now known or hereafter devised",
-        "no further compensation"
+        "no further compensation",
+        "right to inspect or approve",
+        "no payment or other compensation",
+        "my name, likeness"
       ],
       "negative_features": [
         "employment agreement",

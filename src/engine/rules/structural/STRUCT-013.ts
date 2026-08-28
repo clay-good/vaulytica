@@ -113,7 +113,9 @@ export const rule: Rule = {
           // critical placeholder findings on every contract.
           if (
             label === "underscore-line placeholder" &&
-            (isSignatureContext(p.text) || isBareNameSignature(p.text, partyNames))
+            (isSignatureContext(p.text) ||
+              isBareNameSignature(p.text, partyNames) ||
+              isLabeledFormFieldRow(p.text))
           ) {
             continue;
           }
@@ -148,6 +150,31 @@ export const rule: Rule = {
     });
   },
 };
+
+/**
+ * A row of LABELED FILL-IN FIELDS — a blank the reader is meant to complete,
+ * not template content the drafter forgot to replace.
+ *
+ * "Program: ______  Date of event: ______" is the top of every consent form,
+ * release, application, and intake sheet, and the "By:/Name:/Title:" grid the
+ * signature test knows is only one shape of it. The label is what makes the
+ * difference: a placeholder stands alone where content belongs, and a form
+ * field is announced by the words that say what to write there.
+ *
+ * EVERY underscore run in the paragraph must be labeled, so a row that mixes
+ * one labeled field with a bare template blank still reports.
+ */
+const LABELED_FIELD = /[A-Za-z][A-Za-z\s'’()/-]{0,40}:\s*$/;
+
+function isLabeledFormFieldRow(text: string): boolean {
+  // TWO or more, which is what makes it a ROW of fields. A single labeled
+  // blank is ambiguous — "Signed: ______" is a signature affordance and
+  // "Counterparty: ______" is an unfilled template field — so one is left to
+  // the signature tests and to the placeholder finding.
+  const runs = [...text.matchAll(/_{10,}/g)];
+  if (runs.length < 2) return false;
+  return runs.every((m) => LABELED_FIELD.test(text.slice(Math.max(0, m.index - 44), m.index)));
+}
 
 /**
  * The offices a signature line may name instead of using a "By:/Name:/Title:"
@@ -233,6 +260,11 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
   // placeholder, which carries template text the office alone never does, is
   // untouched.
   if (STANDALONE_OFFICE_LINE.test(after.replace(/\s+/g, " ").trim())) return true;
+  // A bare FIELD LABEL beneath the rule — "____ Printed name", "____
+  // Signature" — which is what a form prints under a signature line when the
+  // label sits on its own row. The two-token signature test sees only one
+  // token there and reported the line as an unfilled placeholder.
+  if (SIGNATURE_FIELD_LABEL.test(after.replace(/\s+/g, " ").trim())) return true;
   // A signature line labeled by role beneath the rule — "____ Signature of
   // Subject", "____ Signed by Applicant", "____ Print Name of Witness" — as a
   // consent form, affidavit, or application signs. A genuine "[Insert
@@ -260,6 +292,14 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
     return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
   });
 }
+
+/**
+ * A signature-block field label standing alone under the rule. Anchored to the
+ * WHOLE remainder, so "____ Company Name" — a genuine placeholder where the
+ * counterparty's name belongs — is untouched.
+ */
+const SIGNATURE_FIELD_LABEL =
+  /^(?:Signature|Signed|Print(?:ed)?\s+Name|Name|Date|Title|By)(?:\s+(?:of|for)\s+[A-Za-z][A-Za-z\s]{0,30})?$/i;
 
 // A template / field-label token that must NOT appear in a string we would
 // accept as a printed personal name — "____ Company Name", "____ Insert Party",

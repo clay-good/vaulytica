@@ -994,6 +994,14 @@ export const EXPECTED: Record<string, Expectation> = {
   // termination-for-cause path, and no effect-of-termination clause. All four
   // live in the purchase agreement whose definitions it borrows.
   "earnout.txt": { playbook: "earnout-agreement", findings: ["MNA-066", "OBLI-005"] },
+
+  // A nonprofit's photograph, video, and voice release. Its family knew only
+  // the COMMERCIAL model-release register ("in all media now known or
+  // hereafter devised"), so the commonest release there is scored 0.2 and fell
+  // to generic-fallback. Its form fields — "Program: ______  Date of event:
+  // ______" and a bare "______ Printed name" — were reported at critical as
+  // unfilled template placeholders.
+  "media-release.txt": { playbook: "media-release", findings: ["IPDATA-010", "OBLI-005"] },
 };
 
 describe("hand-written specimens", () => {

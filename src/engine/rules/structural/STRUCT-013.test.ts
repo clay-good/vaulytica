@@ -318,3 +318,29 @@ describe("STRUCT-013 — a signature line labeled by office alone", () => {
     expect(STRUCT_013.check(ctx)).not.toBeNull();
   });
 });
+
+describe("STRUCT-013 — a blank the reader is meant to fill in", () => {
+  // "Program: ______  Date of event: ______" is the top of every consent form,
+  // release, application, and intake sheet. The label is what makes it a form
+  // field rather than template content the drafter forgot to replace.
+  it("does not fire on a row of labeled fill-in fields", () => {
+    const ctx = buildContext([
+      "Photograph Release",
+      "Program: ______________________________________  Date of event: ________________",
+    ]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+  });
+
+  it("does not fire on a bare field label under a signature rule", () => {
+    const ctx = buildContext(["Release", "_______________________________ Printed name"]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+  });
+
+  it("still fires when one blank in the row carries no label", () => {
+    const ctx = buildContext([
+      "Photograph Release",
+      "Program: ______________________________________  ________________",
+    ]);
+    expect(STRUCT_013.check(ctx)).not.toBeNull();
+  });
+});
