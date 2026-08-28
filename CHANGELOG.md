@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.64.1] — 2026-08-27
+
+### Fixed
+- **`bill-of-sale` had empty `rule_overrides`.** A bill of sale is a one-time
+  conveyance executed by the seller alone: it allocates no IP, caps no
+  liability, has nothing to terminate, names no forum, and its operative date
+  is the execution date at the foot rather than an Effective Date recital at
+  the head. Ten findings became four, and all four are real — the schedules are
+  not attached, and the tax indemnity is one-sided, uncapped, and has no
+  procedure.
+
+### Added
+- A bill of sale specimen, bringing the set to twenty-nine.
+
 ## [9.64.0] — 2026-08-27
 
 ### Fixed

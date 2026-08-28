@@ -254,6 +254,12 @@ const EXPECTED: Record<string, Expectation> = {
     ],
   },
 
+  // A bill of sale: a one-time conveyance, executed by the seller alone.
+  "bill-of-sale.txt": {
+    playbook: "bill-of-sale",
+    findings: ["RISK-015", "STRUCT-018", "OBLI-002", "RISK-011"],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.
