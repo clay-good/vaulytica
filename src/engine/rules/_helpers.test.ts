@@ -4,6 +4,7 @@ import {
   enclosingSentence,
   firstParagraphMatch,
   firstUnnegatedParagraphMatch,
+  isIncorporatedExhibit,
   isPresenceDisclaimed,
 } from "./_helpers.js";
 import type { RuleContext } from "../finding.js";
@@ -292,5 +293,55 @@ describe("the clause scan stays linear on a large, densely-matching paragraph", 
     // 4x the input. Linear predicts ~4x; quadratic predicts ~16x. Anything at
     // or under 10x is comfortably not quadratic, with room for timer noise.
     expect(large / small).toBeLessThan(10);
+  });
+});
+
+describe("an exhibit incorporated into a named parent", () => {
+  /**
+   * "This Exhibit is incorporated into and forms part of the Subcontract dated
+   * May 4, 2026" is the recital every exhibit opens on, and an exhibit dropped
+   * in on its own is one of the commonest things a reviewer uploads. It
+   * carries no ratification clause (it changes nothing) and is not "issued
+   * under" its parent (it is part of it), so neither half of the
+   * parent-agreement test saw it: a FAR flowdown exhibit was reported for
+   * having no governing law, no venue, no IP allocation, no indemnity, no
+   * liability cap, and no termination clause.
+   */
+  const ctx = (text: string) => ctxWith(text);
+
+  it("recognizes the incorporation recital", () => {
+    expect(
+      isIncorporatedExhibit(
+        ctx(
+          "This Exhibit is incorporated into and forms part of the Subcontract dated May 4, 2026 between the Prime Contractor and the Subcontractor.",
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  it("recognizes the attached-to-and-made-part-of form", () => {
+    expect(
+      isIncorporatedExhibit(
+        ctx("This Schedule is attached to and made a part of the Master Services Agreement."),
+      ),
+    ).toBe(true);
+  });
+
+  it("does not fire on an agreement incorporating its OWN exhibits", () => {
+    expect(
+      isIncorporatedExhibit(
+        ctx("Each Exhibit referenced in this Agreement is incorporated into this Agreement."),
+      ),
+    ).toBe(false);
+  });
+
+  it("does not fire on an ordinary standalone agreement", () => {
+    expect(
+      isIncorporatedExhibit(
+        ctx(
+          "This Agreement is entered into as of March 2, 2026 between Alpha LLC and Beta Inc. and is governed by the laws of the State of Delaware.",
+        ),
+      ),
+    ).toBe(false);
   });
 });

@@ -582,10 +582,37 @@ const PARENT_CONTROLS =
   /\b(?:[Ii]n\s+the\s+event\s+of\s+(?:any\s+)?(?:a\s+)?conflict|[Tt]o\s+the\s+extent\s+of\s+(?:any\s+)?conflict|[Ii]f\s+there\s+is\s+(?:any\s+)?conflict)[^.]{0,140}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Agreement|Lease|Contract|MSA)\s*(?:controls|prevails|governs|shall\s+control|shall\s+prevail|shall\s+govern|takes\s+precedence)/;
 
 /**
- * Whether the document is subordinate to a named parent agreement — either
- * because it amends and ratifies one, or because it is issued under one.
+ * The third half of the same shape: an EXHIBIT, schedule, or annex that says
+ * it is incorporated into a named parent.
+ *
+ * "This Exhibit is incorporated into and forms part of the Subcontract dated
+ * May 4, 2026" is the recital every such document opens on, and an exhibit
+ * dropped in on its own is one of the commonest things a reviewer uploads. It
+ * carries no ratification clause (it changes nothing) and is not "issued
+ * under" its parent (it is part of it), so neither half above saw it: a FAR
+ * flowdown exhibit was reported for having no governing law, no venue, no IP
+ * allocation, no indemnity, no liability cap, and no termination clause. All
+ * six live in the subcontract the exhibit is attached to.
+ *
+ * The document must call ITSELF the exhibit — an agreement that incorporates
+ * its own exhibits says "each Exhibit is incorporated into this Agreement",
+ * where the parent is "this", not "the <Named> Agreement", and does not match.
  */
-export function amendsParentAgreement(ctx: RuleContext): boolean {
+const INCORPORATED_INTO_PARENT =
+  /\bThis\s+(?:Exhibit|Schedule|Annex|Appendix|Attachment)\b[^.]{0,80}?\b(?:is|are)\s+(?:hereby\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
+
+/**
+ * Whether the document is an exhibit / schedule / annex that says it is
+ * incorporated into a named parent instrument. Narrower than
+ * {@link amendsParentAgreement}: the checks that read execution and party
+ * identification use this one, because an amendment IS separately signed by
+ * both parties and an exhibit is not.
+ */
+export function isIncorporatedExhibit(ctx: RuleContext): boolean {
+  return INCORPORATED_INTO_PARENT.test(documentTextOf(ctx));
+}
+
+function documentTextOf(ctx: RuleContext): string {
   const parts: string[] = [];
   const walk = (sections: RuleContext["tree"]["sections"]): void => {
     for (const section of sections) {
@@ -594,8 +621,21 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
     }
   };
   walk(ctx.tree.sections);
-  const text = parts.join(" ");
-  return RATIFIES_PARENT.test(text) || ISSUED_UNDER_PARENT.test(text) || PARENT_CONTROLS.test(text);
+  return parts.join(" ");
+}
+
+/**
+ * Whether the document is subordinate to a named parent agreement — either
+ * because it amends and ratifies one, or because it is issued under one.
+ */
+export function amendsParentAgreement(ctx: RuleContext): boolean {
+  const text = documentTextOf(ctx);
+  return (
+    RATIFIES_PARENT.test(text) ||
+    ISSUED_UNDER_PARENT.test(text) ||
+    PARENT_CONTROLS.test(text) ||
+    INCORPORATED_INTO_PARENT.test(text)
+  );
 }
 
 /**

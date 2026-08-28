@@ -1,0 +1,60 @@
+EXHIBIT C
+
+FEDERAL ACQUISITION REGULATION FLOWDOWN CLAUSES
+
+Subcontract No. RVN-2026-0418 under Prime Contract No. W58RGZ-25-C-0091
+
+This Exhibit sets out the clauses of the Federal Acquisition Regulation ("FAR") and the Defense Federal Acquisition Regulation Supplement ("DFARS") that Ridgeline Avionics, Inc. (the "Prime Contractor") is required to flow down to Kestrel Precision Machining LLC (the "Subcontractor") under Prime Contract No. W58RGZ-25-C-0091 with the Department of the Army. This Exhibit is incorporated into and forms part of the Subcontract dated May 4, 2026 between the Prime Contractor and the Subcontractor.
+
+1. Application.
+
+The clauses listed in Sections 3 and 4 are incorporated by reference and apply to this Subcontract with the same force and effect as if set out in full. In each incorporated clause, unless the context requires otherwise: "Contracting Officer" means the Prime Contractor's authorized representative; "Contractor" means the Subcontractor; "Government" retains its meaning; and "Contract" means this Subcontract. Where an incorporated clause gives a right to the Government that cannot sensibly be exercised by the Prime Contractor, that right is reserved to the Government.
+
+2. Order of Precedence.
+
+If a clause incorporated by this Exhibit conflicts with a term of the Subcontract, the incorporated clause controls to the extent of the conflict, except that nothing in this Exhibit enlarges the Subcontractor's liability beyond the limits stated in Section 14 of the Subcontract.
+
+3. FAR Clauses Incorporated by Reference.
+
+FAR 52.203-13, Contractor Code of Business Ethics and Conduct (Nov 2021).
+FAR 52.203-19, Prohibition on Requiring Certain Internal Confidentiality Agreements or Statements (Jan 2017).
+FAR 52.204-21, Basic Safeguarding of Covered Contractor Information Systems (Nov 2021).
+FAR 52.204-23, Prohibition on Contracting for Hardware, Software, and Services Developed or Provided by Kaspersky Lab (Nov 2021).
+FAR 52.204-25, Prohibition on Contracting for Certain Telecommunications and Video Surveillance Services or Equipment (Nov 2021).
+FAR 52.219-8, Utilization of Small Business Concerns (Oct 2018).
+FAR 52.222-21, Prohibition of Segregated Facilities (Apr 2015).
+FAR 52.222-26, Equal Opportunity (Sep 2016).
+FAR 52.222-35, Equal Opportunity for Veterans (Jun 2020).
+FAR 52.222-36, Equal Opportunity for Workers with Disabilities (Jun 2020).
+FAR 52.222-50, Combating Trafficking in Persons (Nov 2021).
+FAR 52.225-13, Restrictions on Certain Foreign Purchases (Feb 2021).
+FAR 52.244-6, Subcontracts for Commercial Products and Commercial Services (Nov 2021).
+FAR 52.247-64, Preference for Privately Owned U.S.-Flag Commercial Vessels (Nov 2021).
+
+4. DFARS Clauses Incorporated by Reference.
+
+DFARS 252.204-7012, Safeguarding Covered Defense Information and Cyber Incident Reporting (Jan 2023).
+DFARS 252.225-7009, Restriction on Acquisition of Certain Articles Containing Specialty Metals (Oct 2014).
+DFARS 252.225-7048, Export-Controlled Items (Jun 2013).
+DFARS 252.244-7000, Subcontracts for Commercial Products or Commercial Services (Jan 2021).
+DFARS 252.246-7003, Notification of Potential Safety Issues (Jan 2023).
+
+5. Cybersecurity.
+
+The Subcontractor shall implement the security requirements of NIST Special Publication 800-171 on all covered contractor information systems, and shall report a cyber incident to the Department of Defense at https://dibnet.dod.mil within 72 hours after discovery, with a copy of the report to the Prime Contractor at the same time, as required by DFARS 252.204-7012.
+
+6. Audit and Records.
+
+The Subcontractor shall maintain books and records supporting its charges under this Subcontract for three (3) years after final payment, and shall make them available to the Prime Contractor, the Contracting Officer, the Defense Contract Audit Agency, and the Comptroller General on reasonable notice during normal business hours.
+
+7. Flowdown to Lower Tiers.
+
+The Subcontractor shall include the clauses listed in Sections 3 and 4 in each of its own subcontracts at any tier, with the same substitutions of party names stated in Section 1, to the extent each clause requires flowdown by its own terms.
+
+8. Certifications.
+
+By accepting this Subcontract, the Subcontractor certifies that: (a) it and its principals are not debarred, suspended, or proposed for debarment by any federal agency; (b) it does not use covered telecommunications equipment or services as described in FAR 52.204-25; and (c) the representations it made in the System for Award Management are current, accurate, and complete. The Subcontractor shall notify the Prime Contractor in writing within five (5) business days after any of these certifications ceases to be accurate.
+
+9. Changes in Law.
+
+If the Government modifies the Prime Contract to add, delete, or change a flowdown clause, the Prime Contractor shall give the Subcontractor written notice of the change, and the parties shall negotiate in good faith an equitable adjustment to the price or schedule of this Subcontract to the extent the change increases the Subcontractor's cost or time of performance.

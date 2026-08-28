@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { isIncorporatedExhibit } from "../_helpers.js";
 import { findStatuteCitation, makeFinding } from "../../finding.js";
 
 /**
@@ -21,6 +22,12 @@ export const rule: Rule = {
 
   check(ctx: RuleContext): Finding | null {
     if (ctx.extracted.parties.length > 0) return null;
+    // An exhibit / schedule / annex that says it is incorporated into a named
+    // parent instrument is part of that instrument, not a document of its own.
+    // A FAR flowdown exhibit dropped in on its own was reported for naming no parties —
+    // which lives in the subcontract the exhibit is attached to.
+    if (isIncorporatedExhibit(ctx)) return null;
+
     const firstSectionId = ctx.tree.sections[0]?.id ?? "";
     return makeFinding({
       rule,

@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { findStatuteCitation, makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
+import { isIncorporatedExhibit } from "../_helpers.js";
 
 // A signature-block label is followed by a colon ("By:") or an underscore fill
 // line ("By ____"). WITHOUT that anchor the bare words "by" / "date" / "title"
@@ -239,6 +240,11 @@ export const rule: Rule = {
     // Self-declaring, so it needs no playbook to be attached to, and it
     // matches nothing in the corpus.
     if (DISCLAIMS_CONTRACT.test(documentText(ctx))) return null;
+    // An exhibit / schedule / annex that says it is incorporated into a named
+    // parent instrument is signed WITH that instrument, on the parent's
+    // signature page. A FAR flowdown exhibit dropped in on its own drew this
+    // finding at `critical` for a signature block it is not supposed to have.
+    if (isIncorporatedExhibit(ctx)) return null;
     type P = { start: number; text: string; sectionId: string; inExhibit: boolean };
     const paragraphs: P[] = [];
     // The printed names of the signatories, for the bare-name signature line a

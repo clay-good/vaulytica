@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.102.0] — 2026-08-28
+
+A FAR flowdown exhibit — one of the commonest things a reviewer uploads on its
+own.
+
+### Fixed
+- **An exhibit incorporated into a named parent was audited as though it were
+  the whole contract.** "This Exhibit is incorporated into and forms part of
+  the Subcontract dated May 4, 2026" is the recital every exhibit opens on. It
+  carries no ratification clause, because it changes nothing, and it is not
+  "issued under" its parent, because it is part of it — so neither half of the
+  parent-agreement test saw it. A FAR/DFARS flowdown exhibit was reported for
+  having no governing law, no venue, no IP allocation, no indemnity, no
+  liability cap, no termination-for-cause path, no effect-of-termination
+  clause, no payment term, no parties, and no signature block. Every one of
+  those lives in the subcontract the exhibit is attached to. Ten findings, one
+  recital.
+
+  The document must call ITSELF the exhibit: an agreement that incorporates its
+  own exhibits says "each Exhibit is incorporated into **this** Agreement",
+  where the parent is "this" rather than a named instrument, and is untouched.
+- **"the Subcontract" was not in either cross-instrument vocabulary.** A
+  reference to "Section 14 of the Subcontract" read as a broken internal
+  reference, and the parent-agreement recital did not recognize its own parent.
+
+### Added
+- One specimen, bringing the set to seventy-four.
+
 ## [9.101.0] — 2026-08-28
 
 A recorded declaration of covenants, conditions, and restrictions.

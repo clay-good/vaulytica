@@ -791,6 +791,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // bind whoever buys it. Its statutory citations are decimal-numbered and
   // come in pairs, which is where the external-citation run stopped reading.
   "ccrs.txt": { playbook: "ccrs", findings: ["OBLI-005", "TEMP-004", "TEMP-008"] },
+
+  // A FAR/DFARS flowdown exhibit to a defense subcontract. An exhibit dropped
+  // in on its own is one of the commonest things a reviewer uploads, and it
+  // was reported for having no governing law, no venue, no IP allocation, no
+  // indemnity, no liability cap, no termination clause, no parties, and no
+  // signature block — every one of which lives in the subcontract it is
+  // attached to. COMM-159 and COMM-162 are real gaps: this exhibit flows down
+  // neither the termination-for-convenience clause nor a prompt-payment term.
+  "far-flowdown.txt": {
+    playbook: "far-subcontract-flowdown",
+    findings: ["COMM-159", "COMM-162", "STRUCT-006", "STRUCT-009"],
+  },
 };
 
 describe("hand-written specimens", () => {

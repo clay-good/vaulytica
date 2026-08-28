@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { emit, firstParagraphMatch, isIncorporatedExhibit, topPosition } from "../_helpers.js";
 
 // The hyphenated compound ("forty-five") comes FIRST: alternation is ordered,
 // so listing the bare ten ("forty") before it would match only "forty" and
@@ -144,6 +144,12 @@ export const rule: Rule = {
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     if (firstParagraphMatch(ctx, PAYMENT_TERMS)) return null;
+    // An exhibit / schedule / annex that says it is incorporated into a named
+    // parent instrument is part of that instrument, not a document of its own.
+    // A FAR flowdown exhibit dropped in on its own was reported for stating no payment term —
+    // which lives in the subcontract the exhibit is attached to.
+    if (isIncorporatedExhibit(ctx)) return null;
+
     if (!firstParagraphMatch(ctx, ANY_PAYMENT)) return null;
     return emit(ctx, rule, {
       title: "No payment-term clause detected",
