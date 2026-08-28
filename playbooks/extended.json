@@ -7151,10 +7151,7 @@
         "joint instruction",
         "interpleader"
       ],
-      "negative_features": [
-        "stock purchase agreement",
-        "asset purchase agreement"
-      ]
+      "negative_features": []
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -7162,7 +7159,11 @@
       "Escrow Fund",
       "Release Date"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "RISK-002": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "Practice-Baseline",
@@ -12283,11 +12284,7 @@
         "miller act",
         "aia a312"
       ],
-      "negative_features": [
-        "lien waiver",
-        "subcontract",
-        "change order"
-      ]
+      "negative_features": []
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -12296,7 +12293,23 @@
       "Obligee",
       "Penal Sum"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "MILLER-ACT-AIA-A312",

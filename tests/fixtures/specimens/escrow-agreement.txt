@@ -1,0 +1,83 @@
+ESCROW AGREEMENT
+
+THIS ESCROW AGREEMENT (this "Agreement") is made as of September 8, 2026, among ORINOCO SPECIALTY CHEMICALS, INC., a Delaware corporation ("Seller"), TALLGRASS INDUSTRIAL HOLDINGS LP, a Delaware limited partnership ("Buyer"), and FIRST MERIDIAN TRUST COMPANY, N.A., a national banking association, as escrow agent (the "Escrow Agent").
+
+RECITALS
+
+A. Buyer and Seller are parties to a Stock Purchase Agreement dated September 8, 2026 (the "Purchase Agreement"), under which Buyer is acquiring all of the outstanding capital stock of Aldergrove Coatings Corp.
+
+B. The Purchase Agreement requires that $4,750,000 of the purchase price be deposited with the Escrow Agent to secure Seller's indemnification obligations.
+
+C. The Escrow Agent is willing to act on the terms below.
+
+NOW, THEREFORE, the parties agree as follows.
+
+1. Appointment and Deposit.
+
+Buyer and Seller appoint First Meridian Trust Company, N.A. as Escrow Agent, and the Escrow Agent accepts the appointment, subject only to the express terms of this Agreement. At the Closing, Buyer shall deposit $4,750,000 (together with all interest and earnings, the "Escrow Fund") with the Escrow Agent by wire transfer. The Escrow Agent shall hold the Escrow Fund in a segregated account in the name of the Escrow Agent as escrow agent, and not as the property of the Escrow Agent, Buyer, or Seller.
+
+2. Investment.
+
+The Escrow Agent shall invest the Escrow Fund solely in a money market fund that invests exclusively in obligations of the United States government with a maturity of ninety days or less, as Buyer and Seller jointly direct in writing, and in the absence of joint direction, in the fund identified on Schedule 1. The Escrow Agent has no liability for any loss from an investment made in accordance with this Section, other than a loss caused by the Escrow Agent's own gross negligence or willful misconduct. Interest and earnings are treated for tax purposes as earned by Seller, and the Escrow Agent shall report them accordingly on Form 1099 using the taxpayer identification number Seller provides on Schedule 2.
+
+3. Claims Against the Escrow Fund.
+
+Buyer may deliver to the Escrow Agent, with a simultaneous copy to Seller, a written notice (a "Claim Notice") stating the amount claimed and, in reasonable detail, the basis for the claim under the Purchase Agreement. If the Escrow Agent does not receive a written objection from Seller within thirty (30) days after the Escrow Agent's receipt of a Claim Notice, the Escrow Agent shall release the claimed amount to Buyer on the thirty-first day. If the Escrow Agent receives a timely written objection, it shall not release the disputed amount except in accordance with Section 4.
+
+4. Disputed Amounts.
+
+The Escrow Agent shall release a disputed amount only on (a) a joint written instruction signed by Buyer and Seller, or (b) a final, non-appealable order of a court of competent jurisdiction accompanied by an opinion of counsel, reasonably satisfactory to the Escrow Agent, that the order is final and non-appealable. The Escrow Agent may, at its option, deposit the disputed amount with a court of competent jurisdiction and thereupon be discharged from all further obligation with respect to that amount.
+
+5. Release Date.
+
+On the date eighteen (18) months after the Closing (the "Release Date"), the Escrow Agent shall release to Seller the balance of the Escrow Fund less the aggregate amount of all claims that are then the subject of an unresolved Claim Notice, and shall continue to hold that retained amount until it is released under Section 3 or Section 4.
+
+6. Duties of the Escrow Agent.
+
+The Escrow Agent's duties are purely ministerial and are limited to those expressly set forth in this Agreement, and no implied duties or obligations may be read into this Agreement. The Escrow Agent is not a party to, is not bound by, and has no duty to inquire into the Purchase Agreement or any other agreement, whether or not a copy is delivered to it. The Escrow Agent may rely on, and is protected in acting on, any written instruction, notice, or other document that it in good faith believes to be genuine and signed by the proper person, and has no duty to verify any statement in it. The Escrow Agent may consult counsel of its choice and is protected in acting in accordance with that advice.
+
+7. Compensation and Expenses.
+
+Buyer and Seller shall each pay one-half of the Escrow Agent's fees as set out on Schedule 3, consisting of an acceptance fee of $2,500 payable at signing and an annual administration fee of $4,000 payable in advance on each anniversary of the Closing, and shall each reimburse one-half of the Escrow Agent's reasonable out-of-pocket expenses, including reasonable fees of counsel. The Escrow Agent may not deduct any fee or expense from the Escrow Fund without the joint written consent of Buyer and Seller.
+
+8. Indemnification of the Escrow Agent.
+
+Buyer and Seller shall jointly and severally indemnify, defend, and hold harmless the Escrow Agent and its officers, directors, employees, and agents from and against any claim, loss, liability, damage, cost, or expense, including reasonable attorneys' fees, arising out of or in connection with the Escrow Agent's performance of this Agreement, except to the extent caused by the Escrow Agent's gross negligence or willful misconduct as finally determined by a court of competent jurisdiction. As between Buyer and Seller, each shall bear one-half of any amount paid under this Section. The Escrow Agent shall give prompt written notice of any claim for which it seeks indemnity, shall permit Buyer and Seller jointly to control the defense with counsel reasonably satisfactory to the Escrow Agent, and shall not settle any such claim without the prior written consent of Buyer and Seller, which shall not be unreasonably withheld. The aggregate liability of the Escrow Agent under this Agreement shall not exceed the amount of fees actually paid to it under Section 7, except in the case of its gross negligence or willful misconduct. This Section survives the termination of this Agreement and the resignation or removal of the Escrow Agent.
+
+9. Resignation and Removal.
+
+The Escrow Agent may resign on thirty (30) days' prior written notice to Buyer and Seller, and Buyer and Seller may jointly remove the Escrow Agent on thirty (30) days' prior written notice. Buyer and Seller shall jointly appoint a successor escrow agent within that period; if they do not, the Escrow Agent may appoint a successor that is a bank or trust company with capital of at least $250,000,000, or may deposit the Escrow Fund with a court of competent jurisdiction. On delivery of the Escrow Fund to a successor, the resigning or removed Escrow Agent is discharged from all further obligation.
+
+10. Termination.
+
+This Agreement terminates when the entire Escrow Fund has been released in accordance with its terms. On termination, the Escrow Agent has no further duty, and Sections 7 and 8 survive.
+
+11. Notices; Governing Law; Counterparts.
+
+Every notice under this Agreement shall be in writing and delivered by hand, overnight courier, or email with confirmed receipt to the addresses below each party's signature, and is effective on receipt; a notice to the Escrow Agent is effective only on actual receipt by the officer named on Schedule 4. This Agreement is governed by the laws of the State of New York, without regard to its conflict-of-laws principles, and each party submits to the exclusive jurisdiction of the state and federal courts sitting in the Borough of Manhattan, City of New York. This Agreement may be executed in counterparts, and no amendment binds the Escrow Agent unless signed by it.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+ORINOCO SPECIALTY CHEMICALS, INC.
+
+By: /s/ Solveig Ramachandran
+Name: Solveig Ramachandran
+Title: Chief Executive Officer
+
+TALLGRASS INDUSTRIAL HOLDINGS LP
+By: Tallgrass Industrial GP LLC, its general partner
+
+By: /s/ Barnabas Achebe-Lindqvist
+Name: Barnabas Achebe-Lindqvist
+Title: Managing Director
+
+FIRST MERIDIAN TRUST COMPANY, N.A., as Escrow Agent
+
+By: /s/ Guadalupe Fitzgerald-Nakamura
+Name: Guadalupe Fitzgerald-Nakamura
+Title: Vice President
+
+Schedule 1 — Permitted Investment
+Schedule 2 — Taxpayer Identification Numbers
+Schedule 3 — Escrow Agent Fee Schedule
+Schedule 4 — Notice Officer

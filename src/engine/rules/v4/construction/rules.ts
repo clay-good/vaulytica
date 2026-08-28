@@ -459,6 +459,7 @@ const BOND_RULES: Rule[] = [
   }),
   presence({
     id: "CON-021",
+    version: "1.1.0",
     name: "Bond type — payment / performance / dual-obligee",
     description: "Bond must clearly state whether it is a payment bond, performance bond, or dual.",
     citation: millerAct(),
@@ -470,9 +471,18 @@ const BOND_RULES: Rule[] = [
       "Miller Act (federal) and state Little Miller Acts use separate payment and performance bonds. AIA A312 ships both. The type determines who can make a claim and the procedure.",
     recommendation:
       "Title the bond explicitly: 'Payment Bond' or 'Performance Bond' (or both, if dual).",
+    // 1.1.0 — the second pillar wanted "AIA A312", "Miller Act", or "Little
+    // Miller", and no bond prints any of them: a statutory bond cites the
+    // enacting state's code by section ("given pursuant to Idaho Code
+    // §§ 54-1925 through 54-1930"), and "Little Miller Act" is a
+    // commentator's name for those statutes, not a drafter's. Conjoined with
+    // the bond-type pillar, that made the check unable to be satisfied by any
+    // real state bond — reported at `critical` on a document titled "PAYMENT
+    // AND PERFORMANCE BOND". The pillar now recognizes the authority the way
+    // a bond states it.
     present_patterns: [
       /(payment\s+bond|performance\s+bond)/i,
-      /(aia\s+a312|miller\s+act|little\s+miller)/i,
+      /(aia\s+a312|miller\s+act|little\s+miller|dual[-\s]obligee|§+\s*\d+[-–.]\d+|\b\d+\s+U\.?\s?S\.?\s?C\.?\s*§*\s*\d)/i,
     ],
     require_all_present: true,
   }),
@@ -491,6 +501,7 @@ const BOND_RULES: Rule[] = [
   }),
   presence({
     id: "CON-023",
+    version: "1.1.0",
     name: "Underlying contract incorporation",
     description: "Bond must reference and incorporate the underlying construction contract.",
     citation: millerAct(),
@@ -502,9 +513,15 @@ const BOND_RULES: Rule[] = [
     recommendation:
       "Add 'Underlying Contract' identifying the construction contract by date / parties / project and incorporating it by reference.",
     present_patterns: [
-      /(underlying\s+contract|construction\s+contract|incorporated\s+by\s+reference)/i,
+      /(underlying\s+contract|construction\s+contract|incorporated\s+by\s+reference|made\s+a\s+part\s+(?:of|hereof))/i,
       /(dated|date\s+of|project)/i,
     ],
+    // A bond incorporates its contract in the WHEREAS clause and nowhere
+    // else, and the shared text helper strips recitals — so this check
+    // reported at `critical` that a bond reciting "which Contract is
+    // incorporated by reference and made a part of this bond" incorporates
+    // nothing.
+    include_recitals: true,
   }),
   presence({
     id: "CON-024",

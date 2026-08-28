@@ -13,11 +13,13 @@
       "joint instruction",
       "interpleader"
     ],
-    "negative_features": ["stock purchase agreement", "asset purchase agreement"]
+    "negative_features": []
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Escrow Agent", "Escrow Fund", "Release Date"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "RISK-002": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "Practice-Baseline",

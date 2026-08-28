@@ -20,7 +20,7 @@ import type { Finding, Rule, RuleContext, Severity } from "../../finding.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
-import { enclosingSentence, isNonOperative } from "../_helpers.js";
+import { enclosingSentence, isNonOperative, isTableOfContents } from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
 
 /**
@@ -37,6 +37,34 @@ import type { DocPosition } from "../../../extract/types.js";
  * Used only for boolean `.test()` — never for offsets — so dropping
  * paragraphs cannot move a reported position.
  */
+/**
+ * `fullText`, but keeping the recitals.
+ *
+ * A surety bond is BUILT out of recitals. "WHEREAS, the Principal has entered
+ * into a written contract with the Obligee dated August 3, 2026 …, **which
+ * Contract is incorporated by reference and made a part of this bond**" is
+ * the incorporation clause, in the only place a bond ever puts it — and
+ * `fullText` strips it, so CON-023 reported at `critical` that a bond
+ * incorporating its contract incorporates nothing.
+ *
+ * The general exclusion stays right: a recital that says what the parties
+ * INTEND ("WHEREAS the parties intend that Customer own the IP") must not
+ * answer for the operative clause. A recital that PERFORMS the act is a
+ * different thing, and only a rule that knows its family's drafting
+ * convention can tell them apart — so this is opt-in per rule, never the
+ * default. See {@link V4PresenceSpec.include_recitals}.
+ */
+export function fullTextWithRecitals(ctx: RuleContext): string {
+  const parts: string[] = [];
+  forEachSection(ctx.tree, (s) => {
+    if (s.heading) parts.push(s.heading);
+  });
+  forEachParagraph(ctx.tree, (p) => {
+    if (!isTableOfContents(p.text)) parts.push(p.text);
+  });
+  return parts.join("\n");
+}
+
 export function fullText(ctx: RuleContext): string {
   const parts: string[] = [];
   forEachSection(ctx.tree, (s) => {
@@ -127,6 +155,13 @@ export type V4PresenceSpec = {
    * Optional; rules without it are unchanged.
    */
   denied_if?: readonly RegExp[];
+  /**
+   * Read the recitals too. Opt-in, for a family whose operative content
+   * conventionally lives in a "WHEREAS" clause — a surety bond incorporates
+   * its underlying contract there and nowhere else. See
+   * {@link fullTextWithRecitals}.
+   */
+  include_recitals?: boolean;
   /** Title used when `denied_if` fires. Defaults to the missing_title. */
   denied_title?: string;
   /** Description used when `denied_if` fires. Defaults to the missing_description. */
@@ -168,7 +203,7 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
     dkb_citations: [spec.citation.id],
     applies_to_playbooks: [...spec.playbooks],
     check(ctx: RuleContext): Finding | null {
-      const text = fullText(ctx);
+      const text = spec.include_recitals ? fullTextWithRecitals(ctx) : fullText(ctx);
       if (spec.applicable_if && !spec.applicable_if.some((re) => re.test(text))) return null;
       if (spec.denied_if) {
         // An express denial outranks the presence check: the topic words are

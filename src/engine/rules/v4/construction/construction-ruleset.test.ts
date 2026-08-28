@@ -228,3 +228,53 @@ describe("CON-030 — express denial of the further-claims waiver", () => {
     ).toEqual([]);
   });
 });
+
+describe("the surety bond as a bond is actually written (v1.1.0)", () => {
+  /**
+   * Two `critical` false accusations on a document titled "PAYMENT AND
+   * PERFORMANCE BOND".
+   *
+   * CON-021's second pillar wanted "AIA A312", "Miller Act", or "Little
+   * Miller". A statutory bond cites the enacting state's code by section —
+   * "given pursuant to Idaho Code §§ 54-1925 through 54-1930" — and "Little
+   * Miller Act" is a commentator's name for those statutes, not a drafter's.
+   *
+   * CON-023 could not see the incorporation clause at all, because a bond
+   * puts it in the WHEREAS and the shared text helper strips recitals.
+   */
+  const BOND_PB: Playbook = { id: "payment-performance-bond", version: "1.0.0" };
+  const check = (id: string, ...paras: string[]) =>
+    CONSTRUCTION_RULES.find((r) => r.id === id)!.check(
+      withPb(buildContext(["Payment and Performance Bond", ...paras]), BOND_PB),
+    );
+
+  it("CON-021 reads a bond whose authority is a state code section", () => {
+    expect(
+      check(
+        "CON-021",
+        "This is a payment bond and a performance bond given pursuant to Idaho Code §§ 54-1925 through 54-1930.",
+      ),
+    ).toBeNull();
+  });
+
+  it("CON-021 still fires on a bond that names neither its type nor its authority", () => {
+    expect(
+      check("CON-021", "The Surety is bound to the Obligee in the penal sum stated above."),
+    ).not.toBeNull();
+  });
+
+  it("CON-023 reads the incorporation clause in the recital", () => {
+    expect(
+      check(
+        "CON-023",
+        'WHEREAS, the Principal has entered into a written contract with the Obligee dated August 3, 2026 (the "Contract"), which Contract is incorporated by reference and made a part of this bond;',
+      ),
+    ).toBeNull();
+  });
+
+  it("CON-023 still fires on a bond that identifies no underlying contract", () => {
+    expect(
+      check("CON-023", "The Surety is bound to the Obligee in the penal sum of $8,940,000.00."),
+    ).not.toBeNull();
+  });
+});

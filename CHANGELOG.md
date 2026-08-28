@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.88.0] — 2026-08-28
+
+An M&A indemnity escrow and an Idaho payment and performance bond.
+
+### Fixed
+- **A bond states its incorporation clause in the WHEREAS, and recitals are
+  stripped.** `fullText` — which every v4 and v5 presence rule reads — drops
+  recitals, and rightly: a recital that says what the parties INTEND must not
+  answer for the operative clause. But a surety bond is built out of recitals,
+  and "WHEREAS, the Principal has entered into a written contract with the
+  Obligee dated August 3, 2026 …, **which Contract is incorporated by
+  reference and made a part of this bond**" is the incorporation clause, in
+  the only place a bond ever puts it. CON-023 reported at `critical` that a
+  bond incorporating its contract incorporates nothing. Presence rules can now
+  opt in with `include_recitals`, which only a rule that knows its family's
+  drafting convention should do.
+- **CON-021 wanted a name no bond prints.** Its second pillar was "AIA A312",
+  "Miller Act", or "Little Miller" — but a statutory bond cites the enacting
+  state's code by section ("given pursuant to Idaho Code §§ 54-1925 through
+  54-1930"), and "Little Miller Act" is a commentator's name for those
+  statutes, not a drafter's. Conjoined with the bond-type pillar, that made
+  the check impossible to satisfy on any real state bond, and it fired at
+  `critical` on a document titled "PAYMENT AND PERFORMANCE BOND".
+- **A state trial court named for its judicial district registered no venue.**
+  "The District Court of the Fourth Judicial District of the State of Idaho,
+  in and for Ada County" and "the Circuit Court of the Ninth Judicial Circuit
+  in and for Orange County, Florida" are how state courts are named in the
+  states that number their districts. The capture after the court requires an
+  uppercase start, and this form puts a lowercase "the" there, so the whole
+  clause went unextracted and CHOICE-003 reported "no forum clause".
+- **Two more playbooks penalized their own vocabulary.** `escrow-agreement`
+  listed "stock purchase agreement" — the agreement every M&A escrow names in
+  its first recital as the one it secures — and `payment-performance-bond`
+  listed "subcontract", which is what a payment bond's statutory claimant
+  notice is written for.
+- **RISK-002 on an escrow agreement.** A three-party escrow indemnifies its
+  agent one way and always has; the asymmetry is the design.
+- **`escrow-agreement` and `payment-performance-bond` shipped with an empty
+  `rule_overrides`.**
+
+### Added
+- Two specimens, bringing the set to fifty-two.
+
 ## [9.87.0] — 2026-08-28
 
 A permanent utility easement and a tolling agreement.

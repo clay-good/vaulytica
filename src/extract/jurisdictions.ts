@@ -176,7 +176,18 @@ const GOV_LAW_SUBJECT_FIRST = new RegExp(
 // the sovereign before the court type as well as after it.
 const COURT_NAME = String.raw`(?:United\s+States\s+|U\.?S\.?\s+)?(?:Superior\s+|Supreme\s+|District\s+|Circuit\s+|Chancery\s+|Commercial\s+|County\s+|Municipal\s+)?`;
 
-const CIVIL_DIVISION_OF = String.raw`(?:the\s+(?:State|Commonwealth|City|County|Borough|Parish|Township|District|Municipality)\s+of\s+)?`;
+/**
+ * The scaffolding between the court and the jurisdiction it sits in.
+ *
+ * A state trial court is named for its JUDICIAL DISTRICT before it names its
+ * state: "the District Court of the Fourth Judicial District of the State of
+ * Idaho, in and for Ada County", "the Circuit Court of the Ninth Judicial
+ * Circuit in and for Orange County, Florida". The capture that follows
+ * requires an uppercase start, and this form puts a lowercase "the" there, so
+ * the whole clause went unextracted and CHOICE-003 reported "no forum clause"
+ * on a bond that names two courts.
+ */
+const CIVIL_DIVISION_OF = String.raw`(?:the\s+(?:[A-Za-z]+\s+){0,2}?Judicial\s+(?:District|Circuit)\s+(?:of|in\s+and\s+for)\s+)?(?:the\s+(?:State|Commonwealth|City|County|Borough|Parish|Township|District|Municipality)\s+of\s+)?`;
 
 const VENUE = new RegExp(
   String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:exclusively\s+|solely\s+|only\s+|proper(?:ly)?\s+)*(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,

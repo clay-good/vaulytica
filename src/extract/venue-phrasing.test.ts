@@ -7,6 +7,19 @@ import { buildTree } from "./_fixtures.js";
 // document that has one (the worst false absence this tool can make), and a
 // wrong state makes the law/venue-mismatch rules fire spuriously.
 const REGISTERS: Array<[clause: string, want: RegExp]> = [
+  // A state trial court is named for its JUDICIAL DISTRICT before it names
+  // its state. The capture that follows the court requires an uppercase
+  // start, and this form puts a lowercase "the" there, so the whole clause
+  // went unextracted and CHOICE-003 reported "no forum clause" on a surety
+  // bond that names two courts.
+  [
+    "Any proceeding on this bond shall be brought in the District Court of the Fourth Judicial District of the State of Idaho, in and for Ada County.",
+    /Idaho/,
+  ],
+  [
+    "Venue lies in the Circuit Court of the Ninth Judicial Circuit in and for Orange County, Florida.",
+    /Florida/,
+  ],
   // A state court is named by its TYPE and the county it sits FOR — "the
   // Circuit Court for Dane County", "the Superior Court for the County of Los
   // Angeles". The forum patterns admitted only a bare "court(s)" plus an

@@ -408,6 +408,31 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // An M&A indemnity escrow. Its playbook listed "stock purchase agreement"
+  // as a negative feature — the agreement every escrow of this kind names in
+  // its first recital as the one it secures — and RISK-002 reported the
+  // indemnity asymmetric, which it is by design: a three-party escrow
+  // indemnifies its agent one way and always has.
+  "escrow-agreement.txt": {
+    playbook: "escrow-agreement",
+    findings: ["OBLI-005", "STRUCT-006", "STRUCT-018", "TEMP-006", "TEMP-007"],
+  },
+
+  // An Idaho payment and performance bond. Three defects, two at `critical`.
+  // CON-021's second pillar wanted "AIA A312", "Miller Act", or "Little
+  // Miller" — a statutory bond cites the enacting state's code by section, and
+  // "Little Miller Act" is a commentator's name for those statutes, not a
+  // drafter's. CON-023 could not see the incorporation clause because a bond
+  // puts it in the WHEREAS and the shared text helper strips recitals. And the
+  // venue extractor could not read a state trial court named for its judicial
+  // district ("the District Court of the Fourth Judicial District of the State
+  // of Idaho, in and for Ada County") — the capture requires an uppercase
+  // start, and that form puts a lowercase "the" there.
+  "performance-bond.txt": {
+    playbook: "payment-performance-bond",
+    findings: ["OBLI-005", "STRUCT-006"],
+  },
+
   // A permanent utility easement. RE-028 reported the maintenance allocation
   // missing at `critical` on the section headed "Maintenance and Standard of
   // Work", because the object of an easement's maintenance covenant is
