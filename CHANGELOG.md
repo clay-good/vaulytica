@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.115.0] — 2026-08-28
+
+A senior/subordinated intercreditor agreement.
+
+### Fixed
+- **A statutory cite's SUBSECTION is part of its label but not part of its
+  number.** "Section 1111(b)(2) of the Bankruptcy Code" declares the label
+  "1111"; a later bare heading — "9.2 Section 1111(b)." — arrives as "1111(b)"
+  and missed the corroboration lookup entirely, so STRUCT-007 reported a broken
+  internal reference to a section the agreement never has. The four-digit
+  statutory test had the same blind spot: "Section 4999" was statutory and
+  "Section 4999(a)" was not. One stripped label now serves the corroboration
+  test, the flat-number test, and the outline lookup.
+
+### Added
+- One specimen, bringing the set to eighty-seven.
+
 ## [9.114.0] — 2026-08-28
 
 A restaurant franchise agreement.

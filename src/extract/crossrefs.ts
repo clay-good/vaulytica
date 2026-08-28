@@ -292,21 +292,30 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       const after = ctx.text.slice(m.index + m[0].length);
       const before = ctx.text.slice(0, m.index);
       const acronymTail = EXTERNAL_ACRONYM_TAIL.exec(after);
+      // A statutory cite's SUBSECTION is part of its raw label but not part of
+      // its number: the corroborating declaration "Section 1111(b)(2) of the
+      // Bankruptcy Code" records "1111", while a later bare heading — "8.2
+      // Section 1111(b)." — arrives as "1111(b)" and missed the lookup
+      // entirely. The four-digit statutory test had the same blind spot:
+      // "Section 4999" is statutory and "Section 4999(a)" was not. One
+      // stripped label serves the corroboration test, the flat-number test,
+      // and the outline lookup below.
+      const bareLabel = (m[2] ?? "").replace(/\(.*\)$/, "");
       if (
         EXTERNAL_TRAILER_RE.test(after) ||
         EXTERNAL_INSTRUMENT_RE.test(after) ||
         EXTERNAL_LEADER_RE.test(before) ||
         EXTERNAL_LEADING_RE.test(before) ||
         EXTERNAL_REG_LEADING_RE.test(before) ||
-        STATUTE_SECTION_LABEL.test(m[2] ?? "") ||
-        statutoryLabels.has((m[2] ?? "").toUpperCase()) ||
+        STATUTE_SECTION_LABEL.test(bareLabel) ||
+        statutoryLabels.has(bareLabel.toUpperCase()) ||
         (acronymTail != null &&
           (statuteAcronyms.has(acronymTail[1]!.toUpperCase()) ||
             instrumentAcronyms.has(acronymTail[1]!.toUpperCase())))
       ) {
         continue;
       }
-      const label = (m[2] ?? "").replace(/\(.*\)$/, "");
+      const label = bareLabel;
       // The outline models Section / Article headings only. An Exhibit,
       // Schedule, or Attachment reference must NOT resolve to a section that
       // merely shares its number — "Schedule 4.2" is not "Section 4.2". The

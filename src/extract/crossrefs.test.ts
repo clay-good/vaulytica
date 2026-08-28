@@ -874,3 +874,39 @@ describe("a UCC article citation, hyphenated on both sides", () => {
     ).toEqual(["Section 21.4"]);
   });
 });
+
+describe("a statutory cite whose subsection is part of its label", () => {
+  /**
+   * "Section 1111(b)(2) of the Bankruptcy Code" declares the label "1111", and
+   * a later bare heading — "9.2 Section 1111(b)." — arrives as "1111(b)", so
+   * the corroboration lookup missed it entirely and STRUCT-007 reported a
+   * broken internal reference to a section the agreement never has. The
+   * four-digit statutory test had the same blind spot: "Section 4999" was
+   * statutory and "Section 4999(a)" was not.
+   */
+  const unresolved = (...paras: string[]) => {
+    const t = buildTree(["Body", ...paras]);
+    return extractCrossRefs(t, extractSections(t))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+  };
+
+  it("corroborates a bare subsection cite from a qualified one", () => {
+    expect(
+      unresolved(
+        "The Subordinated Agent shall not make an election under Section 1111(b)(2) of the Bankruptcy Code.",
+        "Section 1111(b). The election described above requires the Senior Agent's consent.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("reads a four-digit section with a subsection as statutory", () => {
+    expect(unresolved("Any payment subject to Section 4999(a) shall be reduced.")).toEqual([]);
+  });
+
+  it("still reports a broken internal reference with a subsection", () => {
+    expect(unresolved("The indemnity in Section 12.4(b) survives closing.")).toEqual([
+      "Section 12.4(b)",
+    ]);
+  });
+});

@@ -1,0 +1,117 @@
+INTERCREDITOR AGREEMENT
+
+This Intercreditor Agreement (this "Agreement") is dated as of November 4, 2026, among Harborview Trust Bank, N.A., in its capacity as administrative agent and collateral agent for the Senior Lenders (in such capacities, the "Senior Agent"), Blackrail Credit Partners IV LP, in its capacity as agent for the Subordinated Lenders (in such capacity, the "Subordinated Agent"), and Fenwick Composites Holdings, Inc., a Delaware corporation (the "Borrower"), and is acknowledged by each Guarantor listed on the signature pages.
+
+RECITALS
+
+A. The Borrower, the Senior Agent, and the lenders party thereto are parties to a Credit Agreement dated as of November 4, 2026 (as amended, the "Senior Credit Agreement"), providing for senior secured revolving and term facilities in an aggregate principal amount of up to $180,000,000.
+
+B. The Borrower, the Subordinated Agent, and the lenders party thereto are parties to a Note Purchase Agreement dated as of November 4, 2026 (as amended, the "Subordinated Note Agreement"), providing for subordinated secured notes in an aggregate principal amount of $45,000,000.
+
+C. The Senior Agent and the Subordinated Agent each hold liens on substantially all assets of the Borrower and the Guarantors, and enter into this Agreement to set the relative priority of those liens and of the obligations they secure.
+
+NOW, THEREFORE, the parties agree as follows:
+
+1. Definitions.
+
+"Common Collateral" means all property of the Borrower or any Guarantor in which both the Senior Agent and the Subordinated Agent hold, or purport to hold, a lien.
+
+"Discharge of Senior Obligations" means the payment in full in cash of all Senior Obligations other than contingent indemnity obligations for which no claim has been asserted, the termination of all commitments under the Senior Credit Agreement, and the cash collateralization or expiration of all letters of credit issued under it.
+
+"Guarantor" means each subsidiary of the Borrower that guarantees the Senior Obligations or the Subordinated Obligations.
+
+"Senior Default" means an event of default under the Senior Credit Agreement.
+
+"Senior Lenders" means the lenders from time to time party to the Senior Credit Agreement.
+
+"Senior Liens" means the liens securing the Senior Obligations.
+
+"Senior Obligations" means all obligations of the Borrower and the Guarantors under the Senior Credit Agreement and the other documents executed in connection with it, including principal, interest accruing after the commencement of an insolvency proceeding whether or not allowed, fees, and expenses.
+
+"Subordinated Lenders" means the purchasers from time to time party to the Subordinated Note Agreement.
+
+"Subordinated Liens" means the liens securing the Subordinated Obligations.
+
+"Subordinated Obligations" means all obligations of the Borrower and the Guarantors under the Subordinated Note Agreement and the other documents executed in connection with it.
+
+2. Lien Priority.
+
+Notwithstanding the date, manner, or order of attachment, perfection, or filing, and notwithstanding any provision of the Uniform Commercial Code or any other law, any defect or deficiency in the Senior Liens, or any provision of any other agreement: the Senior Liens on the Common Collateral are senior in all respects to the Subordinated Liens on the Common Collateral, and the Subordinated Liens on the Common Collateral are junior in all respects to the Senior Liens. This Section governs the relative priority of the liens irrespective of whether either lien is avoided, invalidated, or unperfected.
+
+3. Payment Subordination.
+
+Until the Discharge of Senior Obligations, the Borrower shall not make, and the Subordinated Agent and the Subordinated Lenders shall not accept, any payment on account of the Subordinated Obligations, except regularly scheduled cash interest at the non-default rate, so long as no Senior Default has occurred and is continuing and the Borrower is in pro forma compliance with the financial covenants of the Senior Credit Agreement.
+
+4. Payment Blockage.
+
+On written notice from the Senior Agent of a Senior Default (a "Blockage Notice"), no payment may be made on the Subordinated Obligations for one hundred eighty (180) days after the notice. Only one Blockage Notice may be given in any three hundred sixty (360) day period, and no Senior Default existing when a Blockage Notice is given may be the basis for a later Blockage Notice unless it has been cured or waived for at least ninety (90) consecutive days.
+
+5. Standstill.
+
+Until the Discharge of Senior Obligations, the Subordinated Agent and the Subordinated Lenders shall not: accelerate the Subordinated Obligations; commence any enforcement action against the Borrower, any Guarantor, or any Common Collateral; exercise any right of setoff; or file or join in filing any involuntary insolvency proceeding. This restriction lapses one hundred eighty (180) days after the Subordinated Agent delivers written notice to the Senior Agent of an event of default under the Subordinated Note Agreement, provided the Senior Agent has not commenced enforcement of its own during that period and the Senior Obligations have not been accelerated.
+
+6. Turnover.
+
+Any payment or distribution on the Subordinated Obligations received by the Subordinated Agent or any Subordinated Lender in violation of this Agreement shall be held in trust for the Senior Agent, segregated from other funds, and paid over to the Senior Agent within two (2) business days, in the form received with any necessary endorsement, for application to the Senior Obligations.
+
+7. Enforcement of Remedies.
+
+The Senior Agent has the exclusive right to enforce rights, exercise remedies, and make determinations regarding the release, disposition, or restrictions on the Common Collateral, without consultation with the Subordinated Agent. The Subordinated Agent may not object on any ground, including any ground available to an unsecured creditor, to any exercise of remedies by the Senior Agent, or to the manner or commercial reasonableness of any disposition.
+
+8. Releases.
+
+If the Senior Agent releases its Senior Lien on any Common Collateral in connection with a disposition permitted by the Senior Credit Agreement or an exercise of remedies, the Subordinated Lien on that Common Collateral is automatically released, and the Subordinated Agent shall execute any release the Senior Agent reasonably requests. The proceeds shall be applied in the order Section 10 provides.
+
+9. Insolvency Proceedings.
+
+9.1 DIP Financing. If the Borrower becomes subject to an insolvency proceeding, the Subordinated Agent shall not object to any debtor-in-possession financing or use of cash collateral to which the Senior Agent consents, and shall not request adequate protection other than a replacement lien junior to the Senior Liens.
+
+9.2 Section 1111(b). The Subordinated Agent shall not make an election under Section 1111(b)(2) of the Bankruptcy Code without the Senior Agent's consent.
+
+9.3 Plan Voting. Each party retains the right to vote its claims in an insolvency proceeding, except that the Subordinated Agent shall not vote in favor of any plan inconsistent with the priorities this Agreement establishes.
+
+9.4 Reinstatement. If any payment applied to the Senior Obligations is avoided or must be returned, the Senior Obligations are reinstated and this Agreement continues in full force as if the payment had not been made.
+
+10. Application of Proceeds.
+
+Proceeds of Common Collateral received in connection with an exercise of remedies shall be applied: first, to the Senior Agent's costs of enforcement; second, to the Senior Obligations until the Discharge of Senior Obligations; third, to the Subordinated Agent's costs of enforcement; fourth, to the Subordinated Obligations; and the balance, to the Borrower or as a court directs.
+
+11. Amendments to the Debt Documents.
+
+The Senior Credit Agreement may be amended, restated, refinanced, or replaced without the Subordinated Agent's consent, provided that the aggregate principal amount of the Senior Obligations does not exceed $216,000,000 and the all-in yield does not increase by more than two hundred (200) basis points, in each case measured against the Senior Credit Agreement as of the date of this Agreement. The Subordinated Note Agreement may not be amended to shorten a maturity, increase a rate by more than one hundred (100) basis points, or add a financial covenant, without the Senior Agent's consent.
+
+12. No Third-Party Beneficiaries; Continuing Nature.
+
+This Agreement is for the benefit of the Senior Agent, the Senior Lenders, the Subordinated Agent, and the Subordinated Lenders, and confers no right on the Borrower, any Guarantor, or any other person. It is a continuing agreement, is reinstated as Section 9.4 provides, and remains in effect until the Discharge of Senior Obligations.
+
+13. Bankruptcy Code Section 510(a).
+
+This Agreement is a "subordination agreement" within the meaning of Section 510(a) of the Bankruptcy Code and is enforceable in any insolvency proceeding to the same extent it is enforceable under applicable non-bankruptcy law.
+
+14. Notices; Governing Law; Waiver of Jury Trial.
+
+Notices shall be given in writing to the addresses on the signature pages. This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles, and any action arising out of it shall be brought exclusively in the state or federal courts located in the Borough of Manhattan, City of New York. EACH PARTY WAIVES ANY RIGHT TO A TRIAL BY JURY IN ANY ACTION ARISING OUT OF THIS AGREEMENT.
+
+15. Miscellaneous.
+
+This Agreement is the entire agreement of the parties on its subject matter. It may be amended only by a writing signed by the Senior Agent and the Subordinated Agent, and by the Borrower where the amendment increases the Borrower's obligations. It binds and inures to the benefit of successors and assigns. If any provision is unenforceable, the remainder remains in effect. It may be executed in counterparts.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+HARBORVIEW TRUST BANK, N.A., as Senior Agent
+
+By: /s/ Eleanor Whitcombe
+Name: Eleanor Whitcombe
+Title: Managing Director
+
+BLACKRAIL CREDIT PARTNERS IV LP, as Subordinated Agent
+
+By: /s/ Devon Achterberg
+Name: Devon Achterberg
+Title: Partner
+
+FENWICK COMPOSITES HOLDINGS, INC.
+
+By: /s/ Priscilla Vaught
+Name: Priscilla Vaught
+Title: Chief Financial Officer

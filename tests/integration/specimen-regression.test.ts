@@ -963,6 +963,18 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-007",
     ],
   },
+
+  // A senior/subordinated intercreditor agreement. Its Bankruptcy Code cites
+  // carry a subsection — "Section 1111(b)(2) of the Bankruptcy Code", then a
+  // bare "Section 1111(b)." as a later heading — and the corroborating
+  // declaration records only "1111", so the bare heading missed the lookup and
+  // read as a broken internal reference. FIN-005 stays: the document says
+  // "fees" inside the definition of ANOTHER agreement's obligations, and an
+  // intercreditor agreement states no payment term of its own.
+  "intercreditor.txt": {
+    playbook: "intercreditor-agreement",
+    findings: ["BNK-031", "CHOICE-008", "FIN-005", "OBLI-005"],
+  },
 };
 
 describe("hand-written specimens", () => {
