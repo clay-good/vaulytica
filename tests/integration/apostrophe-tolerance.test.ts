@@ -119,6 +119,44 @@ describe("catalog features tolerate every apostrophe", () => {
     expect(PLAYBOOKS.length).toBeGreaterThan(200);
   });
 
+  it("every hyphen-bearing feature matches the spaced and closed spellings", () => {
+    // The hyphen is optional in legal English and every family carries at
+    // least one compound written all three ways: "non-disclosure agreement",
+    // "nondisclosure agreement", "non disclosure agreement";
+    // "anti-money-laundering" and "anti-money laundering"; "attorney-in-fact"
+    // and "attorney in fact"; "by-laws" and "bylaws". A hundred and
+    // thirty-six catalog features carry a hyphen, and each could match
+    // exactly one of the three.
+    const blind: string[] = [];
+    let checked = 0;
+    for (const p of PLAYBOOKS) {
+      const f = p.match_features;
+      const features = [
+        ...f.title_keywords.map((v) => ["title_keywords", v] as const),
+        ...f.distinguishing_phrases.map((v) => ["distinguishing_phrases", v] as const),
+      ];
+      for (const [where, feature] of features) {
+        if (!feature.includes("-")) continue;
+        checked += 1;
+        for (const spelling of [
+          feature,
+          feature.replace(/-/g, " "),
+          feature.replace(/-/g, ""),
+          feature.replace(/-/g, "\u2011"),
+        ]) {
+          if (!matchesFeature(spelling.toLowerCase(), feature)) {
+            blind.push(`${p.id} ${where} "${feature}" does not match "${spelling}"`);
+          }
+        }
+      }
+    }
+    expect(checked, "the sweep found no hyphenated features — it is broken").toBeGreaterThan(100);
+    expect(
+      blind,
+      `these catalog features cannot match every spelling of their own hyphen:\n  ${blind.join("\n  ")}`,
+    ).toEqual([]);
+  });
+
   it("every apostrophe-bearing feature matches the curly and bare spellings", () => {
     const blind: string[] = [];
     let checked = 0;

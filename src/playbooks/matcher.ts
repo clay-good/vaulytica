@@ -473,7 +473,54 @@ const ACRONYM_MAX_LENGTH = 5;
  * normalize to the same token, and the curly and straight spellings do too.
  */
 function stripApostrophes(text: string): string {
-  return text.replace(/['’‘\u02BC]/g, "");
+  return text.replace(/['’‘\u02BC]/g, "").replace(/[\u2010-\u2015]/g, "-");
+}
+
+/**
+ * The three spellings of a compound a drafter may use, precomputed once for
+ * the whole corpus.
+ *
+ * The hyphen is optional in legal English and every family carries at least
+ * one compound that is written all three ways: "non-disclosure agreement",
+ * "nondisclosure agreement", "non disclosure agreement"; "anti-money-
+ * laundering policy" and "anti-money laundering policy"; "attorney-in-fact"
+ * and "attorney in fact"; "by-laws" and "bylaws". A hundred and thirty-six
+ * catalog features carry a hyphen, and each could match exactly one of the
+ * three.
+ *
+ * Spaces are never removed — only hyphens are — so no comparison can join two
+ * words that the document keeps apart. That is what keeps a feature like "a
+ * lien" from matching "alien".
+ */
+type Corpus = { plain: string; noHyphen: string; spaced: string };
+
+function buildCorpus(text: string): Corpus {
+  const plain = stripApostrophes(text);
+  return {
+    plain,
+    noHyphen: plain.replace(/-/g, ""),
+    spaced: plain.replace(/-/g, " "),
+  };
+}
+
+function matchesIn(corpus: Corpus, feature: string): boolean {
+  const needle = stripApostrophes(feature.toLowerCase());
+  if (needle.length === 0) return false;
+  const variants: Array<[string, string]> = [
+    [corpus.plain, needle],
+    [corpus.noHyphen, needle.replace(/-/g, "")],
+    [corpus.spaced, needle.replace(/-/g, " ")],
+  ];
+  for (const [hay, pin] of variants) {
+    if (pin.length === 0) continue;
+    if (pin.length > ACRONYM_MAX_LENGTH || !/^[a-z0-9][a-z0-9.-]*$/.test(pin)) {
+      if (hay.includes(pin)) return true;
+      continue;
+    }
+    const escaped = pin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp(`(?:^|[^a-z0-9])${escaped}(?![a-z0-9])`, "i").test(hay)) return true;
+  }
+  return false;
 }
 
 /**
@@ -483,14 +530,7 @@ function stripApostrophes(text: string): string {
  * threshold, so the match result names no features to assert on.
  */
 export function matchesFeature(corpusRaw: string, feature: string): boolean {
-  const corpus = stripApostrophes(corpusRaw);
-  const needle = stripApostrophes(feature.toLowerCase());
-  if (needle.length === 0) return false;
-  if (needle.length > ACRONYM_MAX_LENGTH || !/^[a-z0-9][a-z0-9.-]*$/.test(needle)) {
-    return corpus.includes(needle);
-  }
-  const escaped = needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(?:^|[^a-z0-9])${escaped}(?![a-z0-9])`, "i").test(corpus);
+  return matchesIn(buildCorpus(corpusRaw), feature);
 }
 
 export function matchPlaybook(
@@ -499,22 +539,22 @@ export function matchPlaybook(
   available: readonly Playbook[],
   input: MatchInput = {},
 ): PlaybookMatchResult {
-  const title = (input.title ?? "").toLowerCase();
-  const body = (input.body_text ?? input.title ?? "").toLowerCase();
+  const title = buildCorpus((input.title ?? "").toLowerCase());
+  const body = buildCorpus((input.body_text ?? input.title ?? "").toLowerCase());
   const present_categories = new Set(classified.map((c) => c.category));
   const defined_terms = new Set(extracted.definitions.entries.map((e) => e.term.toLowerCase()));
 
   const scored: ScoredPlaybook[] = available.map((playbook) => {
     const f = playbook.match_features;
 
-    const matched_title_keywords = f.title_keywords.filter((kw) => matchesFeature(title, kw));
+    const matched_title_keywords = f.title_keywords.filter((kw) => matchesIn(title, kw));
     const matched_required_clauses = f.required_clauses.filter(
       (cat) => present_categories.has(cat) || defined_terms.has(cat.toLowerCase()),
     );
     const matched_distinguishing_phrases = f.distinguishing_phrases.filter((p) =>
-      matchesFeature(body, p),
+      matchesIn(body, p),
     );
-    const matched_negative_features = f.negative_features.filter((n) => matchesFeature(body, n));
+    const matched_negative_features = f.negative_features.filter((n) => matchesIn(body, n));
 
     // Per-match additive scoring, with each feature category capped so
     // playbooks with many keywords don't auto-dominate playbooks with

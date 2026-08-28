@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.110.0] — 2026-08-28
+
+The same defect the apostrophe had, in the hyphen.
+
+### Fixed
+- **A hundred and thirty-six catalog features carry a hyphen, and each could
+  match exactly one of its three spellings.** The hyphen is optional in legal
+  English and every family carries a compound written all three ways:
+  "non-disclosure agreement", "nondisclosure agreement", "non disclosure
+  agreement"; "anti-money-laundering" and "anti-money laundering";
+  "attorney-in-fact" and "attorney in fact"; "by-laws" and "bylaws"; "form
+  10-K" and "form 10K". The matcher now compares a feature against the
+  hyphenated, closed, and spaced spellings of the document, and maps every
+  Unicode dash to a plain hyphen first.
+
+  Spaces are never removed — only hyphens — so no comparison can join two words
+  the document keeps apart. That is what keeps a feature like "a lien" from
+  matching "alien". The corpus variants are built once per document rather than
+  once per feature, so a 250-family catalog costs three normalizations, not
+  seven hundred.
+
+### Added
+- A guard: **every hyphen-bearing feature must match the hyphenated, spaced,
+  closed, and non-breaking-hyphen spellings of itself.** Proven load-bearing —
+  without the normalization it reports 544 failures across the catalog.
+
 ## [9.109.0] — 2026-08-28
 
 A California preliminary notice — and thirty catalog features Word could not
