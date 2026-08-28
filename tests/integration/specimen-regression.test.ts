@@ -871,6 +871,12 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-007",
     ],
   },
+
+  // Banking-authority resolutions of a board, with a secretary's certificate.
+  // GOV-106 — "Recitals establishing the purpose" — was reading a text the
+  // default rule input strips every recital out of, so it reported none on a
+  // document whose second paragraph is a whereas clause.
+  "board-resolution.txt": { playbook: "board-resolution", findings: [] },
 };
 
 describe("hand-written specimens", () => {

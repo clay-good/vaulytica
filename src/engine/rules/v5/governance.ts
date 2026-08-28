@@ -78,6 +78,12 @@ const ARTICLES = pack("articles-of-organization", C, [
 const BOARD_RESOLUTION = pack("board-resolution", C, [
   {
     id: "GOV-106",
+    // The check's whole subject is the recitals, and the default rule input
+    // strips them — so this reported "no recitals establishing the purpose"
+    // on a resolution whose second paragraph is one, and could never have
+    // done otherwise.
+    ver: "1.1.0",
+    recitals: true,
     name: "Recitals establishing the purpose",
     cite: uniformAct(
       "Model Business Corporation Act § 8.20",

@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.107.0] — 2026-08-28
+
+A board resolution — and a check that was reading a text its own subject had
+been removed from.
+
+### Fixed
+- **GOV-106, "Recitals establishing the purpose", could never fire clean.** The
+  default rule input strips non-operative text, which is right for almost every
+  column — a whereas clause is background, not a term of the deal — and exactly
+  wrong for a column whose SUBJECT is the recitals. It was checking for
+  `/whereas/i` in a text the filter had already removed every whereas clause
+  from, and reported "no recitals establishing the purpose" on a resolution
+  whose second paragraph is one. Not a weak check: an impossible one.
+
+### Added
+- `recitals: true` on a compliance-matrix column, and a guard: **no column may
+  recognize a recital marker while reading operative text only.** Mechanical,
+  and a ratchet — it keeps the next column from acquiring the defect.
+- One specimen, bringing the set to eighty.
+
 ## [9.106.0] — 2026-08-28
 
 ### Fixed

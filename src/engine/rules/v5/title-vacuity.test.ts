@@ -403,3 +403,41 @@ describe("the tightened checks stay silent on a compliant clause", () => {
     expect(finding, `${id} flagged a compliant clause: ${finding?.title ?? ""}`).toBeNull();
   });
 });
+
+describe("a column that looks for a recital must be allowed to read one", () => {
+  /**
+   * The default rule input strips non-operative text. That is right for
+   * almost every column — a whereas clause is background, not a term of the
+   * deal — and exactly wrong for a column whose SUBJECT is the recitals.
+   *
+   * GOV-106, "Recitals establishing the purpose", was checking for
+   * `/whereas/i` against a text the filter had already removed every whereas
+   * clause from. It reported "no recitals establishing the purpose" on a board
+   * resolution whose second paragraph is one, and could never have done
+   * otherwise: not a weak check, an impossible one.
+   *
+   * The invariant is mechanical. A pattern that names a recital marker can
+   * only match text the default input does not contain, so the column must
+   * set `recitals: true`.
+   */
+  const RECITAL_MARKER = /whereas|now,?\s*therefore|\brecital/i;
+
+  it("no pack column recognizes a recital marker while reading operative text only", () => {
+    const offending: string[] = [];
+    for (const [id, spec] of PACK_SPECS) {
+      if (spec.recitals) continue;
+      const marked = spec.pat.filter((re) => RECITAL_MARKER.test(re.source));
+      if (marked.length > 0) {
+        offending.push(`${id} (${spec.playbook}): ${marked.map((re) => String(re)).join(", ")}`);
+      }
+    }
+    expect(
+      offending.sort(),
+      `these columns look for text the default rule input removes — set \`recitals: true\`:\n  ${offending.join("\n  ")}`,
+    ).toEqual([]);
+  });
+
+  it("the sweep can see the specs at all", () => {
+    expect(PACK_SPECS.size).toBeGreaterThan(400);
+  });
+});

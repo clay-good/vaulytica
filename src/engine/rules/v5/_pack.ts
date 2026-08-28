@@ -93,6 +93,20 @@ export type ColumnSpec = {
   denied?: readonly RegExp[];
   /** Overrides the generated `missing_description` when the default is too thin. */
   missing?: string;
+  /**
+   * Read the document WITH its recitals.
+   *
+   * The default input strips non-operative text, which is right for almost
+   * every column — a whereas clause is background, not a term of the deal —
+   * and exactly wrong for a column whose SUBJECT is the recitals. GOV-106,
+   * "Recitals establishing the purpose", was checking for `/whereas/i` in a
+   * text the filter had already removed every whereas clause from: it
+   * reported "no recitals establishing the purpose" on a board resolution
+   * whose second paragraph is one, and could never have done otherwise.
+   *
+   * Set this when the clause the column looks for LIVES in the recitals.
+   */
+  recitals?: boolean;
 };
 
 /**
@@ -113,7 +127,10 @@ export const GATED_PACK_RULE_IDS = new Set<string>();
  * reach a rule whose applicability gate would otherwise short-circuit the
  * check before the patterns are ever consulted.
  */
-export const PACK_SPECS = new Map<string, { playbook: string; pat: RegExp[]; all: boolean }>();
+export const PACK_SPECS = new Map<
+  string,
+  { playbook: string; pat: RegExp[]; all: boolean; recitals: boolean }
+>();
 
 /**
  * Build one playbook's ruleset from its compliance-matrix columns. Every
@@ -123,7 +140,12 @@ export const PACK_SPECS = new Map<string, { playbook: string; pat: RegExp[]; all
 export function pack(playbook: string, category: string, specs: readonly ColumnSpec[]): Rule[] {
   for (const s of specs) {
     if (s.when) GATED_PACK_RULE_IDS.add(s.id);
-    PACK_SPECS.set(s.id, { playbook, pat: [...s.pat], all: s.all === true });
+    PACK_SPECS.set(s.id, {
+      playbook,
+      pat: [...s.pat],
+      all: s.all === true,
+      recitals: s.recitals === true,
+    });
   }
   return specs.map((s) =>
     presenceRule({
@@ -143,6 +165,7 @@ export function pack(playbook: string, category: string, specs: readonly ColumnS
       require_all_present: s.all,
       applicable_if: s.when,
       denied_if: s.denied,
+      include_recitals: s.recitals,
       // A denial is a different finding from an absence and has to say so:
       // the title is what reaches the findings index, the compliance matrix,
       // and the execution log, where the description never does.
