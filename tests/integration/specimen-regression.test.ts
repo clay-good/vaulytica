@@ -637,6 +637,17 @@ describe("hand-written specimens", () => {
       expect(result.run.playbook_id, `routed to ${result.run.playbook_id}`).toBe(
         expectation.playbook,
       );
+      // Routing correctly is not the same as routing SAFELY. A family that
+      // wins by a hair is one negative feature away from falling below the
+      // 0.5 threshold, and when that happens the document goes to
+      // `generic-fallback` and NONE of the family's checks run — which is what
+      // `covenant-not-to-sue` was doing, at 0.3, on a document titled COVENANT
+      // NOT TO SUE. Every specimen clears 0.6 today; pinning the floor makes a
+      // change that erodes a margin fail here rather than silently.
+      expect(
+        result.run.playbook_match_confidence,
+        `${expectation.playbook} matched at ${result.run.playbook_match_confidence} — one feature from the 0.5 cliff`,
+      ).toBeGreaterThanOrEqual(0.6);
       const ids = result.run.findings.map((f) => f.rule_id).sort();
       expect(ids).toEqual([...expectation.findings].sort());
     },

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.92.1] — 2026-08-28
+
+### Added
+- **A routing-margin floor on every specimen.** Routing correctly is not the
+  same as routing safely: a family that wins by a hair is one negative feature
+  away from falling below the 0.5 threshold, and when that happens the document
+  goes to `generic-fallback` and NONE of the family's checks run — which is
+  exactly what `covenant-not-to-sue` was doing, at 0.3, on a document titled
+  COVENANT NOT TO SUE. Every specimen clears 0.6 today; the floor makes a
+  change that erodes a margin fail here rather than silently.
+
 ## [9.92.0] — 2026-08-28
 
 A patent covenant not to sue — and the first family this method has found that
