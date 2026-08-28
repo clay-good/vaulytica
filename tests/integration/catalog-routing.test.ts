@@ -325,6 +325,52 @@ describe("a convertible note against its plainer sibling", () => {
   });
 });
 
+describe("a cease-and-desist letter's vocabulary is its own", () => {
+  // Four of the six distinguishing phrases were the bare topic words
+  // "infringement", "trademark", "copyright", and "patent" — which every IP
+  // document on earth contains. An IP ASSIGNMENT scored 0.6 on this playbook
+  // on the strength of "United States Patent and Trademark Office" appearing
+  // in its recordation clause. A distinguishing phrase has to distinguish.
+  function route(body: [string, ...string[]]) {
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    return matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "doc.txt"),
+      body_text: body.join("\n"),
+    });
+  }
+
+  it("does not claim an internal portfolio memo that is nobody's demand", () => {
+    // An IP portfolio review memorandum to a board. It threatens no one and
+    // demands nothing, and it scored 0.5 — over the threshold, and enough to
+    // win outright, because it says "patent", "trademark", "copyright",
+    // "infringement", and (of the outdated product literature) "recall".
+    const match = route([
+      "",
+      "INTELLECTUAL PROPERTY PORTFOLIO REVIEW MEMORANDUM",
+      "This memorandum summarizes the status of the Company's intellectual property portfolio. It is prepared for internal planning purposes.",
+      "The Company holds eleven issued United States patents, all recorded with the United States Patent and Trademark Office.",
+      "A watch service monitors for confusingly similar filings that may constitute infringement of the marks.",
+      "Firmware and documentation are protected by copyright. Registration of the 2025 firmware release remains outstanding.",
+      "Counsel recommends that the Company recall the outdated product literature that references a discontinued mark.",
+    ]);
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).not.toBe("cease-and-desist");
+  });
+
+  it("still reaches a real demand letter", () => {
+    const match = route([
+      "",
+      "Re: Unauthorized Use of the LUMAREAD Mark — Demand to Cease and Desist",
+      "We represent Vanterra Diagnostics, Inc., the owner of United States Trademark Registration No. 6,412,908 for the mark LUMAREAD.",
+      "Accordingly, we demand that you immediately cease all use of the infringing designation and recall all marketing materials bearing it.",
+      "Should you fail to comply, our client is prepared to pursue all available remedies without further notice to you.",
+    ]);
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("cease-and-desist");
+  });
+});
+
 /**
  * Self-reachability: every family must win on a document that names itself and
  * speaks its own vocabulary.

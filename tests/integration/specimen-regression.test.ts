@@ -278,6 +278,15 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["STRUCT-018", "OBLI-002", "OBLI-005", "RISK-011"],
   },
 
+  // A trademark cease-and-desist letter. Its playbook used to be reachable on
+  // the bare topic words "infringement" / "trademark" / "copyright" /
+  // "patent", which every IP document on earth contains — an IP ASSIGNMENT
+  // scored 0.6 on it. The phrases are now the letter's own register.
+  "cease-and-desist.txt": {
+    playbook: "cease-and-desist",
+    findings: ["STRUCT-006", "OBLI-005"],
+  },
+
   // A US privacy notice: no parties, no definitions section, nothing to
   // terminate. Clean, which is the assertion — a compliant notice must
   // produce nothing.
