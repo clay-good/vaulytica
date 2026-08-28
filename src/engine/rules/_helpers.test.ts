@@ -4,6 +4,7 @@ import {
   enclosingSentence,
   firstParagraphMatch,
   firstUnnegatedParagraphMatch,
+  amendsParentAgreement,
   isIncorporatedExhibit,
   isPresenceDisclaimed,
 } from "./_helpers.js";
@@ -379,5 +380,45 @@ describe("a negation inside a sentence-initial condition", () => {
     expect(
       hit("If the parties do not agree on a new rate, the Order does not automatically renew."),
     ).toBeNull();
+  });
+});
+
+describe("a companion document that borrows its definitions", () => {
+  /**
+   * "Capitalized terms used but not defined in this Agreement have the
+   * meanings given in the Purchase Agreement" is the recital every earnout,
+   * escrow, side letter, and ancillary carries, and it says what the other
+   * three parent tests say: the parent supplies what this document does not.
+   * An earnout agreement was reported for having no IP allocation, no
+   * liability cap, no termination-for-cause path, and no effect-of-termination
+   * clause — all four live in the purchase agreement whose definitions it
+   * borrows.
+   */
+  it("recognizes the borrowed-definitions recital", () => {
+    expect(
+      amendsParentAgreement(
+        ctxWith(
+          "The Purchase Agreement provides for contingent consideration, and capitalized terms used but not defined in this Agreement have the meanings given in the Purchase Agreement.",
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  it("does not fire on a contract that defines its own terms", () => {
+    expect(
+      amendsParentAgreement(
+        ctxWith(
+          'Capitalized terms used in this Agreement have the meanings given in Section 1. "Net Revenue" means the consolidated revenue of the Company.',
+        ),
+      ),
+    ).toBe(false);
+  });
+
+  it("does not fire when the parent is not named", () => {
+    expect(
+      amendsParentAgreement(
+        ctxWith("Capitalized terms not defined here have the meanings given below."),
+      ),
+    ).toBe(false);
   });
 });

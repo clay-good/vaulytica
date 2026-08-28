@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.117.0] — 2026-08-28
+
+An earnout agreement ancillary to a membership interest purchase.
+
+### Fixed
+- **A companion document that borrows its VOCABULARY from a named parent was
+  audited as though it were the whole deal.** "Capitalized terms used but not
+  defined in this Agreement have the meanings given in the Purchase Agreement"
+  is the recital every earnout, escrow, side letter, and ancillary carries, and
+  it says exactly what the other three parent tests say: the parent supplies
+  what this document does not. The earnout was reported for having no IP
+  allocation, no liability cap, no termination-for-cause path, and no
+  effect-of-termination clause — all four live in the purchase agreement whose
+  definitions it borrows. Four findings, one recital.
+
+  A standalone contract never says this of itself: it defines its own terms.
+  The parent must be NAMED, which keeps this off an ordinary internal
+  cross-reference.
+
+### Added
+- One specimen, bringing the set to eighty-nine.
+
 ## [9.116.0] — 2026-08-28
 
 Colorado articles of organization, filed electronically.

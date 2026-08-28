@@ -1,0 +1,92 @@
+EARNOUT AGREEMENT
+
+This Earnout Agreement (this "Agreement") is entered into as of December 3, 2026 by and between Vantage Diagnostics Holdings, Inc., a Delaware corporation ("Buyer"), and Corrine Delacroix-Hale, in her capacity as the Sellers' Representative (the "Sellers' Representative"), on behalf of the former equityholders of Meridian Assay Labs, LLC (the "Sellers").
+
+RECITALS
+
+A. Buyer, Meridian Assay Labs, LLC (the "Company"), the Sellers, and the Sellers' Representative are parties to a Membership Interest Purchase Agreement dated as of December 3, 2026 (the "Purchase Agreement"), under which Buyer acquired all of the outstanding membership interests of the Company.
+
+B. The Purchase Agreement provides for contingent consideration payable on the terms set out in this Agreement, and capitalized terms used but not defined here have the meanings given in the Purchase Agreement.
+
+1. Earnout Periods.
+
+"Earnout Period" means each of the following: the twelve months ending December 31, 2027 (the "First Earnout Period"); and the twelve months ending December 31, 2028 (the "Second Earnout Period").
+
+2. Earnout Consideration.
+
+2.1 First Earnout Period. If Net Revenue for the First Earnout Period is at least $28,000,000, Buyer shall pay the Sellers $6,000,000. If Net Revenue is less than $28,000,000 but at least $22,000,000, Buyer shall pay the Sellers an amount equal to $6,000,000 multiplied by a fraction, the numerator of which is Net Revenue minus $22,000,000 and the denominator of which is $6,000,000. If Net Revenue is less than $22,000,000, no amount is payable for that period.
+
+2.2 Second Earnout Period. The same schedule applies to the Second Earnout Period, with the thresholds increased to $34,000,000 and $27,000,000 and the maximum payment increased to $7,500,000.
+
+2.3 Maximum. The aggregate earnout consideration payable under this Agreement may not exceed $13,500,000.
+
+3. Net Revenue.
+
+"Net Revenue" means the consolidated revenue of the Company recognized in accordance with GAAP applied on a basis consistent with the Company's audited financial statements for the year ended December 31, 2025, less returns, allowances, and customer credits, and excluding: revenue from any business Buyer acquires after the Closing; intercompany revenue; and any revenue recognized on a contract Buyer assigns away from the Company.
+
+4. Calculation and Dispute.
+
+4.1 Statement. Within sixty (60) days after the end of each Earnout Period, Buyer shall deliver to the Sellers' Representative a statement setting out Buyer's calculation of Net Revenue and the resulting earnout consideration, together with reasonable supporting detail (an "Earnout Statement").
+
+4.2 Access. For thirty (30) days after delivery of an Earnout Statement, Buyer shall give the Sellers' Representative and its accountants reasonable access, during normal business hours and on reasonable notice, to the books, records, and personnel of the Company relevant to the calculation.
+
+4.3 Objection. The Sellers' Representative may object to an Earnout Statement by written notice delivered within thirty (30) days after the later of delivery of the Earnout Statement and the completion of the access described in Section 4.2, stating each disputed item and the basis for the objection in reasonable detail. An item not disputed in that notice is final.
+
+4.4 Resolution. The parties shall negotiate in good faith for thirty (30) days after an objection notice. A dispute not resolved in that period shall be submitted to Brightwater Advisory LLP, or if it is unavailable, to another nationally recognized independent accounting firm the parties select (the "Independent Accountant"), which shall act as an expert and not as an arbitrator, shall consider only the disputed items, and shall select for each item a value no higher than the highest and no lower than the lowest value the parties proposed. The Independent Accountant's determination is final and binding absent manifest error. Its fees shall be allocated between Buyer and the Sellers in proportion to the dollar value of the disputed items resolved against each.
+
+5. Payment.
+
+Buyer shall pay any earnout consideration by wire transfer of immediately available funds to the account the Sellers' Representative designates, within ten (10) business days after the Earnout Statement becomes final under Section 4, and the Sellers' Representative shall distribute it among the Sellers in accordance with their pro rata shares.
+
+6. Operating Covenants.
+
+During the Earnout Periods, Buyer shall, and shall cause the Company to:
+
+(a) operate the Company as a separate business unit with separate books and records sufficient to calculate Net Revenue;
+
+(b) maintain a sales and marketing budget for the Company of not less than $2,400,000 per year;
+
+(c) retain at least eighteen (18) full-time sales representatives dedicated to the Company's products;
+
+(d) not divert any customer, opportunity, or product line from the Company to any other business of Buyer for the purpose of reducing the earnout consideration; and
+
+(e) not sell, license, or discontinue any product line of the Company that generated more than five percent (5%) of Net Revenue in the prior period without the Sellers' Representative's prior written consent, which shall not be unreasonably withheld.
+
+Buyer shall otherwise operate the Company as Buyer determines in its business judgment, and nothing in this Section requires Buyer to operate the Company in any particular manner or to maximize the earnout consideration.
+
+7. Acceleration on a Change of Control.
+
+If Buyer sells all or substantially all of the Company's assets or equity, or the Company is merged out of existence, before the end of the Second Earnout Period, the maximum earnout consideration for each remaining Earnout Period becomes immediately due and payable in full, less any amount already paid for that period.
+
+8. No Security; No Interest.
+
+The right to earnout consideration is a general unsecured contractual right. It is not a security, does not bear interest before it becomes due, may not be transferred except by operation of law or to a Seller's estate or trust, and confers no equity interest, voting right, or right to any distribution of the Company.
+
+9. Setoff.
+
+Buyer may set off against earnout consideration any amount finally determined to be owed to Buyer under the indemnification provisions of Article IX of the Purchase Agreement, and no other amount.
+
+10. Tax Treatment.
+
+The parties shall treat any earnout consideration as an adjustment to the purchase price for federal and applicable state income tax purposes, except to the extent otherwise required by law, and shall report the imputed interest component, if any, as required by Sections 483 and 1274 of the Internal Revenue Code.
+
+11. Sellers' Representative.
+
+The Sellers' Representative is authorized to act for the Sellers under this Agreement, including to receive Earnout Statements, deliver objections, engage the Independent Accountant, receive payment, and settle disputes. Buyer may rely conclusively on any action of the Sellers' Representative.
+
+12. General.
+
+This Agreement, together with the Purchase Agreement, is the entire agreement of the parties on its subject matter. It may be amended only by a writing signed by Buyer and the Sellers' Representative. It is governed by the laws of the State of Delaware, without regard to its conflict of laws principles, and any action arising out of it shall be brought exclusively in the Court of Chancery of the State of Delaware, or if that court lacks jurisdiction, in the state or federal courts located in New Castle County, Delaware. If any provision is unenforceable, the remainder remains in effect. It may be executed in counterparts.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+VANTAGE DIAGNOSTICS HOLDINGS, INC.
+
+By: /s/ Lucas Fairbairn
+Name: Lucas Fairbairn
+Title: Chief Executive Officer
+
+SELLERS' REPRESENTATIVE
+
+/s/ Corrine Delacroix-Hale
+Corrine Delacroix-Hale

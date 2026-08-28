@@ -644,6 +644,25 @@ function documentTextOf(ctx: RuleContext): string {
 }
 
 /**
+ * The fourth half: a companion document that takes its VOCABULARY from a named
+ * parent.
+ *
+ * "Capitalized terms used but not defined in this Agreement have the meanings
+ * given in the Purchase Agreement" is the recital every earnout, escrow, side
+ * letter, disclosure schedule, and ancillary carries, and it says the same
+ * thing the other three do — the parent supplies what this document does not.
+ * An earnout agreement was reported for having no IP allocation, no liability
+ * cap, no termination-for-cause path, and no effect-of-termination clause; all
+ * four live in the purchase agreement whose definitions it borrows.
+ *
+ * A standalone contract never says this of itself: it defines its own terms.
+ * The parent must be NAMED (a capitalized instrument title), which is what
+ * keeps this off an ordinary internal cross-reference.
+ */
+const BORROWS_DEFINITIONS_FROM_PARENT =
+  /\bcapitali[sz]ed\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,160}?\b(?:have|has|shall\s+have)\s+the\s+meanings?\b[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|Indenture|Plan|Note)\b/;
+
+/**
  * Whether the document is subordinate to a named parent agreement — either
  * because it amends and ratifies one, or because it is issued under one.
  */
@@ -653,7 +672,8 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
     RATIFIES_PARENT.test(text) ||
     ISSUED_UNDER_PARENT.test(text) ||
     PARENT_CONTROLS.test(text) ||
-    INCORPORATED_INTO_PARENT.test(text)
+    INCORPORATED_INTO_PARENT.test(text) ||
+    BORROWS_DEFINITIONS_FROM_PARENT.test(text)
   );
 }
 

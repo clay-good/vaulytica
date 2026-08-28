@@ -985,6 +985,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // company". STRUCT-006 remains: the organizer is named three times and a
   // person's name is not distinguishable in shape from a defined term.
   "articles-org.txt": { playbook: "articles-of-organization", findings: ["STRUCT-006"] },
+
+  // An earnout agreement ancillary to a membership interest purchase. It says
+  // so in the way every ancillary does — "capitalized terms used but not
+  // defined in this Agreement have the meanings given in the Purchase
+  // Agreement" — which none of the three parent-agreement tests could read, so
+  // it was reported for having no IP allocation, no liability cap, no
+  // termination-for-cause path, and no effect-of-termination clause. All four
+  // live in the purchase agreement whose definitions it borrows.
+  "earnout.txt": { playbook: "earnout-agreement", findings: ["MNA-066", "OBLI-005"] },
 };
 
 describe("hand-written specimens", () => {
