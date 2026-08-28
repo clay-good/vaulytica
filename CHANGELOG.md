@@ -2,6 +2,71 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.83.0] — 2026-08-28
+
+Five more specimens, this time in families that are not bilateral commercial
+bargains: a stock option grant notice, a mutual release, an Article 9 security
+agreement, a premarital agreement, and an employment offer letter. Four of the
+five were routed to the wrong playbook.
+
+### Fixed
+- **A plan header hid every equity award's own title.** "HALCYON INSTRUMENTS,
+  INC. 2026 EQUITY INCENTIVE PLAN" sits above "NOTICE OF STOCK OPTION GRANT",
+  and the corpus read only the first line — so a grant notice routed to
+  `equity-incentive-plan` and was checked against the Plan's compliance
+  matrix: no share reserve (critical), no evergreen, no capitalization
+  adjustment, no change-in-control treatment, no amendment triggers, no
+  clawback hook. Those are provisions of the Plan. The header is not a legend
+  to drop, because the Plan document opens on the identical line, so the
+  corpus now reads a second line when that line is title-SHAPED — short, no
+  sentence punctuation, caps or Title Case. A body sentence contributes
+  nothing.
+- **Two more playbooks penalized their own vocabulary.** `prenuptial-agreement`
+  listed "during the marriage", which is what a premarital agreement is about
+  and appears in every property, debt, and support section of one; penalized
+  on its own subject matter it scored 0.4 and routed to `family-msa`, a
+  DIVORCE settlement, which reported at `critical` that it stated no date of
+  separation. `security-agreement` listed "promissory note" and "loan
+  agreement" — the instruments every security agreement names in its first
+  recital as the obligations it secures.
+- **A mutual release lost to `mutual-nda-deep` and collected ten criticals
+  about NDA provisions.** Its playbook's phrases were written in a register
+  real releases do not use: "known and unknown" for "known or unknown", "no
+  admission of liability" for a section headed "No Admission". Its negative
+  feature "demand" fires on the release's own operative words, "claims,
+  demands, causes of action".
+- **An offer letter titled "Offer of Employment" was not an offer letter.**
+  The standard phrasing of the Re: line was not among the title keywords.
+- **PERS-005 read the incoming-obligations representation as a non-compete.**
+  "You represent that you are not subject to any employment, confidentiality,
+  non-competition, or other agreement that would prevent you from accepting
+  this position" is a promise the candidate is NOT bound by someone else's
+  covenant — the opposite of imposing one — and it was reported at `warning`
+  as a non-compete clause present. The rule also now scans every hit rather
+  than the first, so a document that opens with the representation and imposes
+  a real covenant later is no longer silenced by testing the wrong paragraph.
+- **A state court named for its county registered no venue.** "The Circuit
+  Court for Dane County", "the Superior Court for the County of Los Angeles",
+  "the District Court for Harris County" — the commonest way an American state
+  court is written. The forum patterns admitted a bare "court(s)" plus an
+  "of / in / located in / sitting in" connector, and neither the court's type
+  nor the "for" connector was among them, so CHOICE-003 reported "no forum
+  clause" on a document that names one.
+- **FIN-005 could not read a deadline written before the verb.** "Within ten
+  (10) business days after the Effective Date, Kanaan shall pay Pelagic
+  $265,000" is as conventional as the trailing form, and every branch read
+  left to right from the verb.
+- **Five more families shipped with an empty `rule_overrides`** —
+  `stock-option-grant`, `mutual-release`, `security-agreement`,
+  `prenuptial-agreement`, and `offer-letter`. A unilateral equity grant, a
+  release, a security instrument, a prenup, and an at-will offer letter were
+  each told they allocated no IP, capped no liability, indemnified nobody, and
+  stated no termination for cause. Each now carries the profile its nearest
+  sibling already uses.
+
+### Added
+- Five specimens, bringing the set to forty-four.
+
 ## [9.82.0] — 2026-08-28
 
 Five more hand-written specimens — a stipulated protective order, a board's

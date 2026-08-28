@@ -4,7 +4,12 @@
   "name": "Offer Letter",
   "description": "Employment offer letter. Selects the §6.F employment ruleset (EMP-009..EMP-014).",
   "match_features": {
-    "title_keywords": ["offer letter", "letter of employment offer"],
+    "title_keywords": [
+      "offer letter",
+      "letter of employment offer",
+      "offer of employment",
+      "employment offer"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "start date",
@@ -17,7 +22,15 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-003": { "skip": true },
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "STRUCT-001": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "State-Employment",

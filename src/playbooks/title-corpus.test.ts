@@ -400,3 +400,46 @@ describe("the title corpus is documented as built", () => {
     }
   });
 });
+
+describe("titleCorpus — a header line above the document's own title", () => {
+  /**
+   * Every equity award names the plan that governs it on the line above its
+   * own title. The header is not a legend to drop — the Plan document itself
+   * opens on the identical line — so the corpus reads both.
+   */
+  it("reads the grant notice's title under its plan header", () => {
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "HALCYON INSTRUMENTS, INC. 2026 EQUITY INCENTIVE PLAN",
+          "NOTICE OF STOCK OPTION GRANT",
+          "Halcyon Instruments, Inc. hereby grants to the Optionee named below an option to purchase shares.",
+        ],
+      },
+    ]);
+    const corpus = titleCorpus(t, "grant.txt");
+    expect(corpus).toContain("EQUITY INCENTIVE PLAN");
+    expect(corpus).toContain("NOTICE OF STOCK OPTION GRANT");
+  });
+
+  it("does not take a body sentence as a second title", () => {
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "Master Services Agreement",
+          "This Agreement is entered into by Acme Inc. and Globex Inc. as of the date below.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "msa.txt")).toBe("Master Services Agreement");
+  });
+
+  it("does not take a comma- or colon-terminated line as a second title", () => {
+    const t = tree([
+      { heading: "", paragraphs: ["SETTLEMENT AGREEMENT", "BETWEEN THE PARTIES NAMED BELOW:"] },
+    ]);
+    expect(titleCorpus(t, "s.txt")).toBe("SETTLEMENT AGREEMENT");
+  });
+});

@@ -22,7 +22,7 @@
       "custody",
       "parenting plan"
     ],
-    "negative_features": ["master services agreement", "prenuptial", "postnuptial"]
+    "negative_features": ["master services agreement", "prenuptial", "premarital", "postnuptial"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Petitioner", "Respondent", "Date of Separation"],

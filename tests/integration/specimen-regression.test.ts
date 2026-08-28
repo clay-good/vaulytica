@@ -395,6 +395,55 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["EST-060", "OBLI-005", "STRUCT-005", "STRUCT-006"],
   },
 
+  // A notice of stock option grant. Every equity award carries its plan's
+  // name on the line above its own title — "HALCYON INSTRUMENTS, INC. 2026
+  // EQUITY INCENTIVE PLAN" over "NOTICE OF STOCK OPTION GRANT" — and reading
+  // only the first line routed the grant to `equity-incentive-plan`, where it
+  // was checked against the Plan's compliance matrix: no share reserve
+  // (critical), no evergreen, no capitalization adjustment, no
+  // change-in-control treatment, no amendment triggers, no clawback hook.
+  // Those are provisions of the Plan.
+  "option-grant.txt": {
+    playbook: "stock-option-grant",
+    findings: ["OBLI-005", "STRUCT-016"],
+  },
+
+  // A mutual release of claims. Its playbook's distinguishing phrases were
+  // written in a register real releases do not use — "known and unknown" for
+  // "known or unknown", "no admission of liability" for a section headed "No
+  // Admission" — and its negative feature "demand" fires on the release's own
+  // operative words, "claims, demands, causes of action". It scored 0.5,
+  // lost the lexicographic tie to `mutual-nda-deep`, and collected ten
+  // criticals about NDA provisions it is not supposed to have.
+  "mutual-release.txt": { playbook: "mutual-release", findings: ["OBLI-005"] },
+
+  // An Article 9 security agreement. Its playbook listed "promissory note"
+  // and "loan agreement" as negative features — the instruments every
+  // security agreement names in its first recital as the obligations it
+  // secures.
+  "security-agreement.txt": { playbook: "security-agreement", findings: ["OBLI-005"] },
+
+  // A Wisconsin premarital agreement. Its playbook listed "during the
+  // marriage" as a negative feature, which is what a premarital agreement is
+  // about — it appears in every property, debt, and support section of one.
+  // Penalized on its own subject matter it scored 0.4 and routed to
+  // `family-msa`, a DIVORCE settlement, which reported at `critical` that it
+  // stated no date of separation. Nobody is separating.
+  "prenup.txt": {
+    playbook: "prenuptial-agreement",
+    findings: ["EST-060", "STRUCT-006", "STRUCT-016", "STRUCT-018"],
+  },
+
+  // An employment offer letter, titled in its "Re:" line as an "Offer of
+  // Employment" — the standard phrasing, and one the playbook's title
+  // keywords did not include. PERS-005 read the incoming-obligations
+  // representation ("you represent that you are not subject to any …
+  // non-competition … agreement") as a non-compete clause present.
+  "offer-letter.txt": {
+    playbook: "offer-letter",
+    findings: ["OBLI-003", "OBLI-005", "PERS-002", "STRUCT-006"],
+  },
+
   // A statement of work issued under a named master agreement.
   "sow.txt": { playbook: "sow", findings: ["STRUCT-016", "STRUCT-018", "OBLI-005"] },
 

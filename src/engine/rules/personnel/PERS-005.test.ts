@@ -59,3 +59,37 @@ describe("PERS-005 — non-compete clause present", () => {
     ).toBeNull();
   });
 });
+
+describe("PERS-005 — the incoming-obligations representation", () => {
+  /**
+   * Every offer letter and employment agreement asks the candidate to promise
+   * they are NOT bound by someone else's covenant. It is the opposite of
+   * imposing one, and it was reported at `warning` as a non-compete clause
+   * present on a letter that contains none.
+   */
+  it("is silent on a representation that the candidate is not bound by one", () => {
+    for (const clause of [
+      "By accepting this offer you represent that you are not subject to any employment, confidentiality, non-competition, or other agreement that would prevent you from accepting this position.",
+      "Employee represents that Employee is not a party to any non-compete or non-solicitation agreement with a former employer.",
+      "The Consultant is not bound by any covenant not to compete that would restrict the Services.",
+    ]) {
+      expect(PERS_005.check(buildContext(["Representations", clause])), clause).toBeNull();
+    }
+  });
+
+  it("still fires when a real covenant follows the representation (v1.2.0)", () => {
+    // The disclaimer test used to run against the FIRST hit only, so a
+    // document that opens with the representation would have been silenced no
+    // matter what it imposed later. Every hit is scanned now.
+    const f = PERS_005.check(
+      buildContext([
+        "Representations",
+        "Employee represents that Employee is not subject to any non-competition agreement with a former employer.",
+        "Restrictive Covenants",
+        "For twelve months after termination, Employee shall not compete with the Company anywhere in North America.",
+      ]),
+    );
+    expect(f).not.toBeNull();
+    expect(f?.excerpt.text).toContain("shall not compete");
+  });
+});

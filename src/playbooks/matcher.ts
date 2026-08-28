@@ -252,6 +252,30 @@ function captionTitle(paragraphs: readonly string[]): string {
   return "";
 }
 
+/**
+ * Longest a line may be and still read as a title rather than a sentence.
+ */
+const TITLE_LINE_CHARS = 120;
+
+/**
+ * True if `line` is shaped like a document title: short, two or more words,
+ * no sentence-ending punctuation, and set in caps or Title Case. Used to
+ * decide whether the line UNDER the preamble is the document's own name or
+ * the first sentence of its body.
+ */
+function titleShaped(line: string | undefined): boolean {
+  if (!line) return false;
+  const t = line.trim();
+  if (t.length === 0 || t.length > TITLE_LINE_CHARS) return false;
+  if (/[.;:,]$/.test(t)) return false;
+  const words = t.split(/\s+/);
+  if (words.length < 2) return false;
+  if (!/[A-Za-z]/.test(t)) return false;
+  if (t === t.toUpperCase()) return true;
+  // Title Case: every word of three or more letters starts capitalized.
+  return words.every((w) => w.length < 3 || !/^[a-z]/.test(w));
+}
+
 export function titleCorpus(
   tree: {
     sections: readonly {
@@ -269,10 +293,27 @@ export function titleCorpus(
       .join("")
       .trim(),
   );
-  const preamble = (dropLegends(paragraphs)[0] ?? "").slice(0, TITLE_PREAMBLE_CHARS);
+  const stripped = dropLegends(paragraphs);
+  const preamble = (stripped[0] ?? "").slice(0, TITLE_PREAMBLE_CHARS);
+  // A document's identity is sometimes TWO lines: a header naming the
+  // instrument that governs it, and below that the document's own name.
+  // Every equity award carries the shape — "HALCYON INSTRUMENTS, INC. 2026
+  // EQUITY INCENTIVE PLAN" above "NOTICE OF STOCK OPTION GRANT" — and the
+  // header is not a legend to drop, because the Plan document itself opens on
+  // the identical line. Read on one line, a grant notice routed to
+  // `equity-incentive-plan` and was checked against the Plan's compliance
+  // matrix: it was told at `critical` that it stated no share reserve, and at
+  // `warning` that it stated no evergreen, no capitalization adjustment, no
+  // change-in-control treatment, no amendment triggers, and no clawback hook.
+  // Those are provisions of the Plan. A grant notice has none of them and is
+  // not supposed to.
+  //
+  // Only a title-SHAPED second line is taken, so an ordinary agreement whose
+  // second paragraph is body prose contributes nothing.
+  const subtitle = titleShaped(stripped[1]) ? stripped[1]!.slice(0, TITLE_PREAMBLE_CHARS) : "";
   const subject = subjectLine(tree.sections);
   const caption = captionTitle(dropLegends(leadingLines(tree.sections)));
-  const parts = [heading, preamble, subject, caption].filter((p) => p.length > 0);
+  const parts = [heading, preamble, subtitle, subject, caption].filter((p) => p.length > 0);
   return parts.length > 0 ? parts.join(" ") : fallback;
 }
 

@@ -88,6 +88,13 @@ const PAYMENT_TERMS = new RegExp(
     // scoped to the agreement itself ("of this Agreement" / "hereof") so a
     // milestone "due upon execution of Phase 1" is not read as a payment term.
     `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+cash\\s+)?(?:at|upon|on)\\s+(?:the\\s+)?(?:signing|execution\\s+(?:of\\s+this\\s+\\w+|hereof))\\b`,
+    // The deadline FRONTED ahead of the verb — "Within ten (10) business days
+    // after the Effective Date, Kanaan shall pay Pelagic $265,000" — is as
+    // conventional as the trailing form, and every branch above reads left to
+    // right from the verb, so a plainly stated payment term was reported as
+    // none. Same window and same character class as the "shall pay … within"
+    // branch, read the other way.
+    `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()$."'“”’\\-/:;&%–—]{0,160}?\\bshall\\s+(?:pay|remit)\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
     // The installment count is optional: a lease states "annual base rent …
     // payable in equal monthly installments" with no number, and that cadence
@@ -115,7 +122,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

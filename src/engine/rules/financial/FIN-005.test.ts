@@ -268,3 +268,27 @@ describe("FIN-005 — retainer/deposit due at signing (v1.6.4)", () => {
     ).not.toBeNull();
   });
 });
+
+describe("FIN-005 — the deadline fronted ahead of the verb (v1.8.0)", () => {
+  // "Within ten (10) business days after the Effective Date, Kanaan shall pay
+  // Pelagic $265,000" is as conventional as the trailing form, and every
+  // branch read left to right from the verb, so a plainly stated payment term
+  // was reported as none.
+  it("is silent on a fronted payment deadline", () => {
+    for (const clause of [
+      "Within ten (10) business days after the Effective Date, Kanaan shall pay Pelagic $265,000 by wire transfer to the account Pelagic designates in writing.",
+      "Within thirty (30) days of receipt of a proper invoice, Customer shall pay the fees set forth on the Order Form.",
+      "No later than 15 days after the end of each month, Licensee shall remit the royalties due for that month.",
+    ]) {
+      expect(FIN_005.check(doc(clause)), clause).toBeNull();
+    }
+  });
+
+  it("still fires when a fee is stated with no term at all", () => {
+    expect(
+      FIN_005.check(
+        doc("Customer shall pay each invoice in the amount set out in the Order Form."),
+      ),
+    ).not.toBeNull();
+  });
+});

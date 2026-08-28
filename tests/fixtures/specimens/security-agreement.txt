@@ -1,0 +1,73 @@
+SECURITY AGREEMENT
+
+This Security Agreement (this "Agreement") is made as of March 3, 2026, by Verdant Loom Textiles, Inc., a North Carolina corporation ("Debtor"), in favor of Piedmont Commercial Bank, a North Carolina banking corporation ("Secured Party").
+
+RECITALS
+
+Debtor and Secured Party are parties to a Loan and Security Agreement of even date (the "Loan Agreement"), under which Secured Party has agreed to extend a revolving credit facility of up to $6,500,000 to Debtor. It is a condition to that extension that Debtor grant the security interest described below. Capitalized terms used and not defined in this Agreement have the meanings given to them in the Loan Agreement or, if not defined there, in Article 9 of the Uniform Commercial Code as in effect in the State of North Carolina (the "UCC").
+
+1. Grant of Security Interest.
+
+Debtor hereby grants to Secured Party a continuing security interest in all of Debtor's right, title, and interest in and to the following property, whether now owned or hereafter acquired and wherever located (collectively, the "Collateral"): all Accounts; all Chattel Paper; all Deposit Accounts; all Documents; all Equipment; all General Intangibles, including all Intellectual Property; all Goods; all Instruments; all Inventory; all Investment Property; all Letter-of-Credit Rights; all Supporting Obligations; all books and records relating to the foregoing; and all Proceeds and products of the foregoing, including insurance proceeds.
+
+2. Obligations Secured.
+
+The security interest secures the prompt payment and performance in full of all present and future indebtedness, obligations, and liabilities of Debtor to Secured Party under the Loan Agreement, this Agreement, and any other Loan Document, whether direct or indirect, absolute or contingent, due or to become due, and including all interest accruing after the commencement of any insolvency proceeding, whether or not allowed in that proceeding (collectively, the "Obligations").
+
+3. Perfection and Further Assurances.
+
+Debtor authorizes Secured Party to file, at any time and without Debtor's signature, financing statements and amendments describing the Collateral as "all assets" or "all personal property" of Debtor, or in any other manner Secured Party determines is necessary or advisable to perfect its security interest. Debtor shall execute and deliver such control agreements, assignments, notices, and other documents, and take such further action, as Secured Party reasonably requests to perfect, protect, and maintain the priority of its security interest, including obtaining a deposit account control agreement for each Deposit Account maintained with a depositary other than Secured Party.
+
+4. Representations and Warranties.
+
+Debtor represents and warrants that: (a) Debtor is the owner of the Collateral free of all liens other than Permitted Liens; (b) Debtor's exact legal name, jurisdiction of organization, and chief executive office are as set forth on Schedule 1; (c) no financing statement covering any Collateral is on file in favor of any person other than Secured Party, except in respect of Permitted Liens; (d) the Accounts are genuine and arise from bona fide transactions completed in accordance with their terms; and (e) Debtor has the power and authority to grant the security interest created by this Agreement.
+
+5. Covenants.
+
+Debtor shall: (a) not change its legal name, jurisdiction of organization, or corporate structure without thirty (30) days' prior written notice to Secured Party; (b) keep the Collateral free of liens other than Permitted Liens; (c) maintain the Equipment in good working order, ordinary wear and tear excepted; (d) keep the Collateral insured against loss with insurers reasonably acceptable to Secured Party, naming Secured Party as lender's loss payee and additional insured; (e) pay all taxes and assessments on the Collateral before they become delinquent; (f) not sell, lease, or otherwise dispose of any Collateral except for sales of Inventory in the ordinary course of business and dispositions of worn-out or obsolete Equipment; and (g) permit Secured Party to inspect the Collateral and Debtor's books and records at reasonable times on reasonable notice, and at any time after an Event of Default.
+
+6. Collection of Accounts.
+
+Until Secured Party notifies Debtor otherwise after an Event of Default, Debtor may collect the Accounts in the ordinary course. After such notice, Secured Party may notify account debtors to make payments directly to Secured Party, may endorse Debtor's name on any instrument received in payment, and may settle or compromise any Account on terms Secured Party reasonably determines.
+
+7. Events of Default.
+
+Each of the following is an "Event of Default": (a) Debtor fails to pay any Obligation when due; (b) Debtor breaches any covenant in this Agreement and, if the breach is capable of cure, fails to cure it within ten (10) days after notice; (c) any representation made by Debtor proves to have been materially false when made; (d) an Event of Default occurs under the Loan Agreement; (e) Debtor becomes insolvent or a proceeding under the Bankruptcy Code is commenced by or against Debtor and, if involuntary, is not dismissed within sixty (60) days; or (f) a material portion of the Collateral is lost, destroyed, or subjected to a lien that is not a Permitted Lien.
+
+8. Remedies.
+
+On the occurrence and during the continuance of an Event of Default, Secured Party may exercise all rights and remedies of a secured party under the UCC and any other applicable law, including the right to take possession of the Collateral, to require Debtor to assemble the Collateral and make it available at a place Secured Party designates, and to sell, lease, or otherwise dispose of the Collateral at public or private sale. Secured Party shall give Debtor at least ten (10) days' prior notice of the time and place of any public sale or the time after which any private sale is to be made, which Debtor agrees is commercially reasonable notice under UCC § 9-611 and § 9-612. Secured Party may buy the Collateral at any public sale and, if the Collateral is of a type customarily sold in a recognized market or the subject of widely distributed standard price quotations, at any private sale. Proceeds are applied first to Secured Party's reasonable expenses of retaking, holding, preparing for disposition, and disposing of the Collateral, including reasonable attorneys' fees, then to the Obligations in the order Secured Party elects, with any surplus paid to Debtor and Debtor remaining liable for any deficiency.
+
+9. Standard of Care.
+
+Secured Party has no duty as to the collection or protection of the Collateral beyond the safe custody of Collateral in its actual possession. Secured Party's exercise of reasonable care in the custody of Collateral in its possession is conclusively established if the Collateral is accorded treatment substantially equal to that which Secured Party accords its own property.
+
+10. Power of Attorney.
+
+Debtor appoints Secured Party as its attorney-in-fact, effective only during the continuance of an Event of Default, to endorse Debtor's name on instruments, to sign and file financing statements, and to take any other action necessary to perfect or enforce the security interest. This power is coupled with an interest and is irrevocable until the Obligations are paid in full and the commitments under the Loan Agreement have terminated.
+
+11. Continuing Security Interest; Termination.
+
+This Agreement creates a continuing security interest and remains in full force until the Obligations have been paid in full in cash and Secured Party has no further commitment to extend credit, at which time the security interest terminates and Secured Party shall, at Debtor's expense, file a termination statement and deliver such other releases as Debtor reasonably requests.
+
+12. Miscellaneous.
+
+This Agreement is governed by the laws of the State of North Carolina, without regard to its conflict-of-laws principles, except that perfection and the effect of perfection or non-perfection are governed by the UCC of the jurisdiction whose law applies under UCC § 9-301. Each party consents to the exclusive jurisdiction and venue of the state and federal courts sitting in Mecklenburg County, North Carolina. No amendment or waiver is effective unless in writing and signed by Secured Party. No failure or delay by Secured Party in exercising any right operates as a waiver. If any provision is held unenforceable, the remainder continues in effect. This Agreement binds Debtor and its successors and permitted assigns and inures to the benefit of Secured Party and its successors and assigns; Debtor may not assign its rights or obligations without Secured Party's prior written consent.
+
+IN WITNESS WHEREOF, Debtor has executed this Security Agreement as of the date first written above.
+
+VERDANT LOOM TEXTILES, INC.
+
+By: /s/ Tobias Amankwah
+Name: Tobias Amankwah
+Title: Chief Financial Officer
+
+ACCEPTED:
+
+PIEDMONT COMMERCIAL BANK
+
+By: /s/ Cecily Vandermeer
+Name: Cecily Vandermeer
+Title: Senior Vice President
+
+Schedule 1 — Debtor Information

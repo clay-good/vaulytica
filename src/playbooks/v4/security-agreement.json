@@ -14,11 +14,13 @@
       "grant",
       "after-acquired"
     ],
-    "negative_features": ["promissory note", "loan agreement", "guaranty"]
+    "negative_features": ["guaranty"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Debtor", "Secured Party", "Collateral"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "FIN-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-ART-9",

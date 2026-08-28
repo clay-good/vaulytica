@@ -14,15 +14,24 @@
     "distinguishing_phrases": [
       "releasor",
       "releasee",
+      "known or unknown",
       "known and unknown",
       "section 1542",
-      "no admission of liability"
+      "no admission",
+      "fully and finally release",
+      "forever discharge"
     ],
-    "negative_features": ["settlement payment", "demand", "cease and desist"]
+    "negative_features": ["settlement payment", "demand letter", "cease and desist"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Releasor", "Releasee", "Effective Date"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-RELEASE-LAW",

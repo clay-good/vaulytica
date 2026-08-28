@@ -7,6 +7,25 @@ import { buildTree } from "./_fixtures.js";
 // document that has one (the worst false absence this tool can make), and a
 // wrong state makes the law/venue-mismatch rules fire spuriously.
 const REGISTERS: Array<[clause: string, want: RegExp]> = [
+  // A state court is named by its TYPE and the county it sits FOR — "the
+  // Circuit Court for Dane County", "the Superior Court for the County of Los
+  // Angeles". The forum patterns admitted only a bare "court(s)" plus an
+  // "of/in/located in/sitting in" connector, so the commonest way an American
+  // state court is written registered no venue at all, and CHOICE-003
+  // reported "no forum clause" on a premarital agreement that names one.
+  [
+    "The Parties consent to the jurisdiction of the Circuit Court for Dane County, Wisconsin, in any proceeding concerning this Agreement.",
+    /Wisconsin/,
+  ],
+  [
+    "The parties submit to the jurisdiction of the Superior Court for the County of Los Angeles, California.",
+    /California/,
+  ],
+  [
+    "Each party waives any objection to venue in the Circuit Court for Cook County, Illinois.",
+    /Illinois/,
+  ],
+  ["Venue shall lie exclusively in the District Court for Harris County, Texas.", /Texas/],
   [
     "Any action shall be filed and maintained exclusively in the Superior Court of California, County of Los Angeles.",
     /California/,

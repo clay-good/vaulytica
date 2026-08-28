@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { allMatches, emit, excerptWindow } from "../_helpers.js";
 
 /**
  * PERS-005 — Non-compete clause present (warning, personnel).
@@ -23,7 +23,7 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",
@@ -31,7 +31,11 @@ export const rule: Rule = {
     "Surfaces non-compete / covenant-not-to-compete language so a reviewer can audit against the controlling jurisdiction's enforceability rules.",
   dkb_citations: ["stat-ca-bp-16600"],
   check(ctx: RuleContext): Finding | null {
-    const hit = firstParagraphMatch(
+    // Scan EVERY hit, not just the first. A document that opens with an
+    // incoming-obligations representation and imposes a real covenant later
+    // would otherwise be silenced by the disclaimer test running against the
+    // wrong paragraph.
+    const hits = allMatches(
       ctx,
       // "non-competition" (the dominant section-heading spelling) is added — the
       // old `non[-\s]?compete` matched "non-compete" but not "non-competition".
@@ -39,18 +43,24 @@ export const rule: Rule = {
       // TO compete", not only "shall not compete".
       /\b(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|(?:shall|will)\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet|shall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business)/i,
     );
-    if (!hit) return null;
     // Suppress a DISCLAIMER of a non-compete ("nothing shall be construed as a
     // covenant not to compete", "does not contain a non-compete") — but NOT the
     // operative covenant itself ("Executive shall not compete"), whose "not" is
     // the restriction, not a disclaimer. The generic negation helper can't tell
     // these apart, so this rule checks disclaimer markers specifically.
-    if (
-      /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b/i.test(
-        hit.text,
-      )
-    )
-      return null;
+    //
+    // The INCOMING-OBLIGATIONS representation is the other shape, and it is in
+    // essentially every offer letter and employment agreement: "you represent
+    // that you are not subject to any employment, confidentiality,
+    // non-competition, or other agreement that would prevent you from
+    // accepting this position". That is a promise the candidate is NOT bound
+    // by someone else's covenant — the opposite of imposing one — and it was
+    // reported as a non-compete clause present, at `warning`, on a letter that
+    // contains none.
+    const DISCLAIMED =
+      /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b/i;
+    const hit = hits.find((h) => !DISCLAIMED.test(h.text));
+    if (!hit) return null;
     return emit(ctx, rule, {
       title: "Non-compete clause present",
       description: hit.match[0],
