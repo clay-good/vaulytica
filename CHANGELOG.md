@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.90.1] — 2026-08-28
+
+### Added
+- **The self-penalizing guard now reaches the families that have no
+  specimen.** Fifty-five of the two hundred sixty-six families have a
+  hand-written document; the rest do not. A playbook still describes itself in
+  four other places — its prose description, the terms it expects the document
+  to define, the clauses it expects to find, and its compliance-matrix columns
+  — and a negative feature drawn from any of them is self-contradictory for
+  the same reason one drawn from its title keywords is. It passes today: a
+  ratchet, not a discovery, keeping the next family from acquiring the defect
+  where the other two guards cannot look.
+
 ## [9.90.0] — 2026-08-28
 
 Three more instruments: a UCC § 9-104 deposit account control agreement, a

@@ -101,3 +101,37 @@ describe("negative features against the family's own specimen", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * The same invariant reaching the families that have no specimen.
+ *
+ * Fifty-five of the two hundred sixty-six families have a hand-written
+ * document; the rest do not, and the specimen guard above cannot see them. A
+ * playbook still describes itself in four other places — its prose
+ * description, the terms it expects the document to define, the clauses it
+ * expects to find, and its compliance-matrix columns — and a negative feature
+ * drawn from any of them is self-contradictory for the same reason a feature
+ * drawn from its title keywords is.
+ *
+ * This passes today. It is a ratchet, not a discovery: it keeps the next
+ * family from acquiring the defect in the place the other two guards cannot
+ * look.
+ */
+describe("negative features against the family's own self-description", () => {
+  it.each(PLAYBOOKS.map((p) => [p.id, p] as const))("%s", (_id, playbook) => {
+    const own = [
+      playbook.description ?? "",
+      ...(playbook.expected_defined_terms ?? []).map((t) => t.term),
+      ...(playbook.expected_clauses ?? []).map((c) => c.category),
+      ...(playbook.compliance_matrix_columns ?? []),
+    ]
+      .map((s) => s.toLowerCase())
+      .filter((s) => s.length > 0);
+
+    const offending = playbook.match_features.negative_features
+      .map((n) => n.toLowerCase())
+      .flatMap((n) => own.filter((o) => o.includes(n)).map((o) => `"${n}" inside "${o}"`));
+
+    expect(offending, `${playbook.id} penalizes itself: ${offending.join("; ")}`).toEqual([]);
+  });
+});
