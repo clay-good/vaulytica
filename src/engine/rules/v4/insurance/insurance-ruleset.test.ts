@@ -354,3 +354,49 @@ describe("INS-012 — express denial of the subrogation waiver", () => {
     expect(await run(text)).toEqual([]);
   });
 });
+
+describe("INS-017 — the settlement-consent clause as drafters write it", () => {
+  /**
+   * The third pillar wanted the NOUN PHRASE "consent to settle" or "right to
+   * control", and no drafter writes either. The clause is written as an
+   * operative prohibition — "shall not settle any Proceeding … without the
+   * other party's prior written consent" — or as the mirror election, "is
+   * entitled to assume the defense". A document carrying the strongest
+   * settlement-consent provision available was told it established no
+   * procedure at all.
+   */
+  const ins017 = INSURANCE_RULES.find((r) => r.id === "INS-017")!;
+  const doc = (...paras: string[]) =>
+    withPb(buildContext(["Indemnification Agreement", ...paras]), IND_PB);
+
+  it("is silent on a complete procedure written operatively", () => {
+    expect(
+      ins017.check(
+        doc(
+          "Indemnitee shall notify the Company in writing of any Proceeding as soon as reasonably practicable.",
+          "Indemnitee shall cooperate with the Company in the defense of any Proceeding.",
+          "The Company shall not settle any Proceeding in a manner that imposes any liability on Indemnitee without Indemnitee's prior written consent.",
+        ),
+      ),
+    ).toBeNull();
+    expect(
+      ins017.check(
+        doc(
+          "The Indemnitee shall give prompt written notice and tender the claim.",
+          "The parties shall cooperate in the defense.",
+          "The Indemnitor is entitled to assume the defense with counsel reasonably satisfactory to the Indemnitee.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when the procedure states no settlement or defense mechanics", () => {
+    expect(
+      ins017.check(
+        doc(
+          "Indemnitee shall give the Company notice of any Proceeding and shall cooperate in good faith.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

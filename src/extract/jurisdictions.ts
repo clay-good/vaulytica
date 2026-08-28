@@ -44,6 +44,29 @@ const COUNTRY_PATTERN =
 // comparisons then reported as a DIFFERENT jurisdiction from the governing law,
 // and CHOICE-005 as a foreign forum with no enforceability treaty. One false
 // finding became four. The division word is consumed before the state is read.
+/**
+ * Words that may sit lowercase INSIDE a place name — "District of Columbia",
+ * "Court of Chancery of the State of Delaware", "England and Wales". Anything
+ * else in lowercase begins the sentence's tail, not the place.
+ */
+const VENUE_INTERNAL_WORD = /^(?:of|the|and|at|upon|de|del|la|le|van|von|du|des|da|dos)$/;
+
+/** Cut a venue capture at the first lowercase word that is not internal. */
+function trimVenueTail(captured: string): string {
+  const words = captured.split(/\s+/);
+  let end = words.length;
+  for (let i = 0; i < words.length; i += 1) {
+    const w = words[i]!;
+    if (/^[a-z]/.test(w) && !VENUE_INTERNAL_WORD.test(w)) {
+      end = i;
+      break;
+    }
+  }
+  // Never end on an internal connective: "the State of" alone is not a place.
+  while (end > 0 && VENUE_INTERNAL_WORD.test(words[end - 1]!)) end -= 1;
+  return words.slice(0, end).join(" ");
+}
+
 const JURISDICTION_AFTER_LOCALITY = new RegExp(
   `^\\s*,\\s*(?:the\\s+)?(?:(?:State|Commonwealth|City|County|Borough|Parish|Township|Municipality)\\s+of\\s+)?(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\\b`,
   "i",
@@ -495,6 +518,18 @@ export function extractJurisdictions(
       // be the sole and exclusive forum for any derivative action" registers
       // the lowercase clause tail as the venue.
       if (!/^[A-Z]/.test(captured)) return;
+      // The capture can only stop at punctuation, so a forum clause that runs
+      // to the end of its sentence without one takes the sentence's tail with
+      // it: "submit to the exclusive jurisdiction of the Court of Chancery of
+      // the State of Delaware **for any dispute arising under this Agreement**"
+      // registered a venue of "Delaware for any dispute arising under this
+      // Agreement", and CHOICE-004, CHOICE-009, and CHOICE-012 each reported
+      // that Delaware governing law and that venue "name different
+      // jurisdictions". Trimming to the last capitalized token is not enough —
+      // "this Agreement" ends on one — so the place name ends at the first
+      // lowercase word that is not an internal connective.
+      const place = trimVenueTail(captured);
+      if (!place) return;
       // A venue captured with the state name embedded — "Court of Chancery of
       // the State of Delaware" leaves "Chancery of the State of Delaware" in
       // the capture because "Chancery" blocks the pattern's "the State of"
@@ -503,8 +538,8 @@ export function extractJurisdictions(
       // Delaware governing law instead of reading as a different jurisdiction
       // (CHOICE-004/009/012). A clean capture ("Delaware") has no such tail and
       // is left untouched.
-      const stateOfTail = /(?:State|Commonwealth)\s+of\s+([A-Z][A-Za-z\s&-]+?)\s*$/.exec(captured);
-      const normalizedCapture = stateOfTail?.[1] ? stateOfTail[1].trim() : captured;
+      const stateOfTail = /(?:State|Commonwealth)\s+of\s+([A-Z][A-Za-z\s&-]+?)\s*$/.exec(place);
+      const normalizedCapture = stateOfTail?.[1] ? stateOfTail[1].trim() : place;
       const end = ext.end;
       const jurisdiction = JURISDICTION_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
       const raw = jurisdiction ? jurisdiction.replace(/\s+/g, " ") : normalizedCapture;

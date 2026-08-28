@@ -96,3 +96,50 @@ describe("venue phrasing guard", () => {
     });
   }
 });
+
+describe("a venue capture stops at the place name", () => {
+  /**
+   * The capture can only stop at punctuation, so a forum clause that runs to
+   * the end of its sentence without one takes the sentence's tail with it.
+   * "submit to the exclusive jurisdiction of the Court of Chancery of the
+   * State of Delaware for any dispute arising under this Agreement"
+   * registered a venue of "Delaware for any dispute arising under this
+   * Agreement", and CHOICE-004, CHOICE-009, and CHOICE-012 each then reported
+   * that Delaware governing law and that venue "name different
+   * jurisdictions".
+   *
+   * Trimming to the last capitalized token is not enough — "this Agreement"
+   * ends on one — so the place name ends at the first lowercase word that is
+   * not an internal connective ("of", "the", "and").
+   */
+  const venueOf = (clause: string) =>
+    extractJurisdictions(buildTree(["Body", clause]))
+      .filter((r) => r.clause_kind === "venue")
+      .map((r) => r.raw_text);
+
+  it("drops the sentence tail after the place", () => {
+    expect(
+      venueOf(
+        "The parties submit to the exclusive jurisdiction of the Court of Chancery of the State of Delaware for any dispute arising under this Agreement.",
+      ),
+    ).toEqual(["Delaware"]);
+    expect(
+      venueOf(
+        "The parties consent to the exclusive jurisdiction of the courts of Delaware for any dispute arising under this Agreement.",
+      ),
+    ).toEqual(["Delaware"]);
+  });
+
+  it("keeps a multi-word place and its internal connectives", () => {
+    expect(
+      venueOf(
+        "The parties consent to the jurisdiction of the courts of New York for all disputes.",
+      ),
+    ).toEqual(["New York"]);
+    expect(
+      venueOf(
+        "The parties consent to the jurisdiction of the courts of Miami-Dade County, Florida, for all disputes.",
+      ),
+    ).toEqual(["Florida"]);
+  });
+});

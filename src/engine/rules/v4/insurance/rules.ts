@@ -438,7 +438,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     // ("and"), but the patterns were a synonym OR: notice, tender, and cooperation are distinct pillars, and `(notice|tender)` alone is satisfied by any notices clause.
     // The check could not fire on a document that carried nothing but
     // execution boilerplate.
-    version: "1.0.1",
+    version: "1.0.2",
     name: "Notice + tender + cooperation procedure",
     description:
       "Agreement must establish notice, tender, and cooperation procedure for indemnification claims.",
@@ -456,9 +456,19 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add 'Indemnification Procedure' covering written notice, tender deadline, indemnitor's election to defend, cooperation obligations, and consent-to-settle.",
     present_patterns: [
-      /(notice|tender)/i,
+      // The first pillar wanted the NOUN too: an indemnity procedure that says
+      // "Indemnitee shall NOTIFY the Company in writing" never prints the word
+      // "notice".
+      /notice|tender|notif(?:y|ies|ied|ication)/i,
       /cooperat/i,
-      /(consent\s+to\s+settle|right\s+to\s+control)/i,
+      // 1.0.2 — the third pillar wanted the NOUN PHRASE "consent to settle" or
+      // "right to control", and no drafter writes either. The clause is written
+      // as an operative prohibition — "shall not settle any Proceeding … without
+      // the other party's prior written consent" — or as the mirror election,
+      // "is entitled to assume the defense with counsel reasonably satisfactory
+      // to". A document carrying the strongest settlement-consent provision
+      // available was reported as establishing no procedure at all.
+      /consent\s+to\s+settle|right\s+to\s+control|settle[^.;]{0,120}?\bconsent\b|\bconsent\b[^.;]{0,80}?\bsettle|(?:assume|control|conduct)\s+(?:the\s+)?defen[sc]e/i,
     ],
     require_all_present: true,
     default_severity: "warning",

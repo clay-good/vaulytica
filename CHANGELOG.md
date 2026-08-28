@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.84.0] — 2026-08-28
+
+A restricted stock unit agreement and a director indemnification agreement.
+The RSU award was the third unilateral equity grant shipping with an empty
+`rule_overrides`; the indemnification agreement found three defects and one
+gap in the catalog itself.
+
+### Fixed
+- **A venue capture ran past the place name into the sentence.** The capture
+  can only stop at punctuation, so a forum clause with no comma before its
+  period took the tail with it: "submit to the exclusive jurisdiction of the
+  Court of Chancery of the State of Delaware **for any dispute arising under
+  this Agreement**" registered a venue of "Delaware for any dispute arising
+  under this Agreement", and CHOICE-004, CHOICE-009, and CHOICE-012 each
+  reported that Delaware governing law and that venue "name different
+  jurisdictions". Trimming to the last capitalized token is not enough — "this
+  Agreement" ends on one — so the place name now ends at the first lowercase
+  word that is not an internal connective ("of", "the", "and").
+- **Arbitration named in a definition is not an arbitration clause.**
+  '"Proceeding" means any threatened, pending, or completed action, suit,
+  **arbitration**, alternative dispute resolution proceeding, administrative
+  hearing, or investigation' enumerates the forums a claim might take; it does
+  not agree to any of them. Every indemnification agreement, D&O policy, and
+  litigation-hold notice carries that list, and each was reported as having an
+  arbitration clause "with the seat not specified".
+- **INS-017 wanted nouns nobody writes.** Its notice pillar matched "notice"
+  but not "notify", and its settlement pillar wanted the phrase "consent to
+  settle" or "right to control" — so a document saying "Indemnitee shall
+  notify the Company in writing" and "The Company shall not settle any
+  Proceeding … without Indemnitee's prior written consent" was told it
+  established no notice, tender, or cooperation procedure at all.
+- **`rsu-grant` shipped with an empty `rule_overrides`** and now carries the
+  unilateral-instrument profile its two siblings use.
+
+### Added
+- `firstUnnegatedParagraphMatch` takes an optional `skip` predicate. Returning
+  the first hit and testing it afterwards is a trap: a document whose first
+  mention is a definitional aside then hides every real occurrence behind it.
+  CHOICE-006 is the first caller.
+- One specimen, bringing the set to forty-five.
+
+### Known gap
+- The catalog has no **DGCL § 145 director-and-officer indemnification
+  agreement**. `indemnification-agreement` is the commercial / anti-indemnity
+  family (NY § 5-322.1, CA § 2782, TX § 151) and applies the construction
+  Type I/II/III taxonomy, which a D&O agreement has nothing to do with.
+
 ## [9.83.0] — 2026-08-28
 
 Five more specimens, this time in families that are not bilateral commercial

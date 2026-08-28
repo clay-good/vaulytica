@@ -408,6 +408,16 @@ const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "STRUCT-016"],
   },
 
+  // A restricted stock unit award agreement, under the same plan-header shape
+  // as the option grant. `rsu-grant` was the third unilateral equity award
+  // shipping with an empty `rule_overrides`. What is left is real: EQT-033 is
+  // the § 83(b)-not-available recital an RSU agreement ought to carry, and the
+  // stock-plan data-privacy consent names no regime and no retention period.
+  "rsu-grant.txt": {
+    playbook: "rsu-grant",
+    findings: ["EQT-033", "IPDATA-005", "IPDATA-007", "OBLI-005"],
+  },
+
   // A mutual release of claims. Its playbook's distinguishing phrases were
   // written in a register real releases do not use — "known and unknown" for
   // "known or unknown", "no admission of liability" for a section headed "No

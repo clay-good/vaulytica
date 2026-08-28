@@ -148,6 +148,13 @@ export function firstUnnegatedParagraphMatch(
   ctx: RuleContext,
   re: RegExp,
   window = 50,
+  /**
+   * Reject a match the caller can see is not the thing, and keep scanning.
+   * Returning the first hit and testing it afterwards is a trap: a document
+   * whose first mention is a definitional aside then hides every real
+   * occurrence behind it.
+   */
+  skip?: (paragraph: string, matchIndex: number) => boolean,
 ): ParagraphHit | null {
   let hit: ParagraphHit | null = null;
   forEachParagraph(ctx.tree, (p) => {
@@ -165,7 +172,7 @@ export function firstUnnegatedParagraphMatch(
       // Still floored at the `window` slice, so a distant negation in the same
       // sentence cannot reach forward and suppress a genuine trigger.
       const clause = p.text.slice(Math.max(from, clauseStartBefore(p.text, m.index)), m.index);
-      if (!NEGATION_BEFORE.test(clause)) {
+      if (!NEGATION_BEFORE.test(clause) && !skip?.(p.text, m.index)) {
         hit = {
           text: p.text,
           match: m,

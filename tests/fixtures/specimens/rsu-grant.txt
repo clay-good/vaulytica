@@ -1,0 +1,72 @@
+CASCADIA BIOSCIENCES, INC.
+2023 STOCK INCENTIVE PLAN
+
+RESTRICTED STOCK UNIT AWARD AGREEMENT
+
+Cascadia Biosciences, Inc., a Delaware corporation (the "Company"), grants to the Participant named below an award of Restricted Stock Units (the "Award") under the Cascadia Biosciences, Inc. 2023 Stock Incentive Plan (the "Plan"). The Award is subject to this Restricted Stock Unit Award Agreement (this "Agreement") and to the Plan, which is incorporated by reference. Capitalized terms used and not defined in this Agreement have the meanings given to them in the Plan.
+
+Participant:                    Thandiwe Mokoena-Bright
+Grant Date:                     April 1, 2026
+Number of Restricted Stock Units: 62,500
+Vesting Commencement Date:      April 1, 2026
+
+1. Grant of Units.
+
+Each Restricted Stock Unit represents an unfunded, unsecured right to receive one share of the Company's Common Stock on the settlement date described in Section 3. The Participant has no rights of a stockholder, including no voting rights and no right to dividends, until shares are issued in settlement.
+
+2. Vesting.
+
+The Units vest as to twenty-five percent (25%) of the total on the first anniversary of the Vesting Commencement Date, and as to 1/16th of the total on each subsequent quarterly anniversary, so that the Award is fully vested on the fourth anniversary, in each case subject to the Participant's Continuous Service through the applicable vesting date. Units that have not vested when Continuous Service terminates are forfeited automatically and without consideration on the termination date.
+
+3. Settlement.
+
+Vested Units are settled in shares of Common Stock as soon as administratively practicable after the applicable vesting date, and in no event later than the fifteenth day of the third month following the end of the calendar year in which the Units vest. This settlement timing is intended to satisfy the short-term deferral exception under Treasury Regulation § 1.409A-1(b)(4), and this Agreement shall be construed accordingly. The Company may settle in cash equal to the fair market value of the shares if the Administrator so determines before the vesting date.
+
+4. Tax Withholding.
+
+The Participant is responsible for all taxes arising from the Award. As a condition to settlement, the Company will satisfy its withholding obligation by withholding from the shares otherwise deliverable a number of shares with a fair market value equal to the amount required to be withheld, rounded up to the nearest whole share, unless the Administrator instead permits or requires payment in cash or a sell-to-cover transaction. The Company has made no representation as to the tax consequences of the Award, and the Participant is advised to consult a tax advisor.
+
+5. Change in Control.
+
+If the Award is assumed or substituted in a Change in Control and the Participant's Continuous Service is terminated by the Company without Cause, or by the Participant for Good Reason, within twelve (12) months after the Change in Control, the Units vest in full on the termination date. If the Award is not assumed or substituted, the Units vest in full immediately before the Change in Control.
+
+6. Clawback.
+
+The Award and any shares or cash delivered under it are subject to recoupment under the Company's clawback policy as in effect from time to time, and to any recovery required by Section 10D of the Securities Exchange Act of 1934 and the listing standards adopted under it.
+
+7. Transferability.
+
+The Units may not be sold, assigned, pledged, or otherwise transferred except by will or the laws of descent and distribution. Any attempted transfer in violation of this Section is void.
+
+8. Securities Law Compliance.
+
+The Company is not obligated to issue any shares if the issuance would violate any law or regulation, and may require the Participant to make customary representations before issuing shares in a transaction not registered under the Securities Act of 1933.
+
+9. No Right to Continued Service.
+
+Nothing in this Agreement or the Plan confers on the Participant any right to continue in the service of the Company or interferes with the right of the Company to terminate that service at any time, with or without Cause.
+
+10. Data Privacy.
+
+The Participant consents to the collection, use, and transfer of the Participant's personal data by the Company and its service providers for the purpose of administering the Award, including transfer to the Company's stock plan administrator in the United States.
+
+11. Governing Law.
+
+This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws principles.
+
+12. Entire Agreement.
+
+This Agreement and the Plan are the entire agreement of the parties with respect to the Award and supersede all prior discussions concerning it. In the event of a conflict, the Plan controls. This Agreement may be amended only in a writing signed by the Company, except that the Company may amend it unilaterally if the amendment does not materially impair the Participant's rights.
+
+By accepting the Award, the Participant acknowledges receipt of the Plan and agrees to be bound by this Agreement and the Plan.
+
+CASCADIA BIOSCIENCES, INC.
+
+By: /s/ Ingeborg Halvorsen
+Name: Ingeborg Halvorsen
+Title: Chief Executive Officer
+
+PARTICIPANT
+
+/s/ Thandiwe Mokoena-Bright
+Thandiwe Mokoena-Bright
