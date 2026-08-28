@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.122.0] — 2026-08-28
+
+Three more format axes, swept the same way.
+
+Every specimen was run again through three transforms that change no word of
+the document. Two of them moved findings.
+
+### Fixed
+- **A Windows document took the PDF-paste fallback.** A CRLF blank line is
+  `\r\n\r\n` — a carriage return sits between the two newlines — and the
+  blank-line test added in 9.121.0 read the RAW text, so a CRLF document
+  reported having no blank lines at all. A general warranty deed lost its title
+  to that and fell to `generic-fallback`. Line endings are now normalized once
+  and every line-shape test reads the same string.
+- **A line broken AT a hyphen was rejoined with a space through it.** A mail
+  client, a legacy export, or a justified PDF column wraps "month-to-month"
+  across two lines, and the join produced "month-to- month" — so TEMP-004
+  stopped reading the holdover renewal of a hard-wrapped equipment lease. A
+  line ending in a hyphen now joins without the space, which also keeps a soft
+  hyphenation ("agree-" + "ment") as one token for the matcher's hyphen
+  normalization to read.
+
+### Added
+- The guard is now `format-invariance.test.ts` and covers four axes: blank
+  lines stripped, CRLF line endings, hard wrapping at 62 columns, and Word
+  smart quotes. **All ninety-two specimens are identical under three of them,
+  with no exceptions**; the blank-line axis holds routing for all ninety-two
+  and findings for all but fourteen.
+
+  Smart quotes were already lossless and are pinned so they stay that way.
+
 ## [9.121.0] — 2026-08-28
 
 The same documents, pasted out of a PDF.

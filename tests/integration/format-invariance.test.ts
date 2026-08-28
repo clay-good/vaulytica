@@ -1,6 +1,5 @@
 /**
- * Stripping a document's blank lines must not change what the engine says
- * about it.
+ * Changing a document's FORMAT must not change what the engine says about it.
  *
  * Text copied out of a PDF keeps its line breaks and loses its blank lines,
  * and it is one of the commonest things a reviewer pastes in. Paragraphs in
@@ -68,7 +67,73 @@ function stripBlankLines(text: string): string {
     .join("\n");
 }
 
-describe("blank lines are not load-bearing", () => {
+/** The same text with Windows line endings, as half the world's files have. */
+function crlf(text: string): string {
+  return text.replace(/\n/g, "\r\n");
+}
+
+/**
+ * The same text hard-wrapped at 62 columns, as a mail client, a legacy export,
+ * or a justified PDF column produces — including the break AT a hyphen that
+ * turns "month-to-month" into two lines.
+ */
+function hardWrap(text: string, width = 62): string {
+  const out: string[] = [];
+  for (const line of text.split("\n")) {
+    if (line.trim().length === 0) {
+      out.push("");
+      continue;
+    }
+    let rest = line.trim();
+    while (rest.length > width) {
+      const slice = rest.slice(0, width + 1);
+      const cut = Math.max(slice.lastIndexOf(" "), slice.lastIndexOf("-"));
+      if (cut <= 0) break;
+      out.push(rest.slice(0, cut + (slice[cut] === "-" ? 1 : 0)).trimEnd());
+      rest = rest.slice(cut + 1).trimStart();
+    }
+    out.push(rest);
+  }
+  return out.join("\n");
+}
+
+/**
+ * The same text as Word writes it: paired curly quotes and curly apostrophes.
+ * This one has always held — it is here so it keeps holding.
+ */
+function smartQuotes(text: string): string {
+  let open = true;
+  let out = "";
+  for (const ch of text) {
+    if (ch === '"') {
+      out += open ? "\u201C" : "\u201D";
+      open = !open;
+    } else if (ch === "'") {
+      out += "\u2019";
+    } else {
+      out += ch;
+      if (ch === "\n") open = true;
+    }
+  }
+  return out;
+}
+
+/**
+ * The format axes that must not change a single finding, on any specimen.
+ *
+ * Each was found by running the whole corpus through the transform and reading
+ * what moved: CRLF cost a general warranty deed its title (a Windows blank
+ * line is "\r\n\r\n", and the blank-line test read the raw text); hard
+ * wrapping broke "month-to-month" across a line and the join put a space in
+ * the middle of it.
+ */
+const LOSSLESS_TRANSFORMS: Array<[string, (t: string) => string]> = [
+  ["CRLF line endings", crlf],
+  ["hard-wrapped at 62 columns", hardWrap],
+  ["Word smart quotes", smartQuotes],
+];
+
+describe("format is not load-bearing", () => {
   it("the corpus is present", () => {
     expect(SPECIMENS.length).toBeGreaterThan(50);
   });
@@ -95,6 +160,23 @@ describe("blank lines are not load-bearing", () => {
       const stripped = await analyzeText(stripBlankLines(text), name);
       const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
       expect(ids(stripped)).toEqual(ids(normal));
+    },
+    120_000,
+  );
+
+  it.each(
+    LOSSLESS_TRANSFORMS.flatMap(([label, fn]) =>
+      SPECIMENS.map((n) => [`${n} — ${label}`, n, fn] as const),
+    ),
+  )(
+    "%s",
+    async (_label, name, transform) => {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const normal = await analyzeText(text, name);
+      const transformed = await analyzeText(transform(text), name);
+      const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      expect(transformed.run.playbook_id).toBe(normal.run.playbook_id);
+      expect(ids(transformed)).toEqual(ids(normal));
     },
     120_000,
   );

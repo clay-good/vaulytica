@@ -39,7 +39,14 @@ export async function ingestPaste(text: string): Promise<IngestResult> {
 
 function buildTreeFromText(text: string): DocumentTree {
   // Split on lone line breaks but keep them so we can detect blank-line breaks.
-  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  // Normalize the line endings ONCE and read every line-shape test off the
+  // same string. The blank-line test below looked at the raw text, where a
+  // Windows blank line is "\r\n\r\n" — a `\r` sits between the two newlines —
+  // so a CRLF document read as having no blank lines at all and took the
+  // single-block fallback meant for a PDF paste. A general warranty deed lost
+  // its title to that and fell to `generic-fallback`.
+  const normalized = text.replace(/\r\n?/g, "\n");
+  const lines = normalized.split("\n");
 
   // Root section accumulates paragraphs that appear before any heading.
   const root: Section = { id: "", heading: "", level: 1, paragraphs: [], children: [] };
@@ -75,7 +82,7 @@ function buildTreeFromText(text: string): DocumentTree {
    * only where the alternative is a single block, so a document that separates
    * its paragraphs normally is untouched.
    */
-  const hasBlankLine = /\n[ \t]*\n/.test(text);
+  const hasBlankLine = /\n[ \t]*\n/.test(normalized);
   const CLAUSE_OPENER =
     /^(?:\d+(?:\.\d+)*\.?\s|\([a-z0-9]{1,4}\)\s|(?:ARTICLE|SECTION|EXHIBIT|SCHEDULE|ANNEX|APPENDIX)\s+[0-9IVXLC]|[A-Z]\.\s)/;
   // An all-caps LINE is a heading only in a document that offers case
@@ -83,7 +90,7 @@ function buildTreeFromText(text: string): DocumentTree {
   // matched every line and made every line its own paragraph — which destroyed
   // the structure far more thoroughly than the single block it was meant to
   // fix, and cost the document its title.
-  const documentHasCaseContrast = text !== text.toUpperCase();
+  const documentHasCaseContrast = normalized !== normalized.toUpperCase();
   const ALL_CAPS_HEADING = (line: string): boolean =>
     documentHasCaseContrast &&
     line.length <= 80 &&
@@ -94,7 +101,17 @@ function buildTreeFromText(text: string): DocumentTree {
   let currentParaLines: string[] = [];
   const flushParagraph = (): void => {
     if (currentParaLines.length === 0) return;
-    const joined = currentParaLines.join(" ").trim();
+    // A line that ends in a hyphen was BROKEN at that hyphen by whatever wrapped
+    // it — a mail client, a PDF exporter, a justified column. Joining with a
+    // space turns "month-to-\nmonth" into "month-to- month", which is not the
+    // compound the drafter wrote, and TEMP-004 stopped reading the holdover
+    // renewal of a hard-wrapped equipment lease because of it. Join those
+    // without the space and keep the hyphen: the compound is restored, and a
+    // soft hyphenation ("agree-" + "ment") at least stays one token, which the
+    // matcher's hyphen normalization then reads correctly.
+    const joined = currentParaLines
+      .reduce((acc, line, i) => (i === 0 ? line : acc + (/\w-$/.test(acc) ? "" : " ") + line), "")
+      .trim();
     currentParaLines = [];
     if (!joined) return;
     const target = stack[stack.length - 1]!;
