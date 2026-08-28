@@ -53,7 +53,7 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
@@ -89,10 +89,37 @@ export const rule: Rule = {
     // branches missed them and the rule reported a capped indemnity as uncapped.
     // Both orderings are admitted, each requiring "liability … exceed" so a
     // non-liability limit ("in no event shall the term exceed") stays inert.
+    // The cap noun and its verb are almost never adjacent: "EACH PARTY'S TOTAL
+    // LIABILITY UNDER THESE API TERMS IS LIMITED TO …", "Vendor's aggregate
+    // liability arising out of or relating to this Agreement shall be capped
+    // at …". The first branch required "liability … is limited" with nothing
+    // between, so a contract with an explicit total-liability cap in the same
+    // section as its indemnity was reported as having an uncapped indemnity.
+    // The gap is bounded to one sentence, and the "not exceed" branches
+    // already read the same shape the other way.
     const CAP_PRESENT =
-      /\b(?:liability\s+(?:shall|will|is|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
+      /\b(?:liabilit(?:y|ies)\b[^.]{0,80}?\b(?:shall|will|is|are|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
+    // The stem is `indemni(f|t)`: a carve-out names the "indemnity
+    // obligations" as often as the verb, and `indemnif` matches none of them.
     const CARVE_OUT_INDEMNITY =
-      /\b(?:except\s+(?:for|with\s+respect\s+to)|excluding|other\s+than|not\s+including|carve[-\s]out\s+for)\s+[^.]{0,80}\bindemnif/i;
+      /\b(?:except\s+(?:for|with\s+respect\s+to)|excluding|other\s+than|not\s+including|carve[-\s]out\s+for)\s+[^.]{0,80}\bindemni(?:f|t)/i;
+
+    // The same carve-out written as its OWN sentence, pointing back at the
+    // limits it excepts: "These limits do not apply to a party's indemnity
+    // obligations under Section 10." That is the ordinary drafting of a
+    // limitation-of-liability section, and the connector-led pattern above
+    // reads none of it. This branch needs no cap phrase in its own sentence,
+    // because its subject — "these limits" / "the foregoing limitations" — IS
+    // the reference to the cap.
+    //
+    // It must BEGIN a sentence. A back-reference tucked inside the
+    // consequential-damages sentence — "Neither party shall be liable for
+    // indirect damages, except that this limitation does not apply to
+    // Contractor's indemnification obligations" — excepts the WAIVER, not the
+    // cap that follows in the next sentence, and the indemnity there is
+    // capped (`risk-allocation-guards.test.ts`).
+    const CARVE_OUT_BACKREFERENCE =
+      /(?:^|[.;]\s+)(?:these|those|the\s+foregoing|the\s+preceding|this)\s+(?:limits?|limitations?|caps?|exclusions?|restrictions?)\b[^.]{0,60}?\b(?:do|does|shall|will)\s+not\s+apply\s+to\b[^.]{0,140}?\bindemni(?:f|t)/i;
 
     forEachParagraph(ctx.tree, (p) => {
       if (!indemnityHit) {
@@ -126,6 +153,7 @@ export const rule: Rule = {
       if (carve && CAP_PRESENT.test(enclosingSentence(p.text, carve.index))) {
         capCarvesOutIndemnity = true;
       }
+      if (CARVE_OUT_BACKREFERENCE.test(p.text)) capCarvesOutIndemnity = true;
     });
 
     if (!indemnityHit) return null;

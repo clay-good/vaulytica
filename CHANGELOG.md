@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.99.0] — 2026-08-28
+
+Developer-facing API terms — and the liability cap the engine could not read.
+
+### Fixed
+- **RISK-015 required the cap noun and its verb to be adjacent.** "EACH
+  PARTY'S TOTAL LIABILITY UNDER THESE API TERMS IS LIMITED TO …" is the
+  dominant cap sentence, and the words "under these API Terms" sit between
+  them, so a contract with an explicit total-liability cap in the same section
+  as its indemnity was reported as having an uncapped indemnity.
+- **RISK-015 could not read a carve-out written as its own sentence.** "These
+  limits do not apply to a party's indemnity obligations under Section 10" is
+  the ordinary drafting of a limitation-of-liability section; the carve-out
+  pattern read only connector-led forms ("except for …", "other than …") and
+  only the verb stem `indemnif`, which does not match the noun "indemnity".
+  Documents whose indemnity is carved out of the cap now say so, instead of
+  being reported for having no cap at all. The back-reference must BEGIN a
+  sentence: one tucked inside the consequential-damages sentence excepts the
+  waiver, not the cap that follows it.
+- **`api-terms` listed the bare word "merger" as a negative feature** — what
+  the assignment clause of every agreement says ("we may assign them in
+  connection with a merger or sale of assets"). It penalized its own document
+  and dropped the family's match confidence from 0.9 to 0.8.
+
+### Added
+- One specimen, bringing the set to seventy-one.
+
 ## [9.98.0] — 2026-08-28
 
 Sweepstakes official rules, and the published-terms cohort behind them.

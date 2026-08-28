@@ -888,7 +888,7 @@
       "negative_features": [
         "employment",
         "lease of the premises",
-        "merger"
+        "merger agreement"
       ]
     },
     "expected_clauses": [],

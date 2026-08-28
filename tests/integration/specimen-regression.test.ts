@@ -757,6 +757,25 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "sweepstakes-official-rules",
     findings: ["OBLI-005", "OBLI-006", "STRUCT-006"],
   },
+
+  // Developer-facing API terms. Its playbook listed the bare word "merger" as a
+  // negative feature — the assignment clause every agreement carries — and its
+  // total-liability cap names the agreement between the noun and the verb,
+  // which is where RISK-015 stopped reading.
+  "api-terms.txt": {
+    playbook: "api-terms",
+    findings: [
+      "IPDATA-005",
+      "OBLI-005",
+      "RISK-007",
+      "TEMP-006",
+      "TEMP-007",
+      "TEMP-008",
+      "TERM-001",
+      "TERM-006",
+      "TERM-007",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

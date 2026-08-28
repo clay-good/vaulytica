@@ -1,0 +1,65 @@
+HALCYON DATA API TERMS OF USE
+
+Last updated: February 2, 2026
+
+These API Terms of Use (these "API Terms") govern your access to and use of the Halcyon Data application programming interface, SDKs, and developer documentation (together, the "API") provided by Halcyon Data, Inc. ("Halcyon", "we", or "us"). By requesting an API key or calling any API endpoint, you agree to these API Terms. If you are agreeing on behalf of an organization, you represent that you have authority to bind it, and "you" means that organization.
+
+1. Developer Account and API Keys.
+
+You must register a developer account to obtain an API key. We issue you a unique key for each application. You are responsible for keeping each key secret and for every call made with it. Do not embed an API key in client-side code, a mobile binary, or a public repository. Notify us at security@halcyondata.com within 24 hours after you learn that a key has been exposed, and we will rotate it.
+
+2. Rate Limits and Quotas.
+
+The API is limited to 1,000 requests per minute per key on the Free tier and 20,000 requests per minute per key on the Business tier. We may throttle or reject requests that exceed the limit and will return HTTP 429 with a Retry-After header. You may not use multiple keys, multiple accounts, or any other method to circumvent a rate limit.
+
+3. Permitted Use.
+
+You may use the API to build, operate, and improve applications that integrate with the Halcyon service. You may not: (a) build or operate a product that substantially replicates or competes with the Halcyon service; (b) resell, sublicense, or redistribute raw API responses; (c) use the API to train a machine-learning model; (d) reverse engineer the API or any part of the Halcyon service; or (e) use the API in any manner that violates applicable law.
+
+4. End-User Data and Privacy Flow-Down.
+
+You may receive personal data about our end users through the API ("End User Data"). You shall: (a) publish a privacy policy that accurately describes how you collect, use, share, and retain End User Data; (b) obtain any consent your use requires under applicable law; (c) use End User Data only to provide the features your application discloses to the end user; (d) delete End User Data within 30 days after an end user or Halcyon requests deletion, and confirm the deletion in writing; (e) retain End User Data no longer than necessary for the disclosed purpose, and in no event more than 24 months; and (f) not sell End User Data, and not combine it with data from any other source to build a profile of an end user. You shall maintain administrative, physical, and technical safeguards appropriate to the sensitivity of End User Data, and you shall notify us within 48 hours after you become aware of any unauthorized access to it.
+
+5. Caching.
+
+You may cache API responses for up to 24 hours to improve performance. You must refresh or delete cached data when the underlying record changes or is deleted.
+
+6. Ownership and License.
+
+As between the parties, Halcyon owns the API, the Halcyon service, and all intellectual property in them; you own your application and the content you create. Subject to these API Terms, we grant you a limited, revocable, non-exclusive, non-transferable, non-sublicensable license to call the API and to use the SDKs and documentation to build and operate your application. All rights not expressly granted are reserved.
+
+7. Branding and Attribution.
+
+You may use the Halcyon name and logo only as described in our brand guidelines at halcyondata.com/brand. You must display "Powered by Halcyon" on any screen of your application that shows data returned by the API. You may not use our brand assets in a way that implies that we sponsor, endorse, or are affiliated with your application.
+
+8. Changes to the API.
+
+We may add, change, or deprecate API endpoints. We will announce a breaking change at least 90 days before it takes effect on our changelog page and by email to the address on your developer account, and we will continue to serve the prior version for that period. We may make a change with less notice only where it is necessary to address a security vulnerability or to comply with law.
+
+9. Suspension.
+
+We may suspend your API key if your use threatens the stability or security of the API, or if you materially breach these API Terms and do not cure the breach within 10 days after we notify you. Where the suspension is not for an imminent security risk, we will tell you why and give you an opportunity to correct the problem first.
+
+10. Termination and Wind-Down.
+
+Either party may terminate these API Terms for convenience on 30 days' written notice. We may terminate immediately if you materially breach Section 3 or Section 4 and do not cure within 10 days after notice. On termination, you shall cease all use of the API, remove Halcyon brand assets from your application, and delete all End User Data and cached API responses within 30 days, and certify the deletion in writing. Where we terminate for convenience, we will provide a 90-day wind-down period during which your existing integrations continue to function so your end users are not stranded. Sections 4, 6, 11, 12, 13, and 14 survive termination.
+
+11. Fees.
+
+Business tier access is billed monthly in advance at the rates published at halcyondata.com/pricing. We may change the rates on at least 30 days' notice by email, effective at your next billing period.
+
+12. Warranties and Disclaimers.
+
+We warrant that the API will perform materially as described in the documentation. EXCEPT AS STATED IN THIS SECTION, THE API IS PROVIDED "AS IS" AND WE DISCLAIM ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+13. Indemnification and Limitation of Liability.
+
+You shall indemnify, defend, and hold harmless Halcyon from any third-party claim arising out of your application or your use of End User Data, provided that we give you prompt written notice of the claim, allow you to control the defense with counsel reasonably acceptable to us, and cooperate at your expense. You shall not settle any claim in a manner that imposes an obligation on us without our prior written consent. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR PUNITIVE DAMAGES. EACH PARTY'S TOTAL LIABILITY UNDER THESE API TERMS IS LIMITED TO THE GREATER OF THE FEES YOU PAID IN THE PRIOR TWELVE MONTHS AND FIVE THOUSAND DOLLARS ($5,000).
+
+14. Governing Law and Disputes.
+
+These API Terms are governed by the laws of the State of New York, without regard to conflict of laws rules. Any dispute arising out of these API Terms shall be brought exclusively in the state or federal courts located in New York County, New York, and each party consents to the jurisdiction of those courts. Nothing here prevents either party from seeking injunctive relief in any court of competent jurisdiction.
+
+15. General.
+
+These API Terms are the entire agreement between you and Halcyon about the API. If a provision is unenforceable, the rest remains in effect. You may not assign these API Terms without our written consent; we may assign them in connection with a merger or sale of assets. Notices to you will be sent to the email address on your developer account; notices to us go to legal@halcyondata.com.
