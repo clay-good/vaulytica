@@ -936,9 +936,30 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-010",
       "RISK-011",
       "RISK-015",
+      "TEMP-004",
       "TEMP-006",
       "TEMP-007",
       "TEMP-008",
+      "TERM-007",
+    ],
+  },
+
+  // A restaurant franchise agreement. Its Section 3 is a renewal OPTION the
+  // franchisee exercises by notice, which TEMP-004 read as an auto-renewal;
+  // and its dispute clause sends the parties to MEDIATION administered by the
+  // American Arbitration Association, whose name CHOICE-006 read as an
+  // arbitration clause with the seat unspecified.
+  "franchise.txt": {
+    playbook: "franchise-agreement",
+    findings: [
+      "OBLI-002",
+      "OBLI-003",
+      "OBLI-005",
+      "PERS-001",
+      "PERS-005",
+      "RISK-005",
+      "RISK-010",
+      "STRUCT-006",
       "TERM-007",
     ],
   },

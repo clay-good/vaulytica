@@ -349,3 +349,35 @@ describe("an exhibit incorporated into a named parent", () => {
     ).toBe(false);
   });
 });
+
+describe("a negation inside a sentence-initial condition", () => {
+  /**
+   * "If Lessee gives NO notice, the Schedule renews on a month-to-month basis"
+   * is a live holdover renewal. The negator search read the "no" — which
+   * belongs to the CONDITION, not to the main clause — and suppressed
+   * TEMP-004 on the commonest auto-renewal an equipment lease carries.
+   *
+   * The trim is scoped as tightly as the reading is: the negation window must
+   * BEGIN with the subordinator, so a negation that governs the main clause is
+   * untouched.
+   */
+  const hit = (text: string) => firstUnnegatedParagraphMatch(ctxWith(text), /automatically renew/i);
+
+  it("does not suppress the main clause", () => {
+    expect(
+      hit("If Lessee gives no notice of return, the Schedule automatically renews for one year."),
+    ).not.toBeNull();
+  });
+
+  it("still suppresses a negation that governs the main clause", () => {
+    expect(
+      hit("The Order shall not, if Customer gives notice, automatically renew for a further term."),
+    ).toBeNull();
+  });
+
+  it("still suppresses a main clause with a negation of its own", () => {
+    expect(
+      hit("If the parties do not agree on a new rate, the Order does not automatically renew."),
+    ).toBeNull();
+  });
+});

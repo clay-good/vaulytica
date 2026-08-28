@@ -43,7 +43,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "CHOICE-006",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -737,7 +737,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1085,7 +1085,7 @@
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
       "id": "TEMP-004-s1.3-634",
       "rule_id": "TEMP-004",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1249,11 +1249,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "fb7ab10ab382719118e7cfe47c57dbaf0fb0b1dd8de3d31451c719b856752998",
+  "result_hash": "9c8896c562f78cd008cc9397bd240eddec8def808c9eb78385c5f3a81bfc8f5e",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.113.0"
+  "version": "9.114.0"
 }

@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.114.0] — 2026-08-28
+
+A restaurant franchise agreement.
+
+### Fixed
+- **A renewal OPTION was reported as an auto-renewal.** "Franchisee MAY RENEW
+  for one additional term of ten (10) years if, not less than nine months
+  before the initial term expires, Franchisee gives written notice" requires
+  the party to act — it is the opposite of a clause that renews without anyone
+  doing anything. TEMP-004 now refuses a permissive modal.
+- **TEMP-004 could not read the commonest holdover renewal there is.** "If
+  Lessee gives no notice, the Schedule renews on a month-to-month basis" — its
+  period list had only successive / additional / annual, and the negator search
+  read the "no", which belongs to the CONDITION, not to the main clause. Both
+  are fixed; the negation trim is scoped so a negation that governs the main
+  clause ("shall not, if Customer gives notice, automatically renew") is
+  untouched. Zero finding-level golden churn across the whole corpus.
+- **CHOICE-006 read an institution's NAME as an arbitration clause.** A
+  franchise agreement whose dispute clause sends the parties to MEDIATION
+  "administered by the American Arbitration Association" and then to court was
+  reported as having an arbitration clause with the seat not specified — a
+  drafting fix for a clause it does not contain. A paragraph that names the
+  institution AND agrees to arbitrate still fires, on its other token.
+
+### Added
+- One specimen, bringing the set to eighty-six.
+
 ## [9.113.0] — 2026-08-28
 
 A master equipment lease that routed to `complaint`.

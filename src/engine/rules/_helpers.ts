@@ -144,6 +144,14 @@ const NEGATION_BEFORE =
  * on the real one. Honesty-first: an ambiguous negation suppresses the finding
  * (a missed flag is safer than a false one).
  */
+/**
+ * A subordinate clause that opens a sentence and closes at a comma — "If
+ * Lessee gives no notice, …", "Unless Customer objects within 30 days, …".
+ * Bounded so it cannot swallow a clause containing its own sentence break.
+ */
+const SENTENCE_INITIAL_CONDITION =
+  /^\s*(?:if|unless|when|whenever|where|provided\s+that|in\s+the\s+event\s+(?:of|that)|to\s+the\s+extent\s+that)\b[^,.;]{0,160},\s*/i;
+
 export function firstUnnegatedParagraphMatch(
   ctx: RuleContext,
   re: RegExp,
@@ -171,7 +179,18 @@ export function firstUnnegatedParagraphMatch(
       // negator at the abbreviation and was reported as a live auto-renewal.
       // Still floored at the `window` slice, so a distant negation in the same
       // sentence cannot reach forward and suppress a genuine trigger.
-      const clause = p.text.slice(Math.max(from, clauseStartBefore(p.text, m.index)), m.index);
+      const clause = p.text
+        .slice(Math.max(from, clauseStartBefore(p.text, m.index)), m.index)
+        // A sentence-initial SUBORDINATE clause carries its negation inside
+        // the CONDITION, not over the main clause that follows the comma: "If
+        // Lessee gives NO notice, the Schedule renews on a month-to-month
+        // basis" is a live holdover renewal, and the negator search read the
+        // "no" and suppressed it. Dropping the condition is scoped as tightly
+        // as the reading is: the slice must BEGIN with the subordinator, so a
+        // negation that governs the main clause — "shall not, if Customer
+        // gives notice, automatically renew" — is untouched, and so is a main
+        // clause with a negation of its own.
+        .replace(SENTENCE_INITIAL_CONDITION, "");
       if (!NEGATION_BEFORE.test(clause) && !skip?.(p.text, m.index)) {
         hit = {
           text: p.text,
