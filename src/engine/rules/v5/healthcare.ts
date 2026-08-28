@@ -515,7 +515,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
     // patient's location are distinct pillars, and `state\s+of\s+\w+` alone is
     // satisfied by any governing-law clause. The check could not fire on any
     // realistic document.
-    ver: "1.2.0",
+    ver: "1.3.0",
     name: "Licensure and patient-location recital",
     cite: stateLaw(
       "telehealth-licensure",
@@ -524,7 +524,14 @@ const TELEHEALTH = pack("telehealth-consent", C, [
     ),
     pat: [
       /(licens(e|ed|ure))/i,
-      /(in\s+the\s+state\s+(where|in\s+which)\s+(the\s+)?(patient|you)|patient['’]?s?[-\s]+location|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
+      // A patient-facing consent addresses the patient as YOU and names the
+      // state with the indefinite article: "your provider may treat you by
+      // telehealth only when you are physically located in A state where the
+      // provider is licensed", "tell your provider where you are physically
+      // located". The pillar required "in THE state where THE PATIENT" and
+      // read none of it, so a consent whose Section 5 is the recital was
+      // reported at `critical` as having none.
+      /(in\s+(?:a|the)\s+state\s+(?:where|in\s+which)|(?:patient|you|your)['’]?s?[-\s]+(?:physical\s+)?location|where\s+(?:the\s+patient|you)\s+(?:is|are)\s+(?:physically\s+)?located|(?:physically\s+)?located\s+(?:in|at)\s+(?:a|the|any)\s+state|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
     ],
     all: true,
     why: "The practice of medicine occurs where the patient is, so the provider must be licensed in that state (or covered by a compact or an exception). A patient who travels can put an otherwise routine encounter outside the provider's licensure.",

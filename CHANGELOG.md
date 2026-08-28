@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.111.0] — 2026-08-28
+
+A telehealth consent, addressed to the patient as "you".
+
+### Fixed
+- **HC-132 required "in THE state where THE PATIENT".** A patient-facing
+  consent addresses the reader as "you" and names the state with the
+  indefinite article: "your provider may treat you by telehealth only when you
+  are physically located in a state where the provider is licensed", "tell your
+  provider where you are physically located". A consent whose Section 5 IS the
+  licensure recital was reported at `critical` as having none.
+- **`telehealth-consent` matched on one phrase.** Five of its six
+  distinguishing phrases were formulations nobody writes ("the limitations of a
+  remote evaluation", "the location of the patient"), so a well-formed consent
+  routed at exactly 0.5 — one negative feature from the cliff. It now routes at
+  0.9 on the language a real consent uses.
+
+### Added
+- One specimen, bringing the set to eighty-three.
+
 ## [9.110.0] — 2026-08-28
 
 The same defect the apostrophe had, in the hyphen.

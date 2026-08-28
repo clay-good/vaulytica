@@ -895,6 +895,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // "mechanic's lien", and California's statute spells it "mechanics lien" —
   // one of thirty catalog features whose apostrophe made them invisible.
   "lien-notice.txt": { playbook: "preliminary-lien-notice", findings: [] },
+
+  // A telehealth consent, addressed to the patient as "you" throughout — which
+  // is what HC-132 could not read. It required "in THE state where THE
+  // PATIENT", and a patient-facing consent writes "only when you are
+  // physically located in A state where the provider is licensed", so a
+  // document whose Section 5 IS the licensure recital drew a critical for
+  // having none.
+  "telehealth-consent.txt": {
+    playbook: "telehealth-consent",
+    findings: ["OBLI-005", "STRUCT-006"],
+  },
 };
 
 describe("hand-written specimens", () => {

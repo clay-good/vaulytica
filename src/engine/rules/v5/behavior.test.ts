@@ -708,3 +708,37 @@ describe("v5 — the assent and modification recitals a real terms page carries"
     ).not.toBeNull();
   });
 });
+
+describe("v5 — the licensure recital a patient-facing consent writes", () => {
+  /**
+   * HC-132's second pillar required "in THE state where THE PATIENT". A
+   * telehealth consent addresses the patient as "you" and names the state with
+   * the indefinite article: "your provider may treat you by telehealth only
+   * when you are physically located in A state where the provider is
+   * licensed". A consent whose section IS the licensure recital was reported
+   * at `critical` as having none.
+   */
+  const hc132 = () => V5_RULES.find((x) => x.id === "HC-132")!;
+
+  it("reads the second-person recital", () => {
+    expect(
+      hc132().check(
+        buildContext([
+          "Consent to Telehealth Services",
+          "Your provider is licensed to practice in Washington. Under Washington law, your provider may treat you by telehealth only when you are physically located in a state where the provider is licensed.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a consent that says nothing about licensure or location", () => {
+    expect(
+      hc132().check(
+        buildContext([
+          "Consent to Telehealth Services",
+          "Telehealth means we deliver health care to you using live video instead of an in-person visit.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
