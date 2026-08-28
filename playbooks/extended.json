@@ -191,8 +191,8 @@
       ],
       "negative_features": [
         "healthcare proxy",
-        "agent",
-        "power of attorney"
+        "attorney-in-fact",
+        "last will and testament"
       ]
     },
     "expected_clauses": [],
@@ -4529,7 +4529,32 @@
       "APR",
       "Billing Cycle"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "TILA-REG-Z",

@@ -20,8 +20,8 @@
     ],
     "negative_features": [
       "healthcare proxy",
-      "agent",
-      "power of attorney"
+      "attorney-in-fact",
+      "last will and testament"
     ]
   },
   "expected_clauses": [],

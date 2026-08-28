@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.97.0] — 2026-08-28
+
+An advance health care directive, a bank forbearance agreement, and a consumer
+cardholder agreement.
+
+### Fixed
+- **`advance-directive` listed "agent" and "power of attorney" as NEGATIVE
+  features** — the vocabulary of the document's own Part 1, which appoints a
+  health care agent and revokes any prior health care power of attorney. The
+  family scored 0.5 on a textbook directive, fell below the routing threshold,
+  and went to `generic-fallback`: none of the directive's checks ran on a
+  directive. It now routes at 0.7.
+- **A governing-law clause that names federal law first read as no clause at
+  all.** "This Agreement is governed by federal law and, to the extent state
+  law applies, by the laws of the State of Minnesota" is how every national
+  bank writes it. The state is named only after an intervening clause, so the
+  `governed by … the laws of X` anchor never reached it, and the compact
+  adjectival form reads "federal law" and correctly rejects it. CHOICE-001
+  reported no governing-law clause on a cardholder agreement that names one.
+- **`credit-card-agreement` shipped with an empty `rule_overrides`.** A
+  consumer card agreement is not a bilateral commercial bargain: it drew eight
+  findings for having no indemnity, no liability cap, no IP allocation, no
+  venue, no parties, and no termination clause — none of which a cardholder
+  agreement has or should have.
+
+### Added
+- Three specimens, bringing the set to sixty-nine.
+
 ## [9.96.0] — 2026-08-28
 
 A public website's terms of use and a consumer SaaS terms of service — two

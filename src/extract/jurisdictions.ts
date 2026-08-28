@@ -140,6 +140,25 @@ const GOV_LAW_ADJ_SUBJECT = new RegExp(
 );
 
 /**
+ * The federal-first governing-law clause every national bank, credit union,
+ * and federally chartered lender writes: "This Agreement is governed by
+ * federal law and, to the extent state law applies, by the laws of the State
+ * of Minnesota", "governed by federal law and the laws of the State of Ohio".
+ *
+ * The state is named, but only after an intervening clause, so the
+ * `governed by … the laws of X` anchor never reached it; and the compact
+ * adjectival form reads "federal law" and correctly rejects it as a
+ * non-jurisdiction. Between them, CHOICE-001 reported "no governing-law
+ * clause" on a cardholder agreement whose Governing Law section names
+ * Minnesota. Scoped to the literal "federal law and", inside one sentence, so
+ * it cannot reach across into an unrelated jurisdiction mention.
+ */
+const GOV_LAW_FEDERAL_AND_STATE = new RegExp(
+  String.raw`\b(?:${GOVERNED_BY})\s+federal\s+law\s+and\b[^.;]{0,80}?\b(?:by\s+)?the\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
+  "gi",
+);
+
+/**
  * The subject-first governing-law clause: "The laws of the State of Texas shall
  * govern this Agreement", "The laws of Delaware apply". The verb follows the
  * jurisdiction, so the "governed by … the laws of X" patterns above never saw
@@ -482,6 +501,19 @@ export function extractJurisdictions(
       // Same guards as GOV_LAW_IS: the `i` flag makes `[A-Z]` match any
       // letter, so require a real capitalized jurisdiction name, and drop a
       // disclaimed selection ("not governed by California law").
+      if (!/^[A-Z]/.test(raw)) return;
+      if (isNegatedGovLaw(ctx.text, m.index)) return;
+      if (seenGovLaw.has(raw.toLowerCase())) return;
+      seenGovLaw.add(raw.toLowerCase());
+      out.push({
+        clause_kind: "governing-law",
+        jurisdiction_id: lookup(raw),
+        raw_text: raw,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    });
+    runRegex(GOV_LAW_FEDERAL_AND_STATE, ctx.text, (m) => {
+      const raw = (m[1] ?? "").trim();
       if (!/^[A-Z]/.test(raw)) return;
       if (isNegatedGovLaw(ctx.text, m.index)) return;
       if (seenGovLaw.has(raw.toLowerCase())) return;

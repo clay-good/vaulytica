@@ -709,3 +709,36 @@ describe("the arbitrators as the subject of the seat", () => {
     expect(seatOf("Any dispute shall be finally resolved by three arbitrators.")).toEqual([]);
   });
 });
+
+describe("the federal-first governing-law clause", () => {
+  /**
+   * Every national bank writes it this way: "governed by federal law and, to
+   * the extent state law applies, by the laws of the State of Minnesota". The
+   * state is named only after an intervening clause, so the "governed by … the
+   * laws of X" anchor never reached it, and the compact adjectival form reads
+   * "federal law" and correctly rejects it — between them, CHOICE-001 reported
+   * no governing-law clause on a cardholder agreement that names one.
+   */
+  const govLaw = (text: string) =>
+    extractJurisdictions(buildTree(["Governing Law", text]))
+      .filter((j) => j.clause_kind === "governing-law")
+      .map((j) => j.raw_text);
+
+  it("names the state behind an intervening clause", () => {
+    expect(
+      govLaw(
+        "This Agreement is governed by federal law and, to the extent state law applies, by the laws of the State of Minnesota, without regard to its conflict of laws rules.",
+      ),
+    ).toEqual(["Minnesota"]);
+  });
+
+  it("names the state in the compact federal-and-state form", () => {
+    expect(
+      govLaw("This Agreement is governed by federal law and the laws of the State of Ohio."),
+    ).toEqual(["Ohio"]);
+  });
+
+  it("does not invent a jurisdiction from federal law alone", () => {
+    expect(govLaw("This Agreement is governed by federal law.")).toEqual([]);
+  });
+});

@@ -1,0 +1,98 @@
+FORBEARANCE AGREEMENT
+
+This Forbearance Agreement (this "Agreement") is entered into as of July 20, 2026 (the "Effective Date"), by and among Cascade Valley Bank, N.A. (the "Lender"), Fernwood Millworks, Inc., an Oregon corporation (the "Borrower"), and Gregory T. Hallam, an individual (the "Guarantor").
+
+RECITALS
+
+A. The Lender made a term loan to the Borrower in the original principal amount of $6,500,000 pursuant to a Loan and Security Agreement dated February 8, 2023 (as amended, the "Loan Agreement"). Capitalized terms used but not defined in this Agreement have the meanings given in the Loan Agreement.
+
+B. The Borrower's obligations under the Loan Agreement are secured by a first-priority lien on substantially all of the Borrower's assets and are guaranteed by the Guarantor under a Continuing Guaranty dated February 8, 2023 (the "Guaranty").
+
+C. The Borrower has failed to maintain the Fixed Charge Coverage Ratio required by Section 6.1 of the Loan Agreement for the fiscal quarters ended December 31, 2025 and March 31, 2026, and failed to deliver the annual audited financial statements required by Section 5.1 of the Loan Agreement within the time required (collectively, the "Existing Defaults").
+
+D. The Borrower and the Guarantor have asked the Lender to forbear temporarily from exercising its rights and remedies arising from the Existing Defaults, and the Lender is willing to do so on the terms set out below.
+
+NOW, THEREFORE, in consideration of the foregoing and the mutual covenants below, the parties agree as follows:
+
+1. Acknowledgment of Obligations.
+
+The Borrower and the Guarantor acknowledge that as of the Effective Date the outstanding principal balance of the loan is $4,812,449.17, together with accrued and unpaid interest of $31,204.88, and that these amounts are due and owing without defense, offset, or counterclaim. The Borrower and the Guarantor further acknowledge that the Existing Defaults have occurred and are continuing, that the Loan Agreement, the Guaranty, and the other Loan Documents are valid and enforceable, and that the Lender's liens are valid, perfected, and first-priority.
+
+2. Forbearance.
+
+Subject to the conditions in Section 3 and the absence of a Forbearance Termination Event, the Lender shall forbear from exercising its rights and remedies under the Loan Documents with respect to the Existing Defaults during the period beginning on the Effective Date and ending on January 31, 2027 (the "Forbearance Period"). This forbearance is limited to the Existing Defaults. It is not a waiver of the Existing Defaults, is not a course of dealing, and creates no obligation to forbear as to any other default or after the Forbearance Period.
+
+3. Conditions to Forbearance.
+
+The Lender's agreement to forbear is conditioned on each of the following:
+
+(a) the Borrower pays the Lender a forbearance fee of $32,500 on the Effective Date, which is fully earned when paid and is not refundable;
+
+(b) the Borrower delivers, by August 15, 2026, a thirteen-week cash flow forecast, updated every two weeks thereafter during the Forbearance Period;
+
+(c) the Borrower engages, by August 31, 2026, a financial advisor acceptable to the Lender in its reasonable discretion, at the Borrower's expense; and
+
+(d) the Borrower delivers the audited financial statements for the fiscal year ended December 31, 2025 by September 30, 2026.
+
+4. Interest Rate During the Forbearance Period.
+
+Interest accrues on the outstanding principal during the Forbearance Period at the default rate stated in Section 2.7 of the Loan Agreement, which is 2.00% per annum above the rate otherwise applicable, payable monthly in arrears on the first business day of each month.
+
+5. Additional Covenants.
+
+During the Forbearance Period, the Borrower shall not, without the Lender's prior written consent: (a) make any distribution, dividend, or payment on account of any equity interest; (b) pay any management, consulting, or similar fee to any affiliate; (c) incur any indebtedness other than trade payables incurred in the ordinary course; (d) make any capital expenditure exceeding $75,000 in the aggregate; or (e) sell or transfer any asset outside the ordinary course of business.
+
+6. Forbearance Termination Events.
+
+Each of the following is a Forbearance Termination Event: (a) the Borrower or the Guarantor fails to perform any obligation under this Agreement; (b) any default other than an Existing Default occurs under the Loan Documents; (c) any representation made in this Agreement proves to have been untrue when made; (d) the Borrower or the Guarantor commences, or has commenced against it, any bankruptcy, insolvency, receivership, or assignment for the benefit of creditors proceeding; or (e) any other creditor accelerates indebtedness of the Borrower exceeding $250,000.
+
+7. Effect of Termination.
+
+On a Forbearance Termination Event, the Forbearance Period ends immediately without notice or demand, and the Lender may exercise all rights and remedies under the Loan Documents and applicable law with respect to the Existing Defaults and any other default, in each case as if this Agreement had not been entered into.
+
+8. Reaffirmation by the Guarantor.
+
+The Guarantor reaffirms the Guaranty, confirms that it remains in full force and effect, and agrees that the Guaranty applies to the obligations as modified by this Agreement. The Guarantor consents to this Agreement and waives any defense based on the Lender's forbearance or on any modification of the Loan Documents.
+
+9. Release.
+
+The Borrower and the Guarantor each release the Lender and its officers, directors, employees, agents, and affiliates from all claims, demands, and causes of action of every kind, known or unknown, arising on or before the Effective Date and relating to the Loan Documents, the loan, or the Lender's administration of the loan. Each of the Borrower and the Guarantor acknowledges that it has been represented by counsel of its own choosing in connection with this release, or has had the opportunity to be so represented, and that it waives the benefit of any statute limiting the effect of a general release as to claims not known or suspected to exist at the time of the release.
+
+10. Representations.
+
+The Borrower and the Guarantor each represent that: (a) it has the power and authority to enter into this Agreement and has duly authorized it; (b) this Agreement is its legal, valid, and binding obligation; and (c) no default other than the Existing Defaults has occurred and is continuing.
+
+11. No Waiver; Reservation of Rights.
+
+Except as expressly stated in Section 2, nothing in this Agreement waives, modifies, or limits any right or remedy of the Lender, and the Lender expressly reserves all of them.
+
+12. Expenses.
+
+The Borrower shall pay the Lender's reasonable out-of-pocket costs and expenses, including the reasonable fees of outside counsel, incurred in connection with this Agreement and the administration of the Loan Documents during the Forbearance Period, within ten (10) days after the Lender delivers an invoice.
+
+13. Governing Law; Jury Waiver.
+
+This Agreement is governed by the laws of the State of Oregon, without regard to its conflict of laws principles. Any action arising out of this Agreement shall be brought exclusively in the state or federal courts located in Multnomah County, Oregon. EACH PARTY WAIVES ANY RIGHT TO A TRIAL BY JURY IN ANY ACTION ARISING OUT OF THIS AGREEMENT OR THE LOAN DOCUMENTS.
+
+14. Entire Agreement; Amendment; Counterparts.
+
+This Agreement, together with the Loan Documents, is the entire agreement of the parties on its subject matter. It may be amended only by a writing signed by the Lender, the Borrower, and the Guarantor. It may be executed in counterparts, each of which is an original and all of which together are one instrument.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+CASCADE VALLEY BANK, N.A.
+
+By: /s/ Iris Fontaine
+Name: Iris Fontaine
+Title: Senior Vice President
+
+FERNWOOD MILLWORKS, INC.
+
+By: /s/ Gregory T. Hallam
+Name: Gregory T. Hallam
+Title: President
+
+GUARANTOR
+
+/s/ Gregory T. Hallam
+Gregory T. Hallam

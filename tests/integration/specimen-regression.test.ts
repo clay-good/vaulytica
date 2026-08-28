@@ -726,6 +726,28 @@ export const EXPECTED: Record<string, Expectation> = {
       "TEMP-008",
     ],
   },
+
+  // A combined advance directive: a health care agent in Part 1 and living-will
+  // instructions in Part 2. Its own playbook listed "agent" and "power of
+  // attorney" as NEGATIVE features, so it scored 0.5 and fell to
+  // generic-fallback — none of the directive's checks ran on a directive.
+  "advance-directive.txt": {
+    playbook: "advance-directive",
+    findings: ["EST-060", "STRUCT-006"],
+  },
+
+  // A bank forbearance agreement with a reaffirming guarantor and a release.
+  "forbearance.txt": {
+    playbook: "forbearance-agreement",
+    findings: ["CHOICE-008", "OBLI-005", "TEMP-002"],
+  },
+
+  // A consumer cardholder agreement, with a Schumer box and a governing-law
+  // clause that names federal law before it names the state.
+  "credit-card.txt": {
+    playbook: "credit-card-agreement",
+    findings: ["CHOICE-006", "CHOICE-008", "DARK-005", "OBLI-005", "STRUCT-006"],
+  },
 };
 
 describe("hand-written specimens", () => {
