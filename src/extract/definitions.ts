@@ -787,6 +787,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     const line = ctx.text.trim();
     if (line.length > 0 && line.length <= 80 && !/[.;:!?]$/.test(line) && isTitleCaseSegment(line))
       headings.add(line.toLowerCase());
+    // A RUN-IN heading titles its section exactly as a standalone one does:
+    // "4. Base Rent. Base Rent shall be $34.50 per rentable square foot ...".
+    // Occurrences inside the heading segment were already discounted, but the
+    // heading's own words were never registered AS a heading, so every use of
+    // the term in the paragraph beneath it counted — and a lease letter of
+    // intent was told it uses Base Rent, Commencement Date and Operating
+    // Expenses without defining them, when each titles the section that
+    // states it.
+    const runIn = runInHeadingTitle(ctx.text);
+    if (runIn) headings.add(runIn.toLowerCase());
   });
   // Names of natural persons who sign or appear before a notary — collected
   // from conformed-signature lines ("/s/ Nora Castellanos") and notarial
@@ -1657,6 +1667,14 @@ function runInHeadingEnd(text: string): number {
   const m = /^\s*(?:\d+(?:\.\d+)*|[A-Z])[.)]\s+([A-Z][^.;:]{0,80}?)[.;:]\s/.exec(text);
   if (!m) return 0;
   return isTitleCaseSegment(m[1]!) ? m[0].length : 0;
+}
+
+/** The TITLE of a run-in heading — "4. Base Rent. …" yields "Base Rent". */
+function runInHeadingTitle(text: string): string | undefined {
+  const m = /^\s*(?:\d+(?:\.\d+)*|[A-Z])[.)]\s+([A-Z][^.;:]{0,80}?)[.;:]\s/.exec(text);
+  if (!m) return undefined;
+  const title = m[1]!.trim();
+  return isTitleCaseSegment(title) ? title : undefined;
 }
 
 /** True when [index, index+length) lies inside an occurrence of `container` in `text`. */

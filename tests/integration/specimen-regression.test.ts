@@ -40,6 +40,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A NON-BINDING lease letter of intent, countersigned. The family shipped
+  // with an empty rule profile while its M&A sibling `loi-term-sheet` already
+  // had the right one, so a term sheet was told at `warning` that it states no
+  // IP ownership, no indemnity, no liability cap and no termination for cause
+  // — four clauses an LOI is not supposed to carry. It also pins the run-in
+  // heading fix: "4. Base Rent. Base Rent shall be $34.50 ..." titles its own
+  // section, and every use beneath it read as an undefined Title-Case term.
+  "lease-loi.txt": {
+    playbook: "letter-of-intent-lease",
+    findings: ["STRUCT-006", "CHOICE-003", "OBLI-005", "TEMP-006"],
+  },
   // A three-party technology escrow. The escrow pack (IPL-129..133) is silent
   // on a well-drafted deposit, and the specimen pins three repairs it exposed:
   // a payment term stated as "payable in advance on each anniversary"

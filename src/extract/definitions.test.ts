@@ -1673,6 +1673,36 @@ describe("a phrase that names one of the document's own headings", () => {
   });
 });
 
+describe("a term that titles its own RUN-IN heading", () => {
+  // "4. Base Rent. Base Rent shall be $34.50 per rentable square foot per
+  // year..." — the term titles the section that states it. Occurrences inside
+  // the heading segment were already discounted, but the heading's own words
+  // were never registered AS a heading, so every use in the paragraph beneath
+  // it counted and a lease letter of intent was told it uses Base Rent,
+  // Commencement Date and Operating Expenses without defining them.
+  const undef = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Letter of Intent", ...paras])).undefined_capitalized.map(
+      (e) => e.term,
+    );
+
+  it("does not flag a term that titles the run-in heading of its own section", () => {
+    const terms = undef(
+      "4. Base Rent. Base Rent shall be $34.50 per rentable square foot per year for the first Lease Year, payable in equal monthly installments in advance.",
+      "6. Operating Expenses. Tenant shall pay its proportionate share of increases in Operating Expenses over the base year.",
+    );
+    expect(terms).not.toContain("Base Rent");
+    expect(terms).not.toContain("Operating Expenses");
+  });
+
+  it("still flags a term that titles no section anywhere in the document", () => {
+    const terms = undef(
+      "3. Term. One hundred twenty-six (126) months, commencing on the Commencement Date.",
+      "4. Base Rent. Base Rent escalates three percent (3%) on each anniversary of the Commencement Date.",
+    );
+    expect(terms).toContain("Commencement Date");
+  });
+});
+
 describe("the names a privilege log is made of", () => {
   // A privilege log is a table of people: "Author: Dana Okwuosa (Associate
   // General Counsel)", "Recipients: Peter Vance", "cc: Renata Silva". Every

@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.166.0] — 2026-08-29
+
+### Added
+- A non-binding lease letter of intent, countersigned — the 133rd specimen.
+
+### Fixed
+- **`letter-of-intent-lease` shipped with an empty rule profile** while its
+  M&A sibling `loi-term-sheet` already carried the right one. A term sheet
+  whose own text says it is non-binding was told at `warning` that it states
+  no IP ownership, no indemnity, no limitation of liability and no
+  termination for cause — four clauses a letter of intent is not supposed to
+  carry, and none of which the definitive lease's absence makes a defect.
+  The sibling's eight-skip profile is now copied onto it.
+- **A term that titles its own RUN-IN heading was reported as undefined.**
+  Occurrences inside the heading segment were already discounted, but the
+  heading's own words were never registered AS a heading, so every use in the
+  paragraph beneath counted: "4. Base Rent. Base Rent shall be $34.50 per
+  rentable square foot ..." was reported as using Base Rent without defining
+  it. Standalone heading lines had been registered since the discovery-
+  response fix; run-in headings, which is how most numbered agreements are
+  written, had not.
+
 ## [9.165.0] — 2026-08-29
 
 ### Added

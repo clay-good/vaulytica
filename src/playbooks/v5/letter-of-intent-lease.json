@@ -23,7 +23,16 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Premises", "Base Rent", "Term"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "FIN-005": { "skip": true },
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "TEMP-007": { "skip": true },
+    "TEMP-012": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-REAL-ESTATE",
