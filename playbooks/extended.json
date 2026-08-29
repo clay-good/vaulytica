@@ -3055,9 +3055,9 @@
         "our values"
       ],
       "negative_features": [
-        "anti-bribery",
-        "aml",
-        "whistleblower"
+        "anti-bribery policy",
+        "anti-money laundering policy",
+        "whistleblower policy"
       ]
     },
     "expected_clauses": [],

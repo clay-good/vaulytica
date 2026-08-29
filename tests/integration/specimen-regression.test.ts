@@ -679,6 +679,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A code of business conduct and ethics — the 190th specimen, and the first
+  // for `code-of-conduct`. POL-001..005 are all satisfied: the scope over
+  // directors, officers, and employees; the SOX § 406 honest-and-ethical and
+  // full-fair-accurate-disclosure elements; the waiver mechanism with its
+  // four-business-day Form 8-K disclosure; reporting with a helpline and
+  // non-retaliation; and compliance with laws. STRUCT-006 stays and is fair:
+  // the Integrity Helpline is named three times and introduced nowhere.
+  "code-of-conduct.txt": {
+    playbook: "code-of-conduct",
+    findings: ["OBLI-005", "STRUCT-006"],
+  },
   // A motion to compel in the Circuit Court of Cook County — the 189th
   // specimen, and the first for `trial-motion`. Clean but for the exhibits,
   // which travel with the supporting declaration. It exposed CITE-001 reading

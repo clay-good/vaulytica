@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.231.0] — 2026-08-29
+
+### Added
+- A code of business conduct and ethics — the 190th specimen, and the first for
+  `code-of-conduct`. POL-001..005 are all satisfied: the scope over directors,
+  officers, and employees; the SOX § 406 honest-and-ethical and
+  full-fair-accurate-disclosure elements; the waiver mechanism with its
+  four-business-day Form 8-K disclosure; reporting with a helpline and
+  non-retaliation; and compliance with laws.
+
+### Fixed
+- **A SUBSECTION of an external instrument read as a broken internal
+  reference.** "Section 303A.10 of the NYSE Listed Company Manual" reaches the
+  external-instrument test as the label "303A" with ".10 of …" still ahead of
+  it, so the lookahead never matched and a code of conduct reported a broken
+  reference to its own Section 303A.
+- **`code-of-conduct` penalized its own vocabulary.** Its non-retaliation
+  section names the whistleblower award programs and its compliance section
+  names anti-bribery law, yet "whistleblower", "anti-bribery", and "aml" were
+  negative features. They are meant to catch the standalone POLICIES, which say
+  so in their own titles.
+
 ## [9.230.0] — 2026-08-29
 
 ### Added

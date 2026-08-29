@@ -1065,3 +1065,13 @@ describe("crossrefs — a section of ANOTHER commercial instrument (v9.224.0)", 
     expect(unresolved).toContain("Section 14.9");
   });
 });
+
+describe("crossrefs — a subsection of an external instrument (v9.231.0)", () => {
+  it('does not report "Section 303A.10 of the NYSE Listed Company Manual"', () => {
+    const tree = buildTree([
+      "Code of Business Conduct and Ethics",
+      "This Code is adopted under Section 303A.10 of the NYSE Listed Company Manual and is intended to satisfy Item 406 of Regulation S-K.",
+    ]);
+    expect(extractCrossRefs(tree, extractSections(tree)).filter((c) => c.unresolved)).toEqual([]);
+  });
+});

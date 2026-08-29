@@ -166,7 +166,7 @@ const EXTERNAL_REG_LEADING_RE =
 // this Agreement" and "of these Bylaws" are the document talking about itself,
 // and a broken reference in one still reports.
 const EXTERNAL_INSTRUMENT_RE =
-  /^(?:\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Sub-?leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Sub-?contracts?|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?|Terms?|Orders?|SOWs?|Statements?\s+of\s+Work|Guarant(?:y|ies|ee|ees)|Warrant(?:y|ies)|Rules?|Manuals?|Handbooks?|Schedules?)\b|thereof\b)/i;
+  /^(?:\.\d+[a-z]?|\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Sub-?leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Sub-?contracts?|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?|Terms?|Orders?|SOWs?|Statements?\s+of\s+Work|Guarant(?:y|ies|ee|ees)|Warrant(?:y|ies)|Rules?|Manuals?|Handbooks?|Schedules?)\b|thereof\b)/i;
 
 // A four-digit-or-longer flat section number ("Section 4999", "Section 1798")
 // is statutory: no contract numbers its own sections past three digits.
