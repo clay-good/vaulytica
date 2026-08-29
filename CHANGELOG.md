@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.208.0] — 2026-08-29
+
+### Added
+- An equipment finance agreement — the 167th specimen. A loan secured by the
+  equipment, which the document says in terms: "This Agreement is a loan
+  secured by the Equipment and is NOT A LEASE."
+
+### Fixed
+- **It routed to `loan-agreement`**, the syndicated-credit family, so its own
+  BNK-139..143 pack never ran. The equipment-finance family's distinguishing
+  phrases were verbatim sentences: "grants a security interest in the
+  equipment" (with the indirect object removed — a real one reads "Borrower
+  grants LENDER a first-priority security interest in the Equipment") and
+  "title to the equipment passes", which a loan never says because title never
+  moves. It now carries the register a real one uses, and a second title
+  keyword.
+- **`equipment-finance-agreement` shipped with no rule profile.** A secured
+  loan does not terminate for cause — it accelerates — and allocates no IP.
+
 ## [9.207.0] — 2026-08-29
 
 ### Added

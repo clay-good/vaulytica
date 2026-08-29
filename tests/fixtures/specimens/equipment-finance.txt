@@ -1,0 +1,87 @@
+EQUIPMENT FINANCE AGREEMENT
+
+This Equipment Finance Agreement (this "Agreement") is made as of August 11, 2026 between Cordwain Capital Funding LLC, a Delaware limited liability company ("Lender"), and Ridgeline Aggregate Company, an Idaho corporation ("Borrower").
+
+1. THE LOAN AND THE EQUIPMENT
+
+1.1 Advance. Lender shall advance $2,340,000 to Borrower to finance Borrower's purchase of the equipment described on Schedule 1 (the "Equipment"), on satisfaction of the conditions in Section 6.
+
+1.2 Not a Lease. This Agreement is a loan secured by the Equipment and is not a lease. Borrower is the owner of the Equipment for all purposes, including tax, and is entitled to all depreciation.
+
+1.3 Use and Location. Borrower shall keep the Equipment at the locations listed on Schedule 1 and shall not move any item to another state without thirty (30) days' prior written notice to Lender.
+
+2. PAYMENT
+
+2.1 Repayment. Borrower shall repay the loan in sixty (60) consecutive monthly instalments of $44,120.18 each, payable on the fifteenth (15th) day of each month beginning October 15, 2026, and a final balloon payment of $180,000 on September 15, 2031.
+
+2.2 Interest. Interest accrues on the outstanding principal at a fixed rate of seven and one-quarter percent (7.25%) per year, computed on the basis of a 360-day year of twelve 30-day months.
+
+2.3 Late Charge. A payment not received within ten (10) days after its due date bears a late charge of five percent (5%) of the overdue instalment, and the overdue amount bears interest at the lesser of eighteen percent (18%) per year and the maximum rate permitted by applicable law.
+
+2.4 Prepayment. Borrower may prepay the loan in whole on thirty (30) days' notice, together with a prepayment premium of two percent (2%) of the amount prepaid in the first twenty-four (24) months, one percent (1%) in months twenty-five through forty-eight, and none thereafter.
+
+2.5 Application. Payments are applied first to costs and late charges, then to accrued interest, then to principal.
+
+3. SECURITY INTEREST
+
+3.1 Grant. Borrower grants Lender a first-priority security interest in the Equipment, all accessions, attachments, replacements, and proceeds, including insurance proceeds, to secure all obligations under this Agreement.
+
+3.2 Perfection. Borrower authorizes Lender to file financing statements describing the collateral, and shall execute any further document and take any further action Lender reasonably requests to perfect and maintain the security interest.
+
+3.3 No Other Liens. Borrower shall keep the Equipment free of every lien other than Lender's, and shall promptly discharge or bond over any lien that attaches.
+
+4. BORROWER COVENANTS
+
+4.1 Maintenance. Borrower shall maintain the Equipment in good operating condition and repair, in accordance with the manufacturer's recommendations, and shall keep maintenance records available to Lender.
+
+4.2 Insurance. Borrower shall maintain all-risk physical damage insurance on the Equipment for not less than its full replacement cost, and commercial general liability insurance of at least $2,000,000 per occurrence, naming Lender as loss payee and additional insured, and shall deliver certificates annually and on request.
+
+4.3 Taxes. Borrower shall pay all taxes, assessments, and charges levied on the Equipment or its use before delinquency.
+
+4.4 Financial Reporting. Borrower shall deliver audited annual financial statements within one hundred twenty (120) days after each fiscal year end and unaudited quarterly statements within forty-five (45) days after each quarter end, and shall maintain a fixed-charge coverage ratio of not less than 1.20 to 1.00, tested quarterly.
+
+4.5 No Sale. Borrower shall not sell, lease, or otherwise transfer any item of Equipment without Lender's prior written consent, except that Borrower may replace an item with equipment of equal or greater value that becomes part of the collateral.
+
+5. REPRESENTATIONS
+
+5.1 Borrower represents that it is duly organized and in good standing in Idaho; that this Agreement is its valid and binding obligation; that it has good title to the Equipment free of liens other than Lender's; that its financial statements fairly present its condition; and that no event of default exists.
+
+6. CONDITIONS TO THE ADVANCE
+
+6.1 Lender's obligation to advance is conditioned on receipt of this Agreement executed by Borrower, the invoices and bills of sale for the Equipment, evidence of insurance, a UCC lien search showing no prior filing, a certificate of Borrower's secretary, and payment of Lender's documentation fee of $3,500.
+
+7. DEFAULT AND REMEDIES
+
+7.1 Events of Default. Each of the following is an Event of Default: failure to pay any amount within ten (10) days after its due date; breach of Section 4.2, 4.5, or 3.3; breach of any other covenant not cured within thirty (30) days after written notice; a representation untrue when made; a bankruptcy petition by or against Borrower not dismissed within sixty (60) days; or a default under any other agreement between Borrower and Lender.
+
+7.2 Remedies. On an Event of Default, Lender may declare all amounts immediately due and payable, may take possession of the Equipment without judicial process if it can do so without a breach of the peace, may require Borrower to assemble the Equipment at a place Lender designates, and may sell or otherwise dispose of it in a commercially reasonable manner as Article 9 of the Uniform Commercial Code permits. Lender shall give Borrower ten (10) days' notice of any public or private disposition.
+
+7.3 Deficiency and Surplus. Borrower remains liable for any deficiency after application of the net proceeds, and is entitled to any surplus.
+
+7.4 Cumulative Remedies. Lender's remedies are cumulative and not exclusive, and no delay in exercising a remedy waives it.
+
+8. GENERAL
+
+8.1 Governing Law; Venue. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles, except that the perfection and enforcement of the security interest are governed by the law of the jurisdiction where the Equipment is located. Any action arising out of this Agreement shall be brought in the state or federal courts located in New Castle County, Delaware.
+
+8.2 Usury Savings. If any amount charged under this Agreement exceeds the maximum permitted by applicable law, that amount shall be reduced to the maximum permitted and any excess already collected shall be applied to principal or refunded.
+
+8.3 Assignment. Lender may assign this Agreement and the security interest without Borrower's consent, and shall notify Borrower of any assignment. Borrower may not assign this Agreement.
+
+8.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses stated beneath the signatures.
+
+8.5 Entire Agreement; Amendment. This Agreement, with its schedules, is the entire agreement between the parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+CORDWAIN CAPITAL FUNDING LLC
+
+By: /s/ Helena Vandermolen
+Name: Helena Vandermolen
+Title: Senior Vice President
+
+RIDGELINE AGGREGATE COMPANY
+
+By: /s/ Bertrand Okoye
+Name: Bertrand Okoye
+Title: Chief Financial Officer

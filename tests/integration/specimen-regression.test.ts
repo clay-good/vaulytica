@@ -40,6 +40,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An equipment finance agreement — a loan secured by the equipment, which
+  // the document says in terms ("This Agreement is a loan secured by the
+  // Equipment and is NOT A LEASE"). It routed to `loan-agreement`, the
+  // syndicated-credit family, because its own distinguishing phrases were
+  // verbatim sentences ("grants a security interest in the equipment", with
+  // the indirect object removed; "title to the equipment passes", which a
+  // loan never says) and it had one title keyword to stand on. Its own
+  // BNK-139..143 pack is silent on a well-drafted one. A secured loan does
+  // not terminate for cause — it accelerates — and allocates no IP.
+  "equipment-finance.txt": {
+    playbook: "equipment-finance-agreement",
+    findings: ["RISK-001", "RISK-005", "STRUCT-018", "FIN-009", "OBLI-005", "RISK-010"],
+  },
   // A title-sponsorship agreement for a road race. COMM-175 reported no
   // trademark licence or approval right on a document with a section headed
   // "USE OF MARKS" and another headed "Approvals" — it wanted the noun phrase

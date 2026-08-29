@@ -6,24 +6,31 @@
   "match_features": {
     "title_keywords": [
       "equipment finance agreement",
+      "equipment finance",
       "equipment financing agreement",
       "efa",
       "conditional sale contract"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "grants a security interest in the equipment",
+      "security interest in the equipment",
+      "is not a lease",
+      "financing statement",
+      "balloon payment",
+      "assemble the equipment",
       "unconditional obligation to pay",
-      "prepayment",
-      "ucc-1 financing statement",
-      "the equipment cost",
+      "prepayment premium",
       "title to the equipment passes"
     ],
     "negative_features": ["lease of the premises", "employment offer", "merger agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Equipment", "Financed Amount", "Payment Schedule"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-9",
