@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.170.0] — 2026-08-29
+
+### Fixed
+- **The definitions half of `amendsParentAgreement()` could never fire on the
+  drafting it was written for.** The test has no `i` flag — by design, because
+  the parent must be a NAMED instrument — and its leading literal is
+  lowercase, so "**C**apitalized terms used but not defined in this Addendum
+  have the meanings given in the Purchase Agreement" matched nothing. That is
+  how every one of them is written. Case-folded by hand, exactly as
+  `PARENT_CONTROLS` folds its own leading phrase.
+- **An addendum, a rider and a work letter say what an exhibit says** — "This
+  Artificial Intelligence Addendum is incorporated into and forms part of the
+  Master Services Agreement dated August 4, 2023" — and none was recognized.
+  They now have their own half, kept OUT of `isIncorporatedExhibit` because
+  that test also answers "is this document separately executed", and they are:
+  suppressing the signature and party checks on them would be wrong.
+- **"This Data Processing Schedule FORMS PART OF the Master Subscription
+  Agreement"** was missed because the incorporation test required a copula
+  before the verb.
+
+The twenty subordination recitals such documents actually open on were written
+out and run against the helper; seven were missed. All twenty now pass, and
+five negatives — a standalone agreement, an agreement incorporating its own
+exhibits, an agreement defining its own terms, a mere mention of another
+agreement, and a DPA incorporating the SCCs — still return false. The table is
+pinned in `_helpers.test.ts`.
+
 ## [9.169.0] — 2026-08-29
 
 ### Added

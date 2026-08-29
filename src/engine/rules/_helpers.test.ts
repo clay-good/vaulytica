@@ -495,3 +495,92 @@ describe("amendsParentAgreement — an exhibit that names itself", () => {
     expect(isIncorporatedExhibit(ctx)).toBe(false);
   });
 });
+
+describe("amendsParentAgreement — the shapes a subordinate document actually takes", () => {
+  // Each row was written as the recital such a document opens on, then run
+  // against the helper. Seven of twenty were missed, and the worst was the
+  // definitions half: it has no `i` flag — by design, because the parent must
+  // be a NAMED instrument — and its leading literal is lowercase, so
+  // "CAPITALIZED terms used but not defined in this Addendum have the meanings
+  // given in the Purchase Agreement" could never match. That is how every one
+  // of them is written.
+  const subordinate = (text: string) => amendsParentAgreement(buildContext(["Document", text]));
+
+  it.each([
+    [
+      "amendment ratifies",
+      "This Third Amendment amends the Office Lease dated March 1, 2021. Except as expressly amended, the Lease remains in full force and effect.",
+    ],
+    [
+      "sow issued under",
+      "This Statement of Work is entered into under and subject to the Master Services Agreement dated February 12, 2024.",
+    ],
+    [
+      "exhibit names itself",
+      "This Information Security Exhibit is attached to and incorporated into the Master Services Agreement dated October 12, 2024.",
+    ],
+    [
+      "schedule with no copula",
+      "This Data Processing Schedule forms part of the Master Subscription Agreement dated April 9, 2025.",
+    ],
+    [
+      "addendum incorporated",
+      "This Addendum is incorporated into the Master Services Agreement dated August 4, 2023.",
+    ],
+    [
+      "addendum names itself",
+      "This Artificial Intelligence Addendum is incorporated into and forms part of the Master Services Agreement dated August 4, 2023.",
+    ],
+    [
+      "rider attached",
+      "This Rider is attached to and made a part of the Commercial Lease dated February 2, 2022.",
+    ],
+    [
+      "work letter",
+      "This Tenant Work Letter is attached to and incorporated into the Lease dated March 3, 2024.",
+    ],
+    [
+      "borrows definitions, sentence-initial",
+      "Capitalized terms used but not defined in this Addendum have the meanings given to them in the Purchase Agreement.",
+    ],
+  ])("recognizes %s", (_label, text) => {
+    expect(subordinate(text)).toBe(true);
+  });
+
+  it.each([
+    [
+      "a standalone agreement",
+      "This Master Services Agreement is entered into as of June 1, 2026 between Acme, Inc. and Beta, LLC.",
+    ],
+    [
+      "an agreement incorporating its own exhibits",
+      "Each Exhibit is incorporated into this Agreement and forms part of it.",
+    ],
+    [
+      "an agreement defining its own terms",
+      "Capitalized terms used but not defined in this Section have the meanings given in this Agreement.",
+    ],
+    [
+      "a mere mention of another agreement",
+      "Vendor shall comply with the Master Services Agreement and all applicable law.",
+    ],
+    [
+      "a DPA incorporating the SCCs",
+      "The Standard Contractual Clauses are incorporated into this Data Processing Agreement.",
+    ],
+  ])("does not treat %s as subordinate", (_label, text) => {
+    expect(subordinate(text)).toBe(false);
+  });
+
+  // An addendum, a rider and a work letter ARE separately signed, so the
+  // narrower test the execution and party checks read must stay false for
+  // them even though the parent test is true.
+  it("keeps a separately-signed rider out of isIncorporatedExhibit", () => {
+    const ctx = buildContext([
+      "Addendum",
+      "This Artificial Intelligence Addendum is incorporated into and forms part of the Master Services Agreement dated August 4, 2023.",
+    ]);
+    expect(amendsParentAgreement(ctx)).toBe(true);
+    expect(isIncorporatedExhibit(ctx)).toBe(false);
+  });
+});

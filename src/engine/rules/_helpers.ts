@@ -642,7 +642,26 @@ const INCORPORATED_INTO_PARENT =
   // level annex — each opens on its own name, and requiring the bare noun
   // immediately after "This" saw none of them. The capitalized run keeps the
   // test on a document that calls itself the exhibit.
-  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Exhibit|Schedule|Annex|Appendix|Attachment)\b[^.]{0,80}?\b(?:is|are)\s+(?:hereby\s+)?(?:attached\s+to\s+and\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
+  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Exhibit|Schedule|Annex|Appendix|Attachment)\b[^.]{0,80}?(?:\b(?:is|are)\s+(?:hereby\s+)?(?:attached\s+to\s+and\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)|\bforms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
+
+/**
+ * The same recital, in a document that IS separately signed.
+ *
+ * An addendum, a rider, and a work letter say exactly what an exhibit says —
+ * "This Artificial Intelligence Addendum is incorporated into and forms part
+ * of the Master Services Agreement dated August 4, 2023" — and the parent
+ * supplies governing law, the liability cap, the indemnity, the IP allocation
+ * and the termination machinery just the same. They are kept out of
+ * {@link INCORPORATED_INTO_PARENT} because that one also answers "is this
+ * document separately executed", and these are: suppressing the signature and
+ * party checks on them would be wrong.
+ */
+const SIGNED_RIDER_INTO_PARENT = new RegExp(
+  INCORPORATED_INTO_PARENT.source.replace(
+    "(?:Exhibit|Schedule|Annex|Appendix|Attachment)",
+    "(?:Addendum|Addenda|Rider|Supplement|Work\\s+Letter)",
+  ),
+);
 
 /**
  * Whether the document is an exhibit / schedule / annex that says it is
@@ -684,7 +703,14 @@ function documentTextOf(ctx: RuleContext): string {
  * keeps this off an ordinary internal cross-reference.
  */
 const BORROWS_DEFINITIONS_FROM_PARENT =
-  /\bcapitali[sz]ed\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,160}?\b(?:have|has|shall\s+have)\s+the\s+meanings?\b[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|Indenture|Plan|Note)\b/;
+  // The leading literal OPENS the sentence, so it has to admit the capital:
+  // "Capitalized terms used but not defined in this Addendum have the meanings
+  // given in the Purchase Agreement" is how every one of these is written, and
+  // this test has no `i` flag — by design, because the parent must be a NAMED
+  // instrument. It could therefore never match a sentence-initial occurrence,
+  // which is nearly all of them. Case-folded by hand, exactly as PARENT_CONTROLS
+  // folds its own leading phrase.
+  /\b[Cc]apitali[sz]ed\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,160}?\b(?:have|has|shall\s+have)\s+the\s+meanings?\b[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|Indenture|Plan|Note)\b/;
 
 /**
  * Whether the document is subordinate to a named parent agreement — either
@@ -747,6 +773,7 @@ export function borrowsParentVocabulary(ctx: RuleContext): boolean {
   return (
     RATIFIES_PARENT.test(text) ||
     INCORPORATED_INTO_PARENT.test(text) ||
+    SIGNED_RIDER_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text)
   );
 }
@@ -760,6 +787,7 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
     RATIFIES_PARENT.test(text) ||
     named.some((re) => re.test(text)) ||
     INCORPORATED_INTO_PARENT.test(text) ||
+    SIGNED_RIDER_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text)
   );
 }
