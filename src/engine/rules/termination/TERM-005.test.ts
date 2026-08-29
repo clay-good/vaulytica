@@ -319,3 +319,16 @@ describe("TERM-005 — transfer as a wind-down consequence", () => {
     ).toBeNull();
   });
 });
+
+describe("TERM-005 — the preposition is AFTER as often as ON", () => {
+  it("reads a data-return clause stated as 'within N days after termination'", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Return and Destruction",
+          "Within thirty (30) days after expiration or termination, Recipient shall destroy all copies of the Shared Data and shall certify the destruction in writing.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.202.0] — 2026-08-29
+
+### Added
+- A public-health limited-data-set data sharing agreement — the 162nd
+  specimen.
+
+### Fixed
+- **TERM-005's trigger read "(up)on termination" only**, and the standard
+  data-return clause is written "within thirty (30) days **AFTER** expiration
+  or termination" or "**FOLLOWING** the effective date of expiration or
+  termination". It was reporting "the contract does not state what happens
+  upon termination" on **25 corpus fixtures** that state it in terms —
+  including one whose section is headed "Data Deletion on Termination" and
+  whose next words are "Vendor shall securely delete or destroy all Customer
+  Data … and shall certify such deletion in writing".
+- **IPDATA-008 reported a cross-border transfer missing its Article 46
+  safeguard on a data-LOCALIZATION clause.** "Recipient shall store and
+  process the Shared Data ONLY WITHIN the United States and SHALL NOT TRANSFER
+  it outside the United States without Provider's prior written consent" is a
+  prohibition, not an authorization. The negation sits directly on the verb
+  the match begins with, which the existing disclaimer scan — which looks for
+  a disclaimer FRAME — does not read.
+- **`data-sharing-agreement` shipped with an empty rule profile.**
+
 ## [9.201.0] — 2026-08-29
 
 ### Added — a new document family

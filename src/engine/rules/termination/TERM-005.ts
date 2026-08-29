@@ -11,7 +11,11 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 // "(effective) date of" tolerated between the lead-in and the noun — "upon the
 // effective date of termination", "on the date of expiration" — so the trigger
 // still leads a wind-down consequence in that common phrasing.
-const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
+// The preposition is AFTER as often as ON: "Within thirty (30) days AFTER
+// expiration or termination, Recipient shall destroy all copies" is the
+// standard data-return clause, and an on/upon-only trigger read it as no
+// effect-of-termination clause at all.
+const TERMINATION_TRIGGER = String.raw`(?:(?:up)?on|after|following)\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
 
 /**
  * What the clause says happens. "delete" and "export" belong here: a modern
@@ -153,7 +157,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.15.0",
+  version: "1.16.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "IPDATA-008",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Cross-border data transfer without safeguard",
   category: "ip-and-data",
   default_severity: "warning",
@@ -56,7 +56,22 @@ export const rule: Rule = {
         // "NO transfers outside the EEA occur" states the ABSENCE of any
         // transfer — a document that transfers nothing needs no Article 46
         // safeguard, and reporting one is a confident false accusation.
-        if (m && DATA_CONTEXT.test(p.text) && !isPresenceDisclaimed(p.text, m.index)) {
+        // A PROHIBITION is not an authorization. "Recipient shall store and
+        // process the Shared Data only within the United States and SHALL NOT
+        // TRANSFER it outside the United States without Provider's prior
+        // written consent" is a data-LOCALIZATION clause, and reporting it as
+        // a cross-border transfer missing its Article 46 safeguard inverts
+        // what the document says. The negation sits directly on the verb the
+        // match begins with, which `isPresenceDisclaimed` — a backward scan
+        // for a disclaimer FRAME — does not read.
+        const PROHIBITED = /\b(?:shall|may|will|must|can|does|do|is|are)\s+not\s+(?:be\s+)?$/i;
+        const before = p.text.slice(Math.max(0, m ? m.index - 24 : 0), m ? m.index : 0);
+        if (
+          m &&
+          DATA_CONTEXT.test(p.text) &&
+          !PROHIBITED.test(before) &&
+          !isPresenceDisclaimed(p.text, m.index)
+        ) {
           transferHit = {
             sectionId: p.section.id,
             start: p.start + m.index,

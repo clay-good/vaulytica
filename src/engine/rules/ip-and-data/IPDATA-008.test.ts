@@ -95,3 +95,32 @@ describe("a disclaimed transfer needs no safeguard (v1.1.0)", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-008 — a prohibition is not an authorization", () => {
+  // "Recipient shall store and process the Shared Data only within the United
+  // States and SHALL NOT TRANSFER it outside the United States without
+  // Provider's prior written consent" is a data-LOCALIZATION clause, and
+  // reporting it as a cross-border transfer missing its Article 46 safeguard
+  // inverts what the document says.
+  it("is silent on a localization clause", () => {
+    expect(
+      IPDATA_008.check(
+        buildContext([
+          "Safeguards",
+          "Recipient shall store and process the Shared Data only within the United States and shall not transfer it outside the United States without Provider's prior written consent.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on an actual authorization with no safeguard", () => {
+    expect(
+      IPDATA_008.check(
+        buildContext([
+          "Transfers",
+          "Vendor may transfer Customer personal data to the United States for processing by its affiliates.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

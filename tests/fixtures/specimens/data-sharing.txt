@@ -1,0 +1,93 @@
+DATA SHARING AGREEMENT
+
+This Data Sharing Agreement (this "Agreement") is made as of April 30, 2026 between Marrowbone County Public Health District, a political subdivision of the State of Ohio ("Provider"), and Cedarline Population Research Institute, an Ohio nonprofit corporation ("Recipient").
+
+RECITALS
+
+A. Provider holds administrative records concerning residents who received services from its communicable-disease and maternal-health programs.
+
+B. Recipient conducts public-health research and wishes to receive a limited set of those records for the study described in Exhibit A (the "Study").
+
+C. The parties are entering into this Agreement to define the data to be shared, the permitted uses, and the safeguards, and neither party intends this Agreement to create a business associate relationship.
+
+1. DEFINITIONS
+
+1.1 "Shared Data" means the data elements listed on Exhibit B that Provider transfers to Recipient under this Agreement.
+
+1.2 "Limited Data Set" has the meaning given in 45 C.F.R. § 164.514(e), and the Shared Data constitutes a Limited Data Set.
+
+1.3 "Study Personnel" means the individuals identified on Exhibit C who are authorized to access the Shared Data.
+
+2. DATA TO BE SHARED
+
+2.1 Elements. Provider shall transfer only the data elements listed on Exhibit B. The Shared Data excludes name, street address, telephone and fax number, email address, Social Security number, medical record number, health plan number, account number, certificate or licence number, vehicle identifier, device identifier, URL, IP address, biometric identifier, and full-face photograph, as 45 C.F.R. § 164.514(e)(2) requires.
+
+2.2 Dates and Geography. Consistent with the Limited Data Set standard, the Shared Data may include dates of service and birth and geographic subdivisions no smaller than the five-digit ZIP code.
+
+2.3 Minimum Necessary. Provider shall apply the minimum necessary standard and shall transfer no element not required for the Study.
+
+3. PERMITTED AND PROHIBITED USES
+
+3.1 Permitted Use. Recipient may use the Shared Data solely to conduct the Study, and for no other purpose, including no commercial purpose and no use in any other study.
+
+3.2 No Re-identification. Recipient shall not use the Shared Data, alone or in combination with other data, to identify or contact any individual, and shall not attempt to re-identify any record. Recipient shall notify Provider within twenty-four (24) hours if re-identification occurs inadvertently.
+
+3.3 No Onward Disclosure. Recipient shall not disclose the Shared Data to any third party, except to Study Personnel and to a subcontractor Provider approves in writing that agrees in writing to the restrictions in this Agreement.
+
+3.4 Publication. Recipient may publish aggregate findings that do not identify any individual and do not permit identification by inference, and shall provide Provider a copy of any manuscript at least thirty (30) days before submission. Provider may request redaction of any content that would identify an individual, and Recipient shall comply, but Provider may not otherwise restrict or delay publication.
+
+4. SAFEGUARDS
+
+4.1 Administrative, Physical, and Technical. Recipient shall implement safeguards appropriate to the sensitivity of the Shared Data, including role-based access limited to Study Personnel, encryption at rest using AES-256 and in transit using TLS 1.2 or higher, logging of all access, an annual access review, and secure disposal.
+
+4.2 Location and Transfer. Recipient shall store and process the Shared Data only within the United States and shall not transfer it outside the United States without Provider's prior written consent.
+
+4.3 Training. Recipient shall train each Study Person on this Agreement and on the applicable requirements of 45 C.F.R. Parts 160 and 164 before granting access.
+
+5. INCIDENT RESPONSE
+
+5.1 Notice. Recipient shall notify Provider of any unauthorized access, use, or disclosure of the Shared Data without unreasonable delay and in no event later than forty-eight (48) hours after discovery, and shall include the nature of the incident, the records affected, the measures taken, and a contact.
+
+5.2 Cooperation. Recipient shall cooperate with Provider's investigation, shall preserve evidence, and shall bear the reasonable cost of any notification Provider determines is required by law.
+
+6. OVERSIGHT
+
+6.1 IRB. Recipient represents that the Study has been approved by an institutional review board registered with the Office for Human Research Protections, and shall provide the approval and any continuing-review determination on request.
+
+6.2 Audit. Provider may audit Recipient's compliance with this Agreement once in any twelve (12) month period on thirty (30) days' written notice, and at any time following an incident.
+
+6.3 Records. Recipient shall maintain records of access to and disclosures of the Shared Data for six (6) years and shall make them available to Provider on request.
+
+7. TERM, RETURN, AND DESTRUCTION
+
+7.1 Term. This Agreement begins on the Effective Date and continues until the earlier of completion of the Study and April 30, 2029, unless terminated earlier.
+
+7.2 Termination. Provider may terminate this Agreement immediately on written notice if Recipient breaches Section 3 or Section 4, and either party may terminate on thirty (30) days' written notice for any other material breach the other fails to cure within that period.
+
+7.3 Return or Destruction. Within thirty (30) days after expiration or termination, Recipient shall destroy all copies of the Shared Data, including copies held by Study Personnel and any approved subcontractor, and shall certify the destruction in writing. If destruction is infeasible, Recipient shall notify Provider, shall extend the protections of this Agreement to the retained data, and shall limit further use to the purposes that make destruction infeasible. Sections 3.2, 5, 6.3 and 8 survive.
+
+8. GENERAL
+
+8.1 No Business Associate Relationship. The parties agree that Recipient is not a business associate of Provider, that the Shared Data is disclosed as a Limited Data Set under 45 C.F.R. § 164.514(e), and that this Agreement is the data use agreement that provision requires.
+
+8.2 No Warranty. Provider makes no representation or warranty as to the accuracy, completeness, or fitness of the Shared Data, and provides it AS IS.
+
+8.3 Governing Law; Venue. This Agreement is governed by the laws of the State of Ohio. Any action arising out of this Agreement shall be brought in the state courts located in Marrowbone County, Ohio.
+
+8.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses stated beneath the signatures.
+
+8.5 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+MARROWBONE COUNTY PUBLIC HEALTH DISTRICT
+
+By: /s/ Adaeze Nwosu-Barrett
+Name: Adaeze Nwosu-Barrett
+Title: Health Commissioner
+
+CEDARLINE POPULATION RESEARCH INSTITUTE
+
+By: /s/ Lars Henriksen
+Name: Lars Henriksen
+Title: Executive Director

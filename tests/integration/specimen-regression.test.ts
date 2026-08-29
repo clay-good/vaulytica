@@ -40,6 +40,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A public-health limited-data-set data sharing agreement. IPDATA-008
+  // reported a cross-border transfer missing its Article 46 safeguard on a
+  // data-LOCALIZATION clause — "shall store and process ... only within the
+  // United States and SHALL NOT TRANSFER it outside the United States without
+  // Provider's prior written consent" — inverting what the document says. And
+  // TERM-005 reported no effect-of-termination clause on the standard return
+  // clause, because its trigger read "(up)on termination" and the clause
+  // reads "within thirty (30) days AFTER expiration or termination".
+  "data-sharing.txt": {
+    playbook: "data-sharing-agreement",
+    findings: ["STRUCT-018", "OBLI-005", "TERM-007"],
+  },
   // An NVCA Series B PREFERRED STOCK PURCHASE AGREEMENT — a primary venture
   // financing, in which the company ISSUES new shares.
   //
