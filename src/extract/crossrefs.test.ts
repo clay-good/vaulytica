@@ -1005,3 +1005,41 @@ describe("a division of another instrument, named by the amendment on it", () =>
     expect(refs.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual(["Section IX"]);
   });
 });
+
+describe("crossrefs — a run-in heading with no period after its number (v9.222.0)", () => {
+  // A Delaware corporation's bylaws number their sections "Section 1.1
+  // Registered Office." with no period after the number. Neither the anchored
+  // nor the run-in declaration pattern could see that, so a clean set of
+  // bylaws registered none of its own sections and reported all 28 headings as
+  // broken references to themselves.
+  it("registers the heading rather than reporting it as a broken reference", () => {
+    const tree = buildTree([
+      "Amended and Restated Bylaws",
+      "Section 1.1 Registered Office. The registered office of the Corporation is in Delaware.",
+      "Section 3.5 Committees. The Board of Directors may designate one or more committees.",
+      "The Corporation shall maintain the office described in Section 1.1 and the committees described in Section 3.5.",
+    ]);
+    expect(extractCrossRefs(tree, extractSections(tree)).filter((c) => c.unresolved)).toEqual([]);
+  });
+
+  it("registers a run-in heading that shares a paragraph with the text before it", () => {
+    const tree = buildTree([
+      "Bylaws",
+      "Section 2.4 Quorum; Adjournment. A majority constitutes a quorum. Section 2.5 Voting. Each stockholder is entitled to one vote.",
+      "Voting is governed by Section 2.5 and quorum by Section 2.4.",
+    ]);
+    expect(extractCrossRefs(tree, extractSections(tree)).filter((c) => c.unresolved)).toEqual([]);
+  });
+
+  it("does not read a mid-sentence reference as a declaration", () => {
+    const tree = buildTree([
+      "Bylaws",
+      "Section 1.1 Offices. The Corporation may have offices as the Board determines.",
+      "Notice shall be given in accordance with Section 232 of the General Corporation Law. This Section 9.9 does not apply to any claim.",
+    ]);
+    const unresolved = extractCrossRefs(tree, extractSections(tree))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+    expect(unresolved).toContain("Section 9.9");
+  });
+});

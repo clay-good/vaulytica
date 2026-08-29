@@ -258,6 +258,16 @@ const ARTICLE_THEN_SECTION_RE =
 // amount, not a clause number.
 const LEADING_SUBSECTION_RE = /^\s*(\d+(?:\.\d+)+)\.?\s+[A-Z(]/;
 
+// The same heading with NO period after the number — "Section 1.1 Registered
+// Office." — which is how a Delaware corporation's bylaws are almost always
+// numbered. `LEADING_SECTION_RE` requires the period and
+// `LEADING_SUBSECTION_RE` anchors on the bare number, so a clean set of bylaws
+// registered none of its own sections and then reported every heading as a
+// broken reference to itself: 28 unresolved cross-references on a document
+// with none. The "Section" keyword is REQUIRED here — without it, a paragraph
+// opening "5 Business Days after the Closing" would register as a section.
+const LEADING_SECTION_NO_PERIOD_RE = /^\s*(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\s+[A-Z(]/;
+
 // A RUN-IN section heading anywhere in a paragraph — "… continues in effect.
 // Section 6.4. Definitions. \"Descendants\" means …". Stripping a document's
 // blank lines, as a PDF copy-paste does, merges a whole article into one
@@ -268,6 +278,17 @@ const LEADING_SUBSECTION_RE = /^\s*(\d+(?:\.\d+)+)\.?\s+[A-Z(]/;
 // The trailing period after the number is what separates a heading from a
 // reference: "Section 3.4. Vacancies." declares, "under Section 3.4" refers.
 const RUN_IN_SECTION_RE = /(?:^|[.!?]\s+)(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z(]/g;
+
+// The same run-in heading in the NO-PERIOD numbering a Delaware corporation's
+// bylaws use — "… by the Board. Section 3.5 Committees. The Board of Directors
+// may designate …". Without the period after the number, the heading is told
+// apart from a reference by what FOLLOWS it: a short Title-Case clause title
+// that itself ends in a period. "in accordance with Section 220 of the General
+// Corporation Law" is not preceded by a sentence end, "This Section 8.1 does
+// not apply" continues in lowercase, and "See Section 2.3 for notice
+// requirements." never closes a Title-Case run — none of them register.
+const RUN_IN_SECTION_NO_PERIOD_RE =
+  /(?:^|[.!?]\s+)(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\s+[A-Z][\w'’-]*[;,]?(?:\s+(?:[A-Z][\w'’-]*|of|and|the|to|by|for|in)[;,]?)*\.\s+[A-Z]/g;
 
 // The flat-paste ARTICLE heading — "ARTICLE VII — FORUM SELECTION" — is a
 // DECLARATION of the article, not a reference to it. It both feeds the
@@ -322,7 +343,10 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
   });
   // Augment the index with paragraph-leading section numbers the outline missed.
   forEachParagraph(tree, (ctx) => {
-    const m = LEADING_SECTION_RE.exec(ctx.text) ?? LEADING_SUBSECTION_RE.exec(ctx.text);
+    const m =
+      LEADING_SECTION_RE.exec(ctx.text) ??
+      LEADING_SECTION_NO_PERIOD_RE.exec(ctx.text) ??
+      LEADING_SUBSECTION_RE.exec(ctx.text);
     const norm = m ? normalizeLabel(m[1]!) : undefined;
     if (norm && !labelIndex.has(norm)) labelIndex.set(norm, ctx.paragraph.id);
     const a = LEADING_ARTICLE_RE.exec(ctx.text);
@@ -337,18 +361,22 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     if (atsNorm && !labelIndex.has(atsNorm)) labelIndex.set(atsNorm, ctx.paragraph.id);
     // Every run-in heading in the paragraph, for the flattened layouts where
     // an article's subsections all arrive in one.
-    RUN_IN_SECTION_RE.lastIndex = 0;
-    let ri: RegExpExecArray | null;
-    while ((ri = RUN_IN_SECTION_RE.exec(ctx.text)) !== null) {
-      const riNorm = normalizeLabel(ri[1]!);
-      if (riNorm && !labelIndex.has(riNorm)) labelIndex.set(riNorm, ctx.paragraph.id);
+    for (const re of [RUN_IN_SECTION_RE, RUN_IN_SECTION_NO_PERIOD_RE]) {
+      re.lastIndex = 0;
+      let ri: RegExpExecArray | null;
+      while ((ri = re.exec(ctx.text)) !== null) {
+        const riNorm = normalizeLabel(ri[1]!);
+        if (riNorm && !labelIndex.has(riNorm)) labelIndex.set(riNorm, ctx.paragraph.id);
+      }
     }
   });
 
   forEachParagraph(tree, (ctx) => {
     const leadingArticle = LEADING_ARTICLE_RE.exec(ctx.text);
     const leadingSection =
-      LEADING_SECTION_RE.exec(ctx.text) ?? LEADING_SECTION_ROMAN_RE.exec(ctx.text);
+      LEADING_SECTION_RE.exec(ctx.text) ??
+      LEADING_SECTION_NO_PERIOD_RE.exec(ctx.text) ??
+      LEADING_SECTION_ROMAN_RE.exec(ctx.text);
     const articleThenSection = ARTICLE_THEN_SECTION_RE.exec(ctx.text);
     REF_RE.lastIndex = 0;
     let m: RegExpExecArray | null;

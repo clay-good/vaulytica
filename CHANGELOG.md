@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.222.0] — 2026-08-29
+
+### Added
+- Amended and restated bylaws of a Delaware corporation — the 180th specimen,
+  and the first for `bylaws-corporation`. GOV-001..012 are all satisfied and
+  the exclusive-forum bylaw carves out the Exchange Act, so the document is
+  clean but for one `info`.
+
+### Fixed
+- **A bylaws heading with NO period after its section number registered as no
+  section at all**, and was then re-read as a broken reference to itself. The
+  specimen drew 28 unresolved cross-references on a document that has none:
+  `LEADING_SECTION_RE` requires "Section 1.1." with the period, and
+  `LEADING_SUBSECTION_RE` anchors on the bare number, so "Section 1.1
+  Registered Office." — the way a Delaware corporation's bylaws are almost
+  always numbered — fell between them. The "Section" keyword is required in the
+  new pattern, so a paragraph opening "5 Business Days after the Closing" still
+  does not register.
+- The same heading MID-PARAGRAPH, for the flattened layouts a PDF copy-paste
+  produces. Without a period after the number, a heading is told apart from a
+  reference by what follows it: a short Title-Case clause title that itself
+  ends in a period. "in accordance with Section 232 of the General Corporation
+  Law" is not preceded by a sentence end, "This Section 9.9 does not apply"
+  continues in lowercase, and "See Section 2.3 for notice requirements." never
+  closes a Title-Case run — none of them register.
+
 ## [9.221.0] — 2026-08-29
 
 ### Added

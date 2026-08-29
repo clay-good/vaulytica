@@ -1,0 +1,87 @@
+AMENDED AND RESTATED BYLAWS
+
+OF
+
+WREXHAM ANALYTICS, INC.
+a Delaware corporation
+
+(Adopted by the Board of Directors on February 9, 2026)
+
+ARTICLE I. OFFICES
+
+Section 1.1 Registered Office. The registered office of the Corporation in the State of Delaware, and the name of the registered agent at that address, are as set forth in the Certificate of Incorporation or as the Board of Directors may from time to time designate.
+
+Section 1.2 Other Offices. The Corporation may also have offices at such other places, within or outside the State of Delaware, as the Board of Directors may from time to time determine.
+
+ARTICLE II. MEETINGS OF STOCKHOLDERS
+
+Section 2.1 Annual Meeting. An annual meeting of stockholders shall be held each year on a date and at a time designated by the Board of Directors, for the election of directors and the transaction of such other business as may properly come before the meeting. The Board of Directors may determine that the annual meeting shall be held solely by means of remote communication in accordance with Section 211(a)(2) of the General Corporation Law of the State of Delaware.
+
+Section 2.2 Special Meetings. Special meetings of the stockholders may be called at any time by the Board of Directors, the Chairperson of the Board, or the Chief Executive Officer, and shall be called by the Secretary upon the written request of stockholders holding not less than 25% of the voting power of the outstanding capital stock. Business transacted at a special meeting is limited to the purposes stated in the notice of that meeting.
+
+Section 2.3 Notice of Meetings. Written notice of each meeting of stockholders, stating the place, date, hour, the means of remote communication (if any), and, in the case of a special meeting, the purpose of the meeting, shall be given not less than ten (10) nor more than sixty (60) days before the date of the meeting to each stockholder entitled to vote at the meeting. Notice may be given by electronic transmission in accordance with Section 232 of the General Corporation Law. A stockholder's attendance at a meeting waives notice of that meeting, except where the stockholder attends solely to object to the transaction of business on the ground that the meeting was not lawfully called.
+
+Section 2.4 Quorum; Adjournment. The holders of a majority of the voting power of the outstanding stock entitled to vote, present in person or represented by proxy, constitute a quorum for the transaction of business at a meeting of stockholders. If a quorum is not present, the chairperson of the meeting or the holders of a majority of the voting power present may adjourn the meeting until a quorum is present. At an adjourned meeting at which a quorum is present, any business may be transacted that might have been transacted at the original meeting.
+
+Section 2.5 Voting. Each stockholder is entitled to one vote for each share of capital stock held of record. Directors are elected by a plurality of the votes cast. Every other matter is decided by the affirmative vote of a majority of the voting power present in person or represented by proxy and entitled to vote on the matter, except where a different vote is required by law, the Certificate of Incorporation, or these Bylaws.
+
+Section 2.6 Action by Written Consent. Any action required or permitted to be taken at a meeting of stockholders may be taken without a meeting if a consent in writing or by electronic transmission is signed by the holders of outstanding stock having not less than the minimum number of votes that would be necessary to authorize the action at a meeting at which all shares entitled to vote were present and voted, and prompt notice is given to those stockholders who did not consent.
+
+ARTICLE III. BOARD OF DIRECTORS
+
+Section 3.1 Number and Term. The number of directors constituting the whole Board of Directors shall be fixed from time to time by resolution of the Board of Directors, and shall not be fewer than three (3) nor more than nine (9). Each director holds office until the next annual meeting of stockholders and until a successor is elected and qualified, or until the director's earlier death, resignation, or removal.
+
+Section 3.2 Removal; Vacancies. Any director may be removed, with or without cause, by the holders of a majority of the voting power of the shares then entitled to vote at an election of directors. Any vacancy on the Board of Directors, whether arising from death, resignation, removal, or an increase in the authorized number of directors, may be filled by a majority of the directors then in office, though less than a quorum, or by a sole remaining director, and a director so chosen holds office for the remainder of the term.
+
+Section 3.3 Regular and Special Meetings. Regular meetings of the Board of Directors may be held without notice at such times and places as the Board determines. Special meetings may be called by the Chairperson of the Board, the Chief Executive Officer, or any two directors, on at least twenty-four (24) hours' notice given personally, by telephone, or by electronic transmission.
+
+Section 3.4 Quorum; Action. A majority of the whole Board of Directors constitutes a quorum for the transaction of business, and the vote of a majority of the directors present at a meeting at which a quorum is present is the act of the Board of Directors. Any action required or permitted to be taken at a meeting of the Board may be taken without a meeting if all directors consent in writing or by electronic transmission.
+
+Section 3.5 Committees. The Board of Directors may designate one or more committees, each consisting of one or more directors, and may delegate to any committee the authority of the Board except as limited by Section 141(c) of the General Corporation Law.
+
+ARTICLE IV. OFFICERS
+
+Section 4.1 Officers. The officers of the Corporation are a Chief Executive Officer, a President, a Secretary, and a Treasurer, and such other officers, including one or more Vice Presidents and a Chief Financial Officer, as the Board of Directors may appoint. Any number of offices may be held by the same person.
+
+Section 4.2 Election; Term; Removal. Officers are elected annually by the Board of Directors and hold office until a successor is elected or until the officer's earlier resignation or removal. Any officer may be removed at any time, with or without cause, by the Board of Directors, without prejudice to the officer's rights, if any, under any employment agreement.
+
+Section 4.3 Duties. Each officer has the powers and duties customarily incident to the office and such other powers and duties as the Board of Directors assigns.
+
+ARTICLE V. STOCK
+
+Section 5.1 Certificated and Uncertificated Shares. The shares of the Corporation shall be uncertificated, provided that the Board of Directors may provide by resolution that some or all classes or series shall be represented by certificates. Every holder of stock represented by certificates is entitled to a certificate signed by, or in the name of the Corporation by, any two authorized officers.
+
+Section 5.2 Transfers. Transfers of stock are made on the books of the Corporation only upon presentation of proper evidence of succession, assignment, or authority to transfer, and, in the case of certificated shares, surrender of the certificate.
+
+Section 5.3 Lost Certificates. The Board of Directors may direct that a new certificate be issued in place of a certificate alleged to have been lost, stolen, or destroyed, upon such terms, including the giving of a bond, as it may require.
+
+ARTICLE VI. INDEMNIFICATION
+
+Section 6.1 Right to Indemnification. The Corporation shall indemnify each person who was or is made a party to any threatened, pending, or completed action, suit, or proceeding by reason of the fact that the person is or was a director or officer of the Corporation, to the fullest extent permitted by Section 145 of the General Corporation Law of the State of Delaware, against all expense, liability, and loss reasonably incurred by that person.
+
+Section 6.2 Advancement of Expenses. The Corporation shall pay the expenses incurred by a director or officer in defending any such proceeding in advance of its final disposition, upon receipt of an undertaking by that person to repay all amounts advanced if it is ultimately determined that the person is not entitled to be indemnified.
+
+Section 6.3 Non-Exclusivity; Insurance. The rights conferred by this Article VI are not exclusive of any other right that a person may have, and the Corporation may purchase and maintain insurance on behalf of any director, officer, employee, or agent against any liability asserted against that person, whether or not the Corporation would have the power to indemnify that person against the liability under Section 145.
+
+ARTICLE VII. RECORDS AND INSPECTION
+
+Section 7.1 Books and Records. The Corporation shall keep correct and complete books and records of account, minutes of the proceedings of its stockholders and Board of Directors, and a record of its stockholders. Any stockholder may, upon written demand under oath stating the purpose of the demand, inspect the Corporation's stock ledger, list of stockholders, and other books and records for any proper purpose, in accordance with Section 220 of the General Corporation Law.
+
+Section 7.2 Fiscal Year. The fiscal year of the Corporation ends on December 31 unless otherwise fixed by resolution of the Board of Directors.
+
+ARTICLE VIII. FORUM
+
+Section 8.1 Exclusive Forum. Unless the Corporation consents in writing to an alternative forum, the Court of Chancery of the State of Delaware is the sole and exclusive forum for any derivative action brought on behalf of the Corporation, any action asserting a claim of breach of a fiduciary duty owed by a director, officer, or stockholder, any action arising under the General Corporation Law, and any action governed by the internal affairs doctrine. This Section 8.1 does not apply to any claim arising under the Securities Exchange Act of 1934, for which the federal courts have exclusive jurisdiction.
+
+Section 8.2 Federal Forum. Unless the Corporation consents in writing to an alternative forum, the federal district courts of the United States are the exclusive forum for any claim arising under the Securities Act of 1933.
+
+ARTICLE IX. AMENDMENTS
+
+Section 9.1 Amendment of Bylaws. These Bylaws may be amended, altered, or repealed, and new bylaws adopted, by the Board of Directors or by the affirmative vote of the holders of a majority of the voting power of the outstanding capital stock entitled to vote, provided that any bylaw adopted by the stockholders may not be altered or repealed by the Board of Directors if the stockholders so provide in the bylaw.
+
+CERTIFICATION
+
+The undersigned, the duly elected Secretary of Wrexham Analytics, Inc., certifies that the foregoing Amended and Restated Bylaws were adopted by the Board of Directors of the Corporation on February 9, 2026.
+
+/s/ Ottoline Marsh
+Ottoline Marsh, Secretary

@@ -679,6 +679,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // Amended and restated bylaws of a Delaware corporation — the 180th
+  // specimen. Clean but for one info: GOV-001..012 are all satisfied, and the
+  // exclusive-forum bylaw carves out the Exchange Act. It was this document
+  // that exposed the run-in "Section 1.1 Registered Office." heading, which
+  // the cross-reference extractor registered as no section at all and then
+  // reported as 28 broken references to itself.
+  "bylaws-corporation.txt": {
+    playbook: "bylaws-corporation",
+    findings: ["OBLI-005"],
+  },
   // A revolving credit agreement on LSTA architecture — the 179th specimen.
   // The whole BNK-101..108 pack is silent: commitment and borrowing base,
   // the SOFR benchmark-replacement waterfall, the financial covenants with
