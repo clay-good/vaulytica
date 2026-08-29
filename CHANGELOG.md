@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.237.0] — 2026-08-29
+
+### Fixed
+- **The adoption recital added in 9.236.0 matched nothing.** Its verb and its
+  adopting-body alternations were spelled in lowercase in a case-SENSITIVE
+  pattern, so "Adopted by the Board of Directors … on January 21, 2026" — the
+  form every policy actually uses — never matched, and the conflict-of-interest
+  policy fixture still drew a `critical` "no signature block". The pattern is
+  now `i`-flagged with the month name in a case-sensitive lookahead, which is
+  the only part that must stay case-sensitive. The STRUCT-003 test gained its
+  load-bearing half: the same policy with the recital REMOVED still reports.
+- The conflict-of-interest policy fixture added in 9.233.0 became entirely
+  clean once the recital matched, which the v4 sanity guard rejects — a fixture
+  must exercise something. It is now
+  `compliance-coi-policy-missing-sanctions-fail.txt`, drawing POL-036, in the
+  pass/fail shape the rest of the corpus uses.
+
 ## [9.236.0] — 2026-08-29
 
 ### Added

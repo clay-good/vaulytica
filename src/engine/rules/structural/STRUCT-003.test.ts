@@ -117,6 +117,20 @@ describe("STRUCT-003 — a policy is adopted, not signed (v1.31.0)", () => {
     ).toBeNull();
   });
 
+  it("reports the SAME policy when the adoption recital is removed", () => {
+    // The load-bearing half: without the recital the document is identical and
+    // still unsigned, so the recital is what stands the check down.
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Records Retention and Destruction Policy",
+          "Owner: General Counsel.",
+          "The retention period for each record type is set out in the schedule below.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
   it("still reports an unsigned agreement whose only date is an effective date", () => {
     // The note on PUBLICATION_STAMP records why a bare "Effective Date:" must
     // not stand in for execution: plenty of SIGNED contracts carry one.

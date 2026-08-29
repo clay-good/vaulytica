@@ -994,6 +994,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // stack, calculate self-insured retentions, and establish total
   // risk-transfer headroom before relying on the policy.
   "insurance-policy-summary-missing-limits-of-liability-fail.txt": ["INS-003"],
+  "compliance-coi-policy-missing-sanctions-fail.txt": ["POL-036"],
 
   // Revocable Living Trust with the preamble extended by a sentence that
   // affirmatively elects not to include a separately captioned provision

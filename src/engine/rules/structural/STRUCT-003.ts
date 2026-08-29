@@ -193,8 +193,17 @@ const DELIVERY_RECITAL =
 // Date: …" appears on plenty of signed contracts, and the note on
 // `PUBLICATION_STAMP` above records why accepting that alone would silence the
 // finding on a genuinely unsigned agreement.
-const ADOPTION_RECITAL =
-  /\b(?:adopted|approved|ratified|issued|authorized)\s+by\s+(?:the\s+)?[^.\n]{0,60}?\b(?:board|committee|council|trustees|directors|shareholders|stockholders|members|general\s+counsel|chief\s+\w+\s+officer)\b[^.\n]{0,40}?\b(?:on|effective|as\s+of|dated)\s+(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{4}-\d{2}-\d{2})/;
+const ADOPTION_RECITAL = new RegExp(
+  String.raw`\b(?:adopted|approved|ratified|issued|authorized)\s+by\s+(?:the\s+)?` +
+    String.raw`[^.\n]{0,60}?\b(?:board|committee|council|trustees|directors|shareholders` +
+    String.raw`|stockholders|members|general\s+counsel|chief\s+\w+\s+officer)\b` +
+    String.raw`[^.\n]{0,40}?\b(?:on|effective|as\s+of|dated)\s+` +
+    // The month name is the only part that must stay case-SENSITIVE, and it
+    // cannot be spelled inside an `i`-flagged pattern, where `[A-Z]` is inert.
+    "(?=(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)" +
+    String.raw`\s+\d{1,2},\s+\d{4}|\d{4}-\d{2}-\d{2})`,
+  "i",
+);
 
 const PUBLICATION_STAMP =
   /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
