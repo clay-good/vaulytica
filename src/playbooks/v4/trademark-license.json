@@ -14,7 +14,7 @@
       "channels of trade",
       "field of use"
     ],
-    "negative_features": ["patent", "copyright", "assignment"]
+    "negative_features": ["patent license agreement", "copyright license agreement", "assignment of the marks"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Licensed Marks", "Quality Standards", "Territory"],

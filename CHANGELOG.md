@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.180.0] — 2026-08-29
+
+### Added
+- A trademark license — the 143rd specimen. All six IPL-013..018 checks
+  (quality control, goodwill inurement, no-challenge, proper use) are silent
+  on a compliant one.
+
+### Fixed
+- **`trademark-license` penalized its own standard drafting three times over.**
+  It listed "patent", "copyright" and "assignment" as NEGATIVE features — and
+  every trademark license reserves patent and copyright rights in terms ("No
+  license is granted under any patent, copyright, or trade secret") and has an
+  assignment clause. The three penalties cost it 0.3, so a document titled
+  TRADEMARK LICENSE AGREEMENT routed to `msa-general` and none of its own
+  checks ran. Replaced with the title-shaped phrases that do distinguish:
+  "patent license agreement", "copyright license agreement", "assignment of
+  the marks".
+
 ## [9.179.0] — 2026-08-29
 
 ### Fixed

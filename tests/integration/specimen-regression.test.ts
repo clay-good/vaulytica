@@ -40,6 +40,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A trademark license. It routed to `msa-general` at 0.7 and none of its six
+  // IPL-013..018 checks ran, because the family listed "patent", "copyright"
+  // and "assignment" as NEGATIVE features — and every trademark license
+  // reserves patent and copyright rights in terms ("No license is granted
+  // under any patent, copyright, or trade secret") and has an assignment
+  // clause. Three penalties on its own standard drafting cost it 0.3.
+  // RISK-015 stays and is right: the cap carves out the indemnity.
+  "trademark-license.txt": {
+    playbook: "trademark-license",
+    findings: [
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "FIN-008",
+      "OBLI-005",
+      "RISK-010",
+      "STRUCT-005",
+      "TEMP-008",
+    ],
+  },
   // A managed-care participating provider agreement. All six HC-121..126
   // checks are silent on a compliant one. Its family shipped with an empty
   // rule profile, so it was told it allocates no IP and caps no liability —

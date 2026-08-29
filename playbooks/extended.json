@@ -18635,9 +18635,9 @@
         "field of use"
       ],
       "negative_features": [
-        "patent",
-        "copyright",
-        "assignment"
+        "patent license agreement",
+        "copyright license agreement",
+        "assignment of the marks"
       ]
     },
     "expected_clauses": [],
