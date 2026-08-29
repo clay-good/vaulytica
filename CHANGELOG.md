@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.232.0] — 2026-08-29
+
+### Added
+- The self-penalizing-features guard now also runs against the **golden
+  fixtures**, which reach forty families the specimen corpus does not. Each
+  fixture carries a `.playbook` sidecar naming the family it was written for,
+  so a negative feature appearing in one is a penalty the family charges its
+  own document — the specimen check, over a corpus three times the size.
+
+### Fixed
+- **Six families penalized their own vocabulary**, every one of them naming the
+  instrument the family exists ALONGSIDE rather than a rival family's document:
+  - `revocable-living-trust` penalized "last will and testament", which its own
+    pour-over rule requires it to name;
+  - `loan-agreement` penalized "security agreement" and "promissory note",
+    which a secured loan names in its collateral clause;
+  - `safe-yc` penalized the bare word "interest", which appears in "does not
+    bear interest" and in every "membership interest";
+  - `baa-subcontractor` and `dpa-processor-subprocessor` penalized "Master
+    Services Agreement" and "Statement of Work", the instruments they are
+    appended to;
+  - `insurance-policy-summary` penalized "certificate holder", which a policy
+    summary names in its additional-insured line.
+
+  Each was narrowed to the form the OTHER document states in terms — "this
+  security agreement", "declare this to be my last will", "certificate of
+  liability insurance".
+
 ## [9.231.0] — 2026-08-29
 
 ### Added

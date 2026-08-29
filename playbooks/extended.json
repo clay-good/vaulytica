@@ -1915,8 +1915,8 @@
         "covered entity directly engages",
         "Data Processing Agreement",
         "Standard Contractual Clauses",
-        "Master Services Agreement",
-        "Statement of Work",
+        "this Master Services Agreement",
+        "this Statement of Work",
         "mutual non-disclosure"
       ]
     },
@@ -6562,8 +6562,8 @@
         "between the controller and the processor",
         "Business Associate Agreement",
         "protected health information",
-        "Master Services Agreement",
-        "Statement of Work",
+        "this Master Services Agreement",
+        "this Statement of Work",
         "mutual non-disclosure"
       ]
     },
@@ -9514,7 +9514,7 @@
       ],
       "negative_features": [
         "acord 25",
-        "certificate holder",
+        "certificate of liability insurance",
         "indemnification agreement"
       ]
     },
@@ -10800,9 +10800,9 @@
         "events of default"
       ],
       "negative_features": [
-        "promissory note",
-        "security agreement",
-        "guaranty"
+        "this promissory note",
+        "this security agreement",
+        "this guaranty"
       ]
     },
     "expected_clauses": [],
@@ -15923,9 +15923,9 @@
       "negative_features": [
         "deleted in its entirety",
         "ratified and confirmed",
-        "last will and testament",
-        "advance directive",
-        "power of attorney"
+        "declare this to be my last will",
+        "health care directive",
+        "attorney-in-fact"
       ]
     },
     "expected_clauses": [],
@@ -16728,9 +16728,9 @@
         "equity financing"
       ],
       "negative_features": [
-        "convertible note",
-        "promissory note",
-        "interest"
+        "this convertible promissory note",
+        "for value received, the undersigned",
+        "the principal amount of this note"
       ]
     },
     "expected_clauses": [],

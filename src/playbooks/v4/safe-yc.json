@@ -2,9 +2,12 @@
   "id": "safe-yc",
   "version": "1.0.0",
   "name": "Simple Agreement for Future Equity (Y Combinator SAFE)",
-  "description": "Y Combinator SAFE (post-money or pre-money variant). Selects the §6.C equity ruleset (EQT-001..EQT-009).",
+  "description": "Y Combinator SAFE (post-money or pre-money variant). Selects the \u00a76.C equity ruleset (EQT-001..EQT-009).",
   "match_features": {
-    "title_keywords": ["simple agreement for future equity", "safe"],
+    "title_keywords": [
+      "simple agreement for future equity",
+      "safe"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "post-money valuation cap",
@@ -13,7 +16,11 @@
       "most favored nation",
       "equity financing"
     ],
-    "negative_features": ["convertible note", "promissory note", "interest"]
+    "negative_features": [
+      "this convertible promissory note",
+      "for value received, the undersigned",
+      "the principal amount of this note"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [
@@ -23,22 +30,40 @@
     "Post-Money Valuation Cap"
   ],
   "rule_overrides": {
-    "CHOICE-003": { "skip": true },
-    "FIN-005": { "skip": true },
-    "IPDATA-001": { "skip": true },
-    "RISK-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "TERM-002": { "skip": true },
-    "TERM-005": { "skip": true }
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "Reg-D",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["investor-rights-agreement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "investor-rights-agreement"
+  ],
   "compliance_matrix_columns": [
-    "YC SAFE — post-money template",
+    "YC SAFE \u2014 post-money template",
     "Reg D Rule 506",
-    "DGCL § 102 / § 151"
+    "DGCL \u00a7 102 / \u00a7 151"
   ]
 }

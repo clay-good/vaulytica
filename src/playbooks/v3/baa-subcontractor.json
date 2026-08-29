@@ -1,8 +1,8 @@
 {
   "id": "baa-subcontractor",
   "version": "1.0.0",
-  "name": "BAA — Business Associate to Subcontractor (HIPAA)",
-  "description": "Business-associate to subcontractor BAA under HIPAA. Selects the §28 BAA ruleset (45 rules) covering 45 CFR § 164.504(e) required clauses, § 164.314(a) Security Rule flow-down, § 164.410 breach notification, plus HHS-guidance posture rules — with an emphasis on flow-down (the subcontractor must comply with the same terms the upstream BAA imposes on the business associate, per 45 CFR § 164.502(e)(1)(ii) and § 164.504(e)(5)). Companion: the upstream BAA between the covered entity and the business associate.",
+  "name": "BAA \u2014 Business Associate to Subcontractor (HIPAA)",
+  "description": "Business-associate to subcontractor BAA under HIPAA. Selects the \u00a728 BAA ruleset (45 rules) covering 45 CFR \u00a7 164.504(e) required clauses, \u00a7 164.314(a) Security Rule flow-down, \u00a7 164.410 breach notification, plus HHS-guidance posture rules \u2014 with an emphasis on flow-down (the subcontractor must comply with the same terms the upstream BAA imposes on the business associate, per 45 CFR \u00a7 164.502(e)(1)(ii) and \u00a7 164.504(e)(5)). Companion: the upstream BAA between the covered entity and the business associate.",
   "match_features": {
     "title_keywords": [
       "subcontractor business associate agreement",
@@ -33,8 +33,8 @@
       "covered entity directly engages",
       "Data Processing Agreement",
       "Standard Contractual Clauses",
-      "Master Services Agreement",
-      "Statement of Work",
+      "this Master Services Agreement",
+      "this Statement of Work",
       "mutual non-disclosure"
     ]
   },
@@ -51,13 +51,15 @@
     "Security Incident"
   ],
   "rule_overrides": {
-    "OBLI-002": { "skip": true }
+    "OBLI-002": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [
     {
       "id": "hipaa-45-cfr-164",
-      "source": "45 C.F.R. Part 164 — HIPAA Privacy and Security Rules",
+      "source": "45 C.F.R. Part 164 \u2014 HIPAA Privacy and Security Rules",
       "source_url": "https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164",
       "retrieved_at": "2026-05-12T00:00:00Z",
       "license": "Public domain (US government work)",
@@ -65,7 +67,7 @@
     },
     {
       "id": "hhs-hipaa-subcontractor-guidance",
-      "source": "HHS HIPAA Omnibus Rule (78 Fed. Reg. 5566, Jan. 25, 2013) — subcontractor-as-business-associate provisions",
+      "source": "HHS HIPAA Omnibus Rule (78 Fed. Reg. 5566, Jan. 25, 2013) \u2014 subcontractor-as-business-associate provisions",
       "source_url": "https://www.federalregister.gov/documents/2013/01/25/2013-01073/modifications-to-the-hipaa-privacy-security-enforcement-and-breach-notification-rules-under-the",
       "retrieved_at": "2026-05-12T00:00:00Z",
       "license": "Public domain (US government work)",
@@ -73,22 +75,27 @@
     }
   ],
   "regulator_frame": "HIPAA",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["baa", "msa-vendor-deep"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "baa",
+    "msa-vendor-deep"
+  ],
   "compliance_matrix_columns": [
-    "45 CFR § 164.504(e)(2)(i)",
-    "45 CFR § 164.504(e)(2)(ii)(A)",
-    "45 CFR § 164.504(e)(2)(ii)(B)",
-    "45 CFR § 164.504(e)(2)(ii)(C)",
-    "45 CFR § 164.504(e)(2)(ii)(D)",
-    "45 CFR § 164.504(e)(2)(ii)(E)",
-    "45 CFR § 164.504(e)(2)(ii)(F)",
-    "45 CFR § 164.504(e)(2)(ii)(G)",
-    "45 CFR § 164.504(e)(2)(ii)(H)",
-    "45 CFR § 164.504(e)(2)(ii)(I)",
-    "45 CFR § 164.504(e)(2)(iii)",
-    "45 CFR § 164.314(a)",
-    "45 CFR § 164.410",
-    "45 CFR § 164.504(e)(5) (flow-down)"
+    "45 CFR \u00a7 164.504(e)(2)(i)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(A)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(B)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(C)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(D)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(E)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(F)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(G)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(H)",
+    "45 CFR \u00a7 164.504(e)(2)(ii)(I)",
+    "45 CFR \u00a7 164.504(e)(2)(iii)",
+    "45 CFR \u00a7 164.314(a)",
+    "45 CFR \u00a7 164.410",
+    "45 CFR \u00a7 164.504(e)(5) (flow-down)"
   ]
 }

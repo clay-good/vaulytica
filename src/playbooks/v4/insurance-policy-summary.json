@@ -2,7 +2,7 @@
   "id": "insurance-policy-summary",
   "version": "1.0.0",
   "name": "Insurance Policy Summary / Declarations",
-  "description": "Insurance policy declarations / summary review under state insurance codes. Selects the §6.K ruleset (INS-001..INS-006).",
+  "description": "Insurance policy declarations / summary review under state insurance codes. Selects the \u00a76.K ruleset (INS-001..INS-006).",
   "match_features": {
     "title_keywords": [
       "declarations",
@@ -26,7 +26,7 @@
     ],
     "negative_features": [
       "acord 25",
-      "certificate holder",
+      "certificate of liability insurance",
       "indemnification agreement"
     ]
   },

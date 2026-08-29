@@ -22,7 +22,7 @@
  * The invariant is mechanical and needs no judgment: whatever a playbook
  * offers as evidence FOR itself cannot also be evidence against.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parsePlaybook, parsePlaybooks } from "../../src/playbooks/loader.js";
@@ -99,6 +99,55 @@ describe("negative features against the family's own specimen", () => {
       offending,
       `${expectation.playbook} penalizes its own document for: ${offending.join(", ")}`,
     ).toEqual([]);
+  });
+});
+
+/**
+ * The same invariant against the GOLDEN FIXTURES, which reach forty families
+ * the specimen corpus does not.
+ *
+ * Each golden fixture carries a `.playbook` sidecar naming the family it is
+ * written for, so a negative feature appearing in one is a penalty the family
+ * charges its own document — exactly the specimen check, over a corpus three
+ * times the size. It found six on the day it was written, and every one of
+ * them named the instrument the family exists ALONGSIDE rather than a rival
+ * family's document: `revocable-living-trust` penalized "last will and
+ * testament", which its own pour-over rule requires; `loan-agreement`
+ * penalized "security agreement", which a secured loan names in its collateral
+ * clause; `safe-yc` penalized the bare word "interest"; and two downstream
+ * data-protection families penalized "Master Services Agreement", the
+ * instrument they are appended to. Each was narrowed to the form the OTHER
+ * document states in terms ("this security agreement", "declare this to be my
+ * last will").
+ */
+describe("negative features against the family's own golden fixtures", () => {
+  const byId = new Map(PLAYBOOKS.map((p) => [p.id, p]));
+  const cases: [string, string, string][] = [];
+  for (const dir of [
+    join(process.cwd(), "tests", "golden", "v3", "fixtures"),
+    join(process.cwd(), "tests", "golden", "v4", "fixtures"),
+  ]) {
+    if (!existsSync(dir)) continue;
+    for (const file of readdirSync(dir)) {
+      if (!file.endsWith(".txt")) continue;
+      const sidecar = join(dir, `${file}.playbook`);
+      if (!existsSync(sidecar)) continue;
+      cases.push([file, readFileSync(sidecar, "utf8").trim(), join(dir, file)]);
+    }
+  }
+
+  it("the fixture corpus is loaded", () => {
+    expect(cases.length).toBeGreaterThan(200);
+  });
+
+  it.each(cases)("%s", (_file, id, path) => {
+    const playbook = byId.get(id);
+    if (!playbook) return;
+    const text = readFileSync(path, "utf8").toLowerCase();
+    const offending = playbook.match_features.negative_features.filter((n) =>
+      text.includes(n.toLowerCase()),
+    );
+    expect(offending, `${id} penalizes its own fixture for: ${offending.join(", ")}`).toEqual([]);
   });
 });
 

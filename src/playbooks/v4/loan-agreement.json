@@ -2,9 +2,13 @@
   "id": "loan-agreement",
   "version": "1.0.0",
   "name": "Loan Agreement",
-  "description": "Commercial loan agreement (term / revolver) with affirmative + negative + financial covenants. LSTA / ABA model baseline. Selects the §6.L ruleset (BNK-007..BNK-013).",
+  "description": "Commercial loan agreement (term / revolver) with affirmative + negative + financial covenants. LSTA / ABA model baseline. Selects the \u00a76.L ruleset (BNK-007..BNK-013).",
   "match_features": {
-    "title_keywords": ["loan agreement", "credit agreement", "credit facility agreement"],
+    "title_keywords": [
+      "loan agreement",
+      "credit agreement",
+      "credit facility agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "borrower",
@@ -14,18 +18,34 @@
       "covenants",
       "events of default"
     ],
-    "negative_features": ["promissory note", "security agreement", "guaranty"]
+    "negative_features": [
+      "this promissory note",
+      "this security agreement",
+      "this guaranty"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Borrower", "Lender", "Commitment"],
+  "expected_defined_terms": [
+    "Borrower",
+    "Lender",
+    "Commitment"
+  ],
   "rule_overrides": {
-    "IPDATA-001": { "skip": true }
+    "IPDATA-001": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-9-REG-Z-STATE-USURY",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["promissory-note", "security-agreement", "guaranty"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "promissory-note",
+    "security-agreement",
+    "guaranty"
+  ],
   "compliance_matrix_columns": [
     "Loan amount + use of proceeds",
     "Interest (SOFR + margin + floor)",
