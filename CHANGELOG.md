@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.240.0] — 2026-08-29
+
+### Added
+- A Form D narrative supplement — the 196th specimen, and the first for
+  `form-d-narrative`. REG-001..007 are all satisfied: issuer identification
+  with its jurisdiction, the Rule 506(b) exemption, accredited-investor
+  representations with the verification contrast against 506(c), the
+  general-solicitation prohibition, the Rule 506(d) bad-actor inquiry over
+  every covered person, the offering amount with a minimum investment, and the
+  NSMIA-preempted state notice filings.
+- A digital advertising insertion order — the 197th specimen, and the first for
+  `advertising-insertion-order`. COMM-168..172 are all satisfied.
+
+### Fixed
+- **The sixth half of `amendsParentAgreement()`: a named STANDARD FORM is a
+  parent.** An insertion order says "This Insertion Order incorporates the IAB
+  Standard Terms and Conditions for Internet Advertising … Version 3.0", and
+  the standard form is where the governing law, the IP allocation, the
+  indemnity, the liability cap, and the termination rights live. The IO drew
+  six findings for clauses it deliberately does not restate. Case-SENSITIVE on
+  the form's NAME, which is what keeps an ordinary "subject to the
+  specifications set out in the attached schedule" out.
+
 ## [9.239.0] — 2026-08-29
 
 ### Added

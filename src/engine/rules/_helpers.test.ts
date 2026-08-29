@@ -612,3 +612,23 @@ describe("expressDenial — a causative with an INFINITIVE, and one without", ()
     ).toBe(true);
   });
 });
+
+describe("amendsParentAgreement — a named STANDARD FORM is a parent (v9.240.0)", () => {
+  it("recognizes an insertion order that incorporates the IAB Standard Terms", () => {
+    const ctx = buildContext([
+      "Digital Advertising Insertion Order",
+      'This Insertion Order incorporates the IAB Standard Terms and Conditions for Internet Advertising for Media Buys One Year or Less, Version 3.0 (the "IAB Standard Terms").',
+      "Placement A — Homepage takeover. Guaranteed 4,200,000 impressions. CPM $18.50.",
+    ]);
+    expect(amendsParentAgreement(ctx)).toBe(true);
+  });
+
+  it("does not treat an ordinary schedule reference as a standard form", () => {
+    const ctx = buildContext([
+      "Services Agreement",
+      "The Services are subject to the specifications set out in the attached schedule.",
+      "Provider shall perform the Services with reasonable skill and care.",
+    ]);
+    expect(amendsParentAgreement(ctx)).toBe(false);
+  });
+});

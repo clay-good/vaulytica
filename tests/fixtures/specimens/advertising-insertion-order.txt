@@ -1,0 +1,61 @@
+DIGITAL ADVERTISING INSERTION ORDER
+
+IO Number: IO-2026-4471
+Date: April 9, 2026
+Media Company: Brightwater Media Group LLC
+Agency: Kessington & Vale Media, acting solely as agent for the Advertiser
+Advertiser: Northaven Outdoor Co.
+Campaign: Spring Trail Series
+Flight Dates: May 4, 2026 through July 26, 2026
+
+This Insertion Order incorporates the IAB Standard Terms and Conditions for Internet Advertising for Media Buys One Year or Less, Version 3.0 (the "IAB Standard Terms"). In the event of a conflict, the terms of this Insertion Order control over the IAB Standard Terms, and the IAB Standard Terms control over any other document.
+
+1. INVENTORY, PLACEMENTS, AND IMPRESSIONS
+
+Placement A — Homepage takeover, desktop and mobile web, run of site. Guaranteed 4,200,000 impressions. CPM $18.50. Net cost $77,700.
+Placement B — In-article display, 300x250 and 728x90 units, contextual targeting to outdoor and hiking content. Guaranteed 9,000,000 impressions. CPM $6.25. Net cost $56,250.
+Placement C — Pre-roll video, 15-second non-skippable, desktop and connected TV inventory. Guaranteed 1,500,000 impressions. CPM $31.00. Net cost $46,500.
+
+Total guaranteed impressions: 14,700,000. Total net cost: $180,450. Flight dates for each placement are the campaign flight dates unless a placement-level start date and end date are stated above.
+
+2. PRICING, COUNTING, AND DISCREPANCY RESOLUTION
+
+Pricing is on a CPM basis at the net cost stated for each placement. Media Company shall invoice monthly in arrears for impressions delivered in the prior month, and payment is due net thirty (30) days from the invoice date.
+
+Delivery is measured by the Agency's third-party ad server, DoubleVerify, which is the system of record for billing. If the Media Company's counting method and the third-party measurement differ by more than ten percent (10%) for any placement in any month, the parties shall work in good faith to resolve the discrepancy within ten (10) business days, and billing for that month is based on the third-party measurement. A discrepancy of ten percent (10%) or less is billed on the Media Company's numbers.
+
+3. MAKEGOOD AND UNDER-DELIVERY
+
+If the Media Company under-delivers guaranteed impressions for any placement by the end of the flight, the Agency may, at its election, (a) accept a makegood of equivalent inventory and equivalent value, to run within sixty (60) days after the end of the flight on placements the Agency approves in advance, or (b) take a credit for undelivered impressions against the final invoice, or (c) if the shortfall exceeds twenty percent (20%) of the guaranteed impressions for that placement, receive a refund of the amounts paid for the undelivered portion. A makegood proposal shall be delivered within ten (10) business days after the end of the flight.
+
+4. CANCELLATION
+
+The Agency may cancel any placement, in whole or in part, on fourteen (14) days prior written notice without penalty, except that video placements are non-cancelable within thirty (30) days of the placement start date. Cancellation of a non-cancelable placement obligates the Advertiser for the amounts committed for the remainder of that placement's flight. The Media Company may cancel on thirty (30) days prior written notice if the Agency fails to cure a payment default within fifteen (15) days after notice.
+
+5. AD VERIFICATION, BRAND SAFETY, AND MEASUREMENT
+
+All impressions are subject to viewability, invalid-traffic, and brand-safety measurement by the Agency's ad verification vendor. Impressions determined by the verification vendor to be invalid traffic, or to have been served adjacent to content on the Advertiser's excluded-category list attached as Schedule 1, are not billable and do not count toward guaranteed delivery. The Media Company shall provide access to placement-level verification reporting throughout the flight.
+
+6. SEQUENTIAL LIABILITY
+
+The Agency is acting solely as agent for a disclosed principal, the Advertiser, and is not liable for payment except to the extent the Agency has been paid by the Advertiser for the applicable placements. The Advertiser shall be liable to the Media Company for any amounts not paid to the Agency. This sequential liability provision applies notwithstanding any contrary term of the IAB Standard Terms.
+
+7. CREATIVE AND POLICIES
+
+Creative materials are due five (5) business days before the placement start date. The Media Company may reject creative that violates its published advertising policies, and shall notify the Agency within two (2) business days of rejection so that replacement creative may be supplied.
+
+8. ACCEPTANCE
+
+This Insertion Order is binding when signed by both parties or when the Media Company begins serving the campaign, whichever occurs first.
+
+BRIGHTWATER MEDIA GROUP LLC
+
+By: /s/ Solveig Ramanathan
+Name: Solveig Ramanathan
+Title: Director, Advertising Operations
+
+KESSINGTON & VALE MEDIA, as agent for Northaven Outdoor Co.
+
+By: /s/ Thaddeus Okonjo-Barrow
+Name: Thaddeus Okonjo-Barrow
+Title: Group Media Director

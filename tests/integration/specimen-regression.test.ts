@@ -679,6 +679,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A Form D narrative supplement — the 196th specimen, and the first for
+  // `form-d-narrative`. REG-001..007 are all satisfied: issuer identification
+  // with its jurisdiction, the Rule 506(b) exemption, accredited-investor
+  // representations with the verification contrast against 506(c), the
+  // general-solicitation prohibition, the Rule 506(d) bad-actor inquiry over
+  // every covered person, the offering amount with a minimum investment, and
+  // the NSMIA-preempted state notice filings.
+  "form-d-narrative.txt": {
+    playbook: "form-d-narrative",
+    findings: ["OBLI-005", "REG-040"],
+  },
+  // A digital advertising insertion order — the 197th specimen, and the first
+  // for `advertising-insertion-order`. COMM-168..172 are all satisfied. It
+  // exposed the sixth half of `amendsParentAgreement()`: an order form that
+  // incorporates a NAMED STANDARD FORM — here the IAB Standard Terms — drew
+  // six findings for the clauses that live in the form it incorporates.
+  "advertising-insertion-order.txt": {
+    playbook: "advertising-insertion-order",
+    findings: ["STRUCT-018"],
+  },
   // An irrevocable trust — the 194th specimen, and the first for
   // `irrevocable-trust`. EST-401..407 are all satisfied: the express
   // irrevocability recital, the three-pillar spendthrift provision, the HEMS

@@ -630,6 +630,25 @@ const PARENT_CONTROLS =
   /\b(?:[Ii]n\s+the\s+event\s+of\s+(?:any\s+)?(?:a\s+)?conflict|[Tt]o\s+the\s+extent\s+of\s+(?:any\s+)?conflict|[Ii]f\s+there\s+is\s+(?:any\s+)?conflict)[^.]{0,140}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Agreement|Lease|Contract|MSA)\s*(?:controls|prevails|governs|shall\s+control|shall\s+prevail|shall\s+govern|takes\s+precedence)/;
 
 /**
+ * The SIXTH half: an order form that incorporates a NAMED STANDARD FORM.
+ *
+ * A digital advertising insertion order says "This Insertion Order
+ * incorporates the IAB Standard Terms and Conditions for Internet Advertising
+ * … Version 3.0", and the standard form is where the governing law, the IP
+ * allocation, the indemnity, the liability cap, and the termination rights
+ * live. Without this the IO drew six findings for clauses it deliberately does
+ * not restate — the same shape as an amendment, with a published form in place
+ * of a named parent agreement.
+ *
+ * Case-SENSITIVE on the form's NAME, which is what keeps an ordinary
+ * "incorporates the terms of the attached schedule" out: a standard form is
+ * named in title case ("IAB Standard Terms", "AIA Document A201", "NAESB Base
+ * Contract"), and the noun that closes it is the give-away.
+ */
+const INCORPORATES_STANDARD_FORM =
+  /\b(?:incorporates|is\s+subject\s+to|are\s+subject\s+to|is\s+governed\s+by)\s+(?:the\s+)?(?:[A-Z][\w&.()-]*\s+){1,6}(?:Standard\s+Terms|Terms\s+and\s+Conditions|General\s+Conditions|Master\s+Terms|Standard\s+Form|Uniform\s+Terms)\b/;
+
+/**
  * The third half of the same shape: an EXHIBIT, schedule, or annex that says
  * it is incorporated into a named parent.
  *
@@ -785,7 +804,8 @@ export function borrowsParentVocabulary(ctx: RuleContext): boolean {
     RATIFIES_PARENT.test(text) ||
     INCORPORATED_INTO_PARENT.test(text) ||
     SIGNED_RIDER_INTO_PARENT.test(text) ||
-    BORROWS_DEFINITIONS_FROM_PARENT.test(text)
+    BORROWS_DEFINITIONS_FROM_PARENT.test(text) ||
+    INCORPORATES_STANDARD_FORM.test(text)
   );
 }
 
@@ -799,7 +819,8 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
     named.some((re) => re.test(text)) ||
     INCORPORATED_INTO_PARENT.test(text) ||
     SIGNED_RIDER_INTO_PARENT.test(text) ||
-    BORROWS_DEFINITIONS_FROM_PARENT.test(text)
+    BORROWS_DEFINITIONS_FROM_PARENT.test(text) ||
+    INCORPORATES_STANDARD_FORM.test(text)
   );
 }
 
