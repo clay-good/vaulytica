@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,818 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `10,000+ passing tests` · `v9.185.0` · `MIT`
+`1,818 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `10,000+ passing tests` · `v9.186.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -1344,6 +1344,7 @@ npm run lint         # eslint
 npm run test         # vitest — 10,000+ tests, ~90s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
+npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
 npm run citation:check   # v8 build-only citation URL well-formedness (+ --reachability for the network sweep)
 npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, compare, compare-coherence, coherence-trend, coherence-shift-trend, coherence-arc, coherence-exposure, coherence-persistence, coherence-breadth, coherence-recurrence, coherence-volatility, coherence-synchrony, coherence-settling, coherence-onset, coherence-latency, coherence-concurrency, coherence-relapse, coherence-tenure, coherence-affinity, coherence-recovery-affinity, coherence-opposition, coherence-precedence, coherence-concession, coherence-recovery-order, coherence-weak-front, coherence-cadence, coherence-duration, coherence-durability, coherence-chain, coherence-recovery-chain, coherence-matrix, verify)

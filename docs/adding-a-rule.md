@@ -184,6 +184,24 @@ Two traps:
   whose whole point is that it does not list them. Match the obligation, not
   the noun.
 
+## 4c. Read the golden churn properly
+
+`VAULYTICA_REGEN_GOLDEN=1` rewrites every golden, so `git diff` shows hundreds
+of files whose only change is `result_hash` and the rule versions. Do not read
+that diff by eye, and do not grep it for non-hash lines: the v3 goldens are
+pretty-printed and the **v4 goldens are a single line of JSON**, so a rule that
+stopped firing on a v4 fixture looks exactly like a version bump.
+
+```bash
+npm run golden:churn
+```
+
+It parses each rewritten golden and prints only the fixtures whose finding-id
+set actually changed, with what came off and what came on. Zero is the usual
+and expected result for a false-positive fix. Anything else you must be able to
+explain in the commit message — and if you cannot, it is a regression, not
+churn.
+
 ## 5. Update playbooks (optional)
 
 If your rule should fire selectively for some contract types, add per-playbook overrides in the relevant JSON under [`playbooks/`](../playbooks/):

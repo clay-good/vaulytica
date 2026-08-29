@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.186.0] — 2026-08-29
+
+### Added
+- **`npm run golden:churn`** (`tools/golden-churn.mjs`) — after a golden
+  regen, prints only the fixtures whose FINDING-ID SET actually changed, and
+  what came off or on.
+
+  A regen rewrites every golden, so `git diff` shows hundreds of files whose
+  only change is `result_hash` and the rule versions. Filtering that by
+  grepping the diff for non-hash lines works on the pretty-printed v3 goldens
+  and is **blind to the v4 ones, which are a single line of JSON** — a rule
+  that stopped firing on a v4 fixture looked exactly like a version bump. That
+  is how 9.185.0's removal of IPL-021 from `ip-licensing-copyright-minimal`
+  first read as zero churn.
+
+### Documentation
+- `docs/adding-a-rule.md` gains "4c. Read the golden churn properly".
+
 ## [9.185.0] — 2026-08-29
 
 ### Added
