@@ -1,0 +1,99 @@
+OEM AGREEMENT
+
+This OEM Agreement (this "Agreement") is made as of June 9, 2026 between Thornfield Sensor Systems, Inc., a Delaware corporation ("Supplier"), and Calder Industrial Automation LLC, a Wisconsin limited liability company ("OEM").
+
+1. APPOINTMENT AND SCOPE
+
+1.1 Appointment. Supplier appoints OEM as a non-exclusive original equipment manufacturer authorized to incorporate the products listed on Exhibit A (the "Components") into OEM's own automation systems (the "OEM Products") and to distribute the OEM Products worldwide through OEM's channels.
+
+1.2 No Standalone Resale. OEM shall not resell any Component on a standalone basis, and shall incorporate each Component into an OEM Product before sale.
+
+1.3 Non-Exclusive. Supplier may sell the Components to any other customer, including a competitor of OEM, and may appoint other OEMs, distributors, and resellers.
+
+2. LICENSE AND BRANDING
+
+2.1 Firmware License. Supplier grants OEM a non-exclusive, non-transferable, worldwide licence to reproduce and distribute the Component firmware in object-code form solely as embedded in OEM Products, and to grant end users a licence on terms no less protective than those in Exhibit B.
+
+2.2 Trademark Licence. Supplier grants OEM a non-exclusive licence to use the marks listed on Exhibit C solely to identify the Components inside OEM Products, in the form and with the notices Supplier specifies. All goodwill from that use inures solely to Supplier.
+
+2.3 Private Label. OEM may label the OEM Products under OEM's own brand and need not identify Supplier, except that OEM shall not remove or obscure any Supplier notice embedded in the firmware or on the Component itself.
+
+2.4 Reservation. Supplier reserves all rights not expressly granted. No licence is granted under any patent of Supplier except as necessary to use and resell the Components as embedded in OEM Products, and OEM acquires no ownership interest in the Components or the firmware.
+
+3. FORECASTS, ORDERS, AND SUPPLY
+
+3.1 Forecast. OEM shall provide a rolling six (6) month forecast each month. The first sixty (60) days are binding.
+
+3.2 Purchase Orders. OEM shall order by purchase order. Supplier shall accept or reject within three (3) business days, and may reject only an order inconsistent with the binding forecast. The pre-printed terms of any purchase order or acknowledgment are of no effect.
+
+3.3 Allocation. If Supplier cannot meet total demand, it shall allocate available Components among its customers on a fair and equitable basis measured by each customer's purchases over the preceding twelve (12) months, and shall not deprioritize OEM relative to Supplier's own product lines.
+
+3.4 Last-Time Buy. Supplier shall give OEM at least twelve (12) months' written notice before discontinuing a Component, shall accept last-time-buy orders for up to eighteen (18) months of OEM's forecast volume, and shall, at OEM's request, qualify a functionally equivalent replacement at Supplier's cost.
+
+4. PRICE AND PAYMENT
+
+4.1 Price. Prices are set out on Exhibit D and are firm for twenty-four (24) months. Thereafter Supplier may adjust prices once per year on one hundred twenty (120) days' notice.
+
+4.2 Most Favored Terms. If Supplier offers a comparable OEM more favourable pricing for comparable annual volumes, Supplier shall offer OEM the same pricing prospectively.
+
+4.3 Payment. Supplier shall invoice on shipment. OEM shall pay each undisputed invoice within forty-five (45) days after receipt.
+
+5. QUALITY, WARRANTY, AND SUPPORT
+
+5.1 Specifications. Supplier shall manufacture the Components to the specifications on Exhibit E, and shall not change form, fit, function, or the manufacturing site without OEM's prior written approval and one hundred eighty (180) days' notice.
+
+5.2 Warranty. Supplier warrants each Component against defects in material and workmanship for thirty-six (36) months from delivery, and warrants that each conforms to the specifications and is free of any lien. Supplier shall, at OEM's election, repair, replace, or refund the price of a non-conforming Component, and shall bear the cost of return.
+
+5.3 Epidemic Failure. If a single root cause affects more than two percent (2%) of the Components delivered in any rolling six-month period, Supplier shall reimburse OEM's reasonable costs of investigation, retrieval, rework, and field replacement, including reasonable labour, and shall deliver a corrective action plan OEM approves.
+
+5.4 Support. Supplier shall provide engineering support to OEM's technical staff during business hours and shall respond to a critical issue within four (4) hours. Supplier shall not provide support directly to OEM's end users, who remain OEM's customers.
+
+6. INTELLECTUAL PROPERTY AND INDEMNITY
+
+6.1 Ownership. Supplier retains all right, title, and interest in and to the Components, the firmware, and its Background IP. OEM retains all right, title, and interest in and to the OEM Products and its own designs.
+
+6.2 IP Indemnity. Supplier shall indemnify, defend, and hold harmless OEM against any claim that a Component or its firmware infringes a third party's patent, copyright, trademark, or trade secret. If a Component becomes subject to such a claim, Supplier shall, at its cost, procure the right to continue using it, modify it to be non-infringing without loss of function, or accept its return and refund the price paid, in that order of preference.
+
+6.3 Exclusions. Supplier has no obligation under Section 6.2 for a claim arising from OEM's modification of a Component, from OEM's combination of a Component with anything Supplier did not supply where the claim would not arise from the Component alone, or from OEM's continued use after Supplier provides a non-infringing replacement.
+
+6.4 Procedure. OEM shall give prompt written notice, Supplier shall control the defense, and Supplier shall not settle a claim imposing a non-monetary obligation on OEM without OEM's consent.
+
+7. LIMITATION OF LIABILITY
+
+7.1 Cap. Except for Supplier's obligations under Sections 5.3 and 6.2, breach of Section 8, and either party's gross negligence or willful misconduct, neither party's aggregate liability under this Agreement shall exceed the amounts paid by OEM in the twelve (12) months preceding the claim, and neither party is liable for indirect, incidental, special, consequential, or punitive damages.
+
+8. CONFIDENTIALITY
+
+8.1 Obligations. Each party shall keep the other's Confidential Information confidential, use it only under this Agreement, and disclose it only to personnel and advisers bound to protect it. These obligations continue for five (5) years after termination, and indefinitely for source code and trade secrets.
+
+9. TERM AND TERMINATION
+
+9.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, renewing for successive one-year terms unless either party gives one hundred eighty (180) days' notice of non-renewal.
+
+9.2 Termination for Cause. Either party may terminate on written notice if the other materially breaches and fails to cure within forty-five (45) days, or immediately if the other becomes insolvent.
+
+9.3 Effect of Termination. On expiration or termination, OEM may continue to sell OEM Products containing Components already purchased, and the licences in Section 2 continue for that purpose and for the support of OEM Products already sold. Supplier shall fulfil accepted purchase orders. Sections 2.4, 5.2, 6, 7, 8, 9.3 and 10 survive.
+
+10. GENERAL
+
+10.1 Governing Law; Venue. This Agreement is governed by the laws of the State of Delaware. Any action arising out of this Agreement shall be brought in the state or federal courts located in New Castle County, Delaware.
+
+10.2 Assignment. Neither party may assign this Agreement without the other's written consent, except to a successor to substantially all of its business.
+
+10.3 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses stated beneath the signatures.
+
+10.4 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+THORNFIELD SENSOR SYSTEMS, INC.
+
+By: /s/ Yusuf Adebayo-Klein
+Name: Yusuf Adebayo-Klein
+Title: Vice President, Sales
+
+CALDER INDUSTRIAL AUTOMATION LLC
+
+By: /s/ Margit Halvorsen
+Name: Margit Halvorsen
+Title: Chief Operating Officer

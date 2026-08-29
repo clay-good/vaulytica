@@ -12070,6 +12070,7 @@
     "match_features": {
       "title_keywords": [
         "oem agreement",
+        "oem",
         "white label agreement",
         "white-label",
         "original equipment manufacturer agreement",
@@ -12077,12 +12078,13 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "embedded in the oem product",
-        "rebrand",
-        "under the oem's brand",
+        "oem products",
+        "original equipment manufacturer",
+        "last-time buy",
+        "private label",
+        "epidemic failure",
         "end user license",
-        "minimum purchase commitment",
-        "support tiers"
+        "minimum purchase commitment"
       ],
       "negative_features": [
         "employment",

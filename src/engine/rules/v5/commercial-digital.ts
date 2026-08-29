@@ -527,14 +527,18 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
 const OEM = pack("oem-agreement", C, [
   {
     id: "COMM-237",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Embedded license scope and branding rights",
     cite: practice("oem-license", "embedded license scoping in OEM agreements"),
     pat: [
       /(embed|incorporate\s+(the\s+)?(licensed\s+)?(technology|software)\s+(in|into))/i,
       // The branding right is granted plainly: "OEM may brand the OEM Products
       // with its own marks". None of the three forms below appears in that.
-      /(rebrand|white[- ]?label|under\s+the\s+oem['’]?s?\s+(brand|name)|remove\s+(the\s+)?(supplier['’]?s?\s+)?marks|brand[^.;]{0,50}?\bwith\s+its\s+own\s+(?:marks|name|brand)|(?:its|their)\s+own\s+(?:brand|marks|name|label))/i,
+      // "OEM may label the OEM Products under OEM'S OWN BRAND" — no "the"
+      // before the party name, and "own" between the possessive and the
+      // noun. Both forms of the possessive (a pronoun or a named party) now
+      // take the optional "own".
+      /(rebrand|white[- ]?label|under\s+(?:the\s+)?[A-Za-z]+['’]?s?\s+(?:own\s+)?(brand|name|label)|remove\s+(the\s+)?(supplier['’]?s?\s+)?marks|brand[^.;]{0,50}?\bwith\s+its\s+own\s+(?:marks|name|brand)|(?:its|their|[A-Za-z]+['’]s)\s+own\s+(?:brand|marks|name|label))/i,
     ],
     all: true,
     why: "An OEM license is a license to make the supplier's product disappear into someone else's. Whether the OEM may remove marks, and whether the supplier may be identified at all, is the core of the deal.",

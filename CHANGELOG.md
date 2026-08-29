@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.204.0] — 2026-08-29
+
+### Added
+- An OEM agreement — the 164th specimen. An OEM incorporates the components;
+  it does not resell them.
+
+### Fixed
+- **An OEM agreement routed to `distribution-agreement`** and drew five
+  `critical` findings from the distribution pack — three of them on clauses
+  the document carries under those very headings ("Appointment", the
+  trademark licence, the post-termination sell-off). The OEM family's own
+  distinguishing phrases were **verbatim sentences nobody writes** ("embedded
+  in the oem product", "under the oem's brand", "support tiers"), so it
+  matched none of them and had a single title keyword to stand on. It now
+  carries the register a real one uses — OEM Products, last-time buy, private
+  label, epidemic failure — and "oem" as a second title keyword.
+- **COMM-237 wanted "under THE oem's brand"** where the document says "under
+  OEM's OWN brand" — no article before the party name, and "own" between the
+  possessive and the noun.
+
 ## [9.203.0] — 2026-08-29
 
 ### Added

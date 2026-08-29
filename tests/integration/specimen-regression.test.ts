@@ -40,6 +40,21 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An OEM agreement — the OEM incorporates the components, it does not
+  // resell them. It routed to `distribution-agreement` at 0.6 and drew five
+  // criticals from the distribution pack, three of them on clauses the
+  // document carries under those very headings ("Appointment", the trademark
+  // licence, the post-termination sell-off). The OEM family's own
+  // distinguishing phrases were verbatim sentences nobody writes ("embedded
+  // in the oem product", "under the oem's brand", "support tiers"), so it
+  // matched none of them and had a single title keyword to stand on. Once
+  // routed, COMM-237 wanted "under THE oem's brand" where the document says
+  // "under OEM's OWN brand". COMM-239 stays and is real: the agreement states
+  // a response time but no support tiering.
+  "oem-agreement.txt": {
+    playbook: "oem-agreement",
+    findings: ["COMM-239", "STRUCT-018", "OBLI-002", "OBLI-005", "RISK-007"],
+  },
   // A cross-border joint development agreement. It routed to
   // `consulting-agreement` at 1.0, then to `mutual-nda`: the JDA family's own
   // distinguishing phrases were the SPELLED-OUT forms ("background
