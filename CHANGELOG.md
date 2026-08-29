@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.205.0] — 2026-08-29
+
+### Added
+- An FTC-compliant influencer endorsement agreement — the 165th specimen.
+
+### Fixed
+- **An endorsement agreement written to 16 C.F.R. Part 255 routed to
+  `independent-contractor`**, so the whole endorsement pack never ran. The
+  contractor family reaches 1.4 on three required clauses (0.8) plus
+  "independent contractor", "not an employee" and "1099" — words an influencer
+  agreement carries as a matter of course. Fixed on both sides: "influencer"
+  and "endorsement" are title keywords of the family whose documents carry
+  them, and the endorsement markers ("sponsored content", "material
+  connection", "#ad") are negatives of the contractor family, which never
+  carries them.
+
 ## [9.204.0] — 2026-08-29
 
 ### Added

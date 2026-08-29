@@ -40,6 +40,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An FTC-compliant influencer endorsement agreement. It routed to
+  // `independent-contractor` at 1.0 — three required clauses at 0.8 plus
+  // "independent contractor", "not an employee" and "1099" — so the whole
+  // endorsement pack never ran on a document written to 16 C.F.R. Part 255.
+  // Fixed on both sides: "influencer" and "endorsement" as title keywords for
+  // the family whose documents carry them, and the endorsement markers as
+  // negatives of the contractor family, which never carries them. COMM-183
+  // stays and is real: the agreement requires disclosure but does not commit
+  // the brand to train and monitor.
+  "influencer-agreement.txt": {
+    playbook: "influencer-agreement",
+    findings: ["COMM-183", "RISK-015", "STRUCT-018", "OBLI-005", "RISK-007"],
+  },
   // An OEM agreement — the OEM incorporates the components, it does not
   // resell them. It routed to `distribution-agreement` at 0.6 and drew five
   // criticals from the distribution pack, three of them on clauses the
