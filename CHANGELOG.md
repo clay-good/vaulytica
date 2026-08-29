@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.158.0] — 2026-08-29
+
+### Changed
+- **The pillar-vacuity debt list is empty.** Every conjunction in the catalog
+  whose pillar its family's own title satisfies now carries the clause a
+  compliant document writes, and the assertion that the rule is silent on it —
+  thirty-three rows in all. A new collapsed conjunction fails the guard unless
+  it is proved the same way.
+
+### Fixed
+- Two of the last seventeen were not merely collapsed but unsatisfiable:
+  - `COMM-237` wanted "rebrand" or "under the OEM's brand" from a clause that
+    grants the right plainly: "OEM may brand the OEM Products with its own
+    marks."
+  - `PRV-102` wanted the phrase "specific purpose" from a BIPA form that states
+    the purpose the way § 15(b)(1) asks for it: "We collect and use the template
+    for one purpose: to identify you when you clock in and out."
+
 ## [9.157.0] — 2026-08-29
 
 ### Changed

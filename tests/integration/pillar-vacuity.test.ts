@@ -42,30 +42,15 @@ const CATALOG = JSON.parse(
 const PROVED = new Set(COMPLIANT.map(([id]) => id));
 
 /**
- * Collapsed and NOT yet proved. Debt: take an entry off either by proving the
- * rule silent on a compliant clause (add a row to `COMPLIANT`) or by replacing
- * the vacuous pillar with a form the title cannot satisfy. May only shrink.
+ * Collapsed and NOT yet proved — now EMPTY. Every conjunction whose pillar its
+ * family's own title satisfies has been proved against a hand-written
+ * compliant clause, or had that pillar replaced.
+ *
+ * The set stays, empty, because the two assertions below are what hold it
+ * there: a NEW collapsed conjunction fails unless it is proved, and an entry
+ * that becomes proved or repaired has to come off.
  */
-const KNOWN_COLLAPSED = new Set<string>([
-  "BNK-127",
-  "COMM-237",
-  "DISC-024",
-  "EMP-110",
-  "EMP-121",
-  "ENG-006",
-  "ENG-008",
-  "ENG-016",
-  "ENG-018",
-  "ENG-021",
-  "ENG-024",
-  "ENG-028",
-  "ENG-029",
-
-  "EST-426",
-  "GOV-101",
-  "PRV-102",
-  "PRV-113",
-]);
+const KNOWN_COLLAPSED = new Set<string>([]);
 
 const files: string[] = [];
 const walk = (dir: string): void => {

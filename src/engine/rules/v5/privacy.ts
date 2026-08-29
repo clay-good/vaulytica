@@ -39,6 +39,7 @@ const BIOMETRIC = pack("biometric-consent", C, [
   },
   {
     id: "PRV-102",
+    ver: "1.1.0",
     name: "Specific purpose stated",
     cite: stateLaw(
       "biometric-purpose",
@@ -46,7 +47,10 @@ const BIOMETRIC = pack("biometric-consent", C, [
       "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004",
     ),
     pat: [
-      /(specific\s+purpose|purpose\s+(for\s+which|of\s+(the\s+)?collection))/i,
+      // BIPA § 15(b)(1) asks for the specific purpose, and a compliant form
+      // states it plainly: "We collect and use the template for one purpose:
+      // to identify you when you clock in and out."
+      /(specific\s+purpose|purpose\s+(for\s+which|of\s+(the\s+)?collection)|for\s+(?:one|a\s+single|the\s+sole|the\s+following)\s+purposes?|purposes?\s+(?:is|are)\s+to)/i,
       /(biometric|fingerprint|facial|voiceprint|retina|iris|scan\s+of\s+hand)/i,
     ],
     all: true,
