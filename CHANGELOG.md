@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.199.0] — 2026-08-29
+
+### Added
+- An NVCA-style right of first refusal and co-sale agreement — the 160th
+  specimen.
+
+### Fixed
+Four of its own checks fired on the drafting they exist to require, three at
+`critical`:
+- **EQT-064 and EQT-065 wanted the defined phrase adjacent to the party in ONE
+  order**, and the operative clauses never repeat it: the section is headed
+  "RIGHT OF FIRST REFUSAL" and the clauses read "The COMPANY MAY ELECT TO
+  PURCHASE …" and "Each INVESTOR MAY THEN ELECT TO PURCHASE …". Either order,
+  and the operative forms, are now read.
+- **EQT-066 required BOTH "co-sale" and "tag-along"** — the same right under
+  two names, the US venture form saying the first and the European form the
+  second — so no compliant document could satisfy it. The conjunction was also
+  doing a second job by accident: the bare word "co-sale" sits in this family's
+  own TITLE, so an OR of the two bare spellings would be satisfied by the title
+  alone. The repair REPLACES the vacuous spelling rather than simply OR-ing it.
+- **EQT-069 wanted the word "terminate" beside the offering**, where the term
+  clause reads "continues until … a firm-commitment underwritten public
+  offering". Same repair as GOV-041 in 9.174.0.
+- **`rofr-co-sale` shipped with an empty rule profile.**
+
 ## [9.198.0] — 2026-08-29
 
 ### Added

@@ -40,6 +40,20 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An NVCA-style right of first refusal and co-sale agreement. FOUR of its
+  // own checks fired on the drafting they exist to require, three at
+  // `critical`: EQT-064 and EQT-065 wanted the defined phrase adjacent to the
+  // party in ONE order, and the operative clauses never repeat it ("The
+  // COMPANY MAY ELECT TO PURCHASE …", "Each INVESTOR MAY THEN ELECT TO
+  // PURCHASE …"); EQT-066 required BOTH "co-sale" and "tag-along", which are
+  // the same right under two names, so no compliant document could satisfy
+  // it; and EQT-069 wanted the word "terminate" beside the offering, where
+  // the term clause reads "continues until … a firm-commitment underwritten
+  // public offering".
+  "rofr-co-sale.txt": {
+    playbook: "rofr-co-sale",
+    findings: ["STRUCT-006", "STRUCT-018", "OBLI-005"],
+  },
   // A staffing services agreement. Clean: routes at 0.9 and every finding is
   // real — the indemnities are 2:1, the confidentiality obligation runs one
   // way, and the agreement defines "Assigned Personnel" but uses the

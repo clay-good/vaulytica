@@ -1,0 +1,70 @@
+RIGHT OF FIRST REFUSAL AND CO-SALE AGREEMENT
+
+THIS RIGHT OF FIRST REFUSAL AND CO-SALE AGREEMENT (this "Agreement") is made as of July 14, 2026, by and among Kestrel Bioworks, Inc., a Delaware corporation (the "Company"), the investors listed on Schedule A (each an "Investor"), and the holders of Common Stock listed on Schedule B (each a "Key Holder").
+
+1. RIGHT OF FIRST REFUSAL
+
+1.1 Notice. A Key Holder proposing to transfer any shares of Capital Stock (a "Proposed Transfer") shall deliver a written notice (the "Transfer Notice") to the Company and each Investor stating the number of shares, the proposed price and payment terms, the identity of the proposed transferee, and a representation that the Key Holder has received a bona fide offer and believes in good faith that the transfer will close.
+
+1.2 Company Right. The Company may elect to purchase all or any portion of the shares described in the Transfer Notice by written notice delivered within fifteen (15) days after the Transfer Notice, on the terms stated in the Transfer Notice.
+
+1.3 Investor Right. The Company shall notify the Investors of any shares it does not elect to purchase within five (5) days after its election period ends. Each Investor may then elect to purchase its pro rata share of the remaining shares, and may oversubscribe for any shares other Investors do not take, by written notice delivered within fifteen (15) days after the Company's notice.
+
+1.4 Consideration. If the Proposed Transfer is for consideration other than cash, the purchase price is the cash equivalent as the Company's board determines in good faith, and any purchaser may pay that cash equivalent.
+
+1.5 Closing. Any purchase under this Section 1 shall close within forty-five (45) days after the Transfer Notice, against delivery of the certificates or transfer instructions and the customary representations of title.
+
+2. RIGHT OF CO-SALE
+
+2.1 Co-Sale Right. To the extent the Company and the Investors do not exercise their rights of first refusal as to all of the shares in a Transfer Notice, each Investor may elect to participate in the Proposed Transfer, on the same terms, by selling up to its pro rata portion of the total shares to be sold.
+
+2.2 Effect on the Key Holder. The Key Holder shall reduce the number of shares it sells so that each participating Investor may sell its full co-sale allocation. If the proposed transferee refuses to purchase from a participating Investor, the Key Holder shall not sell to that transferee unless the Key Holder purchases the participating Investor's shares on the same terms.
+
+2.3 Exercise Period. An Investor shall exercise its co-sale right by written notice delivered within fifteen (15) days after the Company's notice under Section 1.3.
+
+3. EXEMPT TRANSFERS
+
+3.1 Exempt Transfers. Sections 1 and 2 do not apply to a transfer by a Key Holder to a trust for the benefit of the Key Holder or an immediate family member, by will or intestacy, to an affiliate of an Investor, or of up to 50,000 shares in the aggregate over the term of this Agreement, in each case if the transferee agrees in writing to be bound by this Agreement.
+
+3.2 Prohibited Transferees. Notwithstanding Section 3.1, no Key Holder may transfer shares to a competitor of the Company identified on Schedule C without the written consent of the Company and the holders of a majority of the Preferred Stock.
+
+4. VOID TRANSFERS AND LEGENDS
+
+4.1 Void Transfers. Any transfer of Capital Stock not made in compliance with this Agreement is void, and the Company shall not record it on its books or treat the purported transferee as the owner of the shares.
+
+4.2 Legend. Each certificate representing shares subject to this Agreement shall bear a legend stating that the shares are subject to a right of first refusal and co-sale agreement, a copy of which is on file at the Company's principal office, as Section 202 of the Delaware General Corporation Law permits.
+
+5. TERM AND TERMINATION
+
+5.1 Term. This Agreement takes effect on the date first written above and continues until the earliest of the closing of a firm-commitment underwritten public offering of the Company's Common Stock, the closing of a Deemed Liquidation Event, and the written agreement of the Company, the holders of a majority of the Preferred Stock, and the holders of a majority of the Common Stock held by the Key Holders.
+
+6. MISCELLANEOUS
+
+6.1 Amendment and Waiver. This Agreement may be amended or waived only with the written consent of the Company, the holders of a majority of the Preferred Stock, and the holders of a majority of the Common Stock held by the Key Holders, provided that an amendment that adversely affects one holder in a manner different from the others requires that holder's consent.
+
+6.2 Specific Performance. The parties agree that monetary damages would be inadequate for a breach of this Agreement and that each party is entitled to specific performance and injunctive relief without the requirement of posting a bond.
+
+6.3 Governing Law; Venue. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles. Each party irrevocably submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware.
+
+6.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses on Schedule A or Schedule B.
+
+6.5 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+KESTREL BIOWORKS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+KEY HOLDER:
+
+/s/ Priya Raghunathan
+Priya Raghunathan
+
+MERIDIAN GROWTH PARTNERS III, L.P.
+
+By: /s/ Tomas Beaulieu
+Name: Tomas Beaulieu
+Title: Managing Partner

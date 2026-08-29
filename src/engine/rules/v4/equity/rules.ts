@@ -1343,6 +1343,7 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
 const ROFR_RULES: Rule[] = [
   presence({
     id: "EQT-064",
+    version: "1.1.0",
     name: "ROFR — company right",
     description: "Company should have a primary right of first refusal on third-party transfers.",
     citation: dgcl("202"),
@@ -1352,10 +1353,21 @@ const ROFR_RULES: Rule[] = [
     explanation: "Standard tier: company has the first right; investors have the secondary right.",
     recommendation:
       "Add 'Company Right of First Refusal' as the primary tier on transfers by founders / common holders.",
-    present_patterns: [/(company|corporation).{0,40}right\s+of\s+first\s+refusal/is],
+    present_patterns: [
+      // Either ORDER — the legend reads "subject to a right of first refusal
+      // ... on file at the COMPANY's principal office" — and the OPERATIVE
+      // form, which never repeats the defined phrase: the section is headed
+      // "RIGHT OF FIRST REFUSAL" and the clause reads "The COMPANY MAY ELECT
+      // TO PURCHASE all or any portion of the shares described in the Transfer
+      // Notice".
+      /(company|corporation)[^.]{0,60}right\s+of\s+first\s+refusal/is,
+      /right\s+of\s+first\s+refusal[^.]{0,80}(company|corporation)/is,
+      /\b(?:the\s+)?Company\s+may\s+elect\s+to\s+purchase\b/i,
+    ],
   }),
   presence({
     id: "EQT-065",
+    version: "1.1.0",
     name: "ROFR — investor secondary right",
     description: "Investors get a secondary ROFR to the extent the company does not exercise.",
     citation: nvca("rofr-investor", "ROFR / Co-Sale — Investor Tier"),
@@ -1366,12 +1378,18 @@ const ROFR_RULES: Rule[] = [
       "If the company does not exercise its primary ROFR, investors typically have a pro rata secondary right.",
     recommendation: "Add 'Investor Right of First Refusal' as a pro rata secondary tier.",
     present_patterns: [
-      /(investor|stockholder).{0,40}right\s+of\s+first\s+refusal/is,
+      /(investor|stockholder)[^.]{0,60}right\s+of\s+first\s+refusal/is,
+      /right\s+of\s+first\s+refusal[^.]{0,80}(investor|stockholder)/is,
       /secondary\s+(right|tier)/i,
+      // The operative form: "Each INVESTOR MAY THEN ELECT TO PURCHASE its pro
+      // rata share of the remaining shares, and may OVERSUBSCRIBE for any
+      // shares other Investors do not take."
+      /\bEach\s+Investor\s+may\s+(?:then\s+)?elect\s+to\s+purchase\b|\boversubscrib\w+/i,
     ],
   }),
   presence({
     id: "EQT-066",
+    version: "1.1.0",
     name: "Co-sale right",
     description:
       "Investors should have a co-sale right to participate pro rata in transfers above thresholds.",
@@ -1382,8 +1400,23 @@ const ROFR_RULES: Rule[] = [
     explanation: "Standard NVCA pattern: investors participate pro rata when founders sell.",
     recommendation:
       "Add 'Co-Sale Right' allowing investors to participate pro rata when transferring stockholder elects to sell.",
-    present_patterns: [/co.sale/i, /tag.along/i],
-    require_all_present: true,
+    // "Co-sale" and "tag-along" are the SAME RIGHT under two names — the US
+    // venture form says the first, the European form the second — so requiring
+    // BOTH made this a rule no compliant document could satisfy, at
+    // `critical`, on an agreement whose Section 2 is headed "RIGHT OF
+    // CO-SALE".
+    //
+    // The conjunction was also doing a second job by accident: the bare word
+    // "co-sale" sits in this family's own TITLE, so an OR of the two bare
+    // spellings would be satisfied by the title alone. The repair REPLACES the
+    // vacuous spelling rather than simply OR-ing it — each alternative is a
+    // phrase the operative clause carries and the title does not.
+    present_patterns: [
+      /right\s+of\s+co.sale|co.sale\s+right/i,
+      /tag.along/i,
+      /participate\s+in\s+the\s+(?:proposed\s+)?transfer/i,
+      /pro\s+rata\s+portion\s+of\s+the\s+total\s+shares/i,
+    ],
   }),
   presence({
     id: "EQT-067",
@@ -1420,6 +1453,7 @@ const ROFR_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-069",
+    version: "1.1.0",
     name: "Termination upon IPO",
     description: "ROFR / co-sale should terminate on IPO.",
     citation: nvca("rofr-termination", "ROFR / Co-Sale — Termination"),
@@ -1430,7 +1464,12 @@ const ROFR_RULES: Rule[] = [
       "Without termination, transfer restrictions survive into the public-company period when they would be inoperable / unenforceable.",
     recommendation:
       "Add 'Termination' ending the agreement on the earlier of an IPO or a qualifying sale.",
-    present_patterns: [/termin(ate|ation).{0,80}(ipo|initial\s+public\s+offering)/is],
+    present_patterns: [
+      // A term clause ends the agreement without ever using the word:
+      // "continues until the earliest of the closing of a FIRM-COMMITMENT
+      // UNDERWRITTEN PUBLIC OFFERING". Same repair as GOV-041.
+      /(?:termin(?:ate|ation)|continues?\s+until|remains?\s+in\s+(?:full\s+force|effect)\s+until|expires?\s+(?:on|upon)|ends?\s+(?:on|upon))[\s\S]{0,140}?(?:\bipo\b|(?:(?:initial|qualified|firm[-\s]commitment|underwritten|registered)\s+)*public\s+offering)/is,
+    ],
     default_severity: "warning",
   }),
   presence({
