@@ -4,9 +4,10 @@
   "name": "SaaS Agreement (Vendor Side)",
   "description": "Vendor reviewing a SaaS subscription agreement. Watches for customer-favorable risk shifts, uncapped indemnity, and gold-plated SLAs. Based on Common Paper Cloud Service Agreement.",
   "match_features": {
-    "title_keywords": ["cloud service agreement", "saas agreement", "master service agreement", "msa for software"],
+    "title_keywords": ["cloud service agreement", "saas agreement",
+      "subscription agreement", "master service agreement", "msa for software"],
     "required_clauses": ["limitation-of-liability", "indemnification"],
-    "distinguishing_phrases": ["the Service", "Subscription Term", "Customer Data", "Vendor", "Provider", "uptime"],
+    "distinguishing_phrases": ["hosted service", "Subscription Term", "Customer Data", "service level", "subscription fees", "uptime"],
     "negative_features": ["independent contractor", "lease", "Premises", "Tenant", "Employee", "the Discloser"]
   },
   "expected_clauses": [

@@ -1,0 +1,96 @@
+/**
+ * A specimen must BEAT its runner-up, not tie it.
+ *
+ * `specimen-regression.test.ts` asserts the family a document routes to and
+ * that it matched at 0.6 or better. Neither says anything about the gap to the
+ * next family, and a tie is decided by a lexicographic comparison of the two
+ * ids — which is arbitrary, and which is how two real documents went wrong:
+ *
+ *   - A voting agreement tied `stockholders-agreement` at 0.5, lost the
+ *     tiebreak, and was told at `critical` that it had no voting-agreement
+ *     clause.
+ *   - A Rule 26(f) joint report tied `complaint` at 0.6 and was told it
+ *     demanded no relief and no jury trial.
+ *
+ * A tie means the catalog cannot tell the two apart on this document. That is
+ * a defect in the catalog whichever way the tiebreak falls, so it is asserted
+ * here rather than left to luck.
+ */
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import { ingestPaste } from "../../src/ingest/paste.js";
+import { extractAll } from "../../src/extract/index.js";
+import { matchPlaybook, titleCorpus } from "../../src/playbooks/matcher.js";
+import { parsePlaybook, parsePlaybooks } from "../../src/playbooks/loader.js";
+import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
+
+const SPECIMENS = join(process.cwd(), "tests", "fixtures", "specimens");
+const PLAYBOOK_DIR = join(process.cwd(), "playbooks");
+const launch = readdirSync(PLAYBOOK_DIR)
+  .filter((f) => f.endsWith(".json") && f !== "extended.json")
+  .map((f) => parsePlaybook(JSON.parse(readFileSync(join(PLAYBOOK_DIR, f), "utf8"))));
+const extended = parsePlaybooks(
+  JSON.parse(readFileSync(join(PLAYBOOK_DIR, "extended.json"), "utf8")),
+);
+const ALL = [...launch, ...extended];
+const dkb = loadStarterDkbSync();
+
+/**
+ * Ties that are a real choice rather than a defect: the same document seen
+ * from two sides, or under two regimes. Which one you want is your choice —
+ * `--role`, `--playbook` — not the document's, and the catalog is right to
+ * score them equally. Each needs its reason.
+ */
+const DECLARED_TIES = new Map<string, string>([
+  [
+    "order-form.txt:saas-vendor",
+    "the customer and vendor packs read the same order form from two sides",
+  ],
+  ["saas-tos.txt:saas-vendor", "the same two sides, on a set of published terms"],
+  [
+    "privacy-notice.txt:privacy-policy-lint",
+    "the lint pack is a second lens on the same notice, not a rival family",
+  ],
+  [
+    "loan-agreement.txt:revolving-credit-agreement",
+    "a credit agreement can be a term loan or a revolver; this one is both-shaped and the document does not say which pack you want",
+  ],
+]);
+
+const NAMES = readdirSync(SPECIMENS)
+  .filter((f) => f.endsWith(".txt"))
+  .sort();
+
+describe("a specimen beats its runner-up", () => {
+  it.each(NAMES)(
+    "%s",
+    async (name) => {
+      const text = readFileSync(join(SPECIMENS, name), "utf8");
+      const tree = (await ingestPaste(text)).tree;
+      const extracted = extractAll(tree, {
+        classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+      });
+      const match = matchPlaybook(extracted, extracted.classified, ALL, {
+        title: titleCorpus(tree, name),
+        body_text: text,
+      });
+      // A generic-fallback document has nothing to beat.
+      if (match.playbook_id === "generic-fallback") return;
+      const runnerUp = match.alternatives?.[0];
+      if (!runnerUp) return;
+      if (DECLARED_TIES.has(`${name}:${runnerUp.playbook_id}`)) {
+        expect(
+          runnerUp.confidence,
+          `${name}: ${runnerUp.playbook_id} is declared a TIE, so it must still be one`,
+        ).toBe(match.confidence);
+        return;
+      }
+      expect(
+        runnerUp.confidence,
+        `${name} routes to ${match.playbook_id} at ${match.confidence}, tied by ${runnerUp.playbook_id} at ${runnerUp.confidence} — the tiebreak is a lexicographic id comparison, so which one wins is luck`,
+      ).toBeLessThan(match.confidence);
+    },
+    120_000,
+  );
+});

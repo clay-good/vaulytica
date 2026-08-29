@@ -48,6 +48,11 @@ const AMBIGUOUS = new Map<string, string>([
   ],
   ["unilateral-nda-deep:unilateral-nda", "the same deep-and-launch pair, for the one-way NDA"],
   [
+    "saas-customer:subscription-agreement",
+    '"Subscription Agreement" is the commonest title a SaaS agreement carries AND the name of the securities subscription agreement; the phrases decide which',
+  ],
+  ["saas-vendor:subscription-agreement", "the same ambiguity, from the vendor side"],
+  [
     "family-msa:separation-agreement",
     "in family law a 'Separation Agreement' IS the marital settlement agreement; in employment law it is the release",
   ],

@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.163.0] — 2026-08-29
+
+### Added
+- **`specimen-routing-margin.test.ts`** — a specimen must BEAT its runner-up,
+  not tie it. The existing regression test asserts the family and a 0.6 floor,
+  and says nothing about the gap to the next family; a tie is decided by a
+  lexicographic comparison of the two ids, which is arbitrary. That is how the
+  voting agreement and the Rule 26(f) report both went wrong. Four ties are
+  declared as real choices rather than defects — the two SaaS perspectives, the
+  privacy-lint lens, and a credit agreement that is both a term loan and a
+  revolver shaped.
+
+### Fixed
+- **A factoring agreement tied the SaaS packs at 0.9.** Three of
+  `saas-customer`'s six distinguishing phrases were "the Service", "the
+  Software", and "Subscription Term", and `saas-vendor` also carried "Vendor"
+  and "Provider" — words in every services contract written. A factoring
+  agreement was one lexicographic accident from being audited as a SaaS
+  subscription.
+- **"Subscription Agreement" is genuinely two documents** — the commonest title
+  a SaaS agreement carries, and the name of the securities subscription
+  agreement. Both SaaS packs claim it again, declared as an ambiguity the
+  phrases decide.
+
 ## [9.162.0] — 2026-08-29
 
 ### Added
