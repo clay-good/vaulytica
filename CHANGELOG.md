@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.173.0] — 2026-08-29
+
+### Fixed
+- **An E-SIGNED contract reported "No signature block detected" at
+  `critical`.** Thirteen ways a document can be executed were written out and
+  run against STRUCT-003; the platform e-signature was the one it could not
+  read. A contract signed through DocuSign, Adobe Sign, or Dropbox Sign
+  carries the platform's stamp and a typed name beside a timestamp — "By: Dana
+  Reyes (Aug 4, 2026 14:02 EDT)" — with no "Name:"/"Title:" grid beneath it.
+  That is ONE weak token against a two-token floor, so the executed copy of an
+  enormous share of modern contracts was accused of not being signed. The
+  stamp is never ordinary prose, so it is self-sufficient, like a conformed
+  "/s/".
+
 ## [9.172.0] — 2026-08-29
 
 ### Added

@@ -46,6 +46,16 @@ const ATTESTATION =
 // and old-form guaranties, bonds, and powers of attorney are set in capitals
 // throughout.
 const CONFORMED_SIG = /(?:^|[^\w/])\s*\/s\/\s+\S/im;
+// An E-SIGNATURE PLATFORM ARTIFACT is an executed signature. A contract signed
+// through DocuSign, Adobe Sign, or Dropbox Sign carries the platform's stamp
+// on every page of the executed copy, and the signature itself is a typed name
+// beside a timestamp — "By: Dana Reyes (Aug 4, 2026 14:02 EDT)" — with no
+// "Name:"/"Title:" grid beneath it. That is ONE weak token against a
+// two-token floor, so the executed copy of an enormous share of modern
+// contracts reported "No signature block detected" at `critical`. The stamp is
+// never ordinary prose, so it is self-sufficient, like a conformed "/s/".
+const ESIGN_ARTIFACT =
+  /\bDocuSign\s+Envelope\s+ID\b|\bAdobe\s+(?:Acrobat\s+)?Sign\b|\bDropbox\s+Sign\b|\bHelloSign\b|\bPandaDoc\b|\bSignNow\b|\bElectronically\s+signed\s+by\b|\be-?signed\s+by\b|\bSigned\s+by:\s*\S/i;
 // A signature line that names its signatory by office rather than by a
 // "By:/Name:/Title:" grid — "____________ Jordan Ellis, Director". Board /
 // member / partner consents, resolutions, and certificates sign this way: an
@@ -252,7 +262,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.27.0",
+  version: "1.28.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -324,6 +334,7 @@ export const rule: Rule = {
         // that single line alone — so it is self-sufficient (+2), like the
         // bare-name / office-signature lines, not a weak token needing a second.
         if (CONFORMED_SIG.test(text)) signals += 2;
+        if (ESIGN_ARTIFACT.test(text)) signals += 2;
         // An office-signature line ("____ Eleanor Harper, Settlor and Trustee",
         // "____ Jordan Ellis, Director") is an unambiguous affordance, and a
         // unilateral instrument (a trust declaration, a certificate) carries

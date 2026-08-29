@@ -589,7 +589,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.27.0"
+      "rule_version": "1.28.0"
     },
     {
       "elapsed_ms": 0,
@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected msa-general (score 0.7). Required clauses present: \"indemnification\". Distinguishing phrases: \"Provider\", \"Customer\". Negative features penalized: \"Premises\".",
-  "result_hash": "1856bade1d723fe3d94b2d35951e1e8949852c48e3b44cbe45c00b02484cbfd1",
+  "result_hash": "4305a294057908bfc5c4ee02ffcfc8d738da13cb6cedecfba42938c6e6c91a43",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.172.0"
+  "version": "9.173.0"
 }
