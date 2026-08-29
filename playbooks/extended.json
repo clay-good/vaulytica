@@ -7435,9 +7435,9 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "chief executive officer",
-        "chief financial officer",
-        "named executive officer",
+        "good reason",
+        "base salary",
+        "employment period",
         "section 409a",
         "section 280g",
         "change in control"
@@ -14455,6 +14455,8 @@
     "match_features": {
       "title_keywords": [
         "proxy statement",
+        "compensation discussion and analysis",
+        "compensation committee report",
         "notice of annual meeting of stockholders",
         "def 14a",
         "notice of annual meeting and proxy statement"

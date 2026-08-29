@@ -1,0 +1,55 @@
+INSIDER TRADING POLICY
+
+Corvid Optical Systems, Inc.
+Adopted by the Board of Directors on January 27, 2026
+Policy owner: Deirdre Salazar, General Counsel
+
+1. WHO THIS APPLIES TO
+
+Every director, officer, employee, and contractor of the Company and its subsidiaries, and the family members sharing their household and any entity they control. You are responsible for the transactions of those people and entities as if they were your own.
+
+2. THE RULE
+
+Do not buy or sell the Company's securities, and do not advise anyone else to, while you are aware of material non-public information about the Company. Do not buy or sell the securities of any other company while you are aware of material non-public information about that company that you learned through your work here.
+
+3. WHAT "MATERIAL" AND "NON-PUBLIC" MEAN
+
+Information is material if a reasonable investor would consider it important in deciding whether to buy, hold, or sell, or if it would likely affect the market price. Examples: results before they are announced; a change in guidance; a significant contract won or lost; a merger, acquisition, or divestiture; a financing; a major product development or clinical result; a cybersecurity incident; a change in senior management or auditor; a significant legal or regulatory development.
+
+Information is non-public until it has been disclosed broadly to the market and the market has had time to absorb it. As a rule, wait until the second full trading day after a press release or a Form 8-K.
+
+4. TIPPING
+
+Do not pass material non-public information to anyone outside the Company, including family and friends, and do not recommend a transaction to anyone while you are aware of it. You are liable for a trade the person you told makes, whether or not you traded yourself and whether or not you received anything for it.
+
+5. TRADING WINDOWS AND BLACKOUTS
+
+Directors, executive officers, and employees on the restricted list may trade only during an open window, which begins at the start of the second full trading day after the quarterly earnings release and closes fourteen days before the end of the following quarter. The Company may impose an event-specific blackout at any time; the fact that a blackout has been imposed is itself confidential.
+
+6. PRECLEARANCE
+
+Directors, executive officers, and employees on the restricted list must obtain preclearance from the General Counsel before any transaction in Company securities, including a gift and a transaction under an equity award. Preclearance is valid for five trading days. Preclearance is not a judgment that the trade is lawful; you remain responsible for it.
+
+7. RULE 10b5-1 PLANS
+
+A plan that satisfies Rule 10b5-1(c) is an affirmative defense if it is adopted in an open window, while you are not aware of material non-public information, and after the cooling-off period the rule requires — ninety days for a director or officer, or two business days after the second-quarter Form 10-Q or 10-K, whichever is later, and thirty days for everyone else. A director or officer must include the certification Rule 10b5-1(c)(1)(ii)(C) requires. Only one single-trade plan is permitted in any twelve-month period. A plan must be precleared, and its adoption, modification, and termination are disclosed as the rules require.
+
+8. PROHIBITED TRANSACTIONS
+
+Short sales of Company securities are prohibited. Transactions in puts, calls, and other derivatives on Company securities are prohibited. Hedging transactions, including prepaid variable forwards, equity swaps, collars, and exchange funds, are prohibited. Holding Company securities in a margin account or pledging them as collateral is prohibited without the General Counsel's approval.
+
+9. AFTER YOU LEAVE
+
+If you leave the Company while aware of material non-public information, this policy continues to apply until that information is public or is no longer material.
+
+10. CONSEQUENCES
+
+Insider trading is a federal crime. The penalties include disgorgement, civil penalties of up to three times the profit gained or loss avoided, criminal fines, and imprisonment. A violation of this policy is also grounds for discipline up to and including termination, whether or not it is a violation of law.
+
+11. QUESTIONS
+
+If you are unsure whether information is material or non-public, or whether a transaction is permitted, ask the General Counsel before you act. When in doubt, do not trade.
+
+12. REVIEW
+
+The Board reviews this policy at least annually.

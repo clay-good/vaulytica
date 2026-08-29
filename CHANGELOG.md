@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.162.0] — 2026-08-29
+
+### Added
+- An insider trading policy (already clean) and a proxy statement's
+  Compensation Discussion and Analysis. One hundred and thirty specimens.
+
+### Fixed
+- **A proxy statement's CD&A routed to `executive-employment`** and drew five
+  `critical` findings — that it had no § 409A clause, no § 280G clause, no
+  restrictive covenants, and no signature block. Three of that family's six
+  distinguishing phrases were "chief executive officer", "chief financial
+  officer", and "named executive officer", which a CD&A names on every page and
+  so does every board consent and officer's certificate. They are replaced by
+  phrases only an employment agreement carries: "good reason", "base salary",
+  "employment period".
+- **A Compensation Discussion and Analysis is a proxy statement section**, and
+  is now a title keyword of the family that owns it — along with the
+  Compensation Committee Report.
+
 ## [9.161.0] — 2026-08-29
 
 ### Added

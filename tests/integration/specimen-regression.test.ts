@@ -449,6 +449,21 @@ export const EXPECTED: Record<string, Expectation> = {
     ],
   },
 
+  // A company's insider trading policy, with the Rule 10b5-1(c) cooling-off
+  // periods as amended. Already clean; pinned so it stays that way.
+  "insider-trading-policy.txt": { playbook: "insider-trading-policy", findings: [] },
+
+  // A proxy statement's Compensation Discussion and Analysis. It routed to
+  // `executive-employment` — whose distinguishing phrases were "chief
+  // executive officer", "chief financial officer", and "named executive
+  // officer", which a CD&A names on every page — and drew five criticals,
+  // including that it had no § 409A clause and no signature block. The three
+  // findings left are the rest of the proxy, which this section is not.
+  "proxy-statement-narrative.txt": {
+    playbook: "proxy-statement-narrative",
+    findings: ["GOV-117", "GOV-118", "GOV-122"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],
