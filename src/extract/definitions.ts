@@ -1423,6 +1423,9 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   while ((m = DEFINITION_ALIASED.exec(text)) !== null) {
     const definition = text.slice(m.index + m[0].length).trim();
     if (!definition) continue;
+    // The `i` flag the defining verb needs also weakens the leading `[A-Z]` of
+    // each alias to "any letter"; restore the anchor explicitly.
+    if (!/^[A-Z]/.test(m[1]!.trim()) || !/^[A-Z]/.test(m[2]!.trim())) continue;
     for (const term of [m[1]!.trim(), m[2]!.trim()]) {
       out.push({
         term,
@@ -1473,6 +1476,11 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   DEFINITION_INLINE_REFERS.lastIndex = 0;
   while ((m = DEFINITION_INLINE_REFERS.exec(text)) !== null) {
     const term = m[1]!.trim();
+    // The pattern needs its `i` flag for the case-varying defining verb,
+    // which also weakens its leading `[A-Z]` to "any letter". Restore the
+    // capitalization anchor explicitly — a quoted LOWERCASE phrase is not a
+    // defined term. (Dropping the flag would lose every ALL-CAPS definition.)
+    if (!/^[A-Z]/.test(term)) continue;
     const after = text.slice(m.index + m[0].length).trim();
     if (!after) continue;
     out.push({
@@ -1490,6 +1498,11 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   DEFINITION_INLINE_COPULA.lastIndex = 0;
   while ((m = DEFINITION_INLINE_COPULA.exec(text)) !== null) {
     const term = m[1]!.trim();
+    // The pattern needs its `i` flag for the case-varying defining verb,
+    // which also weakens its leading `[A-Z]` to "any letter". Restore the
+    // capitalization anchor explicitly — a quoted LOWERCASE phrase is not a
+    // defined term. (Dropping the flag would lose every ALL-CAPS definition.)
+    if (!/^[A-Z]/.test(term)) continue;
     const after = text.slice(m.index + m[0].length).trim();
     if (!after) continue;
     out.push({
@@ -1507,6 +1520,11 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   DEFINITION_INLINE_PERIOD.lastIndex = 0;
   while ((m = DEFINITION_INLINE_PERIOD.exec(text)) !== null) {
     const term = m[1]!.trim();
+    // The pattern needs its `i` flag for the case-varying defining verb,
+    // which also weakens its leading `[A-Z]` to "any letter". Restore the
+    // capitalization anchor explicitly — a quoted LOWERCASE phrase is not a
+    // defined term. (Dropping the flag would lose every ALL-CAPS definition.)
+    if (!/^[A-Z]/.test(term)) continue;
     // Only a bounded temporal term — "Tolling Period", "Restricted Period",
     // "Term" — is defined by "shall begin/commence"; a plain quoted noun is not.
     if (!/\b(?:Period|Term)$/.test(term)) continue;
@@ -1524,6 +1542,8 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   }
   DEFINITION_ROLE_WHEN.lastIndex = 0;
   while ((m = DEFINITION_ROLE_WHEN.exec(text)) !== null) {
+    // Same restored anchor: see DEFINITION_INLINE above.
+    if (!/^[A-Z]/.test(m[1]!.trim())) continue;
     out.push({
       term: m[1]!.trim(),
       definition: text.slice(m.index + m[0].length).trim(),

@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.212.0] — 2026-08-29
+
+### Fixed
+- **Five more quoted-term patterns shared the defect fixed in 9.211.0.** Each
+  needs its `i` flag for a case-varying defining verb — "means", "refers to",
+  "is defined as", "shall commence", "when" — and each anchors its capture on
+  `[A-Z]`, which the flag makes inert. A quoted LOWERCASE phrase could
+  register as a defined term through any of them, and then be reported as
+  defined-but-never-used.
+
+  Found by sweeping every case-insensitive regex in `src/` for an `[A-Z]`
+  class: 30 hits, of which the six in `definitions.ts` were all the same bug.
+  The anchor is restored explicitly at each consumer rather than by dropping
+  the flag, which would lose every ALL-CAPS definition.
+
 ## [9.211.0] — 2026-08-29
 
 ### Added

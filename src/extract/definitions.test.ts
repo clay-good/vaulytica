@@ -2043,3 +2043,36 @@ describe("an inline definition needs a CAPITALIZED term", () => {
     expect(map.entries.map((e) => e.term)).toContain("CONFIDENTIAL INFORMATION");
   });
 });
+
+describe("every quoted-term pattern needs a CAPITALIZED term", () => {
+  // Five more patterns shared DEFINITION_INLINE's defect: each needs its `i`
+  // flag for a case-varying defining verb, and each anchors on `[A-Z]`, which
+  // the flag makes inert. A quoted LOWERCASE phrase could register as a
+  // defined term through any of them.
+  const terms = (t: string) =>
+    extractDefinitions(buildTree(["Agreement", t])).entries.map((e) => e.term);
+
+  it.each([
+    ['All references to "this Trust" mean the Trust as amended.', "this Trust"],
+    [
+      'A reference to "the said premises" refers to the Property described above.',
+      "the said premises",
+    ],
+    [
+      'The phrase "as soon as practicable" is defined as within five business days.',
+      "as soon as practicable",
+    ],
+    ['"this agreement" or "the agreement" means this instrument.', "this agreement"],
+  ])("does not register a lowercase phrase from %s", (text, term) => {
+    expect(terms(text)).not.toContain(term);
+  });
+
+  it("still registers the ALL-CAPS and Title-Case forms", () => {
+    expect(terms('"CONFIDENTIAL INFORMATION" means any disclosed information.')).toContain(
+      "CONFIDENTIAL INFORMATION",
+    );
+    expect(terms('"Effective Date" refers to the date first written above.')).toContain(
+      "Effective Date",
+    );
+  });
+});
