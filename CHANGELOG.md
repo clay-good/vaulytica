@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.140.0] — 2026-08-29
+
+### Added
+- A research informed-consent form, the 116th specimen.
+
+### Fixed
+- **The consent form 21 CFR 50.25 asks for was told at `critical` that it
+  stated neither its purpose nor its duration** (HC-001). The regulation asks
+  for a PLAIN-LANGUAGE explanation, and a well-drafted form gives one: "WHY
+  THIS STUDY IS BEING DONE" and "you will have four visits over eighteen
+  months" say both without using either word.
+- **A person introduced by an honorific was reported as an undefined term.**
+  "Dr. Ingrid Vasconcelos-Amaru" is a person, and a consent form names its
+  principal investigator that way twice — in the header block and in the
+  contact section.
+
 ## [9.139.0] — 2026-08-29
 
 ### Fixed

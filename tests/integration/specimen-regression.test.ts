@@ -362,6 +362,13 @@ export const EXPECTED: Record<string, Expectation> = {
     ],
   },
 
+  // A research informed-consent form. 21 CFR 50.25 asks for a PLAIN-LANGUAGE
+  // explanation, and HC-001 demanded the regulation's own vocabulary: a form
+  // headed "WHY THIS STUDY IS BEING DONE" that says "four visits over eighteen
+  // months" was told at `critical` that it stated neither purpose nor
+  // duration.
+  "informed-consent.txt": { playbook: "informed-consent", findings: ["OBLI-005"] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

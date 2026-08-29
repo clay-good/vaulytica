@@ -33,6 +33,7 @@ const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
 const INFORMED_CONSENT_RULES: Rule[] = [
   presence({
     id: "HC-001",
+    version: "1.1.0",
     name: "Statement that the study involves research + purpose / duration",
     description:
       "Informed consent must state that the study involves research, the purpose, and the expected duration of participation.",
@@ -45,10 +46,16 @@ const INFORMED_CONSENT_RULES: Rule[] = [
       "45 C.F.R. § 46.116(b)(1) requires a statement that the study involves research, an explanation of the purposes, the expected duration of participation, and a description of procedures.",
     recommendation:
       "Add 'Research Study' clause stating the study involves research, the purpose, the expected duration, and the procedures involved.",
+    // 21 CFR 50.25 asks for a PLAIN-LANGUAGE explanation, and a well-drafted
+    // form gives one: "WHY THIS STUDY IS BEING DONE" and "you will have four
+    // visits over eighteen months" say the purpose and the duration without
+    // using either word. Demanding the regulation's own vocabulary reported
+    // the form the regulation asks for as missing its first element, at
+    // `critical`.
     present_patterns: [
       /(research|study)/i,
-      /(purpose|objective)/i,
-      /(duration|time\s+commitment|expected\s+to\s+(last|take))/i,
+      /(purpose|objective|why\s+(?:this|the)\s+(?:study|research|trial)\s+is\s+being\s+done|what\s+(?:this|the)\s+(?:study|research)\s+is\s+(?:about|trying))/i,
+      /(duration|time\s+commitment|expected\s+to\s+(last|take)|how\s+long\s+(?:you|the\s+study)|\b\d+\s+(?:visits?|weeks?|months?|years?)\b|over\s+\w+\s+(?:weeks|months|years))/i,
     ],
     require_all_present: true,
   }),

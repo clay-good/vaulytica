@@ -1636,3 +1636,20 @@ describe("the article inside the quotes", () => {
     expect(m.entries.map((e) => e.term)).not.toContain("Services");
   });
 });
+
+describe("a person introduced by an honorific", () => {
+  // "Dr. Ingrid Vasconcelos-Amaru" is a person. A research consent form names
+  // its principal investigator that way twice — in the header block and in the
+  // contact section — and the investigator was reported as a term the form
+  // forgot to define.
+  it("does not flag the name after Dr.", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Consent to Participate in a Research Study",
+        "Principal investigator: Dr. Ingrid Vasconcelos-Amaru, MD.",
+        "For a question about the study, contact Dr. Ingrid Vasconcelos-Amaru at the number above.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Ingrid Vasconcelos-Amaru");
+  });
+});

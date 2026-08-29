@@ -947,6 +947,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       )
         continue;
       if (OFFICER_TITLES.test(phrase)) continue;
+      // A phrase introduced by an HONORIFIC is a person: "Dr. Ingrid
+      // Vasconcelos-Amaru", "Hon. Marisol Aguirre-Vance", "Prof. Emil
+      // Halloran". A research consent form names its principal investigator
+      // that way twice — in the header block and in the contact section — and
+      // the investigator was reported as a term the form forgot to define.
+      if (
+        /\b(?:Dr|Mr|Mrs|Ms|Mx|Prof(?:essor)?|Hon|Rev|Sir|Dame|Fr|Sr|Capt|Col|Gen|Lt|Sgt|Rabbi|Pastor|Judge|Justice)\.?\s+$/.test(
+          ctx.text.slice(Math.max(0, m.index - 12), m.index),
+        )
+      )
+        continue;
       // An office named by its ABBREVIATION — "VP Information Security", "SVP
       // Global Sales", "CISO Operations". TITLE_CASE_PHRASE cannot include the
       // all-caps abbreviation, so the capture begins one word in and the
