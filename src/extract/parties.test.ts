@@ -385,3 +385,41 @@ describe("a signature-block label whose value is not a name", () => {
     expect(names).toContain("Dana Reyes");
   });
 });
+
+describe("a role parenthetical behind a QUALIFIER", () => {
+  // "Sonoran Crest Management, Inc., an Arizona corporation HOLDING ARIZONA
+  // REAL ESTATE BROKER LICENSE NUMBER BR-558214 ("Manager")". The role must
+  // follow the entity type immediately, and `BETWEEN_RE` cannot supply it
+  // either — its capture terminates at the comma before "an Arizona
+  // corporation". A party with no role is invisible to every rule that
+  // compares an obligor against the party set, so OBLI-002 reported a MUTUAL
+  // indemnity as one-sided.
+  const roles = (t: string) =>
+    extractParties(buildTree(["Agreement", t])).map((p) => `${p.name}|${p.role ?? ""}`);
+
+  it("reads the role across the qualifier", () => {
+    expect(
+      roles(
+        'This Agreement is made between Halverson Ridge Apartments LLC, an Arizona limited liability company ("Owner"), and Sonoran Crest Management, Inc., an Arizona corporation holding Arizona real estate broker license number BR-558214 ("Manager").',
+      ),
+    ).toEqual(["Halverson Ridge Apartments LLC|Owner", "Sonoran Crest Management, Inc|Manager"]);
+  });
+
+  it("does not reach past this party's clause into the next party's role", () => {
+    // The gap refuses to cross "and", so the first party cannot borrow the
+    // second party's parenthetical.
+    const r = roles(
+      'This Agreement is made between Acme LLC, a Delaware limited liability company, and Beta Corp., a Delaware corporation ("Manager").',
+    );
+    expect(r.some((x) => x.startsWith("Acme LLC|Manager"))).toBe(false);
+  });
+
+  it("does not run past the end of a sentence to find a parenthetical", () => {
+    // The leading period is admitted only as an ABBREVIATION period — one not
+    // followed by a capital across a space.
+    const r = roles(
+      'This Agreement is made between Acme LLC and Beta Corp. The Services are described in Exhibit A ("Services").',
+    );
+    expect(r.some((x) => x.endsWith("|Services"))).toBe(false);
+  });
+});

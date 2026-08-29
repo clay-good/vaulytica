@@ -50,7 +50,9 @@
     "Unsecured PHI",
     "Security Incident"
   ],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "OBLI-002": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [
     {

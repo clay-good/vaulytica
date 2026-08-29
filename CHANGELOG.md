@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.190.0] — 2026-08-29
+
+### Fixed
+- **A party's ROLE was lost whenever a qualifier stood between its entity type
+  and its role parenthetical.** "Sonoran Crest Management, Inc., an Arizona
+  corporation HOLDING ARIZONA REAL ESTATE BROKER LICENSE NUMBER BR-558214
+  (\"Manager\")" — `PARTY_DECL` wanted the parenthetical immediately after the
+  type, and `BETWEEN_RE` cannot supply it either, because its capture
+  terminates at the comma before "an Arizona corporation". A party with no role
+  is invisible to every rule that compares an obligor against the party set, so
+  OBLI-002 reported a MUTUAL indemnity as one-sided.
+
+  The gap refuses to cross "and", so a party cannot borrow the next party's
+  role, and the leading period is admitted only as an ABBREVIATION period — one
+  not followed by a capital across a space — so it cannot run past the end of
+  the sentence. (The gap and the parenthetical are one optional group: left
+  optional and non-greedy on its own, the gap always matched empty.)
+
+### Changed
+- Reading those roles made OBLI-002 visible where it had been silent. On five
+  specimens the new finding is real and stays — a copyright, patent or
+  trademark licence, a clinical trial agreement, and a medical director
+  agreement each carry a genuinely one-sided indemnity, which is what the rule
+  exists to surface.
+- **`dpa-controller-processor` and `baa-subcontractor` now skip OBLI-002.** In
+  a processor-side agreement the confidentiality obligation is one-sided by
+  design — the processor holds the controller's data — so the finding is
+  structural, not a drafting signal. Without the skip the fix would have added
+  it to 54 corpus fixtures.
+
 ## [9.189.0] — 2026-08-29
 
 ### Added

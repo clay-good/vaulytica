@@ -54,22 +54,20 @@ export const EXPECTED: Record<string, Expectation> = {
   // of the following month" — the payment SOURCE sits between the verb and the
   // date, and the ordinal is spelled with the numeral in a parenthetical.
   //
-  // OBLI-002 stays and is a KNOWN FALSE POSITIVE, recorded with the signal
-  // tried: the indemnities in Sections 6.3 and 6.4 are mutual, but only the
-  // first party's ROLE is extracted — the second party's role parenthetical
-  // sits behind a long qualifier ("an Arizona corporation holding Arizona real
-  // estate broker license number BR-558214 (\"Manager\")"), and a party with no
-  // role is invisible to every rule that compares an obligor against the party
-  // set. Widening `PARTY_DECL`'s window does not fix it: these parties come
-  // from the BETWEEN path, whose `ROLE_PAREN` is anchored to the end of the
-  // segment. The fix belongs in that path, not in the rule.
+  // OBLI-002 came off when the second party's ROLE was finally read: its
+  // parenthetical sits behind a long qualifier ("an Arizona corporation
+  // holding Arizona real estate broker license number BR-558214
+  // (\"Manager\")"), `PARTY_DECL` wanted it immediately after the entity type,
+  // and `BETWEEN_RE`'s capture terminates at the comma before "an Arizona
+  // corporation". A party with no role is invisible to every rule that
+  // compares an obligor against the party set, so the mutual indemnities in
+  // Sections 6.3 and 6.4 read as one-sided.
   "property-management.txt": {
     playbook: "property-management-agreement",
     findings: [
       "RISK-015",
       "RISK-016",
       "TEMP-004",
-      "OBLI-002",
       "OBLI-005",
       "RISK-010",
       "RISK-011",
@@ -135,7 +133,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // family's own minimal-PASS fixture.
   "copyright-license.txt": {
     playbook: "copyright-license",
-    findings: ["OBLI-005", "RISK-011", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-002", "OBLI-005", "RISK-011", "TEMP-006", "TEMP-007"],
   },
   // A university exclusive patent license, Bayh-Dole subject. It routed to
   // `eula` — an end-user licence for consumer software — and was told it
@@ -150,17 +148,18 @@ export const EXPECTED: Record<string, Expectation> = {
   "patent-license.txt": {
     playbook: "patent-license",
     findings: [
+      "FIN-008",
       "IPL-011",
       "IPL-012",
-      "RISK-005",
-      "RISK-015",
-      "STRUCT-018",
-      "TERM-003",
-      "FIN-008",
+      "OBLI-002",
       "OBLI-005",
       "OBLI-008",
+      "RISK-005",
       "RISK-010",
+      "RISK-015",
+      "STRUCT-018",
       "TERM-001",
+      "TERM-003",
     ],
   },
   // An ASF-style individual contributor license agreement. Four defects, and
@@ -212,13 +211,14 @@ export const EXPECTED: Record<string, Expectation> = {
   "trademark-license.txt": {
     playbook: "trademark-license",
     findings: [
-      "RISK-015",
-      "STRUCT-006",
-      "STRUCT-018",
       "FIN-008",
+      "OBLI-002",
       "OBLI-005",
       "RISK-010",
+      "RISK-015",
       "STRUCT-005",
+      "STRUCT-006",
+      "STRUCT-018",
       "TEMP-008",
     ],
   },
@@ -398,7 +398,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // and a survival clause that names its sections by number.
   "cta.txt": {
     playbook: "clinical-trial-agreement",
-    findings: ["RISK-005", "RISK-015", "STRUCT-006", "STRUCT-018", "OBLI-005", "TEMP-006"],
+    findings: [
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-002",
+      "RISK-005",
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-006",
+    ],
   },
 
   // A cyber liability policy with roman-numbered sections.
@@ -451,14 +460,15 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "medical-director-agreement",
     findings: [
       "IPDATA-001",
+      "OBLI-002",
+      "OBLI-005",
       "RISK-001",
       "RISK-005",
+      "RISK-010",
       "STRUCT-018",
+      "TERM-001",
       "TERM-002",
       "TERM-005",
-      "OBLI-005",
-      "RISK-010",
-      "TERM-001",
     ],
   },
 

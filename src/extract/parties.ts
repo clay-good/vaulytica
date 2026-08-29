@@ -60,7 +60,24 @@ const PARTY_DECL = new RegExp(
   // name is manufactured, and it is not harmless — rules that compare a phrase
   // against the party set (STRUCT-006) treat it as real and party-tallying
   // rules (RISK-002) report counts against it.
-  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])\s*(?:\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
+  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])` +
+    // A QUALIFIER may sit between the entity type and the role parenthetical:
+    // "Sonoran Crest Management, Inc., an Arizona corporation HOLDING ARIZONA
+    // REAL ESTATE BROKER LICENSE NUMBER BR-558214 (\"Manager\")". Requiring the
+    // parenthetical to follow the type immediately dropped the role — and
+    // `BETWEEN_RE` cannot supply it either, because its capture terminates at
+    // the comma before "an Arizona corporation". A party with no role is
+    // invisible to every rule that compares an obligor against the party set,
+    // so OBLI-002 reported a MUTUAL indemnity as one-sided.
+    //
+    // The gap refuses to cross "and", so it cannot reach past this party's
+    // clause into the next party's role, and the leading period is admitted
+    // only as an ABBREVIATION period — one not followed by a capital across a
+    // space — so it cannot run past the end of the sentence.
+    // The gap and the parenthetical are ONE optional group: with the gap
+    // optional and non-greedy on its own, the engine always matched it empty
+    // and the role was never reached.
+    String.raw`(?:(?:\.(?!\s+[A-Z]))?\s*(?:(?!\band\b)[^.;()]){0,120}?\s*\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
   "g",
 );
 
