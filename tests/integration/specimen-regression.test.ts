@@ -679,10 +679,40 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // An asset purchase agreement — the 178th specimen. The whole MNA-020..028
+  // pack is silent: purchased assets, excluded assets, assumed and excluded
+  // liabilities, the bulk-sales waiver, the § 1060 allocation with Form 8594,
+  // the required-consents mechanics, WARN allocation, and the bill of sale.
+  // What remains is fair: no termination article (TERM-005), schedules and
+  // exhibits delivered separately (STRUCT-018), and four terms this body uses
+  // without defining (STRUCT-006).
+  "asset-purchase-agreement.txt": {
+    playbook: "asset-purchase-agreement",
+    findings: [
+      "OBLI-001",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-007",
+      "OBLI-008",
+      "RISK-002",
+      "RISK-003",
+      "RISK-004",
+      "RISK-011",
+      "STRUCT-005",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-012",
+      "TERM-005",
+    ],
+  },
+  // OBLI-002 arrived with the parties fix in v9.220.0: "Investor" is a named
+  // party, and § 5.3 puts the confidentiality obligation on the Investors
+  // alone. That is accurate, and `info`.
   "stockholders-agreement.txt": {
     playbook: "stockholders-agreement",
     findings: [
       "GOV-039",
+      "OBLI-002",
       "STRUCT-006",
       "STRUCT-018",
       "OBLI-005",

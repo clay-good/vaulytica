@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.220.0] — 2026-08-29
+
+### Added
+- An asset purchase agreement — the 178th specimen, and the first for
+  `asset-purchase-agreement`. The whole MNA-020..028 pack is silent on one that
+  covers every column: purchased and excluded assets, assumed and excluded
+  liabilities, the bulk-sales waiver with its own indemnity, the § 1060
+  allocation and Form 8594 consistency covenant, the required-consents and
+  non-assignment mechanics, the WARN Act allocation, and the bill of sale.
+
+### Fixed
+- **A party name swallowed an unmatched open parenthesis.** `Antonia Pike
+  (each, a "Principal" …)` registered as a party named `Antonia Pike (each`:
+  the preamble list splits on commas, so the name and its role parenthetical
+  landed in different members, and the ", a …" entity-descriptor strip cut
+  inside a parenthesis it had not opened. A name never carries an unmatched
+  "(".
+- **The same entity registered twice, with and without its corporate suffix.**
+  "Harrowgate Finishing Systems, Inc." and "Harrowgate Finishing Systems" were
+  two parties, and every rule that TALLIES BY PARTY — RISK-002's indemnity
+  symmetry among them — read the bare form as a third party with no
+  obligations. Collapsed only when one form carries a suffix and the other
+  carries none, so "Acme Holdings, Inc." and "Acme Holdings LLC" stay distinct.
+- **A collective alias could not name what it collects.** `(each employee who
+  accepts, a "Transferred Employee")` and `(each such meeting, a "Review
+  Meeting")` were not read as definitions, because the parenthetical's lead-in
+  allowed only bare determiners between "each" and the quoted term. The term
+  then showed up in STRUCT-006's undefined-term list on the document that
+  defines it.
+- The preamble role parenthetical now also reads the collective form
+  `(each a "Principal" and together, the "Principals")`.
+
 ## [9.219.0] — 2026-08-29
 
 ### Added

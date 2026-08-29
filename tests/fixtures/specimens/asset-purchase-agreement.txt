@@ -1,0 +1,135 @@
+ASSET PURCHASE AGREEMENT
+
+This Asset Purchase Agreement (this "Agreement") is entered into as of March 12, 2026, by and among Kestrel Coatings LLC, a Delaware limited liability company ("Buyer"), Harrowgate Finishing Systems, Inc., an Ohio corporation ("Seller"), and, solely for purposes of Article 7, Merrill Vance and Antonia Pike (each, a "Principal" and together, the "Principals").
+
+RECITALS
+
+WHEREAS, Seller operates a industrial powder-coating business at its facility in Marion, Ohio (the "Business");
+
+WHEREAS, Seller desires to sell, and Buyer desires to purchase, substantially all of the assets used in the Business, and Buyer is willing to assume only the liabilities expressly identified in this Agreement;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein and other good and valuable consideration, the receipt and sufficiency of which are acknowledged, the parties agree as follows.
+
+ARTICLE 1. PURCHASE AND SALE
+
+1.1 Purchased Assets. Subject to the terms of this Agreement, at the Closing Seller shall sell, convey, transfer, assign, and deliver to Buyer, and Buyer shall purchase and acquire from Seller, free and clear of all Liens other than Permitted Liens, all right, title, and interest of Seller in and to the assets, properties, and rights set forth on Schedule 1.1 (collectively, the "Purchased Assets"), which include the following:
+
+(a) the coating lines, ovens, conveyors, and other machinery and equipment listed on Schedule 1.1(a);
+
+(b) all inventory of raw materials, work in process, and finished goods on hand at the Closing;
+
+(c) all accounts receivable of the Business arising from sales made before the Closing;
+
+(d) the Intellectual Property listed on Schedule 1.1(d), including the "Harrowgate" name and the associated trademark registrations;
+
+(e) the contracts listed on Schedule 1.1(e) (the "Assigned Contracts");
+
+(f) all permits and licenses relating to the Business, to the extent transferable; and
+
+(g) all books, records, customer lists, and supplier files of the Business.
+
+1.2 Excluded Assets. Notwithstanding Section 1.1, the Purchased Assets do not include, and Seller shall retain, the following (collectively, the "Excluded Assets"): (a) cash and cash equivalents; (b) Seller's corporate minute books, stock ledger, and tax returns; (c) the real property in Marion, Ohio, which is the subject of a separate lease between the parties dated as of the date hereof; (d) all claims for refunds of Taxes attributable to any period ending on or before the Closing Date; (e) the assets listed on Schedule 1.2; and (f) Seller's rights under this Agreement.
+
+1.3 Assumed Liabilities. At the Closing, Buyer shall assume and agree to pay, perform, and discharge only the following liabilities of Seller (collectively, the "Assumed Liabilities"): (a) all obligations arising after the Closing Date under the Assigned Contracts, other than obligations arising from any breach occurring on or before the Closing Date; (b) the accounts payable of the Business set forth on Schedule 1.3; and (c) all liabilities for the payment of accrued but unused vacation of the Transferred Employees, to the extent reflected in the Closing Working Capital.
+
+1.4 Excluded Liabilities. Buyer does not assume, and shall have no responsibility for, any liability of Seller other than the Assumed Liabilities (collectively, the "Excluded Liabilities"). Without limiting the foregoing, the Excluded Liabilities include all liabilities (a) for Taxes of Seller or relating to the Business for any period ending on or before the Closing Date; (b) arising from products manufactured or services performed on or before the Closing Date, including all product liability and warranty claims; (c) under any Benefit Plan of Seller; (d) for indebtedness for borrowed money; (e) arising from any environmental condition existing at the Marion facility on or before the Closing Date; and (f) arising from any litigation pending or threatened as of the Closing Date, including the matters described on Schedule 1.4.
+
+ARTICLE 2. PURCHASE PRICE
+
+2.1 Purchase Price. The aggregate purchase price for the Purchased Assets is $14,500,000 (the "Purchase Price"), consisting of (a) $12,700,000 in cash payable at the Closing, and (b) $1,800,000 deposited with the Escrow Agent to be held and released in accordance with the Escrow Agreement.
+
+2.2 Working Capital Adjustment. The Purchase Price shall be increased or decreased, dollar for dollar, by the amount by which the Closing Working Capital exceeds or is less than $2,300,000 (the "Working Capital Target"). Within 60 days after the Closing Date, Buyer shall deliver to Seller a statement of the Closing Working Capital. Seller may object to the statement by written notice delivered within 30 days after receipt, and any dispute not resolved by the parties within 30 days thereafter shall be referred to a nationally recognized independent accounting firm, whose determination shall be final and binding.
+
+2.3 Allocation of Purchase Price. The Purchase Price, together with the Assumed Liabilities, shall be allocated among the Purchased Assets in accordance with Section 1060 of the Internal Revenue Code of 1986, as amended, and the Treasury Regulations promulgated thereunder. Buyer shall deliver a proposed allocation to Seller within 90 days after the Closing Date. Each party shall file its IRS Form 8594 consistently with the final allocation and shall not take any position inconsistent with the allocation on any Tax Return or in any Tax proceeding, except as required by a determination within the meaning of Section 1313(a) of the Code.
+
+ARTICLE 3. CLOSING
+
+3.1 Closing. The closing of the transactions contemplated by this Agreement (the "Closing") shall take place remotely by exchange of electronic signatures on the third Business Day after the satisfaction or waiver of the conditions set forth in Article 6, or on such other date as the parties agree (the "Closing Date").
+
+3.2 Deliveries by Seller. At the Closing, Seller shall deliver to Buyer (a) a bill of sale in the form of Exhibit A, conveying the tangible Purchased Assets; (b) an assignment and assumption agreement in the form of Exhibit B, assigning the Assigned Contracts and the Assumed Liabilities; (c) an intellectual property assignment in the form of Exhibit C; (d) payoff letters and UCC-3 termination statements releasing all Liens on the Purchased Assets other than Permitted Liens; (e) a certificate of non-foreign status under Treasury Regulation § 1.1445-2(b); and (f) the officer's certificate required by Section 6.2.
+
+3.3 Deliveries by Buyer. At the Closing, Buyer shall (a) pay the cash portion of the Purchase Price by wire transfer of immediately available funds; (b) deposit the escrow amount with the Escrow Agent; (c) execute and deliver the assignment and assumption agreement; and (d) deliver the officer's certificate required by Section 6.3.
+
+ARTICLE 4. REPRESENTATIONS AND WARRANTIES OF SELLER
+
+4.1 Organization and Authority. Seller is a corporation duly organized, validly existing, and in good standing under the laws of the State of Ohio, and has full corporate power and authority to enter into this Agreement and to consummate the transactions contemplated hereby.
+
+4.2 Title to Purchased Assets. Seller has good and valid title to, or a valid leasehold interest in, all of the Purchased Assets, free and clear of all Liens other than Permitted Liens.
+
+4.3 Financial Statements. The financial statements of the Business delivered to Buyer have been prepared in accordance with GAAP applied consistently and fairly present in all material respects the financial condition and results of operations of the Business as of the dates and for the periods indicated.
+
+4.4 Absence of Certain Changes. Since December 31, 2025, the Business has been conducted in the ordinary course and there has not been any Material Adverse Effect.
+
+4.5 Contracts. Schedule 4.5 lists each material contract of the Business. Each Assigned Contract is in full force and effect, and neither Seller nor, to Seller's Knowledge, any other party is in material breach of any Assigned Contract.
+
+4.6 Compliance with Law; Permits. Seller is, and for the past three years has been, in compliance in all material respects with all Laws applicable to the Business, and holds all permits required to conduct the Business as currently conducted.
+
+4.7 Environmental Matters. Except as set forth on Schedule 4.7, Seller has operated the Business in compliance in all material respects with all Environmental Laws, and Seller has not received any written notice of any actual or alleged violation of any Environmental Law.
+
+4.8 Employees and Benefit Plans. Schedule 4.8 lists each employee of the Business and each Benefit Plan. Seller has not, within the 90 days preceding the date hereof, effectuated a "plant closing" or "mass layoff" as those terms are defined in the Worker Adjustment and Retraining Notification Act.
+
+4.9 No Brokers. Except for Ridgeline Advisors LLC, whose fee is payable solely by Seller, no broker is entitled to any fee in connection with the transactions contemplated by this Agreement.
+
+ARTICLE 5. REPRESENTATIONS AND WARRANTIES OF BUYER
+
+5.1 Buyer is a limited liability company duly organized, validly existing, and in good standing under the laws of the State of Delaware, has full power and authority to enter into this Agreement, and has sufficient funds available to pay the Purchase Price at the Closing.
+
+ARTICLE 6. COVENANTS AND CLOSING CONDITIONS
+
+6.1 Required Consents; Assignment Mechanics. Schedule 6.1 lists each consent required to assign an Assigned Contract. Seller shall use commercially reasonable efforts to obtain each such consent before the Closing. Notwithstanding anything to the contrary, this Agreement does not constitute an assignment of any Assigned Contract if an attempted assignment without a required consent would constitute a breach of that contract. Where a consent has not been obtained by the Closing, Seller shall, at Buyer's expense, use commercially reasonable efforts for 12 months after the Closing to provide Buyer with the benefits of the contract, and Buyer shall perform Seller's obligations thereunder.
+
+6.2 Conditions to Buyer's Obligation. Buyer's obligation to consummate the Closing is subject to (a) the accuracy in all material respects of Seller's representations and warranties as of the Closing Date; (b) Seller's performance in all material respects of its covenants; (c) the absence of any Material Adverse Effect since the date of this Agreement; (d) delivery of the items listed in Section 3.2; and (e) the receipt of the consents designated as material on Schedule 6.1.
+
+6.3 Conditions to Seller's Obligation. Seller's obligation to consummate the Closing is subject to the accuracy in all material respects of Buyer's representations and warranties, Buyer's performance in all material respects of its covenants, and delivery of the items listed in Section 3.3.
+
+6.4 Bulk Sales. The parties waive compliance with the provisions of any bulk-sales, bulk-transfer, or similar Law of any jurisdiction that may be applicable to the transactions contemplated by this Agreement. Seller shall indemnify Buyer for any Losses arising from that waiver, and the indemnity in this Section 6.4 is not subject to the Basket or the Cap.
+
+6.5 Employees; WARN Act. Buyer shall offer employment, effective as of the Closing Date, to each employee of the Business listed on Schedule 4.8 on terms providing base compensation no less favorable than that in effect immediately before the Closing (each employee who accepts, a "Transferred Employee"). Seller shall be responsible for all wages, commissions, and benefits accrued through the Closing Date. Seller shall be responsible for any notice or liability under the Worker Adjustment and Retraining Notification Act arising from any employment loss occurring on or before the Closing Date, and Buyer shall be responsible for any such notice or liability arising from any employment loss occurring after the Closing Date.
+
+6.6 Material Adverse Effect. "Material Adverse Effect" means any change, event, or effect that is materially adverse to the business, assets, financial condition, or results of operations of the Business, taken as a whole, excluding any change, event, or effect arising from (a) general economic or political conditions; (b) conditions generally affecting the industries in which the Business operates; (c) any change in Law or GAAP; (d) any act of war, terrorism, or natural disaster; or (e) the announcement of this Agreement, except, in the case of clauses (a) through (d), to the extent the change, event, or effect has a disproportionate effect on the Business relative to other participants in the same industry.
+
+ARTICLE 7. INDEMNIFICATION AND RESTRICTIVE COVENANTS
+
+7.1 Survival. The representations and warranties in Article 4 and Article 5 survive the Closing for 18 months, except that the representations in Sections 4.1, 4.2, and 4.9 (the "Fundamental Representations") survive for the applicable statute of limitations plus 60 days, and the representations in Section 4.7 survive for three years. Covenants to be performed after the Closing survive until performed in accordance with their terms.
+
+7.2 Indemnification by Seller. Seller shall indemnify and hold harmless Buyer and its officers, directors, employees, and affiliates from and against all Losses arising from (a) any breach of a representation or warranty of Seller; (b) any breach of a covenant of Seller; and (c) any Excluded Liability.
+
+7.3 Limitations. Seller has no obligation to indemnify under Section 7.2(a) until the aggregate Losses exceed $145,000 (the "Basket"), after which Seller is liable for all Losses from the first dollar, and Seller's aggregate liability under Section 7.2(a) shall not exceed $1,800,000 (the "Cap"). The Basket and the Cap do not apply to a breach of a Fundamental Representation, to any claim based on fraud, or to indemnification under Section 7.2(c). Seller's aggregate liability for all claims under this Agreement shall not exceed the Purchase Price.
+
+7.4 Sandbagging. Buyer's right to indemnification is not affected by any investigation conducted by Buyer, or by any knowledge acquired by Buyer at any time, with respect to the accuracy of any representation or warranty of Seller.
+
+7.5 Restrictive Covenants. For three years after the Closing Date, neither Seller nor any Principal shall (a) engage anywhere in the States of Ohio, Indiana, Michigan, and Kentucky in the business of industrial powder coating, or (b) solicit for employment any Transferred Employee, provided that a general advertisement not targeted at Transferred Employees is not a solicitation. Each Principal acknowledges that the covenants in this Section 7.5 are given in connection with the sale of the goodwill of the Business and are reasonable in scope, geography, and duration.
+
+ARTICLE 8. MISCELLANEOUS
+
+8.1 Governing Law. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles.
+
+8.2 Forum. Each party irrevocably submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware, and, if that court lacks subject matter jurisdiction, the federal courts sitting in the State of Delaware, for any action arising out of this Agreement, and waives any objection to venue in those courts.
+
+8.3 Notices. All notices under this Agreement shall be in writing and delivered by hand, by nationally recognized overnight courier, or by email with confirmation of receipt, to the addresses set forth on the signature page.
+
+8.4 Entire Agreement; Amendment. This Agreement, together with the Schedules and Exhibits, constitutes the entire agreement of the parties with respect to its subject matter and supersedes all prior agreements. This Agreement may be amended only by a writing signed by Buyer and Seller.
+
+8.5 Counterparts. This Agreement may be executed in counterparts, each of which is an original and all of which together constitute one agreement. Signatures delivered electronically have the same effect as original signatures.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+KESTREL COATINGS LLC
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+HARROWGATE FINISHING SYSTEMS, INC.
+
+By: /s/ Merrill Vance
+Name: Merrill Vance
+Title: President
+
+PRINCIPALS
+
+/s/ Merrill Vance
+Merrill Vance
+
+/s/ Antonia Pike
+Antonia Pike

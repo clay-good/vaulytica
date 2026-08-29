@@ -2076,3 +2076,23 @@ describe("every quoted-term pattern needs a CAPITALIZED term", () => {
     );
   });
 });
+
+describe("extractDefinitions — a collective alias may name what it collects (v9.220.0)", () => {
+  it('reads (each employee who accepts, a "Transferred Employee")', () => {
+    const tree = buildTree([
+      "Employees",
+      'Buyer shall offer employment to each employee of the Business listed on Schedule 4.8 (each employee who accepts, a "Transferred Employee").',
+      "Seller shall be responsible for all wages of each Transferred Employee accrued through the Closing.",
+    ]);
+    expect(extractDefinitions(tree).entries.map((d) => d.term)).toContain("Transferred Employee");
+  });
+
+  it('reads (each such meeting, a "Review Meeting")', () => {
+    const tree = buildTree([
+      "Governance",
+      'The parties shall meet quarterly (each such meeting, a "Review Meeting").',
+      "Each Review Meeting shall be minuted.",
+    ]);
+    expect(extractDefinitions(tree).entries.map((d) => d.term)).toContain("Review Meeting");
+  });
+});

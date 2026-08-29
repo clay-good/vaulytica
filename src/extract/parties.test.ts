@@ -447,3 +447,37 @@ describe("a d/b/a name must be CAPITALIZED", () => {
     expect(parties.some((p) => p.dba === "Halcyon Logistics")).toBe(true);
   });
 });
+
+describe("extractParties — a preamble parenthetical is not part of the name (v9.220.0)", () => {
+  it("does not register a name that swallowed an unmatched open parenthesis", () => {
+    const tree = buildTree([
+      "Asset Purchase Agreement",
+      'This Agreement is entered into by and among Kestrel Coatings LLC, a Delaware limited liability company ("Buyer"), Harrowgate Finishing Systems, Inc., an Ohio corporation ("Seller"), and, solely for purposes of Article 7, Merrill Vance and Antonia Pike (each, a "Principal" and together, the "Principals").',
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    // The ", a …" descriptor strip used to cut inside the parenthetical and
+    // leave a party named `Antonia Pike (each`.
+    expect(names).toContain("Antonia Pike");
+    expect(names.some((n) => n.includes("("))).toBe(false);
+  });
+
+  it("does not register the same entity twice, with and without its suffix", () => {
+    const tree = buildTree([
+      "Asset Purchase Agreement",
+      'This Agreement is entered into by and among Kestrel Coatings LLC, a Delaware limited liability company ("Buyer"), Harrowgate Finishing Systems, Inc., an Ohio corporation ("Seller"), and Merrill Vance.',
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).not.toContain("Harrowgate Finishing Systems");
+    expect(names).toContain("Harrowgate Finishing Systems, Inc");
+  });
+
+  it("keeps two entities that share a stem but carry different suffixes", () => {
+    const tree = buildTree([
+      "Agreement",
+      'This Agreement is made between Acme Holdings, Inc., a Delaware corporation ("Parent"), and Acme Holdings LLC, a Delaware limited liability company ("Opco").',
+    ]);
+    const names = extractParties(tree).map((p) => p.name);
+    expect(names).toContain("Acme Holdings, Inc");
+    expect(names).toContain("Acme Holdings LLC");
+  });
+});

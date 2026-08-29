@@ -592,7 +592,41 @@ export function extractParties(tree: DocumentTree): Party[] {
     });
   }
 
+  // "Harrowgate Finishing Systems, Inc." and "Harrowgate Finishing Systems"
+  // are one party. Two branches captured the preamble name with and without
+  // its corporate suffix, and every rule that TALLIES BY PARTY — RISK-002's
+  // indemnity symmetry among them — read the bare form as a third party with
+  // no obligations. Collapse only when one form carries a suffix and the other
+  // carries none; "Acme Holdings, Inc." and "Acme Holdings LLC" stay distinct.
+  const byBare = new Map<string, Party>();
+  for (const party of partyMap.values()) {
+    const bare = bareEntityName(party.name);
+    if (bare === party.name.toLowerCase()) continue;
+    byBare.set(bare, party);
+  }
+  for (const [key, party] of [...partyMap.entries()]) {
+    const suffixed = byBare.get(key);
+    if (!suffixed || suffixed === party) continue;
+    suffixed.role = suffixed.role ?? party.role;
+    suffixed.entity_type = suffixed.entity_type ?? party.entity_type;
+    suffixed.jurisdiction_of_formation =
+      suffixed.jurisdiction_of_formation ?? party.jurisdiction_of_formation;
+    suffixed.positions.push(...party.positions);
+    partyMap.delete(key);
+  }
+
   return [...partyMap.values()];
+}
+
+/** The party name with its trailing corporate suffix removed, lower-cased. */
+function bareEntityName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(
+      /,?\s+(?:inc|incorporated|llc|l\.l\.c|ltd|limited|corp|corporation|co|company|lp|l\.p|llp|plc|gmbh|pllc|pc|na|n\.a)\.?$/,
+      "",
+    )
+    .trim();
 }
 
 function registerParty(
@@ -667,6 +701,16 @@ function computeAliases(party: Party): string[] {
 const ROLE_PAREN = /\(\s*["“”']([^"”'’)]+)["“”']\s*\)\s*$/;
 
 /**
+ * The COLLECTIVE parenthetical: `Antonia Pike (each, a "Principal" and
+ * together, the "Principals")`. `ROLE_PAREN` requires the quoted role to be the
+ * whole parenthetical, so this shape fell through to `cleanPartyName`, whose
+ * ", a …" descriptor strip cut the phrase mid-parenthesis and registered a
+ * party named `Antonia Pike (each`. The role is the FIRST quoted term.
+ */
+const ROLE_PAREN_COLLECTIVE =
+  /\(\s*(?:each|collectively|together)\b[^"“”'’)]{0,20}?["“”'’]([^"”'’)]+)["“”'’]/;
+
+/**
  * Words that mark a descriptive phrase as naming a PARTY rather than an
  * instrument — "the individual or entity accepting this EULA" versus "any
  * Statement of Work".
@@ -685,7 +729,7 @@ const PARTY_DESCRIPTOR =
  */
 function splitNameAndRole(raw: string): { name: string; role?: string } {
   const trimmed = raw.trim();
-  const m = ROLE_PAREN.exec(trimmed);
+  const m = ROLE_PAREN.exec(trimmed) ?? ROLE_PAREN_COLLECTIVE.exec(trimmed);
   if (!m) return { name: cleanPartyName(trimmed) };
   const role = m[1]?.trim();
   const name = cleanPartyName(trimmed.slice(0, m.index));
@@ -710,6 +754,11 @@ function cleanPartyName(raw: string): string {
   n = n.replace(LEADING_ROLE, "");
   // Strip trailing entity descriptor like ", a Delaware corporation".
   n = n.replace(/,\s*(?:a|an)\s+.+$/i, "");
+  // A name never carries an UNMATCHED open parenthesis. The descriptor strip
+  // above can cut inside a parenthetical it did not open.
+  if ((n.match(/\(/g) ?? []).length > (n.match(/\)/g) ?? []).length) {
+    n = n.slice(0, n.lastIndexOf("(")).trim();
+  }
   n = trimEnd(n, /[.,;]/);
   if (n.length < 2 || n.length > 80) return "";
   if (!/[A-Z]/.test(n.charAt(0))) return "";
