@@ -20,16 +20,44 @@
       "eligible passive company",
       "life insurance assignment"
     ],
-    "negative_features": ["employment offer", "merger agreement"]
+    "negative_features": [
+      "employment offer",
+      "merger agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Loan", "Guarantor", "Borrower"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Loan",
+    "Guarantor",
+    "Borrower"
+  ],
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "SBA-SOP-50-10",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["loan-agreement", "guaranty"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "loan-agreement",
+    "guaranty"
+  ],
   "compliance_matrix_columns": [
     "SBA authorization incorporated",
     "Use-of-proceeds restrictions",

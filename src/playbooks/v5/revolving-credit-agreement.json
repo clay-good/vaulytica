@@ -20,16 +20,45 @@
       "administrative agent",
       "unused commitment fee"
     ],
-    "negative_features": ["employment offer", "lease of the premises", "merger agreement"]
+    "negative_features": [
+      "employment offer",
+      "lease of the premises",
+      "merger agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Commitment", "Borrowing Base", "Applicable Margin"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Commitment",
+    "Borrowing Base",
+    "Applicable Margin"
+  ],
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "LSTA",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["security-agreement", "intercreditor-agreement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "security-agreement",
+    "intercreditor-agreement"
+  ],
   "compliance_matrix_columns": [
     "Commitment, availability, and borrowing base",
     "Interest rate, benchmark, and replacement waterfall",

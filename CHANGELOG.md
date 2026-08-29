@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.221.0] — 2026-08-29
+
+### Added
+- A revolving credit agreement on LSTA architecture — the 179th specimen, and
+  the first for `revolving-credit-agreement`. The whole BNK-101..108 pack is
+  silent on one that covers every column: commitment and borrowing base, the
+  SOFR benchmark-replacement waterfall, financial covenants with testing dates
+  and an equity cure, conditions to each borrowing, events of default with cure
+  and cross-default, the collateral and guarantor package, agent authority with
+  assignment and participation, and prepayment with breakage, increased costs,
+  and the tax gross-up.
+
+### Fixed
+- **Three lending families carried an empty `rule_overrides`** —
+  `revolving-credit-agreement`, `sba-loan-agreement`, and
+  `intercreditor-agreement`. A credit agreement was told it does not allocate
+  ownership of intellectual property and has no limitation-of-liability clause,
+  because nobody had given the families the profile their siblings
+  (`convertible-note`, `promissory-note`) already carry.
+- **STRUCT-009 read an ATTRIBUTIVE use as a miscapitalized defined term.** A
+  credit agreement defines "Commitment" and then charges an "unused commitment
+  fee" — the fee, not the Commitment. The head nouns are enumerated rather than
+  inferred, because an open "followed by any lowercase word" test would swallow
+  the ordinary sentences where the term is the subject and the next word is its
+  verb.
+
 ## [9.220.0] — 2026-08-29
 
 ### Added

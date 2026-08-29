@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -44,7 +44,8 @@ export const rule: Rule = {
             !isGenericOwnUse(text, m.index) &&
             !isContrastiveUse(text, m.index) &&
             !isStatutoryIdiomUse(text, m.index, target, m[0].length) &&
-            !isQuotedIdiomUse(text, m.index, m[0].length)
+            !isQuotedIdiomUse(text, m.index, m[0].length) &&
+            !isAttributiveUse(text, m.index, m[0].length)
           ) {
             foundLower = true;
             break;
@@ -159,4 +160,24 @@ export function isQuotedIdiomUse(text: string, index: number, length: number): b
   const insideCurly = opensBefore > closesBefore;
   if (!insideStraight && !insideCurly) return false;
   return /["\u201D]/.test(after);
+}
+
+/**
+ * A lowercase use that MODIFIES a following noun names a different thing than
+ * the defined term it borrows a word from. A credit agreement defines
+ * "Commitment" as a lender's obligation to lend and then charges an "unused
+ * commitment fee" — the fee, not the Commitment — and the same holds for a
+ * "commitment letter" and a "commitment period". Reporting these as a
+ * miscapitalized "Commitment" asks the drafter to capitalize a word that is
+ * not the defined term.
+ *
+ * The head nouns are enumerated rather than inferred: an open "followed by any
+ * lowercase word" test would swallow ordinary sentences, where the word after
+ * the term is a verb or a preposition and the term IS the subject.
+ */
+const ATTRIBUTIVE_HEAD =
+  /^\s+(?:fee|fees|letter|letters|date|dates|period|periods|rate|rates|price|prices|amount|amounts|notice|notices|certificate|certificates|schedule|schedules|statement|statements|report|reports|threshold|thresholds)\b/;
+
+export function isAttributiveUse(text: string, index: number, length: number): boolean {
+  return ATTRIBUTIVE_HEAD.test(text.slice(index + length, index + length + 24));
 }

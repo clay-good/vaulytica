@@ -2,9 +2,13 @@
   "id": "intercreditor-agreement",
   "version": "1.0.0",
   "name": "Intercreditor Agreement",
-  "description": "Intercreditor / lien-priority agreement (1L / 2L) — LSTA model baseline. Selects the §6.L ruleset (BNK-027..BNK-032).",
+  "description": "Intercreditor / lien-priority agreement (1L / 2L) \u2014 LSTA model baseline. Selects the \u00a76.L ruleset (BNK-027..BNK-032).",
   "match_features": {
-    "title_keywords": ["intercreditor agreement", "intercreditor", "lien subordination agreement"],
+    "title_keywords": [
+      "intercreditor agreement",
+      "intercreditor",
+      "lien subordination agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "senior",
@@ -14,15 +18,41 @@
       "turnover",
       "dip financing"
     ],
-    "negative_features": ["promissory note", "loan agreement", "guaranty"]
+    "negative_features": [
+      "promissory note",
+      "loan agreement",
+      "guaranty"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Senior Debt", "Junior Debt", "Standstill Period"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Senior Debt",
+    "Junior Debt",
+    "Standstill Period"
+  ],
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-9-339-LSTA-MODEL",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Senior / junior priorities",

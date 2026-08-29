@@ -679,6 +679,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A revolving credit agreement on LSTA architecture — the 179th specimen.
+  // The whole BNK-101..108 pack is silent: commitment and borrowing base,
+  // the SOFR benchmark-replacement waterfall, the financial covenants with
+  // testing dates and an equity cure, conditions to each borrowing, events of
+  // default with cure and cross-default, the collateral and guarantor
+  // package, agent authority with assignment and participation, and
+  // prepayment with breakage, increased costs, and the tax gross-up.
+  "revolving-credit-agreement.txt": {
+    playbook: "revolving-credit-agreement",
+    findings: [
+      "CHOICE-008",
+      "OBLI-003",
+      "OBLI-005",
+      "OBLI-007",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-006",
+      "TEMP-007",
+    ],
+  },
   // An asset purchase agreement — the 178th specimen. The whole MNA-020..028
   // pack is silent: purchased assets, excluded assets, assumed and excluded
   // liabilities, the bulk-sales waiver, the § 1060 allocation with Form 8594,

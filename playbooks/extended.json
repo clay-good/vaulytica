@@ -9541,7 +9541,23 @@
       "Junior Debt",
       "Standstill Period"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UCC-9-339-LSTA-MODEL",
@@ -15872,7 +15888,23 @@
       "Borrowing Base",
       "Applicable Margin"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "LSTA",
@@ -16645,7 +16677,23 @@
       "Guarantor",
       "Borrower"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "SBA-SOP-50-10",

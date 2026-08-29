@@ -43,3 +43,23 @@ describe("STRUCT-009 — a lowercase term inside a quotation (v1.7.0)", () => {
     expect(finding!.description).toContain("Software");
   });
 });
+
+describe("STRUCT-009 — an attributive use is not the defined term (v1.8.0)", () => {
+  it('does not report "Commitment" for a lowercase "commitment fee"', () => {
+    const ctx = buildContext([
+      "Credit Agreement",
+      '"Commitment" means, as to each Lender, its obligation to make Revolving Loans up to the amount set opposite its name on Schedule 2.1.',
+      "The Borrower shall pay an unused commitment fee of 0.30% per annum on the average daily unused portion of each Commitment.",
+    ]);
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+
+  it("still reports a bare lowercase use of the same term", () => {
+    const ctx = buildContext([
+      "Credit Agreement",
+      '"Commitment" means, as to each Lender, its obligation to make Revolving Loans up to the amount set opposite its name on Schedule 2.1.',
+      "No Lender shall be required to lend in excess of its commitment.",
+    ]);
+    expect(STRUCT_009.check(ctx)?.description).toBe("Commitment");
+  });
+});

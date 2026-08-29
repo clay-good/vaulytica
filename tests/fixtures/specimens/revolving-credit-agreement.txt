@@ -1,0 +1,103 @@
+REVOLVING CREDIT AGREEMENT
+
+This Revolving Credit Agreement (this "Agreement") is dated as of May 4, 2026, among Thornbury Outdoor Brands, Inc., a Delaware corporation (the "Borrower"), the several lenders from time to time party hereto (each, a "Lender" and collectively, the "Lenders"), and Calderwood Bank, National Association, as administrative agent for the Lenders (in such capacity, the "Administrative Agent").
+
+ARTICLE 1. DEFINITIONS
+
+1.1 Defined Terms. As used in this Agreement:
+
+"Applicable Margin" means, for any day, the rate per annum set forth in the pricing grid in Schedule 1.1, determined by reference to the Consolidated Total Leverage Ratio as of the most recent testing date, ranging from 1.75% to 2.75% for Term SOFR Loans and from 0.75% to 1.75% for Base Rate Loans.
+
+"Borrowing Base" means, at any time, the sum of (a) 85% of Eligible Accounts, plus (b) the lesser of (i) 65% of the value of Eligible Inventory and (ii) 85% of the net orderly liquidation value of Eligible Inventory, minus (c) the aggregate amount of all Reserves then in effect.
+
+"Commitment" means, as to each Lender, its obligation to make Revolving Loans in an aggregate principal amount not to exceed the amount set opposite its name on Schedule 2.1. The aggregate Commitments on the Closing Date are $75,000,000.
+
+"Eligible Accounts" means accounts receivable of the Borrower that satisfy the criteria in Section 2.3, excluding accounts more than 90 days past the original invoice date, accounts owing from an affiliate, and accounts subject to any offset or dispute.
+
+"Reserves" means reserves against the Borrowing Base established by the Administrative Agent in the exercise of its Permitted Discretion, provided that the Administrative Agent shall give the Borrower five (5) Business Days' prior written notice before establishing or increasing any Reserve, and no Reserve may be established for a matter already accounted for in the eligibility criteria.
+
+ARTICLE 2. THE CREDIT FACILITY
+
+2.1 Revolving Commitments. Subject to the terms of this Agreement, each Lender severally agrees to make revolving loans (each, a "Revolving Loan") to the Borrower from time to time during the Availability Period in an aggregate principal amount at any time outstanding not to exceed its Commitment, provided that the aggregate principal amount of all Revolving Loans outstanding shall not at any time exceed the lesser of (a) the aggregate Commitments and (b) the Borrowing Base.
+
+2.2 Availability. Availability at any time equals the lesser of the aggregate Commitments and the Borrowing Base, minus the aggregate outstanding Revolving Loans and the aggregate Letter of Credit Obligations.
+
+2.3 Borrowing Base Reporting. The Borrower shall deliver a Borrowing Base Certificate, in the form of Exhibit D, on or before the twentieth day of each month, and weekly at any time when Availability is less than the greater of $7,500,000 and 12.5% of the aggregate Commitments.
+
+2.4 Interest. Revolving Loans bear interest, at the Borrower's election, at (a) Term SOFR for the applicable Interest Period plus the Applicable Margin, or (b) the Base Rate plus the Applicable Margin. Interest is payable in arrears on the last day of each Interest Period and on the Maturity Date.
+
+2.5 Benchmark Replacement. If a Benchmark Transition Event occurs with respect to Term SOFR, the Administrative Agent and the Borrower shall replace the then-current Benchmark with a Benchmark Replacement, together with any related Benchmark Replacement Adjustment, in each case selected in accordance with the waterfall in this Section 2.5. The Administrative Agent may make Conforming Changes to give effect to any Benchmark Replacement, and shall notify the Borrower and the Lenders of any such change. If no successor rate is available under the waterfall, Revolving Loans shall bear interest at the Base Rate.
+
+2.6 Fees. The Borrower shall pay to the Administrative Agent, for the account of each Lender, an unused commitment fee of 0.30% per annum on the average daily unused portion of that Lender's Commitment, payable quarterly in arrears. The Borrower shall also pay the arrangement and agency fees set forth in the Fee Letter.
+
+2.7 Prepayment. The Borrower may prepay Revolving Loans in whole or in part at any time without premium or penalty, subject to Section 2.8 for any prepayment of a Term SOFR Loan on a day other than the last day of its Interest Period. The Borrower shall prepay Revolving Loans to the extent the outstanding principal exceeds Availability.
+
+2.8 Breakage; Increased Costs; Taxes. The Borrower shall compensate each Lender for any loss or expense attributable to a prepayment or conversion of a Term SOFR Loan other than on the last day of its Interest Period. If any change in Law increases the cost to a Lender of making or maintaining any Loan, the Borrower shall pay that Lender the additional amounts necessary to compensate it for the increased costs. All payments shall be made free and clear of Taxes, and if the Borrower is required to deduct any Indemnified Taxes, the sum payable shall be increased by the tax gross-up necessary so that the recipient receives the amount it would have received had no deduction been made.
+
+ARTICLE 3. CONDITIONS PRECEDENT
+
+3.1 Conditions to Closing. The obligation of each Lender to make its initial Revolving Loan is subject to the conditions precedent that the Administrative Agent has received the executed Loan Documents, the UCC-1 financing statements, a customary opinion of counsel, the initial Borrowing Base Certificate, and evidence that all liens other than Permitted Liens have been released.
+
+3.2 Conditions to Each Borrowing. The obligation of each Lender to make any Revolving Loan, including the initial Revolving Loan, is subject to the further conditions precedent that (a) the representations and warranties are true and correct in all material respects as of the date of that borrowing, (b) no Default or Event of Default shall have occurred and be continuing or would result from the borrowing, and (c) after giving effect to the borrowing, the outstanding Revolving Loans do not exceed Availability.
+
+ARTICLE 4. FINANCIAL COVENANTS
+
+4.1 Fixed Charge Coverage Ratio. The Borrower shall maintain a Fixed Charge Coverage Ratio of not less than 1.10 to 1.00, tested as of the last day of each fiscal quarter, commencing with the fiscal quarter ending June 30, 2026, for the four fiscal quarters then ended.
+
+4.2 Consolidated Total Leverage Ratio. The Borrower shall not permit the Consolidated Total Leverage Ratio to exceed 3.50 to 1.00 as of the last day of any fiscal quarter, stepping down to 3.25 to 1.00 for each fiscal quarter ending on or after June 30, 2027.
+
+4.3 Compliance Certificate. Within 45 days after the end of each of the first three fiscal quarters, and within 90 days after the end of each fiscal year, the Borrower shall deliver a compliance certificate signed by a Financial Officer setting forth the calculation of each financial covenant in reasonable detail.
+
+4.4 Equity Cure. If the Borrower fails to satisfy Section 4.1 or 4.2, the Borrower may, within 10 Business Days after the compliance certificate is due, apply the cash proceeds of an equity contribution to increase Consolidated EBITDA for the applicable period. The equity cure may be exercised no more than twice in any four consecutive fiscal quarters and no more than four times during the term of this Agreement.
+
+ARTICLE 5. COLLATERAL AND GUARANTEES
+
+5.1 Security Interest. To secure the Obligations, the Borrower grants to the Administrative Agent, for the benefit of the Secured Parties, a security interest in substantially all of its personal property, as more fully described in the Security Agreement. The Borrower shall take all action reasonably requested to perfect that security interest, including the filing of UCC-1 financing statements and the execution of a deposit account control agreement for each deposit account other than an Excluded Account.
+
+5.2 Guarantors. Each existing and future wholly owned domestic subsidiary of the Borrower shall guarantee the Obligations and grant a security interest in its assets, in each case within 30 days after becoming a subsidiary. The Borrower shall pledge 100% of the equity interests of each domestic subsidiary and 65% of the voting equity interests of each first-tier foreign subsidiary.
+
+ARTICLE 6. EVENTS OF DEFAULT
+
+6.1 Events of Default. Each of the following is an Event of Default: (a) failure to pay principal when due, or interest or any other amount within three Business Days after it is due; (b) any representation or warranty proves to have been incorrect in any material respect when made; (c) failure to perform any covenant in Article 4, or failure to perform any other covenant that continues unremedied for 30 days after notice from the Administrative Agent; (d) a cross-default under any other indebtedness with a principal amount exceeding $5,000,000; (e) a bankruptcy or insolvency proceeding; (f) an ERISA event that could reasonably be expected to result in a Material Adverse Effect; or (g) a Change of Control.
+
+6.2 Remedies. Upon the occurrence and during the continuance of an Event of Default, the Administrative Agent may, and at the direction of the Required Lenders shall, terminate the Commitments, declare all Obligations immediately due and payable, and exercise all rights under the Loan Documents and applicable Law. Upon a bankruptcy Event of Default, the Commitments terminate and the Obligations become immediately due and payable automatically and without any notice or declaration.
+
+ARTICLE 7. THE ADMINISTRATIVE AGENT
+
+7.1 Appointment and Authority. Each Lender appoints Calderwood Bank, National Association as Administrative Agent and authorizes it to take such actions on its behalf as are delegated to it by this Agreement, together with such actions as are reasonably incidental thereto. The Administrative Agent has no fiduciary duty to any Lender or the Borrower.
+
+7.2 Required Lenders. Except for the amendments listed in Section 9.2 that require the consent of each affected Lender, this Agreement may be amended only with the consent of the Required Lenders, meaning Lenders holding more than 50% of the aggregate Commitments.
+
+7.3 Assignments and Participations. Any Lender may assign all or a portion of its rights and obligations to an Eligible Assignee with the prior written consent of the Administrative Agent and, so long as no Event of Default has occurred and is continuing, the consent of the Borrower, which consent shall not be unreasonably withheld and shall be deemed given if the Borrower does not object within 10 Business Days. No consent of the Borrower is required for an assignment to another Lender or an affiliate of a Lender. Any Lender may sell a participation in its Loans without the consent of the Borrower, and the participant has no voting rights other than on the matters requiring the consent of each affected Lender.
+
+ARTICLE 8. TERM AND TERMINATION
+
+8.1 Maturity. The Commitments terminate, and all Obligations are due and payable in full, on May 4, 2031 (the "Maturity Date").
+
+8.2 Voluntary Termination. The Borrower may terminate or permanently reduce the aggregate Commitments, in a minimum amount of $5,000,000, on three Business Days' prior written notice, together with any accrued commitment fee on the terminated portion.
+
+8.3 Effect of Termination. Upon termination of the Commitments and payment in full of the Obligations, the Administrative Agent shall release its security interests and file UCC-3 termination statements at the Borrower's expense. The indemnification, yield protection, and tax gross-up provisions survive the termination of this Agreement and the repayment of the Obligations.
+
+ARTICLE 9. MISCELLANEOUS
+
+9.1 Indemnification. The Borrower shall indemnify the Administrative Agent, each Lender, and their respective officers, directors, employees, and affiliates against all losses, claims, damages, and reasonable and documented out-of-pocket expenses arising from the Loan Documents or the use of proceeds, except to the extent resulting from the gross negligence or willful misconduct of the indemnified party. The Administrative Agent shall control the defense of any third-party claim for which it seeks indemnification, and no indemnified party shall settle any such claim without the Borrower's prior written consent, not to be unreasonably withheld.
+
+9.2 Amendments. No amendment that increases any Commitment, reduces any principal, interest, or fee, extends any scheduled payment date, or releases all or substantially all of the Collateral or the Guarantors is effective without the written consent of each affected Lender.
+
+9.3 Governing Law; Jurisdiction; Waiver of Jury Trial. This Agreement is governed by the laws of the State of New York. Each party irrevocably submits to the exclusive jurisdiction of the courts of the State of New York sitting in New York County and the United States District Court for the Southern District of New York, and waives any objection to venue in those courts. EACH PARTY IRREVOCABLY WAIVES ANY RIGHT TO TRIAL BY JURY IN ANY ACTION ARISING OUT OF THIS AGREEMENT.
+
+9.4 Notices; Counterparts. Notices shall be in writing and delivered by hand, overnight courier, or email to the addresses in Schedule 9.4. This Agreement may be executed in counterparts, each of which is an original.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+THORNBURY OUTDOOR BRANDS, INC.
+
+By: /s/ Lucinda Farrow
+Name: Lucinda Farrow
+Title: Chief Financial Officer
+
+CALDERWOOD BANK, NATIONAL ASSOCIATION, as Administrative Agent and as a Lender
+
+By: /s/ Desmond Achebe
+Name: Desmond Achebe
+Title: Managing Director
