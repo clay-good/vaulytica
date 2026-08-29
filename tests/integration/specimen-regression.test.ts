@@ -40,6 +40,43 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A tenant work letter attached to an office lease. Clean: it routes on its
+  // own title, the family's checks are silent, and the always-on absence
+  // checks stand down because "This Tenant Work Letter is attached to and made
+  // a part of the Office Lease" is now read as a subordination recital.
+  "work-letter.txt": {
+    playbook: "tenant-improvement-work-letter",
+    findings: ["OBLI-005"],
+  },
+
+  // A residential property management agreement. FIN-005 could not read a
+  // management fee "payable from the Operating Account on the TENTH (10TH) DAY
+  // of the following month" — the payment SOURCE sits between the verb and the
+  // date, and the ordinal is spelled with the numeral in a parenthetical.
+  //
+  // OBLI-002 stays and is a KNOWN FALSE POSITIVE, recorded with the signal
+  // tried: the indemnities in Sections 6.3 and 6.4 are mutual, but only the
+  // first party's ROLE is extracted — the second party's role parenthetical
+  // sits behind a long qualifier ("an Arizona corporation holding Arizona real
+  // estate broker license number BR-558214 (\"Manager\")"), and a party with no
+  // role is invisible to every rule that compares an obligor against the party
+  // set. Widening `PARTY_DECL`'s window does not fix it: these parties come
+  // from the BETWEEN path, whose `ROLE_PAREN` is anchored to the end of the
+  // segment. The fix belongs in that path, not in the rule.
+  "property-management.txt": {
+    playbook: "property-management-agreement",
+    findings: [
+      "RISK-015",
+      "RISK-016",
+      "TEMP-004",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-010",
+      "RISK-011",
+      "TEMP-006",
+      "TERM-001",
+    ],
+  },
   // A 99-year ground lease with leasehold-mortgage protections. Four of its
   // own checks fired on the drafting they exist to require: RE-022 at
   // `critical` on a section headed "Escalation" (it knew CPI and "fair market

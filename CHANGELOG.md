@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.189.0] — 2026-08-29
+
+### Added
+- A tenant work letter and a residential property management agreement — the
+  150th and 151st specimens. The work letter is clean: it routes on its own
+  title, its family's checks are silent, and the always-on absence checks
+  stand down because "This Tenant Work Letter is attached to and made a part
+  of the Office Lease" is now read as a subordination recital.
+
+### Fixed
+- **FIN-005 could not read a fee "payable from the Operating Account on the
+  TENTH (10TH) DAY of the following month."** The payment SOURCE sits between
+  the verb and the date, and the ordinal is spelled with the numeral in a
+  parenthetical; the ordinal-day branch read neither.
+- **`property-management-agreement` shipped with an empty rule profile.**
+
+### Known limitation, recorded
+- **OBLI-002 reports a MUTUAL indemnity as one-sided** on the property
+  management agreement. Only the first party's ROLE is extracted: the second
+  party's role parenthetical sits behind a long qualifier ("an Arizona
+  corporation holding Arizona real estate broker license number BR-558214
+  (\"Manager\")"), and a party with no role is invisible to every rule that
+  compares an obligor against the party set. Widening `PARTY_DECL`'s window
+  does not fix it — these parties come from the `BETWEEN` path, whose
+  `ROLE_PAREN` is anchored to the end of the segment. The signal tried is
+  written into the specimen's pin so the next attempt starts from it.
+
+### Not changed
+- A static "does each presence rule's own recommendation satisfy its own
+  patterns" sweep over all 1,306 rules with patterns was built and discarded:
+  its string extraction cannot read a multi-line `fix:` value, so its 121
+  single-pattern "failures" were mostly artifacts. Two spot-checks (RE-109,
+  RE-150) were false alarms, and the work-letter specimen — which exercises
+  both — is silent. The specimen method already covers this class with better
+  evidence.
+
 ## [9.188.0] — 2026-08-29
 
 ### Added

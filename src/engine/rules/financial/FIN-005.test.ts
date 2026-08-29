@@ -386,3 +386,18 @@ describe("FIN-005 — the payment verb is not always 'pay'", () => {
     expect(FIN_005.check(buildContext(["Fees", clause]))).toBeNull();
   });
 });
+
+describe("FIN-005 — a recurring due date behind the payment source", () => {
+  // "payable from the Operating Account on the TENTH (10TH) DAY of the
+  // following month" — the payment SOURCE sits between the verb and the date,
+  // and the ordinal is spelled with the numeral in a parenthetical. The
+  // ordinal-day branch read neither, so a management fee with a stated
+  // monthly due date warned that no payment term was stated.
+  it.each([
+    "Owner shall pay Manager a management fee of four percent (4%) of Gross Collections each month, payable from the Operating Account on the tenth (10th) day of the following month.",
+    "The fee is payable on the fifteenth day of each month.",
+    "Rent is due on the 1st of each month.",
+  ])("reads %s", (clause) => {
+    expect(FIN_005.check(buildContext(["Fees", clause]))).toBeNull();
+  });
+});
