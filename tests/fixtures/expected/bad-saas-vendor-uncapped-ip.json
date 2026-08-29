@@ -604,7 +604,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-005",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1050,7 +1050,7 @@
       "id": "STRUCT-005-s1.3-987",
       "recommendation": "Review each unused term and either delete it or wire it into the relevant clause.",
       "rule_id": "STRUCT-005",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "info",
       "source_citations": [],
       "title": "Defined terms with no uses: 1"
@@ -1076,11 +1076,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Customer Data\", \"uptime\". Negative features penalized: \"Premises\".",
-  "result_hash": "214b99477ad617e085be87af78797e78a3abe33031c393e6a11650b4a0818f72",
+  "result_hash": "363cce332f07827024b742a0d106d3bd0c1fc140c52bf618d386eef61b571bd3",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.143.0"
+  "version": "9.144.0"
 }

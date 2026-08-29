@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.144.0] — 2026-08-29
+
+### Added
+- **`excerpt-is-evidence.test.ts`** — an excerpt with a span must be text the
+  document contains. A finding carries three things a reader acts on: a title,
+  a span the report highlights, and an excerpt printed beside it. An absence
+  finding is zero-width and its excerpt is a marker; every other finding points
+  at a range and must quote from it. The sweep runs the whole specimen corpus.
+
+### Fixed
+- **STRUCT-005 printed a comma-joined list of every unused defined term as its
+  excerpt**, while pointing at the paragraph that defines the first one — so
+  the report quoted a passage the document does not contain, and sent the
+  reader to a range that does not say it. The excerpt is the first unused term
+  now, which is text in the span; the full list stays in the description, where
+  it already was. (STRUCT-006 already read this way.)
+
 ## [9.143.0] — 2026-08-29
 
 ### Added
