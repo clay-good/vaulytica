@@ -518,6 +518,19 @@ const TITLE_CASE_LEADING_STOPWORDS = new Set([
   "We",
   "You",
   "I",
+  // The POSSESSIVE determiners. A power of attorney is written in the first
+  // person and refers to the defined "Agent" as "My Agent" throughout —
+  // reported as an undefined Title-Case term on the instrument that defines
+  // it. Their siblings are here for the same reason a leading article is:
+  // "Its Confidential Information" and "Their Representatives" are uses of the
+  // defined terms, not new ones. ("Your" is deliberately ABSENT — a consumer
+  // ToS commonly DEFINES "Your Content" as a term in its own right.)
+  "My",
+  "Our",
+  "Its",
+  "Their",
+  "His",
+  "Her",
   "Such",
   "Other",
   "Another",

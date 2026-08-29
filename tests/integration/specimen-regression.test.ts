@@ -679,6 +679,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A durable financial power of attorney — the 188th specimen, and the first
+  // for `durable-poa-financial`. EST-031..037 are all satisfied: principal and
+  // agent with a successor, durability that survives incapacity, the general
+  // subject-matter grant, the seven "hot powers" that require an express
+  // grant, the agent's fiduciary duties with an accounting, third-party
+  // reliance protection, and a notarial acknowledgment with recording. It
+  // exposed the possessive determiner: "My Agent" was reported as a term the
+  // instrument forgot to define.
+  "durable-poa-financial.txt": {
+    playbook: "durable-poa-financial",
+    findings: ["EST-060", "OBLI-005"],
+  },
   // An assignment and assumption agreement — the 187th specimen, and the first
   // for `assignment-and-assumption-agreement`. MNA-108..112 are all satisfied:
   // the schedule of assigned contracts, assumed versus excluded liabilities,

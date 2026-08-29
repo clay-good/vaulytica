@@ -2122,3 +2122,28 @@ describe("extractDefinitions — a cited case is not an undefined term (v9.223.0
     );
   });
 });
+
+describe("extractDefinitions — a possessive determiner does not make a new term (v9.229.0)", () => {
+  it('does not report "My Agent" on a power of attorney that defines "Agent"', () => {
+    const tree = buildTree([
+      "Durable Power of Attorney",
+      'I appoint my daughter as my agent and attorney-in-fact (the "Agent") to act for me.',
+      "My Agent shall act in good faith and within the scope of the authority granted.",
+      "My Agent shall keep a record of all receipts and disbursements made on my behalf.",
+    ]);
+    expect(extractDefinitions(tree).undefined_capitalized.map((u) => u.term)).not.toContain(
+      "My Agent",
+    );
+  });
+
+  it("still reports a possessive-led phrase whose remainder is undefined", () => {
+    const tree = buildTree([
+      "Agreement",
+      "Its Retention Bonus is payable on the anniversary date.",
+      "The Company shall pay Its Retention Bonus in a single lump sum.",
+    ]);
+    expect(extractDefinitions(tree).undefined_capitalized.map((u) => u.term)).toContain(
+      "Retention Bonus",
+    );
+  });
+});

@@ -21,7 +21,9 @@
     "negative_features": [
       "healthcare proxy",
       "advance directive",
-      "trust"
+      "declaration of trust",
+      "revocable living trust",
+      "the trust estate"
     ]
   },
   "expected_clauses": [],

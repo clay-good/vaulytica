@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.229.0] — 2026-08-29
+
+### Added
+- A durable financial power of attorney — the 188th specimen, and the first for
+  `durable-poa-financial`. EST-031..037 are all satisfied: principal and agent
+  with a successor, durability that survives incapacity, the general
+  subject-matter grant, the seven "hot powers" that require an express grant,
+  the agent's fiduciary duties with an accounting, third-party reliance
+  protection, and a notarial acknowledgment with recording.
+
+### Fixed
+- **A POSSESSIVE determiner made a new defined term.** A power of attorney is
+  written in the first person and calls the defined "Agent" "My Agent"
+  throughout, which STRUCT-006 reported as a term the instrument forgot to
+  define. "My", "Our", "Its", "Their", "His", and "Her" now behave like a
+  leading article. "Your" is deliberately absent — a consumer ToS commonly
+  defines "Your Content" as a term in its own right.
+- **`durable-poa-financial` penalized its own vocabulary.** It listed "trust"
+  as a negative feature, but a POA's hot powers include the power to create,
+  amend, revoke, or terminate an inter vivos trust. Narrowed to what a trust
+  instrument states in terms: "declaration of trust", "revocable living trust",
+  "the trust estate".
+
 ## [9.228.0] — 2026-08-29
 
 ### Added
