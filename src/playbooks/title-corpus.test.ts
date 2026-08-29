@@ -536,3 +536,53 @@ describe("a memorandum's subject line, inside its header block", () => {
     );
   });
 });
+
+describe("titleCorpus — a STATE court's caption", () => {
+  /**
+   * Federal practice is not the only practice. A Washington superior court
+   * caption names its venue "IN AND FOR KING COUNTY", writes its docket bare
+   * ("No. 26-2-04188-1 SEA") on a line of its own, and puts the versus mark
+   * alone on another — and every one of those stopped the caption walk. A set
+   * of interrogatories routed to `document-requests` and was told at
+   * `critical` that it stated no form of production for electronically stored
+   * information.
+   */
+  const state = (paragraphs: string[]) => tree([{ heading: "", paragraphs }]);
+  const TITLE = "PLAINTIFF'S FIRST SET OF INTERROGATORIES TO DEFENDANT";
+
+  it("reads past a venue line, a bare docket, and a lone versus mark", () => {
+    const t = state([
+      "IN THE SUPERIOR COURT OF THE STATE OF WASHINGTON",
+      "IN AND FOR KING COUNTY",
+      "HOLLIS MARINE SUPPLY, INC.,",
+      "Plaintiff,",
+      "v.",
+      "CASCADE PORT SERVICES, LLC,",
+      "Defendant.",
+      "No. 26-2-04188-1 SEA",
+      TITLE,
+      "Pursuant to CR 33, Plaintiff propounds the following interrogatories.",
+    ]);
+    expect(titleCorpus(t, "d.txt")).toContain(TITLE);
+  });
+
+  it("reads past a party block that carries the docket on the same line", () => {
+    const t = state([
+      "IN THE SUPERIOR COURT OF THE STATE OF WASHINGTON IN AND FOR KING COUNTY",
+      "HOLLIS MARINE SUPPLY, INC., Plaintiff, v. CASCADE PORT SERVICES, LLC, Defendant. No. 26-2-04188-1 SEA",
+      TITLE,
+      "Pursuant to CR 33, Plaintiff propounds the following interrogatories.",
+    ]);
+    expect(titleCorpus(t, "d.txt")).toContain(TITLE);
+  });
+
+  it("does not skip a title that merely ENDS on a party role", () => {
+    const t = state([
+      "IN THE SUPERIOR COURT OF THE STATE OF WASHINGTON",
+      "No. 26-2-04188-1 SEA",
+      "MOTION TO COMPEL ANSWERS FROM DEFENDANT",
+      "Plaintiff moves the Court for an order compelling answers.",
+    ]);
+    expect(titleCorpus(t, "d.txt")).toContain("MOTION TO COMPEL ANSWERS FROM DEFENDANT");
+  });
+});

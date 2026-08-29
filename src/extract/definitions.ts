@@ -623,9 +623,21 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     // defined in one number is routinely used in the other ("Confidential
     // Material" … "the Confidential Materials"; "Deliverables" … "each
     // Deliverable"), which is still a use, not a template leftover.
-    const variants = [entry.term, regularPlural(entry.term), regularSingular(entry.term)].filter(
-      (v): v is string => !!v && v !== entry.term,
-    );
+    // The article a definition QUOTES is not part of the term the body uses:
+    // '"The Berth Agreement" means …' is used as "the Berth Agreement"
+    // everywhere after, and the term went unmatched. The document was then
+    // told BOTH that "The Berth Agreement" is never used and that "Berth
+    // Agreement" is a term it forgot to define — two findings that contradict
+    // each other, about one term.
+    const bare = articleLess(entry.term);
+    const variants = [
+      entry.term,
+      regularPlural(entry.term),
+      regularSingular(entry.term),
+      bare,
+      bare ? regularPlural(bare) : undefined,
+      bare ? regularSingular(bare) : undefined,
+    ].filter((v): v is string => !!v && v !== entry.term);
     const alternatives = [entry.term, ...new Set(variants)].map(escapeRegExp).join("|");
     const needle = new RegExp(`\\b(?:${alternatives})\\b`, "g");
     forEachParagraph(tree, (ctx) => {
@@ -677,6 +689,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
 
   // Pass 4: undefined Title-Case phrases.
   const definedNames = new Set([...definitions.keys()]);
+  // A term defined WITH its article is the same term the body uses without
+  // one, so the article-less form is defined too.
+  for (const key of [...definedNames]) {
+    const bare = articleLess(key);
+    if (bare) definedNames.add(bare.toLowerCase());
+  }
   const undefinedHits = new Map<string, DocPosition[]>();
   /**
    * Title-Case phrases the document SIGNS. A phrase introduced by a signature
@@ -897,6 +915,30 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // above cannot see the word that makes it a law. Look at what follows.
       if (/^\s+(?:Act|Code|Law)\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
       if (OFFICER_TITLES.test(phrase)) continue;
+      // An office named by its ABBREVIATION — "VP Information Security", "SVP
+      // Global Sales", "CISO Operations". TITLE_CASE_PHRASE cannot include the
+      // all-caps abbreviation, so the capture begins one word in and the
+      // office reads as a term the document forgot to define. A completed
+      // security questionnaire reported "Information Security", which is the
+      // job of the person who signed it.
+      if (
+        /\b(?:VP|SVP|EVP|AVP|CEO|CFO|CTO|COO|CIO|CISO|CHRO|CRO|GC)\s+$/.test(
+          ctx.text.slice(Math.max(0, m.index - 8), m.index),
+        )
+      )
+        continue;
+      // The VALUE of a cover-block field — "Requesting organisation: Thornbury
+      // Federal Credit Union" — is a fact the document states, not a term it
+      // defines. Recognized only on a short paragraph that OPENS with the
+      // label, which is what a cover block is; a sentence that happens to
+      // carry a colon mid-flow is prose.
+      const fieldValue = /^\s*[A-Z][A-Za-z]*(?:\s+[A-Za-z]+){0,4}:\s*/.exec(ctx.text);
+      if (
+        fieldValue &&
+        ctx.text.trim().length <= FIELD_BLOCK_MAX_LENGTH &&
+        m.index === fieldValue[0].length
+      )
+        continue;
       // A phrase immediately followed by a corporate suffix (", Inc.",
       // " LLC") is an entity NAME, not a defined term — same reasoning as
       // the street-address guard, keyed on the unambiguous suffix.
@@ -1514,6 +1556,20 @@ function registerDefinition(map: Map<string, DefinitionEntry>, entry: Definition
   const existing = map.get(key);
   if (existing && existing.definition) return; // first definition wins
   map.set(key, entry);
+}
+
+/**
+ * A term with a leading article dropped — "The Berth Agreement" → "Berth
+ * Agreement" — or undefined when it has none, or nothing would be left of it.
+ */
+function articleLess(term: string): string | undefined {
+  const words = term.split(/\s+/);
+  const first = words[0] ?? "";
+  // The definition map is keyed in lower case and the entry carries the term
+  // as written, so the stopword test has to read both.
+  const capitalized = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+  if (words.length < 3 || !TITLE_CASE_LEADING_STOPWORDS.has(capitalized)) return undefined;
+  return words.slice(1).join(" ");
 }
 
 function escapeRegExp(s: string): string {

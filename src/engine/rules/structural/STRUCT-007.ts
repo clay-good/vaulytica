@@ -28,7 +28,14 @@ const ATTACHMENT_REF = /^(?:Exhibit|Schedule|Attachment)\b/i;
 // Narrow on both sides: only in a document that names the regulation, and only
 // for an ARABIC article number. An agreement's own internal divisions are
 // "Article III", and a genuinely broken reference to one still reports.
-const NAMES_GDPR = /\b(?:general\s+data\s+protection\s+regulation|GDPR)\b/i;
+// The formal citation is the regulation's NUMBER, not its nickname:
+// "Regulation (EU) 2016/679" is how an Article 30 record, a set of standard
+// contractual clauses, and any document drafted by a European lawyer names it.
+// A record of processing activities citing its own legal bases — "Article
+// 6(1)(b)", "Article 6(1)(a)", "Article 30(4)" — reported five broken internal
+// references to Articles a register does not have.
+const NAMES_GDPR =
+  /\b(?:general\s+data\s+protection\s+regulation|GDPR)\b|\bRegulation\s*\(EU\)\s*2016\/679\b/i;
 const GDPR_ARTICLE_REF = /^Articles?\s+\d/i;
 
 function documentText(ctx: RuleContext): string {
@@ -45,7 +52,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-007",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Cross-reference resolution",
   category: "structural",
   default_severity: "warning",

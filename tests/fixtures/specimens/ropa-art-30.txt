@@ -1,0 +1,49 @@
+RECORD OF PROCESSING ACTIVITIES
+
+Maintained by Kestrel Analytics B.V. under Article 30 of Regulation (EU) 2016/679
+
+Controller: Kestrel Analytics B.V., Herengracht 412, 1017 BX Amsterdam, Netherlands
+Data Protection Officer: Ivo Brandsma, dpo@kestrelanalytics.eu, +31 20 555 0142
+EU Representative: not applicable (the controller is established in the Union)
+Version: 4.2
+Last reviewed: March 3, 2026
+
+ACTIVITY 1 — CUSTOMER ACCOUNT ADMINISTRATION
+
+Purpose of processing: creating and maintaining customer accounts, authenticating users, and providing support.
+Categories of data subjects: employees of corporate customers who are named as authorised users.
+Categories of personal data: name, business email address, business telephone number, job title, account identifier, authentication logs.
+Special categories: none.
+Legal basis: Article 6(1)(b), performance of a contract to which the data subject's employer is party, and Article 6(1)(f) for authentication logging, the legitimate interest being the security of the service.
+Recipients: Nimbus Hosting GmbH (infrastructure), Vantage Support Ltd (tier-2 support).
+Transfers to third countries: none. All processing takes place in the Netherlands and Ireland.
+Retention period: for the term of the customer agreement and 24 months after its termination, after which records are deleted.
+Technical and organisational measures: encryption in transit and at rest, role-based access control, quarterly access review, annual penetration test.
+
+ACTIVITY 2 — MARKETING COMMUNICATIONS
+
+Purpose of processing: sending product announcements and event invitations to subscribers.
+Categories of data subjects: individuals who have subscribed to the mailing list.
+Categories of personal data: name, email address, subscription date, engagement metrics.
+Special categories: none.
+Legal basis: Article 6(1)(a), consent, withdrawable at any time through the unsubscribe link in every message.
+Recipients: Postmark Mail Services Inc.
+Transfers to third countries: transfers to the United States to Postmark Mail Services Inc. under the standard contractual clauses adopted by Commission Implementing Decision (EU) 2021/914, Module Two, supplemented by a transfer impact assessment dated November 2025.
+Retention period: until consent is withdrawn, and 6 months thereafter for suppression-list purposes.
+Technical and organisational measures: consent records retained with timestamp and source, pseudonymised engagement analytics.
+
+ACTIVITY 3 — RECRUITMENT
+
+Purpose of processing: assessing applicants for open positions.
+Categories of data subjects: job applicants.
+Categories of personal data: name, contact details, curriculum vitae, work history, interview notes, references.
+Special categories: none collected; applicants are asked not to supply them.
+Legal basis: Article 6(1)(b), steps taken at the request of the data subject prior to entering a contract.
+Recipients: Wavelength Recruiting B.V. for sourced candidates only.
+Transfers to third countries: none.
+Retention period: 4 weeks after the position is filled, or 12 months where the applicant consents to be kept on file.
+Technical and organisational measures: access limited to the hiring panel, interview notes stored in the applicant tracking system only.
+
+REVIEW
+
+This record is reviewed annually by the Data Protection Officer and on any material change to a processing activity. It is made available to the Autoriteit Persoonsgegevens on request under Article 30(4).

@@ -1,0 +1,67 @@
+VENDOR SECURITY QUESTIONNAIRE
+
+Requesting organisation: Thornbury Federal Credit Union
+Vendor: Larkspur Data Systems, Inc.
+Service under review: hosted loan origination platform
+Completed by: Priyanka Deshmukh, VP Information Security, Larkspur Data Systems, Inc.
+Date completed: April 22, 2026
+
+SECTION A — GOVERNANCE
+
+A1. Do you maintain a written information security policy approved by executive management?
+Yes. Our information security policy was last approved by the Board of Directors on January 14, 2026 and is reviewed annually.
+
+A2. Do you hold a current SOC 2 Type II report or ISO/IEC 27001 certificate?
+Yes. A SOC 2 Type II report covering security, availability, and confidentiality for the period July 1, 2025 through December 31, 2025 was issued on February 20, 2026 by Marchetti & Foss LLP. It is available under NDA.
+
+A3. Who is accountable for information security at your organisation?
+The VP Information Security reports to the Chief Technology Officer and presents to the Board's Risk Committee quarterly.
+
+SECTION B — ACCESS CONTROL
+
+B1. Is multi-factor authentication enforced for all administrative access?
+Yes, for all administrative and remote access, using hardware security keys or a TOTP authenticator. SMS is not accepted.
+
+B2. How often is access reviewed?
+Access is reviewed quarterly by the system owner. Terminated personnel lose access within 4 hours of the termination ticket.
+
+B3. Do you use shared or generic accounts?
+No. Break-glass accounts exist for two systems; each use is logged, alerts the security team, and requires a written justification within one business day.
+
+SECTION C — DATA PROTECTION
+
+C1. Is customer data encrypted at rest and in transit?
+Yes. AES-256 at rest, TLS 1.3 in transit. Keys are managed in a hardware security module and rotated annually.
+
+C2. Where is customer data stored?
+In the United States only, in two regions of a major cloud provider. No customer data is stored or accessed outside the United States.
+
+C3. Do you use subprocessors with access to customer data?
+Yes, three. A current list is maintained at larkspurdata.com/subprocessors and we give 30 days notice before adding one.
+
+SECTION D — INCIDENT RESPONSE
+
+D1. Do you maintain a documented incident response plan?
+Yes, tested by tabletop exercise at least annually. The last exercise was held on October 8, 2025.
+
+D2. What is your customer notification commitment following a security incident?
+We notify affected customers without undue delay and in any event within 48 hours of confirming an incident affecting their data.
+
+D3. Have you experienced a reportable security incident in the last 24 months?
+No.
+
+SECTION E — RESILIENCE
+
+E1. What are your recovery time and recovery point objectives?
+RTO of 4 hours and RPO of 15 minutes for the production platform.
+
+E2. When did you last test your disaster recovery plan?
+A full failover test was performed on November 12, 2025 and completed within the stated RTO.
+
+ATTESTATION
+
+The undersigned confirms that the answers above are accurate as of the date completed and undertakes to notify Thornbury Federal Credit Union of any material change within 30 days.
+
+/s/ Priyanka Deshmukh
+Priyanka Deshmukh, VP Information Security
+Larkspur Data Systems, Inc.

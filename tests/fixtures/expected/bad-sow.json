@@ -587,7 +587,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.25.0"
+      "rule_version": "1.26.0"
     },
     {
       "elapsed_ms": 0,
@@ -616,7 +616,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-007",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1033,11 +1033,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "a011182f50b3a7392c1364f851401f9decfb791e8cbb32bb6ee0647dfaf69a25",
+  "result_hash": "d8c4ac5776aaad64b4786f9eb652d254fdf2d979959ae5ade795ccdfac9f0cdc",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.128.0"
+  "version": "9.129.0"
 }

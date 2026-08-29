@@ -190,6 +190,35 @@ export const EXPECTED: Record<string, Expectation> = {
   "settlement.txt": { playbook: "confidential-settlement", findings: ["SET-009", "OBLI-005"] },
 
   // A desktop EULA that recites FAR 12.212's quoted phrase.
+  // An Article 30 record of processing activities: a REGISTER a controller
+  // keeps, not an agreement with anybody. It routed to
+  // `dpa-controller-processor` and drew seventy-five findings, every one of
+  // them a clause a register is not supposed to contain.
+  "ropa-art-30.txt": { playbook: "ropa-art-30", findings: [] },
+
+  // A completed vendor security questionnaire: question-and-answer pairs, not
+  // clauses. The one finding is the family's own — the questionnaire never
+  // asks about vulnerability management.
+  "vendor-security-questionnaire.txt": {
+    playbook: "vendor-security-questionnaire",
+    findings: ["PRV-031"],
+  },
+
+  // An ACORD-style certificate of liability insurance, which says in its own
+  // first paragraph that it is not a contract.
+  "coi.txt": { playbook: "coi", findings: [] },
+
+  // A Washington state set of interrogatories. The caption puts the docket on
+  // its OWN line and writes it bare — "No. 26-2-04188-1 SEA" — and the party
+  // block arrives as one paragraph ending in ", Defendant.", so the caption
+  // walk stopped short of the title and the document routed to
+  // `document-requests`, which reported at `critical` that it stated no form
+  // of production for electronically stored information.
+  "interrogatories.txt": {
+    playbook: "interrogatories",
+    findings: ["DISC-010", "STRUCT-005"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

@@ -1482,3 +1482,66 @@ describe("the title of an attachment on its label line", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Trust Property");
   });
 });
+
+describe("a term defined WITH its article", () => {
+  // '"The Berth Agreement" means …' is used as "the Berth Agreement"
+  // everywhere after, and the term went unmatched. A set of interrogatories
+  // was told BOTH that "The Berth Agreement" is never used and that "Berth
+  // Agreement" is a term it forgot to define — two findings that contradict
+  // each other, about one term.
+  const map = () =>
+    extractDefinitions(
+      buildTree([
+        "Interrogatories",
+        '"The Berth Agreement" means the Berth and Terminal Services Agreement dated March 2, 2024.',
+        "Identify each person who negotiated the Berth Agreement on Your behalf.",
+        "State when You first performed under the Berth Agreement.",
+      ]),
+    );
+
+  it("counts the article-less uses", () => {
+    expect(map().unused_terms).not.toContain("The Berth Agreement");
+  });
+
+  it("does not also report the article-less form as undefined", () => {
+    expect(map().undefined_capitalized.map((e) => e.term)).not.toContain("Berth Agreement");
+  });
+});
+
+describe("a cover block's field values and office abbreviations", () => {
+  const undef = (...paras: string[]) =>
+    extractDefinitions(
+      buildTree(["Vendor Security Questionnaire", ...paras]),
+    ).undefined_capitalized.map((e) => e.term);
+
+  // The VALUE of a cover-block field is a fact the document states, not a term
+  // it defines.
+  it("does not report a field value as an undefined term", () => {
+    expect(
+      undef(
+        "Requesting organisation: Thornbury Federal Credit Union",
+        "The vendor shall notify Thornbury Federal Credit Union of any material change.",
+      ),
+    ).not.toContain("Thornbury Federal Credit Union");
+  });
+
+  // TITLE_CASE_PHRASE cannot include the all-caps abbreviation, so the capture
+  // begins one word into the office and reads as an undefined term.
+  it("does not report the tail of an abbreviated office", () => {
+    expect(
+      undef(
+        "The VP Information Security reports to the Chief Technology Officer.",
+        "Completed by Priyanka Deshmukh, VP Information Security.",
+      ),
+    ).not.toContain("Information Security");
+  });
+
+  it("still reports a genuine undefined term in the same paragraph shape", () => {
+    expect(
+      undef(
+        "Scope of review: the Reference Architecture as delivered.",
+        "The vendor shall maintain the Reference Architecture for the term.",
+      ),
+    ).toContain("Reference Architecture");
+  });
+});

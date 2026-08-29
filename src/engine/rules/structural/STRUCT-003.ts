@@ -166,8 +166,11 @@ const DELIVERY_RECITAL =
 // stands in for execution. Deliberately narrow to the revision-stamp wording:
 // "Effective Date:" appears on plenty of signed contracts, and accepting it
 // would silence the critical finding on a genuinely unsigned agreement.
+// "Last reviewed" belongs beside "last updated": a policy, a register, and a
+// standing notice all stamp the REVIEW rather than the edit, and it is the
+// same publication stamp under a different verb.
 const PUBLICATION_STAMP =
-  /\blast\s+(?:updated|revised|modified|amended)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
+  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
 
 // A formal valediction opening a line — "Very truly yours,", "Sincerely,",
 // "Respectfully submitted," — is the execution of CORRESPONDENCE (a demand
@@ -245,7 +248,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.25.0",
+  version: "1.26.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

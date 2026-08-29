@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.129.0] — 2026-08-29
+
+### Added
+- **Four specimens for documents that are not agreements at all**: an Article
+  30 record of processing activities, a completed vendor security
+  questionnaire, an ACORD-style certificate of liability insurance, and a
+  Washington state set of interrogatories. Ninety-six specimens now, and every
+  defect below came out of running the CLI on one of the four.
+
+### Fixed
+- **A record of processing activities drew seventy-five findings, none of them
+  about a register.** It routed to `dpa-controller-processor` and was told at
+  `critical` that it had no documented-instructions clause, no subprocessor
+  terms, no SCC Clause 1, and thirty-six more. Its family's title keyword was
+  the PLURAL "records of processing" — the heading of Article 30 itself — and
+  a controller titles its own document "Record of Processing Activities".
+- **A state court's caption swallowed its filing's title** (four separate
+  ways). The venue line is written "IN AND FOR KING COUNTY" or "COUNTY OF LOS
+  ANGELES", the docket bare as "No. 26-2-04188-1 SEA", the versus mark alone
+  as "v.", and the party block ends ", Defendant." on the same line as the
+  docket. Each stopped the caption walk, so a set of interrogatories routed to
+  `document-requests` and was told at `critical` that it stated no form of
+  production for electronically stored information. (The `\b` after the versus
+  mark could never match: a period has no word character after it.)
+- **A GDPR citation read as a broken internal cross-reference** (STRUCT-007),
+  twice over. A lettered sub-reference — "Article 6(1)(b)", "Section 4(a) of
+  the Act" — stopped the external-citation run at the first lettered level,
+  because the group required a digit. And the guard for a document that cites
+  the regulation looked only for the nickname: the formal citation is
+  "Regulation (EU) 2016/679", which is how any document drafted by a European
+  lawyer names it.
+- **A term defined WITH its article was reported both unused and undefined** —
+  '"The Berth Agreement" means …' used as "the Berth Agreement" thereafter drew
+  a STRUCT-005 saying the term is never used and a STRUCT-006 saying the same
+  term is never defined. Two findings that contradict each other, about one
+  term.
+- **A cover block's field value and an abbreviated office were reported as
+  undefined terms** — "Requesting organisation: Thornbury Federal Credit Union"
+  states a fact, and "VP Information Security" is a job (the capture begins one
+  word in, because a Title-Case run cannot include the all-caps abbreviation).
+- **A "Last reviewed:" stamp is a publication stamp** (STRUCT-003), the same as
+  "Last updated" — a register and a standing policy stamp the review, not the
+  edit, and were told at `critical` that they had no signature block.
+- Skip profiles: `ropa-art-30` no longer demands a signature block, and
+  `vendor-security-questionnaire` no longer demands a data-retention period or
+  an IP-ownership allocation from a question-and-answer form.
+
 ## [9.128.0] — 2026-08-29
 
 ### Changed

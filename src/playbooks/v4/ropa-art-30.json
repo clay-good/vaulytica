@@ -6,6 +6,7 @@
   "match_features": {
     "title_keywords": [
       "records of processing",
+      "record of processing",
       "ropa",
       "article 30",
       "processing register"
@@ -54,6 +55,9 @@
       "skip": true
     },
     "STRUCT-002": {
+      "skip": true
+    },
+    "STRUCT-003": {
       "skip": true
     },
     "STRUCT-004": {

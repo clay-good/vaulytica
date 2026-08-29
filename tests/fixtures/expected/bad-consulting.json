@@ -594,7 +594,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.25.0"
+      "rule_version": "1.26.0"
     },
     {
       "elapsed_ms": 0,
@@ -622,7 +622,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-007",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1175,11 +1175,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "ed6a602beec1d069bb01a888d4894642b10ef520787d9fb429d4e57ffb6f2905",
+  "result_hash": "42d773e43856595775f44ed99dafd3f7d62cf5f53c4ebd5c775d88815124adb3",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.128.0"
+  "version": "9.129.0"
 }

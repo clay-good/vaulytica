@@ -27,6 +27,11 @@ const EXTERNAL: string[] = [
   "As required by Article 5 of the Charter.",
   "Capital Accounts are maintained under Treasury Regulations Section 1.704-1(b)(2)(iv).",
   "The allocation complies with Treas. Reg. § 1.704-2.",
+  // The lettered sub-reference: the group required a DIGIT, so the run stopped
+  // at the first lettered level and the qualifier that follows was never
+  // reached.
+  "The legal basis is Article 6(1)(b) of the GDPR.",
+  "Notice is given under Section 4(a) of the Act.",
 ];
 
 describe("STRUCT-007 external-citation FP guard", () => {
@@ -41,4 +46,34 @@ describe("STRUCT-007 external-citation FP guard", () => {
       expect(f, `FALSE BROKEN-REF: ${f?.description ?? ""}`).toBeNull();
     });
   }
+});
+
+/**
+ * The formal citation is the regulation's NUMBER, not its nickname. An Article
+ * 30 record of processing activities names it "Regulation (EU) 2016/679" and
+ * then cites its own legal bases bare — "Article 6(1)(b)", "Article 30(4)" —
+ * and reported five broken internal references to Articles a register does not
+ * have.
+ */
+describe("STRUCT-007 — the regulation named by its number", () => {
+  it("stays silent on bare Article citations in a document citing Regulation (EU) 2016/679", () => {
+    const ctx = buildContext(
+      [
+        "Record of Processing Activities",
+        "Maintained under Article 30 of Regulation (EU) 2016/679.",
+      ],
+      ["Activity 1", "Legal basis: Article 6(1)(b), performance of a contract."],
+      ["Review", "It is made available to the supervisory authority under Article 30(4)."],
+    );
+    const f = STRUCT_007.check(ctx);
+    expect(f, `FALSE BROKEN-REF: ${f?.description ?? ""}`).toBeNull();
+  });
+
+  it("still reports a broken reference in a document that names no regulation", () => {
+    const ctx = buildContext(
+      ["1. Definitions", "Terms used herein have the meanings given."],
+      ["2. Obligations", "The Supplier shall perform as set out in Section 9.4."],
+    );
+    expect(STRUCT_007.check(ctx)).not.toBeNull();
+  });
 });

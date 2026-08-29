@@ -267,18 +267,66 @@ function dropLegends(lines: readonly string[]): string[] {
  * is not a filing is touched.
  */
 const CAPTION_COURT = /^[^.]{0,160}\bcourt\b[^.]{0,80}$/i;
+// The trailing guard is a negative lookahead, not `\b`: a line holding the
+// bare versus mark — "v." — ends on a period, and `\b` needs a word character
+// on one side of the position, so the commonest caption line there is never
+// matched. It only shows when each line is its own paragraph, which is what a
+// double-spaced filing gives; a Washington set of interrogatories then handed
+// the matcher "v." as its title.
 const CAPTION_ROLE =
-  /^\s*(?:v\.|vs\.|-v-|plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?|cross-?(?:claimants?|defendants?)|third-?party\s+(?:plaintiffs?|defendants?))\b[\s,.:;)-]*$/i;
-const CAPTION_COURT_DIVISION = /^\s*(?:[A-Za-z]+\s+)?district\s+of\b|\bdivision\s*$/i;
+  /^\s*(?:v\.|vs\.|-v-|plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?|cross-?(?:claimants?|defendants?)|third-?party\s+(?:plaintiffs?|defendants?))(?![A-Za-z])[\s,.:;)-]*$/i;
+// The court block's venue line, which STATE practice writes half a dozen
+// ways: "IN AND FOR KING COUNTY", "COUNTY OF LOS ANGELES", "PARISH OF
+// ORLEANS", "THIRD JUDICIAL DISTRICT". None of them names a "court" and none
+// is a party line, so the walk stopped on the venue and handed the matcher a
+// county as the filing's title — which is exactly what a Washington set of
+// interrogatories does the moment each of its lines is its own paragraph.
+const CAPTION_COURT_DIVISION =
+  /^\s*(?:[A-Za-z]+\s+)?district\s+of\b|\bdivision\s*$|^\s*in\s+and\s+for\b|^\s*(?:the\s+)?(?:county|parish|borough|city|state|commonwealth)\s+of\b|\b(?:county|parish)\s*$|^\s*[A-Za-z]+\s+judicial\s+(?:district|circuit)\b/i;
 const CAPTION_DOCKET =
   /\b(?:case|civil\s+action|index|docket|cause|file)\s+no\b|\bhon\.|\bjudge\b/i;
+/**
+ * The docket line written BARE, which is how most state courts write it:
+ * "No. 26-2-04188-1 SEA". The qualifier the pattern above requires — "Case
+ * No.", "Civil Action No." — is federal practice and a minority of state
+ * practice. A Washington set of interrogatories stopped the caption walk on
+ * its own docket line.
+ *
+ * A number must follow, and the walk is engaged only under a court line, so a
+ * title beginning with the word "No" is untouched.
+ */
+const CAPTION_BARE_DOCKET = /^\s*nos?\.\s*\d/i;
+/** A docket number trailing the party block on the same line. */
+const TRAILING_DOCKET =
+  /\s*\b(?:(?:case|civil\s+action|index|docket|cause|file)\s+)?nos?\.\s*\d[\w.-]*(?:\s+[A-Z0-9-]{1,8})*\s*$/i;
+/**
+ * The caption's party block arriving as ONE paragraph, which is what happens
+ * whenever the ingest does not give each line its own: "HOLLIS MARINE SUPPLY,
+ * INC., Plaintiff, v. CASCADE PORT SERVICES, LLC, Defendant." The role test
+ * above is anchored at the START of a line and cannot see a block that merely
+ * ENDS on one, so the walk handed the matcher both parties' names as the
+ * filing's title.
+ *
+ * The COMMA before the role is what makes it the caption's and not a title's:
+ * "PLAINTIFF'S FIRST SET OF INTERROGATORIES TO DEFENDANT" ends on the same
+ * word and names the document, and skipping it lost the title all over again.
+ */
+const CAPTION_PARTY_BLOCK =
+  /,\s*(?:plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?|cross-?(?:claimants?|defendants?)|third-?party\s+(?:plaintiffs?|defendants?))\s*[.,;:)\s-]*$/i;
 
 function captionTitle(paragraphs: readonly string[]): string {
   if (paragraphs.length === 0 || !CAPTION_COURT.test(paragraphs[0]!)) return "";
   for (const text of paragraphs.slice(1)) {
     if (text.length === 0) continue;
     if (CAPTION_ROLE.test(text)) continue;
-    if (CAPTION_DOCKET.test(text)) continue;
+    if (CAPTION_DOCKET.test(text) || CAPTION_BARE_DOCKET.test(text)) continue;
+    // The docket sits on the same LINE as the party block whenever the ingest
+    // does not separate them — "… LLC, Defendant. No. 26-2-04188-1 SEA" — so
+    // the party-block test, which reads the end of the line, has to see past
+    // it. Only the scaffolding tests read the trimmed form; the title returned
+    // is always the line as written.
+    const withoutDocket = text.replace(TRAILING_DOCKET, "").trim();
+    if (CAPTION_PARTY_BLOCK.test(withoutDocket) || CAPTION_ROLE.test(withoutDocket)) continue;
     // The court block runs over several lines — "UNITED STATES DISTRICT COURT"
     // / "NORTHERN DISTRICT OF CALIFORNIA" / "SAN FRANCISCO DIVISION" — and only
     // the first names a "court". When each line is its own paragraph the walk
