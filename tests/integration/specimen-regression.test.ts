@@ -1049,10 +1049,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // a state-AG notification threshold — and both are now gated off a letter
   // that names its addressee, because an issued notice has neither and is not
   // supposed to.
-  "incident-notice.txt": {
-    playbook: "incident-notification",
-    findings: ["STRUCT-006"],
-  },
+  "incident-notice.txt": { playbook: "incident-notification", findings: [] },
 
   // A gastroenterologist's employment agreement, with the Stark and
   // anti-kickback recitals a group practice writes. Its arbitration clause
@@ -1098,7 +1095,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // it has been released").
   "litigation-hold.txt": {
     playbook: "litigation-hold",
-    findings: ["OBLI-005", "STRUCT-006", "TEMP-002"],
+    findings: ["OBLI-005", "TEMP-002"],
   },
 
   // A California preliminary notice, carrying the statutory NOTICE TO PROPERTY

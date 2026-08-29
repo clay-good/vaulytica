@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.147.0] — 2026-08-29
+
+### Fixed
+- **STRUCT-006 is the most frequent warning in the catalog — it fired on 35 of
+  the 120 specimens — so its false positives cost more than any other rule's.**
+  Three classes came off:
+  - **The names a privilege log is made of.** "Author: Dana Okwuosa",
+    "Recipients: Peter Vance", "cc: Renata Silva" — a privilege log is a table
+    of exactly those, and every name in one was reported as a term the log
+    forgot to define. The labels sit mid-paragraph, where the cover-block test
+    could not see them. One specimen went from eight reported terms to three.
+  - **Named public bodies.** "Illinois Attorney General", "Nevada Governor",
+    "Oregon Health Authority". A term a contract defines does not begin with
+    the name of a state.
+  - **Organizations.** "Cascade Valley Hospital", "Fairhaven Trust Company",
+    "Commercial Lending Group" — a phrase ending in an organization noun is a
+    name. (The single-word "Company" and "Trust", which are ordinary defined
+    terms, never reach the multi-word candidate list.)
+  - Counsel offices: "Associate General Counsel", "Outside Counsel". The office
+    list knew the bare "General Counsel" only.
+
 ## [9.146.0] — 2026-08-29
 
 ### Fixed

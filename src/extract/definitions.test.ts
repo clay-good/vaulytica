@@ -1672,3 +1672,58 @@ describe("a phrase that names one of the document's own headings", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("General Objections");
   });
 });
+
+describe("the names a privilege log is made of", () => {
+  // A privilege log is a table of people: "Author: Dana Okwuosa (Associate
+  // General Counsel)", "Recipients: Peter Vance", "cc: Renata Silva". Every
+  // name in one was reported as a Title-Case term the log forgot to define.
+  // The labels sit mid-paragraph, so the cover-block test cannot see them.
+  const undef = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Privilege Log", ...paras])).undefined_capitalized.map(
+      (e) => e.term,
+    );
+
+  it("does not flag a name after a person-field label", () => {
+    const terms = undef(
+      "Entry 1. Date: 2024-11-08. Author: Dana Okwuosa (Associate General Counsel). Recipients: Peter Vance; cc: Renata Silva.",
+      "Entry 2. Date: 2024-11-09. Author: Dana Okwuosa (Associate General Counsel). Recipients: Peter Vance; cc: Renata Silva.",
+    );
+    expect(terms).not.toContain("Peter Vance");
+    expect(terms).not.toContain("Renata Silva");
+    expect(terms).not.toContain("Associate General Counsel");
+  });
+});
+
+describe("named public bodies and organizations", () => {
+  const undef = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Notice", ...paras])).undefined_capitalized.map((e) => e.term);
+
+  // A term a contract defines does not begin with the name of a state.
+  it("does not flag a state's own office", () => {
+    expect(
+      undef(
+        "The Company notified the Illinois Attorney General on March 3, 2026.",
+        "A copy of the notice to the Illinois Attorney General is attached.",
+      ),
+    ).not.toContain("Illinois Attorney General");
+  });
+
+  // A phrase ending in an organization noun is an organization's NAME.
+  it("does not flag an organization's name", () => {
+    expect(
+      undef(
+        "Services are provided at Cascade Valley Hospital under the affiliation agreement.",
+        "The Physician holds privileges at Cascade Valley Hospital.",
+      ),
+    ).not.toContain("Cascade Valley Hospital");
+  });
+
+  it("still flags an ordinary undefined business term", () => {
+    expect(
+      undef(
+        "The Purchaser shall pay the Earnout Consideration within thirty days.",
+        "The Earnout Consideration is subject to the offset in Section 9.",
+      ),
+    ).toContain("Earnout Consideration");
+  });
+});

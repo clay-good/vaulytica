@@ -408,8 +408,56 @@ const WELL_KNOWN_ENTITIES = new Set(
  * "Title:" line an execution block, not a defined term, so they are covered
  * too.
  */
+/**
+ * US state names, for the named-public-body test. Two-word states already sit
+ * in {@link PLACE_NAMES}; these are the single-word ones the phrase test needs
+ * to recognize as a LEADING word rather than as the whole phrase.
+ */
+const US_STATE_NAMES = new Set([
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "Wisconsin",
+  "Wyoming",
+]);
+
 const OFFICER_TITLES =
-  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|(?:[A-Z][\w]*\s+)?Vice\s+President(?:,?\s+[A-Z][\w\s]*)?|General\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+(?:Member|Director|Partner)|(?:General|Limited)\s+Partner|Authorized\s+(?:Signator(?:y|ies)|Representative|Person|Agent))$/;
+  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|(?:[A-Z][\w]*\s+)?Vice\s+President(?:,?\s+[A-Z][\w\s]*)?|(?:[A-Z][a-z]+\s+){0,2}General\s+Counsel|(?:Outside|In-?[Hh]ouse|Inside|Litigation|Regulatory|Corporate|Trial)\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+(?:Member|Director|Partner)|(?:General|Limited)\s+Partner|Authorized\s+(?:Signator(?:y|ies)|Representative|Person|Agent))$/;
 
 /**
  * Sentence-initial words that are commonly capitalized but never
@@ -964,6 +1012,35 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       )
         continue;
       if (headings.has(phraseLower)) continue;
+      // A person named after a PERSON FIELD label — "Author: Dana Okwuosa",
+      // "Recipients: Peter Vance", "cc: Renata Silva", "Custodian: Marcus
+      // Bell". A privilege log is a table of exactly these, and every name in
+      // one was reported as a Title-Case term the log forgot to define. The
+      // labels are mid-paragraph, so the cover-block test above cannot see
+      // them.
+      if (
+        /\b(?:Author|Authors|Recipient|Recipients|From|To|Cc|Bcc|Custodian|Custodians|Attendees|Present|Signator(?:y|ies)|Witness|Notary|Preparer|Reviewer|Interviewer|Deponent)s?\s*:\s*$/i.test(
+          ctx.text.slice(Math.max(0, m.index - 16), m.index),
+        )
+      )
+        continue;
+      // A named PUBLIC BODY: a state or country name followed by the office or
+      // agency it belongs to — "Illinois Attorney General", "Nevada Governor",
+      // "Oregon Health Authority". A term a contract defines does not begin
+      // with the name of a state.
+      // A phrase ending in an ORGANIZATION noun is an organization's NAME —
+      // "Cascade Valley Hospital", "Fairhaven Trust Company", "Commercial
+      // Lending Group". A contract's defined terms do not end that way; the
+      // single-word "Company" and "Trust", which do, never reach this
+      // multi-word candidate list.
+      if (
+        /\s(?:Hospital|Clinic|University|College|Institute|Foundation|Association|Bank|Laborator(?:y|ies)|Company|Corporation|Group|Partners|Ventures|Holdings|Systems)$/.test(
+          phrase,
+        )
+      )
+        continue;
+      const leadWord = phrase.split(/\s+/)[0]!;
+      if (PLACE_NAMES.has(leadWord) || US_STATE_NAMES.has(leadWord)) continue;
       if (OFFICER_TITLES.test(phrase)) continue;
       // A phrase introduced by an HONORIFIC is a person: "Dr. Ingrid
       // Vasconcelos-Amaru", "Hon. Marisol Aguirre-Vance", "Prof. Emil
