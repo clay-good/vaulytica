@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.197.0] — 2026-08-29
+
+### Fixed
+- **The last entry on `format-invariance`'s debt list comes off.** An SEC
+  risk-factor heading has no number to anchor on: stripping the blank lines
+  glued "Risks Related to Our Business and Industry" to the paragraph beneath
+  it, the Title-Case run stopped at the lowercase "to", and "Risks Related"
+  arrived as a candidate three times over and reported as an undefined term —
+  so the finding set depended on the FORMAT of the upload.
+
+  The signal that settled it is linguistic rather than positional, and it was
+  not one of the three recorded as tried and rejected: **no document defines a
+  term whose last word is a RELATIONAL PARTICIPLE** — Related, Relating,
+  Regarding, Concerning, Pertaining, Arising, Attributable, Associated,
+  Connected, Applicable, Subject. They are all prepositional heads waiting for
+  an object.
+
+  All 158 specimens now report the same finding set under all five format
+  axes, with no declared exceptions.
+
 ## [9.196.0] — 2026-08-29
 
 ### Fixed

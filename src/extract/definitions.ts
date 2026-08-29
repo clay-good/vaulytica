@@ -1070,6 +1070,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // are an external authority, like a statute, and a document that invokes
       // them does not define them.
       if (/\b(?:Rules|Procedures|Regulations|Guidelines)$/.test(phrase)) continue;
+      // A candidate whose LAST word is a RELATIONAL PARTICIPLE is the front
+      // half of a phrase the Title-Case run cut at a lowercase connector:
+      // "Risks Related to Our Business and Industry" arrives as "Risks
+      // Related", because the run stops at "to". No document defines a term
+      // ending in one of these — they are all prepositional heads waiting for
+      // an object.
+      if (
+        /\s(?:Related|Relating|Regarding|Concerning|Pertaining|Arising|Attributable|Associated|Connected|Applicable|Subject)$/.test(
+          phrase,
+        )
+      )
+        continue;
       if (headings.has(phraseLower)) continue;
       // The article belongs to the SENTENCE, not to the heading. "The Escrow
       // Agent is Fernbank Title & Trust, LLC" sits under a section headed

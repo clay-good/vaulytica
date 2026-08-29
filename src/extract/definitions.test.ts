@@ -1948,3 +1948,35 @@ describe("a statute name whose noun is a few words further on", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Age Discrimination");
   });
 });
+
+describe("a candidate cut at a lowercase connector", () => {
+  // "Risks Related to Our Business and Industry" is an SEC risk-factor
+  // heading. With the blank lines stripped it glues to the paragraph beneath
+  // it, and the Title-Case run stops at the lowercase "to" — so "Risks
+  // Related" arrived as a two-word candidate three times over and reported as
+  // an undefined term. No document defines a term ending in a relational
+  // participle: they are prepositional heads waiting for an object.
+  const undef = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Risk Factors", ...paras])).undefined_capitalized.map(
+      (e) => e.term,
+    );
+
+  it("does not flag a phrase ending in a relational participle", () => {
+    const terms = undef(
+      "Risks Related to Our Business and Industry We have a history of losses.",
+      "Risks Related to Our Common Stock The trading price may be volatile.",
+      "Risks Related to Regulation Our products are subject to review.",
+    );
+    expect(terms).not.toContain("Risks Related");
+  });
+
+  it("still flags an ordinary two-word Title-Case term", () => {
+    expect(
+      undef(
+        "The Purchase Price is payable at closing.",
+        "Buyer shall pay the Purchase Price in cash.",
+        "The Purchase Price excludes taxes.",
+      ),
+    ).toContain("Purchase Price");
+  });
+});
