@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.151.0] — 2026-08-29
+
+### Added
+- An answer with affirmative defenses, a Rule 41(a)(1)(A)(ii) stipulation of
+  dismissal, and an open-source compliance policy. One hundred and twenty-five
+  specimens. The two pleadings were already clean and are pinned so they stay
+  that way.
+
+### Fixed
+- **A policy adopted by an OFFICER was told at `critical` that it had no
+  signature block** (STRUCT-003). An engineering, security, or records policy
+  is adopted by the officer who owns it — "Adopted by the Chief Technology
+  Officer on March 9, 2026" — not by a board resolution, and demanding one is
+  the same false positive the board form was added to answer.
+- **`oss-compliance` penalized its own document for "contributor license"**, a
+  term an open-source compliance policy necessarily discusses, and its title
+  keywords did not include the spelling with "software" in it — so the policy
+  matched at 0.5, one feature from the routing cliff. Found by the
+  self-penalizing guard the moment the family had a specimen.
+
 ## [9.150.0] — 2026-08-29
 
 ### Added

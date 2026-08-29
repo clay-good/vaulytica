@@ -12144,6 +12144,9 @@
     "match_features": {
       "title_keywords": [
         "open source compliance",
+        "open source software compliance",
+        "open source policy",
+        "open source software policy",
         "oss compliance",
         "sbom",
         "third-party software notices",
@@ -12161,7 +12164,7 @@
         "notice file"
       ],
       "negative_features": [
-        "contributor license",
+        "this contributor license agreement",
         "patent license",
         "trademark license"
       ]

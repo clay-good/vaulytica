@@ -1,0 +1,52 @@
+OPEN SOURCE SOFTWARE COMPLIANCE POLICY
+
+Kestrel Photonics LLC
+Adopted by the Chief Technology Officer on March 9, 2026
+Owner: Priyanka Deshmukh, VP Engineering
+Review cycle: annual
+
+1. PURPOSE AND SCOPE
+
+This policy governs the use, modification, and distribution of open source software in every product, service, and internal tool of Kestrel Photonics LLC. It applies to all employees and contractors who write, review, or ship code.
+
+2. WHY THIS MATTERS
+
+Open source licenses are contracts. Using code under one obliges us to conditions — attribution, source disclosure, patent grants, notice files — and failing to meet them can cost us the license, expose our proprietary source, or bring a claim from the copyright holder. Some licenses also impose obligations that are incompatible with how we ship.
+
+3. LICENSE CATEGORIES
+
+Permitted without review: MIT, BSD-2-Clause, BSD-3-Clause, Apache-2.0, ISC, Zlib. These impose attribution and, for Apache-2.0, patent and notice conditions we satisfy through the standard notice file.
+
+Permitted with review: MPL-2.0, EPL-2.0, CDDL-1.0, LGPL-2.1, LGPL-3.0. These are file-level or library-level copyleft. Use is permitted where the component is dynamically linked and unmodified; modification or static linking requires approval from Engineering and Legal.
+
+Prohibited without written approval: GPL-2.0, GPL-3.0, AGPL-3.0, SSPL, and any license with a network-use or commons-clause condition. Approval requires a written analysis of the distribution boundary and sign-off from the VP Engineering and the General Counsel.
+
+Never permitted: code with no license, code under a license we cannot identify, and code whose license forbids commercial use.
+
+4. BEFORE YOU ADD A COMPONENT
+
+Run the dependency scanner in the build pipeline, which fails the build on a prohibited license and warns on a review-required one. Record the component, version, license, and where it is used in the software bill of materials the pipeline generates in SPDX format. Do not vendor source without recording its origin and license.
+
+5. WHAT WE SHIP
+
+Every release ships a NOTICE file listing each component, its version, its license, and its copyright notice, and a written offer for source where a license requires one. The release engineer verifies the NOTICE file against the bill of materials before the release is signed.
+
+6. MODIFICATION AND CONTRIBUTION
+
+A modification to a copyleft component must be recorded with the file, the date, and a description of the change. Contributing our code to an outside project requires approval from the VP Engineering; contributions are made under the project's own license and under the contributor license agreement the project requires.
+
+7. INBOUND CODE FROM SUPPLIERS
+
+A supplier that delivers software delivers a bill of materials with it. The supplier agreement requires the supplier to identify each open source component and its license, and to indemnify us for a claim arising out of one.
+
+8. RESPONSIBILITY
+
+Engineering runs the scanner and maintains the bill of materials. Legal reviews a request to use a review-required or prohibited license. The VP Engineering approves an exception, records it with the reason, and reports open exceptions to the Chief Technology Officer quarterly.
+
+9. WHEN SOMETHING GOES WRONG
+
+Report a suspected non-compliance to Legal immediately. Do not ship a release you believe is out of compliance. A good-faith report is never a basis for discipline.
+
+10. REVIEW
+
+This policy is reviewed annually and on any material change to how we distribute software.

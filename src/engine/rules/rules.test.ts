@@ -79,6 +79,18 @@ describe("STRUCT-003 — signature block present", () => {
   // A release's signature page lays out four rules and four labels, and once
   // its blank lines are gone they arrive as one paragraph — so a label
   // anchored at the paragraph's start could only ever see the first of them.
+  // An engineering, security, or records policy is adopted by an OFFICER, not
+  // by the board — and demanding a board resolution of one is the same
+  // critical false positive the board form was added to answer.
+  it("reads an officer's dated adoption recital (v1.27.0)", () => {
+    const ctx = buildContext([
+      "Open Source Software Compliance Policy",
+      "Adopted by the Chief Technology Officer on March 9, 2026.",
+      "This policy governs the use, modification, and distribution of open source software.",
+    ]);
+    expect(STRUCT_003.check(ctx)).toBeNull();
+  });
+
   it("reads a signature label that is not first in the paragraph (v1.25.0)", () => {
     const ctx = buildContext([
       "Photograph Release",

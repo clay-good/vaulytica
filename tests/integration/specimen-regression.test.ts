@@ -400,6 +400,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // its designation paragraph.
   "deposition-notice.txt": { playbook: "deposition-notice", findings: ["STRUCT-018"] },
 
+  // An answer with affirmative defenses and a jury demand, and a Rule
+  // 41(a)(1)(A)(ii) stipulation of dismissal. Both already clean; pinned so
+  // they stay that way.
+  "answer.txt": { playbook: "answer", findings: [] },
+  "stipulation-of-dismissal.txt": { playbook: "stipulation-of-dismissal", findings: [] },
+
+  // An open-source compliance policy, adopted by an OFFICER rather than by the
+  // board — which STRUCT-003's dated-adoption recital did not recognize, so a
+  // policy nobody signs was told at `critical` that it had no signature block.
+  "oss-compliance.txt": { playbook: "oss-compliance", findings: ["IPL-035"] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

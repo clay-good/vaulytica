@@ -150,7 +150,11 @@ const CERTIFICATION = /\bcertified\s+as\s+adopted\b|\bcertif(?:y|ies)\s+that\s+t
 // the critical finding until the verb set matched the way boards actually
 // minute the act.
 const DATED_ADOPTION =
-  /\b(?:adopted|approved|ratified)\s+by\s+the\s+(?:board(?:\s+of\s+directors)?|(?:audit|compensation|nominating|governance|risk|executive|finance)\s+committee)\s+(?:on|as\s+of)\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
+  // An engineering, security, or records policy is adopted by an OFFICER, not
+  // by the board — "Adopted by the Chief Technology Officer on March 9,
+  // 2026" — and demanding a board resolution of one is the same critical
+  // false positive the board form was added to answer.
+  /\b(?:adopted|approved|ratified)\s+by\s+the\s+(?:board(?:\s+of\s+directors)?|(?:audit|compensation|nominating|governance|risk|executive|finance)\s+committee|chief\s+\w+\s+officer|general\s+counsel|president|c[eftoi]o)\s+(?:on|as\s+of)\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
 
 // A delivery instrument — disclosure schedules, closing certificates,
 // officer's certificates — is DELIVERED pursuant to a parent agreement, not
@@ -248,7 +252,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.26.0",
+  version: "1.27.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
