@@ -146,22 +146,13 @@ function doubleSpaced(text: string): string {
  * paragraph, so a construct laid out over two lines — a signature rule and the
  * name under it, an exhibit reference and its heading — arrives split.
  *
- * The signature affordances read the rule together with the line that follows
- * it now, which is a fact about the file rather than the document: a DOCX
- * styles them as separate paragraphs too. What remains is attachment and
- * defined-term detection, which lose findings rather than inventing them.
+ * This list started at fourteen and is down to one. Every entry that came off
+ * it came off because the DOUBLE-SPACED reading was the correct one and the
+ * normal case held a false positive: only the first entry of an attachment
+ * list counted as attached, and a signatory named twice in a signature block
+ * was reported as an undefined defined-term.
  */
-const DOUBLE_SPACED_UNSTABLE = new Set<string>([
-  "covenant-not-to-sue.txt",
-  "escrow-agreement.txt",
-  "hold-harmless.txt",
-  "lease-assignment.txt",
-  "performance-bond.txt",
-  "revocable-trust.txt",
-  "snda.txt",
-  "tolling-agreement.txt",
-  "trademark-assignment.txt",
-]);
+const DOUBLE_SPACED_UNSTABLE = new Set<string>(["revocable-trust.txt"]);
 
 describe("format is not load-bearing", () => {
   it("the corpus is present", () => {

@@ -418,7 +418,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // section is actually headed with.
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
-    findings: ["OBLI-005", "RISK-010", "STRUCT-006", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],
   },
 
   // An assignment and assumption of a commercial lease, with the landlord's
@@ -433,7 +433,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // "Assignor is not released … Assignor remains liable".
   "lease-assignment.txt": {
     playbook: "lease-assignment",
-    findings: ["OBLI-005", "RE-060", "STRUCT-006", "TEMP-002"],
+    findings: ["OBLI-005", "RE-060", "TEMP-002"],
   },
 
   // A patent covenant not to sue. Its playbook's distinguishing phrases were
@@ -449,7 +449,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // states no joint-tortfeasor effect, and this one does not either.
   "covenant-not-to-sue.txt": {
     playbook: "covenant-not-to-sue",
-    findings: ["OBLI-005", "SET-108", "STRUCT-006"],
+    findings: ["OBLI-005", "SET-108"],
   },
 
   // A Series B side letter. Two defects about citing a parent document.
@@ -486,7 +486,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // limitation, and a transition-period quality-control covenant. All five of
   // its § 1060 checks are silent on it, which is the compliant direction for
   // that pack.
-  "trademark-assignment.txt": { playbook: "trademark-assignment", findings: ["STRUCT-006"] },
+  "trademark-assignment.txt": { playbook: "trademark-assignment", findings: [] },
 
   // An M&A indemnity escrow. Its playbook listed "stock purchase agreement"
   // as a negative feature — the agreement every escrow of this kind names in
@@ -495,7 +495,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // indemnifies its agent one way and always has.
   "escrow-agreement.txt": {
     playbook: "escrow-agreement",
-    findings: ["OBLI-005", "STRUCT-006", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-005", "TEMP-006", "TEMP-007"],
   },
 
   // An Idaho payment and performance bond. Three defects, two at `critical`.
@@ -510,7 +510,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // start, and that form puts a lowercase "the" there.
   "performance-bond.txt": {
     playbook: "payment-performance-bond",
-    findings: ["OBLI-005", "STRUCT-006"],
+    findings: ["OBLI-005"],
   },
 
   // A permanent utility easement. RE-028 reported the maintenance allocation
@@ -521,7 +521,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // "easement / premises / property / area / improvements / surface".
   "easement.txt": {
     playbook: "easement-agreement",
-    findings: ["OBLI-005", "RISK-010", "RISK-011", "STRUCT-006"],
+    findings: ["OBLI-005", "RISK-010", "RISK-011"],
   },
 
   // A tolling agreement suspending a limitations period pending settlement
@@ -533,7 +533,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // tolling agreement exists.
   "tolling-agreement.txt": {
     playbook: "tolling-agreement",
-    findings: ["STRUCT-006", "TEMP-002"],
+    findings: ["TEMP-002"],
   },
 
   // A patent assignment for USPTO recordation. Two defects, both about a
@@ -559,7 +559,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // wanted the passive "shall not be disturbed". RE-051 missed the
   // no-prepayment covenant for the same reason, and again in the lender's
   // mirror of it ("bound by any rent … paid more than one month in advance").
-  "snda.txt": { playbook: "snda", findings: ["OBLI-005", "STRUCT-006"] },
+  "snda.txt": { playbook: "snda", findings: ["OBLI-005"] },
 
   // A DGCL § 145 director indemnification agreement — the document every
   // VC-backed company signs once per director, and the family the catalog

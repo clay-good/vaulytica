@@ -407,6 +407,13 @@ const OFFICER_TITLES =
  * like "Each Statement of Work" still fail this filter and so do
  * cases like "The Services" (where "The" is the leading stopword).
  */
+/**
+ * A signature-block label immediately before a name — "By: ", "By: /s/ ",
+ * "Name: ", "Printed Name: ", or a bare conformed-signature mark.
+ */
+const SIGNATURE_LABEL_BEFORE =
+  /(?:^|[\s|])(?:By|Name|Print(?:ed)?\s+Name|Signature|Signed)\s*:\s*(?:\/s\/\s*)?$|\/s\/\s*$/i;
+
 const TITLE_CASE_LEADING_STOPWORDS = new Set([
   "Each",
   // "Every" sat beside "Each" in every drafter's vocabulary and not in this
@@ -981,6 +988,20 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // Contract Sum will be increased …" and "increased the Contract Sum"
       // are occurrences of ONE term, and reporting "Contract Sum" and "The
       // Contract Sum" side by side is the same term twice.
+      // A signature block names its signatory two or three times — "By: /s/
+      // Ignatius Mbeki" over "Name: Ignatius Mbeki" — and that is a person
+      // signing, not a term the drafter forgot to define. Nine specimens
+      // reported their own signatories as undefined Title-Case terms, and the
+      // shape of a personal name is not distinguishable from the shape of a
+      // defined term ("Marisol Thibodeaux", "Base Rent") — but the CONTEXT is:
+      // a defined term is never introduced by a signature label.
+      //
+      // Skipping the occurrence rather than the term means a name that also
+      // appears in the body still reaches the two-occurrence threshold on its
+      // body uses, and reports.
+      if (SIGNATURE_LABEL_BEFORE.test(ctx.text.slice(Math.max(0, m.index - 24), m.index))) {
+        continue;
+      }
       let canonical = phrase;
       let start = m.index;
       if (TITLE_CASE_LEADING_STOPWORDS.has(words[0]!) && words.length > 2) {

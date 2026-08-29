@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.125.0] — 2026-08-28
+
+### Fixed
+- **A signatory named in a signature block was reported as an undefined
+  defined-term.** "By: /s/ Ignatius Mbeki" over "Name: Ignatius Mbeki" names
+  the same person twice, which is what a signature block is for — and nine
+  specimens were told their own signatories are Title-Case phrases the drafter
+  forgot to define.
+
+  This was recorded as a known limitation in 9.103.0 on the reasoning that the
+  shape of a personal name is not distinguishable from the shape of a defined
+  term. That is true, and it is the wrong thing to look at: a defined term is
+  never introduced by a signature label. The occurrence is skipped rather than
+  the term, so a name that also appears in the body still reaches the
+  two-occurrence threshold on its body uses and reports.
+
+### Changed
+- **The double-spaced format-debt list is down from fourteen to one.** Every
+  entry that came off it came off because the double-spaced reading was the
+  correct one and the normal case held a false positive.
+
 ## [9.124.0] — 2026-08-28
 
 ### Fixed
