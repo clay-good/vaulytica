@@ -636,7 +636,13 @@ const PARENT_CONTROLS =
  * where the parent is "this", not "the <Named> Agreement", and does not match.
  */
 const INCORPORATED_INTO_PARENT =
-  /\bThis\s+(?:Exhibit|Schedule|Annex|Appendix|Attachment)\b[^.]{0,80}?\b(?:is|are)\s+(?:hereby\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
+  // The exhibit names ITSELF: "This INFORMATION SECURITY Exhibit is attached
+  // to and incorporated into the Master Services Agreement dated October 12,
+  // 2024". A vendor security exhibit, a data processing schedule, a service
+  // level annex — each opens on its own name, and requiring the bare noun
+  // immediately after "This" saw none of them. The capitalized run keeps the
+  // test on a document that calls itself the exhibit.
+  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Exhibit|Schedule|Annex|Appendix|Attachment)\b[^.]{0,80}?\b(?:is|are)\s+(?:hereby\s+)?(?:attached\s+to\s+and\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
 
 /**
  * Whether the document is an exhibit / schedule / annex that says it is

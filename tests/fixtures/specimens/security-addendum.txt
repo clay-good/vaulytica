@@ -1,0 +1,47 @@
+INFORMATION SECURITY EXHIBIT
+
+This Information Security Exhibit (this "Exhibit") is attached to and incorporated into the Master Services Agreement dated October 12, 2024 between Rowan Credit Union ("Customer") and Beacon Ledger Systems, Inc. ("Vendor") (the "Agreement"). Capitalized terms used but not defined in this Exhibit have the meanings given in the Agreement.
+
+1. Scope. This Exhibit applies to all Customer Data that Vendor stores, processes, or transmits in connection with the Services, and to every Vendor system, network, and facility used to do so.
+
+2. Information Security Program. Vendor shall maintain a written information security program, approved by Vendor's management and reviewed and updated at least annually, that is aligned with ISO 27001 and includes the administrative, technical, and physical safeguards described in this Exhibit.
+
+3. Data Classification. Vendor shall classify Customer Data as Confidential unless Customer designates it otherwise in writing, and shall apply the controls in this Exhibit to all data so classified. Vendor shall maintain a data inventory identifying where Customer Data is stored, the systems that process it, and the personnel with access to it.
+
+4. Access Control. Vendor shall enforce role-based access control on a least-privilege basis, require multi-factor authentication for all administrative and remote access to systems holding Customer Data, review access rights at least quarterly, and revoke a departing worker's access within twenty-four (24) hours of separation. Vendor shall not use shared or generic administrative accounts.
+
+5. Encryption. Vendor shall encrypt Customer Data at rest using AES-256 and in transit using TLS 1.2 or higher, and shall use cryptographic modules validated under FIPS 140-3. Vendor shall manage keys in a hardware security module or an equivalent managed key service, rotate keys at least annually, and separate key-management duties from data-administration duties.
+
+6. Secure Development. Vendor shall follow a documented secure development lifecycle that includes threat modeling for new features, peer code review, static and dynamic application security testing in the build pipeline, and dependency scanning for known vulnerabilities before each release to production.
+
+7. Vulnerability Management. Vendor shall scan its production environment for vulnerabilities at least monthly and shall remediate, or apply a documented compensating control for, each vulnerability within the following periods after discovery: critical, seven (7) days; high, thirty (30) days; medium, ninety (90) days. Vendor shall maintain a published vulnerability disclosure policy and a security contact address, and shall triage a report received through it within five (5) business days.
+
+8. Penetration Testing. Vendor shall engage a qualified independent third party to perform a penetration test of the environment used to deliver the Services at least annually and after any material architectural change, and shall provide Customer with the executive summary and the remediation plan within thirty (30) days after the test report is issued.
+
+9. Security Review and Audit. Vendor shall provide Customer with its most recent SOC 2 Type II report annually, at no charge. Customer may conduct an on-site or remote security assessment of Vendor's controls once in any twelve (12) month period, on thirty (30) days' written notice, and additionally after any Security Incident affecting Customer Data. Vendor shall complete Customer's security questionnaire annually and shall respond to a follow-up request within fifteen (15) business days.
+
+10. Incident Response. Vendor shall maintain a documented incident response plan, tested at least annually. Vendor shall notify Customer of any Security Incident affecting Customer Data without undue delay and in no event later than twenty-four (24) hours after Vendor becomes aware of it. Each notice shall describe the nature of the incident, the categories and approximate volume of Customer Data affected, the measures taken and proposed, and a point of contact. Vendor shall cooperate with Customer's investigation, shall preserve forensic evidence, and shall not issue any public statement identifying Customer without Customer's prior written consent, except as required by law.
+
+11. Subcontractors. Vendor shall impose obligations no less protective than those in this Exhibit on any subcontractor that stores, processes, or transmits Customer Data, and remains responsible for each subcontractor's performance.
+
+12. Personnel. Vendor shall conduct background screening of each worker with access to Customer Data to the extent permitted by applicable law, require each to sign a confidentiality undertaking, and provide security awareness training on hire and at least annually thereafter.
+
+13. Business Continuity. Vendor shall maintain and test at least annually a business continuity and disaster recovery plan with a recovery time objective of four (4) hours and a recovery point objective of one (1) hour for the Services.
+
+14. Return and Deletion. On expiration or termination of the Agreement, Vendor shall return or securely delete all Customer Data, at Customer's election, within thirty (30) days, and shall certify the deletion in writing. Deletion shall render the data unrecoverable in accordance with NIST SP 800-88.
+
+15. Order of Precedence. If this Exhibit conflicts with the Agreement with respect to information security, this Exhibit controls.
+
+AGREED:
+
+ROWAN CREDIT UNION
+
+By: /s/ Imani Osei
+Name: Imani Osei
+Title: Chief Information Security Officer
+
+BEACON LEDGER SYSTEMS, INC.
+
+By: /s/ Anders Ruhl
+Name: Anders Ruhl
+Title: Chief Technology Officer

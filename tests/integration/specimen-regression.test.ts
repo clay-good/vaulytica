@@ -40,6 +40,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A vendor information-security exhibit. It carries no ratification clause —
+  // an exhibit changes nothing, so it has none — and relies on the recital
+  // every such document opens on: "This INFORMATION SECURITY Exhibit is
+  // attached to and incorporated into the Master Services Agreement dated
+  // October 12, 2024". `amendsParentAgreement()` required the bare noun
+  // immediately after "This", and admitted "incorporated into" only right
+  // after "is", so it saw neither: the exhibit was reported as having no
+  // governing law, no venue, no IP allocation, no indemnity, no liability cap
+  // and no termination clause. All six live in the agreement it is attached to.
+  "security-addendum.txt": {
+    playbook: "vendor-security-addendum",
+    findings: ["IPDATA-004", "OBLI-005", "TERM-007"],
+  },
   // A general assignment and assumption of a transportation services contract.
   // It routed to `lease-assignment` at 0.9 and drew a `critical` about a
   // LANDLORD'S CONSENT: that family listed "assignor" and "assignee" as

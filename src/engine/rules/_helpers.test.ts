@@ -10,6 +10,7 @@ import {
   expressDenial,
 } from "./_helpers.js";
 import type { RuleContext } from "../finding.js";
+import { buildContext } from "../_test-fixtures.js";
 
 /** Minimal RuleContext with a single-paragraph body. */
 function ctxWith(text: string): RuleContext {
@@ -464,5 +465,33 @@ describe("expressDenial — a causative is not a denial", () => {
           "This Addendum contains no subprocessor list.",
         ),
     ).toBe(true);
+  });
+});
+
+describe("amendsParentAgreement — an exhibit that names itself", () => {
+  // "This INFORMATION SECURITY Exhibit is attached to and incorporated into
+  // the Master Services Agreement dated October 12, 2024" is the recital such
+  // a document opens on. The test required the bare noun immediately after
+  // "This", and admitted "incorporated into" only when it followed "is"
+  // directly — so a vendor security exhibit that relies on incorporation
+  // rather than a ratification clause (it changes nothing, so it carries
+  // none) was reported as having no governing law, no IP allocation, no
+  // indemnity, no liability cap and no termination clause. All five live in
+  // the agreement it is attached to.
+  const RECITAL =
+    'This Information Security Exhibit (this "Exhibit") is attached to and incorporated into the Master Services Agreement dated October 12, 2024 between Rowan Credit Union ("Customer") and Beacon Ledger Systems, Inc. ("Vendor").';
+
+  it("recognizes a self-named exhibit incorporated into a named parent", () => {
+    const ctx = buildContext(["Information Security Exhibit", RECITAL]);
+    expect(amendsParentAgreement(ctx)).toBe(true);
+    expect(isIncorporatedExhibit(ctx)).toBe(true);
+  });
+
+  it("does not treat an agreement incorporating its OWN exhibits as subordinate", () => {
+    const ctx = buildContext([
+      "Services Agreement",
+      "Each Exhibit is incorporated into this Agreement and forms part of it.",
+    ]);
+    expect(isIncorporatedExhibit(ctx)).toBe(false);
   });
 });

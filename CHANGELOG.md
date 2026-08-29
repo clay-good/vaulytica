@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.169.0] — 2026-08-29
+
+### Added
+- A vendor information-security exhibit — the 136th specimen.
+
+### Fixed
+- **An exhibit that names ITSELF was not recognized as subordinate to its
+  parent.** "This INFORMATION SECURITY Exhibit is attached to and incorporated
+  into the Master Services Agreement dated October 12, 2024" is the recital
+  every such document opens on, and `amendsParentAgreement()` saw neither
+  half of it: the test required the bare noun immediately after "This", and
+  admitted "incorporated into" only when it followed "is" directly. An
+  exhibit carries no ratification clause — it changes nothing — so this
+  recital is all it has, and without it the document was reported as having
+  no governing law, no venue, no IP allocation, no indemnity, no liability
+  cap and no termination clause. All six live in the agreement it is attached
+  to. This is the highest-leverage helper in the engine; the fix reaches every
+  rule that consults it.
+
+### Verified, not changed
+- The nine `ADDENDA-001..009` security checks are silent on a well-drafted
+  information-security exhibit, and the family's empty `rule_overrides` is
+  correct: the always-on absence checks already stand down for an addendum
+  through `amendsParentAgreement()`, so no skip profile is needed.
+
 ## [9.168.0] — 2026-08-29
 
 ### Added
