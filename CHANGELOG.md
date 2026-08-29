@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.123.0] — 2026-08-28
+
+The mirror of the PDF paste: a blank line between every line.
+
+Where stripping the blank lines makes a document ONE paragraph, double-spacing
+makes every line its own — so a construct laid out over two lines arrives
+split. Sixty-eight of ninety-two specimens survived it, with two mis-routed.
+It is now **seventy-eight of ninety-two, and the routing is invariant for all
+ninety-two**.
+
+### Fixed
+- **A signature line and the name under it are one construct.** STRUCT-003 and
+  STRUCT-013 read the underscore rule and the printed name only when they
+  shared a paragraph — but whether they do is a fact about the file, not about
+  the document: a DOCX styles them as separate paragraphs too. Both now read
+  the rule together with the line that follows it, and both readings are tried,
+  because appending the next line can spoil a clean printed name as easily as
+  it can supply one.
+- **The recorder's block must be PASSED before the title is taken.** Where each
+  line of the return-to address is its own paragraph, the first title-shaped
+  line is the title company's NAME — "Ashfield Title Company" carries no ZIP
+  and no street suffix, so nothing else recognized it — and a general warranty
+  deed was handed its escrow agent as its own name.
+- **A caption's party line continued onto the next line carries a conjunction,
+  not a comma.** "CORVUS SYSTEMS CORPORATION and" / "MARISOL ANDRADE," — the
+  comma test let the first through, and the walk handed the matcher a
+  defendant's name as the filing's title. No document title ends in "and".
+
+### Added
+- The double-spaced axis, making five: blank lines stripped, CRLF, hard
+  wrapping, smart quotes, and double spacing. **Routing is invariant under
+  every one of them for every specimen, with no exceptions.** Two axes carry a
+  finding-set exception list; both may only shrink.
+- Three more axes were swept and needed no repair: a leading byte-order mark,
+  non-breaking spaces, and soft hyphens are all lossless across the corpus.
+
 ## [9.122.0] — 2026-08-28
 
 Three more format axes, swept the same way.

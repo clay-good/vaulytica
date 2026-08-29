@@ -300,6 +300,12 @@ function captionTitle(paragraphs: readonly string[]): string {
     // a court line, and skipping every line still lands on the first line that
     // is not caption scaffolding — the title.
     if (text.endsWith(",")) continue;
+    // A party line CONTINUED onto the next line — "CORVUS SYSTEMS CORPORATION
+    // and" / "MARISOL ANDRADE," — carries the conjunction instead of the
+    // comma, so the comma test above lets it through and the walk hands the
+    // matcher a defendant's name as the filing's title. No document title ends
+    // in "and".
+    if (/\b(?:and|&)\s*$/i.test(text)) continue;
     return text.slice(0, TITLE_PREAMBLE_CHARS);
   }
   return "";
@@ -344,11 +350,22 @@ const ADDRESS_SHAPED =
 
 function recordedInstrumentTitle(paragraphs: readonly string[]): string {
   if (paragraphs.length === 0 || !RECORDING_HEADER.test(paragraphs[0]!)) return "";
+  // The block must be PASSED before the title is taken. Where each line of the
+  // return-to address is its own paragraph, the first title-shaped line is the
+  // title company's NAME — "Ashfield Title Company" carries no ZIP and no
+  // street suffix, so nothing else here recognizes it — and a general warranty
+  // deed was handed its escrow agent as its own name. An address line or the
+  // recorder's reserved space is what marks the end of the block, and every
+  // recorded instrument has at least one.
+  let passedBlock = false;
   for (const text of paragraphs.slice(1)) {
     if (text.length === 0) continue;
     if (RECORDING_HEADER.test(text)) continue;
-    if (RECORDER_RESERVED_SPACE.test(text)) continue;
-    if (ADDRESS_SHAPED.test(text)) continue;
+    if (RECORDER_RESERVED_SPACE.test(text) || ADDRESS_SHAPED.test(text)) {
+      passedBlock = true;
+      continue;
+    }
+    if (!passedBlock) continue;
     if (titleShaped(text)) return text.slice(0, TITLE_PREAMBLE_CHARS);
     return "";
   }

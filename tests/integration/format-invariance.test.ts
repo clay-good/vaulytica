@@ -29,6 +29,15 @@ import { analyzeText } from "../../tools/cli/api.js";
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
 /**
+ * The five format transforms, each with the specimens whose finding SET still
+ * moves under it. Routing is invariant under EVERY transform for EVERY
+ * specimen, with no exceptions — a document that is reformatted must not
+ * become a different kind of document — and only the finding sets carry debt.
+ *
+ * Each list may only shrink.
+ */
+
+/**
  * Specimens whose finding SET still moves when the blank lines go. Each is a
  * paragraph-boundary sensitivity in one rule, not a routing failure — the
  * routing is invariant across the whole corpus and is asserted for every
@@ -133,6 +142,38 @@ const LOSSLESS_TRANSFORMS: Array<[string, (t: string) => string]> = [
   ["Word smart quotes", smartQuotes],
 ];
 
+/** A blank line between EVERY line, as a double-spaced export produces. */
+function doubleSpaced(text: string): string {
+  return text.split("\n").join("\n\n");
+}
+
+/**
+ * The mirror of stripping the blank lines: every line becomes its own
+ * paragraph, so a construct laid out over two lines — a signature rule and the
+ * name under it, an exhibit reference and its heading — arrives split.
+ *
+ * The signature affordances read the rule together with the line that follows
+ * it now, which is a fact about the file rather than the document: a DOCX
+ * styles them as separate paragraphs too. What remains is attachment and
+ * defined-term detection, which lose findings rather than inventing them.
+ */
+const DOUBLE_SPACED_UNSTABLE = new Set<string>([
+  "covenant-not-to-sue.txt",
+  "daca.txt",
+  "easement.txt",
+  "escrow-agreement.txt",
+  "hold-harmless.txt",
+  "lease-assignment.txt",
+  "patent-assignment.txt",
+  "performance-bond.txt",
+  "prenup.txt",
+  "revocable-trust.txt",
+  "snda.txt",
+  "tolling-agreement.txt",
+  "trademark-assignment.txt",
+  "written-consent.txt",
+]);
+
 describe("format is not load-bearing", () => {
   it("the corpus is present", () => {
     expect(SPECIMENS.length).toBeGreaterThan(50);
@@ -181,16 +222,44 @@ describe("format is not load-bearing", () => {
     120_000,
   );
 
+  it.each(SPECIMENS)(
+    "%s routes the same double-spaced",
+    async (name) => {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const normal = await analyzeText(text, name);
+      const spaced = await analyzeText(doubleSpaced(text), name);
+      expect(spaced.run.playbook_id, `${name} re-routed`).toBe(normal.run.playbook_id);
+    },
+    120_000,
+  );
+
+  it.each(SPECIMENS.filter((n) => !DOUBLE_SPACED_UNSTABLE.has(n)))(
+    "%s reports the same findings double-spaced",
+    async (name) => {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const normal = await analyzeText(text, name);
+      const spaced = await analyzeText(doubleSpaced(text), name);
+      const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      expect(ids(spaced)).toEqual(ids(normal));
+    },
+    120_000,
+  );
+
   it("every listed specimen is still unstable, so the list cannot outlive its entries", async () => {
     // A specimen that has become stable must be REMOVED from the list, or the
     // list silently permits the instability to come back.
     const stable: string[] = [];
-    for (const name of KNOWN_UNSTABLE) {
-      const text = readFileSync(join(DIR, name), "utf8");
-      const normal = await analyzeText(text, name);
-      const stripped = await analyzeText(stripBlankLines(text), name);
-      const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
-      if (JSON.stringify(ids(normal)) === JSON.stringify(ids(stripped))) stable.push(name);
+    for (const [list, transform] of [
+      [KNOWN_UNSTABLE, stripBlankLines],
+      [DOUBLE_SPACED_UNSTABLE, doubleSpaced],
+    ] as const) {
+      for (const name of list) {
+        const text = readFileSync(join(DIR, name), "utf8");
+        const normal = await analyzeText(text, name);
+        const other = await analyzeText(transform(text), name);
+        const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+        if (JSON.stringify(ids(normal)) === JSON.stringify(ids(other))) stable.push(name);
+      }
     }
     expect(
       stable.sort(),

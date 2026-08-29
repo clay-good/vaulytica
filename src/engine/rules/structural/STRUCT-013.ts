@@ -100,7 +100,18 @@ export const rule: Rule = {
     const partyNames = ctx.extracted.parties
       .map((p) => p.name)
       .filter((n): n is string => typeof n === "string" && n.trim().length >= 4);
+    // A signature line and the name under it are ONE construct, and whether
+    // they arrive as one paragraph or two is a fact about the file, not about
+    // the document: a DOCX styles them as separate paragraphs, and so does any
+    // text laid out with a blank line between every line. Reading the
+    // underscore rule together with what FOLLOWS it is what lets "______" over
+    // "Priya Venkataraman, Secretary" be recognized as the signature it is.
+    const paragraphs: Array<{ text: string; section: { id: string }; start: number }> = [];
     forEachParagraph(ctx.tree, (p) => {
+      paragraphs.push({ text: p.text, section: p.section, start: p.start });
+    });
+    paragraphs.forEach((p, i) => {
+      const withNext = `${p.text} ${paragraphs[i + 1]?.text ?? ""}`.trim();
       for (const { re, label } of PATTERNS) {
         re.lastIndex = 0;
         let m: RegExpExecArray | null;
@@ -113,8 +124,15 @@ export const rule: Rule = {
           // critical placeholder findings on every contract.
           if (
             label === "underscore-line placeholder" &&
+            // Both readings: the paragraph alone, and the paragraph with the
+            // line that follows it. The bare-name test wants a CLEAN printed
+            // name after the rule, which appending the next paragraph can
+            // spoil as easily as it can supply — so neither reading may be the
+            // only one tried.
             (isSignatureContext(p.text) ||
+              isSignatureContext(withNext) ||
               isBareNameSignature(p.text, partyNames) ||
+              isBareNameSignature(withNext, partyNames) ||
               isLabeledFormFieldRow(p.text))
           ) {
             continue;

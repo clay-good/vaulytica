@@ -273,8 +273,18 @@ export const rule: Rule = {
       let signals = 0;
       let attested = false;
       let certified = false;
-      for (const p of slice) {
+      for (const [i, p] of slice.entries()) {
         const text = p.text;
+        // A signature line and the name under it are ONE construct, and
+        // whether they arrive as one paragraph or two is a fact about the
+        // file, not about the document: a DOCX styles them separately, and so
+        // does any text laid out with a blank line between every line. The
+        // affordance tests read the rule together with what FOLLOWS it, so
+        // "______" over "Priya Venkataraman, Secretary" is recognized as the
+        // signature it is. The weak By:/Name:/Title: token count still reads
+        // one paragraph, so a stray label in the next one cannot manufacture a
+        // signature block out of nothing.
+        const withNext = `${text} ${slice[i + 1]?.text ?? ""}`.trim();
         if (!attested && ATTESTATION.test(text)) {
           attested = true;
           signals += 1;
@@ -290,7 +300,7 @@ export const rule: Rule = {
         // exactly one — so each is self-sufficient (×2), like the bare-name
         // line below.
         OFFICE_SIG_LINE.lastIndex = 0;
-        const officeSigs = text.match(OFFICE_SIG_LINE);
+        const officeSigs = text.match(OFFICE_SIG_LINE) ?? withNext.match(OFFICE_SIG_LINE);
         if (officeSigs) signals += officeSigs.length * 2;
         // A bare-name signature line — an underscore rule followed by the
         // printed name of a known party, a standalone "Notary Public" /
@@ -300,7 +310,12 @@ export const rule: Rule = {
         // such line must satisfy the check; it is self-sufficient (+2) like a
         // dated-adoption recital, unlike the weak By/Name/Title tokens that
         // need corroboration.
-        if (isBareNameSignatureLine(text, partyNames)) signals += 2;
+        if (
+          isBareNameSignatureLine(text, partyNames) ||
+          isBareNameSignatureLine(withNext, partyNames)
+        ) {
+          signals += 2;
+        }
         if (!certified && CERTIFICATION.test(text)) {
           certified = true;
           signals += 1;
