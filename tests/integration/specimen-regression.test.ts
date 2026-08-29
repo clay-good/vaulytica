@@ -40,6 +40,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A general assignment and assumption of a transportation services contract.
+  // It routed to `lease-assignment` at 0.9 and drew a `critical` about a
+  // LANDLORD'S CONSENT: that family listed "assignor" and "assignee" as
+  // distinguishing phrases — words in every assignment of anything — and
+  // claimed the bare title keyword "assignment and assumption", which is the
+  // other family's own name. MNA-108 then demanded a SCHEDULE of assigned
+  // contracts, at `critical`, from a document that names the one contract it
+  // assigns: the pattern read only the plural.
+  "assignment-assumption.txt": {
+    playbook: "assignment-and-assumption-agreement",
+    findings: ["STRUCT-018", "OBLI-005", "RISK-011"],
+  },
   // An AI addendum to a master services agreement. Three false positives, all
   // vocabulary: "Vendor shall not PERMIT any subprocessor ... to use Customer
   // Data to train" was read as denying that subprocessors are disclosed;

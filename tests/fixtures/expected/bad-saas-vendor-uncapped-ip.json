@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected msa-general (score 0.7). Required clauses present: \"indemnification\". Distinguishing phrases: \"Provider\", \"Customer\". Negative features penalized: \"Premises\".",
-  "result_hash": "25dbc1842e42d95f4eac669f45cf7da8236b6bb6bd7dd9cad14199c29d84e631",
+  "result_hash": "0643c41c99a878c160731e7348afadb43fae7c08a513cc62eea79abf0b8e6b7a",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.167.0"
+  "version": "9.168.0"
 }

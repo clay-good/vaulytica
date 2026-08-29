@@ -1,0 +1,55 @@
+ASSIGNMENT AND ASSUMPTION AGREEMENT
+
+This Assignment and Assumption Agreement (this "Assignment") is made as of September 30, 2026 (the "Effective Date") by and between Larkspur Freight Systems, LLC, a Nevada limited liability company ("Assignor"), and Pinehurst Logistics Holdings, Inc., a Delaware corporation ("Assignee").
+
+RECITALS
+
+A. Assignor is the "Carrier" under that certain Transportation Services Agreement dated May 8, 2023 between Assignor and Vantage Grocery Distribution, Inc. ("Counterparty"), as amended by the First Amendment dated November 2, 2024 (as so amended, the "Assigned Contract").
+
+B. Assignor has agreed to assign to Assignee all of Assignor's right, title and interest in and to the Assigned Contract, and Assignee has agreed to assume all of Assignor's obligations under the Assigned Contract arising on and after the Effective Date.
+
+C. Section 18.3 of the Assigned Contract permits assignment with the prior written consent of Counterparty, and Counterparty has delivered its consent in the form attached as Exhibit A.
+
+AGREEMENT
+
+In consideration of the mutual covenants in this Assignment and other good and valuable consideration, the receipt and sufficiency of which are acknowledged, the parties agree as follows:
+
+1. Assignment. Effective as of the Effective Date, Assignor assigns, transfers and conveys to Assignee all of Assignor's right, title and interest in, to and under the Assigned Contract.
+
+2. Assumption. Effective as of the Effective Date, Assignee accepts the foregoing assignment and assumes and agrees to pay, perform and discharge when due all of the liabilities and obligations of Assignor under the Assigned Contract to the extent arising on or after the Effective Date (the "Assumed Obligations").
+
+3. Retained Liabilities. Assignor retains, and Assignee does not assume, any liability or obligation of Assignor under the Assigned Contract to the extent arising from any act, omission, event or circumstance occurring before the Effective Date, including any claim for breach, indemnity, damage, freight loss or shortage, or unpaid charges relating to any period before the Effective Date (the "Retained Liabilities").
+
+4. Representations of Assignor. Assignor represents and warrants to Assignee that: (a) Assignor is duly organized, validly existing and in good standing under the laws of Nevada and has full power and authority to execute and deliver this Assignment and to perform its obligations under it; (b) the Assigned Contract is in full force and effect and is the entire agreement between Assignor and Counterparty with respect to its subject matter; (c) Assignor has not previously assigned, pledged or encumbered any of its right, title or interest in the Assigned Contract; (d) to Assignor's knowledge, no default by Assignor or Counterparty exists under the Assigned Contract and no event has occurred that with notice or lapse of time would constitute a default; and (e) all amounts due from Assignor under the Assigned Contract through the Effective Date have been paid in full.
+
+5. Representations of Assignee. Assignee represents and warrants to Assignor that Assignee is duly organized, validly existing and in good standing under the laws of Delaware, has full power and authority to execute and deliver this Assignment and to perform the Assumed Obligations, and is not subject to any agreement or order that would prevent it from performing the Assumed Obligations.
+
+6. Indemnity. Assignor shall indemnify, defend and hold harmless Assignee from and against any loss, liability, claim, damage and expense, including reasonable attorneys' fees, arising out of the Retained Liabilities or any breach of Assignor's representations in Section 4. Assignee shall indemnify, defend and hold harmless Assignor from and against any loss, liability, claim, damage and expense, including reasonable attorneys' fees, arising out of the Assumed Obligations or any breach of Assignee's representations in Section 5. The aggregate liability of each party under this Section 6 shall not exceed $2,000,000, except that this limitation does not apply to fraud or willful misconduct.
+
+7. Further Assurances. Each party shall execute and deliver such further instruments and take such further actions as the other party may reasonably request to give effect to this Assignment, including any notice or acknowledgment Counterparty may reasonably require.
+
+8. Notices. All notices under this Assignment shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses set out beneath the parties' signatures.
+
+9. Governing Law; Venue. This Assignment is governed by the laws of the State of Delaware, without regard to its conflict of laws principles. Each party irrevocably submits to the exclusive jurisdiction of the state and federal courts located in New Castle County, Delaware, for any action arising out of this Assignment.
+
+10. Entire Agreement; Amendment. This Assignment is the entire agreement between the parties with respect to its subject matter and supersedes all prior negotiations. It may be amended only by a writing signed by both parties.
+
+11. Successors and Assigns. This Assignment binds and benefits the parties and their respective successors and permitted assigns.
+
+12. Counterparts. This Assignment may be executed in counterparts, each of which is an original and all of which together constitute one instrument.
+
+IN WITNESS WHEREOF, the parties have executed this Assignment as of the Effective Date.
+
+LARKSPUR FREIGHT SYSTEMS, LLC
+
+By: /s/ Teodora Nakamura
+Name: Teodora Nakamura
+Title: Manager
+Address: 3300 Sunridge Boulevard, Reno, Nevada 89501
+
+PINEHURST LOGISTICS HOLDINGS, INC.
+
+By: /s/ Curtis Vandermeer
+Name: Curtis Vandermeer
+Title: Executive Vice President
+Address: 1102 Kingsley Drive, Wilmington, Delaware 19801

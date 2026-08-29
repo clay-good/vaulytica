@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.168.0] — 2026-08-29
+
+### Added
+- A general assignment and assumption of a services contract — the 135th
+  specimen.
+
+### Fixed
+- **An assignment of a freight contract routed to `lease-assignment`** at 0.9
+  and was told at `critical` that it has no LANDLORD-CONSENT clause, plus that
+  it addresses neither the security deposit nor recording. There is no lease
+  and no landlord. Two causes, both base-rate: that family listed **"assignor"
+  and "assignee"** as distinguishing phrases — the two words in every
+  assignment of anything — and claimed the bare title keyword **"assignment
+  and assumption"**, which is the other family's own name. Replaced with
+  "assignment of the lease" and "the premises"; the lease specimen still
+  routes on "assignment and assumption OF LEASE" and is unchanged.
+- **MNA-108 demanded a SCHEDULE of assigned contracts, at `critical`, from a
+  document that names the one contract it assigns.** The pattern read only the
+  plural, so "that certain Transportation Services Agreement dated May 8, 2023
+  … (the 'Assigned Contract')" — which identifies exactly what moved, the
+  thing the rule exists to require — satisfied nothing.
+
 ## [9.167.0] — 2026-08-29
 
 ### Added

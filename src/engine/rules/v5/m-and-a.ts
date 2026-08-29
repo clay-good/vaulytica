@@ -120,10 +120,16 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
 const ASSIGNMENT = pack("assignment-and-assumption-agreement", C, [
   {
     id: "MNA-108",
+    ver: "1.1.0",
     name: "Schedule of assigned contracts",
     cite: practice("assigned-contracts", "identification of assigned contracts at closing"),
     pat: [
-      /(assigned\s+contracts|schedule\s+[a-z0-9]|set\s+forth\s+(on|in)\s+(exhibit|schedule))/i,
+      // The SINGULAR too. An assignment and assumption of one named contract
+      // — "that certain Transportation Services Agreement dated May 8, 2023
+      // ... (the 'Assigned Contract')" — identifies exactly what moved, which
+      // is what this rule exists to require, and the plural-only pattern
+      // reported it at `critical` as having no schedule of assigned contracts.
+      /(assigned\s+contracts?|schedule\s+[a-z0-9]|set\s+forth\s+(on|in)\s+(exhibit|schedule))/i,
       /(contracts?\s+listed|identified\s+(on|in))/i,
     ],
     why: "A blanket assignment of 'all contracts' does not tell a counterparty, a court, or the buyer's own team which agreements moved. The schedule is the operative list.",

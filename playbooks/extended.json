@@ -1620,6 +1620,9 @@
         "hereby assigns",
         "assumes and agrees to perform",
         "assumed liabilities",
+        "assumed obligations",
+        "retained liabilities",
+        "right, title and interest in and to",
         "excluded liabilities",
         "assigned contracts",
         "effective as of the closing"
@@ -10145,13 +10148,12 @@
         "assignment of lease",
         "lease assignment",
         "assignment and assumption of lease",
-        "assignment and assumption",
         "consent to assignment"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "assignor",
-        "assignee",
+        "assignment of the lease",
+        "the premises",
         "landlord consents",
         "assumes and agrees to perform",
         "arising on and after the effective date"
