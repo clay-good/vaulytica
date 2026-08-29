@@ -8,7 +8,9 @@
       "title_keywords": [
         "10-k",
         "form 10-k",
-        "annual report on form 10-k"
+        "annual report on form 10-k",
+        "item 1a",
+        "risk factors"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -11459,8 +11461,6 @@
         "customer data",
         "termination for convenience",
         "transition assistance",
-        "limitation of liability",
-        "indemnification",
         "order of precedence"
       ],
       "negative_features": [
@@ -11566,8 +11566,6 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "limitation of liability",
-        "indemnification",
         "intellectual property",
         "warranty",
         "term and termination",

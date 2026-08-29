@@ -181,7 +181,7 @@
     {
       "elapsed_ms": 0,
       "fired": false,
-      "ran": false,
+      "ran": true,
       "rule_id": "DARK-014",
       "rule_version": "1.2.0"
     },
@@ -388,28 +388,28 @@
     {
       "elapsed_ms": 0,
       "fired": false,
-      "ran": true,
+      "ran": false,
       "rule_id": "PERS-001",
       "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
-      "ran": true,
+      "ran": false,
       "rule_id": "PERS-002",
       "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
-      "ran": true,
+      "ran": false,
       "rule_id": "PERS-003",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
-      "ran": true,
+      "ran": false,
       "rule_id": "PERS-004",
       "rule_version": "1.1.0"
     },
@@ -1073,14 +1073,14 @@
       "title": "Wind-down / transition services clause present"
     }
   ],
-  "playbook_id": "msa-general",
+  "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
-  "playbook_match_reasoning": "Selected msa-general (score 0.7). Required clauses present: \"indemnification\". Distinguishing phrases: \"Provider\", \"Customer\". Negative features penalized: \"Premises\".",
-  "result_hash": "8e04b782df37b0934c5c7f02c216b40f0c13f56b7c21ea453ede8f3c0c16b748",
+  "playbook_match_reasoning": "Selected saas-customer (score 0.7). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\". Negative features penalized: \"Premises\".",
+  "result_hash": "e1bf472a028fbb865cab6279d25c96adfaa6fe1eaeefcede35676bc654e12c70",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.195.0"
+  "version": "9.196.0"
 }

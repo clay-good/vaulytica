@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.196.0] — 2026-08-29
+
+### Fixed
+- **Three families were leaning on words that name a CLAUSE TYPE rather than a
+  register.** `msa-general` listed "Provider" and "Customer"; `msa-customer-deep`
+  and `msa-vendor-deep` listed "limitation of liability" and "indemnification".
+  Any document that discusses contracts contains those — which is how a
+  copyright licence routed to `msa-general` (9.185.0), how a managed-care
+  provider agreement tied it (9.177.0), and how a 10-K RISK FACTORS section
+  came level with the deep MSA families. Each keeps the vocabulary that is
+  actually its own.
+- **`10-k-risk-factors` had no title keyword its own document carries.** "ITEM
+  1A. RISK FACTORS" is the heading of every one; both are now title keywords,
+  which is the only lever available once the distinguishing-phrase cap is
+  reached.
+
 ## [9.195.0] — 2026-08-29
 
 ### Added
