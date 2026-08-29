@@ -679,6 +679,38 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A profits-interest award in an LLC — the 184th specimen, and the first for
+  // `profits-interest-award`. EQT-114..119 are all satisfied: the threshold
+  // amount set at grant-date liquidation value, the Rev. Proc. 93-27 and
+  // 2001-43 recitals, the § 83(b) direction with its 30-day deadline, vesting
+  // with forfeiture allocations, capital-account book-up, and the partner-not-
+  // employee warning. The family had an empty `rule_overrides`, so an equity
+  // award was told it has no payment terms.
+  "profits-interest-award.txt": {
+    playbook: "profits-interest-award",
+    findings: ["OBLI-005", "STRUCT-018"],
+  },
+  // An option to purchase real property — the 185th specimen, and the first
+  // for `option-to-purchase-real-estate`. RE-123..127 are all satisfied:
+  // non-refundable independent option consideration, strict exercise
+  // mechanics with time of the essence, a price with an appraisal formula, a
+  // recordable memorandum of option, and a perpetuities savings clause. It
+  // took the `easement-agreement` skip profile — an interest in land is not a
+  // services bargain.
+  "option-to-purchase-real-estate.txt": {
+    playbook: "option-to-purchase-real-estate",
+    findings: [
+      "FIN-006",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-011",
+      "RISK-015",
+      "RISK-016",
+      "STRUCT-018",
+      "TEMP-006",
+      "TEMP-007",
+    ],
+  },
   // A foundation grant award — the 183rd specimen, and the first for
   // `grant-agreement`. GOV-133..138 are all satisfied. It exposed two
   // defects: the family had an empty `rule_overrides`, so a charitable grant

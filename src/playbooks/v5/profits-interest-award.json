@@ -27,17 +27,48 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Units", "Threshold Amount", "Participant"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Units",
+    "Threshold Amount",
+    "Participant"
+  ],
+  "rule_overrides": {
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "REV-PROC-93-27",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["operating-agreement-llc", "section-83b-election"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "operating-agreement-llc",
+    "section-83b-election"
+  ],
   "compliance_matrix_columns": [
     "Threshold / hurdle amount set at grant-date value",
     "Rev. Proc. 93-27 safe-harbor recitals",
-    "§ 83(b) election direction and deadline",
+    "\u00a7 83(b) election direction and deadline",
     "Vesting, forfeiture, and repurchase",
     "Capital-account and distribution mechanics",
     "Partner (not employee) tax treatment warning"

@@ -1,0 +1,61 @@
+PROFITS INTEREST AWARD AGREEMENT
+
+Bellweather Analytics Holdings LLC
+Class B Incentive Units
+
+This Profits Interest Award Agreement (this "Award Agreement") is made as of June 1, 2026, between Bellweather Analytics Holdings LLC, a Delaware limited liability company (the "Company"), and Sunniva Halvorsen (the "Participant"), pursuant to the Company's 2024 Incentive Unit Plan (the "Plan") and the Company's Amended and Restated Limited Liability Company Agreement dated March 3, 2024 (the "LLC Agreement"). Capitalized terms not defined in this Award Agreement have the meanings given in the Plan or the LLC Agreement.
+
+1. GRANT OF UNITS
+
+1.1 Award. The Company grants to the Participant 275,000 Class B Units of the Company (the "Units"), subject to this Award Agreement, the Plan, and the LLC Agreement.
+
+1.2 Nature of the Award. The Units are intended to constitute a "profits interest" within the meaning of Revenue Procedure 93-27 and Revenue Procedure 2001-43. The Units are not, and do not entitle the Participant to, an interest in the existing capital of the Company.
+
+2. THRESHOLD AMOUNT
+
+2.1 Threshold. Each Unit has a threshold amount of $3.18 per Unit (the "Threshold Amount"). The Threshold Amount equals the amount that would be distributed with respect to one Common Unit if, immediately before the grant date, the Company sold all of its assets at fair market value as of the grant date, satisfied its liabilities, and liquidated. The Board determined the fair market value as of the grant date on the basis of a third-party valuation dated May 18, 2026.
+
+2.2 Effect. The Units participate in distributions only to the extent the aggregate distributions with respect to a Unit exceed its Threshold Amount. The Units have no right to any distribution attributable to value existing on or before the grant date, and the Participant's initial capital account balance in respect of the Units is zero.
+
+3. SAFE HARBOR AND TAX TREATMENT
+
+3.1 Safe-Harbor Recitals. The Company and the Participant intend that the grant of the Units qualify for the safe harbor of Revenue Procedure 93-27. The Units are not a substantially certain and predictable stream of income from Company assets, are not related to a publicly traded partnership interest, and the Participant will not dispose of the Units within two years of the grant date. Consistent with Revenue Procedure 2001-43, the Company and the Participant shall treat the Participant as the owner of the Units from the grant date, shall not claim a deduction on the grant or vesting of the Units, and shall report the Participant's distributive share of Company income for the entire period.
+
+3.2 Section 83(b) Election. The Participant is strongly advised to file an election under Section 83(b) of the Internal Revenue Code with respect to the Units. The election must be filed with the Internal Revenue Service no later than 30 days after the grant date, and a copy must be delivered to the Company. The Participant acknowledges that the Company has made no representation about whether an election should be made and that the deadline cannot be extended. A form of election is attached as Exhibit A.
+
+3.3 Partner, Not Employee. From the grant date, the Participant is a partner in the Company for federal tax purposes and will no longer be treated as an employee of the Company for such purposes. The Participant will receive a Schedule K-1 rather than a Form W-2, no income or employment taxes will be withheld from amounts paid to the Participant, and the Participant is responsible for self-employment tax and for making quarterly estimated tax payments. The Participant should consult the Participant's own tax adviser.
+
+4. VESTING AND FORFEITURE
+
+4.1 Vesting. Twenty-five percent (25%) of the Units vest on the first anniversary of June 1, 2026, and the remainder vest in twelve (12) equal quarterly installments thereafter, in each case subject to the Participant's continuous service through the applicable vesting date.
+
+4.2 Forfeiture. On termination of the Participant's service for any reason, all unvested Units are automatically forfeited without payment. Forfeited Units are cancelled, and the Company shall make forfeiture allocations under Treasury Regulation § 1.704-1(b)(4)(x) so that the capital accounts of the remaining members are restored.
+
+4.3 Repurchase. The Company has the right, exercisable within 180 days after the termination of the Participant's service, to repurchase all vested Units at fair market value, determined as of the repurchase date, or, if the Participant's service was terminated for Cause, at the lesser of fair market value and zero.
+
+5. CAPITAL ACCOUNTS AND DISTRIBUTIONS
+
+5.1 Capital Account. A separate capital account shall be maintained for the Participant in accordance with Treasury Regulation § 1.704-1(b)(2)(iv). On the grant date, the Company shall revalue its property and book up the capital accounts of the existing members so that the Participant's capital account attributable to the Units is zero.
+
+5.2 Distributions. Distributions are made in accordance with Article 5 of the LLC Agreement. The Units share in distributions only after the holders of Common Units have received aggregate distributions equal to the Threshold Amount for each Unit, and only in respect of vested Units. Tax distributions are made to all members, including the Participant, in accordance with Section 5.4 of the LLC Agreement.
+
+6. GENERAL
+
+6.1 No Service Rights. Nothing in this Award Agreement gives the Participant a right to continued service with the Company or limits the Company's right to terminate that service at any time.
+
+6.2 Transfer Restrictions. The Units may not be transferred except as permitted by the LLC Agreement. The Participant shall execute a joinder to the LLC Agreement as a condition of the grant.
+
+6.3 Governing Law. This Award Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles.
+
+6.4 Entire Agreement. This Award Agreement, the Plan, and the LLC Agreement are the entire agreement of the parties concerning the Units. In the event of a conflict, the LLC Agreement controls, and then the Plan.
+
+BELLWEATHER ANALYTICS HOLDINGS LLC
+
+By: /s/ Anselm Kirchner
+Name: Anselm Kirchner
+Title: Manager
+
+PARTICIPANT
+
+/s/ Sunniva Halvorsen
+Sunniva Halvorsen

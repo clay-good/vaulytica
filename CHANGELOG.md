@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.226.0] — 2026-08-29
+
+### Added
+- A profits-interest award in an LLC — the 184th specimen, and the first for
+  `profits-interest-award`. EQT-114..119 are all satisfied: the threshold
+  amount set at grant-date liquidation value, the Rev. Proc. 93-27 and 2001-43
+  recitals, the § 83(b) direction with its 30-day deadline, vesting with
+  forfeiture allocations under Treas. Reg. § 1.704-1(b)(4)(x), the
+  capital-account book-up, and the partner-not-employee warning.
+- An option to purchase real property — the 185th specimen, and the first for
+  `option-to-purchase-real-estate`. RE-123..127 are all satisfied:
+  non-refundable independent option consideration, strict exercise mechanics
+  with time of the essence, a price with an appraisal formula, a recordable
+  memorandum of option, and a perpetuities savings clause.
+
+### Fixed
+- **Two more families carried an empty `rule_overrides`.** An equity award was
+  told it has no payment-term clause; a land option was told it does not
+  allocate ownership of intellectual property, has no limitation-of-liability
+  clause, and states no path to terminate for material breach.
+  `profits-interest-award` takes the `rsu-grant` profile and
+  `option-to-purchase-real-estate` takes `easement-agreement`'s — an interest
+  in land is not a services bargain.
+
 ## [9.225.0] — 2026-08-29
 
 ### Added

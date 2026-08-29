@@ -18,16 +18,43 @@
       "the option price",
       "time is of the essence"
     ],
-    "negative_features": ["lease of the premises shall commence", "employment agreement"]
+    "negative_features": [
+      "lease of the premises shall commence",
+      "employment agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Option", "Option Period", "Option Price"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Option",
+    "Option Period",
+    "Option Price"
+  ],
+  "rule_overrides": {
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-REAL-ESTATE",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["real-estate-psa"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "real-estate-psa"
+  ],
   "compliance_matrix_columns": [
     "Option consideration recited and non-refundable",
     "Exercise notice mechanics and deadline",
