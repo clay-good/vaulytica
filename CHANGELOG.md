@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.224.0] — 2026-08-29
+
+### Added
+- A pre-suit demand letter on unpaid invoices — the 182nd specimen, and the
+  first for `demand-letter`. Clean once the two defects below were fixed:
+  SET-011..014 are satisfied by the statement of facts, the specific demand
+  with a deadline, the absence of abusive language, and the reservation of
+  rights.
+
+### Fixed
+- **SET-015's "(if applicable)" was in the rule's NAME and nowhere in its
+  logic.** With no gate, it fired on every demand letter that is not a PAGA
+  notice, and an Illinois UCC collection letter was told its PAGA notice
+  elements were missing. The gate is a California wage-and-hour claim,
+  deliberately broader than the present patterns, so a California wage letter
+  that never says "PAGA" or "LWDA" still reports.
+- **`demand-letter` penalized its own vocabulary.** It listed "release" as a
+  negative feature, meant to catch a signed release — but every demand letter's
+  reservation of rights says "nothing in this letter is a waiver, release, or
+  modification of any right". Narrowed to the forms a release states in terms:
+  "releases and forever discharges", "general release of all claims", "mutual
+  release".
+- **A section of ANOTHER commercial instrument read as a broken internal
+  reference.** "the fee-shifting provision in section 11 of the terms of sale"
+  cites the seller's standard terms, not the letter. The external-instrument
+  nouns covered agreements, leases, notes, and deeds but not the ones a
+  commercial letter names: terms, orders, statements of work, guaranties,
+  warranties, rules, manuals, handbooks, and schedules.
+
 ## [9.223.0] — 2026-08-29
 
 ### Added

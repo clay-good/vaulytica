@@ -2,7 +2,7 @@
   "id": "demand-letter",
   "version": "1.0.0",
   "name": "Demand Letter",
-  "description": "Pre-suit demand letter (debt, wage, contract, PAGA) with FDCPA compliance and reservation of rights. Selects the §6.G settlement ruleset (SET-011..SET-015).",
+  "description": "Pre-suit demand letter (debt, wage, contract, PAGA) with FDCPA compliance and reservation of rights. Selects the \u00a76.G settlement ruleset (SET-011..SET-015).",
   "match_features": {
     "title_keywords": [
       "demand letter",
@@ -20,7 +20,9 @@
     ],
     "negative_features": [
       "settlement agreement",
-      "release",
+      "releases and forever discharges",
+      "general release of all claims",
+      "mutual release",
       "cease and desist",
       "tolling"
     ]
@@ -73,9 +75,9 @@
   ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
-    "FDCPA § 1692e (debt-collection)",
+    "FDCPA \u00a7 1692e (debt-collection)",
     "Specific demand + deadline",
-    "Cal. Lab. § 2699.3 (PAGA notice)",
+    "Cal. Lab. \u00a7 2699.3 (PAGA notice)",
     "Reservation of rights"
   ]
 }

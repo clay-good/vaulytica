@@ -4989,7 +4989,9 @@
       ],
       "negative_features": [
         "settlement agreement",
-        "release",
+        "releases and forever discharges",
+        "general release of all claims",
+        "mutual release",
         "cease and desist",
         "tolling"
       ]

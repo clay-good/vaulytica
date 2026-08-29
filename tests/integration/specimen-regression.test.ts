@@ -679,6 +679,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A pre-suit demand letter on unpaid invoices — the 182nd specimen, and the
+  // first for `demand-letter`. Clean: SET-011..014 are satisfied by the
+  // statement of facts, the specific demand with a deadline, the absence of
+  // abusive language, and the reservation of rights. It exposed two defects:
+  // SET-015 reported missing PAGA elements on an Illinois UCC collection
+  // letter, and "section 11 of the terms of sale" read as a broken reference
+  // to a section of the letter.
+  "demand-letter.txt": {
+    playbook: "demand-letter",
+    findings: [],
+  },
   // An appellate brief in the Ninth Circuit — the 181st specimen, and the
   // first for `appellate-brief`. Entirely clean: the filing-format pack is
   // dormant without --court, and the 53-rule contract-lint skip profile is

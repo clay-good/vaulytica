@@ -502,3 +502,29 @@ describe("SET-002 — release of claims expressly withheld", () => {
     ).toEqual([]);
   });
 });
+
+describe('SET-015 — "(if applicable)" is now in the logic (v1.1.0)', () => {
+  async function ids(text: string): Promise<string[]> {
+    const ctx = withPb(buildContext(["Demand Letter", text]), DEMAND_PB);
+    const run = await runEngine({ rules: SETTLEMENT_RULES, ctx, source_file: SRC });
+    return run.findings.map((f) => f.rule_id);
+  }
+
+  it("is silent on a debt-collection demand letter that has nothing to do with PAGA", async () => {
+    // An Illinois UCC collection letter was told its PAGA notice elements were
+    // missing: the gate was in the rule's NAME and nowhere in its logic.
+    expect(
+      await ids(
+        "Larkspur demands payment of $527,052.41 on or before September 5, 2026. Larkspur is entitled to the unpaid price under section 2-709 of the Illinois Uniform Commercial Code. Nothing in this letter is a waiver of any right, all of which are expressly reserved.",
+      ),
+    ).not.toContain("SET-015");
+  });
+
+  it("still reports a California wage-and-hour letter that never says PAGA", async () => {
+    expect(
+      await ids(
+        "Our clients are non-exempt warehouse associates in California. Ridgeway failed to provide meal and rest periods and failed to pay unpaid overtime as required by the California Labor Code. We demand payment within thirty days. All rights are expressly reserved.",
+      ),
+    ).toContain("SET-015");
+  });
+});

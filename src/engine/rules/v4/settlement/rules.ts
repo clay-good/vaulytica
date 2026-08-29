@@ -489,6 +489,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
   }),
   presence({
     id: "SET-015",
+    version: "1.1.0",
     name: "PAGA pre-suit notice — required elements (if applicable)",
     description:
       "California PAGA demand letters must satisfy Cal. Lab. § 2699.3 (LWDA notice, specific Labor Code sections, supporting facts).",
@@ -501,6 +502,20 @@ const DEMAND_LETTER_RULES: Rule[] = [
       "Cal. Lab. § 2699.3 requires PAGA notices to identify the specific Labor Code sections allegedly violated and the facts and theories supporting each alleged violation, delivered to the LWDA online.",
     recommendation:
       "If this is a PAGA notice, list the specific Labor Code sections allegedly violated, the supporting facts, and confirm LWDA filing.",
+    // "(if applicable)" was in the NAME and nowhere in the logic: with no
+    // gate, the rule fired on every demand letter that is not a PAGA notice —
+    // an Illinois UCC collection letter was told its PAGA notice elements were
+    // missing. The gate is a CALIFORNIA WAGE-AND-HOUR claim, deliberately
+    // broader than the present patterns, so a California wage letter that
+    // never says "PAGA" or "LWDA" still reports.
+    applicable_if: [
+      /\bcalifornia\s+labor\s+code\b/i,
+      /\bwage\s+and\s+hour\b/i,
+      /\bmeal\s+(?:and|or)\s+rest\s+(?:period|break)s?\b/i,
+      /\baggrieved\s+employees?\b/i,
+      /\blabor\s+code\s+§+\s*\d/i,
+      /\bunpaid\s+overtime\b/i,
+    ],
     present_patterns: [
       /\bpaga\b/i,
       /(private\s+attorneys?\s+general\s+act|labor\s+code\s+§\s*2699)/i,

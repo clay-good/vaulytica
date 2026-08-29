@@ -1043,3 +1043,25 @@ describe("crossrefs — a run-in heading with no period after its number (v9.222
     expect(unresolved).toContain("Section 9.9");
   });
 });
+
+describe("crossrefs — a section of ANOTHER commercial instrument (v9.224.0)", () => {
+  it("does not report a section of the terms of sale as a broken internal reference", () => {
+    const tree = buildTree([
+      "Demand",
+      "Larkspur is entitled to its reasonable attorney's fees under the fee-shifting provision in section 11 of the terms of sale.",
+      "Delivery was governed by section 4 of the purchase order and section 2 of the warranty.",
+    ]);
+    expect(extractCrossRefs(tree, extractSections(tree)).filter((c) => c.unresolved)).toEqual([]);
+  });
+
+  it("still reports a broken reference to this document's own section", () => {
+    const tree = buildTree([
+      "Agreement",
+      "The parties shall comply with Section 14.9 of this Agreement.",
+    ]);
+    const unresolved = extractCrossRefs(tree, extractSections(tree))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+    expect(unresolved).toContain("Section 14.9");
+  });
+});
