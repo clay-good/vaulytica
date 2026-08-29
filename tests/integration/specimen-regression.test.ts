@@ -40,6 +40,48 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A staffing services agreement. Clean: routes at 0.9 and every finding is
+  // real — the indemnities are 2:1, the confidentiality obligation runs one
+  // way, and the agreement defines "Assigned Personnel" but uses the
+  // undefined singular "Assigned Person".
+  "staffing-services.txt": {
+    playbook: "staffing-services-agreement",
+    findings: [
+      "RISK-002",
+      "RISK-015",
+      "STRUCT-006",
+      "OBLI-002",
+      "OBLI-005",
+      "PERS-002",
+      "RISK-006",
+      "RISK-007",
+      "RISK-010",
+      "TEMP-006",
+      "TERM-001",
+    ],
+  },
+
+  // An NVCA-style investors' rights agreement. EQT-053 reported no
+  // information-rights clause at `critical` on a section headed "INFORMATION
+  // AND INSPECTION RIGHTS" that delivers four sets of statements: its pillars
+  // wanted "information rights" adjacent, and a cadence-first, "financial"-
+  // required statement phrase ("unaudited MONTHLY financial statements",
+  // "unaudited QUARTERLY STATEMENTS" and "AUDITED ANNUAL STATEMENTS" all
+  // failed it). EQT-054 wanted the NVCA's own heading, and a large share of
+  // these agreements head the same right "PREEMPTIVE RIGHTS".
+  "investor-rights.txt": {
+    playbook: "investor-rights-agreement",
+    findings: [
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-003",
+      "RISK-010",
+      "RISK-011",
+    ],
+  },
   // A pharmaceutical contract-manufacturing and supply agreement. Three
   // findings inverted what the document says: COMM-024 reported no
   // title/lien warranty at `critical` on a warranty that the Products are

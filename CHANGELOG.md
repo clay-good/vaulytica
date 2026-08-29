@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.198.0] — 2026-08-29
+
+### Added
+- A staffing services agreement and an NVCA-style investors' rights agreement
+  — the 158th and 159th specimens. The staffing agreement is clean: every
+  finding on it is real.
+
+### Fixed
+- **EQT-053 reported no information-rights clause at `critical`** on a section
+  headed "INFORMATION AND INSPECTION RIGHTS" that delivers four sets of
+  statements. Its pillars wanted "information rights" adjacent, and a
+  cadence-first phrase with "financial" required — so "unaudited MONTHLY
+  financial statements", "unaudited QUARTERLY STATEMENTS" and "AUDITED ANNUAL
+  STATEMENTS" all failed it.
+- **EQT-054 wanted the NVCA model's own heading.** A large share of investors'
+  rights agreements head the same right "PREEMPTIVE RIGHTS", and others call
+  it a pro rata or participation right.
+- **`investor-rights-agreement` shipped with an empty rule profile.**
+
 ## [9.197.0] — 2026-08-29
 
 ### Fixed

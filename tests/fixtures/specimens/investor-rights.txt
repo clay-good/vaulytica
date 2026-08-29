@@ -1,0 +1,81 @@
+AMENDED AND RESTATED INVESTORS' RIGHTS AGREEMENT
+
+THIS AMENDED AND RESTATED INVESTORS' RIGHTS AGREEMENT (this "Agreement") is made as of July 14, 2026, by and among Kestrel Bioworks, Inc., a Delaware corporation (the "Company"), and the investors listed on Schedule A (each an "Investor" and collectively the "Investors").
+
+RECITALS
+
+A. Certain of the Investors hold shares of the Company's Series A Preferred Stock and are parties to an Investors' Rights Agreement dated May 3, 2024 (the "Prior Agreement").
+
+B. Certain Investors are purchasing shares of Series B Preferred Stock under a Series B Preferred Stock Purchase Agreement of even date (the "Purchase Agreement"), and it is a condition to the closing that the Prior Agreement be amended and restated as set out here.
+
+NOW, THEREFORE, the parties agree as follows:
+
+1. REGISTRATION RIGHTS
+
+1.1 Demand Registration. At any time after the earlier of July 14, 2031 and one hundred eighty (180) days after the effective date of the Company's initial public offering, Investors holding at least forty percent (40%) of the Registrable Securities then outstanding may demand that the Company register at least $10,000,000 of Registrable Securities. The Company is obligated to effect no more than two (2) demand registrations, and may defer a demand once in any twelve (12) month period for up to ninety (90) days if the board determines in good faith that registration would be seriously detrimental to the Company.
+
+1.2 Piggyback Registration. If the Company proposes to register any of its securities under the Securities Act of 1933, other than on Form S-4 or Form S-8, it shall give each Investor at least twenty (20) days' notice and shall include the Registrable Securities each Investor requests, subject to underwriter cutback. In any cutback, the Registrable Securities may not be reduced below thirty percent (30%) of the total securities registered, except in the initial public offering, where they may be excluded entirely.
+
+1.3 Form S-3 Registration. Once the Company is eligible to use Form S-3, Investors holding at least ten percent (10%) of the Registrable Securities may request a Form S-3 registration of at least $2,000,000, and the Company shall effect no more than two (2) such registrations in any twelve (12) month period.
+
+1.4 Expenses. The Company shall bear all registration expenses, including the reasonable fees of one counsel for the selling Investors not exceeding $50,000, other than underwriting discounts and selling commissions, which the selling Investors bear pro rata.
+
+1.5 Indemnification. The Company shall indemnify each selling Investor against any loss arising out of an untrue statement of a material fact in a registration statement, except a statement made in reliance on written information that Investor furnished. Each selling Investor shall indemnify the Company for a loss arising out of information that Investor furnished, limited to the net proceeds that Investor received.
+
+1.6 Market Standoff. Each Investor agrees that, in connection with the Company's initial public offering, it will not sell or otherwise transfer any Company securities during the period beginning seven (7) days before and ending one hundred eighty (180) days after the effective date of the registration statement, provided that all officers, directors, and holders of at least one percent (1%) of the Company's capital stock are bound by the same restriction.
+
+1.7 Termination. The registration rights in this Section 1 terminate on the earlier of the fifth anniversary of the Company's initial public offering and the date on which an Investor may sell all of its Registrable Securities under Rule 144 without limitation during any ninety (90) day period.
+
+2. INFORMATION AND INSPECTION RIGHTS
+
+2.1 Financial Statements. The Company shall deliver to each Major Investor unaudited monthly financial statements within thirty (30) days after each month end, unaudited quarterly statements within forty-five (45) days after each quarter end, audited annual statements within one hundred twenty (120) days after each fiscal year end, and an annual budget at least thirty (30) days before the start of each fiscal year.
+
+2.2 Inspection. Each Major Investor may inspect the Company's properties, books, and records and discuss the Company's affairs with its officers, at reasonable times and on reasonable notice, for a purpose reasonably related to its investment.
+
+2.3 Confidentiality. Each Investor shall keep confidential all information it receives under this Section 2, except that it may disclose that information to its partners, members, and professional advisers who are bound to keep it confidential, or as required by law, and except that a fund Investor may disclose summary portfolio information to its limited partners in the ordinary course.
+
+2.4 Termination. The rights in this Section 2 terminate on the closing of the Company's initial public offering or a Deemed Liquidation Event.
+
+3. PREEMPTIVE RIGHTS
+
+3.1 Right to Participate. If the Company proposes to issue new equity securities, each Major Investor that is an accredited investor may purchase up to its pro rata share on the same terms, exercisable by written notice within twenty (20) days after the Company's notice.
+
+3.2 Excluded Securities. Section 3.1 does not apply to shares issued under a board-approved equity incentive plan, on conversion of Preferred Stock, in a board-approved acquisition, or in a registered public offering.
+
+4. ADDITIONAL COVENANTS
+
+4.1 Employee Agreements. The Company shall cause each employee and consultant to execute a confidential information and invention assignment agreement, and shall cause each founder's shares to remain subject to the vesting schedule set out on Schedule B.
+
+4.2 Board Matters. The Company shall hold board meetings at least quarterly, shall reimburse directors for reasonable expenses of attendance, and shall maintain directors' and officers' liability insurance of at least $5,000,000.
+
+4.3 Qualified Small Business Stock. The Company shall use commercially reasonable efforts to cause its stock to constitute "qualified small business stock" under Section 1202 of the Internal Revenue Code, and shall respond to an Investor's written request for the information necessary to establish that status.
+
+4.4 Termination of Covenants. The covenants in this Section 4 terminate on the closing of the Company's initial public offering or a Deemed Liquidation Event.
+
+5. MISCELLANEOUS
+
+5.1 Amendment and Waiver. This Agreement may be amended or waived only with the written consent of the Company and Investors holding a majority of the Registrable Securities then outstanding, provided that an amendment that adversely affects one Investor in a manner different from the other Investors requires that Investor's consent.
+
+5.2 Assignment. The rights under this Agreement may be assigned by an Investor to a transferee that acquires at least 250,000 shares, or to an affiliate, in each case if the transferee agrees in writing to be bound by this Agreement and the Company receives written notice.
+
+5.3 Governing Law; Venue. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles. Each party irrevocably submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware.
+
+5.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses on Schedule A.
+
+5.5 Entire Agreement. This Agreement amends, restates, and supersedes the Prior Agreement in its entirety.
+
+5.6 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+KESTREL BIOWORKS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+MERIDIAN GROWTH PARTNERS III, L.P.
+
+By: /s/ Tomas Beaulieu
+Name: Tomas Beaulieu
+Title: Managing Partner

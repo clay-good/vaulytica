@@ -1109,6 +1109,7 @@ const IRA_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-053",
+    version: "1.1.0",
     name: "Information rights",
     description: "Annual / quarterly financials, monthly financials at threshold, budget.",
     citation: nvca("ira-info-rights", "IRA — Information Rights"),
@@ -1119,12 +1120,20 @@ const IRA_RULES: Rule[] = [
     recommendation:
       "Add 'Information Rights' for major investors with the standard cadence and an inspection right.",
     present_patterns: [
-      /information\s+rights/i,
-      /(quarterly|annual)\s+(unaudited|audited)?\s*financial\s+statements?/is,
+      // The section is headed "INFORMATION AND INSPECTION RIGHTS" as often as
+      // "Information Rights".
+      /information\s+(?:and\s+inspection\s+)?rights|inspection\s+rights/i,
+      // Either order, the MONTHLY cadence, and the word "financial" optional:
+      // "UNAUDITED MONTHLY financial statements", "unaudited QUARTERLY
+      // STATEMENTS", "AUDITED ANNUAL STATEMENTS". The cadence-first,
+      // financial-required form read none of them, and a section that delivers
+      // four sets of statements was reported at `critical` as delivering none.
+      /(?:audited|unaudited)?\s*(?:monthly|quarterly|annual|semi-?annual)\s+(?:audited|unaudited)?\s*(?:financial\s+)?statements?/i,
     ],
   }),
   presence({
     id: "EQT-054",
+    version: "1.1.0",
     name: "Right of first offer on new issuances",
     description:
       "Often combined with pro rata: investors get a right of first offer on new securities issuances.",
@@ -1136,7 +1145,16 @@ const IRA_RULES: Rule[] = [
       "NVCA-style IRA: company must offer new securities to existing investors before third parties.",
     recommendation:
       "Add 'Right of First Offer' on new securities subject to standard exclusions (employee equity, conversions, M&A).",
-    present_patterns: [/right\s+of\s+first\s+offer/i, /\brofo\b/i],
+    // The same right is headed "PREEMPTIVE RIGHTS" in a large share of
+    // investors' rights agreements, and "pro rata rights" or "participation
+    // rights" in others. The NVCA model calls it a right of first offer; the
+    // documents do not always follow.
+    present_patterns: [
+      /right\s+of\s+first\s+offer/i,
+      /\brofo\b/i,
+      /preemptive\s+rights?/i,
+      /(?:pro\s+rata|participation)\s+rights?/i,
+    ],
     default_severity: "warning",
   }),
   presence({
