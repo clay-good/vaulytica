@@ -19,7 +19,9 @@
  * engine already handles and change only its FORMAT. Nothing about the words
  * changed, so any difference is the engine's.
  *
- * The list below is debt, not design. It may only shrink.
+ * Both debt lists below are now EMPTY: all ninety-two specimens report
+ * identically under all five transforms, with no exceptions. The lists stay
+ * because the assertion at the bottom is what holds them there.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -29,32 +31,16 @@ import { analyzeText } from "../../tools/cli/api.js";
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
 /**
- * The five format transforms, each with the specimens whose finding SET still
- * moves under it. Routing is invariant under EVERY transform for EVERY
- * specimen, with no exceptions — a document that is reformatted must not
- * become a different kind of document — and only the finding sets carry debt.
+ * Specimens whose finding SET still moves when the blank lines go — now none.
  *
- * Each list may only shrink.
+ * The list started at eight. Five of those eight were false NEGATIVES in the
+ * NORMAL case rather than false positives in the reformatted one: a signature
+ * label read only at the start of its paragraph, a preamble window measured in
+ * paragraphs rather than characters, a liability cap named in the section
+ * HEADING, an auto-renewal clause read for its heading and no further. Each is
+ * a rule that took a fact about the LAYOUT for a fact about the document.
  */
-
-/**
- * Specimens whose finding SET still moves when the blank lines go. Each is a
- * paragraph-boundary sensitivity in one rule, not a routing failure — the
- * routing is invariant across the whole corpus and is asserted for every
- * specimen below, with no exceptions.
- *
- * Mostly attachment detection (STRUCT-018 counts a reference it can no longer
- * pair with a heading), signature-block detection (STRUCT-003), and the
- * placeholder / carve-out rules that read a paragraph as their unit.
- */
-const KNOWN_UNSTABLE = new Set<string>([
-  "83b-election.txt",
-  "advance-directive.txt",
-  "media-release.txt",
-  "option-grant.txt",
-  "po-terms.txt",
-  "saas-tos.txt",
-]);
+const KNOWN_UNSTABLE = new Set<string>([]);
 
 const SPECIMENS = readdirSync(DIR)
   .filter((f) => f.endsWith(".txt"))

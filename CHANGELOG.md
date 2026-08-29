@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.128.0] — 2026-08-29
+
+### Changed
+- **Format is no longer load-bearing anywhere.** All ninety-two specimens now
+  report identically under all five format transforms — blank lines stripped,
+  double-spaced, CRLF, hard-wrapped, smart-quoted — with no exceptions. The
+  debt lists the guard carried are both empty. Five of the eight remaining
+  entries were false NEGATIVES in the normal case, not false positives in the
+  reformatted one.
+
+### Fixed
+- **Two documents reported themselves unsigned at `critical`** (STRUCT-003).
+  The conformed-signature anchor listed the punctuation that may precede the
+  mark — "^", ":", ",", "." — and left out the commonest thing of all, a
+  SPACE, so an 83(b) election dated on the line above its signature was
+  unsigned as soon as its blank lines went. And a signature label was anchored
+  at the start of its paragraph, so a release whose four rules and four labels
+  arrive as one paragraph could only ever be read for the first of them. Each
+  segment that follows an underscore rule is read now.
+- **An advance directive's witness lines were reported as unfilled template
+  placeholders**, at `critical` (STRUCT-013). The prose that PRECEDES an
+  underscore rule is not part of the signature line, and blanking the rules in
+  place left the witness attestation glued to the label beneath it.
+- **A stock option grant reported "No parties identified"** while naming the
+  company, its state, and its defined role in plain sight (STRUCT-001). The
+  preamble window was a quarter of the PARAGRAPH COUNT, which is a fact about
+  the layout: the same notice arrives as twenty-one paragraphs with its blank
+  lines and as six without them, and a quarter of six stops one paragraph short
+  of the preamble. The window is floored in characters now.
+- **An indemnity carved out of a liability cap went unreported whenever the cap
+  was named in the section HEADING** (RISK-004) — "13. Limitation of
+  Liability." over "Neither party is liable … This limitation does not apply to
+  Seller's indemnification obligations". A set of purchase order terms and a
+  set of SaaS terms each carve their cap in exactly that shape. The heading is
+  read together with the clause, whether the file styles it as one or leaves it
+  as the short line above.
+- **An auto-renewal clause was read for its section heading and no further**
+  (TEMP-011). "3. Billing and Automatic Renewal." matches the trigger and
+  carries no notice window, so the clause beneath it was never examined. The
+  same rule also read the provider's own courtesy reminder — "we will send you
+  an email reminder at least 7 days before an annual renewal" — as a
+  seven-day cancellation window, and reported a set of terms for the thing
+  ROSCA asks them to do.
+- The catalog-shadowing sweep had no timeout despite the comment promising one,
+  and failed against vitest's 5-second default at its true 6-second runtime.
+
 ## [9.127.0] — 2026-08-29
 
 ### Fixed

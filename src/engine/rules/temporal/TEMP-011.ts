@@ -15,7 +15,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "TEMP-011",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Auto-renewal notice window shorter than 30 days",
   category: "temporal",
   default_severity: "warning",
@@ -28,34 +28,17 @@ export const rule: Rule = {
       // consumer spelling "auto-renew(s)" / "auto-renewal" is detected, not only
       // the spaced "automatically renew" — the same gap TEMP-005 / DARK-002 fixed.
       /auto(?:matic)?(?:ally)?[\s-]+renew(?:s|ed|ing|al)?|renews?\s+(?:automatically\s+)?(?:for\s+)?(?:successive|additional|further)/i,
+      50,
+      // A paragraph with no non-renewal window in it is not the clause: the
+      // section HEADING "3. Billing and Automatic Renewal." matches the
+      // trigger and carries no window, so stopping at the first match read the
+      // heading and never reached the clause beneath it. Testing the hit
+      // afterwards is the trap this callback exists to avoid.
+      (paragraph) => nonRenewalNoticeDays(paragraph) === null,
     );
     if (!hit) return null;
-
-    // Look for "N days" notice-window language in the same paragraph.
-    // Supports `30 days`, `30 day`, `thirty (30) days`, `30-day`.
-    const noticeMatch = hit.text.match(
-      /(\d+)\s*(?:-?day-?\(?s?\)?)\s*(?:prior\s+(?:written\s+)?)?(?:written\s+)?notice|(?:prior|written)\s+notice\s+(?:of\s+)?(?:at\s+least\s+)?(\d+)\s*days?|(\d+)\s*days?\s*(?:prior|before|in\s+advance)/i,
-    );
-    if (!noticeMatch) return null;
-    // The notice must govern non-renewal, not a different termination path in
-    // the same paragraph: if a for-cause / convenience / breach termination
-    // clause immediately precedes the notice, that notice belongs to it, not to
-    // the auto-renewal non-renewal window.
-    const noticeStart = noticeMatch.index ?? 0;
-    const preNotice = hit.text.slice(Math.max(0, noticeStart - 60), noticeStart);
-    if (
-      // "breach\b" missed the verb forms ("materially breaches / breached"),
-      // so a for-cause cure-notice window could slip past this guard and be
-      // misread as the non-renewal window. Match the inflections too.
-      /\bfor\s+(?:cause|convenience)\b|\bmaterial(?:ly)?\s+breach(?:e[sd]|ing)?\b|\bdefault\b|\buncured\b/i.test(
-        preNotice,
-      )
-    )
-      return null;
-    const daysStr = noticeMatch[1] ?? noticeMatch[2] ?? noticeMatch[3];
-    if (!daysStr) return null;
-    const days = Number(daysStr);
-    if (!Number.isFinite(days) || days >= 30) return null;
+    const days = nonRenewalNoticeDays(hit.text);
+    if (days === null) return null;
 
     return emit(ctx, rule, {
       title: `Auto-renewal notice window under 30 days: ${days}`,
@@ -68,3 +51,46 @@ export const rule: Rule = {
     });
   },
 };
+
+/**
+ * The non-renewal notice window a paragraph imposes, in days, or null if it
+ * imposes none under thirty. Supports `30 days`, `30 day`, `thirty (30) days`,
+ * `30-day`.
+ */
+function nonRenewalNoticeDays(text: string): number | null {
+  const noticeMatch = text.match(
+    /(\d+)\s*(?:-?day-?\(?s?\)?)\s*(?:prior\s+(?:written\s+)?)?(?:written\s+)?notice|(?:prior|written)\s+notice\s+(?:of\s+)?(?:at\s+least\s+)?(\d+)\s*days?|(\d+)\s*days?\s*(?:prior|before|in\s+advance)/i,
+  );
+  if (!noticeMatch) return null;
+  // The notice must govern non-renewal, not a different termination path in
+  // the same paragraph: if a for-cause / convenience / breach termination
+  // clause immediately precedes the notice, that notice belongs to it, not to
+  // the auto-renewal non-renewal window.
+  const noticeStart = noticeMatch.index ?? 0;
+  const preNotice = text.slice(Math.max(0, noticeStart - 60), noticeStart);
+  if (
+    // "breach\b" missed the verb forms ("materially breaches / breached"),
+    // so a for-cause cure-notice window could slip past this guard and be
+    // misread as the non-renewal window. Match the inflections too.
+    /\bfor\s+(?:cause|convenience)\b|\bmaterial(?:ly)?\s+breach(?:e[sd]|ing)?\b|\bdefault\b|\buncured\b/i.test(
+      preNotice,
+    )
+  )
+    return null;
+  // A REMINDER the provider sends is not a window the customer must meet.
+  // "We will send you an email reminder at least 7 days before an annual
+  // renewal" is the pro-consumer half of an auto-renewal clause — it is what
+  // ROSCA and the state statutes ASK for — and reading it as a seven-day
+  // cancellation window reported a set of terms for the courtesy it extends.
+  if (
+    /\b(?:remind(?:er|ers|s)?|notify\s+you|send\s+you|e-?mail|inform\s+you|alert)\b/i.test(
+      preNotice,
+    )
+  )
+    return null;
+  const daysStr = noticeMatch[1] ?? noticeMatch[2] ?? noticeMatch[3];
+  if (!daysStr) return null;
+  const days = Number(daysStr);
+  if (!Number.isFinite(days) || days >= 30) return null;
+  return days;
+}

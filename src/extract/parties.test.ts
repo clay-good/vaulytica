@@ -322,3 +322,26 @@ describe("an all-caps instrument's parties", () => {
     expect(parties.map((p) => p.role).sort()).toEqual(["Guarantor", "Lender"]);
   });
 });
+
+describe("the preamble window is measured in characters too", () => {
+  // A paragraph COUNT is a fact about the layout, not about the document. The
+  // same option-grant notice arrives as twenty-one paragraphs with its blank
+  // lines and as six without them — a PDF copy-paste, where each numbered
+  // section runs into its heading — and a quarter of six is one paragraph past
+  // the preamble. The grant reported "No parties identified" while naming the
+  // company, its state, and its defined role in plain sight.
+  it("reads a preamble that sits past a quarter of a six-paragraph document", () => {
+    const body = "x ".repeat(400);
+    const parties = extractParties(
+      buildTree([
+        "HALCYON INSTRUMENTS, INC.",
+        "2026 EQUITY INCENTIVE PLAN",
+        "NOTICE OF STOCK OPTION GRANT",
+        'Halcyon Instruments, Inc., a Delaware corporation (the "Company"), hereby grants to the Optionee named below an option to purchase shares.',
+        body,
+        body,
+      ]),
+    );
+    expect(parties.map((p) => p.name)).toContain("Halcyon Instruments, Inc");
+  });
+});

@@ -165,6 +165,23 @@ const AMONG_SEP = /\s*,\s*(?:and\s+)?|\s+and\s+/i;
 const INSTRUMENT =
   "(?:agreement|contract|amendment|addendum|lease|deed|indenture|memorandum|mou|nda|msa|sow|dpa|baa|eula|guaranty|note|assignment|release|licence|license)";
 const SAME_SENTENCE = String.raw`(?:[^.;\n]|\.(?!\s))`;
+/**
+ * How much front matter the preamble window covers when the paragraph count
+ * is small — about a page, which is where a preamble lives in any layout.
+ */
+const PREAMBLE_CHAR_FLOOR = 2500;
+
+/** The number of leading paragraphs whose text totals at least `chars`. */
+function paragraphsCovering(paragraphs: ReadonlyArray<{ text: string }>, chars: number): number {
+  let total = 0;
+  let n = 0;
+  while (n < paragraphs.length && total < chars) {
+    total += paragraphs[n]!.text.length;
+    n += 1;
+  }
+  return n;
+}
+
 const PREAMBLE_LEAD = new RegExp(
   "(?:" +
     String.raw`\bby\s+and\s+` +
@@ -325,7 +342,20 @@ export function extractParties(tree: DocumentTree): Party[] {
   // identify the parties" while naming them in plain sight. The preamble is a
   // fixed feature of the front matter, not a proportion of the body, so give it
   // a floor of the first few paragraphs.
-  const preambleCount = Math.max(3, Math.ceil(allText.length * 0.25));
+  //
+  // A paragraph COUNT is a fact about the layout, not about the document. The
+  // same option-grant notice arrives as twenty-one paragraphs with its blank
+  // lines and as six without them — a PDF copy-paste, where each numbered
+  // section runs into its heading — and a quarter of six is one paragraph
+  // past the preamble. The grant reported "No parties identified" while
+  // naming the company, its state, and its defined role in plain sight. So
+  // the window is also floored in CHARACTERS: enough paragraphs to cover the
+  // front matter however the text happens to be chunked.
+  const preambleCount = Math.max(
+    3,
+    Math.ceil(allText.length * 0.25),
+    paragraphsCovering(allText, PREAMBLE_CHAR_FLOOR),
+  );
 
   for (let i = 0; i < preambleCount && i < allText.length; i += 1) {
     const { text, pos } = allText[i]!;

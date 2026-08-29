@@ -32,12 +32,20 @@ const ATTESTATION =
 // /s/ Dana Reyes"). That last case is not a stylistic variant: pasted and
 // plain-text ingest joins the lines of a block with SPACES, so a signature
 // laid out on three lines arrives as one paragraph and a line-start anchor
-// can never reach the "/s/". The anchor still holds against a URL path
-// ("example.com/s/thing"), where the mark is glued to a word character.
+// can never reach the "/s/".
+//
+// The anchor is that the character before the mark is not a word character,
+// which is the whole of the URL guard ("example.com/s/thing", where the mark
+// is glued to one). Listing the punctuation that may precede it instead ("^",
+// ":", ",", ".") left out the commonest thing of all: a SPACE. An 83(b)
+// election dated on the line above its conformed signature arrives as "…
+// Dated: July 15, 2026 /s/ Elena Marie Vasquez" once its blank lines are
+// gone, and reported itself unsigned at `critical`.
+//
 // Case-INSENSITIVE: an all-caps instrument signs "/S/ MARTIN R. ODEGAARD",
 // and old-form guaranties, bonds, and powers of attorney are set in capitals
 // throughout.
-const CONFORMED_SIG = /(?:^|[:,.])\s*\/s\/\s+\S/im;
+const CONFORMED_SIG = /(?:^|[^\w/])\s*\/s\/\s+\S/im;
 // A signature line that names its signatory by office rather than by a
 // "By:/Name:/Title:" grid — "____________ Jordan Ellis, Director". Board /
 // member / partner consents, resolutions, and certificates sign this way: an
@@ -91,24 +99,39 @@ function isPersonalName(s: string): boolean {
 function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
   if (STANDALONE_SIGNATORY_ROLE.test(text)) return true;
   if (!/_{6,}/.test(text)) return false;
-  const after = text.replace(/_{6,}/g, " ").replace(/\/s\//g, " ").trim();
-  if (!after) return false;
-  // "____ Signature of Subject" / "____ Print Name of Witness" — the label
-  // form a consent, affidavit, or application signs with.
-  if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(after)) return true;
-  if (isPersonalName(after)) return true;
-  const lower = after.toLowerCase();
-  return partyNames.some((n) => {
-    // Strip a role parenthetical the extractor may attach —
-    // 'Karen Whitfield (the "Petitioner")' — before comparing to the printed
-    // signature name.
-    const nl = n
-      .toLowerCase()
-      .replace(/\s*\(.*$/, "")
-      .trim();
-    if (nl.length < 4) return false;
-    return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
-  });
+  // Each segment that FOLLOWS an underscore rule, rather than the paragraph
+  // with its rules blanked out. A release's signature page lays out four
+  // rules and four labels, and once its blank lines are gone they arrive as
+  // one paragraph — so a label anchored at the paragraph's start could only
+  // ever see the first of them, and the release reported itself unsigned at
+  // `critical`. Splitting on the rules reads each line the same way whether
+  // it arrived alone or joined to its neighbours.
+  const segments = text
+    .split(/_{6,}/)
+    .slice(1)
+    .map((seg) => seg.replace(/\/s\//g, " ").trim())
+    .filter((seg) => seg.length > 0);
+  if (segments.length === 0) return false;
+  for (const seg of segments) {
+    // "____ Signature of Subject" / "____ Print Name of Witness" — the label
+    // form a consent, affidavit, or application signs with.
+    if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(seg)) return true;
+    if (isPersonalName(seg)) return true;
+    const lower = seg.toLowerCase();
+    const named = partyNames.some((n) => {
+      // Strip a role parenthetical the extractor may attach —
+      // 'Karen Whitfield (the "Petitioner")' — before comparing to the printed
+      // signature name.
+      const nl = n
+        .toLowerCase()
+        .replace(/\s*\(.*$/, "")
+        .trim();
+      if (nl.length < 4) return false;
+      return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
+    });
+    if (named) return true;
+  }
+  return false;
 }
 // The secretary's certification formula that closes bylaws and resolutions.
 // Deliberately narrow ("certified as adopted", "certify that the foregoing")
@@ -222,7 +245,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.24.0",
+  version: "1.25.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

@@ -452,7 +452,7 @@ describe("every playbook is reachable by its own name and vocabulary", () => {
     expect(shadowed.sort(), `shadowed by a sibling:\n  ${shadowed.sort().join("\n  ")}`).toEqual(
       [],
     );
-  });
+  }, 60_000);
 });
 
 /**

@@ -81,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.12.0",
+  version: "1.13.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -265,50 +265,63 @@ const STANDALONE_SIGNATORY_ROLE =
  */
 function isBareNameSignature(text: string, partyNames: string[]): boolean {
   if (!/_{6,}/.test(text)) return false;
-  const after = text.replace(/_{6,}/g, " ").replace(/\/s\//g, " ").trim();
-  if (!after) return false;
-  if (STANDALONE_SIGNATORY_ROLE.test(after)) return true;
-  // A signature line labeled by OFFICE ALONE, with no name printed beneath it
-  // — "_______________________  Judge        Date" is how a proposed order,
-  // decree, or QDRO leaves room for the bench to sign, and a corporate
-  // consent sometimes prints only "________ Secretary". `SIGNATURE_LINE_BY_OFFICE`
-  // requires a name before the office, so every such order reported its own
-  // signature line at `critical` as an unfilled template placeholder.
-  // Anchored to the WHOLE remainder so a genuine "____ [Insert Judge Name]"
-  // placeholder, which carries template text the office alone never does, is
-  // untouched.
-  if (STANDALONE_OFFICE_LINE.test(after.replace(/\s+/g, " ").trim())) return true;
-  // A bare FIELD LABEL beneath the rule — "____ Printed name", "____
-  // Signature" — which is what a form prints under a signature line when the
-  // label sits on its own row. The two-token signature test sees only one
-  // token there and reported the line as an unfilled placeholder.
-  if (SIGNATURE_FIELD_LABEL.test(after.replace(/\s+/g, " ").trim())) return true;
-  // A signature line labeled by role beneath the rule — "____ Signature of
-  // Subject", "____ Signed by Applicant", "____ Print Name of Witness" — as a
-  // consent form, affidavit, or application signs. A genuine "[Insert
-  // Signature]" placeholder starts with the bracket / "Insert", not the label.
-  if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(after)) return true;
-  // A bare underscore rule beneath a printed personal name — "________ Jonathan
-  // Pierce" — is a signature line even when that individual is named only in the
-  // signature block: a multi-signatory operating agreement, member/partner
-  // consent, or deed lists its signatories here, not as defined parties, so the
-  // party-name anchor below never sees them. Require the remainder to be a clean
-  // 2–4-word personal name (each word Title-Case, no field-label / template
-  // token) so a genuine "____ [Party Name]" / "____ Company Name" / "____ Print
-  // Name" placeholder is not suppressed.
-  if (isPersonalName(after)) return true;
-  const lower = after.toLowerCase();
-  return partyNames.some((n) => {
-    // A party is often extracted with its role parenthetical attached —
-    // 'Karen Whitfield (the "Petitioner")'. The printed signature line is the
-    // bare name, so compare against the name before the "(".
-    const nl = n
-      .toLowerCase()
-      .replace(/\s*\(.*$/, "")
-      .trim();
-    if (nl.length < 4) return false;
-    return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
-  });
+  // Each segment that FOLLOWS an underscore rule, rather than the paragraph
+  // with its rules blanked out. The prose that PRECEDES the rule is not part
+  // of the signature line, and blanking the rules in place left it glued to
+  // the label: an advance directive whose witness attestation runs into its
+  // own witness lines — as it does the moment its blank lines are gone —
+  // reported them as unfilled template placeholders, at `critical`.
+  // (Parity with STRUCT-003's reading of the same construct.)
+  for (const after of text
+    .split(/_{6,}/)
+    .slice(1)
+    .map((seg) => seg.replace(/\/s\//g, " ").trim())
+    .filter((seg) => seg.length > 0)) {
+    if (STANDALONE_SIGNATORY_ROLE.test(after)) return true;
+    // A signature line labeled by OFFICE ALONE, with no name printed beneath it
+    // — "_______________________  Judge        Date" is how a proposed order,
+    // decree, or QDRO leaves room for the bench to sign, and a corporate
+    // consent sometimes prints only "________ Secretary". `SIGNATURE_LINE_BY_OFFICE`
+    // requires a name before the office, so every such order reported its own
+    // signature line at `critical` as an unfilled template placeholder.
+    // Anchored to the WHOLE remainder so a genuine "____ [Insert Judge Name]"
+    // placeholder, which carries template text the office alone never does, is
+    // untouched.
+    if (STANDALONE_OFFICE_LINE.test(after.replace(/\s+/g, " ").trim())) return true;
+    // A bare FIELD LABEL beneath the rule — "____ Printed name", "____
+    // Signature" — which is what a form prints under a signature line when the
+    // label sits on its own row. The two-token signature test sees only one
+    // token there and reported the line as an unfilled placeholder.
+    if (SIGNATURE_FIELD_LABEL.test(after.replace(/\s+/g, " ").trim())) return true;
+    // A signature line labeled by role beneath the rule — "____ Signature of
+    // Subject", "____ Signed by Applicant", "____ Print Name of Witness" — as a
+    // consent form, affidavit, or application signs. A genuine "[Insert
+    // Signature]" placeholder starts with the bracket / "Insert", not the label.
+    if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(after)) return true;
+    // A bare underscore rule beneath a printed personal name — "________ Jonathan
+    // Pierce" — is a signature line even when that individual is named only in the
+    // signature block: a multi-signatory operating agreement, member/partner
+    // consent, or deed lists its signatories here, not as defined parties, so the
+    // party-name anchor below never sees them. Require the remainder to be a clean
+    // 2–4-word personal name (each word Title-Case, no field-label / template
+    // token) so a genuine "____ [Party Name]" / "____ Company Name" / "____ Print
+    // Name" placeholder is not suppressed.
+    if (isPersonalName(after)) return true;
+    const lower = after.toLowerCase();
+    const named = partyNames.some((n) => {
+      // A party is often extracted with its role parenthetical attached —
+      // 'Karen Whitfield (the "Petitioner")'. The printed signature line is the
+      // bare name, so compare against the name before the "(".
+      const nl = n
+        .toLowerCase()
+        .replace(/\s*\(.*$/, "")
+        .trim();
+      if (nl.length < 4) return false;
+      return lower === nl || lower.startsWith(`${nl},`) || lower.startsWith(`${nl} `);
+    });
+    if (named) return true;
+  }
+  return false;
 }
 
 /**

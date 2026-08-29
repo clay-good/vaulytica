@@ -675,6 +675,7 @@ export const EXPECTED: Record<string, Expectation> = {
   "po-terms.txt": {
     playbook: "purchase-order-terms",
     findings: [
+      "RISK-004",
       "FIN-007",
       "OBLI-005",
       "OBLI-008",
@@ -710,6 +711,7 @@ export const EXPECTED: Record<string, Expectation> = {
   "saas-tos.txt": {
     playbook: "saas-tos",
     findings: [
+      "RISK-004",
       "IPDATA-005",
       "OBLI-005",
       "RISK-007",

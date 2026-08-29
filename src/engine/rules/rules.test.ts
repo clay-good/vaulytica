@@ -52,6 +52,41 @@ describe("STRUCT-003 — signature block present", () => {
     ]);
     expect(STRUCT_003.check(ctx)).toBeNull();
   });
+
+  // The conformed-signature anchor listed the punctuation that may precede the
+  // mark ("^", ":", ",", ".") and left out the commonest thing of all: a
+  // SPACE. An 83(b) election dated on the line above its signature arrives as
+  // "… Dated: July 15, 2026 /s/ Elena Marie Vasquez" once its blank lines are
+  // gone, and reported itself unsigned at `critical`.
+  it("reads a conformed signature preceded by a space (v1.25.0)", () => {
+    const ctx = buildContext([
+      "Election Under Section 83(b)",
+      "The undersigned makes this election under Section 83(b) of the Internal Revenue Code.",
+      "Dated: July 15, 2026 /s/ Elena Marie Vasquez Elena Marie Vasquez, Taxpayer",
+    ]);
+    expect(STRUCT_003.check(ctx)).toBeNull();
+  });
+
+  it("still refuses a URL path that merely contains the mark", () => {
+    const ctx = buildContext([
+      "Notice",
+      "The current form is published at example.com/s/notice-form and may change.",
+      "The parties intend to be bound when the form is completed.",
+    ]);
+    expect(STRUCT_003.check(ctx)).not.toBeNull();
+  });
+
+  // A release's signature page lays out four rules and four labels, and once
+  // its blank lines are gone they arrive as one paragraph — so a label
+  // anchored at the paragraph's start could only ever see the first of them.
+  it("reads a signature label that is not first in the paragraph (v1.25.0)", () => {
+    const ctx = buildContext([
+      "Photograph Release",
+      "I release Riverbend from any claim arising out of the use of the material.",
+      "_______________________________ Signature Date _______________________________ Signature of parent or legal guardian Date _______________________________ Printed name of parent or legal guardian",
+    ]);
+    expect(STRUCT_003.check(ctx)).toBeNull();
+  });
 });
 
 describe("STRUCT-004 — defined terms identifiable", () => {

@@ -60,4 +60,29 @@ describe("TEMP-011 — auto-renewal notice window < 30 days", () => {
       )?.title,
     ).toContain("7");
   });
+
+  // A REMINDER the provider sends is not a window the customer must meet.
+  // "We will send you an email reminder at least 7 days before an annual
+  // renewal" is the pro-consumer half of an auto-renewal clause — what ROSCA
+  // and the state statutes ASK for — and it was read as a seven-day
+  // cancellation window.
+  it("silent on the provider's own advance reminder (v1.4.0)", () => {
+    const ctx = buildContext([
+      "Renewal",
+      "Your subscription will automatically renew at the end of each billing period unless you cancel before the renewal date. We will send you an email reminder at least 7 days before an annual renewal.",
+    ]);
+    expect(TEMP_011.check(ctx)).toBeNull();
+  });
+
+  // The section HEADING matches the auto-renewal trigger and carries no
+  // window, so stopping at the first match read the heading and never reached
+  // the clause beneath it.
+  it("reaches the clause beneath a heading that matches the trigger (v1.4.0)", () => {
+    const ctx = buildContext([
+      "",
+      "3. Automatic Renewal.",
+      "The Term renews automatically for successive one-year periods unless either party gives 10 days written notice of non-renewal.",
+    ]);
+    expect(TEMP_011.check(ctx)).not.toBeNull();
+  });
 });
