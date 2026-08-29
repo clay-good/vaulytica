@@ -477,6 +477,11 @@ const OFFICER_TITLES =
  * A signature-block label immediately before a name — "By: ", "By: /s/ ",
  * "Name: ", "Printed Name: ", or a bare conformed-signature mark.
  */
+/** The phrase is the PLAINTIFF half of a case name: "Celotex Corp. v. Catrett". */
+const CASE_NAME_PLAINTIFF = /^[.'’]?\s*v\.\s/;
+/** The phrase is the DEFENDANT half: "Reeves v. Sanderson Plumbing Prods.". */
+const CASE_NAME_DEFENDANT = /\bv\.\s+(?:[A-Z][\w.'’-]*\s+)*$/;
+
 const SIGNATURE_LABEL_BEFORE =
   /(?:^|[\s|])(?:By|Name|Print(?:ed)?\s+Name|Signature|Signed)\s*:\s*(?:\/s\/\s*)?$|\/s\/\s*$/i;
 
@@ -769,6 +774,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
    * entirely rather than the signed occurrence alone.
    */
   const signedNames = new Set<string>();
+  // A party to a CITED CASE is not a term the drafter forgot to define. An
+  // appellate brief's table of authorities and argument name "Celotex Corp.",
+  // "Sanderson Plumbing Prods.", and "Entek Int'l" several times each, and
+  // every one was reported as an undefined Title-Case term. Like a signatory,
+  // a case name is dropped wherever it appears: a brief cites the same case in
+  // its table of authorities, its standard of review, and its argument.
+  const caseNames = new Set<string>();
   /** The candidate key a phrase is recorded under (a leading article dropped). */
   const canonicalOf = (phrase: string): string => {
     const w = phrase.split(/\s+/);
@@ -1337,6 +1349,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         signedNames.add(canonicalOf(phrase));
         continue;
       }
+      // "<Phrase> v. Other" or "Other v. <Phrase>" — the two halves of a case
+      // name. The "v." is the whole signal; a reporter citation may or may not
+      // follow, since a short-form cite has none.
+      if (
+        CASE_NAME_PLAINTIFF.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 8),
+        ) ||
+        CASE_NAME_DEFENDANT.test(ctx.text.slice(Math.max(0, m.index - 60), m.index))
+      ) {
+        caseNames.add(canonicalOf(phrase));
+        continue;
+      }
       let canonical = phrase;
       let start = m.index;
       if (TITLE_CASE_LEADING_STOPWORDS.has(words[0]!) && words.length > 2) {
@@ -1349,7 +1373,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     }
   });
   const undefined_capitalized = [...undefinedHits.entries()]
-    .filter(([term]) => !signedNames.has(term))
+    .filter(([term]) => !signedNames.has(term) && !caseNames.has(term))
     .filter(([, positions]) => positions.length >= 2)
     .map(([term, positions]) => ({ term, positions }))
     .sort((a, b) => a.term.localeCompare(b.term, "en"));

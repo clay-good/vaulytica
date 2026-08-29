@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.223.0] — 2026-08-29
+
+### Added
+- An appellate brief in the Ninth Circuit — the 181st specimen, and the first
+  for `appellate-brief`. Entirely clean once the defect below was fixed: the
+  filing-format pack is dormant without `--court`, and the family's 53-rule
+  contract-lint skip profile does the rest.
+
+### Fixed
+- **A party to a CITED CASE was reported as a term the drafter forgot to
+  define.** The brief's table of authorities and argument name "Celotex Corp.",
+  "Sanderson Plumbing Prods.", and "Entek Int'l" several times each, and
+  STRUCT-006 listed all of them. The "v." is the whole signal — a phrase on
+  either side of it is half a case name — and, like a signatory, a case name is
+  dropped wherever it appears, because a brief cites the same case in its table
+  of authorities, its standard of review, and its argument.
+
 ## [9.222.0] — 2026-08-29
 
 ### Added

@@ -1,0 +1,134 @@
+IN THE UNITED STATES COURT OF APPEALS
+FOR THE NINTH CIRCUIT
+
+No. 25-16042
+
+MARISOL ONTIVEROS-BAEZ,
+Plaintiff-Appellant,
+
+v.
+
+CASCADIA FREIGHT LOGISTICS, INC.,
+Defendant-Appellee.
+
+On Appeal from the United States District Court
+for the Northern District of California
+No. 3:23-cv-04471-JSC
+The Honorable Jacqueline Scott Corley, District Judge
+
+BRIEF FOR APPELLANT
+
+Devarshi Nandakumar
+HOLLOWAY & NANDAKUMAR LLP
+1900 Franklin Street, Suite 1400
+Oakland, California 94612
+(510) 555-0148
+dnandakumar@hollowaynandakumar.com
+
+Counsel for Plaintiff-Appellant
+
+CORPORATE DISCLOSURE STATEMENT
+
+Appellant Marisol Ontiveros-Baez is a natural person and is not a corporate entity. No corporate disclosure statement is required under Federal Rule of Appellate Procedure 26.1.
+
+TABLE OF CONTENTS
+
+Corporate Disclosure Statement
+Table of Authorities
+Statement of Jurisdiction
+Statement of the Issues
+Statement of the Case
+Summary of the Argument
+Standard of Review
+Argument
+Conclusion
+Certificate of Compliance
+Certificate of Service
+
+TABLE OF AUTHORITIES
+
+Cases
+Anderson v. Liberty Lobby, Inc., 477 U.S. 242 (1986)
+Celotex Corp. v. Catrett, 477 U.S. 317 (1986)
+Dawson v. Entek Int'l, 630 F.3d 928 (9th Cir. 2011)
+McDonnell Douglas Corp. v. Green, 411 U.S. 792 (1973)
+Reeves v. Sanderson Plumbing Prods., Inc., 530 U.S. 133 (2000)
+Yartzoff v. Thomas, 809 F.2d 1371 (9th Cir. 1987)
+
+Statutes
+28 U.S.C. § 1291
+28 U.S.C. § 1331
+42 U.S.C. § 2000e-3(a)
+
+Rules
+Fed. R. App. P. 4(a)(1)(A)
+Fed. R. Civ. P. 56(a)
+
+STATEMENT OF JURISDICTION
+
+The district court had subject matter jurisdiction under 28 U.S.C. § 1331 because Appellant's claims arise under Title VII of the Civil Rights Act of 1964. The district court entered final judgment on all claims on June 3, 2025. Appellant filed a timely notice of appeal on June 27, 2025, within the thirty days allowed by Federal Rule of Appellate Procedure 4(a)(1)(A). This Court has jurisdiction under 28 U.S.C. § 1291.
+
+STATEMENT OF THE ISSUES
+
+1. Whether the district court erred in granting summary judgment on Appellant's retaliation claim where she was terminated eleven days after she reported her supervisor's conduct to human resources.
+
+2. Whether the district court erred in disregarding the sworn declaration of a coworker who overheard the supervisor say that Appellant "would not be here much longer" after the report.
+
+STATEMENT OF THE CASE
+
+Appellant worked as a dispatch coordinator for Appellee from March 2019 until her termination on October 24, 2022. On October 13, 2022, she submitted a written complaint to Appellee's human resources department reporting that her supervisor had repeatedly made demeaning remarks about the national origin of two warehouse employees. Eleven days later, Appellee terminated her employment, citing a reduction in force.
+
+Appellee's own records show that no other dispatch coordinator was terminated in that reduction, and that Appellee posted an opening for the same position six weeks later. A coworker, Teodoro Villanueva, submitted a declaration stating that he heard the supervisor say, two days after the complaint, that Appellant "would not be here much longer."
+
+The district court granted summary judgment for Appellee, holding that Appellant had not established a prima facie case of retaliation and that, in any event, she had not shown that the reduction-in-force explanation was pretextual. The court declined to consider the Villanueva declaration, reasoning without explanation that it was "not probative."
+
+SUMMARY OF THE ARGUMENT
+
+Summary judgment was improper. Eleven days between a protected complaint and a termination is close enough in time to establish the causal link element of a prima facie retaliation case under this Court's precedent. The district court applied a standard drawn from cases involving gaps of many months, and in doing so required Appellant to prove at the prima facie stage what she is required to prove only at trial.
+
+The district court compounded that error by disregarding a sworn declaration that a decisionmaker predicted Appellant's departure two days after her complaint. On summary judgment, that evidence had to be credited and all reasonable inferences drawn in Appellant's favor. Once it is credited, a reasonable jury could find that the reduction-in-force explanation was a pretext, particularly where no other coordinator was let go and the position was reposted six weeks later.
+
+STANDARD OF REVIEW
+
+This Court reviews a grant of summary judgment de novo, viewing the evidence in the light most favorable to the nonmoving party and drawing all reasonable inferences in that party's favor. Dawson v. Entek Int'l, 630 F.3d 928, 934 (9th Cir. 2011). Summary judgment is appropriate only where there is no genuine dispute as to any material fact. Fed. R. Civ. P. 56(a); Anderson v. Liberty Lobby, Inc., 477 U.S. 242, 248 (1986).
+
+ARGUMENT
+
+I. ELEVEN DAYS BETWEEN THE COMPLAINT AND THE TERMINATION ESTABLISHES CAUSATION AT THE PRIMA FACIE STAGE.
+
+A plaintiff establishes a prima facie case of retaliation under 42 U.S.C. § 2000e-3(a) by showing that she engaged in protected activity, suffered an adverse employment action, and that a causal link connects the two. McDonnell Douglas Corp. v. Green, 411 U.S. 792, 802 (1973). The burden at this stage is not onerous.
+
+Causation may be inferred from timing alone where the adverse action follows closely on the protected activity. Yartzoff v. Thomas, 809 F.2d 1371, 1376 (9th Cir. 1987). Eleven days is well within the interval this Court has treated as sufficient. The district court's contrary conclusion rested on decisions addressing gaps of eight months and longer, which say nothing about an eleven-day interval.
+
+II. THE DISTRICT COURT COULD NOT DISREGARD THE VILLANUEVA DECLARATION.
+
+A district court may not weigh evidence or make credibility determinations on summary judgment. Reeves v. Sanderson Plumbing Prods., Inc., 530 U.S. 133, 150 (2000). The Villanueva declaration is sworn, is based on personal knowledge, and reports a statement by the supervisor who made the termination decision. Calling it "not probative," without more, is a credibility determination in all but name.
+
+Credited, the declaration supplies direct evidence of retaliatory motive. Combined with the undisputed facts that no other dispatch coordinator was terminated and that the position was reposted six weeks later, it is enough for a reasonable jury to reject the reduction-in-force explanation as pretext. Celotex Corp. v. Catrett, 477 U.S. 317, 322 (1986).
+
+CONCLUSION
+
+For the foregoing reasons, Appellant respectfully requests that this Court reverse the judgment of the district court and remand for trial.
+
+Dated: August 11, 2025
+
+Respectfully submitted,
+
+/s/ Devarshi Nandakumar
+Devarshi Nandakumar
+HOLLOWAY & NANDAKUMAR LLP
+Counsel for Plaintiff-Appellant
+
+CERTIFICATE OF COMPLIANCE
+
+This brief complies with the type-volume limitation of Federal Rule of Appellate Procedure 32(a)(7)(B) because it contains 4,812 words, excluding the parts exempted by Rule 32(f). This brief complies with the typeface requirements of Rule 32(a)(5) and the type-style requirements of Rule 32(a)(6) because it has been prepared in a proportionally spaced typeface using Microsoft Word in 14-point Times New Roman.
+
+/s/ Devarshi Nandakumar
+Devarshi Nandakumar
+
+CERTIFICATE OF SERVICE
+
+I certify that on August 11, 2025, I electronically filed the foregoing brief with the Clerk of the Court using the appellate CM/ECF system, which will serve counsel of record.
+
+/s/ Devarshi Nandakumar
+Devarshi Nandakumar

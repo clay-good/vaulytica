@@ -679,6 +679,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // An appellate brief in the Ninth Circuit — the 181st specimen, and the
+  // first for `appellate-brief`. Entirely clean: the filing-format pack is
+  // dormant without --court, and the 53-rule contract-lint skip profile is
+  // doing its job. It exposed the case-name defect: STRUCT-006 reported
+  // "Celotex Corp", "Entek Int", and "Sanderson Plumbing Prods" as terms the
+  // brief forgot to define.
+  "appellate-brief.txt": {
+    playbook: "appellate-brief",
+    findings: [],
+  },
   // Amended and restated bylaws of a Delaware corporation — the 180th
   // specimen. Clean but for one info: GOV-001..012 are all satisfied, and the
   // exclusive-forum bylaw carves out the Exchange Act. It was this document

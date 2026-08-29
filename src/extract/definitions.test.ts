@@ -2096,3 +2096,29 @@ describe("extractDefinitions — a collective alias may name what it collects (v
     expect(extractDefinitions(tree).entries.map((d) => d.term)).toContain("Review Meeting");
   });
 });
+
+describe("extractDefinitions — a cited case is not an undefined term (v9.223.0)", () => {
+  it("does not report the parties to a cited case", () => {
+    const tree = buildTree([
+      "Standard of Review",
+      "This Court reviews a grant of summary judgment de novo. Dawson v. Entek Int'l, 630 F.3d 928, 934 (9th Cir. 2011).",
+      "Summary judgment is appropriate only where there is no genuine dispute of material fact. Celotex Corp. v. Catrett, 477 U.S. 317, 322 (1986).",
+      "The court may not weigh the evidence. Reeves v. Sanderson Plumbing Prods., Inc., 530 U.S. 133, 150 (2000); Celotex Corp. v. Catrett, 477 U.S. 317 (1986); Dawson v. Entek Int'l, 630 F.3d 928 (9th Cir. 2011).",
+    ]);
+    const undefined_terms = extractDefinitions(tree).undefined_capitalized.map((u) => u.term);
+    expect(undefined_terms).not.toContain("Celotex Corp");
+    expect(undefined_terms).not.toContain("Entek Int");
+    expect(undefined_terms).not.toContain("Sanderson Plumbing Prods");
+  });
+
+  it("still reports an ordinary undefined Title-Case term in the same document", () => {
+    const tree = buildTree([
+      "Argument",
+      "The Retention Bonus was payable on the anniversary date. Celotex Corp. v. Catrett, 477 U.S. 317 (1986).",
+      "Appellee never paid the Retention Bonus.",
+    ]);
+    expect(extractDefinitions(tree).undefined_capitalized.map((u) => u.term)).toContain(
+      "Retention Bonus",
+    );
+  });
+});
