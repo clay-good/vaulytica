@@ -349,7 +349,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1216,11 +1216,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "09db3d3fa71aa1e84373549d63476c6806a7c6843950d8266b8d8ca093655cf8",
+  "result_hash": "4f6c1e284d81f0a63dfc31e1dce4a0df2ba659d287bac3f73ed16a8bdb571d4f",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.190.0"
+  "version": "9.191.0"
 }

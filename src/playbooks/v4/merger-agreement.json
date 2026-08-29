@@ -22,7 +22,10 @@
     "Effective Time",
     "Merger Consideration"
   ],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "DGCL",

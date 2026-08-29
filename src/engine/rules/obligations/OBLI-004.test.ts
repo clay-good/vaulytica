@@ -49,3 +49,24 @@ describe("OBLI-004 — best efforts / best endeavours ambiguity", () => {
     ).toBeNull();
   });
 });
+
+describe("OBLI-004 — 'reasonable best efforts' is a different standard", () => {
+  // "reasonable best efforts" is the MIDDLE standard, and OBLI-008 already
+  // surfaces it as an undefined efforts standard. Matching the substring
+  // reported an M&A agreement that deliberately chose the qualified standard
+  // as using the unqualified one — the opposite of what its drafters did.
+  it.each([
+    "Each party shall use reasonable best efforts to obtain all required regulatory approvals.",
+    "Buyer shall use commercially reasonable best efforts to close.",
+    "Seller shall use good faith best efforts to obtain the consent.",
+  ])("is silent on %s", (clause) => {
+    expect(OBLI_004.check(buildContext(["Covenants", clause]))).toBeNull();
+  });
+
+  it.each([
+    "Seller shall use best efforts to obtain the consent.",
+    "Vendor shall use its best endeavours to deliver by the target date.",
+  ])("still fires on %s", (clause) => {
+    expect(OBLI_004.check(buildContext(["Covenants", clause]))).not.toBeNull();
+  });
+});

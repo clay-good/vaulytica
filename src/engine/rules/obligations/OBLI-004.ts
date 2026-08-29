@@ -4,7 +4,7 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
 /** OBLI-004 — "Best efforts" vs. "reasonable efforts" (info). */
 export const rule: Rule = {
   id: "OBLI-004",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Best efforts standard ambiguity",
   category: "obligations",
   default_severity: "info",
@@ -15,7 +15,17 @@ export const rule: Rule = {
     // equivalent of "best efforts" and carries the identical ambiguity — an
     // aspirational, undefined standard courts interpret inconsistently. Cross-
     // border contracts drafted on an English-law template use it verbatim.
-    const hit = firstParagraphMatch(ctx, /\bbest\s+(?:efforts|endeavou?rs)\b/i);
+    // "REASONABLE best efforts" is a different standard — the middle one —
+    // and OBLI-008 already surfaces it as an undefined efforts standard.
+    // Matching the substring reported an M&A agreement that deliberately
+    // chose the qualified standard as using the unqualified one, which is
+    // the opposite of what its drafters did. "Commercially reasonable best
+    // efforts" and "good faith best efforts" are excluded for the same
+    // reason; a bare "best efforts" still fires.
+    const hit = firstParagraphMatch(
+      ctx,
+      /(?<!\b(?:reasonable|commercially\s+reasonable|good\s+faith|diligent)\s)\bbest\s+(?:efforts|endeavou?rs)\b/i,
+    );
     if (!hit) return null;
     // Suppress a DISCLAIMER of the best-efforts standard — "commercially
     // reasonable efforts, and not best efforts", "reasonable efforts rather

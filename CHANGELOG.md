@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.191.0] — 2026-08-29
+
+### Added
+- A one-step cash merger agreement — the 152nd specimen.
+
+### Fixed
+- **OBLI-004 reported an agreement that deliberately chose "REASONABLE best
+  efforts" as using the unqualified standard** — the opposite of what its
+  drafters did. "Reasonable best efforts" is the middle standard, and OBLI-008
+  already surfaces it as an undefined efforts standard. "Commercially
+  reasonable best efforts" and "good faith best efforts" are excluded for the
+  same reason; a bare "best efforts" still fires.
+- **MNA-035 demanded § 228 written consents and drag-along letters of a merger
+  approved at a stockholder MEETING on a proxy statement.** The rule's own
+  title, description and explanation scope it to PRIVATE targets, which have
+  no meeting and no proxy; it is now gated to them.
+- **`merger-agreement` shipped with an empty rule profile.**
+
 ## [9.190.0] — 2026-08-29
 
 ### Fixed

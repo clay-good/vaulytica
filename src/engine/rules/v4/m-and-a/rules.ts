@@ -767,6 +767,7 @@ const MERGER_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-035",
+    version: "1.1.0",
     name: "Drag-along / appraisal-waiver letter agreement reference",
     description:
       "Private-target mergers often pair with a stockholder consent / drag-along enforcement.",
@@ -787,6 +788,15 @@ const MERGER_RULES: Rule[] = [
       /written\s+consent.{0,40}stockholders/is,
       /drag.along/i,
       /support\s+agreement/i,
+      /voting\s+agreement/i,
+    ],
+    // PRIVATE targets only, which is what this rule's own title, description
+    // and explanation all say. A merger approved at a MEETING of stockholders
+    // on a proxy statement has no § 228 written consents and no drag-along
+    // letters to reference, and demanding them of it is asking the drafter to
+    // bolt a private-deal mechanic onto a registered one.
+    applicable_if: [
+      /^(?![\s\S]*\b(?:proxy\s+statement|meeting\s+of\s+(?:its\s+|the\s+)?stockholders|stockholders['’]?\s+meeting|Securities\s+and\s+Exchange\s+Commission)\b)/i,
     ],
     default_severity: "warning",
   }),

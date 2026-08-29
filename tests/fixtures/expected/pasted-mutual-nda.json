@@ -345,7 +345,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -982,11 +982,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.8). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "3873219fe2c6a049cf60eef0a38591aaf6d3a1a2ffb87396c9e5973392367f9f",
+  "result_hash": "8d888aa5da7a0ab73f830ea86ceabd8104e473cc90a0d1eca4eddcd9262dfff7",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",
     "size_bytes": 1565
   },
-  "version": "9.190.0"
+  "version": "9.191.0"
 }

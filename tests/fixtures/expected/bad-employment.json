@@ -353,7 +353,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1195,7 +1195,7 @@
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
       "id": "OBLI-004-s1.1-278",
       "rule_id": "OBLI-004",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "'Best efforts' standard used"
@@ -1333,11 +1333,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\".",
-  "result_hash": "fc81eb05a47868bb49967113461b97c486e28a8734d49316b633eaa7f409c488",
+  "result_hash": "dcf4dde96140505c111482cd07c2d4b52630e0b1798d1db77b16b7080ce514fb",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.190.0"
+  "version": "9.191.0"
 }

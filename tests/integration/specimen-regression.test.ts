@@ -40,6 +40,27 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A one-step cash merger of a private target approved at a stockholder
+  // MEETING. Two false positives: OBLI-004 reported the agreement as using
+  // "best efforts" when it deliberately chose "REASONABLE best efforts" — the
+  // middle standard, which OBLI-008 already surfaces — and MNA-035 demanded
+  // § 228 written consents and drag-along letters, which its own title and
+  // explanation scope to PRIVATE targets and which a merger approved on a
+  // proxy statement has none of. STRUCT-006 stays: the specimen omits the
+  // definitions article, so Acquisition Proposal and its siblings really are
+  // undefined here.
+  "merger-agreement.txt": {
+    playbook: "merger-agreement",
+    findings: [
+      "OBLI-007",
+      "RISK-016",
+      "STRUCT-006",
+      "STRUCT-018",
+      "OBLI-005",
+      "OBLI-008",
+      "STRUCT-005",
+    ],
+  },
   // A tenant work letter attached to an office lease. Clean: it routes on its
   // own title, the family's checks are silent, and the always-on absence
   // checks stand down because "This Tenant Work Letter is attached to and made

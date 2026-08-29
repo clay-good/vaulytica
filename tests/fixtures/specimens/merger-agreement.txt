@@ -1,0 +1,117 @@
+AGREEMENT AND PLAN OF MERGER
+
+THIS AGREEMENT AND PLAN OF MERGER (this "Agreement") is made as of October 8, 2026 among Thornbury Industrial Group, Inc., a Delaware corporation ("Parent"), TIG Falcon Merger Sub, Inc., a Delaware corporation and a wholly owned subsidiary of Parent ("Merger Sub"), and Falconridge Instruments, Inc., a Delaware corporation (the "Company").
+
+RECITALS
+
+A. The board of directors of each of Parent, Merger Sub, and the Company has approved this Agreement and determined that the Merger is advisable and in the best interests of its respective stockholders.
+
+B. The parties intend that the Merger qualify as a reorganization within the meaning of Section 368(a) of the Internal Revenue Code of 1986, as amended.
+
+ARTICLE I — THE MERGER
+
+1.1 The Merger. At the Effective Time, Merger Sub shall be merged with and into the Company in accordance with Section 251 of the General Corporation Law of the State of Delaware (the "DGCL"). The separate corporate existence of Merger Sub shall cease, and the Company shall continue as the surviving corporation (the "Surviving Corporation") and a wholly owned subsidiary of Parent.
+
+1.2 Closing. The closing of the Merger (the "Closing") shall take place remotely by exchange of electronic signatures on the third business day after the conditions in Article VI are satisfied or waived, or on such other date as the parties agree (the "Closing Date").
+
+1.3 Effective Time. At the Closing, the parties shall file a certificate of merger with the Secretary of State of the State of Delaware. The Merger becomes effective when the certificate is filed or at such later time as the certificate specifies (the "Effective Time").
+
+1.4 Effect on Capital Stock. At the Effective Time, each share of Company common stock outstanding immediately before the Effective Time (other than Dissenting Shares and shares held in treasury) is converted into the right to receive $18.75 in cash, without interest (the "Merger Consideration"), and each share of Merger Sub common stock is converted into one share of the Surviving Corporation.
+
+1.5 Dissenting Shares. Shares held by a stockholder who has properly demanded appraisal under Section 262 of the DGCL and has not withdrawn or lost that right are not converted into the Merger Consideration, and the holder is entitled only to the rights Section 262 provides.
+
+1.6 Treatment of Equity Awards. Each vested Company option outstanding at the Effective Time is cancelled in exchange for a cash payment equal to the excess of the Merger Consideration over the exercise price. Each unvested Company option is assumed by Parent and converted into an option to acquire Parent common stock on equivalent terms.
+
+ARTICLE II — REPRESENTATIONS AND WARRANTIES OF THE COMPANY
+
+2.1 Organization and Authority. The Company is duly organized, validly existing, and in good standing under Delaware law, and has all corporate power and authority to enter into this Agreement and, subject to obtaining the Company Stockholder Approval, to consummate the Merger.
+
+2.2 Capitalization. Schedule 2.2 sets out the Company's authorized, issued, and outstanding capital stock, all outstanding options and warrants, and all agreements relating to the voting or transfer of Company stock.
+
+2.3 Financial Statements. The Company has delivered audited financial statements for the three fiscal years ended December 31, 2025, which were prepared in accordance with generally accepted accounting principles applied consistently and fairly present the Company's financial position and results of operations in all material respects.
+
+2.4 Absence of Certain Changes. Since December 31, 2025, the Company has conducted its business in the ordinary course and there has not been any Company Material Adverse Effect.
+
+2.5 Material Contracts. Schedule 2.5 lists each Material Contract. Each is in full force and effect, and neither the Company nor, to the Company's knowledge, any counterparty is in material breach of any of them.
+
+2.6 Compliance and Permits. The Company is in compliance in all material respects with applicable law and holds all permits material to its business.
+
+2.7 Litigation. Except as set out on Schedule 2.7, there is no action pending or, to the Company's knowledge, threatened against the Company that would reasonably be expected to have a Company Material Adverse Effect.
+
+2.8 Brokers. Except for Harlow Meridian Partners LLC, whose fees the Company shall pay, no broker is entitled to a fee in connection with the Merger.
+
+ARTICLE III — REPRESENTATIONS AND WARRANTIES OF PARENT AND MERGER SUB
+
+3.1 Organization and Authority. Each of Parent and Merger Sub is duly organized, validly existing, and in good standing under Delaware law and has all corporate power and authority to enter into this Agreement and consummate the Merger.
+
+3.2 Financing. Parent has, and at Closing will have, cash on hand sufficient to pay the aggregate Merger Consideration and all related fees and expenses. Parent's obligations are not conditioned on obtaining financing.
+
+3.3 Merger Sub. Merger Sub was formed solely for the purpose of the Merger and has conducted no business.
+
+ARTICLE IV — COVENANTS
+
+4.1 Conduct of Business. Between the date of this Agreement and the Effective Time, the Company shall conduct its business in the ordinary course consistent with past practice and shall not, without Parent's prior written consent (not to be unreasonably withheld): amend its certificate of incorporation or bylaws; declare a dividend; issue or repurchase equity except on exercise of outstanding options; incur indebtedness over $2,000,000; sell assets outside the ordinary course; enter into, materially amend, or terminate a Material Contract; increase compensation other than in the ordinary course; or settle litigation for more than $500,000.
+
+4.2 No Solicitation. The Company shall not, and shall cause its representatives not to, solicit, initiate, or knowingly encourage an Acquisition Proposal, or furnish non-public information to a person making one. The Company may, before the Company Stockholder Approval is obtained, furnish information to and negotiate with a person that makes an unsolicited written Acquisition Proposal the board determines in good faith, after consultation with outside counsel and its financial advisor, constitutes or would reasonably be expected to lead to a Superior Proposal, if the Company gives Parent notice and enters into a confidentiality agreement no less restrictive than the one with Parent.
+
+4.3 Change of Recommendation. The Company board may change its recommendation in response to a Superior Proposal or an Intervening Event if it determines in good faith, after consultation with outside counsel, that failing to do so would be inconsistent with its fiduciary duties, provided the Company gives Parent four (4) business days' notice and negotiates in good faith with Parent during that period.
+
+4.4 Stockholder Approval. The Company shall submit this Agreement to its stockholders for adoption at a meeting held as promptly as practicable, and shall prepare and file a proxy statement with the Securities and Exchange Commission.
+
+4.5 Regulatory Approvals. Each party shall use reasonable best efforts to obtain all required regulatory approvals, including expiration or termination of the waiting period under the Hart-Scott-Rodino Antitrust Improvements Act, and shall make its HSR filing within ten (10) business days after the date of this Agreement. Parent shall take any action required to obtain antitrust clearance, other than a divestiture of assets representing more than $50,000,000 of revenue.
+
+4.6 D&O Indemnification and Insurance. For six (6) years after the Effective Time, the Surviving Corporation shall indemnify each present and former director and officer of the Company to the fullest extent permitted by the DGCL, and shall maintain the Company's existing directors' and officers' liability insurance, or a policy no less favorable, with a premium not exceeding 300% of the current annual premium.
+
+ARTICLE V — CONDITIONS
+
+5.1 Mutual Conditions. Each party's obligation to close is conditioned on the Company Stockholder Approval, expiration or termination of the HSR waiting period, and the absence of any law or order prohibiting the Merger.
+
+5.2 Conditions of Parent and Merger Sub. Parent's obligation to close is conditioned on the Company's representations being true and correct as of the Closing (subject to the materiality standards stated in Section 5.4), the Company's material compliance with its covenants, and the absence of a Company Material Adverse Effect since the date of this Agreement.
+
+5.3 Conditions of the Company. The Company's obligation to close is conditioned on Parent's and Merger Sub's representations being true and correct in all material respects and their material compliance with their covenants.
+
+5.4 Bring-Down Standard. The representations in Sections 2.1 and 2.2 must be true and correct in all but de minimis respects; all other representations must be true and correct except where the failure would not have a Company Material Adverse Effect.
+
+ARTICLE VI — TERMINATION
+
+6.1 Termination Rights. This Agreement may be terminated before the Effective Time: by mutual written consent; by either party if the Merger has not been consummated by April 8, 2027 (the "Outside Date"); by either party if a final order permanently prohibits the Merger; by Parent if the Company board changes its recommendation; by the Company to accept a Superior Proposal, subject to payment of the Company Termination Fee; or by either party on the other's uncured material breach that would cause a closing condition to fail.
+
+6.2 Company Termination Fee. If this Agreement is terminated because the Company board changed its recommendation or the Company accepted a Superior Proposal, the Company shall pay Parent a termination fee of $14,600,000 in immediately available funds within two (2) business days after termination.
+
+6.3 Parent Termination Fee. If this Agreement is terminated because the required antitrust approvals are not obtained by the Outside Date, Parent shall pay the Company a reverse termination fee of $24,000,000 within two (2) business days after termination.
+
+6.4 Effect of Termination. On termination, this Agreement becomes void and there is no liability on the part of any party, except that Sections 6.2, 6.3, and 7 survive and no party is relieved of liability for fraud or willful and material breach.
+
+ARTICLE VII — GENERAL
+
+7.1 Non-Survival of Representations. The representations and warranties in this Agreement do not survive the Effective Time, and there is no post-closing indemnification. This Section does not limit any claim for fraud.
+
+7.2 Expenses. Each party shall bear its own expenses, except that Parent shall pay all filing fees under the HSR Act.
+
+7.3 Governing Law; Venue. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles. Each party irrevocably submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware.
+
+7.4 Specific Performance. The parties agree that irreparable damage would occur if this Agreement were not performed and that each party is entitled to specific performance, in addition to any other remedy, without proof of damages or the posting of a bond.
+
+7.5 Amendment. This Agreement may be amended only in a writing signed by each party, and after the Company Stockholder Approval only as Section 251(d) of the DGCL permits.
+
+7.6 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+THORNBURY INDUSTRIAL GROUP, INC.
+
+By: /s/ Marcus Aldebrand
+Name: Marcus Aldebrand
+Title: Chief Executive Officer
+
+TIG FALCON MERGER SUB, INC.
+
+By: /s/ Marcus Aldebrand
+Name: Marcus Aldebrand
+Title: President
+
+FALCONRIDGE INSTRUMENTS, INC.
+
+By: /s/ Ingrid Sallinen
+Name: Ingrid Sallinen
+Title: Chief Executive Officer
