@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.228.0] — 2026-08-29
+
+### Added
+- An assignment and assumption agreement — the 187th specimen, and the first
+  for `assignment-and-assumption-agreement`. MNA-108..112 are all satisfied:
+  the schedule of assigned contracts, assumed versus excluded liabilities, the
+  third-party consent carve-out, an effective time of 12:01 a.m. on the Closing
+  Date, and further assurances with a power of attorney.
+
+### Fixed
+- **Two more families carried an empty `rule_overrides`** —
+  `assignment-and-assumption-agreement` and `secondary-stock-transfer`. A
+  closing deliverable was told it states no payment terms; both now carry
+  `assignment-of-claim`'s profile plus FIN-005.
+
 ## [9.227.0] — 2026-08-29
 
 ### Added

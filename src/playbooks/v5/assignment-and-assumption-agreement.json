@@ -14,23 +14,52 @@
       "hereby assigns",
       "assumes and agrees to perform",
       "assumed liabilities",
-    "assumed obligations",
-    "retained liabilities",
-    "right, title and interest in and to",
+      "assumed obligations",
+      "retained liabilities",
+      "right, title and interest in and to",
       "excluded liabilities",
       "assigned contracts",
       "effective as of the closing"
     ],
-    "negative_features": ["lease of the premises shall commence", "employment agreement"]
+    "negative_features": [
+      "lease of the premises shall commence",
+      "employment agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Assigned Contracts", "Assumed Liabilities", "Assignor", "Assignee"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Assigned Contracts",
+    "Assumed Liabilities",
+    "Assignor",
+    "Assignee"
+  ],
+  "rule_overrides": {
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-MA",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["asset-purchase-agreement", "bill-of-sale"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "asset-purchase-agreement",
+    "bill-of-sale"
+  ],
   "compliance_matrix_columns": [
     "Schedule of assigned contracts",
     "Assumed vs. excluded liabilities",

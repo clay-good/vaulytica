@@ -679,6 +679,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // An assignment and assumption agreement — the 187th specimen, and the first
+  // for `assignment-and-assumption-agreement`. MNA-108..112 are all satisfied:
+  // the schedule of assigned contracts, assumed versus excluded liabilities,
+  // the third-party consent carve-out, an effective time of 12:01 a.m. on the
+  // Closing Date, and further assurances with a power of attorney.
+  "assignment-and-assumption-agreement.txt": {
+    playbook: "assignment-and-assumption-agreement",
+    findings: ["OBLI-008", "STRUCT-018"],
+  },
   // A postnuptial agreement — the 186th specimen, and the first for
   // `postnuptial-agreement`. EST-046..052 are all satisfied: the
   // during-marriage recital, consideration beyond the marriage itself,
@@ -2129,7 +2138,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // intercreditor agreement states no payment term of its own.
   "intercreditor.txt": {
     playbook: "intercreditor-agreement",
-    findings: ["BNK-031", "CHOICE-008", "FIN-005", "OBLI-005"],
+    findings: ["FIN-005", "BNK-031", "CHOICE-008", "OBLI-005"],
   },
 
   // Colorado articles of organization, filed electronically. Its statutory

@@ -2,7 +2,7 @@
   "id": "secondary-stock-transfer",
   "version": "1.0.0",
   "name": "Secondary Stock Transfer Agreement",
-  "description": "Private secondary sale of shares by an existing holder, covering ROFR clearance, transfer restrictions, and Rule 144 / § 4(a)(7) posture. Selects the EQT-125..130 ruleset (6 checks).",
+  "description": "Private secondary sale of shares by an existing holder, covering ROFR clearance, transfer restrictions, and Rule 144 / \u00a7 4(a)(7) posture. Selects the EQT-125..130 ruleset (6 checks).",
   "match_features": {
     "title_keywords": [
       "stock transfer agreement",
@@ -19,16 +19,45 @@
       "section 4(a)(7)",
       "selling stockholder"
     ],
-    "negative_features": ["merger", "employment agreement", "the company hereby issues"]
+    "negative_features": [
+      "merger",
+      "employment agreement",
+      "the company hereby issues"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Seller", "Purchaser", "Shares"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Seller",
+    "Purchaser",
+    "Shares"
+  ],
+  "rule_overrides": {
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-SECURITIES",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["stockholders-agreement", "rofr-co-sale"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "stockholders-agreement",
+    "rofr-co-sale"
+  ],
   "compliance_matrix_columns": [
     "ROFR / co-sale waiver evidence",
     "Company consent and transfer-agent instruction",

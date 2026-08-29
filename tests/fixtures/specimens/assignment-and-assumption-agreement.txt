@@ -1,0 +1,55 @@
+ASSIGNMENT AND ASSUMPTION AGREEMENT
+
+This Assignment and Assumption Agreement (this "Assignment") is made as of March 12, 2026, between Harrowgate Finishing Systems, Inc., an Ohio corporation ("Assignor"), and Kestrel Coatings LLC, a Delaware limited liability company ("Assignee").
+
+RECITALS
+
+Assignor and Assignee are parties to the Asset Purchase Agreement dated as of March 12, 2026 (the "Purchase Agreement"), under which Assignor agreed to sell and Assignee agreed to purchase substantially all of the assets of Assignor's industrial powder-coating business. Capitalized terms used and not defined in this Assignment have the meanings given in the Purchase Agreement. This Assignment is delivered under Section 3.2(b) of the Purchase Agreement.
+
+1. ASSIGNMENT
+
+1.1 Assigned Contracts. Assignor hereby assigns, transfers, conveys, and delivers to Assignee all of Assignor's right, title, and interest in and to the contracts listed on Schedule 1 (the "Assigned Contracts"), including all rights to payment, all warranties, and all claims arising under the Assigned Contracts on and after the Effective Time.
+
+1.2 Effective Time. This Assignment is effective as of 12:01 a.m. Eastern time on the Closing Date, immediately after the Closing under the Purchase Agreement (the "Effective Time").
+
+2. ASSUMPTION
+
+2.1 Assumed Liabilities. Assignee hereby assumes and agrees to pay, perform, and discharge when due all obligations of Assignor under the Assigned Contracts to the extent arising on and after the Effective Time (the "Assumed Liabilities").
+
+2.2 Excluded Liabilities. Assignee does not assume, and Assignor retains, all other liabilities of Assignor, including (a) any obligation under an Assigned Contract arising before the Effective Time, (b) any liability arising from a breach of, or default under, an Assigned Contract occurring before the Effective Time, and (c) the Excluded Liabilities as defined in the Purchase Agreement. Nothing in this Assignment expands the Assumed Liabilities beyond what Section 1.3 of the Purchase Agreement provides.
+
+3. CONSENTS
+
+3.1 No Assignment Without Consent. Nothing in this Assignment constitutes an assignment of any Assigned Contract if an attempted assignment without a required consent from the counterparty would constitute a breach of that contract or would be ineffective. Any such Assigned Contract is not assigned until the required consent is obtained.
+
+3.2 Pending Consents. Until a required consent is obtained, Assignor shall hold the affected Assigned Contract for the benefit of Assignee and shall, at Assignee's expense, use commercially reasonable efforts to provide Assignee with the benefits of that contract, and Assignee shall perform Assignor's obligations under it, in each case as provided in Section 6.1 of the Purchase Agreement.
+
+4. FURTHER ASSURANCES
+
+4.1 Further Acts. Each party shall execute and deliver such other and additional instruments, and take such further acts, as the other party reasonably requests to give effect to this Assignment and to vest in Assignee the Assigned Contracts.
+
+4.2 Power of Attorney. Assignor irrevocably constitutes and appoints Assignee its true and lawful attorney-in-fact, with full power of substitution, to demand and receive any Assigned Contract, to give receipts for it, and to institute and prosecute in Assignor's name any proceeding Assignee reasonably considers necessary to collect or reduce to possession any Assigned Contract, in each case at Assignee's expense and for Assignee's own benefit.
+
+5. GENERAL
+
+5.1 Purchase Agreement Controls. This Assignment is delivered under the Purchase Agreement and is subject to its terms, including the representations, warranties, covenants, and indemnities in it. Nothing in this Assignment limits, expands, or supersedes any provision of the Purchase Agreement, and in the event of a conflict the Purchase Agreement controls.
+
+5.2 Governing Law. This Assignment is governed by the laws of the State of Delaware, without regard to its conflict of laws principles.
+
+5.3 Successors. This Assignment binds and benefits the parties and their respective successors and permitted assigns.
+
+5.4 Counterparts. This Assignment may be executed in counterparts, each of which is an original and all of which together constitute one instrument. A signature delivered electronically has the same effect as an original.
+
+The parties have executed this Assignment as of the date first written above.
+
+HARROWGATE FINISHING SYSTEMS, INC.
+
+By: /s/ Merrill Vance
+Name: Merrill Vance
+Title: President
+
+KESTREL COATINGS LLC
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
