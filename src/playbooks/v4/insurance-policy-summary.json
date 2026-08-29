@@ -16,13 +16,17 @@
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "this is a summary only",
+      "coverage part",
+      "declarations page",
       "does not amend, extend, or alter",
-      "the policy controls",
+      "limits of liability",
+      "named insured",
+      "policy summary",
       "prepared for",
       "summary of insurance",
-      "named insured",
-      "limits of liability"
+      "the binder",
+      "the policy controls",
+      "this is a summary only"
     ],
     "negative_features": [
       "acord 25",

@@ -1895,21 +1895,15 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "subcontractor",
         "business associate to subcontractor",
-        "downstream",
         "upstream baa",
+        "upstream business associate",
+        "downstream",
         "flow-down",
         "flow down",
         "164.504(e)(5)",
         "164.502(e)(1)(ii)",
-        "same terms",
-        "protected health information",
-        "covered entity",
-        "business associate",
-        "phi",
-        "164.504",
-        "164.410"
+        "same terms"
       ],
       "negative_features": [
         "covered entity directly engages",
@@ -3302,10 +3296,14 @@
         "limits of insurance"
       ],
       "negative_features": [
-        "this agreement",
+        "conflict of interest",
         "master services agreement",
         "non-disclosure agreement",
-        "personal data"
+        "personal data",
+        "policy summary",
+        "recusal",
+        "summary of insurance",
+        "this agreement"
       ]
     },
     "expected_clauses": [],
@@ -9504,13 +9502,17 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "this is a summary only",
+        "coverage part",
+        "declarations page",
         "does not amend, extend, or alter",
-        "the policy controls",
+        "limits of liability",
+        "named insured",
+        "policy summary",
         "prepared for",
         "summary of insurance",
-        "named insured",
-        "limits of liability"
+        "the binder",
+        "the policy controls",
+        "this is a summary only"
       ],
       "negative_features": [
         "acord 25",
@@ -13048,7 +13050,10 @@
     "match_features": {
       "title_keywords": [
         "authorization for release",
+        "authorization for the use and disclosure",
+        "authorization for use and disclosure",
         "authorization to disclose",
+        "hipaa authorization",
         "phi authorization",
         "release of medical records"
       ],
@@ -16871,7 +16876,13 @@
         "clause 14",
         "personal data"
       ],
-      "negative_features": []
+      "negative_features": [
+        "uk addendum",
+        "international data transfer addendum",
+        "idta",
+        "issued by the information commissioner",
+        "uk gdpr"
+      ]
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -16933,7 +16944,13 @@
         "clause 8",
         "personal data"
       ],
-      "negative_features": []
+      "negative_features": [
+        "idta",
+        "international data transfer addendum",
+        "issued by the information commissioner",
+        "uk addendum",
+        "uk gdpr"
+      ]
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -18233,7 +18250,9 @@
         "prime contract"
       ],
       "negative_features": [
+        "business associate",
         "performance bond only",
+        "protected health information",
         "this lien waiver is given"
       ]
     },

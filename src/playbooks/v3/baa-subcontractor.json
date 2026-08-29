@@ -13,21 +13,15 @@
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "subcontractor",
       "business associate to subcontractor",
-      "downstream",
       "upstream baa",
+      "upstream business associate",
+      "downstream",
       "flow-down",
       "flow down",
       "164.504(e)(5)",
       "164.502(e)(1)(ii)",
-      "same terms",
-      "protected health information",
-      "covered entity",
-      "business associate",
-      "phi",
-      "164.504",
-      "164.410"
+      "same terms"
     ],
     "negative_features": [
       "covered entity directly engages",

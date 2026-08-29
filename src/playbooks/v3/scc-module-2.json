@@ -1,8 +1,8 @@
 {
   "id": "scc-module-2",
   "version": "1.0.0",
-  "name": "EU Standard Contractual Clauses — Module 2 (Controller to Processor)",
-  "description": "Verifies the official EU SCC Module 2 text (Commission Implementing Decision 2021/914) is incorporated and checks Annexes I, II, III. Re-runs the §29 DPA-GDPR ruleset because SCC Module 2 must satisfy Article 28(3) by reference.",
+  "name": "EU Standard Contractual Clauses \u2014 Module 2 (Controller to Processor)",
+  "description": "Verifies the official EU SCC Module 2 text (Commission Implementing Decision 2021/914) is incorporated and checks Annexes I, II, III. Re-runs the \u00a729 DPA-GDPR ruleset because SCC Module 2 must satisfy Article 28(3) by reference.",
   "match_features": {
     "title_keywords": [
       "standard contractual clauses",
@@ -22,7 +22,13 @@
       "clause 14",
       "personal data"
     ],
-    "negative_features": []
+    "negative_features": [
+      "uk addendum",
+      "international data transfer addendum",
+      "idta",
+      "issued by the information commissioner",
+      "uk gdpr"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [
@@ -45,15 +51,19 @@
     }
   ],
   "regulator_frame": "GDPR",
-  "applicable_jurisdictions": ["EU"],
-  "companion_playbooks": ["dpa-controller-processor"],
+  "applicable_jurisdictions": [
+    "EU"
+  ],
+  "companion_playbooks": [
+    "dpa-controller-processor"
+  ],
   "compliance_matrix_columns": [
     "SCC Clause 1 (Purpose and Scope)",
     "SCC Clause 2 (Effect and Invariability)",
     "SCC Clause 8 (Data Protection Safeguards)",
-    "SCC Clause 14 (Local Laws — TIA)",
-    "Annex I — Parties / Transfer / SA",
-    "Annex II — TOMs",
-    "Annex III — Sub-processors"
+    "SCC Clause 14 (Local Laws \u2014 TIA)",
+    "Annex I \u2014 Parties / Transfer / SA",
+    "Annex II \u2014 TOMs",
+    "Annex III \u2014 Sub-processors"
   ]
 }

@@ -2,7 +2,7 @@
   "id": "coi",
   "version": "1.0.0",
   "name": "Certificate of Insurance (COI) Check",
-  "description": "Linter for an ACORD 25 Certificate of Liability Insurance. Extracts carrier, AM Best rating, coverage amounts, and endorsements and lints against the §12 default requirements profile or a customer-supplied profile. The AM Best rating threshold is consulted from the DKB node `am-best-ratings.json` (curated for the build; cited as 'AM Best public ratings as of [DKB build date]'). Note: the ACORD-25 binary spatial-layout extractor lands in a follow-up commit alongside the COI test fixture corpus; this playbook is text-extraction-driven for now.",
+  "description": "Linter for an ACORD 25 Certificate of Liability Insurance. Extracts carrier, AM Best rating, coverage amounts, and endorsements and lints against the \u00a712 default requirements profile or a customer-supplied profile. The AM Best rating threshold is consulted from the DKB node `am-best-ratings.json` (curated for the build; cited as 'AM Best public ratings as of [DKB build date]'). Note: the ACORD-25 binary spatial-layout extractor lands in a follow-up commit alongside the COI test fixture corpus; this playbook is text-extraction-driven for now.",
   "match_features": {
     "title_keywords": [
       "certificate of liability insurance",
@@ -22,10 +22,14 @@
       "limits of insurance"
     ],
     "negative_features": [
-      "this agreement",
+      "conflict of interest",
       "master services agreement",
       "non-disclosure agreement",
-      "personal data"
+      "personal data",
+      "policy summary",
+      "recusal",
+      "summary of insurance",
+      "this agreement"
     ]
   },
   "expected_clauses": [],
@@ -77,7 +81,7 @@
     },
     {
       "id": "addenda-acord-form-25",
-      "source": "ACORD 25 — Certificate of Liability Insurance",
+      "source": "ACORD 25 \u2014 Certificate of Liability Insurance",
       "source_url": "https://www.acord.org/standards-architecture/acord-forms",
       "retrieved_at": "2026-05-13T00:00:00Z",
       "license": "Form identifier only (not the form itself)",
@@ -94,9 +98,9 @@
   ],
   "compliance_matrix_columns": [
     "Carrier identified",
-    "AM Best rating ≥ A-",
-    "General liability ≥ $1M / $2M",
-    "Professional liability (E&O) ≥ $1M",
+    "AM Best rating \u2265 A-",
+    "General liability \u2265 $1M / $2M",
+    "Professional liability (E&O) \u2265 $1M",
     "Cyber liability (where applicable)",
     "Additional insured endorsement",
     "Waiver of subrogation",

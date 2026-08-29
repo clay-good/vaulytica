@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.233.0] — 2026-08-29
+
+### Added
+- **A golden fixture must route to the family it was written for.** Every
+  golden fixture carries a `.playbook` sidecar that FORCES its family, so the
+  matcher never runs on it and a mis-routing can hide there indefinitely.
+  Routing the same 327 fixtures without the sidecar is a free matcher corpus
+  three times the size of the specimen set. Perspective variants — a
+  `msa-vendor-deep` review of an `msa-general` document — are declared with the
+  reason they are not defects.
+- A conflict-of-interest policy fixture, so POL-033..036 have a document of
+  their own family to run on.
+
+### Fixed
+- **A certificate of insurance had been audited as a CONFLICT OF INTEREST
+  POLICY.** `insurance-coi-minimal.txt` was pinned to `coi-policy`, and its
+  golden recorded four findings about recusal, annual certification, and
+  related-party review against an ACORD-25-style certificate. The sidecar was
+  wrong, not the matcher.
+- **`subcontractor-agreement`'s title keyword "subcontract" is a SUBSTRING of
+  "Subcontractor Business Associate Agreement"**, so a HIPAA downstream BAA
+  routed to a construction subcontract at 1.00.
+- **`baa-subcontractor` listed the BASE RATE of every HIPAA document** —
+  "protected health information", "covered entity", "business associate", "phi"
+  — as distinguishing phrases, so a patient's authorization form scored 0.6
+  there. What distinguishes a DOWNSTREAM BAA is the flow-down, not the subject
+  matter.
+- **`phi-authorization` did not list its own statutory caption**,
+  "Authorization for Use and Disclosure of Protected Health Information"
+  (45 C.F.R. § 164.508).
+- **"UK International Data Transfer Addendum to the EU Standard Contractual
+  Clauses" title-matches both families head-on.** The EU SCC modules now carry
+  the counter-signal; the EU clauses are not issued by the UK Information
+  Commissioner.
+- **`coi` won a policy SUMMARY**, on the four generic insurance words a summary
+  shares with a certificate. The summary family gained the vocabulary that
+  points back at what it summarizes — the binder, the declarations page, the
+  coverage parts.
+
 ## [9.232.0] — 2026-08-29
 
 ### Added

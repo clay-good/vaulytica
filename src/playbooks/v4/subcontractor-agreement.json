@@ -2,9 +2,12 @@
   "id": "subcontractor-agreement",
   "version": "1.0.0",
   "name": "Subcontractor Agreement",
-  "description": "Subcontractor agreement with prime flow-down + pay-when/if-paid screen. ConsensusDocs 750 / AIA A401 baseline. Selects the §6.M ruleset (CON-008..CON-013).",
+  "description": "Subcontractor agreement with prime flow-down + pay-when/if-paid screen. ConsensusDocs 750 / AIA A401 baseline. Selects the \u00a76.M ruleset (CON-008..CON-013).",
   "match_features": {
-    "title_keywords": ["subcontract", "subcontractor agreement"],
+    "title_keywords": [
+      "subcontract",
+      "subcontractor agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "subcontractor",
@@ -14,16 +17,29 @@
       "pay-if-paid",
       "prime contract"
     ],
-    "negative_features": ["performance bond only", "this lien waiver is given"]
+    "negative_features": [
+      "business associate",
+      "performance bond only",
+      "protected health information",
+      "this lien waiver is given"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Subcontractor", "General Contractor", "Prime Contract"],
+  "expected_defined_terms": [
+    "Subcontractor",
+    "General Contractor",
+    "Prime Contract"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "AIA-A401-CONSENSUSDOCS-750",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["construction-contract"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "construction-contract"
+  ],
   "compliance_matrix_columns": [
     "GC / Subk / Project identified",
     "Scope + flow-down",
