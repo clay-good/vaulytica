@@ -9989,16 +9989,20 @@
     "match_features": {
       "title_keywords": [
         "joint development agreement",
+        "joint development",
+        "co-development",
         "collaborative research agreement",
         "co-development agreement",
         "research and development agreement"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
+        "background ip",
+        "foreground ip",
+        "joint steering committee",
         "background intellectual property",
         "foreground intellectual property",
         "jointly developed",
-        "project plan",
         "joint inventions",
         "publication rights"
       ],

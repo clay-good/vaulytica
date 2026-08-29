@@ -7,7 +7,7 @@
     "title_keywords": ["mutual non-disclosure", "mutual nda", "mutual confidentiality", "non-disclosure agreement", "confidentiality agreement"],
     "required_clauses": ["confidentiality-obligation", "permitted-disclosures", "term"],
     "distinguishing_phrases": ["Discloser", "Permitted Purpose", "disclosing party", "receiving party", "each party may disclose"],
-    "negative_features": ["fees", "monthly subscription", "services to be performed", "rent", "premises", "employment agreement", "salary", "scope of work", "one-way", "unilateral"]
+    "negative_features": ["foreground ip", "joint steering committee", "fees", "monthly subscription", "services to be performed", "rent", "premises", "employment agreement", "salary", "scope of work", "one-way", "unilateral"]
   },
   "expected_clauses": [
     {"category": "confidentiality-obligation", "severity_if_missing": "critical"},

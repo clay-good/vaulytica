@@ -1,0 +1,101 @@
+JOINT DEVELOPMENT AGREEMENT
+
+This Joint Development Agreement (this "Agreement") is made as of March 18, 2026 between Halvorsen Photonics AB, a Swedish limited company with offices at Kungsgatan 44, 111 35 Stockholm, Sweden ("Halvorsen"), and Ridgemont Instruments, Inc., a Delaware corporation with offices at 4100 Pinecrest Way, Boulder, Colorado 80301 ("Ridgemont"). Each is a "Party" and together they are the "Parties."
+
+RECITALS
+
+A. Halvorsen has expertise in tunable laser sources and owns the Background IP listed on Exhibit A-1.
+
+B. Ridgemont has expertise in spectroscopic detection and owns the Background IP listed on Exhibit A-2.
+
+C. The Parties wish to collaborate to develop a compact mid-infrared spectrometer for industrial gas analysis (the "Program").
+
+1. THE PROGRAM
+
+1.1 Statement of Work. The Parties shall perform the tasks allocated to each of them in the statement of work attached as Exhibit B (the "SOW"), which states the deliverables, the milestones, the acceptance criteria, and the personnel each Party will commit.
+
+1.2 Joint Steering Committee. The Parties shall form a joint steering committee of two representatives from each Party, which shall meet at least monthly, review progress against the milestones, and decide by unanimous agreement. If the committee cannot agree within thirty (30) days, the matter is escalated to each Party's chief technology officer, and if they cannot agree within a further thirty (30) days either Party may terminate under Section 8.3.
+
+1.3 Changes. A change to the SOW is effective only when signed by an authorized representative of each Party.
+
+2. COSTS
+
+2.1 Each Party Bears Its Own. Each Party shall bear its own costs of performing the Program, except that the Parties shall share equally the cost of the third-party testing described in the SOW, and Ridgemont shall invoice Halvorsen for Halvorsen's share within thirty (30) days after each test campaign, payable within forty-five (45) days after receipt.
+
+2.2 No Funding Obligation. Neither Party is obliged to fund the other, and nothing in this Agreement is a commitment to purchase.
+
+3. INTELLECTUAL PROPERTY
+
+3.1 Background IP. Each Party retains all right, title, and interest in and to its Background IP. Nothing in this Agreement transfers ownership of any Background IP.
+
+3.2 Background Licence. Each Party grants the other a non-exclusive, royalty-free, worldwide licence to use its Background IP solely to perform the Program during the Term, with no right to sublicense except to a subcontractor approved under Section 6.
+
+3.3 Foreground IP. All right, title, and interest in and to any invention, improvement, know-how, or work of authorship conceived or first reduced to practice in the course of the Program (the "Foreground IP") is owned as follows: Foreground IP conceived solely by employees of one Party is owned by that Party; Foreground IP conceived jointly by employees of both Parties is owned jointly, with each Party holding an undivided one-half interest.
+
+3.4 Joint Foreground IP. Each Party may use, license, and exploit Joint Foreground IP without the other's consent and without a duty to account, except that neither Party may grant an exclusive licence under Joint Foreground IP without the other's prior written consent. The Parties waive any right under any applicable law to require the other's consent to exploitation or to an accounting.
+
+3.5 Patent Prosecution. The Party that solely owns an item of Foreground IP controls its prosecution at its own cost. For Joint Foreground IP the Parties shall agree on a lead Party, which shall prosecute at shared cost, shall keep the other informed, and shall consider the other's comments in good faith. If a Party declines to share the cost in a jurisdiction, the other may prosecute alone there and that item becomes solely owned in that jurisdiction.
+
+3.6 Assignment by Personnel. Each Party shall cause every employee, contractor, and consultant who participates in the Program to assign to that Party all right, title, and interest in and to any Foreground IP they conceive, and to waive any moral rights, before that person begins work.
+
+3.7 Marking and Publication. Neither Party shall publish or present any result of the Program without the other's prior written consent, not to be unreasonably withheld, and shall submit any proposed publication at least forty-five (45) days in advance so the other may request a delay of up to sixty (60) days to seek patent protection.
+
+4. CONFIDENTIALITY
+
+4.1 Obligations. Each Party shall keep the other's Confidential Information confidential, use it only for the Program, and disclose it only to personnel and approved subcontractors who need it and are bound to obligations no less protective. These obligations continue for seven (7) years after termination, and indefinitely for trade secrets.
+
+4.2 Exceptions. The obligations do not apply to information that is or becomes public without breach, was known to the receiving Party without a duty of confidence, is independently developed without use of the other's Confidential Information, or is rightfully received from a third party.
+
+5. EXPORT CONTROL AND COMPLIANCE
+
+5.1 Export. Each Party shall comply with the Export Administration Regulations, the International Traffic in Arms Regulations where applicable, and Regulation (EU) 2021/821, and shall not transfer any controlled technology to the other without the required licence or exemption. Each Party shall notify the other of the export classification of any technology it transfers.
+
+5.2 Anti-Corruption. Each Party shall comply with the U.S. Foreign Corrupt Practices Act and the UK Bribery Act 2010.
+
+6. SUBCONTRACTORS
+
+6.1 Approval. Neither Party may subcontract any Program task without the other's prior written approval, and shall bind each approved subcontractor in writing to the confidentiality and IP-assignment obligations of this Agreement.
+
+7. WARRANTIES AND LIABILITY
+
+7.1 Mutual Warranty. Each Party warrants that it has the right to grant the licences it grants here, that its Background IP does not to its knowledge infringe a third party's rights, and that it will perform the Program with the care and skill of a competent professional.
+
+7.2 Disclaimer. EXCEPT AS EXPRESSLY STATED, EACH PARTY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT, AND MAKES NO WARRANTY THAT THE PROGRAM WILL SUCCEED.
+
+7.3 Limitation. Except for breach of Section 3, breach of Section 4, and a Party's fraud or wilful misconduct, neither Party's aggregate liability under this Agreement shall exceed €500,000, and neither Party is liable for indirect, incidental, special, consequential, or punitive damages.
+
+8. TERM AND TERMINATION
+
+8.1 Term. This Agreement begins on the Effective Date and continues for three (3) years unless terminated earlier (the "Term").
+
+8.2 Termination for Cause. Either Party may terminate on written notice if the other materially breaches and fails to cure within thirty (30) days, or immediately if the other becomes insolvent.
+
+8.3 Termination for Deadlock or Convenience. Either Party may terminate on sixty (60) days' written notice following an unresolved escalation under Section 1.2, and either Party may terminate for convenience on ninety (90) days' written notice given after the first anniversary of the Effective Date.
+
+8.4 Effect of Termination. On termination, each Party shall return or destroy the other's Confidential Information and Background IP embodiments, the Background Licences in Section 3.2 end, and each Party retains its ownership of Foreground IP accrued to the date of termination. Sections 3, 4, 5, 7 and 9 survive.
+
+9. GENERAL
+
+9.1 Governing Law; Dispute Resolution. This Agreement is governed by the laws of England and Wales, without regard to its conflict of laws rules. Any dispute shall be finally resolved by arbitration under the LCIA Rules, seated in London, England, before three arbitrators, in the English language.
+
+9.2 No Partnership. Nothing in this Agreement creates a partnership, joint venture, or agency between the Parties, and neither Party may bind the other.
+
+9.3 Assignment. Neither Party may assign this Agreement without the other's written consent, except to a successor to substantially all of the business to which this Agreement relates.
+
+9.4 Notices. All notices shall be in writing and delivered by hand, by internationally recognized courier, or by electronic mail with confirmation of receipt, to the addresses first stated above.
+
+9.5 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the Parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the date first written above.
+
+HALVORSEN PHOTONICS AB
+
+By: /s/ Annika Sjöberg
+Name: Annika Sjöberg
+Title: Chief Executive Officer
+
+RIDGEMONT INSTRUMENTS, INC.
+
+By: /s/ Theodore Ashcombe
+Name: Theodore Ashcombe
+Title: Chief Technology Officer

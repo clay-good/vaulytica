@@ -7,7 +7,7 @@
     "title_keywords": ["master services agreement", "master service agreement", "msa", "professional services agreement", "services agreement"],
     "required_clauses": ["term", "termination-for-cause", "indemnification"],
     "distinguishing_phrases": ["Statement of Work", "SOW", "perform the Services", "Deliverables", "Master Agreement"],
-    "negative_features": ["the Service is a hosted", "Subscription Term", "lease", "Premises", "Tenant", "Employee", "the Discloser"]
+    "negative_features": ["foreground ip", "joint steering committee", "the Service is a hosted", "Subscription Term", "lease", "Premises", "Tenant", "Employee", "the Discloser"]
   },
   "expected_clauses": [
     {"category": "payment-terms", "severity_if_missing": "critical"},

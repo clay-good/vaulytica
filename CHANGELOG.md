@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.203.0] — 2026-08-29
+
+### Added
+- A cross-border joint development agreement — the 163rd specimen.
+
+### Fixed
+- **A JOINT DEVELOPMENT AGREEMENT routed to `consulting-agreement`, then to
+  `mutual-nda`, then to `msa-general`, then to `sow`.** Four causes, one
+  shape: the JDA family's own distinguishing phrases were the SPELLED-OUT
+  forms ("background intellectual property"), and every real one writes
+  "Background IP"; `consulting-agreement` was leaning on "Consultant" and
+  "expertise"; and `mutual-nda`, `msa-general` and `sow` all reach 0.9–1.0 on
+  required clauses any agreement with a confidentiality section, a term and a
+  statement of work satisfies.
+
+  The durable fix was to give the family a **second title keyword its own
+  document carries** — "joint development" beside "joint development
+  agreement" — rather than another negative feature on each rival. Once the
+  distinguishing-phrase cap is reached, title keywords are the only lever.
+  ("Foreground IP" and "joint steering committee" are also now negatives of
+  the NDA and MSA families, which is correct on its own terms.)
+- **STRUCT-006 reported "Joint Foreground"** — the front half of "Joint
+  Foreground IP", cut because the Title-Case run needs a lowercase tail on
+  every word and "IP" has none.
+
 ## [9.202.0] — 2026-08-29
 
 ### Added

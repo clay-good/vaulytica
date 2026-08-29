@@ -1998,3 +1998,21 @@ describe("the name of another INSTRUMENT the document references", () => {
     expect(terms).not.toContain("Rights Agreement");
   });
 });
+
+describe("a candidate truncated by an ALL-CAPS acronym", () => {
+  // "Joint Foreground IP" captures as "Joint Foreground", because the
+  // Title-Case run needs a lowercase tail on every word and "IP" has none.
+  // The document defines "Foreground IP", not "Joint Foreground".
+  it("does not flag the front half of a term ending in an acronym", () => {
+    const terms = extractDefinitions(
+      buildTree([
+        "Joint Development Agreement",
+        'All right, title and interest in the Foreground IP is owned as set out below (the "Foreground IP").',
+        "Each Party may use, license, and exploit Joint Foreground IP without the other's consent.",
+        "Neither Party may grant an exclusive licence under Joint Foreground IP without consent.",
+        "The Parties waive any right to an accounting for Joint Foreground IP.",
+      ]),
+    ).undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Joint Foreground");
+  });
+});

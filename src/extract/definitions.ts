@@ -1065,6 +1065,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // A candidate immediately followed by an ALL-CAPS ACRONYM is the front
+      // half of a longer term: "Joint Foreground IP" captures as "Joint
+      // Foreground", because the Title-Case run needs a lowercase tail on
+      // every word and "IP" has none. The document defines "Foreground IP",
+      // not "Joint Foreground".
+      if (/^\s+[A-Z]{2,6}\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
       // The NAME OF ANOTHER INSTRUMENT the document references — "the
       // Investors' Rights Agreement", "the Voting Agreement", "the Restated
       // Certificate". A document that names another agreement is not defining

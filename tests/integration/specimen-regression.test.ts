@@ -40,6 +40,29 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A cross-border joint development agreement. It routed to
+  // `consulting-agreement` at 1.0, then to `mutual-nda`: the JDA family's own
+  // distinguishing phrases were the SPELLED-OUT forms ("background
+  // intellectual property"), and every real one writes "Background IP";
+  // `consulting-agreement` was leaning on "Consultant" and "expertise"; and
+  // `mutual-nda` reached 1.0 on three required clauses any agreement with a
+  // confidentiality section and a term satisfies. STRUCT-006 also reported
+  // "Joint Foreground" — the front half of "Joint Foreground IP", cut by the
+  // acronym.
+  "joint-development.txt": {
+    playbook: "joint-development-agreement",
+    findings: [
+      "RISK-001",
+      "STRUCT-006",
+      "STRUCT-018",
+      "CHOICE-006",
+      "OBLI-005",
+      "RISK-007",
+      "TEMP-006",
+      "TERM-001",
+      "TERM-007",
+    ],
+  },
   // A public-health limited-data-set data sharing agreement. IPDATA-008
   // reported a cross-border transfer missing its Article 46 safeguard on a
   // data-LOCALIZATION clause — "shall store and process ... only within the
