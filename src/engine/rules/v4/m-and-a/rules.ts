@@ -1257,6 +1257,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
 const TSA_RULES: Rule[] = [
   presence({
     id: "MNA-055",
+    version: "1.1.0",
     name: "Transition services scope / schedule",
     description: "TSA must include a scope schedule listing the services being provided.",
     citation: maPractice(
@@ -1270,12 +1271,17 @@ const TSA_RULES: Rule[] = [
     explanation:
       "Without a scope schedule the TSA is unenforceable; standard pattern is a per-service line in Schedule A.",
     recommendation: "Add a 'Schedule of Services' enumerating each service, duration, and fee.",
+    // Three spellings of ONE fact, conjoined — and the first is this family's
+    // own name, so it could never fail and the other two could never both be
+    // met by a schedule that names itself once. "Transition services" is
+    // replaced rather than OR'd, for the reason `v34-title-vacuity.test.ts`
+    // exists: a `transition-services-agreement` says it in its title.
     present_patterns: [
-      /transition\s+services/i,
       /schedule\s+(of\s+)?services/i,
-      /service\s+description/i,
+      /services\s+schedule/i,
+      /(?:service|services)\s+description/i,
+      /description\s+of\s+(?:the\s+)?services/i,
     ],
-    require_all_present: true,
   }),
   presence({
     id: "MNA-056",

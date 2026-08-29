@@ -59,11 +59,14 @@ const ENGAGEMENT = pack("engagement-letter", C, [
     // director, or employee of the Client"). A letter that named its client
     // and disclaimed its constituents exactly as Rule 1.13 contemplates was
     // told at `critical` that it had done neither.
-    ver: "1.0.2",
+    ver: "1.0.3",
     name: "Identity of the client",
     cite: modelRule("1.13", "organization as client"),
     pat: [
-      /(our\s+client\s+(is|will\s+be)|we\s+(?:will\s+|shall\s+|have\s+agreed\s+to\s+)?represent|the\s+client\s+(is|for\s+purposes\s+of))/i,
+      // "Our client IN THIS MATTER is …" is how a letter that opens more than
+      // one matter says it, and the adjacent-words form could not see past the
+      // qualifier.
+      /(our\s+client\b[^.]{0,40}?\s(?:is|will\s+be)\b|we\s+(?:will\s+|shall\s+|have\s+agreed\s+to\s+)?represent|the\s+client\s+(is|for\s+purposes\s+of))/i,
       /(only\s+(the\s+)?(company|entity|you)|(?:do|will|shall)\s+not\s+represent\s+(its|your|any)\s+(officers|directors|affiliates|shareholders|members|parent|subsidiar)|(?:are|is|am)\s+not\s+(?:undertaking\s+to\s+represent|representing)\s+(its|your|any)\s+(officers|directors|affiliates|shareholders|members|parent|subsidiar))/i,
     ],
     all: true,

@@ -52,6 +52,7 @@ const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
 const NET_LEASE_RULES: Rule[] = [
   presence({
     id: "RE-001",
+    version: "1.1.0",
     name: "Triple-net (NNN) cost allocation stated",
     description:
       "Net lease must specify which expenses (real estate taxes, insurance, CAM / operating expenses) pass through to tenant.",
@@ -72,7 +73,10 @@ const NET_LEASE_RULES: Rule[] = [
       // "NNN" is in this family's own title ("Single-Tenant Net Lease
       // (NNN)"), so it and its spelled-out twin are one pillar, and the
       // allocation itself is the rest.
-      /(triple.net|\bnnn\b)/i,
+      // A net lease's additional-rent clause does not call itself "triple
+      // net" — the LEASE might, in its title. What the clause carries is the
+      // additional-rent label and the tenant's share.
+      /(triple.net|\bnnn\b|additional\s+rent|(?:proportionate|pro\s+rata|tenant['’]?s?)\s+share)/i,
       // Either order. "TENANT shall pay all real estate taxes" is at least as
       // common as "real estate taxes ... payable by Tenant", and the
       // one-directional form flagged the standard drafting once the pillars

@@ -85,7 +85,7 @@ const COVENANT = pack("covenant-not-to-sue", C, [
     // license". Same column — which instrument this is and which it is not —
     // and the check reported it missing, at `critical`, on the section that
     // states it.
-    ver: "1.0.1",
+    ver: "1.0.2",
     name: "Covenant versus release characterization",
     cite: practice(
       "covenant-vs-release",
@@ -93,7 +93,11 @@ const COVENANT = pack("covenant-not-to-sue", C, [
     ),
     pat: [
       /covenants?\s+not\s+to\s+sue/i,
-      /is\s+not\s+a\s+(?:release|license)|rather\s+than\s+a\s+(?:release|license)|does\s+not\s+release|(?:shall|will)\s+not\s+be\s+construed\s+as\s+a\s+(?:release|license)|not\s+a\s+license\b/i,
+      // The MIRROR characterization is just as standard: a settlement agreement
+      // says "this is a general release, not a covenant not to sue". The
+      // column is which instrument this is and which it is not, and it knew
+      // only one direction.
+      /is\s+not\s+a\s+(?:release|license|covenant\s+not\s+to\s+sue)|rather\s+than\s+a\s+(?:release|license|covenant)|does\s+not\s+release|(?:shall|will)\s+not\s+be\s+construed\s+as\s+(?:a\s+(?:release|license|covenant)|one)|not\s+a\s+license\b/i,
     ],
     all: true,
     why: "A release extinguishes the claim; a covenant not to sue leaves it alive but promises not to assert it. In joint-tortfeasor states the difference decides whether other defendants get a credit.",

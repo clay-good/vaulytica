@@ -303,6 +303,7 @@ const RESPONSES = pack("discovery-responses", C, [
   },
   {
     id: "DISC-019",
+    ver: "1.1.0",
     name: "No 'subject to and without waiving' boilerplate",
     cite: practice(
       "subject-to-objections",
@@ -310,7 +311,11 @@ const RESPONSES = pack("discovery-responses", C, [
     ),
     pat: [
       /(subject\s+to\s+(and\s+without\s+waiving|the\s+foregoing)|without\s+waiving\s+(the\s+foregoing|any)\s+objections?)/i,
-      /(nevertheless|notwithstanding|the\s+withholding\s+statement\s+(above|below)|as\s+stated\s+above,?\s+no\s+documents\s+are\s+withheld)/i,
+      // The Rule 34(b)(2)(C) statement is written "is withholding documents
+      // on the basis of the attorney-client privilege" or "no responsive
+      // documents are being withheld" — the plainest compliant drafting, and
+      // the column could see neither.
+      /(nevertheless|notwithstanding|the\s+withholding\s+statement\s+(above|below)|withh(?:old|olding|eld)[^.;]{0,90}?(?:on\s+the\s+basis|pursuant\s+to|because)|no\s+(?:responsive\s+)?documents?\s+(?:are|is|were)\s+(?:being\s+)?withheld)/i,
     ],
     all: true,
     why: "Answering 'subject to and without waiving' objections leaves the requesting party unable to tell what was produced and what was held back — which is exactly what Rule 34(b)(2)(C) was amended to stop. Courts increasingly treat the formulation as a waiver of the objections it purports to preserve.",

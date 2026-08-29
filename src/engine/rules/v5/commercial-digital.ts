@@ -430,11 +430,13 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.1.1",
     name: "Clear and conspicuous automatic-renewal disclosure",
     cite: usc("15", "8403", "Restore Online Shoppers' Confidence Act — negative option marketing"),
     pat: [
-      /(automatic(ally)?[-\s]+renew|auto-?renew)/i,
+      // "renews for a further term of one year unless you cancel" carries the
+      // renewal without the adverb, and TEMP-011 already reads it that way.
+      /(automatic(ally)?[-\s]+renew|auto-?renew|renews?\s+(?:automatically\s+)?for\s+(?:a\s+)?(?:further|additional|successive))/i,
       /(clear(ly)?\s+and\s+conspicuous|before\s+(obtaining|charging)|prior\s+to\s+(the\s+)?(charge|purchase))/i,
     ],
     all: true,

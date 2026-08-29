@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.136.0] — 2026-08-29
+
+### Added
+- **`compliant-conjunctions.test.ts`** — for each repaired conjunction, the
+  clause its own recommendation asks for, and the assertion that the rule is
+  silent on it. Fourteen rows, every one of which was a real defect.
+
+### Fixed
+- **A sweep of every `require_all_present` / `all: true` conjunction in the
+  catalog**, ranked by whether the rule's own recommendation text satisfies its
+  own patterns, then confirmed by writing the compliant clause by hand. Eight
+  more columns could not be satisfied by the drafting they exist to bless:
+  - `ENG-002` wanted the adjacent "our client is", which a letter opening more
+    than one matter never writes ("our client IN THIS MATTER is").
+  - `SET-106` knew the covenant-side characterization and not its mirror: a
+    settlement agreement says "this is a general release, not a covenant not to
+    sue".
+  - `COMM-231` wanted the adverb — "renews for a further term of one year
+    unless you cancel" carries the renewal without it, and TEMP-011 already
+    reads it that way.
+  - `COMM-146` wanted "business of the venture" and never the possessive "the
+    Venture's business is"; and "shall not compete" and never "may not pursue".
+  - `MNA-055` conjoined THREE spellings of one fact, the first of which is the
+    family's own title ("transition services") and so could never fail.
+  - `RE-001` wanted the words "triple net" from an additional-rent clause,
+    which never carries them — only the lease's title might.
+  - `PRV-040` wanted the singular "state attorney general"; the plural is what
+    everyone writes.
+  - `DISC-019` could not read the Rule 34(b)(2)(C) withholding statement in its
+    plainest form ("is withholding documents on the basis of the
+    attorney-client privilege").
+
 ## [9.135.0] — 2026-08-29
 
 ### Added

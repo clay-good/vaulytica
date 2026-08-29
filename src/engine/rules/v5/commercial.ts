@@ -590,15 +590,19 @@ const FDD = pack("franchise-disclosure-document", C, [
 const JOINT_VENTURE = pack("joint-venture-agreement", C, [
   {
     id: "COMM-146",
-    ver: "1.1.0",
+    ver: "1.3.0",
     name: "Scope and exclusivity of the venture",
     cite: practice("jv-scope", "scope and exclusivity definition in joint ventures"),
     pat: [
-      /(purpose\s+of\s+the\s+(venture|jv)|scope\s+of\s+the\s+venture|business\s+of\s+the\s+venture|(?:sole|exclusive|limited|only)\s+purpose\s+of\b|formed\s+(?:solely\s+)?(?:to|for\s+the\s+purpose)\b)/i,
+      // "The Venture's business is …" is the possessive form every joint
+      // venture agreement uses, and the of-phrase list could not see it.
+      /((?:the\s+)?[Vv]enture['’]?s?\s+(?:business|purpose|scope)\s+is|purpose\s+of\s+the\s+(venture|jv)|scope\s+of\s+the\s+venture|business\s+of\s+the\s+venture|(?:sole|exclusive|limited|only)\s+purpose\s+of\b|formed\s+(?:solely\s+)?(?:to|for\s+the\s+purpose)\b)/i,
       // "Neither Member shall compete with the Business" is how an
       // exclusivity covenant is actually written — the negation sits in
       // "Neither", not on the verb, and `shall not compete` missed it.
-      /(exclusiv|shall\s+not\s+(compete|engage)|neither\s+\w+(?:\s+\w+){0,3}\s+shall\s+(?:compete|engage|develop|manufacture|sell)|outside\s+the\s+scope)/i,
+      // The restriction is as often "may not pursue" as "shall not compete",
+      // and the boundary as often "outside the Venture" as "outside the scope".
+      /(exclusiv|(?:shall|may|will)\s+not\s+(?:compete|engage|pursue|carry\s+on|conduct)|neither\s+\w+(?:\s+\w+){0,3}\s+(?:shall|may|will)\s+(?:compete|engage|pursue|develop|manufacture|sell)|outside\s+the\s+(?:scope|venture|jv))/i,
     ],
     // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
     // to an OR, so either half alone scored the document clean. See the

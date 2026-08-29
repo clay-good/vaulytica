@@ -882,11 +882,12 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     recommendation:
       "Add 'Regulator Notification' covering state-AG triggers (typically 500 / 1,000+), HIPAA 500-resident media notice, and EU supervisory-authority notification under Art. 33.",
     present_patterns: [
-      /(state\s+(ag|attorney\s+general)|supervisory\s+authority)/i,
+      // The plural is the standard form: "the state attorneys general".
+      /(state\s+(ags?|attorneys?\s+general)|supervisory\s+authority)/i,
       // A template may state any threshold, not only the two that happened
       // to be written here.
       /(\d{2,5}\s+(?:or\s+more\s+)?(?:residents?|individuals?|persons?|consumers?)|more\s+than\s+\d|threshold)/i,
-      /(media|notice|notification)/i,
+      /(media|notice|notif\w+)/i,
     ],
     require_all_present: true,
     // These two are TEMPLATE checks: a record count and a state-AG
@@ -899,7 +900,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     // and a state-AG trigger threshold, neither of which it is supposed to
     // state.
     applicable_if: [/^(?![\s\S]*\bDear\s+(?:Mr|Mrs|Ms|Mx|Dr|Prof|Hon|Rev)\b)/],
-    version: "1.1.0",
+    version: "1.2.0",
     default_severity: "warning",
   }),
 ];
