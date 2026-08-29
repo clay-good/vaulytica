@@ -486,11 +486,15 @@ const LIMITED_SCOPE = pack("limited-scope-representation", C, [
   },
   {
     id: "ENG-031",
+    ver: "1.1.0",
     name: "How and when the representation ends",
     cite: modelRule("1.16(d)", "declining or terminating representation"),
     pat: [
       /(conclu(de|sion)|end(s)?|complete(d|s)?|terminat)/i,
-      /(upon\s+(delivery|filing|completion)|closing\s+letter|no\s+further\s+(obligation|services))/i,
+      // "The representation ends when the transaction closes" and "we will
+      // confirm the end of the representation in writing" are how a letter
+      // says it; none of the tokens below appears in either.
+      /(upon\s+(delivery|filing|completion|closing)|when\s+[^.;]{0,60}?\b(?:closes|is\s+completed|concludes)\b|closing\s+letter|no\s+further\s+(obligation|services)|confirm[^.;]{0,60}?end\s+of\s+the\s+representation)/i,
     ],
     all: true,
     why: "Limited-scope engagements end at a task, not at a matter, and a client who does not know the engagement is over will keep relying on the lawyer. A defined endpoint plus a closing letter is the fix.",
@@ -501,10 +505,13 @@ const LIMITED_SCOPE = pack("limited-scope-representation", C, [
 const TERMINATION = pack("termination-of-representation", C, [
   {
     id: "ENG-032",
+    ver: "1.1.0",
     name: "Statement that the representation has ended",
     cite: modelRule("1.16", "declining or terminating representation"),
     pat: [
-      /(representation\s+(has\s+)?(ended|concluded|is\s+(now\s+)?(complete|terminated))|we\s+(are\s+)?(no\s+longer|have\s+concluded))/i,
+      // "our representation OF YOU IN THIS MATTER has ended" puts the scope
+      // between the noun and the verb, which the adjacent form cannot see.
+      /(representation\b[^.;]{0,40}?\s(?:has\s+)?(?:ended|concluded|is\s+(?:now\s+)?(?:complete|terminated))|we\s+(are\s+)?(no\s+longer|have\s+concluded))/i,
       /(this\s+(letter|matter)|as\s+of\s+\w+\s+\d{1,2}|effective)/i,
     ],
     all: true,

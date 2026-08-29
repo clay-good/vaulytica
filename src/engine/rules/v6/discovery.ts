@@ -491,11 +491,14 @@ const PRIV_LOG = pack("privilege-log", C, [
 const RULE_26F = pack("rule-26f-report", C, [
   {
     id: "DISC-030",
+    ver: "1.1.0",
     name: "Proposed discovery plan with the required subjects",
     cite: frcp("26(f)(3)", "conference of the parties — discovery plan"),
     pat: [
       /(discovery\s+plan|rule\s+26\(f\))/i,
-      /(subjects?\s+on\s+which\s+discovery|completion\s+date|phases?|limits?\s+on\s+discovery)/i,
+      // A Rule 26(f) report states its plan as DEADLINES — "fact discovery
+      // closing December 18, 2026" — not as the rule's own vocabulary.
+      /(subjects?\s+on\s+which\s+discovery|completion\s+date|phases?|limits?\s+on\s+discovery|discovery\s+(?:closes|closing|cutoff|cut-off|deadline)|\bdeadlines?\b)/i,
     ],
     all: true,
     why: "Rule 26(f)(3) enumerates six subjects the plan must state. A report that omits them leaves the scheduling order to be written by the court without the parties' input.",

@@ -601,11 +601,14 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
   },
   {
     id: "GOV-144",
+    ver: "1.1.0",
     name: "Determination of entitlement and who makes it",
     cite: dgcl("145(d)"),
     pat: [
       /independent\s+counsel|disinterested\s+directors|special\s+legal\s+counsel|by\s+the\s+stockholders/i,
-      /determination\s+of\s+entitlement|determin\w+[^.;]{0,80}?entitle/i,
+      // The sentence runs the other way as readily: "Entitlement to
+      // indemnification IS DETERMINED by the disinterested directors."
+      /determination\s+of\s+entitlement|determin\w+[^.;]{0,80}?entitle|entitle\w*[^.;]{0,60}?\bdetermin/i,
     ],
     all: true,
     why: "§ 145(d) requires a determination that indemnification is proper, made by disinterested directors, by independent legal counsel, or by the stockholders. Who decides is the whole question after a change in control, when the directors making the determination are the ones the Indemnitee may be adverse to.",
@@ -628,10 +631,12 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
   },
   {
     id: "GOV-146",
+    ver: "1.1.0",
     name: "Non-exclusivity and directors' and officers' liability insurance",
     cite: dgcl("145(f)"),
     pat: [
-      /non-?exclusiv|in\s+addition\s+to\s+(?:any\s+)?(?:other\s+)?rights/i,
+      // "are NOT EXCLUSIVE of any other rights" is the DGCL § 145(f) wording.
+      /non-?exclusiv|not\s+exclusive|in\s+addition\s+to\s+(?:any\s+)?(?:other\s+)?rights/i,
       /(?:d\s*&\s*o|directors[’']?\s+and\s+officers[’']?)[^.;]{0,40}?insurance|liability\s+insurance/i,
     ],
     all: true,
@@ -640,13 +645,16 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
   },
   {
     id: "GOV-147",
+    ver: "1.1.0",
     name: "Survival after service ends and against later amendment",
     cite: practice(
       "do-indemnification-survival",
       "Contractual survival of indemnification rights against a later charter or bylaw amendment",
     ),
     pat: [
-      /(?:continue|survive)[^.;]{0,100}?(?:ceas\w+\s+to\s+serve|termination\s+of[^.;]{0,40}?service|no\s+longer\s+(?:serves|a\s+director|an\s+officer))/i,
+      // "survive the CESSATION OF the Indemnitee's service" is the nominal
+      // form, and the verb forms alone missed it.
+      /(?:continue|survive)[^.;]{0,100}?(?:ceas\w+\s+to\s+serve|cessation\s+of[^.;]{0,40}?service|termination\s+of[^.;]{0,40}?service|no\s+longer\s+(?:serves|a\s+director|an\s+officer))/i,
       /(?:amendment|repeal|modification|alteration)[^.;]{0,100}?(?:certificate\s+of\s+incorporation|by-?laws|charter)|binds?\s+(?:any\s+)?successors?|successors?[^.;]{0,80}?(?:merger|consolidation)/i,
     ],
     all: true,

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.138.0] — 2026-08-29
+
+### Fixed
+- **Six more columns could not read the clause they ask for.** Every one is the
+  same shape: the rule knows one grammatical form of the sentence and a drafter
+  wrote another.
+  - `DISC-030` wanted "subjects on which discovery" from a Rule 26(f) report
+    that states its plan as deadlines: "fact discovery closing December 18,
+    2026".
+  - `ENG-031` wanted "upon delivery" or "closing letter" from "the
+    representation ends when the transaction closes … we will confirm the end
+    of the representation in writing".
+  - `ENG-032` wanted the adjacent "representation has ended" from a closing
+    letter that puts the scope between the noun and the verb — "our
+    representation OF YOU IN THIS MATTER has ended".
+  - `GOV-144` wanted the noun phrase "determination of entitlement" and could
+    not read the sentence run the other way: "Entitlement to indemnification IS
+    DETERMINED by the disinterested directors".
+  - `GOV-146` wanted the hyphenated "non-exclusive" and not DGCL § 145(f)'s own
+    wording, "are NOT EXCLUSIVE of any other rights".
+  - `GOV-147` wanted the verb forms and not the nominal one: "survive the
+    CESSATION OF the Indemnitee's service".
+
 ## [9.137.0] — 2026-08-29
 
 ### Fixed

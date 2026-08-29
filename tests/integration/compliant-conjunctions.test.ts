@@ -133,6 +133,42 @@ const COMPLIANT: Array<[string, string, string, string]> = [
     "Defendant is withholding documents responsive to this request on the basis of the attorney-client privilege and the work-product doctrine, and has identified them on the privilege log served with these responses.",
     "the passive withholding statement only, never the active one",
   ],
+  [
+    "DISC-030",
+    "Rule 26(f) Report",
+    "The parties propose the following discovery plan: initial disclosures by June 1, 2026; fact discovery closing December 18, 2026; expert reports exchanged February 5, 2027; and a protective order and a Rule 502(d) order to be submitted by June 15, 2026.",
+    "the rule's own vocabulary, where a report states its plan as deadlines",
+  ],
+  [
+    "ENG-031",
+    "Engagement Letter",
+    "The representation ends when the transaction closes or when either of us terminates it in writing, whichever comes first. We will confirm the end of the representation in writing.",
+    'the tokens "upon delivery" / "closing letter", which the sentence never uses',
+  ],
+  [
+    "ENG-032",
+    "Closing Letter",
+    "This letter confirms that our representation of you in this matter has ended. We are not undertaking to advise you of any future change in the law.",
+    'the adjacent "representation has ended", with the scope between noun and verb',
+  ],
+  [
+    "GOV-144",
+    "Indemnification Agreement",
+    "Entitlement to indemnification is determined, at the Indemnitee's election, by a majority vote of the disinterested directors, by a committee of such directors designated by majority vote, or by Independent Counsel selected by the Indemnitee and approved by the Corporation.",
+    'the noun phrase "determination of entitlement", never the sentence run the other way',
+  ],
+  [
+    "GOV-146",
+    "Indemnification Agreement",
+    "The rights of the Indemnitee are not exclusive of any other rights the Indemnitee may have. The Corporation shall maintain directors and officers liability insurance covering the Indemnitee on terms no less favorable than the policy in effect on the date of this Agreement.",
+    'the hyphenated "non-exclusive", never § 145(f)\'s own "not exclusive"',
+  ],
+  [
+    "GOV-147",
+    "Indemnification Agreement",
+    "The rights of the Indemnitee survive the cessation of the Indemnitee's service and continue for so long as the Indemnitee may be subject to any Proceeding. No amendment to the certificate of incorporation or the bylaws may impair a right arising out of conduct occurring before the amendment.",
+    'the verb forms only, never the nominal "cessation of service"',
+  ],
 ];
 
 describe("a conjunction is satisfiable by the clause it asks for", () => {
