@@ -653,3 +653,49 @@ describe("an individual separation agreement is not a group termination", () => 
     ).toEqual([]);
   });
 });
+
+describe("a proprietary-information and inventions agreement", () => {
+  const run = async (id: string, ...paragraphs: string[]) => {
+    const res = await runEngine({
+      rules: EMPLOYMENT_RULES,
+      ctx: withPb(
+        buildContext(["Employee Proprietary Information and Inventions Agreement", ...paragraphs]),
+        PIIA_PB,
+      ),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === id).map((f) => f.title);
+  };
+
+  // EMP-032 conjoined "proprietary information" — this family's own TITLE, so
+  // it could never fail — with "non-disclosure", which the agreement never
+  // uses. It states the obligation instead.
+  it("EMP-032 reads the obligation rather than the label", async () => {
+    expect(
+      await run(
+        "EMP-032",
+        "I will hold Proprietary Information in confidence, use it only for the Company's benefit, and not disclose it to anyone outside the Company without authorization.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("EMP-032 still fires on an agreement that imposes no confidence at all", async () => {
+    expect(
+      await run(
+        "EMP-032",
+        "I assign to the Company every invention I conceive during my employment.",
+      ),
+    ).toEqual(["Confidentiality / proprietary-information clause missing"]);
+  });
+
+  // "I appoint the Company as my ATTORNEY-IN-FACT for that limited purpose" is
+  // how the power is granted.
+  it("EMP-036 reads the attorney-in-fact appointment", async () => {
+    expect(
+      await run(
+        "EMP-036",
+        "If the Company cannot obtain my signature, I appoint the Company as my attorney-in-fact for that limited purpose.",
+      ),
+    ).toEqual([]);
+  });
+});

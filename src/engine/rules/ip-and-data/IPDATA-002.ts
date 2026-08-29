@@ -2,9 +2,21 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 
 /** IPDATA-002 — Pre-existing IP carve-out clarity (warning). */
+function documentText(ctx: RuleContext): string {
+  const parts: string[] = [];
+  const walk = (sections: RuleContext["tree"]["sections"]): void => {
+    for (const section of sections) {
+      for (const p of section.paragraphs) for (const r of p.runs) parts.push(r.text);
+      walk(section.children);
+    }
+  };
+  walk(ctx.tree.sections);
+  return parts.join(" ");
+}
+
 export const rule: Rule = {
   id: "IPDATA-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Pre-existing IP carve-out",
   category: "ip-and-data",
   default_severity: "warning",
@@ -22,9 +34,14 @@ export const rule: Rule = {
     // "Retained IP", and "Existing Intellectual Property" are all carve-outs;
     // recognizing only "pre-existing / background IP" reported the carve-out
     // missing on the standard employee IP agreement that plainly states one.
+    //
+    // Read across the whole DOCUMENT, not the assignment's paragraph: the
+    // carve-out is almost always its own section — "Limited Exclusion",
+    // "Prior Inventions" — sitting after the assignment it qualifies, and the
+    // paragraph-scoped test could never see it.
     if (
       /\b(?:pre[- ]?existing|background|prior|existing|retained)\s+(?:IP\b|intellectual\s+property|inventions?|technology|materials?|works?|know[- ]how)\b/i.test(
-        hit.text,
+        documentText(ctx),
       )
     )
       return null;

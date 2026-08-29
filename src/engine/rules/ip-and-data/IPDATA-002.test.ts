@@ -30,4 +30,17 @@ describe("IPDATA-002 — pre-existing IP carve-out", () => {
       IPDATA_002.check(doc("All inventions created prior to the date are also covered.")),
     ).not.toBeNull();
   });
+
+  // The carve-out is almost always its OWN SECTION — "Limited Exclusion",
+  // "Prior Inventions" — sitting after the assignment it qualifies, and the
+  // paragraph-scoped test could never see it.
+  it("reads a carve-out that sits in a later section (v1.2.0)", () => {
+    const ctx = buildContext([
+      "4. Assignment of Inventions",
+      "I assign to the Company every invention and item of intellectual property that I conceive during my employment.",
+      "6. Prior Inventions",
+      "Attached as Exhibit A is a list of prior inventions I made before my employment that I wish to exclude from section 4.",
+    ]);
+    expect(IPDATA_002.check(ctx)).toBeNull();
+  });
 });

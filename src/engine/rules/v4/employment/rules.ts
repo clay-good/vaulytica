@@ -790,6 +790,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
 const PIIA_RULES: Rule[] = [
   presence({
     id: "EMP-032",
+    version: "1.1.0",
     name: "Confidentiality / proprietary information obligation",
     description:
       "PIIA must include a confidentiality obligation covering employer's proprietary information.",
@@ -805,7 +806,16 @@ const PIIA_RULES: Rule[] = [
       "The 'PI' half of PIIA — employee maintains confidentiality of employer's proprietary information.",
     recommendation:
       "Add 'Proprietary Information' obligation with standard carve-outs (publicly available, independently developed).",
-    present_patterns: [/(confidential|proprietary)\s+information/i, /non.?disclosure/i],
+    // Two spellings of one fact, and the first is this family's own TITLE
+    // ("Proprietary Information and Inventions Agreement"), so it could never
+    // fail — leaving the whole check on the word "non-disclosure", which the
+    // agreement never uses. It states the OBLIGATION instead: "I will hold
+    // Proprietary Information in confidence … and not disclose it to anyone
+    // outside the Company."
+    present_patterns: [
+      /(confidential|proprietary)\s+information/i,
+      /(non.?disclos|hold[^.;]{0,50}?\bin\s+confidence|(?:will|shall|agree\s+to)\s+not\s+disclose|keep[^.;]{0,40}?\bconfidential\b|maintain[^.;]{0,40}?\bconfiden)/i,
+    ],
     require_all_present: true,
   }),
   presence({
@@ -892,6 +902,7 @@ const PIIA_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-036",
+    version: "1.1.0",
     name: "Power of attorney for IP filings",
     description: "PIIA typically grants employer a power of attorney to file IP applications.",
     citation: empPractice(
@@ -906,7 +917,14 @@ const PIIA_RULES: Rule[] = [
       "Without a POA, employer cannot file patent applications if the inventor refuses or cannot be reached.",
     recommendation:
       "Add 'Power of Attorney' irrevocably appointing the employer to file IP applications.",
-    present_patterns: [/power\s+of\s+attorney/i, /coupled\s+with\s+an\s+interest/i],
+    // "I appoint the Company as my ATTORNEY-IN-FACT for that limited purpose"
+    // is how an invention-assignment agreement grants the power; neither of
+    // the two spellings below appears in it.
+    present_patterns: [
+      /power\s+of\s+attorney/i,
+      /attorney[- ]in[- ]fact/i,
+      /coupled\s+with\s+an\s+interest/i,
+    ],
     default_severity: "warning",
   }),
   presence({

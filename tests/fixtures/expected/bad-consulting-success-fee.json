@@ -262,7 +262,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -886,7 +886,7 @@
       "explanation": "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
       "id": "IPDATA-002-s1.4-1278",
       "rule_id": "IPDATA-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Pre-existing IP carve-out not stated"
@@ -1094,11 +1094,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "05f985c41d1a48b12b832cce60f77892ae218e20dee441586d4878c843999133",
+  "result_hash": "186fdab1edf2a3268e755505d1fdda96b5665d97203f431d5bb6507d662a1fb8",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.152.0"
+  "version": "9.153.0"
 }

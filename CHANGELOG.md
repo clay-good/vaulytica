@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.153.0] — 2026-08-29
+
+### Added
+- A California proprietary-information and inventions agreement, the 127th
+  specimen.
+
+### Fixed
+- **EMP-032 told a PIIA at `critical` that it had no confidentiality clause**,
+  on a document whose first two sections are one and whose TITLE names it. The
+  check conjoined "proprietary information" — the family's own title, so it
+  could never fail — with "non-disclosure", which the agreement never uses. It
+  states the OBLIGATION instead: "I will hold Proprietary Information in
+  confidence … and not disclose it to anyone outside the Company."
+- **EMP-036 wanted "power of attorney" or "coupled with an interest"** from a
+  clause that says "I appoint the Company as my ATTORNEY-IN-FACT for that
+  limited purpose".
+- **IPDATA-002 read the pre-existing-IP carve-out only in the assignment's own
+  paragraph.** The carve-out is almost always its own section — "Limited
+  Exclusion", "Prior Inventions" — sitting after the assignment it qualifies.
+- `piia` no longer demands an indemnity, a liability cap, a termination clause,
+  a venue, or a stated Effective Date of a unilateral employee agreement whose
+  date is its signature date.
+
 ## [9.152.0] — 2026-08-29
 
 ### Added

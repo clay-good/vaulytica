@@ -12893,7 +12893,26 @@
       "Prior Inventions",
       "Confidential Information"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-003": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "State-IP-Assignment",

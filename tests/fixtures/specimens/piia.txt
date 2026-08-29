@@ -1,0 +1,64 @@
+EMPLOYEE PROPRIETARY INFORMATION AND INVENTIONS AGREEMENT
+
+In consideration of my employment by Kestrel Photonics LLC (the "Company") and the compensation I receive, I agree as follows.
+
+1. PROPRIETARY INFORMATION
+
+"Proprietary Information" means information the Company owns or holds in confidence, including its designs, drawings, source code, algorithms, test data, processes, formulas, customer and supplier lists, pricing, business plans, and personnel information, and any information a third party has entrusted to the Company in confidence. It does not include information that is or becomes public through no fault of mine, that I lawfully knew before the Company disclosed it, or that I lawfully receive from a third party free of any obligation of confidence.
+
+2. MY OBLIGATIONS
+
+I will hold Proprietary Information in confidence, use it only for the Company's benefit and only as my work requires, and not disclose it to anyone outside the Company without authorization. These obligations continue after my employment ends, for as long as the information remains confidential, except that information qualifying as a trade secret is protected for as long as it remains one.
+
+3. THIRD-PARTY INFORMATION
+
+I will not bring to the Company, or use in my work, any confidential information or trade secret belonging to a former employer or any other person, and I will not violate any agreement I have with any of them.
+
+4. ASSIGNMENT OF INVENTIONS
+
+I assign to the Company every invention, discovery, improvement, work of authorship, mask work, and trade secret that I conceive or reduce to practice, alone or with others, during my employment and that relates to the Company's business or actual or demonstrably anticipated research or development, or that results from work I perform for the Company. I will disclose each promptly and in confidence, and will sign the documents and give the assistance the Company reasonably needs to obtain and enforce patents and other rights, at the Company's expense, during and after my employment. If the Company cannot obtain my signature, I appoint the Company as my attorney-in-fact for that limited purpose.
+
+5. LIMITED EXCLUSION
+
+This assignment does not apply to an invention that I developed entirely on my own time without using the Company's equipment, supplies, facilities, or trade secret information, except for an invention that either relates at the time of conception or reduction to practice to the Company's business or its actual or demonstrably anticipated research or development, or results from work I performed for the Company. This paragraph reflects California Labor Code section 2870, and I have received written notice of it. Sections 2870 through 2872 govern where they apply.
+
+6. PRIOR INVENTIONS
+
+Attached as Exhibit A is a list of inventions I made before my employment that I wish to exclude from section 4. If I attach no list, I represent that there are none.
+
+7. WORKS OF AUTHORSHIP
+
+I acknowledge that a work of authorship I create within the scope of my employment is a work made for hire under the Copyright Act. To the extent it is not, I assign it to the Company.
+
+8. RETURN OF MATERIALS
+
+When my employment ends, or sooner on request, I will return every document, device, and copy containing Proprietary Information and will delete Company data from my personal devices and accounts.
+
+9. DEFEND TRADE SECRETS ACT NOTICE
+
+Under 18 U.S.C. § 1833(b), I am not held criminally or civilly liable under any federal or state trade secret law for disclosing a trade secret in confidence to a federal, state, or local government official or to an attorney solely for the purpose of reporting or investigating a suspected violation of law, or in a complaint or other document filed under seal in a lawsuit or other proceeding. If I file a lawsuit for retaliation for reporting a suspected violation of law, I may disclose the trade secret to my attorney and use it in the court proceeding, if I file any document containing it under seal and do not disclose it except pursuant to court order.
+
+10. PROTECTED ACTIVITY
+
+Nothing in this Agreement limits my right to report a possible violation of law to a government agency, to participate in an investigation, or to receive an award from a government whistleblower program, and I do not need the Company's permission or notice to do so.
+
+11. NO EMPLOYMENT TERM
+
+This Agreement is not a contract of employment and does not change the at-will nature of my employment.
+
+12. GENERAL
+
+This Agreement is governed by the laws of the State of California. It binds my heirs and assigns and benefits the Company's successors. If any provision is unenforceable, the rest remains in effect. This Agreement is the entire agreement on this subject and may be changed only by a writing the Company and I both sign.
+
+I have read this Agreement and understand it.
+
+/s/ Emil Halloran
+Emil Halloran
+Date: February 9, 2026
+
+KESTREL PHOTONICS LLC
+
+By: /s/ Priyanka Deshmukh
+Name: Priyanka Deshmukh
+Title: VP Engineering
+Date: February 9, 2026

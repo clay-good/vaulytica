@@ -422,6 +422,15 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["CHOICE-003", "OBLI-005", "PERS-006", "TEMP-002"],
   },
 
+  // A California proprietary-information and inventions agreement. EMP-032
+  // conjoined "proprietary information" — this family's own TITLE, so it could
+  // never fail — with "non-disclosure", which the agreement never uses; it
+  // states the obligation instead. EMP-036 wanted "power of attorney" or
+  // "coupled with an interest" from a clause that says "I appoint the Company
+  // as my attorney-in-fact"; and IPDATA-002 read the carve-out only in the
+  // assignment's own paragraph, when it is always its own section.
+  "piia.txt": { playbook: "piia", findings: ["OBLI-005", "STRUCT-018"] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],
