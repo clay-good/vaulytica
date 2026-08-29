@@ -809,3 +809,48 @@ describe("arbitration seat — the participle hung off the institution", () => {
     expect(seats).toHaveLength(0);
   });
 });
+
+describe("the FALLBACK forum in a two-court clause", () => {
+  // "…submits to the exclusive jurisdiction of the Bankruptcy Court in the
+  // Case and, if that court lacks jurisdiction, the state and federal courts
+  // located in New York County, New York." The first court named carries no
+  // geography, so every trigger-anchored branch fails on it and none reaches
+  // the second court — and an assignment of a bankruptcy claim that names two
+  // forums was reported as naming none.
+  const venues = (t: string) =>
+    extractJurisdictions(buildTree(["Venue", t]))
+      .filter((j) => j.clause_kind === "venue")
+      .map((j) => j.raw_text);
+
+  it("reads the second court when the first names no place", () => {
+    expect(
+      venues(
+        "Assignor and Assignee each irrevocably submit to the exclusive jurisdiction of the Bankruptcy Court in the Case and, if that court lacks jurisdiction, the state and federal courts located in New York County, New York.",
+      ),
+    ).toEqual(["New York"]);
+  });
+
+  it("reads a subject-matter court named with a district", () => {
+    expect(
+      venues(
+        "Each party irrevocably submits to the exclusive jurisdiction of the Bankruptcy Court for the District of Delaware.",
+      ),
+    ).toEqual(["Delaware"]);
+  });
+
+  it("does not add a second opinion where a branch already read the forum", () => {
+    expect(
+      venues(
+        "Each party irrevocably submits to the exclusive jurisdiction of the state and federal courts located in New York County, New York.",
+      ),
+    ).toEqual(["New York"]);
+  });
+
+  it("does not invent a forum from a court named with no place at all", () => {
+    expect(
+      venues(
+        "Each party irrevocably submits to the exclusive jurisdiction of the Bankruptcy Court in the Case.",
+      ),
+    ).toEqual([]);
+  });
+});

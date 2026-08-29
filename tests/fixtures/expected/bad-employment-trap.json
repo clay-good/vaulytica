@@ -586,7 +586,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1035,7 +1035,7 @@
       "id": "STRUCT-002-s1-0",
       "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
@@ -1147,11 +1147,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.9). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\".",
-  "result_hash": "b76894d1e7329db3409aee79a31eef31cfc11aba14d76f7669893e524bea5427",
+  "result_hash": "9ee29f3b2dfa71b3f3946dde59621715dbe3041b0a946c4712582920d866806e",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.191.0"
+  "version": "9.192.0"
 }

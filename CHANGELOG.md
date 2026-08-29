@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.192.0] — 2026-08-29
+
+### Added
+- A bankruptcy trade-claim purchase — the 153rd specimen.
+
+### Fixed
+- **An ASSIGNMENT OF CLAIM routed to `ip-assignment`** and drew two `critical`
+  findings about assigned INTELLECTUAL PROPERTY scope and a power of attorney.
+  There is no IP. `assignment-of-claim`'s own distinguishing phrases were
+  verbatim sentences nobody writes ("hereby assigns all right, title and
+  interest in the claim", "no warranty of collectability"), and `ip-assignment`
+  was leaning on "assignor" / "assignee" — the two words in every assignment of
+  anything, the same defect fixed in `lease-assignment` at 9.168.0.
+- **CHOICE-003 reported no forum on a clause that names two.** "…submits to the
+  exclusive jurisdiction of the BANKRUPTCY COURT in the Case and, if that court
+  lacks jurisdiction, the state and federal courts located in New York County,
+  New York": the first court carries no geography, so every trigger-anchored
+  branch failed on it and none reached the second. The subject-matter courts
+  (bankruptcy, tax, probate, family, surrogate's, housing, land) are now court
+  names, and a fallback-forum branch runs when nothing else in the paragraph
+  named a forum.
+- **SET-115 read a title warranty written as a VERB SERIES as warranting
+  nothing.** "Assignor is the SOLE LEGAL AND BENEFICIAL OWNER of the Claim and
+  HAS NOT SOLD, ASSIGNED, PLEDGED, OR ENCUMBERED it" is the warranty; the
+  pillar read only noun phrases.
+- **STRUCT-002 could not see the EXECUTION RECITAL that dates an instrument at
+  its foot** — "IN WITNESS WHEREOF, the parties have executed this Assignment
+  of Claim as of November 12, 2026". The branch reads the EXTRACTED date, so
+  the corpus's `bad-nda`, dated "as of February 30, 2026", still reports.
+- **`assignment-of-claim` shipped with an empty rule profile.**
+
 ## [9.191.0] — 2026-08-29
 
 ### Added

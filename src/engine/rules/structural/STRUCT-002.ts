@@ -11,7 +11,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "STRUCT-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Effective date present and parseable",
   category: "structural",
   default_severity: "warning",
@@ -67,6 +67,26 @@ export const rule: Rule = {
       if (
         /\b[Dd]ated\s+(?:as\s+of\s+)?this\s+\d{1,2}(?:st|nd|rd|th)?\s+day\s+of\s+[A-Z][a-z]+,?\s+\d{4}/.test(
           p.text,
+        )
+      )
+        dateLine = true;
+      // The EXECUTION RECITAL at the foot of the instrument: "IN WITNESS
+      // WHEREOF, the parties have EXECUTED this Assignment of Claim AS OF
+      // November 12, 2026." An instrument that dates itself only where it is
+      // signed has an identifiable starting point, and the first-quarter test
+      // never reaches it.
+      // The date must PARSE, not merely look like one. `bad-nda` is dated "as
+      // of February 30, 2026" — an impossible date, which is the point of the
+      // fixture — and a surface-pattern test stood the rule down on it.
+      if (
+        /\b(?:executed|signed|entered\s+into|made)\b[^.]{0,90}?\bas\s+of\b/.test(p.text) &&
+        ctx.extracted.dates.some(
+          (d) =>
+            d.type === "absolute" &&
+            d.iso &&
+            d.position.section_id === p.section.id &&
+            d.position.start >= p.start &&
+            d.position.end <= p.end,
         )
       )
         dateLine = true;

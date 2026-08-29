@@ -587,7 +587,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1045,7 +1045,7 @@
       "id": "STRUCT-002-s1-0",
       "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
@@ -1175,11 +1175,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"Consultant\", \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "7fe5461099b7e9dd69978a88d5d8449e3862a412c8e570f38d655655eef95133",
+  "result_hash": "3218cfef7a060297b6f08a61b8211328d9ef10796e66f717b9ca78555babf908",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.191.0"
+  "version": "9.192.0"
 }

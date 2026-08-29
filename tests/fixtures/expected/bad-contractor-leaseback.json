@@ -581,7 +581,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -899,7 +899,7 @@
       "id": "STRUCT-002-s1-0",
       "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
@@ -1002,11 +1002,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "74146d3c71560e5c58c9e62cc4b1776c841b18c4de6b53fe0b49e33a3708c330",
+  "result_hash": "e956741184795fdc48ae79eb81fbd2f7e2507ae76749fa6290aac9d24fe1a8d0",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.191.0"
+  "version": "9.192.0"
 }

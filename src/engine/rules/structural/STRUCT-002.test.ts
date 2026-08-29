@@ -36,3 +36,52 @@ describe("STRUCT-002 — the execution date of a signed form", () => {
     ).not.toBeNull();
   });
 });
+
+describe("STRUCT-002 — the execution recital at the foot of an instrument", () => {
+  // "IN WITNESS WHEREOF, the parties have EXECUTED this Assignment of Claim AS
+  // OF November 12, 2026." An instrument that dates itself only where it is
+  // signed has an identifiable starting point, and the first-quarter test
+  // never reaches it.
+  it.each([
+    "IN WITNESS WHEREOF, the parties have executed this Assignment of Claim as of November 12, 2026.",
+    "The parties have signed this instrument as of 12 November 2026.",
+  ])("accepts %s", (line) => {
+    expect(
+      STRUCT_002.check(
+        buildContext([
+          "Assignment of Claim",
+          "For value received, Assignor assigns to Assignee all of its right, title and interest in the Claim.",
+          "Assignor represents that it is the sole owner of the Claim.",
+          line,
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not accept a date that cannot exist", () => {
+    // The corpus's `bad-nda` is dated "as of February 30, 2026", which is the
+    // point of that fixture. The recital branch reads the EXTRACTED date, so a
+    // surface pattern that looks like a date but does not parse is not one.
+    expect(
+      STRUCT_002.check(
+        buildContext([
+          "Mutual Non-Disclosure Agreement",
+          "Each party shall keep the other's Confidential Information confidential.",
+          "This Agreement is entered into as of February 30, 2026 between the parties.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("does not accept an execution recital with no date", () => {
+    expect(
+      STRUCT_002.check(
+        buildContext([
+          "Assignment of Claim",
+          "For value received, Assignor assigns to Assignee all of its right, title and interest in the Claim.",
+          "IN WITNESS WHEREOF, the parties have executed this Assignment of Claim as of the date first written above.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

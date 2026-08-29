@@ -220,12 +220,17 @@ const ASSIGNMENT_OF_CLAIM = pack("assignment-of-claim", C, [
     id: "SET-115",
     // 1.0.1 — written as a synonym OR, but the warranty and its subject are distinct pillars; `represent` alone matches inside "representatives". The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    ver: "1.1.0",
     name: "Warranties as to title and collectability",
     cite: practice("claim-warranties", "title and collectability warranties in claim assignments"),
     pat: [
       /(warrant|represent)/i,
-      /(title\s+to\s+the\s+claim|free\s+(and\s+clear\s+)?of|no\s+(prior\s+)?(assignment|encumbrance)|makes?\s+no\s+(warranty|representation)\s+(as\s+to|regarding)\s+collect)/i,
+      // The title warranty is written as a VERB SERIES at least as often as a
+      // noun phrase: "Assignor is the SOLE LEGAL AND BENEFICIAL OWNER of the
+      // Claim and HAS NOT SOLD, ASSIGNED, PLEDGED, OR ENCUMBERED it". The
+      // noun-only pillar read a paragraph that warrants exactly this as
+      // warranting nothing about title.
+      /(title\s+to\s+the\s+claim|free\s+(and\s+clear\s+)?of|no\s+(prior\s+)?(assignment|encumbrance)|makes?\s+no\s+(warranty|representation)\s+(as\s+to|regarding)\s+collect|sole\s+(?:legal\s+(?:and\s+beneficial\s+)?)?(?:and\s+beneficial\s+)?owner|(?:has\s+)?not\s+(?:[\w,]+\s+){0,4}?(?:sold|assigned|pledged|encumbered|transferred)\b)/i,
     ],
     all: true,
     why: "The assignee needs to know it is buying an unencumbered claim, and the assignor needs to be clear it is not guaranteeing recovery. Both directions must be stated.",

@@ -40,6 +40,21 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A bankruptcy trade-claim purchase. It routed to `ip-assignment` at 0.6 and
+  // drew two `critical` findings about assigned INTELLECTUAL PROPERTY scope
+  // and a power of attorney — there is no IP. Its own family's distinguishing
+  // phrases were verbatim sentences nobody writes ("hereby assigns all right,
+  // title and interest in the claim", "no warranty of collectability"), and
+  // `ip-assignment` was leaning on "assignor"/"assignee". Then: CHOICE-003
+  // reported no forum on a clause naming two; SET-115 read a title warranty
+  // written as a VERB SERIES as warranting nothing; and STRUCT-002 could not
+  // see the execution recital that dates the instrument at its foot.
+  // SET-112 stays: a claim purchase should confirm the underlying claim is
+  // assignable, and this one does not.
+  "assignment-of-claim.txt": {
+    playbook: "assignment-of-claim",
+    findings: ["SET-112", "STRUCT-018", "OBLI-002", "RISK-011"],
+  },
   // A one-step cash merger of a private target approved at a stockholder
   // MEETING. Two false positives: OBLI-004 reported the agreement as using
   // "best efforts" when it deliberately chose "REASONABLE best efforts" — the

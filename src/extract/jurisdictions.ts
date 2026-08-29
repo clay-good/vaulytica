@@ -193,7 +193,12 @@ const GOV_LAW_SUBJECT_FIRST = new RegExp(
 // A federal forum names the court in full — "the United States District Court
 // for the Northern District of Illinois" — so the qualifier run has to admit
 // the sovereign before the court type as well as after it.
-const COURT_NAME = String.raw`(?:United\s+States\s+|U\.?S\.?\s+)?(?:Superior\s+|Supreme\s+|District\s+|Circuit\s+|Chancery\s+|Commercial\s+|County\s+|Municipal\s+)?`;
+// The SUBJECT-MATTER courts a contract selects as readily as the general
+// trial courts: an assignment of a bankruptcy claim submits to "the
+// exclusive jurisdiction of the BANKRUPTCY COURT in the Case", and with
+// only the general adjectives here the clause read as no venue clause at
+// all.
+const COURT_NAME = String.raw`(?:United\s+States\s+|U\.?S\.?\s+)?(?:Superior\s+|Supreme\s+|District\s+|Circuit\s+|Chancery\s+|Commercial\s+|County\s+|Municipal\s+|Bankruptcy\s+|Tax\s+|Probate\s+|Family\s+|Surrogate['’]?s\s+|Housing\s+|Land\s+)?`;
 
 /**
  * The scaffolding between the court and the jurisdiction it sits in.
@@ -207,6 +212,27 @@ const COURT_NAME = String.raw`(?:United\s+States\s+|U\.?S\.?\s+)?(?:Superior\s+|
  * on a bond that names two courts.
  */
 const CIVIL_DIVISION_OF = String.raw`(?:the\s+(?:[A-Za-z]+\s+){0,2}?Judicial\s+(?:District|Circuit)\s+(?:of|in\s+and\s+for)\s+)?(?:the\s+(?:State|Commonwealth|City|County|Borough|Parish|Township|District|Municipality)\s+of\s+)?`;
+
+/**
+ * The FALLBACK forum in a two-court clause.
+ *
+ * "Each party irrevocably submits to the exclusive jurisdiction of the
+ * Bankruptcy Court in the Case and, if that court lacks jurisdiction, the
+ * state and federal courts located in New York County, New York." The first
+ * court named carries no geography ("in the Case"), so every trigger-anchored
+ * branch fails on it and none of them reaches the second court — and an
+ * assignment of a bankruptcy claim that names two forums was reported as
+ * naming none.
+ *
+ * Anchored on a jurisdiction / venue / forum trigger earlier in the SAME
+ * sentence, and on the explicit "courts located in" locative, so ordinary
+ * prose about a court somewhere is not read as a forum selection.
+ */
+const VENUE_FALLBACK_FORUM = new RegExp(
+  String.raw`\b(?:jurisdiction|venue|forum)\b[^.;]{0,160}?\bcourts?\s+(?:located|sitting)\s+(?:in|within)\s+` +
+    String.raw`${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  "g",
+);
 
 const VENUE = new RegExp(
   String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:exclusively\s+|solely\s+|only\s+|proper(?:ly)?\s+)*(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
@@ -579,6 +605,7 @@ export function extractJurisdictions(
       });
     });
     const seenVenue = new Set<string>();
+    let venueRecorded = false;
     const recordVenue = (m: RegExpExecArray): void => {
       const ext = extendEnglandAndWales(ctx.text, (m[1] ?? "").trim(), m.index + m[0].length);
       const captured = ext.raw;
@@ -622,6 +649,7 @@ export function extractJurisdictions(
         raw_text: raw,
         position: posInParagraph(ctx, m.index, end),
       });
+      venueRecorded = true;
     };
     runRegex(VENUE, ctx.text, recordVenue);
     runRegex(VENUE_SIMPLE, ctx.text, recordVenue);
@@ -631,6 +659,10 @@ export function extractJurisdictions(
     runRegex(VENUE_AGREE_IN, ctx.text, recordVenue);
     runRegex(VENUE_SUBJECT, ctx.text, recordVenue);
     runRegex(VENUE_WAIVE_OBJECTION, ctx.text, recordVenue);
+    // Only when nothing else in this paragraph named a forum: the fallback
+    // branch is a safety net for a two-court clause, not a second opinion on a
+    // clause the branches above already read.
+    if (!venueRecorded) runRegex(VENUE_FALLBACK_FORUM, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
       // The pattern needs the `i` flag for its case-varying keywords, which

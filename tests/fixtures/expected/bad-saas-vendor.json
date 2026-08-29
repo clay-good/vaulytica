@@ -588,7 +588,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1043,7 +1043,7 @@
       "id": "STRUCT-002-s1-0",
       "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
       "rule_id": "STRUCT-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
@@ -1241,11 +1241,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "fea42547323bcfe5279ad0d0738983dd21ee8c613638a0536a72de286d0ca3b6",
+  "result_hash": "44a3579651cebc7b8e6cce6a1ec3de045b86906068c6d2d30eb94c9b7979249f",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.191.0"
+  "version": "9.192.0"
 }

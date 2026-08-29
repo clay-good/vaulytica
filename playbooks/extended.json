@@ -1671,10 +1671,12 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "hereby assigns all right, title and interest in the claim",
         "the assigned claim",
+        "proof of claim",
+        "face amount of the claim",
+        "unsecured claim",
+        "evidence of transfer",
         "real party in interest",
-        "notice to the obligor",
         "no warranty of collectability"
       ],
       "negative_features": [
@@ -1688,7 +1690,20 @@
       "Assignor",
       "Assignee"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-SETTLEMENT",
@@ -9808,8 +9823,8 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "assignor",
-        "assignee",
+        "moral rights",
+        "inventions and works of authorship",
         "hereby assigns",
         "right to sue",
         "further assurances",
