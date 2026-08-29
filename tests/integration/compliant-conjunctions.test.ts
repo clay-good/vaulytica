@@ -181,6 +181,12 @@ const COMPLIANT: Array<[string, string, string, string]> = [
     "This notice is issued because the Company reasonably anticipates litigation arising out of the ceiling collapse at 1440 Fruitvale Avenue on November 14, 2025, and because a demand letter was received from counsel for the tenant on January 14, 2026.",
     "the past participle only, never the present tense a hold notice is written in",
   ],
+  [
+    "ENG-027",
+    "Limited Scope Representation Agreement",
+    "The lawyer will draft the petition, prepare the financial declaration, and appear at the status conference. The client will gather and provide bank statements, serve the petition, and appear at all other hearings.",
+    'the words "will perform" from an agreement that LISTS the tasks, with its other pillar met by the family\'s own title',
+  ],
 ];
 
 describe("a conjunction is satisfiable by the clause it asks for", () => {

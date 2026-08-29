@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.154.0] — 2026-08-29
+
+### Added
+- **`pillar-vacuity.test.ts`** — a conjunction may not rest on a pillar the
+  family's own TITLE satisfies. The existing title-vacuity guard asks whether a
+  WHOLE rule is satisfied by its family's title; a conjunction never is, because
+  the other pillars fail, so that guard cannot see the failure one level down.
+  A pillar met by the title contributes nothing and the check silently collapses
+  onto whatever pillars are left — which is where three of the worst defects
+  this catalog has had were hiding (`GOV-071`, `EMP-032`, `MNA-055`). Thirty-four
+  conjunctions are in that state; the list is debt and may only shrink.
+
+### Fixed
+- `ENG-027` wanted the words "will perform" from a limited-scope agreement that
+  LISTS the tasks — "The lawyer will draft the petition … the client will gather
+  and provide bank statements" — while its other pillar was met by the family's
+  own title, so the whole check rested on words nobody writes.
+
 ## [9.153.0] — 2026-08-29
 
 ### Added

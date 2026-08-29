@@ -435,11 +435,18 @@ const JOINT_REP = pack("joint-representation-waiver", C, [
 const LIMITED_SCOPE = pack("limited-scope-representation", C, [
   {
     id: "ENG-027",
+    ver: "1.1.0",
     name: "Tasks the lawyer will and will not perform",
     cite: modelRule("1.2(c)", "scope of representation — limiting the scope"),
     pat: [
       /(limited\s+(scope|representation)|unbundled|discrete\s+task)/i,
-      /(will\s+(not\s+)?(perform|handle|include)|the\s+lawyer\s+(shall|will)\s+only|excluded\s+tasks)/i,
+      // A limited-scope agreement LISTS the tasks: "The lawyer will draft the
+      // petition, prepare the financial declaration, and appear at the status
+      // conference. The client will gather and provide bank statements, serve
+      // the petition, and appear at all other hearings." None of the three
+      // forms below appears in that, and the first pillar is met by the
+      // family's own title — so the whole check rested on words nobody writes.
+      /(will\s+(not\s+)?(perform|handle|include)|the\s+lawyer\s+(shall|will)\s+only|excluded\s+tasks|(?:lawyer|attorney|firm|client)\s+will\s+(?:not\s+)?[a-z]+)/i,
     ],
     all: true,
     why: "Rule 1.2(c) permits a limited scope only if it is reasonable and the client consents after being informed. An itemized division of labor is what makes both findings possible.",
