@@ -31,7 +31,15 @@ const TERMINATION_TRIGGER = String.raw`(?:up)?on\s+(?:the\s+)?(?:any\s+|such\s+)
 // which the passive "is/are released" branch below could not read. It is a
 // consequence only when it follows a termination trigger inside one sentence,
 // so a settlement's "mutual release of claims" is untouched.
-const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|revert|discontinue|surrenders?|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
+// A ground lease's consequence is that TITLE VESTS: "On expiration or
+// earlier termination of this Lease, title to the Improvements VESTS IN
+// Landlord automatically … and Tenant shall DELIVER the Improvements in
+// good condition." Neither verb was in the list, so the clause that is the
+// whole economic point of the lease read as no effect-of-termination clause
+// at all. Both are only consequences when they follow a termination trigger
+// inside one sentence, which is what keeps "Landlord shall deliver
+// possession" and an equity vesting schedule out.
+const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|reverts?|reverted|vests?\s+in|deliver(?:s|ed)?|conveys?|conveyed|discontinue|surrenders?|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
 
 /**
  * Either order, within one sentence. A consequence drafted BEFORE its trigger
@@ -143,7 +151,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.13.0",
+  version: "1.14.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

@@ -570,6 +570,7 @@ const GROUND_LEASE_RULES: Rule[] = [
   }),
   presence({
     id: "RE-022",
+    version: "1.1.0",
     name: "Rent escalation / CPI / market reset",
     description: "Ground leases include rent escalators (CPI, fixed steps, or market-rent resets).",
     citation: rePractice(
@@ -587,11 +588,21 @@ const GROUND_LEASE_RULES: Rule[] = [
       /(cpi|consumer\s+price\s+index)/i,
       /rent\s+adjustment/i,
       /market\s+rent\s+reset/i,
-      /fair\s+market\s+rent/i,
+      // A ground lease resets to fair market GROUND rent — the qualifier sits
+      // between the words — and the commonest escalation of all is a flat
+      // periodic step ("Base Rent INCREASES BY ten percent (10%) on the fifth
+      // anniversary"), which no pattern here could see. A section headed
+      // "Escalation" that does both was reported at `critical` as having no
+      // escalation clause.
+      /fair\s+market\s+(?:ground\s+|net\s+)?rent/i,
+      /\bescalat\w+/i,
+      /\brent\b[^.;]{0,40}?\bincreases?\s+(?:by|to)\b/i,
+      /\b(?:increases?|adjusted|reset)\s+(?:by|to)\b[^.;]{0,60}?\banniversary\b/i,
     ],
   }),
   presence({
     id: "RE-023",
+    version: "1.1.0",
     name: "Assignment and subletting",
     description: "Ground lease should address assignment / subletting consent.",
     citation: rePractice(
@@ -606,11 +617,21 @@ const GROUND_LEASE_RULES: Rule[] = [
       "Ground leases typically allow assignment without consent (or with consent not unreasonably withheld) to keep collateral marketable.",
     recommendation:
       "Add 'Assignment and Subletting' with a consent standard and permitted-assignment carve-outs.",
-    present_patterns: [/assign(ment)?\s+(and|or)\s+sublet/i, /transfer.{0,40}leasehold/is],
+    present_patterns: [
+      /assign(ment)?\s+(and|or)\s+sublet/i,
+      /transfer.{0,40}leasehold/is,
+      // A section headed "ASSIGNMENT AND TRANSFER" grants the two rights in
+      // separate sentences — "Tenant MAY ASSIGN this Lease, without Landlord's
+      // consent, to a leasehold mortgagee"; "Tenant MAY SUBLEASE any portion
+      // of the Improvements" — and the adjacent bigram matched neither.
+      /\bmay\s+(?:not\s+)?(?:freely\s+)?assign\s+(?:this\s+)?(?:Lease|Agreement)\b/i,
+      /\bsub-?leas\w+|\bsub-?let\w*/i,
+    ],
     default_severity: "warning",
   }),
   presence({
     id: "RE-024",
+    version: "1.1.0",
     name: "Memorandum of lease to be recorded",
     description: "Ground leases commonly record a memorandum of lease.",
     citation: recordingAct(),
@@ -620,7 +641,8 @@ const GROUND_LEASE_RULES: Rule[] = [
     explanation:
       "A recorded memorandum gives constructive notice of the leasehold interest; standard for long-term leases.",
     recommendation: "Add 'Memorandum of Lease' authorizing recording of a short-form memorandum.",
-    present_patterns: [/memorandum\s+of\s+lease/i, /short.form\s+memorandum/i],
+    // "a memorandum of THIS Lease" is how the clause is actually written.
+    present_patterns: [/memorandum\s+of\s+(?:this\s+)?lease/i, /short.form\s+memorandum/i],
     default_severity: "warning",
   }),
 ];

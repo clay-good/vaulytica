@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.188.0] — 2026-08-29
+
+### Added
+- A 99-year ground lease with leasehold-mortgage protections — the 149th
+  specimen.
+
+### Fixed
+Four checks fired on the drafting they exist to require:
+- **RE-022, at `critical`, on a section headed "Escalation."** It knew CPI and
+  "fair market rent" but not the commonest escalation of all — a flat periodic
+  step ("Base Rent INCREASES BY ten percent (10%) on the fifth
+  anniversary") — nor "fair market GROUND rent", where the qualifier sits
+  between the words.
+- **RE-023 on a section headed "ASSIGNMENT AND TRANSFER."** It wanted the
+  bigram "assignment and sublet"; a ground lease grants the two rights in
+  separate sentences ("Tenant MAY ASSIGN this Lease…"; "Tenant may SUBLEASE
+  any portion of the Improvements").
+- **RE-024 on "a memorandum of THIS Lease."**
+- **TERM-005 on the REVERSION, which is the whole economic point of a ground
+  lease** — "On expiration or earlier termination of this Lease, title to the
+  Improvements VESTS IN Landlord automatically … and Tenant shall DELIVER the
+  Improvements in good condition." Neither verb was in the consequence list.
+  Both count only when they follow a termination trigger inside one sentence,
+  so "Landlord shall deliver possession" and an equity vesting schedule are
+  untouched.
+
 ## [9.187.0] — 2026-08-29
 
 ### Added

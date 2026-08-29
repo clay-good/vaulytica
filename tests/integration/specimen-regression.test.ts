@@ -40,6 +40,27 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A 99-year ground lease with leasehold-mortgage protections. Four of its
+  // own checks fired on the drafting they exist to require: RE-022 at
+  // `critical` on a section headed "Escalation" (it knew CPI and "fair market
+  // rent", not a flat periodic step or "fair market GROUND rent"); RE-023 on
+  // a section headed "ASSIGNMENT AND TRANSFER" (it wanted the bigram
+  // "assignment and sublet", and the two rights are granted in separate
+  // sentences); RE-024 on "a memorandum of THIS Lease"; and TERM-005 on the
+  // reversion, which is the whole economic point of a ground lease — "title
+  // to the Improvements VESTS IN Landlord automatically".
+  "ground-lease.txt": {
+    playbook: "ground-lease",
+    findings: [
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-018",
+      "CHOICE-006",
+      "OBLI-005",
+      "RISK-010",
+      "TEMP-008",
+    ],
+  },
   // A single-tenant ABSOLUTE net lease. Three lease families were leaning on
   // "Landlord", "Tenant" and "Premises" — the three words every lease
   // contains — so it routed first to `lease-commercial-multitenant` and then

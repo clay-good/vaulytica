@@ -275,3 +275,30 @@ describe("TERM-005 — the active voice of release", () => {
     expect(TERM_005.check(ctx)).not.toBeNull();
   });
 });
+
+describe("TERM-005 — the consequence is that TITLE VESTS", () => {
+  // A ground lease's effect-of-termination clause is the reversion: "On
+  // expiration or earlier termination of this Lease, title to the
+  // Improvements VESTS IN Landlord automatically … and Tenant shall DELIVER
+  // the Improvements in good condition." Neither verb was in the consequence
+  // list, so the clause that is the whole economic point of the lease read as
+  // no effect-of-termination clause at all.
+  it.each([
+    "On expiration or earlier termination of this Lease, title to the Improvements vests in Landlord automatically, without payment.",
+    "Upon termination, Tenant shall deliver the Improvements to Landlord in good condition and repair.",
+    "On termination of this Lease, all rights granted revert to Licensor.",
+  ])("is silent on %s", (clause) => {
+    expect(TERM_005.check(buildContext(["Termination", clause]))).toBeNull();
+  });
+
+  it("does not read a delivery obligation with no termination trigger as one", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Possession",
+          "Landlord shall deliver possession of the Land free of occupants on the Commencement Date.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
