@@ -477,6 +477,14 @@ const OFFICER_TITLES =
  * A signature-block label immediately before a name — "By: ", "By: /s/ ",
  * "Name: ", "Printed Name: ", or a bare conformed-signature mark.
  */
+/**
+ * A regulation CLAUSE NUMBER immediately before the phrase: "FAR clause
+ * 52.225-5, Trade Agreements", "GSAR 552.238-81, Price Reductions". The
+ * dotted-hyphenated form is distinctive to the FAR/GSAR/DFARS numbering and
+ * does not collide with a contract's own "Section 2.1".
+ */
+const CLAUSE_NUMBER_BEFORE = /\b\d{1,3}\.\d{1,4}(?:-\d+)+(?:\([a-z0-9]+\))*,?\s+$/;
+
 /** The phrase is the PLAINTIFF half of a case name: "Celotex Corp. v. Catrett". */
 const CASE_NAME_PLAINTIFF = /^[.'’]?\s*v\.\s/;
 /** The phrase is the DEFENDANT half: "Reeves v. Sanderson Plumbing Prods.". */
@@ -1360,6 +1368,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // is dropped, not just the signed occurrence.
       if (SIGNATURE_LABEL_BEFORE.test(ctx.text.slice(Math.max(0, m.index - 24), m.index))) {
         signedNames.add(canonicalOf(phrase));
+        continue;
+      }
+      // A REGULATION CLAUSE is cited by number and name — "FAR clause 52.225-5,
+      // Trade Agreements", "GSAR clause 552.238-81, Price Reductions", "in
+      // accordance with FAR 8.405-3". The name is the regulation's, not a term
+      // the drafter forgot to define, and a federal contract cites the same
+      // clause in several sections. Like a signatory and a case name, it is
+      // dropped wherever it appears.
+      if (CLAUSE_NUMBER_BEFORE.test(ctx.text.slice(Math.max(0, m.index - 40), m.index))) {
+        caseNames.add(canonicalOf(phrase));
         continue;
       }
       // "<Phrase> v. Other" or "Other v. <Phrase>" — the two halves of a case

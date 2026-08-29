@@ -679,6 +679,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A GSA Multiple Award Schedule contract — the 193rd specimen, and the first
+  // for `gsa-schedule-contract`. COMM-163..167 are all satisfied: the
+  // basis-of-award customer with its discount relationship and the
+  // 552.238-81 Price Reductions clause, the industrial funding fee with
+  // quarterly sales reporting, Trade Agreements Act country of origin, FAR 8.4
+  // ordering with order-level materials, and the 52.217-9 option periods.
+  // STRUCT-006 stays and is fair: the Federal Supply Schedule is named three
+  // times and introduced nowhere. STRUCT-004 is fair too — a Schedule contract
+  // defines nothing itself, it incorporates the FAR by reference.
+  "gsa-schedule-contract.txt": {
+    playbook: "gsa-schedule-contract",
+    findings: ["OBLI-005", "STRUCT-004", "STRUCT-006"],
+  },
   // An audit committee charter — the 191st specimen, and the first for
   // `committee-charter`. GOV-051..060 are all satisfied: purpose, composition
   // and independence under Rule 10A-3, the § 301 auditor-oversight authority,

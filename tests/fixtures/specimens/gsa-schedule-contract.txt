@@ -1,0 +1,71 @@
+GENERAL SERVICES ADMINISTRATION
+FEDERAL SUPPLY SERVICE
+
+MULTIPLE AWARD SCHEDULE CONTRACT
+
+Contract Number: 47QTCA26D00F3
+Contractor: Wrentham Geospatial Systems LLC, 4400 Old Post Road, Suite 210, Herndon, Virginia 20171
+UEI: K7MDX4RB2LP9
+Special Item Numbers: 54151S (Information Technology Professional Services), 33411 (Purchasing of New Electronic Equipment)
+Contract Period: Base period June 1, 2026 through May 31, 2031, plus three (3) five-year option periods
+Contracting Officer: Ingrid Vasquez-Thorne, GSA/FAS/ITC
+
+1. SCOPE AND AUTHORITY
+
+This Multiple Award Schedule contract is awarded under the Federal Supply Schedule program administered by the General Services Administration. Ordering activities may place task orders and delivery orders against this contract in accordance with FAR Subpart 8.4. The Contractor shall furnish the supplies and services described in the awarded Special Item Numbers at or below the prices in the awarded price list.
+
+2. COMMERCIAL SALES PRACTICES AND BASIS OF AWARD
+
+2.1 Disclosure. The Contractor's Commercial Sales Practices format, submitted with its offer and incorporated by reference, discloses the Contractor's discounting practices for its commercial customers.
+
+2.2 Basis of Award Customer. The basis of award customer for this contract is the Contractor's Commercial Enterprise category, and the discount relationship between that category and the Federal Supply Schedule price is: GSA receives a 7% discount from the Contractor's commercial list price, and the basis of award customer receives a 4% discount from that same list price. GSA's price is therefore 3 percentage points more favorable than the basis of award customer's price, and that relationship shall be maintained throughout the contract period.
+
+2.3 Price Reductions Clause. In accordance with GSAR clause 552.238-81, Price Reductions, the Contractor shall report to the Contracting Officer any change in its commercial pricing or discount arrangement that disturbs the discount relationship stated in Section 2.2. The Contractor shall report the change within fifteen (15) calendar days after its effective date, and the corresponding reduction applies to all orders placed on or after that effective date. A price reduction is not required for a sale to an eligible ordering activity, for a one-time sale of a quantity greater than the maximum order threshold, or for a sale under a firm-fixed-price definite-quantity contract with a specified quantity.
+
+3. INDUSTRIAL FUNDING FEE AND SALES REPORTING
+
+3.1 Reporting. The Contractor shall report all sales under this contract through the FAS Sales Reporting Portal, quarterly, within thirty (30) calendar days after the close of each quarter of the Government's fiscal year, including quarters in which no sales occur.
+
+3.2 Industrial Funding Fee. The Contractor shall remit the industrial funding fee of 0.75% of reported sales with each quarterly sales report. The fee is included in the awarded prices and may not be separately itemized on an invoice to an ordering activity. Failure to remit the fee when due is a material breach and interest accrues under the Prompt Payment Act.
+
+4. TRADE AGREEMENTS ACT
+
+4.1 Compliance. In accordance with FAR clause 52.225-5, Trade Agreements, and GSAR 552.238-82, the Contractor shall deliver only U.S.-made end products or designated country end products. The Contractor certifies that each product offered under this contract is manufactured in, or substantially transformed in, the United States or a designated country.
+
+4.2 Country of Origin. The Contractor shall identify the country of origin of each product on its price list and shall notify the Contracting Officer within ten (10) business days of any change in the country of origin of an awarded product. A product whose country of origin becomes a non-designated country shall be removed from the contract.
+
+5. ORDERING
+
+5.1 Ordering Procedures. Ordering activities shall place orders in accordance with FAR 8.405-1 for supplies and services with prices established in the contract, and FAR 8.405-2 for services requiring a statement of work. An ordering activity may establish a blanket purchase agreement against this contract under FAR 8.405-3.
+
+5.2 Order-Level Materials. Order-level materials may be acquired under an individual task order in accordance with FAR 8.403(b) and GSAR 552.238-82, provided they are incidental to and necessary for the performance of the order, do not exceed 33.33% of the total value of the order, and are subject to a determination of fair and reasonable pricing by the ordering contracting officer.
+
+5.3 Order-Level Terms. An order placed against this contract may include terms and conditions required by the ordering activity, provided they do not conflict with the terms of this contract. In the event of a conflict, the terms of this Schedule contract control.
+
+6. OPTION PERIODS
+
+6.1 Option to Extend. In accordance with FAR clause 52.217-9, Option to Extend the Term of the Contract, the Government may exercise each option period by written notice to the Contractor within thirty (30) days before the end of the then-current period, provided the Government gives the Contractor a preliminary written notice of its intent to exercise the option at least sixty (60) days before the contract expires. The base period is five years, and the total contract period, including all option periods exercised, may not exceed twenty (20) years.
+
+6.2 Effect of Exercise. Exercise of an option continues the contract on its existing terms, including the discount relationship in Section 2.2, unless the parties execute a modification.
+
+7. GENERAL
+
+7.1 Incorporated Clauses. FAR clause 52.212-4, Contract Terms and Conditions — Commercial Products and Commercial Services, and the clauses listed in the contract award document are incorporated by reference with the same force and effect as if set out in full.
+
+7.2 Disputes. Disputes arising under or relating to this contract are subject to the Contract Disputes Act of 1978, 41 U.S.C. §§ 7101-7109, and FAR clause 52.233-1, Disputes.
+
+7.3 Modifications. This contract may be modified only by a written modification signed by the Contracting Officer. No other Government employee is authorized to modify this contract or to waive any of its requirements.
+
+7.4 Records. The Contractor shall retain records supporting its sales reports and its compliance with the Price Reductions clause for three (3) years after final payment, and shall make them available to GSA and to the Inspector General on request.
+
+CONTRACTING OFFICER
+
+By: /s/ Ingrid Vasquez-Thorne
+Name: Ingrid Vasquez-Thorne
+Title: Contracting Officer, GSA Federal Acquisition Service
+
+CONTRACTOR
+
+By: /s/ Radhika Balasubramanian
+Name: Radhika Balasubramanian
+Title: President, Wrentham Geospatial Systems LLC

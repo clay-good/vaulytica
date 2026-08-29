@@ -2147,3 +2147,29 @@ describe("extractDefinitions — a possessive determiner does not make a new ter
     );
   });
 });
+
+describe("extractDefinitions — a regulation clause name is not a term (v9.238.0)", () => {
+  it("does not report a FAR or GSAR clause cited by number and name", () => {
+    const tree = buildTree([
+      "Multiple Award Schedule Contract",
+      "In accordance with GSAR clause 552.238-81, Price Reductions, the Contractor shall report any change in its commercial pricing.",
+      "In accordance with FAR clause 52.225-5, Trade Agreements, the Contractor shall deliver only designated country end products.",
+      "The Contractor shall comply with GSAR 552.238-81, Price Reductions, throughout the contract period, and with FAR 52.225-5, Trade Agreements.",
+    ]);
+    const terms = extractDefinitions(tree).undefined_capitalized.map((u) => u.term);
+    expect(terms).not.toContain("Price Reductions");
+    expect(terms).not.toContain("Trade Agreements");
+  });
+
+  it("still reports an undefined Title-Case term in the same document", () => {
+    const tree = buildTree([
+      "Multiple Award Schedule Contract",
+      "In accordance with GSAR clause 552.238-81, Price Reductions, the Contractor shall report a change.",
+      "The Basis of Award Customer receives a 4% discount.",
+      "GSA's price is more favorable than the Basis of Award Customer's price.",
+    ]);
+    expect(extractDefinitions(tree).undefined_capitalized.map((u) => u.term)).toContain(
+      "Award Customer",
+    );
+  });
+});

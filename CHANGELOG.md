@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.238.0] — 2026-08-29
+
+### Added
+- A GSA Multiple Award Schedule contract — the 193rd specimen, and the first
+  for `gsa-schedule-contract`. COMM-163..167 are all satisfied: the
+  basis-of-award customer with its discount relationship and the GSAR 552.238-81
+  Price Reductions clause, the industrial funding fee with quarterly sales
+  reporting, Trade Agreements Act country of origin, FAR 8.4 ordering with
+  order-level materials, and the FAR 52.217-9 option periods.
+
+### Fixed
+- **`gsa-schedule-contract` and `far-subcontract-flowdown` carried an empty
+  `rule_overrides`.** A federal Schedule contract was told it has no governing
+  law, no venue, no payment terms, no IP allocation, no indemnity, no liability
+  cap, and no effect-of-termination clause. None of those belongs in a
+  government contract: the Contract Disputes Act supplies the forum, the
+  Anti-Deficiency Act forbids the indemnity, and FAR 52.212-4 supplies the
+  termination terms by reference.
+- **A REGULATION CLAUSE NAME read as an undefined defined-term.** "GSAR clause
+  552.238-81, Price Reductions" and "FAR clause 52.225-5, Trade Agreements"
+  name the regulation's clauses, not terms the drafter forgot to define, and a
+  federal contract cites the same clause in several sections. The
+  dotted-hyphenated FAR/GSAR/DFARS number is distinctive enough not to collide
+  with a contract's own "Section 2.1".
+
 ## [9.237.0] — 2026-08-29
 
 ### Fixed

@@ -20,16 +20,52 @@
       "incorporated by reference",
       "prime contract number"
     ],
-    "negative_features": ["software as a service", "lease of the premises"]
+    "negative_features": [
+      "software as a service",
+      "lease of the premises"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Prime Contract", "Contracting Officer"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Prime Contract",
+    "Contracting Officer"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FAR",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["teaming-agreement", "gsa-schedule-contract"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "teaming-agreement",
+    "gsa-schedule-contract"
+  ],
   "compliance_matrix_columns": [
     "Mandatory clause list and incorporation by reference",
     "Audit and records access (FAR 52.215-2)",

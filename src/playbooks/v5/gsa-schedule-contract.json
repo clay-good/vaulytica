@@ -18,16 +18,51 @@
       "commercial sales practices",
       "industrial funding fee"
     ],
-    "negative_features": ["employment agreement", "lease of the premises"]
+    "negative_features": [
+      "employment agreement",
+      "lease of the premises"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Schedule Contract", "Basis of Award"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Schedule Contract",
+    "Basis of Award"
+  ],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "GSA-MAS",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["far-subcontract-flowdown"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "far-subcontract-flowdown"
+  ],
   "compliance_matrix_columns": [
     "Basis-of-award customer and price reductions",
     "Industrial funding fee and 72A reporting",
