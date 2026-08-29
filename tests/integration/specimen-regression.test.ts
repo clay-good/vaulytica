@@ -40,6 +40,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A third-party litigation funding agreement. All six SET-138..143 checks
+  // are silent on a compliant one. It drew three false positives: CHOICE-011
+  // told a Delaware LP and a Massachusetts corporation that their New York
+  // governing law is void as to a California worker, because the funder's
+  // ADDRESS is in San Francisco — § 925 is a rule about employment contracts,
+  // and there is no worker here; FIN-005 could not read "shall FUND each
+  // conforming draw within fifteen (15) business days"; and the family shipped
+  // with an empty rule profile.
+  "litigation-funding.txt": {
+    playbook: "litigation-funding-agreement",
+    findings: ["STRUCT-018", "OBLI-005", "TEMP-006", "TEMP-007"],
+  },
   // A North Carolina residential purchase and sale contract. It routed to the
   // COMMERCIAL `real-estate-psa` and was told at `warning` to add a § 1031
   // like-kind-exchange cooperation clause to a family home sale — and at

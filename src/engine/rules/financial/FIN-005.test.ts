@@ -371,3 +371,18 @@ describe("FIN-005 — a fee payable in advance on a stated date", () => {
     ).not.toBeNull();
   });
 });
+
+describe("FIN-005 — the payment verb is not always 'pay'", () => {
+  // A funder "shall FUND each conforming draw within fifteen (15) business
+  // days", a lender "shall ADVANCE", an escrow agent "shall DISBURSE", an
+  // employer "shall REIMBURSE". Each is a payment term, and the pay-only
+  // branch reported that none was stated.
+  it.each([
+    "The Funder shall fund each conforming draw within fifteen (15) business days of receipt.",
+    "The Lender shall advance the requested amount within three (3) business days of the notice.",
+    "The Escrow Agent shall disburse the balance within ten (10) days after Closing.",
+    "The Company shall reimburse approved expenses within thirty (30) days of submission.",
+  ])("reads %s", (clause) => {
+    expect(FIN_005.check(buildContext(["Fees", clause]))).toBeNull();
+  });
+});

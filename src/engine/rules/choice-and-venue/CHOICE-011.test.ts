@@ -92,3 +92,37 @@ describe("CHOICE-011 — out-of-state choice-of-law on California worker", () =>
     ).toBeNull();
   });
 });
+
+describe("CHOICE-011 — § 925 is a rule about EMPLOYMENT contracts", () => {
+  // The v1.1.0 note removed the state-of-incorporation branch because it fired
+  // on every B2B contract with a California party. The ADDRESS branches added
+  // later reopened the same hole from the other side: a litigation funding
+  // agreement between a Delaware LP "with offices at 300 Battery Street, San
+  // Francisco, California" and a Massachusetts corporation was told its New
+  // York governing law is void as to a California worker. There is no worker.
+  it("does not fire on a B2B contract whose party has a California address", () => {
+    expect(
+      CHOICE_011.check(
+        buildContext([
+          "Parties",
+          'This Agreement is between Sandpiper Capital Partners LP, with offices at 300 Battery Street, San Francisco, California 94111 (the "Funder"), and Ravensworth Instruments, Inc., a Massachusetts corporation.',
+          "Governing Law",
+          "This Agreement is governed by the laws of the State of New York.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on an employment agreement with a California worker", () => {
+    expect(
+      CHOICE_011.check(
+        buildContext([
+          "Employment",
+          "Employee resides in California and is employed at the Company's San Francisco, California office.",
+          "Governing Law",
+          "This Agreement is governed by the laws of the State of New York.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

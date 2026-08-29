@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.176.0] — 2026-08-29
+
+### Added
+- A third-party litigation funding agreement — the 141st specimen. All six
+  SET-138..143 checks are silent on a compliant one.
+
+### Fixed
+- **CHOICE-011 told a Delaware LP and a Massachusetts corporation that their
+  New York governing law is void as to a California worker.** There is no
+  worker: the funder's ADDRESS is in San Francisco. Cal. Lab. Code § 925 is a
+  rule about employment contracts, and v1.1.0 had already removed the
+  state-of-incorporation branch for exactly this reason — the address branches
+  added later reopened the same hole from the other side. The rule now
+  requires an employment relationship before it looks for a California worker.
+- **FIN-005 could not read "shall FUND each conforming draw within fifteen
+  (15) business days."** A funder funds, a lender advances, an escrow agent
+  disburses, an employer reimburses; each is a payment term, and the branch
+  led only on "shall pay".
+- **`litigation-funding-agreement` shipped with an empty rule profile** and
+  was told it allocates no IP, provides no indemnity and caps no liability.
+
 ## [9.175.0] — 2026-08-29
 
 ### Added

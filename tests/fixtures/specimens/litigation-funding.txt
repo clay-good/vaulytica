@@ -1,0 +1,97 @@
+LITIGATION FUNDING AGREEMENT
+
+This Litigation Funding Agreement (this "Agreement") is made as of April 21, 2026 between Sandpiper Capital Partners LP, a Delaware limited partnership with offices at 300 Battery Street, 22nd Floor, San Francisco, California 94111 (the "Funder"), and Ravensworth Instruments, Inc., a Massachusetts corporation with offices at 12 Prospect Street, Waltham, Massachusetts 02451 (the "Claimant").
+
+RECITALS
+
+A. The Claimant has asserted claims for patent infringement against Kestrel Optics Corporation in the action captioned Ravensworth Instruments, Inc. v. Kestrel Optics Corp., No. 1:25-cv-11982 (D. Mass.) (the "Funded Claim").
+
+B. The Claimant is represented in the Funded Claim by Halloway & Finch LLP (the "Claimant's Counsel").
+
+C. The Claimant wishes to obtain funding for the fees and expenses of prosecuting the Funded Claim, and the Funder is willing to provide it on the terms set out below.
+
+AGREEMENT
+
+1. FUNDING COMMITMENT
+
+1.1 Commitment. The Funder commits to advance up to $4,500,000 (the "Commitment") to pay the fees and expenses of prosecuting the Funded Claim, drawn in accordance with the budget attached as Schedule 1 (the "Budget").
+
+1.2 Draws. The Claimant's Counsel shall submit a draw request no more often than monthly, with supporting invoices. The Funder shall fund each conforming draw within fifteen (15) business days.
+
+1.3 Budget Overruns. If cumulative expenditures are projected to exceed the Budget by more than ten percent (10%), the Claimant shall notify the Funder and the parties shall confer in good faith on a revised Budget. The Funder is not obligated to fund amounts above the Commitment, and a decision not to increase the Commitment is not a breach of this Agreement.
+
+1.4 Non-Recourse. The Funder's right to any return is limited to Proceeds actually received. If the Funded Claim yields no Proceeds, the Claimant owes the Funder nothing, and the Funder has no recourse to the Claimant's other assets. This Agreement is not a loan, and no amount advanced is repayable except out of Proceeds.
+
+2. CONTROL OF THE LITIGATION
+
+2.1 No Funder Control. The Funder shall have no right to control, direct, or interfere with the conduct of the Funded Claim. All decisions regarding litigation strategy, the selection and instruction of counsel and experts, the assertion or abandonment of any claim, and the acceptance or rejection of any settlement offer rest exclusively with the Claimant, in consultation with the Claimant's Counsel. The Claimant retains sole and absolute settlement authority.
+
+2.2 Professional Independence. Nothing in this Agreement gives the Funder any right to direct the Claimant's Counsel, and the Claimant's Counsel owes its professional duties solely to the Claimant. No provision of this Agreement shall be construed to interfere with counsel's independent professional judgment under the applicable rules of professional conduct.
+
+2.3 Information. The Claimant shall provide the Funder with quarterly case status reports and prompt notice of any dispositive motion, trial date, mediation, or settlement offer. The Funder may not attend a mediation or settlement conference without the Claimant's consent.
+
+3. PRIVILEGE AND CONFIDENTIALITY
+
+3.1 Common Interest. The parties share a common interest in the successful prosecution of the Funded Claim. All information the Claimant or the Claimant's Counsel provides to the Funder is provided in furtherance of that common interest, and the parties intend that it remain protected by the attorney-client privilege, the work-product doctrine, and the common-interest doctrine, and that no privilege or protection is waived by its disclosure to the Funder.
+
+3.2 Confidentiality. The Funder shall keep all such information confidential, shall use it solely to evaluate and administer its investment in the Funded Claim, and shall not disclose it except to its own officers, employees, auditors, and professional advisers who need to know it and are bound to keep it confidential, or as required by law or court order. If the Funder receives a subpoena or other legal process seeking such information, it shall notify the Claimant promptly, and in any event before responding, so the Claimant may seek a protective order.
+
+3.3 Disclosure of This Agreement. The Claimant may disclose the existence of this Agreement, the identity of the Funder, and the terms a court or rule requires, including under any standing order of the District of Delaware or the District of New Jersey and under Federal Rule of Civil Procedure 7.1(a)(2) as applicable, without the Funder's consent and without breaching Section 3.2.
+
+4. PROCEEDS
+
+4.1 Definition. "Proceeds" means all amounts recovered on account of the Funded Claim, whether by judgment, award, settlement, or license, net of court costs and taxable expenses paid by the Claimant.
+
+4.2 Waterfall. Proceeds shall be distributed in the following order of priority: first, to the Claimant's Counsel for any unpaid fees and expenses; second, to the Funder in an amount equal to the aggregate amount actually advanced; third, to the Funder in an amount equal to the Funder's Return; and fourth, the remainder to the Claimant.
+
+4.3 Funder's Return. The "Funder's Return" is the greater of (a) two times the aggregate amount actually advanced, if Proceeds are received on or before the second anniversary of the first draw, or three times that amount thereafter, and (b) twenty-five percent (25%) of Proceeds. In no event shall the Funder receive more than fifty percent (50%) of Proceeds, and in no event shall the Claimant receive less than the Claimant's Counsel's contingent fee would leave it.
+
+5. REPRESENTATIONS
+
+5.1 Claimant. The Claimant represents that it owns the Funded Claim free of any prior assignment, lien, or funding arrangement; that it has disclosed to the Funder all material facts known to it about the Funded Claim; and that no part of the Funded Claim has been assigned to the Funder.
+
+5.2 Funder. The Funder represents that it is a sophisticated investor, that it is not engaged in the practice of law, that it has made its own investigation, and that it is not relying on the Claimant's Counsel for any legal advice.
+
+6. CHAMPERTY AND USURY
+
+6.1 No Assignment of the Claim. This Agreement transfers no interest in the Funded Claim itself. The Funder acquires only a contingent right to a share of Proceeds, and the Claimant remains the real party in interest.
+
+6.2 Not a Loan. Because the Funder's return is contingent and non-recourse, this Agreement is an investment and not a loan, and no usury law applies to it. If a court of competent jurisdiction nonetheless determines that any amount payable to the Funder exceeds the maximum lawful rate, that amount shall be reduced to the maximum lawful rate and any excess shall be applied to the Claimant's benefit.
+
+6.3 Severability under Local Law. If the law governing the Funded Claim would treat this Agreement as champertous or otherwise void, the parties shall negotiate in good faith to reform it to the minimum extent necessary to make it enforceable.
+
+7. TERM AND TERMINATION
+
+7.1 Term. This Agreement continues until the earlier of the final resolution of the Funded Claim and the distribution of all Proceeds.
+
+7.2 Termination by the Funder. The Funder may terminate its funding obligation on thirty (30) days' written notice if the Claimant materially breaches this Agreement and fails to cure within that period, or if the Claimant abandons the Funded Claim without the Funder's consent. On termination, the Funder remains entitled to the Funder's Return calculated on amounts already advanced, payable only out of Proceeds.
+
+7.3 Termination by the Claimant. The Claimant may terminate this Agreement at any time. On such termination, the Funder is entitled to the Funder's Return calculated on amounts already advanced, payable only out of Proceeds, and the Funder has no other claim against the Claimant.
+
+7.4 Survival. Sections 3, 4, 6 and 8 survive any termination of this Agreement.
+
+8. GENERAL
+
+8.1 Governing Law; Venue. This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles. Each party irrevocably submits to the exclusive jurisdiction of the state and federal courts located in New York County, New York.
+
+8.2 Assignment. The Funder may not assign this Agreement or any interest in Proceeds without the Claimant's prior written consent, except to an affiliate under common control that agrees in writing to be bound by this Agreement, including Section 2.1.
+
+8.3 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses first stated above.
+
+8.4 Entire Agreement; Amendment. This Agreement is the entire agreement between the parties with respect to its subject matter and may be amended only in a writing signed by both.
+
+8.5 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+SANDPIPER CAPITAL PARTNERS LP
+
+By: /s/ Beatrix Oyelaran
+Name: Beatrix Oyelaran
+Title: Managing Director
+
+RAVENSWORTH INSTRUMENTS, INC.
+
+By: /s/ Declan Mbeki
+Name: Declan Mbeki
+Title: Chief Executive Officer

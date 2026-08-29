@@ -20,7 +20,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "CHOICE-011",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Out-of-state choice-of-law on California employee",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -34,6 +34,25 @@ export const rule: Rule = {
     // every B2B mutual NDA and MSA that happened to have a California entity
     // as a party — 31 fixtures, none of them an employment relationship — so
     // that branch is deliberately absent (v1.1.0).
+    // Cal. Lab. Code § 925 is a rule about EMPLOYMENT contracts, and the rule
+    // has to know it is looking at one. The v1.1.0 note below removed the
+    // state-of-incorporation branch for exactly this reason, and the address
+    // branches added later reopened the same hole from the other side: a
+    // litigation funding agreement between a Delaware LP "with offices at 300
+    // Battery Street, San Francisco, California" and a Massachusetts
+    // corporation was told its New York governing law is void as to a
+    // California worker. There is no worker.
+    let employmentRelationship = false;
+    forEachParagraph(ctx.tree, (p) => {
+      if (
+        /\b(?:employee|employer|employment|employed|independent\s+contractor|the\s+Executive|the\s+Worker|offer\s+letter|at-will)\b|\bprincipal\s+place\s+of\s+(?:employment|work)\b/i.test(
+          p.text,
+        )
+      )
+        employmentRelationship = true;
+    });
+    if (!employmentRelationship) return null;
+
     let californiaWorker = false;
     forEachParagraph(ctx.tree, (p) => {
       if (
