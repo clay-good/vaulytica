@@ -13,14 +13,17 @@ describe("STRUCT-016 — incorporation by reference to external / unattached doc
     expect(f?.title).toMatch(/URL/i);
   });
 
-  it("fires when an Exhibit referenced in the body is missing", () => {
+  // A MISSING attachment belongs to STRUCT-018, which owns attachment presence
+  // and reads the cover line whether the file styles it as a heading or leaves
+  // it as a paragraph. Eleven specimens carried both findings for one drafting
+  // fact, in the same words about the same exhibit; on three more the two
+  // disagreed, and STRUCT-018 was right.
+  it("leaves a MISSING exhibit to STRUCT-018 (v1.3.0)", () => {
     const ctx = buildContext([
       "9.3 Service Levels",
       "The service level commitments and remedies are as set forth in Exhibit B.",
     ]);
-    const f = STRUCT_016.check(ctx);
-    expect(f).not.toBeNull();
-    expect(f?.title).toMatch(/Exhibit B/i);
+    expect(STRUCT_016.check(ctx)).toBeNull();
   });
 
   it("fires when the referenced Exhibit exists but is empty", () => {

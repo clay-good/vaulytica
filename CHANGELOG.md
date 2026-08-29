@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.148.0] — 2026-08-29
+
+### Changed
+- **STRUCT-016 no longer reports a MISSING attachment; STRUCT-018 owns that.**
+  Eleven of the corpus's fourteen STRUCT-016 findings came with a STRUCT-018
+  finding saying the same thing about the same exhibit, in the same words — one
+  drafting fact, two `warning`s. On three more the two rules DISAGREED, and
+  STRUCT-018 was right: its anchor search reads the exhibit's cover line
+  whether the file styles it as a heading or leaves it as a paragraph, and
+  STRUCT-016's was heading-scoped, so "Exhibit A — Stock Option Agreement" at
+  the foot of an option grant read as an exhibit that is not there.
+
+  What STRUCT-016 keeps is the fact STRUCT-018 cannot see: an exhibit that IS
+  attached and has nothing in it. Its URL-incorporation pass — the risk that
+  operative terms live on a page the vendor can edit — is untouched, and is
+  what the rule is named for.
+
 ## [9.147.0] — 2026-08-29
 
 ### Fixed

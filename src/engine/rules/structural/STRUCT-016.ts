@@ -43,7 +43,7 @@ const INCORP_DISCLAIMER =
  */
 export const rule: Rule = {
   id: "STRUCT-016",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Incorporation by reference to external / unattached document",
   category: "structural",
   default_severity: "warning",
@@ -84,8 +84,8 @@ export const rule: Rule = {
       });
     }
 
-    // Pass B: exhibit-based incorporation pointing at a missing /
-    // empty exhibit.
+    // Pass B: exhibit-based incorporation pointing at an EMPTY exhibit —
+    // one that is attached and carries no substantive text.
     //
     // The number accepts a DECIMAL and a lettered suffix. The old bound
     // stopped at the first digit of "Schedule 2.3" — the numbering every
@@ -129,6 +129,17 @@ export const rule: Rule = {
       const present = anchors.has(key);
       const substantive = (anchorParaCounts.get(key) ?? 0) >= 1;
       if (present && substantive) continue;
+      // A MISSING attachment belongs to STRUCT-018, which owns attachment
+      // presence and reads the cover line whether the file styles it as a
+      // heading or leaves it as a paragraph. Eleven specimens carried both
+      // findings for one drafting fact, in the same words about the same
+      // exhibit; on three more the two rules DISAGREED, and STRUCT-018 was
+      // right — "Exhibit A — Stock Option Agreement" is the cover line, and
+      // only the heading-scoped anchor search here could not see it.
+      //
+      // What this rule keeps is the fact STRUCT-018 cannot see: an exhibit
+      // that IS attached and has nothing in it.
+      if (!present) continue;
 
       const niceKind = (r.match[1] ?? "").replace(/^./, (c) => c.toUpperCase());
       const niceId = (r.match[2] ?? "").toUpperCase();

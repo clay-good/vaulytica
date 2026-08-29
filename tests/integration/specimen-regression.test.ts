@@ -48,30 +48,14 @@ export const EXPECTED: Record<string, Expectation> = {
   // A union collective bargaining agreement, with arabic-numbered articles.
   "cba.txt": {
     playbook: "union-cba",
-    findings: [
-      "RISK-015",
-      "STRUCT-006",
-      "STRUCT-016",
-      "STRUCT-018",
-      "CHOICE-006",
-      "OBLI-005",
-      "RISK-011",
-    ],
+    findings: ["RISK-015", "STRUCT-006", "STRUCT-018", "CHOICE-006", "OBLI-005", "RISK-011"],
   },
 
   // A clinical trial agreement: a payment term behind a hyphenated qualifier,
   // and a survival clause that names its sections by number.
   "cta.txt": {
     playbook: "clinical-trial-agreement",
-    findings: [
-      "RISK-005",
-      "RISK-015",
-      "STRUCT-006",
-      "STRUCT-016",
-      "STRUCT-018",
-      "OBLI-005",
-      "TEMP-006",
-    ],
+    findings: ["RISK-005", "RISK-015", "STRUCT-006", "STRUCT-018", "OBLI-005", "TEMP-006"],
   },
 
   // A cyber liability policy with roman-numbered sections.
@@ -109,7 +93,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // A third amendment to an office lease: defines nothing, ratifies the rest.
   "lease-amendment.txt": {
     playbook: "lease-commercial-multitenant",
-    findings: ["RISK-015", "STRUCT-016", "STRUCT-018", "OBLI-005", "RISK-011"],
+    findings: ["RISK-015", "STRUCT-018", "OBLI-005", "RISK-011"],
   },
 
   // A mutual NDA stamped EXECUTION VERSION / CONFIDENTIAL above its title.
@@ -172,7 +156,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "MNA-103",
       "FIN-005",
       "STRUCT-006",
-      "STRUCT-016",
       "STRUCT-018",
       "TEMP-012",
       "OBLI-005",
@@ -246,7 +229,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // internal reference to a "section 2033.010".
   "requests-for-admission.txt": {
     playbook: "requests-for-admission",
-    findings: ["STRUCT-005", "STRUCT-016", "STRUCT-018"],
+    findings: ["STRUCT-005", "STRUCT-018"],
   },
 
   // An SEC Form 10-K Item 1A. A narrative disclosure section: no parties, no
@@ -310,7 +293,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // pinned so they stay that way.
   "estoppel-certificate.txt": {
     playbook: "estoppel-certificate",
-    findings: ["STRUCT-016", "STRUCT-018"],
+    findings: ["STRUCT-018"],
   },
 
   "cookie-notice.txt": { playbook: "cookie-notice", findings: ["PRV-003"] },
@@ -559,7 +542,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // referenced and not attached, and three Title-Case terms used undefined.
   "protective-order.txt": {
     playbook: "protective-order-stipulated",
-    findings: ["OBLI-008", "STRUCT-006", "STRUCT-009", "STRUCT-014", "STRUCT-016", "STRUCT-018"],
+    findings: ["OBLI-008", "STRUCT-006", "STRUCT-009", "STRUCT-014", "STRUCT-018"],
   },
 
   // A DGCL § 141(f) unanimous written consent of the board. The playbook
@@ -567,7 +550,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // opens on ("pursuant to ... the Bylaws of the Corporation").
   "written-consent.txt": {
     playbook: "written-consent",
-    findings: ["STRUCT-006", "STRUCT-016"],
+    findings: ["STRUCT-006"],
   },
 
   // A Series B financing term sheet, titled "Summary of Terms" — the standard
@@ -620,7 +603,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // Those are provisions of the Plan.
   "option-grant.txt": {
     playbook: "stock-option-grant",
-    findings: ["OBLI-005", "STRUCT-016"],
+    findings: ["OBLI-005"],
   },
 
   // A recreational-use hold harmless and indemnity agreement. TEMP-012
@@ -821,7 +804,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // stated no date of separation. Nobody is separating.
   "prenup.txt": {
     playbook: "prenuptial-agreement",
-    findings: ["EST-060", "STRUCT-016"],
+    findings: ["EST-060"],
   },
 
   // An employment offer letter, titled in its "Re:" line as an "Offer of
@@ -835,7 +818,7 @@ export const EXPECTED: Record<string, Expectation> = {
   },
 
   // A statement of work issued under a named master agreement.
-  "sow.txt": { playbook: "sow", findings: ["STRUCT-016", "STRUCT-018", "OBLI-005"] },
+  "sow.txt": { playbook: "sow", findings: ["STRUCT-018", "OBLI-005"] },
 
   // A contractor-favorable construction subcontract.
   "subcontract.txt": {
@@ -845,7 +828,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-005",
       "RISK-015",
       "STRUCT-006",
-      "STRUCT-016",
       "STRUCT-018",
       "TERM-002",
       "CHOICE-003",
@@ -864,7 +846,7 @@ export const EXPECTED: Record<string, Expectation> = {
 
   // Minutes of a board meeting: not a contract, no parties, and its only
   // cross-reference points into the company's bylaws.
-  "minutes.txt": { playbook: "meeting-minutes", findings: ["STRUCT-016", "STRUCT-018"] },
+  "minutes.txt": { playbook: "meeting-minutes", findings: ["STRUCT-018"] },
 
   // A § 83(b) election, whose statutory citation lives in an ALL-CAPS caption.
   "83b-election.txt": { playbook: "section-83b-election", findings: ["OBLI-005"] },
@@ -873,16 +855,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // consent — the genitive reversed, the adjective inserted.
   "sublease.txt": {
     playbook: "sublease-agreement",
-    findings: [
-      "OBLI-005",
-      "OBLI-006",
-      "RE-103",
-      "RISK-010",
-      "RISK-011",
-      "RISK-015",
-      "STRUCT-016",
-      "STRUCT-018",
-    ],
+    findings: ["OBLI-005", "OBLI-006", "RE-103", "RISK-010", "RISK-011", "RISK-015", "STRUCT-018"],
   },
 
   // Buyer-form purchase order terms: standing terms nobody signs and no two

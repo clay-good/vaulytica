@@ -94,15 +94,23 @@ describe("MNA-106 on a covenant that states its scope", () => {
 });
 
 describe("STRUCT-016 on a decimal schedule number", () => {
+  // The old bound stopped at the first digit of "Schedule 2.3" — the numbering
+  // every purchase agreement uses to tie a schedule to the representation it
+  // qualifies — so the finding named a "Schedule 2" the document never
+  // mentions. Read through the EMPTY-exhibit branch since v1.3.0, which is the
+  // fact this rule kept when STRUCT-018 took over attachment presence.
   it("names the schedule the document actually references", () => {
     const finding = STRUCT_016.check(
-      buildContext([
-        "Representations",
-        "The Financial Statements attached as Schedule 2.3 were prepared in accordance with GAAP.",
-      ]),
+      buildContext(
+        [
+          "Representations",
+          "The Financial Statements attached as Schedule 2.3 were prepared in accordance with GAAP.",
+        ],
+        ["Schedule 2.3", "[TBD]"],
+      ),
     );
     expect(finding).not.toBeNull();
     expect(finding!.title).toContain("Schedule 2.3");
-    expect(finding!.title).not.toBe("Schedule 2 referenced but missing");
+    expect(finding!.title).not.toBe("Schedule 2 referenced but empty");
   });
 });
