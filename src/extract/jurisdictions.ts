@@ -400,6 +400,18 @@ const ARBITRATION_SEAT = new RegExp(
     // arbitration clause went unread and CHOICE-006 reported "seat not
     // specified" on a clause that specifies one.
     String.raw`(?:administered|conducted|held|resolved|settled|before|under)\s+(?:by\s+|the\s+)?(?:the\s+)?(?:${ARB_PROVIDER})\b(?:(?:\s+\w+){0,3}\s+rules|\s+arbitration)?\s+(?:in|at)\s+` +
+    String.raw`|` +
+    // The participle hung off the INSTITUTION with a comma: "under the
+    // Commercial Arbitration Rules of the American Arbitration Association,
+    // seated in New York, New York". The participle branch above wants
+    // "arbitration"/"tribunal"/"arbitrators" immediately before the
+    // participle, and the institution-first branch wants a bare "in"/"at"
+    // immediately after the provider — so the most ordinary institutional
+    // drafting form, which puts the rules and the body between the two,
+    // matched neither and CHOICE-006 reported "seat not specified" on a
+    // clause that seats the arbitration in terms. The named arbitral body
+    // is what fixes this as an arbitration clause rather than prose.
+    String.raw`(?:${ARB_PROVIDER})\b[^.;]{0,60}?,\s*(?:seated|sitting|located)\s+in\s+` +
     String.raw`)([A-Z][A-Za-z\s&\-]+?)(?=[.,;)]|\s+under|\s+pursuant|$)`,
   "gi",
 );

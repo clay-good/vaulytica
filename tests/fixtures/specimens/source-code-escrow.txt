@@ -1,0 +1,119 @@
+TECHNOLOGY ESCROW AGREEMENT
+
+This Technology Escrow Agreement (this "Agreement") is made as of March 12, 2026 (the "Effective Date") among Kestrel Analytics, Inc., a Delaware corporation with offices at 2200 Wilshire Court, Austin, Texas 78701 ("Depositor"), Fairmont Regional Health System, a Michigan nonprofit corporation with offices at 41 Grandview Parkway, Traverse City, Michigan 49684 ("Beneficiary"), and Ironbound Escrow Services, LLC, a New York limited liability company with offices at 90 Broad Street, 14th Floor, New York, New York 10004 ("Escrow Agent"). Depositor, Beneficiary and Escrow Agent are referred to collectively as the "Parties" and individually as a "Party."
+
+RECITALS
+
+A. Depositor and Beneficiary are parties to that certain Software License and Support Agreement dated June 1, 2024 (the "License Agreement"), under which Depositor licenses to Beneficiary the object code of Depositor's clinical scheduling platform (the "Licensed Program").
+
+B. Beneficiary's continued operation of the Licensed Program depends on the availability of the source code and related materials if Depositor ceases to support the Licensed Program.
+
+C. The Parties wish to provide for the deposit of those materials with Escrow Agent and for their release to Beneficiary on the terms set out below.
+
+NOW, THEREFORE, in consideration of the mutual covenants contained in this Agreement, the Parties agree as follows:
+
+1. DEFINITIONS
+
+1.1 "Deposit Materials" means, collectively, (a) the complete source code of the Licensed Program in machine-readable form; (b) the build scripts, makefiles, and compilation instructions sufficient to compile, link, and package the Licensed Program without reference to any resource not included in the deposit; (c) a list of all third-party and open-source components incorporated in the Licensed Program, identifying each component's version and license; (d) the technical documentation, data schemas, and configuration files reasonably necessary to install, operate, and maintain the Licensed Program; and (e) the names and contact information of the two Depositor engineers most familiar with the Licensed Program.
+
+1.2 "Release Condition" has the meaning given in Section 5.1.
+
+1.3 "Deposit Account" means the account established by Escrow Agent under this Agreement and identified as Account No. IES-2026-4417.
+
+2. DEPOSIT
+
+2.1 Initial Deposit. Within thirty (30) days after the Effective Date, Depositor shall deliver the Deposit Materials to Escrow Agent, accompanied by a written inventory in the form of Exhibit A.
+
+2.2 Update of the Deposit. Depositor shall update the deposit within thirty (30) days after each general release of the Licensed Program, and in any event at least annually on the anniversary of the Effective Date, whether or not a release has occurred. Each update shall be accompanied by a revised inventory. Escrow Agent shall notify Beneficiary in writing within ten (10) business days after it receives an update, and shall notify Beneficiary if no update has been received within forty-five (45) days after any anniversary of the Effective Date.
+
+2.3 Custody. Escrow Agent shall hold the Deposit Materials in a secure, environmentally controlled facility and shall not use, copy, or disclose them except as this Agreement expressly permits.
+
+3. VERIFICATION
+
+3.1 Verification Rights. Beneficiary may request that Escrow Agent verify the Deposit Materials no more than once in any twelve (12) month period, and additionally within sixty (60) days after any update that follows a Release Condition demand.
+
+3.2 Level of Verification. Verification shall consist of, at Beneficiary's election, (a) an inventory and file-integrity test confirming that the media are readable and that the contents match the inventory; or (b) a full compile test in which Escrow Agent or its subcontractor builds the Licensed Program from the Deposit Materials in a clean environment and confirms that the resulting binaries function in accordance with the documentation.
+
+3.3 Cooperation and Cost. Depositor shall cooperate reasonably with any verification, including by answering technical questions within ten (10) business days. Beneficiary shall bear the cost of verification, except that Depositor shall bear the cost of any verification that reveals a material deficiency in the Deposit Materials and of curing that deficiency.
+
+4. FEES
+
+4.1 Beneficiary shall pay Escrow Agent an annual fee of $9,500, payable in advance on each anniversary of the Effective Date. Verification services are billed separately at Escrow Agent's then-current rates, which shall not increase by more than five percent (5%) in any twelve (12) month period.
+
+5. RELEASE
+
+5.1 Release Conditions. Each of the following is a "Release Condition":
+
+(a) Depositor ceases to do business in the ordinary course, or ceases to support and maintain the Licensed Program, and does not resume within thirty (30) days after written notice from Beneficiary;
+
+(b) Depositor becomes insolvent, makes a general assignment for the benefit of creditors, or has a case commenced by or against it under the United States Bankruptcy Code that is not dismissed within sixty (60) days; or
+
+(c) Depositor commits a material breach of its support obligations under the License Agreement and fails to cure that breach within thirty (30) days after written notice.
+
+5.2 Demand. Beneficiary may deliver to Escrow Agent a written demand for release identifying the Release Condition and the facts supporting it. Escrow Agent shall deliver a copy of the demand to Depositor within three (3) business days.
+
+5.3 Objection. Depositor may deliver a written objection within ten (10) business days after it receives the demand. If Depositor does not object within that period, Escrow Agent shall release the Deposit Materials to Beneficiary.
+
+5.4 Dispute. If Depositor objects within the period stated in Section 5.3, the dispute shall be submitted to expedited arbitration before a single arbitrator under the Commercial Arbitration Rules of the American Arbitration Association, seated in New York, New York, and the arbitrator shall issue an award within forty-five (45) days after appointment. Escrow Agent shall retain the Deposit Materials pending the award and shall act in accordance with the award. Escrow Agent shall have no duty to determine the merits of any demand or objection.
+
+6. LICENSE AFTER RELEASE
+
+6.1 Grant. Upon release of the Deposit Materials to Beneficiary, Depositor grants to Beneficiary a perpetual, irrevocable, non-exclusive, worldwide, fully paid-up license to use, reproduce, modify, and create derivative works of the Deposit Materials, and to compile and execute the resulting programs, solely for Beneficiary's internal purpose of supporting and maintaining the Licensed Program for Beneficiary's own operations.
+
+6.2 Restrictions. Beneficiary shall not distribute, sublicense, or otherwise make the Deposit Materials available to any third party, except to a contractor bound by confidentiality obligations no less protective than those in the License Agreement and acting solely on Beneficiary's behalf.
+
+6.3 Confidentiality. The Deposit Materials are the confidential information and trade secrets of Depositor. Beneficiary shall protect them with at least the degree of care it uses for its own most sensitive materials and in no event less than a reasonable degree of care.
+
+7. BANKRUPTCY
+
+7.1 Supplementary Agreement. The Parties acknowledge and agree that the License Agreement is an executory contract under which Depositor is a licensor of "intellectual property" as defined in Section 101(35A) of the United States Bankruptcy Code, that this Agreement is a supplementary agreement to the License Agreement within the meaning of Section 365(n) of the Bankruptcy Code, and that Beneficiary may elect to retain its rights under Section 365(n) if the License Agreement is rejected in a case under the Bankruptcy Code.
+
+7.2 Embodiments. If Beneficiary makes an election under Section 365(n), Depositor and any trustee shall not interfere with Beneficiary's rights, and Escrow Agent shall release the Deposit Materials to Beneficiary as an embodiment of the intellectual property licensed under the License Agreement.
+
+8. ESCROW AGENT
+
+8.1 Duties. Escrow Agent's duties are limited to those expressly stated in this Agreement. Escrow Agent has no obligation to examine the Deposit Materials for accuracy or completeness except as part of a verification requested under Section 3.
+
+8.2 Indemnity. Depositor and Beneficiary shall jointly and severally indemnify Escrow Agent against any loss arising out of this Agreement, other than a loss caused by Escrow Agent's gross negligence or willful misconduct.
+
+8.3 Resignation. Escrow Agent may resign on sixty (60) days' written notice to Depositor and Beneficiary, provided that it shall continue to hold the Deposit Materials until a successor escrow agent is appointed and accepts the deposit.
+
+9. TERM AND TERMINATION
+
+9.1 Term. This Agreement begins on the Effective Date and continues for so long as the License Agreement remains in effect, unless terminated earlier under this Section 9.
+
+9.2 Termination. Depositor and Beneficiary may terminate this Agreement by joint written notice to Escrow Agent. Beneficiary may terminate on thirty (30) days' written notice to Depositor and Escrow Agent. Depositor may not terminate this Agreement without Beneficiary's written consent while the License Agreement remains in effect.
+
+9.3 Effect. On termination, Escrow Agent shall return the Deposit Materials to Depositor, except that Sections 6, 7 and 8.2 survive any termination and any release of the Deposit Materials.
+
+10. GENERAL
+
+10.1 Governing Law. This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles.
+
+10.2 Notices. All notices under this Agreement shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses first stated above.
+
+10.3 Assignment. No Party may assign this Agreement without the written consent of the other Parties, except that Beneficiary may assign it to a successor to substantially all of its assets or business.
+
+10.4 Entire Agreement. This Agreement is the entire agreement among the Parties with respect to the escrow of the Deposit Materials and supersedes all prior discussions on that subject.
+
+10.5 Counterparts. This Agreement may be executed in counterparts, each of which is an original and all of which together constitute one instrument.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+KESTREL ANALYTICS, INC.
+
+By: /s/ Marcus Trent
+Name: Marcus Trent
+Title: Chief Executive Officer
+
+FAIRMONT REGIONAL HEALTH SYSTEM
+
+By: /s/ Diane Ruiz
+Name: Diane Ruiz
+Title: Chief Information Officer
+
+IRONBOUND ESCROW SERVICES, LLC
+
+By: /s/ Peter Hallam
+Name: Peter Hallam
+Title: Vice President, Operations

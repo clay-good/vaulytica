@@ -75,7 +75,12 @@ const PAYMENT_TERMS = new RegExp(
     // "due and payable on May 15, 2028" / "due and payable on the Maturity
     // Date". Every branch above is interval- or cadence-shaped, so a
     // perfectly conventional note was told it has no payment term.
-    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},?\\s+\\d{4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
+    // "payable IN ADVANCE on each anniversary of the Effective Date" is how an
+    // annual fee states its term. The interstitial "in advance" / "in arrears"
+    // was admitted only by the ordinal-day-of-each-month branch above, so this
+    // branch — which knows "each anniversary" — could not reach it, and a
+    // plainly stated annual fee warned that no payment term was stated.
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},?\\s+\\d{4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
     // An M&A or real-estate purchase price states its term as the CLOSING
     // event, not an interval or a fixed date: "the Purchase Price … payable in
     // cash at the Closing", "the balance is due and payable at closing". The
@@ -136,7 +141,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

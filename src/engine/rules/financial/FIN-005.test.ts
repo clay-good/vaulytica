@@ -337,3 +337,37 @@ describe("FIN-005 — an installment schedule with named due dates", () => {
     expect(FIN_005.check(ctx)).not.toBeNull();
   });
 });
+
+describe("FIN-005 — a fee payable in advance on a stated date", () => {
+  // "an annual fee of $9,500, payable in advance on each anniversary of the
+  // Effective Date" is a payment term. The "in advance" / "in arrears"
+  // interstitial was admitted only by the ordinal-day-of-each-month branch,
+  // so the branch that knows "each anniversary" could not reach past it.
+  it("recognizes 'payable in advance on each anniversary'", () => {
+    expect(
+      FIN_005.check(
+        buildContext([
+          "Fees",
+          "Beneficiary shall pay Escrow Agent an annual fee of $9,500, payable in advance on each anniversary of the Effective Date.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("recognizes 'due in arrears on the Maturity Date'", () => {
+    expect(
+      FIN_005.check(
+        buildContext([
+          "Fees",
+          "Interest on the outstanding principal is due in arrears on the Maturity Date.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when fees are named with no term at all", () => {
+    expect(
+      FIN_005.check(buildContext(["Fees", "Beneficiary shall pay an annual fee of $9,500."])),
+    ).not.toBeNull();
+  });
+});

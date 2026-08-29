@@ -472,8 +472,18 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   if (nums.size === 0) return survivalText;
   const named: string[] = [];
   forEachParagraph(ctx.tree, (p) => {
-    const label = /^\s*(\d+(?:\.\d+)*)[.)]\s+/.exec(p.text)?.[1];
-    if (label && nums.has(label)) named.push(p.text);
+    // The delimiter after the clause number is OPTIONAL. "6.3 Confidentiality."
+    // — number, space, heading — is the dominant modern form, and requiring a
+    // "." or ")" right after the digits meant no paragraph in such a document
+    // was ever incorporated: a survival clause reading "Sections 6, 7 and 8.2
+    // survive" was told it names neither the confidentiality section (6.3) nor
+    // the indemnity (8.2) that it incorporates by number. The uppercase
+    // lookahead keeps a sentence that merely opens on a numeral out.
+    const label = /^\s*(\d+(?:\.\d+){0,3})[.)]?\s+(?=[A-Z"\u201C(])/.exec(p.text)?.[1];
+    // A reference to Section 6 incorporates 6.1, 6.2 and 6.3 — the survival
+    // clause names the SECTION, and the obligations live in its subsections.
+    if (label && (nums.has(label) || [...nums].some((n) => label.startsWith(`${n}.`))))
+      named.push(p.text);
   });
   return named.length > 0 ? `${survivalText}\n${named.join("\n")}` : survivalText;
 }

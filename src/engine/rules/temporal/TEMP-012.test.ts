@@ -131,3 +131,37 @@ describe("TEMP-012 — the survival clause that names sections, not topics (v1.2
     ).toContain("indemnification");
   });
 });
+
+describe("TEMP-012 — a survival clause that names sections by number", () => {
+  // The clause number's trailing delimiter is OPTIONAL in modern drafting:
+  // "6.3 Confidentiality." — number, space, heading. The section-reference
+  // expander required a "." or ")" right after the digits, so no paragraph in
+  // such a document was ever incorporated, and a survival clause reading
+  // "Sections 6, 7 and 8.2 survive" was reported as naming neither the
+  // confidentiality section it incorporates nor the indemnity.
+  it("reads an undelimited clause label, and a section reference reaches its subsections", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Escrow",
+          "6.3 Confidentiality. The Deposit Materials are the confidential information of Depositor.",
+          "8.2 Indemnity. Depositor shall indemnify Escrow Agent against any loss arising out of this Agreement.",
+          "9.3 Effect. On termination, Escrow Agent shall return the Deposit Materials, except that Sections 6, 7 and 8.2 survive any termination.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when the survival clause names sections that carry neither obligation", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Escrow",
+          "6.3 Confidentiality. The Deposit Materials are the confidential information of Depositor.",
+          "10.1 Notices. All notices shall be in writing.",
+          "9.3 Effect. On termination, Section 10 survives any termination.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

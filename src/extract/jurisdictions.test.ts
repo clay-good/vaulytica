@@ -777,3 +777,35 @@ describe("the arbitration seat in its bare locative form", () => {
     );
   });
 });
+
+describe("arbitration seat — the participle hung off the institution", () => {
+  // "under the Commercial Arbitration Rules of the American Arbitration
+  // Association, seated in New York, New York" is the ordinary institutional
+  // form: the rules and the body sit between the arbitration noun and the
+  // participle, so neither the participle branch (which wants
+  // "arbitration/tribunal seated in") nor the institution branch (which wants
+  // a bare "in" right after the provider) could reach the seat, and
+  // CHOICE-006 reported "seat not specified" on a clause that states one.
+  it("reads the seat after a comma following the administering body", () => {
+    for (const clause of [
+      "The dispute shall be submitted to expedited arbitration before a single arbitrator under the Commercial Arbitration Rules of the American Arbitration Association, seated in New York, New York.",
+      "Any dispute shall be finally resolved under the JAMS Comprehensive Arbitration Rules and Procedures, seated in Chicago, Illinois.",
+      "Arbitration shall be administered by the ICC, sitting in London, England.",
+    ]) {
+      const seats = extractJurisdictions(buildTree(["Dispute Resolution", clause])).filter(
+        (j) => j.clause_kind === "arbitration-seat",
+      );
+      expect(seats.length, clause).toBeGreaterThan(0);
+    }
+  });
+
+  it("does not read a seat from prose that names no arbitral body", () => {
+    const seats = extractJurisdictions(
+      buildTree([
+        "Meetings",
+        "The parties met in New York, New York, seated in the conference room.",
+      ]),
+    ).filter((j) => j.clause_kind === "arbitration-seat");
+    expect(seats).toHaveLength(0);
+  });
+});

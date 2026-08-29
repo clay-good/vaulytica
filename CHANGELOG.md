@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.165.0] — 2026-08-29
+
+### Added
+- A three-party technology escrow agreement, the 132nd specimen. The escrow
+  pack (IPL-129..133) is silent on it, and it exposed three false positives
+  that had nothing to do with escrow.
+
+### Fixed
+- **A survival clause that names its sections BY NUMBER was read as naming
+  nothing**, because the section-reference expander required a `.` or `)`
+  right after the clause number. `6.3 Confidentiality.` — number, space,
+  heading — is the dominant modern form, so in such a document no paragraph
+  was ever incorporated and "Sections 6, 7 and 8.2 survive" was reported as
+  silent on both the confidentiality section and the indemnity it names.
+  TEMP-012's own recommendation says standard drafting names each sticky
+  section "by number or category"; the rule accepted only the category. A
+  reference to Section 6 now also reaches 6.1 through 6.3 — the survival
+  clause names the SECTION, and the obligations live in its subsections.
+  (TEMP-007 shares the helper and was wrong the same way.)
+- **FIN-005 could not read a fee "payable IN ADVANCE on each anniversary of
+  the Effective Date."** The `in advance` / `in arrears` interstitial was
+  admitted only by the ordinal-day-of-each-month branch, so the branch that
+  knows "each anniversary" could not reach past it.
+- **CHOICE-006 reported "seat not specified" on a clause that seats the
+  arbitration in terms.** In the ordinary institutional form — "under the
+  Commercial Arbitration Rules of the American Arbitration Association,
+  seated in New York, New York" — the rules and the body sit between the
+  arbitration noun and the participle, so neither the participle branch
+  (which wants "arbitration seated in") nor the institution branch (which
+  wants a bare "in" right after the provider) could reach the seat.
+
 ## [9.164.0] — 2026-08-29
 
 ### Added

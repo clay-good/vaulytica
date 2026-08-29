@@ -40,6 +40,27 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A three-party technology escrow. The escrow pack (IPL-129..133) is silent
+  // on a well-drafted deposit, and the specimen pins three repairs it exposed:
+  // a payment term stated as "payable in advance on each anniversary"
+  // (FIN-005), a survival clause that names its sections by number where the
+  // labels carry no trailing delimiter (TEMP-007 / TEMP-012), and an
+  // arbitration seat hung off the administering body with a comma (CHOICE-006).
+  "source-code-escrow.txt": {
+    playbook: "source-code-escrow-agreement",
+    findings: [
+      "STRUCT-018",
+      "CHOICE-006",
+      "IPDATA-003",
+      "IPDATA-006",
+      "OBLI-005",
+      "RISK-011",
+      "STRUCT-005",
+      "TEMP-006",
+      "TEMP-007",
+      "TERM-007",
+    ],
+  },
 
   // An employee handbook: a policy nobody signs, which says so in its first
   // substantive sentence.
