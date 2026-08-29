@@ -1,0 +1,103 @@
+DESIGN-BUILD AGREEMENT
+
+THIS DESIGN-BUILD AGREEMENT (this "Agreement") is made as of April 6, 2026 between Kestrel Municipal Water District, an Arizona special district ("Owner"), and Vantablack Constructors LLC, an Arizona limited liability company ("Design-Builder").
+
+RECITALS
+
+A. Owner intends to design and construct a 12 million-gallon-per-day water reclamation facility at 8800 Verde Ranch Road, Maricopa County, Arizona (the "Project").
+
+B. Design-Builder is qualified to furnish both design and construction services and holds an Arizona contractor's licence (ROC 344112) and employs or has retained Arizona-registered professional engineers.
+
+C. Owner and Design-Builder intend that Design-Builder be responsible to Owner for both the design and the construction of the Project, so that Owner has a single point of responsibility for the Project as a whole.
+
+ARTICLE 1 — THE WORK AND SINGLE POINT OF RESPONSIBILITY
+
+1.1 The Work. Design-Builder shall perform all design and construction services necessary to complete the Project in accordance with the Owner's Project Criteria attached as Exhibit A, the Design-Builder's Proposal attached as Exhibit B, and this Agreement.
+
+1.2 Single Point of Responsibility. Design-Builder is solely responsible to Owner for the design and the construction, and for the coordination of the two. Design-Builder may not assert as a defence to any claim that a deficiency arose from the design rather than the construction, or from a consultant Design-Builder retained.
+
+1.3 Standard of Care. Design-Builder shall perform the design services with the professional skill and care ordinarily used by members of the design profession practising under similar conditions in Maricopa County at the same time, and shall perform the construction services in a good and workmanlike manner and in accordance with the Contract Documents.
+
+1.4 Licensed Professionals. All design services shall be performed by or under the responsible charge of a professional engineer or architect registered in Arizona, whose seal shall appear on the drawings and specifications as A.R.S. § 32-125 requires.
+
+ARTICLE 2 — CONTRACT PRICE AND PAYMENT
+
+2.1 Guaranteed Maximum Price. The Contract Price is a guaranteed maximum price of $84,600,000, which includes Design-Builder's fee of $5,900,000 and a construction contingency of $3,400,000. Design-Builder shall bear any cost above the guaranteed maximum price except an increase this Agreement expressly permits.
+
+2.2 Savings. Any amount by which the final cost of the Work is less than the guaranteed maximum price shall be shared seventy-five percent (75%) to Owner and twenty-five percent (25%) to Design-Builder.
+
+2.3 Applications for Payment. Design-Builder shall submit a monthly application for payment supported by a schedule of values and conditional lien waivers. Owner shall pay the approved amount within thirty (30) days after receipt.
+
+2.4 Retainage. Owner shall retain five percent (5%) of each payment until the Work is fifty percent (50%) complete, after which no further retainage shall be withheld if the Work is progressing satisfactorily, and shall release retainage within sixty (60) days after Substantial Completion.
+
+ARTICLE 3 — SCHEDULE
+
+3.1 Milestones. Design-Builder shall complete design development by October 2, 2026, shall achieve Substantial Completion by November 30, 2028, and shall achieve Final Completion within sixty (60) days after Substantial Completion.
+
+3.2 Liquidated Damages. If Design-Builder does not achieve Substantial Completion by the date as adjusted, Design-Builder shall pay Owner liquidated damages of $6,500 per day, capped at five percent (5%) of the Contract Price. The parties agree that actual damages would be difficult to determine and that this amount is a reasonable estimate and not a penalty.
+
+3.3 Time Extensions. Design-Builder is entitled to an extension for a delay caused by Owner, by a change in the Work, by a differing site condition, by unusually severe weather, or by another cause beyond Design-Builder's control, on written notice within twenty-one (21) days after the event.
+
+ARTICLE 4 — CHANGES AND DIFFERING SITE CONDITIONS
+
+4.1 Changes. Owner may order a change in the Work by written change order signed by both parties. The Contract Price and the schedule shall be adjusted for each change.
+
+4.2 Differing Site Conditions. A subsurface or concealed physical condition that differs materially from the conditions the Owner's Project Criteria indicate, or that differs materially from conditions ordinarily encountered in work of this character, entitles Design-Builder to an equitable adjustment of the Contract Price and the schedule, on notice before the condition is disturbed and in any event within twenty-one (21) days after observing it.
+
+ARTICLE 5 — INSURANCE, BONDS, AND INDEMNITY
+
+5.1 Professional Liability. Design-Builder shall maintain professional liability insurance covering the design services of at least $5,000,000 per claim and in the aggregate, and shall maintain it for three (3) years after Final Completion.
+
+5.2 Other Insurance. Design-Builder shall maintain commercial general liability of $2,000,000 per occurrence and $4,000,000 aggregate, automobile liability of $1,000,000, workers' compensation as law requires with employer's liability of $1,000,000, and excess liability of $25,000,000, naming Owner as an additional insured on a primary and non-contributory basis.
+
+5.3 Bonds. Design-Builder shall furnish a performance bond and a labor and material payment bond, each in the full amount of the Contract Price, from a surety licensed in Arizona.
+
+5.4 Indemnity. To the fullest extent permitted by law, Design-Builder shall indemnify, defend, and hold harmless Owner and its officers, employees, and agents from and against claims, damages, and expenses, including reasonable attorneys' fees, arising out of performance of the Work, but only to the extent caused by the negligent acts or omissions of Design-Builder or anyone for whom it is responsible. This indemnity does not require Design-Builder to indemnify Owner for Owner's own negligence, consistent with A.R.S. § 34-226.
+
+5.5 Waiver of Subrogation. Owner and Design-Builder waive all rights against each other for damages caused by fire or other perils to the extent covered by property insurance, and each shall obtain an endorsement waiving subrogation.
+
+ARTICLE 6 — WARRANTY
+
+6.1 Warranty. Design-Builder warrants that materials and equipment will be new and of good quality and that the Work will conform to the Contract Documents. Design-Builder shall correct Work that fails to conform and is discovered within two (2) years after Substantial Completion. This warranty does not shorten any statute of limitations or repose.
+
+ARTICLE 7 — TERMINATION AND SUSPENSION
+
+7.1 Termination by Owner for Cause. Owner may terminate after seven (7) days' written notice and an opportunity to cure if Design-Builder repeatedly fails to supply enough skilled workers or proper materials, fails to pay subcontractors, or otherwise materially breaches.
+
+7.2 Termination by Owner for Convenience. Owner may terminate for convenience on fourteen (14) days' written notice, in which case Design-Builder is entitled to payment for Work executed plus reasonable overhead, profit on Work executed, and termination costs.
+
+7.3 Termination by Design-Builder. Design-Builder may terminate if the Work is stopped for sixty (60) consecutive days through no fault of Design-Builder because Owner has failed to pay.
+
+7.4 Ownership of Design Documents. On any termination, Owner may use the drawings, specifications, models, and other design documents for the completion, operation, and maintenance of the Project, and Design-Builder grants Owner a licence for that purpose, provided Owner has paid for them and releases Design-Builder from liability for any use on another project.
+
+ARTICLE 8 — DISPUTE RESOLUTION
+
+8.1 Step Negotiation. A claim shall first be referred to the parties' senior representatives, who shall meet within fourteen (14) days.
+
+8.2 Mediation. A claim not resolved by negotiation shall be submitted to mediation administered by the American Arbitration Association under its Construction Industry Mediation Procedures, seated in Phoenix, Arizona, as a condition precedent to litigation.
+
+8.3 Litigation. If mediation does not resolve the claim, either party may bring an action in the Superior Court of Arizona in Maricopa County. This Agreement is governed by the laws of the State of Arizona.
+
+8.4 Continuation of the Work. Pending resolution, Design-Builder shall proceed with the Work and Owner shall pay amounts not in dispute.
+
+ARTICLE 9 — MISCELLANEOUS
+
+9.1 Assignment. Neither party may assign this Agreement without the other's written consent, except that Owner may assign to a public entity succeeding to its functions.
+
+9.2 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses beneath the signatures.
+
+9.3 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+KESTREL MUNICIPAL WATER DISTRICT
+
+By: /s/ Imelda Vargas-Thornbury
+Name: Imelda Vargas-Thornbury
+Title: General Manager
+
+VANTABLACK CONSTRUCTORS LLC
+
+By: /s/ Soren Ashby
+Name: Soren Ashby
+Title: President

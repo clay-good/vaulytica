@@ -40,6 +40,28 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A public design-build agreement with a guaranteed maximum price. Clean:
+  // it routes at 1.0 and its own pack — including the single-point-of-
+  // responsibility check — is silent on a compliant one. IPDATA-001 stays and
+  // is real: Section 7.4 grants Owner a LICENCE to the design documents but
+  // never says who owns them, and in design-build that is the IP question.
+  // A guaranteed-maximum-price contract caps nothing else, so RISK-005 is
+  // skipped for the family as it is for `construction-contract`.
+  "design-build.txt": {
+    playbook: "design-build-agreement",
+    findings: [
+      "IPDATA-001",
+      "RISK-002",
+      "STRUCT-006",
+      "STRUCT-018",
+      "FIN-006",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-010",
+      "RISK-011",
+      "TERM-001",
+    ],
+  },
   // A Clean Water Act consent judgment. It fell to `generic-fallback`: the
   // family's five distinguishing phrases were verbatim sentences ("judgment is
   // hereby entered", "the court retains jurisdiction") that a real one does

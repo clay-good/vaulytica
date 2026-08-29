@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.216.0] — 2026-08-29
+
+### Added
+- A public design-build agreement with a guaranteed maximum price — the 174th
+  specimen. Clean: it routes at 1.0 and its own pack, including the
+  single-point-of-responsibility check, is silent on a compliant one.
+
+### Changed
+- `design-build-agreement` skips RISK-005, as `construction-contract` does: a
+  guaranteed-maximum-price contract caps the price, not liability.
+
+IPDATA-001 stays and is real — Section 7.4 grants Owner a LICENCE to the design
+documents but never says who owns them, and in design-build that is the IP
+question.
+
 ## [9.215.0] — 2026-08-29
 
 ### Added

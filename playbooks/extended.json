@@ -5350,7 +5350,11 @@
       "Owner's Program",
       "Work"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "RISK-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "DBIA-AIA-A141",
