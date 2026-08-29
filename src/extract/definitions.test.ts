@@ -1566,3 +1566,39 @@ describe("a statute named after its noun", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Civil Procedure");
   });
 });
+
+describe("a fragment of the document's own all-caps caption", () => {
+  // The Title-Case run cuts "NOTICE OF PRIVACY PRACTICES" at the lowercase
+  // "of" wherever the body uses it, so "Privacy Practices" arrived as a
+  // two-word candidate — and the caption test only suppressed a phrase on the
+  // caption LINE. A HIPAA acknowledgment was told that a fragment of its own
+  // title was a term it forgot to define.
+  it("does not flag a phrase inside the caption, wherever it appears", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "",
+        "ACKNOWLEDGMENT OF RECEIPT OF NOTICE OF PRIVACY PRACTICES",
+        "I acknowledge that I have received a copy of the Notice of Privacy Practices.",
+        "I may request a paper copy of the Notice of Privacy Practices at any time.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Privacy Practices");
+  });
+});
+
+describe("a professional corporation's suffix", () => {
+  // The dotted spellings alone missed every medical, legal, and accounting
+  // practice that drops the periods.
+  it("does not flag a company named with a bare PC suffix", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Acknowledgment",
+        "Ridgeway Valley Pediatric Associates, PC maintains the privacy of your health information.",
+        "You may contact Ridgeway Valley Pediatric Associates, PC at the address above.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain(
+      "Ridgeway Valley Pediatric Associates",
+    );
+  });
+});

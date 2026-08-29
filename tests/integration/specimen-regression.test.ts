@@ -310,6 +310,17 @@ export const EXPECTED: Record<string, Expectation> = {
 
   "cookie-notice.txt": { playbook: "cookie-notice", findings: ["PRV-003"] },
 
+  // A California Civil Code § 8132 conditional waiver on progress payment, in
+  // the statutory wording the form must use verbatim. Clean, and pinned so it
+  // stays clean.
+  "construction-lien-waiver.txt": { playbook: "construction-lien-waiver", findings: [] },
+
+  // A blank HIPAA acknowledgment form. Its own "Date: ______" line is the
+  // date-of-receipt line HC-020 asked for; its labeled blanks are fields, not
+  // unfilled template content; and "Privacy Practices" is a fragment of its
+  // own all-caps caption.
+  "npp-acknowledgment.txt": { playbook: "npp-acknowledgment", findings: ["HC-025"] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

@@ -40,6 +40,11 @@ describe("v3 golden-output", () => {
   });
 
   if (REGEN) {
+    // An explicit budget. The loop regenerates every golden in ONE `it`, and
+    // against vitest's 5-second default it was cut off partway through — so a
+    // regen run left some goldens rewritten and the rest stale, and the next
+    // full run failed on exactly the ones it had not reached. That reads as
+    // flaky non-determinism and is neither.
     it("regenerates every v3 golden file", async () => {
       await mkdir(EXPECTED, { recursive: true });
       for (const name of fixtures) {
@@ -53,7 +58,7 @@ describe("v3 golden-output", () => {
       for (const name of fixtures) {
         expect(existsSync(join(EXPECTED, `${stripExt(name)}.json`)), name).toBe(true);
       }
-    });
+    }, 600_000);
     return;
   }
 

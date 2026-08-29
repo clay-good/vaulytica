@@ -779,7 +779,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       }
     }
     const ENTITY_NAME =
-      /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,4}),?\s+(LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLP|PLLC|N\.A\.|GmbH)(?![\w])/g;
+      /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,4}),?\s+(LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLLP|LLP|PLLC|P\.?C\.?|P\.?A\.?|N\.A\.|GmbH)(?![\w])/g;
     ENTITY_NAME.lastIndex = 0;
     let em: RegExpExecArray | null;
     while ((em = ENTITY_NAME.exec(ctx.text)) !== null) {
@@ -841,6 +841,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // or inside an echo of it ("This Confidential Settlement Agreement and
       // Mutual Release (this 'Agreement') …") is title vocabulary.
       if (caption && insideOccurrenceOf(ctx.text, caption, m.index, phrase.length)) continue;
+      // A phrase that sits inside the CAPTION is the document's own name
+      // wherever else it appears, not only on the caption line. Compared case
+      // -insensitively because a caption is routinely set in capitals: a HIPAA
+      // form headed "ACKNOWLEDGMENT OF RECEIPT OF NOTICE OF PRIVACY PRACTICES"
+      // was told that "Privacy Practices" — a fragment of its own title, which
+      // the Title-Case run cuts at the lowercase "of" — was a term it forgot
+      // to define.
+      if (caption && caption.toLowerCase().includes(phrase.toLowerCase())) continue;
       // A phrase soon followed by a defining parenthetical is the SUBJECT
       // that parenthetical names — "This Employee Handbook (this
       // 'Handbook') …" defined the whole phrase as "Handbook"; its words are
@@ -964,7 +972,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // use of the name was reported as a Title-Case term the document forgot
       // to define.
       if (
-        /^,?\s*(?:Inc|LLC|L\.L\.C|Ltd|Corp|Co|N\.A|P\.C|GmbH|S\.A|B\.?V|N\.?V|A\.?G|PLC|LLP|PLLC|L\.P|LP|S\.p\.A|Pty|Pte|SARL)\b/.test(
+        // The periods are OPTIONAL. A professional corporation writes itself
+        // "Ridgeway Valley Pediatric Associates, PC" as often as "P.C.", and
+        // the dotted spellings alone missed every medical, legal, and
+        // accounting practice that drops them.
+        /^,?\s*(?:Inc|L\.?L\.?C|Ltd|Corp|Co|N\.?A|P\.?C|P\.?A|GmbH|S\.?A|B\.?V|N\.?V|A\.?G|PLC|LLLP|LLP|PLLC|L\.?P|S\.p\.A|Pty|Pte|SARL)\b/.test(
           ctx.text.slice(m.index + phrase.length, m.index + phrase.length + 12),
         )
       )

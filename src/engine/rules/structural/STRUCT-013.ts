@@ -81,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.14.0",
+  version: "1.15.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -110,6 +110,8 @@ export const rule: Rule = {
     forEachParagraph(ctx.tree, (p) => {
       paragraphs.push({ text: p.text, section: p.section, start: p.start });
     });
+    // Two or more labeled blanks ANYWHERE in the document make it a form.
+    const documentIsForm = paragraphs.reduce((n, p) => n + labeledRuns(p.text).labeled, 0) >= 2;
     paragraphs.forEach((p, i) => {
       const withNext = `${p.text} ${paragraphs[i + 1]?.text ?? ""}`.trim();
       for (const { re, label } of PATTERNS) {
@@ -133,7 +135,7 @@ export const rule: Rule = {
               isSignatureContext(withNext) ||
               isBareNameSignature(p.text, partyNames) ||
               isBareNameSignature(withNext, partyNames) ||
-              isLabeledFormFieldRow(p.text) ||
+              isLabeledFormFieldRow(p.text, documentIsForm) ||
               isRuledWritingSpace(p.text, paragraphs[i - 1]?.text))
           ) {
             continue;
@@ -185,14 +187,31 @@ export const rule: Rule = {
  */
 const LABELED_FIELD = /[A-Za-z][A-Za-z\s'’()/-]{0,40}:\s*$/;
 
-function isLabeledFormFieldRow(text: string): boolean {
-  // TWO or more, which is what makes it a ROW of fields. A single labeled
-  // blank is ambiguous — "Signed: ______" is a signature affordance and
-  // "Counterparty: ______" is an unfilled template field — so one is left to
-  // the signature tests and to the placeholder finding.
+function labeledRuns(text: string): { total: number; labeled: number } {
   const runs = [...text.matchAll(/_{10,}/g)];
-  if (runs.length < 2) return false;
-  return runs.every((m) => LABELED_FIELD.test(text.slice(Math.max(0, m.index - 44), m.index)));
+  return {
+    total: runs.length,
+    labeled: runs.filter((m) => LABELED_FIELD.test(text.slice(Math.max(0, m.index - 44), m.index)))
+      .length,
+  };
+}
+
+/**
+ * Two or more labeled blanks make a ROW of fields. A single labeled blank is
+ * ambiguous on its own — "Signed: ______" is a signature affordance and
+ * "Counterparty: ______" is an unfilled template field — so one is left to the
+ * signature tests and to the placeholder finding.
+ *
+ * Unless the DOCUMENT is a form. Two or more labeled blanks anywhere in it
+ * settle that question once, and whether the second one shares a line with the
+ * first or sits three paragraphs below is a fact about the layout: a HIPAA
+ * acknowledgment prints "Name of patient: ____" and "Date: ____" on separate
+ * lines and was told at `critical` that it held unfilled template content.
+ */
+function isLabeledFormFieldRow(text: string, documentIsForm: boolean): boolean {
+  const { total, labeled } = labeledRuns(text);
+  if (total === 0 || labeled !== total) return false;
+  return documentIsForm || total >= 2;
 }
 
 /**

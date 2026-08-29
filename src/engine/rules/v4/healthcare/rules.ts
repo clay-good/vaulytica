@@ -428,6 +428,7 @@ const NPP_ACK_RULES: Rule[] = [
   }),
   presence({
     id: "HC-020",
+    version: "1.1.0",
     name: "Date of receipt",
     description: "Acknowledgment must include the date of receipt.",
     citation: hipaa("520(c)(2)(ii)", "Date"),
@@ -437,7 +438,15 @@ const NPP_ACK_RULES: Rule[] = [
     explanation:
       "The acknowledgment must include the date the NPP was received so the covered entity can document compliance with the timing requirements.",
     recommendation: "Add a 'Date Received' line.",
-    present_patterns: [/(date\s+(received|of\s+receipt)|received\s+on|signed\s+on)/i, /\d/],
+    // A blank acknowledgment form prints "Date: ______" beside the signature
+    // line; that IS the date-of-receipt line, and the form carries no digits
+    // at all until a patient fills it in. The form the rule exists to bless
+    // reported at `critical` that it had no date.
+    present_patterns: [
+      /(date\s+(received|of\s+receipt)|received\s+on|signed\s+on)/i,
+      /(?:^|\s)date\s*:\s*(?:_{3,}|\d)/im,
+      /\d/,
+    ],
   }),
   presence({
     id: "HC-021",

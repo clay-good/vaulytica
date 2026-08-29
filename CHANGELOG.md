@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.133.0] — 2026-08-29
+
+### Added
+- **Two specimens**: a California Civil Code § 8132 conditional lien waiver on
+  progress payment, in the statutory wording the form must use verbatim, and a
+  blank HIPAA acknowledgment of receipt. One hundred and eleven.
+
+### Fixed
+- **A blank acknowledgment form was told at `critical` that it had no date of
+  receipt** (HC-020) and that its own fields were unfilled template content
+  (STRUCT-013). The form prints "Date: ______" beside the signature line —
+  that IS the date-of-receipt line — and carries no digits at all until a
+  patient fills it in. Two or more labeled blanks anywhere in a document now
+  make it a form: whether the second shares a line with the first or sits
+  three paragraphs below is a fact about the layout, not about the document.
+- **A fragment of a document's own all-caps caption was reported as an
+  undefined term.** The Title-Case run cuts "NOTICE OF PRIVACY PRACTICES" at
+  the lowercase "of" wherever the body uses it, and the caption test only
+  suppressed a phrase sitting on the caption LINE.
+- **A professional corporation's suffix was only recognized with its periods.**
+  "Ridgeway Valley Pediatric Associates, PC" is how a medical, legal, or
+  accounting practice writes itself as often as "P.C.".
+- **`construction-lien-waiver` penalized its own statutory form.** "change
+  order" sat in its negative features, and § 8132's text says "pursuant to a
+  written change order that has been fully executed by the parties". Found by
+  the self-penalizing guard the moment the family had a specimen.
+- **The golden-regeneration loops had no timeout.** Each rewrites every golden
+  inside ONE `it`, and against vitest's 5-second default it was cut off partway
+  — so a regen run left some goldens rewritten and the rest stale, and the next
+  full run failed on exactly the ones it had not reached. That reads as flaky
+  non-determinism and is neither.
+
 ## [9.132.0] — 2026-08-29
 
 ### Added

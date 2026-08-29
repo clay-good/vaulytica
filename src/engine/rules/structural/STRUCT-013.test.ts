@@ -366,4 +366,29 @@ describe("STRUCT-013 — a blank the reader is meant to fill in", () => {
     ]);
     expect(STRUCT_013.check(ctx)).not.toBeNull();
   });
+
+  // Two or more labeled blanks ANYWHERE in the document make it a form, and
+  // whether the second shares a line with the first or sits three paragraphs
+  // below is a fact about the layout. A HIPAA acknowledgment prints "Name of
+  // patient: ____" and "Date: ____" on separate lines and was told at
+  // `critical` that it held unfilled template content.
+  it("does not report a form's fields laid out one per line (v1.15.0)", () => {
+    const ctx = buildContext([
+      "Acknowledgment of Receipt",
+      "I acknowledge that I have received a copy of the Notice of Privacy Practices.",
+      "Name of patient: ____________________________________________",
+      "Date: ____________________",
+    ]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+  });
+
+  it("still reports an UNLABELED blank in a document with labeled fields", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "Name of party: ____________________",
+      "Date: ____________________",
+      "The Company shall pay ____________________ on the first day of each month.",
+    ]);
+    expect(STRUCT_013.check(ctx)).not.toBeNull();
+  });
 });
