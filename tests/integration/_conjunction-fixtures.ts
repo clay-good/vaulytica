@@ -161,4 +161,55 @@ export const COMPLIANT: Array<[string, string, string, string]> = [
     "The lawyer will draft the petition, prepare the financial declaration, and appear at the status conference. The client will gather and provide bank statements, serve the petition, and appear at all other hearings.",
     'the words "will perform" from an agreement that LISTS the tasks, with its other pillar met by the family\'s own title',
   ],
+  // ── Proved-silent rows for conjunctions whose vacuous pillar was left in
+  // place: the surviving pillars carry the check, and these clauses are the
+  // proof. See `pillar-vacuity.test.ts`.
+  [
+    "DISC-001",
+    "Requests for Production",
+    "Pursuant to Rule 34, Plaintiff requests that Defendant produce the documents described below within thirty (30) days after service of these requests.",
+    "its surviving pillar, proved against the deadline a request actually states",
+  ],
+  [
+    "DISC-007",
+    "Interrogatories",
+    "These interrogatories, including all discrete subparts, number twenty-two and are within the limit of twenty-five set by Rule 33(a)(1).",
+    "its surviving pillar, proved against the limit recital",
+  ],
+  [
+    "DISC-020",
+    "Responses and Objections to Requests for Production",
+    "Defendant will substantially complete its production of responsive documents on or before July 31, 2026.",
+    "its surviving pillar, proved against a stated completion date",
+  ],
+  [
+    "PLDG-009",
+    "Answer",
+    "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS. RIDGELINE AEROSPACE COMPONENTS, INC., Plaintiff, v. HALLORAN PRECISION CASTINGS, LLC, Defendant. Case No. 1:26-cv-04412. ANSWER AND AFFIRMATIVE DEFENSES.",
+    "its surviving pillar, proved against a full caption and designation",
+  ],
+  [
+    "PLDG-012",
+    "Answer",
+    "FIRST AFFIRMATIVE DEFENSE — STATUTE OF LIMITATIONS. The claim is barred by the applicable statute of limitations. SECOND AFFIRMATIVE DEFENSE — WAIVER. Plaintiff waived the claim by accepting performance for eleven months without objection.",
+    "its surviving pillar, proved against separately stated defenses",
+  ],
+  [
+    "EMP-101",
+    "Arbitration Agreement",
+    "The Company and the Employee each agree to arbitrate all claims arising out of the employment relationship, on the same terms, before a single neutral arbitrator. Claims of sexual harassment and sexual assault are excluded at the Employee's election under the Ending Forced Arbitration Act.",
+    "its surviving pillar, proved against a mutual obligation with the EFAA carve-out",
+  ],
+  [
+    "EMP-150",
+    "Disclosure and Authorization",
+    "I hereby authorize Halverson Grid Services, Inc. and its consumer reporting agency to obtain the consumer reports described in the disclosure above. Signature of applicant: ____________________ Date: ____________",
+    "its surviving pillar, proved against a written authorization and signature line",
+  ],
+  [
+    "HC-127",
+    "Telehealth Informed Consent",
+    "Your visit will be conducted by live two-way interactive audio and video through the practice's secure platform. If the video connection fails, the visit may continue by telephone with your agreement.",
+    "its surviving pillar, proved against a described modality",
+  ],
 ];

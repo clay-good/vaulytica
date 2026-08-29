@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.157.0] — 2026-08-29
+
+### Changed
+- **Eight more collapsed conjunctions proved.** Each now carries the clause a
+  compliant document writes, and the assertion that the rule is silent on it:
+  `DISC-001`, `DISC-007`, `DISC-020`, `PLDG-009`, `PLDG-012`, `EMP-101`,
+  `EMP-150`, `HC-127`. Seventeen remain unproved.
+
 ## [9.156.0] — 2026-08-29
 
 ### Changed

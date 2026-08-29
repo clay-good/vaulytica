@@ -49,14 +49,9 @@ const PROVED = new Set(COMPLIANT.map(([id]) => id));
 const KNOWN_COLLAPSED = new Set<string>([
   "BNK-127",
   "COMM-237",
-  "DISC-001",
-  "DISC-007",
-  "DISC-020",
   "DISC-024",
-  "EMP-101",
   "EMP-110",
   "EMP-121",
-  "EMP-150",
   "ENG-006",
   "ENG-008",
   "ENG-016",
@@ -68,10 +63,6 @@ const KNOWN_COLLAPSED = new Set<string>([
 
   "EST-426",
   "GOV-101",
-  "HC-127",
-
-  "PLDG-009",
-  "PLDG-012",
   "PRV-102",
   "PRV-113",
 ]);
