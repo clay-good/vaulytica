@@ -56,3 +56,36 @@ describe("PERS-001 — non-compete present (v1.1.0)", () => {
     ).toBe(false);
   });
 });
+
+describe("PERS-001 — the scope it exists to surface (v1.3.0)", () => {
+  // PERS-005 reports that a non-compete is present, at `warning`, with the
+  // jurisdiction analysis. Both rules were emitting the same title over the
+  // same span on three specimens: one drafting fact, reported twice in the
+  // same words. What this rule adds is the SCOPE.
+  const titleOf = (clause: string) =>
+    PERS_001.check(buildContext(["Restrictive Covenants", clause]))?.title;
+
+  it("names the duration and the radius", () => {
+    expect(
+      titleOf(
+        "9.1 Non-Competition. For twelve (12) months after termination, the Physician shall not provide gastroenterology services at any facility located within fifteen (15) miles of the Group's principal office.",
+      ),
+    ).toContain("Non-compete scope: For twelve (12) months, within fifteen (15) miles");
+  });
+
+  it("names a state where the covenant states one", () => {
+    expect(
+      titleOf(
+        "For two (2) years after the Closing, Seller shall not compete with the Business in the State of Georgia.",
+      ),
+    ).toContain("Non-compete scope: For two (2) years, in the State of Georgia");
+  });
+
+  it("prompts rather than accuses when the scope is not in the clause", () => {
+    // The trigger matches the section HEADING as readily as the covenant, and
+    // the scope is then in the paragraph beneath it.
+    expect(titleOf("14. Covenant Not to Compete.")).toBe(
+      "Non-compete clause — check scope and enforceability",
+    );
+  });
+});

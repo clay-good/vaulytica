@@ -388,7 +388,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-001",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1022,7 +1022,7 @@
       "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
       "id": "PERS-001-s1.2-704",
       "rule_id": "PERS-001",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1042,17 +1042,17 @@
           "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16600."
         }
       ],
-      "title": "Non-compete clause present"
+      "title": "Non-compete scope: For a period of twelve (12) months"
     }
   ],
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.7). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"exempt\".",
-  "result_hash": "20913d49833c4ca2aaeaefc42bb263ad5701db9277760d990c64ce31a553d520",
+  "result_hash": "8de5083bd0edc9c62dec64d4e8bf6192e6c47a4634b8bf27ce8b82b9f0d73367",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.144.0"
+  "version": "9.145.0"
 }

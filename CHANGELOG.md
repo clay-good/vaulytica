@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.145.0] — 2026-08-29
+
+### Fixed
+- **One drafting fact was reported twice in the same words.** PERS-001 and
+  PERS-005 both emitted the title "Non-compete clause present" over the same
+  span, on three specimens — one at `info`, one at `warning`. PERS-005 owns the
+  presence finding and the jurisdiction analysis; PERS-001 now surfaces what
+  its own description has always promised, the SCOPE: "Non-compete scope: For
+  twelve (12) months, within fifteen (15) miles". Where the scope is not in the
+  clause it prompts rather than accuses — the trigger matches the section
+  heading ("14. Covenant Not to Compete.") as readily as the covenant, and the
+  scope is then in the paragraph beneath it.
+
 ## [9.144.0] — 2026-08-29
 
 ### Added
