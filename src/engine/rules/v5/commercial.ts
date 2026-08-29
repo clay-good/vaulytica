@@ -1033,11 +1033,17 @@ const SPONSORSHIP = pack("sponsorship-agreement", C, [
   },
   {
     id: "COMM-175",
+    ver: "1.1.0",
     name: "Trademark license and approval rights",
     cite: usc("15", "1055", "Lanham Act — use by related companies and quality control"),
     pat: [
-      /(trademark|logo|marks?)\s+(license|use)/i,
-      /(approv(e|al)\s+(of\s+)?(all\s+)?(uses|materials|creative)|prior\s+written\s+approval)/i,
+      // Either ORDER: the section is headed "USE OF MARKS" as often as
+      // "Trademark License".
+      /(trademark|logo|marks?)\s+(license|licence|use)|use\s+of\s+(?:the\s+)?(?:event\s+)?(?:marks?|logo|trademarks?)/i,
+      // The approval right is stated as an obligation to approve, not as the
+      // noun phrase: "Each party shall APPROVE the other's USE of its marks in
+      // advance."
+      /(approv(e|al)\s+(of\s+)?(all\s+)?(uses|materials|creative)|prior\s+written\s+approval|approv\w+[^.;]{0,40}?\b(?:use|marks?|materials|creative|artwork)\b)/i,
     ],
     why: "Both parties license marks to each other. A trademark licensor that does not control quality risks abandonment through naked licensing under the Lanham Act.",
     fix: "Grant reciprocal, limited trademark licenses with brand guidelines, an approval process with a deemed-approval deadline, and quality-control rights.",

@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.207.0] — 2026-08-29
+
+### Added
+- A title-sponsorship agreement for a road race — the 166th specimen.
+
+### Fixed
+- **COMM-175 reported no trademark licence or approval right** on a document
+  with a section headed "USE OF MARKS" and another headed "Approvals". It
+  wanted the noun phrase in one order ("marks license") and "prior written
+  approval" verbatim, where the document says "Each party shall APPROVE the
+  other's USE of its marks in advance".
+- **FIN-005 could not read "payable $425,000 on JANUARY 31 and $425,000 on
+  JUNE 30 of each year."** The amount sits between the verb and the date, and
+  the date carries no year because it recurs; the branch required both to be
+  absent.
+- **`sponsorship-agreement` shipped with no rule profile**, so it was told it
+  allocates no IP ownership — a sponsorship licenses marks, it does not
+  allocate ownership.
+
 ## [9.206.0] — 2026-08-29
 
 ### Changed — the matcher

@@ -40,6 +40,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A title-sponsorship agreement for a road race. COMM-175 reported no
+  // trademark licence or approval right on a document with a section headed
+  // "USE OF MARKS" and another headed "Approvals" — it wanted the noun phrase
+  // in one order and "prior written approval" verbatim. FIN-005 could not
+  // read "payable $425,000 on JANUARY 31 and $425,000 on JUNE 30 of each
+  // year": the amount sits between the verb and the date, and the date
+  // carries no year because it recurs.
+  "sponsorship-agreement.txt": {
+    playbook: "sponsorship-agreement",
+    findings: [
+      "RISK-015",
+      "STRUCT-018",
+      "IPDATA-005",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-007",
+      "RISK-010",
+      "RISK-013",
+    ],
+  },
   // An FTC-compliant influencer endorsement agreement. It routed to
   // `independent-contractor` at 1.0 — three required clauses at 0.8 plus
   // "independent contractor", "not an employee" and "1099" — so the whole

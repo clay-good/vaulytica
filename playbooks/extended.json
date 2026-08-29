@@ -17495,7 +17495,11 @@
       "Property",
       "Rights"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-COMMERCIAL",

@@ -401,3 +401,16 @@ describe("FIN-005 — a recurring due date behind the payment source", () => {
     expect(FIN_005.check(buildContext(["Fees", clause]))).toBeNull();
   });
 });
+
+describe("FIN-005 — a recurring annual instalment date", () => {
+  // "payable $425,000 on JANUARY 31 and $425,000 on JUNE 30 of each year" —
+  // the AMOUNT sits between the verb and the date, and the date carries no
+  // year because it recurs. The branch required both to be absent.
+  it.each([
+    "Sponsor shall pay Property $850,000 per Event year, payable $425,000 on January 31 and $425,000 on June 30 of each year of the Term.",
+    "The premium is payable on March 1 of each policy year.",
+    "The note is due and payable on May 15, 2028.",
+  ])("reads %s", (clause) => {
+    expect(FIN_005.check(buildContext(["Fees", clause]))).toBeNull();
+  });
+});

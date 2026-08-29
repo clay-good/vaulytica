@@ -85,12 +85,16 @@ const PAYMENT_TERMS = new RegExp(
     // "due and payable on May 15, 2028" / "due and payable on the Maturity
     // Date". Every branch above is interval- or cadence-shaped, so a
     // perfectly conventional note was told it has no payment term.
+    // The AMOUNT may sit between the verb and the date, and the YEAR is
+    // optional: a recurring annual instalment is written
+    // "payable $425,000 on JANUARY 31 and $425,000 on JUNE 30 of each year",
+    // and requiring a four-digit year read that as no payment term at all.
     // "payable IN ADVANCE on each anniversary of the Effective Date" is how an
     // annual fee states its term. The interstitial "in advance" / "in arrears"
     // was admitted only by the ordinal-day-of-each-month branch above, so this
     // branch — which knows "each anniversary" — could not reach it, and a
     // plainly stated annual fee warned that no payment term was stated.
-    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},?\\s+\\d{4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?(?:[^.;]{0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}(?:,?\\s+\\d{4})?|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
     // An M&A or real-estate purchase price states its term as the CLOSING
     // event, not an interval or a fixed date: "the Purchase Price … payable in
     // cash at the Closing", "the balance is due and payable at closing". The
@@ -151,7 +155,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.12.0",
+  version: "1.13.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",
