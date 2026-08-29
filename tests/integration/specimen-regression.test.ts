@@ -394,6 +394,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // told at `critical` that it demanded no relief and no jury trial.
   "rule-26f-report.txt": { playbook: "rule-26f-report", findings: [] },
 
+  // A Rule 30(b)(6) deposition notice. DISC-037 wanted Rule 30(b)(1)'s own
+  // vocabulary — "the name of the deponent is" — from a notice that NAMES the
+  // organization three times: in its title, in its opening sentence, and in
+  // its designation paragraph.
+  "deposition-notice.txt": { playbook: "deposition-notice", findings: ["STRUCT-018"] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

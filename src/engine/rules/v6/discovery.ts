@@ -610,10 +610,18 @@ const DEPO = pack("deposition-notice", C, [
     // execution clause of nearly every document, and `name` matches the
     // "Name: ____" line of every signature block. The deponent pillar now
     // requires a word that names the person to be deposed.
-    ver: "1.0.1",
+    ver: "1.1.0",
     pat: [
       /(deponent|the\s+deposition\s+of|person\s+to\s+be\s+(deposed|examined)|witness\s+to\s+be\s+(deposed|examined))/i,
-      /(name\s+of\s+the\s+(deponent|witness)|if\s+the\s+name\s+is\s+not\s+known|general\s+description\s+sufficient\s+to\s+identify|\bname\s*:)/i,
+      // A notice NAMES the deponent; it does not say "the name of the deponent
+      // is". Rule 30(b)(1)'s own vocabulary is what the rule asks the drafter
+      // to satisfy, and no compliant notice contains it — this one names the
+      // organization three times, in its title, in its opening sentence, and in
+      // its designation paragraph.
+      //
+      // Case-SENSITIVE: the name run is `[A-Z]`, which under the `i` flag would
+      // match any word at all.
+      /([Nn]ame\s+of\s+the\s+(deponent|witness)|[Ii]f\s+the\s+name\s+is\s+not\s+known|[Gg]eneral\s+description\s+sufficient\s+to\s+identify|\b[Nn]ame\s*:|(?:[Dd]eposition\s+of|[Dd]eponent\s+is)\s+(?:Defendant\s+|Plaintiff\s+|the\s+)?[A-Z][\w.'’-]+|[Dd]esignate\s+one\s+or\s+more)/,
     ],
     all: true,
     why: "The rule requires naming the deponent or, if the name is unknown, a description sufficient to identify the person or the class or group to which the person belongs.",

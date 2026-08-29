@@ -572,3 +572,29 @@ describe("the exclusion a fee agreement actually writes", () => {
     ).not.toBeNull();
   });
 });
+
+describe("a deposition notice names its deponent", () => {
+  // DISC-037 wanted Rule 30(b)(1)'s own vocabulary — "the name of the deponent
+  // is" — which no compliant notice contains. A notice NAMES the person.
+  it("reads the name after 'the deposition of'", () => {
+    expect(
+      rule("DISC-037").check(
+        doc(
+          "Notice of Rule 30(b)(6) Deposition",
+          "PLEASE TAKE NOTICE that Plaintiff will take the deposition of Defendant Halloran Precision Castings, LLC on September 17, 2026 beginning at 9:30 a.m.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a notice that names nobody", () => {
+    expect(
+      rule("DISC-037").check(
+        doc(
+          "Notice of Deposition",
+          "PLEASE TAKE NOTICE that a deposition will be taken on September 17, 2026 beginning at 9:30 a.m. at the offices of undersigned counsel.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

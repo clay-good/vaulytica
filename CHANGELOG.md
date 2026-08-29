@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.150.0] — 2026-08-29
+
+### Added
+- A Rule 30(b)(6) deposition notice, the 122nd specimen.
+
+### Fixed
+- **DISC-037 wanted Rule 30(b)(1)'s own vocabulary — "the name of the deponent
+  is" — which no compliant notice contains.** A notice NAMES the person: this
+  one names the organization three times, in its title, in its opening
+  sentence, and in its designation paragraph. The name run is case-SENSITIVE,
+  since under the `i` flag `[A-Z]` would match any word at all.
+
 ## [9.149.0] — 2026-08-29
 
 ### Added
