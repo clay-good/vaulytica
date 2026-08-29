@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.174.0] — 2026-08-29
+
+### Added
+- An amended and restated NVCA-style stockholders' agreement — the 139th
+  specimen.
+
+### Fixed
+- **A section headed VOTING AGREEMENT was reported at `critical` as containing
+  no voting agreement.** GOV-040 wanted "vote in favor" adjacently, and every
+  real voting agreement puts the OBJECT between them: "each Stockholder shall
+  vote ITS SHARES in favor of the transaction", "shall vote ALL SHARES OF
+  CAPITAL STOCK OVER WHICH IT HAS VOTING CONTROL so that the Board consists of
+  seven directors".
+- **GOV-041 reported the IPO-termination clause missing on the NVCA term
+  clause**, which ends the agreement without ever using the word: "continues
+  until the earliest of (a) the closing of a Sale of the Company, (b) the
+  closing of a firm-commitment underwritten public offering".
+- **A drag-along's CARVE-OUT was reported as a non-compete, twice.** "No
+  Stockholder shall be required, AS A CONDITION OF THE DRAG-ALONG, to agree to
+  any non-competition covenant" promises that none will be imposed. PERS-005's
+  disclaimer test wanted "required to" adjacently and could not reach past the
+  parenthetical; PERS-001 did not consult that test at all, and now shares it.
+- **A covenant about the CHARTER's indemnification provisions was read as an
+  indemnity of this document.** "The Company shall not amend the
+  indemnification provisions of its certificate of incorporation" made
+  TEMP-012 report the survival clause silent on an indemnification that is not
+  there — as did the drag-along's limit, "shall not be required to indemnify
+  beyond its pro rata share".
+- **`stockholders-agreement` listed "bylaws" as a negative feature**, and a
+  stockholders' agreement references the company's bylaws as a matter of
+  course. Narrowed to "these bylaws", which only a set of bylaws says of
+  itself. (Caught by `self-penalizing-features.test.ts` the moment the
+  specimen existed.)
+
 ## [9.173.0] — 2026-08-29
 
 ### Fixed

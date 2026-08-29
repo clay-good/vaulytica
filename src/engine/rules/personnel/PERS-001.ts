@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { describesCovenantElsewhere, emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { NON_COMPETE_DISCLAIMED } from "./PERS-005.js";
 
 /**
  * How long the covenant runs — "for a period of two (2) years", "for
@@ -29,7 +30,7 @@ const GEOGRAPHY =
  */
 export const rule: Rule = {
   id: "PERS-001",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Non-compete present",
   category: "personnel",
   default_severity: "info",
@@ -53,7 +54,13 @@ export const rule: Rule = {
       // A covenant the document merely DESCRIBES — "the non-competition
       // covenants each of you will sign" in a conflict-waiver letter — is not
       // one this document imposes.
-      (paragraph, index) => describesCovenantElsewhere(paragraph, index),
+      // The same three MENTION-without-imposing shapes PERS-005 excludes: a
+      // disclaimer, a drag-along's protection ("no Stockholder shall be
+      // required ... to agree to any non-competition covenant"), and the
+      // incoming-obligations representation. This rule was reporting a
+      // stockholders' agreement's drag-along CARVE-OUT as a non-compete.
+      (paragraph, index) =>
+        describesCovenantElsewhere(paragraph, index) || NON_COMPETE_DISCLAIMED.test(paragraph),
     );
     if (!hit) return null;
     // The PARAGRAPH, not the enclosing sentence: the trigger matches the

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { rule as PERS_005 } from "./PERS-005.js";
+import { rule as PERS_001 } from "./PERS-001.js";
 import { buildContext } from "../../_test-fixtures.js";
 
 describe("PERS-005 — non-compete clause present", () => {
@@ -123,5 +124,31 @@ describe("PERS-005 — the incoming-obligations representation", () => {
       "Section 2.1 applies only if the liability of a Stockholder is several and not joint, and no Stockholder is required to accept a covenant not to compete.",
     ]);
     expect(PERS_005.check(ctx)).toBeNull();
+  });
+});
+
+describe("PERS-005 / PERS-001 — a drag-along's carve-out is not a non-compete", () => {
+  // "No Stockholder shall be required, AS A CONDITION OF THE DRAG-ALONG, to
+  // agree to any non-competition covenant" promises that none will be imposed.
+  // The disclaimer test wanted "required to" adjacently and could not reach
+  // past the parenthetical, so a stockholders' agreement was reported as
+  // containing a non-compete, at `warning`, on the sentence protecting against
+  // one — twice, once from each rule.
+  const CLAUSE =
+    "No Stockholder shall be required, as a condition of the drag-along, to agree to any non-competition covenant, to indemnify beyond its pro rata share of the consideration actually received, or to bear liability other than on a several and not joint basis.";
+
+  it("is silent in PERS-005", () => {
+    expect(PERS_005.check(buildContext(["Voting Agreement", CLAUSE]))).toBeNull();
+  });
+
+  it("is silent in PERS-001", () => {
+    expect(PERS_001.check(buildContext(["Voting Agreement", CLAUSE]))).toBeNull();
+  });
+
+  it("still reports an operative covenant", () => {
+    const real =
+      "For a period of two (2) years after the Closing, Seller shall not compete with the Business anywhere in the United States.";
+    expect(PERS_005.check(buildContext(["Non-Competition", real]))).not.toBeNull();
+    expect(PERS_001.check(buildContext(["Non-Competition", real]))).not.toBeNull();
   });
 });

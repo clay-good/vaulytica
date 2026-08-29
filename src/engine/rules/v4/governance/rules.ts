@@ -904,6 +904,7 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-040",
+    version: "1.1.0",
     name: "Voting agreement / proxy",
     description: "Voting commitments under DGCL § 218(c).",
     citation: dgcl("218"),
@@ -915,14 +916,21 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add a 'Voting Agreement' section binding stockholders to vote in favor of board designations and approved sale transactions.",
     present_patterns: [
-      /vote\s+(in\s+favor|to\s+approve)/i,
+      // The OBJECT sits between the verb and the preposition in every real
+      // voting agreement — "each Stockholder shall vote ITS SHARES in favor of
+      // the transaction", "shall vote ALL SHARES OF CAPITAL STOCK OVER WHICH IT
+      // HAS VOTING CONTROL so that the Board consists of seven directors" — and
+      // the adjacent form matched none of them. A section headed VOTING
+      // AGREEMENT was reported at `critical` as containing no voting agreement.
+      /vote\s+(?:[^.;]{0,60}?\s+)?(?:in\s+favor|to\s+approve)/i,
       /agree\s+to\s+vote/i,
+      /\b(?:shall|will|agrees?\s+to)\s+vote\s+(?:all\s+|any\s+)?(?:of\s+)?(?:its|their|his|her|such)?\s*(?:shares|stock|securities)\b/i,
       /irrevocable\s+proxy/i,
     ],
   }),
   presence({
     id: "GOV-041",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Termination upon IPO",
     description: "Most provisions in a stockholders' agreement should terminate on IPO.",
     citation: govPractice(
@@ -942,7 +950,12 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
       // underwritten public offering" or a "qualified public offering" as an
       // "initial public offering" / "IPO"; the qualifier varies but the trigger
       // is the public offering.
-      /termin(ate|ation).{0,90}(?:\bipo\b|(?:(?:initial|qualified|firm[-\s]commitment|underwritten|registered)\s+)*public\s+offering)/is,
+      // A term clause ends the agreement without ever using the word:
+      // "continues until the earliest of (a) the closing of a Sale of the
+      // Company, (b) the closing of a firm-commitment underwritten public
+      // offering". That is the NVCA drafting, and requiring "terminat*" near
+      // the offering reported the IPO-termination clause missing on it.
+      /(?:termin(?:ate|ation)|continues?\s+until|remains?\s+in\s+(?:full\s+force|effect)\s+until|expires?\s+(?:on|upon)|ends?\s+(?:on|upon)).{0,120}(?:\bipo\b|(?:(?:initial|qualified|firm[-\s]commitment|underwritten|registered)\s+)*public\s+offering)/is,
       /(?:\bipo\b|public\s+offering).{0,60}termin(ate|ation)/is,
     ],
     default_severity: "warning",

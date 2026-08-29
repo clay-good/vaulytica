@@ -165,3 +165,49 @@ describe("TEMP-012 — a survival clause that names sections by number", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TEMP-012 — an indemnity this document does not contain", () => {
+  // A stockholders' agreement covenants that the Company "shall not amend the
+  // INDEMNIFICATION PROVISIONS OF ITS CERTIFICATE OF INCORPORATION", and its
+  // drag-along protects each holder from being "required ... to INDEMNIFY
+  // beyond its pro rata share". Neither is an indemnity of this document, and
+  // both made the survival clause report an indemnification that is not there.
+  it("does not treat another instrument's indemnity as this document's", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Stockholders' Agreement",
+          "The Company shall maintain directors' and officers' liability insurance and shall not amend the indemnification provisions of its certificate of incorporation or bylaws in a manner adverse to any director.",
+          "5.3 Confidentiality. Each Investor shall keep confidential all information it receives under this Section 5.",
+          "7.2 Effect of Termination. On termination, Sections 5.3, 6.2 and 8 survive.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not treat a LIMIT on an indemnity as an indemnity", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Stockholders' Agreement",
+          "No Stockholder shall be required, as a condition of the drag-along, to indemnify beyond its pro rata share of the consideration actually received.",
+          "5.3 Confidentiality. Each Investor shall keep confidential all information it receives.",
+          "7.2 Effect of Termination. On termination, Sections 5.3 and 8 survive.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports a real indemnity the survival clause omits", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Services Agreement",
+          "6. Indemnity. Vendor shall indemnify Customer against any third-party claim arising out of the Services.",
+          "5. Confidentiality. Each party shall keep the other's Confidential Information confidential.",
+          "9. Effect of Termination. On termination, Section 5 survives.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -40,6 +40,30 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An amended and restated NVCA-style stockholders' agreement. Four false
+  // positives, all rigid drafting assumptions: a section headed VOTING
+  // AGREEMENT reported at `critical` as containing none (the OBJECT sits
+  // between "vote" and "in favor"); an IPO-termination clause reported
+  // missing on "continues until ... the closing of a firm-commitment
+  // underwritten public offering"; the drag-along's CARVE-OUT ("No
+  // Stockholder shall be required ... to agree to any non-competition
+  // covenant") reported as a non-compete, twice; and a covenant about the
+  // CHARTER's indemnification provisions read as an indemnity of this
+  // document. The three that stay are real: protective provisions are absent,
+  // the Schedules travel separately, and Common/Preferred Stock are defined
+  // in the certificate of incorporation rather than here.
+  "stockholders-agreement.txt": {
+    playbook: "stockholders-agreement",
+    findings: [
+      "GOV-039",
+      "STRUCT-006",
+      "STRUCT-018",
+      "OBLI-005",
+      "RISK-010",
+      "TEMP-006",
+      "TEMP-007",
+    ],
+  },
   // A franchise disclosure document, cover page through the receipt. The six
   // FTC Franchise Rule checks are silent on a compliant one. It named its
   // officers the way an FDD does — "Renata Kowalczyk, Chief Executive Officer"

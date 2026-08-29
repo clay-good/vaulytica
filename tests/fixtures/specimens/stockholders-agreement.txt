@@ -1,0 +1,102 @@
+AMENDED AND RESTATED STOCKHOLDERS' AGREEMENT
+
+THIS AMENDED AND RESTATED STOCKHOLDERS' AGREEMENT (this "Agreement") is made as of July 14, 2026, by and among Kestrel Bioworks, Inc., a Delaware corporation (the "Company"), the holders of the Company's Series A Preferred Stock and Series B Preferred Stock listed on Schedule A (each an "Investor" and collectively the "Investors"), and the holders of the Company's Common Stock listed on Schedule B (each a "Key Holder" and collectively the "Key Holders"). The Investors and the Key Holders are referred to collectively as the "Stockholders."
+
+RECITALS
+
+A. The Company and certain of the parties are parties to an Amended and Restated Stockholders' Agreement dated May 3, 2024 (the "Prior Agreement").
+
+B. The Company and the Investors are parties to a Series B Preferred Stock Purchase Agreement of even date herewith (the "Purchase Agreement"), and it is a condition to the closing under the Purchase Agreement that this Agreement be executed.
+
+C. The parties wish to amend and restate the Prior Agreement in its entirety as set forth below.
+
+NOW, THEREFORE, the parties agree as follows:
+
+1. BOARD OF DIRECTORS
+
+1.1 Size and Composition. Each Stockholder shall vote all shares of capital stock over which it has voting control so that the Board of Directors consists of seven (7) directors, designated as follows: (a) one director designated by Meridian Growth Partners III, L.P., for so long as it holds at least 500,000 shares of Series A Preferred Stock; (b) one director designated by Halyard Venture Fund IV, L.P., for so long as it holds at least 500,000 shares of Series B Preferred Stock; (c) two directors designated by the holders of a majority of the outstanding Common Stock held by the Key Holders, one of whom shall be the Company's then-serving Chief Executive Officer; and (d) three directors, not otherwise affiliated with the Company or any Investor, designated by the mutual agreement of the directors designated under clauses (a) through (c).
+
+1.2 Removal and Vacancies. A director designated under Section 1.1 may be removed only by the party or parties entitled to designate that director, and any vacancy shall be filled only by that party or those parties. This Section 1.2 is enforceable under Section 218(c) of the Delaware General Corporation Law.
+
+1.3 Committees. The Board shall maintain an audit committee and a compensation committee, each of which shall include at least one director designated under Section 1.1(a) or 1.1(b).
+
+1.4 Expenses and Insurance. The Company shall reimburse each director for reasonable out-of-pocket expenses incurred in attending meetings and shall maintain directors' and officers' liability insurance with coverage of at least $5,000,000, and shall not amend the indemnification provisions of its certificate of incorporation or bylaws in a manner adverse to any director without that director's consent.
+
+2. VOTING AGREEMENT
+
+2.1 Drag-Along. If the Board and the holders of a majority of the outstanding Preferred Stock, voting together as a single class on an as-converted basis, and the holders of a majority of the outstanding Common Stock held by the Key Holders, approve a Sale of the Company, each Stockholder shall vote its shares in favor of the transaction, shall not exercise appraisal or dissenters' rights, and shall execute the definitive agreements. No Stockholder shall be required, as a condition of the drag-along, to agree to any non-competition covenant, to indemnify beyond its pro rata share of the consideration actually received, or to bear liability other than on a several and not joint basis.
+
+2.2 Sale of the Company. "Sale of the Company" means a transaction or series of related transactions in which a person or group acquires more than fifty percent (50%) of the outstanding voting power of the Company, or all or substantially all of its assets, other than a bona fide equity financing.
+
+3. TRANSFER RESTRICTIONS
+
+3.1 Restriction on Transfer. No Key Holder shall transfer any shares of Common Stock except in compliance with this Section 3 and the legend requirements of Section 6.1. Any purported transfer in violation of this Section 3 is void.
+
+3.2 Right of First Refusal. Before transferring any shares, a Key Holder shall deliver a written notice to the Company describing the proposed transfer, the number of shares, the price, and the identity of the proposed transferee. The Company may elect to purchase all or part of the offered shares within thirty (30) days of the notice. Any shares the Company does not elect to purchase shall be offered to the Investors, pro rata, who may elect within an additional fifteen (15) days.
+
+3.3 Right of Co-Sale. If the Investors do not purchase all of the offered shares, each Investor may instead elect to participate in the proposed transfer on the same terms, selling a number of shares up to its pro rata portion of the total shares to be sold.
+
+3.4 Permitted Transfers. Sections 3.2 and 3.3 do not apply to a transfer by a Key Holder to a trust for the benefit of the Key Holder or immediate family members, by will or intestacy, or to an affiliate of an Investor, in each case if the transferee agrees in writing to be bound by this Agreement.
+
+4. PREEMPTIVE RIGHTS
+
+4.1 Right to Participate. If the Company proposes to issue new equity securities, each Investor that qualifies as an accredited investor may purchase up to its pro rata share of the new securities on the same terms, exercisable by written notice within twenty (20) days after the Company's notice of the proposed issuance.
+
+4.2 Excluded Securities. Section 4.1 does not apply to shares issued under an equity incentive plan approved by the Board, shares issued on conversion of Preferred Stock, shares issued in a bona fide acquisition approved by the Board, or shares issued in a registered public offering.
+
+5. INFORMATION RIGHTS
+
+5.1 Financial Statements. The Company shall deliver to each Investor holding at least 250,000 shares (a) unaudited monthly financial statements within thirty (30) days after each month end, (b) unaudited quarterly financial statements within forty-five (45) days after each quarter end, and (c) audited annual financial statements within one hundred twenty (120) days after each fiscal year end.
+
+5.2 Inspection. Each such Investor may inspect the Company's books and records and discuss its affairs with its officers, at reasonable times and on reasonable notice, for a purpose reasonably related to its investment.
+
+5.3 Confidentiality. Each Investor shall keep confidential all information it receives under this Section 5, except that an Investor may disclose it to its partners, members, and professional advisers who are bound to keep it confidential, or as required by law.
+
+6. LEGEND AND ENFORCEMENT
+
+6.1 Legend. Each certificate representing shares subject to this Agreement shall bear a legend stating that the shares are subject to transfer restrictions and voting obligations contained in a stockholders' agreement, a copy of which is on file at the Company's principal office, as permitted by Section 202 of the Delaware General Corporation Law.
+
+6.2 Specific Performance. The parties agree that monetary damages would be inadequate for a breach of this Agreement and that each party is entitled to specific performance and injunctive relief without the requirement of posting a bond, in addition to any other remedy at law or in equity.
+
+7. TERM AND TERMINATION
+
+7.1 Term. This Agreement takes effect on the date first written above and continues until the earliest of (a) the closing of a Sale of the Company, (b) the closing of a firm-commitment underwritten public offering of the Company's Common Stock, and (c) the written agreement of the Company, the holders of a majority of the outstanding Preferred Stock, and the holders of a majority of the Common Stock held by the Key Holders.
+
+7.2 Effect of Termination. On termination, this Agreement is of no further force or effect, except that Sections 5.3, 6.2 and 8 survive, and no termination relieves any party of liability for a breach occurring before termination.
+
+8. GENERAL
+
+8.1 Amendment and Waiver. This Agreement may be amended or waived only with the written consent of the Company, the holders of a majority of the outstanding Preferred Stock, and the holders of a majority of the outstanding Common Stock held by the Key Holders, provided that any amendment that adversely affects one Stockholder in a manner different from the other Stockholders requires that Stockholder's consent.
+
+8.2 Governing Law; Venue. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles. Each party irrevocably submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware, and, if that court lacks subject matter jurisdiction, the federal and state courts located in New Castle County, Delaware.
+
+8.3 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses on Schedule A or Schedule B.
+
+8.4 Entire Agreement. This Agreement amends, restates, and supersedes the Prior Agreement in its entirety and is the entire agreement among the parties with respect to its subject matter.
+
+8.5 Counterparts. This Agreement may be executed in counterparts, including by electronic signature, each of which is an original and all of which together constitute one instrument.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+KESTREL BIOWORKS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+MERIDIAN GROWTH PARTNERS III, L.P.
+
+By: /s/ Tomas Beaulieu
+Name: Tomas Beaulieu
+Title: Managing Partner
+
+HALYARD VENTURE FUND IV, L.P.
+
+By: /s/ Sunniva Alcaraz
+Name: Sunniva Alcaraz
+Title: General Partner
+
+KEY HOLDER:
+
+/s/ Priya Raghunathan
+Priya Raghunathan

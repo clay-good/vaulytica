@@ -17,7 +17,7 @@
       "preemptive",
       "protective provisions"
     ],
-    "negative_features": ["bylaws", "operating agreement"]
+    "negative_features": ["these bylaws", "operating agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],

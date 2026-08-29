@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "TEMP-012",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Survival clause silent on confidentiality / IP / indemnity",
   category: "temporal",
   default_severity: "warning",
@@ -62,7 +62,25 @@ export const rule: Rule = {
         )
       )
         hasIpOwnership = true;
-      if (/\b(?:indemnif|hold\s+\w+\s+harmless|defend\s+and\s+indemnify)/i.test(p.text))
+      // An indemnity this document does NOT contain. A stockholders' agreement
+      // promises the Company "shall not amend the INDEMNIFICATION PROVISIONS OF
+      // ITS CERTIFICATE OF INCORPORATION" — a covenant about another
+      // instrument's indemnity — and that made the survival clause report the
+      // indemnification as unnamed, when there is none here to survive.
+      if (
+        /\b(?:indemnif|hold\s+\w+\s+harmless|defend\s+and\s+indemnify)/i.test(p.text) &&
+        !/\bindemnif\w*\s+(?:provisions?|obligations?|rights?)\s+(?:of|in|under)\s+(?:its|the|that|such)\s+(?:certificate\s+of\s+incorporation|articles|bylaws|by-laws|charter|operating\s+agreement|partnership\s+agreement|[A-Z][\w&.-]*\s+Agreement)\b/i.test(
+          p.text,
+        ) &&
+        // A LIMIT on an indemnity is not an indemnity. A drag-along's
+        // protection — "No Stockholder shall be required ... to indemnify
+        // beyond its pro rata share of the consideration actually received" —
+        // promises the opposite of an indemnification obligation, and it made
+        // the survival clause report an indemnification that is not there.
+        !/\b(?:no|not)\s+[^.;]{0,60}?\brequired\s*(?:,[^.;]{0,60},)?\s*to\s+[^.;]{0,60}?\bindemnif/i.test(
+          p.text,
+        )
+      )
         hasIndemnity = true;
     });
 
