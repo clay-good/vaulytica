@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.161.0] — 2026-08-29
+
+### Added
+- **`family-owns-its-name.test.ts`** — a family may not claim another family's
+  own name as a title keyword. The catalog-routing sweep cannot see this: it
+  builds its probe from the family's own keywords AND its distinguishing
+  phrases, so the phrases carry the family past its impostor. The collision
+  only bites a real document, which may carry none of them — which is exactly
+  what happened to the voting agreement.
+
+### Fixed
+- Five more families claimed a sibling's identity:
+  - `piia` claimed "ip assignment"; a PIIA is never titled that.
+  - `rspa` claimed the bare "stock purchase agreement".
+  - `stockholders-agreement` claimed "investor rights agreement" and
+    "investors rights agreement".
+  - `saas-customer` and `saas-vendor` claimed "subscription agreement", which
+    is the SECURITIES subscription agreement — a Regulation D document, not a
+    SaaS one.
+  - `employment-at-will-us` claimed "offer letter".
+
+  Three claims are declared ambiguities rather than mistakes, each with its
+  reason: the two deep-and-launch NDA pairs, a D&O indemnification agreement
+  titled exactly "Indemnification Agreement", and "Separation Agreement", which
+  in family law IS the marital settlement agreement.
+
 ## [9.160.0] — 2026-08-29
 
 ### Added

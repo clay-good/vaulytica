@@ -4,7 +4,7 @@
   "name": "Restricted Stock Purchase Agreement",
   "description": "Founder / early-employee restricted stock purchase agreement subject to vesting and a § 83(b) election. Selects the §6.C equity ruleset (EQT-036..EQT-042).",
   "match_features": {
-    "title_keywords": ["restricted stock purchase agreement", "rspa", "stock purchase agreement"],
+    "title_keywords": ["restricted stock purchase agreement", "rspa"],
     "required_clauses": [],
     "distinguishing_phrases": ["repurchase right", "vesting", "83(b)", "stock power", "escrow"],
     "negative_features": ["stock option", "rsu"]
