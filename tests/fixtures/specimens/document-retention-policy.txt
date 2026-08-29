@@ -1,0 +1,51 @@
+RECORDS RETENTION AND DESTRUCTION POLICY
+
+Thornapple Instruments Corporation
+Approved by the Audit Committee on March 2, 2026. Owner: General Counsel. Reviewed annually.
+
+1. PURPOSE AND SCOPE
+
+This policy governs how the Corporation creates, stores, retains, and disposes of records. It applies to every director, officer, employee, and contractor, and to records in every medium — paper, email, chat, shared drives, cloud applications, mobile devices, backup media, and structured databases.
+
+2. DEFINITIONS
+
+"Record" means information, regardless of medium, created or received in the course of the Corporation's business and retained as evidence of an activity or because it has continuing value. "Electronically stored information" or "ESI" means any Record maintained in electronic form, including email, instant messages, documents in cloud storage, mobile device data, voicemail, and database entries. "Transitory material" means a draft, a duplicate, or a convenience copy with no continuing value.
+
+3. RETENTION SCHEDULE
+
+The retention period for each record type is set out below. Retention runs from the end of the fiscal year in which the record was created, unless stated otherwise.
+
+Corporate records — articles, bylaws, minute books, stock ledgers, board and committee minutes: permanent.
+Financial and accounting records — general ledger, audited financial statements, trial balances: 7 years.
+Accounts payable and receivable ledgers, invoices, expense reports: 7 years.
+Tax records — federal and state returns, supporting workpapers, IRS correspondence: 7 years after filing, and permanent for the returns themselves.
+Contracts and agreements, including amendments and statements of work: 7 years after expiration or termination.
+Real property records — deeds, leases, title policies: permanent for deeds; 7 years after expiration for leases.
+HR records — personnel files, offer letters, performance reviews: 7 years after separation.
+Payroll records, time cards, and wage rate tables: 3 years under the Fair Labor Standards Act.
+Benefit plan records subject to ERISA — plan documents, Forms 5500, participant records: 6 years after filing.
+I-9 forms: 3 years after hire or 1 year after separation, whichever is later.
+Health information subject to HIPAA — the policies and procedures required by 45 C.F.R. § 164.530(j): 6 years from creation or last effective date.
+Broker-dealer communications subject to SEC Rule 17a-4: 6 years for the first two years in an easily accessible place, or as the rule otherwise requires.
+Email and chat not falling within another category: 3 years.
+Transitory material: delete when no longer useful.
+
+4. LEGAL HOLD
+
+When litigation, an investigation, an audit, or a regulatory inquiry is reasonably anticipated, the General Counsel issues a legal hold notice. A legal hold suspends and overrides every retention period and every automatic deletion rule in this policy for the records it covers, including the routine purge of email and the recycling of backup media. Custodians shall preserve all responsive Records and ESI in place and shall stop destruction of any covered material immediately on receipt of the notice.
+
+Custodians shall acknowledge the hold in writing within five (5) business days. The General Counsel maintains a hold register, reissues each notice at least every six months, and releases a hold only in writing. Failure to comply with a legal hold may result in discipline up to termination and may expose the Corporation to sanctions for spoliation. IT shall suspend the affected auto-deletion jobs within two (2) business days of the notice and shall confirm suspension in writing.
+
+5. ELECTRONICALLY STORED INFORMATION
+
+ESI is subject to the same retention periods as its paper equivalent. Email is retained in the Corporation's archive for the period stated in Section 3, after which deletion is automatic. Files in approved cloud repositories are retained under the schedule applied to the workspace. Mobile device data that constitutes a Record must be synchronized to an approved repository; a Record kept only on a device is not preserved. Backup media are for disaster recovery only, are recycled on a 35-day rotation, and are not a records repository. Employees may not use personal accounts, personal devices, or unapproved applications to create or store Records, and may not use auto-deleting or ephemeral messaging for any Record. These practices follow the Sedona Principles on the preservation of Electronically Stored Information.
+
+6. FINAL DISPOSITION
+
+At the end of a retention period, and provided no legal hold applies, Records are disposed of by secure destruction. Paper Records are shredded by a NAID AAA certified vendor, and the vendor provides a certificate of destruction for each pickup, which the Corporation retains for 3 years. Electronic Records are deleted using media sanitization consistent with NIST SP 800-88, and media that cannot be sanitized is physically destroyed. The records manager keeps a destruction log recording the record type, the volume, the date, the method, and the authorizing person.
+
+7. ROLES AND ADMINISTRATION
+
+The General Counsel owns this policy and issues legal holds. The records manager maintains the retention schedule and the destruction log. Department heads identify the Records their department creates and apply the schedule. IT implements retention and deletion in the Corporation's systems and suspends automated deletion on notice of a legal hold. Every employee completes records training on hire and annually thereafter.
+
+The General Counsel reviews this policy at least annually and submits any proposed amendment to the Audit Committee for approval.

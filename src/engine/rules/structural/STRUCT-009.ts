@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -176,7 +176,7 @@ export function isQuotedIdiomUse(text: string, index: number, length: number): b
  * the term is a verb or a preposition and the term IS the subject.
  */
 const ATTRIBUTIVE_HEAD =
-  /^\s+(?:fee|fees|letter|letters|date|dates|period|periods|rate|rates|price|prices|amount|amounts|notice|notices|certificate|certificates|schedule|schedules|statement|statements|report|reports|threshold|thresholds)\b/;
+  /^\s+(?:fee|fees|letter|letters|date|dates|period|periods|rate|rates|price|prices|amount|amounts|notice|notices|certificate|certificates|schedule|schedules|statement|statements|report|reports|threshold|thresholds|manager|managers|management|training|log|logs|register|registers|custodian|custodians|retention|policy|program)\b/;
 
 export function isAttributiveUse(text: string, index: number, length: number): boolean {
   return ATTRIBUTIVE_HEAD.test(text.slice(index + length, index + length + 24));

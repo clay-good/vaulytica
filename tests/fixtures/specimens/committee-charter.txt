@@ -1,0 +1,44 @@
+AUDIT COMMITTEE CHARTER
+
+Thornapple Instruments Corporation
+Adopted by the Board of Directors on February 18, 2026
+
+I. PURPOSE
+
+The purpose of the Audit Committee of the Board of Directors of Thornapple Instruments Corporation is to assist the Board in its oversight of (a) the integrity of the Corporation's financial statements, (b) the Corporation's compliance with legal and regulatory requirements, (c) the qualifications, independence, and performance of the Corporation's independent auditor, (d) the performance of the Corporation's internal audit function, and (e) the Corporation's risk-assessment and risk-management policies. The Committee also prepares the audit committee report required by Item 407(d)(3)(i) of Regulation S-K.
+
+II. COMPOSITION AND INDEPENDENCE
+
+The Committee shall consist of at least three members of the Board. Each member shall be an independent director under Section 303A.02 of the NYSE Listed Company Manual and Rule 10A-3 under the Securities Exchange Act of 1934. No member of the Committee may accept, directly or indirectly, any consulting, advisory, or other compensatory fee from the Corporation other than board and committee fees, and no member may be an affiliated person of the Corporation or any subsidiary. A director who fails to satisfy these independence requirements may not serve on the Committee.
+
+Every member shall be financially literate, as the Board interprets that qualification in its business judgment, and at least one member shall be an audit committee financial expert as defined in Item 407(d)(5) of Regulation S-K. The composition of the Committee, including the appointment and removal of members and the designation of its chair, is determined by the Board on the recommendation of the Nominating and Corporate Governance Committee.
+
+III. AUTHORITY AND RESPONSIBILITIES
+
+A. Independent Auditor. The Committee is directly responsible for the appointment, compensation, retention, and oversight of the work of any registered public accounting firm engaged for the purpose of preparing or issuing an audit report or performing other audit, review, or attest services for the Corporation, and that firm shall report directly to the Committee. The Committee has the sole authority to appoint, retain, evaluate, and terminate the independent auditor, to approve all audit engagement fees and terms, and to pre-approve all permitted non-audit services. The Committee shall at least annually obtain and review a report by the independent auditor describing the firm's internal quality-control procedures and all relationships between the firm and the Corporation.
+
+B. Financial Reporting. The Committee shall review and discuss with management and the independent auditor the annual audited financial statements and the quarterly financial statements, including the disclosures under Management's Discussion and Analysis, before filing. The Committee shall review with the independent auditor any audit problems or difficulties and management's response, and shall discuss earnings press releases and the financial information and earnings guidance provided to analysts and rating agencies.
+
+C. Internal Audit and Controls. The Committee shall review the internal audit function's charter, plan, budget, and staffing, shall review significant findings and management's responses, and shall discuss the adequacy and effectiveness of the Corporation's internal control over financial reporting and its disclosure controls and procedures.
+
+D. Complaint Procedures. The Committee shall establish and maintain procedures for the receipt, retention, and treatment of complaints received by the Corporation regarding accounting, internal accounting controls, or auditing matters, and for the confidential, anonymous submission by employees of the Corporation of concerns regarding questionable accounting or auditing matters. The Committee shall oversee the investigation of each such submission and shall receive a report on the disposition of each. The Corporation shall not retaliate against any person who makes a report under these procedures.
+
+E. Advisors and Funding. The Committee has the authority to engage independent counsel and other advisors as it determines necessary to carry out its duties, without seeking Board approval. The Corporation shall provide appropriate funding, as determined by the Committee, for payment of compensation to the independent auditor, to any advisors employed by the Committee, and for ordinary administrative expenses of the Committee that are necessary or appropriate in carrying out its duties.
+
+F. Related-Party Transactions and Risk. The Committee shall review and approve or ratify all related-party transactions required to be disclosed under Item 404 of Regulation S-K, and shall discuss the Corporation's policies with respect to risk assessment and risk management, including cybersecurity risk.
+
+IV. MEETINGS
+
+The Committee shall hold meetings at least quarterly, and at least four times each fiscal year, and may hold additional meetings as it determines necessary. A majority of the members constitutes a quorum, and the act of a majority of the members present at a meeting at which a quorum is present is the act of the Committee. The Committee shall meet separately, in executive session and at least quarterly, with management, with the head of internal audit, and with the independent auditor. The Committee shall keep minutes of its meetings and may act by unanimous written consent.
+
+V. REPORTING TO THE BOARD
+
+The Committee shall report regularly to the Board on its activities, on the matters discussed at each meeting, and on any issues that arise with respect to the quality or integrity of the Corporation's financial statements, the Corporation's compliance with legal or regulatory requirements, the performance and independence of the independent auditor, and the performance of the internal audit function.
+
+VI. ANNUAL SELF-EVALUATION AND CHARTER REVIEW
+
+The Committee shall conduct an annual self-evaluation of its performance, including its effectiveness and compliance with this Charter, and shall report the results to the Board. The Committee shall review and reassess the adequacy of this Charter at least annually and shall recommend any proposed changes to the Board for approval. This Charter may be amended only by the Board.
+
+VII. LIMITATIONS
+
+While the Committee has the responsibilities set out in this Charter, it is not the duty of the Committee to plan or conduct audits, to determine that the Corporation's financial statements are complete and accurate and in accordance with generally accepted accounting principles, or to assure compliance with laws, regulations, or the Corporation's Code of Business Conduct and Ethics. Those are the responsibilities of management and, as to the audit, of the independent auditor.

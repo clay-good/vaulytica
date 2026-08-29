@@ -63,3 +63,15 @@ describe("STRUCT-009 — an attributive use is not the defined term (v1.8.0)", (
     expect(STRUCT_009.check(ctx)?.description).toBe("Commitment");
   });
 });
+
+describe("STRUCT-009 — more attributive heads (v1.9.0)", () => {
+  it('does not report "Record" for the records manager or records training', () => {
+    const ctx = buildContext([
+      "Records Retention Policy",
+      '"Record" means information, regardless of medium, created or received in the course of the business and retained as evidence of an activity.',
+      "The records manager maintains the schedule and the destruction log, and every employee completes records training on hire.",
+      "Each Record is disposed of at the end of its retention period.",
+    ]);
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+});

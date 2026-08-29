@@ -99,3 +99,35 @@ describe("STRUCT-003 — an effective-date recital is not a signature field (v1.
     ).toBeNull();
   });
 });
+
+describe("STRUCT-003 — a policy is adopted, not signed (v1.31.0)", () => {
+  // A records-retention policy and an audit committee charter have no
+  // signature block, and reporting one as unsigned is a `critical` with no
+  // answer. "Approved by the Audit Committee on March 2, 2026" names the BODY
+  // that executed it and the date it did so.
+  it("stands down on an adoption recital naming the adopting body and the date", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Records Retention and Destruction Policy",
+          "Approved by the Audit Committee on March 2, 2026. Owner: General Counsel.",
+          "The retention period for each record type is set out in the schedule below.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports an unsigned agreement whose only date is an effective date", () => {
+    // The note on PUBLICATION_STAMP records why a bare "Effective Date:" must
+    // not stand in for execution: plenty of SIGNED contracts carry one.
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Services Agreement",
+          "Effective Date: March 2, 2026.",
+          "Provider shall perform the Services described in Exhibit A.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

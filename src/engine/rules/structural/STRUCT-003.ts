@@ -183,6 +183,19 @@ const DELIVERY_RECITAL =
 // "Last reviewed" belongs beside "last updated": a policy, a register, and a
 // standing notice all stamp the REVIEW rather than the edit, and it is the
 // same publication stamp under a different verb.
+// A POLICY is ADOPTED, not signed. "Adopted by the Board of Directors on
+// February 18, 2026" names the BODY that executed it and the date it did so,
+// which is a corporate policy's whole execution — there is no signature block
+// on a records-retention policy or an audit committee charter, and reporting
+// one as unsigned is a `critical` with no answer.
+//
+// Narrow to an adopting BODY plus a date, deliberately: a bare "Effective
+// Date: …" appears on plenty of signed contracts, and the note on
+// `PUBLICATION_STAMP` above records why accepting that alone would silence the
+// finding on a genuinely unsigned agreement.
+const ADOPTION_RECITAL =
+  /\b(?:adopted|approved|ratified|issued|authorized)\s+by\s+(?:the\s+)?[^.\n]{0,60}?\b(?:board|committee|council|trustees|directors|shareholders|stockholders|members|general\s+counsel|chief\s+\w+\s+officer)\b[^.\n]{0,40}?\b(?:on|effective|as\s+of|dated)\s+(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{4}-\d{2}-\d{2})/;
+
 const PUBLICATION_STAMP =
   /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
 
@@ -262,7 +275,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.30.0",
+  version: "1.31.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -369,6 +382,7 @@ export const rule: Rule = {
           (DATED_ADOPTION.test(text) ||
             DELIVERY_RECITAL.test(text) ||
             PUBLICATION_STAMP.test(text) ||
+            ADOPTION_RECITAL.test(text) ||
             hasLetterClosing(text) ||
             CLICKWRAP_ACCEPTANCE.test(text))
         ) {

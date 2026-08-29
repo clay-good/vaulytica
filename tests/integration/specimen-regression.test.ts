@@ -679,6 +679,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // An audit committee charter — the 191st specimen, and the first for
+  // `committee-charter`. GOV-051..060 are all satisfied: purpose, composition
+  // and independence under Rule 10A-3, the § 301 auditor-oversight authority,
+  // the complaint procedures with confidential anonymous submission, funding
+  // for advisors, at-least-quarterly meetings, the annual self-evaluation,
+  // regular reporting to the Board, and the annual charter review.
+  "committee-charter.txt": {
+    playbook: "committee-charter",
+    findings: ["OBLI-005"],
+  },
+  // A records retention and destruction policy — the 192nd specimen, and the
+  // first for `document-retention-policy`. POL-028..032 are all satisfied.
+  // STRUCT-009 stays and is fair: the retention schedule writes its category
+  // labels as "Corporate records", "Tax records", "HR records", which is a
+  // lowercase use of the defined "Record". It exposed STRUCT-003 reporting a
+  // `critical` "no signature block" on a policy nobody signs.
+  "document-retention-policy.txt": {
+    playbook: "document-retention-policy",
+    findings: ["OBLI-005", "STRUCT-009"],
+  },
   // A code of business conduct and ethics — the 190th specimen, and the first
   // for `code-of-conduct`. POL-001..005 are all satisfied: the scope over
   // directors, officers, and employees; the SOX § 406 honest-and-ethical and

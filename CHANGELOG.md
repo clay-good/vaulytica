@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.236.0] — 2026-08-29
+
+### Added
+- An audit committee charter — the 191st specimen, and the first for
+  `committee-charter`. GOV-051..060 are all satisfied: purpose, composition and
+  independence under Rule 10A-3, the § 301 auditor-oversight authority, the
+  complaint procedures with confidential anonymous submission, funding for
+  advisors, at-least-quarterly meetings, the annual self-evaluation, regular
+  reporting to the Board, and the annual charter review.
+- A records retention and destruction policy — the 192nd specimen, and the
+  first for `document-retention-policy`. POL-028..032 are all satisfied.
+
+### Fixed
+- **A POLICY is ADOPTED, not signed.** STRUCT-003 reported a `critical` "no
+  signature block" on a records-retention policy — a finding with no answer,
+  since nobody signs one. "Approved by the Audit Committee on March 2, 2026"
+  names the BODY that executed it and the date it did so, and that is a
+  corporate policy's whole execution. Narrow to an adopting body plus a date,
+  deliberately: a bare "Effective Date:" appears on plenty of SIGNED contracts,
+  and accepting that alone would silence the finding on a genuinely unsigned
+  agreement.
+- **STRUCT-009's attributive head nouns now cover the role and program forms.**
+  A retention policy defines "Record" and then names the records MANAGER, the
+  records LOG, and records TRAINING — none of which is the defined Record.
+
 ## [9.235.0] — 2026-08-29
 
 ### Fixed
