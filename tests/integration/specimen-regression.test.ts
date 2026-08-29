@@ -40,6 +40,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A book publishing copyright license. It routed to `msa-general`: the
+  // family listed "patent", "trademark" and "assignment" as NEGATIVE
+  // features, and a copyright license reserves patent and trademark rights in
+  // terms and says in its own Ownership section that it "is a license and not
+  // a transfer of copyright ownership, and nothing in it constitutes an
+  // ASSIGNMENT of the copyright". Once routed, IPL-021 demanded a CITATION to
+  // 17 U.S.C. § 106 at `critical` — which no real copyright license carries,
+  // and which its own recommendation does not supply. It was firing on this
+  // family's own minimal-PASS fixture.
+  "copyright-license.txt": {
+    playbook: "copyright-license",
+    findings: ["OBLI-005", "RISK-011", "TEMP-006", "TEMP-007"],
+  },
   // A university exclusive patent license, Bayh-Dole subject. It routed to
   // `eula` — an end-user licence for consumer software — and was told it
   // states no EU consumer-law minimums under the Digital Content Directive.

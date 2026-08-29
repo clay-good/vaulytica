@@ -565,6 +565,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-021",
+    version: "1.1.0",
     name: "Rights granted — reproduction / distribution / display / performance / derivative",
     description: "Copyright license must specify which 17 U.S.C. § 106 rights are granted.",
     citation: copyrightAct("106", "Exclusive rights"),
@@ -579,8 +580,19 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
     present_patterns: [
       // "copy" matched "Copyright" in this family's own title. The § 106
       // rights are named in full instead, so the pillar reads the GRANT.
-      /(reproduc\w+|distribut\w+|publicly\s+(?:display|perform)\w*|display\w*|perform\w*|derivative\s+works?)/i,
-      /(section\s+106|17\s+u\.?s\.?c\.?\s+§?\s*106)/i,
+      //
+      // The second pillar used to demand a CITATION to § 106, and no real
+      // copyright license carries one — a publishing agreement grants "the
+      // exclusive right to reproduce, distribute, publicly display and create
+      // derivative works" and never names the statute. The rule's own
+      // recommendation ("enumerate which of reproduction, distribution, public
+      // display, public performance, and preparation of derivative works are
+      // licensed") does not satisfy it either, and it fired on this family's
+      // own minimal-PASS fixture. Read as a conjunction the two pillars now
+      // mean "names the reproduction right AND at least one other § 106 right
+      // (or cites the section)", which is what an enumerated grant looks like.
+      /(reproduc\w+|\bprint\b|\bpublish\w*|\bcopies\b)/i,
+      /(distribut\w+|publicly\s+(?:display|perform)\w*|display\w*|perform\w*|derivative\s+works?|section\s+106|17\s+u\.?s\.?c\.?\s+§?\s*106)/i,
     ],
     require_all_present: true,
   }),

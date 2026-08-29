@@ -12,9 +12,12 @@
       "non-exclusive",
       "reproduction",
       "derivative works",
-      "section 106"
+      "section 106",
+    "reversion of rights",
+    "out of print",
+    "royalty statements"
     ],
-    "negative_features": ["patent", "trademark", "assignment"]
+    "negative_features": ["patent license agreement", "trademark license agreement", "work made for hire"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Licensed Works", "Term", "Territory"],

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.185.0] — 2026-08-29
+
+### Added
+- A book publishing copyright license — the 147th specimen.
+
+### Fixed
+- **IPL-021 demanded a CITATION to 17 U.S.C. § 106, at `critical`.** No real
+  copyright license carries one: a publishing agreement grants "the exclusive
+  right to reproduce, distribute, publicly display and create derivative
+  works" and never names the statute. Neither does the rule's own
+  recommendation. It was firing on this family's own **minimal-PASS
+  fixture** — a rule no compliant document could satisfy, sitting in the
+  golden corpus. Read as a conjunction the two pillars now mean "names the
+  reproduction right AND at least one other § 106 right (or cites the
+  section)", which is what an enumerated grant looks like. The fixture built
+  to fail it still fails it.
+- **`copyright-license` routed to `msa-general`** — the family listed
+  "patent", "trademark" and "assignment" as NEGATIVE features, and a copyright
+  license reserves patent and trademark rights in terms and says in its own
+  Ownership section that it "is a license and not a transfer of copyright
+  ownership, and nothing in it constitutes an ASSIGNMENT of the copyright".
+  The fourth self-penalizing family found by writing the document.
+
 ## [9.184.0] — 2026-08-29
 
 ### Added
