@@ -4,7 +4,12 @@
   "name": "Grant Agreement (Foundation / Government)",
   "description": "Grant award agreement from a foundation or government funder, reviewed for the restricted-purpose, reporting, and clawback terms. Selects the GOV-133..138 ruleset (6 checks).",
   "match_features": {
-    "title_keywords": ["grant agreement", "grant award", "notice of award", "subaward agreement"],
+    "title_keywords": [
+      "grant agreement",
+      "grant award",
+      "notice of award",
+      "subaward agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "grant funds",
@@ -15,22 +20,45 @@
       "return of grant funds",
       "no lobbying"
     ],
-    "negative_features": ["employment offer", "merger agreement", "purchase and sale"]
+    "negative_features": [
+      "employment offer",
+      "merger agreement",
+      "purchase and sale"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Grant", "Grantee", "Grant Period"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Grant",
+    "Grantee",
+    "Grant Period"
+  ],
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "2-CFR-200",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["fiscal-sponsorship-agreement", "nonprofit-bylaws"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "fiscal-sponsorship-agreement",
+    "nonprofit-bylaws"
+  ],
   "compliance_matrix_columns": [
     "Grant amount, period, and payment schedule",
     "Restricted purpose and budget deviation limits",
     "Narrative and financial reporting deadlines",
     "Unexpended-funds and clawback terms",
     "Lobbying, political-activity, and use restrictions",
-    "Audit, records access, and retention (2 C.F.R. § 200 for federal funds)"
+    "Audit, records access, and retention (2 C.F.R. \u00a7 200 for federal funds)"
   ]
 }

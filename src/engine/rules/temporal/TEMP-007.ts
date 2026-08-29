@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { allMatches, emit, expandSurvivalSectionRefs } from "../_helpers.js";
+import { forEachParagraph } from "../../../extract/walk.js";
 
 const EXPECTED = [
   ["confidentiality", /confidential/i],
@@ -11,7 +12,7 @@ const EXPECTED = [
 /** TEMP-007 — Survival list completeness (info). */
 export const rule: Rule = {
   id: "TEMP-007",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Survival list completeness",
   category: "temporal",
   default_severity: "info",
@@ -44,7 +45,18 @@ export const rule: Rule = {
       return null;
     }
     const combined = expandSurvivalSectionRefs(ctx, survivals.map((s) => s.text).join("\n"));
-    const missing = EXPECTED.filter(([, re]) => !re.test(combined)).map(([name]) => name);
+    // An obligation the document does not HAVE cannot be missing from its
+    // survival list. A charitable grant agreement with no confidentiality
+    // clause and no indemnity was told its survival list omits both — a
+    // defect with no answer short of adding two clauses the instrument does
+    // not want. Only a category the document states somewhere is audited.
+    const present = new Set<string>();
+    forEachParagraph(ctx.tree, (p) => {
+      for (const [name, re] of EXPECTED) if (re.test(p.text)) present.add(name);
+    });
+    const missing = EXPECTED.filter(([name, re]) => present.has(name) && !re.test(combined)).map(
+      ([name]) => name,
+    );
     if (missing.length === 0) return null;
     return emit(ctx, rule, {
       title: `Survival list may be missing categories: ${missing.join(", ")}`,

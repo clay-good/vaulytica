@@ -7945,7 +7945,17 @@
       "Project",
       "Project Fund"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRC-501C3",
@@ -8486,7 +8496,17 @@
       "Grantee",
       "Grant Period"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "2-CFR-200",

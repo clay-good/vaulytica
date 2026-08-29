@@ -18,16 +18,39 @@
       "administrative fee",
       "grantor restricted funds"
     ],
-    "negative_features": ["employment agreement", "merger", "lease of the premises"]
+    "negative_features": [
+      "employment agreement",
+      "merger",
+      "lease of the premises"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Sponsor", "Project", "Project Fund"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Sponsor",
+    "Project",
+    "Project Fund"
+  ],
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "IRC-501C3",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["nonprofit-bylaws", "grant-agreement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "nonprofit-bylaws",
+    "grant-agreement"
+  ],
   "compliance_matrix_columns": [
     "Model A vs. Model C characterization",
     "Variance power retained by the sponsor",

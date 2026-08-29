@@ -535,7 +535,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // family's own minimal-PASS fixture.
   "copyright-license.txt": {
     playbook: "copyright-license",
-    findings: ["OBLI-002", "OBLI-005", "RISK-011", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-002", "OBLI-005", "RISK-011", "TEMP-006"],
   },
   // A university exclusive patent license, Bayh-Dole subject. It routed to
   // `eula` — an end-user licence for consumer software — and was told it
@@ -654,7 +654,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // with an empty rule profile.
   "litigation-funding.txt": {
     playbook: "litigation-funding-agreement",
-    findings: ["STRUCT-018", "OBLI-005", "TEMP-006", "TEMP-007"],
+    findings: ["STRUCT-018", "OBLI-005", "TEMP-006"],
   },
   // A North Carolina residential purchase and sale contract. It routed to the
   // COMMERCIAL `real-estate-psa` and was told at `warning` to add a § 1031
@@ -665,7 +665,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // compliant contract.
   "residential-purchase.txt": {
     playbook: "residential-purchase-agreement",
-    findings: ["FIN-006", "OBLI-005", "TEMP-006", "TEMP-007", "TEMP-008"],
+    findings: ["FIN-006", "OBLI-005", "TEMP-006", "TEMP-008"],
   },
   // An amended and restated NVCA-style stockholders' agreement. Four false
   // positives, all rigid drafting assumptions: a section headed VOTING
@@ -679,6 +679,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A foundation grant award — the 183rd specimen, and the first for
+  // `grant-agreement`. GOV-133..138 are all satisfied. It exposed two
+  // defects: the family had an empty `rule_overrides`, so a charitable grant
+  // was told it does not allocate IP and has no indemnity or liability cap;
+  // and TEMP-007 reported that its survival list omits confidentiality and
+  // indemnity, two clauses the instrument does not have at all.
+  "grant-agreement.txt": {
+    playbook: "grant-agreement",
+    findings: ["OBLI-005", "STRUCT-018", "TEMP-006", "TEMP-008"],
+  },
   // A pre-suit demand letter on unpaid invoices — the 182nd specimen, and the
   // first for `demand-letter`. Clean: SET-011..014 are satisfied by the
   // statement of facts, the specific demand with a deadline, the absence of
@@ -1811,7 +1821,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-007",
       "RISK-011",
       "TEMP-006",
-      "TEMP-007",
     ],
   },
 
@@ -1875,7 +1884,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-005",
       "RISK-007",
       "TEMP-006",
-      "TEMP-007",
       "TEMP-008",
       "TERM-001",
       "TERM-006",

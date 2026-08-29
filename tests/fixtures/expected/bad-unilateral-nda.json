@@ -752,7 +752,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -1074,7 +1074,7 @@
       "title": "Survival clause present"
     },
     {
-      "description": "Survival clause does not appear to include: confidentiality, indemnity, payment, governing law.",
+      "description": "Survival clause does not appear to include: confidentiality, governing law.",
       "document_position": 537,
       "excerpt": {
         "end_offset": 556,
@@ -1085,20 +1085,20 @@
       "explanation": "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
       "id": "TEMP-007-s1.3-537",
       "rule_id": "TEMP-007",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "info",
       "source_citations": [],
-      "title": "Survival list may be missing categories: confidentiality, indemnity, payment, governing law"
+      "title": "Survival list may be missing categories: confidentiality, governing law"
     }
   ],
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "b8a323dd6134c7a814606e40c6a443a7a84b8b4391936aea76e82dc644fb597f",
+  "result_hash": "0b9fa79b74790b889a058d60fa6a6b737cd14fc0a46554cf924c170661171608",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.224.0"
+  "version": "9.225.0"
 }

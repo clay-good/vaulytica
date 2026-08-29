@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.225.0] — 2026-08-29
+
+### Added
+- A foundation grant award — the 183rd specimen, and the first for
+  `grant-agreement`. GOV-133..138 are all satisfied: award amount and period of
+  performance, restricted purpose with a budget-deviation threshold, narrative
+  and financial reporting deadlines, return of unexpended funds and repayment
+  on demand, the § 4945 lobbying and political-activity restrictions, and
+  records retention with audit access.
+
+### Fixed
+- **`grant-agreement` and `fiscal-sponsorship-agreement` carried an empty
+  `rule_overrides`.** A charitable grant was told it does not allocate
+  ownership of intellectual property and has no indemnity or
+  limitation-of-liability clause. None of the three belongs in a one-way
+  funding instrument.
+- **TEMP-007 reported categories the document does not HAVE.** The grant has no
+  confidentiality clause and no indemnity, and was told its survival list omits
+  both — a defect with no answer short of adding two clauses the instrument
+  does not want. Only a category the document states somewhere is now audited,
+  which also cleared the same false positive on five earlier specimens and on
+  one golden fixture — where the engineered defect, a missing governing-law
+  clause, is still reported by CHOICE-001, the rule that owns it.
+
 ## [9.224.0] — 2026-08-29
 
 ### Added
