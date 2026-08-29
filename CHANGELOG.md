@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.155.0] — 2026-08-29
+
+### Fixed
+- **Three conjunctions taken off the pillar-vacuity debt list**, each by
+  replacing the pillar its family's own title satisfied:
+  - `DISC-036` conjoined "notice of deposition" — the family's title — with the
+    time-and-place test, so the whole check was the second pillar. The
+    OPERATIVE sentence ("PLEASE TAKE NOTICE", "will take the deposition of") is
+    what a notice carries and a title never does.
+  - `PLDG-006` had the bare word "damages" as a pillar, and `complaint`'s title
+    keywords include "petition for damages". The relief has to be DEMANDED with
+    a verb now — awarded, recovered, entered — which a title never does.
+  - `EST-401` conjoined "irrevocab", which is an Irrevocable Trust's whole
+    name, with the recital that makes the trust irrevocable. The recital is the
+    check; the word in the title is not.
+
+  Thirty-one conjunctions remain on the list.
+
 ## [9.154.0] — 2026-08-29
 
 ### Added

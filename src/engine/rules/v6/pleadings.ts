@@ -107,11 +107,16 @@ const COMPLAINT = pack("complaint", C, [
   },
   {
     id: "PLDG-006",
+    ver: "1.1.0",
     name: "Demand for relief",
     cite: frcp("8(a)(3)", "claim for relief — demand for the relief sought"),
     pat: [
       /(wherefore|prayer\s+for\s+relief|demand(s)?\s+judgment|requests?\s+that\s+(this|the)\s+court)/i,
-      /(damages|injunctive|declaratory|costs|attorneys['’]?\s+fees|such\s+other\s+(and\s+further\s+)?relief)/i,
+      // The bare word "damages" sits inside this family's own title keyword
+      // "petition for damages", so the pillar could never fail — and a bare
+      // "for damages" is still inside it. The relief has to be DEMANDED with a
+      // verb, which a title never does.
+      /((?:award(?:ing)?|recover(?:y\s+of)?|judgment\s+(?:for|in\s+the\s+amount)|entry\s+of)\s+(?:compensatory\s+|actual\s+|consequential\s+)?damages|compensatory\s+damages|damages\s+in\s+an\s+amount|injunctive\s+relief|declaratory\s+(?:judgment|relief)|costs\s+of\s+(?:this\s+)?(?:suit|action)|attorneys['’]?\s+fees|such\s+other\s+(and\s+further\s+)?relief)/i,
     ],
     all: true,
     why: "Rule 8(a)(3) requires a demand for the relief sought. A default judgment cannot exceed what the demand asked for, so an omitted or narrow prayer caps the case before it starts.",

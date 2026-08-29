@@ -13,13 +13,16 @@ const C = "trust-estate";
 const IRREVOCABLE = pack("irrevocable-trust", C, [
   {
     id: "EST-401",
+    ver: "1.1.0",
     name: "Express irrevocability recital",
     cite: uniformAct("Uniform Trust Code § 602", "revocation or amendment of a revocable trust"),
+    // "irrevocab" is this family's whole NAME — an Irrevocable Trust says it
+    // in its title — so as a pillar it could never fail, and the conjunction
+    // rested entirely on the recital below. Which is the right check: the
+    // RECITAL is what makes the trust irrevocable, not the word in the title.
     pat: [
-      /irrevocab/i,
       /(may\s+not\s+be\s+(revoked|amended)|is\s+irrevocable|reserves?\s+no\s+power|no\s+power\s+to\s+(alter|revoke|amend))/i,
     ],
-    all: true,
     why: "UTC § 602 reverses the common-law presumption: a trust is revocable unless the terms expressly provide otherwise. A trust intended to be irrevocable that does not say so is revocable in every UTC state, which destroys the estate-tax result.",
     fix: 'State expressly: "This Trust is irrevocable. The Settlor reserves no power to alter, amend, revoke, or terminate this Trust."',
     sev: "critical",

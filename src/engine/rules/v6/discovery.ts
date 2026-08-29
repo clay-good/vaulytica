@@ -590,10 +590,14 @@ const RULE_26F = pack("rule-26f-report", C, [
 const DEPO = pack("deposition-notice", C, [
   {
     id: "DISC-036",
+    ver: "1.1.0",
     name: "Reasonable written notice with time and place",
     cite: frcp("30(b)(1)", "depositions by oral examination — notice of the deposition"),
     pat: [
-      /(notice\s+of\s+(the\s+)?(taking\s+of\s+)?deposition|please\s+take\s+notice)/i,
+      // "Notice of deposition" is this family's own TITLE, so as a pillar it
+      // could never fail and the conjunction rested entirely on the second.
+      // The OPERATIVE sentence is what a notice carries and a title never does.
+      /(please\s+take\s+notice|notice\s+is\s+hereby\s+given|will\s+take\s+the\s+deposition)/i,
       /(on\s+\w+\s+\d{1,2},?\s+\d{4}|at\s+\d{1,2}:\d{2}|commencing\s+at|located\s+at)/i,
     ],
     all: true,

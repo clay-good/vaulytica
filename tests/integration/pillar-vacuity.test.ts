@@ -47,7 +47,7 @@ const KNOWN_COLLAPSED = new Set<string>([
   "DISC-020",
   "DISC-024",
   "DISC-030",
-  "DISC-036",
+
   "EMP-101",
   "EMP-110",
   "EMP-121",
@@ -62,11 +62,11 @@ const KNOWN_COLLAPSED = new Set<string>([
   "ENG-027",
   "ENG-028",
   "ENG-029",
-  "EST-401",
+
   "EST-426",
   "GOV-101",
   "HC-127",
-  "PLDG-006",
+
   "PLDG-009",
   "PLDG-012",
   "PRV-102",
