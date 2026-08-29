@@ -1742,11 +1742,11 @@ describe("names a document invokes rather than defines", () => {
   it("still flags an ordinary Title-Case term the document never defines", () => {
     expect(
       undef(
-        "Claimant delivered the Acceptance Certificate to Respondent.",
-        "Respondent countersigned the Acceptance Certificate on February 14, 2026.",
-        "The Acceptance Certificate is conclusive as to conformity.",
+        "Claimant delivered the Sea Trial Records to Respondent.",
+        "Respondent countersigned the Sea Trial Records on February 14, 2026.",
+        "The Sea Trial Records are conclusive as to conformity.",
       ),
-    ).toContain("Acceptance Certificate");
+    ).toContain("Sea Trial Records");
   });
 });
 
@@ -1978,5 +1978,23 @@ describe("a candidate cut at a lowercase connector", () => {
         "The Purchase Price excludes taxes.",
       ),
     ).toContain("Purchase Price");
+  });
+});
+
+describe("the name of another INSTRUMENT the document references", () => {
+  // "the Investors' Rights Agreement", "the Voting Agreement", "the Restated
+  // Certificate" — a document that names another agreement is not defining a
+  // term, and whether that instrument is attached is STRUCT-018's question.
+  it("does not flag a referenced instrument as an undefined term", () => {
+    const terms = extractDefinitions(
+      buildTree([
+        "Stock Purchase Agreement",
+        "Each additional purchaser shall become a party to the Investors' Rights Agreement, the Voting Agreement, and this Agreement.",
+        "The Voting Agreement is executed by the Company and the requisite holders.",
+        "The Investors' Rights Agreement governs registration rights.",
+      ]),
+    ).undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Voting Agreement");
+    expect(terms).not.toContain("Rights Agreement");
   });
 });

@@ -1,0 +1,87 @@
+SERIES B PREFERRED STOCK PURCHASE AGREEMENT
+
+THIS SERIES B PREFERRED STOCK PURCHASE AGREEMENT (this "Agreement") is made as of July 14, 2026, by and among Kestrel Bioworks, Inc., a Delaware corporation (the "Company"), and the investors listed on Exhibit A (each a "Purchaser").
+
+1. PURCHASE AND SALE OF PREFERRED STOCK
+
+1.1 Sale and Issuance. Subject to the terms of this Agreement, the Company shall adopt and file with the Secretary of State of the State of Delaware an Amended and Restated Certificate of Incorporation in the form attached as Exhibit B (the "Restated Certificate") on or before the Initial Closing, and shall sell, and each Purchaser shall purchase, the number of shares of Series B Preferred Stock set out opposite that Purchaser's name on Exhibit A at a purchase price of $4.7250 per share.
+
+1.2 Closing. The initial closing (the "Initial Closing") shall take place remotely by exchange of documents and signatures on July 14, 2026, or at such other time as the Company and Purchasers acquiring a majority of the shares agree.
+
+1.3 Subsequent Closings. At any time within ninety (90) days after the Initial Closing, the Company may sell up to the balance of the authorized Series B Preferred Stock to additional purchasers, each of whom shall become a party to this Agreement, the Investors' Rights Agreement, the Voting Agreement, and the Right of First Refusal and Co-Sale Agreement by executing a counterpart signature page.
+
+1.4 Use of Proceeds. The Company shall use the proceeds for working capital, clinical development of its lead program, and general corporate purposes, and not to redeem any capital stock or repay indebtedness to an officer, director, or affiliate.
+
+2. REPRESENTATIONS AND WARRANTIES OF THE COMPANY
+
+The Company represents and warrants to each Purchaser that, except as set out on the Disclosure Schedule attached as Exhibit C, which exceptions are deemed part of these representations:
+
+2.1 Organization and Good Standing. The Company is duly organized, validly existing, and in good standing under Delaware law, and is qualified to do business in each jurisdiction where the failure to qualify would have a Material Adverse Effect.
+
+2.2 Capitalization. Immediately before the Initial Closing, the authorized capital consists of 42,000,000 shares of Common Stock, of which 11,480,000 are issued and outstanding, and 18,600,000 shares of Preferred Stock, of which 7,200,000 are designated Series A Preferred Stock and all are outstanding. All outstanding shares are validly issued, fully paid, and non-assessable, and were issued in compliance with applicable federal and state securities laws.
+
+2.3 Authorization. All corporate action required to authorize this Agreement, the Restated Certificate, and the issuance of the Series B Preferred Stock and the Common Stock issuable on conversion has been taken, and this Agreement is the Company's valid and binding obligation, enforceable in accordance with its terms except as limited by bankruptcy and equitable principles.
+
+2.4 Valid Issuance. The Series B Preferred Stock, when issued and paid for in accordance with this Agreement, will be validly issued, fully paid, non-assessable, and free of restrictions on transfer other than those under this Agreement, the Investors' Rights Agreement, and applicable securities laws.
+
+2.5 Litigation. There is no action pending or, to the Company's knowledge, threatened against the Company that would reasonably be expected to have a Material Adverse Effect, and the Company is not a party to any order of any court or agency.
+
+2.6 Intellectual Property. The Company owns or possesses sufficient rights to all intellectual property necessary for its business as now conducted, without any conflict with the rights of others of which the Company is aware. Each employee and consultant has executed a confidential information and invention assignment agreement.
+
+2.7 Compliance with Laws. The Company is not in violation of any provision of the Restated Certificate or its bylaws, or of any statute, rule, or order, in a manner that would have a Material Adverse Effect.
+
+2.8 Financial Statements. The Company has delivered unaudited financial statements as of and for the period ended May 31, 2026, which were prepared in accordance with generally accepted accounting principles applied consistently, subject to normal year-end adjustments and the absence of footnotes.
+
+2.9 Tax Returns. The Company has filed all required tax returns and paid all taxes shown as due.
+
+2.10 Disclosure. The Company has made available to each Purchaser all information it has requested for deciding whether to purchase the Series B Preferred Stock, and no representation in this Agreement contains an untrue statement of a material fact.
+
+3. REPRESENTATIONS AND WARRANTIES OF THE PURCHASERS
+
+Each Purchaser, severally and not jointly, represents and warrants to the Company that:
+
+3.1 Authorization. This Agreement is that Purchaser's valid and binding obligation.
+
+3.2 Purchase Entirely for Own Account. That Purchaser is acquiring the shares for its own account for investment and not with a view to distribution.
+
+3.3 Accredited Investor. That Purchaser is an "accredited investor" as Rule 501(a) of Regulation D promulgated under the Securities Act of 1933 defines the term.
+
+3.4 Restricted Securities. That Purchaser understands the shares are "restricted securities" that may not be resold without registration or an exemption, and that the certificates will bear the legend required by Rule 144.
+
+3.5 No General Solicitation. That Purchaser is not purchasing as a result of any general solicitation or general advertising.
+
+4. CONDITIONS TO CLOSING
+
+4.1 Conditions of the Purchasers. Each Purchaser's obligation to purchase is conditioned on: the Company's representations being true and correct as of the Initial Closing; the Company's performance of its obligations; the filing of the Restated Certificate; delivery of a legal opinion from the Company's counsel; execution of the Investors' Rights Agreement, the Voting Agreement, and the Right of First Refusal and Co-Sale Agreement by the Company and the requisite holders; delivery of a certificate of the Company's secretary; and the absence of any order prohibiting the purchase.
+
+4.2 Conditions of the Company. The Company's obligation is conditioned on the Purchasers' representations being true and correct and on the Purchasers' performance of their obligations.
+
+5. MISCELLANEOUS
+
+5.1 Survival. The representations and warranties in this Agreement survive the Initial Closing for eighteen (18) months, except that those in Sections 2.1, 2.2, 2.3, and 2.4 survive indefinitely.
+
+5.2 Transfer; Successors. This Agreement binds and benefits the parties and their successors and permitted assigns.
+
+5.3 Governing Law. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles.
+
+5.4 Expenses. The Company shall pay the reasonable fees and expenses of one counsel for the Purchasers, not to exceed $50,000.
+
+5.5 Amendment. This Agreement may be amended only with the written consent of the Company and Purchasers holding a majority of the Series B Preferred Stock, and any amendment so effected is binding on every Purchaser.
+
+5.6 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses on Exhibit A.
+
+5.7 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+KESTREL BIOWORKS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+
+MERIDIAN GROWTH PARTNERS III, L.P.
+
+By: /s/ Tomas Beaulieu
+Name: Tomas Beaulieu
+Title: Managing Partner

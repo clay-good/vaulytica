@@ -1065,6 +1065,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // The NAME OF ANOTHER INSTRUMENT the document references — "the
+      // Investors' Rights Agreement", "the Voting Agreement", "the Restated
+      // Certificate". A document that names another agreement is not defining
+      // a term, and whether that instrument is attached is STRUCT-018's
+      // question, not this one's.
+      if (
+        /\s(?:Agreement|Certificate|Indenture|Debenture|Mortgage|Guaranty|Guarantee|Charter|Bylaws|By-laws)$/.test(
+          phrase,
+        )
+      )
+        continue;
       // The NAME OF A RULE SET — "the Commercial Arbitration Rules", "the
       // Construction Industry Mediation Procedures". A body's published rules
       // are an external authority, like a statute, and a document that invokes

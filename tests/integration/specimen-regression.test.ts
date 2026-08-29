@@ -40,6 +40,39 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An NVCA Series B PREFERRED STOCK PURCHASE AGREEMENT — a primary venture
+  // financing, in which the company ISSUES new shares.
+  //
+  // CATALOG GAP, recorded rather than papered over: the catalog carries the
+  // whole NVCA suite — the investors' rights agreement, the voting agreement,
+  // the ROFR and co-sale agreement, the SAFE, the convertible note — but NOT
+  // the stock purchase agreement that closes the round. `stock-purchase-
+  // agreement` is the ABA private-target M&A SPA, so this document is checked
+  // for sandbagging, a stockholder representative, and selling-stockholder
+  // restrictive covenants, none of which a financing has. Narrowing the M&A
+  // family with negatives an issuance carries ("accredited investor",
+  // "Restated Certificate", "Investors' Rights Agreement") takes it to 0.6 —
+  // still over the threshold — so the fix is a new family with its own pack,
+  // not another negative feature.
+  "stock-purchase.txt": {
+    playbook: "stock-purchase-agreement",
+    findings: [
+      "MNA-016",
+      "MNA-017",
+      "MNA-018",
+      "OBLI-007",
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-012",
+      "TERM-002",
+      "TERM-005",
+      "CHOICE-003",
+      "OBLI-005",
+      "TEMP-002",
+    ],
+  },
   // An NVCA-style right of first refusal and co-sale agreement. FOUR of its
   // own checks fired on the drafting they exist to require, three at
   // `critical`: EQT-064 and EQT-065 wanted the defined phrase adjacent to the
@@ -1053,7 +1086,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // A fixed-rate promissory note with a flat late charge.
   "promissory-note.txt": {
     playbook: "promissory-note",
-    findings: ["STRUCT-006", "FIN-009", "STRUCT-005"],
+    findings: ["FIN-009", "STRUCT-005"],
   },
 
   // An assignment is a completed conveyance: it has no term, nothing to

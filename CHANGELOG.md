@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.200.0] — 2026-08-29
+
+### Added
+- An NVCA Series B preferred stock purchase agreement — the 161st specimen.
+
+### Fixed
+- **The name of another INSTRUMENT the document references was reported as an
+  undefined term** — "the Investors' Rights Agreement", "the Voting
+  Agreement", "the Master Services Agreement", "the Stock Purchase Agreement".
+  A document that names another agreement is not defining a term, and whether
+  that instrument is attached is STRUCT-018's question. Across the whole
+  corpus this suppresses exactly two distinct terms, on 43 fixtures.
+
+### Recorded, not fixed — a CATALOG GAP
+- The catalog carries the whole NVCA suite — the investors' rights agreement,
+  the voting agreement, the ROFR and co-sale agreement, the SAFE, the
+  convertible note — but **not the STOCK PURCHASE AGREEMENT that closes the
+  round**. `stock-purchase-agreement` is the ABA private-target M&A SPA, so a
+  Series B financing routes there and is checked for sandbagging, a
+  stockholder representative, and selling-stockholder restrictive covenants,
+  none of which a financing has.
+
+  Narrowing the M&A family with negatives an issuance carries ("accredited
+  investor", "Restated Certificate", "Investors' Rights Agreement") takes it
+  to 0.6 — still over the threshold — and makes the family penalize the
+  specimen pinned to it, so that half-measure was reverted. The fix is a new
+  family with its own pack. The specimen and its current finding set are
+  pinned so the gap stays visible.
+
 ## [9.199.0] — 2026-08-29
 
 ### Added
