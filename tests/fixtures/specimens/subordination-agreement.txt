@@ -1,0 +1,91 @@
+SUBORDINATION AGREEMENT
+
+THIS SUBORDINATION AGREEMENT (this "Agreement") is made as of December 3, 2026 among Cardington Bank, N.A., a national banking association ("Senior Lender"), Thistlewood Mezzanine Partners III, L.P., a Delaware limited partnership ("Subordinated Lender"), and Braemar Packaging Holdings, Inc., a Delaware corporation (the "Borrower").
+
+RECITALS
+
+A. Senior Lender has extended to Borrower a senior secured revolving credit and term loan facility under a Credit Agreement dated December 3, 2026 (as amended, the "Senior Credit Agreement"), secured by a first-priority lien on substantially all of Borrower's assets.
+
+B. Subordinated Lender has extended to Borrower a subordinated term loan under a Note Purchase Agreement of even date (as amended, the "Subordinated Debt Documents").
+
+C. It is a condition to Senior Lender's extension of credit that Subordinated Lender subordinate the Subordinated Debt and its liens on the terms below.
+
+AGREEMENT
+
+1. DEFINITIONS
+
+1.1 "Senior Debt" means all obligations of Borrower to Senior Lender under the Senior Credit Agreement, including principal, interest (including interest accruing after the commencement of an insolvency proceeding, whether or not allowed), fees, expenses, and indemnities, together with all refinancings, in an aggregate principal amount not to exceed $85,000,000 plus a permitted increase of $12,750,000 (the "Senior Debt Cap").
+
+1.2 "Subordinated Debt" means all obligations of Borrower to Subordinated Lender under the Subordinated Debt Documents.
+
+1.3 "Blockage Period" means a period beginning on the date Senior Lender delivers a Blockage Notice and ending on the earliest of 180 days after that date, the date Senior Lender rescinds the notice, and the date the Senior Debt is paid in full.
+
+2. SUBORDINATION OF PAYMENT
+
+2.1 Subordination. The Subordinated Debt is subordinated in right of payment to the prior payment in full in cash of the Senior Debt. Until the Senior Debt is paid in full, Subordinated Lender shall not accept, and Borrower shall not make, any payment on the Subordinated Debt except Permitted Payments.
+
+2.2 Permitted Payments. So long as no Blockage Period is in effect and no payment default on the Senior Debt has occurred and is continuing, Borrower may pay regularly scheduled cash interest on the Subordinated Debt at the non-default rate.
+
+2.3 Payment Blockage. On the occurrence of a default under the Senior Credit Agreement, Senior Lender may deliver a written notice to Subordinated Lender (a "Blockage Notice"), and no Permitted Payment may be made during the resulting Blockage Period. Senior Lender may not deliver more than one Blockage Notice in any 360-day period, and no default existing on the date of a Blockage Notice may be the basis for a later one unless it has been cured and has recurred.
+
+2.4 Turnover. If Subordinated Lender receives any payment or distribution on the Subordinated Debt in contravention of this Agreement, it shall hold that payment in trust for Senior Lender, segregated from its other funds, and shall pay it over to Senior Lender within three (3) business days, in the form received with any necessary endorsement.
+
+3. SUBORDINATION OF LIENS
+
+3.1 Lien Subordination. Every lien securing the Subordinated Debt is subordinate to every lien securing the Senior Debt, regardless of the order or method of attachment or perfection, the time or manner of filing, or any provision of the Uniform Commercial Code or other law to the contrary. This Agreement is a subordination agreement under Section 510(a) of the Bankruptcy Code.
+
+3.2 No Contest. Subordinated Lender shall not contest, or support any other person in contesting, the validity, perfection, priority, or enforceability of any lien or claim of Senior Lender.
+
+4. ENFORCEMENT STANDSTILL
+
+4.1 Standstill. Until the Senior Debt is paid in full, Subordinated Lender shall not accelerate the Subordinated Debt, commence any enforcement action, exercise any remedy against Borrower or any collateral, file or join in an involuntary insolvency petition against Borrower, or take possession of any collateral, except that after 180 days from the date Subordinated Lender delivers written notice to Senior Lender of a payment default under the Subordinated Debt Documents, Subordinated Lender may accelerate the Subordinated Debt if the default is continuing and Senior Lender has not itself accelerated.
+
+4.2 Senior Lender's Exclusive Control. Senior Lender has the exclusive right to enforce remedies against the collateral, to release collateral, and to make all decisions in any insolvency proceeding relating to the collateral, without notice to or consent from Subordinated Lender.
+
+5. AMENDMENTS AND REFINANCING
+
+5.1 Senior Debt. Senior Lender may amend, restate, refinance, or otherwise modify the Senior Credit Agreement without Subordinated Lender's consent, provided that the principal amount does not exceed the Senior Debt Cap and the scheduled final maturity is not shortened to a date earlier than the maturity of the Subordinated Debt.
+
+5.2 Subordinated Debt. Subordinated Lender and Borrower shall not amend the Subordinated Debt Documents to increase the principal amount or the interest rate, to shorten any maturity or scheduled payment date, to add or make more restrictive any covenant or event of default, or to grant any additional collateral or guarantee, without Senior Lender's prior written consent.
+
+6. INSOLVENCY
+
+6.1 Insolvency Proceedings. In any insolvency proceeding of Borrower, the Senior Debt shall be paid in full in cash before Subordinated Lender receives any payment or distribution on the Subordinated Debt. Subordinated Lender assigns to Senior Lender its right to receive distributions on the Subordinated Debt until the Senior Debt is paid in full.
+
+6.2 DIP Financing and Cash Collateral. Subordinated Lender shall not object to, and shall be deemed to consent to, any debtor-in-possession financing or use of cash collateral to which Senior Lender consents, and shall not seek adequate protection except to the extent Senior Lender does and only on a subordinate basis.
+
+6.3 Section 1111(b) and Plan Voting. Subordinated Lender shall not make an election under Section 1111(b)(2) of the Bankruptcy Code and shall not vote for or support any plan of reorganization Senior Lender opposes that does not provide for payment in full in cash of the Senior Debt.
+
+7. GENERAL
+
+7.1 Continuing Agreement. This Agreement continues until the Senior Debt is paid in full in cash and all commitments to lend are terminated, and is reinstated if any payment of Senior Debt is avoided or must be returned.
+
+7.2 No Third-Party Beneficiaries; Borrower's Position. Borrower joins this Agreement solely to acknowledge it and to agree to be bound by Sections 2 and 5.2. Nothing in this Agreement gives Borrower any right or defense against either lender, and nothing impairs the obligation of Borrower to pay the Subordinated Debt in accordance with its terms, subject to this Agreement.
+
+7.3 Governing Law; Venue. This Agreement is governed by the laws of the State of New York. Each party irrevocably submits to the exclusive jurisdiction of the state and federal courts located in New York County, New York, and waives any objection based on venue or forum non conveniens.
+
+7.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses stated beneath the signatures.
+
+7.5 Amendment. This Agreement may be amended only in a writing signed by Senior Lender and Subordinated Lender, and, as to Section 7.2, by Borrower.
+
+7.6 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+CARDINGTON BANK, N.A.
+
+By: /s/ Helena Vandermolen
+Name: Helena Vandermolen
+Title: Senior Vice President
+
+THISTLEWOOD MEZZANINE PARTNERS III, L.P.
+
+By: /s/ Rafael Okonkwo
+Name: Rafael Okonkwo
+Title: Managing Director
+
+BRAEMAR PACKAGING HOLDINGS, INC.
+
+By: /s/ Cecily Marchetti
+Name: Cecily Marchetti
+Title: Chief Financial Officer

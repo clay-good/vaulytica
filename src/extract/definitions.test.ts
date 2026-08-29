@@ -1703,6 +1703,53 @@ describe("a term that titles its own RUN-IN heading", () => {
   });
 });
 
+describe("names a document invokes rather than defines", () => {
+  const undef = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Demand for Arbitration", ...paras])).undefined_capitalized.map(
+      (e) => e.term,
+    );
+
+  it("does not flag a VESSEL name behind its prefix", () => {
+    expect(
+      undef(
+        "Respondent owns and operates a fleet of offshore supply vessels, including the M/V Bayou Sentinel.",
+        "Claimant refitted the propulsion systems of the M/V Bayou Sentinel for a fixed price.",
+        "Respondent accepted delivery of the M/V Bayou Sentinel and placed it into service.",
+      ),
+    ).not.toContain("Bayou Sentinel");
+  });
+
+  it("does not flag a fragment of a COMPOUND INSTRUMENT NAME", () => {
+    expect(
+      undef(
+        "Claimant demands arbitration under the Vessel Refit and Services Agreement dated March 9, 2024.",
+        "The Vessel Refit and Services Agreement provides for binding arbitration.",
+        "Section 18.7 of the Vessel Refit and Services Agreement awards fees to the prevailing party.",
+      ),
+    ).not.toContain("Vessel Refit");
+  });
+
+  it("does not flag the name of a RULE SET", () => {
+    expect(
+      undef(
+        "The arbitration is administered under the Commercial Arbitration Rules.",
+        "A panel is appointed under the Commercial Arbitration Rules.",
+        "The filing fee is prescribed by the Commercial Arbitration Rules fee schedule.",
+      ),
+    ).not.toContain("Commercial Arbitration Rules");
+  });
+
+  it("still flags an ordinary Title-Case term the document never defines", () => {
+    expect(
+      undef(
+        "Claimant delivered the Acceptance Certificate to Respondent.",
+        "Respondent countersigned the Acceptance Certificate on February 14, 2026.",
+        "The Acceptance Certificate is conclusive as to conformity.",
+      ),
+    ).toContain("Acceptance Certificate");
+  });
+});
+
 describe("a DECIMAL-numbered run-in heading", () => {
   // "3.1 Base Rent. Tenant shall pay annual Base Rent of $674,800" — the
   // period belongs to the NUMBER, not after it, so requiring "." or ")" after

@@ -40,6 +40,23 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A three-party subordination agreement. Clean: routes at 1.0 and its own
+  // pack is silent on a well-drafted one.
+  "subordination-agreement.txt": {
+    playbook: "subordination-agreement",
+    findings: ["OBLI-005"],
+  },
+
+  // An AAA demand for arbitration. Three names it INVOKES rather than defines
+  // were reported as undefined Title-Case terms: a VESSEL name behind its
+  // prefix ("the M/V Bayou Sentinel"), a fragment of a compound instrument
+  // name ("the Vessel Refit AND SERVICES AGREEMENT", where the Title-Case run
+  // stops at the lowercase "and"), and the name of a rule set ("the Commercial
+  // Arbitration Rules").
+  "arbitration-demand.txt": {
+    playbook: "arbitration-demand",
+    findings: ["STRUCT-018"],
+  },
   // A bankruptcy trade-claim purchase. It routed to `ip-assignment` at 0.6 and
   // drew two `critical` findings about assigned INTELLECTUAL PROPERTY scope
   // and a power of attorney — there is no IP. Its own family's distinguishing

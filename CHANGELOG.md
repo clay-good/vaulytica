@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.193.0] — 2026-08-29
+
+### Added
+- A three-party subordination agreement and an AAA demand for arbitration —
+  the 154th and 155th specimens. The subordination agreement is clean: it
+  routes at 1.0 and its own pack is silent on a well-drafted one.
+
+### Fixed
+Three names a document INVOKES rather than defines were reported as undefined
+Title-Case terms:
+- a **VESSEL name behind its prefix** — "the M/V Bayou Sentinel";
+- a **fragment of a compound instrument name** — "the Vessel Refit AND
+  SERVICES AGREEMENT", where the Title-Case run stops at the lowercase "and",
+  the same shape as the `Act` / `Code` / `Law` lookahead already in place;
+- the **name of a RULE SET** — "the Commercial Arbitration Rules". A body's
+  published rules are an external authority, like a statute.
+
 ## [9.192.0] — 2026-08-29
 
 ### Added

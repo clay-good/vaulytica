@@ -1045,6 +1045,31 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // A VESSEL, aircraft, or hull NAME — "the M/V Bayou Sentinel", "the S/S
+      // United States" — is a proper noun the document names, not a term it
+      // defines. The prefix is the whole signal.
+      if (
+        /\b(?:M\/V|MV|S\/S|SS|M\/T|MT|F\/V|FV|R\/V|USNS|USCGC|USS|HMS)\s*$/i.test(
+          ctx.text.slice(Math.max(0, m.index - 8), m.index),
+        )
+      )
+        continue;
+      // A Title-Case fragment that is part of a COMPOUND INSTRUMENT NAME:
+      // "the Vessel Refit AND SERVICES AGREEMENT" captures as "Vessel Refit",
+      // because the Title-Case run stops at the lowercase "and". The document
+      // is naming another agreement, not defining a term. Same reasoning as
+      // the `Act` / `Code` / `Law` lookahead above, for the instrument nouns.
+      if (
+        /^\s+(?:and|&|of|for|to)\s+(?:[A-Z][\w-]*\s+){0,3}(?:Agreement|Contract|Lease|Deed|Indenture|Note|Plan|Policy|Charter|Bylaws|Rules)\b/.test(
+          ctx.text.slice(m.index + phrase.length),
+        )
+      )
+        continue;
+      // The NAME OF A RULE SET — "the Commercial Arbitration Rules", "the
+      // Construction Industry Mediation Procedures". A body's published rules
+      // are an external authority, like a statute, and a document that invokes
+      // them does not define them.
+      if (/\b(?:Rules|Procedures|Regulations|Guidelines)$/.test(phrase)) continue;
       if (headings.has(phraseLower)) continue;
       // The article belongs to the SENTENCE, not to the heading. "The Escrow
       // Agent is Fernbank Title & Trust, LLC" sits under a section headed
