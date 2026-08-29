@@ -92,4 +92,25 @@ describe("PERS-005 — the incoming-obligations representation", () => {
     expect(f).not.toBeNull();
     expect(f?.excerpt.text).toContain("shall not compete");
   });
+
+  // A covenant the document merely DESCRIBES, to be signed in some other
+  // instrument, is not one this document imposes. A conflict-of-interest
+  // waiver letter tells its clients that "the scope and duration of the
+  // non-competition covenants each of you will sign" may affect them
+  // differently, and was reported as containing a non-compete.
+  it("silent on a covenant the document says will be signed elsewhere (v1.3.0)", () => {
+    const ctx = buildContext([
+      "Where your interests may diverge",
+      "The allocation of the purchase price among you, the scope and duration of the non-competition covenants each of you will sign, and the tax consequences of the transaction to each of you may affect you differently.",
+    ]);
+    expect(PERS_005.check(ctx)).toBeNull();
+  });
+
+  it("still reports the covenant in the instrument that imposes it", () => {
+    const ctx = buildContext([
+      "Restrictive Covenants",
+      "For two years after the Closing, Seller shall not compete with the Business anywhere in the State of Georgia.",
+    ]);
+    expect(PERS_005.check(ctx)).not.toBeNull();
+  });
 });

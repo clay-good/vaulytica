@@ -1,10 +1,10 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { describesCovenantElsewhere, emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 /** PERS-001 — Non-compete present (info). */
 export const rule: Rule = {
   id: "PERS-001",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Non-compete present",
   category: "personnel",
   default_severity: "info",
@@ -24,6 +24,11 @@ export const rule: Rule = {
       // unnegated-window guard only suppresses a genuine disclaimer ("this is
       // NOT a non-compete") — not the covenant.
       /\bnon[- ]?compet(?:e|ition)\b|\bcovenant\s+not\s+to\s+compete\b|\b(?:shall|will|agrees?)\s+not[,\s]+(?:to[,\s]+)?(?:directly\s+or\s+indirectly[,\s]+)?compete\b|\bshall\s+not[^.;]{0,80}?\b(?:own|manage|operate|control|engage\s+in|carry\s+on|be\s+employed\s+by|work\s+for|render\s+services?|participate\s+in)\b[^.;]{0,120}?\b(?:(?:competing|competitive)\s+(?:business|enterprise|activit\w*|venture|firm|company)|business\s+that\s+competes)\b/i,
+      50,
+      // A covenant the document merely DESCRIBES — "the non-competition
+      // covenants each of you will sign" in a conflict-waiver letter — is not
+      // one this document imposes.
+      (paragraph, index) => describesCovenantElsewhere(paragraph, index),
     );
     if (!hit) return null;
     return emit(ctx, rule, {

@@ -702,6 +702,22 @@ function caseBlind(re: RegExp): RegExp {
  * ancillary, and suppressing its undefined-term check would hide the five
  * terms it really does leave undefined.
  */
+/**
+ * True when the SENTENCE around a match merely describes a covenant to be
+ * signed in some OTHER instrument, rather than imposing one here.
+ *
+ * A conflict-of-interest waiver letter tells its clients that "the scope and
+ * duration of the non-competition covenants each of you will sign" may affect
+ * them differently. That is a topic the letter raises, not a covenant the
+ * letter imposes, and the letter was reported as containing a non-compete.
+ */
+export function describesCovenantElsewhere(paragraph: string, matchIndex: number): boolean {
+  const sentence = enclosingSentence(paragraph, matchIndex);
+  return /\b(?:will|shall|to)\s+(?:be\s+)?(?:sign|signs|signed|execute|executes|executed|enter\s+into|entered\s+into)\b|\b(?:contained|set\s+forth|included|provided)\s+in\s+the\s+[A-Z]/.test(
+    sentence,
+  );
+}
+
 export function borrowsParentVocabulary(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
   return (

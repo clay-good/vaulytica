@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.134.0] — 2026-08-29
+
+### Added
+- **Two specimens**: a credit union's whistleblower and non-retaliation policy
+  (already clean) and a joint-representation conflict waiver. One hundred and
+  thirteen.
+
+### Fixed
+- **A joint-representation waiver was told at `critical` that it did not
+  identify its clients** (ENG-021) and did not say what happens if a conflict
+  develops (ENG-023). A letter identifies its clients by ADDRESSING them — the
+  address block, the salutation, the consent signature blocks — and almost
+  never says "the clients are"; and the section headed "What happens if a
+  conflict becomes actual" was invisible to a rule that wanted "if a conflict
+  arises".
+- **A covenant the document merely DESCRIBES was reported as one it imposes**
+  (PERS-001, PERS-005). The same waiver letter tells its clients that "the
+  scope and duration of the non-competition covenants each of you will sign"
+  may affect them differently — a topic it raises about another instrument, not
+  a restriction it creates.
+
 ## [9.133.0] — 2026-08-29
 
 ### Added

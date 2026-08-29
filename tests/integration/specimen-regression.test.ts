@@ -321,6 +321,25 @@ export const EXPECTED: Record<string, Expectation> = {
   // own all-caps caption.
   "npp-acknowledgment.txt": { playbook: "npp-acknowledgment", findings: ["HC-025"] },
 
+  // A credit union's whistleblower policy, with the DTSA § 1833(b) notice.
+  // Clean, and pinned so it stays clean.
+  "whistleblower-policy.txt": { playbook: "whistleblower-policy", findings: [] },
+
+  // A joint-representation conflict waiver. ENG-021 wanted the letter to say
+  // "the clients are" when a letter identifies its clients by addressing them,
+  // and ENG-023 wanted "if a conflict arises" from a section headed "What
+  // happens if a conflict becomes actual". The letter was also reported as
+  // containing a non-compete, on a sentence naming "the non-competition
+  // covenants each of you will sign" — a covenant it describes, in an
+  // instrument it is not.
+  // CHOICE-001, CHOICE-003, and STRUCT-004 stay: this family shares the
+  // five-skip engagement profile with the four fee agreements, and a waiver
+  // letter can state its governing law as readily as they can.
+  "joint-representation-waiver.txt": {
+    playbook: "joint-representation-waiver",
+    findings: ["CHOICE-001", "CHOICE-003", "STRUCT-004"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

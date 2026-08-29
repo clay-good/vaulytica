@@ -391,7 +391,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-001",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -420,7 +420,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -898,7 +898,7 @@
       "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
       "id": "PERS-001-s1.3-739",
       "rule_id": "PERS-001",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "critical",
       "source_citations": [
         {
@@ -985,7 +985,7 @@
       "id": "PERS-005-s1.3-739",
       "recommendation": "Confirm the controlling jurisdiction's enforceability bucket (use the DKB jurisdiction record). If the controlling state voids non-competes, either delete the clause or convert to a narrower non-solicitation. If the clause is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1204,11 +1204,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "42a792980c5795866bedb19830ed94cabdf61b0873d092f245d623a349896f38",
+  "result_hash": "252ff36b132507617562fe87d90677123628ddd67f3f539578b9fb5947af93fe",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.133.0"
+  "version": "9.134.0"
 }

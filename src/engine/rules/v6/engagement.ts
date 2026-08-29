@@ -326,11 +326,16 @@ const FLAT_FEE = pack("flat-fee-agreement", C, [
 const JOINT_REP = pack("joint-representation-waiver", C, [
   {
     id: "ENG-021",
+    ver: "1.1.0",
     name: "Identification of every jointly represented client",
     cite: modelRule("1.7", "conflict of interest — current clients"),
     pat: [
       /(joint(ly)?\s+represent|common\s+representation|both\s+of\s+you|each\s+of\s+you)/i,
-      /(client(s)?\s+(are|is)|the\s+following\s+(parties|persons|entities))/i,
+      // A joint-representation letter identifies its clients by ADDRESSING
+      // them — the address block, the salutation, the consent signature blocks
+      // — and almost never says "the clients are". Requiring that made the
+      // column unsatisfiable by a well-drafted letter.
+      /(client(s)?\s+(are|is)|the\s+following\s+(parties|persons|entities)|you\s+have\s+each\s+asked|each\s+of\s+you\s+(?:has|have)\s+asked|represent(?:ing)?\s+both\s+of\s+you|(?:joint|common)\s+representation\s+of)/i,
     ],
     all: true,
     why: "A joint-representation waiver that does not name every client cannot establish informed consent from each of them, which is the only thing that makes the joint representation permissible.",
@@ -355,13 +360,18 @@ const JOINT_REP = pack("joint-representation-waiver", C, [
   },
   {
     id: "ENG-023",
+    ver: "1.1.0",
     name: "Consequence if a conflict later develops",
     cite: modelRule(
       "1.7",
       "conflict of interest — comment [29] on withdrawal from common representation",
     ),
     pat: [
-      /(if\s+(a\s+)?(conflict|dispute)\s+(arises|develops)|should\s+a\s+conflict)/i,
+      // A letter writes it "If a disagreement arises between you" and "if a
+      // conflict becomes actual" as readily as "if a conflict arises", and a
+      // section HEADED "What happens if a conflict becomes actual" was
+      // reported as missing at `critical`.
+      /(if\s+(?:an?\s+)?(?:actual\s+)?(conflict|dispute|disagreement)\s+(arises|develops|becomes)|should\s+an?\s+(?:actual\s+)?(?:conflict|dispute|disagreement)|(?:conflict|dispute)\s+becomes\s+actual)/i,
       /(withdraw|cease\s+to\s+represent|resign|may\s+be\s+required\s+to)/i,
     ],
     all: true,

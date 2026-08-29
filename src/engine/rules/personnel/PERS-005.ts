@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { allMatches, emit, excerptWindow } from "../_helpers.js";
+import { allMatches, describesCovenantElsewhere, emit, excerptWindow } from "../_helpers.js";
 
 /**
  * PERS-005 — Non-compete clause present (warning, personnel).
@@ -23,7 +23,7 @@ import { allMatches, emit, excerptWindow } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",
@@ -59,7 +59,9 @@ export const rule: Rule = {
     // contains none.
     const DISCLAIMED =
       /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b/i;
-    const hit = hits.find((h) => !DISCLAIMED.test(h.text));
+    const hit = hits.find(
+      (h) => !DISCLAIMED.test(h.text) && !describesCovenantElsewhere(h.text, h.match.index),
+    );
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Non-compete clause present",

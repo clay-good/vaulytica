@@ -504,3 +504,44 @@ describe("the proof of service under the name its own rules give it", () => {
     ).not.toBeNull();
   });
 });
+
+describe("a joint-representation waiver as a letter is written", () => {
+  /**
+   * ENG-021 wanted the letter to say "the clients are". A letter identifies
+   * its clients by ADDRESSING them — the address block, the salutation, the
+   * consent signature blocks — and almost never says that. ENG-023 wanted "if
+   * a conflict arises" from a section headed "What happens if a conflict
+   * becomes actual".
+   */
+  const letter = (...paragraphs: string[]) =>
+    doc("Re: Joint Representation and Waiver of Conflict", ...paragraphs);
+
+  it("ENG-021 identifies the clients from the letter's own opening", () => {
+    expect(
+      rule("ENG-021").check(
+        letter(
+          "You have each asked this firm to represent you in connection with the proposed sale of the membership interests in the Company.",
+          "Rule 1.7 requires that we explain the risks of a joint representation to both of you and obtain your informed consent, confirmed in writing.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("ENG-023 reads the disagreement wording", () => {
+    expect(
+      rule("ENG-023").check(
+        letter(
+          "If a disagreement arises between you that we cannot resolve, we may be required to withdraw from representing both of you, and you would each need to retain new counsel.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("ENG-023 still fires on a waiver that says nothing about what follows", () => {
+    expect(
+      rule("ENG-023").check(
+        letter("You each consent to our joint representation on the terms described above."),
+      ),
+    ).not.toBeNull();
+  });
+});
