@@ -170,3 +170,33 @@ describe("IPDATA-001 — ownership allocated by retaining rights in named conten
     expect(IPDATA_001.check(ctx)).not.toBeNull();
   });
 });
+
+describe("IPDATA-001 — the bare vesting sentence", () => {
+  // "ALL RIGHT, TITLE, AND INTEREST IN AND TO THE WORK PRODUCT vests in
+  // Customer upon creation" is the standard allocation, and the title-vesting
+  // branch wanted "title TO" / "title IN" — here the phrase reads "title, and
+  // interest in", so the rule reported that the contract allocates no IP.
+  it.each([
+    "All right, title, and interest in and to the Work Product vests in Customer upon creation.",
+    "All right, title and interest in and to any and all Inventions shall vest in the Company.",
+    "All right, title, and interest in and to the Deliverables passes to Customer on payment.",
+  ])("is silent on %s", (clause) => {
+    expect(IPDATA_001.check(buildContext(["Ownership", clause]))).toBeNull();
+  });
+
+  it("does not read an assignment of a CONTRACT as an IP allocation", () => {
+    // The new branch is anchored on an IP object, so the identical phrase over
+    // a non-IP subject does not satisfy it. (Phrased WITHOUT "under the
+    // Assigned Contract": that wording matches `ISSUED_UNDER_PARENT`, which
+    // stands the whole rule down as a document subordinate to a named parent —
+    // defensible for an assignment, but it would not be testing this branch.)
+    expect(
+      IPDATA_001.check(
+        buildContext([
+          "Assignment",
+          "Assignor assigns to Assignee all of Assignor's right, title and interest in and to the Assigned Contract.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

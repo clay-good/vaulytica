@@ -56,3 +56,15 @@ describe("RISK-001 — indemnification present", () => {
     }
   });
 });
+
+describe("RISK-001 — 'save harmless' is an indemnity", () => {
+  // The older form, still used in leases and construction contracts: "the
+  // Lessee shall SAVE the Lessor HARMLESS from all claims arising out of use
+  // of the Premises". Only "hold ... harmless" was recognized.
+  it.each([
+    "The Lessee shall save the Lessor harmless from all claims arising out of use of the Premises.",
+    "Contractor shall keep the Owner harmless from any lien asserted by a subcontractor.",
+  ])("is silent on %s", (clause) => {
+    expect(RISK_001.check(buildContext(["Indemnity", clause]))).toBeNull();
+  });
+});

@@ -255,7 +255,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -458,7 +458,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-001",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -950,7 +950,7 @@
       "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
       "id": "IPDATA-001-s1-0",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.9.0",
+      "rule_version": "1.10.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1056,7 +1056,7 @@
       "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
       "id": "RISK-001-s1-0",
       "rule_id": "RISK-001",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No indemnification clause detected"
@@ -1204,11 +1204,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "a61ef0a725e7ce2ed8ee30d5d3ef6e6587c448342bd1b7d93ded39b5b5d31359",
+  "result_hash": "dbcd6ca49c36c777868a96ca7cc8032f11e3ecc8ac7026280c99929ce92f081e",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.178.0"
+  "version": "9.179.0"
 }

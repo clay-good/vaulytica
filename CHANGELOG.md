@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.179.0] — 2026-08-29
+
+### Fixed
+- **IPDATA-001 could not read the bare VESTING sentence.** "ALL RIGHT, TITLE,
+  AND INTEREST IN AND TO THE WORK PRODUCT vests in Customer upon creation" is
+  the standard allocation; the title-vesting branch wanted "title TO" / "title
+  IN", and here the phrase reads "title, and interest in". Anchored on an IP
+  object, so an assignment of "all right, title and interest in and to the
+  Assigned Contract" is still not read as an IP allocation.
+- **RISK-001 did not know "SAVE harmless" or "KEEP harmless"** — the older
+  forms, still used in leases and construction contracts: "the Lessee shall
+  SAVE the Lessor HARMLESS from all claims arising out of use of the
+  Premises".
+
+Ten governing-law, eight IP-allocation and eight indemnity shapes were written
+out and run against CHOICE-001, IPDATA-001 and RISK-001. CHOICE-001 read all
+ten; the two above were the only misses.
+
 ## [9.178.0] — 2026-08-29
 
 ### Fixed

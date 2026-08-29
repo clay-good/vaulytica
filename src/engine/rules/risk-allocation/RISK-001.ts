@@ -4,7 +4,7 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 /** RISK-001 — Indemnification clause present (warning). */
 export const rule: Rule = {
   id: "RISK-001",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Indemnification clause present",
   category: "risk-allocation",
   default_severity: "warning",
@@ -28,9 +28,12 @@ export const rule: Rule = {
     // clause, and a contract drafted with those forms was told it had no
     // indemnification (v1.2.0). `indemnif\w*` + `indemnit(y|ee|or…)` cover them
     // all; no non-indemnity word carries either stem.
+    // "SAVE harmless" and "KEEP harmless" are the older forms, and a lease or
+    // a construction contract still uses them: "the Lessee shall SAVE the
+    // Lessor HARMLESS from all claims arising out of use of the Premises".
     const hit = firstParagraphMatch(
       ctx,
-      /\bindemnif\w*|\bindemnit(?:y|ies|ee|ees|or|ors)\b|\bhold\s+(?:[\w'’-]+\s+){0,4}?harmless\b/i,
+      /\bindemnif\w*|\bindemnit(?:y|ies|ee|ees|or|ors)\b|\b(?:hold|save|keep)\s+(?:[\w'’-]+\s+){0,4}?harmless\b/i,
     );
     if (hit) return null;
     return emit(ctx, rule, {
