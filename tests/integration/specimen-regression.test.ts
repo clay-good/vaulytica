@@ -340,6 +340,28 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["CHOICE-001", "CHOICE-003", "STRUCT-004"],
   },
 
+  // An Article 35 data protection impact assessment — an assessment document,
+  // not an agreement. Clean, and pinned so it stays clean.
+  "dpia-art-35.txt": { playbook: "dpia-art-35", findings: [] },
+
+  // A California contingency fee agreement. It defines both its parties in its
+  // first sentence — ("the Firm"), ("the Client") — with the article INSIDE the
+  // quotes, which the parenthetical-definition pattern could not see, so it was
+  // reported as having no defined terms at all. ENG-012 wanted a label where
+  // the exclusion is written as a promise.
+  "contingency-fee-agreement.txt": {
+    playbook: "contingency-fee-agreement",
+    findings: [
+      "CHOICE-001",
+      "CHOICE-003",
+      "CHOICE-006",
+      "FIN-005",
+      "OBLI-005",
+      "RISK-010",
+      "TEMP-002",
+    ],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

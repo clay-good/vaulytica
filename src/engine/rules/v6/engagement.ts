@@ -197,10 +197,15 @@ const CONTINGENCY = pack("contingency-fee-agreement", C, [
   },
   {
     id: "ENG-012",
+    ver: "1.1.0",
     name: "Matters excluded from the contingent fee",
     cite: modelRule("1.5(c)", "contingent fee agreements — scope"),
     pat: [
-      /(not\s+(covered|included)|exclud|separate\s+(fee|engagement)|does\s+not\s+(cover|include))/i,
+      // The exclusion is written as a promise, not as a label: "The Firm will
+      // not represent the Client on appeal, in a bankruptcy, or in any other
+      // matter unless the parties sign a separate agreement" is the ordinary
+      // drafting, and it carried none of the tokens this column wanted.
+      /(not\s+(covered|included)|exclud|separate\s+(fee|engagement|agreement|retainer)|does\s+not\s+(cover|include|extend\s+to|apply\s+to)|will\s+not\s+represent)/i,
       /(appeal|counterclaim|collection|bankruptcy|related\s+matter|enforce)/i,
     ],
     all: true,

@@ -1602,3 +1602,37 @@ describe("a professional corporation's suffix", () => {
     );
   });
 });
+
+describe("the article inside the quotes", () => {
+  // `("the Firm")` and `("the Client")` are the dominant convention in UK
+  // drafting and common in US practice, and the parenthetical pattern required
+  // the quote to open on a capital — so a contingency fee agreement that
+  // defines both its parties in its first sentence was reported as having no
+  // defined terms at all.
+  const map = () =>
+    extractDefinitions(
+      buildTree([
+        "Contingency Fee Agreement",
+        'This agreement is made between Oyelaran Law Group, a professional corporation ("the Firm"), and Marisol Oyelaran-Diaz ("the Client").',
+        "The Firm will represent the Client in a claim for personal injuries.",
+      ]),
+    );
+
+  it("registers both terms without their article", () => {
+    expect(
+      map()
+        .entries.map((e) => e.term)
+        .sort(),
+    ).toEqual(["Client", "Firm"]);
+  });
+
+  it("does not read a quoted phrase used mid-parenthetical as a definition", () => {
+    const m = extractDefinitions(
+      buildTree([
+        "Agreement",
+        'Vendor shall perform the services (the "Services" described in Exhibit A) with due care.',
+      ]),
+    );
+    expect(m.entries.map((e) => e.term)).not.toContain("Services");
+  });
+});

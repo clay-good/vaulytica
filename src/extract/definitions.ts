@@ -121,9 +121,16 @@ const DEFINITION_ALIASED =
  * The closing `)` must follow the quote immediately, so a quoted phrase used
  * mid-parenthetical (`(the "Services" described in Exhibit A)`) is not read as
  * a definition.
+ *
+ * The article may sit INSIDE the quotes as readily as outside — `("the Firm")`,
+ * `("the Client")` — which is the dominant convention in UK drafting and common
+ * in US practice. Requiring the quote to open on a capital missed all of them,
+ * so a contingency fee agreement that defines both its parties in its first
+ * sentence was reported as having no defined terms at all. The article is not
+ * part of the term: the body writes "the Firm", and the term is "Firm".
  */
 const DEFINITION_PARENTHETICAL =
-  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as|THE|THIS|THESE|EACH|AN?|COLLECTIVELY|TOGETHER|INDIVIDUALLY|HEREINAFTER|REFERRED\s+TO\s+AS)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as|THE|THIS|THESE|EACH|AN?|COLLECTIVELY|TOGETHER|INDIVIDUALLY|HEREINAFTER|REFERRED\s+TO\s+AS)[,]?\s+)*["\u201C](?:(?:[Tt]he|[Tt]his|[Aa]n?)\s+)?([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * The paired collective/individual parenthetical \u2014 the party-definition idiom

@@ -545,3 +545,30 @@ describe("a joint-representation waiver as a letter is written", () => {
     ).not.toBeNull();
   });
 });
+
+describe("the exclusion a fee agreement actually writes", () => {
+  // "The Firm will not represent the Client on appeal, in a bankruptcy, or in
+  // any other matter unless the parties sign a separate agreement" is the
+  // ordinary drafting, and it carried none of the tokens ENG-012 wanted.
+  it("ENG-012 reads the exclusion written as a promise", () => {
+    expect(
+      rule("ENG-012").check(
+        doc(
+          "Contingency Fee Agreement",
+          "The Firm will not represent the Client on appeal, in a bankruptcy, in a related insurance coverage dispute, or in any other matter unless the parties sign a separate agreement.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("ENG-012 still fires on an agreement that bounds nothing", () => {
+    expect(
+      rule("ENG-012").check(
+        doc(
+          "Contingency Fee Agreement",
+          "The Firm will represent the Client in a claim for personal injuries arising out of the incident described above.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

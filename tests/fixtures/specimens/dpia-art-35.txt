@@ -1,0 +1,58 @@
+DATA PROTECTION IMPACT ASSESSMENT
+
+Processing operation: automated shortlisting of job applicants
+Controller: Larkmoor Publishing Group Limited
+Assessment owner: Ivo Brandsma, Data Protection Officer
+Version: 2.0
+Date of assessment: January 19, 2026
+Date of next review: January 19, 2027
+
+1. WHY THIS ASSESSMENT IS REQUIRED
+
+The processing evaluates personal aspects of individuals by automated means and produces a score used to decide who progresses to interview. It is a systematic and extensive evaluation of personal aspects based on automated processing within Article 35(3)(a), and it appears on the supervisory authority's list of processing requiring an assessment. This assessment is made under Article 35 of Regulation (EU) 2016/679 and was prepared with the advice of the Data Protection Officer under Article 35(2).
+
+2. DESCRIPTION OF THE PROCESSING
+
+Nature: applications submitted through the careers site are parsed, and a model trained on five years of historical hiring outcomes produces a fit score between 0 and 100. Recruiters see the score alongside the application and decide whom to interview.
+
+Scope: approximately 14,000 applications a year, for roles in the United Kingdom and Ireland. Data processed: name, contact details, work history, education, right-to-work status, and the free text of the application. No special category data is requested; free text may contain it incidentally.
+
+Context: applicants are not in a relationship with the controller and have limited practical alternatives if they wish to be considered. The processing is not widely understood by the people subject to it.
+
+Purposes: to shortlist efficiently and consistently, and to reduce the time to hire.
+
+3. NECESSITY AND PROPORTIONALITY
+
+Lawful basis: Article 6(1)(b), steps taken at the request of the data subject prior to entering a contract, for the assessment of the application itself; Article 6(1)(f) for the use of historical outcome data to train and validate the model, the legitimate interest being an efficient and consistent hiring process, balanced in section 5.
+
+The score is advisory. A human recruiter reviews every application that receives a score above the threshold and every application an applicant asks to have reviewed, so the processing is not a decision based solely on automated processing within Article 22(1). Data minimisation: only fields relevant to the advertised role are supplied to the model. Retention: applications are deleted four weeks after the position is filled, or twelve months where the applicant consents to be kept on file. Applicants are told about the scoring in the privacy notice at the point of application.
+
+4. RISKS TO THE RIGHTS AND FREEDOMS OF DATA SUBJECTS
+
+Risk 1: the model reproduces historical bias and disadvantages applicants sharing a protected characteristic. Likelihood: possible. Severity: severe. Inherent risk: high.
+
+Risk 2: an applicant does not understand that a score was used, and cannot contest it. Likelihood: likely. Severity: significant. Inherent risk: high.
+
+Risk 3: free text containing special category data is processed without a condition under Article 9. Likelihood: possible. Severity: significant. Inherent risk: medium.
+
+Risk 4: the training set is retained longer than necessary. Likelihood: possible. Severity: limited. Inherent risk: low.
+
+5. MEASURES TO ADDRESS THE RISKS
+
+Risk 1: quarterly adverse-impact testing across protected characteristics with a four-fifths rule threshold, an independent annual audit of the model, and suspension of the score if a disparity is found and not explained. Residual risk: medium.
+
+Risk 2: the privacy notice states that scoring is used and how; every applicant may request human review through a stated address; recruiters are trained not to treat the score as determinative. Residual risk: low.
+
+Risk 3: free text is excluded from the model's input features and is visible only to the recruiter. Residual risk: low.
+
+Risk 4: the training set is refreshed annually and the superseded set deleted. Residual risk: low.
+
+6. CONSULTATION
+
+The Data Protection Officer advised on this assessment and its conclusions. A sample of applicants was surveyed in November 2025 about the use of automated scoring. The works council was consulted on December 3, 2025. No residual high risk remains, so prior consultation with the Information Commissioner under Article 36 is not required.
+
+7. SIGN-OFF
+
+Measures approved by: Deirdre Salazar, General Counsel, on January 19, 2026.
+DPO advice provided by: Ivo Brandsma, on January 14, 2026. The DPO's advice was accepted in full.
+This assessment will be reviewed on the next review date or on any material change to the processing, whichever is earlier.

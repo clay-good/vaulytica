@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.135.0] — 2026-08-29
+
+### Added
+- **Two specimens**: an Article 35 data protection impact assessment (already
+  clean) and a California contingency fee agreement. One hundred and fifteen.
+
+### Fixed
+- **A document that defines both its parties in its first sentence was
+  reported as having no defined terms at all.** `("the Firm")` and `("the
+  Client")` put the article INSIDE the quotes — the dominant convention in UK
+  drafting and common in US practice — and the parenthetical-definition pattern
+  required the quote to open on a capital. The article is not part of the term:
+  the body writes "the Firm", and the term is "Firm".
+- **An exclusion written as a promise was invisible** (ENG-012). "The Firm will
+  not represent the Client on appeal, in a bankruptcy, or in any other matter
+  unless the parties sign a separate agreement" is the ordinary drafting, and
+  it carried none of the labels the column wanted.
+
 ## [9.134.0] — 2026-08-29
 
 ### Added
