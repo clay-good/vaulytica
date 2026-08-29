@@ -231,3 +231,22 @@ describe("extractCitations — prose is not a citation", () => {
     expect(real.filter((c) => c.kind === "case" && c.well_formed)).toHaveLength(2);
   });
 });
+
+describe("extractCitations — an identifier number is not a citation (v9.230.0)", () => {
+  it("does not read an attorney registration number as a malformed case cite", () => {
+    // A motion's signature block runs the phone number into the bar number:
+    // "(312) 555-0192\nARDC No. 6318842" flattens to "0192 ARDC No. 6318842".
+    const cites = extractCitations("(312) 555-0192 ARDC No. 6318842");
+    expect(cites).toEqual([]);
+  });
+
+  it("does not read a docket or invoice number pair as a citation", () => {
+    expect(extractCitations("Order No. 4471 was issued.")).toEqual([]);
+    expect(extractCitations("0410 U.S. 113 is not a volume.")).toEqual([]);
+  });
+
+  it("still reads a real case citation", () => {
+    const cites = extractCitations("Anderson v. Liberty Lobby, Inc., 477 U.S. 242 (1986).");
+    expect(cites.some((c) => c.kind === "case" && c.reporter === "U.S.")).toBe(true);
+  });
+});

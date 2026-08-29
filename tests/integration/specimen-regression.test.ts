@@ -679,6 +679,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A motion to compel in the Circuit Court of Cook County — the 189th
+  // specimen, and the first for `trial-motion`. Clean but for the exhibits,
+  // which travel with the supporting declaration. It exposed CITE-001 reading
+  // the signature block's phone number and attorney registration number,
+  // "0192 ARDC No. 6318842", as a malformed case citation.
+  "trial-motion.txt": {
+    playbook: "trial-motion",
+    findings: ["STRUCT-018"],
+  },
   // A durable financial power of attorney — the 188th specimen, and the first
   // for `durable-poa-financial`. EST-031..037 are all satisfied: principal and
   // agent with a successor, durability that survives incapacity, the general

@@ -163,6 +163,15 @@ function matchCases(text: string): ParsedCitation[] {
     // not a malformed case — and the longer bogus case match would swallow
     // it in overlap resolution (audit).
     if (/^Fed\.\s*R\./.test(reporter) || /^(?:FRAP|FRCP|FRBP|FRE)\b/.test(reporter)) continue;
+    // An IDENTIFIER NUMBER is not a citation. A motion's signature block runs
+    // a phone number into an attorney registration number — "(312) 555-0192
+    // ARDC No. 6318842" — and "0192 ARDC No. 6318842" parsed as volume,
+    // reporter, page, drawing a malformed-citation finding against a filing
+    // with none. Two independent tells, either of which is decisive: a
+    // reporter abbreviation never ends in "No.", and a volume never carries a
+    // leading zero.
+    if (/\bNos?\.$/.test(reporter)) continue;
+    if (/^0\d/.test(volume)) continue;
     const start = m.index ?? 0;
     out.push({
       kind: "case",

@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.230.0] — 2026-08-29
+
+### Added
+- A motion to compel in the Circuit Court of Cook County — the 189th specimen,
+  and the first for `trial-motion`. Clean but for the exhibits, which travel
+  with the supporting declaration.
+
+### Fixed
+- **An IDENTIFIER NUMBER read as a case citation.** A motion's signature block
+  runs the phone number into the attorney registration number — "(312)
+  555-0192 / ARDC No. 6318842" — and "0192 ARDC No. 6318842" parsed as volume,
+  reporter, and page, drawing a malformed-citation finding against a filing
+  that has none. Two independent tells, either decisive: a reporter
+  abbreviation never ends in "No.", and a volume never carries a leading zero.
+
 ## [9.229.0] — 2026-08-29
 
 ### Added
