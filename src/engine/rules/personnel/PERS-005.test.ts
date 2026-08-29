@@ -113,4 +113,15 @@ describe("PERS-005 — the incoming-obligations representation", () => {
     ]);
     expect(PERS_005.check(ctx)).not.toBeNull();
   });
+
+  // A drag-along's PROTECTION is the mirror of the covenant: "no Stockholder
+  // is required to accept a covenant not to compete" is a promise that none
+  // will be imposed, and it was reported as a non-compete clause present.
+  it("silent on a promise that no covenant will be required (v1.4.0)", () => {
+    const ctx = buildContext([
+      "Drag-Along Conditions",
+      "Section 2.1 applies only if the liability of a Stockholder is several and not joint, and no Stockholder is required to accept a covenant not to compete.",
+    ]);
+    expect(PERS_005.check(ctx)).toBeNull();
+  });
 });

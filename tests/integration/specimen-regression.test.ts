@@ -431,6 +431,24 @@ export const EXPECTED: Record<string, Expectation> = {
   // assignment's own paragraph, when it is always its own section.
   "piia.txt": { playbook: "piia", findings: ["OBLI-005", "STRUCT-018"] },
 
+  // An NVCA-style voting agreement. It routed to `stockholders-agreement` —
+  // which listed "voting agreement" among its own title keywords — and was
+  // told at `critical` that it had no tag-along, no right of first refusal,
+  // and no voting-agreement clause, on a document whose Article 1 is one.
+  "voting-agreement.txt": {
+    playbook: "voting-agreement",
+    findings: [
+      "CHOICE-003",
+      "EQT-059",
+      "EQT-060",
+      "EQT-063",
+      "OBLI-005",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TERM-005",
+    ],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

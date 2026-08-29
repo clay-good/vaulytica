@@ -1186,7 +1186,7 @@ const IRA_RULES: Rule[] = [
 const VOTING_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "EQT-057",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Election of directors covenant",
     description:
       "Voting agreement should bind stockholders to vote for the agreed board composition.",
@@ -1205,7 +1205,13 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
       // The canonical covenant: "vote all shares … so as to elect to the Board
       // … directors designated by [holders]". The verb and object sit apart,
       // and "designated"/"nominated" is as common as "designees".
-      /vote\b[^.]{0,160}\belect\b[^.]{0,40}(?:to\s+the\s+)?(?:board|director)/i,
+      // `\belect\b` cannot match "elected", which is how the covenant is
+      // actually written: "each Stockholder shall vote its Shares so that one
+      // director IS ELECTED by the holders of Series A Preferred Stock". And
+      // the covenant is as often framed by RESULT — "shall vote all Shares so
+      // that the Board consists of five directors" — as by the verb.
+      /vote\b[^.]{0,160}\belect(?:s|ed|ing|ion)?\b[^.]{0,40}(?:to\s+the\s+)?(?:board|director)/i,
+      /vote\b[^.]{0,120}?\bso\s+that[^.]{0,120}?\b(?:board|directors?)\b/i,
       /(?:elect|appoint)\w*[^.]{0,60}(?:designee|designated|nominat)/i,
     ],
   }),

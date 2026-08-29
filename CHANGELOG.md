@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.160.0] — 2026-08-29
+
+### Added
+- An NVCA-style voting agreement, the 128th specimen.
+
+### Fixed
+- **A voting agreement routed to `stockholders-agreement`** and was told at
+  `critical` that it had no tag-along, no right of first refusal, and no
+  voting-agreement clause — on a document whose Article 1 is one. The
+  stockholders family listed "voting agreement" among its OWN title keywords; a
+  document titled "Voting Agreement" is a voting agreement.
+- **EQT-057 could not read the covenant it exists for.** `\belect\b` cannot
+  match "elected", which is how it is written: "each Stockholder shall vote its
+  Shares so that one director IS ELECTED by the holders of Series A Preferred
+  Stock". The covenant is also framed by RESULT as often as by the verb —
+  "shall vote all Shares so that the Board consists of five directors".
+- **A drag-along's PROTECTION was reported as a non-compete** (PERS-005). "No
+  Stockholder is required to accept a covenant not to compete" is a promise
+  that none will be imposed.
+
 ## [9.159.0] — 2026-08-29
 
 ### Added

@@ -17690,8 +17690,7 @@
         "stockholders agreement",
         "stockholders' agreement",
         "investors rights agreement",
-        "investor rights agreement",
-        "voting agreement"
+        "investor rights agreement"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -19487,6 +19486,10 @@
         "drag-along",
         "irrevocable proxy",
         "vote in favor",
+        "shall vote all",
+        "vote its shares",
+        "election of the board",
+        "preferred directors",
         "election of directors"
       ],
       "negative_features": [
@@ -19496,7 +19499,17 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "DGCL",

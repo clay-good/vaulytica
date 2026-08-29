@@ -23,7 +23,7 @@ import { allMatches, describesCovenantElsewhere, emit, excerptWindow } from "../
  */
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",
@@ -49,6 +49,11 @@ export const rule: Rule = {
     // the restriction, not a disclaimer. The generic negation helper can't tell
     // these apart, so this rule checks disclaimer markers specifically.
     //
+    // A drag-along's PROTECTION is a third shape, and it is the mirror of the
+    // covenant: "no Stockholder is required to accept a covenant not to
+    // compete" is a promise that none will be imposed, and it was reported as
+    // a non-compete clause present.
+    //
     // The INCOMING-OBLIGATIONS representation is the other shape, and it is in
     // essentially every offer letter and employment agreement: "you represent
     // that you are not subject to any employment, confidentiality,
@@ -58,7 +63,7 @@ export const rule: Rule = {
     // reported as a non-compete clause present, at `warning`, on a letter that
     // contains none.
     const DISCLAIMED =
-      /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b/i;
+      /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b|\b(?:no|not)\s+[^.;]{0,50}?\brequired\s+to\s+(?:accept|sign|execute|enter\s+into|agree\s+to)\b/i;
     const hit = hits.find(
       (h) => !DISCLAIMED.test(h.text) && !describesCovenantElsewhere(h.text, h.match.index),
     );

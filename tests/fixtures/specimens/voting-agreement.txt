@@ -1,0 +1,64 @@
+VOTING AGREEMENT
+
+This Voting Agreement is made as of March 18, 2026 among Corvid Optical Systems, Inc., a Delaware corporation (the "Company"), the investors listed on Schedule A (each an "Investor" and together the "Investors"), and the stockholders listed on Schedule B (each a "Key Holder" and together the "Key Holders"). The Investors and the Key Holders are together the "Stockholders."
+
+RECITALS
+
+The Company and the Investors are parties to a Series B Preferred Stock Purchase Agreement of even date, and it is a condition to closing that the parties enter into this Agreement to provide for the election of the Board and for the other matters set out below.
+
+1. BOARD OF DIRECTORS
+
+1.1 Size of the Board. Each Stockholder shall vote all Shares it holds, at every meeting and in every written consent, so that the Board consists of five (5) directors.
+
+1.2 Election. Each Stockholder shall vote its Shares so that:
+(a) one director is elected by the holders of Series A Preferred Stock, initially Rosalind Achebe;
+(b) one director is elected by the holders of Series B Preferred Stock, initially Ivo Brandsma;
+(c) two directors are elected by the holders of Common Stock, one of whom shall be the person then serving as Chief Executive Officer, initially Nadia Oyelaran and Emil Halloran; and
+(d) one director not employed by the Company and acceptable to a majority of the Preferred Directors and the Common Directors, initially vacant.
+
+1.3 Removal and Vacancies. A director elected under a clause of Section 1.2 may be removed only by the holders entitled to elect that director, and a vacancy in that seat is filled only by those holders.
+
+1.4 No Liability. A Stockholder is under no liability to any party under this Agreement for any vote cast in accordance with it.
+
+2. DRAG-ALONG
+
+2.1 Obligation. If a Sale of the Company is approved by the Board, by the holders of a majority of the Common Stock, and by the holders of a majority of the Preferred Stock voting as a single class on an as-converted basis, each Stockholder shall vote for it, sell its Shares on the same terms, execute the definitive agreements, and refrain from exercising appraisal rights.
+
+2.2 Conditions. Section 2.1 applies only if: each Stockholder receives the same form and amount of consideration per share of the same class; no Stockholder is required to give a representation other than as to title, authority, and the absence of liens; the liability of a Stockholder is several and not joint and is capped at the consideration that Stockholder actually receives; and no Stockholder is required to accept a covenant not to compete.
+
+3. TERMINATION
+
+This Agreement terminates on the earliest of: the closing of a firm-commitment underwritten public offering; a Sale of the Company that satisfies Section 2.2; and the date the Investors holding a majority of the Preferred Stock and the Key Holders holding a majority of the Common Stock agree in writing to terminate it.
+
+4. GENERAL
+
+4.1 Specific Performance. The parties agree that money damages would not be an adequate remedy for a breach, and that a party may seek specific performance and injunctive relief without posting a bond.
+
+4.2 Legend. Each certificate representing Shares shall bear the legend set out in Section 4.3, and the Company shall not record a transfer that violates this Agreement.
+
+4.3 Amendment. This Agreement may be amended only with the written consent of the Company, the holders of a majority of the Shares held by the Investors, and the holders of a majority of the Shares held by the Key Holders; provided that an amendment that treats a Stockholder differently from others of the same class requires that Stockholder's consent.
+
+4.4 Governing Law. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws principles.
+
+4.5 Counterparts. This Agreement may be signed in counterparts, including by electronic signature, each of which is an original.
+
+COMPANY
+
+CORVID OPTICAL SYSTEMS, INC.
+
+By: /s/ Nadia Oyelaran
+Name: Nadia Oyelaran
+Title: Chief Executive Officer
+
+INVESTORS
+
+KESTREL VENTURES III, L.P.
+
+By: /s/ Ivo Brandsma
+Name: Ivo Brandsma
+Title: Managing Member of its General Partner
+
+KEY HOLDERS
+
+/s/ Emil Halloran
+Emil Halloran
