@@ -402,6 +402,10 @@ const PERSPECTIVE_PAIRS = new Map<string, string[]>([
   ["mutual-nda-deep", ["mutual-nda"]],
   ["saas-vendor", ["saas-customer"]],
   ["scc-module-3", ["scc-module-2"]],
+  // A processor-to-subprocessor DPA and a controller-to-processor DPA are the
+  // same instrument seen from two links in the same chain; which one you want
+  // is your position in it, not the document's.
+  ["dpa-processor-subprocessor", ["dpa-controller-processor"]],
   ["unilateral-nda", ["unilateral-nda-deep"]],
 ]);
 
@@ -452,6 +456,47 @@ describe("every playbook is reachable by its own name and vocabulary", () => {
     expect(shadowed.sort(), `shadowed by a sibling:\n  ${shadowed.sort().join("\n  ")}`).toEqual(
       [],
     );
+  }, 60_000);
+
+  /**
+   * The mirror of the keyword sweep: a document titled with the family's own
+   * DISPLAY NAME must reach it.
+   *
+   * A family's keywords and its name are written separately and drift apart.
+   * `healthcare-poa` listed the CLOSED spelling only — "healthcare power of
+   * attorney" — while its name, and every document of the kind, is "Health
+   * Care Power of Attorney", so one so titled fell to `generic-fallback` and
+   * not one of the family's checks ran on it.
+   */
+  it("a document titled with the family's own name reaches it", () => {
+    const shadowed: string[] = [];
+    let checked = 0;
+    for (const pb of [...LAUNCH, ...PLAYBOOKS]) {
+      if (pb.id === "generic-fallback") continue;
+      const phrases = pb.match_features.distinguishing_phrases.slice(0, 3);
+      checked += 1;
+      const body: [string, ...string[]] = [
+        "",
+        pb.name.toUpperCase(),
+        `This document is made as of January 1, 2026. ${phrases.join(". ")}.`,
+      ];
+      const tree = buildTree(body);
+      const extracted = extractAll(tree, {
+        classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+      });
+      const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+        title: titleCorpus(tree, "d.txt"),
+        body_text: body.join("\n"),
+      });
+      if (match.playbook_id === pb.id) continue;
+      if (PERSPECTIVE_PAIRS.get(pb.id)?.includes(match.playbook_id)) continue;
+      shadowed.push(`${pb.id} -> ${match.playbook_id} @${match.confidence} (name "${pb.name}")`);
+    }
+    expect(checked, "the sweep found no playbooks — it is broken").toBeGreaterThan(250);
+    expect(
+      shadowed.sort(),
+      `a family cannot be reached by its own name:\n  ${shadowed.sort().join("\n  ")}`,
+    ).toEqual([]);
   }, 60_000);
 });
 

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.143.0] — 2026-08-29
+
+### Added
+- **A family must be reachable by its own DISPLAY NAME**, not only by its
+  keyword list (`catalog-routing.test.ts`). A family's keywords and its name are
+  written separately and drift apart: `healthcare-poa` listed the closed
+  spelling only — "healthcare power of attorney" — while its name, and every
+  document of the kind, is "Health Care Power of Attorney". A document so
+  titled fell to `generic-fallback` and not one of the family's checks ran on
+  it. All 254 families pass, with one declared perspective pair.
+
 ## [9.142.0] — 2026-08-29
 
 ### Added
