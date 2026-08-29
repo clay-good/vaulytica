@@ -40,6 +40,32 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A single-tenant ABSOLUTE net lease. Three lease families were leaning on
+  // "Landlord", "Tenant" and "Premises" — the three words every lease
+  // contains — so it routed first to `lease-commercial-multitenant` and then
+  // to `lease-residential-us`, and `net-lease`'s own phrases were the
+  // MULTITENANT vocabulary ("common area maintenance", "CAM"), which no
+  // single-tenant net lease carries. Once routed, two of its own checks fired
+  // at `critical` on the drafting they exist to require: RE-001 conjoined a
+  // CAM / operating-expense pillar onto a family named "Single-Tenant Net
+  // Lease", and RE-004 wanted "maintenance and repair" adjacent where the
+  // lease writes the verb series "maintain, repair, and replace". RE-005
+  // stays and is real: this lease gives the tenant no audit right.
+  "net-lease.txt": {
+    playbook: "net-lease",
+    findings: [
+      "RE-005",
+      "RISK-005",
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-010",
+      "RISK-011",
+    ],
+  },
   // A book publishing copyright license. It routed to `msa-general`: the
   // family listed "patent", "trademark" and "assignment" as NEGATIVE
   // features, and a copyright license reserves patent and trademark rights in

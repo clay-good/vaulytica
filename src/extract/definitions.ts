@@ -1708,7 +1708,13 @@ function runInHeadingEnd(text: string): number {
  * `format-invariance.test.ts` exists to forbid.
  */
 function runInHeadingTitles(text: string): string[] {
-  const RE = /(?:^|[.;]\s+)(?:\d+(?:\.\d+)*|[A-Z])[.)]\s+([A-Z][^.;:]{0,80}?)[.;:]\s/g;
+  // A DECIMAL clause number carries no delimiter: "3.1 Base Rent. Tenant shall
+  // pay annual Base Rent of $674,800" — the period belongs to the number, not
+  // after it. Requiring "." or ")" after the digits meant every subsection
+  // heading in a decimal-numbered agreement went unregistered, and a net lease
+  // was told it uses Base Rent without defining it. A bare integer still needs
+  // its delimiter, so an ordinary sentence opening on a year is not a heading.
+  const RE = /(?:^|[.;]\s+)(?:\d+(?:\.\d+)+|\d+[.)]|[A-Z][.)])\s+([A-Z][^.;:]{0,80}?)[.;:]\s/g;
   const titles: string[] = [];
   RE.lastIndex = 0;
   let m: RegExpExecArray | null;

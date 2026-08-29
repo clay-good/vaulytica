@@ -52,7 +52,7 @@ const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
 const NET_LEASE_RULES: Rule[] = [
   presence({
     id: "RE-001",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Triple-net (NNN) cost allocation stated",
     description:
       "Net lease must specify which expenses (real estate taxes, insurance, CAM / operating expenses) pass through to tenant.",
@@ -82,7 +82,17 @@ const NET_LEASE_RULES: Rule[] = [
       // one-directional form flagged the standard drafting once the pillars
       // were conjoined.
       /(real\s+estate\s+taxes?.{0,80}tenant|tenant.{0,80}real\s+estate\s+taxes?)/is,
-      /(cam|common\s+area\s+maintenance|operating\s+expenses)/i,
+      // The third pillar demanded CAM / operating expenses — the MULTITENANT
+      // vocabulary — from a family named "Single-Tenant Net Lease". An
+      // absolute net lease has no common area and no landlord-billed expense
+      // pool: the tenant pays every cost directly, and says so ("Tenant shall
+      // pay, as Additional Rent, all costs and expenses of every kind relating
+      // to the Premises, including real estate taxes and assessments,
+      // insurance premiums, utilities, maintenance, repairs, replacements").
+      // Conjoined with the other two, that made the rule unsatisfiable by the
+      // very document it exists for, at `critical`. The cost CATEGORIES are
+      // the allocation, whoever bills them.
+      /(cam|common\s+area\s+maintenance|operating\s+expenses|insurance\s+premiums?|utilities|all\s+costs\s+and\s+expenses|maintenance[,\s]+(?:and\s+)?repairs?)/i,
     ],
     require_all_present: true,
   }),
@@ -153,7 +163,7 @@ const NET_LEASE_RULES: Rule[] = [
   }),
   presence({
     id: "RE-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Maintenance and repair obligations",
     description:
       "Single-tenant NNN puts maintenance / repair on tenant; landlord typically retains only structural / roof obligations.",
@@ -170,6 +180,13 @@ const NET_LEASE_RULES: Rule[] = [
     recommendation:
       "Add 'Maintenance and Repair' specifying landlord's structural / roof obligations and tenant's responsibility for everything else.",
     present_patterns: [
+      // The VERB SERIES, which is how a net lease writes it: "Tenant shall
+      // MAINTAIN, REPAIR, AND REPLACE every part of the Premises", under a
+      // section headed "MAINTENANCE, REPAIR, AND REPLACEMENT". Both bigrams
+      // below need the two words adjacent, so a clause that assigns every
+      // obligation in the family to the tenant was reported missing, at
+      // `critical`.
+      /(?:maintenance|maintain)\w*\b[^.;]{0,30}?\brepair/i,
       /maintenance\s+and\s+repair/i,
       // The obligation is as often the VERB form "Tenant shall MAINTAIN AND
       // REPAIR the Premises" or the reversed "repairs and maintenance", neither

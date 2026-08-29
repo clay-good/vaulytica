@@ -10,14 +10,18 @@
       "triple net",
       "nnn",
       "real estate taxes",
-      "common area maintenance",
-      "cam"
+      "absolute net",
+      "without abatement",
+      "single-tenant",
+      "tenant shall pay all real estate taxes"
     ],
     "negative_features": ["multi-tenant", "residential lease"]
   },
   "expected_clauses": [],
   "expected_defined_terms": [],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "State-Landlord-Tenant",

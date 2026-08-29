@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.187.0] — 2026-08-29
+
+### Added
+- A single-tenant ABSOLUTE net lease — the 148th specimen.
+
+### Fixed
+- **Three lease families were leaning on "Landlord", "Tenant" and
+  "Premises"** — the three words every lease contains — as distinguishing
+  phrases, so a net lease routed first to `lease-commercial-multitenant` and
+  then to `lease-residential-us`. Each family keeps only the vocabulary that
+  is actually its own (Tenant's Proportionate Share / Common Area / CAM for
+  the multitenant lease; security deposit / no smoking / pets for the
+  residential one).
+- **`net-lease`'s own distinguishing phrases were the MULTITENANT
+  vocabulary** — "common area maintenance" and "CAM", which no single-tenant
+  net lease carries. Replaced with "absolute net", "without abatement",
+  "single-tenant", "tenant shall pay all real estate taxes".
+- **RE-001 conjoined a CAM / operating-expense pillar onto a family named
+  "Single-Tenant Net Lease"**, at `critical`. An absolute net lease has no
+  common area and no landlord-billed expense pool — the tenant pays every cost
+  directly and says so — so the rule was unsatisfiable by the very document it
+  exists for. The cost CATEGORIES are the allocation, whoever bills them.
+- **RE-004 wanted "maintenance and repair" adjacent**, and a net lease writes
+  the verb series: "Tenant shall MAINTAIN, REPAIR, AND REPLACE every part of
+  the Premises", under a section headed "MAINTENANCE, REPAIR, AND
+  REPLACEMENT". Reported missing at `critical`.
+- **A DECIMAL-numbered run-in heading was not registered as a heading.** In
+  "3.1 Base Rent. Tenant shall pay annual Base Rent of $674,800" the period
+  belongs to the number, not after it, so every subsection heading in a
+  decimal-numbered agreement went unregistered and the lease was told it uses
+  Base Rent without defining it. A bare integer still needs its delimiter, so
+  a sentence opening on a year is not mistaken for a heading.
+
 ## [9.186.0] — 2026-08-29
 
 ### Added

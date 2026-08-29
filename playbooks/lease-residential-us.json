@@ -6,7 +6,7 @@
   "match_features": {
     "title_keywords": ["residential lease", "residential rental agreement", "apartment lease", "tenant lease", "rental agreement"],
     "required_clauses": ["term"],
-    "distinguishing_phrases": ["Landlord", "Tenant", "Premises", "security deposit", "rent shall be paid", "no smoking", "pets are not permitted", "residential"],
+    "distinguishing_phrases": ["security deposit", "rent shall be paid", "no smoking", "pets are not permitted", "residential"],
     "negative_features": ["Subscription Term", "Confidential Information", "Customer Data", "Statement of Work", "SOW", "1099", "Operating Expenses", "Common Area", "CAM"]
   },
   "expected_clauses": [

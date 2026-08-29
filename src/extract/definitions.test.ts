@@ -1703,6 +1703,32 @@ describe("a term that titles its own RUN-IN heading", () => {
   });
 });
 
+describe("a DECIMAL-numbered run-in heading", () => {
+  // "3.1 Base Rent. Tenant shall pay annual Base Rent of $674,800" — the
+  // period belongs to the NUMBER, not after it, so requiring "." or ")" after
+  // the digits left every subsection heading in a decimal-numbered agreement
+  // unregistered and a net lease was told it uses Base Rent without defining
+  // it.
+  const undef = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Net Lease", ...paras])).undefined_capitalized.map((e) => e.term);
+
+  it("registers the heading of a decimal-numbered subsection", () => {
+    const terms = undef(
+      "3.1 Base Rent. Tenant shall pay annual Base Rent of $674,800, payable in equal monthly installments in advance.",
+      "Base Rent increases by two percent (2%) on each anniversary of the Commencement Date.",
+      "Tenant shall pay Base Rent without abatement, deduction, or offset of any kind.",
+    );
+    expect(terms).not.toContain("Base Rent");
+  });
+
+  it("does not read a sentence opening on a bare year as a heading", () => {
+    const terms = undef(
+      "In 2026 Hazardous Materials were found on the site. Hazardous Materials must be removed. Hazardous Materials remain Tenant's responsibility.",
+    );
+    expect(terms).toContain("Hazardous Materials");
+  });
+});
+
 describe("a definition whose alias is PARENTHESIZED", () => {
   // `"You" (or "Your") means the copyright owner …` is how every contributor
   // license agreement defines its two pronouns. The alias pattern wanted

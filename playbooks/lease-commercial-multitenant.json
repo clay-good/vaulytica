@@ -6,7 +6,7 @@
   "match_features": {
     "title_keywords": ["office lease", "commercial lease", "lease agreement", "multi-tenant lease"],
     "required_clauses": ["term"],
-    "distinguishing_phrases": ["Landlord", "Tenant", "Premises", "Common Area", "Rentable Square Feet", "Base Rent", "Operating Expenses", "CAM", "subleasing"],
+    "distinguishing_phrases": ["Tenant's Proportionate Share", "Common Area", "Rentable Square Feet", "Base Rent", "Operating Expenses", "CAM", "subleasing"],
     "negative_features": ["the Service", "Subscription Term", "Confidential Information", "Customer Data", "Statement of Work", "SOW", "1099", "residential", "apartment", "no smoking", "pets are not permitted"]
   },
   "expected_clauses": [
