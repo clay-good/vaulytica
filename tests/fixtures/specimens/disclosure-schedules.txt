@@ -1,0 +1,63 @@
+DISCLOSURE SCHEDULES
+
+to the
+
+STOCK PURCHASE AGREEMENT
+
+dated as of February 20, 2026
+
+by and among
+
+Thornfield Instruments Holdings, Inc., as Buyer,
+Ravensworth Metrology, Inc., as the Company,
+and the Sellers named therein
+
+These Disclosure Schedules are delivered by the Company pursuant to and in connection with the Stock Purchase Agreement dated as of February 20, 2026 (the "Purchase Agreement"). Capitalized terms used and not otherwise defined in these Disclosure Schedules have the meanings given to them in the Purchase Agreement.
+
+The section numbers below correspond to the section numbers of the Purchase Agreement. Any matter disclosed in any section of these Disclosure Schedules is deemed disclosed for the purposes of every other section to the extent its relevance to that other section is reasonably apparent on its face. Nothing disclosed here is an admission that the matter is material, that it is required to be disclosed, or that it constitutes a breach of any representation.
+
+The inclusion of any dollar amount is not a representation that the amount is material or that a lower amount would not be material.
+
+Schedule 3.4 — No Conflicts; Consents
+
+1. Consent of Meridian Bank, N.A. under the Credit Agreement dated May 4, 2023, required for the change of control contemplated by the Purchase Agreement.
+
+2. Notice to and consent of Larkfield Properties LLC under the lease of the Ravensworth facility at 4400 Fennimore Road, Rochester, New York, required for a change of control of the tenant.
+
+3. Filing under the Hart-Scott-Rodino Antitrust Improvements Act of 1976, as amended.
+
+Schedule 3.9 — Material Contracts
+
+1. Master Supply Agreement with Corvid Optical Systems, Inc. dated August 12, 2022, as amended by Amendment No. 1 dated January 8, 2024.
+
+2. Distribution Agreement with Halvorsen Instrumentering AS dated March 1, 2021, terminable by either party on 180 days notice.
+
+3. Development and License Agreement with Kestrel Photonics LLC dated November 15, 2024, containing an exclusivity covenant that runs through November 15, 2029.
+
+Schedule 3.12 — Intellectual Property
+
+1. United States Patent No. 11,482,905, "Interferometric Surface Metrology with Adaptive Compensation," issued October 25, 2022.
+
+2. United States Trademark Registration No. 5,914,220 for RAVENSWORTH in International Class 9.
+
+3. The Company licenses the open-source library libsurfmesh under the GNU Lesser General Public License version 3.0, which is dynamically linked and not distributed in modified form.
+
+Schedule 3.15 — Litigation
+
+1. Ravensworth Metrology, Inc. v. Pettigrew Calibration Services, LLC, Monroe County Supreme Court, Index No. E2025-004119, a collection action commenced by the Company on October 3, 2025 seeking $184,000 in unpaid invoices.
+
+2. A demand letter received from a former employee on January 14, 2026 alleging unpaid overtime. No proceeding has been commenced.
+
+Schedule 3.18 — Employee Benefit Plans
+
+1. Ravensworth Metrology, Inc. 401(k) Plan, a safe-harbor plan administered by Fairbrook Retirement Services.
+
+2. Ravensworth Metrology, Inc. 2019 Stock Option Plan, under which options to purchase 412,500 shares are outstanding as of the date of the Purchase Agreement.
+
+3. Group health, dental, and vision plans insured through Sentinel Ridge Insurance Company.
+
+Schedule 5.2 — Conduct of Business Pending Closing
+
+1. Payment of the annual discretionary bonus pool for fiscal 2025, not to exceed $640,000 in the aggregate, in the ordinary course and consistent with past practice.
+
+2. Renewal of the Larkfield Properties LLC lease on its existing terms for one additional year.

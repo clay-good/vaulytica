@@ -623,12 +623,12 @@ describe("an arabic-numbered article reference", () => {
     // Before the keyword reached the normalizer, "Article 9" resolved to
     // `section:9` — a wrong-entity link, the same class the Exhibit/Schedule
     // guard exists to prevent.
-    const tree = buildTree([
+    const t = buildTree([
       "Agreement",
       "9. Confidentiality",
       "The obligations in Article 9 survive termination.",
     ]);
-    const refs = extractCrossRefs(tree, extractSections(tree));
+    const refs = extractCrossRefs(t, extractSections(t));
     expect(refs.find((r) => r.raw_text === "Article 9")?.unresolved).toBe(true);
   });
 });
@@ -945,5 +945,35 @@ describe("a state code's multi-hyphen section number", () => {
         "Filed pursuant to Section 7-80-204 of the Colorado Limited Liability Company Act, and subject to Section 9.2.",
       ),
     ).toEqual(["Section 9.2"]);
+  });
+});
+
+describe("run-in section headings anywhere in a paragraph", () => {
+  // Stripping a document's blank lines, as a PDF copy-paste does, merges a
+  // whole article into one paragraph — so every heading but the first sits
+  // mid-paragraph, the anchored patterns registered none of them, and a clean
+  // set of nonprofit bylaws drew fourteen broken-reference findings against
+  // headings printed in itself.
+  it("registers every run-in heading, not only the first", () => {
+    const t = buildTree([
+      "Bylaws",
+      "ARTICLE III — BOARD OF DIRECTORS Section 3.1. General Powers. The affairs of the corporation are managed by its Board. Section 3.2. Number and Term. The Board consists of not fewer than five directors. Section 3.5. Removal. A director may be removed under Section 3.2.",
+    ]);
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual([]);
+  });
+
+  it("does not read a plain cross-reference as a heading declaration", () => {
+    const t = buildTree([
+      "Agreement",
+      "1. Term. This Agreement continues until terminated. The parties shall proceed as set out in Section 9.4 and Section 9.5.",
+    ]);
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(
+      refs
+        .filter((r) => r.unresolved)
+        .map((r) => r.raw_text)
+        .sort(),
+    ).toEqual(["Section 9.4", "Section 9.5"]);
   });
 });

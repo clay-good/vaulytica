@@ -244,6 +244,39 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["STRUCT-005", "STRUCT-016", "STRUCT-018"],
   },
 
+  // An SEC Form 10-K Item 1A. A narrative disclosure section: no parties, no
+  // signature, and its "we may not" sentences are risk statements rather than
+  // covenants. REG-022 wanted the word "cybersecurity" from a filer whose risk
+  // factor is headed "Risks Related to Data Privacy and Security".
+  "10-k-risk-factors.txt": {
+    playbook: "10-k-risk-factors",
+    findings: ["REG-017", "REG-021", "REG-023", "REG-024", "REG-040"],
+  },
+
+  // A HIPAA notice of privacy practices. It speaks HIPAA's regulatory
+  // vocabulary throughout — "designated record set", "unsecured protected
+  // health information" — and never uses the acronym, so IPDATA-005 reported
+  // that it cited no data regime.
+  "hipaa-npp.txt": { playbook: "hipaa-npp", findings: ["OBLI-005"] },
+
+  // The disclosure schedules to a stock purchase agreement: a list of
+  // exceptions keyed to another instrument's section numbers. MNA-039 wanted
+  // the literal heading "General Notes" and reported the three paragraphs that
+  // ARE the introduction as no introduction at all, at `critical`.
+  "disclosure-schedules.txt": {
+    playbook: "disclosure-schedules",
+    findings: ["MNA-044", "MNA-045"],
+  },
+
+  // Bylaws of a North Carolina nonprofit with no members and no stock. They
+  // routed to `bylaws-corporation` and were told at `critical` that they had
+  // no annual stockholders meeting, no stock certificate clause, and no DGCL
+  // § 220 inspection right.
+  "nonprofit-bylaws.txt": {
+    playbook: "nonprofit-bylaws",
+    findings: ["OBLI-005", "RISK-011"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

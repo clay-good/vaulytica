@@ -13,8 +13,10 @@
     "distinguishing_phrases": [
       "protected health information",
       "phi",
-      "treatment, payment, and health care operations",
-      "tpo",
+      "health care operations",
+      "designated record set",
+      "psychotherapy notes",
+      "department of health and human services",
       "office for civil rights",
       "ocr"
     ],
@@ -55,6 +57,9 @@
       "skip": true
     },
     "STRUCT-004": {
+      "skip": true
+    },
+    "STRUCT-003": {
       "skip": true
     },
     "TERM-002": {

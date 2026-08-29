@@ -247,6 +247,17 @@ const ARTICLE_THEN_SECTION_RE =
 // amount, not a clause number.
 const LEADING_SUBSECTION_RE = /^\s*(\d+(?:\.\d+)+)\.?\s+[A-Z(]/;
 
+// A RUN-IN section heading anywhere in a paragraph — "… continues in effect.
+// Section 6.4. Definitions. \"Descendants\" means …". Stripping a document's
+// blank lines, as a PDF copy-paste does, merges a whole article into one
+// paragraph, so every heading but the first sits mid-paragraph: the anchored
+// patterns above registered none of them and a clean set of nonprofit bylaws
+// drew fourteen broken-reference findings against headings printed in itself.
+//
+// The trailing period after the number is what separates a heading from a
+// reference: "Section 3.4. Vacancies." declares, "under Section 3.4" refers.
+const RUN_IN_SECTION_RE = /(?:^|[.!?]\s+)(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z(]/g;
+
 // The flat-paste ARTICLE heading — "ARTICLE VII — FORUM SELECTION" — is a
 // DECLARATION of the article, not a reference to it. It both feeds the
 // label index (so "Article VII" elsewhere resolves) and is skipped as a
@@ -313,6 +324,14 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     const ats = ARTICLE_THEN_SECTION_RE.exec(ctx.text);
     const atsNorm = ats ? normalizeLabel(ats[1]!) : undefined;
     if (atsNorm && !labelIndex.has(atsNorm)) labelIndex.set(atsNorm, ctx.paragraph.id);
+    // Every run-in heading in the paragraph, for the flattened layouts where
+    // an article's subsections all arrive in one.
+    RUN_IN_SECTION_RE.lastIndex = 0;
+    let ri: RegExpExecArray | null;
+    while ((ri = RUN_IN_SECTION_RE.exec(ctx.text)) !== null) {
+      const riNorm = normalizeLabel(ri[1]!);
+      if (riNorm && !labelIndex.has(riNorm)) labelIndex.set(riNorm, ctx.paragraph.id);
+    }
   });
 
   forEachParagraph(tree, (ctx) => {

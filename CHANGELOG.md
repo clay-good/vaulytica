@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.131.0] — 2026-08-29
+
+### Added
+- **Four specimens from families that had none**: an SEC Form 10-K Item 1A, a
+  HIPAA notice of privacy practices, the disclosure schedules to a stock
+  purchase agreement, and the bylaws of a North Carolina nonprofit. One hundred
+  and four specimens.
+
+### Fixed
+- **Nonprofit bylaws routed to `bylaws-corporation`** and were told at
+  `critical` that they had no annual stockholders meeting and no stock
+  certificate clause, and at `warning` that they did not acknowledge the DGCL
+  § 220 inspection right — on a corporation with no members and no stock. The
+  corporate family now carries the nonprofit vocabulary as disqualifying.
+- **A set of nonprofit bylaws was told it had no § 501(c)(3) purpose recital**
+  (GOV-071, `critical`), on a document whose Section 1.2 carries the textbook
+  one. The rule conjoined THREE spellings of one fact, and its own
+  recommendation failed its own conjunction. The bare citation is not one of
+  the alternatives: this family's title is "Nonprofit Bylaws (501(c)(3))", so a
+  pattern matching it alone could never fail — the citation counts when it is
+  cited.
+- **A well-drafted set of disclosure schedules was told it had no
+  introduction** (MNA-039, `critical`) because the rule wanted the literal
+  heading "General Notes", and **no materiality disclaimer** (MNA-042) because
+  it wanted the negator "not" and the noun "admission" — while the two
+  sentences every set carries are "Nothing disclosed here is an admission that
+  the matter is material" and "The inclusion of any dollar amount is not a
+  representation that the amount is material".
+- **A filer's cybersecurity risk factor went unread** (REG-022) because the
+  rule wanted the word "cybersecurity" from a section headed "Risks Related to
+  Data Privacy and Security". "Security incident" is what the SEC's own Form
+  8-K Item 1.05 calls the event.
+- **A HIPAA notice of privacy practices was reported as citing no data
+  regime** (IPDATA-005). It is the instrument 45 C.F.R. § 164.520 requires,
+  written for patients, and it speaks HIPAA's vocabulary throughout —
+  "designated record set", "unsecured protected health information",
+  "psychotherapy notes" — without ever using the acronym. Its family's
+  distinguishing phrases were the acronyms too, so it matched at 0.5, one
+  feature from falling off the routing cliff.
+- **A run-in section heading was only ever registered at a paragraph's start**.
+  Stripping a document's blank lines merges a whole article into one paragraph,
+  so every heading but the first sits mid-paragraph — and a clean set of
+  bylaws drew fourteen broken-reference findings against headings printed in
+  itself. The trailing period after the number is what separates a heading from
+  a reference: "Section 3.4. Vacancies." declares, "under Section 3.4" refers.
+- Skip profiles: `hipaa-npp` no longer demands a signature block, and
+  `10-k-risk-factors` no longer demands a retention period, a data-ownership
+  allocation, or an indemnity cap from a narrative disclosure section, nor
+  reads its "we may not" sentences as covenants.
+
+### Known
+- `10-k-risk-factors.txt` is the one specimen whose findings still move when
+  its blank lines go: an unnumbered run-in heading glues to the paragraph
+  beneath it and the Title-Case run stops at the lowercase "to". The signals
+  tried and rejected are recorded in `format-invariance.test.ts`.
+
 ## [9.130.0] — 2026-08-29
 
 ### Added

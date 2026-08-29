@@ -1546,12 +1546,26 @@ const NONPROFIT_RULES: Rule[] = [
       "Treas. Reg. § 1.501(c)(3)-1(b) requires the organizing documents to limit the entity's purposes to one or more exempt purposes. The bylaws typically restate the charter.",
     recommendation:
       "Add 'Purpose' restating the § 501(c)(3) exempt purposes (charitable, religious, educational, scientific, etc.).",
+    // Three spellings of ONE fact, conjoined: the recital says the
+    // corporation is organized for exempt purposes under § 501(c)(3), and a
+    // drafter writes it one way, not three. The rule's own recommendation
+    // fails its own conjunction — it carries the citation and neither of the
+    // other two — and a set of nonprofit bylaws whose Section 1.2 reads
+    // "organized exclusively for charitable and educational purposes within
+    // the meaning of Section 501(c)(3) of the Internal Revenue Code" was told
+    // at `critical` that it had no exempt-purpose recital.
+    //
+    // The bare citation is not one of them: this family's own TITLE is
+    // "Nonprofit Bylaws (501(c)(3))", so a pattern matching the citation
+    // alone can never fail. The citation counts when it is CITED — "within
+    // the meaning of Section 501(c)(3)", "of the Internal Revenue Code" —
+    // which a title never says.
     present_patterns: [
-      /501\s*\(?c\)?\s*\(?3\)?/i,
-      /tax.exempt\s+purpose/i,
-      /charitable\s+purposes?/i,
+      /(?:within\s+the\s+meaning\s+of|described\s+in|under|pursuant\s+to)\s+(?:Section\s+)?501\s*\(?c\)?\s*\(?3\)?/i,
+      /501\s*\(?c\)?\s*\(?3\)?\s*\)?\s+of\s+the\s+Internal\s+Revenue\s+Code/i,
+      /(?:tax.exempt|exempt)\s+purposes?/i,
+      /organized\s+(?:and\s+operated\s+)?exclusively\s+for[^.]{0,80}?(?:charitable|religious|educational|scientific|literary)/i,
     ],
-    require_all_present: true,
   }),
   presence({
     id: "GOV-072",

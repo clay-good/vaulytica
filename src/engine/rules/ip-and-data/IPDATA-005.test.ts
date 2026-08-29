@@ -106,4 +106,37 @@ describe("IPDATA-005 — HIPAA terms of art count as a regime reference", () => 
       ).toBeNull();
     }
   });
+
+  // A NOTICE OF PRIVACY PRACTICES is the instrument 45 C.F.R. § 164.520
+  // requires, written for patients, and it speaks HIPAA's regulatory
+  // vocabulary throughout without ever using the acronym.
+  it("reads HIPAA's own vocabulary as naming the regime", () => {
+    for (const clause of [
+      "You have the right to inspect and obtain a copy of your health information in the designated record set.",
+      "Most uses and disclosures of psychotherapy notes require your written authorization.",
+      "You have the right to be notified if we discover a breach of your unsecured protected health information.",
+    ]) {
+      expect(
+        IPDATA005.check(
+          buildContext([
+            "Notice of Privacy Practices",
+            "We may use and disclose your protected health information to provide and coordinate your care.",
+            clause,
+          ]),
+        ),
+        clause,
+      ).toBeNull();
+    }
+  });
+
+  it("still reports a contract that touches personal data and names no regime", () => {
+    expect(
+      IPDATA005.check(
+        buildContext([
+          "Services Agreement",
+          "The Supplier shall process personal information supplied by the Customer solely to provide the Services.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });

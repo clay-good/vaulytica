@@ -57,6 +57,18 @@
     "STRUCT-004": {
       "skip": true
     },
+    "IPDATA-004": {
+      "skip": true
+    },
+    "IPDATA-007": {
+      "skip": true
+    },
+    "OBLI-005": {
+      "skip": true
+    },
+    "RISK-015": {
+      "skip": true
+    },
     "TERM-002": {
       "skip": true
     },

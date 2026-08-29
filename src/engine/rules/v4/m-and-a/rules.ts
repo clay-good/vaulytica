@@ -869,7 +869,18 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       "Practitioner baseline: schedules carry an introduction that (i) cross-references the SPA, (ii) addresses cross-section qualification, and (iii) disclaims materiality inferences.",
     recommendation:
       "Add 'General Notes' at the front of the schedules covering cross-section qualification and materiality disclaimers.",
-    present_patterns: [/disclosure\s+schedule/i, /general\s+(notes|provisions|preamble)/i],
+    present_patterns: [
+      /disclosure\s+schedule/i,
+      // The literal heading "General Notes" is one firm's house style. What an
+      // introduction actually SAYS is that the schedules are delivered
+      // pursuant to the agreement, that their numbering corresponds to its
+      // sections, and that a matter disclosed in one is deemed disclosed in
+      // the others where its relevance is apparent. Requiring the heading
+      // reported a well-drafted set of schedules, whose first three
+      // paragraphs are exactly that, as having no introduction at all — at
+      // `critical`.
+      /general\s+(notes|provisions|preamble)|delivered\s+(?:by|to)?\s*[^.]{0,80}?\bpursuant\s+to\b|section\s+numbers?\b[^.]{0,80}?\bcorrespond|deemed\s+disclosed/i,
+    ],
     require_all_present: true,
   }),
   language({
@@ -958,7 +969,12 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       // The same disclaimer with the standard verbiage between "not" and the
       // admission — "shall not be deemed to be an admission or acknowledgment
       // that such item is material … or falls within any dollar threshold".
-      /\bnot\b[^.]{0,60}?(?:admission|acknowledg\w+)[^.]{0,80}?\b(?:material|threshold)/is,
+      // The negator is as often "Nothing" or "Neither" as "not", and the
+      // noun as often "representation" as "admission": "Nothing disclosed
+      // here is an admission that the matter is material" and "The inclusion
+      // of any dollar amount is not a representation that the amount is
+      // material" are the two sentences every set of schedules carries.
+      /\b(?:not|nothing|neither)\b[^.]{0,60}?(?:admission|acknowledg\w+|representation)[^.]{0,80}?\b(?:material|threshold)/is,
       /standard\s+of\s+materiality/i,
       /deemed\s+to\s+(?:enlarge|establish|expand)[^.]{0,60}(?:materiality|threshold)/is,
     ],

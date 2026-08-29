@@ -1,0 +1,47 @@
+ITEM 1A. RISK FACTORS
+
+Investing in our common stock involves a high degree of risk. You should carefully consider the risks described below, together with the other information in this Annual Report on Form 10-K, including our consolidated financial statements and the related notes, before deciding to invest. If any of the following risks actually occurs, our business, financial condition, results of operations, and prospects could be materially and adversely affected, the trading price of our common stock could decline, and you could lose all or part of your investment. Additional risks and uncertainties not presently known to us, or that we currently deem immaterial, may also impair our business.
+
+Risks Related to Our Business and Industry
+
+We have a history of losses and may not achieve or sustain profitability.
+
+We incurred net losses of $84.2 million, $61.7 million, and $47.3 million for the years ended December 31, 2025, 2024, and 2023, respectively, and had an accumulated deficit of $312.6 million as of December 31, 2025. We expect our operating expenses to increase as we expand our sales organization, invest in research and development, and comply with the requirements of being a public company. We may not generate sufficient revenue to offset these expenses, and we may never achieve or sustain profitability.
+
+We derive a substantial portion of our revenue from a limited number of customers.
+
+Our three largest customers accounted for 38%, 34%, and 31% of our revenue for the years ended December 31, 2025, 2024, and 2023, respectively. Our largest customer alone accounted for 19% of revenue in 2025. Our agreements with these customers generally permit termination for convenience on ninety days notice. The loss of any one of them, or a material reduction in the services they purchase, would materially harm our results of operations.
+
+Our sales cycle is long and unpredictable, which makes our results difficult to forecast.
+
+Our sales cycle for enterprise customers averaged 9.4 months in 2025 and involves multiple stakeholders, competitive evaluations, security reviews, and procurement processes we do not control. As a result, the timing of revenue recognition is difficult to predict, and a delay in a single large transaction can cause our results in a quarter to fall below the expectations of analysts and investors.
+
+Risks Related to Data Privacy and Security
+
+A security incident affecting our platform would harm our reputation and expose us to liability.
+
+Our platform stores and processes sensitive customer data, including personal information. Despite our security measures, our systems and those of our third-party service providers may be vulnerable to attack. We have experienced attempted attacks in the past and expect to experience them in the future. A successful attack could result in unauthorized access to customer data, litigation, regulatory investigations, indemnification obligations, and significant remediation costs, and our insurance may be insufficient to cover the resulting losses.
+
+Evolving privacy laws increase our costs and our exposure to enforcement.
+
+We are subject to the General Data Protection Regulation in the European Union, the California Consumer Privacy Act as amended by the California Privacy Rights Act, and a growing patchwork of state privacy statutes in the United States. These laws are subject to differing interpretations, are frequently amended, and in some cases provide for a private right of action. Compliance requires ongoing investment, and an actual or alleged violation could subject us to significant fines, injunctions, and reputational harm.
+
+Risks Related to Ownership of Our Common Stock
+
+Our stock price is likely to be volatile.
+
+The trading price of our common stock has fluctuated between $8.14 and $41.90 since our initial public offering in June 2024 and is likely to remain volatile. Factors that could cause fluctuations include our operating results, changes in analysts' estimates, sales of substantial amounts of our stock, and general market conditions unrelated to our performance.
+
+Our dual-class structure concentrates voting control with our founders.
+
+Each share of our Class B common stock has ten votes and each share of our Class A common stock has one vote. As of December 31, 2025, our founders together held Class B shares representing approximately 71% of the voting power of our outstanding capital stock. This concentration limits the ability of holders of Class A common stock to influence corporate matters, including the election of directors and the approval of a change of control, and may depress the trading price of our Class A common stock.
+
+We do not intend to pay dividends for the foreseeable future.
+
+We have never declared or paid cash dividends on our capital stock and do not intend to do so in the foreseeable future. Our ability to pay dividends is also restricted by the covenants in our revolving credit facility. Capital appreciation, if any, will be the sole source of gain for holders of our common stock.
+
+General Risk Factors
+
+We may require additional capital, which may not be available on acceptable terms.
+
+We may need to raise additional funds to support our growth, respond to competitive pressures, or acquire complementary businesses. Additional equity financing would dilute existing stockholders, and debt financing, if available, may involve restrictive covenants. If adequate funds are not available on terms acceptable to us, our ability to pursue our business objectives would be impaired.

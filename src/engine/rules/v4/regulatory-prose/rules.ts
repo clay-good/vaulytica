@@ -489,7 +489,11 @@ const RISK_FACTORS_RULES: Rule[] = [
     recommendation:
       "Add a 'Cybersecurity' risk factor describing material cyber risks and incidents.",
     present_patterns: [
-      /(cybersecurity|cyber\s+attack|data\s+breach|ransomware|item\s+106|item\s+1\.05)/i,
+      // "Security incident" is the dominant term — it is what the SEC's own
+      // Form 8-K Item 1.05 and every incident-response plan call the event —
+      // and a filer's risk factor headed "Risks Related to Data Privacy and
+      // Security" was reported as having no cybersecurity risk factor.
+      /(cybersecurity|cyber\s+attack|data\s+breach|ransomware|item\s+106|item\s+1\.05|(?:security|information[- ]security|data[- ]security)\s+(?:incident|breach|event)|unauthorized\s+access)/i,
       /(risk|incident|exposure)/i,
     ],
     require_all_present: true,

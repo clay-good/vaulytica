@@ -21,7 +21,10 @@
     "negative_features": [
       "operating agreement",
       "limited liability company",
-      "partnership"
+      "partnership",
+      "501(c)(3)",
+      "nonprofit corporation",
+      "no part of the net earnings"
     ]
   },
   "expected_clauses": [],

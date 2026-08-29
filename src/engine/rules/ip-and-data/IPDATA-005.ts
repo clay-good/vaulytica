@@ -42,7 +42,14 @@ export const rule: Rule = {
         // Act of 1996 and 45 C.F.R. Parts 160 and 164" and never the acronym.
         // The regulation citation is written the same way: as a Part range,
         // not as a bare "45 C.F.R. 164".
-        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Health\s+Insurance\s+Portability\s+and\s+Accountability\s+Act|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s*C\.?\s*F\.?\s*R\.?(?:\s|§|\.|,|\d|Parts?|and|to|–|-){0,30}16[04]\b|GLBA|Gramm[- ]Leach[- ]Bliley|FERPA|COPPA|VCDPA|Virginia\s+Consumer\s+Data\s+Protection\s+Act|Colorado\s+Privacy\s+Act|Data\s+Privacy\s+Framework|Privacy\s+Shield|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs|Regulation\s*\(?:EU\s*\)?\s*2016\/679|EU\s+Regulation\s+2016\/679|Directive\s+2002\/58|e[- ]?Privacy\s+Directive|UK\s+GDPR|Data\s+Protection\s+Act\s+2018)\b/i,
+        //
+        // A NOTICE OF PRIVACY PRACTICES names neither. It is the instrument
+        // 45 C.F.R. § 164.520 requires, written for patients, and it speaks
+        // HIPAA's regulatory vocabulary throughout — "designated record set",
+        // "unsecured protected health information", "psychotherapy notes" —
+        // without ever using the acronym or the Act's name. Each of those is a
+        // term of art with no other home, so each names the regime.
+        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Health\s+Insurance\s+Portability\s+and\s+Accountability\s+Act|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s*C\.?\s*F\.?\s*R\.?(?:\s|§|\.|,|\d|Parts?|and|to|–|-){0,30}16[04]\b|GLBA|Gramm[- ]Leach[- ]Bliley|FERPA|COPPA|VCDPA|Virginia\s+Consumer\s+Data\s+Protection\s+Act|Colorado\s+Privacy\s+Act|Data\s+Privacy\s+Framework|Privacy\s+Shield|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs|Regulation\s*\(?:EU\s*\)?\s*2016\/679|EU\s+Regulation\s+2016\/679|Directive\s+2002\/58|e[- ]?Privacy\s+Directive|UK\s+GDPR|Data\s+Protection\s+Act\s+2018|Notice\s+of\s+Privacy\s+Practices|designated\s+record\s+set|unsecured\s+protected\s+health\s+information|psychotherapy\s+notes)\b/i,
       )
     )
       return null;
