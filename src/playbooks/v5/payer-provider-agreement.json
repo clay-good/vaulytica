@@ -25,7 +25,10 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Covered Services", "Member", "Fee Schedule"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-MANAGED-CARE",

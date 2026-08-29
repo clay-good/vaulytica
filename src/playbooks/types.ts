@@ -177,11 +177,19 @@ void _superset;
 export type PlaybookMatchAlternative = {
   playbook_id: string;
   confidence: number;
+  /**
+   * The score BEFORE clamping to [0, 1] — which is what actually decides the
+   * ranking. Two families can both clamp to 1 while one outscores the other by
+   * a wide margin, so `confidence` alone cannot answer "was this a coin flip".
+   */
+  raw_confidence: number;
 };
 
 export type PlaybookMatchResult = {
   playbook_id: string;
   confidence: number;
+  /** The winner's score before clamping. See {@link PlaybookMatchAlternative}. */
+  raw_confidence: number;
   alternatives: PlaybookMatchAlternative[];
   /** Human-readable explanation of which features matched. */
   reasoning: string;

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.177.0] — 2026-08-29
+
+### Added
+- A managed-care participating provider agreement — the 142nd specimen. All
+  six HC-121..126 checks are silent on a compliant one.
+- `PlaybookMatchResult` and its alternatives now carry `raw_confidence`, the
+  score BEFORE clamping to [0, 1] — which is what actually decides the
+  ranking. Two families can both display 1 while one outscores the other by a
+  wide margin.
+
+### Fixed
+- **The routing-margin guard called a 1.2-vs-1.0 win a coin flip**, because it
+  compared the CLAMPED confidence. It now compares what the matcher sorts on.
+- **`mutual-nda` listed "each party", "either party" and "both parties" as
+  distinguishing phrases** — mutuality words that appear in nearly every
+  bilateral contract, and the reason an NDA scored 1.0 on a managed-care
+  provider agreement. Replaced with the NDA's own register: "disclosing
+  party", "receiving party", "each party may disclose". Three entries come off
+  the `KNOWN_BROAD` debt list in `distinguishing-base-rate.test.ts`.
+- **`payer-provider-agreement` shipped with an empty rule profile**, and was
+  told it allocates no IP and caps no liability. Neither belongs in a provider
+  agreement — nor in an equipment lease, a credit agreement, or a factoring
+  agreement, whose pins each carried an `IPDATA-001` no such contract can
+  answer.
+
 ## [9.176.0] — 2026-08-29
 
 ### Added

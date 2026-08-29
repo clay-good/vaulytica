@@ -40,6 +40,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A managed-care participating provider agreement. All six HC-121..126
+  // checks are silent on a compliant one. Its family shipped with an empty
+  // rule profile, so it was told it allocates no IP and caps no liability —
+  // a provider agreement does neither, and the same was true of the equipment
+  // lease, the credit agreement, and the factoring agreement, whose pins each
+  // carried an IPDATA-001 that no such contract can answer.
+  "payer-provider.txt": {
+    playbook: "payer-provider-agreement",
+    findings: [
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-004",
+      "OBLI-005",
+      "RISK-010",
+      "TEMP-006",
+      "TEMP-007",
+      "TERM-001",
+      "TERM-007",
+    ],
+  },
   // A third-party litigation funding agreement. All six SET-138..143 checks
   // are silent on a compliant one. It drew three false positives: CHOICE-011
   // told a Delaware LP and a Massachusetts corporation that their New York
@@ -274,7 +294,6 @@ export const EXPECTED: Record<string, Expectation> = {
   "loan-agreement.txt": {
     playbook: "loan-agreement",
     findings: [
-      "IPDATA-001",
       "RISK-001",
       "RISK-005",
       "RISK-016",
@@ -1338,7 +1357,6 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "CHOICE-008",
       "FIN-009",
-      "IPDATA-001",
       "OBLI-002",
       "OBLI-005",
       "RISK-005",
@@ -1426,7 +1444,6 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "BNK-126",
       "CHOICE-008",
-      "IPDATA-001",
       "OBLI-002",
       "OBLI-005",
       "OBLI-006",

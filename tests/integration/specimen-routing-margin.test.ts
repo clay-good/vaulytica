@@ -81,15 +81,19 @@ describe("a specimen beats its runner-up", () => {
       if (!runnerUp) return;
       if (DECLARED_TIES.has(`${name}:${runnerUp.playbook_id}`)) {
         expect(
-          runnerUp.confidence,
+          runnerUp.raw_confidence,
           `${name}: ${runnerUp.playbook_id} is declared a TIE, so it must still be one`,
-        ).toBe(match.confidence);
+        ).toBe(match.raw_confidence);
         return;
       }
+      // The RAW score is what decides the ranking. `confidence` is clamped to
+      // 1, so two families can both display 1 while one outscores the other by
+      // a wide margin — reading the clamped value called a 1.2-vs-1.0 win a
+      // coin flip. Compare what the matcher actually sorts on.
       expect(
-        runnerUp.confidence,
-        `${name} routes to ${match.playbook_id} at ${match.confidence}, tied by ${runnerUp.playbook_id} at ${runnerUp.confidence} — the tiebreak is a lexicographic id comparison, so which one wins is luck`,
-      ).toBeLessThan(match.confidence);
+        runnerUp.raw_confidence,
+        `${name} routes to ${match.playbook_id} at ${match.raw_confidence}, tied by ${runnerUp.playbook_id} at ${runnerUp.raw_confidence} — the tiebreak is a lexicographic id comparison, so which one wins is luck`,
+      ).toBeLessThan(match.raw_confidence);
     },
     120_000,
   );

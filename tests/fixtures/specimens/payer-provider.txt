@@ -1,0 +1,103 @@
+PARTICIPATING PROVIDER AGREEMENT
+
+This Participating Provider Agreement (this "Agreement") is entered into as of October 1, 2026 (the "Effective Date") between Cascadia Health Plan, Inc., an Oregon health care service contractor ("Plan"), and Willamette Valley Orthopedics, P.C., an Oregon professional corporation ("Provider").
+
+RECITALS
+
+A. Plan arranges for the delivery of health care services to individuals enrolled in the benefit plans it issues or administers ("Members").
+
+B. Provider is a group practice of licensed physicians and allied health professionals that furnishes orthopedic and musculoskeletal services.
+
+C. Provider wishes to participate in Plan's provider networks on the terms set out below.
+
+AGREEMENT
+
+1. DEFINITIONS
+
+1.1 "Clean Claim" means a claim for Covered Services that has no defect or impropriety, including any lack of required substantiating documentation, and that does not require special treatment that prevents timely payment from being made on the claim, consistent with ORS 743B.450.
+
+1.2 "Covered Services" means the health care services and supplies that a Member is entitled to receive under the applicable Benefit Plan, as described in the Member's evidence of coverage.
+
+1.3 "Member" means an individual enrolled in a Benefit Plan issued or administered by Plan.
+
+2. PARTICIPATION AND CREDENTIALING
+
+2.1 Credentialing. Provider and each of its practitioners shall complete Plan's credentialing process before furnishing Covered Services, and shall be re-credentialed at least every thirty-six (36) months. Plan shall complete initial credentialing within sixty (60) days after it receives a complete application, and shall notify Provider in writing of its determination.
+
+2.2 Practitioner Roster. Provider shall maintain a current roster of participating practitioners and shall notify Plan within ten (10) business days after a practitioner joins or leaves the group, or after any change in a practitioner's licensure, DEA registration, board certification, or malpractice coverage.
+
+2.3 Standards. Provider shall maintain, and shall require each practitioner to maintain, an unrestricted license to practice in Oregon, professional liability insurance of at least $1,000,000 per occurrence and $3,000,000 in the aggregate, and eligibility to participate in Medicare, Medicaid, and other federal health care programs.
+
+3. COVERED SERVICES AND STANDARDS OF CARE
+
+3.1 Provision of Services. Provider shall furnish Covered Services to Members in accordance with generally accepted professional standards, without discrimination on the basis of race, color, national origin, sex, age, disability, health status, source of payment, or benefit plan.
+
+3.2 Access. Provider shall offer Members appointment availability no less favorable than it offers to its non-Member patients, and shall provide or arrange for coverage twenty-four (24) hours a day, seven (7) days a week for urgent clinical needs.
+
+3.3 Medical Records. Provider shall maintain complete medical records for each Member and shall make them available to Plan for quality review, care coordination, and payment purposes, in accordance with 45 C.F.R. Parts 160 and 164 and applicable state law. Provider and Plan shall each protect protected health information as required by HIPAA.
+
+4. COMPENSATION
+
+4.1 Fee Schedule. Plan shall pay Provider for Covered Services in accordance with the fee schedule attached as Exhibit A (the "Fee Schedule"), less any applicable Member cost-share. The Fee Schedule is expressed as a percentage of the then-current Medicare physician fee schedule for the locality.
+
+4.2 Amendment of the Fee Schedule. Plan may amend the Fee Schedule only on ninety (90) days' prior written notice to Provider. If Provider objects in writing within thirty (30) days after that notice, Provider may terminate this Agreement effective on the date the amendment would take effect, and the existing Fee Schedule governs until then.
+
+4.3 Claims Submission. Provider shall submit claims electronically in the HIPAA standard format within one hundred eighty (180) days after the date of service.
+
+4.4 Prompt Payment. Plan shall pay or deny each Clean Claim within thirty (30) days after receipt, as ORS 743B.450 requires. Interest accrues on a Clean Claim not paid within that period at twelve percent (12%) per year from the thirty-first day until paid. If Plan requires additional information, it shall request it within thirty (30) days after receipt of the claim and shall pay or deny the claim within thirty (30) days after receiving the information.
+
+4.5 Overpayments. Plan may recover an overpayment by offset against future payments only after giving Provider thirty (30) days' written notice describing the claim, the amount, and the basis for recovery, and only if the request is made within twelve (12) months after the original payment, except in cases of fraud.
+
+5. MEMBER HOLD HARMLESS
+
+5.1 Hold Harmless. Provider shall hold harmless each Member, and shall not bill, charge, collect a deposit from, seek compensation or reimbursement from, or have any recourse against a Member for Covered Services, other than for applicable copayments, coinsurance, and deductibles. This Section survives termination of this Agreement, including termination arising from Plan's insolvency, and supersedes any oral or written agreement to the contrary between Provider and a Member.
+
+5.2 Non-Covered Services. Provider may bill a Member for a service that is not a Covered Service only if, before furnishing it, Provider obtains the Member's written acknowledgment that the service is not covered and that the Member is financially responsible.
+
+6. UTILIZATION MANAGEMENT AND APPEALS
+
+6.1 Utilization Review. Provider shall cooperate with Plan's utilization management program, including prior authorization for the services listed on Exhibit B. A prior-authorization determination shall be made within two (2) business days for non-urgent requests and within twenty-four (24) hours for urgent requests.
+
+6.2 Adverse Determinations. Plan shall provide written notice of any adverse benefit determination stating the specific reason, the clinical rationale, the criteria relied on, and the availability of appeal, and shall make a physician reviewer of the same or a similar specialty available to discuss the determination.
+
+6.3 Appeals. Provider may appeal an adverse determination on the Member's behalf with the Member's consent, and Plan shall decide the appeal within thirty (30) days, or within seventy-two (72) hours for an expedited appeal. Nothing in this Agreement limits a Member's right to external review under ORS 743B.256.
+
+6.4 Payment Disputes. A dispute over payment of a claim shall be submitted first to Plan's provider appeals process. If it is not resolved within sixty (60) days, either party may pursue any remedy available at law.
+
+7. TERM AND TERMINATION
+
+7.1 Term. This Agreement begins on the Effective Date and continues for one (1) year, renewing automatically for successive one-year terms unless terminated.
+
+7.2 Termination Without Cause. Either party may terminate this Agreement without cause on ninety (90) days' prior written notice.
+
+7.3 Termination for Cause. Either party may terminate this Agreement immediately if the other materially breaches it and fails to cure within thirty (30) days after written notice, and Plan may terminate immediately if Provider loses its license, is excluded from a federal health care program, or presents an imminent risk to Member safety.
+
+7.4 Continuity of Care. On termination other than for quality-of-care reasons or loss of licensure, Provider shall continue to furnish Covered Services at the Fee Schedule rate to a Member then under active treatment for up to ninety (90) days, and through the postpartum period for a Member in her second or third trimester, as ORS 743B.220 requires. Plan shall notify affected Members of the termination as state law requires.
+
+7.5 Effect of Termination. On termination, each party shall promptly return or destroy the other's confidential information, except as retention is required by law, and Sections 3.3, 5 and 7.4 survive.
+
+8. GENERAL
+
+8.1 Regulatory Requirements. This Agreement incorporates the provisions required by ORS Chapter 743B and OAR Chapter 836, and by 42 C.F.R. Part 422 to the extent Provider furnishes services to Members enrolled in a Medicare Advantage plan. Any provision inconsistent with those requirements is deemed amended to conform.
+
+8.2 Governing Law; Venue. This Agreement is governed by the laws of the State of Oregon. Any action arising out of it shall be brought in the state or federal courts located in Multnomah County, Oregon.
+
+8.3 Assignment. Neither party may assign this Agreement without the other's prior written consent, except that Plan may assign it to an affiliate.
+
+8.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses stated beneath the signatures.
+
+8.5 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the parties and may be amended only in a writing signed by both, except as Section 4.2 and Section 8.1 provide.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+CASCADIA HEALTH PLAN, INC.
+
+By: /s/ Marisol Delacroix
+Name: Marisol Delacroix
+Title: Vice President, Network Management
+
+WILLAMETTE VALLEY ORTHOPEDICS, P.C.
+
+By: /s/ Aaron Whitcombe, M.D.
+Name: Aaron Whitcombe, M.D.
+Title: President

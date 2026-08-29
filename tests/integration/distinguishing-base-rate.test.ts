@@ -62,8 +62,6 @@ const KNOWN_BROAD = new Map<string, string>([
   ["confidential", "the subject of a stipulated protective order"],
   ["assignment", "the operative act of a PIIA"],
   ["schedule", "a disclosure schedule is named for it"],
-  ["either party", "mutuality is what makes a mutual NDA mutual"],
-  ["each party", "same"],
 ]);
 
 function contains(corpus: string, feature: string): boolean {

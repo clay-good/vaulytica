@@ -24,7 +24,9 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Purchased Accounts", "Advance Rate", "Reserve"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-9",

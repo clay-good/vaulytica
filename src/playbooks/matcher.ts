@@ -789,17 +789,23 @@ export function matchPlaybook(
   const alternatives: PlaybookMatchAlternative[] = scored.slice(1, 4).map((s) => ({
     playbook_id: s.playbook.id,
     confidence: round3(s.score),
+    raw_confidence: round3(s.raw_score),
   }));
 
   if (!top || top.playbook.id === GENERIC_FALLBACK_ID || top.score < MATCH_THRESHOLD) {
     return {
       playbook_id: GENERIC_FALLBACK_ID,
       confidence: top ? round3(top.score) : 0,
+      raw_confidence: top ? round3(top.raw_score) : 0,
       alternatives: top
         ? scored
             .slice(0, 3)
             .filter((s) => s.playbook.id !== GENERIC_FALLBACK_ID)
-            .map((s) => ({ playbook_id: s.playbook.id, confidence: round3(s.score) }))
+            .map((s) => ({
+              playbook_id: s.playbook.id,
+              confidence: round3(s.score),
+              raw_confidence: round3(s.raw_score),
+            }))
         : [],
       reasoning: buildFallbackReasoning(top),
     };
@@ -808,6 +814,7 @@ export function matchPlaybook(
   return {
     playbook_id: top.playbook.id,
     confidence: round3(top.score),
+    raw_confidence: round3(top.raw_score),
     alternatives,
     reasoning: buildReasoning(top),
   };

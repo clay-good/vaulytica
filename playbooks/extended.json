@@ -7121,7 +7121,11 @@
       "Lessor",
       "Rent"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UCC-2A",
@@ -7671,7 +7675,11 @@
       "Advance Rate",
       "Reserve"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UCC-9",
@@ -10591,7 +10599,11 @@
       "Lender",
       "Commitment"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "UCC-9-REG-Z-STATE-USURY",
@@ -12479,7 +12491,14 @@
       "Member",
       "Fee Schedule"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-MANAGED-CARE",
