@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.227.0] — 2026-08-29
+
+### Added
+- A postnuptial agreement — the 186th specimen, and the first for
+  `postnuptial-agreement`. EST-046..052 are all satisfied: the during-marriage
+  recital, consideration beyond the marriage itself, heightened fiduciary
+  disclosure with schedules, transmutation of two specific assets, a support
+  waiver with a limited carve-out, independent counsel with a review period,
+  and a notarial acknowledgment.
+
+### Fixed
+- **`postnuptial-agreement` and `cohabitation-agreement` carried an empty
+  `rule_overrides`.** The postnup drew seven generic contract findings: no
+  payment terms, no IP allocation, no indemnity, no liability cap, no
+  termination-for-cause, no effect-of-termination, and no venue clause. Both
+  families now carry `prenuptial-agreement`'s profile, extended with RISK-001
+  and CHOICE-003 — a marital agreement has no indemnity, and states its
+  governing law without a forum.
+
 ## [9.226.0] — 2026-08-29
 
 ### Added

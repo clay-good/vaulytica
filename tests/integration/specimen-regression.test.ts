@@ -679,6 +679,20 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A postnuptial agreement — the 186th specimen, and the first for
+  // `postnuptial-agreement`. EST-046..052 are all satisfied: the
+  // during-marriage recital, consideration beyond the marriage itself,
+  // heightened fiduciary disclosure with schedules, transmutation of two
+  // specific assets, a support waiver with a limited carve-out, independent
+  // counsel with a review period, and a notarial acknowledgment. The family
+  // had an empty `rule_overrides` and drew seven generic contract findings; it
+  // now carries `prenuptial-agreement`'s profile, extended with RISK-001 and
+  // CHOICE-003 — a marital agreement has no indemnity and states its
+  // governing law without a forum.
+  "postnuptial-agreement.txt": {
+    playbook: "postnuptial-agreement",
+    findings: ["EST-060", "STRUCT-018", "TEMP-002"],
+  },
   // A profits-interest award in an LLC — the 184th specimen, and the first for
   // `profits-interest-award`. EQT-114..119 are all satisfied: the threshold
   // amount set at grant-date liquidation value, the Rev. Proc. 93-27 and
