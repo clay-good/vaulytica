@@ -68,6 +68,7 @@ const RFP = pack("document-requests", C, [
   },
   {
     id: "DISC-004",
+    ver: "1.1.0",
     name: "Form of production for electronically stored information",
     cite: frcp(
       "34(b)(1)(C)",
@@ -75,7 +76,11 @@ const RFP = pack("document-requests", C, [
     ),
     pat: [
       /(electronically\s+stored\s+information|esi|native|tiff|pdf|load\s+file|metadata)/i,
-      /(form(at)?\s+of\s+production|produced\s+in|shall\s+be\s+produced\s+as)/i,
+      // The instruction is written in the imperative as often as the passive:
+      // "Produce electronically stored information in single-page TIFF images
+      // with a document-level load file" specifies the form completely and
+      // carried none of these tokens.
+      /(form(at)?\s+of\s+production|production\s+format|\bproduc(?:e|ed|tion)\b[^.;]{0,80}?\bin\b|shall\s+be\s+produced\s+as)/i,
     ],
     all: true,
     why: "Rule 34(b)(1)(C) lets the requesting party specify the form. A party that does not specify takes whatever form the producing party chooses, which is routinely a form that strips the metadata the case needs.",
@@ -271,6 +276,7 @@ const RFA = pack("requests-for-admission", C, [
 const RESPONSES = pack("discovery-responses", C, [
   {
     id: "DISC-017",
+    ver: "1.1.0",
     name: "Objections stated with specificity",
     cite: frcp(
       "34(b)(2)(B)",
@@ -278,7 +284,11 @@ const RESPONSES = pack("discovery-responses", C, [
     ),
     pat: [
       /object/i,
-      /(on\s+the\s+ground\s+that|specifically\s+because|to\s+the\s+extent\s+(that\s+)?it\s+(seeks|requires))/i,
+      // A specific objection is written "objects to this request as overbroad
+      // BECAUSE it seeks documents from 2011, six years before the parties
+      // first did business" — the specificity Rule 34(b)(2)(B) asks for, in
+      // the form practitioners write it.
+      /(on\s+the\s+grounds?\s+that|specifically\s+because|to\s+the\s+extent\s+(that\s+)?it\s+(seeks|requires|calls)|because\s+it\s+(seeks|requires|would|calls)|\bas\s+[a-z]+(?:\s+[a-z]+){0,3}\s+because\b)/i,
     ],
     all: true,
     why: "The 2015 amendments require objections to be stated with specificity. Boilerplate lists — overbroad, unduly burdensome, not reasonably calculated — are treated as waived by a growing number of courts.",
@@ -287,6 +297,7 @@ const RESPONSES = pack("discovery-responses", C, [
   },
   {
     id: "DISC-018",
+    ver: "1.1.0",
     name: "Whether responsive material is being withheld",
     cite: frcp(
       "34(b)(2)(C)",
@@ -294,7 +305,10 @@ const RESPONSES = pack("discovery-responses", C, [
     ),
     pat: [
       /(withh(e|o)ld)/i,
-      /(no\s+(responsive\s+)?(documents|materials)\s+(are\s+being\s+)?withheld|documents\s+are\s+being\s+withheld\s+on\s+the\s+basis\s+of)/i,
+      // The statement is as often ACTIVE as passive: "Defendant is withholding
+      // documents responsive to this request on the basis of the
+      // attorney-client privilege" is the plainest compliant drafting.
+      /(no\s+(responsive\s+)?(documents?|materials?)\s+(?:are|is|were)\s+(?:being\s+)?withheld|withh(?:eld|olding)\b[^.;]{0,80}?\bon\s+the\s+basis\s+of)/i,
     ],
     all: true,
     why: "Rule 34(b)(2)(C) requires the response to state whether any responsive materials are being withheld on the basis of the objection. This is the single most-missed requirement in modern discovery practice, and its absence is what makes an objection unreviewable.",

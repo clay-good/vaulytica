@@ -115,6 +115,24 @@ const COMPLIANT: Array<[string, string, string, string]> = [
     "THE GRANTOR, Rosalind Amara Ferreira, conveys and quitclaims to THE GRANTEE all right, title, and interest that the Grantor may have in the property.",
     'the word "hereby", which the statutory short form does not contain',
   ],
+  [
+    "DISC-004",
+    "Requests for Production",
+    "Produce electronically stored information in single-page TIFF images with document-level extracted text, a Concordance-delimited load file, and the metadata fields listed in Appendix A; produce spreadsheets and audio in native format.",
+    "the passive voice only, never the imperative the instruction is written in",
+  ],
+  [
+    "DISC-017",
+    "Responses and Objections to Requests for Production",
+    "Defendant objects to this request as overbroad because it seeks documents from 2011, six years before the parties first did business, and as unduly burdensome because collecting them would require restoring forty backup tapes at a cost of approximately $180,000.",
+    'the phrase "on the ground that", never the "as X because Y" practitioners write',
+  ],
+  [
+    "DISC-018",
+    "Responses and Objections to Requests for Production",
+    "Defendant is withholding documents responsive to this request on the basis of the attorney-client privilege and the work-product doctrine, and has identified them on the privilege log served with these responses.",
+    "the passive withholding statement only, never the active one",
+  ],
 ];
 
 describe("a conjunction is satisfiable by the clause it asks for", () => {

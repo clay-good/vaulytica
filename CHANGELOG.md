@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.137.0] — 2026-08-29
+
+### Fixed
+- **Three more discovery columns could not read a compliant response.**
+  - `DISC-004` knew the passive voice only — "produced in native format" — and
+    a production instruction is written in the imperative: "Produce
+    electronically stored information in single-page TIFF images with a
+    document-level load file."
+  - `DISC-017` wanted "on the ground that" from an objection written the way
+    practitioners write one: "objects to this request as overbroad BECAUSE it
+    seeks documents from 2011, six years before the parties first did
+    business."
+  - `DISC-018` wanted the passive withholding statement and could not read the
+    active one: "Defendant is withholding documents responsive to this request
+    on the basis of the attorney-client privilege."
+
 ## [9.136.0] — 2026-08-29
 
 ### Added
