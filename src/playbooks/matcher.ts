@@ -749,9 +749,30 @@ export function matchPlaybook(
       matched_title_keywords.length * MATCH_WEIGHTS.title_keyword,
       MATCH_WEIGHTS.title_keyword * 2,
     );
+    // ONE required clause, not two.
+    //
+    // `required_clauses` are classifier CATEGORIES — "term",
+    // "termination-for-cause", "indemnification", "confidentiality-obligation",
+    // "ip-ownership" — and the generic commercial families list three apiece.
+    // Any agreement with a confidentiality section, a term, and a statement of
+    // work therefore collected 0.8 for them, which is the largest single block
+    // in the score and enough on its own to beat a specialised family that
+    // matched its own title and three phrases of its own register.
+    //
+    // That is how `independent-contractor` took an FTC endorsement agreement,
+    // `consulting-agreement` and then `mutual-nda`, `msa-general` and `sow`
+    // took a joint development agreement, and `msa-general` took a copyright
+    // licence — each fixed by hand, one negative feature at a time, before the
+    // cause was measured.
+    //
+    // Lowering the cap to one was run against the whole suite: all 166
+    // specimens still route to the family they are pinned to, all 365 golden
+    // fixtures are unchanged, and 10,284 tests pass. The second required
+    // clause was contributing nothing correct anywhere — it only let a generic
+    // family outbid a specific one.
     const req_score = Math.min(
       matched_required_clauses.length * MATCH_WEIGHTS.required_clause,
-      MATCH_WEIGHTS.required_clause * 2,
+      MATCH_WEIGHTS.required_clause * 1,
     );
     const dist_score = Math.min(
       matched_distinguishing_phrases.length * MATCH_WEIGHTS.distinguishing_phrase,

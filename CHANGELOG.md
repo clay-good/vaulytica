@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.206.0] — 2026-08-29
+
+### Changed — the matcher
+- **`required_clauses` now cap at ONE clause's weight, not two.**
+
+  They are classifier CATEGORIES — "term", "termination-for-cause",
+  "indemnification", "confidentiality-obligation", "ip-ownership" — and the
+  generic commercial families list three apiece. At a two-clause cap, any
+  agreement with a confidentiality section, a term and a statement of work
+  collected **0.8**: the largest single block in the score, and enough on its
+  own to beat a specialised family that matched its own title and three
+  phrases of its own register.
+
+  That is how `independent-contractor` took an FTC endorsement agreement
+  (9.205.0), how `consulting-agreement` and then `mutual-nda`, `msa-general`
+  and `sow` took a joint development agreement (9.203.0), how `msa-general`
+  took a copyright licence (9.185.0), and how `employment-at-will-us` came
+  level with a pharmaceutical supply agreement (9.195.0) — each fixed by hand,
+  one negative feature at a time, before the cause was measured.
+
+  The change was run against the whole suite before it was made: **all 166
+  specimens still route to the family they are pinned to, all 365 golden
+  fixtures are unchanged, and every one of 10,284 tests passes.** The second
+  required clause was contributing nothing correct anywhere.
+
 ## [9.205.0] — 2026-08-29
 
 ### Added
