@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.146.0] — 2026-08-29
+
+### Fixed
+- **A set of discovery responses drew three `critical` findings, two of them
+  false.** Undertaking to serve a PRIVILEGE LOG is the Rule 26(b)(5)(A)
+  withholding statement — it says responsive material is being held back and on
+  what basis, in the form the rule prescribes for it — and DISC-018 and
+  DISC-019 could not read it.
+- **A phrase that names one of the document's OWN SECTION HEADINGS was reported
+  as an undefined term.** A response set headed "GENERAL OBJECTIONS" whose
+  answers say "subject to the General Objections above" is cross-referencing
+  itself. Same reasoning as the numbered-heading test: a term whose section is
+  headed with it has been addressed by that section.
+
 ## [9.145.0] — 2026-08-29
 
 ### Fixed

@@ -723,6 +723,23 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     return TITLE_CASE_LEADING_STOPWORDS.has(w[0]!) && w.length > 2 ? w.slice(1).join(" ") : phrase;
   };
   const caption = captionText(tree);
+  // Every HEADING the document carries, styled or standalone. A phrase that
+  // names a section of this document is a cross-reference to it, not a term
+  // the drafter forgot to define: a set of discovery responses is headed
+  // "GENERAL OBJECTIONS" and its answers say "subject to the General
+  // Objections above", and that was reported as an undefined Title-Case term.
+  // The same reasoning as the numbered-heading test below — a term whose
+  // section is headed with it has been addressed by that section.
+  const headings = new Set<string>();
+  forEachSection(tree, (section) => {
+    const heading = section.heading.trim();
+    if (heading) headings.add(heading.toLowerCase());
+  });
+  forEachParagraph(tree, (ctx) => {
+    const line = ctx.text.trim();
+    if (line.length > 0 && line.length <= 80 && !/[.;:!?]$/.test(line) && isTitleCaseSegment(line))
+      headings.add(line.toLowerCase());
+  });
   // Names of natural persons who sign or appear before a notary — collected
   // from conformed-signature lines ("/s/ Nora Castellanos") and notarial
   // recitals ("personally appeared Nora Castellanos") — are people, not
@@ -946,6 +963,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      if (headings.has(phraseLower)) continue;
       if (OFFICER_TITLES.test(phrase)) continue;
       // A phrase introduced by an HONORIFIC is a person: "Dr. Ingrid
       // Vasconcelos-Amaru", "Hon. Marisol Aguirre-Vance", "Prof. Emil

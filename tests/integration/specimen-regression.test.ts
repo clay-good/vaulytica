@@ -98,7 +98,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // waiving" boilerplate, and no production completion date.
   "interrogatory-responses.txt": {
     playbook: "discovery-responses",
-    findings: ["DISC-018", "DISC-019", "DISC-020", "STRUCT-006"],
+    // DISC-018 and DISC-019 came off when the privilege-log undertaking was
+    // recognized as the Rule 26(b)(5)(A) withholding statement it is, and
+    // STRUCT-006 when a phrase naming one of the document's own SECTION
+    // HEADINGS stopped reading as an undefined term. DISC-020 stays: the
+    // responses state no completion date.
+    findings: ["DISC-020"],
   },
 
   // A third amendment to an office lease: defines nothing, ratifies the rest.

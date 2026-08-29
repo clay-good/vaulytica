@@ -1653,3 +1653,22 @@ describe("a person introduced by an honorific", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Ingrid Vasconcelos-Amaru");
   });
 });
+
+describe("a phrase that names one of the document's own headings", () => {
+  // A set of discovery responses is headed "GENERAL OBJECTIONS" and its
+  // answers say "subject to the General Objections above". That is a
+  // cross-reference to a section of this document, not a term the drafter
+  // forgot to define.
+  it("does not flag a phrase that matches a section heading", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Responses and Objections",
+        "GENERAL OBJECTIONS",
+        "Halloran objects to each interrogatory to the extent it seeks privileged information.",
+        "Subject to the General Objections, Halloran responds as follows.",
+        "Halloran incorporates the General Objections into each response below.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("General Objections");
+  });
+});

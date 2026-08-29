@@ -297,18 +297,21 @@ const RESPONSES = pack("discovery-responses", C, [
   },
   {
     id: "DISC-018",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Whether responsive material is being withheld",
     cite: frcp(
       "34(b)(2)(C)",
       "responding to document requests — an objection must state whether any responsive materials are being withheld",
     ),
     pat: [
-      /(withh(e|o)ld)/i,
+      /(withh(e|o)ld|privilege\s+log)/i,
       // The statement is as often ACTIVE as passive: "Defendant is withholding
       // documents responsive to this request on the basis of the
       // attorney-client privilege" is the plainest compliant drafting.
-      /(no\s+(responsive\s+)?(documents?|materials?)\s+(?:are|is|were)\s+(?:being\s+)?withheld|withh(?:eld|olding)\b[^.;]{0,80}?\bon\s+the\s+basis\s+of)/i,
+      // Undertaking to serve a PRIVILEGE LOG is the Rule 26(b)(5)(A)
+      // withholding statement: it says responsive material is being held
+      // back and on what basis, in the form the rule prescribes for it.
+      /(no\s+(responsive\s+)?(documents?|materials?)\s+(?:are|is|were)\s+(?:being\s+)?withheld|withh(?:eld|olding)\b[^.;]{0,80}?\bon\s+the\s+basis\s+of)|(?:produce|serve|provide|prepare)[^.;]{0,50}?\bprivilege\s+log|will\s+log\s+(?:privileged|withheld)/i,
     ],
     all: true,
     why: "Rule 34(b)(2)(C) requires the response to state whether any responsive materials are being withheld on the basis of the objection. This is the single most-missed requirement in modern discovery practice, and its absence is what makes an objection unreviewable.",
@@ -317,7 +320,7 @@ const RESPONSES = pack("discovery-responses", C, [
   },
   {
     id: "DISC-019",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "No 'subject to and without waiving' boilerplate",
     cite: practice(
       "subject-to-objections",
@@ -329,7 +332,7 @@ const RESPONSES = pack("discovery-responses", C, [
       // on the basis of the attorney-client privilege" or "no responsive
       // documents are being withheld" — the plainest compliant drafting, and
       // the column could see neither.
-      /(nevertheless|notwithstanding|the\s+withholding\s+statement\s+(above|below)|withh(?:old|olding|eld)[^.;]{0,90}?(?:on\s+the\s+basis|pursuant\s+to|because)|no\s+(?:responsive\s+)?documents?\s+(?:are|is|were)\s+(?:being\s+)?withheld)/i,
+      /(nevertheless|notwithstanding|the\s+withholding\s+statement\s+(above|below)|withh(?:old|olding|eld)[^.;]{0,90}?(?:on\s+the\s+basis|pursuant\s+to|because)|no\s+(?:responsive\s+)?documents?\s+(?:are|is|were)\s+(?:being\s+)?withheld)|(?:produce|serve|provide|prepare)[^.;]{0,50}?\bprivilege\s+log|will\s+log\s+(?:privileged|withheld)/i,
     ],
     all: true,
     why: "Answering 'subject to and without waiving' objections leaves the requesting party unable to tell what was produced and what was held back — which is exactly what Rule 34(b)(2)(C) was amended to stop. Courts increasingly treat the formulation as a waiver of the objections it purports to preserve.",
