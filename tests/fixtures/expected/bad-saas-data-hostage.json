@@ -322,7 +322,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-010",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -938,7 +938,7 @@
       "description": "grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developi",
       "document_position": 598,
       "excerpt": {
-        "end_offset": 906,
+        "end_offset": 604,
         "section_id": "s1.2",
         "start_offset": 598,
         "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning models, and related products."
@@ -947,7 +947,7 @@
       "id": "IPDATA-010-s1.2-598",
       "recommendation": "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, terminating on termination of the Agreement, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
       "rule_id": "IPDATA-010",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "License grant is perpetual / irrevocable / royalty-free / sublicensable"
@@ -1110,11 +1110,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"the Service\", \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "8d771eac90805f5bf9ec097abfa6fb686e80e73f55932eaf7ec8f7c9684fbee6",
+  "result_hash": "f3da6feb486090b5caf98943f08359e441aa04641b2473b9458cc699a39b475c",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.126.0"
+  "version": "9.127.0"
 }

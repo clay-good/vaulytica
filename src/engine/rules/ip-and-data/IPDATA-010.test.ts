@@ -58,4 +58,27 @@ describe("IPDATA-010 — perpetual / irrevocable license overreach", () => {
       ),
     ).toBeNull();
   });
+
+  // Only the FIRST grant in the document was examined, and the whole clause
+  // was matched from the grant word — four hundred characters of it, which
+  // swallowed the operative grant behind the run-in heading that announces
+  // it. A EULA's broad Feedback license went unreported because a narrow
+  // grant preceded it, and a media release lost its finding entirely as soon
+  // as its blank lines went and "1. Grant of Rights." ran into the sentence.
+  it("reads a broad grant that a NARROW one precedes (v1.2.0)", () => {
+    const ctx = buildContext([
+      "Terms",
+      "Customer grants Vendor a non-exclusive, non-transferable, revocable license to use the Marks during the Term.",
+      "Customer grants Vendor a perpetual, irrevocable, royalty-free license to use Feedback without obligation.",
+    ]);
+    expect(IPDATA_010.check(ctx)).not.toBeNull();
+  });
+
+  it("reads a grant behind a run-in heading (v1.2.0)", () => {
+    const ctx = buildContext([
+      "Release",
+      "1. Grant of Rights. I grant Riverbend the irrevocable, perpetual, worldwide, royalty-free right to use my name, likeness, image, and voice.",
+    ]);
+    expect(IPDATA_010.check(ctx)).not.toBeNull();
+  });
 });

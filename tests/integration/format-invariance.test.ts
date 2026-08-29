@@ -50,8 +50,6 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const KNOWN_UNSTABLE = new Set<string>([
   "83b-election.txt",
   "advance-directive.txt",
-  "cease-and-desist.txt",
-  "cre-psa.txt",
   "media-release.txt",
   "option-grant.txt",
   "po-terms.txt",
@@ -146,13 +144,18 @@ function doubleSpaced(text: string): string {
  * paragraph, so a construct laid out over two lines — a signature rule and the
  * name under it, an exhibit reference and its heading — arrives split.
  *
- * This list started at fourteen and is down to one. Every entry that came off
- * it came off because the DOUBLE-SPACED reading was the correct one and the
- * normal case held a false positive: only the first entry of an attachment
- * list counted as attached, and a signatory named twice in a signature block
- * was reported as an undefined defined-term.
+ * This list started at fourteen and is now EMPTY: double-spacing a document
+ * changes nothing the engine says about it, for all ninety-two specimens.
+ * Every entry that came off it came off because the DOUBLE-SPACED reading was
+ * the correct one and the normal case held a false positive — only the first
+ * entry of an attachment list counted as attached, a signatory named twice in
+ * a signature block was reported as an undefined defined-term, and a settlor
+ * whose conformed signature and printed name the paste path had joined into
+ * one doubled string was reported the same way.
+ *
+ * It stays here, empty, because the assertion below is what holds it there.
  */
-const DOUBLE_SPACED_UNSTABLE = new Set<string>(["revocable-trust.txt"]);
+const DOUBLE_SPACED_UNSTABLE = new Set<string>([]);
 
 describe("format is not load-bearing", () => {
   it("the corpus is present", () => {

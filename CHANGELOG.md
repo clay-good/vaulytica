@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.127.0] — 2026-08-29
+
+### Fixed
+- **Three documents were told their own subjects are terms they forgot to
+  define.** Each was found by reading a format diff in the direction that
+  indicates a false positive in the NORMAL case.
+  - A trust's settlor. The paste path joins a signature block's two lines, so
+    "/s/ Adaeze Chinelo Oduya" and the printed name beneath it arrive as one
+    doubled string. The person collector's capture stops at four words, so a
+    THREE-word name doubled runs to six and the halving that undoubles it
+    compared "adaeze chinelo" against "oduya adaeze" and found no repetition.
+    The doubling is read with a backreference now, which is indifferent to how
+    many words the name has.
+  - A cease-and-desist letter's addressee. Half the corporate suffixes are
+    Title-Case words rather than initialisms, so the candidate phrase includes
+    the suffix — "Meridian Optics Corp" — which no prefix of "Meridian Optics"
+    matches.
+  - A purchase agreement's "Due Diligence Materials", on a document whose
+    section 4 is headed with it. A section heading ends with a period as often
+    as not, and the standalone-heading test required an unpunctuated line. The
+    terminal period is forgiven now when a section number is present, which is
+    what distinguishes a heading from a Title-Case sentence.
+  - Also the title of an attachment on its label line — "Schedule A — Trust
+    Property" — which the heading test only caught while the label had a
+    paragraph to itself.
+- **A broad license grant went unread whenever a narrow one preceded it**
+  (IPDATA-010). Only the first grant in the document was examined, and it was
+  matched as a four-hundred-character clause from the grant word, which
+  swallowed the operative grant sitting behind the run-in heading that
+  announces it: "1. Grant of Rights. I grant … the irrevocable, perpetual,
+  worldwide, royalty-free right …". Every grant is examined now, anchored on
+  the verb. A desktop EULA's perpetual, irrevocable, royalty-free Feedback
+  license — the exact clause the rule exists for — had never been reported.
+
+### Changed
+- **The double-spaced format-debt list is empty.** Double-spacing a document
+  changes nothing the engine says about it, for all ninety-two specimens. The
+  blank-lines-stripped list is down from eight entries to five.
+
 ## [9.126.0] — 2026-08-28
 
 ### Fixed

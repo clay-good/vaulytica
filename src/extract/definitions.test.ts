@@ -1357,6 +1357,23 @@ describe("a conformed signature doubled by the paste join", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Priya Raghunathan");
   });
 
+  // The bounded capture stops at four words, so a THREE-word name doubled
+  // runs to six and the halving compared "adaeze chinelo" against "oduya
+  // adaeze" and found no repetition. A revocable trust reported its own
+  // settlor — named in the preamble, under the conformed signature, and in
+  // the notary acknowledgment — as a term the drafter forgot to define.
+  it("does not flag a doubled THREE-word name", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Declaration of Trust",
+        "This Declaration of Trust is made by Adaeze Chinelo Oduya, as Settlor.",
+        "/s/ Adaeze Chinelo Oduya Adaeze Chinelo Oduya, Settlor and Trustee",
+        "This instrument was acknowledged before me by Adaeze Chinelo Oduya.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Adaeze Chinelo Oduya");
+  });
+
   it("still flags a Title-Case term that merely repeats", () => {
     const map = extractDefinitions(
       buildTree([
@@ -1396,5 +1413,72 @@ describe("a sentence-initial 'Every' fused onto a defined term", () => {
         "Withdrawals from the Special Reserve Fund require a two-thirds vote.",
       ),
     ).toContain("Special Reserve Fund");
+  });
+});
+
+describe("a numbered heading that stands alone", () => {
+  // A section heading ends with a period as often as not — "4. Due Diligence
+  // Materials." — and the standalone-heading test required an UNPUNCTUATED
+  // line, so a commercial purchase agreement was told "Due Diligence
+  // Materials" was a term it forgot to define, on a document whose section 4
+  // is headed with it.
+  it("does not read a numbered heading's words as term uses", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Purchase and Sale Agreement",
+        "Buyer has forty-five days to review the Due Diligence Materials.",
+        "4. Due Diligence Materials.",
+        "Seller shall deliver the leases, the rent roll, and the surveys.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Due Diligence Materials");
+  });
+
+  it("still reads a numbered prose SENTENCE as prose", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Purchase and Sale Agreement",
+        "Buyer shall review the Due Diligence Materials.",
+        "4. Seller shall deliver the Due Diligence Materials to Buyer on Monday.",
+      ]),
+    );
+    // Its lowercase function words are what keep it out of the heading test.
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Due Diligence Materials");
+  });
+});
+
+describe("an entity name whose suffix is a Title-Case word", () => {
+  // Half the corporate suffixes are Title-Case words rather than initialisms,
+  // so the candidate phrase INCLUDES the suffix — "Meridian Optics Corp." is
+  // captured as "Meridian Optics Corp", which no prefix of "Meridian Optics"
+  // matches. The addressee of a cease-and-desist letter was reported as a
+  // term the letter forgot to define.
+  it("does not flag a company named with a Corp. suffix", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Demand Letter",
+        "Meridian Optics Corp. is marketing a reader under a confusingly similar mark.",
+        "We demand that Meridian Optics Corp. cease all use of the mark.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Meridian Optics Corp");
+  });
+});
+
+describe("the title of an attachment on its label line", () => {
+  // "Schedule A — Trust Property" names the attachment; it is not a use of a
+  // defined term. The standalone-heading test only catches the label while it
+  // has a paragraph to itself, so a trust pasted out of a PDF — where the
+  // schedule label runs on into the notary block — was told "Trust Property"
+  // was a term it forgot to define.
+  it("does not read an attachment title as a term use", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Declaration of Trust",
+        "The Settlors transfer the Trust Property to the Trustees.",
+        "This instrument was acknowledged before me. Schedule A — Trust Property",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Trust Property");
   });
 });

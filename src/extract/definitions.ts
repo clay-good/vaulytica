@@ -703,6 +703,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   const entityPrefixes = new Set<string>();
   forEachParagraph(tree, (ctx) => {
     for (const re of [
+      // A conformed signature with the printed name beneath it, after the
+      // paste path has joined the two lines with a space: "/s/ Adaeze Chinelo
+      // Oduya Adaeze Chinelo Oduya, Settlor and Trustee". The bounded capture
+      // below stops at four words, so a THREE-word name doubled runs to six
+      // and the halving that follows compared "adaeze chinelo" against "oduya
+      // adaeze" and found no repetition — a trust reported its own settlor as
+      // a Title-Case term the drafter forgot to define. Requiring the
+      // repetition with a backreference reads the doubling directly and is
+      // indifferent to how many words the name has.
+      /\/s\/\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})\s+\1(?![\w'’-])/g,
       /\/s\/\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
       /\b(?:personally\s+appeared|I,)\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
       // The signatory name printed on a "Name:" line of an execution block —
@@ -744,12 +754,22 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       }
     }
     const ENTITY_NAME =
-      /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,4}),?\s+(?:LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLP|PLLC|N\.A\.|GmbH)(?![\w])/g;
+      /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,4}),?\s+(LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLP|PLLC|N\.A\.|GmbH)(?![\w])/g;
     ENTITY_NAME.lastIndex = 0;
     let em: RegExpExecArray | null;
     while ((em = ENTITY_NAME.exec(ctx.text)) !== null) {
       const words = em[1]!.toLowerCase().split(/\s+/);
       for (let k = 2; k <= words.length; k++) entityPrefixes.add(words.slice(0, k).join(" "));
+      // Half of these suffixes are Title-Case words, not initialisms, so the
+      // candidate phrase INCLUDES the suffix — "Meridian Optics Corp." yields
+      // the candidate "Meridian Optics Corp", which no prefix of "Meridian
+      // Optics" matches. The addressee of a cease-and-desist letter was
+      // reported as a Title-Case term the letter forgot to define.
+      // Only the Title-Case suffixes; TITLE_CASE_PHRASE never reaches an
+      // all-caps one, so "Acme Holdings LLC" needs nothing here.
+      if (/^[A-Z][a-z]/.test(em[2]!)) {
+        entityPrefixes.add(`${words.join(" ")} ${em[2]!.replace(/\.$/, "").toLowerCase()}`);
+      }
     }
   });
   forEachParagraph(tree, (ctx) => {
@@ -761,11 +781,19 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     // paragraph ("Risks Related to Our Lending Business") — is heading
     // style throughout; none of its phrases are defined-term uses.
     const trimmed = ctx.text.trim();
+    // A NUMBERED standalone heading ("4. Due Diligence Materials.") is the
+    // same construct, and drafters end it with a period as often as not. The
+    // section number is what distinguishes it from a Title-Case sentence, so
+    // the terminal period is forgiven only when one is present: a commercial
+    // purchase agreement was told "Due Diligence Materials" was a term it
+    // forgot to define, on a document whose section 4 is headed with it.
+    const numbered = /^\d+(?:\.\d+)*\.?\s+(.+?)\.?$/.exec(trimmed);
+    const headingLine = numbered ? numbered[1]! : trimmed;
     if (
-      trimmed.length > 0 &&
-      trimmed.length <= 80 &&
-      !/[.;:!?]$/.test(trimmed) &&
-      isTitleCaseSegment(trimmed)
+      headingLine.length > 0 &&
+      headingLine.length <= 80 &&
+      !/[.;:!?]$/.test(headingLine) &&
+      isTitleCaseSegment(headingLine)
     ) {
       return;
     }
@@ -966,6 +994,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       )
         continue;
       if (entityPrefixes.has(phraseLower)) continue;
+      // The title of an attachment, on its label line — "Schedule A — Trust
+      // Property", "Exhibit B – Form of Note". That is the attachment's NAME,
+      // not a use of a defined term, and the standalone-heading test above
+      // only catches it while the label has a paragraph to itself. A trust
+      // pasted out of a PDF, where the schedule label runs on into the notary
+      // block, was told "Trust Property" was a term it forgot to define.
+      if (
+        /\b(?:Exhibit|Schedule|Appendix|Annex|Attachment)\s+[A-Z0-9][\w.-]*\s*[—–-]\s*$/.test(
+          ctx.text.slice(Math.max(0, m.index - 40), m.index),
+        )
+      )
+        continue;
       // A phrase introduced with a residence or origin ("Diego Castellanos,
       // residing at 9 Elm Row", "Lucia Ferrante, of Burlington") is a natural
       // person, not a defined term.

@@ -192,7 +192,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // A desktop EULA that recites FAR 12.212's quoted phrase.
   "eula.txt": {
     playbook: "eula",
-    findings: ["ADDENDA-018", "OBLI-005", "RISK-007", "TERM-007"],
+    findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],
   },
 
   // A Delaware LLC operating agreement: a governance instrument, not a
@@ -220,7 +220,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RE-013",
       "RE-016",
       "RISK-016",
-      "STRUCT-006",
       "STRUCT-018",
       "FIN-006",
       "OBLI-002",
@@ -285,7 +284,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // scored 0.6 on it. The phrases are now the letter's own register.
   "cease-and-desist.txt": {
     playbook: "cease-and-desist",
-    findings: ["STRUCT-006", "OBLI-005"],
+    findings: ["OBLI-005"],
   },
 
   // A North Carolina deed of trust with an assignment of rents, a power of
@@ -393,7 +392,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // 164 by number.
   "revocable-trust.txt": {
     playbook: "revocable-living-trust",
-    findings: ["EST-060", "OBLI-005", "STRUCT-005", "STRUCT-006"],
+    findings: ["EST-060", "OBLI-005", "STRUCT-005"],
   },
 
   // A notice of stock option grant. Every equity award carries its plan's
