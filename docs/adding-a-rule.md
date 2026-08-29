@@ -145,6 +145,45 @@ When you repair a conjunction, add a row to
 [`tests/integration/compliant-conjunctions.test.ts`](../tests/integration/compliant-conjunctions.test.ts)
 carrying the compliant clause, so the repair stays repaired.
 
+## 4b. Write the document, then run the CLI on it
+
+Every rule defect worth fixing in the last four sessions was found the same
+way: **write a realistic document of a family that has no specimen yet, run
+`node bin/vaulytica.mjs analyze` on it, and read what comes back.** None was
+reachable from the unit suite — fixtures are shorter, cleaner and more
+cooperative than anything a lawyer would actually upload.
+
+```bash
+node bin/vaulytica.mjs analyze tests/fixtures/specimens/<your-doc>.txt
+```
+
+Then pin the result in `tests/integration/specimen-regression.test.ts`. The
+finding-id set is the assertion **in both directions**: a new false finding
+fails, and so does a real one that stops firing. Adding a specimen also
+activates six other whole-corpus guards for that family at once —
+`self-penalizing-features`, `distinguishing-base-rate`,
+`specimen-routing-margin`, `format-invariance`, `excerpt-is-evidence`, and
+`duplicate-span`.
+
+What to look for in the output, in the order it usually appears:
+
+| Symptom | Class | Where the fix goes |
+| --- | --- | --- |
+| Wrong `playbook_id` | the family penalizes its own vocabulary, or a rival's phrase has a high base rate | `src/playbooks/*/**.json` `match_features` |
+| A `warning` for a clause this document type never carries | the family shipped with empty `rule_overrides` | copy the nearest sibling's skip profile |
+| A rule reports a clause missing that is plainly there | rigid adjacency, the plural, or somebody else's vocabulary | the rule's `present_patterns` |
+| A rule reports the OPPOSITE of what the document says | a carve-out or a causative read as a denial | `expressDenial` / the rule's disclaimer test |
+
+Two traps:
+
+- **Probe position-dependent rules through the CLI, not `buildContext`.**
+  STRUCT-002 wants a date in the first 25% of the document; a two-paragraph
+  fixture puts everything at 50% and manufactures false misses.
+- **Before broadening a pattern, check the fixture engineered to FAIL it.**
+  Adding a bare `model providers?` to ADDENDA-015 silenced it on the document
+  whose whole point is that it does not list them. Match the obligation, not
+  the noun.
+
 ## 5. Update playbooks (optional)
 
 If your rule should fire selectively for some contract types, add per-playbook overrides in the relevant JSON under [`playbooks/`](../playbooks/):

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.183.0] — 2026-08-29
+
+### Documentation
+- `docs/adding-a-rule.md` gains **"4b. Write the document, then run the CLI on
+  it"** — the method that found every rule defect fixed in the last four
+  sessions, the four symptom classes to read the output for, and the two traps
+  (probe position-dependent rules through the CLI, and check the
+  engineered-to-fail fixture before broadening a pattern).
+- README: the suite floor is now `10,000+ passing tests`.
+
 ## [9.182.0] — 2026-08-29
 
 ### Added
