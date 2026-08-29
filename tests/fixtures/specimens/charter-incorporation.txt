@@ -1,0 +1,72 @@
+AMENDED AND RESTATED CERTIFICATE OF INCORPORATION
+OF
+CORVID OPTICAL SYSTEMS, INC.
+
+Corvid Optical Systems, Inc., a corporation organized and existing under the General Corporation Law of the State of Delaware, certifies as follows:
+
+A. The corporation's original Certificate of Incorporation was filed with the Secretary of State of the State of Delaware on April 2, 2021 under the name Corvid Photonics, Inc.
+
+B. This Amended and Restated Certificate of Incorporation was duly adopted in accordance with Sections 242 and 245 of the General Corporation Law and restates, integrates, and further amends the corporation's Certificate of Incorporation.
+
+C. The text of the Certificate of Incorporation is amended and restated to read in full as follows:
+
+ARTICLE I — NAME
+
+The name of the corporation is Corvid Optical Systems, Inc.
+
+ARTICLE II — REGISTERED OFFICE AND AGENT
+
+The address of the corporation's registered office in the State of Delaware is 251 Little Falls Drive, Wilmington, New Castle County, Delaware 19808. The name of its registered agent at that address is Corporation Service Company.
+
+ARTICLE III — PURPOSE
+
+The purpose of the corporation is to engage in any lawful act or activity for which a corporation may be organized under the General Corporation Law of the State of Delaware.
+
+ARTICLE IV — CAPITAL STOCK
+
+The corporation is authorized to issue two classes of stock, designated Common Stock and Preferred Stock. The total number of shares the corporation is authorized to issue is 78,000,000, of which 60,000,000 shares are Common Stock, $0.0001 par value per share, and 18,000,000 shares are Preferred Stock, $0.0001 par value per share.
+
+The Preferred Stock may be issued in one or more series. The Board of Directors is authorized, subject to any limitation prescribed by law, to fix by resolution the designation, powers, preferences, and relative, participating, optional, and other rights of each series, and any qualifications, limitations, and restrictions on them, without further stockholder approval.
+
+Of the Preferred Stock, 7,500,000 shares are designated Series A Preferred Stock and 10,500,000 shares are designated Series B Preferred Stock, with the rights and preferences set out in Article V.
+
+ARTICLE V — RIGHTS OF PREFERRED STOCK
+
+Dividends. The holders of Preferred Stock are entitled to receive, when and as declared by the Board, noncumulative dividends at the rate of 8% of the Original Issue Price per share per annum, in preference to the Common Stock.
+
+Liquidation. On a liquidation, dissolution, or winding up, and on a Deemed Liquidation Event, the holders of Preferred Stock are entitled to receive, before any distribution to the Common Stock, the greater of the Original Issue Price plus declared and unpaid dividends and the amount they would receive on an as-converted basis.
+
+Voting. Each share of Preferred Stock votes on an as-converted basis with the Common Stock, and the holders of Preferred Stock vote separately as a class on the matters listed in Article VI.
+
+Conversion. Each share of Preferred Stock converts at the holder's option into Common Stock at the then-effective conversion rate, and converts automatically on the closing of a firm-commitment underwritten public offering with gross proceeds of at least $75,000,000 or on the written election of the holders of a majority of the Preferred Stock.
+
+Anti-dilution. The conversion price of each series is subject to broad-based weighted-average adjustment for an issuance below that series' conversion price, with the customary exclusions for shares issued under the equity incentive plan, on a conversion, and in an acquisition or a lending transaction approved by the Board.
+
+ARTICLE VI — PROTECTIVE PROVISIONS
+
+So long as at least 4,000,000 shares of Preferred Stock remain outstanding, the corporation shall not, without the written consent of the holders of a majority of the Preferred Stock voting as a single class: amend this Certificate or the Bylaws in a way that adversely affects the Preferred Stock; authorize or issue a security senior to or on parity with the Preferred Stock; redeem or repurchase shares other than from a service provider at cost on termination; declare a dividend; effect a Deemed Liquidation Event; or increase or decrease the authorized number of directors.
+
+ARTICLE VII — BOARD OF DIRECTORS
+
+The number of directors is fixed from time to time by the Board or by the stockholders as provided in the Bylaws. Elections of directors need not be by written ballot unless the Bylaws so provide.
+
+ARTICLE VIII — LIMITATION OF DIRECTOR AND OFFICER LIABILITY
+
+To the fullest extent permitted by the General Corporation Law of the State of Delaware, as it exists or may be amended, no director or officer of the corporation shall be personally liable to the corporation or its stockholders for monetary damages for breach of fiduciary duty. Any amendment or repeal of this Article does not adversely affect a right or protection of a director or officer existing at the time of the amendment or repeal.
+
+ARTICLE IX — INDEMNIFICATION
+
+The corporation shall indemnify, and advance expenses to, its directors and officers to the fullest extent permitted by the General Corporation Law of the State of Delaware.
+
+ARTICLE X — FORUM
+
+Unless the corporation consents in writing to an alternative forum, the Court of Chancery of the State of Delaware is the sole and exclusive forum for a derivative action, a claim for breach of fiduciary duty, a claim arising under the General Corporation Law, and a claim governed by the internal affairs doctrine. The federal district courts of the United States are the exclusive forum for a claim arising under the Securities Act of 1933.
+
+ARTICLE XI — AMENDMENT
+
+The corporation reserves the right to amend or repeal any provision of this Certificate in the manner prescribed by the General Corporation Law, subject to Article VI.
+
+IN WITNESS WHEREOF, this Amended and Restated Certificate of Incorporation has been executed by a duly authorized officer on March 18, 2026.
+
+/s/ Nadia Oyelaran
+Nadia Oyelaran, Chief Executive Officer

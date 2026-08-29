@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.164.0] — 2026-08-29
+
+### Added
+- An amended and restated Delaware certificate of incorporation, the 131st
+  specimen.
+
+### Fixed
+- **GOV-027 demanded an incorporator clause of a RESTATED charter**, at
+  `critical`. The incorporator signs the ORIGINAL certificate; a restatement is
+  executed by an officer under DGCL § 245. Every Series A charter there is was
+  being accused of omitting a clause it is not supposed to carry.
+- **GOV-031 could not read the blank-check authority in Article IV** because
+  "by resolution" sits between the words it wanted — "to fix BY RESOLUTION the
+  designation, powers, preferences" — and "may be issued" between the others:
+  "the Preferred Stock MAY BE ISSUED in one or more series".
+
 ## [9.163.0] — 2026-08-29
 
 ### Added

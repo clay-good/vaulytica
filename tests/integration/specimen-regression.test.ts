@@ -464,6 +464,17 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["GOV-117", "GOV-118", "GOV-122"],
   },
 
+  // An amended and restated Delaware certificate of incorporation. GOV-027
+  // demanded an incorporator clause of it, at `critical` — the incorporator
+  // signs the ORIGINAL certificate, and a restatement is executed by an
+  // officer under DGCL § 245 — and GOV-031 could not read the blank-check
+  // authority in Article IV because "by resolution" sits between the words it
+  // wanted.
+  "charter-incorporation.txt": {
+    playbook: "charter-incorporation",
+    findings: ["GOV-030", "OBLI-005", "STRUCT-006"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

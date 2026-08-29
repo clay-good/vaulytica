@@ -605,6 +605,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-027",
+    version: "1.1.0",
     name: "Incorporator name and address",
     description: "Charter must identify the incorporator (DGCL § 102(a)(5); MBCA § 2.01).",
     citation: dgcl("102(a)(5)"),
@@ -615,6 +616,13 @@ const CHARTER_RULES: Rule[] = [
       "DGCL § 102(a)(5) requires the certificate to identify the incorporator(s). Most filings list one.",
     recommendation:
       "Add an 'Incorporator' line identifying the name and mailing address of the incorporator.",
+    // An AMENDED AND RESTATED certificate has no incorporator: the incorporator
+    // signs the ORIGINAL, and the restatement is executed by an officer under
+    // DGCL § 245. Demanding one of a restated charter accused every Series A
+    // charter there is of omitting a clause it is not supposed to carry.
+    applicable_if: [
+      /^(?![\s\S]*\b(?:amended\s+and\s+restated|restated)\s+certificate\s+of\s+incorporation\b)/i,
+    ],
     present_patterns: [/incorporator/i],
   }),
   presence({
@@ -692,7 +700,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-031",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Preferred-stock blank check authority",
     description:
       "Charter should grant the board blank-check preferred-stock authority (DGCL § 151(g)).",
@@ -711,8 +719,11 @@ const CHARTER_RULES: Rule[] = [
       // The charter formula inverts the noun order — "issuance of the
       // Preferred Stock in one or more series … and to fix the
       // designations, powers, preferences" — and no branch above reads it.
-      /preferred\s+stock\s+in\s+one\s+or\s+more\s+series/i,
-      /fix\s+the\s+designations?,?\s+powers?,?\s+preferences?/i,
+      /preferred\s+stock[^.;]{0,40}?\bin\s+one\s+or\s+more\s+series/i,
+      // "to fix BY RESOLUTION the designation, powers, preferences" and "the
+      // Preferred Stock MAY BE ISSUED in one or more series" both carry a
+      // phrase between the words the adjacent forms wanted.
+      /fix[^.;]{0,30}?\bthe\s+designations?,?\s+(?:powers?|preferences?)/i,
     ],
     default_severity: "info",
   }),
