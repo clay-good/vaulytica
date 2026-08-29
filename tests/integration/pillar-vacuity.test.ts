@@ -28,30 +28,34 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { COMPLIANT } from "./_conjunction-fixtures.js";
 
 const CATALOG = JSON.parse(
   readFileSync(join(process.cwd(), "playbooks", "extended.json"), "utf8"),
 ) as Array<{ id: string; name: string; match_features: { title_keywords: string[] } }>;
 
 /**
- * Conjunctions with a pillar the family's title already satisfies. Reviewed,
- * not yet proved. May only shrink.
+ * A collapsed conjunction is ACCEPTABLE once its surviving pillars have been
+ * proved against a hand-written compliant clause — that is what
+ * `compliant-conjunctions.test.ts` is for, and its table is the proof.
+ */
+const PROVED = new Set(COMPLIANT.map(([id]) => id));
+
+/**
+ * Collapsed and NOT yet proved. Debt: take an entry off either by proving the
+ * rule silent on a compliant clause (add a row to `COMPLIANT`) or by replacing
+ * the vacuous pillar with a form the title cannot satisfy. May only shrink.
  */
 const KNOWN_COLLAPSED = new Set<string>([
   "BNK-127",
-  "COMM-231",
   "COMM-237",
   "DISC-001",
   "DISC-007",
-  "DISC-017",
   "DISC-020",
   "DISC-024",
-  "DISC-030",
-
   "EMP-101",
   "EMP-110",
   "EMP-121",
-  "EMP-148",
   "EMP-150",
   "ENG-006",
   "ENG-008",
@@ -59,7 +63,6 @@ const KNOWN_COLLAPSED = new Set<string>([
   "ENG-018",
   "ENG-021",
   "ENG-024",
-  "ENG-027",
   "ENG-028",
   "ENG-029",
 
@@ -71,7 +74,6 @@ const KNOWN_COLLAPSED = new Set<string>([
   "PLDG-012",
   "PRV-102",
   "PRV-113",
-  "SET-106",
 ]);
 
 const files: string[] = [];
@@ -156,19 +158,19 @@ describe("a conjunction does not rest on a pillar its family's title satisfies",
   });
 
   it("no NEW conjunction has collapsed onto its remaining pillars", () => {
-    const added = collapsed.filter((id) => !KNOWN_COLLAPSED.has(id));
+    const added = collapsed.filter((id) => !KNOWN_COLLAPSED.has(id) && !PROVED.has(id));
     expect(
       added,
       `a pillar of these is satisfied by the family's own title, so the check has collapsed onto whatever pillars are left:\n  ${added.join("\n  ")}`,
     ).toEqual([]);
   });
 
-  it("every listed conjunction is still collapsed, so the list cannot outlive its entries", () => {
+  it("every listed conjunction is still collapsed and unproved", () => {
     const live = new Set(collapsed);
-    const stale = [...KNOWN_COLLAPSED].filter((id) => !live.has(id)).sort();
+    const stale = [...KNOWN_COLLAPSED].filter((id) => !live.has(id) || PROVED.has(id)).sort();
     expect(
       stale,
-      `these are repaired — take them off KNOWN_COLLAPSED:\n  ${stale.join("\n  ")}`,
+      `these are repaired or proved — take them off KNOWN_COLLAPSED:\n  ${stale.join("\n  ")}`,
     ).toEqual([]);
   });
 });

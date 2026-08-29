@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.156.0] — 2026-08-29
+
+### Changed
+- **The two conjunction guards are wired together.** A collapsed conjunction —
+  one whose pillar its family's own title satisfies — is ACCEPTABLE once its
+  surviving pillars have been proved against a hand-written compliant clause,
+  which is what `compliant-conjunctions.test.ts` is for. Its table moved to a
+  shared fixture module, and `pillar-vacuity.test.ts` reads it: an entry leaves
+  the debt list either by being proved there or by having its vacuous pillar
+  replaced. Six were already proved; twenty-five remain.
+
 ## [9.155.0] — 2026-08-29
 
 ### Fixed
