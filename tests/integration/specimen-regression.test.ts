@@ -40,6 +40,32 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A university exclusive patent license, Bayh-Dole subject. It routed to
+  // `eula` — an end-user licence for consumer software — and was told it
+  // states no EU consumer-law minimums under the Digital Content Directive.
+  // The family listed "trademark", "copyright" and "assignment" as NEGATIVE
+  // features, and a patent license reserves trademark and copyright rights in
+  // terms ("No license is granted under any copyright, trademark, or know-how
+  // of Licensor") and has an assignment clause. Three penalties on its own
+  // standard drafting. Everything that stays is real: no patent-marking
+  // clause, no grant-back, no liability cap, and only the licensee may
+  // terminate for convenience.
+  "patent-license.txt": {
+    playbook: "patent-license",
+    findings: [
+      "IPL-011",
+      "IPL-012",
+      "RISK-005",
+      "RISK-015",
+      "STRUCT-018",
+      "TERM-003",
+      "FIN-008",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-010",
+      "TERM-001",
+    ],
+  },
   // An ASF-style individual contributor license agreement. Four defects, and
   // three of them are shapes any signed FORM has: `"You" (or "Your") means …`
   // — the parenthesized alias — registered NEITHER term, so the definition

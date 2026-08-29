@@ -12456,9 +12456,9 @@
         "patent marking"
       ],
       "negative_features": [
-        "trademark",
-        "copyright",
-        "assignment"
+        "trademark license agreement",
+        "copyright license agreement",
+        "assignment of the patents"
       ]
     },
     "expected_clauses": [],

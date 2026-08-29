@@ -1,0 +1,117 @@
+PATENT LICENSE AGREEMENT
+
+This Patent License Agreement (this "Agreement") is made as of September 15, 2026 between Larkfield Institute of Technology, a Massachusetts nonprofit corporation with offices at 400 Kendall Row, Cambridge, Massachusetts 02142 ("Licensor"), and Thalen Biosystems, Inc., a Delaware corporation with offices at 2100 Wexford Drive, Research Triangle Park, North Carolina 27709 ("Licensee").
+
+RECITALS
+
+A. Licensor owns the patents and patent applications listed on Exhibit A, including U.S. Patent No. 11,482,907, and all continuations, continuations-in-part, divisionals, reissues, reexaminations, and foreign counterparts of them (collectively, the "Licensed Patents").
+
+B. The Licensed Patents arose in part from research funded by the National Institutes of Health, and are therefore subject to 35 U.S.C. §§ 200–212 and 37 C.F.R. Part 401.
+
+C. Licensee wishes to obtain, and Licensor is willing to grant, an exclusive license under the Licensed Patents in a defined field.
+
+AGREEMENT
+
+1. DEFINITIONS
+
+1.1 "Licensed Product" means any product, the manufacture, use, sale, offer for sale, or importation of which would, absent this license, infringe a Valid Claim of a Licensed Patent.
+
+1.2 "Valid Claim" means a claim of an issued and unexpired Licensed Patent that has not been held invalid or unenforceable by a decision of a court or agency of competent jurisdiction from which no appeal can be taken, and that has not been disclaimed or abandoned.
+
+1.3 "Net Sales" means gross amounts invoiced by Licensee and its Affiliates and Sublicensees for the sale of Licensed Products to third parties, less trade discounts actually allowed, credits for returns, sales and use taxes, and outbound transportation and insurance separately stated on the invoice.
+
+1.4 "Field" means the diagnosis and monitoring of autoimmune disease in humans.
+
+2. GRANT
+
+2.1 License. Licensor grants Licensee an exclusive, worldwide, royalty-bearing license under the Licensed Patents to make, have made, use, offer for sale, sell, and import Licensed Products in the Field, with the right to grant sublicenses under Section 2.3.
+
+2.2 Retained Rights. Licensor retains the right to practice the Licensed Patents for its own research, educational, and publication purposes, and to permit other nonprofit and academic institutions to do the same. No license is granted under any copyright, trademark, or know-how of Licensor except as necessary to practice the Licensed Patents. Licensee acquires no ownership interest in the Licensed Patents.
+
+2.3 Sublicensing. Licensee may grant sublicenses within the Field, provided each sublicense is in writing, is consistent with this Agreement, and binds the sublicensee to the obligations of Sections 2.4, 6, 7, and 9. Licensee shall deliver a copy of each sublicense to Licensor within thirty (30) days after execution and shall remain responsible for each sublicensee's performance.
+
+2.4 Government Rights. This license is subject to the rights of the United States government under 35 U.S.C. §§ 200–212, including a non-exclusive, non-transferable, irrevocable, paid-up license to practice the Licensed Patents on behalf of the United States, and to the march-in rights of 35 U.S.C. § 203. Licensee shall substantially manufacture Licensed Products sold in the United States within the United States, as 35 U.S.C. § 204 requires, unless Licensor obtains a waiver.
+
+3. DILIGENCE
+
+3.1 Development Plan. Licensee shall use commercially reasonable efforts to develop and commercialize Licensed Products in the Field, in accordance with the development plan attached as Exhibit B.
+
+3.2 Milestones. Licensee shall achieve the following milestones: first-in-human study initiated by December 31, 2028; pivotal study initiated by December 31, 2030; and first commercial sale by December 31, 2032. If Licensee fails to achieve a milestone, Licensor may, after ninety (90) days' written notice and an opportunity to cure or to propose a revised schedule, convert the license to non-exclusive or terminate it as to the affected Licensed Product.
+
+3.3 Annual Reports. Licensee shall deliver a written progress report within sixty (60) days after each calendar year end, describing development activities, regulatory status, and plans for the coming year.
+
+4. FINANCIAL TERMS
+
+4.1 License Fee. Licensee shall pay Licensor a non-refundable license issue fee of $250,000 within thirty (30) days after the Effective Date.
+
+4.2 Royalty. Licensee shall pay a royalty of four percent (4%) of Net Sales of Licensed Products covered by a Valid Claim, subject to an annual minimum royalty of $100,000 beginning in the year of first commercial sale.
+
+4.3 Sublicense Income. Licensee shall pay Licensor twenty percent (20%) of non-royalty sublicense income received before the first commercial sale, and ten percent (10%) thereafter.
+
+4.4 Reports and Payment. Licensee shall deliver a royalty report and pay amounts due within forty-five (45) days after the end of each calendar quarter. Amounts not paid when due bear interest at one percent (1%) per month.
+
+4.5 Records and Audit. Licensee shall keep complete records supporting each royalty report for five (5) years and shall permit an independent accountant selected by Licensor to examine them once in any twelve (12) month period. If an audit reveals an underpayment of more than five percent (5%), Licensee shall pay the cost of the audit.
+
+5. PATENT PROSECUTION AND MAINTENANCE
+
+5.1 Control. Licensor shall control the preparation, filing, prosecution, and maintenance of the Licensed Patents, using counsel reasonably acceptable to Licensee, and shall keep Licensee informed and consider Licensee's comments in good faith.
+
+5.2 Costs. Licensee shall reimburse Licensor for all patent costs incurred after the Effective Date, and for past patent costs of $186,000, payable in twelve (12) equal monthly installments.
+
+5.3 Abandonment. If Licensor elects not to file, prosecute, or maintain a Licensed Patent in a country, it shall notify Licensee at least sixty (60) days before any deadline, and Licensee may assume prosecution at its own cost, in which case that patent remains a Licensed Patent.
+
+6. ENFORCEMENT
+
+6.1 Notice. Each party shall promptly notify the other of any suspected infringement of a Licensed Patent in the Field.
+
+6.2 Licensee's Right. Licensee has the first right, at its expense, to bring an action against an infringer in the Field, and Licensor shall join as a party if necessary for standing, at Licensee's expense. Licensee shall not settle in a manner that admits invalidity or unenforceability of a Licensed Patent without Licensor's written consent.
+
+6.3 Recoveries. Recoveries from an action Licensee brings shall be applied first to each party's out-of-pocket costs, then the remainder shall be treated as Net Sales subject to the royalty in Section 4.2.
+
+7. WARRANTIES AND DISCLAIMER
+
+7.1 Licensor. Licensor represents that it owns the Licensed Patents and has the authority to grant this license, and that it has disclosed the government funding described in Recital B.
+
+7.2 Disclaimer. EXCEPT AS EXPRESSLY STATED IN SECTION 7.1, LICENSOR MAKES NO REPRESENTATION OR WARRANTY, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, VALIDITY OF THE LICENSED PATENTS, OR NON-INFRINGEMENT OF THIRD-PARTY RIGHTS.
+
+8. INDEMNITY AND INSURANCE
+
+8.1 Indemnity. Licensee shall indemnify, defend, and hold harmless Licensor, its trustees, officers, employees, and the inventors of the Licensed Patents against any claim arising out of the development, manufacture, use, sale, or other disposition of a Licensed Product by Licensee, its Affiliates, or its Sublicensees. Licensor shall give prompt notice of any claim, and Licensee shall control the defense and shall not settle a claim imposing a non-monetary obligation on Licensor without Licensor's consent.
+
+8.2 Insurance. Beginning with the first human clinical trial, Licensee shall maintain commercial general liability insurance including product liability coverage of at least $5,000,000 per occurrence and $10,000,000 in the aggregate, naming Licensor and the inventors as additional insureds, and shall provide a certificate of insurance annually.
+
+9. TERM AND TERMINATION
+
+9.1 Term. This Agreement begins on the Effective Date and continues, unless terminated earlier, until the expiration of the last Valid Claim of the Licensed Patents.
+
+9.2 Termination by Licensee. Licensee may terminate this Agreement for convenience on ninety (90) days' written notice.
+
+9.3 Termination by Licensor. Licensor may terminate this Agreement if Licensee materially breaches it and fails to cure within sixty (60) days after written notice, or immediately if Licensee becomes insolvent or challenges the validity of a Licensed Patent other than as a defense to an infringement claim Licensor brings.
+
+9.4 Effect of Termination. On termination, all rights granted to Licensee end, and Licensee shall cease making, using, and selling Licensed Products, except that Licensee may sell existing inventory for six (6) months subject to the royalty. Each sublicense granted in good faith survives as a direct license from Licensor, provided the sublicensee is not in breach and agrees in writing to the terms of this Agreement. Sections 4.5, 7.2, 8, and 10 survive.
+
+10. GENERAL
+
+10.1 Governing Law; Venue. This Agreement is governed by the laws of the Commonwealth of Massachusetts, without regard to its conflict of laws principles. Any action arising out of this Agreement shall be brought in the state or federal courts located in Suffolk County, Massachusetts.
+
+10.2 Assignment. Licensee may not assign this Agreement without Licensor's prior written consent, except to a successor to substantially all of its business to which this Agreement relates, provided the successor assumes this Agreement in writing.
+
+10.3 Use of Name. Licensee shall not use the name of Licensor or of any inventor in any advertising or publicity without Licensor's prior written consent, except as required by law.
+
+10.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses first stated above.
+
+10.5 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+LARKFIELD INSTITUTE OF TECHNOLOGY
+
+By: /s/ Helena Marchetti
+Name: Helena Marchetti
+Title: Director, Office of Technology Licensing
+
+THALEN BIOSYSTEMS, INC.
+
+By: /s/ Omar Bendahou
+Name: Omar Bendahou
+Title: Chief Executive Officer

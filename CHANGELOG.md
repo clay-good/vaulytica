@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.184.0] — 2026-08-29
+
+### Added
+- A university exclusive patent license, Bayh-Dole subject — the 146th
+  specimen.
+
+### Fixed
+- **A patent license routed to `eula`** — an end-user licence for consumer
+  software — and was told it states no EU consumer-law minimums under the
+  Digital Content Directive. The family listed "trademark", "copyright" and
+  "assignment" as NEGATIVE features, and a patent license reserves trademark
+  and copyright rights in terms ("No license is granted under any copyright,
+  trademark, or know-how of Licensor") and has an assignment clause. Three
+  penalties on its own standard drafting, and the third self-penalizing family
+  found this way after `trademark-license` and `construction-contract`.
+
 ## [9.183.0] — 2026-08-29
 
 ### Documentation

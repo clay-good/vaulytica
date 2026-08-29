@@ -14,7 +14,7 @@
       "sublicense",
       "patent marking"
     ],
-    "negative_features": ["trademark", "copyright", "assignment"]
+    "negative_features": ["trademark license agreement", "copyright license agreement", "assignment of the patents"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Licensed Patents", "Net Sales", "Field of Use"],
