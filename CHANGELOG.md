@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.178.0] — 2026-08-29
+
+### Fixed
+- **Two liability-cap shapes RISK-005 could not read.** Eleven ways a contract
+  caps liability were written out and run against the rule; two ordinary ones
+  were missed, and each made the rule report "No limitation-of-liability
+  clause detected" on a contract that caps it in terms:
+  - the ADJECTIVE rather than the noun — "In no event shall the Escrow Agent
+    be LIABLE FOR MORE THAN the fees it received under this Agreement";
+  - the cap stated as an EQUATION — "The maximum liability of the Supplier
+    under this Agreement IS THE purchase price of the affected Goods".
+
+  A consequential-damages exclusion and a sole-and-exclusive-remedy clause
+  still report: neither is a cap on the amount.
+
 ## [9.177.0] — 2026-08-29
 
 ### Added

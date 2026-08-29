@@ -127,3 +127,39 @@ describe("RISK-005 — limitation of liability present", () => {
     }
   });
 });
+
+describe("RISK-005 — two cap shapes it could not read", () => {
+  // Eleven ways a contract caps liability were written out and run against
+  // this rule. Two were missed, and both are ordinary drafting.
+  it("reads the ADJECTIVE form: 'in no event shall X be liable for more than Y'", () => {
+    expect(
+      RISK_005.check(
+        buildContext([
+          "Escrow Agent",
+          "In no event shall the Escrow Agent be liable for more than the fees it received under this Agreement.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads the cap stated as an EQUATION: 'the maximum liability ... is the purchase price'", () => {
+    for (const clause of [
+      "The maximum liability of the Supplier under this Agreement is the purchase price of the affected Goods.",
+      "Vendor's total liability shall be limited to the fees paid in the preceding twelve months.",
+      "The cumulative liability of the parties is capped at $250,000.",
+    ]) {
+      expect(RISK_005.check(buildContext(["Liability", clause])), clause).toBeNull();
+    }
+  });
+
+  it("still reports a contract with no cap at all", () => {
+    expect(
+      RISK_005.check(
+        buildContext([
+          "General",
+          "The parties shall perform their obligations in good faith and in accordance with applicable law.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
