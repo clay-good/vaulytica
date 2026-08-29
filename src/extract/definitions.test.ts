@@ -2173,3 +2173,26 @@ describe("extractDefinitions — a regulation clause name is not a term (v9.238.
     );
   });
 });
+
+describe("extractDefinitions — a cover block may open with the company name (v9.239.0)", () => {
+  it('reads "Plan Year:" when the header opens with the company name', () => {
+    const tree = buildTree([
+      "FY2027 Sales Commission Plan",
+      "Halbrook Robotics, Inc. Plan Year: February 1, 2026 through January 31, 2027 Participant: Enterprise Account Executive",
+      "Only the first twelve months of contract value is commissionable in the Plan Year in which the order is booked.",
+      "The remaining years are credited in the Plan Year in which each anniversary invoice is paid.",
+    ]);
+    const d = extractDefinitions(tree);
+    expect(d.entries.map((e) => e.term)).toContain("Plan Year");
+    expect(d.undefined_capitalized.map((u) => u.term)).not.toContain("Plan Year");
+  });
+
+  it("does not read a prose sentence carrying a mid-flow label as a cover block", () => {
+    const tree = buildTree([
+      "Agreement",
+      "The Company shall remit each payment in accordance with the Wire Instructions: the account details supplied by Supplier in writing.",
+      "Supplier shall update the Wire Instructions on ten days notice.",
+    ]);
+    expect(extractDefinitions(tree).entries.map((e) => e.term)).not.toContain("Wire Instructions");
+  });
+});

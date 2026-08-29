@@ -1128,11 +1128,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "0d86cc66fb1852b8d534444ee9af1270f55528c11532934efc674359b13d1e55",
+  "result_hash": "51cae17d37920f3bb301837c7c8411cb0576b819c9c88cf208e53f3518d01748",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.238.0"
+  "version": "9.239.0"
 }

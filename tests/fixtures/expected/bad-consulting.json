@@ -1175,11 +1175,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"consulting agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\".",
-  "result_hash": "2ccd5bed555c3210ef2ec20f05c7e7a3e78d54dad27fc90060ff353d090a1e41",
+  "result_hash": "20f225a075001ec9dfa12df41fc66d13ed3ace8a3eedfc753a3a6b38f1f7294b",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.238.0"
+  "version": "9.239.0"
 }

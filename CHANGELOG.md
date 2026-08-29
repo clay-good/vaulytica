@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.239.0] — 2026-08-29
+
+### Added
+- An irrevocable trust — the 194th specimen, and the first for
+  `irrevocable-trust`. EST-401..407 are all satisfied: the express
+  irrevocability recital, the three-pillar spendthrift provision, the HEMS
+  ascertainable standard with its beneficiary-trustee limit, trustee powers
+  with succession and removal, Crummey rights with notice and a 5-or-5 hanging
+  power, the § 675(4)(C) substitution power with an Independent Trustee tax
+  reimbursement, and situs with decanting.
+- An FY2027 sales commission plan — the 195th specimen, and the first for
+  `commission-plan`. EMP-109..114 are all satisfied.
+
+### Fixed
+- **A cover block may open with the company name.** A plan, a policy, and an
+  order form open on a block of "Label: value" lines, and the cover-block
+  reader required the FIRST label to open the paragraph — so "Halbrook
+  Robotics, Inc. Plan Year: February 1, 2026 …" was not read as one, and
+  STRUCT-006 reported "Plan Year" as a term the plan forgot to define, on the
+  plan whose header defines it. The prefix must be a run of CAPITALIZED tokens,
+  tested case-sensitively, which is what keeps the prose sentence this guard
+  was written against ("… in accordance with the Wire Instructions: …") out —
+  its first lowercase word ends the run.
+
 ## [9.238.0] — 2026-08-29
 
 ### Added

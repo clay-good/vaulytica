@@ -224,6 +224,10 @@ const QUOTED_TERM = /["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
 const FIELD_LABEL = /\b([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){1,4}):\s+/g;
 const FIELD_BLOCK_MAX_LENGTH = 240;
 
+/** What may precede a cover block's FIRST label: nothing, or a capitalized
+ * title / entity run of at most eight tokens. Case-SENSITIVE by design. */
+const FIELD_BLOCK_PREFIX = /^\s*(?:[A-Z][^\s]*\s+){0,8}$/;
+
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
   /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
@@ -686,7 +690,15 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // Only a paragraph that OPENS with a label is a cover block — a
       // sentence that happens to contain "Wire Instructions: …" mid-flow
       // is prose, not a field sheet.
-      if (labels.length > 0 && /^\s*$/.test(ctx.text.slice(0, labels[0]!.start))) {
+      // A cover block routinely opens with the COMPANY or the plan NAME before
+      // its first label — "Halbrook Robotics, Inc. Plan Year: February 1, 2026
+      // …" — and requiring the label to open the paragraph missed every one of
+      // those, so STRUCT-006 reported "Plan Year" as a term the plan forgot to
+      // define, on the plan whose header defines it. The prefix must be a run
+      // of CAPITALIZED tokens, tested case-sensitively, which is what keeps the
+      // prose sentence this guard was written against ("… and the Wire
+      // Instructions: …") out — its first lowercase word ends the run.
+      if (labels.length > 0 && FIELD_BLOCK_PREFIX.test(ctx.text.slice(0, labels[0]!.start))) {
         for (let i = 0; i < labels.length; i++) {
           const value = ctx.text
             .slice(labels[i]!.valueStart, labels[i + 1]?.start ?? ctx.text.length)

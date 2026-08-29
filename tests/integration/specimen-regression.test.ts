@@ -679,6 +679,28 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // An irrevocable trust — the 194th specimen, and the first for
+  // `irrevocable-trust`. EST-401..407 are all satisfied: the express
+  // irrevocability recital, the three-pillar spendthrift provision, the HEMS
+  // ascertainable standard with its beneficiary-trustee limit, trustee powers
+  // with succession and removal, Crummey rights with notice and a 5-or-5
+  // hanging power, the § 675(4)(C) substitution power with an Independent
+  // Trustee tax reimbursement, and situs with decanting.
+  "irrevocable-trust.txt": {
+    playbook: "irrevocable-trust",
+    findings: ["OBLI-005", "STRUCT-018"],
+  },
+  // An FY2027 sales commission plan — the 195th specimen, and the first for
+  // `commission-plan`. EMP-109..114 are all satisfied: earned-on-collection
+  // with a stated payment date, post-termination commissions with a state
+  // wage-law savings clause, chargebacks with a twelve-month limit, the
+  // prospective-only modification right, recoverable versus non-recoverable
+  // draw, and the statement-and-dispute procedure. STRUCT-006 stays and is
+  // fair: Sales Operations is named three times and introduced nowhere.
+  "commission-plan.txt": {
+    playbook: "commission-plan",
+    findings: ["OBLI-005", "OBLI-006", "STRUCT-006"],
+  },
   // A GSA Multiple Award Schedule contract — the 193rd specimen, and the first
   // for `gsa-schedule-contract`. COMM-163..167 are all satisfied: the
   // basis-of-award customer with its discount relationship and the
