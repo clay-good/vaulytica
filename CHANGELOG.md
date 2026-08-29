@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.235.0] — 2026-08-29
+
+### Fixed
+- **A flat paste lost every party in the document.** Two independent causes,
+  both found by running the format-invariance axes over the golden fixtures:
+  - A PDF copy-paste merges the TITLE line into the paragraph below it, so
+    "This Lease is between Landlord, REIT Holdings LLC, and Tenant …" no longer
+    STARTS the paragraph and the preamble lead-in's start anchor failed. A
+    triple net lease whose parties extract cleanly in the normal layout
+    extracted none once its blank lines were stripped. The title prefix is now
+    tolerated, matched CASE-SENSITIVELY and deliberately outside the
+    case-insensitive `PREAMBLE_LEAD` — a title is capitalized, and the run must
+    stop at the first lowercase word, which is what keeps "Landlord shall
+    provide notice of the difference and the amount is …" from reading as a
+    title followed by a preamble.
+  - An SCC annex names its parties ONLY as "Data Exporter: …" labels, and the
+    paste path joins a block's lines with SPACES, so the line-anchored label
+    was unreachable and the annex extracted no parties at all. A whitespace
+    boundary is the same boundary in that layout; the label whitelist and the
+    capitalized-name requirement are what keep ordinary prose out.
+
 ## [9.234.0] — 2026-08-29
 
 ### Fixed

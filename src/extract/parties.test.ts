@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { extractParties } from "./parties.js";
+import { ingestPaste } from "../ingest/paste.js";
 import { buildTree } from "./_fixtures.js";
 
 describe("extractParties", () => {
@@ -479,5 +480,47 @@ describe("extractParties — a preamble parenthetical is not part of the name (v
     const names = extractParties(tree).map((p) => p.name);
     expect(names).toContain("Acme Holdings, Inc");
     expect(names).toContain("Acme Holdings LLC");
+  });
+});
+
+describe("extractParties — a flat paste still names its parties (v9.235.0)", () => {
+  const flatten = (t: string): string =>
+    t
+      .split("\n")
+      .filter((l) => l.trim().length > 0)
+      .join("\n");
+
+  it("reads the preamble when the TITLE shares its paragraph", async () => {
+    // A PDF copy-paste merges the title line into the paragraph below it, so
+    // "This Lease is between …" no longer STARTS the paragraph and the
+    // preamble lead-in's start anchor failed. Every party was lost with it.
+    const text = [
+      "Triple Net Lease Agreement (NNN)",
+      "",
+      'This Triple Net Lease ("Lease") is between Landlord, REIT Holdings LLC, and Tenant, Retailer Inc.',
+      "",
+      "Rent. Tenant shall pay base rent monthly in advance.",
+    ].join("\n");
+    const flat = (await ingestPaste(flatten(text))).tree;
+    expect(extractParties(flat).map((p) => p.name)).toContain("REIT Holdings LLC");
+  });
+
+  it("reads a labelled party that no longer starts a line", async () => {
+    // An SCC annex names its parties ONLY as "Data Exporter: …" labels. The
+    // paste path joins a block's lines with SPACES, so the line anchor was
+    // unreachable and the annex extracted no parties at all.
+    const text = [
+      "Standard Contractual Clauses",
+      "",
+      "Parties",
+      "",
+      "Data Exporter: Globex EU SARL, a French company, 15 rue Lafayette, Paris.",
+      "",
+      "Data Importer: Stark Cloud Ireland Ltd., a company registered in Ireland.",
+    ].join("\n");
+    const flat = (await ingestPaste(flatten(text))).tree;
+    const names = extractParties(flat).map((p) => p.name);
+    expect(names).toContain("Globex EU SARL");
+    expect(names).toContain("Stark Cloud Ireland Ltd");
   });
 });

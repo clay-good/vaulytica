@@ -213,6 +213,31 @@ const PREAMBLE_LEAD = new RegExp(
 );
 
 /**
+ * A TITLE that shares the preamble's paragraph.
+ *
+ * A flat paste — a PDF copy, a blank-line-stripped export — merges the title
+ * line into the paragraph below it, so "This Lease is between Landlord …" no
+ * longer STARTS the paragraph and `PREAMBLE_LEAD`'s start anchor fails. Every
+ * party in the document was lost with it: a triple net lease whose parties
+ * extract cleanly in the normal layout extracted NONE once its blank lines
+ * were stripped.
+ *
+ * Case-SENSITIVE by design, and deliberately not folded into `PREAMBLE_LEAD`,
+ * which carries the `i` flag: a title is capitalized, and the run must stop at
+ * the first lowercase word. That is what keeps an ordinary sentence —
+ * "Landlord shall provide notice of the difference and the amount is …" — from
+ * reading as a title followed by a preamble.
+ */
+const TITLE_BEFORE_PREAMBLE = /^(?:[A-Z(][^\s.;]*\s+){1,12}(?=(?:This|The)\s)/;
+
+/** `PREAMBLE_LEAD`, tolerating a title line merged in front of the preamble. */
+function hasPreambleLead(lead: string): boolean {
+  if (PREAMBLE_LEAD.test(lead)) return true;
+  const withoutTitle = lead.replace(TITLE_BEFORE_PREAMBLE, "");
+  return withoutTitle !== lead && PREAMBLE_LEAD.test(withoutTitle);
+}
+
+/**
  * A LABELED party line: "Data Exporter: Globex EU SARL, a French société à
  * responsabilité limitée, 15 rue Lafayette, 75009 Paris, France".
  *
@@ -237,7 +262,7 @@ const LABELED_PARTY = new RegExp(
   // ("Lender: J.P. Morgan Chase Bank") failed the `{2,80}` minimum at the first
   // period and was dropped entirely, so a labeled-only document (SCC annex,
   // IDTA table) reported STRUCT-001 "could not identify the parties".
-  String.raw`(?:^|\n)\s*(${PARTY_ROLE_LABEL})\s*:\s*(?!\s)([A-Z](?:[^\n,;.]|\.(?!\s|$)|\.(?=\s+[A-Z])){2,80})`,
+  String.raw`(?:^|(?<=[\s\n]))(${PARTY_ROLE_LABEL})\s*:\s*(?!\s)([A-Z](?:[^\n,;.]|\.(?!\s|$)|\.(?=\s+[A-Z])){2,80})`,
   "g",
 );
 
@@ -455,7 +480,7 @@ export function extractParties(tree: DocumentTree): Party[] {
       // to say they are NOT contracting parties. Reading it as a preamble
       // registered both as parties.
       if (NEGATED_PREAMBLE.test(lead)) continue;
-      if (PREAMBLE_LEAD.test(lead)) break;
+      if (hasPreambleLead(lead)) break;
     }
     if (betweenMatch) {
       const { name: a, role: roleA } = splitNameAndRole(betweenMatch[1] ?? "");
@@ -484,7 +509,7 @@ export function extractParties(tree: DocumentTree): Party[] {
     while ((amongMatch = AMONG_RE.exec(text)) !== null) {
       const lead = text.slice(0, amongMatch.index);
       if (NEGATED_PREAMBLE.test(lead)) continue;
-      if (!PREAMBLE_LEAD.test(lead)) continue;
+      if (!hasPreambleLead(lead)) continue;
       const listStart = amongMatch.index + amongMatch[0].indexOf(amongMatch[1] ?? "");
       for (const member of (amongMatch[1] ?? "").split(AMONG_SEP)) {
         const { name, role } = splitNameAndRole(member);
