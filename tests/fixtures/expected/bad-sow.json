@@ -1033,11 +1033,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "85715667aad2713ff52701ca300a65af5f91e60de07686e85376be462ead41aa",
+  "result_hash": "d4fade23c6800c8949b436a79a78d0cbf48bdb3f2fc71361fe5c45052eeef797",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.123.0"
+  "version": "9.124.0"
 }

@@ -53,6 +53,17 @@ const TITLE_RE = new RegExp(
   "i",
 );
 
+/**
+ * One entry of an attachment LIST — `Exhibit B — Depiction of the Easement
+ * Area`. The em/en dash and the Title-Case name after it are what separate an
+ * entry from a body reference; a plain hyphen is excluded because it is part
+ * of a compound id ("Exhibit A-1").
+ */
+const LIST_ENTRY_RE = new RegExp(
+  String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])(-\d{1,2})?\s*[\u2013\u2014]\s*[A-Z]`,
+  "g",
+);
+
 export const rule: Rule = {
   id: "STRUCT-018",
   version: "1.3.0",
@@ -77,6 +88,27 @@ export const rule: Rule = {
       // A title line at the start of a paragraph also marks presence.
       const title = TITLE_RE.exec(p.text);
       if (title) present.add(key(title[1]!, `${title[2]!}${title[3] ?? ""}`));
+      // An attachment LIST is several entries together:
+      //
+      //   Exhibit A — Legal Description of the Servient Estate
+      //   Exhibit B — Depiction of the Easement Area
+      //
+      // Whether those arrive as one paragraph or two — or joined onto the
+      // signature block above them — is a fact about the file, and the
+      // anchored scan above sees only whichever one happens to come first. An
+      // easement that attaches both was told Exhibit B is referenced but not
+      // attached, and so were six other specimens.
+      //
+      // The entry shape carries the discrimination on its own: an em or en
+      // dash directly after the id, followed by a Title-Case name. A body
+      // reference ("described on Exhibit B, being a strip twenty feet wide")
+      // has a comma there, not a dash — so the scan needs no anchor and finds
+      // the list wherever the ingest happens to put it.
+      LIST_ENTRY_RE.lastIndex = 0;
+      let e: RegExpExecArray | null;
+      while ((e = LIST_ENTRY_RE.exec(p.text)) !== null) {
+        present.add(key(e[1]!, `${e[2]!}${e[3] ?? ""}`));
+      }
       // Collect references (skip the title-line self-reference).
       REF_RE.lastIndex = 0;
       let m: RegExpExecArray | null;

@@ -353,7 +353,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // opens on ("pursuant to ... the Bylaws of the Corporation").
   "written-consent.txt": {
     playbook: "written-consent",
-    findings: ["STRUCT-006", "STRUCT-016", "STRUCT-018"],
+    findings: ["STRUCT-006", "STRUCT-016"],
   },
 
   // A Series B financing term sheet, titled "Summary of Terms" — the standard
@@ -449,7 +449,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // states no joint-tortfeasor effect, and this one does not either.
   "covenant-not-to-sue.txt": {
     playbook: "covenant-not-to-sue",
-    findings: ["OBLI-005", "SET-108", "STRUCT-006", "STRUCT-018"],
+    findings: ["OBLI-005", "SET-108", "STRUCT-006"],
   },
 
   // A Series B side letter. Two defects about citing a parent document.
@@ -473,7 +473,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // family, because no bank's control agreement states a dollar cap.
   "daca.txt": {
     playbook: "deposit-account-control-agreement",
-    findings: ["OBLI-005", "RISK-007", "STRUCT-006", "STRUCT-018", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-005", "RISK-007", "STRUCT-006", "TEMP-006", "TEMP-007"],
   },
 
   // A venture-lender warrant behind the same restrictive-securities legend as
@@ -495,7 +495,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // indemnifies its agent one way and always has.
   "escrow-agreement.txt": {
     playbook: "escrow-agreement",
-    findings: ["OBLI-005", "STRUCT-006", "STRUCT-018", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-005", "STRUCT-006", "TEMP-006", "TEMP-007"],
   },
 
   // An Idaho payment and performance bond. Three defects, two at `critical`.
@@ -521,7 +521,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // "easement / premises / property / area / improvements / surface".
   "easement.txt": {
     playbook: "easement-agreement",
-    findings: ["OBLI-005", "RISK-010", "RISK-011", "STRUCT-006", "STRUCT-018"],
+    findings: ["OBLI-005", "RISK-010", "RISK-011", "STRUCT-006"],
   },
 
   // A tolling agreement suspending a limitations period pending settlement
@@ -548,7 +548,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // § 261 checks never ran.
   "patent-assignment.txt": {
     playbook: "patent-assignment",
-    findings: ["OBLI-005", "STRUCT-006", "STRUCT-018"],
+    findings: ["OBLI-005", "STRUCT-006"],
   },
 
   // A subordination, non-disturbance and attornment agreement. RE-047 —
@@ -607,7 +607,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // stated no date of separation. Nobody is separating.
   "prenup.txt": {
     playbook: "prenuptial-agreement",
-    findings: ["EST-060", "STRUCT-006", "STRUCT-016", "STRUCT-018"],
+    findings: ["EST-060", "STRUCT-006", "STRUCT-016"],
   },
 
   // An employment offer letter, titled in its "Re:" line as an "Offer of

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.124.0] — 2026-08-28
+
+### Fixed
+- **Only the first entry of an attachment list counted as attached.** An
+  easement that ends
+
+      Exhibit A — Legal Description of the Servient Estate
+      Exhibit B — Depiction of the Easement Area
+
+  was told Exhibit B is referenced but not attached, and so were six other
+  specimens — a prenuptial agreement with two schedules of assets, a deposit
+  account control agreement with three, an escrow agreement, a covenant not to
+  sue, a patent assignment, and a written consent. The presence scan was
+  anchored to the start of a paragraph and ran once, so it saw whichever entry
+  the ingest happened to put first.
+
+  The entry shape carries the discrimination on its own: an em or en dash
+  directly after the id, followed by a Title-Case name. A body reference —
+  "described on Exhibit B, being a strip twenty feet wide" — has a comma there,
+  not a dash, so the scan needs no anchor and finds the list wherever the
+  ingest puts it. **Seven false "not attached" findings, and both format-debt
+  lists shrank as a consequence: fourteen to eight, and fourteen to nine.**
+
 ## [9.123.0] — 2026-08-28
 
 The mirror of the PDF paste: a blank line between every line.

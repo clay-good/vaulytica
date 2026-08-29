@@ -52,16 +52,10 @@ const KNOWN_UNSTABLE = new Set<string>([
   "advance-directive.txt",
   "cease-and-desist.txt",
   "cre-psa.txt",
-  "hold-harmless.txt",
   "media-release.txt",
   "option-grant.txt",
   "po-terms.txt",
-  "revocable-trust.txt",
   "saas-tos.txt",
-  "security-agreement.txt",
-  "snda.txt",
-  "trademark-assignment.txt",
-  "warrant.txt",
 ]);
 
 const SPECIMENS = readdirSync(DIR)
@@ -159,19 +153,14 @@ function doubleSpaced(text: string): string {
  */
 const DOUBLE_SPACED_UNSTABLE = new Set<string>([
   "covenant-not-to-sue.txt",
-  "daca.txt",
-  "easement.txt",
   "escrow-agreement.txt",
   "hold-harmless.txt",
   "lease-assignment.txt",
-  "patent-assignment.txt",
   "performance-bond.txt",
-  "prenup.txt",
   "revocable-trust.txt",
   "snda.txt",
   "tolling-agreement.txt",
   "trademark-assignment.txt",
-  "written-consent.txt",
 ]);
 
 describe("format is not load-bearing", () => {
