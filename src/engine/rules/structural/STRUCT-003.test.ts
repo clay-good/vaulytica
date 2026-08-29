@@ -68,3 +68,34 @@ describe("STRUCT-003 — a cover block is not a signature block (v1.19.0)", () =
     ).toBeNull();
   });
 });
+
+describe("STRUCT-003 — an effective-date recital is not a signature field (v1.30.0)", () => {
+  // Flattening a document's blank lines — a PDF copy-paste — merges the
+  // "Effective Date: January 1, 2026." recital with the prose after it, and
+  // "Date" plus a stray "by" reached the two-token floor. Four golden fixtures
+  // engineered to LACK a signature block went silent in that layout.
+  it("does not read an effective-date recital plus prose as an execution", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Business Associate Agreement",
+          "Business Associate shall safeguard PHI as required by the Security Rule.",
+          "Effective Date: January 1, 2026. Execution. This BAA is executed by the Parties through their respective duly empowered officers, with execution evidenced solely by reference to the cover page of the Master Services Agreement; no separate execution lines are included.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("still stands down on a real two-field signature line", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Agreement",
+          "Vendor shall provide the Services described in Exhibit A.",
+          "ACME, INC.",
+          "By: /s/ Dana Reyes  Name: Dana Reyes  Title: Chief Executive Officer  Date: August 4, 2026",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

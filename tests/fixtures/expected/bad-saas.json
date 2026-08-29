@@ -593,7 +593,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.29.0"
+      "rule_version": "1.30.0"
     },
     {
       "elapsed_ms": 0,
@@ -1230,11 +1230,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "8cb2ca4961c92e7601e5a216f1ad8aa37dc274ae1770ff60842e346f3b2dc30f",
+  "result_hash": "8f7ba2e93cc5369cd8fce776d83c4ea53fe84fdd9e9dbd04def2a7efd5a6363c",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.233.0"
+  "version": "9.234.0"
 }

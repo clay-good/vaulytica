@@ -262,7 +262,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.29.0",
+  version: "1.30.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -385,7 +385,7 @@ export const rule: Rule = {
         // document. The labels are stripped before counting, so a real "By:"
         // on a signature line still counts.
         const counted = text.replace(
-          /\b(?:prepared|compiled)\s+(?:by|for)\b|\bdate\s+(?:prepared|of\s+issue)\b/gi,
+          /\b(?:prepared|compiled)\s+(?:by|for)\b|\bdate\s+(?:prepared|of\s+issue)\b|\beffective\s+date\b|\bdate\s+of\s+th(?:is|e)\s+\w+/gi,
           " ",
         );
         const m = counted.match(
