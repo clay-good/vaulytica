@@ -40,6 +40,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A franchise disclosure document, cover page through the receipt. The six
+  // FTC Franchise Rule checks are silent on a compliant one. It named its
+  // officers the way an FDD does — "Renata Kowalczyk, Chief Executive Officer"
+  // — and signs nothing, so the signature-line and notarial sources of person
+  // names found nothing and the CEO was reported as a Title-Case term the
+  // document forgot to define. The two that stay are real: an FDD's exhibits
+  // travel separately, and "Gross Sales" is defined in the franchise
+  // agreement, not here.
+  "fdd.txt": {
+    playbook: "franchise-disclosure-document",
+    findings: ["STRUCT-006", "STRUCT-018", "STRUCT-009"],
+  },
   // An expert witness retention letter from counsel to a forensic engineer.
   // The family shipped with an empty rule profile while its sibling
   // `engagement-letter` already had the right one, so a retention letter was

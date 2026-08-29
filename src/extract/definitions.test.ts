@@ -1703,6 +1703,35 @@ describe("a term that titles its own RUN-IN heading", () => {
   });
 });
 
+describe("a person named with their OFFICE in apposition", () => {
+  // A franchise disclosure document names its officers in Item 2 —
+  // "Renata Kowalczyk, Chief Executive Officer" — and signs nothing, so the
+  // signature-line and notarial sources of person names found nothing and
+  // every officer was reported as a Title-Case term the document forgot to
+  // define.
+  const undef = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Disclosure Document", ...paras])).undefined_capitalized.map(
+      (e) => e.term,
+    );
+
+  it("does not flag an officer named before their title", () => {
+    const terms = undef(
+      "Renata Kowalczyk, Chief Executive Officer. Ms. Kowalczyk has served as our Chief Executive Officer since January 2019.",
+      "Ellis Danforth, Chief Financial Officer. Mr. Danforth has served as our Chief Financial Officer since June 2021.",
+      "Contact Renata Kowalczyk at the address above. Ellis Danforth may also be reached there.",
+    );
+    expect(terms).not.toContain("Renata Kowalczyk");
+    expect(terms).not.toContain("Ellis Danforth");
+  });
+
+  it("still flags a Title-Case term followed by an ordinary noun", () => {
+    const terms = undef(
+      "The Gross Sales figure is calculated weekly. Gross Sales are reported to us by electronic funds transfer.",
+    );
+    expect(terms).toContain("Gross Sales");
+  });
+});
+
 describe("the names a privilege log is made of", () => {
   // A privilege log is a table of people: "Author: Dana Okwuosa (Associate
   // General Counsel)", "Recipients: Peter Vance", "cc: Renata Silva". Every

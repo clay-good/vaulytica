@@ -838,6 +838,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // the will forgot to define. Collecting them here also covers the bare
       // list form ("my children: Ana Halloran, Emil Halloran, and Soren
       // Halloran"), because the set is matched against every later use.
+      // A person named with their OFFICE in apposition — "Renata Kowalczyk,
+      // Chief Executive Officer", "Ellis Danforth, Chief Financial Officer",
+      // "Ruth Ellingham, Partner" — is a natural person. A franchise
+      // disclosure document names its officers this way in Item 2 and nowhere
+      // signs anything, so the signature-line and notarial sources found
+      // nothing and every officer was reported as a Title-Case term the
+      // document forgot to define. The office list is closed, so an ordinary
+      // "Acme Holdings, Inc." or a defined term followed by a common noun is
+      // not swept in.
+      /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,3}),\s+(?:the\s+)?(?:Chief\s+\w+\s+Officer|President|Vice\s+President|Executive\s+Vice\s+President|Senior\s+Vice\s+President|Treasurer|Secretary|General\s+Counsel|Managing\s+(?:Member|Partner|Director)|Partner|Principal|Director\s+of\s+[A-Z]\w+|Manager|Incorporator|Trustee|Executor|Notary\s+Public)\b/g,
       /\b(?:my|his|her|their|our)\s+(?:beloved\s+|late\s+|step-?|former\s+)?(?:wife|husband|spouse|partner|son|daughter|child|brother|sister|mother|father|grandson|granddaughter|grandchild|niece|nephew|cousin|uncle|aunt|executor|trustee|guardian)\s+([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){0,3})/g,
     ]) {
       re.lastIndex = 0;

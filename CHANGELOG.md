@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.172.0] — 2026-08-29
+
+### Added
+- A franchise disclosure document, cover page through the receipt — the 138th
+  specimen. The six FTC Franchise Rule checks are silent on a compliant one.
+
+### Fixed
+- **A person named with their OFFICE in apposition was reported as an
+  undefined term.** "Renata Kowalczyk, Chief Executive Officer" is how an FDD
+  names its officers in Item 2 — and an FDD signs nothing, so the
+  signature-line and notarial sources of person names found nothing and the
+  CEO was flagged as a Title-Case term the document forgot to define. The
+  office list is closed, so an ordinary "Acme Holdings, Inc." or a defined
+  term followed by a common noun is not swept in.
+
 ## [9.171.0] — 2026-08-29
 
 ### Added
