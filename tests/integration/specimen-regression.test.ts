@@ -40,6 +40,21 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An AI addendum to a master services agreement. Three false positives, all
+  // vocabulary: "Vendor shall not PERMIT any subprocessor ... to use Customer
+  // Data to train" was read as denying that subprocessors are disclosed;
+  // "model provider" — the current term of art — was in neither the
+  // subprocessor-disclosure nor the hosting-disclosure list; and "Customer
+  // owns all right, title, and interest in and to Customer Data" could not be
+  // read as allocating data ownership. Three findings stay and are real:
+  // the addendum discloses neither the default-on/opt-in state nor the model
+  // hosting (ADDENDA-012), states no deletion of fine-tuning data on
+  // termination (ADDENDA-016), and adds an indemnity whose cap it leaves to
+  // the parent Agreement (RISK-015).
+  "ai-addendum.txt": {
+    playbook: "ai-addendum",
+    findings: ["ADDENDA-012", "ADDENDA-016", "RISK-015", "OBLI-005", "STRUCT-009"],
+  },
   // A NON-BINDING lease letter of intent, countersigned. The family shipped
   // with an empty rule profile while its M&A sibling `loi-term-sheet` already
   // had the right one, so a term sheet was told at `warning` that it states no

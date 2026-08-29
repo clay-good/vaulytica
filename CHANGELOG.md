@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.167.0] — 2026-08-29
+
+### Added
+- An AI addendum to a master services agreement — the 134th specimen.
+
+### Fixed
+- **A CAUSATIVE was read as an express denial.** "Vendor shall not PERMIT any
+  subprocessor or model provider to use Customer Data to train any model" is a
+  negative covenant about what a subprocessor may do; ADDENDA-015 read it as
+  the addendum stating that its subprocessors are NOT disclosed, and said so
+  at `warning` — in a document whose very next clause promises to identify
+  each model provider on request. `expressDenial`'s word gap now refuses to
+  cross permit / allow / authorize / cause / enable, the same way it already
+  refuses to cross a conditional or a scope verb: a causative makes the topic
+  the subject of an embedded clause, not the object of the negation. This is
+  a shared helper, so every rule that uses `denied_if` is corrected.
+- **ADDENDA-015 did not know the phrase "model provider"** — the current term
+  of art for OpenAI / Anthropic / Google. It is matched as a disclosure
+  OBLIGATION rather than a bare noun, because an addendum that says "the
+  parties have elected not to include a schedule identifying the third-party
+  model providers" names them only to say it does not list them.
+- **IPDATA-004 could not read the standard ownership formulation.** "Customer
+  owns all right, title, and interest in and to Customer Data" is how a
+  contract ordinarily allocates data ownership, and the `owns … data` branch
+  could not reach it: after "owns all" comes "right", not "data".
+
+### Deliberately not changed
+- **RISK-015 on an addendum.** Unlike the absence checks that consult
+  `amendsParentAgreement()`, RISK-015 is about a NEW obligation the addendum
+  itself creates — an added indemnity whose cap is left to the parent. That
+  is worth a reviewer's eye, so the warning stands.
+
 ## [9.166.0] — 2026-08-29
 
 ### Added

@@ -7,6 +7,7 @@ import {
   amendsParentAgreement,
   isIncorporatedExhibit,
   isPresenceDisclaimed,
+  expressDenial,
 } from "./_helpers.js";
 import type { RuleContext } from "../finding.js";
 
@@ -420,5 +421,48 @@ describe("a companion document that borrows its definitions", () => {
         ctxWith("Capitalized terms not defined here have the meanings given below."),
       ),
     ).toBe(false);
+  });
+});
+
+describe("expressDenial — a causative is not a denial", () => {
+  // "Vendor shall not PERMIT any subprocessor or model provider to use
+  // Customer Data to train a model" is a negative covenant about what a
+  // subprocessor may do. Read as a denial, it told an AI addendum at
+  // `warning` that it states its subprocessors are not disclosed — the
+  // opposite of what the same sentence goes on to promise.
+  const denies = (topic: string, text: string) => expressDenial(topic).some((re) => re.test(text));
+
+  it("does not read 'shall not permit any X to Y' as denying X", () => {
+    expect(
+      denies(
+        String.raw`(?:ai\s+)?sub.?processors?`,
+        "Vendor shall not use, and shall not permit any subprocessor or model provider to use, Customer Data to train any model.",
+      ),
+    ).toBe(false);
+  });
+
+  it("does not read 'shall not allow / authorize / cause X' as denying X", () => {
+    for (const frame of ["allow any", "authorize any", "cause any", "enable any"]) {
+      expect(
+        denies(
+          String.raw`(?:ai\s+)?sub.?processors?`,
+          `Vendor shall not ${frame} subprocessor to access Customer Data.`,
+        ),
+        frame,
+      ).toBe(false);
+    }
+  });
+
+  it("still reads a real denial of the same topic", () => {
+    expect(
+      denies(
+        String.raw`(?:ai\s+)?sub.?processors?`,
+        "Vendor does not disclose subprocessors and has no obligation to do so.",
+      ) ||
+        denies(
+          String.raw`(?:ai\s+)?sub.?processors?`,
+          "This Addendum contains no subprocessor list.",
+        ),
+    ).toBe(true);
   });
 });

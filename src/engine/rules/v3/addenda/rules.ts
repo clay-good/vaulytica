@@ -333,6 +333,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceAi({
     id: "ADDENDA-012",
+    version: "1.1.0",
     name: "AI transparency: features + default state + hosting",
     description:
       "AI Addendum should disclose which features use AI, whether on by default or opt-in, and whether the model is on-prem or third-party-hosted.",
@@ -390,7 +391,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceAi({
     id: "ADDENDA-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "AI subprocessor disclosure",
     description: "AI Addendum should disclose AI subprocessors (OpenAI, Anthropic, Google, etc.).",
     citation: "GDPR Article 28(2) (subprocessor authorisation)",
@@ -406,6 +407,13 @@ export const ADDENDA_RULES: Rule[] = [
       // "disclose any third-party AI PROVIDERS or subprocessors" — "AI
       // providers" and a "disclose … subprocessors" clause in the AI context.
       /AI\s+(?:providers?|models?\s+providers?|service\s+providers?)/i,
+      // "MODEL PROVIDER" is the current term of art for OpenAI / Anthropic /
+      // Google, and none of the spellings above reach it. The match is the
+      // disclosure OBLIGATION, not the noun: an addendum that says "the
+      // parties have elected not to include a schedule IDENTIFYING THE
+      // THIRD-PARTY MODEL PROVIDERS" names them only to say it does not list
+      // them, and a bare-noun pattern read that as the disclosure itself.
+      /\b(?:shall|will|agrees?\s+to)\b[^.]{0,80}?\b(?:identify|identifies|disclose|discloses|list|lists|name|names)\b[^.]{0,60}?\b(?:model|foundation[- ]model|LLM|AI)\s+providers?\b/i,
       /disclose\w*[^.]{0,60}?\b(?:third[- ]party\s+)?(?:AI\s+)?sub-?processors?\b/i,
     ],
     default_severity: "warning",

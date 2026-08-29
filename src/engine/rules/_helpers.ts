@@ -510,7 +510,15 @@ export function expressDenial(topic: string): RegExp[] {
   // deletion clause), or a
   // scope verb ("this policy does not APPLY TO OFAC screening by third
   // parties"), because neither sentence denies that the clause exists.
-  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|after|before|until|once|upon|following|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts|withhold|withholds|withholding|deny|denies|denying|refuse|refuses|refusing|impair|impairs|delay|delays|obstruct|obstructs|interfere|interferes)\b)\w+[\s,]+){0,3}`;
+  // The gap also refuses to cross a CAUSATIVE — "Vendor shall not PERMIT any
+  // subprocessor or model provider to use Customer Data to train a model" is a
+  // negative covenant about what a subprocessor may do, and it was read as the
+  // addendum denying that it discloses its subprocessors at all. A causative
+  // makes the topic the subject of an embedded clause, not the object of the
+  // negation, so the sentence never denies that the clause exists.
+  // ("permitted" / "allowed" stay out of the PARTICIPLE list below for a
+  // different reason — see the note there.)
+  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|after|before|until|once|upon|following|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts|withhold|withholds|withholding|deny|denies|denying|refuse|refuses|refusing|impair|impairs|delay|delays|obstruct|obstructs|interfere|interferes|permit|permits|permitting|allow|allows|allowing|authorize|authorizes|authorizing|cause|causes|causing|enable|enables|enabling)\b)\w+[\s,]+){0,3}`;
   // "contain" and "include" are how an INSTRUMENT denies carrying a clause —
   // "this trust contains no spendthrift provision" — as against the conduct
   // verbs, which are how a party denies doing something.
