@@ -40,6 +40,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A remote work agreement. It routed correctly but only just — 0.5, right at
+  // the threshold — because the family's distinguishing phrases were headings
+  // rather than register ("work hours and availability", "the employee's home
+  // office") and it had one title keyword. Its own pack is silent on a
+  // compliant one. The family also shipped with no rule profile, so an
+  // employment addendum that says in terms that it does not change Employee's
+  // status was told it allocates no IP, provides no indemnity, caps no
+  // liability, and states no termination path.
+  "remote-work.txt": {
+    playbook: "remote-work-agreement",
+    findings: ["CHOICE-003", "OBLI-002", "OBLI-005"],
+  },
   // A second amendment to a revocable living trust. It routed to
   // `revocable-living-trust` and was told it states no pour-over reference and
   // no spendthrift clause — a two-page amendment restates neither, because

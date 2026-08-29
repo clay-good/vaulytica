@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.214.0] — 2026-08-29
+
+### Added
+- A remote work agreement — the 172nd specimen.
+
+### Fixed
+- **It routed correctly but only just — 0.5, exactly at the threshold.** The
+  family's distinguishing phrases were HEADINGS rather than register ("work
+  hours and availability", "the employee's home office"), so one of six
+  matched, and it had a single title keyword. It now reads the phrases such an
+  agreement carries.
+- **`remote-work-agreement` shipped with no rule profile**, so an employment
+  addendum that says in terms that it does not change Employee's status was
+  told it allocates no IP, provides no indemnity, caps no liability, and states
+  no termination path.
+
 ## [9.213.0] — 2026-08-29
 
 ### Added

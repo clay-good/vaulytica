@@ -1,0 +1,71 @@
+REMOTE WORK AGREEMENT
+
+This Remote Work Agreement (this "Agreement") is between Larkfield Analytics, Inc. (the "Company") and Marcus Oyelaran ("Employee"), and takes effect on May 4, 2026.
+
+1. ARRANGEMENT
+
+1.1 Schedule. Employee will work remotely from Employee's residence in Boise, Idaho, on Monday, Tuesday, Thursday, and Friday, and will work from the Company's Portland, Oregon office on Wednesday. The Company may change this schedule on thirty (30) days' notice.
+
+1.2 Not a Change to Employment Status. This Agreement does not change Employee's at-will employment, position, duties, compensation, or benefits, and is not a promise of employment for any period.
+
+1.3 Trial and Revocation. This arrangement is subject to a ninety (90) day trial. The Company may modify or end it at any time on thirty (30) days' written notice, or immediately if Employee's performance declines materially or Employee breaches this Agreement.
+
+2. WORK LOCATION AND TAX
+
+2.1 Approved Location. Employee shall work only from the approved location in Section 1.1. Employee shall obtain the Company's written approval before working from another state or country for more than ten (10) consecutive business days, because a change of work location can create tax, payroll-registration, and employment-law obligations for the Company in the new jurisdiction.
+
+2.2 State Law. Employee's terms of employment are governed by the law of the state in which Employee performs work. The Company will apply Idaho wage-and-hour, leave, and paid-sick-time rules to Employee while Employee works in Idaho.
+
+2.3 Notification. Employee shall notify the Company within five (5) business days of any change of residence.
+
+3. HOURS, PAY, AND EXPENSES
+
+3.1 Non-Exempt Status. Employee is non-exempt under the Fair Labor Standards Act. Employee shall record all hours worked in the Company's timekeeping system each day, shall take the meal and rest breaks Idaho law provides, and shall not work unrecorded or unapproved overtime. The Company will pay for all hours worked, including any overtime, whether or not it approved them in advance.
+
+3.2 Equipment. The Company will provide a laptop, monitor, keyboard, mouse, and headset, which remain the Company's property. Employee shall return them within ten (10) business days after the arrangement ends or employment terminates.
+
+3.3 Expense Reimbursement. The Company will reimburse a home-office stipend of $75 per month toward internet and utilities, and will reimburse reasonable, documented business expenses under its expense policy. The Company will reimburse any expense that state law requires an employer to bear, whether or not the policy covers it.
+
+4. WORKSPACE, SAFETY, AND WORKERS' COMPENSATION
+
+4.1 Workspace. Employee shall maintain a safe, ergonomic workspace free of hazards, and shall complete the Company's remote-workspace self-certification annually.
+
+4.2 Injury Reporting. Employee shall report any work-related injury to the Company within twenty-four (24) hours. Employee remains covered by the Company's workers' compensation insurance for injuries arising out of and in the course of employment while working remotely.
+
+4.3 Company Access. The Company will not enter Employee's residence. If the Company needs to inspect equipment, it will arrange for Employee to bring it to the office or to ship it at the Company's expense.
+
+5. SECURITY AND CONFIDENTIALITY
+
+5.1 Devices and Network. Employee shall use only Company-issued devices for Company work, shall keep them patched and encrypted, shall use the Company's VPN and multi-factor authentication, and shall not use public wireless networks without the VPN.
+
+5.2 Confidentiality. Employee shall keep Company and client information confidential, shall not permit any other person to view it, shall use a privacy screen in any public setting, and shall store all documents digitally rather than in paper form. Employee's existing confidentiality and invention-assignment agreement continues in force.
+
+5.3 Monitoring. The Company monitors activity on Company-issued devices and Company systems, including email, messaging, and network traffic, for security and compliance. The Company does not monitor Employee's personal devices, personal accounts, or the video or audio of Employee's home except during a scheduled meeting Employee joins.
+
+6. AVAILABILITY AND COMMUNICATION
+
+6.1 Core Hours. Employee shall be reachable during core hours of 9:00 a.m. to 3:00 p.m. Pacific time, shall attend scheduled meetings by video, and shall respond to messages within one business day.
+
+6.2 Right to Disconnect. Outside scheduled hours Employee is not required to monitor or respond to communications, and the Company shall not treat a delayed response outside those hours as a performance issue.
+
+7. GENERAL
+
+7.1 No Waiver of Rights. Nothing in this Agreement waives any right Employee has under federal, state, or local law, including the right to discuss wages, hours, or working conditions, or to report a possible violation of law to a government agency.
+
+7.2 Amendment. This Agreement may be amended only in a writing signed by both parties.
+
+7.3 Entire Agreement. This Agreement is the entire agreement between the parties on remote work, and does not supersede Employee's offer letter or confidentiality agreement.
+
+ACKNOWLEDGED AND AGREED:
+
+LARKFIELD ANALYTICS, INC.
+
+By: /s/ Priya Venkataraman
+Name: Priya Venkataraman
+Title: Chief People Officer
+
+EMPLOYEE:
+
+/s/ Marcus Oyelaran
+Marcus Oyelaran
+Date: May 4, 2026

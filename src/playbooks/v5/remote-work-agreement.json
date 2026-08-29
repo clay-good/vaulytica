@@ -6,24 +6,33 @@
   "match_features": {
     "title_keywords": [
       "remote work agreement",
+      "remote work",
+      "telework",
       "telework agreement",
       "work from home agreement",
       "flexible work arrangement"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "designated work location",
-      "the employee's home office",
+      "work remotely",
+      "work location",
+      "home office",
       "expense reimbursement",
       "company equipment",
-      "work hours and availability",
+      "designated work location",
       "may revoke this arrangement"
     ],
     "negative_features": ["lease of the premises shall commence", "merger", "purchase and sale"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Remote Work Location", "Equipment"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true },
+    "TERM-002": { "skip": true },
+    "TERM-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-WAGE-LAW",
