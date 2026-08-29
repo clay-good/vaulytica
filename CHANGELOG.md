@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.152.0] — 2026-08-29
+
+### Added
+- An OWBPA-compliant separation agreement and general release, the 126th
+  specimen.
+
+### Fixed
+- **EMP-019 demanded the § 626(f)(1)(H) decisional-unit disclosure of an
+  INDIVIDUAL separation.** The statute asks for it only in a group termination
+  program, so every ordinary release was accused of omitting a disclosure the
+  law does not ask it for. The check is gated on a group-termination signal
+  now.
+- **EMP-022 wanted the words "over and above"** from an agreement that makes
+  the same statement structurally: the earned wages are paid "whether or not
+  the Employee signs", and the severance only "if the Employee signs".
+- **The head of a statute's name was reported as an undefined term.** "Age
+  Discrimination in Employment Act" captures as "Age Discrimination", because
+  the Title-Case run stops at the lowercase "in" — and every OWBPA release
+  names that Act.
+- `separation-agreement` no longer demands an IP-ownership allocation, a
+  liability cap, or a termination clause of a document that IS the termination.
+
 ## [9.151.0] — 2026-08-29
 
 ### Added

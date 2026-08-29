@@ -1000,7 +1000,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // TITLE_CASE_PHRASE imposes: "New York Limited Liability Company Law"
       // captures as "New York Limited Liability Company", and the suffix test
       // above cannot see the word that makes it a law. Look at what follows.
-      if (/^\s+(?:Act|Code|Law)\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
+      // The statute noun can sit a couple of words further on: "Age
+      // Discrimination in Employment Act" captures as "Age Discrimination",
+      // because the Title-Case run stops at the lowercase "in". Every OWBPA
+      // release names that Act, and every one reported the fragment as a term
+      // it forgot to define.
+      if (/^[^.;]{0,40}?\b(?:Act|Code|Law)\b/.test(ctx.text.slice(m.index + phrase.length)))
+        continue;
       // The statute's name can also FOLLOW the noun: "Code of Civil
       // Procedure", "Rules of Civil Procedure", "Laws of New York". Every
       // California filing cites the first of those, and "Civil Procedure" was

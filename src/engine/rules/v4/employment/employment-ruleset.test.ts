@@ -606,3 +606,50 @@ describe("a performance improvement plan as one is actually written", () => {
     ).toEqual(["Acknowledgment / signature clause missing"]);
   });
 });
+
+describe("an individual separation agreement is not a group termination", () => {
+  const run = async (id: string, ...paragraphs: string[]) => {
+    const res = await runEngine({
+      rules: EMPLOYMENT_RULES,
+      ctx: withPb(
+        buildContext(["Separation Agreement and General Release", ...paragraphs]),
+        SEPARATION_PB,
+      ),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === id).map((f) => f.title);
+  };
+
+  // § 626(f)(1)(H) applies ONLY to a group termination program, and demanding
+  // the decisional-unit disclosure of an ordinary release accused every one of
+  // omitting a disclosure the statute does not ask it for.
+  it("EMP-019 is never asked of an individual release", async () => {
+    expect(
+      await run(
+        "EMP-019",
+        "The Employee has twenty-one (21) days from receipt to consider this Agreement and seven (7) days after signing to revoke it.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("EMP-019 still fires on a group termination program that discloses nothing", async () => {
+    expect(
+      await run(
+        "EMP-019",
+        "This Agreement is offered as part of a reduction in force affecting the Company's Charlotte operations.",
+      ),
+    ).toEqual(["Group-termination disclosure clause missing"]);
+  });
+
+  // The consideration statement is as often made STRUCTURALLY as in the words
+  // "over and above".
+  it("EMP-022 reads the structural consideration statement", async () => {
+    expect(
+      await run(
+        "EMP-022",
+        "The Employee will be paid all wages earned through the Separation Date and all accrued, unused vacation, whether or not the Employee signs this Agreement.",
+        "If the Employee signs this Agreement and does not revoke it, the Company will pay severance of twenty-six weeks of base salary.",
+      ),
+    ).toEqual([]);
+  });
+});

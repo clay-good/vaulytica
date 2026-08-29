@@ -411,6 +411,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // policy nobody signs was told at `critical` that it had no signature block.
   "oss-compliance.txt": { playbook: "oss-compliance", findings: ["IPL-035"] },
 
+  // An OWBPA-compliant separation agreement and general release. EMP-019
+  // demanded the § 626(f)(1)(H) decisional-unit disclosure of an INDIVIDUAL
+  // separation, which the statute asks only of a group termination program;
+  // EMP-022 wanted the words "over and above" from an agreement that says the
+  // earned wages are paid "whether or not the Employee signs" and the
+  // severance only "if the Employee signs".
+  "separation-agreement.txt": {
+    playbook: "separation-agreement",
+    findings: ["CHOICE-003", "OBLI-005", "PERS-006", "TEMP-002"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

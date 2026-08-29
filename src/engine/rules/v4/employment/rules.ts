@@ -439,6 +439,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-019",
+    version: "1.1.0",
     name: "Group termination — § 626(f)(1)(H) disclosure",
     description:
       "Group terminations (RIF) must include the § 626(f)(1)(H) decisional-unit / job-titles-and-ages disclosure.",
@@ -450,6 +451,13 @@ const SEPARATION_RULES: Rule[] = [
       "29 U.S.C. § 626(f)(1)(H) requires, for group terminations, disclosure of (i) the decisional unit, (ii) eligibility factors, (iii) time limits, and (iv) job titles and ages of those selected and not selected.",
     recommendation:
       "Add 'Group Termination Information' covering the four § 626(f)(1)(H) elements where applicable.",
+    // § 626(f)(1)(H) applies ONLY to a group termination program. An
+    // individual separation agreement is not one, and demanding the
+    // decisional-unit disclosure of one accused every ordinary release of
+    // omitting a disclosure the statute does not ask it for.
+    applicable_if: [
+      /group\s+termination|reduction\s+in\s+force|exit\s+incentive|employment\s+termination\s+program|decisional\s+unit|\blayoff\b|\bRIF\b/i,
+    ],
     present_patterns: [
       /decisional\s+unit/i,
       /(eligibility\s+factor|selection\s+factor)/i,
@@ -533,6 +541,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-022",
+    version: "1.1.0",
     name: "Severance consideration over and above accrued amounts",
     description:
       "Severance must be consideration over and above what employee is otherwise entitled to (§ 626(f)(1)(D) requirement for ADEA waiver).",
@@ -545,8 +554,14 @@ const SEPARATION_RULES: Rule[] = [
       "29 U.S.C. § 626(f)(1)(D) requires that the waiver be supported by consideration in addition to anything the employee is already entitled to.",
     recommendation:
       "Add 'Consideration' clause clarifying severance is over and above accrued wages / vested benefits.",
+    // The substantive statement is as often made STRUCTURALLY: the earned
+    // wages are paid "whether or not the Employee signs", and the severance is
+    // paid only "if the Employee signs". That says the severance is over and
+    // above what is owed, without using the phrase.
     present_patterns: [
       /(over\s+and\s+above|in\s+addition\s+to).{0,80}(entitled|owe|accrued)/is,
+      /(?:paid|receive|pay)[^.;]{0,80}?whether\s+or\s+not[^.;]{0,40}?\bsigns?\b/is,
+      /(?:if|provided\s+that)\s+(?:you|the\s+Employee)\s+signs?[^.;]{0,140}?(?:will\s+pay|shall\s+pay|will\s+receive)/is,
       /consideration.{0,40}(to\s+which\s+(you|the\s+employee)\s+(would|are)\s+not\s+otherwise)/is,
     ],
     default_severity: "warning",

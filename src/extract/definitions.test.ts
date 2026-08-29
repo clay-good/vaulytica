@@ -1727,3 +1727,20 @@ describe("named public bodies and organizations", () => {
     ).toContain("Earnout Consideration");
   });
 });
+
+describe("a statute name whose noun is a few words further on", () => {
+  // "Age Discrimination in Employment Act" captures as "Age Discrimination",
+  // because the Title-Case run stops at the lowercase "in". Every OWBPA
+  // release names that Act, and every one reported the fragment as a term it
+  // forgot to define.
+  it("does not flag the head of a statute's name", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Separation Agreement",
+        "The Employee releases all claims under the Age Discrimination in Employment Act.",
+        "The release does not cover a claim under the Age Discrimination in Employment Act that arises after signing.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Age Discrimination");
+  });
+});
