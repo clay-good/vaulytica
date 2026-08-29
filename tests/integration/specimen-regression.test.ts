@@ -388,6 +388,12 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["EST-060", "OBLI-005"],
   },
 
+  // A joint Rule 26(f) report. It routed to `complaint` — whose distinguishing
+  // phrases were "plaintiff", "jurisdiction", "venue", and "jury", the words of
+  // every commercial contract's own governing-law and dispute clauses — and was
+  // told at `critical` that it demanded no relief and no jury trial.
+  "rule-26f-report.txt": { playbook: "rule-26f-report", findings: [] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

@@ -615,3 +615,50 @@ describe("a recorded instrument's index fields", () => {
     expect(titleCorpus(t, "d.txt")).toContain("QUITCLAIM DEED");
   });
 });
+
+describe("titleCorpus — a caption that arrived as one paragraph", () => {
+  /**
+   * A whole caption can arrive as a single paragraph — which is what stripping
+   * a filing's blank lines does — with the docket and the judge MID-line and
+   * the filing's title after them. Skipping the line because it mentions a
+   * docket threw the title away with it: a Rule 26(f) joint report re-routed to
+   * `litigation-hold`, and a stipulated protective order to `mutual-nda-deep`.
+   */
+  const oneParagraph = (caption: string) =>
+    tree([
+      {
+        heading: "",
+        paragraphs: ["UNITED STATES DISTRICT COURT", caption, "The parties submit this report."],
+      },
+    ]);
+
+  it("reads the title past a mid-line docket and judge", () => {
+    const t = oneParagraph(
+      "RIDGELINE AEROSPACE COMPONENTS, INC., Plaintiff, v. HALLORAN PRECISION CASTINGS, LLC, Defendant. Case No. 1:26-cv-04412 Hon. Marisol Aguirre-Vance JOINT INITIAL STATUS REPORT AND RULE 26(f) DISCOVERY PLAN",
+    );
+    expect(titleCorpus(t, "d.txt")).toContain("JOINT INITIAL STATUS REPORT");
+  });
+
+  it("reads the title past a party block that FOLLOWS the docket", () => {
+    const t = oneParagraph(
+      "ORINDA BIOSCIENCES, INC., Plaintiff, v. Case No. 3:26-cv-01188 CORVUS SYSTEMS CORPORATION and MARISOL ANDRADE, Defendants. STIPULATED PROTECTIVE ORDER",
+    );
+    expect(titleCorpus(t, "d.txt")).toContain("STIPULATED PROTECTIVE ORDER");
+  });
+
+  it("reads past the federal venue line's 'FOR THE' lead", () => {
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "IN THE UNITED STATES DISTRICT COURT",
+          "FOR THE NORTHERN DISTRICT OF ILLINOIS",
+          "EASTERN DIVISION",
+          "JOINT INITIAL STATUS REPORT AND RULE 26(f) DISCOVERY PLAN",
+          "The parties conferred under Rule 26(f).",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "d.txt")).toContain("JOINT INITIAL STATUS REPORT");
+  });
+});

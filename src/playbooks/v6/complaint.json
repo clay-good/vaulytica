@@ -12,13 +12,12 @@
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "plaintiff",
-      "jurisdiction",
-      "venue",
       "wherefore",
       "cause of action",
       "demands judgment",
-      "jury"
+      "complains of",
+      "demand for jury trial",
+      "prays for judgment"
     ],
     "negative_features": [
       "by and between",

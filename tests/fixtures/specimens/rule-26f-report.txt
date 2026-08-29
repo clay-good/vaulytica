@@ -1,0 +1,60 @@
+IN THE UNITED STATES DISTRICT COURT
+FOR THE NORTHERN DISTRICT OF ILLINOIS
+EASTERN DIVISION
+
+RIDGELINE AEROSPACE COMPONENTS, INC.,
+Plaintiff,
+v.
+HALLORAN PRECISION CASTINGS, LLC,
+Defendant.
+
+Case No. 1:26-cv-04412
+Hon. Marisol Aguirre-Vance
+
+JOINT INITIAL STATUS REPORT AND RULE 26(f) DISCOVERY PLAN
+
+The parties conferred under Federal Rule of Civil Procedure 26(f) on May 5, 2026 by videoconference and submit this joint report.
+
+1. NATURE OF THE CASE
+
+Plaintiff alleges that castings supplied by Defendant between 2023 and 2025 failed to conform to AS9100 requirements, and pleads breach of contract and breach of the implied warranty of merchantability. Defendant denies the allegations and asserts that Plaintiff accepted the goods without timely rejection under UCC § 2-602. Jurisdiction is founded on diversity under 28 U.S.C. § 1332; no party contests jurisdiction or venue.
+
+2. INITIAL DISCLOSURES
+
+The parties will exchange Rule 26(a)(1) initial disclosures on or before June 1, 2026.
+
+3. SUBJECTS ON WHICH DISCOVERY MAY BE NEEDED
+
+The negotiation and performance of the supply agreement; Defendant's inspection, testing, and quality records for the lots at issue; Plaintiff's receipt, inspection, and use of the castings; notice of nonconformity and any cure; and damages, including cover and consequential loss.
+
+4. PROPOSED SCHEDULE
+
+Amendments to the pleadings and joinder of additional parties by July 10, 2026. Fact discovery closing December 18, 2026. Plaintiff's expert reports February 5, 2027; Defendant's March 12, 2027; rebuttal April 9, 2027. Expert discovery closing May 14, 2027. Dispositive motions due June 11, 2027. The parties propose a trial-ready date of October 4, 2027.
+
+5. PROPOSED LIMITS
+
+The parties propose the limits set by the Rules: twenty-five interrogatories, ten depositions, and twenty-five requests for admission per side, except that requests for admission directed solely to the genuineness of documents are unlimited. No party seeks to alter the presumptive seven-hour deposition limit at this time.
+
+6. ELECTRONICALLY STORED INFORMATION
+
+The parties have each suspended routine deletion of potentially relevant electronically stored information and have issued litigation holds. They will exchange custodian and data-source lists by June 15, 2026 and will negotiate search terms thereafter. Production will be in single-page TIFF with document-level extracted text, a Concordance-delimited load file, and the metadata fields listed in the parties' agreed ESI protocol; spreadsheets, audio, and video will be produced natively. Neither party presently seeks discovery of backup tapes or of legacy systems, and each reserves the right to move for cost-shifting under Rule 26(b)(2)(B) if such discovery is later sought.
+
+7. PRIVILEGE AND PROTECTED MATERIAL
+
+The parties will submit a stipulated protective order by June 15, 2026 and request entry of an order under Federal Rule of Evidence 502(d) providing that the production of privileged or protected material does not waive the privilege in this or any other proceeding. Privilege logs will be exchanged within thirty days after each production, and communications with counsel dated after the filing of the complaint need not be logged.
+
+8. SETTLEMENT AND ALTERNATIVE DISPUTE RESOLUTION
+
+The parties exchanged settlement positions on April 28, 2026 and did not resolve the case. They request a settlement conference before the assigned magistrate judge after the close of fact discovery. The parties do not consent to proceed before a magistrate judge for all purposes at this time.
+
+9. OTHER MATTERS
+
+No party requests a change to the disclosure or discovery requirements of the Rules or the Court's standing order.
+
+Dated: May 12, 2026
+
+/s/ Adaora Okonkwo
+Adaora Okonkwo, Counsel for Plaintiff
+
+/s/ Bettina Achterberg
+Bettina Achterberg, Counsel for Defendant

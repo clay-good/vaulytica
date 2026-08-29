@@ -568,11 +568,18 @@ const RULE_26F = pack("rule-26f-report", C, [
   },
   {
     id: "DISC-035",
+    ver: "1.1.0",
     name: "Settlement and ADR posture",
     cite: frcp("26(f)(2)", "conference of the parties — discussing settlement"),
     pat: [
       /(settle|settlement|mediat|adr|alternative\s+dispute)/i,
-      /(discussed|prospects?|referral|willing|premature)/i,
+      // A report states its posture by what the parties DID and what they ask
+      // the court for: "the parties exchanged settlement positions on April 28
+      // and did not resolve the case … they request a settlement conference
+      // before the assigned magistrate judge". None of the words below appears
+      // in that, and the section is headed "SETTLEMENT AND ALTERNATIVE DISPUTE
+      // RESOLUTION".
+      /(discussed|discussions?|prospects?|referral|refer(?:red)?\s+to|willing|premature|exchanged|conferred|request(?:s|ed)?\s+a[^.;]{0,40}?(?:conference|mediation)|(?:did\s+not|have\s+not)\s+(?:resolve|settle))/i,
     ],
     all: true,
     why: "Rule 26(f)(2) requires the parties to discuss settlement prospects, and most districts require the report to state the ADR posture.",

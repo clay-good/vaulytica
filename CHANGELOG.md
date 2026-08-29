@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.149.0] — 2026-08-29
+
+### Added
+- A joint Rule 26(f) report and discovery plan, the 121st specimen.
+
+### Fixed
+- **A Rule 26(f) joint report routed to `complaint`** and was told at
+  `critical` that it demanded no relief and no jury trial. Four of
+  `complaint`'s seven distinguishing phrases were "plaintiff",
+  "jurisdiction", "venue", and "jury" — the words of every commercial
+  contract's own governing-law and dispute clauses, and of every filing in
+  every case. They are replaced by phrases only a complaint carries:
+  "wherefore", "cause of action", "complains of", "demand for jury trial",
+  "prays for judgment".
+- **A one-paragraph caption threw its filing's title away.** Stripping a
+  filing's blank lines merges the whole caption into one paragraph, with the
+  docket and the judge MID-line and the title after them — and the walk skipped
+  the line because it mentioned a docket. The report re-routed to
+  `litigation-hold` and a stipulated protective order to `mutual-nda-deep`. The
+  walk now reads past the docket, the judge, and a party-role designation,
+  wherever each sits.
+- **The federal venue line's "FOR THE" lead** — "FOR THE NORTHERN DISTRICT OF
+  ILLINOIS" — was unreadable to a pattern that allowed one word before
+  "district of".
+- `DISC-035` wanted "discussed" or "prospects" from a report that states its
+  posture by what the parties DID: "exchanged settlement positions … did not
+  resolve the case … request a settlement conference".
+
 ## [9.148.0] — 2026-08-29
 
 ### Changed

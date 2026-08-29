@@ -48,7 +48,11 @@ const KNOWN_BROAD = new Map<string, string>([
   // The party's NAME in the instrument, not a topic word.
   ["principal", "the grantor of a power of attorney and the obligee of a bond are 'the Principal'"],
   // Pleading elements and defined roles, argued in the document that owns them.
-  ["jurisdiction", "a complaint must plead it; every contract also names one"],
+  // "jurisdiction" came off `complaint` in 9.149.0, with "plaintiff", "venue",
+  // and "jury": all four are the words of every commercial contract's own
+  // governing-law and dispute clauses, and a Rule 26(f) joint report routed to
+  // `complaint` on them and was told at `critical` that it demanded no relief
+  // and no jury.
   ["consent", "the operative act of a cookie notice"],
   ["purpose", "the operative disclosure of a PHI authorization"],
   ["exclusive", "the operative grant word of a copyright license"],

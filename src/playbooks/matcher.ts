@@ -275,14 +275,19 @@ const CAPTION_COURT = /^[^.]{0,160}\bcourt\b[^.]{0,80}$/i;
 // the matcher "v." as its title.
 const CAPTION_ROLE =
   /^\s*(?:v\.|vs\.|-v-|plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?|cross-?(?:claimants?|defendants?)|third-?party\s+(?:plaintiffs?|defendants?))(?![A-Za-z])[\s,.:;)-]*$/i;
-// The court block's venue line, which STATE practice writes half a dozen
+// The court block's venue line. Federal practice puts a "FOR THE" in front of
+// it — "FOR THE NORTHERN DISTRICT OF ILLINOIS" — which the bare one-word lead
+// could not read, so a Rule 26(f) joint report re-routed to `litigation-hold`
+// the moment its court block arrived as three paragraphs instead of one.
+//
+// STATE practice writes it half a dozen
 // ways: "IN AND FOR KING COUNTY", "COUNTY OF LOS ANGELES", "PARISH OF
 // ORLEANS", "THIRD JUDICIAL DISTRICT". None of them names a "court" and none
 // is a party line, so the walk stopped on the venue and handed the matcher a
 // county as the filing's title — which is exactly what a Washington set of
 // interrogatories does the moment each of its lines is its own paragraph.
 const CAPTION_COURT_DIVISION =
-  /^\s*(?:[A-Za-z]+\s+)?district\s+of\b|\bdivision\s*$|^\s*in\s+and\s+for\b|^\s*(?:the\s+)?(?:county|parish|borough|city|state|commonwealth)\s+of\b|\b(?:county|parish)\s*$|^\s*[A-Za-z]+\s+judicial\s+(?:district|circuit)\b/i;
+  /^\s*(?:for\s+the\s+)?(?:[A-Za-z]+\s+){0,3}(?:district|circuit)\s+of\b|\bdivision\s*$|^\s*in\s+and\s+for\b|^\s*(?:the\s+)?(?:county|parish|borough|city|state|commonwealth)\s+of\b|\b(?:county|parish)\s*$|^\s*[A-Za-z]+\s+judicial\s+(?:district|circuit)\b/i;
 const CAPTION_DOCKET =
   /\b(?:case|civil\s+action|index|docket|cause|file)\s+no\b|\bhon\.|\bjudge\b/i;
 /**
@@ -296,6 +301,34 @@ const CAPTION_DOCKET =
  * title beginning with the word "No" is untouched.
  */
 const CAPTION_BARE_DOCKET = /^\s*nos?\.\s*\d/i;
+/**
+ * A party-role designation closing a side of the caption — ", Defendants." —
+ * wherever it sits in a one-paragraph caption.
+ */
+const ROLE_DESIGNATION =
+  /,?\s*(?:plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?)\s*[.,;]/i;
+
+/**
+ * The docket number or the judge's line, wherever it sits.
+ *
+ * A judge's name is Title Case and a filing's title is not, so the name run
+ * requires a lowercase second letter: without it, "Hon. Marisol Aguirre-Vance
+ * JOINT INITIAL STATUS" was swallowed whole and the title lost its first three
+ * words. Splitting on it
+ * leaves the filing's title as the last segment when a whole caption arrives
+ * as one paragraph.
+ */
+const DOCKET_LINE = /(?:(?:case|civil\s+action|index|docket|cause|file)\s+)?nos?\.\s*\S+/i;
+
+/**
+ * The judge's line. Case-SENSITIVE, and deliberately: the name run is
+ * `[A-Z][a-z]` so it stops at a filing's ALL-CAPS title. Under the `i` flag
+ * `[A-Z]` matches a lowercase letter too, so "Hon. Marisol Aguirre-Vance
+ * JOINT INITIAL" was swallowed whole and the title lost its first two words.
+ */
+const JUDGE_LINE =
+  /[Hh]on(?:orable)?\.?\s+(?:[A-Z][a-z][\w.'’-]*\s*){1,4}|[Mm]agistrate\s+[Jj]udge\s+(?:[A-Z][a-z][\w.'’-]*\s*){1,4}/;
+
 /** A docket number trailing the party block on the same line. */
 const TRAILING_DOCKET =
   /\s*\b(?:(?:case|civil\s+action|index|docket|cause|file)\s+)?nos?\.\s*\d[\w.-]*(?:\s+[A-Z0-9-]{1,8})*\s*$/i;
@@ -319,6 +352,31 @@ function captionTitle(paragraphs: readonly string[]): string {
   for (const text of paragraphs.slice(1)) {
     if (text.length === 0) continue;
     if (CAPTION_ROLE.test(text)) continue;
+    // A caption that arrived as ONE paragraph carries the docket and the judge
+    // MID-line, with the filing's title after them: "… Defendant. Case No.
+    // 1:26-cv-04412 Hon. Marisol Aguirre-Vance JOINT INITIAL STATUS REPORT AND
+    // RULE 26(f) DISCOVERY PLAN". Skipping the whole line because it mentions
+    // a docket threw the title away with it, and a Rule 26(f) report re-routed
+    // to `litigation-hold` the moment its blank lines went.
+    // Split on the docket AND on a party-role designation: a one-paragraph
+    // caption can carry the parties on either side of the docket, and taking
+    // only what follows the docket handed the matcher a defendant's name.
+    const afterDocket =
+      (text.split(DOCKET_LINE).pop() ?? "")
+        .split(JUDGE_LINE)
+        .pop()
+        ?.split(ROLE_DESIGNATION)
+        .pop()
+        ?.trim() ?? "";
+    if (
+      afterDocket !== text &&
+      afterDocket.length >= 12 &&
+      /^[A-Z]/.test(afterDocket) &&
+      !CAPTION_ROLE.test(afterDocket) &&
+      !afterDocket.endsWith(",")
+    ) {
+      return afterDocket.slice(0, TITLE_PREAMBLE_CHARS);
+    }
     if (CAPTION_DOCKET.test(text) || CAPTION_BARE_DOCKET.test(text)) continue;
     // The docket sits on the same LINE as the party block whenever the ingest
     // does not separate them — "… LLC, Defendant. No. 26-2-04188-1 SEA" — so
