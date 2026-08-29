@@ -40,6 +40,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A Regulation D private placement memorandum. Clean: the whole
+  // REG-025..032 pack is silent on a memorandum that covers every column —
+  // the § 4(a)(2) / Rule 506(b) legend, the no-approval legend, use of
+  // proceeds, risk factors, manager compensation, transfer restrictions,
+  // suitability standards, and the Rule 502(b) investor-access undertaking.
+  // REG-040 is the standing scope disclosure, not a defect in the document.
+  "ppm-narrative.txt": { playbook: "ppm-narrative", findings: ["OBLI-005", "REG-040"] },
   // An omnibus equity incentive plan. Clean: the whole EQT-101..114 plan pack
   // is silent on a plan that covers every column — share reserve, evergreen,
   // capitalization adjustment, the no-repricing covenant, § 409A, the § 422(d)
