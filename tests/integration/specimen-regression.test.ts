@@ -607,7 +607,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // stated no date of separation. Nobody is separating.
   "prenup.txt": {
     playbook: "prenuptial-agreement",
-    findings: ["EST-060", "STRUCT-006", "STRUCT-016"],
+    findings: ["EST-060", "STRUCT-016"],
   },
 
   // An employment offer letter, titled in its "Re:" line as an "Offer of

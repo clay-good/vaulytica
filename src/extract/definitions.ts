@@ -678,6 +678,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   // Pass 4: undefined Title-Case phrases.
   const definedNames = new Set([...definitions.keys()]);
   const undefinedHits = new Map<string, DocPosition[]>();
+  /**
+   * Title-Case phrases the document SIGNS. A phrase introduced by a signature
+   * label is a person, and it is a person everywhere else it appears too — the
+   * preamble, the notary acknowledgment, the body — so the term is dropped
+   * entirely rather than the signed occurrence alone.
+   */
+  const signedNames = new Set<string>();
+  /** The candidate key a phrase is recorded under (a leading article dropped). */
+  const canonicalOf = (phrase: string): string => {
+    const w = phrase.split(/\s+/);
+    return TITLE_CASE_LEADING_STOPWORDS.has(w[0]!) && w.length > 2 ? w.slice(1).join(" ") : phrase;
+  };
   const caption = captionText(tree);
   // Names of natural persons who sign or appear before a notary — collected
   // from conformed-signature lines ("/s/ Nora Castellanos") and notarial
@@ -996,10 +1008,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // defined term ("Marisol Thibodeaux", "Base Rent") — but the CONTEXT is:
       // a defined term is never introduced by a signature label.
       //
-      // Skipping the occurrence rather than the term means a name that also
-      // appears in the body still reaches the two-occurrence threshold on its
-      // body uses, and reports.
+      // A phrase the document SIGNS is a person, wherever else it appears: a
+      // trust names its settlor in the preamble, again under the conformed
+      // signature, and once more in the notary acknowledgment, and none of
+      // those three is a term the drafter forgot to define. So the whole term
+      // is dropped, not just the signed occurrence.
       if (SIGNATURE_LABEL_BEFORE.test(ctx.text.slice(Math.max(0, m.index - 24), m.index))) {
+        signedNames.add(canonicalOf(phrase));
         continue;
       }
       let canonical = phrase;
@@ -1014,6 +1029,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     }
   });
   const undefined_capitalized = [...undefinedHits.entries()]
+    .filter(([term]) => !signedNames.has(term))
     .filter(([, positions]) => positions.length >= 2)
     .map(([term, positions]) => ({ term, positions }))
     .sort((a, b) => a.term.localeCompare(b.term, "en"));

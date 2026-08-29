@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.126.0] — 2026-08-28
+
+### Fixed
+- **A phrase the document SIGNS is a person wherever else it appears.** A trust
+  names its settlor three times — in the preamble, under the conformed
+  signature, and in the notary acknowledgment — and none of the three is a term
+  the drafter forgot to define. 9.125.0 skipped the signed OCCURRENCE, which
+  left the other two to reach the two-occurrence threshold on their own; the
+  whole term is dropped now. One more specimen came clean.
+
 ## [9.125.0] — 2026-08-28
 
 ### Fixed
