@@ -101,6 +101,50 @@ describe("TEMP-011", () => {
 
 Bump the count assertion in [`src/engine/rules/all-rules.test.ts`](../src/engine/rules/all-rules.test.ts) by 1.
 
+### The test that matters most is the SILENT one
+
+"Does it fire on a bad document" is the easy half. The half that costs users
+their trust is the other one: **write the clause a compliant document carries,
+and check the rule says nothing.** Every false accusation this catalog has ever
+shipped was a rule that fired on drafting a careful lawyer would call correct.
+
+Three questions to ask before opening the PR, each of which has caught real
+defects:
+
+1. **Would a compliant document contain the words you are matching?** A rule
+   asking a background-check disclosure to describe itself as "stand-alone"
+   asks for something no lawful form says — the form simply IS one. A rule
+   asking a quitclaim deed for "hereby quitclaims" asks for a word the statutory
+   short form does not contain. If the required text is a claim ABOUT the
+   document rather than a term OF it, the rule cannot be satisfied.
+2. **Does your own `recommendation` / `fix` text satisfy your own patterns?**
+   It is prose rather than a clause, so a miss is not proof — but it is the
+   cheapest signal there is, and both examples above failed it.
+3. **Write the clause four ways.** Put the numeral in a parenthetical, the verb
+   in a series, the deadline at the front of the sentence, the prohibition
+   inside an enumerated list, and the actor in the second person. Then check the
+   rule is silent for all five.
+
+### Conjunctions need one more pass
+
+Setting `require_all_present` (v4) or `all: true` (v5/v6) turns a pattern list
+from SYNONYMS into PILLARS that must all be met. Two failure modes:
+
+- **Alternative spellings, conjoined.** Three ways of saying one fact are not
+  three facts. A drafter writes it one way. `GOV-071` demanded "501(c)(3)" AND
+  "tax-exempt purpose" AND "charitable purposes" from a recital that carries
+  one of them.
+- **A pillar that is the family's own title.** `transition services` in the
+  `transition-services-agreement` pack can never fail, so the conjunction
+  silently collapses to its other pillars — and repairing the conjunction by
+  OR-ing that pillar in makes the whole rule vacuous instead.
+  `v34-title-vacuity.test.ts` catches this; re-derive it after any AND→OR
+  change.
+
+When you repair a conjunction, add a row to
+[`tests/integration/compliant-conjunctions.test.ts`](../tests/integration/compliant-conjunctions.test.ts)
+carrying the compliant clause, so the repair stays repaired.
+
 ## 5. Update playbooks (optional)
 
 If your rule should fire selectively for some contract types, add per-playbook overrides in the relevant JSON under [`playbooks/`](../playbooks/):
@@ -131,6 +175,8 @@ The CI in [deploy.yml](../.github/workflows/deploy.yml) re-runs all three on eve
 - [ ] Imported + listed in `src/engine/rules/index.ts`
 - [ ] `dkb_citations` references at least one existing DKB entry
 - [ ] Positive + negative tests in `<RULE-ID>.test.ts`
+- [ ] A COMPLIANT clause, written the way a careful drafter writes it, and the rule is silent on it
+- [ ] If the rule is a conjunction: no pillar is a word from the family's own title, and no two pillars are spellings of one fact
 - [ ] `all-rules.test.ts` rule count bumped
 - [ ] `npm run lint && npm run typecheck && npm test` all pass locally
 - [ ] PR description explains the legal basis for the rule (statute, regulation, or named drafting standard)
