@@ -47,12 +47,27 @@ let churned = 0;
 for (const file of changed) {
   let before;
   try {
-    before = execFileSync("git", ["show", `${ref}:${file}`], { encoding: "utf8" });
+    before = execFileSync("git", ["show", `${ref}:${file}`], {
+      encoding: "utf8",
+      // A file that is NEW at `ref` makes git print "fatal: …" to
+      // stderr; that is the expected path here, not an error to show.
+      stdio: ["ignore", "pipe", "ignore"],
+    });
   } catch {
     continue; // new file
   }
   const a = findingCounts(before);
-  const b = findingCounts(readFileSync(file, "utf8"));
+  let b;
+  try {
+    b = findingCounts(readFileSync(file, "utf8"));
+  } catch {
+    // DELETED, or renamed away. `git diff --name-only` lists it, and reading
+    // it threw — which crashed the whole report and hid every other fixture's
+    // churn behind a stack trace. A deleted golden has no finding set to diff.
+    console.log(`### ${file}\n   (deleted)`);
+    churned += 1;
+    continue;
+  }
   if (!a || !b) continue;
   const keys = [...new Set([...a.keys(), ...b.keys()])].sort();
   const removed = keys.filter((k) => (a.get(k) ?? 0) > (b.get(k) ?? 0));
