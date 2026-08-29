@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.213.0] — 2026-08-29
+
+### Added
+- **`tests/integration/inert-case-anchor.test.ts`** — a permanent guard for a
+  defect this codebase has grown five separate times: **an `[A-Z]` inside a
+  case-INSENSITIVE regex is inert.** `/"([A-Z][\w\s]{1,80}?)"\s*means\b/gi`
+  reads as "a quoted term that starts with a capital" and is not.
+
+  The flag is usually load-bearing — the defining verb, the marker, or the
+  document itself varies in case — so the fix is normally an explicit
+  `/^[A-Z]/` check at the consumer rather than dropping the flag. Every
+  remaining instance is declared with the reason it is safe, and a second
+  assertion fails if a declared entry stops applying, so the list cannot
+  outlive the code.
+
+### Fixed
+- **A d/b/a capture could read "doing business as A REGIONAL CARRIER" as an
+  operating NAME.** Same defect, same repair.
+
 ## [9.212.0] — 2026-08-29
 
 ### Fixed

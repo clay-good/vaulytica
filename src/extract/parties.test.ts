@@ -423,3 +423,27 @@ describe("a role parenthetical behind a QUALIFIER", () => {
     expect(r.some((x) => x.endsWith("|Services"))).toBe(false);
   });
 });
+
+describe("a d/b/a name must be CAPITALIZED", () => {
+  // DBA_RE needs its `i` flag for the case-varying "d/b/a" marker, which also
+  // weakens the capture's leading `[A-Z]` to "any letter".
+  it("does not register a lowercase phrase as an operating name", () => {
+    const parties = extractParties(
+      buildTree([
+        "Agreement",
+        'This Agreement is made between Halcyon Freight Systems, LLC, a Delaware limited liability company doing business as a regional carrier in the Midwest ("Carrier"), and Beta Corp., a New York corporation ("Shipper").',
+      ]),
+    );
+    expect(parties.some((p) => p.dba)).toBe(false);
+  });
+
+  it("still registers a real operating name", () => {
+    const parties = extractParties(
+      buildTree([
+        "Agreement",
+        'This Agreement is made between Halcyon Freight Systems, LLC, a Delaware limited liability company doing business as Halcyon Logistics ("Carrier"), and Beta Corp., a New York corporation ("Shipper").',
+      ]),
+    );
+    expect(parties.some((p) => p.dba === "Halcyon Logistics")).toBe(true);
+  });
+});

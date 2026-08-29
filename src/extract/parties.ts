@@ -422,7 +422,11 @@ export function extractParties(tree: DocumentTree): Party[] {
     let dm: RegExpExecArray | null;
     while ((dm = DBA_RE.exec(text)) !== null) {
       const dba = cleanPartyName(dm[1] ?? "");
-      if (!dba) continue;
+      // The pattern needs its `i` flag for the case-varying "d/b/a" marker,
+      // which also weakens the capture's leading `[A-Z]` to "any letter" — so
+      // "doing business as a regional carrier" would register "a regional
+      // carrier" as an operating NAME. Restore the anchor explicitly.
+      if (!dba || !/^[A-Z]/.test(dba)) continue;
       // Attach to the party whose declaration ends nearest before the
       // d/b/a phrase (the legal name it operates under).
       const before = text.slice(0, dm.index);
