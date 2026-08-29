@@ -858,6 +858,7 @@ const MERGER_RULES: Rule[] = [
 const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   presence({
     id: "MNA-039",
+    version: "1.1.0",
     name: "Disclosure-schedule introduction / general notes",
     description:
       "Disclosure schedules should have an introduction reciting which reps they qualify and the scope rules (cross-section qualification, immateriality).",
@@ -948,7 +949,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-042",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Materiality / dollar-threshold-conformity disclaimer",
     description:
       "Schedules should disclaim that listing of items above a stated threshold implies materiality.",

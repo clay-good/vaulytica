@@ -209,11 +209,16 @@ const SMS = pack("sms-consent-disclosure", C, [
     id: "PRV-113",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Express written consent language",
     cite: cfr("47", "64.1200(f)(9)", "TCPA rules — prior express written consent"),
     pat: [
-      /(express\s+written\s+consent|i\s+(agree|consent)\s+to\s+receive)/i,
+      // Consumer messaging terms address the reader in the SECOND person —
+      // "you consent to receive recurring automated marketing text messages" —
+      // and the first-person form belongs on a paper sign-up sheet. A program
+      // whose consent sentence is the CTIA-standard one was reported as
+      // carrying no express-consent language, at `critical`.
+      /(express(?:ly)?\s+written\s+consent|(?:i|you)\s+(?:hereby\s+)?(?:agree|consent)\s+to\s+receive|consent\s+to\s+receive)/i,
       /(text\s+messages?|sms|calls?\s+(from|by)|autodial)/i,
     ],
     all: true,
@@ -236,6 +241,7 @@ const SMS = pack("sms-consent-disclosure", C, [
   },
   {
     id: "PRV-115",
+    ver: "1.1.0",
     name: "Autodialer and prerecorded disclosure",
     cite: usc(
       "47",
@@ -243,8 +249,11 @@ const SMS = pack("sms-consent-disclosure", C, [
       "Telephone Consumer Protection Act — restrictions on the use of telephone equipment",
     ),
     pat: [
-      /(autodial|automatic\s+telephone\s+dialing|prerecorded|artificial\s+voice)/i,
-      /(may\s+be\s+(used|sent)|messages?\s+(may\s+be\s+)?sent\s+using)/i,
+      // "Automated" is the word an SMS program uses — "recurring automated
+      // marketing text messages" is the CTIA-standard phrasing, and after
+      // Facebook v. Duguid almost nobody writes "autodialer" about texting.
+      /(autodial|automatic\s+telephone\s+dialing|prerecorded|artificial\s+voice|automated\s+(?:marketing\s+)?(?:text|message|call))/i,
+      /(may\s+be\s+(used|sent)|messages?\s+(may\s+be\s+)?sent\s+(?:using|by|via|through)|receive[^.]{0,40}?(?:automated|autodialed|prerecorded))/i,
     ],
     why: "The consent must disclose that the messages may be delivered using an automatic telephone dialing system or a prerecorded voice; without the disclosure, consent to the technology is not established.",
     fix: "Disclose that messages or calls may be delivered using automated technology or a prerecorded or artificial voice.",

@@ -6,6 +6,10 @@
   "match_features": {
     "title_keywords": [
       "sms consent",
+      "sms terms",
+      "sms program",
+      "text message program",
+      "mobile messaging",
       "text message consent",
       "telemarketing consent",
       "mobile messaging terms"
@@ -13,8 +17,9 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "message and data rates may apply",
-      "reply stop to opt out",
-      "consent is not a condition of purchase",
+      "reply stop",
+      "reply help",
+      "consent is not a condition",
       "autodialed",
       "prerecorded",
       "message frequency"
@@ -46,6 +51,9 @@
       "skip": true
     },
     "STRUCT-002": {
+      "skip": true
+    },
+    "STRUCT-003": {
       "skip": true
     },
     "STRUCT-004": {

@@ -473,6 +473,7 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   presence({
     id: "REG-022",
+    version: "1.1.0",
     name: "Cybersecurity / data-breach risk factor",
     description:
       "Risk factors should address cybersecurity / data-breach risk (per 2023 cybersecurity disclosure rules).",

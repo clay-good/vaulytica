@@ -277,6 +277,39 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "RISK-011"],
   },
 
+  // An FCRA stand-alone disclosure and authorization. Two of its family's
+  // columns could not be satisfied by a COMPLIANT document: one required the
+  // disclosure to describe itself as stand-alone, and the other required it to
+  // say it carries no liability waiver. A lawful form says neither; it simply
+  // carries neither.
+  "background-check-disclosure.txt": { playbook: "background-check-disclosure", findings: [] },
+
+  // A CTIA-standard SMS program disclosure. Its family's title keywords and
+  // three of its six distinguishing phrases were spellings nobody uses, so it
+  // scored 0.4 and fell to `generic-fallback`; PRV-113 then wanted the
+  // first-person "I agree to receive" from a page that addresses the reader as
+  // "you".
+  "sms-consent-disclosure.txt": { playbook: "sms-consent-disclosure", findings: [] },
+
+  // An ISO additional-insured endorsement. "declarations" sat in its family's
+  // NEGATIVE features, and an endorsement references the Declarations by
+  // definition, so it routed to `coi`. Its references into the policy's own
+  // divisions — "Section II — Who Is An Insured is amended" — read as broken
+  // internal cross-references.
+  "insurance-endorsement.txt": {
+    playbook: "insurance-endorsement",
+    findings: ["INS-012"],
+  },
+
+  // A tenant estoppel certificate and a UK cookie notice: both already clean,
+  // pinned so they stay that way.
+  "estoppel-certificate.txt": {
+    playbook: "estoppel-certificate",
+    findings: ["STRUCT-016", "STRUCT-018"],
+  },
+
+  "cookie-notice.txt": { playbook: "cookie-notice", findings: ["PRV-003"] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

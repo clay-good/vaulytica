@@ -705,6 +705,7 @@ const WARN = pack("warn-notice", C, [
 const FCRA = pack("background-check-disclosure", C, [
   {
     id: "EMP-148",
+    ver: "1.1.0",
     name: "Stand-alone disclosure with no extraneous terms",
     cite: usc(
       "15",
@@ -712,7 +713,13 @@ const FCRA = pack("background-check-disclosure", C, [
       "Fair Credit Reporting Act § 604(b) — conditions for furnishing and using consumer reports for employment purposes",
     ),
     pat: [
-      /(clear\s+and\s+conspicuous\s+(written\s+)?disclosure|in\s+a\s+document\s+that\s+consists\s+solely|stand-?alone\s+(disclosure|document)|separate\s+document\s+(containing|consisting))/i,
+      // A COMPLIANT disclosure says none of these: it does not describe itself
+      // as stand-alone, it simply IS one, carrying nothing but the § 604(b)
+      // disclosure statement. Requiring the meta-claim made the column
+      // unsatisfiable by the very document it exists to bless — the rule's own
+      // `fix` text does not satisfy it either. The disclosure STATEMENT is
+      // what a compliant document carries, so that is what is recognized.
+      /(clear\s+and\s+conspicuous\s+(written\s+)?disclosure|in\s+a\s+document\s+that\s+consists\s+solely|stand-?alone\s+(disclosure|document)|separate\s+document\s+(containing|consisting)|consumer\s+report(?:ing\s+agency)?[^.]{0,120}?\bfor\s+employment\s+purposes|for\s+employment\s+purposes[^.]{0,120}?\bconsumer\s+report)/i,
       /(consumer\s+report|background\s+(check|report))/i,
     ],
     all: true,
@@ -722,7 +729,20 @@ const FCRA = pack("background-check-disclosure", C, [
   },
   {
     id: "EMP-149",
-    name: "No liability waiver embedded in the disclosure",
+    // 1.1.0 — GATED on a waiver actually being present. As an ungated presence
+    // column it could not be satisfied by a compliant document: one that
+    // carries no release says nothing about carrying none, so a lawful
+    // stand-alone disclosure reported at `critical` that it had an embedded
+    // waiver problem. The gate turns it into what it always meant — a document
+    // that DOES release the employer or the agency fails, and one that does
+    // not is never asked.
+    ver: "1.1.0",
+    name: "Disclosure free of an embedded liability waiver",
+    missing:
+      "This disclosure contains a release or waiver of liability. FCRA § 604(b)(2)(A)(i) requires the disclosure to be in a document consisting solely of the disclosure, and an embedded release defeats that outright.",
+    when: [
+      /(?:releases?|waives?|discharges?)\b[^.]{0,90}?\b(?:from\s+)?(?:any|all|the)\b[^.]{0,90}?\b(?:liabilit|claims?|causes?\s+of\s+action)/i,
+    ],
     cite: usc("15", "1681b", "FCRA § 604(b)(2) — stand-alone disclosure requirement"),
     pat: [
       /(no\s+(liability\s+)?(waiver|release)|does\s+not\s+(contain|include)\s+(a\s+)?(waiver|release))/i,

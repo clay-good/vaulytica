@@ -100,6 +100,17 @@ const EXTERNAL_TRAILER_RE =
 // the tile it substitutes reported a broken internal reference to a "Section
 // 09" no change order has.
 const SPECIFICATION_SECTION_RE = /^\s+\d{2}(?:\s+\d{2}){1,2}\b/;
+
+// A division of ANOTHER instrument, named by the amendment that operates on
+// it. An insurance endorsement writes "Section II — Who Is An Insured is
+// amended to include as an additional insured …" and "the following is added
+// to Section III — Limits Of Insurance": both number against the POLICY, not
+// against the endorsement, which has no sections of its own. An ISO
+// additional-insured endorsement reported two broken internal references.
+const AMENDED_DIVISION_AFTER_RE =
+  /^\s*[—–-]\s*[A-Z][^.;]{0,60}?\s+(?:is|are)\s+(?:hereby\s+)?(?:amended|added|deleted|replaced|revised|restated|modified)\b/;
+const AMENDED_DIVISION_BEFORE_RE =
+  /\b(?:added|amended|deleted|replaced|revised|restated|modified)\s+(?:to|in|into)\s+$/i;
 const EXTERNAL_LEADER_RE =
   /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$|\bTitle\s+\d+[A-Za-z]?\s*,\s*$/;
 
@@ -366,6 +377,8 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       if (
         EXTERNAL_TRAILER_RE.test(after) ||
         SPECIFICATION_SECTION_RE.test(after) ||
+        AMENDED_DIVISION_AFTER_RE.test(after) ||
+        AMENDED_DIVISION_BEFORE_RE.test(before) ||
         EXTERNAL_INSTRUMENT_RE.test(after) ||
         EXTERNAL_LEADER_RE.test(before) ||
         EXTERNAL_LEADING_RE.test(before) ||

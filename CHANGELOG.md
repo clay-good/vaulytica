@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.132.0] — 2026-08-29
+
+### Added
+- **Five specimens**: an FCRA stand-alone disclosure and authorization, a
+  CTIA-standard SMS program disclosure, an ISO additional-insured endorsement,
+  a tenant estoppel certificate, and a UK cookie notice. One hundred and nine.
+
+### Fixed
+- **Two FCRA columns could not be satisfied by a COMPLIANT document.** A lawful
+  stand-alone disclosure does not describe itself as stand-alone (EMP-148) and
+  does not announce that it carries no liability waiver (EMP-149) — it simply
+  carries neither. Both reported at `critical` on the very form they exist to
+  bless, and EMP-148's own recommendation failed its own patterns. EMP-148 now
+  reads the § 604(b) disclosure statement itself; EMP-149 is gated on a release
+  actually being present, which is what it always meant.
+- **An SMS program disclosure fell to `generic-fallback`.** Its family's title
+  keywords and three of its six distinguishing phrases were spellings nobody
+  uses — "reply stop to opt out" for "Reply STOP to cancel", "consent is not a
+  condition of purchase" for "Consent is not a condition of any purchase".
+  PRV-113 then wanted the first-person "I agree to receive" from a page that
+  addresses the reader as "you", and PRV-115 wanted "autodialer" from a program
+  that says "recurring automated marketing text messages" — the CTIA-standard
+  wording, and the word almost everyone uses after Facebook v. Duguid.
+- **An ISO additional-insured endorsement routed to `coi`** because
+  "declarations" sat in its own family's NEGATIVE features, and an endorsement
+  references the Declarations by definition. Its references into the policy's
+  divisions — "Section II — Who Is An Insured is amended", "added to Section
+  III — Limits Of Insurance" — read as broken internal cross-references; both
+  number against the policy, not against the endorsement, which has no sections
+  of its own.
+
 ## [9.131.0] — 2026-08-29
 
 ### Added

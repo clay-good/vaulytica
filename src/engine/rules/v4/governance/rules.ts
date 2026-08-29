@@ -1535,6 +1535,7 @@ const PARTNERSHIP_RULES: Rule[] = [
 const NONPROFIT_RULES: Rule[] = [
   presence({
     id: "GOV-071",
+    version: "1.1.0",
     name: "501(c)(3) exempt purpose recital",
     description:
       "Nonprofit bylaws should recite the § 501(c)(3) exempt purposes (charitable, religious, educational, scientific, etc.).",

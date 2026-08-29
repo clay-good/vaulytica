@@ -959,7 +959,7 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-040",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Measurable performance goals",
     description: "PIP must include measurable performance goals.",
     citation: eeocGuidance(),
@@ -1046,7 +1046,7 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-044",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Acknowledgment and signature",
     description:
       "PIP should include employee acknowledgment with a 'signing does not equal agreement' qualifier.",

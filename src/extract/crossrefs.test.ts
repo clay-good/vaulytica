@@ -977,3 +977,31 @@ describe("run-in section headings anywhere in a paragraph", () => {
     ).toEqual(["Section 9.4", "Section 9.5"]);
   });
 });
+
+describe("a division of another instrument, named by the amendment on it", () => {
+  // An insurance endorsement writes "Section II — Who Is An Insured is amended
+  // to include as an additional insured …" and "the following is added to
+  // Section III — Limits Of Insurance": both number against the POLICY, not
+  // against the endorsement, which has no sections of its own. An ISO
+  // additional-insured endorsement reported two broken internal references.
+  it("does not report an amended division of the parent instrument", () => {
+    const t = buildTree([
+      "Additional Insured Endorsement",
+      "This endorsement modifies insurance provided under the Commercial General Liability Coverage Part.",
+      "A. Section II — Who Is An Insured is amended to include as an additional insured the organization shown in the Schedule.",
+      "C. With respect to the insurance afforded to these additional insureds, the following is added to Section III — Limits Of Insurance: the most we will pay is the amount required by the written contract.",
+    ]);
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual([]);
+  });
+
+  it("still reports a plain reference into a section the document lacks", () => {
+    const t = buildTree([
+      "Endorsement",
+      "This endorsement modifies the policy.",
+      "Coverage is subject to the conditions in Section IX.",
+    ]);
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual(["Section IX"]);
+  });
+});

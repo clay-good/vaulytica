@@ -378,6 +378,7 @@ const OPTION = pack("option-to-purchase-real-estate", C, [
 const QUITCLAIM = pack("quitclaim-deed", C, [
   {
     id: "RE-128",
+    ver: "1.1.0",
     name: "Granting words appropriate to a quitclaim",
     cite: stateLaw(
       "deed-granting-words",
