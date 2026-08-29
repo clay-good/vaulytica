@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.217.0] — 2026-08-29
+
+### Added
+- An omnibus equity incentive plan — the 175th specimen. Clean: the whole
+  EQT-101..114 pack is silent on a plan that covers every column — share
+  reserve, evergreen, capitalization adjustment, the no-repricing covenant,
+  § 409A, the § 422(d) $100,000 ISO limit, change-in-control treatment,
+  clawback, and the amendment triggers that need stockholder approval.
+
+### Fixed
+- **`equity-incentive-plan` listed "vesting commencement date" as a NEGATIVE
+  feature**, meant to distinguish a grant NOTICE from the plan — but a plan's
+  default vesting schedule references the same date. Narrowed to the
+  field-label form, "vesting commencement date:", which only a grant notice
+  carries. (Caught by `self-penalizing-features.test.ts` the moment the
+  specimen existed.)
+
 ## [9.216.0] — 2026-08-29
 
 ### Added

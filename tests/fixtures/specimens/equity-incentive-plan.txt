@@ -1,0 +1,87 @@
+KESTREL BIOWORKS, INC.
+2026 EQUITY INCENTIVE PLAN
+
+1. PURPOSE
+
+The purpose of this 2026 Equity Incentive Plan (the "Plan") is to attract and retain personnel, to provide additional incentive to Employees, Directors, and Consultants, and to promote the success of the Company's business.
+
+2. DEFINITIONS
+
+2.1 "Award" means a grant under the Plan of an Option, a Restricted Stock Award, or a Restricted Stock Unit.
+
+2.2 "Administrator" means the Board or a Committee to which the Board has delegated authority under Section 3.
+
+2.3 "Fair Market Value" means, as of any date, the value of a Share determined by the Administrator in good faith and, where the Company's stock is not publicly traded, by reference to an independent appraisal that satisfies Section 409A of the Internal Revenue Code.
+
+2.4 "Share" means a share of the Company's Common Stock.
+
+3. ADMINISTRATION
+
+3.1 Administrator. The Plan shall be administered by the Board or by a Committee of one or more directors the Board appoints. The Administrator has authority to select participants, to determine the type, number, and terms of each Award, to interpret the Plan, and to adopt rules for its administration. Its determinations are final and binding.
+
+3.2 No Repricing. Notwithstanding Section 3.1, the Administrator shall not, without stockholder approval, reduce the exercise price of an outstanding Option, cancel an outstanding Option in exchange for cash or another Award with a lower exercise price, or take any other action that would be treated as a repricing under applicable accounting rules or stock-exchange listing standards.
+
+3.3 Section 16. With respect to a participant subject to Section 16 of the Securities Exchange Act of 1934, the Administrator shall be constituted so that each Award is exempt under Rule 16b-3.
+
+4. SHARES SUBJECT TO THE PLAN
+
+4.1 Share Reserve. Subject to Section 4.3, the maximum number of Shares that may be issued under the Plan is 6,400,000 Shares.
+
+4.2 Evergreen. The share reserve shall increase on the first day of each fiscal year beginning in 2027 and ending in 2036 by the lesser of five percent (5%) of the Shares outstanding on the last day of the preceding fiscal year and a number of Shares the Board determines. The Board may determine that no increase shall occur in a given year.
+
+4.3 Adjustment. In the event of a stock split, reverse stock split, stock dividend, recapitalization, combination, reclassification, spin-off, or other change in the Company's capitalization, the Administrator shall proportionately adjust the number and class of Shares available under the Plan, the number and class of Shares subject to each outstanding Award, and the exercise price of each outstanding Option.
+
+4.4 Share Recycling. Shares subject to an Award that expires, is forfeited, or is settled in cash again become available under the Plan. Shares withheld to satisfy the exercise price or a tax obligation do not again become available.
+
+5. ELIGIBILITY AND AWARDS
+
+5.1 Eligibility. Employees, Directors, and Consultants are eligible for Awards. Only Employees of the Company or a parent or subsidiary may receive an Incentive Stock Option.
+
+5.2 Options. Each Option shall be evidenced by an Award Agreement stating the number of Shares, the exercise price, the vesting schedule, and the term. The exercise price shall be not less than one hundred percent (100%) of the Fair Market Value of a Share on the date of grant, and not less than one hundred ten percent (110%) for an Incentive Stock Option granted to a holder of more than ten percent (10%) of the Company's voting power. No Option shall have a term longer than ten (10) years, or five (5) years in the case of such a ten-percent holder.
+
+5.3 Incentive Stock Options. The aggregate Fair Market Value, determined at the date of grant, of Shares for which Incentive Stock Options first become exercisable by a participant in any calendar year shall not exceed $100,000, as Section 422(d) of the Internal Revenue Code requires. Any excess shall be treated as a Nonstatutory Stock Option.
+
+5.4 Restricted Stock and Restricted Stock Units. The Administrator may grant Restricted Stock and Restricted Stock Units on terms it determines, including vesting conditions based on service or performance.
+
+5.5 Section 409A. Each Award is intended to be exempt from or compliant with Section 409A of the Internal Revenue Code, and the Plan shall be interpreted accordingly. The Company does not guarantee any particular tax treatment.
+
+6. EXERCISE, VESTING, AND TERMINATION OF SERVICE
+
+6.1 Vesting. Awards vest on the schedule the Award Agreement states. Unless the Award Agreement provides otherwise, an Option vests as to twenty-five percent (25%) of the Shares on the first anniversary of the vesting commencement date and as to 1/48th of the Shares monthly thereafter.
+
+6.2 Termination of Service. Unless the Award Agreement provides otherwise, a vested Option remains exercisable for three (3) months after termination of service, twelve (12) months after termination because of disability, and eighteen (18) months after death, and in no event beyond the original term.
+
+6.3 Cause. On a termination for Cause, all Awards, vested and unvested, terminate immediately.
+
+7. CHANGE IN CONTROL
+
+7.1 Treatment. In the event of a Change in Control, the Administrator may provide for any of the following: assumption or substitution of outstanding Awards by the successor; acceleration of vesting in whole or in part; cancellation of unvested Awards; or cancellation of vested Awards in exchange for the consideration holders of Shares receive, net of the exercise price. Treatment need not be uniform across Awards or participants.
+
+7.2 Double Trigger. If an Award is assumed or substituted and the participant's service is terminated without Cause or the participant resigns for Good Reason within twelve (12) months after the Change in Control, the Award shall vest in full.
+
+8. TRANSFERABILITY, CLAWBACK, AND OTHER TERMS
+
+8.1 Transferability. An Award may not be sold, pledged, assigned, or otherwise transferred other than by will or the laws of descent and distribution, except that the Administrator may permit a transfer of a Nonstatutory Stock Option to a family member for no consideration.
+
+8.2 Clawback. Each Award is subject to any clawback or recoupment policy the Company adopts, including any policy required by Section 10D of the Securities Exchange Act of 1934 and the listing standards adopted under it, and to any recovery required by applicable law.
+
+8.3 Stockholder Rights. A participant has no rights as a stockholder with respect to Shares subject to an Award until the Shares are issued.
+
+8.4 Withholding. The Company may withhold Shares or other amounts sufficient to satisfy any tax withholding obligation arising from an Award.
+
+9. TERM, AMENDMENT, AND TERMINATION
+
+9.1 Term of the Plan. The Plan becomes effective on the date the Board adopts it, subject to approval by the Company's stockholders within twelve (12) months, and continues until the tenth anniversary of adoption unless terminated earlier.
+
+9.2 Amendment. The Board may amend, suspend, or terminate the Plan at any time, provided that no amendment shall increase the share reserve, change the class of persons eligible for Incentive Stock Options, or effect a repricing prohibited by Section 3.2 without stockholder approval, and no amendment shall materially impair an outstanding Award without the holder's consent.
+
+10. GENERAL
+
+10.1 No Right to Continued Service. Nothing in the Plan or any Award confers a right to continued employment or service.
+
+10.2 Governing Law. The Plan is governed by the laws of the State of Delaware, without regard to its conflict of laws principles.
+
+10.3 Severability. If any provision is held invalid, the remainder of the Plan continues in effect.
+
+Adopted by the Board of Directors on February 3, 2026.
+Approved by the stockholders on March 17, 2026.

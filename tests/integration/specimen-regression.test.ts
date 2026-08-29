@@ -40,6 +40,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An omnibus equity incentive plan. Clean: the whole EQT-101..114 plan pack
+  // is silent on a plan that covers every column — share reserve, evergreen,
+  // capitalization adjustment, the no-repricing covenant, § 409A, the § 422(d)
+  // $100,000 ISO limit, change-in-control treatment, clawback, and the
+  // amendment triggers that need stockholder approval. STRUCT-006 is right
+  // that the plan uses Incentive Stock Option, Nonstatutory Stock Option and
+  // Restricted Stock without defining them in Section 2.
+  "equity-incentive-plan.txt": {
+    playbook: "equity-incentive-plan",
+    findings: ["STRUCT-006", "OBLI-005", "STRUCT-009"],
+  },
   // A public design-build agreement with a guaranteed maximum price. Clean:
   // it routes at 1.0 and its own pack — including the single-point-of-
   // responsibility check — is silent on a compliant one. IPDATA-001 stays and
