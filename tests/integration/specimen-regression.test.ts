@@ -40,6 +40,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A second amendment to a revocable living trust. It routed to
+  // `revocable-living-trust` and was told it states no pour-over reference and
+  // no spendthrift clause — a two-page amendment restates neither, because
+  // both are in the trust it amends. The amendment family's own title keywords
+  // could not match "SECOND AMENDMENT TO THE HARROWGATE FAMILY REVOCABLE
+  // LIVING TRUST" (they read "trust amendment" and "first amendment to the
+  // trust"), and its distinguishing phrases were verbatim sentences. Clean
+  // once routed.
+  "trust-amendment.txt": { playbook: "trust-amendment", findings: [] },
   // A mutual employment arbitration agreement, drafted around the Ending
   // Forced Arbitration Act. CHOICE-001 reported no governing-law clause on
   // "This Agreement is governed by the FEDERAL ARBITRATION ACT, 9 U.S.C.

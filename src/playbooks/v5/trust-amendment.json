@@ -6,17 +6,21 @@
   "match_features": {
     "title_keywords": [
       "trust amendment",
+      "amendment to the",
+      "amendment to",
       "amendment to trust",
       "restatement of trust",
       "first amendment to the trust"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "the settlor reserved the right to amend",
-      "the trust is hereby amended",
-      "in all other respects the trust is ratified",
+      "deleted in its entirety",
+      "ratified and confirmed",
+      "amends the trust",
+      "as amended by",
       "restated in its entirety",
-      "trust dated"
+      "trust dated",
+      "the settlor reserved the right to amend"
     ],
     "negative_features": ["last will and testament", "merger agreement"]
   },

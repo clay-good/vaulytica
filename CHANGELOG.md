@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.211.0] — 2026-08-29
+
+### Added
+- A second amendment to a revocable living trust — the 171st specimen. Clean
+  once routed.
+
+### Fixed
+- **It routed to `revocable-living-trust`** and was told it states no
+  pour-over reference and no spendthrift clause. A two-page amendment restates
+  neither, because both are in the trust it amends. The amendment family's own
+  title keywords could not match "SECOND AMENDMENT TO THE HARROWGATE FAMILY
+  REVOCABLE LIVING TRUST" — they read "trust amendment" and "first amendment
+  to the trust" — and its distinguishing phrases were verbatim sentences. It
+  now reads the register an amendment uses (deleted in its entirety, ratified
+  and confirmed, as amended by), and the trust family treats those as
+  negatives, which they are.
+- **An inline definition registered a LOWERCASE quoted phrase as a term.**
+  `DEFINITION_INLINE` needs its `i` flag for the case-varying defining verb,
+  which also weakens its leading `[A-Z]` to "any letter" — so `All references
+  in the Trust to "this Trust" MEAN the Trust as amended` yielded a term named
+  "this Trust", reported as defined and never used. The anchor is restored
+  explicitly rather than by dropping the flag, which would lose every ALL-CAPS
+  definition.
+
 ## [9.210.0] — 2026-08-29
 
 ### Added

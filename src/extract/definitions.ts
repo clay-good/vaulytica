@@ -1440,6 +1440,14 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   DEFINITION_INLINE.lastIndex = 0;
   while ((m = DEFINITION_INLINE.exec(text)) !== null) {
     const term = m[1]!.trim();
+    // The pattern needs its `i` flag for the case-varying defining verb, which
+    // also weakens its leading `[A-Z]` to "any letter" — so a LOWERCASE quoted
+    // phrase registered as a defined term. A trust amendment reading `All
+    // references in the Trust to "this Trust" MEAN the Trust as amended`
+    // yielded a term named "this Trust", which STRUCT-005 then reported as
+    // defined and never used. The anchor is restored explicitly here rather
+    // than by dropping the flag, which would lose every ALL-CAPS definition.
+    if (!/^[A-Z]/.test(term)) continue;
     const after = text.slice(m.index + m[0].length).trim();
     if (!after) continue;
     // Only the term's own defining clause (up to the first sentence break) can

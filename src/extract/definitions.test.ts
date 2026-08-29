@@ -2016,3 +2016,30 @@ describe("a candidate truncated by an ALL-CAPS acronym", () => {
     expect(terms).not.toContain("Joint Foreground");
   });
 });
+
+describe("an inline definition needs a CAPITALIZED term", () => {
+  // DEFINITION_INLINE needs its `i` flag for the case-varying defining verb,
+  // which also weakens its leading `[A-Z]` to "any letter". A trust amendment
+  // reading `All references in the Trust to "this Trust" MEAN the Trust as
+  // amended` registered a term named "this Trust", which STRUCT-005 then
+  // reported as defined and never used.
+  it("does not register a lowercase quoted phrase as a term", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Second Amendment",
+        'All references in the Trust to "this Trust" mean the Trust as amended by the First Amendment and by this Second Amendment.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("this Trust");
+  });
+
+  it("still registers an ALL-CAPS inline definition", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Agreement",
+        '"CONFIDENTIAL INFORMATION" means any information disclosed by one party to the other.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("CONFIDENTIAL INFORMATION");
+  });
+});
