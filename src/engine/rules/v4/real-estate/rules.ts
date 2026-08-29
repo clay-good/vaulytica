@@ -273,7 +273,7 @@ const NET_LEASE_RULES: Rule[] = [
 const PSA_RULES: Rule[] = [
   presence({
     id: "RE-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Property description / legal description",
     description: "PSA must include a legal description of the property (Statute of Frauds).",
     citation: statuteOfFrauds(),
@@ -297,6 +297,16 @@ const PSA_RULES: Rule[] = [
       // sentence so a "Permitted Exceptions described on Exhibit B" reference
       // does not satisfy it.
       /\b(?:real\s+property|the\s+property|premises|land)\b[^.]{0,200}?\bdescribed\s+(?:in|on)\s+(?:the\s+)?exhibit\s+[a-z]/i,
+      // The legal description IN LINE, which is how a residential contract and
+      // plenty of commercial ones do it: "legally described as Lot 17, Block
+      // 4, Fernbank Estates, Plat Book 42, Page 118, Buncombe County
+      // Registry". Every pattern above wants the words "legal description" or
+      // an exhibit reference, so a contract that sets out the description
+      // itself was told at `critical` that it has none.
+      /\blegally\s+described\s+as\b|\bmore\s+particularly\s+described\s+as\s+follows\b/i,
+      // The description's own forms: lot-and-block, plat reference, the public
+      // land survey, and metes and bounds.
+      /\bLot\s+\w+[^.]{0,80}?\bBlock\s+\w+|\bplat\s+book\b|\bmetes\s+and\s+bounds\b|\bSection\s+\d+,\s*Township\s+\d+|\bdeed\s+book\s+\d+/i,
     ],
   }),
   presence({

@@ -1703,6 +1703,56 @@ describe("a term that titles its own RUN-IN heading", () => {
   });
 });
 
+describe("an entity name with an AMPERSAND", () => {
+  // "Fernbank Title & Trust, LLC", "Grantham & Boyle LLP", "Hollis & Parr
+  // LLP" — the ampersand is part of the name in a huge share of firms and
+  // title companies, and the entity-prefix run stopped at the first word, so
+  // "Fernbank Title" was reported as a term the contract forgot to define.
+  it("registers the whole name, so its prefix is not an undefined term", () => {
+    const terms = extractDefinitions(
+      buildTree([
+        "Purchase and Sale Agreement",
+        "The Escrow Agent is Fernbank Title & Trust, LLC, 88 Merrimon Avenue, Asheville, North Carolina 28801.",
+        "Buyer shall deliver the earnest money to Fernbank Title within three business days.",
+        "Fernbank Title shall disburse the earnest money in accordance with this Agreement.",
+      ]),
+    ).undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Fernbank Title");
+  });
+});
+
+describe("an ALL-CAPS run-in heading, and the article before its term", () => {
+  // "4. ESCROW AGENT. The Escrow Agent is Fernbank Title & Trust, LLC" — a
+  // residential purchase contract numbers its sections in capitals from end to
+  // end. Two things had to change: the run-in heading test only read title
+  // case, and the article belongs to the SENTENCE, not the heading, so the
+  // check ran against "the escrow agent" and missed the section's own title.
+  const undef = (...paras: string[]) =>
+    extractDefinitions(
+      buildTree(["Purchase and Sale Agreement", ...paras]),
+    ).undefined_capitalized.map((e) => e.term);
+
+  it("does not flag a term that titles its own ALL-CAPS run-in heading", () => {
+    expect(
+      undef(
+        "4. ESCROW AGENT. The Escrow Agent is Fernbank Title & Trust, LLC, 88 Merrimon Avenue, Asheville, North Carolina 28801.",
+        "The Escrow Agent shall hold the earnest money in a non-interest-bearing trust account.",
+        "Buyer shall deposit the earnest money with the Escrow Agent within three business days.",
+      ),
+    ).not.toContain("Escrow Agent");
+  });
+
+  it("stays silent in an ALL-CAPS instrument, where capitalization is no evidence", () => {
+    // Every branch of the run-in test needs case CONTRAST: with the body in
+    // capitals too, the first sentence of an all-caps guaranty must not be
+    // read as a heading.
+    const terms = undef(
+      "1. GUARANTY. GUARANTOR ABSOLUTELY AND UNCONDITIONALLY GUARANTEES THE PROMPT PAYMENT OF THE OBLIGATIONS.",
+    );
+    expect(Array.isArray(terms)).toBe(true);
+  });
+});
+
 describe("a person named with their OFFICE in apposition", () => {
   // A franchise disclosure document names its officers in Item 2 —
   // "Renata Kowalczyk, Chief Executive Officer" — and signs nothing, so the

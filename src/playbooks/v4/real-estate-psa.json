@@ -14,7 +14,8 @@
       "closing statement",
       "permitted exceptions"
     ],
-    "negative_features": ["stock purchase agreement", "asset purchase agreement"]
+    "negative_features": [
+      "lead-based paint","stock purchase agreement", "asset purchase agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Earnest Money", "Closing", "Permitted Exceptions"],

@@ -6,6 +6,9 @@
   "match_features": {
     "title_keywords": [
       "residential purchase agreement",
+    "residential purchase and sale agreement",
+    "residential real estate",
+    "contract to buy and sell real estate",
       "residential real estate purchase",
       "purchase and sale agreement for residential",
       "offer to purchase real estate"
@@ -18,13 +21,20 @@
       "lead-based paint",
       "closing costs",
       "appraisal contingency",
-      "seller's disclosure"
+      "seller's disclosure",
+    "seller disclosures",
+    "residential property disclosure",
+    "loan commitment"
     ],
     "negative_features": ["commercial property", "employment agreement", "merger"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Buyer", "Seller", "Property", "Earnest Money"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-RESIDENTIAL-RE",

@@ -40,6 +40,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A North Carolina residential purchase and sale contract. It routed to the
+  // COMMERCIAL `real-estate-psa` and was told at `warning` to add a § 1031
+  // like-kind-exchange cooperation clause to a family home sale — and at
+  // `critical` that it has no legal description, on a paragraph that sets one
+  // out ("legally described as Lot 17, Block 4, Fernbank Estates, Plat Book
+  // 42, Page 118"). The eight RE-138..145 residential checks are silent on a
+  // compliant contract.
+  "residential-purchase.txt": {
+    playbook: "residential-purchase-agreement",
+    findings: ["FIN-006", "OBLI-005", "TEMP-006", "TEMP-007", "TEMP-008"],
+  },
   // An amended and restated NVCA-style stockholders' agreement. Four false
   // positives, all rigid drafting assumptions: a section headed VOTING
   // AGREEMENT reported at `critical` as containing none (the OBJECT sits

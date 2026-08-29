@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.175.0] — 2026-08-29
+
+### Added
+- A North Carolina residential purchase and sale contract — the 140th
+  specimen. The eight RE-138..145 residential checks are silent on a compliant
+  one.
+
+### Fixed
+- **A family home sale routed to the COMMERCIAL `real-estate-psa`** and was
+  told at `warning` to add a § 1031 like-kind-exchange cooperation clause, and
+  at `critical` that it states no closing conditions and no seller
+  representations. The residential family's title keywords did not include
+  "residential purchase AND SALE agreement", and nothing distinguished the two
+  families in the other direction — so `lead-based paint`, a disclosure
+  federal law requires only of a pre-1978 dwelling and which no commercial PSA
+  carries, is now a negative feature of the commercial one.
+- **RE-009 reported "Legal property description missing" at `critical` on a
+  paragraph that sets one out.** "legally described as Lot 17, Block 4,
+  Fernbank Estates, Plat Book 42, Page 118" is a textbook lot-and-block
+  description; every pattern wanted the literal words "legal description" or
+  a reference to an exhibit. Lot-and-block, plat book, deed book, the public
+  land survey, and metes and bounds are now read directly.
+- **`residential-purchase-agreement` shipped with an empty rule profile** and
+  was told it allocates no IP, provides no indemnity and caps no liability.
+- **An ALL-CAPS run-in heading was not read as a heading** — "4. ESCROW AGENT.
+  The Escrow Agent is Fernbank Title & Trust, LLC" — and the ARTICLE was not
+  stripped before the heading was looked up, so the section's own title was
+  reported as a term the contract forgot to define. Every run-in heading in a
+  paragraph is now registered, not just the leading one: with blank lines
+  stripped the ingest joins a document into one paragraph, and a `^`-anchored
+  test made the finding set depend on the format of the upload.
+- **An entity name with an AMPERSAND** — "Fernbank Title & Trust, LLC",
+  "Grantham & Boyle LLP" — stopped the name run at the first word, so
+  "Fernbank Title" was reported as an undefined term.
+
 ## [9.174.0] — 2026-08-29
 
 ### Added

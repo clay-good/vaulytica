@@ -795,8 +795,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     // intent was told it uses Base Rent, Commencement Date and Operating
     // Expenses without defining them, when each titles the section that
     // states it.
-    const runIn = runInHeadingTitle(ctx.text);
-    if (runIn) headings.add(runIn.toLowerCase());
+    for (const runIn of runInHeadingTitles(ctx.text)) headings.add(runIn.toLowerCase());
   });
   // Names of natural persons who sign or appear before a notary — collected
   // from conformed-signature lines ("/s/ Nora Castellanos") and notarial
@@ -870,8 +869,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         }
       }
     }
+    // The AMPERSAND is part of the name in a huge share of firms and title
+    // companies — "Fernbank Title & Trust, LLC", "Grantham & Boyle LLP",
+    // "Hollis & Parr LLP". Without it the run stopped at the first word and
+    // the prefix was never registered, so "Fernbank Title" was reported as a
+    // Title-Case term the contract forgot to define.
     const ENTITY_NAME =
-      /\b([A-Z][\w'’-]+(?:\s+[A-Z][\w'’-]+){1,4}),?\s+(LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLLP|LLP|PLLC|P\.?C\.?|P\.?A\.?|N\.A\.|GmbH)(?![\w])/g;
+      /\b([A-Z][\w'’-]+(?:\s+(?:&|and)\s+[A-Z][\w'’-]+|\s+[A-Z][\w'’-]+){1,4}),?\s+(LLC|Inc\.?|Corp\.?|Ltd\.?|L\.P\.|LLLP|LLP|PLLC|P\.?C\.?|P\.?A\.?|N\.A\.|GmbH)(?![\w])/g;
     ENTITY_NAME.lastIndex = 0;
     let em: RegExpExecArray | null;
     while ((em = ENTITY_NAME.exec(ctx.text)) !== null) {
@@ -1038,6 +1042,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       )
         continue;
       if (headings.has(phraseLower)) continue;
+      // The article belongs to the SENTENCE, not to the heading. "The Escrow
+      // Agent is Fernbank Title & Trust, LLC" sits under a section headed
+      // "4. ESCROW AGENT.", and the term is canonicalized to "Escrow Agent"
+      // further down — but the heading test ran against "the escrow agent"
+      // and missed, so the section's own title was reported as a term the
+      // contract forgot to define.
+      const bareForHeading = articleLess(phraseLower);
+      if (bareForHeading && headings.has(bareForHeading)) continue;
       // A person named after a PERSON FIELD label — "Author: Dana Okwuosa",
       // "Recipients: Peter Vance", "cc: Renata Silva", "Custodian: Marcus
       // Bell". A privilege log is a table of exactly these, and every name in
@@ -1680,11 +1692,39 @@ function runInHeadingEnd(text: string): number {
 }
 
 /** The TITLE of a run-in heading — "4. Base Rent. …" yields "Base Rent". */
-function runInHeadingTitle(text: string): string | undefined {
-  const m = /^\s*(?:\d+(?:\.\d+)*|[A-Z])[.)]\s+([A-Z][^.;:]{0,80}?)[.;:]\s/.exec(text);
-  if (!m) return undefined;
-  const title = m[1]!.trim();
-  return isTitleCaseSegment(title) ? title : undefined;
+/**
+ * The TITLES of every run-in heading in a paragraph — "4. Base Rent. …"
+ * yields "Base Rent".
+ *
+ * EVERY heading, not just the leading one. When a document arrives with its
+ * blank lines stripped — a PDF copy-paste — the ingest joins its lines into
+ * one paragraph, so a `^`-anchored test could see only the first section's
+ * title and the rest of the document's headings went unregistered. That made
+ * the finding set depend on the FORMAT of the upload, which is exactly what
+ * `format-invariance.test.ts` exists to forbid.
+ */
+function runInHeadingTitles(text: string): string[] {
+  const RE = /(?:^|[.;]\s+)(?:\d+(?:\.\d+)*|[A-Z])[.)]\s+([A-Z][^.;:]{0,80}?)[.;:]\s/g;
+  const titles: string[] = [];
+  RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = RE.exec(text)) !== null) {
+    const title = m[1]!.trim();
+    if (isTitleCaseSegment(title)) {
+      titles.push(title);
+      continue;
+    }
+    // An ALL-CAPS run-in heading — "4. ESCROW AGENT. The Escrow Agent is
+    // Fernbank Title & Trust, LLC" — titles its section exactly as a
+    // title-case one does, and a residential purchase contract numbers its
+    // sections that way from end to end. Capitalization is evidence only where
+    // the document offers CONTRAST, so what follows the heading must not
+    // itself be capitals; in an all-caps instrument this branch stays silent.
+    const rest = text.slice(m.index + m[0].length, m.index + m[0].length + 200);
+    const capsHeading = /[A-Z]/.test(title) && title === title.toUpperCase();
+    if (capsHeading && /[a-z]/.test(rest) && title.length <= 60) titles.push(title);
+  }
+  return titles;
 }
 
 /** True when [index, index+length) lies inside an occurrence of `container` in `text`. */
