@@ -301,7 +301,17 @@ const LEADING_ROLE = new RegExp(String.raw`^(${PARTY_ROLE_LABEL})\s*,\s*(?=[A-Z]
 const NEGATED_PREAMBLE =
   /\b(?:not|no|nothing|never|neither)\b(?:[^.;\n](?!\bbetween\b)){0,80}(?:constitute|create|form|imply|establish|give\s+rise\s+to|amount\s+to)\w*(?:[^.;\n](?!\bbetween\b)){0,40}$/i;
 
-const SIGNATURE_LINE = /^(?:By|Name|Title|Date)\s*:?\s*/i;
+/**
+ * The signature-block labels whose VALUE is a person's name. All four of
+ * "By:", "Name:", "Title:" and "Date:" mark a signature-block line, but only
+ * the first two carry a name after them.
+ * Stripping any of the four and registering what followed turned the
+ * execution date of a signed form into a party: a contributor license
+ * agreement ending in "Date: May 14, 2026" reported one party, named
+ * "May 14, 2026" — which also masked the true finding that the form names
+ * no parties the extractor can read.
+ */
+const SIGNATURE_NAME_LINE = /^(?:By|Name)\s*:?\s*/i;
 
 /**
  * Every "By:" / "Name:" segment in a signature paragraph, not just the
@@ -489,7 +499,7 @@ export function extractParties(tree: DocumentTree): Party[] {
   const sigStart = Math.floor(allText.length * 0.85);
   for (let i = sigStart; i < allText.length; i += 1) {
     const { text, pos } = allText[i]!;
-    if (SIGNATURE_LINE.test(text)) {
+    if (SIGNATURE_NAME_LINE.test(text)) {
       // Only the FIRST label is stripped, so on a two-column block the rest of
       // the line — including the second signer's own "By:" field — came along
       // and registered as one party named "Jane Roe By: John Doe". Cut at the
@@ -497,7 +507,7 @@ export function extractParties(tree: DocumentTree): Party[] {
       // recovers a signer whose name is too long for `SIGNATURE_FIELD`'s
       // five-word cap, which otherwise skipped the column entirely.
       const after = text
-        .replace(SIGNATURE_LINE, "")
+        .replace(SIGNATURE_NAME_LINE, "")
         .replace(/\s+(?:By|Name|Title|Date)\s*:.*$/i, "")
         .trim();
       if (after && /[A-Z]/.test(after) && !/^_+$/.test(after)) {

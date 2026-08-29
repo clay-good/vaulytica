@@ -345,3 +345,43 @@ describe("the preamble window is measured in characters too", () => {
     expect(parties.map((p) => p.name)).toContain("Halcyon Instruments, Inc");
   });
 });
+
+describe("a signature-block label whose value is not a name", () => {
+  // `SIGNATURE_LINE` recognizes a signature-block line; only "By:" and "Name:"
+  // carry a name after it. Stripping any of the four labels and registering
+  // what followed turned the execution date of a signed form into a party: a
+  // contributor license agreement ending in "Date: May 14, 2026" reported one
+  // party, named "May 14, 2026" — which also masked the true finding that the
+  // form names no parties the extractor can read.
+  it("does not register the execution date as a party", () => {
+    const names = extractParties(
+      buildTree([
+        "Individual Contributor License Agreement",
+        "You grant the Foundation a perpetual, royalty-free copyright license to Your Contributions.",
+        "Signature: /s/ Rosalind Achebe-Karlsson",
+        "Date: May 14, 2026",
+      ]),
+    ).map((p) => p.name);
+    expect(names).not.toContain("May 14, 2026");
+  });
+
+  it("still reads the signer from a By: line", () => {
+    // The signature-block scan reads only the last 15% of paragraphs, so the
+    // fixture needs a body for the block to be at the end of.
+    const body = Array.from(
+      { length: 10 },
+      (_, i) => `${i + 1}. The parties shall perform their obligations in good faith.`,
+    );
+    const names = extractParties(
+      buildTree([
+        "Agreement",
+        ...body,
+        "ACME, INC.",
+        "By: /s/ Dana Reyes",
+        "Title: Chief Executive Officer",
+        "Date: May 14, 2026",
+      ]),
+    ).map((p) => p.name);
+    expect(names).toContain("Dana Reyes");
+  });
+});

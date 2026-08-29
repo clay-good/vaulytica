@@ -40,6 +40,20 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An ASF-style individual contributor license agreement. Four defects, and
+  // three of them are shapes any signed FORM has: `"You" (or "Your") means …`
+  // — the parenthesized alias — registered NEITHER term, so the definition
+  // was lost and "Your Contributions" was reported as never defined; the only
+  // date is on the "Date:" line the signer fills in, at the bottom of the
+  // page, and STRUCT-002 looks only at the first quarter; and the family
+  // shipped with no rule profile, so a one-way copyright grant was told it
+  // provides no indemnity, caps no liability, and states no termination path.
+  // The family also listed "royalty" as a NEGATIVE feature, and every CLA
+  // grants a ROYALTY-FREE license.
+  "cla.txt": {
+    playbook: "contributor-license-agreement",
+    findings: ["CHOICE-003", "STRUCT-005"],
+  },
   // An AIA-style owner-contractor agreement. It routed to
   // `independent-contractor` at 0.9 and none of its seven CON-001..007 checks
   // ran, because the family listed "subcontractor", "lien waiver",

@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
+import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
  * STRUCT-002 — Effective date present and parseable (warning).
@@ -10,7 +11,7 @@ import { makeFinding } from "../../finding.js";
  */
 export const rule: Rule = {
   id: "STRUCT-002",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Effective date present and parseable",
   category: "structural",
   default_severity: "warning",
@@ -33,6 +34,44 @@ export const rule: Rule = {
     if (firstAbsolute && firstAbsolute.position.start < documentLength(ctx) * 0.25) {
       return null;
     }
+
+    // The EXECUTION DATE is the effective date of a signed form. A contributor
+    // license agreement, a consent, an acknowledgment, and an offer letter all
+    // put their only date on the "Date:" line the signer fills in — at the
+    // BOTTOM of the page, which is nowhere near the first quarter — and every
+    // one of them was told it states no effective date. The label is what makes
+    // this a date the document adopts, rather than an incidental date in prose.
+    let dateLine = false;
+    forEachParagraph(ctx.tree, (p) => {
+      // The date has to FOLLOW the label. An unsigned template writes
+      // "Date: ____________________", and accepting any absolute date in the
+      // same paragraph let a blank line borrow one from elsewhere in a joined
+      // signature block — which is how the corpus's own unsigned fixtures
+      // stopped reporting the effective date they genuinely lack.
+      const LABEL = /(?:^|[\s>|])[Dd]ated?\s*(?::|\s+as\s+of)\s*/g;
+      LABEL.lastIndex = 0;
+      let m: RegExpExecArray | null;
+      while ((m = LABEL.exec(p.text)) !== null) {
+        const at = p.start + m.index + m[0].length;
+        for (const d of ctx.extracted.dates) {
+          if (
+            d.type === "absolute" &&
+            d.iso &&
+            d.position.section_id === p.section.id &&
+            d.position.start >= at &&
+            d.position.start <= at + 2
+          )
+            dateLine = true;
+        }
+      }
+      if (
+        /\b[Dd]ated\s+(?:as\s+of\s+)?this\s+\d{1,2}(?:st|nd|rd|th)?\s+day\s+of\s+[A-Z][a-z]+,?\s+\d{4}/.test(
+          p.text,
+        )
+      )
+        dateLine = true;
+    });
+    if (dateLine) return null;
 
     const firstSectionId = ctx.tree.sections[0]?.id ?? "";
     return makeFinding({

@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.182.0] — 2026-08-29
+
+### Added
+- An ASF-style individual contributor license agreement — the 145th specimen.
+
+### Fixed
+- **A definition whose alias is PARENTHESIZED registered NEITHER term.**
+  `"You" (or "Your") means …` is how every CLA defines its two pronouns; the
+  alias pattern wanted `"You" or "Your" means`, so the definition was lost
+  entirely and "Your Contributions" was reported as never defined.
+- **The EXECUTION DATE of a signed form was not read as its effective date.**
+  A CLA, a consent, an acknowledgment and an offer letter all put their only
+  date on the "Date:" line the signer fills in, at the bottom of the page —
+  nowhere near the first quarter STRUCT-002 looks at. The date must FOLLOW the
+  label, so an unsigned template's "Date: ____________" still reports.
+- **The execution date was registered as a PARTY.** All four of "By:",
+  "Name:", "Title:" and "Date:" mark a signature-block line, but only the
+  first two carry a name — so a CLA ending in "Date: May 14, 2026" reported
+  one party, named "May 14, 2026". That also masked the true finding that the
+  form names no parties the extractor can read.
+- **`contributor-license-agreement` listed "royalty" as a NEGATIVE feature**,
+  and every CLA grants a ROYALTY-FREE license. It also shipped with no rule
+  profile, so a one-way copyright grant was told it provides no indemnity,
+  caps no liability, and states no termination path.
+
+### Changed
+- `bad-employment` and `bad-saas` no longer report "No Effective Date found".
+  Both are signed and dated on the signature line ("Date: January 1, 2026"),
+  which is an identifiable starting point — the finding was a false positive
+  on them. This is the intended consequence of the STRUCT-002 change above and
+  the only substantive golden churn.
+
 ## [9.181.0] — 2026-08-29
 
 ### Added

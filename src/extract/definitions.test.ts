@@ -1703,6 +1703,28 @@ describe("a term that titles its own RUN-IN heading", () => {
   });
 });
 
+describe("a definition whose alias is PARENTHESIZED", () => {
+  // `"You" (or "Your") means the copyright owner …` is how every contributor
+  // license agreement defines its two pronouns. The alias pattern wanted
+  // `"You" or "Your" means`, so it matched NEITHER term — the definition was
+  // lost entirely and "Your Contributions" was reported as never defined.
+  it("registers both spellings", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Contributor License Agreement",
+        '"You" (or "Your") means the copyright owner or the legal entity authorized by the copyright owner.',
+        '"Contribution" means any original work of authorship submitted by You to the Foundation.',
+        "You hereby grant a license to reproduce Your Contributions and such derivative works.",
+        "You represent that each of Your Contributions is Your original creation.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toEqual(
+      expect.arrayContaining(["You", "Your", "Contribution"]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Your Contributions");
+  });
+});
+
 describe("an entity name with an AMPERSAND", () => {
   // "Fernbank Title & Trust, LLC", "Grantham & Boyle LLP", "Hollis & Parr
   // LLP" — the ampersand is part of the name in a huge share of firms and

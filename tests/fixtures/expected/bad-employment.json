@@ -589,11 +589,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-002-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "STRUCT-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1097,24 +1096,6 @@
       "title": "No limitation-of-liability clause detected"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no Effective Date reference matched)"
-      },
-      "explanation": "Most contracts identify a starting point that other date references rely on. Without it, relative terms like 'within 30 days after the Effective Date' have no anchor.",
-      "id": "STRUCT-002-s1-0",
-      "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
-      "rule_id": "STRUCT-002",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No Effective Date found"
-    },
-    {
       "description": "The survival clause exists but does not name: confidentiality, IP ownership / assignment.",
       "document_position": 1505,
       "excerpt": {
@@ -1352,11 +1333,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"exempt\", \"salary\".",
-  "result_hash": "d8defe3447e08dd056d6c4d1c27ccdb92ce0632b5be167afba5a119479608abd",
+  "result_hash": "d0204d45ccfdbc1cb84253e9f4ebe518aa4cfd2c7676fc5f007326a09a7fc327",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.181.0"
+  "version": "9.182.0"
 }

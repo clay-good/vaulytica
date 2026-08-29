@@ -107,7 +107,11 @@ const GLOSSARY_ENTRY = /^\s*["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*
  * defined. Both names name the same definition.
  */
 const DEFINITION_ALIASED =
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall\s+)?means?\b/gi;
+  // The alias is as often PARENTHESIZED — `"You" (or "Your") means …`, which
+  // is how every contributor license agreement defines its two pronouns — and
+  // the unparenthesized form matched neither term, so the definition was lost
+  // entirely and "Your Contributions" was reported as never defined.
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:\(\s*)?or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s*\)?\s*(?:shall\s+)?means?\b/gi;
 
 /**
  * The other inline convention, and the dominant one in commercial drafting:

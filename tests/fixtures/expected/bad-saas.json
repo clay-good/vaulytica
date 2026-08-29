@@ -583,11 +583,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-002-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "STRUCT-002",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -1038,24 +1037,6 @@
       "title": "Data retention period unspecified"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no Effective Date reference matched)"
-      },
-      "explanation": "Most contracts identify a starting point that other date references rely on. Without it, relative terms like 'within 30 days after the Effective Date' have no anchor.",
-      "id": "STRUCT-002-s1-0",
-      "recommendation": "Add an Effective Date — either in the preamble ('dated as of [date]'), as a defined term, or as an explicit 'Effective Date: [date]' line.",
-      "rule_id": "STRUCT-002",
-      "rule_version": "1.0.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No Effective Date found"
-    },
-    {
       "description": "Used but not defined: Subscription Term.",
       "document_position": 253,
       "excerpt": {
@@ -1249,11 +1230,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "2210b2076ca64b7922e57c686e844f1925a87a449e20999df883958a3a523897",
+  "result_hash": "2858bfcc6e53436ed2e992137fcf4dcc7aad0908edc21bd3607df5c3ab27894c",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.181.0"
+  "version": "9.182.0"
 }
