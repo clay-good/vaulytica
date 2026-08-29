@@ -40,6 +40,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A Clean Water Act consent judgment. It fell to `generic-fallback`: the
+  // family's five distinguishing phrases were verbatim sentences ("judgment is
+  // hereby entered", "the court retains jurisdiction") that a real one does
+  // not say. Once routed, SET-103 reported no admission recital on a document
+  // whose second WHEREAS is one — the pack's text source STRIPS RECITALS, and
+  // a consent judgment states that recital nowhere else — and SET-105 wanted
+  // a satisfaction of judgment where a decree is discharged by a MOTION TO
+  // TERMINATE after a compliance period. STRUCT-006 also reported "Consent
+  // Judgment", the document's own name.
+  "consent-judgment.txt": {
+    playbook: "consent-judgment",
+    findings: ["STRUCT-018", "OBLI-008"],
+  },
   // A remote work agreement. It routed correctly but only just — 0.5, right at
   // the threshold — because the family's distinguishing phrases were headings
   // rather than register ("work hours and availability", "the employee's home

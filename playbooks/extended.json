@@ -3878,11 +3878,15 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
+        "ordered, adjudged, and decreed",
+        "so ordered",
+        "retains jurisdiction",
+        "stipulated penalt",
+        "not an admission of liability",
+        "lodging",
+        "public comment",
         "the court retains jurisdiction",
-        "judgment is hereby entered",
-        "stipulate and agree",
-        "without admission of liability",
-        "enforcement of this judgment"
+        "stipulate and agree"
       ],
       "negative_features": [
         "this agreement is entered into by and between the parties as of",

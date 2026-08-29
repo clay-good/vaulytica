@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.215.0] — 2026-08-29
+
+### Added
+- A Clean Water Act consent judgment — the 173rd specimen.
+
+### Fixed
+- **It fell to `generic-fallback`.** The family's five distinguishing phrases
+  were verbatim sentences — "judgment is hereby entered", "the court retains
+  jurisdiction", "stipulate and agree" — that a real consent judgment does not
+  say. It now reads the register one uses: "ORDERED, ADJUDGED, AND DECREED",
+  "SO ORDERED", stipulated penalties, lodging, public comment.
+- **SET-103 reported no admission recital on a document whose second WHEREAS
+  is one.** The pack's text source STRIPS RECITALS by default, and a consent
+  judgment states "this Consent Judgment is not an admission of liability"
+  nowhere else — so the rule could not see the sentence it exists to find. It
+  now reads recitals, and knows the two forms the recital takes ("not an
+  admission", "deny the allegations").
+- **SET-105 wanted a satisfaction of judgment.** A consent decree is
+  discharged by a MOTION TO TERMINATE after a stated compliance period.
+- **STRUCT-006 reported "Consent Judgment"** — the document's own name. The
+  court-order nouns join the named-instrument suppression; "Order" is
+  deliberately absent, because a contract may genuinely define a Change Order.
+
 ## [9.214.0] — 2026-08-29
 
 ### Added

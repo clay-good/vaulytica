@@ -1077,7 +1077,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // a term, and whether that instrument is attached is STRUCT-018's
       // question, not this one's.
       if (
-        /\s(?:Agreement|Certificate|Indenture|Debenture|Mortgage|Guaranty|Guarantee|Charter|Bylaws|By-laws)$/.test(
+        /\s(?:Agreement|Certificate|Indenture|Debenture|Mortgage|Guaranty|Guarantee|Charter|Bylaws|By-laws|Judgment|Decree|Stipulation)$/.test(
           phrase,
         )
       )

@@ -40,12 +40,23 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
   },
   {
     id: "SET-103",
+    ver: "1.1.0",
     name: "Admission or no-admission recital",
     cite: fre("408", "compromise offers and negotiations"),
     pat: [
-      /(without\s+(any\s+)?admission|no\s+admission\s+of\s+(liability|wrongdoing)|denies\s+(any\s+)?liability)/i,
+      // "this Consent Judgment IS NOT AN ADMISSION of liability" and
+      // "Defendants DENY THE ALLEGATIONS of the Complaint" are the two forms
+      // a real no-admission recital takes; the pattern read "no admission"
+      // and "denies liability" only.
+      /(without\s+(any\s+)?admission|no\s+admission\s+of\s+(liability|wrongdoing)|not\s+an\s+admission|den(?:y|ies|ied)\s+(?:any\s+)?(?:liability|the\s+allegations))/i,
       /(admits?|acknowledges?\s+liability|stipulates?\s+to\s+liability)/i,
     ],
+    // The no-admission recital lives in the WHEREAS clauses — "WHEREAS,
+    // Defendants deny the allegations of the Complaint and this Consent
+    // Judgment is not an admission of liability" — and the pack's text source
+    // strips recitals by default, so the rule could not see the very sentence
+    // it exists to find.
+    recitals: true,
     why: "A consent judgment can carry collateral-estoppel and insurance-coverage consequences depending on whether liability was admitted. Silence leaves the question to a later court.",
     fix: "State expressly whether the defendant admits liability, and if not, that the judgment is entered without admission and may not be used as evidence of liability elsewhere.",
   },
@@ -65,10 +76,15 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
   },
   {
     id: "SET-105",
+    ver: "1.1.0",
     name: "Vacatur or satisfaction on performance",
     cite: practice("satisfaction-of-judgment", "satisfaction and vacatur of stipulated judgments"),
     pat: [
-      /(satisfaction\s+of\s+judgment|satisfied|vacat)/i,
+      // A consent decree is discharged by a motion to TERMINATE it after a
+      // stated compliance period, not by filing a satisfaction of judgment:
+      // "Defendants may MOVE TO TERMINATE this Consent Judgment after they
+      // have maintained compliance for twenty-four (24) consecutive months".
+      /(satisfaction\s+of\s+judgment|satisfied|vacat|(?:move|motion)\s+to\s+terminate|terminat\w+[^.;]{0,80}?(?:consent\s+(?:judgment|decree)|this\s+Decree))/i,
       /(upon\s+(full\s+)?payment|file\s+(a\s+)?(satisfaction|acknowledgment)|within\s+\d+\s+days)/i,
     ],
     why: "An unsatisfied judgment of record damages credit and title for years. The obligation to file a satisfaction, with a deadline, is the defendant's principal protection.",
