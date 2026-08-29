@@ -40,6 +40,34 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A warehousing and third-party logistics agreement. Clean: it routes on its
+  // own title and its pack is silent on a well-drafted one.
+  "warehousing-3pl.txt": {
+    playbook: "warehousing-3pl-agreement",
+    findings: [
+      "RISK-015",
+      "RISK-016",
+      "STRUCT-018",
+      "OBLI-005",
+      "RISK-007",
+      "RISK-010",
+      "TERM-001",
+    ],
+  },
+
+  // A venue rental agreement for a firm reception. It routed to
+  // `lease-residential-us` and drew DARK-012, a residential security-deposit
+  // dark-pattern rule, on a non-refundable EVENT booking deposit — on a
+  // document that says in terms that it "creates no leasehold estate,
+  // tenancy, or other interest in real property". The venue family's own
+  // distinguishing phrases were HOTEL vocabulary ("room block", "attrition",
+  // "food and beverage minimum") that a conservatory hire does not use. Once
+  // routed, COMM-243 reported no cancellation schedule on a clause that sets
+  // one out in tiered day windows — it wanted the words "cancellation fee".
+  "venue-rental.txt": {
+    playbook: "venue-rental-agreement",
+    findings: ["RISK-015", "RISK-016", "OBLI-005", "RISK-010", "RISK-011", "RISK-013", "TEMP-002"],
+  },
   // An equipment finance agreement — a loan secured by the equipment, which
   // the document says in terms ("This Agreement is a loan secured by the
   // Equipment and is NOT A LEASE"). It routed to `loan-agreement`, the

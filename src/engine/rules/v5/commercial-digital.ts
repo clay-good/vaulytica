@@ -604,10 +604,19 @@ const OEM = pack("oem-agreement", C, [
 const VENUE = pack("venue-rental-agreement", C, [
   {
     id: "COMM-243",
+    ver: "1.1.0",
     name: "Cancellation and attrition fee schedule",
     cite: practice("venue-attrition", "attrition and cancellation damages in venue contracts"),
     pat: [
+      // A cancellation SCHEDULE is written as tiered day windows, not as the
+      // words "cancellation fee": "If Renter cancels MORE THAN one hundred
+      // twenty (120) DAYS before the Event, Renter FORFEITS the booking
+      // deposit only. Between one hundred twenty (120) and sixty (60) days,
+      // Renter OWES fifty percent (50%) of the rental fee." The rule exists
+      // to require exactly that, and reported it missing.
       /(cancel(l)?ation\s+(fee|schedule|charges)|liquidated\s+damages)/i,
+      /cancel\w*[^.;]{0,140}?\b(?:more\s+than|within|between)\s+(?:[a-z-]+\s+)*\(?\d{1,3}\)?\s*days?\b/i,
+      /cancel\w*[^.;]{0,120}?\b(?:forfeits?|owes?|shall\s+pay)\b/i,
       /(attrition|room\s+block|food\s+and\s+beverage\s+minimum|sliding\s+scale)/i,
     ],
     why: "Attrition and cancellation fees are liquidated damages and are unenforceable as penalties unless they approximate the venue's actual loss and account for resale of the space.",

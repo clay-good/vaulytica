@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.209.0] — 2026-08-29
+
+### Added
+- A warehousing and third-party logistics agreement (clean) and a venue rental
+  agreement — the 168th and 169th specimens.
+
+### Fixed
+- **A venue rental routed to `lease-residential-us`** and drew DARK-012, a
+  residential security-deposit dark-pattern rule, on a non-refundable EVENT
+  booking deposit — on a document that says in terms that it "creates no
+  leasehold estate, tenancy, or other interest in real property". The venue
+  family's own distinguishing phrases were HOTEL vocabulary ("room block",
+  "attrition", "food and beverage minimum") that a conservatory hire does not
+  use, so it had one title keyword to stand on.
+- **COMM-243 reported no cancellation schedule on a clause that sets one out
+  in tiered day windows.** It wanted the words "cancellation fee"; a real one
+  reads "If Renter cancels MORE THAN one hundred twenty (120) DAYS before the
+  Event, Renter FORFEITS the booking deposit only."
+- **`venue-rental-agreement` shipped with no rule profile.**
+
 ## [9.208.0] — 2026-08-29
 
 ### Added

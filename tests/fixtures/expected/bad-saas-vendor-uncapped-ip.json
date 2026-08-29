@@ -1076,11 +1076,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\". Negative features penalized: \"Premises\".",
-  "result_hash": "6e14e93771add0b77463df591b28c5a596ca0a87aee5a2888ca84e7734e69b1b",
+  "result_hash": "4dbc653a3f939ba853b6bf40e68a7394fa336c4cc52825f5c0f5515ef906b130",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.208.0"
+  "version": "9.209.0"
 }

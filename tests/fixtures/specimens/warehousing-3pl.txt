@@ -1,0 +1,101 @@
+WAREHOUSING AND THIRD-PARTY LOGISTICS AGREEMENT
+
+This Warehousing and Third-Party Logistics Agreement (this "Agreement") is made as of September 1, 2026 between Cattermole Distribution Services LLC, a Tennessee limited liability company ("Provider"), and Bramblewood Home Goods, Inc., a Delaware corporation ("Customer").
+
+1. SERVICES
+
+1.1 Scope. Provider shall receive, store, handle, pick, pack, and ship Customer's goods (the "Goods") at the facilities listed on Exhibit A, and shall provide the value-added services listed on Exhibit B, in accordance with the service levels on Exhibit C.
+
+1.2 Bailment. Provider takes possession of the Goods as bailee for hire. Title to the Goods remains with Customer at all times, and Provider acquires no ownership interest.
+
+1.3 Non-Exclusive. This Agreement is non-exclusive, and Customer may use other logistics providers.
+
+2. RECEIPT, STORAGE, AND INVENTORY
+
+2.1 Receiving. Provider shall receive inbound shipments within twenty-four (24) hours of arrival, shall count and inspect for visible damage, and shall note any discrepancy on the receiving document and report it to Customer within one (1) business day.
+
+2.2 Warehouse Receipt. Provider shall issue a non-negotiable warehouse receipt for each lot, as Article 7 of the Uniform Commercial Code contemplates.
+
+2.3 Storage Conditions. Provider shall store the Goods in a clean, dry, secure, and pest-controlled environment, at temperatures between 55 and 80 degrees Fahrenheit and relative humidity below sixty percent (60%), and shall not commingle Customer's Goods with those of another customer except in clearly segregated locations.
+
+2.4 Inventory Accuracy. Provider shall maintain inventory accuracy of not less than 99.5% by unit, measured by quarterly cycle counts. Provider shall conduct a full physical inventory annually with Customer's representative present, and shall reconcile any variance within ten (10) business days.
+
+2.5 Shrinkage. Provider shall reimburse Customer at Customer's landed cost for any variance exceeding 0.25% of units on hand in any quarter, determined after the reconciliation in Section 2.4.
+
+3. ORDER FULFILMENT
+
+3.1 Service Levels. Provider shall ship 99.0% of orders received before 2:00 p.m. local time on the same business day, shall achieve order accuracy of not less than 99.8%, and shall meet the other service levels on Exhibit C.
+
+3.2 Service Credits. If Provider fails to meet a service level in any month, Customer is entitled to the credit stated on Exhibit C, which is Customer's sole monetary remedy for that failure. Three consecutive months of failure to meet the same service level is a material breach.
+
+3.3 Carrier Selection. Provider shall tender shipments to the carriers Customer designates, using Customer's carrier accounts where Customer provides them, and shall not select a carrier or service level that increases Customer's freight cost without Customer's approval.
+
+4. FEES
+
+4.1 Rates. Customer shall pay the rates on Exhibit D. Storage is billed monthly in arrears by pallet position; handling is billed per unit received and per order shipped.
+
+4.2 Rate Adjustment. Provider may adjust rates once per calendar year on ninety (90) days' written notice, by not more than the increase in the Consumer Price Index for All Urban Consumers over the preceding twelve months. Any greater increase requires Customer's written agreement, failing which Customer may terminate on sixty (60) days' notice without penalty.
+
+4.3 Invoicing and Payment. Provider shall invoice monthly. Customer shall pay each undisputed invoice within forty-five (45) days after receipt, and may withhold a disputed amount if it gives notice within fifteen (15) days after the invoice.
+
+4.4 No Lien Beyond Charges. Provider's warehouse lien under UCC § 7-209 is limited to unpaid, undisputed charges for the specific Goods on which the lien is claimed, and Provider waives any lien for charges relating to other Goods or other periods.
+
+5. LOSS, DAMAGE, AND INSURANCE
+
+5.1 Standard of Care. Provider shall exercise reasonable care in the custody of the Goods, as UCC § 7-204 requires, and is liable for loss or damage caused by its failure to do so.
+
+5.2 Limitation on Liability for Goods. Provider's liability for loss of or damage to the Goods is limited to Customer's landed cost of the affected units, and in no event exceeds $500,000 per occurrence, except that no limit applies to loss or damage caused by Provider's gross negligence, willful misconduct, or conversion.
+
+5.3 Customer Insurance. Customer shall maintain all-risk property insurance on the Goods while in Provider's custody, and shall cause its insurer to waive subrogation against Provider except to the extent of Provider's liability under Section 5.2.
+
+5.4 Provider Insurance. Provider shall maintain warehouse legal liability insurance of at least $2,000,000, commercial general liability of $2,000,000 per occurrence, workers' compensation as required by law, and auto liability of $1,000,000, naming Customer as an additional insured on the general liability policy.
+
+6. INDEMNITY AND GENERAL LIABILITY
+
+6.1 Provider Indemnity. Provider shall indemnify, defend, and hold harmless Customer against any third-party claim arising out of Provider's negligence, willful misconduct, or breach of this Agreement.
+
+6.2 Customer Indemnity. Customer shall indemnify, defend, and hold harmless Provider against any third-party claim arising out of the Goods themselves, including product liability, except to the extent caused by Provider's negligence or breach.
+
+6.3 Procedure. The indemnified party shall give prompt written notice, the indemnifying party shall control the defense, and no settlement imposing a non-monetary obligation on the indemnified party may be made without its consent.
+
+6.4 General Limitation. Except for the indemnity obligations in this Section 6, Provider's obligations under Sections 2.5 and 5.2, and either party's gross negligence or willful misconduct, neither party's aggregate liability under this Agreement shall exceed the fees paid in the twelve (12) months preceding the claim, and neither party is liable for indirect, incidental, special, consequential, or punitive damages.
+
+7. COMPLIANCE AND SECURITY
+
+7.1 Law. Provider shall comply with all applicable law, including the Occupational Safety and Health Act, the Food Safety Modernization Act where applicable, and applicable customs and export requirements.
+
+7.2 Security. Provider shall maintain access controls, video surveillance retained for ninety (90) days, and background screening of warehouse personnel to the extent permitted by law, and shall notify Customer of any theft or security incident within twenty-four (24) hours.
+
+7.3 Audit. Customer may audit the facilities, records, and inventory once in any twelve (12) month period on ten (10) business days' notice, and at any time following a material inventory variance or security incident.
+
+8. TERM AND TERMINATION
+
+8.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, renewing for successive one-year terms unless either party gives one hundred eighty (180) days' notice of non-renewal.
+
+8.2 Termination. Either party may terminate on written notice if the other materially breaches and fails to cure within thirty (30) days, and Customer may terminate for convenience on one hundred twenty (120) days' written notice.
+
+8.3 Transition Out. On expiration or termination, Provider shall, at Customer's request and at the rates in Exhibit D, continue to perform for up to one hundred eighty (180) days, shall release all Goods to Customer or its designee against payment of undisputed charges, shall deliver all inventory records in a machine-readable format, and shall cooperate in the transition to a successor provider. Provider shall not withhold the Goods on account of a disputed charge. Sections 4.4, 5, 6, 8.3 and 9 survive.
+
+9. GENERAL
+
+9.1 Governing Law; Venue. This Agreement is governed by the laws of the State of Tennessee. Any action arising out of this Agreement shall be brought in the state or federal courts located in Davidson County, Tennessee.
+
+9.2 Assignment. Neither party may assign this Agreement without the other's written consent, except to a successor to substantially all of its business.
+
+9.3 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses stated beneath the signatures.
+
+9.4 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+CATTERMOLE DISTRIBUTION SERVICES LLC
+
+By: /s/ Naomi Fitzgerald-Boateng
+Name: Naomi Fitzgerald-Boateng
+Title: President
+
+BRAMBLEWOOD HOME GOODS, INC.
+
+By: /s/ Piotr Zawadzki
+Name: Piotr Zawadzki
+Title: Vice President, Supply Chain

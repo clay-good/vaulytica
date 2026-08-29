@@ -19735,6 +19735,8 @@
     "match_features": {
       "title_keywords": [
         "venue rental agreement",
+        "venue rental",
+        "event space",
         "event space agreement",
         "facility rental agreement",
         "banquet event order",
@@ -19742,11 +19744,14 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "room block",
-        "attrition",
-        "food and beverage minimum",
         "load-in",
-        "cancellation fee schedule",
+        "load-out",
+        "damage deposit",
+        "host liquor liability",
+        "amplified music",
+        "the caterer",
+        "room block",
+        "food and beverage minimum",
         "dram shop"
       ],
       "negative_features": [
@@ -19761,7 +19766,20 @@
       "Event",
       "Event Date"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "US-COMMERCIAL",
