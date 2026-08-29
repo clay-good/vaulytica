@@ -169,6 +169,18 @@ const COMPLIANT: Array<[string, string, string, string]> = [
     "The rights of the Indemnitee survive the cessation of the Indemnitee's service and continue for so long as the Indemnitee may be subject to any Proceeding. No amendment to the certificate of incorporation or the bylaws may impair a right arising out of conduct occurring before the amendment.",
     'the verb forms only, never the nominal "cessation of service"',
   ],
+  [
+    "DISC-034",
+    "Rule 26(f) Report",
+    "The parties propose limits of twenty-five interrogatories and ten depositions per side, fact discovery closing December 18, 2026, dispositive motions due February 12, 2027, and a trial-ready date of June 7, 2027.",
+    'the word "deadline", from a report that states its schedule by the events themselves',
+  ],
+  [
+    "SET-025",
+    "Litigation Hold Notice",
+    "This notice is issued because the Company reasonably anticipates litigation arising out of the ceiling collapse at 1440 Fruitvale Avenue on November 14, 2025, and because a demand letter was received from counsel for the tenant on January 14, 2026.",
+    "the past participle only, never the present tense a hold notice is written in",
+  ],
 ];
 
 describe("a conjunction is satisfiable by the clause it asks for", () => {

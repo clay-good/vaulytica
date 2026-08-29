@@ -748,6 +748,7 @@ const TOLLING_RULES: Rule[] = [
 const LIT_HOLD_RULES: Rule[] = [
   presence({
     id: "SET-025",
+    version: "1.1.0",
     name: "Triggering event / pending or anticipated litigation",
     description:
       "Litigation hold must describe the triggering event (filed or anticipated litigation / investigation).",
@@ -762,7 +763,9 @@ const LIT_HOLD_RULES: Rule[] = [
       "Identify the matter (case caption / investigation), the parties, and the date the duty to preserve attached.",
     present_patterns: [
       /(litigation|investigation|claim|dispute|matter)/i,
-      /(anticipated|pending|reasonably\s+(expected|anticipated))/i,
+      // "the Company reasonably ANTICIPATES litigation" is the present tense
+      // a hold notice is written in, and the past participle alone missed it.
+      /(anticipat\w+|pending|reasonably\s+(expects?|expected))/i,
     ],
     require_all_present: true,
   }),

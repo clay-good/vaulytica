@@ -548,10 +548,15 @@ const RULE_26F = pack("rule-26f-report", C, [
   },
   {
     id: "DISC-034",
+    ver: "1.1.0",
     name: "Proposed limits and case-management deadlines",
     cite: frcp("16(b)(3)", "scheduling — required contents of the order"),
     pat: [
-      /(deadline|cut-?off|schedul)/i,
+      // A report states its schedule by the events themselves — "fact
+      // discovery closing December 18, 2026; dispositive motions due
+      // February 12, 2027; trial-ready June 7, 2027" — without ever using
+      // the word "deadline".
+      /(deadline|cut-?off|schedul|discovery\s+clos\w+|\bdue\s+[A-Z][a-z]+\s+\d|trial-?ready)/,
       /(amend\s+the\s+pleadings|join\s+(additional\s+)?parties|expert\s+(disclosure|report)|dispositive\s+motion|fact\s+discovery)/i,
     ],
     all: true,

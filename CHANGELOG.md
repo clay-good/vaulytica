@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.139.0] — 2026-08-29
+
+### Fixed
+- `DISC-034` wanted the word "deadline" from a Rule 26(f) report that states
+  its schedule by the events themselves — "fact discovery closing December 18,
+  2026; dispositive motions due February 12, 2027; trial-ready June 7, 2027".
+- `SET-025` wanted the past participle and could not read the present tense a
+  litigation hold notice is written in: "the Company reasonably ANTICIPATES
+  litigation".
+
 ## [9.138.0] — 2026-08-29
 
 ### Fixed
