@@ -262,7 +262,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.28.0",
+  version: "1.29.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -377,10 +377,23 @@ export const rule: Rule = {
         }
         // Count distinct sig tokens in the paragraph; a single
         // paragraph can carry the full table row "By: ___ Name: ___".
-        const m = text.match(/\b(By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b/gi);
+        //
+        // A COVER BLOCK is not a signature block. "Prepared for: … Prepared
+        // by: … Date prepared: …" at the top of a broker's summary yields the
+        // tokens "by" and "date" in one paragraph, which was enough to reach
+        // the two-token floor and stand the check down on an unsigned
+        // document. The labels are stripped before counting, so a real "By:"
+        // on a signature line still counts.
+        const counted = text.replace(
+          /\b(?:prepared|compiled)\s+(?:by|for)\b|\bdate\s+(?:prepared|of\s+issue)\b/gi,
+          " ",
+        );
+        const m = counted.match(
+          /\b(By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b/gi,
+        );
         if (!m) continue;
         const distinct = new Set(m.map((t) => t.toLowerCase().replace(/\s+/g, " ")));
-        if (SIG_LINE.test(text) || SIG_TOKEN.test(text)) signals += distinct.size;
+        if (SIG_LINE.test(counted) || SIG_TOKEN.test(counted)) signals += distinct.size;
       }
       return signals;
     };

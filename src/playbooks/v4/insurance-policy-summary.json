@@ -7,21 +7,26 @@
     "title_keywords": [
       "declarations",
       "policy summary",
+      "summary of insurance",
+      "insurance summary",
+      "summary of coverage",
       "insurance declarations",
       "dec page",
       "policy declarations"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
+      "this is a summary only",
+      "does not amend, extend, or alter",
+      "the policy controls",
+      "prepared for",
+      "summary of insurance",
       "named insured",
-      "policy period",
-      "limits of liability",
-      "premium",
-      "deductible",
-      "form number"
+      "limits of liability"
     ],
     "negative_features": [
-      "endorsement",
+      "acord 25",
+      "certificate holder",
       "indemnification agreement"
     ]
   },

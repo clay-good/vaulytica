@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.219.0] — 2026-08-29
+
+### Added
+- A broker's summary of insurance — the 177th specimen.
+
+### Fixed
+- **`insurance-policy-summary` listed "endorsement" as a NEGATIVE feature**, but
+  every policy summary lists its key endorsements. The document said in terms
+  that it "is not a certificate of insurance" and routed to `coi` anyway, which
+  matched four generic insurance words. Widened the family's title keywords
+  ("summary of insurance", "insurance summary", "summary of coverage"), replaced
+  the negative features with the ones a certificate actually carries ("acord
+  25", "certificate holder"), and narrowed the distinguishing phrases to
+  summary-only vocabulary so the family does not tie `cyber-insurance-policy`.
+- **STRUCT-003 read a COVER BLOCK as a signature block.** "Prepared for: …
+  Prepared by: … Date prepared: …" at the top of the summary yielded the
+  distinct tokens "by" and "date" in one paragraph — enough to reach the
+  two-token floor and stand the check down on a document nobody had signed. The
+  cover-page labels are stripped before counting; "approved by" and "reviewed
+  by" are deliberately left in, because an approval block *is* an execution
+  affordance (the DPIA specimen relies on it).
+- Found by the format-invariance guard from both directions: the double-spaced
+  layout reported STRUCT-003 and the normal layout did not, because the cover
+  block's tokens only share a paragraph when the lines are not split.
+
 ## [9.218.0] — 2026-08-29
 
 ### Added

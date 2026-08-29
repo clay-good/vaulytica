@@ -40,6 +40,23 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A broker's summary of insurance coverage. It routed to `coi` — on a
+  // document that says in terms that it "is not a certificate of insurance" —
+  // because the summary family listed "ENDORSEMENT" as a negative feature,
+  // and every policy summary lists its key endorsements, while `coi` matched
+  // four words any insurance document carries (policy number, general
+  // liability, additional insured, carrier). The summary family now carries
+  // its own register and its title keywords read "SUMMARY OF INSURANCE
+  // COVERAGE". INS-001 and INS-005 stay and are fair: the summary identifies
+  // the insured as "Prepared for" rather than as the Named Insured, and
+  // enumerates coverage parts without form numbers or edition dates.
+  // STRUCT-003 is fair too: nobody signs a broker's summary. It was silent
+  // until STRUCT-003 v1.19.0 stopped reading the cover block's "Prepared
+  // by: … Date prepared: …" as a two-token signature line.
+  "insurance-policy-summary.txt": {
+    playbook: "insurance-policy-summary",
+    findings: ["INS-001", "STRUCT-003", "INS-005", "TEMP-002"],
+  },
   // A Regulation D private placement memorandum. Clean: the whole
   // REG-025..032 pack is silent on a memorandum that covers every column —
   // the § 4(a)(2) / Rule 506(b) legend, the no-approval legend, use of

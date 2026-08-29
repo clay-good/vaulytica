@@ -1,0 +1,72 @@
+SUMMARY OF INSURANCE COVERAGE
+Prepared for: Bramblewood Home Goods, Inc.
+Policy Period: July 1, 2026 to July 1, 2027
+Prepared by: Ashfield Risk Advisors LLC, 300 Commerce Way, Nashville, Tennessee 37201
+Date prepared: June 18, 2026
+
+THIS IS A SUMMARY ONLY. It is prepared for convenience and does not amend, extend, or alter the coverage afforded by the policies described. The policies themselves, including their exclusions, conditions, and endorsements, govern in every case. In the event of any conflict between this summary and a policy, the policy controls. This summary confers no rights on any person and is not a certificate of insurance.
+
+1. COMMERCIAL GENERAL LIABILITY
+
+Carrier: Meridian Casualty Insurance Company (A.M. Best rating A XV)
+Policy number: CGL-4471982
+Form: Occurrence
+Limits: $1,000,000 each occurrence; $2,000,000 general aggregate; $2,000,000 products-completed operations aggregate; $1,000,000 personal and advertising injury; $100,000 damage to premises rented; $10,000 medical expense
+Deductible: $10,000 per occurrence, bodily injury and property damage combined
+Key endorsements: additional insured — owners, lessees or contractors (ongoing and completed operations); primary and non-contributory; waiver of transfer of rights of recovery
+Notable exclusions: professional services; recall of products; asbestos; and any claim arising out of the hazardous materials described in the policy's pollution exclusion
+
+2. COMMERCIAL PROPERTY
+
+Carrier: Meridian Casualty Insurance Company
+Policy number: CP-4471983
+Covered locations: the four distribution centers listed on the schedule of locations
+Valuation: replacement cost, no coinsurance (agreed value)
+Limits: $48,500,000 blanket building and business personal property; $12,000,000 business income and extra expense with a 12-month period of indemnity
+Deductible: $50,000 per occurrence; 3% of the value at risk for named windstorm, subject to a $250,000 minimum
+Notable exclusions: flood, earthquake, and any loss caused by a cyber incident, which is excluded by endorsement and addressed under the cyber policy below
+
+3. WORKERS' COMPENSATION AND EMPLOYERS' LIABILITY
+
+Carrier: Cardinal State Mutual Insurance Company (A.M. Best rating A- IX)
+Policy number: WC-2210447
+Coverage: statutory in Tennessee, Georgia, and Ohio; employers' liability of $1,000,000 each accident, $1,000,000 disease each employee, $1,000,000 disease policy limit
+Notable exclusions: coverage is not afforded for employees in any state not listed above, including any monopolistic state
+
+4. AUTOMOBILE LIABILITY
+
+Carrier: Meridian Casualty Insurance Company
+Policy number: BA-4471984
+Coverage: any auto; $1,000,000 combined single limit
+Physical damage: comprehensive and collision on scheduled autos, $2,500 deductible
+
+5. UMBRELLA / EXCESS LIABILITY
+
+Carrier: Northgate Specialty Insurance Company (A.M. Best rating A XIV)
+Policy number: UMB-778201
+Limits: $25,000,000 each occurrence and aggregate
+Attachment: follows the general liability, automobile liability, and employers' liability policies above; $10,000 self-insured retention for claims not covered by an underlying policy
+Notable exclusion: the umbrella does not follow the cyber or professional policies
+
+6. CYBER LIABILITY
+
+Carrier: Halyard Specialty Insurance Company (A.M. Best rating A- VIII)
+Policy number: CYB-990412
+Form: claims made and reported, with a retroactive date of July 1, 2022
+Limits: $10,000,000 aggregate; sublimits of $2,500,000 for cyber extortion and $1,000,000 for regulatory fines and penalties where insurable by law
+Retention: $250,000 each claim; an eight-hour waiting period applies to business interruption
+Notable exclusions: unencrypted mobile device; failure to maintain the minimum security controls warranted in the application; bodily injury and property damage
+
+7. GAPS AND OBSERVATIONS
+
+7.1 The property policy excludes flood at all four locations, and one location is in a FEMA Special Flood Hazard Area. Standalone flood coverage is not currently purchased.
+
+7.2 The cyber policy is written on a claims-made-and-reported basis with a 2022 retroactive date; claims arising from acts before that date are not covered, and late reporting will forfeit coverage even where the claim is otherwise covered.
+
+7.3 The umbrella does not sit above the cyber or professional policies, so cyber losses above $10,000,000 are uninsured.
+
+7.4 The workers' compensation policy lists three states. Any employee working in a fourth state, including a remote worker, may be uncovered until that state is added.
+
+7.5 Two carriers carry an A.M. Best rating below A, which does not meet the A VIII minimum several of the company's contracts require.
+
+Questions about this summary should be directed to Ashfield Risk Advisors LLC.
