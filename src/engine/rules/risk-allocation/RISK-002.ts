@@ -4,7 +4,7 @@ import { emit, allMatches, topPosition } from "../_helpers.js";
 /** RISK-002 — Indemnity mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Indemnity mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -27,7 +27,15 @@ export const rule: Rule = {
       // "Seller's indemnification obligations under the Purchase Agreement"
       // was scored as Seller-heavy asymmetry. "under this Agreement" is this
       // document and still counts.
-      if (/indemnif[^.]{0,60}\bunder\s+the\s+[a-z]+\s+agreement\b/.test(sentence)) continue;
+      // The named instrument is one word as often as three — "under the
+      // Purchase Agreement", "under the Stock Purchase Agreement", "under the
+      // Asset Purchase and Contribution Agreement" — and the single-word
+      // window read only the first of those. (The text is already lowercased,
+      // so the capitalization of the title is not available here; the word
+      // count is what bounds it. "under this Agreement" is this document and
+      // still counts, because "this" is not admitted.)
+      if (/indemnif[^.]{0,60}\bunder\s+the\s+(?:[a-z]+\s+){1,4}agreement\b/.test(sentence))
+        continue;
       const before = sentence.slice(0, idx);
       // Count the INDEMNITOR, not every party the sentence happens to name.
       // "Customer shall indemnify Vendor" names both, so tallying any mention

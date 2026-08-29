@@ -40,6 +40,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An expert witness retention letter from counsel to a forensic engineer.
+  // The family shipped with an empty rule profile while its sibling
+  // `engagement-letter` already had the right one, so a retention letter was
+  // told at `warning` that it allocates no IP, provides no indemnity, caps no
+  // liability and states no termination for cause. A retention letter carries
+  // none of those and is not supposed to.
+  "expert-retention.txt": {
+    playbook: "expert-witness-retention",
+    findings: ["CHOICE-003", "OBLI-005", "TEMP-006", "TEMP-007", "TERM-007"],
+  },
   // A vendor information-security exhibit. It carries no ratification clause —
   // an exhibit changes nothing, so it has none — and relies on the recital
   // every such document opens on: "This INFORMATION SECURITY Exhibit is

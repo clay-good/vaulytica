@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.171.0] — 2026-08-29
+
+### Added
+- An expert witness retention letter — the 137th specimen.
+
+### Fixed
+- **`expert-witness-retention` shipped with an empty rule profile** while its
+  sibling `engagement-letter` already had the right one. A retention letter
+  from counsel to a forensic engineer was told at `warning` that it allocates
+  no IP, provides no indemnity, caps no liability and states no path to
+  terminate for cause. A retention letter carries none of those.
+- **RISK-002's parent-instrument guard read only a ONE-word title.** An
+  indemnity "under the Purchase Agreement" describes a parent deal's
+  allocation rather than an indemnity of this document, and that is what the
+  guard exists to exclude — but "under the Stock Purchase Agreement" fell
+  straight through, so an escrow securing the seller's obligations under it
+  was scored as seller-heavy asymmetry. "under this Agreement" is still this
+  document and still counts.
+
 ## [9.170.0] — 2026-08-29
 
 ### Fixed

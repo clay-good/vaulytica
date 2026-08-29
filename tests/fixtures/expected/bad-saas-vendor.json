@@ -465,7 +465,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -990,7 +990,7 @@
       "explanation": "One party appears to bear materially more indemnity scope than the other. Confirm the asymmetry is intentional and reciprocated by other consideration (e.g., a fee discount).",
       "id": "RISK-002-s1.3-601",
       "rule_id": "RISK-002",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnity appears asymmetric"
@@ -1241,11 +1241,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "cfeee5e88a768cc2bbd5046423e416ebfda6630eec51efe2ee6899aea6fd60b6",
+  "result_hash": "70e96f895d65f878290f4d0537e7ec35904ba16e3f41b5f6e4507ebacd6af8fb",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.170.0"
+  "version": "9.171.0"
 }
