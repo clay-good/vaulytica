@@ -43,31 +43,21 @@ export const EXPECTED: Record<string, Expectation> = {
   // An NVCA Series B PREFERRED STOCK PURCHASE AGREEMENT — a primary venture
   // financing, in which the company ISSUES new shares.
   //
-  // CATALOG GAP, recorded rather than papered over: the catalog carries the
-  // whole NVCA suite — the investors' rights agreement, the voting agreement,
-  // the ROFR and co-sale agreement, the SAFE, the convertible note — but NOT
-  // the stock purchase agreement that closes the round. `stock-purchase-
-  // agreement` is the ABA private-target M&A SPA, so this document is checked
-  // for sandbagging, a stockholder representative, and selling-stockholder
-  // restrictive covenants, none of which a financing has. Narrowing the M&A
-  // family with negatives an issuance carries ("accredited investor",
-  // "Restated Certificate", "Investors' Rights Agreement") takes it to 0.6 —
-  // still over the threshold — so the fix is a new family with its own pack,
-  // not another negative feature.
+  // The catalog carried the whole NVCA suite — the investors' rights
+  // agreement, the voting agreement, the ROFR and co-sale agreement, the
+  // SAFE, the convertible note — but not the document that closes the round,
+  // so this routed to the ABA private-target M&A SPA and was checked for
+  // sandbagging, a stockholder representative, and selling-stockholder
+  // restrictive covenants, none of which a financing has. 9.201.0 added the
+  // family and its EQT-131..136 pack; all six are silent on a well-drafted
+  // one.
   "stock-purchase.txt": {
-    playbook: "stock-purchase-agreement",
+    playbook: "venture-stock-purchase-agreement",
     findings: [
-      "MNA-016",
-      "MNA-017",
-      "MNA-018",
       "OBLI-007",
-      "RISK-001",
-      "RISK-005",
       "STRUCT-006",
       "STRUCT-018",
       "TEMP-012",
-      "TERM-002",
-      "TERM-005",
       "CHOICE-003",
       "OBLI-005",
       "TEMP-002",

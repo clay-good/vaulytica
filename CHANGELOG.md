@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.201.0] — 2026-08-29
+
+### Added — a new document family
+- **`venture-stock-purchase-agreement`** (EQT-131..136, 6 checks). The catalog
+  carried the whole NVCA suite — the investors' rights agreement, the voting
+  agreement, the ROFR and co-sale agreement, the SAFE, the convertible note —
+  but not **the document that closes the round**. A Series B preferred stock
+  purchase agreement routed to `stock-purchase-agreement`, which is the ABA
+  private-target M&A SPA, and was checked for sandbagging, a stockholder
+  representative, and selling-stockholder restrictive covenants, none of which
+  a primary financing has.
+
+  The six columns are the ones an investor's counsel actually reads it for:
+  the restated certificate filed as a closing condition (`critical` — the
+  preferred stock does not exist until it is on file); the capitalization
+  representation and its disclosure schedule (`critical`); authorization and
+  valid issuance; the purchasers' private-placement representations
+  (`critical` — the Regulation D exemption is their status and intent);
+  the ancillary agreements as closing deliverables; and survival of the
+  representations, which in a financing is the investor's only post-closing
+  recourse.
+
+  `stock-purchase-agreement` now carries the issuance markers as negative
+  features, so the M&A family stands down for a financing.
+
+  Catalog: **1,824 rules across 267 document types**.
+
 ## [9.200.0] — 2026-08-29
 
 ### Added

@@ -13,7 +13,10 @@
       "indemnification",
       "survival"
     ],
-    "negative_features": ["asset purchase", "merger agreement"]
+    "negative_features": [
+      "accredited investor",
+      "restated certificate",
+      "investors' rights agreement","asset purchase", "merger agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": [

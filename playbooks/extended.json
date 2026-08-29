@@ -17852,6 +17852,9 @@
         "survival"
       ],
       "negative_features": [
+        "accredited investor",
+        "restated certificate",
+        "investors' rights agreement",
         "asset purchase",
         "merger agreement"
       ]
@@ -19617,6 +19620,76 @@
       "Vulnerability management + penetration testing",
       "Incident response + breach SLA",
       "Subprocessor disclosure"
+    ]
+  },
+  {
+    "id": "venture-stock-purchase-agreement",
+    "version": "1.0.0",
+    "name": "Venture Preferred Stock Purchase Agreement",
+    "description": "NVCA-style preferred stock purchase agreement — a primary venture financing in which the company ISSUES new shares, as against the ABA private-target M&A stock purchase agreement. Selects the EQT-131..136 ruleset (6 checks).",
+    "match_features": {
+      "title_keywords": [
+        "preferred stock purchase agreement",
+        "preferred stock purchase",
+        "series seed purchase agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "accredited investor",
+        "restated certificate",
+        "investors' rights agreement",
+        "validly issued",
+        "subsequent closing",
+        "disclosure schedule"
+      ],
+      "negative_features": [
+        "selling stockholder",
+        "stockholder representative",
+        "asset purchase",
+        "merger agreement"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [
+      "Purchaser",
+      "Restated Certificate",
+      "Preferred Stock"
+    ],
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-SECURITIES",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "investor-rights-agreement",
+      "rofr-co-sale",
+      "voting-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Restated certificate filed as a closing condition",
+      "Capitalization representation and disclosure schedule",
+      "Authorization and valid issuance",
+      "Purchaser private-placement representations",
+      "Ancillary agreements executed at closing",
+      "Survival of the representations"
     ]
   },
   {

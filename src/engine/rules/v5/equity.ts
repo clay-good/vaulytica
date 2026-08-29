@@ -415,6 +415,103 @@ const SECONDARY = pack("secondary-stock-transfer", C, [
   },
 ]);
 
+const VENTURE_SPA = pack("venture-stock-purchase-agreement", C, [
+  {
+    id: "EQT-131",
+    name: "Restated certificate filed as a closing condition",
+    cite: practice(
+      "restated-certificate",
+      "filing the amended and restated certificate of incorporation at a preferred financing closing",
+    ),
+    pat: [
+      /(amended\s+and\s+restated|restated)\s+certificate\s+of\s+incorporation|restated\s+certificate/i,
+      /(file[ds]?\s+with\s+the\s+secretary\s+of\s+state|filing\s+of\s+the\s+restated|condition(?:ed)?\s+on[^.]{0,120}?filing)/i,
+    ],
+    all: true,
+    why: "The preferred stock does not exist until the restated certificate is on file — every economic and control term of the round lives in it, not in this agreement. A closing that does not condition on the filing can leave the investors holding shares of a series that has not been created.",
+    fix: "Attach the restated certificate as an exhibit and condition each closing on its filing with the Secretary of State.",
+    sev: "critical",
+  },
+  {
+    id: "EQT-132",
+    name: "Capitalization representation and disclosure schedule",
+    cite: practice(
+      "capitalization-rep",
+      "the capitalization representation and its disclosure schedule in a venture financing",
+    ),
+    pat: [
+      /\bcapitali[sz]ation\b|authorized\s+capital|issued\s+and\s+outstanding/i,
+      /disclosure\s+schedule|except\s+as\s+set\s+(?:out|forth)\s+on/i,
+    ],
+    all: true,
+    why: "The capitalization representation is the one an investor prices the round on, and the exceptions live on the disclosure schedule. A representation with no schedule is either untrue or incomplete.",
+    fix: "State the authorized, issued and outstanding capital by class, list every option, warrant and convertible, and qualify the representation by a disclosure schedule delivered at signing.",
+    sev: "critical",
+  },
+  {
+    id: "EQT-133",
+    name: "Authorization and valid issuance",
+    cite: practice(
+      "valid-issuance",
+      "the authorization and valid-issuance representations in a preferred financing",
+    ),
+    pat: [
+      /valid(?:ly)?\s+issued|duly\s+authori[sz]ed|corporate\s+action\s+required/i,
+      /fully\s+paid|non-?assessable|enforceable\s+in\s+accordance\s+with\s+its\s+terms/i,
+    ],
+    all: true,
+    why: "These are the representations counsel's closing opinion rests on. Without them the investor has no contractual recourse if the board never approved the issuance or the shares were not lawfully authorized.",
+    fix: "Represent that all corporate action has been taken, that the shares will be validly issued, fully paid and non-assessable, and that this agreement is enforceable against the company.",
+  },
+  {
+    id: "EQT-134",
+    name: "Purchaser private-placement representations",
+    cite: cfr(
+      "17",
+      "230.506",
+      "Regulation D — rules governing the limited offer and sale of securities",
+    ),
+    pat: [
+      /accredited\s+investor|regulation\s+d|rule\s+501/i,
+      /(own\s+account|not\s+with\s+a\s+view\s+to\s+distribut|restricted\s+securit|general\s+solicitation)/i,
+    ],
+    all: true,
+    why: "The exemption the round relies on is the purchasers' status and intent, and only their written representations establish it. Without them the issuer cannot show the offering was exempt.",
+    fix: "Have each purchaser represent that it is an accredited investor, is acquiring for its own account and not with a view to distribution, understands the shares are restricted, and was not solicited generally.",
+    sev: "critical",
+  },
+  {
+    id: "EQT-135",
+    name: "Ancillary agreements executed at closing",
+    cite: practice(
+      "ancillary-agreements",
+      "the investors' rights, voting, and co-sale agreements as closing deliverables",
+    ),
+    pat: [
+      /investors[’']?\s+rights\s+agreement|voting\s+agreement|co-?sale\s+agreement/i,
+      /(condition|deliver\w*|execut\w*|counterpart\s+signature)/i,
+    ],
+    all: true,
+    why: "The governance, registration, and transfer terms of the round are not in this agreement — they are in the three ancillary agreements. A closing that does not condition on their execution leaves the round documented in one document out of four.",
+    fix: "Condition each closing on execution of the investors' rights agreement, the voting agreement, and the right of first refusal and co-sale agreement by the company and the requisite holders.",
+  },
+  {
+    id: "EQT-136",
+    name: "Survival of the representations",
+    cite: practice(
+      "rep-survival",
+      "survival of representations and warranties in a venture financing",
+    ),
+    pat: [
+      /surviv\w+/i,
+      /(representations?\s+and\s+warrant|\bfor\s+(?:a\s+period\s+of\s+)?[a-z-]*\s*\(?\d{1,3}\)?\s*(?:month|year)s?\b|indefinitely)/i,
+    ],
+    all: true,
+    why: "A venture financing has no indemnity and no escrow: survival of the representations is the investor's only post-closing recourse, and its period is the whole of the bargain.",
+    fix: "State how long the representations survive the closing, and name any that survive indefinitely.",
+  },
+]);
+
 /** Rev. Rul. 69-184 — a partner cannot simultaneously be an employee of the partnership. */
 function agency_rev_rul() {
   return irs(
@@ -429,4 +526,5 @@ export const V5_EQUITY_RULES: readonly Rule[] = [
   ...PROFITS_INTEREST,
   ...WARRANT,
   ...SECONDARY,
+  ...VENTURE_SPA,
 ];
