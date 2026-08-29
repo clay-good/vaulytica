@@ -14,7 +14,7 @@ const BIOMETRIC = pack("biometric-consent", C, [
     id: "PRV-101",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Written release obtained before collection",
     cite: stateLaw(
       "biometric-privacy",
@@ -22,8 +22,14 @@ const BIOMETRIC = pack("biometric-consent", C, [
       "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004",
     ),
     pat: [
-      /(written\s+release|hereby\s+(consent|authorize)|i\s+consent\s+to|informed\s+written\s+consent)/i,
-      /(before\s+(any\s+)?(collection|capture)|prior\s+to\s+(the\s+)?(collection|capture)|collect(ion)?\s+of\s+my\s+biometric)/i,
+      // "I give my written consent … to that collection, storage, and use" is
+      // the § 15(b)(3) release, written as the statute's own recital, and the
+      // adjacent forms below could not see it.
+      /(written\s+release|written\s+consent|consent\s+in\s+writing|hereby\s+(consent|authorize)|i\s+consent\s+to|(?:give|giving|provide)\s+(?:my\s+)?(?:written\s+)?(?:consent|release|authorization)|informed\s+written\s+consent)/i,
+      // BIPA § 15(b)(1) asks the form to say WHAT is being collected, and a
+      // form that recites "is collecting, storing, and using a biometric
+      // identifier and biometric information about me" says it.
+      /(before\s+(any\s+)?(collection|capture)|prior\s+to\s+(the\s+)?(collection|capture)|collect(ion)?\s+of\s+my\s+biometric|collect\w*[^.;]{0,70}?\bbiometric|biometric\s+identifier[^.;]{0,90}?\bcollect)/i,
     ],
     all: true,
     why: "BIPA § 15(b) requires informed written consent before collection, and it carries a private right of action with statutory damages per violation — the only US biometric statute that does.",

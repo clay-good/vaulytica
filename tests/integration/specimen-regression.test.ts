@@ -369,6 +369,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // duration.
   "informed-consent.txt": { playbook: "informed-consent", findings: ["OBLI-005"] },
 
+  // An Illinois BIPA § 15(b) consent. Its consent paragraph recites the
+  // statute's own elements, and PRV-101 wanted "written release" or "I consent
+  // to" from a form that says "I give my written consent … to that collection,
+  // storage, and use".
+  "biometric-consent.txt": { playbook: "biometric-consent", findings: ["OBLI-005"] },
+
+  // A blank 45 C.F.R. § 164.508 authorization. It is a FORM, and five of its
+  // own fields — marked with prose rather than a colon, "for the period ______
+  // through ______" — were reported at `critical` as unfilled template
+  // content.
+  "phi-authorization.txt": { playbook: "phi-authorization", findings: ["OBLI-005"] },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

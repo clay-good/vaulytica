@@ -391,4 +391,19 @@ describe("STRUCT-013 — a blank the reader is meant to fill in", () => {
     ]);
     expect(STRUCT_013.check(ctx)).not.toBeNull();
   });
+
+  // A blank form marks a field with prose as readily as with a colon. A HIPAA
+  // authorization, which 45 C.F.R. § 164.508 requires to be a form, was told
+  // at `critical` that five of its own fields were unfilled template content.
+  it("does not report a form's prose-marked fields (v1.16.0)", () => {
+    const ctx = buildContext([
+      "Authorization for Release of Protected Health Information",
+      "Patient name: ____________________________________________",
+      "Date of birth: ____________________  Medical record number: ____________________",
+      "Address: ____________________________________________",
+      "Purpose of the disclosure: ____________________________________________",
+      "Office visit notes for the period ____________________ through ____________________",
+    ]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+  });
 });

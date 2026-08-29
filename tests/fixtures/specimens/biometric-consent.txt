@@ -1,0 +1,38 @@
+BIOMETRIC INFORMATION CONSENT AND RELEASE
+
+Larkfield Logistics, Inc.
+Effective for employees at the Joliet and Bolingbrook facilities
+
+WHAT WE COLLECT
+
+To record the start and end of your shift, our timekeeping system scans the shape of your hand and converts it to a mathematical template. The template is a biometric identifier, and the record we keep of it is biometric information, as those terms are used in the Illinois Biometric Information Privacy Act, 740 ILCS 14/1 et seq. We do not store an image of your hand, and the template cannot be reversed to produce one.
+
+WHY WE COLLECT IT
+
+We collect and use the template for one purpose: to identify you when you clock in and out, so that your hours and your pay are recorded accurately. We do not use it for any other purpose, and we do not sell, lease, trade, or otherwise profit from it.
+
+HOW LONG WE KEEP IT
+
+We keep the template until the first of these occurs: the purpose above is satisfied, or one year after your last day of employment. When that happens we permanently destroy the template and the record of it, and we do so even if you do not ask. Our written retention schedule and destruction guidelines are posted on the employee portal and are available from Human Resources on request.
+
+WHO ELSE SEES IT
+
+The template is stored by our timekeeping vendor, Ashgrove Workforce Systems, LLC, which processes it solely on our instructions and is contractually forbidden to use it for any other purpose. We do not disclose the template to anyone else unless you consent in writing, the disclosure completes a financial transaction you requested, or the disclosure is required by state or federal law or by a warrant or subpoena.
+
+HOW WE PROTECT IT
+
+We store and transmit the template using the reasonable standard of care in our industry, and in a manner at least as protective as the manner in which we store and transmit other confidential and sensitive information.
+
+YOUR ALTERNATIVE
+
+If you prefer not to have your hand scanned, tell your supervisor or Human Resources. You may clock in and out with a badge and PIN instead. Choosing the alternative will not affect your employment, your schedule, or your pay.
+
+CONSENT
+
+I have read this notice. I understand that Larkfield Logistics, Inc. is collecting, storing, and using a biometric identifier and biometric information about me, the specific purpose for which it is being collected, and the length of time for which it will be stored and used. I give my written consent, or my legally authorized representative gives it, to that collection, storage, and use.
+
+_______________________________          ______________
+Signature of employee                    Date
+
+_______________________________
+Printed name of employee

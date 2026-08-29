@@ -81,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.15.0",
+  version: "1.16.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -110,8 +110,27 @@ export const rule: Rule = {
     forEachParagraph(ctx.tree, (p) => {
       paragraphs.push({ text: p.text, section: p.section, start: p.start });
     });
-    // Two or more labeled blanks ANYWHERE in the document make it a form.
-    const documentIsForm = paragraphs.reduce((n, p) => n + labeledRuns(p.text).labeled, 0) >= 2;
+    // Two or more labeled blanks ANYWHERE in the document make it a form —
+    // and if MOST of its blanks are labeled, every blank in it is a field.
+    //
+    // A blank form marks a field with prose as readily as with a colon: "for
+    // the period ______ through ______", "expires on ______". A HIPAA
+    // authorization, which 45 C.F.R. § 164.508 requires to be a form, was told
+    // at `critical` that five of its own fields were unfilled template
+    // content. The majority test is what separates it from a CONTRACT that
+    // carries two labeled fields and three placeholders the drafter forgot.
+    const runTotals = paragraphs.reduce(
+      (acc, p) => {
+        const { total, labeled } = labeledRuns(p.text);
+        return { total: acc.total + total, labeled: acc.labeled + labeled };
+      },
+      { total: 0, labeled: 0 },
+    );
+    const documentIsForm = runTotals.labeled >= 2;
+    // FOUR labeled fields and a clear majority. A contract that carries two
+    // labeled blanks and one the drafter forgot is not a form, and the
+    // majority alone would call it one.
+    const everyBlankIsAField = runTotals.labeled >= 4 && runTotals.labeled * 2 > runTotals.total;
     paragraphs.forEach((p, i) => {
       const withNext = `${p.text} ${paragraphs[i + 1]?.text ?? ""}`.trim();
       for (const { re, label } of PATTERNS) {
@@ -135,6 +154,7 @@ export const rule: Rule = {
               isSignatureContext(withNext) ||
               isBareNameSignature(p.text, partyNames) ||
               isBareNameSignature(withNext, partyNames) ||
+              everyBlankIsAField ||
               isLabeledFormFieldRow(p.text, documentIsForm) ||
               isRuledWritingSpace(p.text, paragraphs[i - 1]?.text))
           ) {

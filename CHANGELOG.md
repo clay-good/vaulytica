@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.141.0] — 2026-08-29
+
+### Added
+- An Illinois BIPA § 15(b) consent and a blank 45 C.F.R. § 164.508
+  authorization for release of protected health information. One hundred and
+  eighteen specimens.
+
+### Fixed
+- **A BIPA consent that recites the statute's own elements was told at
+  `critical` that it obtained no written release** (PRV-101). The rule wanted
+  "written release" or "I consent to"; the form says "I give my written consent
+  … to that collection, storage, and use", which is the § 15(b)(3) release.
+- **Five of a blank HIPAA authorization's own fields were reported as unfilled
+  template content** (STRUCT-013, `critical`). A form marks a field with prose
+  as readily as with a colon — "for the period ______ through ______",
+  "expires on ______". Four or more labeled fields and a clear majority now
+  settle that the document is a form and every blank in it is a field; two
+  labeled fields and one the drafter forgot still report.
+- **A HIPAA authorization was reported as citing no data regime**
+  (IPDATA-005). The redisclosure warning § 164.508(c)(2)(iii) requires — "may
+  then no longer be protected by the federal privacy regulations" — names it.
+
 ## [9.140.0] — 2026-08-29
 
 ### Added
