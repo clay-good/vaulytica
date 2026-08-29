@@ -40,6 +40,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A Delaware limited partnership agreement. RISK-015 and RISK-011 both
+  // demanded commercial indemnity machinery of the Partnership's indemnity of
+  // its GENERAL PARTNER — an aggregate cap, a notice provision, defense
+  // control. That indemnity is uncapped by design, and the existing statutory
+  // guard wanted the "fullest extent permitted" formula, which an LP agreement
+  // usually does not use: it writes the governance-role indemnitee and the
+  // statutory carve-out (fraud, willful misconduct, gross negligence, knowing
+  // violation of law) instead. STRUCT-006 stays: this specimen omits the
+  // definition of Percentage Interest.
+  "partnership-agreement.txt": {
+    playbook: "partnership-agreement",
+    findings: ["STRUCT-006", "STRUCT-018", "CHOICE-006", "OBLI-005"],
+  },
   // A three-party subordination agreement. Clean: routes at 1.0 and its own
   // pack is silent on a well-drafted one.
   "subordination-agreement.txt": {
@@ -889,7 +902,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // commercial bargain.
   "operating-agreement.txt": {
     playbook: "operating-agreement-llc",
-    findings: ["STRUCT-006", "STRUCT-018", "OBLI-005", "RISK-011", "RISK-015"],
+    findings: ["OBLI-005", "STRUCT-006", "STRUCT-018"],
   },
 
   // An executive employment agreement — 409A, 280G, Good Reason, and an

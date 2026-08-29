@@ -127,3 +127,50 @@ describe("RISK-011 — the escrow agent's fiduciary indemnity (v1.3.0)", () => {
     expect(RISK_011.check(ctx)).toBeNull();
   });
 });
+
+describe("RISK-015 — the statutory indemnity without the 'fullest extent' formula", () => {
+  // An LP or LLC agreement usually writes it plainly: "The Partnership shall
+  // indemnify the GENERAL PARTNER and its officers, directors, members, and
+  // employees against any loss arising out of the Partnership's business,
+  // EXCEPT a loss resulting from FRAUD, WILLFUL MISCONDUCT, GROSS NEGLIGENCE,
+  // or a knowing violation of law." That indemnity is uncapped by design, and
+  // demanding an aggregate cap on it tells the drafter to break the entity
+  // form. The governance-role indemnitee plus the statutory carve-out is the
+  // discriminator.
+  it("is silent on a partnership indemnifying its general partner", () => {
+    expect(
+      RISK_015.check(
+        buildContext([
+          "Indemnification",
+          "The Partnership shall indemnify the General Partner and its officers, directors, members, and employees against any loss arising out of the Partnership's business, except a loss resulting from fraud, willful misconduct, gross negligence, or a knowing violation of law.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports a COMMERCIAL indemnity between two businesses", () => {
+    // "Owner shall indemnify ... Manager ... other than a claim arising from
+    // Manager's gross negligence" reads like the statutory carve-out, but the
+    // indemnitor is a counterparty, not the entity. The ENTITY as indemnitor
+    // is what makes an indemnity a governance one.
+    expect(
+      RISK_015.check(
+        buildContext([
+          "Indemnity",
+          "Owner shall indemnify, defend, and hold harmless Manager against any claim arising out of the ownership or operation of the Property, other than a claim arising from Manager's gross negligence, willful misconduct, or breach of this Agreement.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("still reports a COMMERCIAL indemnity with no cap", () => {
+    expect(
+      RISK_015.check(
+        buildContext([
+          "Indemnity",
+          "Vendor shall indemnify Customer against any third-party claim arising out of the Services, including claims of infringement.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

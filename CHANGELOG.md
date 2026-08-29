@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.194.0] — 2026-08-29
+
+### Added
+- A Delaware limited partnership agreement — the 156th specimen.
+
+### Fixed
+- **RISK-015 and RISK-011 demanded commercial indemnity machinery of an
+  entity's indemnity of its own fiduciary** — an aggregate cap, a notice
+  provision, defense control — on "The Partnership shall indemnify the GENERAL
+  PARTNER … except a loss resulting from FRAUD, WILLFUL MISCONDUCT, GROSS
+  NEGLIGENCE, or a knowing violation of law". That indemnity is uncapped by
+  design; the existing statutory guard wanted the "fullest extent permitted"
+  formula, which an LP or LLC agreement usually does not use.
+
+  The ENTITY as indemnitor is what makes an indemnity a governance one. "Owner
+  shall indemnify … Manager … other than a claim arising from Manager's gross
+  negligence" reads like the same carve-out but runs between two businesses,
+  and still needs its cap.
+- **`partnership-agreement` shipped with an empty rule profile.**
+
+### Changed
+- `operating-agreement.txt` no longer reports RISK-015 / RISK-011: an LLC
+  agreement's indemnity of its Manager and Members is the same statutory
+  indemnity, and the guard now reaches it.
+
 ## [9.193.0] — 2026-08-29
 
 ### Added

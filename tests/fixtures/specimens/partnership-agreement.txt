@@ -1,0 +1,104 @@
+LIMITED PARTNERSHIP AGREEMENT OF
+HAWTHORNE MILL PARTNERS, L.P.
+
+THIS LIMITED PARTNERSHIP AGREEMENT (this "Agreement") of Hawthorne Mill Partners, L.P., a Delaware limited partnership (the "Partnership"), is made as of January 15, 2026 by and among Hawthorne Mill GP, LLC, a Delaware limited liability company, as general partner (the "General Partner"), and the persons listed on Schedule A as limited partners (each a "Limited Partner" and collectively the "Limited Partners").
+
+ARTICLE I — FORMATION
+
+1.1 Formation. The Partnership was formed on January 8, 2026 by filing a certificate of limited partnership with the Secretary of State of the State of Delaware under the Delaware Revised Uniform Limited Partnership Act, 6 Del. C. § 17-101 et seq. (the "Act").
+
+1.2 Name and Office. The name of the Partnership is Hawthorne Mill Partners, L.P. Its registered office and registered agent in Delaware are as stated in the certificate of limited partnership.
+
+1.3 Purpose. The Partnership is formed to acquire, develop, own, operate, and dispose of the mixed-use property at 118 Hawthorne Mill Road, Providence, Rhode Island, and to conduct any lawful activity related to that purpose.
+
+1.4 Term. The Partnership continues until December 31, 2046 unless dissolved earlier under Article IX.
+
+ARTICLE II — CAPITAL
+
+2.1 Initial Capital Contributions. Each Partner has contributed the amount set out opposite its name on Schedule A. The aggregate initial capital is $24,000,000, of which the General Partner contributed $480,000 (2%) and the Limited Partners contributed $23,520,000 (98%).
+
+2.2 Additional Capital. No Partner is obligated to make an additional capital contribution. The General Partner may call for additional capital from all Partners pro rata on thirty (30) days' notice. A Partner that does not fund a capital call is subject to dilution of its Percentage Interest in accordance with Section 2.3, and the funding Partners may advance the shortfall as a loan bearing interest at twelve percent (12%) per year.
+
+2.3 Dilution. If a Partner fails to fund a capital call, its Percentage Interest is reduced, and the funding Partners' Percentage Interests are increased, so that each Partner's Percentage Interest equals its aggregate contributions divided by all Partners' aggregate contributions, multiplied by 1.5 for the amount of the shortfall funded by others.
+
+2.4 No Interest; No Withdrawal. No Partner is entitled to interest on its capital contribution or to withdraw any part of its capital account except as this Agreement provides.
+
+ARTICLE III — ALLOCATIONS AND DISTRIBUTIONS
+
+3.1 Distributions. Distributable Cash is distributed within forty-five (45) days after the end of each calendar quarter, in the following order: first, to the Limited Partners until each has received a cumulative eight percent (8%) internal rate of return on its unreturned capital; second, to the Limited Partners until each has received a return of its unreturned capital; third, eighty percent (80%) to the Limited Partners and twenty percent (20%) to the General Partner as a carried interest.
+
+3.2 Allocations. Profits and losses are allocated among the Partners in a manner that causes each Partner's capital account to equal the amount it would receive on a hypothetical liquidation at book value, consistent with Treasury Regulation § 1.704-1(b)(2)(iv).
+
+3.3 Tax Distributions. The Partnership shall distribute to each Partner, before other distributions, an amount sufficient to pay the federal, state, and local income tax on that Partner's allocable share of taxable income, computed at the highest marginal rate applicable to an individual resident in Rhode Island.
+
+3.4 Withholding. The Partnership may withhold and pay over any amount required by law with respect to a Partner, and any amount withheld is treated as distributed to that Partner.
+
+ARTICLE IV — MANAGEMENT
+
+4.1 General Partner. The General Partner has exclusive authority to manage the business of the Partnership and may bind the Partnership. The Limited Partners take no part in management and have no authority to bind the Partnership.
+
+4.2 Major Decisions. Notwithstanding Section 4.1, the General Partner shall not, without the written consent of Limited Partners holding a majority of the Percentage Interests held by Limited Partners: sell all or substantially all of the Partnership's assets; incur indebtedness exceeding sixty percent (60%) loan-to-value; admit a new Partner other than a transferee permitted by Article VII; amend this Agreement in a manner adverse to the Limited Partners; file a bankruptcy petition; or engage in a transaction with an affiliate of the General Partner other than on arm's-length terms.
+
+4.3 Standard of Care; Exculpation. The General Partner shall discharge its duties in good faith and in a manner it reasonably believes to be in the best interests of the Partnership. To the fullest extent permitted by the Act, the General Partner is not liable to the Partnership or any Partner for any act or omission except one constituting fraud, willful misconduct, gross negligence, or a knowing violation of law. The Partners intend that this Section modify the General Partner's fiduciary duties as Section 17-1101(d) of the Act permits, except that the implied contractual covenant of good faith and fair dealing may not be eliminated.
+
+4.4 Indemnification. The Partnership shall indemnify the General Partner and its officers, directors, members, and employees against any loss arising out of the Partnership's business, except a loss resulting from fraud, willful misconduct, gross negligence, or a knowing violation of law, and shall advance expenses on receipt of an undertaking to repay if indemnification is ultimately unavailable.
+
+4.5 Fees. The Partnership shall pay the General Partner an annual asset-management fee of one and one-quarter percent (1.25%) of invested capital, payable quarterly in arrears on the fifteenth day after each quarter end, and a disposition fee of one percent (1%) of gross sale proceeds.
+
+ARTICLE V — LIMITED PARTNERS
+
+5.1 Limited Liability. No Limited Partner is liable for the obligations of the Partnership beyond its capital contribution and its share of undistributed profits, as Section 17-303 of the Act provides.
+
+5.2 Information Rights. Each Limited Partner may obtain the information Section 17-305 of the Act specifies, and the Partnership shall deliver annual audited financial statements within one hundred twenty (120) days after each fiscal year end, a Schedule K-1 by March 15, and unaudited quarterly statements within forty-five (45) days after each quarter end.
+
+5.3 Meetings. The General Partner shall hold an annual meeting of the Partners and shall call a special meeting on the written request of Limited Partners holding twenty percent (20%) of the Percentage Interests held by Limited Partners.
+
+ARTICLE VI — BOOKS, RECORDS, AND TAX
+
+6.1 Books. The Partnership shall keep complete books and records at its principal office, and each Partner may inspect them on reasonable notice for a purpose reasonably related to its interest.
+
+6.2 Partnership Representative. The General Partner is the "partnership representative" under Section 6223 of the Internal Revenue Code and may make elections under the centralized partnership audit rules, including a push-out election under Section 6226, in its reasonable discretion after consulting the Limited Partners.
+
+ARTICLE VII — TRANSFERS AND ADMISSION
+
+7.1 Transfer by a Limited Partner. A Limited Partner may not transfer its interest without the General Partner's consent, which may be withheld in its reasonable discretion, except a transfer to an affiliate or by operation of law on death, in each case if the transferee agrees in writing to be bound by this Agreement.
+
+7.2 Right of First Offer. Before transferring to a third party, a Limited Partner shall offer its interest to the other Limited Partners, pro rata, on the same terms, exercisable within thirty (30) days.
+
+7.3 Transfer by the General Partner. The General Partner may not transfer its interest or withdraw as general partner without the consent of Limited Partners holding a majority of the Percentage Interests held by Limited Partners.
+
+ARTICLE VIII — DISSOLUTION AND WINDING UP
+
+8.1 Dissolution Events. The Partnership dissolves on the expiration of its term, the sale of all its assets, the written consent of the General Partner and Limited Partners holding a majority of the Percentage Interests held by Limited Partners, or an event of dissolution the Act requires.
+
+8.2 Winding Up. On dissolution the General Partner shall wind up the Partnership, liquidate its assets, and apply the proceeds: first, to creditors, including Partners who are creditors; second, to a reserve the General Partner reasonably determines; and third, to the Partners in accordance with their positive capital account balances, as Treasury Regulation § 1.704-1(b)(2)(ii)(b)(2) requires.
+
+8.3 Certificate of Cancellation. On completion of winding up, the General Partner shall file a certificate of cancellation with the Delaware Secretary of State.
+
+ARTICLE IX — GENERAL
+
+9.1 Governing Law. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles.
+
+9.2 Dispute Resolution. Any dispute arising out of this Agreement shall be finally resolved by binding arbitration administered by JAMS under its Comprehensive Arbitration Rules, seated in Wilmington, Delaware, before a single arbitrator.
+
+9.3 Amendment. This Agreement may be amended only with the written consent of the General Partner and Limited Partners holding a majority of the Percentage Interests held by Limited Partners, provided that no amendment may increase a Partner's obligation to contribute capital or reduce its share of distributions without that Partner's consent.
+
+9.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses on Schedule A.
+
+9.5 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+GENERAL PARTNER:
+
+HAWTHORNE MILL GP, LLC
+
+By: /s/ Olamide Fitzgerald
+Name: Olamide Fitzgerald
+Title: Manager
+
+LIMITED PARTNERS:
+
+By: /s/ Olamide Fitzgerald
+Name: Olamide Fitzgerald
+Title: Attorney-in-fact for each Limited Partner listed on Schedule A

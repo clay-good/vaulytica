@@ -47,13 +47,29 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // extent permitted by law" carries no such role and still requires its cap.
     /\bindemnif\w+[^.]{0,80}?\b(?:Managers?|Members?|Partners?|Directors?|Officers?|Trustees?)\b[^.]{0,80}?\bfullest\s+extent\s+permitted\b/i.test(
       text,
+    ) ||
+    // The same statutory indemnity written WITHOUT the "fullest extent"
+    // formula, which is how an LP or LLC agreement usually puts it: "The
+    // Partnership shall indemnify the GENERAL PARTNER and its officers,
+    // directors, members, and employees against any loss arising out of the
+    // Partnership's business, EXCEPT a loss resulting from FRAUD, WILLFUL
+    // MISCONDUCT, GROSS NEGLIGENCE, or a knowing violation of law." The
+    // governance-role indemnitee plus the statutory carve-out is the
+    // discriminator: a commercial indemnity carries neither.
+    // The ENTITY is the indemnitor — that is what makes this a governance
+    // indemnity rather than a commercial one. "Owner shall indemnify Manager
+    // ... other than a claim arising from Manager's gross negligence" is a
+    // property-management indemnity between two businesses, and it still needs
+    // its cap; "The Partnership shall indemnify the General Partner" does not.
+    /\b(?:the\s+)?(?:Partnership|Company|Corporation|Trust|LLC|Limited\s+Liability\s+Company)\s+(?:shall|will|must|agrees\s+to)\s+indemnif\w+[^.]{0,100}?\b(?:General\s+Partner|Managing\s+Member|Manager|Managers|Members?|Directors?|Officers?|Trustees?)\b[^.]{0,200}?\b(?:fraud|willful\s+misconduct|gross\s+negligence|knowing\s+violation\s+of\s+law)\b/i.test(
+      text,
     )
   );
 }
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
