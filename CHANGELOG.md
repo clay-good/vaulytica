@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.210.0] — 2026-08-29
+
+### Added
+- A mutual employment arbitration agreement drafted around the Ending Forced
+  Arbitration Act — the 170th specimen.
+
+### Fixed
+- **CHOICE-001 reported no governing-law clause on an FAA-governed
+  agreement.** "This Agreement is governed by the FEDERAL ARBITRATION ACT,
+  9 U.S.C. §§ 1–16" is the governing-law clause of every employment
+  arbitration agreement in the United States; every pattern wanted "the laws
+  of <place>", and this one names a federal statute instead. The sovereign is
+  the United States.
+- **`arbitration-agreement-employment` shipped with no rule profile**, so a
+  four-page arbitration agreement was told it allocates no IP, provides no
+  indemnity, caps no liability, states no payment term and states no
+  termination path.
+
+DARK-005 stays and is the point: the class-action waiver is the central term a
+reviewer must see. CHOICE-003 and CHOICE-006 are right that the seat is stated
+only by reference ("the county where Employee last worked").
+
 ## [9.209.0] — 2026-08-29
 
 ### Added

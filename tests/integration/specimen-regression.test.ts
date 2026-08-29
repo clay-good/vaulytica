@@ -40,6 +40,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A mutual employment arbitration agreement, drafted around the Ending
+  // Forced Arbitration Act. CHOICE-001 reported no governing-law clause on
+  // "This Agreement is governed by the FEDERAL ARBITRATION ACT, 9 U.S.C.
+  // §§ 1-16" — every governing-law pattern wanted "the laws of <place>", and
+  // an FAA-governed agreement names a federal statute instead. DARK-005 stays
+  // and is the point: the class-action waiver is the central term a reviewer
+  // must see, and CHOICE-003 / CHOICE-006 are right that the seat is stated
+  // only by reference ("the county where Employee last worked").
+  "employment-arbitration.txt": {
+    playbook: "arbitration-agreement-employment",
+    findings: ["DARK-005", "CHOICE-003", "CHOICE-006"],
+  },
   // A warehousing and third-party logistics agreement. Clean: it routes on its
   // own title and its pack is silent on a well-drafted one.
   "warehousing-3pl.txt": {

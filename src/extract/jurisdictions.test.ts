@@ -854,3 +854,29 @@ describe("the FALLBACK forum in a two-court clause", () => {
     ).toEqual([]);
   });
 });
+
+describe("governing law stated as a FEDERAL STATUTE", () => {
+  // "This Agreement is governed by the Federal Arbitration Act, 9 U.S.C.
+  // §§ 1–16" is the governing-law clause of every employment arbitration
+  // agreement in the United States, and every other pattern wants "the laws
+  // of <place>" — so CHOICE-001 reported that such an agreement states no
+  // governing law at all.
+  const gov = (t: string) =>
+    extractJurisdictions(buildTree(["Governing Law", t]))
+      .filter((j) => j.clause_kind === "governing-law")
+      .map((j) => j.raw_text);
+
+  it("names the United States as the sovereign", () => {
+    expect(
+      gov("This Agreement is governed by the Federal Arbitration Act, 9 U.S.C. §§ 1-16."),
+    ).toEqual(["United States"]);
+  });
+
+  it("still reads a state governing-law clause in the same document", () => {
+    expect(
+      gov(
+        "This Agreement is governed by the Federal Arbitration Act. If the Act does not apply, this Agreement is governed by the laws of the State of Ohio.",
+      ),
+    ).toEqual(expect.arrayContaining(["United States", "Ohio"]));
+  });
+});

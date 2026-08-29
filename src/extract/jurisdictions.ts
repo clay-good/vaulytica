@@ -153,6 +153,20 @@ const GOV_LAW_ADJ_SUBJECT = new RegExp(
  * Minnesota. Scoped to the literal "federal law and", inside one sentence, so
  * it cannot reach across into an unrelated jurisdiction mention.
  */
+/**
+ * Governing law stated as a FEDERAL STATUTE rather than a sovereign's laws.
+ *
+ * "This Agreement is governed by the Federal Arbitration Act, 9 U.S.C.
+ * §§ 1-16" is the governing-law clause of every employment arbitration
+ * agreement in the United States, and every pattern here wants "the laws of
+ * <place>" — so CHOICE-001 reported that such an agreement states no
+ * governing law at all. The sovereign is the United States.
+ */
+const GOV_LAW_FEDERAL_STATUTE = new RegExp(
+  String.raw`\b(?:${GOVERNED_BY})\s+(?:and\s+construed\s+in\s+accordance\s+with\s+)?the\s+(Federal\s+Arbitration\s+Act|United\s+States\s+Arbitration\s+Act)\b`,
+  "gi",
+);
+
 const GOV_LAW_FEDERAL_AND_STATE = new RegExp(
   String.raw`\b(?:${GOVERNED_BY})\s+federal\s+law\s+and\b[^.;]{0,80}?\b(?:by\s+)?the\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:without|excluding|and|regardless)|$)`,
   "gi",
@@ -556,6 +570,18 @@ export function extractJurisdictions(
       // disclaimed selection ("not governed by California law").
       if (!/^[A-Z]/.test(raw)) return;
       if (isNegatedGovLaw(ctx.text, m.index)) return;
+      if (seenGovLaw.has(raw.toLowerCase())) return;
+      seenGovLaw.add(raw.toLowerCase());
+      out.push({
+        clause_kind: "governing-law",
+        jurisdiction_id: lookup(raw),
+        raw_text: raw,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    });
+    runRegex(GOV_LAW_FEDERAL_STATUTE, ctx.text, (m) => {
+      if (isNegatedGovLaw(ctx.text, m.index)) return;
+      const raw = "United States";
       if (seenGovLaw.has(raw.toLowerCase())) return;
       seenGovLaw.add(raw.toLowerCase());
       out.push({

@@ -1,0 +1,83 @@
+MUTUAL ARBITRATION AGREEMENT
+
+This Mutual Arbitration Agreement (this "Agreement") is between Larkfield Analytics, Inc. (the "Company") and the employee signing below ("Employee"), and takes effect on the date Employee signs it.
+
+1. WHAT THIS AGREEMENT COVERS
+
+1.1 Covered Claims. The Company and Employee each agree to resolve by final and binding arbitration all claims arising out of or relating to Employee's employment or its termination that either could bring in court, including claims for wages, overtime, expense reimbursement, discrimination, harassment, retaliation, wrongful termination, breach of contract, and claims under the Fair Labor Standards Act, Title VII of the Civil Rights Act of 1964, the Americans with Disabilities Act, the Age Discrimination in Employment Act, and their state and local equivalents.
+
+1.2 Mutual. This Agreement binds both parties equally. The Company agrees to arbitrate every claim it may have against Employee on the same terms.
+
+1.3 Excluded Claims. This Agreement does not cover, and nothing in it prevents Employee from bringing or participating in:
+
+(a) a claim of sexual assault or sexual harassment, which Employee may bring in court under the Ending Forced Arbitration of Sexual Assault and Sexual Harassment Act of 2021, 9 U.S.C. §§ 401–402, at Employee's sole election;
+
+(b) a claim for workers' compensation or unemployment benefits;
+
+(c) a charge or complaint filed with the Equal Employment Opportunity Commission, the National Labor Relations Board, the Department of Labor, the Securities and Exchange Commission, or any comparable federal, state, or local agency, and Employee may participate in any investigation or proceeding those agencies conduct;
+
+(d) a claim that cannot lawfully be arbitrated; and
+
+(e) an application by either party to a court for a temporary restraining order or preliminary injunction in aid of arbitration.
+
+1.4 No Waiver of Protected Activity. Nothing in this Agreement limits Employee's right to discuss wages, hours, or working conditions with others, to engage in protected concerted activity under Section 7 of the National Labor Relations Act, or to report a possible violation of law to a government agency, and Employee need not notify the Company before doing so.
+
+2. CLASS AND COLLECTIVE ACTIONS
+
+2.1 Individual Basis. Covered claims shall be arbitrated on an individual basis only. The arbitrator has no authority to hear a claim on a class, collective, or consolidated basis, or to award relief to anyone other than the individual parties.
+
+2.2 Severability of the Waiver. If the waiver in Section 2.1 is held unenforceable as to a particular claim, that claim shall proceed in court, and all other claims shall remain in arbitration.
+
+2.3 Representative PAGA Claims. Nothing in this Agreement waives a non-individual claim under the California Private Attorneys General Act to the extent that waiver is unenforceable under controlling law.
+
+3. HOW ARBITRATION WORKS
+
+3.1 Rules and Administrator. Arbitration shall be administered by JAMS under its Employment Arbitration Rules and Procedures, which are available at jamsadr.com and a copy of which the Company has provided to Employee with this Agreement.
+
+3.2 Arbitrator. A single neutral arbitrator shall be selected by mutual agreement, or, failing agreement, by the striking process the JAMS rules provide. The arbitrator shall be a retired judge or an attorney experienced in employment law.
+
+3.3 Location. The arbitration shall take place in the county where Employee last worked for the Company, unless the parties agree otherwise.
+
+3.4 Discovery. Each party may take three (3) depositions and serve reasonable document requests, and the arbitrator may permit further discovery on a showing of need, so that each party has a fair opportunity to present its case.
+
+3.5 Motions and Remedies. The arbitrator may hear dispositive motions and shall have authority to award any remedy that would be available in court, including compensatory, statutory, and punitive damages, injunctive relief, and attorneys' fees where a statute provides for them.
+
+3.6 Written Award. The arbitrator shall issue a written award stating the essential findings and conclusions on which it is based, and the award is enforceable in any court of competent jurisdiction.
+
+3.7 Statute of Limitations. A claim must be brought within the time the applicable statute of limitations allows, and this Agreement neither shortens nor lengthens any limitations period.
+
+4. COSTS
+
+4.1 Company Pays. The Company shall pay all costs unique to arbitration, including the filing fee to the extent it exceeds the fee Employee would pay to file in court, the arbitrator's fees, and the administrator's fees.
+
+4.2 Own Attorneys' Fees. Each party bears its own attorneys' fees, except that the arbitrator may award fees to the extent a statute or agreement permits.
+
+5. GENERAL
+
+5.1 Not a Contract of Employment. This Agreement does not alter Employee's at-will employment status and is not a promise of employment for any period.
+
+5.2 Consideration. The parties' mutual promises to arbitrate, and Employee's employment or continued employment, are the consideration for this Agreement.
+
+5.3 Federal Arbitration Act. This Agreement is governed by the Federal Arbitration Act, 9 U.S.C. §§ 1–16. If the Act does not apply, the arbitration law of the state where Employee last worked applies.
+
+5.4 Severability. If any provision is held unenforceable, the rest remains in effect, except as Section 2.2 provides.
+
+5.5 Survival. This Agreement survives the end of Employee's employment.
+
+5.6 Right to Consult Counsel. Employee has the right to consult an attorney before signing, and has been given fourteen (14) days to consider this Agreement.
+
+5.7 Entire Agreement. This Agreement is the entire agreement between the parties on arbitration and may be amended only in a writing signed by both.
+
+ACKNOWLEDGED AND AGREED:
+
+LARKFIELD ANALYTICS, INC.
+
+By: /s/ Priya Venkataraman
+Name: Priya Venkataraman
+Title: Chief People Officer
+
+EMPLOYEE:
+
+/s/ Marcus Oyelaran
+Marcus Oyelaran
+Date: April 6, 2026
