@@ -8,16 +8,18 @@
       "children's privacy",
       "children's privacy notice",
       "coppa notice",
+      "direct notice to parents",
+      "notice to parents",
       "privacy policy for children"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "under 13",
-      "verifiable parental consent",
+      "verifiable consent",
       "children's online privacy protection",
-      "parent may review",
+      "review the personal information",
       "operator's contact information",
-      "we do not condition participation"
+      "do not condition"
     ],
     "negative_features": ["merger", "employment offer"]
   },
@@ -46,6 +48,9 @@
       "skip": true
     },
     "STRUCT-002": {
+      "skip": true
+    },
+    "STRUCT-003": {
       "skip": true
     },
     "STRUCT-004": {

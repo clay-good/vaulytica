@@ -381,6 +381,25 @@ export const EXPECTED: Record<string, Expectation> = {
   // content.
   "phi-authorization.txt": { playbook: "phi-authorization", findings: ["OBLI-005"] },
 
+  // A COPPA direct notice to parents. It routed to `cookie-notice` — 16 CFR
+  // 312.4(b)'s own name for the document, "direct notice to parents", was not
+  // a title keyword — and PRV-110 wanted "parent may review" from a notice
+  // that addresses the parent as "you", which is what the regulation asks for.
+  "childrens-privacy-notice.txt": {
+    playbook: "childrens-privacy-notice",
+    findings: ["OBLI-005"],
+  },
+
+  // A North Carolina health care power of attorney. Its family's title
+  // keywords carried the CLOSED spelling only — "healthcare power of attorney"
+  // — so the document titled with the spaced one fell to `generic-fallback`,
+  // and EST-027 wanted "takes effect upon" from "my agent's authority BEGINS
+  // when my attending physician determines that I LACK THE CAPACITY".
+  "healthcare-poa.txt": {
+    playbook: "healthcare-poa",
+    findings: ["EST-060", "OBLI-005"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],

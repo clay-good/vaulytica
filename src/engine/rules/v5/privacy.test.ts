@@ -36,3 +36,32 @@ describe("PRV-101 — the BIPA release as a form writes it", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A COPPA direct notice addresses the parent in the SECOND person — which is
+ * what 16 CFR 312.4(c) asks the notice to do — and PRV-110 wanted "parent may
+ * review".
+ */
+describe("PRV-110 — the parent addressed as 'you'", () => {
+  it("reads the second-person statement of the parent's rights", () => {
+    expect(
+      rule("PRV-110").check(
+        buildContext([
+          "Direct Notice to Parents",
+          "You may review the personal information we have collected from your child, you may refuse to permit its further collection or use, and you may direct us to delete it.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a notice that states no parental rights", () => {
+    expect(
+      rule("PRV-110").check(
+        buildContext([
+          "Direct Notice to Parents",
+          "We collect your child's first name, grade level, and the books your child marks as read.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

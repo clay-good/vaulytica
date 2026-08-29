@@ -165,6 +165,7 @@ const COPPA = pack("childrens-privacy-notice", C, [
   },
   {
     id: "PRV-110",
+    ver: "1.1.0",
     name: "Parental review, deletion, and revocation rights",
     cite: cfr(
       "16",
@@ -172,7 +173,11 @@ const COPPA = pack("childrens-privacy-notice", C, [
       "COPPA Rule — right of parent to review personal information provided by a child",
     ),
     pat: [
-      /(parent\s+(may|can|has\s+the\s+right)\s+(to\s+)?(review|access|delete|refuse))/i,
+      // A COPPA direct notice addresses the parent in the SECOND person —
+      // "You may review the personal information we have collected from your
+      // child, you may refuse to permit its further collection" — which is
+      // what 16 CFR 312.4(c) asks the notice to say.
+      /((?:parent|you)\s+(may|can|has\s+the\s+right)\s+(to\s+)?(review|access|delete|refuse|direct))/i,
       /(revoke|withdraw\s+consent|request\s+(the\s+)?deletion|discontinue)/i,
     ],
     why: "§ 312.6 gives parents the right to review the information collected, to refuse further collection, and to direct deletion. The notice must describe how to exercise each.",

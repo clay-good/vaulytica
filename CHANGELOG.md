@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.142.0] — 2026-08-29
+
+### Added
+- A COPPA direct notice to parents and a North Carolina health care power of
+  attorney. One hundred and twenty specimens.
+
+### Fixed
+- **A COPPA direct notice routed to `cookie-notice`.** 16 CFR 312.4(b)'s own
+  name for the document — "direct notice to parents" — was not a title keyword,
+  and three of its family's six distinguishing phrases were spellings a real
+  notice does not use.
+- **PRV-110 wanted "parent may review" from a notice that addresses the parent
+  as "you"** — which is what 16 CFR 312.4(c) asks the notice to do.
+- **A health care power of attorney fell to `generic-fallback`** because its
+  family's title keywords carried the CLOSED spelling only, "healthcare power
+  of attorney", and the document is titled with the spaced one. Its family also
+  listed "advance directive" as disqualifying, which a health care power of
+  attorney routinely cross-references.
+- **EST-027 wanted "takes effect upon" and "incapacity"** from the ordinary
+  springing clause: "my agent's authority BEGINS when my attending physician
+  determines in writing that I LACK THE CAPACITY to make or communicate my own
+  health care decisions".
+- IPDATA-005 now reads COPPA spelled out, and with a straight apostrophe.
+
 ## [9.141.0] — 2026-08-29
 
 ### Added

@@ -8,6 +8,7 @@
       "healthcare proxy",
       "health care proxy",
       "healthcare power of attorney",
+      "health care power of attorney",
       "medical power of attorney"
     ],
     "required_clauses": [],
@@ -16,11 +17,12 @@
       "agent",
       "proxy",
       "medical decisions",
+      "health care decisions",
       "incapacity",
       "hipaa"
     ],
     "negative_features": [
-      "advance directive",
+      "this advance directive",
       "durable poa financial",
       "prenup"
     ]

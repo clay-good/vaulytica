@@ -562,6 +562,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-027",
+    version: "1.1.0",
     name: "Activation — when does agent's authority begin",
     description:
       "Proxy must state when agent's authority activates (typically: incapacity per physician determination).",
@@ -574,8 +575,11 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     recommendation:
       "Add 'Activation' specifying when agent's authority begins (immediate or springing on physician determination of incapacity).",
     present_patterns: [
-      /(activate|springs?|takes?\s+effect|effective\s+(when|upon))/i,
-      /(incapacity|incapacitated|unable\s+to\s+(make|communicate))/i,
+      // "My agent's authority BEGINS when my attending physician determines"
+      // is the ordinary drafting of the springing clause, and none of the
+      // verbs below appears in it.
+      /(activate|springs?|takes?\s+effect|effective\s+(when|upon)|begins?\s+(?:when|upon|on)|commences?\s+(?:when|upon)|authority\s+begins)/i,
+      /(incapacity|incapacitated|unable\s+to\s+(make|communicate)|lacks?\s+(?:the\s+)?capacity)/i,
     ],
   }),
   presence({
