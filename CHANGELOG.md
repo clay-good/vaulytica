@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.181.0] — 2026-08-29
+
+### Added
+- An AIA-style owner-contractor agreement — the 144th specimen. All seven
+  CON-001..007 checks are silent on a compliant one.
+
+### Fixed
+- **`construction-contract` listed the four things every construction contract
+  is made of as NEGATIVE features** — "subcontractor", "lien waiver",
+  "performance bond", "change order" — so an OWNER-CONTRACTOR AGREEMENT
+  routed to `independent-contractor` and none of its own checks ran, including
+  the anti-indemnity screen the family exists for.
+- **CON-006 read the ANTI-INDEMNITY CARVE-OUT as a denial of the indemnity, at
+  `critical`.** "This indemnity … does not require Contractor to indemnify any
+  party for that party's own negligence" is the drafting the state
+  anti-indemnity statutes demand, and the drafting CON-006's own
+  recommendation asks for. `expressDenial` now refuses a causative followed by
+  an object and an INFINITIVE — "does not require X TO indemnify", "shall not
+  permit any subprocessor TO use" — while a denial with a DIRECT object ("does
+  not require OFAC screening") still reads as one. (This replaces the blanket
+  causative blocklist added in 9.167.0, which was too broad.)
+- **CON-005 read only the PLURAL and only one word order.** A contract states
+  the rule one condition at a time — "a differing site CONDITION … entitles
+  Contractor to an equitable adjustment", "DIFFERS MATERIALLY from the
+  conditions indicated" — and the clause that uses the term of art three times
+  was reported missing.
+- **`independent-contractor` scored 0.9 on a construction contract** on the
+  title keyword "contractor agreement", which "Owner-Contractor Agreement"
+  contains. "substantial completion" and "the Architect" — which no
+  independent-contractor agreement carries — now separate them.
+
 ## [9.180.0] — 2026-08-29
 
 ### Added

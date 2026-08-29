@@ -108,6 +108,7 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
   }),
   presence({
     id: "CON-005",
+    version: "1.1.0",
     name: "Differing site conditions clause",
     description:
       "Contract should address differing site conditions (Type I — concealed conditions; Type II — unknown conditions).",
@@ -120,8 +121,15 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
     recommendation:
       "Add 'Concealed or Unknown Conditions' permitting contract adjustment when conditions materially differ.",
     present_patterns: [
-      /(differing\s+site\s+conditions|concealed\s+conditions|unknown\s+conditions)/i,
-      /(materially\s+(differ|unusual)|hidden\s+conditions)/i,
+      // The SINGULAR, and the AIA's own heading "Concealed or Unknown
+      // Conditions". A contract states the rule one condition at a time —
+      // "a differing site CONDITION ... entitles Contractor to an equitable
+      // adjustment" — and the plural-only pattern read a clause that uses the
+      // term of art three times as no clause at all.
+      /(differing\s+site\s+conditions?|concealed\s+(?:or\s+unknown\s+)?conditions?|unknown\s+conditions?)/i,
+      // "DIFFERS MATERIALLY from the conditions indicated" is the AIA's own
+      // word order; the pattern read only "materially differ".
+      /(materially\s+(?:differ\w*|unusual)|differs?\s+materially|hidden\s+conditions?)/i,
     ],
     default_severity: "warning",
   }),

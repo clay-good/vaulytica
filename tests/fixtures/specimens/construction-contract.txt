@@ -1,0 +1,115 @@
+OWNER-CONTRACTOR AGREEMENT
+
+This Owner-Contractor Agreement (this "Agreement") is made as of February 5, 2026 between Harrowgate Civic Trust, a Colorado nonprofit corporation ("Owner"), and Ironvale Builders, Inc., a Colorado corporation ("Contractor"), for construction of the Harrowgate Community Aquatic Center at 1440 Wheatridge Road, Golden, Colorado (the "Project"). The Architect for the Project is Sturridge Kwan Architects LLC (the "Architect").
+
+ARTICLE 1 — THE CONTRACT DOCUMENTS
+
+1.1 The Contract Documents consist of this Agreement, the General Conditions attached as Exhibit A, the Drawings and Specifications listed in Exhibit B, the Schedule of Values, addenda issued before execution, and Modifications issued after execution. The Contract Documents form the entire agreement between Owner and Contractor and supersede prior negotiations.
+
+1.2 The Contract Documents are complementary; what is required by one is as binding as if required by all. In the event of an inconsistency, the order of precedence is: this Agreement, then Modifications in reverse chronological order, then the General Conditions, then the Specifications, then the Drawings.
+
+ARTICLE 2 — THE WORK
+
+2.1 Contractor shall fully execute the Work described in the Contract Documents, except to the extent expressly indicated as the responsibility of others. The Work includes all labor, materials, equipment, supervision, and services necessary to complete the Project.
+
+2.2 Contractor shall supervise and direct the Work using its best skill and attention, and is solely responsible for construction means, methods, techniques, sequences, and procedures, and for coordinating all portions of the Work.
+
+ARTICLE 3 — TIME
+
+3.1 The date of commencement is the date of this Agreement. Contractor shall achieve Substantial Completion of the entire Work not later than March 30, 2027, subject to adjustments permitted by the Contract Documents.
+
+3.2 If Contractor fails to achieve Substantial Completion by that date as adjusted, Contractor shall pay Owner liquidated damages of $2,500 for each day of delay, the parties agreeing that actual damages would be difficult to determine and that this sum is a reasonable estimate and not a penalty. Liquidated damages are Owner's sole monetary remedy for delay.
+
+3.3 Contractor is entitled to an extension of the Contract Time for delay caused by an act or neglect of Owner or the Architect, by a change in the Work, by unusually severe weather, by a differing site condition, or by other causes beyond Contractor's control, provided Contractor gives written notice within twenty-one (21) days after the event.
+
+ARTICLE 4 — CONTRACT SUM
+
+4.1 Owner shall pay Contractor the Contract Sum of $18,450,000 for performance of the Work, subject to additions and deductions by Change Order.
+
+4.2 The Contract Sum includes the allowances listed in Exhibit C and the unit prices listed in Exhibit D. The Contract Sum does not include any contingency other than the Owner's contingency, which Owner controls.
+
+ARTICLE 5 — PAYMENTS
+
+5.1 Applications. Contractor shall submit an Application for Payment to the Architect on the twenty-fifth (25th) day of each month, covering the Work completed through that date, supported by the Schedule of Values and by conditional lien waivers from Contractor and from each subcontractor and supplier for the prior payment.
+
+5.2 Certification and Payment. The Architect shall issue a Certificate for Payment or notify Contractor of the reasons for withholding within seven (7) days after receipt. Owner shall pay the certified amount within thirty (30) days after the Architect issues the Certificate for Payment.
+
+5.3 Retainage. Owner shall retain five percent (5%) of each progress payment until the Work is fifty percent (50%) complete, after which no further retainage shall be withheld provided the Work is progressing satisfactorily, as C.R.S. § 24-91-103 permits. Retainage shall be released within sixty (60) days after Substantial Completion, less twice the value of any incomplete or defective Work.
+
+5.4 Final Payment. Final payment is due within thirty (30) days after Contractor delivers final unconditional lien waivers, the consent of surety, the record documents, warranties, and operating manuals, and the Architect issues the final Certificate for Payment.
+
+5.5 Interest. Amounts not paid when due bear interest at one percent (1%) per month from the date payment is due.
+
+ARTICLE 6 — CHANGES IN THE WORK
+
+6.1 Owner may order changes in the Work within the general scope of the Contract Documents by Change Order signed by Owner, Contractor, and the Architect, or by Construction Change Directive signed by Owner and the Architect.
+
+6.2 The Contract Sum and Contract Time shall be adjusted for each change. Where the parties cannot agree on the adjustment, Contractor shall proceed and Owner shall pay the reasonable cost of the change plus fifteen percent (15%) for overhead and profit, subject to the Architect's determination.
+
+6.3 A differing site condition — a subsurface or concealed physical condition that differs materially from the conditions indicated in the Contract Documents or ordinarily encountered — entitles Contractor to an equitable adjustment of the Contract Sum and Contract Time, provided Contractor gives notice before the condition is disturbed and in any event within twenty-one (21) days after observing it.
+
+ARTICLE 7 — SUBCONTRACTORS
+
+7.1 Contractor shall submit a list of proposed subcontractors and suppliers for the Architect's and Owner's review. Contractor shall not contract with a subcontractor to which Owner or the Architect has made a timely and reasonable objection.
+
+7.2 Each subcontract shall require the subcontractor to be bound to Contractor by the terms of the Contract Documents to the extent applicable to that subcontractor's portion of the Work, and shall preserve the rights and remedies of Owner and the Architect.
+
+ARTICLE 8 — INDEMNITY AND INSURANCE
+
+8.1 Indemnity. To the fullest extent permitted by law, Contractor shall indemnify, defend, and hold harmless Owner, the Architect, and their agents and employees from and against claims, damages, losses, and expenses, including reasonable attorneys' fees, arising out of or resulting from performance of the Work, but only to the extent caused by the negligent acts or omissions of Contractor, a subcontractor, or anyone directly or indirectly employed by them. This indemnity does not extend to any claim caused by the sole or partial negligence of Owner or the Architect, consistent with C.R.S. § 13-21-111.5(6), and does not require Contractor to indemnify any party for that party's own negligence.
+
+8.2 Insurance. Contractor shall maintain commercial general liability insurance of at least $2,000,000 per occurrence and $4,000,000 in the aggregate, automobile liability of $1,000,000, workers' compensation as required by law with employer's liability of $1,000,000, and excess liability of $10,000,000, naming Owner and the Architect as additional insureds on a primary and non-contributory basis, and shall deliver certificates and endorsements before commencing the Work.
+
+8.3 Builder's Risk. Owner shall maintain builder's risk insurance on a replacement-cost, all-risk basis covering the Work, naming Owner, Contractor, and subcontractors as insureds. Owner and Contractor waive all rights against each other and against the Architect and subcontractors for damages caused by fire or other perils to the extent covered by that insurance.
+
+8.4 Bonds. Contractor shall furnish a performance bond and a labor and material payment bond, each in the full amount of the Contract Sum, issued by a surety licensed in Colorado and acceptable to Owner.
+
+ARTICLE 9 — WARRANTY AND CORRECTION
+
+9.1 Contractor warrants that materials and equipment furnished will be new and of good quality, that the Work will be free from defects not inherent in the quality required or permitted, and that the Work will conform to the Contract Documents.
+
+9.2 Contractor shall correct Work rejected by the Architect, or failing to conform to the Contract Documents, discovered within one (1) year after Substantial Completion. This obligation is in addition to, and not a limitation of, Contractor's other obligations or Owner's other remedies, and does not shorten any statute of limitations or repose.
+
+ARTICLE 10 — TERMINATION AND SUSPENSION
+
+10.1 Termination by Contractor. Contractor may terminate this Agreement if the Work is stopped for thirty (30) consecutive days through no fault of Contractor because Owner has failed to make payment when due or has failed to furnish evidence of financing, and may recover payment for Work executed and reasonable costs of termination.
+
+10.2 Termination by Owner for Cause. Owner may terminate this Agreement, after seven (7) days' written notice and an opportunity to cure, if Contractor repeatedly refuses or fails to supply enough skilled workers or proper materials, fails to make payment to subcontractors, disregards applicable law, or is otherwise guilty of a substantial breach.
+
+10.3 Termination by Owner for Convenience. Owner may terminate this Agreement for convenience on fourteen (14) days' written notice, in which case Contractor is entitled to payment for Work executed, plus reasonable overhead and profit on Work not executed and the costs of termination.
+
+10.4 Suspension. Owner may suspend the Work in whole or in part for the period Owner determines, and the Contract Sum and Contract Time shall be adjusted for the increase in cost and time caused by the suspension.
+
+ARTICLE 11 — DISPUTE RESOLUTION
+
+11.1 Initial Decision. Claims other than those relating to hazardous materials shall be referred first to the Architect for an initial decision within ten (10) days.
+
+11.2 Mediation. A claim not resolved by initial decision shall be submitted to mediation administered by the American Arbitration Association under its Construction Industry Mediation Procedures, seated in Denver, Colorado, as a condition precedent to litigation.
+
+11.3 Litigation. If mediation does not resolve the claim, either party may bring an action in the state or federal courts located in Jefferson County, Colorado. This Agreement is governed by the laws of the State of Colorado.
+
+11.4 Continuation of the Work. Pending resolution of any claim, Contractor shall proceed with the Work and Owner shall continue to make payments not in dispute.
+
+ARTICLE 12 — MISCELLANEOUS
+
+12.1 Assignment. Neither party may assign this Agreement without the written consent of the other, except that Owner may assign it to an institutional lender providing construction financing.
+
+12.2 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses stated beneath the signatures.
+
+12.3 Amendment. This Agreement may be amended only in a writing signed by both parties.
+
+12.4 Counterparts. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+HARROWGATE CIVIC TRUST
+
+By: /s/ Miriam Achterberg
+Name: Miriam Achterberg
+Title: Executive Director
+
+IRONVALE BUILDERS, INC.
+
+By: /s/ Dmitri Vasquez
+Name: Dmitri Vasquez
+Title: President

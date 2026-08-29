@@ -518,7 +518,7 @@ export function expressDenial(topic: string): RegExp[] {
   // negation, so the sentence never denies that the clause exists.
   // ("permitted" / "allowed" stay out of the PARTICIPLE list below for a
   // different reason — see the note there.)
-  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|after|before|until|once|upon|following|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts|withhold|withholds|withholding|deny|denies|denying|refuse|refuses|refusing|impair|impairs|delay|delays|obstruct|obstructs|interfere|interferes|permit|permits|permitting|allow|allows|allowing|authorize|authorizes|authorizing|cause|causes|causing|enable|enables|enabling)\b)\w+[\s,]+){0,3}`;
+  const gap = String.raw`(?:(?!\b(?:without|unless|except|absent|failing|prior|after|before|until|once|upon|following|appl(?:y|ies)|affect|affects|limit|limits|waive|waives|relieve|relieves|supersede|supersedes|alter|alters|modify|modifies|excuse|excuses|prevent|prevents|preclude|precludes|restrict|restricts|withhold|withholds|withholding|deny|denies|denying|refuse|refuses|refusing|impair|impairs|delay|delays|obstruct|obstructs|interfere|interferes)\b)\w+[\s,]+){0,3}`;
   // "contain" and "include" are how an INSTRUMENT denies carrying a clause —
   // "this trust contains no spendthrift provision" — as against the conduct
   // verbs, which are how a party denies doing something.
@@ -534,14 +534,25 @@ export function expressDenial(topic: string): RegExp[] {
   // written contract" demands the contract, it does not disclaim it. The gap's
   // blocked list cannot see this one, because the connective trails the topic.
   const tail = String.raw`(?![^.]{0,40}?\b(?:without|unless|except)\b)`;
+  // A CAUSATIVE with an object and an infinitive is not a denial: "Vendor
+  // shall not PERMIT any subprocessor or model provider TO USE Customer Data
+  // to train a model" is a negative covenant about what a subprocessor may do,
+  // and "this indemnity does not REQUIRE Contractor TO INDEMNIFY any party for
+  // that party's own negligence" is the anti-indemnity CARVE-OUT the statutes
+  // demand — the very drafting CON-006's own recommendation asks for. In both,
+  // the topic is the verb of an embedded clause, not the object of the
+  // negation. The infinitive is what distinguishes them from a real denial
+  // with a direct object ("does not require OFAC screening"), which still
+  // reads as one.
+  const notCausative = String.raw`(?!(?:permit|permits|permitting|allow|allows|allowing|authoriz\w+|caus\w+|enabl\w+|requir\w+|oblig\w+|compel\w*)\s+(?:\w+[\s,'’-]+){1,6}?to\s+)`;
   return [
     // "does not perform OFAC screening" / "is not required to conduct AML training"
     new RegExp(
-      String.raw`\b(?:do|does|did|shall|will|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${gap}${t}${tail}`,
+      String.raw`\b(?:do|does|did|shall|will|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${notCausative}${gap}${t}${tail}`,
       "i",
     ),
     // "cannot revoke this authorization"
-    new RegExp(String.raw`\bcan\s?not\s+(?:be\s+)?${gap}${t}`, "i"),
+    new RegExp(String.raw`\bcan\s?not\s+(?:be\s+)?${notCausative}${gap}${t}`, "i"),
     // "is not required to ensure that any subcontractor agrees in writing".
     // The obligation verb and its object push the topic past the word gap, but
     // "not required to" is itself a strong denial marker, so the topic only has

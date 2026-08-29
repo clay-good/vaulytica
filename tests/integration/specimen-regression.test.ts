@@ -40,6 +40,31 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // An AIA-style owner-contractor agreement. It routed to
+  // `independent-contractor` at 0.9 and none of its seven CON-001..007 checks
+  // ran, because the family listed "subcontractor", "lien waiver",
+  // "performance bond" and "change order" as NEGATIVE features — the four
+  // things every construction contract is made of. Once routed, two of its own
+  // checks fired on the drafting they exist to require: CON-006 read the
+  // ANTI-INDEMNITY carve-out ("does not require Contractor to indemnify any
+  // party for that party's own negligence") as the contract denying it
+  // indemnifies at all, at `critical`; and CON-005 read only the plural
+  // "differing site conditions" and only "materially differ".
+  "construction-contract.txt": {
+    playbook: "construction-contract",
+    findings: [
+      "RISK-002",
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "FIN-006",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-010",
+      "RISK-011",
+      "TERM-001",
+    ],
+  },
   // A trademark license. It routed to `msa-general` at 0.7 and none of its six
   // IPL-013..018 checks ran, because the family listed "patent", "copyright"
   // and "assignment" as NEGATIVE features — and every trademark license

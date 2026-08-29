@@ -19,11 +19,14 @@
       "substantial completion",
       "general conditions"
     ],
-    "negative_features": ["subcontractor", "lien waiver", "performance bond", "change order"]
+    "negative_features": ["this subcontract", "subcontractor agreement", "employment agreement", "scope of work is attached"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Owner", "Contractor", "Architect", "Contract Sum"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "AIA-A101-A201",

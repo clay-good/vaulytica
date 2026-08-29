@@ -584,3 +584,31 @@ describe("amendsParentAgreement — the shapes a subordinate document actually t
     expect(isIncorporatedExhibit(ctx)).toBe(false);
   });
 });
+
+describe("expressDenial — a causative with an INFINITIVE, and one without", () => {
+  // "This indemnity does not REQUIRE Contractor TO INDEMNIFY any party for
+  // that party's own negligence" is the anti-indemnity carve-out the statutes
+  // demand — the very drafting CON-006's own recommendation asks for — and it
+  // was reported at `critical` as the contract denying that it indemnifies at
+  // all. The infinitive is what distinguishes it from a real denial with a
+  // DIRECT object, which still reads as one.
+  const denies = (topic: string, text: string) => expressDenial(topic).some((re) => re.test(text));
+
+  it("does not read 'does not require X to indemnify' as denying the indemnity", () => {
+    expect(
+      denies(
+        String.raw`indemnif(?:y|ies|ication)|indemnity`,
+        "This indemnity does not extend to any claim caused by the sole negligence of Owner and does not require Contractor to indemnify any party for that party's own negligence.",
+      ),
+    ).toBe(false);
+  });
+
+  it("still reads a denial with a DIRECT object", () => {
+    expect(
+      denies(
+        String.raw`(?:ofac|sanctions\s+screening)`,
+        "The Company does not require OFAC screening of its counterparties.",
+      ),
+    ).toBe(true);
+  });
+});
