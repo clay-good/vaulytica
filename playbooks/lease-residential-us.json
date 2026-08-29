@@ -5,7 +5,7 @@
   "description": "US residential lease. Pro se and consumer use case. Per-state variation is significant; treat governing law as the gating concern.",
   "match_features": {
     "title_keywords": ["residential lease", "residential rental agreement", "apartment lease", "tenant lease", "rental agreement"],
-    "required_clauses": ["payment-terms", "term"],
+    "required_clauses": ["term"],
     "distinguishing_phrases": ["Landlord", "Tenant", "Premises", "security deposit", "rent shall be paid", "no smoking", "pets are not permitted", "residential"],
     "negative_features": ["Subscription Term", "Confidential Information", "Customer Data", "Statement of Work", "SOW", "1099", "Operating Expenses", "Common Area", "CAM"]
   },

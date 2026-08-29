@@ -5,7 +5,7 @@
   "description": "Generic professional-services MSA. Fallback for B2B services contracts that are not specifically SaaS or consulting. Based on Common Paper Professional Services Agreement.",
   "match_features": {
     "title_keywords": ["master services agreement", "master service agreement", "msa", "professional services agreement", "services agreement"],
-    "required_clauses": ["payment-terms", "term", "termination-for-cause", "indemnification"],
+    "required_clauses": ["term", "termination-for-cause", "indemnification"],
     "distinguishing_phrases": ["Statement of Work", "SOW", "perform the Services", "Deliverables", "Provider", "Customer", "Master Agreement"],
     "negative_features": ["the Service is a hosted", "Subscription Term", "lease", "Premises", "Tenant", "Employee", "the Discloser"]
   },

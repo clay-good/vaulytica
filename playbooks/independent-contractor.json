@@ -5,7 +5,7 @@
   "description": "Engagement of a non-employee contractor to perform defined services. Focused on misclassification dark patterns. Based on Common Paper Professional Services Agreement and IRS 20-factor commentary.",
   "match_features": {
     "title_keywords": ["independent contractor", "contractor agreement", "freelance agreement", "1099 agreement"],
-    "required_clauses": ["payment-terms", "ip-ownership", "term", "termination-for-convenience"],
+    "required_clauses": [ "ip-ownership", "term", "termination-for-convenience"],
     "distinguishing_phrases": ["independent contractor", "not an employee", "1099", "contractor's own", "no benefits", "Contractor shall"],
     "negative_features": ["at-will employee", "exempt employee", "FLSA exempt", "salary", "base compensation", "the Discloser", "subscription"]
   },

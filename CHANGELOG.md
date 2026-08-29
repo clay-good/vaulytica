@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.159.0] — 2026-08-29
+
+### Added
+- **`required-clauses-live.test.ts`** — a `required_clauses` entry must name a
+  category the shipped classifier can emit.
+
+### Fixed
+- **The largest weight in the matcher was partly dead.** `required_clause` is
+  worth 0.4 each, capped at 0.8, against 0.3 for a title keyword and 0.2 for a
+  distinguishing phrase — and nine of the twelve launch playbooks named a
+  category the classifier never produces, seven of them the same one
+  (`payment-terms`). Each such entry is worth zero forever, and nothing said
+  so. The dead entries are gone, and `employee-ip-assignment` is now
+  `ip-ownership`, which the classifier does emit.
+
+  The pipeline passes an EMPTY vocab — `{ vocab: { vocab: {} }, patterns:
+  dkb.classifier.patterns }` — so only the classifier's twenty-one pattern
+  categories are live; the vocab's ninety-odd are not, and the guard says so.
+
 ## [9.158.0] — 2026-08-29
 
 ### Changed
