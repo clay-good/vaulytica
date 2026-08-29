@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.195.0] — 2026-08-29
+
+### Added
+- A pharmaceutical contract-manufacturing and supply agreement — the 157th
+  specimen.
+
+### Fixed
+Three findings inverted what the document says:
+- **COMM-024 reported no title / lien warranty at `critical`** on a warranty
+  that the Products are "free of ANY LIEN" — the singular, behind a determiner
+  the pattern did not admit.
+- **RISK-006 reported ZERO limitation-of-liability carve-outs on a clause that
+  carves out four.** Its window stopped at the "8.1" of a section citation, and
+  the `indemnif` stem does not match the noun "indemnity". The window now
+  absorbs an in-number period.
+- **TERM-005 reported no effect-of-termination clause on a transition
+  obligation stated as a TRANSFER** — "On expiration or termination, Supplier
+  shall … TRANSFER the manufacturing process and all Customer-owned tooling".
+- **`employment-at-will-us` listed "exempt" as a distinguishing phrase**, which
+  matches "exemption certificate". With three required clauses at 0.8, that put
+  an employment playbook level with the manufacturing family on a pharma supply
+  agreement. Narrowed to "exempt employee".
+
+COMM-025 and COMM-040 stay and are real: the specimen states no exclusive
+remedy and does not address the UCC implied warranties either way.
+
 ## [9.194.0] — 2026-08-29
 
 ### Added

@@ -40,6 +40,36 @@ export const EXPECTED: Record<string, Expectation> = {
   // Illinois long-arm statute and venue in a county, which the PLDG checks
   // could not read until they stopped assuming a federal caption.
   "complaint.txt": { playbook: "complaint", findings: [] },
+  // A pharmaceutical contract-manufacturing and supply agreement. Three
+  // findings inverted what the document says: COMM-024 reported no
+  // title/lien warranty at `critical` on a warranty that the Products are
+  // "free of ANY LIEN" (the singular, behind a determiner); RISK-006 reported
+  // ZERO limitation-of-liability carve-outs on a clause that carves out four,
+  // because its window stopped at the "8.1" of a section citation and the
+  // `indemnif` stem does not match the noun "indemnity"; and TERM-005
+  // reported no effect-of-termination clause on a transition obligation
+  // stated as a TRANSFER. COMM-025 and COMM-040 stay and are real: this
+  // agreement states no exclusive remedy and does not address the UCC implied
+  // warranties either way.
+  "manufacturing-supply.txt": {
+    playbook: "manufacturing-supply-agreement",
+    findings: [
+      "COMM-025",
+      "COMM-040",
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TERM-003",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-006",
+      "RISK-007",
+      "RISK-010",
+      "RISK-013",
+      "TERM-001",
+    ],
+  },
   // A Delaware limited partnership agreement. RISK-015 and RISK-011 both
   // demanded commercial indemnity machinery of the Partnership's indemnity of
   // its GENERAL PARTNER — an aggregate cap, a notice provision, defense

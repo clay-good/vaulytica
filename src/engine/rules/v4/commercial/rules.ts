@@ -209,6 +209,7 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-024",
+    version: "1.1.0",
     name: "Warranty of title and against infringement",
     description:
       "Seller should warrant good title to the Goods, free of liens, and that the Goods do not infringe third-party rights.",
@@ -223,7 +224,11 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
       "Add a warranty that Seller conveys good title free of liens and that the Goods do not infringe any third-party patent, trademark, or copyright, with an infringement indemnity.",
     present_patterns: [
       /(good\s+title|title\s+to\s+the\s+(goods|products))/i,
-      /free\s+(and\s+clear\s+)?of\s+(all\s+)?(liens|encumbrances)/i,
+      // "free of ANY LIEN" — the singular, behind a determiner the pattern
+      // did not admit. A warranty that the goods arrive unencumbered is the
+      // one this rule exists to find, and it was reported missing at
+      // `critical` on a clause that states it.
+      /free\s+(?:and\s+clear\s+)?(?:of|from)\s+(?:all\s+|any\s+)?(?:liens?|encumbrances?|security\s+interests?)/i,
       /(not|non).{0,15}infring\w*/is,
       /infringement\s+indemn\w*/i,
     ],

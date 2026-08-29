@@ -302,3 +302,20 @@ describe("TERM-005 — the consequence is that TITLE VESTS", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-005 — transfer as a wind-down consequence", () => {
+  // "On expiration or termination, Supplier shall, at Customer's request and
+  // expense, continue to supply the Products for up to twelve (12) months,
+  // TRANSFER the manufacturing process and all Customer-owned tooling and
+  // materials, and cooperate in the qualification of an alternative supplier."
+  it("reads a transition obligation stated as a transfer", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Termination",
+          "On expiration or termination, Supplier shall, at Customer's request and expense, continue to supply the Products for up to twelve (12) months, transfer the manufacturing process and all Customer-owned tooling and materials, and cooperate in the qualification of an alternative supplier.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

@@ -8,7 +8,11 @@ const TYPICAL = [
   // reading "except for indemnification obligations" must not read as zero
   // carve-outs. Kept distinct from the narrower "IP indemnity" category so a doc
   // that names an IP-specific indemnity still surfaces that too.
-  ["indemnification", /\bindemnif/i],
+  // `indemnity` is the noun a carve-out list uses — "except for the INDEMNITY
+  // OBLIGATIONS in Sections 8.1 and 8.2" — and the `indemnif` stem does not
+  // match it, so a clause carving out the indemnity read as carving out
+  // nothing.
+  ["indemnification", /\bindemnif|\bindemnit(?:y|ies)\b/i],
   ["IP indemnity", /(?:ip|intellectual\s+property)\s+indemnit/i],
   ["confidentiality breach", /confidential/i],
   ["payment obligations", /payment\s+obligations?/i],
@@ -17,7 +21,7 @@ const TYPICAL = [
 /** RISK-006 — LoL exceptions list (info). */
 export const rule: Rule = {
   id: "RISK-006",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "LoL exceptions list",
   category: "risk-allocation",
   default_severity: "info",
@@ -30,7 +34,12 @@ export const rule: Rule = {
       // exception clause's OWN sentence — otherwise carve-out names ("fraud",
       // "willful misconduct") from an unrelated later sentence were reported as
       // part of the limitation-of-liability exceptions.
-      /\blimitation\s+of\s+liability\b[\s\S]{0,600}?\b(?:except\s+for|excluding|other\s+than)\b[^.;\n]{0,400}/i,
+      // The window absorbs an in-NUMBER period. A carve-out list cites the
+      // sections it excepts — "except for the indemnity obligations in
+      // Sections 8.1 and 8.2, breach of Section 9, and a party's gross
+      // negligence or WILLFUL MISCONDUCT" — and a bare `[^.;\n]` stopped at
+      // the "8.1", so every carve-out after the first citation was invisible.
+      /\blimitation\s+of\s+liability\b[\s\S]{0,600}?\b(?:except\s+for|excluding|other\s+than)\b(?:[^.;\n]|\.(?=\d)){0,400}/i,
     );
     if (!hit) return null;
     const present = TYPICAL.filter(([, re]) => re.test(hit.match[0])).map(([name]) => name);

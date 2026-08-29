@@ -1,0 +1,115 @@
+MANUFACTURING AND SUPPLY AGREEMENT
+
+This Manufacturing and Supply Agreement (this "Agreement") is made as of July 7, 2026 between Kestrel Therapeutics, Inc., a Delaware corporation ("Customer"), and Brandywine Contract Manufacturing LLC, a Pennsylvania limited liability company ("Supplier").
+
+1. SCOPE AND PRODUCTS
+
+1.1 Products. Supplier shall manufacture and supply to Customer the products described on Exhibit A (the "Products"), in accordance with the specifications on Exhibit B (the "Specifications") and this Agreement.
+
+1.2 Non-Exclusive. This Agreement is non-exclusive. Customer may manufacture the Products itself or engage another supplier, and Supplier may manufacture products for others, provided Supplier does not use Customer's Confidential Information or tooling to do so.
+
+2. FORECASTS AND ORDERS
+
+2.1 Rolling Forecast. On or before the tenth (10th) day of each month, Customer shall provide a rolling twelve (12) month forecast of its requirements. The first three (3) months of each forecast are binding, months four through six are a commitment to purchase not less than seventy percent (70%) of the forecast volume, and months seven through twelve are non-binding planning estimates.
+
+2.2 Purchase Orders. Customer shall order Products by purchase order specifying quantity, Specifications revision, price, delivery date, and destination. Supplier shall accept or reject each purchase order within five (5) business days, and a purchase order Supplier does not reject within that period is accepted. Supplier may reject only a purchase order inconsistent with the binding forecast or this Agreement.
+
+2.3 Conflicting Terms. This Agreement governs. The pre-printed terms of any purchase order, acknowledgment, invoice, or other form are of no effect, whether or not they conflict with this Agreement, and neither party's failure to object to them is an acceptance.
+
+2.4 Capacity. Supplier shall maintain capacity sufficient to supply one hundred twenty-five percent (125%) of the binding portion of the most recent forecast, and shall notify Customer within five (5) business days if it becomes unable to do so.
+
+3. PRICE AND PAYMENT
+
+3.1 Price. The prices for the Products are set out on Exhibit C and are firm through December 31, 2027. Thereafter Supplier may adjust prices once per calendar year, on ninety (90) days' prior written notice, by not more than the increase in the Producer Price Index for pharmaceutical preparation manufacturing over the preceding twelve months.
+
+3.2 Payment. Supplier shall invoice on shipment. Customer shall pay each undisputed invoice within forty-five (45) days after receipt. Customer may withhold payment of a disputed amount if it notifies Supplier of the basis within twenty (20) days after receiving the invoice, and shall pay the undisputed balance.
+
+3.3 Taxes. Prices exclude sales and use taxes, which Customer shall pay unless it provides an exemption certificate.
+
+4. DELIVERY, TITLE, AND RISK OF LOSS
+
+4.1 Delivery. Supplier shall deliver the Products FCA Supplier's facility (Incoterms 2020) on the dates stated in accepted purchase orders. Time is of the essence.
+
+4.2 Title and Risk. Title and risk of loss pass to Customer on delivery to the carrier.
+
+4.3 Late Delivery. If Supplier fails to deliver by the confirmed delivery date, Customer may cancel the affected order without liability, purchase substitute goods and recover the excess cost from Supplier, or require expedited shipment at Supplier's cost.
+
+5. QUALITY AND REGULATORY
+
+5.1 Quality Agreement. The parties shall execute a separate quality agreement within thirty (30) days after the Effective Date, allocating regulatory responsibilities in accordance with FDA guidance. If the quality agreement conflicts with this Agreement on a quality or regulatory matter, the quality agreement governs.
+
+5.2 cGMP. Supplier shall manufacture, test, package, label, store, and release the Products in compliance with current Good Manufacturing Practice under 21 C.F.R. Parts 210 and 211, the Specifications, and all applicable law.
+
+5.3 Change Control. Supplier shall not change the Specifications, the manufacturing process, the facility, the equipment, or any raw-material supplier without Customer's prior written approval. Supplier shall give Customer at least one hundred eighty (180) days' notice of any proposed change requiring regulatory notification.
+
+5.4 Audits. Customer may audit Supplier's facility, records, and quality systems once in any twelve (12) month period on thirty (30) days' notice, and at any time following a Product recall, a regulatory inspection observation, or a material quality failure. Supplier shall permit Customer to be present during any FDA inspection concerning the Products and shall provide copies of any Form 483 or warning letter relating to them within three (3) business days.
+
+5.5 Recalls. If either party believes a recall, field correction, or market withdrawal may be required, it shall notify the other within twenty-four (24) hours. Customer decides whether to conduct a recall of the Products. Supplier shall bear the cost of a recall caused by Supplier's failure to manufacture in accordance with the Specifications or cGMP; Customer shall bear the cost of any other recall.
+
+6. WARRANTY AND ACCEPTANCE
+
+6.1 Warranty. Supplier warrants that each Product will, at delivery and for the shelf life stated in the Specifications, conform to the Specifications, be manufactured in compliance with cGMP and applicable law, be free from defects in material and workmanship, and be free of any lien.
+
+6.2 Acceptance. Customer may reject a shipment that fails to conform, by notice within thirty (30) days after delivery, or, for a latent defect, within thirty (30) days after discovery. Supplier shall, at Customer's election, replace the rejected Product at Supplier's cost or refund the price, and shall bear the cost of return or destruction.
+
+6.3 Epidemic Failure. If the same root cause affects more than five percent (5%) of the Products delivered in any six-month period, Supplier shall, in addition to its warranty obligations, reimburse Customer's reasonable costs of investigation, retrieval, and replacement, and shall implement a corrective action plan Customer approves.
+
+7. INTELLECTUAL PROPERTY
+
+7.1 Background IP. Each party retains all right, title, and interest in its own intellectual property existing before this Agreement or developed outside it.
+
+7.2 Customer IP. All right, title, and interest in and to the Specifications, the Products, Customer's formulations, and any invention or improvement arising from the manufacture of the Products vests in Customer. Supplier assigns to Customer all such right, title, and interest and shall execute any document reasonably required to record the assignment.
+
+7.3 Supplier Improvements. Improvements to Supplier's general manufacturing processes that are not specific to the Products remain Supplier's property, and Supplier grants Customer a non-exclusive, royalty-free licence to use them to the extent necessary to make or have made the Products.
+
+8. INDEMNITY, INSURANCE, AND LIABILITY
+
+8.1 Supplier Indemnity. Supplier shall indemnify, defend, and hold harmless Customer against any third-party claim arising out of Supplier's breach of this Agreement, its negligence or willful misconduct, or its failure to manufacture in accordance with the Specifications or cGMP.
+
+8.2 Customer Indemnity. Customer shall indemnify, defend, and hold harmless Supplier against any third-party claim arising out of the design of the Products, the Specifications, Customer's marketing or labelling, or Customer's breach of this Agreement, except to the extent the claim arises from a matter for which Supplier indemnifies Customer.
+
+8.3 Procedure. The indemnified party shall give prompt written notice, the indemnifying party shall control the defense with counsel reasonably acceptable to the indemnified party, and no settlement imposing a non-monetary obligation on the indemnified party may be made without its consent.
+
+8.4 Insurance. Each party shall maintain commercial general liability insurance including products liability of at least $10,000,000 per occurrence, and Supplier shall name Customer as an additional insured and provide certificates annually.
+
+8.5 Limitation of Liability. Except for the indemnity obligations in Sections 8.1 and 8.2, breach of Section 9, and a party's gross negligence or willful misconduct, neither party's aggregate liability under this Agreement shall exceed the amounts paid or payable by Customer in the twelve (12) months preceding the claim, and neither party is liable for indirect, incidental, special, consequential, or punitive damages.
+
+9. CONFIDENTIALITY
+
+9.1 Obligations. Each party shall keep the other's Confidential Information confidential, use it only to perform this Agreement, and disclose it only to personnel and advisers who need it and are bound to keep it confidential. These obligations continue for seven (7) years after termination, and indefinitely for trade secrets.
+
+10. TERM AND TERMINATION
+
+10.1 Term. This Agreement begins on the Effective Date and continues for five (5) years, renewing for successive two-year terms unless either party gives notice of non-renewal at least twelve (12) months before the end of the then-current term.
+
+10.2 Termination for Cause. Either party may terminate on written notice if the other materially breaches and fails to cure within sixty (60) days, or immediately if the other becomes insolvent or has a receiver appointed.
+
+10.3 Termination for Convenience. Customer may terminate this Agreement or any purchase order for convenience on one hundred eighty (180) days' written notice, and shall pay for finished Products, work in process, and raw materials Supplier acquired in reliance on the binding forecast.
+
+10.4 Transition. On expiration or termination, Supplier shall, at Customer's request and expense, continue to supply the Products for up to twelve (12) months, transfer the manufacturing process and all Customer-owned tooling and materials, and cooperate in the qualification of an alternative supplier. Sections 6, 7, 8, 9, 10.4 and 11 survive.
+
+11. GENERAL
+
+11.1 Governing Law; Venue. This Agreement is governed by the laws of the Commonwealth of Pennsylvania. Any action arising out of this Agreement shall be brought in the state or federal courts located in Philadelphia County, Pennsylvania.
+
+11.2 Force Majeure. Neither party is liable for a failure to perform caused by an event beyond its reasonable control, provided it notifies the other promptly and uses reasonable efforts to resume. Supplier's obligation to allocate capacity fairly among its customers is not excused, and Customer may terminate any affected order if the event continues for more than sixty (60) days.
+
+11.3 Assignment. Neither party may assign this Agreement without the other's written consent, except to a successor to substantially all of its business that assumes this Agreement in writing.
+
+11.4 Notices. All notices shall be in writing and delivered by hand, by nationally recognized overnight courier, or by electronic mail with confirmation of receipt, to the addresses stated beneath the signatures.
+
+11.5 Entire Agreement; Amendment. This Agreement, with its exhibits, is the entire agreement between the parties and may be amended only in a writing signed by both.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+KESTREL THERAPEUTICS, INC.
+
+By: /s/ Amara Nwachukwu
+Name: Amara Nwachukwu
+Title: Chief Operating Officer
+
+BRANDYWINE CONTRACT MANUFACTURING LLC
+
+By: /s/ Stefan Wojcik
+Name: Stefan Wojcik
+Title: President
