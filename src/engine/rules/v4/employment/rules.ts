@@ -974,6 +974,11 @@ const PIP_RULES: Rule[] = [
       // "Performance Expectations" is the synonymous PIP heading under which the
       // measurable targets (quota %, response times) are enumerated.
       /performance\s+expectations?/i,
+      // "Expected Standards" is the third heading the same section is written
+      // under, and a plan that enumerates its targets beneath it — "forecasts
+      // within 15% accuracy for two consecutive months" — was told it had no
+      // measurable goals.
+      /expected\s+standards?|performance\s+standards?|standards?\s+(?:you\s+are\s+)?expected\s+to\s+meet/i,
     ],
   }),
   presence({
@@ -1061,8 +1066,16 @@ const PIP_RULES: Rule[] = [
       // "acknowledge that you have RECEIVED" is as common as "acknowledge
       // receipt"; and the receipt-not-agreement disclaimer is written "your
       // signature does not INDICATE agreement" as often as "constitute".
-      /acknowledge.{0,40}(receipt|received)/is,
+      // The window was forty characters and the sentence is longer than that:
+      // "My signature below acknowledges that this plan was discussed with me
+      // and that I received a copy" is the ordinary drafting, and a plan whose
+      // section is HEADED "Acknowledgment" was told it had none.
+      /acknowledge\w*.{0,90}(receipt|received|a\s+copy)/is,
       /signature\s+(does\s+not|is\s+not)\s+(equal|imply|constitute|indicate|mean)\s+(?:[a-z]+\s+){0,3}?agreement/is,
+      // The disclaimer's subject is as often "it" as "my signature", and its
+      // object as often the VERB "agree" as the noun: "It does not indicate
+      // that I agree with its contents."
+      /(?:does|do)\s+not\s+(?:indicate|imply|constitute|mean|signify)\s+(?:that\s+)?(?:[a-z]+\s+){0,3}?(?:agree|agrees|agreement|concur)\b/is,
     ],
     default_severity: "warning",
   }),

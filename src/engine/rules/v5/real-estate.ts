@@ -385,7 +385,13 @@ const QUITCLAIM = pack("quitclaim-deed", C, [
       "https://www.law.cornell.edu/wex/deed",
     ),
     pat: [
-      /(remise,?\s+release|hereby\s+quit\s?claims?|releases?\s+and\s+forever\s+quit)/i,
+      // The statutory short form is "conveys and quitclaims to" (RCW 64.04.050
+      // and its siblings), with no "hereby" anywhere in it — so a Washington
+      // quitclaim deed was told at `critical` that it lacked the granting
+      // words it is written in. The quitclaim VERB is the signal, recognized
+      // by what follows it, which is also what keeps the check off the
+      // document's own title: "QUITCLAIM DEED" is not "quitclaims to".
+      /(?:remise[sd]?,?\s+release|releases?\s+and\s+forever\s+quit|quit\s?claims?(?:\s+and\s+\w+)?\s+(?:to|unto|all|any|whatever|forever)\b)/i,
       /(convey|grant|transfer)/i,
     ],
     all: true,

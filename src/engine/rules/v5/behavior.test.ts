@@ -775,3 +775,45 @@ describe("v5 — the supplemental-needs recital a real trust writes", () => {
     ).not.toBeNull();
   });
 });
+
+describe("RE-128 — the statutory quitclaim short form", () => {
+  /**
+   * "conveys and quitclaims to" is the granting language of RCW 64.04.050 and
+   * its siblings, with no "hereby" anywhere in it — so a Washington quitclaim
+   * deed was told at `critical` that it lacked the words it is written in.
+   */
+  const re128 = () => V5_RULES.find((x) => x.id === "RE-128")!;
+
+  it("reads the statutory short form", () => {
+    expect(
+      re128().check(
+        buildContext([
+          "Quitclaim Deed",
+          "THE GRANTOR, Rosalind Amara Ferreira, conveys and quitclaims to THE GRANTEE all right, title, and interest that the Grantor may have in the property.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads the long form too", () => {
+    expect(
+      re128().check(
+        buildContext([
+          "Quitclaim Deed",
+          "The Grantor does hereby remise, release, and forever quitclaim unto the Grantee all of the Grantor's right, title, and interest, if any, in the property.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a deed titled quitclaim that grants with warranty words", () => {
+    expect(
+      re128().check(
+        buildContext([
+          "Quitclaim Deed",
+          "The Grantor grants, bargains, sells, and conveys to the Grantee the property described below, and warrants the title against all persons.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -558,14 +558,18 @@ describe("hyphenated-compound fragments are not undefined terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Disclosure Agreement");
   });
 
-  it("does not flag 'Border Transfer' from 'Cross-Border Transfer'", () => {
+  it("reads 'Cross-Border Transfer Mechanism' as ONE term, not a fragment", () => {
     const map = extractDefinitions(
       buildTree([
         "Transfers",
         "The Cross-Border Transfer Mechanism applies. The Cross-Border Transfer Mechanism is Annex II.",
       ]),
     );
-    expect(map.undefined_capitalized.map((e) => e.term).join(" ")).not.toContain("Border Transfer");
+    // A hyphenated word is one word, so the candidate is the whole compound
+    // and never the tail of it.
+    const terms = map.undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("Border Transfer Mechanism");
+    expect(terms).toContain("Cross-Border Transfer Mechanism");
   });
 });
 
@@ -1543,5 +1547,22 @@ describe("a cover block's field values and office abbreviations", () => {
         "The vendor shall maintain the Reference Architecture for the term.",
       ),
     ).toContain("Reference Architecture");
+  });
+});
+
+describe("a statute named after its noun", () => {
+  // "Code of Civil Procedure section 2033.010" is how every California filing
+  // cites the CCP, and the statute-name guards read only the noun that
+  // FOLLOWS the phrase — so "Civil Procedure" was reported as a term the
+  // filing forgot to define.
+  it("does not flag the name that follows 'Code of'", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Requests for Admission",
+        "Pursuant to Code of Civil Procedure section 2033.010, Plaintiff requests admissions.",
+        "Responses are due under Code of Civil Procedure section 2033.250.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Civil Procedure");
   });
 });

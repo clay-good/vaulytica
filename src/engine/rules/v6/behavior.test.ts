@@ -472,3 +472,35 @@ describe("v6 discovery — the verb a Rule 34 request actually uses (v1.0.1)", (
     ).not.toBeNull();
   });
 });
+
+describe("the proof of service under the name its own rules give it", () => {
+  /**
+   * "Certificate of service" is federal practice. California and New York say
+   * "Proof of Service"; some jurisdictions say "Declaration" or "Affidavit of
+   * Service". A served California set of requests for admission was told at
+   * `critical` that it had none.
+   */
+  for (const id of ["DISC-006", "DISC-011", "DISC-016", "DISC-023"]) {
+    it(`${id} reads a California proof of service`, () => {
+      expect(
+        rule(id).check(
+          doc(
+            "Plaintiff's Requests for Admission, Set One",
+            "PROOF OF SERVICE. On April 6, 2026 I served the foregoing document on counsel for Defendant by electronic service to the address on record.",
+          ),
+        ),
+      ).toBeNull();
+    });
+  }
+
+  it("DISC-016 still fires on a set of requests with no service record at all", () => {
+    expect(
+      rule("DISC-016").check(
+        doc(
+          "Plaintiff's Requests for Admission, Set One",
+          "Request for Admission No. 1: Admit that You managed the Property on November 14, 2025.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

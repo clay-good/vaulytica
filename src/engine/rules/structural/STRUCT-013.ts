@@ -81,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.13.0",
+  version: "1.14.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -133,7 +133,8 @@ export const rule: Rule = {
               isSignatureContext(withNext) ||
               isBareNameSignature(p.text, partyNames) ||
               isBareNameSignature(withNext, partyNames) ||
-              isLabeledFormFieldRow(p.text))
+              isLabeledFormFieldRow(p.text) ||
+              isRuledWritingSpace(p.text, paragraphs[i - 1]?.text))
           ) {
             continue;
           }
@@ -322,6 +323,24 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
     if (named) return true;
   }
   return false;
+}
+
+/**
+ * A ruled WRITING SPACE: a paragraph that is nothing but an underscore rule,
+ * under a short heading that says what to write in it.
+ *
+ * "EMPLOYEE COMMENTS" over a rule is a line the employee fills in, and a
+ * performance improvement plan was told at `critical` that it held unfilled
+ * template content. A placeholder replaces something INSIDE a sentence; a rule
+ * that is the whole paragraph has no sentence to be part of, and the label
+ * that says what belongs there sits on the line above rather than in front of
+ * it — which is the same construct `isLabeledFormFieldRow` reads when the two
+ * arrive on one line.
+ */
+function isRuledWritingSpace(text: string, previous: string | undefined): boolean {
+  if (!/^[\s_]+$/.test(text) || !/_{6,}/.test(text)) return false;
+  const heading = (previous ?? "").trim();
+  return heading.length > 0 && heading.length <= 60 && !/[.;:!?]\s/.test(heading);
 }
 
 /**

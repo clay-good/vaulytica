@@ -396,6 +396,17 @@ const RECORDER_RESERVED_SPACE =
 const ADDRESS_SHAPED =
   /\b\d{5}(?:-\d{4})?\b|\b(?:street|st\.|avenue|ave\.|road|rd\.|drive|dr\.|boulevard|blvd\.|suite|ste\.|floor|parkway|pkwy|lane|highway|hwy)\b|\bp\.?\s?o\.?\s+box\b|\battn\b|\bescrow\s+(?:no|number)\b|\bapn\b|\b(?:assessor'?s?\s+)?parcel\s+(?:no|number|id)\b/i;
 
+/**
+ * The recorder's INDEX fields, which sit in the same block as the return-to
+ * address: "Reference number of related document: 20190412000733",
+ * "Auditor's File No. 9812440", "Recording No. 2026-0041188". None carries a
+ * ZIP or a street suffix, so the address test cannot see them, and a
+ * Washington quitclaim deed whose lines each had their own paragraph stopped
+ * the walk on one of them and fell to `generic-fallback`.
+ */
+const RECORDER_INDEX_FIELD =
+  /\b(?:reference|recording|document|instrument|(?:auditor|clerk|recorder)'?s?\s+file|tax\s+parcel|folio)\s+(?:no|nos|number|numbers|id)\b/i;
+
 function recordedInstrumentTitle(paragraphs: readonly string[]): string {
   if (paragraphs.length === 0 || !RECORDING_HEADER.test(paragraphs[0]!)) return "";
   // The block must be PASSED before the title is taken. Where each line of the
@@ -409,7 +420,11 @@ function recordedInstrumentTitle(paragraphs: readonly string[]): string {
   for (const text of paragraphs.slice(1)) {
     if (text.length === 0) continue;
     if (RECORDING_HEADER.test(text)) continue;
-    if (RECORDER_RESERVED_SPACE.test(text) || ADDRESS_SHAPED.test(text)) {
+    if (
+      RECORDER_RESERVED_SPACE.test(text) ||
+      ADDRESS_SHAPED.test(text) ||
+      RECORDER_INDEX_FIELD.test(text)
+    ) {
       passedBlock = true;
       continue;
     }

@@ -690,6 +690,27 @@ function caseBlind(re: RegExp): RegExp {
   return new RegExp(re.source, re.flags.includes("i") ? re.flags : `${re.flags}i`);
 }
 
+/**
+ * True when a document takes its VOCABULARY from a parent instrument: it
+ * ratifies the parent's remaining terms, it is incorporated into the parent,
+ * or it says outright that its capitalized terms are defined there.
+ *
+ * Narrower than {@link amendsParentAgreement}, deliberately. That helper also
+ * counts a document ISSUED under a named parent, which is not the same claim:
+ * a membership interest purchase agreement that pays an escrow amount "to be
+ * held under the Escrow Agreement" is a standalone deal document naming an
+ * ancillary, and suppressing its undefined-term check would hide the five
+ * terms it really does leave undefined.
+ */
+export function borrowsParentVocabulary(ctx: RuleContext): boolean {
+  const text = documentTextOf(ctx);
+  return (
+    RATIFIES_PARENT.test(text) ||
+    INCORPORATED_INTO_PARENT.test(text) ||
+    BORROWS_DEFINITIONS_FROM_PARENT.test(text)
+  );
+}
+
 export function amendsParentAgreement(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
   const named = isAllCaps(text)

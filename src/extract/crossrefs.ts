@@ -94,6 +94,12 @@ const EXTERNAL_TRAILER_RE =
 // citation, not a division of this document. Colorado's articles of
 // organization cite "C.R.S. Title 7, Article 80" on their first page, and
 // STRUCT-007 reported it as a broken internal reference to an "Article 80".
+// A CONSTRUCTION SPECIFICATION section is numbered in MasterFormat's
+// space-separated pairs — "Section 09 51 00", "Section 03 30 00" — and names a
+// division of the specifications, not of this document. A change order citing
+// the tile it substitutes reported a broken internal reference to a "Section
+// 09" no change order has.
+const SPECIFICATION_SECTION_RE = /^\s+\d{2}(?:\s+\d{2}){1,2}\b/;
 const EXTERNAL_LEADER_RE =
   /\b(?:U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?|Stat\.)\s*$|\bTitle\s+\d+[A-Za-z]?\s*,\s*$/;
 
@@ -116,7 +122,17 @@ const EXTERNAL_LEADING_RE =
 // to" guard needs a connector and the trailing "of the … Code" guard needs the
 // qualifier to follow, so this — the plainest citation form there is — was
 // read as a broken internal reference.
-const EXTERNAL_NAMED_CODE_LEADING_RE = /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)\s+$/i;
+// The code's own name can carry an "of" phrase — "Code of Civil Procedure
+// section 2033.010" is how every California filing cites the CCP, and
+// "Rules of Civil Procedure Rule 36" and "Code of Federal Regulations
+// § 425.1" are the same shape. The noun alone had to sit immediately before
+// the section, so the commonest citation form in the largest state's practice
+// read as a broken internal reference.
+// Case-INSENSITIVE, because a guaranty set in capitals cites "MINNESOTA
+// STATUTES SECTION 582.30". The optional name phrase is spelled `[A-Za-z]`
+// rather than `[A-Z]` to say what it means under the flag.
+const EXTERNAL_NAMED_CODE_LEADING_RE =
+  /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?\s+$/i;
 
 const EXTERNAL_REG_LEADING_RE =
   /\b(?:Treasury\s+Regulations?|Treas\.?\s+Reg(?:ulation)?s?\.?)\s+$/i;
@@ -330,6 +346,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       const bareLabel = (m[2] ?? "").replace(/\(.*\)$/, "");
       if (
         EXTERNAL_TRAILER_RE.test(after) ||
+        SPECIFICATION_SECTION_RE.test(after) ||
         EXTERNAL_INSTRUMENT_RE.test(after) ||
         EXTERNAL_LEADER_RE.test(before) ||
         EXTERNAL_LEADING_RE.test(before) ||

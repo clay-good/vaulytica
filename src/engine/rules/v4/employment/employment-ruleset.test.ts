@@ -563,3 +563,46 @@ describe("EMP-033 — the § 2870 statutory carve-out is not accused", () => {
     ]);
   });
 });
+
+describe("a performance improvement plan as one is actually written", () => {
+  const run = async (id: string, ...paragraphs: string[]) => {
+    const res = await runEngine({
+      rules: EMPLOYMENT_RULES,
+      ctx: withPb(buildContext(["Performance Improvement Plan", ...paragraphs]), PIP_PB),
+      source_file: SRC,
+    });
+    return res.findings.filter((f) => f.rule_id === id).map((f) => f.title);
+  };
+
+  // "Expected Standards" is the third heading the measurable-targets section is
+  // written under, beside "Performance Goals" and "Performance Expectations".
+  it("EMP-040 reads targets under an 'Expected Standards' heading", async () => {
+    expect(
+      await run(
+        "EMP-040",
+        "EXPECTED STANDARDS. By the plan end date you are expected to submit forecasts within 15% accuracy for two consecutive months and to log contact activity for every active opportunity at least weekly.",
+      ),
+    ).toEqual([]);
+  });
+
+  // The acknowledgment window was forty characters and the sentence is longer
+  // than that; and the receipt-not-agreement disclaimer's subject is as often
+  // "it" as "my signature".
+  it("EMP-044 reads the ordinary acknowledgment sentence", async () => {
+    expect(
+      await run(
+        "EMP-044",
+        "ACKNOWLEDGMENT. My signature below acknowledges that this plan was discussed with me and that I received a copy. It does not indicate that I agree with its contents.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("EMP-044 still reports a plan with no acknowledgment at all", async () => {
+    expect(
+      await run(
+        "EMP-044",
+        "Progress will be reviewed at each review date. Failure to meet the expected standards may result in further action.",
+      ),
+    ).toEqual(["Acknowledgment / signature clause missing"]);
+  });
+});

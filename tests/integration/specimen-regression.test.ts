@@ -219,6 +219,31 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["DISC-010", "STRUCT-005"],
   },
 
+  // A Washington quitclaim deed, whose granting words are the statutory short
+  // form: "conveys and quitclaims to". RE-128 wanted "hereby quitclaims" and
+  // reported at `critical` that the deed lacked the words it is written in.
+  "quitclaim-deed.txt": { playbook: "quitclaim-deed", findings: [] },
+
+  // A performance improvement plan. Its family's distinguishing phrases were
+  // "30 days", "60 days", and "90 days" — which distinguish nothing — so a
+  // textbook PIP scored 0.3 and fell to `generic-fallback`, and not one of the
+  // six PIP checks ran on it.
+  "pip.txt": { playbook: "pip", findings: ["TEMP-002"] },
+
+  // An AIA-style construction change order. It closes by ratifying the
+  // contract it modifies, which is where Contract Sum and Contract Time are
+  // defined — and it was told it had forgotten to define them.
+  "change-order.txt": { playbook: "change-order", findings: ["STRUCT-004"] },
+
+  // A California set of requests for admission. Its proof of service is not
+  // called a "certificate of service" anywhere outside federal practice, and
+  // "Code of Civil Procedure section 2033.010" is a citation, not a broken
+  // internal reference to a "section 2033.010".
+  "requests-for-admission.txt": {
+    playbook: "requests-for-admission",
+    findings: ["STRUCT-005", "STRUCT-016", "STRUCT-018"],
+  },
+
   "eula.txt": {
     playbook: "eula",
     findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],
@@ -826,7 +851,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // neither the termination-for-convenience clause nor a prompt-payment term.
   "far-flowdown.txt": {
     playbook: "far-subcontract-flowdown",
-    findings: ["COMM-159", "COMM-162", "STRUCT-006", "STRUCT-009"],
+    findings: ["COMM-159", "COMM-162", "STRUCT-009"],
   },
 
   // A privilege log under a federal caption. Every entry names its author and

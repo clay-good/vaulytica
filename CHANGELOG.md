@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.130.0] — 2026-08-29
+
+### Added
+- **Four more specimens from families that had none**: a Washington quitclaim
+  deed, a performance improvement plan, an AIA-style construction change order,
+  and a California set of requests for admission. One hundred specimens now.
+
+### Fixed
+- **A quitclaim deed was told at `critical` that it lacked the granting words
+  it is written in** (RE-128). The statutory short form is "conveys and
+  quitclaims to" — RCW 64.04.050 and its siblings — with no "hereby" anywhere
+  in it, and the rule required one. The quitclaim VERB is the signal now,
+  recognized by what follows it, which is also what keeps the check off the
+  document's own title.
+- **A textbook performance improvement plan fell to `generic-fallback`**, so
+  not one of the six PIP checks ran on it. Its family's distinguishing phrases
+  were "30 days", "60 days", and "90 days", which distinguish nothing. Two of
+  those checks then turned out to be unreachable anyway: EMP-040 did not know
+  the "Expected Standards" heading, and EMP-044's acknowledgment window was
+  forty characters when the ordinary sentence is longer than that ("My
+  signature below acknowledges that this plan was discussed with me and that I
+  received a copy. It does not indicate that I agree with its contents.").
+- **A change order was told it had forgotten to define Contract Sum and
+  Contract Time** — the two terms the AIA contract it modifies exists to
+  define. STRUCT-006 now also stands down for a document that RATIFIES a named
+  parent, not only one that says its terms are defined there.
+- **A ruled writing space was reported as unfilled template content**
+  (STRUCT-013, `critical`). "EMPLOYEE COMMENTS" over a rule is a line the
+  reader fills in; a placeholder replaces something inside a sentence, and a
+  rule that is the whole paragraph has no sentence to be part of.
+- **A proof of service is a certificate of service** (DISC-006/011/016/023).
+  "Certificate of service" is federal practice; California and New York say
+  "Proof of Service", and a served California set of requests for admission was
+  told at `critical` that it had none.
+- **A hyphenated word is one word.** "Dmitri Sokolov-Reyes" captured as "Dmitri
+  Sokolov" — a name matching nothing else in the document, so every
+  signature-block and person guard missed it and the employee named on a
+  performance improvement plan was reported as a term it forgot to define.
+  "Non-Disclosure Agreement" read as "Disclosure Agreement" for the same
+  reason.
+- **Three more citations read as broken internal cross-references**: a
+  construction specification's MasterFormat number ("Section 09 51 00"), a code
+  named with an "of" phrase ("Code of Civil Procedure section 2033.010" — the
+  commonest citation form in the largest state's practice), and the statute
+  name that follows it ("Civil Procedure", reported as a term the filing forgot
+  to define).
+- **A recorded instrument's index fields stopped the recorder-block walk** —
+  "Reference number of related document: 20190412000733" carries no ZIP and no
+  street suffix, so the address test could not see it, and a quitclaim deed
+  whose lines each had their own paragraph fell to `generic-fallback`.
+
 ## [9.129.0] — 2026-08-29
 
 ### Added

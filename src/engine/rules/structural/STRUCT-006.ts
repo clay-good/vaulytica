@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
+import { borrowsParentVocabulary } from "../_helpers.js";
 
 /**
  * STRUCT-006 — Used-but-never-defined capitalized terms (warning).
@@ -30,7 +31,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -54,7 +55,14 @@ export const rule: Rule = {
     // The clause is recognized on its two load-bearing halves — capitalized
     // terms not defined HERE, and their meanings given THERE — so an ordinary
     // sentence that merely mentions defined terms does not disable the check.
-    if (INCORPORATES_DEFINITIONS.test(documentText(ctx))) return null;
+    // A document that RATIFIES a named parent takes its vocabulary from it just
+    // as squarely as one that says so in a definitions clause. A construction
+    // change order closes with "Except as expressly modified here, all terms of
+    // the Contract dated June 3, 2025 remain in full force and effect" and was
+    // told that Contract Sum and Contract Time — the two terms the AIA contract
+    // it modifies exists to define — are terms it forgot to define.
+    if (INCORPORATES_DEFINITIONS.test(documentText(ctx)) || borrowsParentVocabulary(ctx))
+      return null;
     // A party's defined ROLE is introduced in the preamble exactly like any
     // other defined term — `… the individual or entity accepting this EULA
     // ("End User")` — so the body's later use of "End User" is defined, not

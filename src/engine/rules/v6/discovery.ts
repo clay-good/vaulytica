@@ -100,13 +100,19 @@ const RFP = pack("document-requests", C, [
   },
   {
     id: "DISC-006",
+    ver: "1.1.0",
     name: "Certificate of service",
     cite: frcp(
       "5(d)(1)(B)",
       "serving and filing pleadings and other papers — certificate of service",
     ),
     pat: [
-      /certificate\s+of\s+service/i,
+      // The federal name for it. State practice says "Proof of Service"
+      // (California, New York), "Declaration of Service", or "Affidavit of
+      // Service" — the same document under the name its own rules give it,
+      // and a served California set of requests was told at `critical` that
+      // it had none.
+      /(?:certificate|proof|declaration|affidavit)\s+of\s+service/i,
       /(served|serve[d]?\s+(a\s+)?(copy|true\s+copy)|e-?mail|electronic\s+service)/i,
     ],
     all: true,
@@ -166,10 +172,16 @@ const ROGS = pack("interrogatories", C, [
   },
   {
     id: "DISC-011",
+    ver: "1.1.0",
     name: "Certificate of service",
     cite: frcp("5(d)(1)(B)", "certificate of service"),
     pat: [
-      /certificate\s+of\s+service/i,
+      // The federal name for it. State practice says "Proof of Service"
+      // (California, New York), "Declaration of Service", or "Affidavit of
+      // Service" — the same document under the name its own rules give it,
+      // and a served California set of requests was told at `critical` that
+      // it had none.
+      /(?:certificate|proof|declaration|affidavit)\s+of\s+service/i,
       /(served|e-?mail|electronic\s+service|method\s+of\s+service)/i,
     ],
     all: true,
@@ -237,10 +249,16 @@ const RFA = pack("requests-for-admission", C, [
   },
   {
     id: "DISC-016",
+    ver: "1.1.0",
     name: "Certificate of service",
     cite: frcp("5(d)(1)(B)", "certificate of service"),
     pat: [
-      /certificate\s+of\s+service/i,
+      // The federal name for it. State practice says "Proof of Service"
+      // (California, New York), "Declaration of Service", or "Affidavit of
+      // Service" — the same document under the name its own rules give it,
+      // and a served California set of requests was told at `critical` that
+      // it had none.
+      /(?:certificate|proof|declaration|affidavit)\s+of\s+service/i,
       /(served|e-?mail|electronic\s+service|method\s+of\s+service)/i,
     ],
     all: true,
@@ -349,10 +367,16 @@ const RESPONSES = pack("discovery-responses", C, [
   },
   {
     id: "DISC-023",
+    ver: "1.1.0",
     name: "Certificate of service",
     cite: frcp("5(d)(1)(B)", "certificate of service"),
     pat: [
-      /certificate\s+of\s+service/i,
+      // The federal name for it. State practice says "Proof of Service"
+      // (California, New York), "Declaration of Service", or "Affidavit of
+      // Service" — the same document under the name its own rules give it,
+      // and a served California set of requests was told at `critical` that
+      // it had none.
+      /(?:certificate|proof|declaration|affidavit)\s+of\s+service/i,
       /(served|e-?mail|electronic\s+service|method\s+of\s+service)/i,
     ],
     all: true,

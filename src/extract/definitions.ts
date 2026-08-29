@@ -222,7 +222,14 @@ const DEFINITION_SCOPE =
   /\b(?:for\s+(?:the\s+)?purposes\s+of|as\s+used\s+in|solely\s+for\s+purposes\s+of)\s+(?:this\s+)?((?:Section|Article|Clause|Paragraph)\s+[\w.()-]+)[,:\s]*$/i;
 
 const DEFINITIONS_HEADING = /\b(definitions?|defined\s+terms|glossary|interpretation)\b/i;
-const TITLE_CASE_PHRASE = /\b((?:[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,4}))\b/g;
+// A hyphenated word is ONE word. Without that, "Dmitri Sokolov-Reyes" captured
+// as "Dmitri Sokolov" — a name that matches nothing else in the document, so
+// every signature-block and person guard missed it and the employee named on a
+// performance improvement plan was reported as a term it forgot to define.
+// "Non-Disclosure Agreement" was read as "Disclosure Agreement" for the same
+// reason.
+const TITLE_CASE_PHRASE =
+  /\b((?:[A-Z][a-z]+(?:-[A-Z][a-z]+)*(?:\s+[A-Z][a-z]+(?:-[A-Z][a-z]+)*){1,4}))\b/g;
 
 /**
  * Place names are proper nouns, never contractual defined terms. A
@@ -914,6 +921,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // captures as "New York Limited Liability Company", and the suffix test
       // above cannot see the word that makes it a law. Look at what follows.
       if (/^\s+(?:Act|Code|Law)\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
+      // The statute's name can also FOLLOW the noun: "Code of Civil
+      // Procedure", "Rules of Civil Procedure", "Laws of New York". Every
+      // California filing cites the first of those, and "Civil Procedure" was
+      // reported as a term the filing forgot to define.
+      if (
+        /\b(?:Code|Rules?|Laws?|Acts?|Statutes?|Regulations?)\s+of\s+$/i.test(
+          ctx.text.slice(Math.max(0, m.index - 24), m.index),
+        )
+      )
+        continue;
       if (OFFICER_TITLES.test(phrase)) continue;
       // An office named by its ABBREVIATION — "VP Information Security", "SVP
       // Global Sales", "CISO Operations". TITLE_CASE_PHRASE cannot include the

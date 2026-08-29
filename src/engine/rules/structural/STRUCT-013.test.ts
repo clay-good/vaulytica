@@ -343,4 +343,27 @@ describe("STRUCT-013 — a blank the reader is meant to fill in", () => {
     ]);
     expect(STRUCT_013.check(ctx)).not.toBeNull();
   });
+
+  // A rule that is the WHOLE paragraph, under a short heading that says what
+  // to write in it, is a writing space. "EMPLOYEE COMMENTS" over a rule is a
+  // line the employee fills in, and a performance improvement plan was told at
+  // `critical` that it held unfilled template content.
+  it("does not report a ruled writing space under its heading (v1.14.0)", () => {
+    const ctx = buildContext([
+      "Performance Improvement Plan",
+      "Progress will be reviewed at each review date.",
+      "EMPLOYEE COMMENTS",
+      "_______________________________________________________________________________",
+    ]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+  });
+
+  it("still reports a rule left inside a sentence", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "Compensation",
+      "The Company shall pay the Consultant $__________ per month during the Term.",
+    ]);
+    expect(STRUCT_013.check(ctx)).not.toBeNull();
+  });
 });

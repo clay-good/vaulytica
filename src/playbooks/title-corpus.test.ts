@@ -586,3 +586,32 @@ describe("titleCorpus — a STATE court's caption", () => {
     expect(titleCorpus(t, "d.txt")).toContain("MOTION TO COMPEL ANSWERS FROM DEFENDANT");
   });
 });
+
+describe("a recorded instrument's index fields", () => {
+  /**
+   * The recorder's block holds index fields as well as an address —
+   * "Reference number of related document: 20190412000733", "Auditor's File
+   * No. 9812440" — and none of them carries a ZIP or a street suffix, so the
+   * address test cannot see them. A Washington quitclaim deed whose lines each
+   * had their own paragraph stopped the walk on one and fell to
+   * `generic-fallback`.
+   */
+  it("passes the recorder's reference and file numbers", () => {
+    const t = tree([
+      {
+        heading: "",
+        paragraphs: [
+          "Recording requested by and when recorded return to:",
+          "Calder & Vance, PLLC",
+          "615 Second Avenue, Suite 900",
+          "Seattle, Washington 98104",
+          "Assessor's Parcel Number: 334920-0185",
+          "Reference number of related document: 20190412000733",
+          "QUITCLAIM DEED",
+          "THE GRANTOR conveys and quitclaims to THE GRANTEE all right, title, and interest.",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "d.txt")).toContain("QUITCLAIM DEED");
+  });
+});
