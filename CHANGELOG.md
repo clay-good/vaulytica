@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.242.0] — 2026-08-29
+
+### Added
+- A § 423 employee stock purchase plan — the 199th specimen, and the first for
+  `employee-stock-purchase-plan`. EQT-108..113 are all satisfied: the § 423
+  qualification election with its Non-423 Component, the equal-rights and
+  eligibility conditions, the $25,000 annual accrual limit, the 85% lookback
+  price, the five-percent shareholder exclusion with § 424(d) attribution, and
+  the withdrawal and termination rules.
+
+### Fixed
+- **A lettered statutory SUBSECTION read as a broken internal reference.** The
+  plan cites § 423 with "of the Internal Revenue Code" attached and then cites
+  §§ 414(q) and 424(d) bare, because in that document the Code is the only thing
+  called a Section. A contract's own outline is decimal or roman; it is the
+  statutes that number a bare three-digit section and split it with a letter.
+  Corroborated on the document naming a code, so a contract that numbers its own
+  sections 101, 102 and writes "Section 101(a)" is untouched unless it also
+  names one.
+- **A lowercase use INSIDE its own definition is the definition doing its job.**
+  `"Common Stock" means the Company's common stock, par value $0.0001 per share`
+  states what the term refers to, in the ordinary noun the term is built from.
+  Every ESPP, charter, and note defines its stock that way, and STRUCT-014 asked
+  the drafter to capitalize the words inside their own definition.
+
 ## [9.241.0] — 2026-08-29
 
 ### Added

@@ -679,6 +679,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A § 423 employee stock purchase plan — the 199th specimen, and the first
+  // for `employee-stock-purchase-plan`. EQT-108..113 are all satisfied: the
+  // § 423 qualification election with its Non-423 Component, the equal-rights
+  // and eligibility conditions, the $25,000 annual accrual limit, the 85%
+  // lookback price, the five-percent shareholder exclusion with § 424(d)
+  // attribution, and the withdrawal and termination rules.
+  "employee-stock-purchase-plan.txt": {
+    playbook: "employee-stock-purchase-plan",
+    findings: ["OBLI-005"],
+  },
   // A first codicil to a will — the 198th specimen, and the first for
   // `codicil`. TEMP-002 is fair: the will it amends is five years older. It
   // exposed STRUCT-007 reporting the WILL's articles as broken references —

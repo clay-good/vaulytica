@@ -189,6 +189,21 @@ function enclosingSentenceOf(text: string, index: number): string {
 const EXTERNAL_INSTRUMENT_RE =
   /^(?:\.\d+[a-z]?|\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Sub-?leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Sub-?contracts?|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?|Terms?|Orders?|SOWs?|Statements?\s+of\s+Work|Guarant(?:y|ies|ee|ees)|Warrant(?:y|ies)|Rules?|Manuals?|Handbooks?|Schedules?|Wills?|Codicils?|Testaments?)\b|thereof\b)/i;
 
+// A FLAT number with a lettered subsection — "Section 414(q)", "Section
+// 424(d)", "Section 423(b)(5)" — in a document that names a CODE.
+//
+// A contract's own outline is decimal ("Section 4.2") or roman ("Article
+// VII"); it is the statutes that number a bare three-digit section and split
+// it with a letter. An ESPP cites § 423 with "of the Internal Revenue Code"
+// attached and then cites §§ 414(q) and 424(d) bare, because in that document
+// the Code is the only thing called a Section — and both reported as broken
+// internal references. Corroborated on the document naming a code, so a
+// contract that numbers its own sections 101, 102 and writes "Section 101(a)"
+// is untouched unless it also names one.
+const STATUTE_SUBSECTION_LABEL = /^\d{2,4}\([a-z]\)/;
+const NAMES_A_CODE =
+  /\b(?:Internal\s+Revenue\s+Code|Bankruptcy\s+Code|Uniform\s+Commercial\s+Code|Securities\s+Act|Exchange\s+Act|ERISA|U\.S\.C\.|C\.F\.R\.)\b/;
+
 // A four-digit-or-longer flat section number ("Section 4999", "Section 1798")
 // is statutory: no contract numbers its own sections past three digits.
 const STATUTE_SECTION_LABEL = /^\d{4,}$/;
@@ -332,6 +347,10 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
   const labelIndex = buildLabelIndex(outline);
   // Section numbers this document ties to a code anywhere in its text.
   const statutoryLabels = new Set<string>();
+  let namesACode = false;
+  forEachParagraph(tree, (ctx) => {
+    if (NAMES_A_CODE.test(ctx.text)) namesACode = true;
+  });
   // Acronyms of statutes cited into another authority's numbering.
   const statuteAcronyms = new Set<string>(SEED_STATUTE_ACRONYMS);
   // Short names the document gives to OTHER instruments it cites into.
@@ -435,6 +454,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         EXTERNAL_REG_LEADING_RE.test(before) ||
         EXTERNAL_NAMED_CODE_LEADING_RE.test(before) ||
         STATUTE_SECTION_LABEL.test(bareLabel) ||
+        (namesACode && STATUTE_SUBSECTION_LABEL.test(m[2] ?? "")) ||
         statutoryLabels.has(bareLabel.toUpperCase()) ||
         (acronymTail != null &&
           (statuteAcronyms.has(acronymTail[1]!.toUpperCase()) ||

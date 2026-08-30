@@ -1,0 +1,70 @@
+HALBROOK ROBOTICS, INC.
+2026 EMPLOYEE STOCK PURCHASE PLAN
+
+Adopted by the Board of Directors on March 4, 2026 and approved by the stockholders on May 19, 2026
+
+1. PURPOSE AND SECTION 423 QUALIFICATION
+
+The purpose of this Plan is to provide eligible employees of the Company and of each Designated Subsidiary an opportunity to purchase Common Stock through accumulated payroll deductions. The Plan is intended to qualify as an "employee stock purchase plan" under Section 423 of the Internal Revenue Code of 1986, as amended, and every provision of the Plan shall be construed so as to satisfy the requirements of Section 423. The Company may also offer participation through a Non-423 Component to employees of subsidiaries outside the United States, and that component is not intended to qualify under Section 423 and may be administered on different terms.
+
+2. DEFINITIONS
+
+"Common Stock" means the Company's common stock, par value $0.0001 per share.
+
+"Designated Subsidiary" means a subsidiary of the Company that the Compensation Committee has designated as eligible to participate in the Plan.
+
+"Offering Period" means a period of twenty-four (24) months during which an option granted under the Plan may be exercised, as described in Section 6.
+
+"Offering Date" means the first trading day of an Offering Period.
+
+"Purchase Period" means each of the four (4) consecutive six-month periods within an Offering Period.
+
+"Purchase Date" means the last trading day of a Purchase Period.
+
+3. SHARES SUBJECT TO THE PLAN
+
+The maximum number of shares of Common Stock that may be issued under the Plan is 1,800,000, subject to adjustment for a stock split, stock dividend, recapitalization, or similar change in capitalization.
+
+4. ELIGIBILITY AND EQUAL RIGHTS
+
+Every employee of the Company and of each Designated Subsidiary is eligible to participate, except an employee who has been employed for less than five (5) months in any calendar year, an employee whose customary employment is twenty (20) hours per week or less, and an employee who is a citizen or resident of a jurisdiction in which participation would violate local law. The exclusions in this Section are applied uniformly.
+
+All participants in an Offering have the same rights and privileges, as Section 423(b)(5) requires, except that the amount of Common Stock that may be purchased by any participant bears a uniform relationship to that participant's compensation. Highly compensated employees within the meaning of Section 414(q) are not excluded from participation.
+
+5. FIVE-PERCENT SHAREHOLDER EXCLUSION
+
+No employee may be granted an option under the Plan if, immediately after the grant, that employee would own stock possessing five percent (5%) or more of the total combined voting power or value of all classes of stock of the Company or of any parent or subsidiary. For this purpose the attribution rules of Section 424(d) apply, and stock the employee may purchase under any outstanding option is treated as owned.
+
+6. OFFERING PERIODS AND PURCHASE PERIODS
+
+The Plan is administered in successive Offering Periods of twenty-four (24) months, each beginning on the first trading day of June and December. Each Offering Period contains four (4) consecutive Purchase Periods of six (6) months. If the fair market value of the Common Stock on the first trading day of a Purchase Period is lower than the fair market value on the Offering Date of the then-current Offering Period, that Offering Period terminates immediately after the purchase and participants are automatically enrolled in a new Offering Period beginning on the next trading day.
+
+7. PURCHASE PRICE
+
+The purchase price for each share is eighty-five percent (85%) of the lower of (a) the fair market value of a share on the Offering Date of the Offering Period and (b) the fair market value of a share on the Purchase Date. This lookback provision is applied to each Purchase Period within the Offering Period.
+
+8. PAYROLL DEDUCTIONS AND THE $25,000 LIMIT
+
+A participant may elect payroll deductions of not less than one percent (1%) and not more than fifteen percent (15%) of eligible compensation. Deductions are credited to a bookkeeping account without interest.
+
+No participant may accrue the right to purchase Common Stock under the Plan and under any other employee stock purchase plan of the Company or of any parent or subsidiary at a rate exceeding $25,000 of fair market value, determined as of the Offering Date, for each calendar year in which the option is outstanding. A purchase that would exceed this limit is reduced, and the excess payroll deductions are refunded without interest.
+
+In addition, no participant may purchase more than 1,500 shares in any Purchase Period.
+
+9. WITHDRAWAL AND TERMINATION OF EMPLOYMENT
+
+A participant may withdraw from an Offering Period at any time up to fifteen (15) days before a Purchase Date by filing a notice of withdrawal with the Company. On withdrawal, all payroll deductions credited to the participant's account are refunded without interest, the participant's option terminates, and no further deductions are made. A participant who withdraws may not rejoin the same Offering Period but may enroll in a later one.
+
+If a participant's employment terminates, or the participant ceases to be an eligible employee, for any reason before a Purchase Date, the participant is deemed to have withdrawn, the option terminates, and the accumulated payroll deductions are refunded without interest as soon as administratively practicable.
+
+10. NON-TRANSFERABILITY
+
+An option granted under the Plan is exercisable during a participant's lifetime only by that participant and may not be transferred, assigned, pledged, or otherwise disposed of, except by will or the laws of descent and distribution.
+
+11. ADMINISTRATION, AMENDMENT, AND TERM
+
+The Compensation Committee administers the Plan and has authority to interpret it, to adopt rules for its administration, and to designate which subsidiaries are Designated Subsidiaries. The Board may amend or terminate the Plan at any time, provided that stockholder approval is obtained for any amendment that increases the number of shares reserved or that changes the class of corporations whose employees may participate, as Section 423(b)(2) requires. The Plan terminates on the tenth anniversary of stockholder approval unless terminated earlier.
+
+12. GENERAL
+
+Participation in the Plan does not confer any right to continued employment. The Plan is governed by the laws of the State of Delaware, without regard to its conflict of laws principles. This Plan is unfunded, and a participant's rights are those of a general unsecured creditor of the Company.

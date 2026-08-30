@@ -662,7 +662,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-014",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -982,11 +982,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "40ee65b836660ba6263f1e196af67fef8097c0416c4d461daa0311ee3e37e3a2",
+  "result_hash": "8c31849c413368643904e32bdd3bce84087e539d7d280542bc932650ca0c9205",
   "source_file": {
     "name": "mutual-nda.docx",
     "sha256": "ef50f0dcb7abba00b9213ddb4a8a77a2ab5f0bc1f3ee2394f809706622bf8151",
     "size_bytes": 9274
   },
-  "version": "9.241.0"
+  "version": "9.242.0"
 }

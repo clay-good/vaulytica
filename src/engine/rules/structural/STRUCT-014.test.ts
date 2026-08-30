@@ -81,3 +81,26 @@ describe("STRUCT-014 — inconsistent defined-term casing", () => {
     expect(f!.description).toMatch(/2 references|references use/);
   });
 });
+
+describe("STRUCT-014 — a lowercase use inside its own definition (v1.4.0)", () => {
+  it('does not report "Common Stock" for the noun inside its own definition', () => {
+    // `"Common Stock" means the Company's common stock, par value $0.0001 per
+    // share` states what the term refers to, in the ordinary noun the term is
+    // built from. Every ESPP, charter, and note defines its stock that way.
+    const ctx = buildContext([
+      "2026 Employee Stock Purchase Plan",
+      '"Common Stock" means the Company\'s common stock, par value $0.0001 per share.',
+      "The maximum number of shares of Common Stock that may be issued under the Plan is 1,800,000.",
+    ]);
+    expect(STRUCT_014.check(ctx)).toBeNull();
+  });
+
+  it("still reports a lowercase use elsewhere in the document", () => {
+    const ctx = buildContext([
+      "2026 Employee Stock Purchase Plan",
+      '"Common Stock" means the Company\'s stock, par value $0.0001 per share.',
+      "The maximum number of shares of common stock that may be issued under the Plan is 1,800,000.",
+    ]);
+    expect(STRUCT_014.check(ctx)).not.toBeNull();
+  });
+});

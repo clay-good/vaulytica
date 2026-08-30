@@ -21,7 +21,7 @@ import { isGenericOwnUse, isStatutoryIdiomUse } from "./STRUCT-009.js";
  */
 export const rule: Rule = {
   id: "STRUCT-014",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Inconsistent defined-term casing",
   category: "structural",
   default_severity: "info",
@@ -72,6 +72,14 @@ export const rule: Rule = {
           // of "Confidential Information". The term does not yet carry its
           // contractual meaning at that point.
           if (def.defined_at && p.start + m.index < def.defined_at.start) continue;
+          // A lowercase occurrence INSIDE the defining sentence is the
+          // definition doing its job: `"Common Stock" means the Company's
+          // common stock, par value $0.0001 per share` states what the term
+          // refers to, in the ordinary noun the term is built from. Every
+          // ESPP, charter, and note defines its stock that way, and reporting
+          // it as a drafting slip asks the drafter to capitalize the words
+          // inside their own definition.
+          if (def.defined_at?.paragraph_id === p.paragraph.id) continue;
           hits.push({
             term: def.term,
             section_id: p.section.id,

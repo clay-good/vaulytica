@@ -1100,3 +1100,27 @@ describe("crossrefs — a codicil cites the WILL's articles (v9.241.0)", () => {
     expect(unresolved).toContain("Section 14.9");
   });
 });
+
+describe("crossrefs — a lettered statutory subsection (v9.242.0)", () => {
+  it("does not report a bare Code subsection in a document that names the Code", () => {
+    const tree = buildTree([
+      "2026 Employee Stock Purchase Plan",
+      "The Plan is intended to qualify under Section 423 of the Internal Revenue Code of 1986, as amended.",
+      "Highly compensated employees within the meaning of Section 414(q) are not excluded from participation.",
+      "For this purpose the attribution rules of Section 424(d) apply.",
+    ]);
+    expect(extractCrossRefs(tree, extractSections(tree)).filter((c) => c.unresolved)).toEqual([]);
+  });
+
+  it("still reports the same shape in a document that names no code", () => {
+    const tree = buildTree([
+      "Services Agreement",
+      "Section 1. Services. Provider shall perform the Services described in the statement of work.",
+      "The escalation path in Section 101(a) applies to every dispute under this Agreement.",
+    ]);
+    const unresolved = extractCrossRefs(tree, extractSections(tree))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+    expect(unresolved).toContain("Section 101(a)");
+  });
+});
