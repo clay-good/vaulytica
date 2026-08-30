@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.261.0] — 2026-08-30
+
+### Added
+- One specimen — a social media and external communications policy for a
+  clinical-stage biotech — the 228th, and the first for
+  `social-media-policy`. It reports nothing.
+
+### Fixed
+- **"Code ANNOTATED" is still a code name.** Half the states trail theirs that
+  way — "Tennessee Code Annotated section 50-1-1003" — and the guard added in
+  9.251.0 for the chapter-first citation style required the code word to be
+  the last one before the section. A policy citing the Tennessee
+  password-protection statute was told it points at a "section 50" it does not
+  have.
+
 ## [9.260.0] — 2026-08-30
 
 ### Added

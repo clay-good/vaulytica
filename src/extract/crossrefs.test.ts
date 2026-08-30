@@ -1191,3 +1191,33 @@ describe("a sibling of a declared code section is external", () => {
     expect(got.some((r) => r.unresolved)).toBe(true);
   });
 });
+
+/**
+ * "ANNOTATED" trails the code's name in half the states, and the code word had
+ * to be the last one before the section — so a social media policy citing the
+ * Tennessee password-protection statute was told it points at a "section 50"
+ * it does not have.
+ */
+describe("a code name trailed by ANNOTATED is still a code name", () => {
+  const refs = (...paras: string[]) => {
+    const t = buildTree(["1. Monitoring", ...paras]);
+    return extractCrossRefs(t, extractSections(t));
+  };
+
+  it.each([
+    "The company does not ask for your passwords, as Tennessee Code Annotated section 50-1-1003 provides.",
+    "Wages are due as Ohio Revised Code Ann. section 4113-15 requires.",
+  ])("does not report a broken reference in: %s", (sentence) => {
+    expect(
+      refs(sentence)
+        .filter((r) => r.unresolved)
+        .map((r) => r.raw_text),
+    ).toEqual([]);
+  });
+
+  it("still reports a genuine internal reference to a missing section", () => {
+    expect(
+      refs("Monitoring is described in Section 19 of this policy.").some((r) => r.unresolved),
+    ).toBe(true);
+  });
+});

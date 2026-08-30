@@ -2156,6 +2156,14 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "flat-fee-agreement",
     findings: ["OBLI-003", "OBLI-005", "STRUCT-004"],
   },
+  // A social media and external communications policy for a clinical-stage
+  // biotech — the 228th specimen, and the first for `social-media-policy`. It
+  // reports nothing. STRUCT-007 reported a broken reference to "section 50",
+  // from "Tennessee Code ANNOTATED section 50-1-1003": half the states trail
+  // their code's name that way, and the guard added in 9.251.0 for the
+  // chapter-first citation style required the code word to be the last one
+  // before the section.
+  "social-media-policy.txt": { playbook: "social-media-policy", findings: [] },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],

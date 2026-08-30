@@ -142,6 +142,12 @@ const EXTERNAL_LEADING_RE =
 // Case-INSENSITIVE, because a guaranty set in capitals cites "MINNESOTA
 // STATUTES SECTION 582.30". The optional name phrase is spelled `[A-Za-z]`
 // rather than `[A-Z]` to say what it means under the flag.
+// "ANNOTATED" trails the code's name in half the states — "Tennessee Code
+// Annotated section 50-1-1003", "Maryland Code Ann., Labor & Empl. § 3-712" —
+// and the code word had to be the last one before the section, so a social
+// media policy citing the Tennessee password-protection statute was told it
+// points at a "section 50" it does not have.
+//
 // A DIVISION may sit between the code's name and the section: "Massachusetts
 // General Laws chapter 149, section 24L", "New York Business Corporation Law
 // article 6, section 630". The code word had to be immediately adjacent, so
@@ -150,7 +156,7 @@ const EXTERNAL_LEADING_RE =
 // noncompetes with a student was told it points at a "section 24L" it does not
 // have.
 const EXTERNAL_NAMED_CODE_LEADING_RE =
-  /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?(?:\s*,?\s*(?:chapter|ch\.?|title|tit\.?|article|art\.?|part|division|div\.?)\s+[\w.-]+)?\s*,?\s+$/i;
+  /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+Annotated|\s+Ann\.?)?(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?(?:\s*,?\s*(?:chapter|ch\.?|title|tit\.?|article|art\.?|part|division|div\.?)\s+[\w.-]+)?\s*,?\s+$/i;
 
 const EXTERNAL_REG_LEADING_RE =
   /\b(?:Treasury\s+Regulations?|Treas\.?\s+Reg(?:ulation)?s?\.?)\s+$/i;
