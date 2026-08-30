@@ -1346,10 +1346,26 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // The all-caps drafting connectives are excluded: those genuinely do
       // precede an unrelated Title-Case phrase ("WHEREAS Buyer Parent has
       // ..."), so the capture after them is not a truncation.
-      const acronymBefore = /\b([A-Z][A-Z0-9]{1,5})\s$/.exec(
+      // A single capital letter is a SERIES or EXHIBIT designator and heads a
+      // phrase the same way an acronym does: "Series B Preferred Stock",
+      // "Exhibit C Specifications", "Class A Common Stock". `[A-Z][a-z]+`
+      // needs a lower-case letter after the capital, so the run breaks at the
+      // designator and a plan of dissolution was told it uses a term
+      // "Preferred Stock" it never defined — on the sentence that names the
+      // Series A and Series B preferences.
+      const acronymBefore = /\b([A-Z][A-Z0-9]{0,5})\s$/.exec(
         ctx.text.slice(Math.max(0, m.index - 8), m.index),
       );
-      if (acronymBefore && !ALL_CAPS_CONNECTIVES.has(acronymBefore[1]!)) continue;
+      // "A" and "I" are single-capital ENGLISH WORDS, not designators: "A
+      // Program Rule may be amended" opens with the article, and reading it as
+      // a designator suppressed a term the document really does leave
+      // undefined.
+      if (
+        acronymBefore &&
+        !ALL_CAPS_CONNECTIVES.has(acronymBefore[1]!) &&
+        !["A", "I"].includes(acronymBefore[1]!)
+      )
+        continue;
       // The VALUE of a cover-block field — "Requesting organisation: Thornbury
       // Federal Credit Union" — is a fact the document states, not a term it
       // defines. Recognized only on a short paragraph that OPENS with the

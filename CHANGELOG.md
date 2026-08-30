@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.259.0] — 2026-08-30
+
+### Added
+- Two specimens — a nonprofit conflict-of-interest policy adopted from the
+  IRS's own model text and a Delaware plan of dissolution and winding up — the
+  225th and 226th, and the first for `coi-policy` and `dissolution-plan`.
+
+### Fixed
+- **A CRITICAL false accusation against the IRS's own model policy.** POL-034
+  told a land conservancy that it has no annual disclosure clause, on a policy
+  whose Article VI is headed "ANNUAL STATEMENTS" and reads "Each director,
+  principal officer, and member of a committee … shall **annually sign a
+  statement** which affirms …". That is the wording in the Form 1023
+  instructions, which nearly every nonprofit adopts verbatim, and the check
+  wanted the nouns "annual disclosure" or "annual certification".
+- **The bare siblings of a declared code section read as broken
+  references.** A plan of dissolution ties one section to the code — "as
+  section 275 of the General Corporation Law of the State of Delaware
+  requires" — and then cites its siblings bare: "as section 277 requires",
+  "Under section 278", "the procedure of sections 280 and 281(a)". Five read
+  as broken references to sections a ten-section plan does not have. The
+  declaration matcher also required the label capitalized, and a plan writes
+  it mid-sentence.
+- **A single capital letter heads a phrase exactly as an acronym does.**
+  "Series B Preferred Stock" — the Title-Case run needs a lower-case letter
+  after the capital, so it breaks at the designator, and "Preferred Stock"
+  arrived as a term the plan had supposedly forgotten to define. "A" and "I"
+  are excluded: they are English words, not designators.
+- **An instruction is not a promise.** FIN-007 reported an MFN clause on
+  "terminate all leases and contracts on the most favorable terms REASONABLY
+  AVAILABLE" — what the officers should get, not what anyone is promised. The
+  qualifier is the discriminator: "Customer shall receive the most favorable
+  terms available" is still an MFN.
+- **A phrase followed by an IDENTIFYING NUMBER is an instrument**, so "Purchase
+  Orders 44117, 44219, and 44320" no longer reads as an undefined term.
+
 ## [9.258.0] — 2026-08-30
 
 ### Added

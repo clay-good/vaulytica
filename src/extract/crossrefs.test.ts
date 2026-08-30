@@ -1152,3 +1152,42 @@ describe("a chapter-first statutory citation is not an internal cross-reference"
     expect(refs.some((r) => r.unresolved)).toBe(true);
   });
 });
+
+/**
+ * A plan of dissolution ties one section to the code — "as section 275 of the
+ * General Corporation Law of the State of Delaware requires" — and then cites
+ * its siblings bare. Only the first carried the qualifier; the rest read as
+ * broken references to sections a ten-section plan does not have.
+ */
+describe("a sibling of a declared code section is external", () => {
+  const refs = (...paras: string[]) => {
+    const t = buildTree(["1. Dissolution", ...paras]);
+    return extractCrossRefs(t, extractSections(t));
+  };
+
+  it("reads the bare siblings once the code is declared", () => {
+    const got = refs(
+      "The stockholders approved this Plan as section 275 of the General Corporation Law of the State of Delaware requires.",
+      "The officers shall file after payment of franchise taxes as section 277 requires.",
+      "Under section 278, the Company continues in existence for three years.",
+      "The Company elects the procedure of sections 280 and 281(a).",
+    );
+    expect(got.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual([]);
+  });
+
+  it("does not suppress a bare section where no code is declared", () => {
+    const got = refs(
+      "The Company shall comply with Section 277 of this Plan.",
+      "Section 278 of this Plan governs the winding up.",
+    );
+    expect(got.some((r) => r.unresolved)).toBe(true);
+  });
+
+  it("does not suppress this document's own two-digit numbering", () => {
+    const got = refs(
+      "The stockholders approved this Plan as section 275 of the General Corporation Law of the State of Delaware requires.",
+      "The distributions are made under Section 42 of this Plan.",
+    );
+    expect(got.some((r) => r.unresolved)).toBe(true);
+  });
+});

@@ -12,7 +12,15 @@ const MFN = new RegExp(
   [
     "most[- ]favou?red[- ](?:nation|customer)",
     "\\bMFN\\b",
-    "most[- ]favou?rable\\s+(?:terms|pricing|price|rates?|treatment)",
+    // The qualifier is what separates them: "Customer shall receive the most
+    // favorable terms AVAILABLE" is an MFN promise, and "terminate all leases
+    // on the most favorable terms REASONABLY available" is not.
+    // An MFN is a PROMISE about the terms one party gives another. "Terminate
+    // all leases and contracts on the most favorable terms REASONABLY
+    // AVAILABLE" is an instruction to the actor about the best deal it can
+    // get, and a plan of dissolution was reported as containing an MFN clause
+    // on the strength of it.
+    "most[- ]favou?rable\\s+(?:terms|pricing|price|rates?|treatment)(?!\\s+(?:reasonably|commercially)\\s+(?:available|obtainable|attainable|practicable|possible))",
     "no[- ]less[- ]favou?rable\\s+(?:terms|pricing|price|rates?|treatment)",
     "no[- ]less[- ]favou?rable\\s+than\\b[^.]{0,80}?\\b(?:any\\s+other|other|its\\s+other|another)\\s+(?:customer|client|purchaser|buyer|licensee|reseller|distributor)",
   ].join("|"),
@@ -22,7 +30,7 @@ const MFN = new RegExp(
 /** FIN-007 — Most-favored-nation present (info). */
 export const rule: Rule = {
   id: "FIN-007",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Most-favored-nation clause present",
   category: "financial",
   default_severity: "info",

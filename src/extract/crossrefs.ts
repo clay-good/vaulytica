@@ -222,7 +222,7 @@ const STATUTE_SECTION_LABEL = /^\d{4,}$/;
 // bare letter-suffixed reference with no statutory context anywhere still
 // reports as an unresolved internal reference.
 const STATUTE_LABEL_DECLARATION =
-  /\b(?:Section|Sections|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
+  /\b(?:[Ss]ections?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
 
 // A statute the document abbreviates — "the Delaware General Corporation Law
 // (the 'DGCL')", "the Delaware Revised Uniform Limited Partnership Act
@@ -354,6 +354,15 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
   const labelIndex = buildLabelIndex(outline);
   // Section numbers this document ties to a code anywhere in its text.
   const statutoryLabels = new Set<string>();
+  /**
+   * True once the document ties a section number to a NAMED code. A plan of
+   * dissolution says "as section 275 of the General Corporation Law of the
+   * State of Delaware requires" and then cites its siblings bare — "as section
+   * 277 requires", "Under section 278", "the procedure of sections 280 and
+   * 281(a)". Only the first carries the qualifier; the rest read as broken
+   * references to sections the plan does not have, and it has ten.
+   */
+  let declaresCode = false;
   let namesACode = false;
   forEachParagraph(tree, (ctx) => {
     if (NAMES_A_CODE.test(ctx.text)) namesACode = true;
@@ -367,6 +376,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     let sm: RegExpExecArray | null;
     while ((sm = STATUTE_LABEL_DECLARATION.exec(ctx.text)) !== null) {
       statutoryLabels.add(sm[1]!.toUpperCase());
+      declaresCode = true;
     }
     STATUTE_ACRONYM_DEFINITION.lastIndex = 0;
     let am: RegExpExecArray | null;
@@ -463,6 +473,13 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         STATUTE_SECTION_LABEL.test(bareLabel) ||
         (namesACode && STATUTE_SUBSECTION_LABEL.test(m[2] ?? "")) ||
         statutoryLabels.has(bareLabel.toUpperCase()) ||
+        // A SIBLING of a declared code section. Bounded three ways: the
+        // document must have tied some section to a named code, the reference
+        // must be a plain three-digit-or-longer integer (a contract numbers
+        // its own sections 1..99, and a decimal or letter suffix is this
+        // document's own style), and it must already have failed to resolve
+        // against the outline.
+        (declaresCode && /^\d{3,}$/.test(bareLabel)) ||
         (acronymTail != null &&
           (statuteAcronyms.has(acronymTail[1]!.toUpperCase()) ||
             instrumentAcronyms.has(acronymTail[1]!.toUpperCase())))

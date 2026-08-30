@@ -2111,6 +2111,34 @@ export const EXPECTED: Record<string, Expectation> = {
   //     which orders it means. A phrase followed by an identifying number
   //     names an instrument; the Title-Case run just stops at the digits.
   "document-requests.txt": { playbook: "document-requests", findings: [] },
+  // A nonprofit conflict-of-interest policy adopted from the IRS's own model —
+  // the one in the Form 1023 instructions — the 225th specimen, and the first
+  // for `coi-policy`. POL-034 told it at CRITICAL that it has no annual
+  // disclosure clause, on a policy whose Article VI is headed ANNUAL
+  // STATEMENTS and reads "shall ANNUALLY SIGN A STATEMENT which affirms". The
+  // check wanted the nouns "annual disclosure" or "annual certification",
+  // which the model text does not use.
+  "conflict-of-interest-policy.txt": {
+    playbook: "coi-policy",
+    findings: ["OBLI-005", "OBLI-008"],
+  },
+  // A Delaware plan of dissolution and winding up — the 226th, and the first
+  // for `dissolution-plan`. Three defects:
+  //
+  //   - STRUCT-007 reported five broken references to sections 277, 278, 280,
+  //     281 and 311, which are DGCL sections. The plan ties one of them to the
+  //     code — "as section 275 of the General Corporation Law of the State of
+  //     Delaware requires" — and cites the rest bare, which is how a plan of
+  //     dissolution is written; the declaration matcher also wanted the label
+  //     capitalized, and this one writes it mid-sentence.
+  //   - STRUCT-006 reported "Preferred Stock" as undefined, from "Series B
+  //     Preferred Stock": a single capital letter heads a phrase exactly as an
+  //     acronym does, and the Title-Case run breaks at the designator.
+  //   - FIN-007 reported an MFN clause, from "terminate all leases and
+  //     contracts on the most favorable terms REASONABLY AVAILABLE" — an
+  //     instruction about the best deal the officers can get, not a promise of
+  //     the best terms to anyone.
+  "dissolution-plan.txt": { playbook: "dissolution-plan", findings: ["OBLI-005"] },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],

@@ -815,6 +815,7 @@ const COI_POLICY_RULES: Rule[] = [
   }),
   presence({
     id: "POL-034",
+    version: "1.1.0",
     name: "Annual disclosure / certification + ongoing duty",
     description: "Policy must require annual disclosure + ongoing duty to disclose new conflicts.",
     citation: form990(),
@@ -825,9 +826,19 @@ const COI_POLICY_RULES: Rule[] = [
       "IRS Form 990 governance questions ask whether annual disclosure is required and reviewed.",
     recommendation:
       "Add 'Disclosure' requiring annual written disclosure + ongoing duty as conflicts arise.",
+    // The IRS's own model conflict-of-interest policy — the one in the Form
+    // 1023 instructions, and the one nearly every nonprofit adopts verbatim —
+    // heads this article "Annual Statements" and reads "Each director,
+    // principal officer, and member of a committee ... shall ANNUALLY SIGN A
+    // STATEMENT which affirms ...". It contains neither "annual disclosure"
+    // nor "annual certification", so a land conservancy that adopted the model
+    // text was told at CRITICAL that it has no annual disclosure clause.
+    //
+    // The second pillar reads the duty by its own name too: the model policy
+    // heads that article "Duty to Disclose", not "ongoing duty".
     present_patterns: [
-      /(annual\s+disclosure|annual\s+certification)/i,
-      /(ongoing|continuing\s+duty|update)/i,
+      /(annual\s+disclosure|annual\s+certification|annual\s+statements?|annually\s+(?:sign|signs|complete|completes|submit|submits|file|files|disclose|discloses|certif\w+))/i,
+      /(ongoing|continuing\s+duty|update|duty\s+to\s+disclose)/i,
     ],
   }),
   presence({
