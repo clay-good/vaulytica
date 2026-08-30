@@ -145,8 +145,19 @@ const LEGAL_SUFFIX = String.raw`l\.?p\.?|l\.?l\.?c\.?|inc\.?|corp\.?|corporation
  * so one company became TWO parties, the second roleless. Party-tallying rules
  * (RISK-002) count that phantom.
  */
+/**
+ * The terminator comma must not fire INSIDE a parenthetical. A collective role
+ * is written with one — `and the party purchasing the Shares (each, a
+ * "Purchaser")` — and the capture stopped at it, losing the role and with it
+ * the only handle a descriptor-named party has.
+ *
+ * `(?![^()]*\))` reads: from here, a ")" is not reachable without crossing a
+ * paren. Inside a parenthetical the next paren character IS ")", so the
+ * lookahead fails and the comma is passed over; outside one it is "(" (or
+ * there is none), so the comma terminates as before.
+ */
 const BETWEEN_RE = new RegExp(
-  String.raw`\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;]|,(?!\s*(?:${LEGAL_SUFFIX})(?![A-Za-z]))|$)`,
+  String.raw`\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;]|,(?!\s*(?:${LEGAL_SUFFIX})(?![A-Za-z]))(?![^()]*\))|$)`,
   "gi",
 );
 
@@ -868,7 +879,16 @@ function computeAliases(party: Party): string[] {
 }
 
 /** A trailing defined-role parenthetical: `Alex Smith ("Employee")`. */
-const ROLE_PAREN = /\(\s*["“”']([^"”'’)]+)["“”']\s*\)\s*$/;
+/**
+ * The quoted role at the END of a preamble party phrase. The article before
+ * the quote is the ordinary form and was not admitted, so `and the undersigned
+ * subscriber (the "Subscriber")` yielded no party at all: a securities
+ * subscription agreement had only one of its two sides, and OBLI-002 reported
+ * that only the Company indemnified — in a section where each side indemnifies
+ * the other, sentence by sentence.
+ */
+const ROLE_PAREN =
+  /\(\s*(?:(?:the|a|an|each|collectively(?:,)?|together|individually)\s+){0,2}["“”']([^"”'’)]+)["“”']\s*\)\s*[,;]?\s*$/;
 
 /**
  * The COLLECTIVE parenthetical: `Antonia Pike (each, a "Principal" and

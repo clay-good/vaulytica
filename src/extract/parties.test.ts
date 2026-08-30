@@ -577,3 +577,38 @@ describe("a title is not a party clause, and a qualified entity type still carri
     expect(got).toContainEqual(["Harbor Point Ventures", "Company"]);
   });
 });
+
+/**
+ * A party identified only by a DESCRIPTOR — "the undersigned subscriber" —
+ * reaches the party set through its quoted role alone. `ROLE_PAREN` required
+ * the quote to open the parenthesis, so the ordinary `(the "Subscriber")` form
+ * yielded no party at all: a securities subscription agreement had only one of
+ * its two sides, and its mutual indemnity was reported as one-sided.
+ */
+describe("a role parenthetical introduced by an article still names the party", () => {
+  it.each([
+    ['and the undersigned subscriber (the "Subscriber")', "Subscriber"],
+    ['and the individual or entity accepting this EULA (the "End User")', "End User"],
+    ['and the party purchasing the Shares (each, a "Purchaser")', "Purchaser"],
+  ])("reads %s", (tail, role) => {
+    const got = extractParties(
+      buildTree([
+        "Doc",
+        `This Agreement is entered into between Thornapple Grid Storage, Inc., a Delaware corporation (the "Company"), ${tail}.`,
+      ]),
+    ).map((p) => p.name);
+    expect(got).toContain("Thornapple Grid Storage, Inc");
+    expect(got).toContain(role);
+  });
+
+  /** A parenthetical about a DOCUMENT is still not a party. */
+  it("does not invent a party from a document abbreviation", () => {
+    const got = extractParties(
+      buildTree([
+        "Doc",
+        'In the event of a conflict between this MSA and any Statement of Work (the "SOW"), this MSA controls.',
+      ]),
+    ).map((p) => p.name);
+    expect(got).not.toContain("SOW");
+  });
+});

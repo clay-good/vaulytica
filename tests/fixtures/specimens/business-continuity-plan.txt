@@ -1,0 +1,86 @@
+BUSINESS CONTINUITY AND DISASTER RECOVERY PLAN
+
+Kestrel Mutual Savings Bank
+Version 6.2
+Approved by the Board of Directors on January 21, 2026
+Plan owner: Chief Operating Officer
+Next scheduled review: January 2027, and after any activation or material change
+
+1. PURPOSE AND SCOPE
+
+This plan states how Kestrel Mutual Savings Bank continues its critical operations during a disruption, how it recovers its technology and facilities, and who decides what. It covers every branch, the operations center in Fargo, North Dakota, the co-location facility in Sioux Falls, South Dakota, and every third party on whom a critical process depends. It is written to the Interagency Paper on Sound Practices to Strengthen Operational Resilience and to the FFIEC Business Continuity Management booklet.
+
+2. GOVERNANCE
+
+The Chief Operating Officer owns this plan. The Crisis Management Team is chaired by the Chief Operating Officer and includes the Chief Information Officer, the Chief Information Security Officer, the Chief Risk Officer, the General Counsel, the head of Retail Banking, the head of Human Resources, and the head of Corporate Communications. The Board of Directors reviews and approves this plan annually and receives a report after each activation and each exercise.
+
+3. BUSINESS IMPACT ANALYSIS
+
+The business impact analysis is refreshed annually and identifies each critical process, its maximum tolerable downtime, its dependencies, and its recovery priority. The current analysis identifies eleven critical processes. The recovery time objective and recovery point objective for each are stated below.
+
+Process — Recovery time objective — Recovery point objective
+Core deposit system — 4 hours — 15 minutes
+Wire transfer and ACH origination — 4 hours — 0 (synchronous replication)
+Retail branch teller operations — 8 hours — 1 hour
+Digital banking and mobile — 8 hours — 15 minutes
+Card authorization — 2 hours — 0 (processor-hosted)
+Loan servicing and payment posting — 24 hours — 4 hours
+Loan origination — 72 hours — 24 hours
+Treasury and liquidity management — 4 hours — 1 hour
+Regulatory reporting — 72 hours — 24 hours
+Customer contact center — 8 hours — 1 hour
+Payroll and accounts payable — 48 hours — 24 hours
+
+4. RISK SCENARIOS
+
+The plan is built to five scenarios rather than to named causes: loss of the operations center; loss of a critical technology platform; loss of a critical third party; loss of a material portion of staff; and a cyber event that renders data unavailable or untrustworthy. Each scenario has a documented response procedure in Appendix C.
+
+5. PLAN ACTIVATION
+
+5.1 Declaration. The Chief Operating Officer, or in that person's absence the Chief Information Officer or the Chief Risk Officer in that order, may declare an activation. A declaration may be made on the judgment of the declaring officer without waiting for confirmation of cause.
+
+5.2 Levels. A Level 1 activation is a localized disruption managed by the affected unit with notification to the Crisis Management Team. A Level 2 activation is a disruption affecting one or more critical processes and convenes the Crisis Management Team. A Level 3 activation is a disruption affecting the institution and adds notification to the Board, to the primary federal regulator, and to the state banking department.
+
+5.3 Notification. On declaration, the Crisis Management Team is notified through the mass notification system, with SMS, voice, and email in that order, and reaches quorum on a standing bridge within thirty (30) minutes. If the mass notification system is unavailable, the call tree in Appendix A is used.
+
+6. ALTERNATE SITE AND WORK ARRANGEMENTS
+
+The alternate operations site is the Sioux Falls co-location facility, which is a warm site holding replicated data and pre-staged capacity for one hundred twenty (120) concurrent users. It is at least one hundred fifty (150) miles from the primary site and is served by a different power grid and different telecommunications carriers. Branch operations fail over to the nearest branch with capacity under the pairing table in Appendix B. Staff whose work does not require a branch presence work remotely on bank-issued equipment.
+
+7. TECHNOLOGY RECOVERY
+
+7.1 Replication. Core banking data replicates synchronously to Sioux Falls. All other systems replicate asynchronously on a schedule set to their recovery point objective.
+
+7.2 Backups. Backups are taken daily, retained for thirty-five (35) days on disk and seven (7) years on immutable object storage, and held in a form that cannot be altered or deleted within its retention period. At least one copy is kept offline and logically separated from the production identity system.
+
+7.3 Restoration Testing. A restoration test is performed quarterly on a sample of systems, and annually on the core deposit system in full. Each test records the time to restore and the data loss observed, and any result outside the stated objective is tracked to closure.
+
+7.4 Cyber Recovery. Where data integrity is in question, recovery proceeds from the last known-good immutable copy, on rebuilt infrastructure, and the environment is not reconnected to production until the Chief Information Security Officer confirms that the initial access vector is closed.
+
+8. THIRD PARTIES
+
+Each critical third party is subject to due diligence covering its own continuity capability, and its contract requires it to maintain a continuity plan, to test it annually, to notify the bank of a disruption within four (4) hours, and to allow the bank to review its test results. The bank maintains a substitution plan for each critical third party and identifies at least one alternative provider or manual workaround.
+
+9. COMMUNICATIONS
+
+The head of Corporate Communications is the single voice to the public and the media. Customer notification uses the digital banking message center, the public website, branch signage, and the contact center script in Appendix D. Employees are directed to the employee hotline. No employee other than the head of Corporate Communications or the Chief Executive Officer may speak publicly about an activation.
+
+10. REGULATORY AND LEGAL NOTIFICATION
+
+The General Counsel determines and makes any required notification. A computer-security incident that materially disrupts or degrades banking operations is notified to the primary federal regulator as soon as practicable and no later than thirty-six (36) hours after determination, as 12 C.F.R. Part 53 requires. A breach of customer information triggers the customer notice required by the Interagency Guidance on Response Programs, and any Suspicious Activity Report is filed within the time the Bank Secrecy Act regulations allow.
+
+11. EXERCISES
+
+A tabletop exercise is conducted at least twice each year, one of which involves the Board or a committee of it. A functional exercise of the alternate site is conducted annually. A full failover of the core deposit system is conducted at least once every twenty-four (24) months. Each exercise produces a written after-action report with findings, owners, and due dates, and each finding is tracked to closure by the Chief Risk Officer.
+
+12. PLAN MAINTENANCE
+
+This plan is reviewed and approved annually by the Board, and is updated within thirty (30) days after any activation, any material change in a critical process or third party, and any finding from an exercise or an examination. Copies are held in the document management system, on the emergency portal, and in printed form at each branch and at the alternate site.
+
+13. APPENDICES
+
+Appendix A — Call tree and mass notification rosters
+Appendix B — Branch pairing table
+Appendix C — Scenario response procedures
+Appendix D — Communication templates and contact center scripts
+Appendix E — Critical third-party register and substitution plans

@@ -405,6 +405,13 @@ const WELL_KNOWN_ENTITIES = new Set(
 );
 
 /**
+ * A body constituted by a sentence naming its chair and its members — a
+ * "Crisis Management Team", an "Incident Response Team", a "Working Group" —
+ * is the same case as an office: a continuity plan that says "The Crisis
+ * Management Team is chaired by the Chief Operating Officer and includes …"
+ * has not left a term undefined, it has constituted the body. "Committee" was
+ * already here; its siblings sit beside it now.
+ *
  * Corporate-office titles are designations, not defined terms: bylaws that
  * empower "the Chief Executive Officer" to call a special meeting have not
  * left a defined term undefined — the office is constituted by the officers
@@ -465,7 +472,7 @@ const US_STATE_NAMES = new Set([
 ]);
 
 const OFFICER_TITLES =
-  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee)|(?:[A-Z][\w]*\s+)?Vice\s+President(?:,?\s+[A-Z][\w\s]*)?|(?:[A-Z][a-z]+\s+){0,2}General\s+Counsel|(?:Outside|In-?[Hh]ouse|Inside|Litigation|Regulatory|Corporate|Trial)\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+(?:Member|Director|Partner)|(?:General|Limited)\s+Partner|Authorized\s+(?:Signator(?:y|ies)|Representative|Person|Agent))$/;
+  /^(?:[A-Z][\w\s]*\s(?:Officer|Committee|Subcommittee|Team|Panel|Task\s+Force|Working\s+Group)|(?:[A-Z][\w]*\s+)?Vice\s+President(?:,?\s+[A-Z][\w\s]*)?|(?:[A-Z][a-z]+\s+){0,2}General\s+Counsel|(?:Outside|In-?[Hh]ouse|Inside|Litigation|Regulatory|Corporate|Trial)\s+Counsel|Chair(?:person|man|woman)(?:\s+of\s+the\s+Board)?|Board\s+of\s+Directors|Managing\s+(?:Member|Director|Partner)|(?:General|Limited)\s+Partner|Authorized\s+(?:Signator(?:y|ies)|Representative|Person|Agent))$/;
 
 /**
  * Sentence-initial words that are commonly capitalized but never
@@ -923,6 +930,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   // a case name is dropped wherever it appears: a brief cites the same case in
   // its table of authorities, its standard of review, and its argument.
   const caseNames = new Set<string>();
+  /**
+   * Phrases seen at least once as a CITY — followed by a comma and a state.
+   * A place is a place everywhere else it appears too, so like a signatory
+   * and a case name it is dropped wherever it is used.
+   */
+  const cityNames = new Set<string>();
   /** The candidate key a phrase is recorded under (a leading article dropped). */
   const canonicalOf = (phrase: string): string => {
     const w = phrase.split(/\s+/);
@@ -1291,6 +1304,22 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         continue;
       const leadWord = phrase.split(/\s+/)[0]!;
       if (PLACE_NAMES.has(leadWord) || US_STATE_NAMES.has(leadWord)) continue;
+      // A candidate followed by a comma and a STATE is a city. "the operations
+      // center in Fargo, North Dakota, the co-location facility in Sioux
+      // Falls, South Dakota" — a continuity plan names both, and "Sioux Falls"
+      // was reported as a term the plan forgot to define. The single-word
+      // cities never reach here (the phrase test needs two words); it is the
+      // two-word ones that do, and the state after the comma is what says so.
+      const afterPhrase = ctx.text.slice(m.index + phrase.length);
+      const cityState = /^\s*,\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\b/.exec(afterPhrase);
+      if (cityState && (US_STATE_NAMES.has(cityState[1]!) || PLACE_NAMES.has(cityState[1]!))) {
+        // Recorded, not merely skipped. A plan names its alternate site once
+        // in full — "the co-location facility in Sioux Falls, South Dakota" —
+        // and twice more bare, so skipping only the qualified occurrence left
+        // the other two to clear the two-occurrence floor on their own.
+        cityNames.add(canonicalOf(phrase));
+        continue;
+      }
       if (OFFICER_TITLES.test(phrase)) continue;
       // A phrase introduced by an HONORIFIC is a person: "Dr. Ingrid
       // Vasconcelos-Amaru", "Hon. Marisol Aguirre-Vance", "Prof. Emil
@@ -1435,6 +1464,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // The same unit, named after the PERSON WHO LEADS IT, where the leading
+      // noun is lower-case and so is not itself part of the Title-Case run:
+      // "the head of Corporate Communications", "the director of Human
+      // Resources". A continuity plan that routes every public statement
+      // through "the head of Corporate Communications" was told it uses a term
+      // "Corporate Communications" without defining it.
+      if (
+        /\b(?:head|director|chair|chief|manager|lead|supervisor|administrator|superintendent|dean|president|secretary|treasurer|controller)\s+of\s+$/i.test(
+          ctx.text.slice(Math.max(0, m.index - 30), m.index),
+        )
+      )
+        continue;
       // A judicial district or division is a place inside a court's name — "the
       // United States District Court for the Northern District of Illinois" —
       // and every settlement, pleading, and forum clause names one. The
@@ -1552,7 +1593,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     }
   });
   const undefined_capitalized = [...undefinedHits.entries()]
-    .filter(([term]) => !signedNames.has(term) && !caseNames.has(term))
+    .filter(([term]) => !signedNames.has(term) && !caseNames.has(term) && !cityNames.has(term))
     .filter(([, positions]) => positions.length >= 2)
     .map(([term, positions]) => ({ term, positions }))
     .sort((a, b) => a.term.localeCompare(b.term, "en"));

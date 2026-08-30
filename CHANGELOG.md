@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.250.0] — 2026-08-30
+
+### Added
+- Two specimens — a bank's business continuity and disaster recovery plan and
+  a Regulation D Rule 506(b) subscription agreement for seed preferred — the
+  218th and 219th, and the first for `business-continuity-plan` and
+  `subscription-agreement`. The continuity plan is the first specimen that
+  reports nothing at all.
+
+### Fixed
+- **A party named only by a DESCRIPTOR was lost, because its role
+  parenthetical carried an article.** `ROLE_PAREN` required the quote to open
+  the parenthesis, so "and the undersigned subscriber (the \"Subscriber\")"
+  yielded no party: a subscription agreement had one of its two sides, and
+  OBLI-002 reported that only the Company indemnified — in a section where each
+  side indemnifies the other, sentence by sentence.
+- **A comma INSIDE a parenthetical ended the preamble capture.** A collective
+  role is written with one — "(each, a \"Purchaser\")" — and the capture
+  stopped at the comma, losing the role and with it the only handle a
+  descriptor-named party has.
+- **A CITY was reported as a term the document forgot to define.** A continuity
+  plan names its alternate site once in full — "the co-location facility in
+  Sioux Falls, South Dakota" — and twice more bare, so skipping only the
+  qualified occurrence left the other two to clear the two-occurrence floor.
+  A place is now dropped wherever it appears, as a signatory and a case name
+  already were.
+- **A department named after the person who LEADS it was reported the same
+  way.** "The head of Corporate Communications" puts a lower-case noun before
+  the "of", so it is not part of the Title-Case run and the unit's name arrived
+  as its own candidate.
+- **A body the document CONSTITUTES was reported as undefined.** A plan that
+  says "The Crisis Management Team is chaired by the Chief Operating Officer
+  and includes …" has constituted the body, not left a term undefined — the
+  same case as an office. "Committee" was already excluded; "Team", "Panel",
+  "Task Force", "Working Group" and "Subcommittee" now sit beside it.
+- **`subscription-agreement` carried an empty `rule_overrides`.** A one-time
+  purchase that CLOSES was told it states no path to terminate for material
+  breach, no effect of termination, no payment term, no IP allocation, and no
+  limitation of liability. It now carries the `secondary-stock-transfer`
+  profile, whose five skips are exactly those five accusations.
+
 ## [9.249.0] — 2026-08-30
 
 ### Added

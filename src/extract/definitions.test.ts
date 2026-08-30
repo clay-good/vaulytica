@@ -2277,3 +2277,53 @@ describe("the tail of an organizational unit's name is not an undefined term", (
     expect(map.undefined_capitalized.map((e) => e.term)).toContain("Base Services");
   });
 });
+
+/**
+ * A well-drafted business continuity plan reported three terms it had
+ * supposedly forgotten to define: its alternate site's CITY, the department
+ * its spokesperson HEADS, and the body the plan itself CONSTITUTES.
+ */
+describe("a place, a unit named by its leader, and a constituted body are not undefined terms", () => {
+  const flagged = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Plan", ...paras])).undefined_capitalized.map((e) => e.term);
+
+  it("does not flag a city, even where it is later used bare", () => {
+    expect(
+      flagged(
+        "The alternate site is the co-location facility in Sioux Falls, South Dakota.",
+        "Branch traffic fails over to the Sioux Falls facility.",
+        "Core banking data replicates synchronously to Sioux Falls.",
+      ),
+    ).not.toContain("Sioux Falls");
+  });
+
+  it.each([
+    ["Corporate Communications", "head of Corporate Communications"],
+    ["Human Resources", "director of Human Resources"],
+  ])("does not flag %s", (tail, phrase) => {
+    expect(flagged(`The ${phrase} approves it.`, `Ask the ${phrase} first.`)).not.toContain(tail);
+  });
+
+  it.each([
+    ["Crisis Management Team", "Crisis Management Team"],
+    ["Incident Response Team", "Incident Response Team"],
+    ["Data Governance Working Group", "Data Governance Working Group"],
+  ])("does not flag the constituted body %s", (term, body) => {
+    expect(
+      flagged(
+        `The ${body} is chaired by the Chief Operating Officer.`,
+        `The ${body} convenes within thirty minutes.`,
+      ),
+    ).not.toContain(term);
+  });
+
+  /** A city guard keyed on the state must not swallow an ordinary term. */
+  it("still flags an invented term followed by a comma", () => {
+    expect(
+      flagged(
+        "The Frobnicator Widget, Revision 4, ships today.",
+        "Each Frobnicator Widget, Revision 4, is inspected.",
+      ),
+    ).toContain("Frobnicator Widget");
+  });
+});

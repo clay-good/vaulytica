@@ -1995,6 +1995,30 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-001",
     ],
   },
+  // A bank's business continuity and disaster recovery plan — the 218th
+  // specimen, and the first that reports NOTHING. Getting there took three
+  // fixes, all in the same undefined-Title-Case-term family: the plan's
+  // alternate site is a CITY ("the co-location facility in Sioux Falls, South
+  // Dakota", then twice more bare), its spokesperson HEADS a department ("the
+  // head of Corporate Communications"), and its "Crisis Management Team" is a
+  // body the plan itself constitutes in the sentence naming its chair and its
+  // members — the same case as an office, which was already excluded.
+  "business-continuity-plan.txt": { playbook: "business-continuity-plan", findings: [] },
+  // A Regulation D Rule 506(b) subscription agreement for seed preferred — the
+  // 219th. Its counterparty is named only by a descriptor, "and the undersigned
+  // subscriber (the \"Subscriber\")", and `ROLE_PAREN` required the quote to
+  // open the parenthesis, so the Subscriber never reached the party set: the
+  // agreement had one side, and OBLI-002 reported that only the Company
+  // indemnified, in a section where each side indemnifies the other sentence by
+  // sentence. The family also carried an empty `rule_overrides`, so a one-time
+  // purchase that CLOSES was told it states no path to terminate for material
+  // breach, no effect of termination, no payment term, no IP allocation, and no
+  // limitation of liability. It now carries the `secondary-stock-transfer`
+  // profile, whose five skips are exactly those five accusations.
+  "subscription-agreement.txt": {
+    playbook: "subscription-agreement",
+    findings: ["RISK-015", "STRUCT-018", "OBLI-005", "OBLI-006"],
+  },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],
