@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.241.0] — 2026-08-29
+
+### Added
+- A first codicil to a will — the 198th specimen, and the first for `codicil`.
+
+### Fixed
+- **A codicil's references to the WILL's articles read as broken.** "I revoke
+  Article VII of my Will in its entirety" cites the parent instrument, which
+  this codicil does not contain — three of a clean codicil's cross-references
+  reported as unresolved. Wills, codicils, and testaments join the
+  external-instrument nouns.
+- **And not always adjacently.** "every provision of my Will remains in full
+  force and effect, including the tax-apportionment clause in Article VIII and
+  the no-contest clause in Article IX" qualifies both articles by the sentence's
+  subject. The corroboration is within ONE SENTENCE and deliberately confined to
+  the testamentary instruments: an amendment to an ordinary agreement keeps the
+  adjacency requirement, so a genuinely broken "Section 14.9" in it still
+  reports.
+
 ## [9.240.0] — 2026-08-29
 
 ### Added

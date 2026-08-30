@@ -165,8 +165,29 @@ const EXTERNAL_REG_LEADING_RE =
 // Company's bylaws"). `(?!th(?:is|ese)\b)` keeps SELF-reference internal: "of
 // this Agreement" and "of these Bylaws" are the document talking about itself,
 // and a broken reference in one still reports.
+/**
+ * A codicil cites the WILL's articles constantly, and not always adjacently:
+ * "every provision of my Will remains in full force and effect, including the
+ * tax-apportionment clause in Article VIII and the no-contest clause in
+ * Article IX." Those are the will's articles; the codicil has six of its own.
+ *
+ * Corroboration within ONE SENTENCE, and deliberately confined to the
+ * testamentary instruments: an amendment to an ordinary agreement keeps the
+ * adjacency requirement, so a genuinely broken "Section 14.9" in it still
+ * reports.
+ */
+const TESTAMENTARY_PARENT_SENTENCE =
+  /\bof\s+(?:my|the|our|his|her|their)\s+(?:[A-Za-z][\w'’]*\s+){0,4}(?:Will|Codicil|Testament)\b/;
+
+/** The sentence around an index, for a corroboration that spans a clause. */
+function enclosingSentenceOf(text: string, index: number): string {
+  const start = Math.max(0, text.lastIndexOf(". ", index) + 1);
+  const dot = text.indexOf(". ", index);
+  return text.slice(start, dot === -1 ? text.length : dot + 1);
+}
+
 const EXTERNAL_INSTRUMENT_RE =
-  /^(?:\.\d+[a-z]?|\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Sub-?leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Sub-?contracts?|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?|Terms?|Orders?|SOWs?|Statements?\s+of\s+Work|Guarant(?:y|ies|ee|ees)|Warrant(?:y|ies)|Rules?|Manuals?|Handbooks?|Schedules?)\b|thereof\b)/i;
+  /^(?:\.\d+[a-z]?|\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Sub-?leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Sub-?contracts?|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?|Terms?|Orders?|SOWs?|Statements?\s+of\s+Work|Guarant(?:y|ies|ee|ees)|Warrant(?:y|ies)|Rules?|Manuals?|Handbooks?|Schedules?|Wills?|Codicils?|Testaments?)\b|thereof\b)/i;
 
 // A four-digit-or-longer flat section number ("Section 4999", "Section 1798")
 // is statutory: no contract numbers its own sections past three digits.
@@ -408,6 +429,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         AMENDED_DIVISION_AFTER_RE.test(after) ||
         AMENDED_DIVISION_BEFORE_RE.test(before) ||
         EXTERNAL_INSTRUMENT_RE.test(after) ||
+        TESTAMENTARY_PARENT_SENTENCE.test(enclosingSentenceOf(ctx.text, m.index)) ||
         EXTERNAL_LEADER_RE.test(before) ||
         EXTERNAL_LEADING_RE.test(before) ||
         EXTERNAL_REG_LEADING_RE.test(before) ||

@@ -679,6 +679,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A first codicil to a will — the 198th specimen, and the first for
+  // `codicil`. TEMP-002 is fair: the will it amends is five years older. It
+  // exposed STRUCT-007 reporting the WILL's articles as broken references —
+  // "I revoke Article VII of my Will", and, in a sentence whose subject is the
+  // will, "the tax-apportionment clause in Article VIII".
+  "codicil.txt": {
+    playbook: "codicil",
+    findings: ["TEMP-002"],
+  },
   // A Form D narrative supplement — the 196th specimen, and the first for
   // `form-d-narrative`. REG-001..007 are all satisfied: issuer identification
   // with its jurisdiction, the Rule 506(b) exemption, accredited-investor

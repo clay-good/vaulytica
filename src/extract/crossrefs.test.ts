@@ -1075,3 +1075,28 @@ describe("crossrefs — a subsection of an external instrument (v9.231.0)", () =
     expect(extractCrossRefs(tree, extractSections(tree)).filter((c) => c.unresolved)).toEqual([]);
   });
 });
+
+describe("crossrefs — a codicil cites the WILL's articles (v9.241.0)", () => {
+  it("does not report an article of the parent will as broken", () => {
+    const tree = buildTree([
+      "First Codicil to the Last Will and Testament",
+      "I revoke Article VII of my Will in its entirety and substitute the following.",
+      "Except as changed by this Codicil, every provision of my Will remains in full force and effect, including the tax-apportionment clause in Article VIII and the no-contest clause in Article IX.",
+    ]);
+    expect(extractCrossRefs(tree, extractSections(tree)).filter((c) => c.unresolved)).toEqual([]);
+  });
+
+  it("keeps the adjacency requirement for an ordinary amendment", () => {
+    // The sentence-level corroboration is confined to the testamentary
+    // instruments; an amendment to an agreement still reports a broken
+    // reference to a section neither instrument is said to contain.
+    const tree = buildTree([
+      "First Amendment to the Services Agreement",
+      "Except as amended, every provision of the Agreement remains in full force and effect, including the audit clause in Section 14.9.",
+    ]);
+    const unresolved = extractCrossRefs(tree, extractSections(tree))
+      .filter((c) => c.unresolved)
+      .map((c) => c.raw_text);
+    expect(unresolved).toContain("Section 14.9");
+  });
+});
