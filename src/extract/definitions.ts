@@ -1480,6 +1480,18 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // A REGULATORY INSTRUMENT named by the regulation that creates it — a
+      // Suspicious Activity Report, a Currency Transaction Report, a
+      // Certificate of Dissolution. The document does not define it because
+      // the Code of Federal Regulations already has, and an AML policy that
+      // files one "as 31 C.F.R. 1020.320 requires" was told it uses a term it
+      // never defined. Keyed on the instrument noun AND a federal citation in
+      // the same sentence, so an ordinary "Annual Report" is untouched.
+      if (
+        /\b(?:Report|Return|Form|Statement|Certificate|Registration|Notice)s?$/.test(phrase) &&
+        /\b\d+\s*(?:U\.S\.C\.|C\.F\.R\.)/.test(ctx.text)
+      )
+        continue;
       // A phrase followed by an IDENTIFYING NUMBER names a specific instrument,
       // not a term: "Purchase Orders 44117, 44219, and 44320", "Invoice 8842",
       // "Work Order 51". The Title-Case run stops at the digits, so the noun

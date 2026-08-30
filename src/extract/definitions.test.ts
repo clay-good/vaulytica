@@ -2397,3 +2397,37 @@ describe("a phrase followed by an identifying number names an instrument", () =>
     ).toContain("Frobnicator Widget");
   });
 });
+
+/**
+ * A REGULATORY INSTRUMENT is named by the regulation that creates it, and the
+ * document does not define it because the Code of Federal Regulations already
+ * has. An AML policy that files a Suspicious Activity Report "as 31 C.F.R.
+ * 1020.320 requires" was told it uses a term it never defined.
+ */
+describe("a regulatory instrument is not a term the document forgot to define", () => {
+  const flagged = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Reporting", ...paras])).undefined_capitalized.map((e) => e.term);
+
+  it.each([
+    [
+      "Suspicious Activity Report",
+      "The bank files a Suspicious Activity Report within thirty days as 31 C.F.R. 1020.320 requires. No employee may disclose that a Suspicious Activity Report has been filed, as 31 U.S.C. 5318(g)(2) prohibits.",
+    ],
+    [
+      "Currency Transaction Report",
+      "The bank files a Currency Transaction Report for each transaction of more than $10,000 as 31 C.F.R. 1010.311 requires. Each Currency Transaction Report is filed within fifteen days.",
+    ],
+  ])("does not flag %s", (term, text) => {
+    expect(flagged(text)).not.toContain(term);
+  });
+
+  /** With no federal citation, the instrument noun alone changes nothing. */
+  it("still flags an instrument-shaped term with no citation behind it", () => {
+    expect(
+      flagged(
+        "The Frobnicator Report is delivered monthly.",
+        "Each Frobnicator Report is reviewed by the committee.",
+      ),
+    ).toContain("Frobnicator Report");
+  });
+});

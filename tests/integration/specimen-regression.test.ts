@@ -2164,6 +2164,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // chapter-first citation style required the code word to be the last one
   // before the section.
   "social-media-policy.txt": { playbook: "social-media-policy", findings: [] },
+  // A national trust company's BSA/AML compliance policy — the 229th specimen,
+  // and the first for `aml-policy`. Two defects:
+  //
+  //   - POL-012 told it at CRITICAL that it has no five-pillar AML program, on
+  //     a policy whose §2 is headed THE FOUR PILLARS AND THE FIFTH and
+  //     enumerates all five with the citation. The officer pillar read
+  //     "compliance officer" and "AML officer" but not "BSA Officer" — the
+  //     industry title in every US bank's program, and the regulation itself
+  //     asks only for "a designated individual".
+  //   - STRUCT-006 reported "Suspicious Activity Report" as undefined. The
+  //     Code of Federal Regulations names that instrument; the policy does not
+  //     define it because it does not have to.
+  "aml-policy.txt": { playbook: "aml-policy", findings: ["OBLI-005"] },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],

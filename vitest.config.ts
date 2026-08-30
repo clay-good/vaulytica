@@ -14,6 +14,20 @@ export default defineConfig({
     ],
     globals: false,
     reporters: "default",
+    // Vitest's default is 5s, and this suite has three kinds of test that
+    // cannot promise to finish inside it when the whole suite is running at
+    // full parallelism: the ones that SPAWN THE CLI as a subprocess
+    // (`cli-stream-contract`), the ones that WALK AND SCAN EVERY SOURCE FILE
+    // (`apostrophe-tolerance`, `inert-case-anchor`), and the ones that run
+    // every rule in the catalog against a probe document (`title-vacuity`,
+    // `boilerplate-satisfaction`). Each of them passes comfortably on its own
+    // and each was seen to time out during a loaded run — a false failure that
+    // says nothing about the code and costs a re-run to diagnose.
+    //
+    // A ceiling on a known-slow path, not a budget: a test that genuinely
+    // hangs still fails, thirty seconds later. The per-test 120s overrides
+    // already in the suite stay where they are.
+    testTimeout: 30_000,
     // spec-v7 Part VIII (Steps 115–116) — code-coverage measurement + gate.
     // Scoped to the shipped browser bundle (`src/`); the build-and-CI-only
     // harnesses (`tools/`, `dkb/build/`) and all test scaffolding are

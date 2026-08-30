@@ -1,0 +1,107 @@
+ANTI-MONEY LAUNDERING AND BANK SECRECY ACT COMPLIANCE POLICY
+
+Cordovan Trust Company, N.A.
+Adopted by the Board of Directors on May 20, 2026
+BSA Officer: Ifeoma Balogun-Reyes, Senior Vice President
+Next board review: May 2027
+
+1. PURPOSE AND SCOPE
+
+This policy states how Cordovan Trust Company, N.A. complies with the Bank Secrecy Act, 31 U.S.C. 5311 et seq., its implementing regulations at 31 C.F.R. Chapter X, and the anti-money laundering program requirement at 12 C.F.R. 21.21. It applies to every director, officer, and employee of the bank and to every product, service, customer, and geography in which the bank operates.
+
+2. THE FOUR PILLARS AND THE FIFTH
+
+The bank maintains a written program, approved by the Board and noted in the minutes, that provides for:
+
+(a) a system of internal controls to assure ongoing compliance;
+(b) independent testing of compliance;
+(c) a designated individual responsible for coordinating and monitoring day-to-day compliance; and
+(d) training for appropriate personnel.
+
+The bank also maintains appropriate risk-based procedures for conducting ongoing customer due diligence, which is the fifth pillar added by 31 C.F.R. 1020.210(b)(5).
+
+3. GOVERNANCE
+
+3.1 Board. The Board approves this policy annually, receives a written report from the BSA Officer at least quarterly, and approves the risk assessment and any material change to the program.
+
+3.2 BSA Officer. The BSA Officer is designated by the Board, has the authority and the resources to administer the program, reports directly to the Board or a committee of it, and has unimpeded access to all records, systems, and personnel. The BSA Officer may not be removed without Board action.
+
+3.3 Independence. The BSA Officer does not have front-line revenue responsibility, and compensation is not tied to business production.
+
+4. RISK ASSESSMENT
+
+The bank documents a BSA/AML risk assessment at least every eighteen months, and sooner on a material change in products, services, customers, or geographies. The assessment identifies inherent risk, evaluates the controls that mitigate it, and states the resulting residual risk. The methodology and the results are provided to the Board and to examiners.
+
+5. CUSTOMER IDENTIFICATION PROGRAM
+
+5.1 Identifying Information. Before opening an account the bank obtains the customer's name, date of birth for a natural person, address, and identification number, as 31 C.F.R. 1020.220 requires.
+
+5.2 Verification. The bank verifies identity through documentary methods, non-documentary methods, or both, within a reasonable time after account opening, and keeps a description of the documents relied on.
+
+5.3 Records. Identifying information is retained for five years after the account is closed, and verification records for five years after the record is made.
+
+5.4 Government Lists. The bank determines whether the customer appears on any list of known or suspected terrorists issued by a federal agency and designated for that purpose.
+
+5.5 Notice. The bank gives customers adequate notice that it is requesting information to verify identity.
+
+6. CUSTOMER DUE DILIGENCE AND BENEFICIAL OWNERSHIP
+
+6.1 Customer Due Diligence. The bank understands the nature and purpose of each customer relationship in order to develop a customer risk profile, and conducts ongoing monitoring to identify and report suspicious transactions and, on a risk basis, to maintain and update customer information.
+
+6.2 Beneficial Ownership. For each legal entity customer, the bank identifies and verifies each individual who owns twenty-five percent (25%) or more of the equity interests and one individual with significant responsibility to control or manage the entity, as 31 C.F.R. 1010.230 requires. The bank collects this at account opening and updates it when it becomes aware of a change.
+
+6.3 Enhanced Due Diligence. Enhanced due diligence applies to a private banking account for a non-United States person, to a correspondent account for a foreign financial institution, to a senior foreign political figure, and to any customer the risk assessment rates high. It includes source of wealth, source of funds, expected activity, and senior management approval to open and to continue the relationship.
+
+6.4 Prohibited Relationships. The bank does not open or maintain a correspondent account for a foreign shell bank, as section 313 of the USA PATRIOT Act prohibits, and certifies the absence of such relationships as 31 C.F.R. 1010.630 requires.
+
+7. MONITORING AND SUSPICIOUS ACTIVITY REPORTING
+
+7.1 Monitoring. The bank monitors transactions through an automated system tuned to its risk assessment, and through employee referrals. Tuning and model validation are documented and independently reviewed.
+
+7.2 Investigation. An alert is investigated and dispositioned within thirty days, and the rationale is documented whether or not a report is filed.
+
+7.3 Filing. The bank files a Suspicious Activity Report within thirty calendar days after the date of initial detection of facts that may constitute a basis for filing, or within sixty calendar days if no suspect is identified on the date of detection, as 31 C.F.R. 1020.320 requires.
+
+7.4 Continuing Activity. Where suspicious activity continues, the bank files a continuing report at least every ninety days.
+
+7.5 Confidentiality. No director, officer, or employee may disclose to any person involved in the transaction that a Suspicious Activity Report has been filed, or reveal any information that would reveal its existence, as 31 U.S.C. 5318(g)(2) prohibits. Disclosure to FinCEN, to a federal banking agency, or as 31 C.F.R. 1020.320(e) otherwise permits is not a violation.
+
+7.6 Safe Harbor. A person who makes a voluntary disclosure of a possible violation of law to a government agency is protected from liability by 31 U.S.C. 5318(g)(3).
+
+8. CURRENCY TRANSACTION REPORTS AND RECORDKEEPING
+
+8.1 CTRs. The bank files a Currency Transaction Report for each transaction in currency of more than $10,000 by, through, or to the bank, within fifteen days, and aggregates multiple transactions by or on behalf of the same person on the same business day.
+
+8.2 Exemptions. The bank may exempt an eligible person as 31 C.F.R. 1020.315 permits, and reviews each exemption annually.
+
+8.3 Structuring. No person may structure a transaction to evade a reporting requirement, and the bank does not assist any customer in doing so. Employees do not tell a customer how to avoid a report.
+
+8.4 Funds Transfers. The bank collects and retains the information the Recordkeeping and Travel Rules require for a transmittal of funds of $3,000 or more, at 31 C.F.R. 1010.410(e) and (f), and transmits it to the next financial institution.
+
+8.5 Monetary Instruments. The bank records the sale of a monetary instrument for currency of $3,000 to $10,000 inclusive.
+
+8.6 Retention. Records required by 31 C.F.R. Chapter X are retained for five years.
+
+9. OFAC SANCTIONS
+
+The bank screens customers, beneficial owners, counterparties, and transactions against the Specially Designated Nationals and Blocked Persons List and other lists the Office of Foreign Assets Control administers, at onboarding and on each list update. The bank blocks or rejects a transaction as the applicable sanctions program requires, and reports a blocking or rejection to OFAC within ten business days and annually by September 30.
+
+10. INFORMATION SHARING
+
+The bank responds to a FinCEN request under section 314(a) of the USA PATRIOT Act within the time the request states, and searches its records as 31 C.F.R. 1010.520 requires. The bank has filed a notice to share information with other financial institutions under section 314(b) and 31 C.F.R. 1010.540, and shares only for the purposes that section permits.
+
+11. INDEPENDENT TESTING
+
+Independent testing is conducted at least every twelve months by internal audit or by a qualified outside party that is independent of the BSA function. The scope covers each pillar, the risk assessment, the transaction monitoring system including its tuning, and the accuracy of regulatory reporting. Findings are reported to the Board, and remediation is tracked to closure by the BSA Officer.
+
+12. TRAINING
+
+Every employee receives BSA/AML and OFAC training on hire and at least annually, with role-specific content for front-line, operations, lending, and compliance staff. Directors receive training on their oversight responsibilities annually. Completion is tracked, and failure to complete is escalated to the employee's manager and to Human Resources.
+
+13. CONSEQUENCES
+
+A violation of this policy may result in discipline up to and including termination, and may expose the individual to civil and criminal penalties under 31 U.S.C. 5321 and 5322.
+
+14. QUESTIONS AND REPORTING
+
+A question or a concern is directed to the BSA Officer at bsa@cordovantrust.example or through the confidential ethics line. No employee is retaliated against for raising a concern in good faith or for filing an internal referral.

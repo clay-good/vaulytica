@@ -313,7 +313,13 @@ const AML_RULES: Rule[] = [
       "Add 'AML Program' establishing the five pillars: policies / procedures, AML officer, training, independent testing, CDD + beneficial ownership.",
     present_patterns: [
       /(aml\s+program|anti.?money.?laundering)/i,
-      /(compliance\s+officer|aml\s+officer)/i,
+      // The third pillar's officer is the "BSA Officer" in every US bank's
+      // program — that is the industry title, and the regulation itself asks
+      // only for "a designated individual". A national trust company whose §3
+      // designates a BSA Officer, gives that officer unimpeded access and
+      // direct Board reporting, and forbids removal without Board action was
+      // told at CRITICAL that it has no five-pillar program.
+      /(compliance\s+officer|aml\s+officer|bsa\s*\/?\s*(?:aml\s+)?officer|designated\s+(?:individual|officer|person)\s+responsible)/i,
       /(training|testing|cdd|customer\s+due\s+diligence)/i,
     ],
     require_all_present: true,

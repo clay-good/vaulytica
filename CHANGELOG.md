@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.262.0] — 2026-08-30
+
+### Added
+- One specimen — a national trust company's BSA/AML compliance policy — the
+  229th, and the first for `aml-policy`.
+
+### Changed
+- **The suite's default test timeout is 30s, not vitest's 5s.** Three kinds of
+  test here cannot promise to finish inside five seconds when the whole suite
+  runs at full parallelism: the ones that spawn the CLI as a subprocess, the
+  ones that walk and scan every source file, and the ones that run every rule
+  in the catalog against a probe document. Eight different tests were seen to
+  time out across four loaded runs, each passing comfortably on its own — a
+  false failure that says nothing about the code and costs a re-run to
+  diagnose. A ceiling on a known-slow path, not a budget: a test that genuinely
+  hangs still fails, thirty seconds later.
+
+### Fixed
+- **A third CRITICAL false accusation against model text.** POL-012 told a
+  national trust company that it has no five-pillar AML program, on a policy
+  whose §2 is headed "THE FOUR PILLARS AND THE FIFTH" and enumerates all five
+  with the citation. The officer pillar read "compliance officer" and "AML
+  officer" but not **BSA Officer** — the industry title in every US bank's
+  program, and the regulation itself asks only for "a designated individual".
+- **A REGULATORY INSTRUMENT read as an undefined term.** The Code of Federal
+  Regulations names the Suspicious Activity Report; the policy does not define
+  it because it does not have to. Keyed on the instrument noun and a federal
+  citation in the same paragraph, so an ordinary "Annual Report" is untouched.
+
 ## [9.261.0] — 2026-08-30
 
 ### Added
