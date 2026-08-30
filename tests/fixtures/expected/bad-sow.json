@@ -254,7 +254,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.10.0"
+      "rule_version": "1.11.0"
     },
     {
       "elapsed_ms": 0,
@@ -331,7 +331,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -1033,11 +1033,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected sow (score 0.9). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "bb70a712f9bf081d357e1cf23af431f23bfdd3ca862154a23a93bc356f0b2c38",
+  "result_hash": "884994719e4a7ec1c4d0ed8a00094c45879485ac81708b82d2c38cf1c71c6567",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.247.0"
+  "version": "9.248.0"
 }

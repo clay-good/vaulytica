@@ -187,3 +187,66 @@ describe("OBLI-002 — how the finding reads", () => {
     expect(JSON.stringify(f)).not.toMatch(/\\b|\(\?:/);
   });
 });
+
+describe("OBLI-002 v1.5.0 — the warranty SENSE, and a class of counterparties", () => {
+  const twoParties = [
+    { name: "Lumenarc Materials, Inc", role: "Company" },
+    { name: "Westford Venture Lending II, LLC", role: "Holder" },
+  ];
+
+  /**
+   * A bare `\bwarrant` also matches the SECURITY. On a warrant agreement every
+   * operative sentence names it, and the instrument was reported as a
+   * one-sided set of warranties.
+   */
+  it("does not read the warrant INSTRUMENT as a warranty", () => {
+    expect(
+      obli002.check(
+        ctxWith(twoParties, [
+          { obligor: "Company", action: "issue a replacement warrant to the transferee" },
+          { obligor: "Company", action: "reserve a number of shares for the Warrant Shares" },
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reads a genuine one-sided warranty", () => {
+    const f = obli002.check(
+      ctxWith(twoParties, [
+        { obligor: "Company", action: "warrants that the Shares are duly authorized" },
+      ]),
+    );
+    expect(f?.description).toContain("company");
+  });
+
+  /**
+   * The counterparties are a CLASS the party extractor cannot register — the
+   * Investors sign a schedule. An investor rights agreement that binds the
+   * Company and every Investor alike was reported as binding only the Company.
+   */
+  it.each(["Each Investor", "Each selling Investor", "Every Member"])(
+    "counts %s as a second side",
+    (obligor) => {
+      expect(
+        obli002.check(
+          ctxWith(twoParties, [
+            { obligor: "Company", action: "indemnify the Investors against any loss" },
+            { obligor, action: "indemnify the Company against any loss" },
+          ]),
+        ),
+      ).toBeNull();
+    },
+  );
+
+  /** A noun phrase that merely starts a sentence is not a party class. */
+  it("does not count a lower-case noun phrase as a side", () => {
+    expect(
+      obli002.check(
+        ctxWith(twoParties, [
+          { obligor: "Company", action: "indemnify the Holder against any loss" },
+          { obligor: "each of the foregoing amounts", action: "be indemnified in full" },
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

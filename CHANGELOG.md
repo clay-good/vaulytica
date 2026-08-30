@@ -2,6 +2,87 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.248.0] — 2026-08-30
+
+### Added
+- Two specimens — an AI acceptable use policy written to the NIST AI RMF and
+  the EU AI Act, and an owner-architect agreement on AIA B101 architecture —
+  the 214th and 215th, and the first for `ai-aup-policy` and
+  `architect-agreement`. Between them they surfaced every fix below.
+
+### Fixed
+- **A phrase headed by an acronym was reported as a term the document forgot
+  to define.** The Title-Case scanner cannot cross an all-caps word, so a
+  capture that begins immediately after one is the tail of a longer phrase —
+  and naming it names something the document never wrote. An AI policy that
+  maintains an "AI Tool Register" was told it uses "Tool Register" without
+  defining it. This had been patched for a fixed list of OFFICE abbreviations
+  (`VP`, `CISO`); the shape is general, and every domain has its own acronyms
+  (`IT Service Desk`, `HR Business Partner`, `FDA Advisory Committee`).
+- **A sentence-initial connective was read as the head of a defined term.**
+  "After", "Before", "During", "Upon" and "Notwithstanding" were all treated
+  as connectives and "Following" was not, so an owner-architect agreement that
+  paces each phase on "Following Owner's written approval …" was told it uses
+  an undefined term "Following Owner". Twenty-five siblings added with it.
+- **A reservation of copyright was not read as an allocation of IP
+  ownership.** IPDATA-001's retention branch wanted "retains all rights IN
+  <object>" adjacent. The standard American owner-architect sentence — "the
+  Architect and its consultants retain all common law, statutory, and other
+  reserved rights, including copyright, in the Instruments of Service" — puts
+  the adjectives and an appositive in between, so an agreement whose §7 is
+  titled Instruments of Service was told it allocates no IP at all.
+- **"To the fullest extent permitted by law," was not a recognized fronted
+  adverbial**, though "to the extent" was. It is the opening of nearly every
+  indemnity clause written in the United States, and the obligor of the
+  sentence came out as "fullest extent permitted by law, Architect" — which
+  matches no party, so OBLI-002 reported that only the Owner indemnified, on
+  the very sentence where the Architect indemnifies the Owner.
+- **A document TITLE was read as the party clause.** "AGREEMENT BETWEEN OWNER
+  AND ARCHITECT FOR DESIGN SERVICES" is the AIA B101 title and names two
+  ROLES, never two parties; it registered "OWNER" and "ARCHITECT FOR DESIGN
+  SERVICES" as the contracting entities. The same title restated at the head
+  of the preamble also beat the real party clause later in the same sentence,
+  publishing a party named `Architect (this "Agreement") is made as of April
+  6`. A cover block does the same thing vertically, and registered a party
+  named "OPERATING AGREEMENT OF HARBOR POINT VENTURES LLC".
+- **An adjective between the formation state and the entity type dropped the
+  party's ROLE.** "A Pennsylvania NONPROFIT corporation" and "a Pennsylvania
+  LIMITED LIABILITY partnership" did not match, so the role parenthetical that
+  follows was never reached — and a party with no role is invisible to every
+  rule that compares an obligor against the party set.
+- **A party whose entity type is written `LLC` or `LLP` was found with no
+  role, or not at all.** The declaration pattern is case-sensitive and every
+  entity type in it was lower case, so it could only ever find a party trailed
+  by a lower-case long-form descriptor. The canonical capitalizations of the
+  period-free abbreviations are now listed exactly. (The abbreviations that
+  end in a period — `Inc.`, `Corp.`, `Ltd.` — remain outstanding; they
+  interact with the sentence-boundary guard on the role parenthetical.)
+- **A firm name broke at its ampersand.** "Vessel & Roark Architects LLP"
+  registered twice, once whole with no role and once as "Roark Architects LLP"
+  with the role.
+- **A role parenthetical introduced by an article was dropped.** The quote had
+  to open the parenthesis, so `(the "Company")` — the most common form there
+  is — did not attach.
+- **The warrant INSTRUMENT was read as a warranty.** OBLI-002's warranty
+  pattern was a bare `\bwarrant`, and on a warrant agreement every operative
+  sentence names the security: the document was told its warranties ran one
+  way.
+- **A CLASS of counterparties was not counted as a side.** "Each Investor
+  shall keep confidential …" names a party the extractor cannot register (the
+  Investors sign a schedule), so an investor rights agreement binding the
+  Company and every Investor alike was reported as binding only the Company. A
+  class standing ALONE is mutual by construction, as "each party" already was.
+- **A distinguishing phrase matched inside a word.** "Annex I", "Annex II" and
+  "Annex III" all matched the single phrase "Annex III", so an AI policy
+  citing Annex III of the EU AI Act collected three transfer-clause signals
+  out of one sentence and tied the SCC Module 2 family. A phrase may still
+  extend inside its own last word — that is how "stenographic" finds
+  "stenographically" — but not when that token is too short to inflect.
+- **A privilege log was identified by two phrases that do not distinguish
+  one.** "Attorney-client privilege" and "work product" appear in every
+  litigation hold, every engagement letter, and every AI policy that forbids
+  pasting privileged material. Replaced with phrases only a LOG carries.
+
 ## [9.247.0] — 2026-08-30
 
 ### Added

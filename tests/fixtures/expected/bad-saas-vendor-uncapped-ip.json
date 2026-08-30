@@ -253,7 +253,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.10.0"
+      "rule_version": "1.11.0"
     },
     {
       "elapsed_ms": 0,
@@ -333,7 +333,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -981,7 +981,7 @@
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
       "rule_id": "OBLI-002",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -1076,11 +1076,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\". Negative features penalized: \"Premises\".",
-  "result_hash": "30d9214952bdd17977a96d64e4a2e284c9f98e4bbeab74f0243a4ea7ccdcf874",
+  "result_hash": "d239dc3039f5e5a593c1774cc9204cd43477f08551b30f6fa2cdc0baa761ff73",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.247.0"
+  "version": "9.248.0"
 }

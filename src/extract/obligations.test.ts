@@ -435,3 +435,28 @@ describe("a sentence that opens with a fronted adverbial", () => {
     ).toContain("Seller, Buyer, and the Company");
   });
 });
+
+/**
+ * "to the extent" was a recognized fronted adverbial and "to the FULLEST
+ * extent permitted by law," — the opening of nearly every American indemnity
+ * clause — was not, so the obligor read "fullest extent permitted by law,
+ * Architect" and matched no party. OBLI-002 then called a mutual indemnity
+ * one-sided.
+ */
+describe("a fronted adverbial does not become the obligor", () => {
+  const parties = extractParties(
+    buildTree([
+      "Doc",
+      'This Agreement is between Harrowgate Community Health, a Pennsylvania nonprofit corporation ("Owner"), and Vessel & Roark Architects LLP, a Pennsylvania limited liability partnership ("Architect").',
+    ]),
+  );
+
+  it.each([
+    "To the fullest extent permitted by law, Architect shall indemnify Owner.",
+    "To the maximum extent permitted by law, Architect shall indemnify Owner.",
+    "Following the Closing, Architect shall indemnify Owner.",
+  ])("%s", (sentence) => {
+    const got = extractObligations(buildTree(["Indemnity", sentence]), parties);
+    expect(got.map((o) => o.obligor)).toContain("Architect");
+  });
+});

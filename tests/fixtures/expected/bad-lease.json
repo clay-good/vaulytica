@@ -257,7 +257,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.10.0"
+      "rule_version": "1.11.0"
     },
     {
       "elapsed_ms": 0,
@@ -335,7 +335,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -1190,7 +1190,7 @@
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
       "id": "OBLI-002-s1-0",
       "rule_id": "OBLI-002",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -1216,11 +1216,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 0.9). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "1b201c5a019ece719f67aebec7149ebc519e1ca0ac58afeb68fe97a8267d10eb",
+  "result_hash": "8e58da7f8b6654bc11785f55053dbfe295cac58f81a9cb8ae61516f5af3f06b6",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.247.0"
+  "version": "9.248.0"
 }

@@ -501,6 +501,45 @@ const CASE_NAME_DEFENDANT = /\bv\.\s+(?:[A-Z][\w.'’-]*\s+)*$/;
 const SIGNATURE_LABEL_BEFORE =
   /(?:^|[\s|])(?:By|Name|Print(?:ed)?\s+Name|Signature|Signed)\s*:\s*(?:\/s\/\s*)?$|\/s\/\s*$/i;
 
+/**
+ * All-caps words that are drafting connectives rather than acronyms. A
+ * Title-Case phrase that follows one of these is its own phrase, not the tail
+ * of a longer one, so the acronym-head guard must not swallow it.
+ */
+const ALL_CAPS_CONNECTIVES = new Set([
+  "AND",
+  "OR",
+  "THE",
+  "NOT",
+  "NO",
+  "ALL",
+  "ANY",
+  "IF",
+  "OF",
+  "TO",
+  "IN",
+  "BY",
+  "FOR",
+  "NOW",
+  "THAT",
+  "THIS",
+  "SUCH",
+  "SHALL",
+  "MUST",
+  "MAY",
+  "WILL",
+  "IS",
+  "ARE",
+  "BE",
+  "AS",
+  "AT",
+  "ON",
+  // "IT", "US" and "WE" are NOT here. An all-caps pronoun essentially never
+  // heads a Title-Case phrase, while "IT Service Desk" and "US Bankruptcy
+  // Court" are ordinary — listing them as connectives reinstated the very
+  // false accusation the guard exists to stop.
+]);
+
 const TITLE_CASE_LEADING_STOPWORDS = new Set([
   "Each",
   // "Every" sat beside "Each" in every drafter's vocabulary and not in this
@@ -583,6 +622,38 @@ const TITLE_CASE_LEADING_STOPWORDS = new Set([
   "Provided",
   "Subject",
   "Including",
+  // Sentence-initial participles and conjunctions that open a clause about a
+  // defined term rather than naming one. An owner-architect agreement paces
+  // its phases with "Following Owner's written approval of the schematic
+  // design, Architect shall ..." three times over, and was told it uses a
+  // term "Following Owner" it never defined. Their siblings already in this
+  // list — "After", "Before", "During", "Until", "Upon", "Notwithstanding" —
+  // are the same word in the same position.
+  "Following",
+  "Pending",
+  "Prior",
+  "Except",
+  "Unless",
+  "Absent",
+  "Because",
+  "Since",
+  "Although",
+  "Though",
+  "Once",
+  "Whenever",
+  "Wherever",
+  "Whether",
+  "Regardless",
+  "Assuming",
+  "Given",
+  "Effective",
+  "Promptly",
+  "Immediately",
+  "Concurrently",
+  "Accordingly",
+  "Consequently",
+  "Thereafter",
+  "Additionally",
   "Furthermore",
   "Moreover",
   "Therefore",
@@ -1232,18 +1303,24 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
-      // An office named by its ABBREVIATION — "VP Information Security", "SVP
-      // Global Sales", "CISO Operations". TITLE_CASE_PHRASE cannot include the
-      // all-caps abbreviation, so the capture begins one word in and the
-      // office reads as a term the document forgot to define. A completed
-      // security questionnaire reported "Information Security", which is the
-      // job of the person who signed it.
-      if (
-        /\b(?:VP|SVP|EVP|AVP|CEO|CFO|CTO|COO|CIO|CISO|CHRO|CRO|GC)\s+$/.test(
-          ctx.text.slice(Math.max(0, m.index - 8), m.index),
-        )
-      )
-        continue;
+      // A phrase HEADED BY AN ACRONYM. TITLE_CASE_PHRASE cannot include an
+      // all-caps word, so a capture that begins immediately after one is the
+      // tail of a longer phrase, and reporting it names a term the document
+      // never wrote: an AI policy that maintains an "AI Tool Register" was
+      // told it uses "Tool Register" without defining it. This started as a
+      // list of OFFICE abbreviations — "VP Information Security", "CISO
+      // Operations", where a security questionnaire reported "Information
+      // Security", the job of the person who signed it — but the shape is
+      // general, and every domain has its own acronyms: "IT Service Desk",
+      // "HR Business Partner", "FDA Advisory Committee".
+      //
+      // The all-caps drafting connectives are excluded: those genuinely do
+      // precede an unrelated Title-Case phrase ("WHEREAS Buyer Parent has
+      // ..."), so the capture after them is not a truncation.
+      const acronymBefore = /\b([A-Z][A-Z0-9]{1,5})\s$/.exec(
+        ctx.text.slice(Math.max(0, m.index - 8), m.index),
+      );
+      if (acronymBefore && !ALL_CAPS_CONNECTIVES.has(acronymBefore[1]!)) continue;
       // The VALUE of a cover-block field — "Requesting organisation: Thornbury
       // Federal Credit Union" — is a fact the document states, not a term it
       // defines. Recognized only on a short paragraph that OPENS with the

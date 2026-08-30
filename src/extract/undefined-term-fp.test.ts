@@ -69,3 +69,82 @@ describe("STRUCT-006 undefined-term FP guard", () => {
     expect(flagged).toContain("Frobnicator Widget");
   });
 });
+
+/**
+ * A Title-Case phrase HEADED BY AN ACRONYM is one phrase. `TITLE_CASE_PHRASE`
+ * cannot cross an all-caps word, so the capture starts one word in and names
+ * something the document never wrote: an AI policy that maintains an "AI Tool
+ * Register" was told it uses "Tool Register" without defining it.
+ */
+const ACRONYM_HEADED: Array<[string, string]> = [
+  [
+    "Tool Register",
+    "Only a tool on the AI Tool Register may be used. The AI Tool Register is kept current.",
+  ],
+  ["Service Desk", "Requests go to the IT Service Desk. The IT Service Desk triages them."],
+  ["Business Partner", "Ask the HR Business Partner. The HR Business Partner responds."],
+  ["Advisory Committee", "The FDA Advisory Committee met. The FDA Advisory Committee voted."],
+  [
+    "Information Security",
+    "Signed by the CISO Information Security lead. The CISO Information Security lead reviews it.",
+  ],
+];
+
+describe("a phrase headed by an acronym is not a term the document forgot to define", () => {
+  for (const [truncation, sentence] of ACRONYM_HEADED) {
+    it(`does not flag: ${truncation}`, () => {
+      const flagged = extractDefinitions(buildTree(["Body", sentence])).undefined_capitalized.map(
+        (e) => e.term,
+      );
+      expect(
+        flagged,
+        `FALSE UNDEFINED: "${truncation}" is the tail of a longer acronym-headed phrase; got ${JSON.stringify(flagged)}`,
+      ).not.toContain(truncation);
+    });
+  }
+
+  /**
+   * The guard must not swallow a phrase that merely FOLLOWS an all-caps
+   * drafting connective — those precede unrelated Title-Case phrases.
+   */
+  it("still flags a term that follows an all-caps drafting connective", () => {
+    const flagged = extractDefinitions(
+      buildTree([
+        "Body",
+        "WHEREAS Frobnicator Widget is scarce; and WHEREAS Frobnicator Widget is needed.",
+      ]),
+    ).undefined_capitalized.map((e) => e.term);
+    expect(flagged).toContain("Frobnicator Widget");
+  });
+});
+
+/**
+ * A sentence-initial participle or conjunction followed by a defined term is
+ * a clause ABOUT that term, not a two-word term of its own. An owner-architect
+ * agreement paces its phases with "Following Owner's written approval ..." and
+ * was told it uses an undefined "Following Owner".
+ */
+describe("a sentence-initial connective does not head a defined term", () => {
+  const CASES: Array<[string, string]> = [
+    [
+      "Following Owner",
+      "Following Owner's approval, Architect proceeds. Following Owner's approval, work starts.",
+    ],
+    ["Unless Buyer", "Unless Buyer objects, the goods ship. Unless Buyer objects, title passes."],
+    ["Prior Landlord", "Prior Landlord consent is needed. Prior Landlord consent was given."],
+    [
+      "Effective Tenant",
+      "Effective Tenant occupancy begins in May. Effective Tenant occupancy ends in June.",
+    ],
+  ];
+  for (const [phrase, sentence] of CASES) {
+    it(`does not flag: ${phrase}`, () => {
+      const flagged = extractDefinitions(buildTree(["Body", sentence])).undefined_capitalized.map(
+        (e) => e.term,
+      );
+      expect(flagged, `FALSE UNDEFINED: ${phrase}; got ${JSON.stringify(flagged)}`).not.toContain(
+        phrase,
+      );
+    });
+  }
+});

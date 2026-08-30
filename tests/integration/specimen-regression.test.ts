@@ -197,7 +197,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-015",
       "STRUCT-018",
       "IPDATA-005",
-      "OBLI-002",
       "OBLI-005",
       "RISK-007",
       "RISK-010",
@@ -385,9 +384,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory carve-out (fraud, willful misconduct, gross negligence, knowing
   // violation of law) instead. STRUCT-006 stays: this specimen omits the
   // definition of Percentage Interest.
+  // OBLI-002 came ONTO this row in 9.248.0. "To the fullest extent permitted
+  // by law," was not a recognized fronted adverbial, so the obligor of the
+  // clause read as part of the adverbial and matched no party; and a party
+  // whose entity type is written "LLC"/"LLP" was found with no ROLE, which
+  // is what an obligor is matched against. The asymmetry each of these
+  // documents carries is real and was simply invisible.
   "partnership-agreement.txt": {
     playbook: "partnership-agreement",
-    findings: ["STRUCT-006", "STRUCT-018", "CHOICE-006", "OBLI-005"],
+    findings: ["STRUCT-006", "STRUCT-018", "CHOICE-006", "OBLI-002", "OBLI-005"],
   },
   // A three-party subordination agreement. Clean: routes at 1.0 and its own
   // pack is silent on a well-drafted one.
@@ -736,9 +741,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // and there is no worker here; FIN-005 could not read "shall FUND each
   // conforming draw within fifteen (15) business days"; and the family shipped
   // with an empty rule profile.
+  // OBLI-002 came ONTO this row in 9.248.0. "To the fullest extent permitted
+  // by law," was not a recognized fronted adverbial, so the obligor of the
+  // clause read as part of the adverbial and matched no party; and a party
+  // whose entity type is written "LLC"/"LLP" was found with no ROLE, which
+  // is what an obligor is matched against. The asymmetry each of these
+  // documents carries is real and was simply invisible.
   "litigation-funding.txt": {
     playbook: "litigation-funding-agreement",
-    findings: ["STRUCT-018", "OBLI-005", "TEMP-006"],
+    findings: ["STRUCT-018", "OBLI-002", "OBLI-005", "TEMP-006"],
   },
   // A North Carolina residential purchase and sale contract. It routed to the
   // COMMERCIAL `real-estate-psa` and was told at `warning` to add a § 1031
@@ -1038,15 +1049,22 @@ export const EXPECTED: Record<string, Expectation> = {
   // default with cure and cross-default, the collateral and guarantor
   // package, agent authority with assignment and participation, and
   // prepayment with breakage, increased costs, and the tax gross-up.
+  // OBLI-002 came ONTO this row in 9.248.0. "To the fullest extent permitted
+  // by law," was not a recognized fronted adverbial, so the obligor of the
+  // clause read as part of the adverbial and matched no party; and a party
+  // whose entity type is written "LLC"/"LLP" was found with no ROLE, which
+  // is what an obligor is matched against. The asymmetry each of these
+  // documents carries is real and was simply invisible.
   "revolving-credit-agreement.txt": {
     playbook: "revolving-credit-agreement",
     findings: [
-      "CHOICE-008",
-      "OBLI-003",
-      "OBLI-005",
       "OBLI-007",
       "STRUCT-006",
       "STRUCT-018",
+      "CHOICE-008",
+      "OBLI-002",
+      "OBLI-003",
+      "OBLI-005",
       "TEMP-006",
       "TEMP-007",
     ],
@@ -1657,7 +1675,16 @@ export const EXPECTED: Record<string, Expectation> = {
     // severance clause — "If the Company terminates Executive without Cause …
     // the Company shall pay Executive twelve (12) months of base salary" —
     // and was being told it does not state what happens on termination.
-    findings: ["EMP-007", "CHOICE-006", "OBLI-005", "PERS-002", "RISK-011", "RISK-015", "TEMP-008"],
+    findings: [
+      "EMP-007",
+      "CHOICE-006",
+      "OBLI-002",
+      "OBLI-005",
+      "PERS-002",
+      "RISK-011",
+      "RISK-015",
+      "TEMP-008",
+    ],
   },
 
   // A commercial real estate purchase and sale agreement.
@@ -1868,9 +1895,45 @@ export const EXPECTED: Record<string, Expectation> = {
   // enumeration expander read only the first endpoint of a RANGE, and the
   // indemnity test used the stem `indemnif`, which does not match the word a
   // section is actually headed with.
+  // An AI acceptable use policy written to the NIST AI RMF and the EU AI Act.
+  // It maintains an "AI Tool Register", and STRUCT-006 reported that the
+  // policy uses a term "Tool Register" it never defined — the Title-Case
+  // scanner cannot cross an all-caps word, so the capture began one word in
+  // and named a phrase the document does not contain.
+  "ai-use-policy.txt": { playbook: "ai-aup-policy", findings: ["OBLI-005"] },
+  // An owner-architect agreement on AIA B101 architecture — the 215th
+  // specimen, and the source of four defects at once:
+  //
+  //   - IPDATA-001 said it allocated no IP ownership, on a document whose §7
+  //     is titled Instruments of Service and reserves copyright in them. The
+  //     retention branch wanted "retains all rights IN <object>" adjacent;
+  //     the standard sentence reads "rights, including copyright, in".
+  //   - STRUCT-006 reported an undefined term "Following Owner", from the
+  //     sentence that paces each phase on Owner's written approval.
+  //   - The party extractor read the TITLE — "AGREEMENT BETWEEN OWNER AND
+  //     ARCHITECT FOR DESIGN SERVICES" — as the party clause, and the title
+  //     restated at the head of the preamble beat the real party clause in
+  //     the same sentence.
+  //   - The indemnity obligor came out as "fullest extent permitted by law,
+  //     Architect", because "to the FULLEST extent" was not a recognized
+  //     fronted adverbial, so OBLI-002 called a mutual indemnity one-sided.
+  "architect-agreement.txt": {
+    playbook: "architect-agreement",
+    findings: [
+      "STRUCT-018",
+      "TEMP-012",
+      "OBLI-005",
+      "RISK-007",
+      "RISK-010",
+      "RISK-011",
+      "TEMP-006",
+      "TEMP-007",
+      "TERM-001",
+    ],
+  },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
-    findings: ["OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],
   },
 
   // An assignment and assumption of a commercial lease, with the landlord's
@@ -2283,24 +2346,31 @@ export const EXPECTED: Record<string, Expectation> = {
   // Spokane County, Washington" — which is where the seat extractor stopped
   // reading, so CHOICE-006 reported "seat not specified" and CHOICE-003
   // reported no forum at all.
+  // OBLI-002 came ONTO this row in 9.248.0. "To the fullest extent permitted
+  // by law," was not a recognized fronted adverbial, so the obligor of the
+  // clause read as part of the adverbial and matched no party; and a party
+  // whose entity type is written "LLC"/"LLP" was found with no ROLE, which
+  // is what an obligor is matched against. The asymmetry each of these
+  // documents carries is real and was simply invisible.
   "physician-employment.txt": {
     playbook: "physician-employment-agreement",
     findings: [
-      "CHOICE-006",
       "DARK-002",
       "IPDATA-001",
-      "OBLI-005",
-      "PERS-001",
-      "PERS-002",
       "PERS-005",
-      "RISK-010",
       "STRUCT-006",
       "TEMP-004",
       "TEMP-005",
+      "TEMP-012",
+      "CHOICE-006",
+      "OBLI-002",
+      "OBLI-005",
+      "PERS-001",
+      "PERS-002",
+      "RISK-010",
       "TEMP-006",
       "TEMP-007",
       "TEMP-008",
-      "TEMP-012",
       "TERM-001",
       "TERM-007",
     ],

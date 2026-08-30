@@ -524,3 +524,56 @@ describe("extractParties — a flat paste still names its parties (v9.235.0)", (
     expect(names).toContain("Stark Cloud Ireland Ltd");
   });
 });
+
+/**
+ * An owner-architect agreement on AIA B101 architecture broke four things at
+ * once in this extractor.
+ */
+describe("a title is not a party clause, and a qualified entity type still carries a role", () => {
+  const preamble =
+    'This Agreement Between Owner and Architect (this "Agreement") is made as of April 6, 2026 between Harrowgate Community Health, a Pennsylvania nonprofit corporation ("Owner"), and Vessel & Roark Architects LLP, a Pennsylvania limited liability partnership ("Architect").';
+
+  it("does not read the document title as the party clause", () => {
+    const got = extractParties(
+      buildTree(["Doc", "AGREEMENT BETWEEN OWNER AND ARCHITECT FOR DESIGN SERVICES", preamble]),
+    ).map((p) => p.name);
+    expect(got).not.toContain("OWNER");
+    expect(got).not.toContain("ARCHITECT FOR DESIGN SERVICES");
+  });
+
+  it("prefers the real party clause over the title restated in the same sentence", () => {
+    const got = extractParties(buildTree(["Doc", preamble])).map((p) => [p.name, p.role]);
+    expect(got).toContainEqual(["Harrowgate Community Health", "Owner"]);
+    expect(got).toContainEqual(["Vessel & Roark Architects LLP", "Architect"]);
+  });
+
+  it("reads a role through an adjective the state slot cannot hold", () => {
+    const got = extractParties(
+      buildTree([
+        "Doc",
+        'Northgate Trust, a Delaware public benefit corporation ("Trustee"), acts.',
+      ]),
+    ).map((p) => [p.name, p.role]);
+    expect(got).toContainEqual(["Northgate Trust", "Trustee"]);
+  });
+
+  it("does not manufacture a party from a nationality adjective", () => {
+    const got = extractParties(
+      buildTree([
+        "Doc",
+        'Stark Cloud Ireland Ltd., an Irish private limited company ("Importer").',
+      ]),
+    ).map((p) => p.name);
+    expect(got).not.toContain("Irish");
+  });
+
+  it("reads a role parenthetical introduced by an article", () => {
+    const got = extractParties(
+      buildTree([
+        "Doc",
+        'This Operating Agreement of Harbor Point Ventures, a Delaware limited liability company (the "Company"), is entered into today.',
+      ]),
+    ).map((p) => [p.name, p.role]);
+    expect(got).toContainEqual(["Harbor Point Ventures", "Company"]);
+  });
+});

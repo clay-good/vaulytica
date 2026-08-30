@@ -351,9 +351,16 @@ function splitSentences(text: string): { text: string; start: number }[] {
  *
  * Keyed on the opening subordinator, so a genuinely comma-bearing subject is
  * untouched: "Seller, Buyer, and the Company shall" does not start with one.
+ *
+ * "to the extent" is here; "to the FULLEST extent permitted by law," was not,
+ * and that is the opening of nearly every indemnity clause written in the
+ * United States. An owner-architect agreement published the obligor of its
+ * indemnity as "fullest extent permitted by law, Architect", which matched no
+ * party, so OBLI-002 reported that only the Owner indemnified — on a document
+ * where the Architect indemnifies the Owner in the very sentence being read.
  */
 const FRONTED_ADVERBIAL =
-  /^(?:within|for|if|upon|on|before|after|during|notwithstanding|subject\s+to|in\s+the\s+event|at|unless|when|while|except|to\s+the\s+extent|provided|in\s+connection\s+with|in\s+accordance\s+with|from|until|as\s+of|beginning|commencing|so\s+long\s+as|concurrently|promptly|immediately|thereafter|not\s+later\s+than|no\s+later\s+than|between\s+the)\b/i;
+  /^(?:within|for|if|upon|on|before|after|during|notwithstanding|subject\s+to|in\s+the\s+event|at|unless|when|while|except|to\s+the\s+(?:fullest\s+|maximum\s+|greatest\s+|extent\s+)?extent|following|pending|provided|in\s+connection\s+with|in\s+accordance\s+with|from|until|as\s+of|beginning|commencing|so\s+long\s+as|concurrently|promptly|immediately|thereafter|not\s+later\s+than|no\s+later\s+than|between\s+the)\b/i;
 
 function stripFrontedAdverbial(subject: string): string {
   if (!FRONTED_ADVERBIAL.test(subject.trimStart())) return subject;

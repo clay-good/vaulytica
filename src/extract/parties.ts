@@ -33,6 +33,17 @@ const ENTITY_TYPES = [
   "sole proprietorship",
   "professional corporation",
   "pllc",
+  // The CANONICAL capitalizations of the abbreviations, added exactly (not by
+  // making the whole alternation case-insensitive — the name capture is
+  // anchored on `[A-Z]`, and under `i` that matches lower-case and starts
+  // manufacturing parties out of ordinary prose). Without these, a party named
+  // the way American contracts actually name one — "Harbor Point Ventures LLC
+  // (the \"Company\")" — was invisible to this path, and the role it declares
+  // in the same breath was lost with it.
+  "LLC",
+  "L\\.L\\.C\\.",
+  "LLP",
+  "PLLC",
   "gmbh",
   "ag",
   "plc",
@@ -46,12 +57,46 @@ const US_STATE =
 // connectives like `is`, `made`, `between`, `and` into the captured
 // name. Entity-type tokens in the text are lowercase by convention
 // ("a Delaware corporation"); the `ENTITY_TYPES` list mirrors that.
+/**
+ * The adjectives that may sit between the formation state and the entity type
+ * — "a Pennsylvania NONPROFIT corporation", "a Delaware PUBLIC BENEFIT
+ * corporation". A closed vocabulary, not "any lower-case word": an open run
+ * bridges a name to an unrelated type straight across the verb, and
+ * "Nothing in this Agreement creates a partnership between Acme and Globex"
+ * then manufactures parties out of a sentence written to deny the
+ * relationship.
+ */
+/**
+ * An entity suffix immediately followed by a comma ENDS a name. The name run
+ * admits commas and periods inside a token so "Acme Widgets, Inc." and
+ * "Skadden, Arps, Slate, Meagher & Flom LLP" stay whole — but once the type
+ * has been written the next comma separates two DIFFERENT parties, and the run
+ * walked straight through it: an "among" preamble listing "Acme Inc., Beta
+ * LLC, and Gamma Ltd." produced a party named "Acme Inc., Beta". Written in
+ * both cases because the same preamble is as often set in capitals.
+ */
+const ENTITY_SUFFIX_BEFORE_COMMA = String.raw`\b(?:[Ii][Nn][Cc]|LLC|[Ll]lc|L\.L\.C|[Ll]td|[Cc]orp|LLP|[Ll]lp|L\.L\.P|LLLP|LP|L\.P|PLLC|P\.C|PC|N\.A|S\.A|[Cc]o)\.?,`;
+
+const ENTITY_QUALIFIERS =
+  "(?:non-?profit|not-for-profit|limited|liability|professional|public|benefit|close|mutual|general|private|registered|statutory|business|cooperative|stock|joint|domestic|foreign|municipal|charitable)";
+
 const PARTY_DECL = new RegExp(
   // Each name token is BOUNDED (`{0,80}`, not `*`): the name is followed by a
   // REQUIRED entity-type suffix, so an unbounded token matches a long letter
   // run, fails to find the suffix, and backtracks the run from every start
   // position — O(n²) on a hostile uppercase run (a ReDoS hang, spec-v8 §5). No
   // real name token exceeds 80 chars, so this is byte-identical and now linear.
+  // A name may not begin immediately after the indefinite article, and a firm
+  // name is joined by an AMPERSAND. Both guard the qualifier run below: it
+  // admits "a Pennsylvania NONPROFIT corporation" and "a Pennsylvania LIMITED
+  // LIABILITY partnership", which the state slot alone could not hold — so
+  // neither party of an owner-architect agreement carried a role, and a role
+  // is what every rule comparing an obligor to the party set matches on. But
+  // without the article guard the same run let a match START at a nationality
+  // adjective ("Stark Cloud Ireland Ltd., an IRISH private limited company"
+  // registered a party named "Irish"), and without the ampersand the run broke
+  // at the "&" ("Vessel & Roark Architects LLP" registered twice, once as
+  // "Roark Architects LLP").
   // The entity-type group needs a non-letter boundary on BOTH sides. Without a
   // trailing one the short types match the START of ordinary words — `inc` in
   // "including", `ag` in "agreement". Without a leading one they match the END
@@ -60,7 +105,7 @@ const PARTY_DECL = new RegExp(
   // name is manufactured, and it is not harmless — rules that compare a phrase
   // against the party set (STRUCT-006) treat it as real and party-tallying
   // rules (RISK-002) report counts against it.
-  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])` +
+  String.raw`(?<!\b(?:a|an)\s)([A-Z][\w&.,'’-]{0,80}(?:(?<!${ENTITY_SUFFIX_BEFORE_COMMA})\s+(?:&\s+)?[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(?:${ENTITY_QUALIFIERS}\s+){0,3}(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])` +
     // A QUALIFIER may sit between the entity type and the role parenthetical:
     // "Sonoran Crest Management, Inc., an Arizona corporation HOLDING ARIZONA
     // REAL ESTATE BROKER LICENSE NUMBER BR-558214 (\"Manager\")". Requiring the
@@ -74,10 +119,14 @@ const PARTY_DECL = new RegExp(
     // clause into the next party's role, and the leading period is admitted
     // only as an ABBREVIATION period — one not followed by a capital across a
     // space — so it cannot run past the end of the sentence.
+    // The parenthetical usually carries an ARTICLE before the quoted role —
+    // `(the "Company")`, `(collectively, "Sellers")` — and requiring the quote
+    // to open the parenthesis dropped the role on the most common form there
+    // is.
     // The gap and the parenthetical are ONE optional group: with the gap
     // optional and non-greedy on its own, the engine always matched it empty
     // and the role was never reached.
-    String.raw`(?:(?:\.(?!\s+[A-Z]))?\s*(?:(?!\band\b)[^.;()]){0,120}?\s*\(\s*["“”']([^"”'’\)]+)["“”']\s*\))?`,
+    String.raw`(?:(?:\.(?!\s+[A-Z]))?\s*(?:(?!\band\b)[^.;()]){0,120}?\s*\(\s*(?:(?:the|each|collectively(?:,)?|together|individually)\s+){0,2}["“”']([^"”'’\)]+)["“”']\s*\))?`,
   "g",
 );
 
@@ -181,6 +230,19 @@ const AMONG_SEP = /\s*,\s*(?:and\s+)?|\s+and\s+/i;
  */
 const INSTRUMENT =
   "(?:agreement|contract|amendment|addendum|lease|deed|indenture|memorandum|mou|nda|msa|sow|dpa|baa|eula|guaranty|note|assignment|release|licence|license)";
+
+/**
+ * The instrument's own title, where a cover block puts it in front of the
+ * party's name: "OPERATING AGREEMENT OF Harbor Point Ventures LLC", "DEED OF
+ * TRUST OF ...". Anchored at the start of the captured name and requiring the
+ * "of", so an entity whose name merely contains one of these words is
+ * untouched.
+ */
+const TITLE_BEFORE_NAME = new RegExp(
+  String.raw`^(?:this\s+)?(?:[A-Za-z]+\s+){0,2}${INSTRUMENT}\s+of\s+`,
+  "i",
+);
+
 const SAME_SENTENCE = String.raw`(?:[^.;\n]|\.(?!\s))`;
 /**
  * How much front matter the preamble window covers when the paragraph count
@@ -231,6 +293,43 @@ const PREAMBLE_LEAD = new RegExp(
 const TITLE_BEFORE_PREAMBLE = /^(?:[A-Z(][^\s.;]*\s+){1,12}(?=(?:This|The)\s)/;
 
 /** `PREAMBLE_LEAD`, tolerating a title line merged in front of the preamble. */
+/**
+ * The lead-ins that only a PREAMBLE carries. `PREAMBLE_LEAD` also accepts a
+ * bare instrument noun ("Agreement between …"), which a document title carries
+ * too, so the two are distinguished here rather than conflated.
+ */
+const STRONG_PREAMBLE_LEAD = new RegExp(
+  "(?:" +
+    String.raw`\bby\s+and\s+` +
+    "|" +
+    String.raw`(?:^|[.;]\s)\s*(?:this|the)\s+${SAME_SENTENCE}{0,80}\b(?:is|are|was|were)\s+` +
+    "|" +
+    String.raw`\b(?:made|entered\s+into|executed|dated|effective)\b${SAME_SENTENCE}{0,160}` +
+    ")$",
+  "i",
+);
+
+/**
+ * A standalone document title: a short line, no terminal sentence punctuation,
+ * and no lower-case sentence body — either ALL CAPS or Title Case.
+ */
+function isDocumentTitleLine(text: string): boolean {
+  const line = text.trim();
+  if (line.length === 0 || line.length > 120) return false;
+  if (/[.;:!?]$/.test(line)) return false;
+  const letters = line.replace(/[^A-Za-z]/g, "");
+  if (letters.length === 0) return false;
+  const allCaps = letters === letters.toUpperCase();
+  const titleCase = line
+    .split(/\s+/)
+    .every((w) => !/^[a-z]/.test(w) || TITLE_CASE_MINOR_WORD.test(w));
+  return allCaps || titleCase;
+}
+
+/** The words a Title Case line is allowed to leave lower-case. */
+const TITLE_CASE_MINOR_WORD =
+  /^(?:a|an|the|and|or|nor|but|for|of|to|in|on|at|by|with|from|as|per)$/i;
+
 function hasPreambleLead(lead: string): boolean {
   if (PREAMBLE_LEAD.test(lead)) return true;
   const withoutTitle = lead.replace(TITLE_BEFORE_PREAMBLE, "");
@@ -340,6 +439,15 @@ const LEADING_ROLE = new RegExp(String.raw`^(${PARTY_ROLE_LABEL})\s*,\s*(?=[A-Z]
  * lead-in so an earlier unrelated negation in the paragraph does not suppress
  * a real preamble.
  */
+/**
+ * A disclaimer of the relationship, tested against everything before the
+ * candidate name. `NEGATED_PREAMBLE` is the same idea for `BETWEEN_RE`, but it
+ * deliberately refuses to cross the word "between" — there the lead ends
+ * before it. Here the names sit AFTER the connective, so the lead contains it.
+ */
+const DISCLAIMED_RELATIONSHIP =
+  /\b(?:not|no|nothing|never|neither)\b[^.;\n]{0,120}?\b(?:constitute|create|form|imply|establish|give\s+rise\s+to|amount\s+to)\w*/i;
+
 const NEGATED_PREAMBLE =
   /\b(?:not|no|nothing|never|neither)\b(?:[^.;\n](?!\bbetween\b)){0,80}(?:constitute|create|form|imply|establish|give\s+rise\s+to|amount\s+to)\w*(?:[^.;\n](?!\bbetween\b)){0,40}$/i;
 
@@ -419,11 +527,24 @@ export function extractParties(tree: DocumentTree): Party[] {
       // trailing comma in ("Acme Corp,") and the same entity registered twice —
       // once dirty here, once cleanly from the `between` preamble, since
       // registerParty keys on the lowercased name.
-      const name = cleanPartyName(m[1] ?? "");
+      // A COVER BLOCK opens with the instrument's own title, and the name
+      // run walks straight through it: "OPERATING AGREEMENT OF HARBOR POINT
+      // VENTURES LLC / a Delaware limited liability company" registered a
+      // party literally named "OPERATING AGREEMENT OF HARBOR POINT VENTURES
+      // LLC" — which then stood beside the real party and made RISK-002 read
+      // the indemnity as running one way.
+      const name = cleanPartyName((m[1] ?? "").replace(TITLE_BEFORE_NAME, ""));
       const state = m[2];
       const entity = m[3];
       const role = m[4];
       if (!name || isBoilerplateName(name)) continue;
+      // A DISCLAIMED relationship names the entities precisely to say they are
+      // NOT in one: "Nothing in this Agreement creates a partnership among
+      // Acme Corp, Beta LLC, and Gamma Inc." `BETWEEN_RE` has always been
+      // guarded this way; this path never was, because it could not read an
+      // upper-case entity abbreviation at all and so never reached such a
+      // sentence.
+      if (DISCLAIMED_RELATIONSHIP.test(text.slice(0, m.index))) continue;
       registerParty(partyMap, name, {
         role,
         entity_type: entity,
@@ -472,6 +593,14 @@ export function extractParties(tree: DocumentTree): Party[] {
     // the real preamble would consume the paragraph's only reading.
     BETWEEN_RE.lastIndex = 0;
     let betweenMatch: RegExpExecArray | null;
+    let weakMatch: RegExpExecArray | null = null;
+    // A document TITLE names the two ROLES, never the two parties: "AGREEMENT
+    // BETWEEN OWNER AND ARCHITECT FOR DESIGN SERVICES" is the AIA B101 title,
+    // and reading it as the party clause registered "OWNER" and "ARCHITECT FOR
+    // DESIGN SERVICES" as the contracting entities. A title is a short
+    // standalone line closing with no sentence punctuation; a preamble is a
+    // sentence and ends in a period, so this cannot swallow one.
+    if (isDocumentTitleLine(text)) continue;
     while ((betweenMatch = BETWEEN_RE.exec(text)) !== null) {
       const lead = text.slice(0, betweenMatch.index);
       // A DISCLAIMED relationship is the opposite of a preamble: "THIS
@@ -480,8 +609,24 @@ export function extractParties(tree: DocumentTree): Party[] {
       // to say they are NOT contracting parties. Reading it as a preamble
       // registered both as parties.
       if (NEGATED_PREAMBLE.test(lead)) continue;
-      if (hasPreambleLead(lead)) break;
+      if (!hasPreambleLead(lead)) continue;
+      // A bare INSTRUMENT NOUN before "between" is the shape of a TITLE, and
+      // the title is commonly restated at the head of the preamble sentence:
+      // "This Agreement Between Owner and Architect (this \"Agreement\") is
+      // made as of April 6, 2026 between Harrowgate ... and Vessel & Roark
+      // ...". That restatement beat the REAL party clause later in the very
+      // same sentence and published a party named 'Architect (this
+      // "Agreement") is made as of April 6'.
+      //
+      // So a weak lead is remembered but not taken: if a later `between` in
+      // the paragraph carries a full preamble lead ("by and between", "is made
+      // as of ... between"), that one is the party clause. Only when none does
+      // is the weak reading used, which is the "This Agreement between X and Y
+      // is dated ..." form it was added for.
+      if (STRONG_PREAMBLE_LEAD.test(lead)) break;
+      if (!weakMatch) weakMatch = betweenMatch;
     }
+    if (!betweenMatch) betweenMatch = weakMatch;
     if (betweenMatch) {
       const { name: a, role: roleA } = splitNameAndRole(betweenMatch[1] ?? "");
       const { name: b, role: roleB } = splitNameAndRole(betweenMatch[2] ?? "");

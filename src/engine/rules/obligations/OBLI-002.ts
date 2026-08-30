@@ -35,7 +35,12 @@ const RECIPROCAL_PATTERNS = [
   { label: "confidentiality", pattern: /\bconfidential/i },
   { label: "indemnification", pattern: /\bindemnif/i },
   { label: "representations", pattern: /\brepresentation/i },
-  { label: "warranties", pattern: /\bwarrant/i },
+  // The WARRANTY sense only. A bare `\bwarrant` also matches the SECURITY —
+  // and on a warrant agreement every operative sentence names it: "the Company
+  // shall issue a replacement warrant", "the Warrant Shares shall be
+  // proportionately adjusted". Not one of them is a warranty, and the document
+  // was told its warranties ran one way.
+  { label: "warranties", pattern: /\bwarrant(?:y|ies)\b|\bwarrants?\s+that\b|\bwarranted\b/i },
 ] as const;
 
 /**
@@ -65,7 +70,7 @@ const RECIPROCAL_ROLES = new Set([
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -84,6 +89,16 @@ export const rule: Rule = {
     );
     for (const { label, pattern } of RECIPROCAL_PATTERNS) {
       const seenObligors = new Set<string>();
+      /**
+       * The subset of `seenObligors` that are party CLASSES. A class occupies
+       * every side at once, exactly as "each party" does, so a class standing
+       * ALONE is mutual by construction — a joint venture whose only
+       * confidentiality duty reads "Each Member shall keep confidential" binds
+       * both members, and reporting that "only each member bears" it is both
+       * false and unreadable. Standing beside a party-specific obligor it is a
+       * genuine second side, which is why it is counted at all.
+       */
+      const classObligors = new Set<string>();
       let mutualByRole = false;
       for (const o of ctx.extracted.obligations) {
         const m = pattern.exec(o.action);
@@ -109,7 +124,28 @@ export const rule: Rule = {
           mutualByRole = true;
           continue;
         }
-        if (partySet.has(o2)) seenObligors.add(o2);
+        if (partySet.has(o2)) {
+          seenObligors.add(o2);
+          continue;
+        }
+        // A CLASS of counterparties — "Each Investor shall keep confidential
+        // …", "Each Member shall indemnify …". The class is not a signatory
+        // the party extractor can register (the Investors sign a schedule), so
+        // it never lands in `partySet`, and the duty it plainly bears went
+        // uncounted: an investor rights agreement that binds the Company and
+        // every Investor alike was reported as binding only the Company.
+        //
+        // Narrow on purpose: "each"/"every", up to two lower-case adjectives
+        // ("Each SELLING Investor shall indemnify …"), and a capitalized
+        // noun. That is a party class, not a noun phrase — "Warrant Shares and
+        // the Exercise Price" is a subject too, and is not a side. Written
+        // without the `i` flag on purpose: the trailing `[A-Z][a-z]+` is what
+        // makes this a party class rather than any two words, and under `i`
+        // that matches lower-case prose.
+        if (/^(?:[Ee]ach|[Ee]very)\s+(?:[a-z]+\s+){0,2}[A-Z][a-z]+$/.test(o.obligor.trim())) {
+          seenObligors.add(o2);
+          classObligors.add(o2);
+        }
       }
       if (mutualByRole) continue;
       if (seenObligors.size === 1 && partySet.size >= 2) {
@@ -117,6 +153,7 @@ export const rule: Rule = {
         // obligation is symmetric, not one-sided — skip it and keep checking the
         // remaining reciprocal patterns for a genuinely party-specific asymmetry.
         if (RECIPROCAL_ROLES.has([...seenObligors][0]!)) continue;
+        if (classObligors.has([...seenObligors][0]!)) continue;
         return emit(ctx, rule, {
           title: `Asymmetric ${label} obligation`,
           description: `Only ${[...seenObligors][0]} bears this typically-mutual obligation.`,

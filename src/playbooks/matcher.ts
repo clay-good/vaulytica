@@ -626,6 +626,14 @@ type ScoredPlaybook = {
  * Ties are broken lexicographically by playbook id for determinism.
  */
 /**
+/**
+ * Shortest final token of a phrase whose same-word extension still reads as an
+ * INFLECTION of that token rather than as a different one. Below this, the end
+ * of the phrase is anchored to a word boundary.
+ */
+const INFLECTABLE_TOKEN_MIN_LENGTH = 5;
+
+/**
  * Longest feature string still treated as an ACRONYM for matching purposes.
  * "psa", "eula", "g701", "daca" are the forms a document actually prints; a
  * longer string is a phrase, and a phrase's substring match is what lets
@@ -706,11 +714,32 @@ function matchesIn(corpus: Corpus, feature: string): boolean {
   ];
   for (const [hay, pin] of variants) {
     if (pin.length === 0) continue;
+    const escaped = pin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     if (pin.length > ACRONYM_MAX_LENGTH || !/^[a-z0-9][a-z0-9.-]*$/.test(pin)) {
-      if (hay.includes(pin)) return true;
+      // A PHRASE is allowed to be a prefix of a longer one, and to extend
+      // INSIDE its own last word: that is how "conflicts of interest" finds
+      // "Conflicts of Interest Policy" and "stenographic" finds
+      // "stenographically".
+      //
+      // But when the last token is SHORT, a same-word extension is a
+      // different token, not an inflection of this one — and "annex i",
+      // "annex ii" and "annex iii" therefore all matched the single phrase
+      // "Annex III". An AI policy citing Annex III of the EU AI Act collected
+      // three transfer-clause signals out of one sentence and tied the SCC
+      // Module 2 family, which shares nothing else with it. The same shape
+      // sits in "clause 8" (matching "clause 80") and "module 2".
+      //
+      // A short token still PLURALIZES, though — "hourly rate" has to find
+      // "hourly rates" — so that one extension stays allowed. A roman numeral
+      // and a digit are unaffected by it.
+      const lastToken = pin.split(/\s+/).pop() ?? "";
+      if (lastToken.length >= INFLECTABLE_TOKEN_MIN_LENGTH) {
+        if (hay.includes(pin)) return true;
+        continue;
+      }
+      if (new RegExp(`${escaped}(?:es|s)?(?![a-z0-9])`, "i").test(hay)) return true;
       continue;
     }
-    const escaped = pin.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     if (new RegExp(`(?:^|[^a-z0-9])${escaped}(?![a-z0-9])`, "i").test(hay)) return true;
   }
   return false;

@@ -14293,8 +14293,9 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "attorney-client privilege",
-        "work product",
+        "log of documents withheld",
+        "withheld or redacted",
+        "work-product doctrine",
         "withheld",
         "recipients",
         "bates"

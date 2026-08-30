@@ -200,3 +200,41 @@ describe("IPDATA-001 — the bare vesting sentence", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-001 — retention with the rights modified before the object (v1.11.0)", () => {
+  /**
+   * The AIA B101 allocation. The retention branch wanted "retains all rights
+   * IN <object>" adjacent; the standard sentence puts the adjectives and an
+   * appositive in between, and the agreement was told it allocated no IP.
+   */
+  it("is silent on the standard owner-architect reservation", () => {
+    expect(
+      IPDATA_001.check(
+        doc(
+          "Architect and its consultants retain all common law, statutory, and other reserved rights, including copyright, in the Instruments of Service.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("is silent when the retained object is a patent", () => {
+    expect(
+      IPDATA_001.check(
+        doc(
+          "Licensor retains all right, title, and interest of every kind, including copyright, in and to the Licensed Patents.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  /** A retention with no IP object is not an IP-ownership clause. */
+  it("still fires when only remedies are retained", () => {
+    expect(
+      IPDATA_001.check(
+        doc(
+          "The Lender retains all rights and remedies available at law or in equity, and no delay in exercising any of them is a waiver.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
