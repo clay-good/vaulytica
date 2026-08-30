@@ -51,6 +51,7 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
   },
   {
     id: "IPL-104",
+    ver: "1.1.0",
     name: "Nunc pro tunc effective date",
     cite: practice(
       "nunc-pro-tunc",
@@ -58,8 +59,18 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
     ),
     pat: [
       /(effective\s+(as\s+of|date)|nunc\s+pro\s+tunc)/i,
-      /(as\s+of\s+\w+\s+\d{1,2},?\s+\d{4}|retroactive|confirms\s+the\s+(prior|earlier))/i,
+      // Retroactivity in SUBSTANCE, not only as the word. A patent assignment
+      // writes it as the reach-back itself: "effective as of the earlier of the
+      // date of execution and the date each Assignor conceived or first reduced
+      // the inventions to practice". Under the conjunction below, reading only
+      // "retroactive" and a literal date would have reported that assignment —
+      // whose effective date reaches back to conception — as having none.
+      /(as\s+of\s+\w+\s+\d{1,2},?\s+\d{4}|retroactive(?:ly)?|nunc\s+pro\s+tunc|confirms\s+the\s+(prior|earlier)|earlier\s+of|first\s+reduced\s+(?:the\s+\w+\s+)?to\s+practice|date\s+of\s+conception|prior\s+to\s+the\s+date\s+of\s+this)/i,
     ],
+    // `all: true`. The retroactivity pillar is a bare date — "as of January 5,
+    // 2026" — which every executed instrument carries, so a nunc pro tunc
+    // column was satisfied by the assignment's own preamble.
+    all: true,
     why: "Federal Circuit law requires the plaintiff to hold title when suit is filed; a nunc pro tunc assignment executed after filing does not cure the standing defect. The effective date matters more here than in almost any other instrument.",
     fix: "State the effective date and, where the assignment confirms an earlier transfer, recite the original transfer and its date rather than relying on retroactivity alone.",
   },
@@ -234,12 +245,17 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
 const JDA = pack("joint-development-agreement", C, [
   {
     id: "IPL-116",
+    ver: "1.1.0",
     name: "Background IP identified and licensed",
     cite: practice("background-ip", "background IP identification in collaboration agreements"),
     pat: [
       /background\s+(ip|intellectual\s+property|technology)/i,
       /(identified|listed|schedule|license\s+to\s+use)/i,
     ],
+    // `all: true`. "Identified" alone matched "the parties identified on the
+    // signature page", so an agreement that never mentions background IP
+    // satisfied the column that exists to find it.
+    all: true,
     why: "Foreground IP is usually unusable without a license to the background it builds on. Undocumented background is the reason many collaborations produce results neither party can commercialize.",
     fix: "Schedule each party's background IP and grant the licenses the project and the commercialization of its results require.",
     sev: "critical",

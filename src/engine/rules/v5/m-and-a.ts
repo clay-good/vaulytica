@@ -74,12 +74,19 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
   },
   {
     id: "MNA-105",
+    ver: "1.1.0",
     name: "Indemnity, caps, baskets, and survival",
     cite: practice(
       "indemnity-architecture",
       "indemnification architecture in private acquisitions",
     ),
-    pat: [/indemnif/i, /(cap|basket|deductible|survival|escrow|de\s+minimis)/i],
+    // `all: true`, and the second pillar carries word boundaries. Joined by an
+    // OR, the bare word "cap" matched inside "CAPitalized terms have the
+    // meanings given in Section 1" — so the column was satisfied by a purchase
+    // agreement's definitions cross-reference, and an APA with no cap, no
+    // basket, and no survival period passed it in silence.
+    pat: [/indemnif/i, /\b(?:caps?|baskets?|deductibles?|survival|escrows?|de\s+minimis)\b/i],
+    all: true,
     why: "The indemnity architecture is the entire post-closing risk allocation. Survival periods that expire before the buyer could discover the breach, or a cap below the deal's real exposure, are where the value leaks.",
     fix: "State survival periods by representation category, the deductible or tipping basket, the de minimis, the cap, and the escrow or holdback securing them.",
   },
@@ -120,7 +127,7 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
 const ASSIGNMENT = pack("assignment-and-assumption-agreement", C, [
   {
     id: "MNA-108",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Schedule of assigned contracts",
     cite: practice("assigned-contracts", "identification of assigned contracts at closing"),
     pat: [
@@ -130,7 +137,13 @@ const ASSIGNMENT = pack("assignment-and-assumption-agreement", C, [
       // is what this rule exists to require, and the plural-only pattern
       // reported it at `critical` as having no schedule of assigned contracts.
       /(assigned\s+contracts?|schedule\s+[a-z0-9]|set\s+forth\s+(on|in)\s+(exhibit|schedule))/i,
-      /(contracts?\s+listed|identified\s+(on|in))/i,
+      // The second pillar keeps the OR — a singly-named "Assigned Contract"
+      // identifies what moved just as a schedule does, which is why the first
+      // pillar reads the singular — but it may not be satisfied by an ordinary
+      // preamble. A bare "identified on" matched "between the parties
+      // IDENTIFIED ON the signature page", so an assignment with no
+      // identification of any kind passed this column in silence.
+      /\b(?:contracts?|agreements?|leases?|assets?|schedules?)\s+(?:listed|identified|described|set\s+forth)\s+(?:on|in)\b/i,
     ],
     why: "A blanket assignment of 'all contracts' does not tell a counterparty, a court, or the buyer's own team which agreements moved. The schedule is the operative list.",
     fix: "Attach a schedule identifying each assigned contract by parties, date, and title, and state that only scheduled contracts are assigned.",

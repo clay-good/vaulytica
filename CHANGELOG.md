@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.252.0] — 2026-08-30
+
+### Added
+- **A guard against a check that cannot fail.** The existing reachability
+  guards ask whether a rule can FIRE at all — title vacuity,
+  self-reachability. `boilerplate-satisfaction.test.ts` asks the other
+  direction, which is where the quieter failure lives: a check whose patterns
+  are matched by the skeleton every contract carries is silent on every
+  document, and a silent check reads to an attorney exactly like a clause that
+  is present and correct. It probes patterns directly through `PACK_SPECS`, so
+  a conditional column ("Crummey withdrawal rights where applicable") is still
+  free to stay silent.
+
+### Fixed
+- **Eight compliance-matrix columns were satisfied by a document that says
+  nothing** — a preamble, a definitions cross-reference, and a signature
+  block. Two causes:
+  - A pillar with no word boundary. MNA-105 ("Indemnity, caps, baskets, and
+    survival") and SET-139 ("Proceeds waterfall and return cap") both listed
+    the bare word "cap", which matches inside "**Cap**italized terms have the
+    meanings given in Section 1" — so a purchase agreement with no cap, no
+    basket and no survival period passed on the strength of its definitions
+    cross-reference.
+  - A LOCATOR pillar joined by an OR. "Arbitration clause quoted AND located"
+    (SET-123), "Background IP identified AND licensed" (IPL-116), "Amount or
+    percentage AND valuation date" (EST-420), "Amended provisions restated in
+    full" (EST-416), "Nunc pro tunc effective date" (IPL-104) — each names two
+    things, and each had its second pillar written as something every document
+    carries: a section number, a date, the word "identified". `pat` defaults
+    to an OR, so the locator alone scored every document clean. Six are now
+    conjunctions; MNA-108 keeps its OR, because a singly-named "Assigned
+    Contract" identifies what moved just as a schedule does, and its generic
+    pillar was tightened instead.
+- **IPL-104 now reads retroactivity in SUBSTANCE.** A patent assignment writes
+  it as the reach-back itself — "effective as of the earlier of the date of
+  execution and the date each Assignor conceived or first reduced the
+  inventions to practice" — and under the new conjunction, reading only the
+  word "retroactive" and a literal date would have reported that assignment as
+  having no nunc pro tunc date at all.
+
 ## [9.251.0] — 2026-08-30
 
 ### Added

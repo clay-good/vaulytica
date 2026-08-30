@@ -350,6 +350,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
 const ARB_DEMAND = pack("arbitration-demand", C, [
   {
     id: "SET-123",
+    ver: "1.1.0",
     name: "Arbitration clause quoted and located",
     cite: standardForm(
       "AAA Commercial Arbitration Rules",
@@ -360,6 +361,11 @@ const ARB_DEMAND = pack("arbitration-demand", C, [
       /(arbitration\s+(clause|provision|agreement))/i,
       /(section\s+\d|§|quoted|provides\s+as\s+follows|attached)/i,
     ],
+    // `all: true`. The check is named for two things, quoted AND located, and
+    // the locator pillar is `section \d` — which every contract satisfies with
+    // "the meanings given in Section 1". Joined by an OR the column could not
+    // fail on any document carrying a section number.
+    all: true,
     why: "The administrator will not proceed without the arbitration agreement, and the respondent's first move is usually to contest arbitrability. Quoting the clause frames that fight from the outset.",
     fix: "Quote the arbitration clause in full, identify the agreement and section it comes from, and attach the agreement.",
     sev: "critical",
@@ -577,6 +583,7 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
   },
   {
     id: "SET-139",
+    ver: "1.1.0",
     name: "Proceeds waterfall and return cap",
     cite: practice(
       "funding-waterfall",
@@ -584,8 +591,12 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
     ),
     pat: [
       /(waterfall|order\s+of\s+(distribution|priority)|proceeds\s+shall\s+be\s+(distributed|applied))/i,
-      /(multiple|return|cap|first\s+to|then\s+to)/i,
+      /\b(?:multiple|returns?|caps?|first\s+to|then\s+to)\b/i,
     ],
+    // `all: true`. The waterfall and the return cap are different terms, and
+    // the cap pillar matched inside "CAPitalized", so a funding agreement with
+    // no waterfall passed on the strength of a definitions cross-reference.
+    all: true,
     why: "A funding return that consumes the entire recovery is the industry's reputational problem and, in consumer cases, can be attacked as usurious or unconscionable. The waterfall must be modeled at signature.",
     fix: "State the distribution waterfall step by step, the funder's return formula and any cap, and include a worked example at two or three recovery levels.",
     sev: "critical",

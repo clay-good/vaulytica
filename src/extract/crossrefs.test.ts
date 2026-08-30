@@ -1139,7 +1139,7 @@ describe("a chapter-first statutory citation is not an internal cross-reference"
   ])("does not report a broken reference in: %s", (sentence) => {
     const t = buildTree(["1. Compliance", sentence]);
     const refs = extractCrossRefs(t, extractSections(t));
-    expect(refs.filter((r) => !r.resolved).map((r) => r.label)).toEqual([]);
+    expect(refs.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual([]);
   });
 
   /** A genuine internal reference to a missing section is still reported. */
@@ -1149,6 +1149,6 @@ describe("a chapter-first statutory citation is not an internal cross-reference"
       "The Intern shall comply with Section 14 of this Agreement.",
     ]);
     const refs = extractCrossRefs(t, extractSections(t));
-    expect(refs.some((r) => !r.resolved)).toBe(true);
+    expect(refs.some((r) => r.unresolved)).toBe(true);
   });
 });

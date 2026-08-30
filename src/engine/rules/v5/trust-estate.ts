@@ -243,12 +243,17 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
   },
   {
     id: "EST-416",
+    ver: "1.1.0",
     name: "Amended provisions restated in full",
     cite: practice("restatement", "restating amended provisions in full"),
     pat: [
       /(is\s+(hereby\s+)?(amended|deleted|restated)|shall\s+read\s+as\s+follows)/i,
       /(in\s+its\s+entirety|article\s+\w+|section\s+\d)/i,
     ],
+    // `all: true`. The locator pillar is `section \d`, which every instrument
+    // satisfies, so an amendment that restates nothing passed the column
+    // requiring amended provisions to be restated in full.
+    all: true,
     why: "Amendments that describe a change without restating the provision produce reconstruction disputes years later, when nobody remembers what the original said.",
     fix: "Identify each amended article or section by number and restate it in full as amended, rather than describing the change.",
   },
@@ -296,12 +301,16 @@ const QDRO = pack("qdro", C, [
   },
   {
     id: "EST-420",
+    ver: "1.1.0",
     name: "Amount or percentage and valuation date",
     cite: usc("29", "1056", "ERISA § 206(d)(3)(C)(ii) — amount or percentage of benefits"),
     pat: [
       /(percentage|amount|\d+%|\$)/i,
       /(valuation\s+date|as\s+of\s+\w+\s+\d{1,2},?\s+\d{4}|account\s+balance\s+as\s+of|manner\s+in\s+which\s+the\s+amount)/i,
     ],
+    // `all: true`. The valuation pillar is a bare date, which every executed
+    // instrument carries, so the column was satisfied by the preamble.
+    all: true,
     why: "The order must state the amount or percentage to be paid or the manner of determining it. A percentage with no valuation date is not determinable and is routinely rejected.",
     fix: "State the amount or percentage and the valuation date, or the formula (such as a coverture fraction) with all its inputs defined.",
     sev: "critical",
