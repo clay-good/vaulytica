@@ -1421,7 +1421,20 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // Canons it names an internal process at least as often as an
       // authority, and the sibling guard above already excludes it whenever
       // the citation shape actually follows.
-      if (/\b(?:Rules?|Regulations?|Canons?)\s+of\s+$/.test(ctx.text.slice(0, m.index))) continue;
+      // An ORGANIZATIONAL UNIT continues the same way — "Office of Technology
+      // Transfer", "Department of Homeland Security", "Bureau of Land
+      // Management" — and yields the tail as its own candidate. A university
+      // licence signed by its "Office of Technology Transfer" was told it uses
+      // a term "Technology Transfer" without defining it. These nouns name a
+      // body, never a document, so unlike "Statement of" / "Schedule of" the
+      // tail is part of a proper NAME rather than a title the drafter left
+      // undefined.
+      if (
+        /\b(?:Rules?|Regulations?|Canons?|Office|Bureau|Ministry|Secretariat|Chamber|Institute|Academy|Council|Commission|Board|Department|Agency|Division|Directorate)\s+of\s+$/.test(
+          ctx.text.slice(0, m.index),
+        )
+      )
+        continue;
       // A judicial district or division is a place inside a court's name — "the
       // United States District Court for the Northern District of Illinois" —
       // and every settlement, pleading, and forum clause names one. The

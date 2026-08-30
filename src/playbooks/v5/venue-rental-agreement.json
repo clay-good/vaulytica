@@ -25,7 +25,7 @@
       "food and beverage minimum",
       "dram shop"
     ],
-    "negative_features": ["term of the lease shall commence", "employment", "merger"]
+    "negative_features": ["term of the lease shall commence", "employment agreement", "merger"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Venue", "Event", "Event Date"],

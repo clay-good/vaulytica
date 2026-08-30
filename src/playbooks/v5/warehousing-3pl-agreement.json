@@ -20,7 +20,7 @@
       "warehouse lien",
       "pick and pack"
     ],
-    "negative_features": ["motor carrier", "lease of the premises", "employment"]
+    "negative_features": ["motor carrier", "lease of the premises", "employment agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Goods", "Facility", "Services"],

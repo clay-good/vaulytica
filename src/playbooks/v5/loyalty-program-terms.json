@@ -19,7 +19,7 @@
       "redemption",
       "no cash value"
     ],
-    "negative_features": ["employment", "lease of the premises", "merger"]
+    "negative_features": ["employment agreement", "lease of the premises", "merger"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Points", "Member", "Program"],

@@ -19,7 +19,7 @@
       "ad verification",
       "flight dates"
     ],
-    "negative_features": ["employment", "lease of the premises", "software as a service"]
+    "negative_features": ["employment agreement", "lease of the premises", "software as a service"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Insertion Order", "Media Company", "Agency"],

@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.249.0] — 2026-08-30
+
+### Added
+- Two specimens — a university technology transfer licence on Bayh-Dole
+  architecture and a UCC Article 2 master purchase agreement for machined
+  goods — the 216th and 217th, and the first for `master-purchase-agreement`.
+
+### Fixed
+- **The tail of an organizational unit's name was reported as a term the
+  document forgot to define.** The Title-Case run breaks at a lower-case "of",
+  so a licence signed by its "Office of Technology Transfer" was told it uses
+  "Technology Transfer" without defining it, and a WARN notice issued by an
+  "Office of Economic Development" and copied to a "Director of Human
+  Resources" was told the same of both. The existing rules-citation guard
+  already handled "Ohio Rules of Professional Conduct"; the organizational
+  nouns now sit beside it. A document TITLE after "of" — "Statement of Base
+  Services" — is still reported, because that is a title the drafter left
+  undefined rather than the name of a body.
+- **COMM-107 could not read the price terms its own recommendation asks
+  for.** The check's `fix` says to "attach a price schedule and state the
+  adjustment mechanism … annual negotiation with a cap"; a master purchase
+  agreement drafted to exactly that was told no clause addressed "price, price
+  adjustment, and payment", because the patterns wanted the NOUNS "price list",
+  "price schedule" and "price adjustment". Its own sibling COMM-102 already
+  read "unit price" and "the price set forth"; the two vocabularies now agree,
+  and the adjustment branch reads the verb as well as the noun.
+- **A signatory was counted as a party bearing indemnity.** RISK-002 seeded
+  its tally from every extracted party, so the natural persons who SIGN sat at
+  zero and dragged `min` down until an ordinary two-versus-one split cleared
+  the `max - min >= 2` threshold. A master purchase agreement in which each
+  side indemnifies the other was reported as one-sided, and a staffing
+  services agreement's genuine 2:1 — inside the rule's own tolerance — was
+  reported for the same reason. An individual who is genuinely a party is
+  introduced with a role and is still counted.
+- **Sixteen families penalized the independent-contractors clause that every
+  commercial agreement carries.** `employment` was listed as a negative
+  feature, and "nothing in this Agreement creates a partnership, joint
+  venture, agency, or employment relationship" is boilerplate, not a signal
+  that the document is an employment agreement. Narrowed to "employment
+  agreement" across all sixteen; only one had a specimen able to expose it.
+
 ## [9.248.0] — 2026-08-30
 
 ### Added

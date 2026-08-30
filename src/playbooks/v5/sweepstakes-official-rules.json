@@ -19,7 +19,7 @@
       "approximate retail value",
       "alternate method of entry"
     ],
-    "negative_features": ["this agreement is entered into by and between", "employment"]
+    "negative_features": ["this agreement is entered into by and between", "employment agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Sponsor", "Entrant", "Prize"],

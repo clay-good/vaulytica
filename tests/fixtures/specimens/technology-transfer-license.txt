@@ -1,0 +1,146 @@
+EXCLUSIVE PATENT LICENSE AGREEMENT
+
+This Exclusive Patent License Agreement (this "Agreement") is entered into as of May 11, 2026 (the "Effective Date") by and between The Regents of Calloway State University, a body corporate of the State of Michigan acting through its Office of Technology Transfer, with offices at 400 Aldridge Hall, Marquette, Michigan 49855 ("University"), and Petrichor Therapeutics, Inc., a Delaware corporation with offices at 90 Wendover Road, Ann Arbor, Michigan 48104 ("Licensee"). University and Licensee are each a "Party" and together the "Parties."
+
+RECITALS
+
+A. University owns certain inventions relating to macrocyclic inhibitors of the KRAS G12D protein, conceived in the laboratory of Dr. Adaeze Nwachukwu and disclosed to University under invention disclosure CSU-2023-114.
+
+B. The inventions were made in part with United States government support under Award No. R01-GM-149203 from the National Institutes of Health, and the government has certain rights under 35 U.S.C. §§ 200-212 and 37 C.F.R. Part 401.
+
+C. Licensee wishes to obtain, and University is willing to grant, an exclusive license to those inventions on the terms set forth below.
+
+1. DEFINITIONS
+
+1.1 "Licensed Patents" means U.S. Provisional Application No. 63/512,904 filed October 3, 2023, PCT/US2024/049117 filed September 27, 2024, and all continuations, divisionals, continuations-in-part to the extent their claims are supported by the foregoing, reissues, reexaminations, extensions, and foreign counterparts.
+
+1.2 "Licensed Product" means any product whose manufacture, use, sale, offer for sale, or importation would, absent the license granted in this Agreement, infringe a Valid Claim of the Licensed Patents.
+
+1.3 "Valid Claim" means a claim of an issued and unexpired patent within the Licensed Patents that has not been held invalid or unenforceable by a decision of a court or other tribunal of competent jurisdiction from which no appeal has been or may be taken.
+
+1.4 "Net Sales" means the gross amount invoiced by Licensee, its Affiliates, and its Sublicensees for the sale of Licensed Products to third parties, less: trade and quantity discounts actually allowed; credits for returns and rejections; freight, insurance, and duties separately stated on the invoice; and sales, use, and value-added taxes actually paid. A transfer of a Licensed Product for use in a clinical trial, for charitable purposes, or for testing is not a sale.
+
+1.5 "Field" means the diagnosis, treatment, and prevention of human oncologic disease.
+
+1.6 "Territory" means worldwide.
+
+2. GRANT
+
+2.1 License. University grants Licensee an exclusive, royalty-bearing license, with the right to sublicense as provided in Section 2.4, under the Licensed Patents to make, have made, use, offer for sale, sell, and import Licensed Products in the Field in the Territory during the Term.
+
+2.2 Reservation for Research. University reserves for itself, and for all other nonprofit and academic research institutions, the irrevocable right to practice the Licensed Patents for research, teaching, and other educationally related purposes, including research sponsored by a commercial entity, provided that no such institution may transfer a Licensed Product to a third party for commercial use.
+
+2.3 Government Rights. The license granted in this Agreement is subject in all respects to the rights of the United States government reserved under 35 U.S.C. §§ 200-212 and 37 C.F.R. Part 401, including a nonexclusive, nontransferable, irrevocable, paid-up license to practice the Licensed Patents for or on behalf of the United States, and the government's march-in rights under 35 U.S.C. § 203.
+
+2.4 Sublicensing. Licensee may grant sublicenses within the scope of the license granted in Section 2.1. Each sublicense must be in writing, must bind the sublicensee to terms consistent with this Agreement, including Sections 2.2, 2.3, 5, 8, and 9, and must provide that it survives termination of this Agreement and converts to a direct license from University if the sublicensee is not then in breach. Licensee shall provide University a copy of each sublicense within thirty (30) days of execution.
+
+3. UNITED STATES MANUFACTURE
+
+Licensee agrees that any Licensed Product sold or used in the United States will be substantially manufactured in the United States, as 35 U.S.C. § 204 requires, unless University obtains a waiver from the funding agency.
+
+4. DILIGENCE
+
+4.1 Diligence Milestones. Licensee shall use commercially reasonable efforts to develop and commercialize Licensed Products, and shall achieve the following milestones:
+
+(a) file an Investigational New Drug application with the Food and Drug Administration on or before December 31, 2028;
+(b) dose the first patient in a Phase I clinical trial on or before December 31, 2029;
+(c) initiate a Phase II clinical trial on or before December 31, 2031; and
+(d) achieve a first commercial sale on or before December 31, 2035.
+
+4.2 Extension. Licensee may extend any milestone date by up to twelve (12) months on written notice and payment of $50,000, twice per milestone. University shall not unreasonably withhold consent to a further extension supported by a written development plan showing diligent effort.
+
+4.3 Development Reports. Licensee shall deliver to University an annual written report, on or before February 28 of each year, describing progress against the milestones, the development activities of the preceding year, and the plan for the coming year.
+
+5. CONSIDERATION
+
+5.1 License Issue Fee. Licensee shall pay University a nonrefundable license issue fee of $125,000 within thirty (30) days after the Effective Date.
+
+5.2 Annual Maintenance Fee. Licensee shall pay University an annual maintenance fee of $25,000 on each anniversary of the Effective Date, creditable against royalties payable for the same year.
+
+5.3 Milestone Payments. Licensee shall pay University $250,000 on IND acceptance, $1,000,000 on first dosing in a Phase III trial, $3,000,000 on first regulatory approval in the United States, and $2,000,000 on first regulatory approval in the European Union.
+
+5.4 Royalties. Licensee shall pay University a royalty of four percent (4%) of Net Sales of Licensed Products covered by a Valid Claim, and two percent (2%) of Net Sales in a country after the last Valid Claim in that country has expired, for three (3) years after that expiration.
+
+5.5 Sublicense Income. Licensee shall pay University twenty percent (20%) of all non-royalty consideration received from a sublicensee, excluding amounts received as reimbursement of documented research and development costs and amounts paid for equity at fair market value.
+
+5.6 Reports and Payment. Licensee shall deliver a royalty report and pay the amounts due within sixty (60) days after the end of each calendar quarter. A late payment bears interest at the lesser of one and one-half percent (1.5%) per month and the maximum rate permitted by law.
+
+5.7 Records and Audit. Licensee shall keep complete records supporting each royalty report for five (5) years. University may, on thirty (30) days' notice and not more than once each year, have an independent certified public accountant audit those records during business hours. University bears the cost of the audit unless it reveals an underpayment of more than five percent (5%) for the audited period, in which case Licensee bears the cost and shall pay the shortfall with interest within thirty (30) days.
+
+6. PATENT PROSECUTION AND COSTS
+
+6.1 Control. University controls the preparation, filing, prosecution, and maintenance of the Licensed Patents, using counsel reasonably acceptable to Licensee. University shall provide Licensee copies of material filings and correspondence and shall consider Licensee's comments in good faith.
+
+6.2 Costs. Licensee shall reimburse University for all documented patent costs incurred on or after the Effective Date within forty-five (45) days of invoice, and shall reimburse $184,000 of past patent costs in four equal quarterly installments beginning on the Effective Date.
+
+6.3 Abandonment. If Licensee elects not to fund the Licensed Patents in a country, it shall give University sixty (60) days' written notice, after which that country falls out of the Territory for the affected patent and University may proceed at its own expense free of this Agreement.
+
+7. INFRINGEMENT
+
+7.1 Notice. Each Party shall promptly notify the other of any suspected infringement of the Licensed Patents in the Field of which it becomes aware.
+
+7.2 Enforcement. Licensee has the first right, at its expense, to enforce the Licensed Patents against infringement in the Field, and University shall join as a party plaintiff if required for standing, at Licensee's expense. If Licensee does not initiate an action within one hundred twenty (120) days after notice, University may do so at its own expense. Neither Party may settle in a way that admits the invalidity or unenforceability of any Licensed Patent without the other Party's written consent, which shall not be unreasonably withheld.
+
+7.3 Recoveries. Any recovery is applied first to the enforcing Party's unreimbursed costs, then to the other Party's unreimbursed costs, and the remainder is treated as Net Sales if Licensee enforced, or shared sixty percent (60%) to University and forty percent (40%) to Licensee if University enforced.
+
+8. WARRANTY AND DISCLAIMER
+
+8.1 University Representations. University represents that it owns the Licensed Patents, that it has the authority to enter into this Agreement, and that it has not granted and will not grant any right inconsistent with the license granted here.
+
+8.2 Disclaimer. EXCEPT AS EXPRESSLY STATED IN SECTION 8.1, UNIVERSITY MAKES NO REPRESENTATION OR WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, VALIDITY OF THE LICENSED PATENTS, OR THAT THE PRACTICE OF THE LICENSED PATENTS WILL NOT INFRINGE ANY THIRD-PARTY RIGHT.
+
+9. INDEMNIFICATION AND INSURANCE
+
+9.1 Indemnity. Licensee shall indemnify, defend, and hold harmless University, its regents, officers, employees, students, and agents from and against any claim, liability, loss, or expense, including reasonable attorneys' fees, arising out of the development, manufacture, use, sale, or other disposition of any Licensed Product by Licensee, its Affiliates, or its Sublicensees, except to the extent caused by University's gross negligence or willful misconduct. University shall give Licensee prompt written notice of any such claim, Licensee shall control the defense with counsel reasonably acceptable to University, and no settlement imposing any obligation on University may be made without University's written consent.
+
+9.2 Insurance. Beginning before the first human clinical trial and continuing for five (5) years after the last sale of a Licensed Product, Licensee shall maintain commercial general liability insurance, including products liability and contractual liability coverage, of at least $5,000,000 per occurrence and in the aggregate, naming University as an additional insured, and shall furnish a certificate of insurance on request.
+
+9.3 Limitation. IN NO EVENT IS UNIVERSITY LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR PUNITIVE DAMAGES, OR FOR LOST PROFITS, ARISING OUT OF THIS AGREEMENT, EVEN IF ADVISED OF THE POSSIBILITY. University's total aggregate liability under this Agreement shall not exceed the amounts Licensee has actually paid University under Section 5.
+
+10. TERM AND TERMINATION
+
+10.1 Term. This Agreement begins on the Effective Date and continues, unless terminated earlier, until the expiration of the last-to-expire Valid Claim of the Licensed Patents.
+
+10.2 Termination by Licensee. Licensee may terminate this Agreement for any reason on ninety (90) days' written notice and payment of all amounts then accrued.
+
+10.3 Termination for Breach. Either Party may terminate this Agreement on sixty (60) days' written notice of a material breach if the breaching Party does not cure within that period. For a failure to pay, the cure period is thirty (30) days.
+
+10.4 Termination for Insolvency. University may terminate this Agreement immediately if Licensee becomes insolvent, makes an assignment for the benefit of creditors, or has a petition in bankruptcy filed against it that is not dismissed within sixty (60) days, to the extent permitted by 11 U.S.C. § 365.
+
+10.5 Effect of Termination. On termination, the license granted in Section 2.1 ends and Licensee shall cease all use of the Licensed Patents, except that Licensee may sell existing inventory of Licensed Products for six (6) months subject to the royalty obligation. Sections 5.6, 5.7, 8.2, 9, 10.5, 11, and 12 survive termination, together with any payment obligation accrued before termination.
+
+11. USE OF NAME
+
+Neither Party may use the name, trademark, or insignia of the other, or of any of its employees, in any advertisement, press release, or other public announcement without the other Party's prior written consent, except that Licensee may state the existence of this Agreement and the identity of the Licensed Patents where required by law or by the rules of a securities exchange.
+
+12. GENERAL
+
+12.1 Governing Law. This Agreement is governed by the laws of the State of Michigan, without regard to its conflict of laws principles.
+
+12.2 Dispute Resolution. The Parties shall first attempt to resolve any dispute by negotiation between senior representatives for thirty (30) days. Any dispute not so resolved shall be brought in the state or federal courts located in Marquette County, Michigan, and each Party consents to that jurisdiction and venue.
+
+12.3 Assignment. Licensee may not assign this Agreement without University's written consent, except to a successor to all or substantially all of its business to which this Agreement relates, provided the successor assumes this Agreement in writing and is not then in breach. Any other purported assignment is void.
+
+12.4 Compliance with Law. Licensee shall comply with all applicable laws, including the United States export control laws and the Foreign Corrupt Practices Act.
+
+12.5 Notices. Notices must be in writing and are effective on receipt, when delivered by hand, by nationally recognized overnight courier, or by certified mail to the addresses first written above, with a copy to the Office of the General Counsel in the case of University.
+
+12.6 Entire Agreement. This Agreement is the entire agreement between the Parties as to its subject matter and supersedes all prior negotiations and understandings, written or oral. It may be amended only by a writing signed by both Parties.
+
+12.7 Severability. If any provision is held unenforceable, it is modified to the minimum extent necessary to make it enforceable, and the remaining provisions remain in full force and effect.
+
+12.8 Counterparts. This Agreement may be executed in counterparts, each of which is an original, and delivered electronically.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+THE REGENTS OF CALLOWAY STATE UNIVERSITY
+
+By: /s/ Sunila Ramaswamy
+Name: Sunila Ramaswamy
+Title: Executive Director, Office of Technology Transfer
+
+PETRICHOR THERAPEUTICS, INC.
+
+By: /s/ Declan Osei-Bonsu
+Name: Declan Osei-Bonsu
+Title: Chief Executive Officer

@@ -19,7 +19,7 @@
       "duly adopted",
       "authorized officer"
     ],
-    "negative_features": ["this agreement is entered into by and between", "employment"]
+    "negative_features": ["this agreement is entered into by and between", "employment agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Corporation", "Board"],

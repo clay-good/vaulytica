@@ -94,9 +94,18 @@ const MASTER_PURCHASE = pack("master-purchase-agreement", C, [
     id: "COMM-107",
     name: "Price, price adjustment, and payment",
     cite: ucc("2-305", "Open price term"),
+    // The rule's own `fix` asks for "a price schedule and ... annual
+    // negotiation with a cap". A master purchase agreement that does exactly
+    // that — "Unit prices are set forth in Exhibit A and are firm through
+    // December 31, 2026. Seller may propose an adjustment for the following
+    // calendar year ..." — satisfied neither pattern, because the first wanted
+    // the noun "price list"/"price schedule"/"pricing set forth" and the
+    // second the noun "price adjustment". Its own sibling COMM-102 already
+    // reads "unit price" and "the price set forth"; the vocabularies are now
+    // aligned, and the adjustment branch reads the VERB as well as the noun.
     pat: [
-      /(price\s+(list|schedule)|pricing\s+set\s+forth)/i,
-      /(price\s+adjustment|indexed|most\s+favored)/i,
+      /(price\s+(list|schedule)|pricing\s+set\s+forth|(?:unit\s+)?prices?\s+(?:are\s+|is\s+|shall\s+be\s+)?(?:set\s+forth|stated|listed|specified)|prices?\s+(?:are\s+|is\s+)?(?:in|on)\s+(?:Exhibit|Schedule|Appendix|Annex))/i,
+      /(price\s+adjustment|indexed|most\s+favored|price\s+escalation|cost\s+pass-?through|(?:propose|negotiate)\s+an?\s+(?:equitable\s+)?adjustment|adjust(?:ment)?\s+(?:to|in|of)\s+(?:the\s+)?prices?|prices?\b[^.]{0,80}?\bfirm\s+(?:through|until|for)\b)/i,
     ],
     why: "Multi-year goods agreements need an adjustment mechanism; without one the price is either frozen against input inflation or open under § 2-305 and set by a good-faith standard neither side can predict.",
     fix: "Attach a price schedule and state the adjustment mechanism (index, cost pass-through, or annual negotiation with a cap) and payment terms.",

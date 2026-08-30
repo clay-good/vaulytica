@@ -293,7 +293,7 @@
         "flight dates"
       ],
       "negative_features": [
-        "employment",
+        "employment agreement",
         "lease of the premises",
         "software as a service"
       ]
@@ -903,7 +903,7 @@
         "sandbox"
       ],
       "negative_features": [
-        "employment",
+        "employment agreement",
         "lease of the premises",
         "merger agreement"
       ]
@@ -1780,7 +1780,7 @@
         "recurring charge"
       ],
       "negative_features": [
-        "employment",
+        "employment agreement",
         "merger",
         "lease of the premises"
       ]
@@ -2237,7 +2237,7 @@
       ],
       "negative_features": [
         "this agreement is entered into by and between",
-        "employment"
+        "employment agreement"
       ]
     },
     "expected_clauses": [],
@@ -2767,7 +2767,7 @@
       "negative_features": [
         "distribution agreement",
         "master services agreement",
-        "employment",
+        "employment agreement",
         "purchase of goods"
       ]
     },
@@ -4852,7 +4852,7 @@
       ],
       "negative_features": [
         "personal data of the data subject shall be processed",
-        "employment",
+        "employment agreement",
         "lease of the premises"
       ]
     },
@@ -5906,7 +5906,7 @@
         "master services agreement",
         "statement of work",
         "software as a service",
-        "employment"
+        "employment agreement"
       ]
     },
     "expected_clauses": [],
@@ -11084,7 +11084,7 @@
         "no cash value"
       ],
       "negative_features": [
-        "employment",
+        "employment agreement",
         "lease of the premises",
         "merger"
       ]
@@ -11251,7 +11251,7 @@
       "negative_features": [
         "distribution agreement",
         "supply of goods",
-        "employment",
+        "employment agreement",
         "referral fee"
       ]
     },
@@ -11303,7 +11303,7 @@
         "software as a service",
         "professional services",
         "lease of the premises",
-        "employment"
+        "employment agreement"
       ]
     },
     "expected_clauses": [],
@@ -12295,7 +12295,7 @@
         "minimum purchase commitment"
       ],
       "negative_features": [
-        "employment",
+        "employment agreement",
         "lease of the premises",
         "merger"
       ]
@@ -18380,7 +18380,7 @@
       "negative_features": [
         "assignment of lease and consent",
         "purchase and sale",
-        "employment"
+        "employment agreement"
       ]
     },
     "expected_clauses": [],
@@ -18535,7 +18535,7 @@
       ],
       "negative_features": [
         "this agreement is entered into by and between",
-        "employment"
+        "employment agreement"
       ]
     },
     "expected_clauses": [],
@@ -20119,7 +20119,7 @@
       ],
       "negative_features": [
         "term of the lease shall commence",
-        "employment",
+        "employment agreement",
         "merger"
       ]
     },
@@ -20239,7 +20239,7 @@
       "negative_features": [
         "motor carrier",
         "lease of the premises",
-        "employment"
+        "employment agreement"
       ]
     },
     "expected_clauses": [],
@@ -20541,7 +20541,7 @@
       "negative_features": [
         "subscription fee",
         "the services will be provided as described in an order form",
-        "employment"
+        "employment agreement"
       ]
     },
     "expected_clauses": [],

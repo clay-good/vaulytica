@@ -20,7 +20,7 @@
       "api call",
       "sandbox"
     ],
-    "negative_features": ["employment", "lease of the premises", "merger agreement"]
+    "negative_features": ["employment agreement", "lease of the premises", "merger agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["API", "Developer Application", "API Key"],

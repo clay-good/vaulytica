@@ -1,0 +1,141 @@
+MASTER PURCHASE AGREEMENT
+
+This Master Purchase Agreement (this "Agreement") is made as of February 17, 2026 (the "Effective Date") by and between Ardmore Instrument Works, Inc., an Ohio corporation with its principal place of business at 3300 Kenmore Boulevard, Akron, Ohio 44314 ("Buyer"), and Yerbury Precision Components LLC, a Wisconsin limited liability company with its principal place of business at 1750 Sturgeon Bay Road, Green Bay, Wisconsin 54303 ("Seller"). Buyer and Seller are each a "Party" and together the "Parties."
+
+RECITALS
+
+A. Buyer manufactures analytical instruments and requires a supply of machined components.
+
+B. Seller manufactures machined components and wishes to supply them to Buyer.
+
+C. The Parties wish to state the terms that will govern each purchase of goods by Buyer from Seller.
+
+1. STRUCTURE
+
+1.1 Master Terms. This Agreement states the terms governing each purchase of Goods by Buyer from Seller. It does not itself obligate Buyer to purchase any quantity.
+
+1.2 Releases. Buyer orders Goods by issuing a written release referencing this Agreement (each, a "Release"). Each Release states the part numbers, quantities, unit prices, delivery dates, and ship-to locations. A Release is an offer that Seller accepts by written acknowledgment or by shipping the Goods.
+
+1.3 Order of Precedence. In the event of a conflict, the following order controls: (a) a written amendment signed by both Parties; (b) this Agreement; (c) the applicable Release; and (d) Seller's acknowledgment. Any additional or different term in Seller's acknowledgment, invoice, or other form is rejected under Section 2-207 of the Uniform Commercial Code and is not part of the contract, whether or not it materially alters this Agreement.
+
+1.4 Forecasts. Buyer may furnish rolling twelve-month forecasts. A forecast is an estimate for planning only and is not a commitment to purchase.
+
+2. PRICE AND PAYMENT
+
+2.1 Prices. Unit prices are set forth in Exhibit A and are firm through December 31, 2026. Seller may propose an adjustment for the following calendar year by written notice not later than October 1, supported by documentation of the change in material and labor cost. If the Parties do not agree on an adjustment by November 15, either Party may terminate the affected part numbers on sixty (60) days' notice.
+
+2.2 Taxes. Prices exclude sales, use, and excise taxes, which Buyer pays unless it furnishes a valid exemption certificate. Seller is responsible for taxes measured by its net income and for taxes on its own property.
+
+2.3 Invoicing and Payment. Seller invoices on shipment. Buyer pays each undisputed invoice net sixty (60) days from the later of receipt of the invoice and receipt of conforming Goods. Buyer may withhold a disputed amount if it notifies Seller of the basis within twenty (20) days of the invoice, and shall pay the undisputed balance when due.
+
+2.4 Setoff. Buyer may set off against amounts owed under this Agreement any amount Seller owes Buyer under this Agreement, on written notice describing the basis.
+
+3. DELIVERY, TITLE, AND RISK OF LOSS
+
+3.1 Delivery Terms. Unless a Release states otherwise, delivery is F.O.B. Seller's plant in Green Bay, Wisconsin (Incoterms are not used; the term has its Uniform Commercial Code meaning). Title and risk of loss pass to Buyer on delivery of the Goods to the carrier at Seller's plant.
+
+3.2 Time. Time is of the essence with respect to each delivery date stated in an accepted Release.
+
+3.3 Late Delivery. If Seller fails to deliver by the stated date, Seller shall, at its expense, use expedited shipping to the extent it will bring the Goods in on time. If a delivery is more than five (5) business days late, Buyer may cancel the affected quantity without liability and may cover under Section 2-712 of the Uniform Commercial Code, and Seller shall pay the difference between the cover price and the contract price.
+
+3.4 Quantity Variance. A shipment must be within plus or minus two percent (2%) of the released quantity. Buyer is not obligated to accept or pay for an overshipment.
+
+3.5 Packaging and Documentation. Seller shall pack the Goods to prevent damage in transit and in accordance with Exhibit B, and shall include with each shipment a packing list, the certificate of conformance, and the material certifications required by the applicable drawing.
+
+4. INSPECTION AND REJECTION
+
+4.1 Right of Inspection. Buyer may inspect and test the Goods at Seller's plant during business hours on reasonable notice, and shall inspect the Goods within thirty (30) days after delivery.
+
+4.2 Rejection. Buyer may reject Goods that do not conform to the applicable drawing, specification, or warranty. Buyer shall give Seller written notice of rejection within the inspection period. Payment for Goods does not constitute acceptance and does not waive Buyer's right to reject.
+
+4.3 Remedies on Rejection. For rejected Goods, Buyer may, at its option, require Seller to repair or replace them at Seller's expense within ten (10) business days, return them at Seller's expense for a full refund, or accept them at an equitable price reduction the Parties agree in writing. Seller shall bear the cost of inbound and outbound freight and of Buyer's reasonable inspection and handling for rejected Goods.
+
+4.4 Latent Defects. A defect not reasonably discoverable on inspection may be rejected within thirty (30) days after Buyer discovers it, notwithstanding prior acceptance.
+
+5. WARRANTY
+
+5.1 Express Warranty. Seller warrants that for twenty-four (24) months after delivery each unit of the Goods will conform to the applicable drawing and specification, will be free from defects in material and workmanship, will be new and not refurbished, and will be free of any lien or encumbrance.
+
+5.2 Implied Warranties. Seller further warrants that the Goods are merchantable within the meaning of Section 2-314 of the Uniform Commercial Code, and where Seller knows of Buyer's particular purpose and Buyer relies on Seller's skill or judgment, that the Goods are fit for that purpose. These warranties are in addition to, and not in place of, the express warranty in Section 5.1.
+
+5.3 Remedy. If Goods breach a warranty during the warranty period, Seller shall, at Buyer's option, repair or replace them or refund the price, and shall bear the freight both ways. The repaired or replaced Goods carry the remaining warranty period or ninety (90) days, whichever is longer.
+
+5.4 Epidemic Defect. If more than five percent (5%) of the units of a part number delivered in any rolling six-month period fail for the same root cause, Seller shall, in addition to the remedies in Section 5.3, conduct a root-cause analysis, implement a corrective action within thirty (30) days, and bear Buyer's reasonable costs of removing and reinstalling the affected units in Buyer's products.
+
+6. CHANGES
+
+6.1 Buyer Changes. Buyer may direct a change in the drawings, specifications, quantity, or delivery schedule by written change order. If a change increases or decreases Seller's cost or the time required for performance, the Parties shall negotiate an equitable adjustment in good faith, and Seller shall submit its proposed adjustment with supporting cost data within fifteen (15) business days of the change order. Seller shall proceed with the change while the adjustment is being negotiated.
+
+6.2 Seller Changes. Seller may not change the design, materials, manufacturing process, or manufacturing location of any Good, or any sub-tier supplier of a critical component, without Buyer's prior written approval.
+
+7. COMPLIANCE AND CONFLICT MINERALS
+
+Seller shall comply with all applicable laws in performing this Agreement, including the Fair Labor Standards Act, the Occupational Safety and Health Act, and the export control laws of the United States. Seller shall furnish, on request, a completed Conflict Minerals Reporting Template covering the Goods, and shall exercise due diligence on the source and chain of custody of tin, tantalum, tungsten, and gold in the Goods.
+
+8. INTELLECTUAL PROPERTY
+
+8.1 Buyer Property. All drawings, specifications, tooling, and technical data Buyer furnishes remain Buyer's property. Seller shall use them only to perform this Agreement, shall return them on request, and acquires no right in them.
+
+8.2 Tooling. Tooling Buyer pays for is Buyer's property, is held by Seller as bailee, is marked as Buyer's property, is insured by Seller at replacement value, and is delivered to Buyer on request or on termination.
+
+8.3 Infringement Indemnity. Seller shall indemnify, defend, and hold harmless Buyer and its customers against any claim that the Goods infringe a patent, copyright, trademark, or trade secret, except to the extent the claim arises from Seller's compliance with Buyer's drawings or specifications. Buyer shall give Seller prompt written notice, Seller shall control the defense with counsel reasonably acceptable to Buyer, and no settlement imposing a non-monetary obligation on Buyer may be made without Buyer's written consent.
+
+9. INDEMNIFICATION, INSURANCE, AND LIABILITY
+
+9.1 Seller Indemnity. Seller shall indemnify, defend, and hold harmless Buyer and its officers, directors, and employees from any claim for personal injury, death, or damage to tangible property to the extent caused by a defect in the Goods or by Seller's negligence or willful misconduct.
+
+9.2 Buyer Indemnity. Buyer shall indemnify, defend, and hold harmless Seller and its officers, directors, and employees from any claim for personal injury, death, or damage to tangible property to the extent caused by Buyer's negligence or willful misconduct or by Seller's compliance with Buyer's drawings or specifications.
+
+9.3 Insurance. Seller shall maintain commercial general liability insurance including products and completed operations of $2,000,000 per occurrence and $4,000,000 aggregate, automobile liability of $1,000,000, workers' compensation at statutory limits with employer's liability of $1,000,000, and umbrella coverage of $5,000,000. Seller shall name Buyer as an additional insured on the general liability and umbrella policies and shall furnish certificates on request.
+
+9.4 Consequential Damages. Neither Party is liable to the other for consequential, incidental, indirect, special, or punitive damages, or for lost profits, arising out of this Agreement. This waiver does not apply to amounts payable to a third party under Section 8.3, 9.1, or 9.2, to a breach of Section 10, or to a Party's willful misconduct.
+
+10. CONFIDENTIALITY
+
+Each Party shall keep confidential the other Party's non-public business and technical information, shall use it only to perform this Agreement, and shall disclose it only to those of its employees and advisers who need it and are bound by confidentiality obligations no less protective. These obligations continue for five (5) years after termination, and indefinitely as to any information that is a trade secret under applicable law. They do not apply to information that is or becomes public through no fault of the receiving Party, that the receiving Party already had without restriction, that it develops independently, or that it receives from a third party free of restriction. A Party compelled by law to disclose shall give prompt notice and reasonable cooperation.
+
+11. TERM AND TERMINATION
+
+11.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, and renews automatically for successive one-year terms unless either Party gives written notice of non-renewal at least one hundred eighty (180) days before the end of the then-current term.
+
+11.2 Termination for Convenience. Buyer may terminate this Agreement or any Release for convenience on ninety (90) days' written notice. On such a termination Buyer shall pay for conforming Goods delivered, for finished Goods in Seller's inventory allocable to accepted Releases, and for raw material and work in process Seller acquired in reasonable reliance on accepted Releases, less any salvage value and any amount recoverable from Seller's suppliers.
+
+11.3 Termination for Cause. Either Party may terminate this Agreement on thirty (30) days' written notice of a material breach if the other does not cure within that period, and immediately on the other Party's insolvency or assignment for the benefit of creditors.
+
+11.4 Transition. On expiration or termination for any reason other than Buyer's uncured breach, Seller shall, for up to twelve (12) months, continue to accept and fill Releases on the terms of this Agreement, and shall cooperate in the transfer of tooling, drawings, and qualification data to Buyer or its designee.
+
+11.5 Survival. Sections 2.3, 5, 8, 9, 10, 11.4, 11.5, and 12 survive expiration or termination, together with any payment obligation accrued before it, and any indemnity and governing-law provision.
+
+12. GENERAL
+
+12.1 Governing Law. This Agreement is governed by the laws of the State of Ohio, including its Uniform Commercial Code, without regard to its conflict of laws principles. The United Nations Convention on Contracts for the International Sale of Goods does not apply.
+
+12.2 Venue. The Parties consent to the exclusive jurisdiction and venue of the state and federal courts located in Summit County, Ohio.
+
+12.3 Force Majeure. Neither Party is liable for a failure to perform, other than a failure to pay, caused by an event beyond its reasonable control, provided it gives prompt notice and uses commercially reasonable efforts to resume. If the event continues for more than sixty (60) days, the other Party may terminate the affected Releases without liability. A Party's own labor dispute and a change in market price are not force majeure events.
+
+12.4 Assignment. Neither Party may assign this Agreement without the other's written consent, which shall not be unreasonably withheld, except to a successor to all or substantially all of its business.
+
+12.5 Independent Contractors. The Parties are independent contractors. Nothing in this Agreement creates a partnership, joint venture, agency, or employment relationship.
+
+12.6 Notices. Notices must be in writing and are effective on receipt when delivered by hand, by nationally recognized overnight courier, or by certified mail to the addresses first written above.
+
+12.7 Entire Agreement. This Agreement, with its Exhibits, is the entire agreement between the Parties as to its subject matter and supersedes all prior negotiations, representations, and agreements, written or oral. It may be amended only by a writing signed by both Parties.
+
+12.8 Severability. If any provision is held unenforceable, the remaining provisions remain in full force and effect.
+
+12.9 Counterparts. This Agreement may be executed in counterparts, each of which is an original, and delivered electronically.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+ARDMORE INSTRUMENT WORKS, INC.
+
+By: /s/ Rosalind Achterberg
+Name: Rosalind Achterberg
+Title: Vice President, Supply Chain
+
+YERBURY PRECISION COMPONENTS LLC
+
+By: /s/ Emeka Villanueva
+Name: Emeka Villanueva
+Title: President

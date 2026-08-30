@@ -871,3 +871,32 @@ describe("clauses written the way practitioners write them", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * COMM-107's own `fix` asks for "a price schedule and ... annual negotiation
+ * with a cap". A master purchase agreement drafted to that recommendation
+ * still failed the check, because the patterns wanted the NOUNS "price
+ * list" / "price schedule" / "price adjustment" and the document writes the
+ * ordinary sentence instead.
+ */
+describe("COMM-107 reads the price terms its own recommendation asks for", () => {
+  it.each([
+    "Unit prices are set forth in Exhibit A and are firm through December 31, 2026.",
+    "The prices stated in Schedule 1 apply to each Release issued under this Agreement.",
+    "Seller may propose an adjustment for the following calendar year by written notice.",
+    "Prices are subject to an annual price escalation indexed to the producer price index.",
+  ])("is silent on: %s", (sentence) => {
+    expect(rule("COMM-107").check(doc("Price and Payment", sentence))).toBeNull();
+  });
+
+  it("still fires on a master agreement that states no price terms at all", () => {
+    expect(
+      rule("COMM-107").check(
+        doc(
+          "Structure",
+          "Buyer orders Goods by issuing a written release referencing this Agreement.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

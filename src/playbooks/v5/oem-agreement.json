@@ -22,7 +22,7 @@
       "end user license",
       "minimum purchase commitment"
     ],
-    "negative_features": ["employment", "lease of the premises", "merger"]
+    "negative_features": ["employment agreement", "lease of the premises", "merger"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["OEM Product", "Licensed Technology", "End User"],

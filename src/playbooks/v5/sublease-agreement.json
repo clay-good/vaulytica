@@ -14,7 +14,7 @@
       "landlord's consent to sublease",
       "recapture"
     ],
-    "negative_features": ["assignment of lease and consent", "purchase and sale", "employment"]
+    "negative_features": ["assignment of lease and consent", "purchase and sale", "employment agreement"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Prime Lease", "Sublandlord", "Subtenant", "Subleased Premises"],

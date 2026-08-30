@@ -4,7 +4,7 @@ import { emit, allMatches, topPosition } from "../_helpers.js";
 /** RISK-002 — Indemnity mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-002",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Indemnity mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -15,8 +15,22 @@ export const rule: Rule = {
     if (parties.length < 2) return null;
     const lines = allMatches(ctx, /[A-Z][^.]*\bindemnif[^.]*\./);
     if (lines.length === 0) return null;
+    // Only the parties that BEAR the agreement. The extractor also records
+    // the natural persons who SIGN it — "Rosalind Achterberg", "Emeka
+    // Villanueva" — and seeding them at zero drags `min` to 0, so a perfectly
+    // ordinary two-versus-one indemnity clears the `max - min >= 2` threshold
+    // on the strength of two signature lines. A master purchase agreement
+    // where each side indemnifies the other was reported as one-sided for
+    // exactly that reason.
+    //
+    // A signatory is the party entry carrying neither a defined ROLE nor an
+    // entity type. An individual who is genuinely a party — an Executive, an
+    // Employee, a Guarantor — is introduced with a role and is kept.
+    const bearing = parties.filter((p) => p.role ?? p.entity_type);
+    const counted = bearing.length >= 2 ? bearing : parties;
+    if (counted.length < 2) return null;
     const counts = new Map<string, number>();
-    for (const p of parties) counts.set(p.name.toLowerCase(), 0);
+    for (const p of counted) counts.set(p.name.toLowerCase(), 0);
     for (const line of lines) {
       const sentence = line.match[0].toLowerCase();
       const idx = sentence.indexOf("indemnif");

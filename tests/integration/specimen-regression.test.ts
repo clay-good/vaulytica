@@ -304,13 +304,14 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["STRUCT-006", "STRUCT-018", "OBLI-005"],
   },
   // A staffing services agreement. Clean: routes at 0.9 and every finding is
-  // real — the indemnities are 2:1, the confidentiality obligation runs one
-  // way, and the agreement defines "Assigned Personnel" but uses the
-  // undefined singular "Assigned Person".
+  // real — the confidentiality obligation runs one way, and the agreement
+  // defines "Assigned Personnel" but uses the undefined singular "Assigned
+  // Person". RISK-002 came OFF this row in 9.249.0: the indemnities are 2:1,
+  // which is inside the rule's own `max - min >= 2` tolerance, and it fired
+  // only because the natural person who SIGNS sat in the tally at zero.
   "staffing-services.txt": {
     playbook: "staffing-services-agreement",
     findings: [
-      "RISK-002",
       "RISK-015",
       "STRUCT-006",
       "OBLI-002",
@@ -1850,7 +1851,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // `critical` that it addressed no state law; EMP-146 wanted the WORD
   // "contact" or "telephone" from a notice that names its HR director and
   // gives her number.
-  "warn-notice.txt": { playbook: "warn-notice", findings: ["STRUCT-006", "TERM-006"] },
+  // STRUCT-006 came off this row in 9.249.0. The notice is issued by the
+  // "Office of Economic Development" and copied to the "Director of Human
+  // Resources", and the Title-Case run breaks at the lower-case "of", so both
+  // tails arrived as terms the notice had supposedly forgotten to define.
+  "warn-notice.txt": { playbook: "warn-notice", findings: ["TERM-006"] },
 
   // An Oregon revocable living trust. The family shipped with an EMPTY
   // `rule_overrides` while its two nearest siblings — the will and the
@@ -1928,6 +1933,65 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-011",
       "TEMP-006",
       "TEMP-007",
+      "TERM-001",
+    ],
+  },
+  // A university technology transfer licence on Bayh-Dole architecture — the
+  // 216th specimen. Its signing office, the "Office of Technology Transfer",
+  // was reported as an undefined term "Technology Transfer": the Title-Case
+  // run breaks at the lower-case "of", so the tail of an organizational
+  // unit's name arrives as its own candidate. The three IPL findings are
+  // real and deliberate — the licence has no patent-marking clause and no
+  // grant-back, and its 2% post-expiration royalty is the Brulotte problem
+  // IPL-009 exists to surface. OBLI-002 is real too: only the Licensee
+  // indemnifies, which is how a university writes one.
+  "technology-transfer-license.txt": {
+    playbook: "patent-license",
+    findings: [
+      "IPL-009",
+      "IPL-011",
+      "IPL-012",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "RISK-010",
+      "TEMP-006",
+      "TEMP-008",
+      "TERM-001",
+    ],
+  },
+  // A UCC Article 2 master purchase agreement for machined goods — the 217th,
+  // and the first for `master-purchase-agreement`. Two false accusations:
+  //
+  //   - COMM-107 reported that no clause addressed "price, price adjustment,
+  //     and payment" on a document whose §2 is titled PRICE AND PAYMENT and
+  //     does exactly what the rule's own `fix` recommends. Its patterns
+  //     wanted the NOUNS "price list" / "price schedule" / "price
+  //     adjustment"; its own sibling COMM-102 already read "unit price".
+  //   - RISK-002 called a mutual indemnity asymmetric. The tally seeded
+  //     itself from every extracted party, so the two natural persons who
+  //     SIGN sat at zero and dragged `min` down until an ordinary 2:1 split
+  //     cleared the `max - min >= 2` threshold.
+  //
+  // What remains is real: no aggregate liability cap, a 180-day non-renewal
+  // window, and two exhibits the specimen does not carry.
+  "master-purchase-agreement.txt": {
+    playbook: "master-purchase-agreement",
+    findings: [
+      "DARK-002",
+      "RISK-005",
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-004",
+      "TEMP-005",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "RISK-010",
+      "RISK-012",
+      "RISK-013",
+      "TEMP-006",
       "TERM-001",
     ],
   },

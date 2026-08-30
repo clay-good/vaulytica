@@ -2247,3 +2247,33 @@ describe("extractDefinitions — a lowercase use is still a use (v9.247.0)", () 
     expect(extractDefinitions(tree).unused_terms).toContain("Restricted Territory");
   });
 });
+
+/**
+ * An ORGANIZATIONAL UNIT's name continues after a lower-case "of" exactly as a
+ * rules citation's does, so the tail arrives as its own candidate: a
+ * university licence signed by its "Office of Technology Transfer" was told it
+ * uses a term "Technology Transfer" without defining it.
+ */
+describe("the tail of an organizational unit's name is not an undefined term", () => {
+  it.each([
+    ["Technology Transfer", "Office of Technology Transfer"],
+    ["Homeland Security", "Department of Homeland Security"],
+    ["Land Management", "Bureau of Land Management"],
+  ])("does not flag %s", (tail, unit) => {
+    const map = extractDefinitions(
+      buildTree(["Body", `Signed by the ${unit}. The ${unit} administers it.`]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain(tail);
+  });
+
+  /** A document TITLE after "of" is still a term the drafter left undefined. */
+  it("still flags the tail of a document title", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Services",
+        "The work is described in the Statement of Base Services. The Statement of Base Services governs.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Base Services");
+  });
+});

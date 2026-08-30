@@ -19,7 +19,7 @@
       "cancellation instructions",
       "recurring charge"
     ],
-    "negative_features": ["employment", "merger", "lease of the premises"]
+    "negative_features": ["employment agreement", "merger", "lease of the premises"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Subscription", "Renewal Term"],
