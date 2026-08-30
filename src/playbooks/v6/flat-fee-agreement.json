@@ -4,7 +4,7 @@
   "name": "Flat Fee Agreement",
   "description": "Fixed-fee legal services agreement measured against ABA Model Rules 1.5 and 1.15(c). Selects the ENG-016..020 ruleset.",
   "match_features": {
-    "title_keywords": ["flat fee agreement", "fixed fee agreement", "flat fee engagement"],
+    "title_keywords": ["flat fee agreement", "fixed fee agreement", "flat fee engagement", "flat fee", "fixed fee"],
     "required_clauses": [],
     "distinguishing_phrases": [
       "flat fee",

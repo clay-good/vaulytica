@@ -59,7 +59,7 @@ const ENGAGEMENT = pack("engagement-letter", C, [
     // director, or employee of the Client"). A letter that named its client
     // and disclaimed its constituents exactly as Rule 1.13 contemplates was
     // told at `critical` that it had done neither.
-    ver: "1.0.3",
+    ver: "1.0.4",
     name: "Identity of the client",
     cite: modelRule("1.13", "organization as client"),
     pat: [
@@ -67,7 +67,15 @@ const ENGAGEMENT = pack("engagement-letter", C, [
       // one matter says it, and the adjacent-words form could not see past the
       // qualifier.
       /(our\s+client\b[^.]{0,40}?\s(?:is|will\s+be)\b|we\s+(?:will\s+|shall\s+|have\s+agreed\s+to\s+)?represent|the\s+client\s+(is|for\s+purposes\s+of))/i,
-      /(only\s+(the\s+)?(company|entity|you)|(?:do|will|shall)\s+not\s+represent\s+(its|your|any)\s+(officers|directors|affiliates|shareholders|members|parent|subsidiar)|(?:are|is|am)\s+not\s+(?:undertaking\s+to\s+represent|representing)\s+(its|your|any)\s+(officers|directors|affiliates|shareholders|members|parent|subsidiar))/i,
+      // 1.0.4 — the disclaimer wanted the constituent noun immediately after
+      // "any", and in the plural. A flat-fee engagement letter writes it "We
+      // do not represent you individually, and we do not represent any OTHER
+      // MEMBER, officer, employee, or investor of the company" — an adjective
+      // in between and a singular noun — and names its client in the trailing
+      // form, "Our client is Chandrasekaran Robotics, LLC ONLY". Both pillars
+      // were plainly satisfied by the letter's first section, headed THE
+      // CLIENT, and it was told at `critical` that neither was.
+      /(only\s+(the\s+)?(company|entity|you)|our\s+client\b[^.]{0,60}\bonly\b|(?:do|will|shall)\s+not\s+represent\s+(?:you\s+individually|(?:its|your|any|the)\s+(?:other\s+|individual\s+)?(?:officers?|directors?|affiliates?|shareholders?|stockholders?|members?|employees?|investors?|owners?|principals?|parent|subsidiar\w*))|(?:are|is|am)\s+not\s+(?:undertaking\s+to\s+represent|representing)\s+(?:its|your|any)\s+(?:officers?|directors?|affiliates?|shareholders?|members?|parent|subsidiar\w*))/i,
     ],
     all: true,
     why: "Rule 1.13 makes the organization the client, not its constituents. When the letter does not say so, officers, affiliates, and investors reasonably believe they are clients too — which creates conflicts and privilege problems nobody intended.",

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.260.0] — 2026-08-30
+
+### Added
+- One specimen — a flat-fee engagement letter for a startup formation and seed
+  financing — the 227th, and the first for `flat-fee-agreement`.
+
+### Fixed
+- **A CRITICAL false accusation against a letter whose first section is headed
+  THE CLIENT.** ENG-002 told a flat-fee engagement letter that it does not
+  identify its client, on "Our client is Chandrasekaran Robotics, LLC only. We
+  do not represent you individually, and we do not represent any **other
+  member**, officer, employee, or investor of the company." The disclaimer
+  pillar wanted the constituent noun immediately after "any" and in the plural,
+  and it read the client-naming form only when "only" came first. A disclaimer
+  of the individual alone — "we do not represent you individually" — is now
+  read too.
+- **The flat-fee checks never ran on a flat-fee letter.** It routed to
+  `engagement-letter` on "legal services agreement" in its title, so
+  earned-on-receipt, the refund of the unearned portion, and the out-of-scope
+  list all went unchecked. The flat-fee family's title keywords were three
+  exact full titles; "flat fee" and "fixed fee" now sit beside them, and the
+  letter routes at 1.0.
+
 ## [9.259.0] — 2026-08-30
 
 ### Added

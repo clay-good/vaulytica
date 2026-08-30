@@ -2139,6 +2139,23 @@ export const EXPECTED: Record<string, Expectation> = {
   //     instruction about the best deal the officers can get, not a promise of
   //     the best terms to anyone.
   "dissolution-plan.txt": { playbook: "dissolution-plan", findings: ["OBLI-005"] },
+  // A flat-fee engagement letter for a startup formation and seed financing —
+  // the 227th specimen, and the first for `flat-fee-agreement`. ENG-002 told
+  // it at CRITICAL that it does not identify its client, on a letter whose §1
+  // is headed THE CLIENT and reads "Our client is Chandrasekaran Robotics, LLC
+  // only. We do not represent you individually, and we do not represent any
+  // other member, officer, employee, or investor of the company." The
+  // disclaimer pillar wanted the constituent noun immediately after "any" and
+  // in the plural.
+  //
+  // It also routed to `engagement-letter`, on "legal services agreement" in
+  // its title, so none of the flat-fee checks ran — earned-on-receipt, the
+  // refund of the unearned portion, the out-of-scope list. The flat-fee
+  // family's title keywords were three exact full titles.
+  "flat-fee-agreement.txt": {
+    playbook: "flat-fee-agreement",
+    findings: ["OBLI-003", "OBLI-005", "STRUCT-004"],
+  },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],

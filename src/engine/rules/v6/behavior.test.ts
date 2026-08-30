@@ -344,6 +344,37 @@ describe("v6 engagement — the boundary as a negative sentence (v1.0.1)", () =>
     ).toBeNull();
   });
 
+  /**
+   * The disclaimer wanted the constituent noun immediately after "any", and in
+   * the plural. A flat-fee engagement letter writes an adjective in between
+   * and the noun in the singular, and names its client in the trailing form.
+   * Both pillars sat in the letter's first section, headed THE CLIENT, and it
+   * was told at `critical` that neither was there.
+   */
+  it("ENG-002 reads the trailing 'only' and an adjective before the constituent (v1.0.4)", () => {
+    expect(
+      rule("ENG-002").check(
+        doc(
+          "Flat Fee Legal Services Agreement",
+          "Our client is Chandrasekaran Robotics, LLC only.",
+          "We do not represent you individually, and we do not represent any other member, officer, employee, or investor of the company.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("ENG-002 reads a disclaimer of the individual alone (v1.0.4)", () => {
+    expect(
+      rule("ENG-002").check(
+        doc(
+          "Engagement Letter",
+          "Our client in this matter is Northgate Instrument Company.",
+          "We do not represent you individually in connection with this engagement.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
   it("ENG-002 still fires when the letter names the client but never disclaims its constituents (v1.0.2)", () => {
     expect(
       rule("ENG-002").check(
