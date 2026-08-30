@@ -1464,6 +1464,24 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // A term the document defines by its COMPOSITION, outside a Definitions
+      // section: "The Contract Documents consist of the prime contract between
+      // Contractor and Owner, the drawings and specifications listed in
+      // Exhibit B, and all addenda and change orders." That sentence is the
+      // definition — a subcontract puts it in its scope-of-work article, where
+      // the unquoted `DEFINITION_BARE` matcher deliberately does not run, and
+      // the term was reported as one the subcontract forgot to define.
+      //
+      // "consist of" and "comprise" are unmistakably definitional, which is
+      // what makes it safe to read them anywhere; "means" is not read here for
+      // the same reason `DEFINITION_BARE` stays section-scoped.
+      if (
+        new RegExp(
+          `\\b(?:the\\s+)?${phrase.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\s+(?:shall\\s+)?(?:consists?\\s+of|comprises?|are\\s+comprised\\s+of|is\\s+comprised\\s+of)\\b`,
+          "i",
+        ).test(ctx.text)
+      )
+        continue;
       // The same unit, named after the PERSON WHO LEADS IT, where the leading
       // noun is lower-case and so is not itself part of the Title-Case run:
       // "the head of Corporate Communications", "the director of Human

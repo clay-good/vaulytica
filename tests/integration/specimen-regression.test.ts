@@ -2304,13 +2304,18 @@ export const EXPECTED: Record<string, Expectation> = {
   "sow.txt": { playbook: "sow", findings: ["STRUCT-018", "OBLI-005"] },
 
   // A contractor-favorable construction subcontract.
+  // STRUCT-006 came off this row in 9.257.0. The subcontract defines "Contract
+  // Documents" by its COMPOSITION — "The Contract Documents consist of the
+  // prime contract between Contractor and Owner, the drawings and
+  // specifications listed in Exhibit B, and all addenda and change orders" —
+  // in its scope-of-work article, where the unquoted definition matcher
+  // deliberately does not run.
   "subcontract.txt": {
     playbook: "subcontractor-agreement",
     findings: [
       "IPDATA-001",
       "RISK-005",
       "RISK-015",
-      "STRUCT-006",
       "STRUCT-018",
       "TERM-002",
       "CHOICE-003",

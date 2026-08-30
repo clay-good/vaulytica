@@ -2327,3 +2327,42 @@ describe("a place, a unit named by its leader, and a constituted body are not un
     ).toContain("Frobnicator Widget");
   });
 });
+
+/**
+ * A term the document defines by its COMPOSITION, outside a Definitions
+ * section. A subcontract puts that sentence in its scope-of-work article,
+ * where the unquoted definition matcher deliberately does not run, and the
+ * term was reported as one the subcontract forgot to define.
+ */
+describe("a term defined by its composition is defined", () => {
+  it.each([
+    [
+      "Contract Documents",
+      "The Work shall be performed in accordance with the Contract Documents. The Contract Documents consist of the prime contract between Contractor and Owner, the drawings listed in Exhibit B, and all addenda.",
+    ],
+    [
+      "Collateral Package",
+      "Borrower grants a lien on the Collateral Package. The Collateral Package comprises the accounts, the inventory, and the equipment.",
+    ],
+    [
+      "Transaction Documents",
+      "Each of the Transaction Documents is binding. The Transaction Documents are comprised of this Agreement, the Note, and the Security Agreement.",
+    ],
+  ])("does not flag %s", (term, text) => {
+    expect(
+      extractDefinitions(buildTree(["Scope", text])).undefined_capitalized.map((e) => e.term),
+    ).not.toContain(term);
+  });
+
+  /** A term merely USED twice, with no composition sentence, still reports. */
+  it("still flags a term the document never composes", () => {
+    expect(
+      extractDefinitions(
+        buildTree([
+          "Scope",
+          "The Work shall follow the Frobnicator Standard. Each deliverable meets the Frobnicator Standard.",
+        ]),
+      ).undefined_capitalized.map((e) => e.term),
+    ).toContain("Frobnicator Standard");
+  });
+});

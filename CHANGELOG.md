@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.257.0] — 2026-08-30
+
+### Fixed
+- **A term defined by its COMPOSITION read as undefined.** "The Contract
+  Documents consist of the prime contract between Contractor and Owner, the
+  drawings and specifications listed in Exhibit B, and all addenda and change
+  orders" is the definition — and a subcontract puts that sentence in its
+  scope-of-work article, where the unquoted definition matcher deliberately
+  does not run. The subcontract was told it uses a term "Contract Documents"
+  it never defined. "Consist of" and "comprise" are unmistakably definitional,
+  which is what makes them safe to read outside a Definitions section;
+  "means" is not read there, for the same reason it never was.
+
 ## [9.256.0] — 2026-08-30
 
 ### Fixed
