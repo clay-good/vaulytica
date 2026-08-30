@@ -142,8 +142,15 @@ const EXTERNAL_LEADING_RE =
 // Case-INSENSITIVE, because a guaranty set in capitals cites "MINNESOTA
 // STATUTES SECTION 582.30". The optional name phrase is spelled `[A-Za-z]`
 // rather than `[A-Z]` to say what it means under the flag.
+// A DIVISION may sit between the code's name and the section: "Massachusetts
+// General Laws chapter 149, section 24L", "New York Business Corporation Law
+// article 6, section 630". The code word had to be immediately adjacent, so
+// every statute cited in the chapter-first style read as a broken internal
+// reference — an internship agreement citing the Massachusetts ban on
+// noncompetes with a student was told it points at a "section 24L" it does not
+// have.
 const EXTERNAL_NAMED_CODE_LEADING_RE =
-  /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?\s+$/i;
+  /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?(?:\s*,?\s*(?:chapter|ch\.?|title|tit\.?|article|art\.?|part|division|div\.?)\s+[\w.-]+)?\s*,?\s+$/i;
 
 const EXTERNAL_REG_LEADING_RE =
   /\b(?:Treasury\s+Regulations?|Treas\.?\s+Reg(?:ulation)?s?\.?)\s+$/i;

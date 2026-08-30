@@ -9739,7 +9739,14 @@
       "Intern",
       "Internship Period"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FLSA",

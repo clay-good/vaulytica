@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.251.0] — 2026-08-30
+
+### Added
+- One specimen — an FLSA primary-beneficiary internship agreement — the 220th,
+  and the first for `internship-agreement`.
+
+### Fixed
+- **A for-cause path stated as ENUMERATED GROUNDS was read as no path at
+  all.** A regulated-services agreement does not write "material breach"; it
+  names the grounds — "Hospital may terminate immediately upon: (a) suspension,
+  revocation, or restriction of Medical Director's license or DEA registration
+  … (d) failure to maintain the insurance required by Section 10". Every
+  branch of TERM-002 wanted the noun "breach" or the phrase "for cause", so a
+  medical director agreement with a full Termination section was told it states
+  no path to terminate for material breach. The enumeration is what separates
+  this from a convenience clause, which still reports.
+- **"End the internship" was not a termination verb.** The list held "end the
+  membership" alone, so an internship agreement's §7.2 cause clause was
+  invisible.
+- **A subsection number in a survival list stopped the effect-of-termination
+  window.** TERM-005 scans one sentence with `[^.]`, and "On the end of the
+  internship for any reason, Sections 4, 5, 7.3, and 8 continue in effect, the
+  Intern returns Company property" stops dead at the period inside "7.3". A
+  period followed by a DIGIT is a decimal or a subsection number, never the end
+  of a sentence.
+- **The consequence verbs had no inflections.** `return`, `destroy`, `delete`,
+  `purge`, `transition`, `export`, `refund` and `discontinue` were listed bare,
+  so "the Intern RETURNS Company property" did not match while "shall return"
+  did — and a GDPR DPA whose §11 is the Article 28(3)(g) clause ("the Processor
+  DELETES OR RETURNS all Personal Data … after the END of the provision of
+  services") was told it states no effect of termination. "End" is now a
+  termination trigger alongside "termination" and "expiration".
+- **A statute cited CHAPTER-FIRST read as a broken internal reference.**
+  "Massachusetts General Laws chapter 149, section 24L" puts a division between
+  the code's name and the section, and the leading-code guard wanted them
+  adjacent — so an internship agreement citing the Massachusetts ban on
+  noncompetes with a student was told it points at a section it does not have.
+  New York and Texas cite the same way.
+- **`internship-agreement` carried an empty `rule_overrides`**, so an
+  internship agreement was asked for an indemnity and a limitation of
+  liability. Narrowly scoped to those two: an internship agreement with no IP
+  assignment or no termination terms is still worth reporting.
+
 ## [9.250.0] — 2026-08-30
 
 ### Added

@@ -25,7 +25,7 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 // The defaulting event's verb takes the noun form too — a lease terminates
 // on "Tenant's FAILURE to pay rent", not only "if Tenant fails to pay" — so
 // the trigger admits fail / fails / failure / failing.
-const BREACH = String.raw`\b(?:(?:breach|default|non-?compliance|non-?performance|violation)\w*|fail(?:s|ure|ing)?\s+to\s+(?:pay|perform|comply|observe|satisfy|make\b[^.]{0,20}?payment))`;
+const BREACH = String.raw`\b(?:(?:breach|default|non-?compliance|non-?performance|violation)\w*|fail(?:s|ure|ing)?\s+to\s+(?:pay|perform|comply|observe|satisfy|maintain|provide|obtain|deliver|furnish|keep|meet|cure|remedy|make\b[^.]{0,20}?payment))`;
 // Uncured: also the present-tense "does not cure" (a lease writes "and does not
 // cure within ten days"), not just the past-tense "not cured".
 const UNCURED = String.raw`\b(?:(?:does\s+|has\s+|is\s+|are\s+)?not\s+(?:been\s+)?cured?|fails?\s+to\s+cure|uncured|not\s+(?:been\s+)?remedied|fails?\s+to\s+remedy|remains?\s+uncured)\b`;
@@ -36,10 +36,25 @@ const UNCURED = String.raw`\b(?:(?:does\s+|has\s+|is\s+|are\s+)?not\s+(?:been\s+
 // `terminat\w+` alone, so a document whose Default section says "we may close
 // the Account and require you to pay the full balance immediately" was
 // reported as stating no path to terminate for material breach.
-const TERMINATE = String.raw`\b(?:terminat\w+|clos(?:e|es|ed|ing)\s+(?:the\s+|your\s+)?(?:account|membership)|end(?:s|ed|ing)?\s+(?:the\s+|your\s+)?membership|cancel(?:s|led|ling|ed|ing)?\s+(?:the\s+|your\s+)?(?:account|membership|subscription))`;
+const TERMINATE = String.raw`\b(?:terminat\w+|clos(?:e|es|ed|ing)\s+(?:the\s+|your\s+)?(?:account|membership)|end(?:s|ed|ing)?\s+(?:the\s+|this\s+|your\s+)?(?:membership|internship|engagement|agreement|relationship|arrangement)|cancel(?:s|led|ling|ed|ing)?\s+(?:the\s+|your\s+)?(?:account|membership|subscription))`;
 
 const FOR_CAUSE = new RegExp(
-  String.raw`${TERMINATE}[^.]{0,120}\bfor\s+cause\b` +
+  // Termination on ENUMERATED cause grounds. A regulated-services agreement
+  // does not write "material breach"; it names the grounds — "Hospital may
+  // terminate immediately upon: (a) suspension, revocation, or restriction of
+  // Medical Director's license or DEA registration; … (d) failure to maintain
+  // the insurance required by Section 10". Every branch below wanted the noun
+  // "breach"/"default" or the phrase "for cause", so a medical director
+  // agreement with a full Termination section was told it states no path to
+  // terminate for material breach.
+  //
+  // The enumeration is what distinguishes this from a convenience clause:
+  // "terminate immediately upon written notice" carries no list.
+  String.raw`${TERMINATE}[^.]{0,60}\b(?:immediately|forthwith|at\s+once)\b[^.]{0,60}?\bupon\b[^.:]{0,30}?:` +
+    "|" +
+    String.raw`${TERMINATE}[^.]{0,80}\bupon\s+the\s+occurrence\s+of\s+any\s+of\s+the\s+following\b` +
+    "|" +
+    String.raw`${TERMINATE}[^.]{0,120}\bfor\s+cause\b` +
     "|" +
     String.raw`\bmaterial(?:ly)?\s+breach` +
     "|" +
@@ -107,7 +122,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

@@ -1279,19 +1279,24 @@ export const EXPECTED: Record<string, Expectation> = {
 
   // A medical director agreement drafted to the Stark and AKS personal-service
   // exceptions, with a three-year term.
+  // TERM-002 came off this row in 9.251.0. The agreement states its cause
+  // grounds SPECIFICALLY, the way a regulated-services agreement does —
+  // "Hospital may terminate immediately upon: (a) suspension, revocation, or
+  // restriction of Medical Director's license or DEA registration … (d)
+  // failure to maintain the insurance required by Section 10" — and every
+  // branch of the check wanted the noun "breach" or the phrase "for cause".
   "medical-director.txt": {
     playbook: "medical-director-agreement",
     findings: [
       "IPDATA-001",
-      "OBLI-002",
-      "OBLI-005",
       "RISK-001",
       "RISK-005",
-      "RISK-010",
       "STRUCT-018",
-      "TERM-001",
-      "TERM-002",
       "TERM-005",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-010",
+      "TERM-001",
     ],
   },
 
@@ -2019,6 +2024,24 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "subscription-agreement",
     findings: ["RISK-015", "STRUCT-018", "OBLI-005", "OBLI-006"],
   },
+  // An FLSA primary-beneficiary internship agreement — the 220th specimen, and
+  // the first for `internship-agreement`. Four defects at once:
+  //
+  //   - TERM-002 said it states no path to terminate for cause, on a §7.2 that
+  //     ends the internship "immediately upon: (a) a material violation of a
+  //     Company policy …" — the termination VERB list held "end the
+  //     membership" and not "end the internship".
+  //   - TERM-005 said it states no effect of termination, on a §7.3 titled
+  //     Effect. Its window is one sentence, and the survival list "Sections 4,
+  //     5, 7.3, and 8" stopped it dead at the period inside "7.3"; the
+  //     consequence verb was written in the third person, which the list did
+  //     not hold either.
+  //   - STRUCT-007 reported a broken reference to "section 24L", which is
+  //     Massachusetts General Laws chapter 149 — cited chapter-first, a style
+  //     the external-citation guard could not read.
+  //   - The family carried an empty `rule_overrides`, so an internship
+  //     agreement was asked for an indemnity and a liability cap.
+  "internship-agreement.txt": { playbook: "internship-agreement", findings: ["OBLI-005"] },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],
@@ -2682,6 +2705,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // notices clause, a survival clause, onward transfer, and the adequacy
   // fallback — and the generic ones for the term, liability, and IP terms it
   // leaves to the Principal Agreement without saying so.
+  // TERM-005 came off this row in 9.251.0. §11 DELETION OR RETURN is the
+  // Article 28(3)(g) clause — "the Processor DELETES OR RETURNS all Personal
+  // Data … after the END of the provision of services" — and the check read
+  // neither the trigger noun "end" nor the third-person "deletes"/"returns".
   "dpa-controller-processor.txt": {
     playbook: "dpa-controller-processor",
     findings: [
@@ -2698,7 +2725,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-005",
       "STRUCT-006",
       "TERM-002",
-      "TERM-005",
       "TRANSFER-018",
       "TRANSFER-020",
       "CHOICE-003",

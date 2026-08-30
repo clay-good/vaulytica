@@ -1124,3 +1124,31 @@ describe("crossrefs — a lettered statutory subsection (v9.242.0)", () => {
     expect(unresolved).toContain("Section 101(a)");
   });
 });
+
+/**
+ * A statute cited CHAPTER-FIRST — "Massachusetts General Laws chapter 149,
+ * section 24L" — is external. The leading-code guard wanted the code word
+ * adjacent to the section, so every citation in that style read as a broken
+ * reference to a section the document does not have.
+ */
+describe("a chapter-first statutory citation is not an internal cross-reference", () => {
+  it.each([
+    "Massachusetts General Laws chapter 149, section 24L prohibits a noncompetition agreement with a student.",
+    "New York Business Corporation Law article 6, section 630 governs the liability of the ten largest shareholders.",
+    "The Texas Business Organizations Code title 3, section 21.223 limits shareholder liability.",
+  ])("does not report a broken reference in: %s", (sentence) => {
+    const t = buildTree(["1. Compliance", sentence]);
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs.filter((r) => !r.resolved).map((r) => r.label)).toEqual([]);
+  });
+
+  /** A genuine internal reference to a missing section is still reported. */
+  it("still reports a reference to a section the document does not have", () => {
+    const t = buildTree([
+      "1. Compliance",
+      "The Intern shall comply with Section 14 of this Agreement.",
+    ]);
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs.some((r) => !r.resolved)).toBe(true);
+  });
+});

@@ -15,7 +15,16 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 // expiration or termination, Recipient shall destroy all copies" is the
 // standard data-return clause, and an on/upon-only trigger read it as no
 // effect-of-termination clause at all.
-const TERMINATION_TRIGGER = String.raw`(?:(?:up)?on|after|following)\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation)(?:\s+or\s+(?:expiration|expiry|termination|cessation))?`;
+/**
+ * "END" — and its siblings "conclusion" and "completion" — are triggers too.
+ * An internship agreement whose §7.3 is titled Effect and reads "On the end of
+ * the internship for any reason, Sections 4, 5, 7.3, and 8 continue in effect,
+ * the Intern returns Company property …" was told it does not state what
+ * happens upon termination, because the trigger noun had to be "termination"
+ * or "expiration". The trigger is conjunctive with a CONSEQUENCE verb, so an
+ * ordinary "on the end of each month" does not satisfy it on its own.
+ */
+const TERMINATION_TRIGGER = String.raw`(?:(?:up)?on|after|following)\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation|end|conclusion|completion)(?:\s+or\s+(?:expiration|expiry|termination|cessation|end|conclusion|completion))?`;
 
 /**
  * What the clause says happens. "delete" and "export" belong here: a modern
@@ -45,7 +54,13 @@ const TERMINATION_TRIGGER = String.raw`(?:(?:up)?on|after|following)\s+(?:the\s+
 // at all. Both are only consequences when they follow a termination trigger
 // inside one sentence, which is what keeps "Landlord shall deliver
 // possession" and an equity vesting schedule out.
-const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transition|export|refund|reverts?|reverted|vests?\s+in|deliver(?:s|ed)?|conveys?|conveyed|transfers?|transferred|discontinue|surrenders?|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
+// Each verb tolerates its third-person and past forms. Several did not:
+// `return`, `destroy`, `delete`, `purge`, `transition`, `export`, `refund` and
+// `discontinue` were listed bare, so "the Intern RETURNS Company property" —
+// the plainest consequence a contract can state — did not match, while
+// "shall return" did. Which form a drafter reaches for is a choice about the
+// subject, not about the clause.
+const CONSEQUENCE = String.raw`ceases?|ceased|returns?|returned|destroys?|destroyed|deletes?|deleted|purges?|purged|transitions?|transitioned|exports?|exported|refunds?|refunded|reverts?|reverted|vests?\s+in|deliver(?:s|ed)?|conveys?|conveyed|transfers?|transferred|discontinues?|discontinued|surrenders?|surrendered|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
 
 /**
  * Either order, within one sentence. A consequence drafted BEFORE its trigger
@@ -54,30 +69,41 @@ const CONSEQUENCE = String.raw`ceases?|cease|return|destroy|delete|purge|transit
  * had the opposite failing, crossing sentence boundaries to borrow a verb from
  * an unrelated clause.
  */
+/**
+ * One sentence, but a section cross-reference is not a sentence boundary. The
+ * windows here were `[^.]`, and a survival clause naming its own sections —
+ * "On the end of the internship for any reason, Sections 4, 5, 7.3, and 8
+ * continue in effect, the Intern returns Company property" — stops the window
+ * dead at the period in "7.3", so the consequence verb four words later is
+ * never reached and the clause reads as absent. A period followed by a DIGIT
+ * is a decimal or a subsection number, never the end of a sentence.
+ */
+const SAME_SENTENCE = String.raw`(?:[^.]|\.(?=\d))`;
+
 const EFFECT_OF_TERMINATION = new RegExp(
   String.raw`\b(?:effect|consequences)\s+of\s+termination\b` +
-    `|\\b${TERMINATION_TRIGGER}\\b[^.]{0,220}\\b(?:${CONSEQUENCE})\\b` +
+    `|\\b${TERMINATION_TRIGGER}\\b${SAME_SENTENCE}{0,220}\\b(?:${CONSEQUENCE})\\b` +
     // The plainest consequence there is, and one the noun list did not hold:
     // "On termination, the Tolling Period ENDS and any applicable limitations
     // period RESUMES running." Admitted only AFTER the trigger, never before
     // it — "This Agreement ends upon expiration of the Initial Term" defines a
     // term, it does not state what termination does.
-    `|\\b${TERMINATION_TRIGGER}\\b[^.]{0,220}\\b(?:ends?|ended|expires?|lapses?|resumes?|is\\s+released|are\\s+released|becomes?\\s+(?:void|null))\\b` +
-    `|\\b(?:${CONSEQUENCE})\\b[^.]{0,120}\\b${TERMINATION_TRIGGER}\\b` +
+    `|\\b${TERMINATION_TRIGGER}\\b${SAME_SENTENCE}{0,220}\\b(?:ends?|ended|expires?|lapses?|resumes?|is\\s+released|are\\s+released|becomes?\\s+(?:void|null))\\b` +
+    `|\\b(?:${CONSEQUENCE})\\b${SAME_SENTENCE}{0,120}\\b${TERMINATION_TRIGGER}\\b` +
     // "Customer shall pay for all Services performed … through the
     // termination date" — the pay-for-work-performed wind-down consequence
     // states what happens on termination without the "upon termination"
     // trigger the branches above require. The full phrase is unambiguous;
     // "pay" is deliberately NOT added to CONSEQUENCE (a failure-to-pay
     // termination TRIGGER would then read as an effect clause).
-    String.raw`|\bpay\b[^.]{0,160}\bthrough\s+the\s+(?:date\s+of\s+termination|termination\s+date|effective\s+date\s+of\s+termination)\b` +
+    String.raw`|\bpay\b${SAME_SENTENCE}{0,160}\bthrough\s+the\s+(?:date\s+of\s+termination|termination\s+date|effective\s+date\s+of\s+termination)\b` +
     // "If Buyer terminates for Seller's material breach, the earnest deposit
     // shall be returned" — the conditional form states a termination
     // consequence with no "upon termination" trigger at all.
     // `\w*` on the consequence: the conditional form conjugates its verb
     // ("the deposit shall be returnED") and a bare \b-wrapped stem rejects
     // every inflection.
-    String.raw`|\bif\s+[^.]{0,80}?\bterminat(?:es|ed)\b[^.]{0,160}?\b(?:${CONSEQUENCE})\w*` +
+    String.raw`|\bif\s+${SAME_SENTENCE}{0,80}?\bterminat(?:es|ed)\b${SAME_SENTENCE}{0,160}?\b(?:${CONSEQUENCE})\w*` +
     // The purchase-agreement form pairs the termination VERB with the
     // consequence in one sentence and no "(up)on" noun trigger — "the Buyer
     // may terminate this Agreement, in which case the Earnest Money is
@@ -86,7 +112,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // return property", which is a firing clause, not a wind-down), and a
     // bare "terminate this Agreement for convenience" with no consequence
     // word still fails this branch and correctly reports none.
-    String.raw`|\bterminat(?:es?|ed|ing)\s+(?:this\s+|the\s+)(?:Agreement|Lease|Contract|SOW|Note|Order)\b[^.]{0,120}?\b(?:${CONSEQUENCE})\w*` +
+    String.raw`|\bterminat(?:es?|ed|ing)\s+(?:this\s+|the\s+)(?:Agreement|Lease|Contract|SOW|Note|Order)\b${SAME_SENTENCE}{0,120}?\b(?:${CONSEQUENCE})\w*` +
     // A survival clause is the paradigmatic effect-of-termination statement —
     // "Sections 3 through 7 shall survive termination of this Agreement." It
     // takes termination as a bare object of "survive", not "UPON termination",
@@ -97,21 +123,21 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // with the trigger first. The reverse direction is anchored on the
     // termination/expiration noun (not "this Agreement", which is too common)
     // to avoid stitching an unrelated "survive" to the clause.
-    String.raw`|\bsurviv(?:e|es|al)\b[^.]{0,60}\b(?:termination|expiration|expiry|this\s+Agreement)\b` +
-    String.raw`|\b(?:termination|expiration|expiry)\b[^.]{0,80}\bsurviv(?:e|es|al)\b` +
+    String.raw`|\bsurviv(?:e|es|al)\b${SAME_SENTENCE}{0,60}\b(?:termination|expiration|expiry|this\s+Agreement)\b` +
+    String.raw`|\b(?:termination|expiration|expiry)\b${SAME_SENTENCE}{0,80}\bsurviv(?:e|es|al)\b` +
     // The accrued-obligations / savings statement is a paradigmatic effect-of-
     // termination clause with no wind-down verb — "Termination shall not
     // relieve either party of obligations accrued …", "termination … without
     // prejudice to any other rights or remedies".
-    String.raw`|\btermination\b[^.]{0,60}?\b(?:shall|will|does)\s+not\s+(?:relieve|affect|release|discharge|waive)\b` +
-    String.raw`|\btermination\b[^.]{0,80}?\bwithout\s+prejudice\s+to\b` +
+    String.raw`|\btermination\b${SAME_SENTENCE}{0,60}?\b(?:shall|will|does)\s+not\s+(?:relieve|affect|release|discharge|waive)\b` +
+    String.raw`|\btermination\b${SAME_SENTENCE}{0,80}?\bwithout\s+prejudice\s+to\b` +
     // "Following termination, the parties shall have no further obligations" —
     // the no-further-obligations savings statement, and "Upon termination,
     // outstanding amounts become immediately due and payable" — the payment-
     // acceleration effect. Both are anchored to a nearby "termination" so a
     // plain payment term ("invoices are due and payable Net 30") stays inert.
-    String.raw`|\btermination\b[^.]{0,80}?\bno\s+further\s+(?:obligations?|liabilit(?:y|ies)|rights|duties)\b` +
-    String.raw`|\btermination\b[^.]{0,80}?\b(?:immediately\s+)?due\s+and\s+payable\b` +
+    String.raw`|\btermination\b${SAME_SENTENCE}{0,80}?\bno\s+further\s+(?:obligations?|liabilit(?:y|ies)|rights|duties)\b` +
+    String.raw`|\btermination\b${SAME_SENTENCE}{0,80}?\b(?:immediately\s+)?due\s+and\s+payable\b` +
     // "Upon such termination, the Owner may complete the Work … and the
     // Contractor shall be liable for any costs …" — a construction / services
     // termination-for-cause states its consequence with a party + modal, and
@@ -120,7 +146,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // "Upon SUCH termination" (the demonstrative pointing back at the specific
     // termination just described) reliably introduces the consequence, so a
     // modal within a short window is a safe, specific effect signal.
-    String.raw`|\b(?:up)?on\s+such\s+(?:termination|expiration|expiry|cancellation)\b[^.]{0,40}\b(?:shall|may|will|must)\b` +
+    String.raw`|\b(?:up)?on\s+such\s+(?:termination|expiration|expiry|cancellation)\b${SAME_SENTENCE}{0,40}\b(?:shall|may|will|must)\b` +
     // An ENTITY agreement (LLC / partnership) winds down by DISSOLUTION, not
     // "termination": "Upon dissolution, the Partnership's assets shall be applied
     // first to creditors, then to the Partners" is the effect-of-termination
@@ -129,7 +155,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // none. A bare dissolution TRIGGER with no wind-down consequence ("the
     // Company shall dissolve upon consent") does not match — the wind-down verb
     // (apply / distribute / wind up / liquidate) must follow.
-    String.raw`|\b(?:up)?on\s+(?:the\s+)?dissolution\b[^.]{0,140}\b(?:appl(?:y|ied)|distribut\w+|wind(?:ing)?[\s-]?up|wound\s+up|liquidat\w+)\b` +
+    String.raw`|\b(?:up)?on\s+(?:the\s+)?dissolution\b${SAME_SENTENCE}{0,140}\b(?:appl(?:y|ied)|distribut\w+|wind(?:ing)?[\s-]?up|wound\s+up|liquidat\w+)\b` +
     // The construction / services termination-FOR-DEFAULT remedy states its
     // effect in the same clause as the termination: "the Owner may terminate
     // this Agreement for default and complete the Work by other means, and the
@@ -139,7 +165,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // discriminator, and "complete the Work" / "liable for … costs" the effect —
     // neither verb is in CONSEQUENCE (a "fails to complete" trigger must not read
     // as an effect), so the for-default qualifier is required.
-    String.raw`|\bterminat\w+\b[^.]{0,80}?\bfor\s+(?:default|cause)\b[^.]{0,120}?\b(?:complete\s+(?:the\s+)?work|liable\s+for\b[^.]{0,40}?\bcosts?)\b` +
+    String.raw`|\bterminat\w+\b${SAME_SENTENCE}{0,80}?\bfor\s+(?:default|cause)\b${SAME_SENTENCE}{0,120}?\b(?:complete\s+(?:the\s+)?work|liable\s+for\b${SAME_SENTENCE}{0,40}?\bcosts?)\b` +
     // "Buyer may terminate this order for convenience on written notice, in
     // which case Buyer pays for conforming goods delivered and Seller's
     // reasonable unavoidable costs" — a purchase order states the effect with
@@ -150,14 +176,14 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // introduces a consequence and nothing else, so pairing it with a
     // termination word in the same sentence is specific without needing to
     // enumerate the consequence verb at all.
-    String.raw`|\bterminat(?:e|es|ed|ing|ion)\b[^.]{0,120}?\bin\s+which\s+case\b`,
+    String.raw`|\bterminat(?:e|es|ed|ing|ion)\b${SAME_SENTENCE}{0,120}?\bin\s+which\s+case\b`,
   "i",
 );
 
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.16.0",
+  version: "1.17.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

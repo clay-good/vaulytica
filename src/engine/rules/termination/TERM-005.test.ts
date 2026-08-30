@@ -332,3 +332,39 @@ describe("TERM-005 — the preposition is AFTER as often as ON", () => {
     ).toBeNull();
   });
 });
+
+/**
+ * Two ways a plainly-stated effect went unread.
+ */
+describe("TERM-005 v1.17.0 — the inflected verb and the subsection number", () => {
+  it("reads a consequence in the third person", () => {
+    expect(
+      TERM_005.check(doc("On the end of the internship, the Intern returns Company property.")),
+    ).toBeNull();
+  });
+
+  it("reads across a subsection number in the survival list", () => {
+    expect(
+      TERM_005.check(
+        doc(
+          "On the end of the internship for any reason, Sections 4, 5, 7.3, and 8 continue in effect, the Intern returns Company property, and the Company completes any academic evaluation.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  /**
+   * The widened window admits a period only when a DIGIT follows it, so a real
+   * sentence end still bounds it: a trigger in one sentence cannot reach a
+   * consequence in the next.
+   */
+  it("does not borrow a consequence from the next sentence", () => {
+    expect(
+      TERM_005.check(
+        doc(
+          "Upon termination the parties shall confer in good faith. The schedule is then agreed between them.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

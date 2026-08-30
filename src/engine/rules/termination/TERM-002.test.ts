@@ -231,3 +231,56 @@ describe("TERM-002 — 'On a default, Lessor may terminate'", () => {
     expect(TERM_002.check(ctx)).not.toBeNull();
   });
 });
+
+/**
+ * A regulated-services agreement states its cause grounds SPECIFICALLY rather
+ * than as "material breach", and every branch wanted the noun. A medical
+ * director agreement with a full Termination section was told it states no
+ * path to terminate for material breach.
+ */
+describe("TERM-002 v1.9.0 — enumerated cause grounds", () => {
+  it("reads a colon-enumerated immediate-termination list", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "Hospital may terminate immediately upon: (a) suspension, revocation, or restriction of Medical Director's license or DEA registration; (b) loss of medical staff membership or clinical privileges at Hospital; (c) exclusion, debarment, or suspension from any federal health care program; or (d) failure to maintain the insurance required by Section 10",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads an occurrence-of-any-of-the-following path", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "Lender may terminate this Agreement upon the occurrence of any of the following events of default described in Schedule 3.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads a failure to MAINTAIN as the defaulting event", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "Client may terminate this Agreement if Provider fails to maintain the insurance required by Section 9 and does not cure that failure within ten (10) days.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  /**
+   * The enumeration is what separates cause from convenience. A bare
+   * "immediately upon written notice" is a convenience clause and must still
+   * be reported.
+   */
+  it("still fires on a convenience-only termination", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "Either party may terminate this Agreement immediately upon written notice to the other party, for any reason or no reason.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

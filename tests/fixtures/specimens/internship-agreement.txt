@@ -1,0 +1,90 @@
+INTERNSHIP AGREEMENT
+
+This Internship Agreement (this "Agreement") is entered into as of May 26, 2026 between Beacon Hollow Analytics, Inc., a Massachusetts corporation with offices at 55 Rowan Street, Somerville, Massachusetts 02143 (the "Company"), and Oluwaseun Adeyemi-Park, an individual residing in Medford, Massachusetts (the "Intern"). The Company and the Intern are each a "Party" and together the "Parties."
+
+1. THE INTERNSHIP
+
+1.1 Position. The Intern will serve as a Data Science Intern, reporting to the Director of Analytics.
+
+1.2 Internship Period. The internship period begins on June 15, 2026 and ends on August 21, 2026, unless ended earlier under Section 7.
+
+1.3 Schedule. The Intern is expected to work approximately thirty-two (32) hours per week, on a schedule the Intern and the Director of Analytics agree in advance each week. The schedule accommodates the Intern's academic obligations, which take precedence.
+
+1.4 Location. The Intern works at the Somerville office at least two days each week and remotely otherwise.
+
+2. EDUCATIONAL PURPOSE
+
+2.1 Primary Beneficiary. This internship is structured so that the Intern is the primary beneficiary of the relationship, within the meaning of the test the United States Department of Labor applies under Fact Sheet #71 and the courts apply under the Fair Labor Standards Act.
+
+2.2 Training. The internship provides training comparable to that given in an educational environment, including a structured curriculum of weekly instruction in experimental design, causal inference, and reproducible analysis; a mentor assigned for the whole internship period; and a capstone project the Intern presents to the analytics team.
+
+2.3 Academic Credit. The internship is tied to the Intern's formal education program. The Intern is receiving three (3) academic credits from Tufts University for the internship, and the Company will complete any evaluation form the university requires. The internship period corresponds to the university's summer academic calendar.
+
+2.4 No Displacement. The Intern's work complements, and does not displace, the work of paid employees. The Intern is not assigned production work on which the Company depends, and the Company will not reduce or defer hiring on account of the internship.
+
+2.5 No Guarantee of Employment. The internship does not entitle the Intern to a paid job at its conclusion, and neither Party has promised or implied one. The Intern understands that the internship is not a trial period for employment and that any future offer would be a separate agreement.
+
+3. COMPENSATION
+
+3.1 Stipend. The Company will pay the Intern a stipend of $8,000, payable in five equal installments on the Company's regular payroll dates during the internship period. The stipend is not wages for hours worked and does not convert the internship into employment.
+
+3.2 Expenses. The Company will reimburse the Intern for pre-approved expenses incurred in connection with the internship, including a public transit pass for the internship period, on submission of receipts.
+
+3.3 Benefits. The Intern is not eligible for the Company's health, retirement, paid time off, or other employee benefit plans, and nothing in this Agreement entitles the Intern to participate in them.
+
+4. CONFIDENTIALITY
+
+4.1 Obligation. The Intern will keep confidential all non-public information of the Company and of its customers that the Intern learns during the internship, will use it only for the internship, and will not disclose it to anyone outside the Company.
+
+4.2 Exclusions. This obligation does not apply to information that is or becomes public through no fault of the Intern, that the Intern already knew without restriction, or that the Intern receives from a third party free of restriction. Nothing in this Agreement prevents the Intern from discussing wages, hours, or working conditions with anyone, from reporting a suspected violation of law to a government agency, or from participating in an agency investigation.
+
+4.3 Duration. This obligation continues for three (3) years after the internship period ends, and indefinitely as to any information that is a trade secret under the Defend Trade Secrets Act or Massachusetts law.
+
+4.4 Return. At the end of the internship period the Intern will return or delete all Company materials in the Intern's possession.
+
+5. INTELLECTUAL PROPERTY
+
+5.1 Assignment. The Intern assigns to the Company all right, title, and interest in any invention, work of authorship, or other work product the Intern creates in the course of the internship using Company time, equipment, or confidential information. The Intern will sign any document the Company reasonably requests to perfect that assignment.
+
+5.2 Statutory Exclusion. This assignment does not apply to any invention the Intern develops entirely on the Intern's own time without using the Company's equipment, supplies, facilities, or trade secret information, except for an invention that relates to the Company's business or actual or demonstrably anticipated research or development, or that results from work the Intern performed for the Company.
+
+5.3 Academic Work. The Intern retains all rights in coursework, a thesis, and any academic publication the Intern produces, provided it discloses no Company confidential information. The Company will review a draft for confidential information within ten (10) business days of receiving it and will not unreasonably withhold clearance.
+
+5.4 Prior Work. The Intern retains ownership of anything the Intern created before the internship period, and grants the Company a nonexclusive license to use any such material the Intern incorporates into internship work product.
+
+6. COMPANY POLICIES AND CONDUCT
+
+The Intern will follow the Company's policies made available to the Intern, including its code of conduct, its information security policy, and its anti-harassment policy. The Intern is covered by the Company's anti-harassment and anti-retaliation policies and may report a concern to the head of People Operations or through the Company's anonymous reporting line.
+
+7. END OF THE INTERNSHIP
+
+7.1 Ending Early. Either Party may end the internship at any time, with or without reason, on written notice. The Company will pay the Intern any stipend installment earned through the end date.
+
+7.2 Cause. The Company may end the internship immediately upon: (a) a material violation of a Company policy; (b) conduct that endangers any person; (c) a breach of Section 4 or Section 5; or (d) the Intern's withdrawal from the academic program on which Section 2.3 depends.
+
+7.3 Effect. On the end of the internship for any reason, Sections 4, 5, 7.3, and 8 continue in effect, the Intern returns Company property, and the Company completes any academic evaluation covering the period the Intern actually served.
+
+8. GENERAL
+
+8.1 Governing Law. This Agreement is governed by the laws of the Commonwealth of Massachusetts, without regard to its conflict of laws principles.
+
+8.2 Venue. The Parties consent to the exclusive jurisdiction and venue of the state and federal courts located in Middlesex County, Massachusetts.
+
+8.3 No Non-Compete. Nothing in this Agreement restricts where the Intern may work after the internship period. The Company acknowledges that Massachusetts General Laws chapter 149, section 24L prohibits a noncompetition agreement with an undergraduate or graduate student in an internship or other short-term employment relationship.
+
+8.4 Entire Agreement. This Agreement is the entire agreement between the Parties as to its subject matter and supersedes all prior discussions. It may be amended only by a writing signed by both Parties.
+
+8.5 Severability. If any provision is held unenforceable, the remaining provisions remain in full force and effect.
+
+8.6 Counterparts. This Agreement may be executed in counterparts and delivered electronically.
+
+BEACON HOLLOW ANALYTICS, INC.
+
+By: /s/ Marguerite Delacroix-Bell
+Name: Marguerite Delacroix-Bell
+Title: Chief Executive Officer
+
+INTERN
+
+By: /s/ Oluwaseun Adeyemi-Park
+Name: Oluwaseun Adeyemi-Park
