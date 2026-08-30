@@ -414,3 +414,24 @@ describe("FIN-005 — a recurring annual instalment date", () => {
     expect(FIN_005.check(buildContext(["Fees", clause]))).toBeNull();
   });
 });
+
+describe("FIN-005 — 'will pay', not only 'shall pay'", () => {
+  // Half of American drafting states the obligation with "will", and both
+  // active-voice branches led on `shall`. A motor carrier agreement saying
+  // "Shipper will pay undisputed amounts within thirty days after receiving a
+  // complete invoice" was reported as stating no payment term at all.
+  it.each([
+    "Shipper will pay undisputed amounts within thirty days after receiving a complete invoice.",
+    "Customer must pay each invoice within forty-five (45) days of the invoice date.",
+    "The Company agrees to pay the fees within fifteen (15) business days after receipt.",
+    "Within ten (10) business days after the Effective Date, Buyer will pay Seller $265,000.",
+  ])("reads %s", (clause) => {
+    expect(FIN_005.check(buildContext(["Payment", clause]))).toBeNull();
+  });
+
+  it("still warns where no term is stated at all", () => {
+    expect(
+      FIN_005.check(buildContext(["Payment", "Carrier will invoice Shipper for the agreed rate."])),
+    ).not.toBeNull();
+  });
+});

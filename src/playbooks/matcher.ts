@@ -726,6 +726,12 @@ export function matchesFeature(corpusRaw: string, feature: string): boolean {
   return matchesIn(buildCorpus(corpusRaw), feature);
 }
 
+/**
+ * Ranking tolerance for {@link matchPlaybook}. Scores are sums of decimal
+ * tenths, so anything below this is float noise, not a difference.
+ */
+const SCORE_EPSILON = 1e-9;
+
 export function matchPlaybook(
   extracted: ExtractedData,
   classified: ClassifiedParagraph[],
@@ -804,14 +810,38 @@ export function matchPlaybook(
   });
 
   scored.sort((a, b) => {
-    if (b.raw_score !== a.raw_score) return b.raw_score - a.raw_score;
+    // Compare scores at display precision, not at IEEE-754 precision.
+    //
+    // The weights are decimal tenths, and three distinguishing phrases
+    // (0.2 × 3 = 0.6000000000000001) are not equal to two title keywords
+    // (0.3 × 2 = 0.6). A trademark coexistence agreement therefore lost to
+    // `mutual-nda-deep` — which matched "each party", "either party",
+    // "irreparable harm" — by one part in 10^16, and every tiebreak below
+    // was unreachable in exactly the cases it was written for. Both scores
+    // were reported to the user as 0.6.
+    if (Math.abs(b.raw_score - a.raw_score) > SCORE_EPSILON) return b.raw_score - a.raw_score;
     // Tiebreak 1: prefer non-deprecated over deprecated. Lets a
     // `*-deep` successor outrank its legacy v2 sibling when both
     // score identically.
     const aDep = a.playbook.deprecated === true;
     const bDep = b.playbook.deprecated === true;
     if (aDep !== bDep) return aDep ? 1 : -1;
-    // Tiebreak 2: lexicographic id for determinism.
+    // Tiebreak 2: prefer the family the document's TITLE named.
+    //
+    // A trademark coexistence agreement tied `mutual-nda-deep` at 0.6 — the
+    // coexistence family on two title keywords, the NDA family on four
+    // phrases every bilateral agreement carries ("each party", "either
+    // party", "injunctive relief", "irreparable harm") — and lost the tie to
+    // the alphabet. It was then audited as a mutual NDA and reported nine
+    // critical omissions, every one of them a clause no coexistence
+    // agreement has.
+    //
+    // The title is the document saying what it is. When two families score
+    // the same, the one that read the title is the better guess.
+    if (b.matched_title_keywords.length !== a.matched_title_keywords.length) {
+      return b.matched_title_keywords.length - a.matched_title_keywords.length;
+    }
+    // Tiebreak 3: lexicographic id for determinism.
     return a.playbook.id.localeCompare(b.playbook.id, "en");
   });
 

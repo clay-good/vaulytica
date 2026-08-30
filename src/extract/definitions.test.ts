@@ -2209,3 +2209,41 @@ describe("extractDefinitions — a court is not a defined term (v9.243.0)", () =
     );
   });
 });
+
+describe("extractDefinitions — a lowercase use is still a use (v9.247.0)", () => {
+  // An anti-bribery policy defines "Government official" and then writes it
+  // lowercase everywhere it uses it. The use scan was case-sensitive, so the
+  // policy was told BOTH that the term is never used (STRUCT-005) and that it
+  // is inconsistently capitalized (STRUCT-009) — which cannot both be true.
+  // The capitalization is the defect, and STRUCT-009 already reports it.
+  it("does not report a term used only in the other case as unused", () => {
+    const tree = buildTree([
+      "Definitions",
+      '"Government official" means an officer or employee of any government, department, agency, or instrumentality.',
+      "No gift may be provided to a government official without the prior written approval of the Chief Compliance Officer.",
+    ]);
+    expect(extractDefinitions(tree).unused_terms).not.toContain("Government official");
+  });
+
+  it("does not count the generic noun a parenthetical definition is carved out of", () => {
+    // "for the premises located at 100 Building Way (the \"Premises\")" — the
+    // lowercase word BEFORE the definition is the ordinary noun being named,
+    // not a use of the term. The first version of the case-insensitive scan
+    // counted it and stopped reporting a genuinely unused defined term.
+    const tree = buildTree([
+      "Lease",
+      'This Lease is made between Big Corp (the "Landlord") and Small Co (the "Tenant"), for the premises located at 100 Building Way (the "Premises").',
+      "Tenant shall pay Base Rent monthly in advance.",
+    ]);
+    expect(extractDefinitions(tree).unused_terms).toContain("Premises");
+  });
+
+  it("still reports a term that appears nowhere else in any case", () => {
+    const tree = buildTree([
+      "Definitions",
+      '"Restricted Territory" means the counties listed in Schedule 1.',
+      "The Company shall pay the fees within thirty days after receipt of an invoice.",
+    ]);
+    expect(extractDefinitions(tree).unused_terms).toContain("Restricted Territory");
+  });
+});

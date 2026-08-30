@@ -1,0 +1,60 @@
+EXPORT CONTROL AND TRADE SANCTIONS COMPLIANCE POLICY
+
+Northwind Photonics Corporation
+Approved by the Board of Directors on January 20, 2026
+Policy owner: Ellery Nakamura, Vice President and Chief Compliance Officer
+Applies to: all employees, officers, directors, contractors, and subsidiaries worldwide
+
+1. WHY THIS EXISTS
+
+The Company designs and sells laser systems, some of which are controlled for export by the United States. Exporting a controlled item, technology, or software to the wrong destination, person, or end use — even inadvertently, even from a desk in the United States, and even by showing a drawing to a colleague — is a federal crime. This policy states the rules and the approvals that keep the Company and each of us on the right side of them.
+
+2. THE LAWS THAT APPLY
+
+The Export Administration Regulations, 15 C.F.R. Parts 730 through 774, administered by the Bureau of Industry and Security, govern dual-use items on the Commerce Control List. The International Traffic in Arms Regulations, 22 C.F.R. Parts 120 through 130, administered by the Directorate of Defense Trade Controls, govern defense articles and defense services on the United States Munitions List. The economic sanctions programs administered by the Office of Foreign Assets Control, 31 C.F.R. Parts 500 through 599, prohibit dealings with sanctioned countries, entities, and individuals. The antiboycott provisions at 15 C.F.R. Part 760 prohibit participating in an unsanctioned foreign boycott and require reporting of boycott requests.
+
+3. CLASSIFICATION
+
+No item may be shipped, and no technology released, until Trade Compliance has assigned it an Export Control Classification Number or determined it is EAR99, and has recorded that determination with its basis. Engineering must notify Trade Compliance before releasing any new product, and before any change that adds encryption, increases wavelength or pulse energy, or adds a military or space application. A classification is reviewed at least every two years and whenever the underlying regulation changes.
+
+4. DEEMED EXPORTS
+
+Releasing controlled technology or source code to a foreign person inside the United States is an export to that person's country of most recent citizenship or permanent residency, and requires the same authorization as a shipment abroad. A release includes visual inspection, oral or written disclosure, granting access to a server or repository, and allowing an unescorted visit to a controlled area. Hiring managers and IT must route any access request for a foreign person that touches controlled technology through Trade Compliance before access is granted.
+
+5. RESTRICTED PARTY SCREENING
+
+Every customer, supplier, distributor, freight forwarder, visitor, job applicant, and payee is screened against the Consolidated Screening List, the Specially Designated Nationals and Blocked Persons List, the Entity List, the Denied Persons List, the Unverified List, and the Military End User List, before onboarding and again before each shipment or payment. A screening hit must be escalated to Trade Compliance immediately and the transaction held. Nobody may proceed on the basis of their own judgment that a hit is a false positive.
+
+6. SANCTIONED DESTINATIONS
+
+The Company does not sell to, buy from, ship to or through, provide services to, or otherwise deal with Cuba, Iran, North Korea, Syria, or the Crimea, Donetsk, and Luhansk regions of Ukraine, or with any party owned fifty percent or more, directly or indirectly, in the aggregate, by one or more blocked persons. Business involving Russia and Belarus requires the prior written approval of the Chief Compliance Officer and is subject to the specific prohibitions in effect at the time.
+
+7. RED FLAGS AND END USE
+
+An order may not be filled where the Company knows, or has reason to know, that the item is destined for a prohibited end use — nuclear, missile, chemical or biological weapons, or a military intelligence end use in a country subject to those controls. Escalate to Trade Compliance before proceeding on any of the following: a customer reluctant to give end-use information; a routing that makes no commercial sense; a request to ship to a freight forwarder with no stated destination; a customer with no expertise in the product's field; a request to falsify an invoice, a shipping document, or a value; an offer to pay in cash or through a third country; or a request to omit the destination control statement.
+
+8. LICENSES, EXCEPTIONS, AND RECORDS
+
+Where a license is required, only Trade Compliance may apply for it, and shipments may not proceed until it is issued. Where a license exception or an exemption is claimed, Trade Compliance records which one, and the conditions attaching to it are honored. Export documentation, classification records, screening results, license applications and approvals, and Electronic Export Information filings are retained for five years from the date of export or the expiration of the license, whichever is later.
+
+9. ANTIBOYCOTT
+
+Report to Trade Compliance any request to refuse to do business with Israel or with a blacklisted company, to furnish information about anyone's nationality, race, religion, or business relationships with Israel, or to include a boycott-related term in a letter of credit or a contract. The request must be reported to the Department of Commerce whether or not the Company complies, and the Company does not comply.
+
+10. TRAINING AND AUDIT
+
+Employees in engineering, sales, procurement, shipping, human resources, and finance complete export control training at hire and annually. Trade Compliance conducts an annual internal audit against the Bureau of Industry and Security Export Compliance Program guidelines and reports the results to the Audit Committee.
+
+11. VOLUNTARY DISCLOSURE
+
+A suspected violation must be reported to the Chief Compliance Officer immediately and is not to be discussed outside the review the General Counsel directs. The Company's practice is to make a voluntary self-disclosure to the relevant agency where the review concludes a violation occurred, and the decision to disclose rests with the General Counsel.
+
+12. REPORTING AND NON-RETALIATION
+
+Report concerns to your manager, to Trade Compliance, to the Chief Compliance Officer, or through the ethics line, which accepts anonymous reports where local law permits. The Company does not retaliate against anyone who reports in good faith or participates in an investigation. Nothing in this policy limits your right to report a possible violation of law to a government agency.
+
+13. CONSEQUENCES
+
+A violation of this policy is grounds for discipline up to and including termination. Export violations carry criminal penalties of up to twenty years' imprisonment and fines for individuals, and civil and criminal penalties, denial of export privileges, and debarment for the Company.
+
+Questions go to tradecompliance@northwindphotonics.example.

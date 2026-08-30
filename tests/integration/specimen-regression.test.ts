@@ -574,6 +574,90 @@ export const EXPECTED: Record<string, Expectation> = {
   // provides no indemnity, caps no liability, and states no termination path.
   // The family also listed "royalty" as a NEGATIVE feature, and every CLA
   // grants a ROYALTY-FREE license.
+  // STRUCT-005 stays: "the Meridian Grid project (the "Project")" defines the
+  // term out of the generic noun that precedes it, and "Project" is genuinely
+  // never used again. The case-insensitive use scan added in 9.247.0 ignores
+  // what comes before a PARENTHETICAL definition for exactly this reason.
+  // An export control and trade sanctions compliance policy. Routes on its
+  // register alone — the family's title keywords are all of the form "export
+  // control policy", and a real one is titled for both halves of the subject
+  // ("Export Control and Trade Sanctions Compliance Policy"). Clean: the two
+  // findings are STRUCT-006 on "Trade Compliance" (a department, the same
+  // shape the employee handbook's "People Operations" carries) and OBLI-005's
+  // tally of the two prohibitions.
+  "export-control-policy.txt": {
+    playbook: "export-control-policy",
+    findings: ["OBLI-005", "STRUCT-006"],
+  },
+
+  // An FCPA/UKBA anti-bribery policy, drafted the way a multinational's
+  // compliance function drafts one. POL-010 reported that it says nothing
+  // about the UK Bribery Act or cross-border reach, on a policy whose first
+  // section names the Act and applies the stricter of local law and the
+  // policy: the rule matched "uk bribery act" with a space, which the
+  // American rendering "U.K. Bribery Act" never has, and required one of
+  // three phrases its own recommendation ("apply the stricter standard")
+  // does not contain.
+  // STRUCT-009 stays and is fair — the policy defines "Government official"
+  // and then writes it lowercase everywhere it uses it.
+  "anti-bribery-policy.txt": {
+    playbook: "anti-bribery-policy",
+    findings: ["STRUCT-009"],
+  },
+
+  // A trademark coexistence agreement settling a TTAB opposition. It routed
+  // to `mutual-nda-deep` and was told, at `critical`, that it defined no
+  // Confidential Information, listed no exclusions, and had no
+  // return-or-destruction clause — nine criticals, none of which any
+  // coexistence agreement carries.
+  //
+  // Both families scored 0.6. They were not equal: the NDA family's three
+  // distinguishing phrases came to 0.2 × 3 = 0.6000000000000001 and the
+  // coexistence family's two title keywords to 0.3 × 2 = 0.6, so the tie —
+  // and every tiebreak written for it — never happened. Ranking now
+  // compares at the precision the scores are reported in, and prefers the
+  // family the title named.
+  //
+  // IPL-113 then reported the consent missing on the document whose whole
+  // operative section is the consent: it looked for "consents to
+  // registration" adjacently and for "shall not oppose", where the
+  // agreement says "consents to Cellars' use and registration" and "will
+  // not oppose". IPDATA-001/RISK-001/RISK-005 came from an empty rule
+  // profile; a coexistence agreement allocates no IP, indemnifies nobody,
+  // and caps no liability.
+  "trademark-coexistence-agreement.txt": {
+    playbook: "trademark-coexistence-agreement",
+    findings: ["CHOICE-008", "OBLI-005", "STRUCT-006", "STRUCT-018", "TEMP-006", "TEMP-007"],
+  },
+
+  // A Delaware director indemnification agreement. GOV-142 reported no
+  // § 145(e) undertaking on the agreement that says "Indemnitee undertakes
+  // to repay the amounts advanced ... an unsecured general obligation": the
+  // pattern read the noun ("undertaking to repay") and not the verb.
+  // OBLI-002 and RISK-005 came from the rule profile — the indemnity runs
+  // one way by design, and a liability cap would defeat the instrument.
+  // GOV-139 and GOV-148 stay and are fair: this specimen states no § 145(a)
+  // standard of conduct and no assumption-of-defense or settlement-consent
+  // procedure.
+  "indemnification-agreement.txt": {
+    playbook: "director-indemnification-agreement",
+    findings: ["GOV-139", "GOV-148", "RISK-016", "STRUCT-018", "STRUCT-009", "TEMP-006"],
+  },
+
+  // A motor carrier transportation agreement. FIN-005 reported no payment
+  // term on "Shipper will pay undisputed amounts within thirty days" — the
+  // branch led on `shall`, and half of American drafting uses `will`.
+  // FIN-008 reported a minimum-commitment clause and quoted the sentence
+  // denying one ("This Agreement does not commit Shipper to tender any
+  // minimum volume"); the shared absence guard knew "does not obligate" but
+  // not "does not commit". IPDATA-001 and RISK-005 came from an empty rule
+  // profile: a carriage contract allocates no IP, and its liability regime
+  // is 49 U.S.C. § 14706, not a contractual cap.
+  "freight-transportation-agreement.txt": {
+    playbook: "freight-transportation-agreement",
+    findings: ["OBLI-005", "RISK-010", "RISK-011", "STRUCT-018", "TEMP-004", "TEMP-006"],
+  },
+
   "cla.txt": {
     playbook: "contributor-license-agreement",
     findings: ["CHOICE-003", "STRUCT-005"],
@@ -1274,9 +1358,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // walk stopped short of the title and the document routed to
   // `document-requests`, which reported at `critical` that it stated no form
   // of production for electronically stored information.
+  // STRUCT-005 dropped in 9.247.0: the term IS used, in lowercase
+  // ("Document" → "document", "Descendants" → "descendants"). The use scan
+  // was case-sensitive, so a term the document uses only in the other case
+  // was reported as never used at all — while STRUCT-009 was separately
+  // reporting the same term as inconsistently capitalized. Both cannot be
+  // true.
   "interrogatories.txt": {
     playbook: "interrogatories",
-    findings: ["DISC-010", "STRUCT-005"],
+    findings: ["DISC-010"],
   },
 
   // A Washington quitclaim deed, whose granting words are the statutory short
@@ -1747,9 +1837,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // CCPA / HIPAA" on the paragraph that cites the Health Insurance
   // Portability and Accountability Act by name and 45 C.F.R. Parts 160 and
   // 164 by number.
+  // STRUCT-005 dropped in 9.247.0: the term IS used, in lowercase
+  // ("Document" → "document", "Descendants" → "descendants"). The use scan
+  // was case-sensitive, so a term the document uses only in the other case
+  // was reported as never used at all — while STRUCT-009 was separately
+  // reporting the same term as inconsistently capitalized. Both cannot be
+  // true.
   "revocable-trust.txt": {
     playbook: "revocable-living-trust",
-    findings: ["EST-060", "OBLI-005", "STRUCT-005"],
+    findings: ["EST-060", "OBLI-005"],
   },
 
   // A notice of stock option grant. Every equity award carries its plan's

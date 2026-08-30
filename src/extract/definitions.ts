@@ -726,6 +726,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   });
 
   // Pass 3: record every use of each term outside its definition.
+  const caseVariantUse = new Set<string>();
   for (const entry of definitions.values()) {
     // Match the term as defined and its regular plural/singular — a term
     // defined in one number is routinely used in the other ("Confidential
@@ -774,6 +775,38 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         entry.used_at.push(pos);
       }
     });
+
+    // A term the document uses only in the other case is USED — the defect is
+    // the capitalization, and STRUCT-009 already reports exactly that. An
+    // anti-bribery policy defines "Government official" and then says
+    // "interact with a government official" a dozen times; the document was
+    // told BOTH that the term is never used and that it is inconsistently
+    // capitalized, which cannot both be true.
+    if (entry.used_at.length === 0) {
+      const loose = new RegExp(`\\b(?:${alternatives})\\b`, "gi");
+      forEachParagraph(tree, (ctx) => {
+        if (caseVariantUse.has(entry.term)) return;
+        const inDefiningParagraph =
+          entry.form !== "parenthetical" && ctx.paragraph.id === entry.defined_at.paragraph_id;
+        loose.lastIndex = 0;
+        let m: RegExpExecArray | null;
+        while ((m = loose.exec(ctx.text)) !== null) {
+          const pos = posInParagraph(ctx, m.index, m.index + m[0].length);
+          // A PARENTHETICAL definition is carved out of the ordinary noun that
+          // precedes it — "for the premises located at 100 Building Way (the
+          // \"Premises\")", "the Meridian Grid project (the \"Project\")" — so a
+          // lowercase occurrence before it is that noun, not a use of the
+          // term. An express definition is different: a trust puts its
+          // definitions section LAST, and "descendants" in Article 3 is a use
+          // of the "Descendants" defined in Article 6. STRUCT-009 draws the
+          // same line, for the same reason.
+          if (entry.form === "parenthetical" && pos.start < entry.defined_at.end) continue;
+          if (inDefiningParagraph && pos.end > entry.defined_at.start) continue;
+          caseVariantUse.add(entry.term);
+          break;
+        }
+      });
+    }
   }
 
   // A field-label term is a fact-sheet entry — "Effective Date: January 1,
@@ -792,6 +825,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   const unused_terms = [...definitions.values()]
     .filter((e) => e.used_at.length === 0 && e.form !== "field-label")
     .filter((e) => !usedAliasSpans.has(`${e.defined_at.start}:${e.defined_at.end}`))
+    .filter((e) => !caseVariantUse.has(e.term))
     .map((e) => e.term)
     .sort();
 

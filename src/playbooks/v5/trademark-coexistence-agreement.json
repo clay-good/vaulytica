@@ -17,13 +17,20 @@
       "goods and services listed",
       "geographic territory",
       "consent to registration",
-      "shall not oppose"
+      "shall not oppose",
+      "petition to cancel",
+      "actual confusion",
+      "coexist"
     ],
     "negative_features": ["employment offer", "merger", "lease of the premises"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Party A Mark", "Party B Mark", "Field"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-001": { "skip": true },
+    "RISK-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "15-USC-1052d",

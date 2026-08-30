@@ -817,3 +817,57 @@ describe("RE-128 — the statutory quitclaim short form", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A trademark coexistence agreement's operative section, and the § 145(e)
+ * undertaking in a director indemnification agreement — two clauses reported
+ * missing on documents that carry them in the words the practice actually
+ * uses.
+ */
+describe("clauses written the way practitioners write them", () => {
+  const find = (id: string) => V5_RULES.find((x) => x.id === id)!;
+
+  it("IPL-113 reads a consent that names the other party before the thing consented to", () => {
+    expect(
+      find("IPL-113").check(
+        buildContext([
+          "Trademark Coexistence Agreement",
+          "Halcyon consents to Cellars' use and registration of the Cellars Mark in the United States for the Cellars Goods, and will not oppose, petition to cancel, or otherwise challenge the Cellars Mark for the Cellars Goods.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("IPL-113 still fires where neither the consent nor the covenant is there", () => {
+    expect(
+      find("IPL-113").check(
+        buildContext([
+          "Trademark Coexistence Agreement",
+          "Each party acknowledges the other party's ownership of its own mark and the goodwill associated with it, and the parties will confer annually about their respective uses.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("GOV-142 reads the undertaking as a verb", () => {
+    expect(
+      find("GOV-142").check(
+        buildContext([
+          "Indemnification Agreement",
+          "Indemnitee undertakes to repay the amounts advanced to the extent it is ultimately determined that Indemnitee is not entitled to be indemnified. This undertaking is an unsecured general obligation of Indemnitee and no security may be required.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("GOV-142 still fires where advancement is conditioned on security", () => {
+    expect(
+      find("GOV-142").check(
+        buildContext([
+          "Indemnification Agreement",
+          "The Company shall advance Expenses only after Indemnitee posts collateral in an amount the Board determines is sufficient to secure repayment.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

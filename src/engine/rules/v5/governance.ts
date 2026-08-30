@@ -577,10 +577,16 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
   },
   {
     id: "GOV-142",
+    // 1.0.1 — the undertaking is as often a verb as a noun. "Indemnitee
+    // undertakes to repay the amounts advanced" is the ordinary drafting,
+    // and only the noun form ("undertaking to repay") was matched, so an
+    // agreement carrying the § 145(e) undertaking verbatim was told it had
+    // none.
+    ver: "1.0.1",
     name: "Undertaking to repay, unsecured and without regard to ability to pay",
     cite: dgcl("145(e)"),
     pat: [
-      /undertaking\s+(?:to\s+repay|by\s+or\s+on\s+behalf)|agrees?\s+to\s+repay/i,
+      /(?:undertaking|undertakes?|undertake|agrees?|covenants?|promises?)\s+to\s+(?:repay|reimburse)|undertaking\s+by\s+or\s+on\s+behalf/i,
       /unsecured|without\s+(?:security|bond|interest|reference\s+to|regard\s+to)/i,
     ],
     all: true,

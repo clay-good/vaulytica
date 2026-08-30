@@ -97,3 +97,34 @@ describe.each(CASES)("$id — can fire, and reads a compliant policy", ({ id, ti
     expect(f, `${id} flagged a compliant policy: ${f?.title ?? ""}`).toBeNull();
   });
 });
+
+/**
+ * POL-010 required the phrase "uk bribery act" with a space in it, which the
+ * American rendering "U.K. Bribery Act" never has, and — for its second
+ * pillar — one of "failure to prevent", "cross-border", or "adequate
+ * procedures", none of which appears in the rule's own recommendation
+ * ("acknowledge the non-US regimes and apply the stricter standard").
+ */
+describe("POL-010 — the way an American policy names the UK Bribery Act", () => {
+  const title = "Anti-Bribery / Anti-Corruption Policy (FCPA / UKBA)";
+  const pol010 = () => rule("POL-010");
+
+  it.each([
+    "This policy states how the Company complies with the Foreign Corrupt Practices Act, the U.K. Bribery Act 2010, and the anti-corruption laws of every country in which the Company operates. Where local law is stricter than this policy, local law governs.",
+    "The Company follows the U.K. Bribery Act as well as the FCPA, and applies the stricter standard wherever the two differ.",
+    "The UK Bribery Act 2010 creates a corporate offence of failure to prevent bribery, and the Company maintains adequate procedures.",
+  ])("stays silent on %s", (compliant) => {
+    expect(pol010().check(buildContext([title, compliant]))).toBeNull();
+  });
+
+  it("still fires on a policy that names only the FCPA", () => {
+    expect(
+      pol010().check(
+        buildContext([
+          title,
+          "The Foreign Corrupt Practices Act prohibits payments to foreign officials to obtain or retain business, and no employee may make one.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -1,0 +1,62 @@
+ANTI-BRIBERY AND ANTI-CORRUPTION POLICY
+
+Meridian Fluidics Holdings, Inc.
+Adopted by the Board of Directors on February 10, 2026
+Policy owner: Amara Okonjo, Chief Compliance Officer
+Effective date: March 1, 2026
+
+1. PURPOSE AND SCOPE
+
+This policy states how the Company complies with the U.S. Foreign Corrupt Practices Act, the U.K. Bribery Act 2010, and the anti-corruption laws of every country in which the Company operates. It applies to every director, officer, and employee of the Company and of each subsidiary the Company controls, and to every agent, consultant, distributor, joint venture partner, and other third party acting for the Company or on its behalf. Where local law is stricter than this policy, local law governs; where this policy is stricter than local law, this policy governs.
+
+2. THE PROHIBITION
+
+Do not offer, promise, give, authorize, solicit, or accept anything of value, directly or through anyone else, in order to obtain or retain business, to secure an improper advantage, or to influence any act or decision of the recipient. This prohibition applies whether the recipient is a government official or a private commercial counterparty, and it applies whether or not the payment would be lawful where it is made.
+
+"Anything of value" is not limited to cash. It includes gifts, meals, entertainment, travel, charitable and political contributions, discounts, loans, the use of property, employment or an internship for a relative, and the assumption or forgiveness of a debt.
+
+"Government official" means an officer or employee of any government, department, agency, or instrumentality, including an employee of a state-owned or state-controlled enterprise; a political party, party official, or candidate for office; an officer or employee of a public international organization; and anyone acting in an official capacity for or on behalf of any of them. A physician employed by a public hospital is a government official for this purpose.
+
+3. FACILITATION PAYMENTS
+
+The Company prohibits facilitation payments — small payments to a low-level official to expedite a routine, non-discretionary action to which the Company is already entitled. The narrow exception the Foreign Corrupt Practices Act allows for such payments is not available under this policy and is not available under the U.K. Bribery Act.
+
+The single exception is a payment made under duress where a person's health or safety is in immediate danger. Make the payment, get to safety, and report it to the Chief Compliance Officer within twenty-four hours so that it can be recorded accurately.
+
+4. GIFTS, HOSPITALITY, AND TRAVEL
+
+A gift or hospitality is permitted only if it is modest, infrequent, given openly, unconnected to any pending decision, permitted by the recipient's own rules, and recorded accurately. No gift, meal, or entertainment for a government official may be provided without the prior written approval of the Chief Compliance Officer. For everyone else, prior written approval is required for any gift exceeding $150 in value and for any meal or event exceeding $250 per person.
+
+The Company does not pay for a government official's travel or lodging except for reasonable expenses directly related to the promotion of the Company's products or to the performance of a contract, approved in advance in writing, paid to the vendor rather than to the official, and documented.
+
+5. THIRD PARTIES
+
+The Company may be held liable for a bribe paid by someone acting on its behalf. Before engaging any third party who will interact with a government official or who will act for the Company in a foreign market, the business sponsor must complete risk-based due diligence, which the Chief Compliance Officer approves. The engagement must be in writing and must include anti-corruption representations, audit rights, and a right to terminate for a breach of this policy. Compensation must be commensurate with the services actually performed and must be paid to the third party's own account in the country where it performs or is organized.
+
+Any of the following requires escalation to the Chief Compliance Officer before the engagement proceeds: a request for payment in cash, to a third country, or to an account in another name; a refusal to accept anti-corruption terms; a commission materially above the market rate; a relationship between the third party and a government official; or a third party recommended by the official whose decision the Company is seeking.
+
+6. BOOKS, RECORDS, AND INTERNAL CONTROLS
+
+Every payment must be recorded in reasonable detail, accurately and fairly reflecting the transaction. No undisclosed or unrecorded account or fund may be established for any purpose. No entry may be false or misleading, and no document may be created to disguise the nature of a payment. These requirements apply to every transaction, not only to transactions involving government officials, and they are independently enforceable under the accounting provisions of the Foreign Corrupt Practices Act.
+
+7. POLITICAL AND CHARITABLE CONTRIBUTIONS
+
+No corporate funds or assets may be contributed to any political party, candidate, or campaign without the prior written approval of the General Counsel and the Chief Compliance Officer. A charitable contribution requested by, or benefiting a person connected to, a government official whose decision affects the Company requires the same approval and must be documented with the recipient's diligence file.
+
+8. REPORTING AND NON-RETALIATION
+
+Report any suspected violation of this policy to your manager, to the Legal Department, to the Chief Compliance Officer, or through the Company's ethics line, which accepts anonymous reports where local law permits. The Company does not retaliate against anyone who reports a concern in good faith or who participates in an investigation, and retaliation is itself a violation of this policy. Nothing in this policy limits your right to report a possible violation of law to a government agency or to receive an award for doing so.
+
+9. TRAINING AND CERTIFICATION
+
+Every employee completes anti-corruption training at hire and annually thereafter. Employees in sales, procurement, finance, and any role that interacts with government officials complete enhanced training annually and certify compliance with this policy each year.
+
+10. CONSEQUENCES
+
+Violating this policy is grounds for discipline up to and including termination of employment, and for termination of a third party's engagement. A violation may also be a crime carrying imprisonment and fines for the individual and for the Company.
+
+11. ADMINISTRATION
+
+The Chief Compliance Officer administers this policy, maintains its procedures, and reports at least annually to the Audit Committee on its operation, on the results of due diligence and monitoring, and on any reported concerns. The Board of Directors reviews and approves this policy at least every two years.
+
+Questions about this policy go to the Chief Compliance Officer at compliance@meridianfluidics.example.

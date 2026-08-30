@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.247.0] — 2026-08-30
+
+### Added
+- Five specimens — an FCPA/UKBA anti-bribery policy, a trademark coexistence
+  agreement settling a TTAB opposition, a Delaware director indemnification
+  agreement, a motor carrier transportation agreement, and an export control
+  and trade sanctions policy — the 209th through 213th, and the first for
+  `anti-bribery-policy`, `trademark-coexistence-agreement`,
+  `director-indemnification-agreement`, `freight-transportation-agreement`, and
+  `export-control-policy`.
+
+### Fixed
+- **Two playbooks that scored the same were not ranked the same.** Match scores
+  are sums of decimal tenths, and three distinguishing phrases
+  (`0.2 × 3 = 0.6000000000000001`) are not equal to two title keywords
+  (`0.3 × 2 = 0.6`). A trademark coexistence agreement lost to `mutual-nda-deep`
+  — on "each party", "either party", "irreparable harm" — by one part in 10^16,
+  and was told at `critical` that it defined no Confidential Information, listed
+  no exclusions, and had no return-or-destruction clause: nine criticals, none of
+  which any coexistence agreement carries. Both scores were reported to the user
+  as 0.6, and every tiebreak written for exactly this case was unreachable.
+  Ranking now compares at the precision the scores are displayed in, and a new
+  tiebreak prefers the family the document's **title** named over one that
+  matched only body phrases.
+  The coexistence family's own register was the deeper cause and is fixed too:
+  it listed "shall not oppose" and "consent to registration", where the
+  instrument says "will not oppose, petition to cancel" — so it now beats its
+  runner-up on merit rather than on a tiebreak.
+- **A term used in lowercase is used.** The defined-term use scan was
+  case-sensitive, so a term the document writes in the other case — an
+  anti-bribery policy that defines `"Government official"` and then says
+  "a government official" throughout — was reported by STRUCT-005 as never used
+  at all, while STRUCT-009 separately reported the same term as inconsistently
+  capitalized. Both could not be true. A lowercase occurrence *before* the
+  definition is still the ordinary noun a parenthetical is carved out of
+  ("the premises located at 100 Building Way (the \"Premises\")"), and does not
+  count.
+- **POL-010 could not read the Act it is named for.** The rule matched
+  `uk bribery act` with a space, which the American rendering "U.K. Bribery Act"
+  never has, and required one of "failure to prevent", "cross-border", or
+  "adequate procedures" — none of which appears in the rule's own recommendation
+  ("apply the stricter standard"). A comprehensive FCPA/UKBA policy that names
+  the Act in its first section was told it addressed neither.
+- **IPL-113 reported the consent missing on a document that is the consent.** It
+  looked for "consents to registration" adjacently and for "shall not oppose",
+  where a coexistence agreement says "consents to Cellars' use and registration
+  of the Cellars Mark" and "will not oppose, petition to cancel".
+- **GOV-142 read the undertaking only as a noun.** "Indemnitee undertakes to
+  repay the amounts advanced" is the ordinary § 145(e) drafting, and only
+  "undertaking to repay" matched.
+- **FIN-005 led on `shall`.** "Shipper will pay undisputed amounts within thirty
+  days after receiving a complete invoice" is a plainly stated payment term, and
+  both active-voice branches required `shall`.
+- **FIN-008 quoted the sentence denying the clause it reported.** "This Agreement
+  does not commit Shipper to tender any minimum volume" was read as a
+  minimum-commitment clause: the shared clause-absence guard knew "does not
+  obligate" but not "does not commit".
+- **Three families shipped with an empty rule profile.**
+  `trademark-coexistence-agreement`, `director-indemnification-agreement`, and
+  `freight-transportation-agreement` were asked for clauses their instruments
+  never carry — an IP-ownership allocation in a carriage contract, a liability
+  cap in a director indemnity, a mutual indemnity in a consent agreement.
+
 ## [9.246.0] — 2026-08-30
 
 ### Added

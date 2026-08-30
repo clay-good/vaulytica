@@ -47,7 +47,7 @@ const PAYMENT_TERMS = new RegExp(
     // upon completion and monitoring of each visit, within forty-five (45)
     // days after receipt of a proper invoice" is a plainly stated payment
     // term, and one hyphen stopped the branch from reaching it.
-    `\\bshall\\s+(?:pay|fund|advance|disburse|reimburse)\\b[\\s\\w,()$."'“”’\\-/:;&%–—]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:shall|will|must|agrees\\s+to)\\s+(?:pay|fund|advance|disburse|reimburse)\\b[\\s\\w,()$."'“”’\\-/:;&%–—]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     // A recurring charge states its term as a DUE DATE, not an interval from
     // an invoice: "Base Rent: $20,000 per month, payable in advance on the
     // first of each month" is a payment term, and every branch above is
@@ -113,7 +113,7 @@ const PAYMENT_TERMS = new RegExp(
     // right from the verb, so a plainly stated payment term was reported as
     // none. Same window and same character class as the "shall pay … within"
     // branch, read the other way.
-    `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()$."'“”’\\-/:;&%–—]{0,160}?\\bshall\\s+(?:pay|remit)\\b`,
+    `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()$."'“”’\\-/:;&%–—]{0,160}?\\b(?:shall|will|must|agrees\\s+to)\\s+(?:pay|remit)\\b`,
     // A subscription states its payment term with "billed", not with
     // "due"/"payable"/"paid" — "Subscription fees are billed in advance,
     // monthly or annually", "you will be charged monthly". Every branch above
@@ -155,7 +155,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.13.0",
+  version: "1.14.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

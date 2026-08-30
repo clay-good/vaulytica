@@ -38,3 +38,20 @@ describe("FIN-008 — minimum commitment / take-or-pay", () => {
     expect(fires("A minimum standard of care applies to all work.")).toBe(false);
   });
 });
+
+describe("FIN-008 — a denial of a minimum commitment is not one", () => {
+  // A framework agreement disclaims the commitment in the same breath it
+  // names it: "This Agreement does not commit Shipper to tender any minimum
+  // volume". The shared absence guard knew "does not obligate" but not "does
+  // not commit", so the rule reported a minimum-commitment clause and quoted
+  // the sentence denying one.
+  it("stays silent on an express disclaimer", () => {
+    expect(
+      fires("This Agreement does not commit Shipper to tender any minimum volume of freight."),
+    ).toBe(false);
+  });
+
+  it("still fires where the commitment is real", () => {
+    expect(fires("Shipper shall tender a minimum volume of 4,000 loads per year.")).toBe(true);
+  });
+});

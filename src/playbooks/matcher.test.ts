@@ -64,3 +64,55 @@ describe("required clauses cap at ONE", () => {
     expect(three.raw_confidence).toBe(one.raw_confidence);
   });
 });
+
+describe("scores that are equal are ranked as equal", () => {
+  // Two title keywords (0.3 × 2 = 0.6) and three distinguishing phrases
+  // (0.2 × 3 = 0.6000000000000001) are the same score everywhere except in
+  // IEEE-754. A trademark coexistence agreement lost to `mutual-nda-deep` by
+  // one part in 10^16 — on "each party", "either party", "irreparable harm" —
+  // and was audited as a mutual NDA, reporting nine critical omissions no
+  // coexistence agreement could ever cure. Both scores were shown as 0.6.
+  const pb = (id: string, title_keywords: string[], distinguishing_phrases: string[]): Playbook =>
+    parsePlaybook({
+      id,
+      version: "1.0.0",
+      name: id,
+      description: id,
+      match_features: {
+        title_keywords,
+        required_clauses: [],
+        distinguishing_phrases,
+        negative_features: [],
+      },
+      expected_clauses: [],
+      expected_defined_terms: [],
+      rule_overrides: {},
+      balanced_defaults: [],
+      sources: [],
+      applicable_jurisdictions: ["US"],
+    });
+
+  const extracted = { definitions: { entries: [] } } as unknown as ExtractedData;
+
+  it("prefers the family the title named over one matching only generic phrases", () => {
+    const titled = pb("z-titled", ["coexistence agreement", "trademark coexistence"], []);
+    const phrases = pb("a-phrases", [], ["each party", "either party", "irreparable harm"]);
+    const match = matchPlaybook(extracted, [], [phrases, titled], {
+      title: "trademark coexistence agreement",
+      body_text:
+        "each party acknowledges the other. either party may terminate. irreparable harm may result.",
+    });
+    expect(match.playbook_id).toBe("z-titled");
+    expect(match.confidence).toBe(0.6);
+  });
+
+  it("still ranks a genuinely higher score first", () => {
+    const titled = pb("z-titled", ["coexistence agreement", "trademark coexistence"], []);
+    const phrases = pb("a-phrases", [], ["each party", "either party", "irreparable harm"]);
+    const match = matchPlaybook(extracted, [], [phrases, titled], {
+      title: "trademark coexistence agreement",
+      body_text: "",
+    });
+    expect(match.playbook_id).toBe("z-titled");
+  });
+});

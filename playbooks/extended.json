@@ -5459,6 +5459,12 @@
       "IPDATA-001": {
         "skip": true
       },
+      "OBLI-002": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
       "RISK-002": {
         "skip": true
       },
@@ -8514,7 +8520,14 @@
       "Shipper",
       "Shipment"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "49-USC-14706",
@@ -19063,7 +19076,10 @@
         "goods and services listed",
         "geographic territory",
         "consent to registration",
-        "shall not oppose"
+        "shall not oppose",
+        "petition to cancel",
+        "actual confusion",
+        "coexist"
       ],
       "negative_features": [
         "employment offer",
@@ -19077,7 +19093,17 @@
       "Party B Mark",
       "Field"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "15-USC-1052d",

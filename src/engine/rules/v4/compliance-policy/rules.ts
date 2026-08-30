@@ -241,6 +241,7 @@ const FCPA_RULES: Rule[] = [
   }),
   presence({
     id: "POL-010",
+    version: "1.1.0",
     name: "UK Bribery Act / cross-border applicability",
     description:
       "Policy should address UK Bribery Act 2010 + other non-US anti-corruption regimes.",
@@ -253,8 +254,14 @@ const FCPA_RULES: Rule[] = [
     recommendation:
       "Add 'Cross-Border' clause acknowledging UKBA + other applicable non-US anti-corruption regimes and applying the stricter standard.",
     present_patterns: [
-      /(uk\s+bribery\s+act|ukba|bribery\s+act\s+2010)/i,
-      /(failure\s+to\s+prevent|cross.border|adequate\s+procedures)/i,
+      // "U.K. Bribery Act" is how an American policy writes it. The bare
+      // `uk\s+bribery` form matched only the unpunctuated spelling, so a
+      // policy naming the Act without its year failed this limb outright.
+      /(u\.?\s?k\.?\s+bribery\s+act|united\s+kingdom\s+bribery\s+act|ukba|bribery\s+act\s+2010)/i,
+      // The rule's own recommendation — acknowledge the non-US regimes and
+      // apply the stricter standard — satisfied none of the three phrases
+      // this limb used to require.
+      /(failure\s+to\s+prevent|cross.border|adequate\s+procedures|strict(?:er|est)|anti.?corruption\s+laws?\s+of\s+(?:every|each|any|the)\b|non.?u\.?s\.?\s+anti.?corruption)/i,
     ],
     require_all_present: true,
     default_severity: "warning",

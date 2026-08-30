@@ -183,11 +183,18 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
   },
   {
     id: "IPL-113",
+    // 1.0.1 — neither pattern could read the clause as it is actually
+    // drafted. The consent names the other party before it names the thing
+    // consented to ("consents to Cellars' use and registration of the
+    // Cellars Mark"), and the covenant is written with "will not", not
+    // "shall not". A coexistence agreement whose sole operative section is
+    // the consent was told, at `critical`, that it contained no consent.
+    ver: "1.0.1",
     name: "Consent to registration and non-opposition",
     cite: usc("15", "1052", "Lanham Act § 2(d) — consent agreements"),
     pat: [
-      /consent(s)?\s+to\s+(the\s+)?(registration|use)/i,
-      /(shall\s+not\s+(oppose|petition\s+to\s+cancel|challenge)|non-?opposition)/i,
+      /consents?\s+to\b[^.;]{0,60}?\b(registration|register|use)\b/i,
+      /((?:shall|will|does|do|may|must)\s+not\s+(?:oppose|petition|challenge|contest|seek\s+to\s+cancel)|(?:agrees?|covenants?|undertakes?)\s+not\s+to\s+(?:oppose|petition|challenge|contest|sue)|non-?opposition|covenant\s+not\s+to\s+(?:challenge|oppose|sue))/i,
     ],
     why: "The consent is the operative deliverable for overcoming a § 2(d) refusal, and the covenant not to oppose or cancel is what buys peace for the life of the marks.",
     fix: "Include an express consent to the other party's use and registration for the agreed goods, and a covenant not to oppose or petition to cancel.",

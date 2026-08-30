@@ -1,0 +1,114 @@
+INDEMNIFICATION AGREEMENT
+
+This Indemnification Agreement (this "Agreement") is made as of March 2, 2026 between Ardent Grid Technologies, Inc., a Delaware corporation (the "Company"), and Rosalind Achebe ("Indemnitee").
+
+RECITALS
+
+A. Indemnitee is a director of the Company and, in that capacity, is performing a valuable service for the Company.
+
+B. The Company's certificate of incorporation and bylaws permit indemnification of, and the advancement of expenses to, its directors and officers to the fullest extent permitted by the General Corporation Law of the State of Delaware, and the Company maintains directors' and officers' liability insurance.
+
+C. Section 145 of the General Corporation Law of the State of Delaware is not exclusive of other rights to which a person seeking indemnification may be entitled, and the Company desires to provide Indemnitee with specific contractual assurance that the protection promised by the certificate of incorporation and bylaws will be available regardless of any later amendment, change in control, or change in the composition of the Board.
+
+D. In order to induce Indemnitee to continue to serve, the Company has determined to enter into this Agreement.
+
+NOW, THEREFORE, in consideration of Indemnitee's continued service, the Company and Indemnitee agree as follows:
+
+1. DEFINITIONS
+
+1.1 "Corporate Status" means the status of a person who is or was a director, officer, employee, agent, or fiduciary of the Company, or who is or was serving at the request of the Company as a director, officer, employee, agent, or fiduciary of another corporation, partnership, limited liability company, joint venture, trust, employee benefit plan, or other enterprise.
+
+1.2 "Expenses" means all reasonable attorneys' fees, retainers, court costs, transcript costs, fees and expenses of experts and witnesses, travel expenses, duplicating, printing, and electronic-discovery costs, and all other disbursements or expenses actually and reasonably incurred in connection with prosecuting, defending, preparing to prosecute or defend, investigating, being or preparing to be a witness in, or otherwise participating in a Proceeding, including the costs of appeal, attachment, and similar bonds. Expenses also include those incurred in connection with an action to enforce this Agreement.
+
+1.3 "Proceeding" means any threatened, pending, or completed action, suit, arbitration, alternative dispute resolution proceeding, administrative hearing, inquiry, or investigation, whether civil, criminal, administrative, or investigative, and whether formal or informal, in which Indemnitee is, was, or becomes involved by reason of Indemnitee's Corporate Status.
+
+1.4 "Change in Control" means the occurrence of any of the events described in Exhibit A.
+
+1.5 "Independent Counsel" means a law firm, or a member of a law firm, that is experienced in matters of corporation law and that has not, within the preceding five years, been retained to represent the Company or Indemnitee in any material matter.
+
+2. INDEMNIFICATION
+
+2.1 General. The Company shall indemnify Indemnitee to the fullest extent permitted by applicable law against all Expenses, judgments, fines, penalties, excise taxes, and amounts paid in settlement actually and reasonably incurred by Indemnitee in connection with any Proceeding by reason of Indemnitee's Corporate Status. This obligation is subject only to the exclusions in Section 6.
+
+2.2 Proceedings by or in the Right of the Company. In a Proceeding brought by or in the right of the Company, the Company shall indemnify Indemnitee against Expenses actually and reasonably incurred, except that no indemnification shall be made for a claim as to which Indemnitee has been adjudged liable to the Company unless, and only to the extent that, the Court of Chancery or the court in which the Proceeding was brought determines that Indemnitee is fairly and reasonably entitled to indemnity.
+
+2.3 Successful Defense. To the extent Indemnitee is successful, on the merits or otherwise, in the defense of any Proceeding or any claim, issue, or matter in it, the Company shall indemnify Indemnitee against all Expenses actually and reasonably incurred. A dismissal without prejudice, and a settlement without a finding of liability, are each a success for this purpose.
+
+2.4 Partial Indemnification. If Indemnitee is entitled under this Agreement to indemnification for some but not all of an amount, the Company shall indemnify Indemnitee for the portion to which Indemnitee is entitled.
+
+2.5 Witness Expenses. The Company shall indemnify Indemnitee against all Expenses incurred in connection with any Proceeding in which Indemnitee is a witness or is asked to provide information and is not a party.
+
+3. ADVANCEMENT OF EXPENSES
+
+The Company shall advance all Expenses incurred by Indemnitee in connection with a Proceeding within twenty days after receiving a written request, which need not include any documentation the disclosure of which would waive a privilege. Advancement is unsecured and interest-free, is made without regard to Indemnitee's ability to repay and without regard to Indemnitee's ultimate entitlement to indemnification, and is not subject to any prior determination. Indemnitee undertakes to repay the amounts advanced to the extent it is ultimately determined by final judicial decision, from which there is no further right of appeal, that Indemnitee is not entitled to be indemnified. This undertaking is an unsecured general obligation of Indemnitee and no security or evidence of ability to repay may be required.
+
+4. PROCEDURE FOR DETERMINATION
+
+4.1 Indemnitee shall notify the Company in writing of any Proceeding reasonably promptly after becoming aware of it, but a failure or delay in giving notice does not relieve the Company of any obligation except to the extent the Company is materially prejudiced by it.
+
+4.2 Where a determination of entitlement is required by applicable law, it shall be made within thirty days after the Company receives Indemnitee's written request, (a) if a Change in Control has occurred, by Independent Counsel in a written opinion to the Board, or (b) otherwise, by a majority vote of the disinterested directors, by a committee of them, by Independent Counsel, or by the stockholders, as the Board elects.
+
+4.3 Indemnitee shall be presumed to be entitled to indemnification, and the Company bears the burden of proving otherwise by clear and convincing evidence. The termination of a Proceeding by judgment, order, settlement, conviction, or a plea of nolo contendere does not by itself create a presumption that Indemnitee did not meet the applicable standard of conduct.
+
+4.4 If the determination is not made within thirty days, entitlement is deemed established, except where the determination is to be made by the stockholders and the Company has convened a meeting within that period.
+
+5. REMEDIES
+
+5.1 Indemnitee may commence an action in the Court of Chancery of the State of Delaware to obtain indemnification or advancement, and the action shall be conducted de novo in all respects. Any adverse determination made under Section 4 is not a defense and does not create a presumption against Indemnitee.
+
+5.2 If Indemnitee prevails in whole or in part in such an action, the Company shall pay Indemnitee's Expenses in bringing it. If Indemnitee does not prevail, Indemnitee is entitled to those Expenses unless the court determines that the action was brought in bad faith or was frivolous.
+
+6. EXCLUSIONS
+
+The Company is not obligated to make any payment under this Agreement:
+
+(a) for which payment has actually been made to or on behalf of Indemnitee under an insurance policy or another indemnity provision, except in respect of any excess beyond the amount paid;
+
+(b) for an accounting of profits, or the disgorgement of profits, under Section 16(b) of the Securities Exchange Act of 1934 or a similar provision of state statutory or common law;
+
+(c) for the reimbursement of any bonus or other incentive compensation or of profits from the sale of securities that the Company is required to recover under Section 304 of the Sarbanes-Oxley Act of 2002 or Section 954 of the Dodd-Frank Wall Street Reform and Consumer Protection Act;
+
+(d) in connection with a Proceeding, or part of one, initiated by Indemnitee, unless the Board authorized it in advance, it is brought to enforce this Agreement, or applicable law otherwise requires payment; or
+
+(e) if a final judicial decision from which there is no further right of appeal determines that the payment is unlawful.
+
+7. NON-EXCLUSIVITY; INSURANCE; SUBROGATION
+
+7.1 The rights under this Agreement are in addition to, and not exclusive of, any rights under the certificate of incorporation, the bylaws, any other agreement, a vote of stockholders or directors, or otherwise. To the extent a change in Delaware law permits greater indemnification than this Agreement provides, Indemnitee is entitled to the greater benefit.
+
+7.2 The Company shall maintain directors' and officers' liability insurance covering Indemnitee on terms no less favorable than the coverage in effect on the date of this Agreement, for so long as Indemnitee may have any liability by reason of Indemnitee's Corporate Status. If the Company obtains a policy, Indemnitee shall be named as an insured in a manner that provides Indemnitee the same rights as the most favorably insured director.
+
+7.3 The Company's obligations under this Agreement are primary, and any obligation of any other person to indemnify or advance expenses to Indemnitee is secondary. The Company waives any right of contribution, subrogation, or reimbursement against any such person.
+
+8. DURATION AND SUCCESSORS
+
+This Agreement continues for so long as Indemnitee may be subject to any Proceeding by reason of Indemnitee's Corporate Status, whether or not Indemnitee continues to serve, and survives the termination of Indemnitee's service, the death of Indemnitee, and any amendment to the certificate of incorporation or bylaws. It binds and benefits the Company's successors, including any acquirer of all or substantially all of its assets or business, and inures to the benefit of Indemnitee's spouse, heirs, executors, and administrators.
+
+9. NOTICE
+
+Notices must be in writing and are effective on personal delivery, on confirmed electronic mail, or one business day after deposit with a nationally recognized overnight courier, addressed to the Company at its principal executive offices, attention General Counsel, and to Indemnitee at the address in the Company's records.
+
+10. SEVERABILITY
+
+If any provision of this Agreement is held invalid or unenforceable, the remainder continues in effect, and the invalid provision shall be construed to give the fullest effect the law permits to the intent of the parties.
+
+11. GOVERNING LAW AND FORUM
+
+This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules. The parties consent to the exclusive jurisdiction of the Court of Chancery of the State of Delaware and waive any objection to venue there.
+
+12. ENTIRE AGREEMENT; AMENDMENT
+
+This Agreement is the entire agreement between the parties on its subject matter. It may be amended only by a writing signed by both parties, and no amendment reduces any right of Indemnitee with respect to any act or omission occurring before the amendment.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+ARDENT GRID TECHNOLOGIES, INC.
+
+By: /s/ Tomas Lindqvist
+Name: Tomas Lindqvist
+Title: Chief Executive Officer
+
+INDEMNITEE
+
+/s/ Rosalind Achebe
+Rosalind Achebe

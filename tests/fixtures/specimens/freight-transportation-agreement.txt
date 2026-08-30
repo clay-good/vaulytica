@@ -1,0 +1,105 @@
+MOTOR CARRIER TRANSPORTATION AGREEMENT
+
+This Motor Carrier Transportation Agreement (this "Agreement") is entered into as of January 12, 2026 (the "Effective Date") by and between Kestrel Foods Distribution, LLC, a Wisconsin limited liability company ("Shipper"), and Redhawk Line, Inc., a Missouri corporation ("Carrier").
+
+1. SERVICES
+
+1.1 Carrier will transport Shipper's freight in interstate and intrastate commerce between the origins and destinations Shipper designates, on the equipment and service levels described in Appendix 1. Each shipment is tendered by a load confirmation issued through Shipper's transportation management system and accepted by Carrier.
+
+1.2 This Agreement does not commit Shipper to tender any minimum volume and does not commit Carrier to accept any particular shipment. A load confirmation Carrier accepts is binding as to that shipment and is governed by this Agreement.
+
+1.3 Carrier will provide the equipment, drivers, fuel, permits, and licenses required to perform, and will perform as a motor carrier and not as a broker. Carrier will not broker, co-broker, interline, subcontract, or otherwise tender any shipment to another carrier without Shipper's prior written consent. A shipment tendered in violation of this Section is a material breach, and Carrier remains fully liable for it.
+
+2. CARRIER REPRESENTATIONS AND COMPLIANCE
+
+2.1 Carrier represents that it is a motor carrier registered with the Federal Motor Carrier Safety Administration under USDOT Number 2914776 and MC Number 998341, that its operating authority is active and unrestricted, and that it will maintain that authority throughout the term.
+
+2.2 Carrier will comply with the Federal Motor Carrier Safety Regulations at 49 C.F.R. Parts 350 through 399, the hours-of-service rules, the electronic logging device requirements, the drug and alcohol testing requirements at 49 C.F.R. Part 382, and all applicable federal, state, and local laws.
+
+2.3 Carrier will not operate with a safety rating of "Conditional" or "Unsatisfactory" and will notify Shipper within two business days of any change to its safety rating, its operating authority, or its insurance.
+
+2.4 Carrier will comply with the Food Safety Modernization Act sanitary transportation rule at 21 C.F.R. Part 1, Subpart O for shipments of food, will pre-cool each temperature-controlled trailer to the temperature the load confirmation states before loading, will maintain that temperature continuously, and will provide download data from the temperature recorder on request.
+
+3. RATES, ACCESSORIALS, AND PAYMENT
+
+3.1 Rates are those in Appendix 2, which the parties may amend by written agreement. The rate stated on an accepted load confirmation controls for that shipment.
+
+3.2 Accessorial charges apply only if listed in Appendix 2 and documented at the time incurred. Detention accrues after two hours of free time at each stop, and Carrier must record arrival and departure times to be entitled to it.
+
+3.3 Carrier will invoice within thirty days after delivery, with the signed delivery receipt attached. Shipper will pay undisputed amounts within thirty days after receiving a complete invoice. An invoice submitted more than one hundred eighty days after delivery is waived.
+
+3.4 Shipper may set off against amounts payable any amount Carrier owes under this Agreement, including cargo loss and damage claims.
+
+3.5 Carrier waives any lien on the freight and waives any claim against the consignee or the beneficial owner of the freight for charges Shipper owes, and will look solely to Shipper for payment.
+
+4. INSURANCE
+
+Carrier will maintain, with insurers rated A- VII or better by A.M. Best: commercial automobile liability of at least $1,000,000 per occurrence; general liability of at least $1,000,000 per occurrence and $2,000,000 aggregate; motor truck cargo insurance of at least $250,000 per occurrence with no exclusion for unattended or unattached trailers, refrigeration breakdown, or spoilage; and workers' compensation at statutory limits with employer's liability of at least $1,000,000. Carrier will name Shipper as an additional insured on the automobile and general liability policies, will provide certificates before the first shipment and on each renewal, and will give Shipper thirty days' written notice of cancellation or material change.
+
+5. CARGO LIABILITY
+
+5.1 Carrier is liable for loss of, damage to, or delay of freight as a common carrier under 49 U.S.C. § 14706, for the full invoice value of the freight plus freight charges, without limitation to any released rate, tariff limitation, or per-pound limit. Carrier waives any released-value limitation and any tariff or rules-circular provision inconsistent with this Agreement.
+
+5.2 Shipper will file a claim within nine months after delivery, or after a reasonable time for delivery has elapsed, and may bring suit within two years and one day after Carrier disallows the claim in whole or in part.
+
+5.3 Carrier will acknowledge a claim within thirty days and will pay, decline, or make a firm settlement offer within one hundred twenty days after receiving it.
+
+5.4 Food, beverage, and pharmaceutical freight that is out of temperature, contaminated, or of unknown temperature history is a total loss. Carrier may not salvage, sell, donate, or otherwise dispose of it, and will deliver it to Shipper's designated disposal site at Carrier's expense.
+
+6. INDEMNIFICATION
+
+Carrier will defend, indemnify, and hold harmless Shipper and its officers, directors, employees, and customers from any claim, loss, liability, fine, penalty, or expense, including reasonable attorneys' fees, arising out of Carrier's performance, its use or operation of any vehicle, its violation of law, or the act or omission of its employees or contractors, except to the extent caused by Shipper's own negligence or willful misconduct. Shipper will defend, indemnify, and hold harmless Carrier from any claim arising out of Shipper's negligence or willful misconduct, or out of the inherent nature of the freight where Shipper failed to disclose it. Neither party's indemnity obligation is limited by any limitation on its insurance.
+
+7. INDEPENDENT CONTRACTOR
+
+Carrier is an independent contractor. Nothing in this Agreement makes either party the agent, employee, joint employer, partner, or joint venturer of the other. Carrier is solely responsible for the hiring, supervision, direction, compensation, and discharge of its drivers and personnel, and for all employment taxes, benefits, and workers' compensation for them.
+
+8. CONFIDENTIALITY
+
+Each party will keep confidential the rates, volumes, routing, customer identities, and other non-public information it receives from the other, will use it only to perform this Agreement, and will not disclose it except to those of its personnel who need it and are bound to equivalent obligations, or as law requires. These obligations continue for three years after the term ends.
+
+9. TERM AND TERMINATION
+
+9.1 The initial term is one year from the Effective Date and renews for successive one-year terms unless either party gives written notice of non-renewal at least thirty days before the end of the then-current term.
+
+9.2 Either party may terminate on thirty days' written notice without cause, and immediately on written notice if the other party is in material breach, becomes insolvent, or files or has filed against it a proceeding under the bankruptcy laws.
+
+9.3 Shipper may suspend or terminate immediately if Carrier's operating authority lapses, its insurance lapses, or its safety rating falls below Satisfactory.
+
+9.4 Sections 3, 5, 6, 8, and 10 survive termination, as do any obligations accrued before it.
+
+10. GOVERNING LAW AND DISPUTES
+
+This Agreement is governed by the laws of the State of Illinois and, where applicable, by federal transportation law, without regard to conflict-of-laws rules. To the extent 49 U.S.C. §§ 13101 through 14914 or the regulations under them apply, the parties waive the rights and remedies under 49 U.S.C. §§ 13101 through 14914 to the extent 49 U.S.C. § 14101(b) permits, except that the cargo-liability provisions of Section 5 govern and Section 5 is not waived. Any dispute will be brought exclusively in the state or federal courts located in Cook County, Illinois, and each party consents to that jurisdiction and venue.
+
+11. NOTICES
+
+Notices must be in writing and are effective on receipt, delivered by hand, by overnight courier, or by certified mail to the addresses stated below each party's signature, with email notice effective only if acknowledged.
+
+12. MISCELLANEOUS
+
+12.1 Neither party may assign this Agreement without the other's prior written consent, except to a successor to all or substantially all of its business.
+
+12.2 This Agreement is the entire agreement on its subject matter and supersedes all prior agreements, tariffs, rules circulars, and understandings. Terms printed on a bill of lading, load confirmation, delivery receipt, or invoice that conflict with this Agreement are void and of no effect, and this Agreement controls.
+
+12.3 This Agreement may be amended only by a writing signed by both parties. No waiver is effective unless in writing, and no waiver of one breach is a waiver of another.
+
+12.4 If any provision is held unenforceable, the rest remains in effect.
+
+12.5 This Agreement may be signed in counterparts and by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+KESTREL FOODS DISTRIBUTION, LLC
+
+By: /s/ Ingrid Halvorsen
+Name: Ingrid Halvorsen
+Title: Vice President, Supply Chain
+Address: 2200 West Canal Street, Milwaukee, Wisconsin 53233
+
+REDHAWK LINE, INC.
+
+By: /s/ Curtis Mbeki
+Name: Curtis Mbeki
+Title: President
+Address: 4401 Front Street, Kansas City, Missouri 64120

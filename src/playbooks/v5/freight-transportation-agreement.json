@@ -24,7 +24,10 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Carrier", "Shipper", "Shipment"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": { "skip": true },
+    "RISK-005": { "skip": true }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "49-USC-14706",
