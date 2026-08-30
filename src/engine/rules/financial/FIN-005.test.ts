@@ -435,3 +435,27 @@ describe("FIN-005 — 'will pay', not only 'shall pay'", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * The amount OWED, as a relocation repayment letter states it. The subject
+ * alternation held "amount due" and "amount owed" but not "amount you owe",
+ * and the tail branch that needs no subject required the deadline to run from
+ * an invoice or a receipt — so "Any amount you owe under Section 4 is due
+ * within sixty (60) days after your last day of employment" read as a document
+ * that states no payment term at all.
+ */
+describe("FIN-005 v1.15.0 — the amount a person owes", () => {
+  it.each([
+    "Any amount you owe under Section 4 is due within sixty (60) days after your last day of employment.",
+    "The amount owing under this letter is due within thirty (30) days after the separation date.",
+    "The balance is due within forty-five (45) days after the closing.",
+  ])("is silent on: %s", (sentence) => {
+    expect(FIN_005.check(doc(sentence))).toBeNull();
+  });
+
+  it("still fires on a document that names a fee and no term at all", () => {
+    expect(
+      FIN_005.check(doc("The Company will pay a relocation fee to the vendor it selects.")),
+    ).not.toBeNull();
+  });
+});

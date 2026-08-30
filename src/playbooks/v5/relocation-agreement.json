@@ -8,6 +8,9 @@
       "relocation agreement",
       "relocation repayment agreement",
       "relocation assistance agreement",
+      "relocation assistance",
+      "relocation and repayment",
+      "repayment agreement",
       "sign-on repayment agreement"
     ],
     "required_clauses": [],
@@ -23,7 +26,23 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Relocation Benefits", "Repayment Period"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-WAGE-LAW",

@@ -1,0 +1,125 @@
+DATA LICENSE AGREEMENT
+
+This Data License Agreement (this "Agreement") is made as of July 14, 2026 (the "Effective Date") by and between Meridian Telemetry Holdings, LLC, a Delaware limited liability company with offices at 1201 Bagby Street, Houston, Texas 77002 ("Licensor"), and Ravenscourt Analytics, Inc., a Delaware corporation with offices at 300 Summer Street, Boston, Massachusetts 02210 ("Licensee"). Licensor and Licensee are each a "Party" and together the "Parties."
+
+RECITALS
+
+A. Licensor collects and aggregates anonymized vehicle telemetry from commercial fleets operating in North America.
+
+B. Licensee wishes to license that data for use in its transportation risk models.
+
+C. The Parties are entering into this Agreement to state the scope of that license, the restrictions on use, and the allocation of risk.
+
+1. DEFINITIONS
+
+1.1 "Licensed Data" means the data sets described in Exhibit A, in the formats and at the delivery cadence stated there, together with any updates Licensor delivers during the Term.
+
+1.2 "Derived Data" means any data Licensee creates by processing the Licensed Data, including aggregates, statistics, indices, model weights, and inferences, in a form from which the Licensed Data cannot be reconstructed.
+
+1.3 "Permitted Purpose" means the development, validation, and operation of Licensee's transportation risk models, and the delivery of the outputs of those models to Licensee's customers.
+
+1.4 "Term" has the meaning given in Section 9.1.
+
+2. LICENSE
+
+2.1 Grant. Licensor grants Licensee a nonexclusive, nontransferable, worldwide license during the Term to access, store, reproduce, and process the Licensed Data for the Permitted Purpose.
+
+2.2 Affiliates and Contractors. Licensee may exercise the license through its affiliates and through contractors performing work for Licensee, provided Licensee remains responsible for their compliance and binds each of them to terms no less protective than this Agreement.
+
+2.3 Reservation. Licensor reserves all rights not expressly granted. Licensee acquires no ownership interest in the Licensed Data, and this Agreement is a license and not a sale.
+
+3. RESTRICTIONS
+
+3.1 No Redistribution. Licensee may not sell, license, sublicense, publish, or otherwise make the Licensed Data available to any third party, whether or not for a fee, except as Section 4 permits for Derived Data.
+
+3.2 No Re-identification. Licensee may not attempt to re-identify any individual, vehicle, or fleet from the Licensed Data, and may not combine the Licensed Data with any other data set for the purpose of doing so.
+
+3.3 Machine Learning. Licensee may use the Licensed Data to train any machine learning model that it operates for the Permitted Purpose. Licensee may not use the Licensed Data to train any machine learning model that Licensee sells, licenses, or otherwise makes available to a third party as a general-purpose model, and may not disclose the Licensed Data to any third-party model provider for training.
+
+3.4 No Benchmarking. Licensee may not use the Licensed Data to build or market a product that competes with Licensor's data products.
+
+3.5 Retention. Licensee may not retain any Licensed Data beyond the period stated in Section 9.4.
+
+4. DERIVED DATA
+
+4.1 Ownership. Licensee owns the Derived Data it creates, subject to Licensor's continuing ownership of the Licensed Data from which it is derived.
+
+4.2 Use and Distribution. Licensee may use and distribute Derived Data for any purpose, provided that the Derived Data does not permit the recipient to reconstruct any material portion of the Licensed Data and does not identify any individual, vehicle, or fleet.
+
+4.3 Attribution. Where Licensee publishes a study, index, or report based on the Licensed Data, Licensee shall include the data source attribution "Source: Meridian Telemetry Holdings, LLC" in a manner customary for the medium.
+
+5. DELIVERY AND SERVICE LEVELS
+
+5.1 Delivery. Licensor shall deliver the Licensed Data through the secure API described in Exhibit A, and shall provide credentials within five (5) business days after the Effective Date.
+
+5.2 Availability. Licensor shall maintain API availability of at least 99.5% measured monthly, excluding scheduled maintenance announced at least seventy-two (72) hours in advance. If availability falls below 99.5% in any two consecutive months, Licensee may terminate this Agreement on thirty (30) days' notice without liability.
+
+5.3 Changes. Licensor may change the schema of the Licensed Data on ninety (90) days' written notice. If a change materially reduces the utility of the Licensed Data for the Permitted Purpose, Licensee may terminate this Agreement on thirty (30) days' notice and receive a pro rata refund of prepaid fees.
+
+6. FEES AND USAGE REPORTING
+
+6.1 Fees. Licensee shall pay an annual license fee of $480,000, invoiced in four quarterly installments of $120,000, each due net thirty (30) days from receipt of a conforming invoice. Undisputed amounts unpaid after forty-five (45) days bear interest at one percent (1%) per month.
+
+6.2 Usage Reporting. Licensee shall deliver a quarterly usage report stating the volume of Licensed Data accessed, the models trained on it, and the categories of Derived Data distributed. Licensor may, on thirty (30) days' notice and not more than once each year, audit Licensee's compliance with Sections 3 and 4 during business hours, and shall bear the cost of the audit unless it reveals a material breach.
+
+6.3 Taxes. Fees exclude taxes, which Licensee pays other than taxes on Licensor's net income.
+
+7. REPRESENTATIONS AND WARRANTIES
+
+7.1 Mutual. Each Party represents that it is duly organized, that it has the authority to enter into this Agreement, and that this Agreement is a valid and binding obligation of it.
+
+7.2 Licensor. Licensor represents that it has the right to license the Licensed Data as this Agreement provides, that the Licensed Data was collected in compliance with applicable law and with the terms under which it was obtained from the fleets, and that the Licensed Data as delivered contains no direct identifier of any natural person.
+
+7.3 Disclaimer. EXCEPT AS STATED IN SECTION 7.2, THE LICENSED DATA IS PROVIDED "AS IS", AND LICENSOR DISCLAIMS ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY, OR COMPLETENESS.
+
+8. INDEMNIFICATION AND LIABILITY
+
+8.1 By Licensor. Licensor shall indemnify, defend, and hold harmless Licensee from any third-party claim that the Licensed Data, as delivered and used for the Permitted Purpose, infringes an intellectual property right or was collected in violation of applicable law.
+
+8.2 By Licensee. Licensee shall indemnify, defend, and hold harmless Licensor from any third-party claim arising out of Licensee's use of the Licensed Data outside the Permitted Purpose, its breach of Section 3, or its Derived Data.
+
+8.3 Procedure. The indemnified Party shall give prompt written notice, the indemnifying Party shall control the defense with counsel reasonably acceptable to the indemnified Party, and no settlement imposing a non-monetary obligation on the indemnified Party may be made without its written consent.
+
+8.4 Limitation. Except for a Party's indemnity obligations under Section 8, a breach of Section 3, and a Party's willful misconduct, each Party's total aggregate liability arising out of this Agreement shall not exceed the fees paid or payable in the twelve months preceding the claim. Neither Party is liable for consequential, incidental, indirect, special, or punitive damages, or for lost profits.
+
+9. TERM AND TERMINATION
+
+9.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, and renews for successive one-year terms unless either Party gives written notice of non-renewal at least sixty (60) days before the end of the then-current term.
+
+9.2 Termination for Cause. Either Party may terminate this Agreement on thirty (30) days' written notice of a material breach if the other does not cure within that period, and immediately on the other Party's insolvency.
+
+9.3 Suspension. Licensor may suspend access on written notice if Licensee's use presents an imminent risk of a violation of Section 3.2, for as long as that risk continues, and shall restore access promptly once it is resolved.
+
+9.4 Effect of Termination. On expiration or termination, the license granted in Section 2 ends, Licensee shall cease accessing the Licensed Data, and Licensee shall delete all Licensed Data within ninety (90) days and certify the deletion in writing. Licensee may retain Derived Data created before termination. Sections 3.2, 4, 6.2, 7.3, 8, 9.4, and 10 survive, together with the confidentiality obligations, the indemnity obligations, and the governing-law provision.
+
+10. GENERAL
+
+10.1 Confidentiality. Each Party shall keep confidential the other Party's non-public business and technical information, shall use it only to perform this Agreement, and shall disclose it only to those who need it and are bound by no less protective obligations. These obligations continue for five (5) years after termination and indefinitely as to a trade secret.
+
+10.2 Governing Law. This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles.
+
+10.3 Venue. The Parties consent to the exclusive jurisdiction and venue of the state and federal courts located in New York County, New York.
+
+10.4 Assignment. Neither Party may assign this Agreement without the other's written consent, except to a successor to all or substantially all of its business that is not a competitor of the other Party.
+
+10.5 Notices. Notices must be in writing and are effective on receipt at the addresses first written above.
+
+10.6 Entire Agreement. This Agreement, with its Exhibits, is the entire agreement between the Parties as to its subject matter and supersedes all prior negotiations, written or oral. It may be amended only by a writing signed by both Parties.
+
+10.7 Severability. If any provision is held unenforceable, the remaining provisions remain in full force and effect.
+
+10.8 Counterparts. This Agreement may be executed in counterparts, each of which is an original, and delivered electronically.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+MERIDIAN TELEMETRY HOLDINGS, LLC
+
+By: /s/ Kwabena Asante-Mensah
+Name: Kwabena Asante-Mensah
+Title: Chief Executive Officer
+
+RAVENSCOURT ANALYTICS, INC.
+
+By: /s/ Soledad Iturbe-Marchetti
+Name: Soledad Iturbe-Marchetti
+Title: Chief Operating Officer

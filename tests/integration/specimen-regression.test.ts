@@ -2042,6 +2042,41 @@ export const EXPECTED: Record<string, Expectation> = {
   //   - The family carried an empty `rule_overrides`, so an internship
   //     agreement was asked for an indemnity and a liability cap.
   "internship-agreement.txt": { playbook: "internship-agreement", findings: ["OBLI-005"] },
+  // A data licence with an explicit machine-learning restriction — the 221st
+  // specimen, and the first for `data-license-agreement`. Clean on arrival:
+  // every finding is real, including RISK-015, which reads the indemnity
+  // carve-out from the liability cap correctly rather than as a missing cap.
+  "data-license-agreement.txt": {
+    playbook: "data-license-agreement",
+    findings: [
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-004",
+      "OBLI-005",
+      "RISK-003",
+      "RISK-007",
+      "TEMP-006",
+      "TERM-007",
+    ],
+  },
+  // A relocation assistance and repayment letter — the 222nd, and the first
+  // for `relocation-agreement`. It routed to `offer-letter`, which won on
+  // three phrases every relocation letter carries ("start date", "base
+  // salary", "at-will"), and was then asked for the pre-employment-check and
+  // plan-subject clauses an offer letter carries. The family's title keywords
+  // were four exact full titles — "relocation assistance agreement",
+  // "relocation repayment agreement" — and this document combines two of
+  // them, so none matched and it scored no title weight at all.
+  //
+  // Behind the mis-routing: FIN-005 read "Any amount you owe under Section 4
+  // is DUE WITHIN sixty (60) days" as no payment term, because its subject
+  // alternation held "amount due" and "amount owed" but not "amount you owe";
+  // and the family's empty `rule_overrides` asked a relocation letter for an
+  // IP clause, an indemnity, and a limitation of liability.
+  "relocation-agreement.txt": {
+    playbook: "relocation-agreement",
+    findings: ["OBLI-005", "STRUCT-009", "TEMP-008"],
+  },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],

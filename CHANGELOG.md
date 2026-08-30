@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.254.0] — 2026-08-30
+
+### Added
+- Two specimens — a data licence with an explicit machine-learning restriction
+  and a relocation assistance and repayment letter — the 221st and 222nd, and
+  the first for `data-license-agreement` and `relocation-agreement`. The data
+  licence was clean on arrival.
+
+### Fixed
+- **A relocation letter routed to `offer-letter`.** The offer-letter family won
+  on three phrases every relocation letter carries — "start date", "base
+  salary", "at-will" — and the document was then asked for the
+  pre-employment-check and plan-subject clauses an offer letter carries. The
+  relocation family's title keywords were four exact full titles ("relocation
+  assistance agreement", "relocation repayment agreement"), and a real
+  document combines two of them: "RELOCATION ASSISTANCE AND REPAYMENT
+  AGREEMENT" matched none, so it scored no title weight at all. It now routes
+  at 1.0.
+- **"Any amount you owe … is due within sixty (60) days" read as no payment
+  term.** FIN-005's subject alternation held "amount due" and "amount owed"
+  but not the amount a PERSON owes, and the branch that needs no subject
+  requires the deadline to run from an invoice or a receipt.
+- **`relocation-agreement` carried an empty `rule_overrides`**, so a
+  relocation letter was asked for an IP-ownership clause, an indemnity, a
+  limitation of liability, and an effect-of-termination clause. It now carries
+  the `remote-work-agreement` profile, its nearest sibling.
+
 ## [9.253.0] — 2026-08-30
 
 ### Added
