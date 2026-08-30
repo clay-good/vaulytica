@@ -1,0 +1,102 @@
+TRANSITION SERVICES AGREEMENT
+
+This Transition Services Agreement (this "Agreement") is entered into as of June 1, 2026 by and between Larkspur Holdings, Inc., a Delaware corporation ("Provider"), and Kettleworth Industrial LLC, a Delaware limited liability company ("Recipient"). Provider and Recipient are each a "Party" and together the "Parties."
+
+RECITALS
+
+WHEREAS, Provider, Recipient and the other parties thereto entered into a Membership Interest Purchase Agreement dated April 14, 2026 (the "Purchase Agreement"), pursuant to which Recipient acquired all of the outstanding membership interests of Larkspur Coatings LLC (the "Business");
+
+WHEREAS, Provider has historically supplied the Business with certain administrative and information technology services; and
+
+WHEREAS, the Purchase Agreement contemplates that Provider will continue to supply those services for a transitional period on the terms set out in this Agreement;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein and other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the Parties agree as follows.
+
+1. DEFINITIONS
+
+Capitalized terms used but not defined in this Agreement have the meanings given to them in the Purchase Agreement. "Service" means each service described on Schedule A. "Service Period" means, for each Service, the period beginning on the Closing Date and ending on the end date stated for that Service on Schedule A, as extended under section 3. "Service Fee" means the fee stated for a Service on Schedule A. "Service Coordinator" means the individual each Party designates under section 4.
+
+2. SERVICES
+
+Provider will supply, or cause its affiliates or third-party providers to supply, each Service to Recipient during the applicable Service Period, substantially in the manner, scope, quality, and volume in which that Service was supplied to the Business during the twelve (12) months before the Closing Date. Provider is not required to supply any service that is not described on Schedule A, to supply a Service in a materially greater volume than the historical baseline, or to acquire additional equipment, software, or personnel, unless the Parties agree in writing on the terms and cost. If Recipient requests a Service in a volume more than fifteen percent (15%) above the historical baseline, the Parties will negotiate in good faith an equitable adjustment to the Service Fee.
+
+Provider may use a third party to supply a Service where it did so before the Closing Date, or with Recipient's consent, which Recipient will not unreasonably withhold. Provider remains responsible for the performance of any third party it engages.
+
+3. TERM, EXTENSION, AND TERMINATION
+
+This Agreement begins on the Closing Date and continues until the last Service Period ends, unless terminated earlier. No Service Period extends beyond eighteen (18) months after the Closing Date.
+
+Recipient may extend a Service Period once, for up to three (3) months, on thirty (30) days' written notice before the scheduled end date, at one hundred ten percent (110%) of the Service Fee for the extension period.
+
+Recipient may terminate any Service, in whole or in part, on thirty (30) days' written notice, without penalty other than payment for the Service through the effective date of termination and reimbursement of any out-of-pocket wind-down cost Provider has irrevocably committed to and cannot reasonably avoid, which Provider will document. Provider may terminate a Service only if Recipient fails to pay an undisputed amount within thirty (30) days after written notice of nonpayment, or on a material breach by Recipient of section 8 that Recipient does not cure within thirty (30) days after written notice. Termination of one Service does not terminate any other Service. Sections 6, 7, 8, 9, 10, and 12 survive termination.
+
+4. SERVICE COORDINATORS AND GOVERNANCE
+
+Each Party designates a Service Coordinator on Schedule B as its primary contact for this Agreement. The Service Coordinators will meet at least monthly to review performance, volumes, invoices, and migration progress. A dispute that the Service Coordinators do not resolve within fifteen (15) business days is escalated under section 11.
+
+5. FEES, INVOICING, AND TAXES
+
+Recipient will pay the Service Fees monthly in arrears, within thirty (30) days after receipt of an invoice describing the Services supplied, the period covered, and any pass-through cost. Provider will bill pass-through costs at actual cost without markup and will supply supporting documentation on request. Recipient may withhold payment of an amount it disputes in good faith if it pays the undisputed balance and gives written notice of the basis for the dispute within fifteen (15) days of the invoice date; the Parties will resolve the dispute under section 11. Overdue undisputed amounts bear interest at the lesser of one percent (1%) per month and the maximum rate permitted by law. Fees are exclusive of sales, use, value-added and similar transfer taxes, which Recipient will pay, other than taxes on Provider's income.
+
+6. STANDARD OF PERFORMANCE; DISCLAIMER
+
+Provider will supply the Services with the same degree of care and skill it used in supplying them to the Business before the Closing Date. EXCEPT AS EXPRESSLY STATED IN THIS SECTION, PROVIDER MAKES NO REPRESENTATION OR WARRANTY OF ANY KIND WITH RESPECT TO THE SERVICES, AND DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. Provider is not a professional services firm and the Services do not constitute legal, tax, accounting, or investment advice.
+
+Provider's sole obligation, and Recipient's exclusive remedy, for a Service that fails to meet the standard in this section is for Provider to re-perform the Service at no additional charge, provided Recipient notifies Provider within thirty (30) days of the failure.
+
+7. LIMITATION OF LIABILITY
+
+NEITHER PARTY IS LIABLE TO THE OTHER FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR LOST PROFITS, LOST REVENUE, OR LOSS OF BUSINESS OPPORTUNITY, ARISING OUT OF THIS AGREEMENT, EVEN IF ADVISED OF THE POSSIBILITY. Each Party's aggregate liability arising out of this Agreement is limited to the total Service Fees paid and payable under this Agreement. These limitations do not apply to a Party's obligations under section 9, to a breach of section 8, or to a Party's fraud or willful misconduct. Nothing in this Agreement limits either Party's rights or remedies under the Purchase Agreement.
+
+8. CONFIDENTIALITY AND DATA PROTECTION
+
+Each Party will hold the other's confidential information in confidence, use it only to perform or receive the Services, and disclose it only to personnel and third-party providers who need it and are bound by obligations at least as protective. These obligations continue for three (3) years after termination, and indefinitely as to trade secrets and personal data. Each Party will comply with applicable data protection law in respect of personal data processed under this Agreement, and the Parties will enter into the data processing addendum attached as Schedule C before Provider processes any personal data on Recipient's behalf. Each Party will maintain administrative, physical, and technical safeguards appropriate to the sensitivity of the information, and will notify the other without undue delay, and in any event within seventy-two (72) hours, after becoming aware of a security incident affecting the other's information.
+
+9. INDEMNIFICATION
+
+Each Party will indemnify, defend, and hold harmless the other Party and its officers, directors, employees, and affiliates from and against any third-party claim, and any resulting loss, liability, damage, and reasonable attorneys' fee, arising out of the indemnifying Party's gross negligence, willful misconduct, or breach of section 8. The indemnified Party will give prompt written notice of the claim, allow the indemnifying Party to control the defense with counsel reasonably acceptable to the indemnified Party, and cooperate at the indemnifying Party's expense. The indemnifying Party may not settle a claim in a way that imposes an obligation on, or admits fault by, the indemnified Party without its written consent.
+
+10. MIGRATION AND COOPERATION
+
+Recipient is responsible for migrating off each Service before the end of its Service Period and will use commercially reasonable efforts to do so. Provider will cooperate reasonably with the migration, including by supplying Recipient's data in the format in which Provider holds it, giving reasonable access to Provider personnel familiar with the Service, and answering reasonable questions, at no additional charge for up to eighty (80) hours per month in the aggregate and at Provider's standard rates thereafter. Provider will deliver a final export of Recipient's data within thirty (30) days after the end of the applicable Service Period and will delete or return Recipient's data thereafter, subject to legal retention requirements and routine backup rotation.
+
+11. DISPUTE RESOLUTION
+
+A dispute that the Service Coordinators do not resolve is escalated to a senior executive of each Party, who will confer within ten (10) business days. If they do not resolve the dispute within twenty (20) business days of escalation, either Party may pursue any remedy available to it. Pending resolution, Provider will continue to supply, and Recipient will continue to pay for, all Services not the subject of the dispute.
+
+12. GENERAL
+
+Provider supplies the Services as an independent contractor, and this Agreement does not create a partnership, joint venture, agency, or employment relationship. Neither Party may assign this Agreement without the other's prior written consent, except to a successor to all or substantially all of its business, and any purported assignment in violation of this section is void. This Agreement, the Purchase Agreement, and the Schedules are the entire agreement of the Parties as to the Services and supersede all prior discussions. If this Agreement and the Purchase Agreement conflict, the Purchase Agreement controls. No amendment or waiver is effective unless in a writing signed by both Parties. If any provision is held unenforceable, it is modified to the minimum extent necessary and the remainder continues in effect. This Agreement is governed by the laws of the State of Delaware, without regard to its conflict of laws principles, and each Party submits to the exclusive jurisdiction of the state and federal courts located in Wilmington, Delaware. Notices must be in writing and delivered to the addresses on Schedule B. This Agreement may be executed in counterparts, including by electronic signature. There are no third-party beneficiaries of this Agreement.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the date first written above.
+
+LARKSPUR HOLDINGS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Financial Officer
+Date: June 1, 2026
+
+KETTLEWORTH INDUSTRIAL LLC
+
+By: /s/ Owen Brandt
+Name: Owen Brandt
+Title: Manager
+Date: June 1, 2026
+
+SCHEDULE A - SERVICES
+
+A-1  Payroll processing and benefits administration.  Service Period: 9 months.  Service Fee: $18,500 per month.
+A-2  Accounts payable and general ledger support.  Service Period: 12 months.  Service Fee: $22,000 per month.
+A-3  Hosting and support of the ERP instance, including nightly backup.  Service Period: 18 months.  Service Fee: $41,000 per month plus pass-through hosting cost.
+A-4  Email, identity, and endpoint management.  Service Period: 6 months.  Service Fee: $9,750 per month.
+A-5  Environmental, health and safety reporting support.  Service Period: 12 months.  Service Fee: $6,200 per month.
+
+SCHEDULE B - SERVICE COORDINATORS AND NOTICE ADDRESSES
+
+Provider: Elena Marchetti, Vice President, Shared Services, Larkspur Holdings, Inc., 2200 Founders Way, Suite 700, Wilmington, DE 19801.
+Recipient: Thomas Aiyegbeni, Director of Operations, Kettleworth Industrial LLC, 415 Canal Street, Akron, OH 44308.
+
+SCHEDULE C - DATA PROCESSING ADDENDUM
+
+Attached.

@@ -1,0 +1,87 @@
+DATA PROCESSING AGREEMENT
+
+This Data Processing Agreement (this "DPA") forms part of the Subscription Agreement dated February 9, 2026 (the "Principal Agreement") between Halden Logistik GmbH, a company incorporated in Germany with its registered office at Kaiserstrasse 41, 60329 Frankfurt am Main (the "Controller"), and Ravenshill Analytics Ltd., a company incorporated in Ireland with its registered office at 14 Merrion Square North, Dublin 2 (the "Processor"). Where this DPA and the Principal Agreement conflict as to the processing of personal data, this DPA prevails.
+
+1. DEFINITIONS
+
+"GDPR" means Regulation (EU) 2016/679. "Controller", "Processor", "Data Subject", "Personal Data", "Personal Data Breach", "Processing", and "Supervisory Authority" have the meanings given to them in Article 4 GDPR. "Sub-processor" means any processor engaged by the Processor to process Personal Data on behalf of the Controller. "Standard Contractual Clauses" means the clauses annexed to Commission Implementing Decision (EU) 2021/914.
+
+2. SUBJECT MATTER, DURATION, NATURE AND PURPOSE
+
+The subject matter, duration, nature and purpose of the processing, the types of Personal Data and the categories of Data Subjects are set out in Annex 1, as Article 28(3) GDPR requires. The processing lasts for the term of the Principal Agreement and for the deletion period described in section 11.
+
+3. PROCESSING ON DOCUMENTED INSTRUCTIONS
+
+The Processor processes Personal Data only on the Controller's documented instructions, including as to transfers to a third country, unless Union or Member State law to which the Processor is subject requires otherwise. In that case the Processor informs the Controller of that legal requirement before processing, unless that law prohibits such information on important grounds of public interest. The Principal Agreement, this DPA and Annex 1 are the Controller's complete documented instructions as at the date of this DPA. The Processor informs the Controller immediately if, in its opinion, an instruction infringes the GDPR or other Union or Member State data protection provisions.
+
+4. CONFIDENTIALITY
+
+The Processor ensures that persons authorised to process the Personal Data have committed themselves to confidentiality or are under an appropriate statutory obligation of confidentiality, and that access is limited to those persons who need it to provide the services.
+
+5. SECURITY OF PROCESSING
+
+Taking into account the state of the art, the costs of implementation and the nature, scope, context and purposes of processing, as well as the risk of varying likelihood and severity for the rights and freedoms of natural persons, the Processor implements appropriate technical and organisational measures to ensure a level of security appropriate to the risk, as Article 32 GDPR requires. Those measures are described in Annex 2 and include pseudonymisation and encryption of Personal Data, measures to ensure the ongoing confidentiality, integrity, availability and resilience of processing systems and services, measures to restore availability and access to Personal Data in a timely manner after a physical or technical incident, and a process for regularly testing, assessing and evaluating the effectiveness of those measures.
+
+6. SUB-PROCESSORS
+
+The Controller gives the Processor general written authorisation to engage Sub-processors. The Processor maintains a current list of Sub-processors at its trust centre and informs the Controller of any intended addition or replacement at least thirty (30) days in advance, giving the Controller the opportunity to object to those changes on reasonable data protection grounds. If the Controller objects, the parties will discuss the objection in good faith, and the Controller may terminate the affected services without penalty if the objection is not resolved.
+
+Where the Processor engages a Sub-processor, it does so by a written contract that imposes the same data protection obligations as are set out in this DPA, in particular providing sufficient guarantees to implement appropriate technical and organisational measures. Where the Sub-processor fails to fulfil its data protection obligations, the Processor remains fully liable to the Controller for the performance of that Sub-processor's obligations.
+
+7. DATA SUBJECT RIGHTS
+
+Taking into account the nature of the processing, the Processor assists the Controller by appropriate technical and organisational measures, insofar as this is possible, for the fulfilment of the Controller's obligation to respond to requests for exercising the Data Subject's rights under Chapter III GDPR. The Processor notifies the Controller without undue delay if it receives a request directly from a Data Subject, and does not respond to that request itself except on the Controller's instruction or where required by law.
+
+8. ASSISTANCE WITH ARTICLES 32 TO 36
+
+The Processor assists the Controller in ensuring compliance with the obligations under Articles 32 to 36 GDPR, taking into account the nature of processing and the information available to the Processor, including in relation to security of processing, notification of a Personal Data Breach, communication of a Personal Data Breach to Data Subjects, data protection impact assessment, and prior consultation with the Supervisory Authority.
+
+9. PERSONAL DATA BREACH
+
+The Processor notifies the Controller without undue delay, and in any event within twenty-four (24) hours, after becoming aware of a Personal Data Breach affecting Personal Data processed under this DPA. The notification describes the nature of the breach including, where possible, the categories and approximate number of Data Subjects and records concerned, the likely consequences, the measures taken or proposed to address the breach, and the name and contact details of the Processor's data protection officer or other contact point. Where the information cannot be provided at the same time, it is provided in phases without further undue delay.
+
+10. AUDIT
+
+The Processor makes available to the Controller all information necessary to demonstrate compliance with the obligations laid down in Article 28 GDPR and allows for and contributes to audits, including inspections, conducted by the Controller or another auditor mandated by the Controller. The Controller may exercise this right once in any twelve-month period on thirty (30) days' notice, and more often following a Personal Data Breach or at the direction of a Supervisory Authority. The Processor may satisfy an audit request by providing its current ISO/IEC 27001 certificate and SOC 2 Type II report, provided that the Controller may still conduct an on-site inspection where those materials do not reasonably answer the Controller's questions.
+
+11. DELETION OR RETURN
+
+At the Controller's choice, the Processor deletes or returns all Personal Data to the Controller after the end of the provision of services relating to processing, and deletes existing copies, unless Union or Member State law requires storage of the Personal Data. The Controller must make its choice within thirty (30) days of the end of the services; absent a choice, the Processor deletes the Personal Data. Deletion of backup copies occurs within ninety (90) days in the ordinary course of the Processor's backup rotation.
+
+12. INTERNATIONAL TRANSFERS
+
+The Processor does not transfer Personal Data outside the European Economic Area except to a country benefiting from an adequacy decision under Article 45 GDPR, or subject to appropriate safeguards under Article 46 GDPR. Where the Processor transfers Personal Data to a Sub-processor in a third country without an adequacy decision, the Standard Contractual Clauses (Module Three, processor to processor) are incorporated and completed by reference to Annexes 1 and 2, and the Processor carries out and documents a transfer impact assessment.
+
+13. LIABILITY
+
+Each party's liability under this DPA is subject to the limitations and exclusions of liability set out in the Principal Agreement, except that nothing limits either party's liability to a Data Subject under Article 82 GDPR or to a Supervisory Authority.
+
+14. GOVERNING LAW
+
+This DPA is governed by the laws of Ireland, and the courts of Ireland have exclusive jurisdiction, without prejudice to the rights of Data Subjects under Articles 79 and 82 GDPR.
+
+ANNEX 1 - DETAILS OF PROCESSING
+
+Categories of Data Subjects: the Controller's employees, drivers, and customer contacts.
+Categories of Personal Data: name, business contact details, employee identifier, vehicle telematics and geolocation records, delivery timestamps.
+Special categories of data: none.
+Nature and purpose of processing: hosting, storage, aggregation and statistical analysis of logistics telemetry to produce route and utilisation reporting for the Controller.
+Duration: the term of the Principal Agreement plus the deletion period in section 11.
+
+ANNEX 2 - TECHNICAL AND ORGANISATIONAL MEASURES
+
+Encryption of Personal Data in transit (TLS 1.3) and at rest (AES-256). Role-based access control with least privilege and quarterly access review. Multi-factor authentication for all administrative access. Network segmentation and centralised logging with twelve-month retention. Annual penetration testing by an independent third party. Documented business continuity and disaster recovery plan with an eight-hour recovery time objective, tested annually. Background screening and annual data protection training for personnel with access to Personal Data. Documented change management and secure development lifecycle.
+
+Signed for and on behalf of HALDEN LOGISTIK GMBH
+
+By: /s/ Annika Bauer
+Name: Annika Bauer
+Title: Managing Director
+Date: February 9, 2026
+
+Signed for and on behalf of RAVENSHILL ANALYTICS LTD.
+
+By: /s/ Colm Fitzgerald
+Name: Colm Fitzgerald
+Title: Director
+Date: February 9, 2026

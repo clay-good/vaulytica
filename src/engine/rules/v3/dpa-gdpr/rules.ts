@@ -49,7 +49,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-001",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subject-matter of processing identified",
     description: "DPA must identify the subject-matter of the processing.",
     citation: "GDPR Art. 28(3) introductory",
@@ -62,14 +62,27 @@ export const DPA_GDPR_RULES: Rule[] = [
     // "Subject Matter and Duration" is the SCC Annex I.B heading and the
     // standard section heading of a commercial DPA — a clause so headed that
     // then describes the processing has identified its subject matter.
+    // A DPA rarely gives subject matter a heading of its own: Article 28(3)
+    // names five things in one breath, and the drafter follows, both in the
+    // heading ("SUBJECT MATTER, DURATION, NATURE AND PURPOSE") and in the
+    // sentence under it ("The subject matter, duration, nature and purpose of
+    // the processing ... are set out in Annex 1"). The original patterns
+    // required "subject-matter" and "of the processing" to be ADJACENT, so
+    // the one form every commercial DPA actually uses was the one form that
+    // could not match, and a textbook Article 28 agreement reported its own
+    // subject matter missing at `critical`. The bounded gap crosses the other
+    // four Article 28(3) nouns without crossing a sentence.
     present_patterns: [
       /subject[- ]matter\s+of\s+(the\s+)?processing/i,
       /scope\s+of\s+processing/i,
       /subject[- ]matter\s+and\s+duration/i,
+      /subject[- ]matter\b[^.\n]{0,80}?\bof\s+(?:the\s+)?processing\b/i,
+      /subject[- ]matter\s*,\s*(?:and\s+)?duration\b/i,
     ],
   }),
   presence({
     id: "DPA-002",
+    version: "1.1.0",
     name: "Duration of processing specified",
     description: "DPA must specify the duration of the processing.",
     citation: "GDPR Art. 28(3) introductory",
@@ -78,8 +91,14 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation: "Article 28(3) requires the duration of the processing to be set out.",
     recommendation:
       "State that processing continues for the term of the agreement plus a defined wind-down period.",
+    // Same enumerated form as DPA-001 ("the subject matter, duration, nature
+    // and purpose of the processing"), plus the present-tense drafting a DPA
+    // uses for its own term — "the processing lasts for the term of the
+    // Principal Agreement" — which the shall/will-only pattern could not see.
     present_patterns: [
       /duration\s+of\s+(the\s+)?processing|processing\s+(shall|will)\s+continue\s+for/i,
+      /duration\b[^.\n]{0,60}?\bof\s+(?:the\s+)?processing\b/i,
+      /processing\s+(?:shall\s+|will\s+)?(?:continue|last)s?\s+for/i,
     ],
   }),
   presence({
@@ -143,7 +162,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-007",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Processing only on documented instructions",
     description:
       "Processor must process personal data only on documented instructions from the controller.",
@@ -163,6 +182,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       // Controller" and "only as instructed by the Controller" forms.
       /(?:only|exclusively|solely)\s+(?:on|in\s+accordance\s+with)\s+(?:the\s+)?(?:documented\s+|written\s+)*instructions\s+(?:from|of|provided\s+by)\s+(?:the\s+)?controller/i,
       /only\s+as\s+instructed\s+(?:in\s+writing\s+)?by\s+(?:the\s+)?controller/i,
+      // The POSSESSIVE form — "only on the Controller's documented
+      // instructions", "solely on Customer's written instructions" — is at
+      // least as common as the "instructions from the Controller" form the
+      // patterns above read, and named neither party generically: a DPA that
+      // calls the controller "Customer" or "Client" drafts it this way as a
+      // matter of course. Requiring the word "instructions" keeps the
+      // possessive from matching "only on the Controller's behalf".
+      /(?:only|exclusively|solely)\s+(?:on|in\s+accordance\s+with)\s+(?:the\s+)?[A-Za-z][\w-]*['’]s\s+(?:documented\s+|written\s+)*instructions\b/i,
     ],
   }),
   presence({

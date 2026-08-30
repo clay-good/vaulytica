@@ -2375,6 +2375,141 @@ export const EXPECTED: Record<string, Expectation> = {
   //
   // Capitalization is evidence only where the document offers case contrast.
   "allcaps-guaranty.txt": { playbook: "guaranty", findings: ["CHOICE-008", "OBLI-005"] },
+  // A HIPAA business associate agreement supplementing a revenue-cycle
+  // services agreement. Every § 164.504(e) element is present, and two of them
+  // were reported missing anyway: BAA-038 read only "terminates WHEN all PHI
+  // is destroyed" and not the same term stated from the other end ("continues
+  // UNTIL … all PHI is returned or destroyed"), and BAA-012 read only "fails
+  // to cure" and "cure is not feasible", not the thirty-day "has not cured …
+  // or immediately if cure is not possible" that a BAA actually drafts.
+  //
+  // What remains is fair and is what a reviewer would raise: the BAA has no
+  // workforce-training requirement (BAA-031), no sanctions policy (BAA-034),
+  // no notices clause (BAA-040), no covered-entity audit right of its own —
+  // § 8 gives access to the Secretary, not to the covered entity (BAA-026) —
+  // and no indemnity, liability cap, or IP clause, because it leaves them to
+  // the underlying agreement without saying so.
+  "baa.txt": {
+    playbook: "baa",
+    findings: [
+      "BAA-026",
+      "BAA-031",
+      "BAA-034",
+      "BAA-040",
+      "IPDATA-001",
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-006",
+      "CHOICE-003",
+      "OBLI-005",
+      "TEMP-006",
+      "TEMP-007",
+      "TERM-007",
+    ],
+  },
+  // A GDPR Article 28 DPA between a German controller and an Irish processor.
+  // It drew TWENTY CRITICAL findings, and seventeen of them were unanswerable.
+  //
+  // Ten were CCPA: the US-state ruleset was scoped to this family, whose own
+  // name is "DPA — Controller to Processor (EU/UK)" and whose 55 rules all
+  // cite the GDPR. Six more were the SCCs read CLAUSE BY CLAUSE, on a DPA that
+  // incorporates them by reference — the commercial pattern — and so can never
+  // contain Clause 1's text. The other three were the enumerated Article 28(3)
+  // sentence ("the subject matter, duration, nature and purpose of the
+  // processing") failing three rules that each demanded two of those nouns be
+  // ADJACENT, and the possessive instruction form ("only on the Controller's
+  // documented instructions") failing the rule that read only "instructions
+  // from the Controller".
+  //
+  // DPA-006 stays and is fair: the DPA states the processor's obligations at
+  // length and never states the controller's, which Article 28(3) requires.
+  // So do the seven warnings for clauses it genuinely omits — records of
+  // processing, the Article 27 representative, an effective date of its own, a
+  // notices clause, a survival clause, onward transfer, and the adequacy
+  // fallback — and the generic ones for the term, liability, and IP terms it
+  // leaves to the Principal Agreement without saying so.
+  "dpa-controller-processor.txt": {
+    playbook: "dpa-controller-processor",
+    findings: [
+      "DPA-006",
+      "DPA-028",
+      "DPA-030",
+      "DPA-044",
+      "DPA-051",
+      "DPA-052",
+      "DPA-054",
+      "DPA-055",
+      "IPDATA-001",
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-006",
+      "TERM-002",
+      "TERM-005",
+      "TRANSFER-018",
+      "TRANSFER-020",
+      "CHOICE-003",
+    ],
+  },
+  // A prime/subcontractor teaming agreement for a federal procurement. It
+  // routed to `eula`, at 0.6, on "license to use", "non-exclusive", and
+  // "software" — while the family named for it, matching its title exactly,
+  // scored 0.3 and never reached the 0.5 threshold. Its six distinguishing
+  // phrases were unreachable: four carried a leading "the" or were whole
+  // sentence fragments ("if the prime is awarded"), and none appears in a
+  // teaming agreement as anyone drafts one.
+  //
+  // The findings are the negotiation points a reviewer would flag: indemnity
+  // and confidentiality are carved out of a $50,000 cap (RISK-004, RISK-015),
+  // Exhibit A is referenced but not attached (STRUCT-018), and the survival
+  // list omits one sticky obligation (TEMP-012).
+  "teaming-agreement.txt": {
+    playbook: "teaming-agreement",
+    findings: [
+      "RISK-004",
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-012",
+      "CHOICE-006",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "TEMP-006",
+      "TEMP-007",
+    ],
+  },
+  // A corporate acceptable-use policy. STRUCT-003 already knows a policy is
+  // ADOPTED rather than signed — but it read the adoption only as a sentence
+  // ("Approved by the Board of Directors on August 15, 2026"), and a policy
+  // states it as a LABELLED FIELD in its cover block ("Approved by: the
+  // Information Security Steering Committee on December 18, 2025"). One colon
+  // was the whole difference between a clean policy and a `critical` "no
+  // signature block".
+  //
+  // POL-111 stays and is the finding this document most needs: a policy that
+  // restricts what employees may say on company systems carries an NLRA § 7
+  // savings clause, and this one does not.
+  "acceptable-use-policy.txt": {
+    playbook: "acceptable-use-policy",
+    findings: ["POL-111", "IPDATA-007", "STRUCT-006", "IPDATA-004", "IPDATA-005", "OBLI-005"],
+  },
+  // A post-closing transition services agreement with a five-line Schedule A.
+  // MNA-055 reported its scope schedule missing, at `critical`, because it
+  // read "Schedule of Services" and "services schedule" but not the lettered
+  // form every transaction document uses — "SCHEDULE A - SERVICES", and "each
+  // Service described on Schedule A". The rule's own recommendation asks for
+  // exactly what the document already had.
+  "transition-services-agreement.txt": {
+    playbook: "transition-services-agreement",
+    findings: [
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "STRUCT-009",
+      "TEMP-006",
+      "TEMP-007",
+      "TERM-006",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

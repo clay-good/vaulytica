@@ -1,0 +1,71 @@
+TEAMING AGREEMENT
+
+This Teaming Agreement (this "Agreement") is made as of April 20, 2026 between Cordell Integration Group, LLC, a Virginia limited liability company ("Prime"), and Tessera Geospatial Corporation, a Maryland corporation ("Subcontractor"). Prime and Subcontractor are each a "Party" and together the "Parties."
+
+RECITALS
+
+The United States Department of the Interior, Bureau of Land Management (the "Government") intends to issue Request for Proposals No. 140L0126R0031 for geospatial data modernization services (the "RFP"). Prime intends to submit a proposal in response to the RFP as prime contractor (the "Proposal"). Subcontractor has capabilities that complement Prime's and is willing to support the Proposal and to perform a portion of the work if the Government awards Prime a contract under the RFP (the "Prime Contract"). The Parties enter into this Agreement to define their respective roles in preparing the Proposal and to state the terms on which they will negotiate a subcontract if award occurs.
+
+1. EXCLUSIVITY
+
+Until this Agreement terminates, Subcontractor will not participate in, or provide capability or pricing information for, any other proposal in response to the RFP, whether as a prime offeror, a subcontractor, or a consultant, without Prime's prior written consent. Prime will not solicit or accept a proposal from another company for the portion of the work described in Exhibit A without first giving Subcontractor written notice and a reasonable opportunity to conform. This exclusivity is limited to the RFP and does not restrict either Party's business with the Government or with any other customer on any other procurement.
+
+2. INDEPENDENT PARTIES
+
+This Agreement does not create a partnership, joint venture, agency, or employment relationship, and does not create a separate legal entity. Neither Party may bind the other. Each Party bears its own costs of proposal preparation, and neither Party is entitled to reimbursement of those costs from the other or from the Government. Each Party remains an independent contractor and is responsible for its own personnel, taxes, and benefits.
+
+3. PROPOSAL RESPONSIBILITIES
+
+Prime has sole responsibility for the content, format, and submission of the Proposal and for all communication with the contracting officer. Subcontractor will furnish the technical, past performance, personnel, and cost or pricing information described in Exhibit A by the dates in the proposal schedule, and represents that the information it furnishes is current, accurate, and complete when submitted and that it may lawfully be disclosed to Prime and to the Government. Subcontractor will make its key personnel available for orals and for any discussions the contracting officer conducts.
+
+4. SCOPE OF THE SUBCONTRACT
+
+If the Government awards the Prime Contract, Prime will award Subcontractor a subcontract for the work described in Exhibit A, at a value of approximately twenty-two percent (22%) of the total contract value, subject to Government consent where required, to the Parties' agreement on terms, and to Subcontractor's continued eligibility. The Parties will negotiate the subcontract in good faith and will use reasonable efforts to execute it within sixty (60) days after award. Neither Party is obligated to accept terms it finds commercially unreasonable, and this Agreement does not guarantee any particular volume of work.
+
+5. CONFIDENTIALITY
+
+Each Party will hold in confidence the other Party's proprietary information disclosed in connection with the Proposal, will use it only to prepare and support the Proposal and to negotiate and perform the subcontract, and will disclose it only to those of its employees and advisors who need it and who are bound by obligations at least as protective. This obligation continues for five (5) years after termination of this Agreement, and indefinitely as to any information that qualifies as a trade secret. Proposal information marked in accordance with FAR 52.215-1(e) is also protected against disclosure by the Government. This section does not apply to information that is or becomes public through no fault of the receiving Party, that the receiving Party lawfully knew before disclosure, that it lawfully receives from a third party free of restriction, or that it independently develops. A Party may disclose the other's information if compelled by law or by a Government request, provided it gives prompt notice and reasonable cooperation so the disclosing Party may seek protection.
+
+6. INTELLECTUAL PROPERTY
+
+Each Party retains all right, title, and interest in the intellectual property it owned before this Agreement or develops outside it. Nothing in this Agreement grants either Party a license to the other's intellectual property, except a limited, non-exclusive, royalty-free license to use the other's information as necessary to prepare and support the Proposal. Each Party is responsible for asserting its own restrictions on technical data and computer software in accordance with FAR 52.227-14 and any applicable agency supplement, and Prime will not assert rights in Subcontractor's data beyond those Subcontractor has marked.
+
+7. ORGANIZATIONAL CONFLICTS OF INTEREST
+
+Each Party represents that it has reviewed the RFP for organizational conflicts of interest under FAR Subpart 9.5, that it knows of none affecting its participation, and that it will notify the other Party promptly if it identifies one. Each Party will cooperate in preparing any mitigation plan the contracting officer requires.
+
+8. REPRESENTATIONS
+
+Each Party represents that it is not suspended, debarred, or proposed for debarment, that it is not otherwise ineligible for award under FAR Subpart 9.4, that it has filed all required representations and certifications in the System for Award Management, and that its SAM registration is active. Each Party will notify the other within five (5) business days if any of these representations ceases to be true.
+
+9. TERM AND TERMINATION
+
+This Agreement begins on the date first written above and terminates on the earliest of: the execution of a subcontract between the Parties for the work; the Government's award of the Prime Contract to an offeror other than Prime; the Government's cancellation of the RFP; Prime's written decision not to submit the Proposal; the Parties' failure to execute a subcontract within one hundred twenty (120) days after award; or the mutual written agreement of the Parties. Either Party may terminate on thirty (30) days' written notice if the other materially breaches and does not cure within that period. Sections 2, 5, 6, 10, 11, and this section survive termination.
+
+10. LIMITATION OF LIABILITY
+
+Neither Party is liable to the other for lost profits, lost revenue, anticipated profit on the Prime Contract or any subcontract, or any indirect, incidental, consequential, special, or punitive damages arising out of this Agreement, however caused and on any theory of liability. Each Party's aggregate liability arising out of this Agreement is limited to fifty thousand dollars ($50,000). These limits do not apply to a breach of section 5, to a Party's indemnification obligations, or to a Party's willful misconduct.
+
+11. DISPUTE RESOLUTION AND GOVERNING LAW
+
+This Agreement is governed by the laws of the Commonwealth of Virginia, without regard to its conflict of laws rules. The Parties will first attempt to resolve any dispute by negotiation between executives with authority to settle. If the dispute is not resolved within thirty (30) days, either Party may submit it to binding arbitration before a single arbitrator under the Commercial Arbitration Rules of the American Arbitration Association, seated in Fairfax County, Virginia. Either Party may seek injunctive relief in a court of competent jurisdiction to protect its confidential information or intellectual property without first exhausting this process.
+
+12. GENERAL
+
+Neither Party may assign this Agreement without the other's prior written consent, except to a successor to all or substantially all of its business, provided the successor is eligible for award and assumes this Agreement in writing. This Agreement is the entire agreement of the Parties as to its subject matter and supersedes all prior discussions. No amendment or waiver is effective unless in a writing signed by both Parties. A waiver on one occasion is not a waiver on any other. If any provision is held unenforceable, it is modified to the minimum extent necessary and the remainder continues in effect. Notices must be in writing and are effective on delivery to the addresses on the signature page. This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the date first written above.
+
+CORDELL INTEGRATION GROUP, LLC
+
+By: /s/ Marisol Vega
+Name: Marisol Vega
+Title: Managing Member
+Date: April 20, 2026
+
+TESSERA GEOSPATIAL CORPORATION
+
+By: /s/ Adaora Nwosu
+Name: Adaora Nwosu
+Title: President and Chief Executive Officer
+Date: April 20, 2026

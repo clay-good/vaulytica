@@ -1,0 +1,69 @@
+ACCEPTABLE USE POLICY
+
+Effective date: January 5, 2026
+Version 4.2
+Owner: Chief Information Security Officer, Brightwater Systems, Inc.
+Approved by: the Information Security Steering Committee on December 18, 2025
+Next review: January 5, 2027
+
+1. PURPOSE
+
+This policy states how Brightwater Systems, Inc. ("Brightwater," "we," or "the Company") expects its information systems to be used, so that the Company protects the confidentiality, integrity, and availability of its information and meets its legal and contractual obligations. It supports the Information Security Policy and is one of the policies referenced in the Employee Handbook.
+
+2. SCOPE
+
+This policy applies to all employees, officers, directors, interns, contractors, consultants, and temporary personnel (each a "User") who access Company information systems, and to all devices used for that access, whether Company-owned or personally owned. It covers Company networks, email, messaging, cloud services, source code repositories, endpoints, mobile devices, removable media, and any account issued in the Company's name.
+
+3. ACCEPTABLE USE
+
+Company information systems are provided for business purposes. Incidental personal use is permitted where it is reasonable in amount, does not interfere with work, does not incur additional cost to the Company, and does not violate this policy. Users must protect their credentials, use the Company's approved password manager, enrol in multi-factor authentication, lock unattended devices, apply operating system and application updates within fourteen (14) days of release, and store Company information only in approved services.
+
+4. PROHIBITED USE
+
+Users must not:
+
+(a) share, disclose, or reuse credentials, or attempt to access an account or data they are not authorised to access;
+(b) circumvent, disable, or attempt to defeat a security control, including endpoint protection, logging, encryption, or network filtering;
+(c) install unapproved software, connect unapproved hardware to the Company network, or use an unapproved cloud service to store or process Company information;
+(d) transmit Company confidential information, personal data, or customer data to a personal account or to an unapproved third party;
+(e) use Company systems to harass, threaten, or discriminate against any person, or to view, store, or transmit unlawful, sexually explicit, or violent material;
+(f) infringe the intellectual property rights of any person, including by unlicensed use or distribution of software, media, or code;
+(g) conduct a personal business, political campaign, or unauthorised fundraising using Company systems;
+(h) submit Company confidential information, personal data, source code, or customer data to a generative artificial intelligence service that is not on the Company's approved list, and must follow the AI Acceptable Use Standard for approved services;
+(i) engage in scanning, penetration testing, or vulnerability research against Company or third-party systems without written authorisation from Information Security;
+(j) mine cryptocurrency, operate an anonymising proxy, or knowingly host peer-to-peer file sharing on Company systems; or
+(k) use Company systems in a way that violates applicable law, a Company contract, or another Company policy.
+
+5. REMOTE AND MOBILE ACCESS
+
+Remote access to Company systems requires multi-factor authentication and an enrolled, managed device. Personally owned devices used for Company email or documents must be enrolled in mobile device management, must have a screen lock and device encryption enabled, and must permit remote wipe of Company data. Users must not use public Wi-Fi to access Company systems without the Company VPN, and must not leave a device unattended in a public place or a vehicle.
+
+6. MONITORING AND PRIVACY
+
+Users should have no expectation of privacy in their use of Company information systems. The Company logs and may review system, network, email, and endpoint activity for security, operational, legal, and compliance purposes, subject to applicable law. Where local law requires notice, consultation with a works council, or a lawful basis for monitoring, the Company follows those requirements, and monitoring in the European Economic Area and the United Kingdom is described in the Employee Privacy Notice. Access to a User's mailbox or files for an investigation requires the approval of the Chief Information Security Officer and the General Counsel.
+
+7. REPORTING
+
+Users must report a lost or stolen device, a suspected phishing message, a suspected compromise of credentials, or any other suspected security incident to security@brightwater.example or through the internal help desk immediately, and in any event within twenty-four (24) hours of becoming aware of it. Users must not attempt to investigate or remediate a suspected incident on their own. Reporting in good faith carries no adverse consequence, and the Company does not retaliate against any User who makes a report.
+
+8. ENFORCEMENT
+
+A violation of this policy may result in suspension of access and in disciplinary action up to and including termination of employment or of a contract, and the Company may refer a violation to law enforcement where the law requires or permits. The Company may suspend access immediately where it reasonably believes doing so is necessary to protect its systems or information.
+
+9. EXCEPTIONS
+
+A User who needs an exception must request it in writing from Information Security, with a business justification and any compensating controls. Information Security records approved exceptions in the exception register with an owner and an expiry date not more than twelve (12) months out, and reviews them at each renewal. An exception that has expired is no longer in effect.
+
+10. RELATED DOCUMENTS
+
+Information Security Policy; Data Classification and Handling Standard; Access Control Standard; AI Acceptable Use Standard; Incident Response Plan; Employee Privacy Notice; Employee Handbook.
+
+11. REVIEW AND REVISION
+
+The Chief Information Security Officer owns this policy and reviews it at least annually and after any material change to the Company's systems, business, or legal obligations. The Information Security Steering Committee approves material revisions. The Company communicates revisions to all Users, who must acknowledge this policy on hire and annually thereafter.
+
+REVISION HISTORY
+
+4.2  January 5, 2026     Added the generative artificial intelligence restriction in section 4(h) and the AI Acceptable Use Standard reference.
+4.1  June 3, 2025        Clarified monitoring in the European Economic Area and the United Kingdom.
+4.0  January 6, 2025     Annual review; added the exception register and expiry requirement.

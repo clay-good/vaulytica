@@ -2,6 +2,76 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.246.0] — 2026-08-30
+
+### Added
+- Five specimens — a HIPAA business associate agreement, a GDPR Article 28 data
+  processing agreement, a federal prime/subcontractor teaming agreement, a
+  corporate acceptable-use policy, and a post-closing transition services
+  agreement — the 204th through 208th, and the first for `baa`,
+  `dpa-controller-processor`, `teaming-agreement`, `acceptable-use-policy`, and
+  `transition-services-agreement`.
+
+### Fixed
+- **A GDPR DPA is not a CCPA contract.** The US-state privacy ruleset was scoped
+  to `dpa-controller-processor` — a family whose own name is "DPA — Controller
+  to Processor (EU/UK)", whose `regulator_frame` is GDPR, and whose 55 rules all
+  cite an Article of the GDPR. A textbook Article 28 agreement between a German
+  controller and an Irish processor was told, at `critical`, that it was missing
+  the CCPA purpose-limitation clause, the no-sale prohibition, the cross-context-
+  advertising prohibition, and seven more — ten criticals no compliant EU DPA
+  could ever clear. A DPA that really does cover both regimes belongs in
+  `dpa-multi-state-us`, which the EU/UK family now names as a companion.
+- **Incorporation by reference is not absence.** TRANSFER-001..016 read the
+  Standard Contractual Clauses CLAUSE BY CLAUSE, which is the right check for a
+  document that IS the SCCs and the wrong one for a commercial DPA that
+  incorporates them in a sentence. Six more criticals on the same document. The
+  clause-text rules now run only on `scc-module-2` and `scc-module-3`; the
+  cross-cutting transfer rules — adequacy fallback, transfer impact assessment,
+  onward transfer — still run on the commercial DPA families, where they read on
+  text those documents actually contain.
+- **Article 28(3) names five things in one breath, and so does the drafter.**
+  DPA-001 and DPA-002 required "subject-matter" and "duration" to sit ADJACENT to
+  "of the processing", so the one form every commercial DPA uses — the heading
+  "SUBJECT MATTER, DURATION, NATURE AND PURPOSE" and the sentence under it —
+  was the one form that could not match. DPA-007 read "instructions FROM the
+  Controller" but not the equally standard possessive, "only on the Controller's
+  documented instructions".
+- **A teaming agreement routed to `eula`.** The family named for it matched its
+  title exactly and still scored 0.3 against a 0.5 threshold, because all six of
+  its distinguishing phrases were unreachable: four carried a leading "the" or
+  were whole sentence fragments ("if the prime is awarded"), and none appears in
+  a teaming agreement as anyone drafts one. `eula` won at 0.6 on "license to
+  use", "non-exclusive", and "software". The phrases are now the register a
+  federal teaming agreement is actually written in.
+- **A policy states its adoption as a labelled field.** STRUCT-003 already knew a
+  policy is ADOPTED rather than signed, but read the adoption only as a sentence
+  ("Approved by the Board of Directors on August 15, 2026"). A policy header
+  writes it as "Approved by: the Information Security Steering Committee on
+  December 18, 2025" — one colon between a clean policy and a `critical` "no
+  signature block".
+- **A TSA heads its schedule "SCHEDULE A - SERVICES".** MNA-055 read "Schedule of
+  Services" and "services schedule" but not the lettered form every transaction
+  document uses, so a transition services agreement carrying a five-line
+  Schedule A — a service period and a monthly fee against each service — was
+  told its scope schedule was missing, at `critical`, by the rule whose own
+  recommendation asks for exactly what it had.
+- **An EU DPA was one coin flip from the US catalog.** `dpa-multi-state-us`
+  listed "personal data", "controller", and "processor" as its distinguishing
+  phrases — the vocabulary of the GDPR family it sits beside, not of a US
+  multi-state DPA — so it tied the EU/UK family at 0.9 on a document written in
+  German-controller/Irish-processor terms, and which of the two won was a
+  lexicographic comparison of their ids. Its phrases are now the US register:
+  personal information, service provider, business purpose, sell or share,
+  cross-context behavioral advertising, deidentified, and the four statute
+  cites.
+- **A BAA states its term from the other end.** BAA-038 read "terminates WHEN all
+  PHI is destroyed" but not "continues UNTIL … all PHI is returned or
+  destroyed", which is how a supplementing BAA states the same § 164.504(e)
+  term. BAA-012 read "fails to cure" and "cure is not feasible" but not the
+  thirty-day "has not cured … or immediately if cure is not possible" that a BAA
+  actually drafts.
+
 ## [9.245.0] — 2026-08-29
 
 ### Added

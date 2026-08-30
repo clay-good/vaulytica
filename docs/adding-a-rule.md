@@ -173,6 +173,8 @@ What to look for in the output, in the order it usually appears:
 | A `warning` for a clause this document type never carries | the family shipped with empty `rule_overrides` | copy the nearest sibling's skip profile |
 | A rule reports a clause missing that is plainly there | rigid adjacency, the plural, or somebody else's vocabulary | the rule's `present_patterns` |
 | A rule reports the OPPOSITE of what the document says | a carve-out or a causative read as a denial | `expressDenial` / the rule's disclaimer test |
+| The family matched the title EXACTLY and still lost | a title match is worth 0.3 against a 0.5 threshold, so a family whose `distinguishing_phrases` never occur in a real document of its kind can never be selected at all | rewrite the phrases in the register the document is actually drafted in, then check their base rate against the specimen corpus |
+| A whole pack from another regime fires | `applies_to_playbooks` scope creep — the pack was added to a family in a different jurisdiction | narrow the pack's playbook list; cross-check the family's `regulator_frame` and `applicable_jurisdictions` |
 
 Two traps:
 

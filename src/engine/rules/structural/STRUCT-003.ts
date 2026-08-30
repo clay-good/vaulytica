@@ -193,8 +193,15 @@ const DELIVERY_RECITAL =
 // Date: …" appears on plenty of signed contracts, and the note on
 // `PUBLICATION_STAMP` above records why accepting that alone would silence the
 // finding on a genuinely unsigned agreement.
+// A policy states its adoption as a LABELLED FIELD in its cover block, not as
+// a sentence: "Owner: Chief Information Security Officer", "Approved by: the
+// Information Security Steering Committee on December 18, 2025", "Next
+// review: …". Requiring a bare space after "by" read only the sentence form,
+// so an acceptable-use policy that named its adopting committee and the date
+// it approved the policy — on the same line, in the way every policy header
+// writes it — still drew the `critical` "no signature block".
 const ADOPTION_RECITAL = new RegExp(
-  String.raw`\b(?:adopted|approved|ratified|issued|authorized)\s+by\s+(?:the\s+)?` +
+  String.raw`\b(?:adopted|approved|ratified|issued|authorized)\s+by\s*:?\s+(?:the\s+)?` +
     String.raw`[^.\n]{0,60}?\b(?:board|committee|council|trustees|directors|shareholders` +
     String.raw`|stockholders|members|general\s+counsel|chief\s+\w+\s+officer)\b` +
     String.raw`[^.\n]{0,40}?\b(?:on|effective|as\s+of|dated)\s+` +
@@ -289,7 +296,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.32.0",
+  version: "1.33.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

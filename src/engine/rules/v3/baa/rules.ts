@@ -299,6 +299,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-012",
+    version: "1.1.0",
     name: "Authorization to terminate if cure infeasible",
     description: "BAA should authorize termination when cure of a material breach is not feasible.",
     citation: "45 C.F.R. § 164.504(e)(2)(iii)",
@@ -309,8 +310,16 @@ export const BAA_RULES: Rule[] = [
       "BAAs should permit termination when a cure is not feasible, mirroring HHS's expected drafting.",
     recommendation:
       "Add language allowing termination if cure is infeasible or if BA fails to cure within a reasonable period.",
+    // "Immediately if cure is not POSSIBLE" is the same right as "if cure is
+    // not FEASIBLE", and a BAA that gives the covered entity a thirty-day cure
+    // period writes the failure as "has not cured", not as "fails to cure" —
+    // the only failure form the patterns read. A § 164.504(e)(2)(iii)-
+    // compliant termination clause therefore reported the right it grants as
+    // missing.
     present_patterns: [
       /(cure\s+is\s+not\s+feasible|cure\s+is\s+infeasible|infeasible\s+to\s+cure|fail.*cure)/i,
+      /cure\s+is\s+(?:not\s+)?(?:possible|practicable|impossible|impracticable)/i,
+      /(?:has|have|does|do)\s+not\s+cure[ds]?\b/i,
     ],
     default_severity: "warning",
   }),
@@ -818,7 +827,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-038",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Term / duration clause present",
     description: "BAA should specify its term.",
     citation: "45 C.F.R. § 164.504(e)",
@@ -833,6 +842,12 @@ export const BAA_RULES: Rule[] = [
     present_patterns: [
       /(\bterm\b.{0,40}(year|month|day)|term\s+of\s+(this\s+)?agreement|initial\s+term)/i,
       /terminates?\s+when\s+all\s+(?:the\s+)?(?:PHI|protected\s+health\s+information)/i,
+      // The same § 164.504(e) shape stated from the other end — the term
+      // CONTINUES UNTIL PHI disposition rather than TERMINATES WHEN it
+      // happens. "…continues until the Underlying Agreement terminates and
+      // all PHI is returned or destroyed" is how a supplementing BAA states
+      // its term, and it matched neither of the patterns above.
+      /(?:continues?|remains?\s+in\s+effect|is\s+in\s+effect|is\s+effective)\b[^.\n]{0,40}?\buntil\b[^.\n]{0,120}?\b(?:PHI|protected\s+health\s+information)\b/i,
     ],
     default_severity: "warning",
   }),

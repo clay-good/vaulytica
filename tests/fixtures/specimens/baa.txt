@@ -1,0 +1,81 @@
+BUSINESS ASSOCIATE AGREEMENT
+
+This Business Associate Agreement (this "Agreement") is entered into as of March 2, 2026 by Northfield Family Health, P.C., an Illinois professional corporation (the "Covered Entity"), and Alder Revenue Systems, Inc., a Delaware corporation (the "Business Associate"). It supplements the Revenue Cycle Services Agreement between the parties dated January 12, 2026 (the "Underlying Agreement"). If this Agreement and the Underlying Agreement conflict as to protected health information, this Agreement controls.
+
+1. DEFINITIONS
+
+Terms used but not defined here have the meanings given them in the Privacy Rule, the Security Rule, the Breach Notification Rule, and the Enforcement Rule at 45 C.F.R. Parts 160 and 164 (together, the "HIPAA Rules"). "Protected Health Information" or "PHI" means protected health information as defined at 45 C.F.R. 160.103, limited to information Business Associate creates, receives, maintains, or transmits for or on behalf of Covered Entity. "Electronic Protected Health Information" or "ePHI" means PHI transmitted by or maintained in electronic media. "Breach", "Required by Law", "Secretary", "Subcontractor", "Unsecured Protected Health Information", and "Security Incident" have the meanings given them in the HIPAA Rules.
+
+2. PERMITTED USES AND DISCLOSURES
+
+Business Associate may use and disclose PHI only to perform the services described in the Underlying Agreement, as Required by Law, or as this Agreement otherwise permits. Business Associate may use PHI for its own proper management and administration and to carry out its legal responsibilities. Business Associate may disclose PHI for those purposes only if the disclosure is Required by Law, or Business Associate obtains reasonable assurances in writing from the recipient that the PHI will be held confidentially and used or further disclosed only as Required by Law or for the purpose for which it was disclosed, and that the recipient will notify Business Associate of any breach of confidentiality of which it becomes aware. Business Associate may de-identify PHI in accordance with 45 C.F.R. 164.514(a)-(c) and may use and disclose the resulting de-identified information for any lawful purpose.
+
+Business Associate will not use or disclose PHI in a manner that would violate Subpart E of 45 C.F.R. Part 164 if done by Covered Entity, except as this section permits. Business Associate will not sell PHI, and will not use or disclose PHI for marketing or fundraising, except as expressly permitted in writing by Covered Entity and by the HIPAA Rules.
+
+3. MINIMUM NECESSARY
+
+Business Associate will limit its request for, and its use and disclosure of, PHI to the minimum necessary to accomplish the intended purpose, consistent with 45 C.F.R. 164.502(b) and 164.514(d).
+
+4. SAFEGUARDS
+
+Business Associate will use appropriate administrative, physical, and technical safeguards, and will comply with Subpart C of 45 C.F.R. Part 164 with respect to ePHI, to prevent use or disclosure of PHI other than as this Agreement provides. Business Associate maintains a written information security program, conducts an annual risk analysis under 45 C.F.R. 164.308(a)(1)(ii)(A), encrypts ePHI at rest and in transit consistent with the guidance the Secretary has issued under section 13402(h)(2) of the HITECH Act, and reviews access rights at least quarterly.
+
+5. SUBCONTRACTORS
+
+Business Associate will require each Subcontractor that creates, receives, maintains, or transmits PHI on its behalf to agree in writing to restrictions and conditions at least as protective as those that apply to Business Associate under this Agreement, as 45 C.F.R. 164.502(e)(1)(ii) and 164.308(b)(2) require. Business Associate remains liable to Covered Entity for the acts and omissions of its Subcontractors with respect to PHI. Business Associate will give Covered Entity a current list of Subcontractors with access to PHI on request, and will give Covered Entity thirty (30) days' notice before engaging a new one.
+
+6. REPORTING
+
+Business Associate will report to Covered Entity any use or disclosure of PHI not permitted by this Agreement, any Security Incident, and any Breach of Unsecured Protected Health Information, in each case without unreasonable delay and no later than ten (10) calendar days after discovery. The report will include, to the extent known, the identification of each individual whose Unsecured Protected Health Information was or is reasonably believed to have been accessed, acquired, used, or disclosed, a description of what happened, the date of the incident and the date of discovery, the types of information involved, and the steps Business Associate has taken to investigate, mitigate, and prevent recurrence. Business Associate will supplement the report as further information becomes available. Unsuccessful attempts at unauthorized access that do not result in unauthorized access to, or use, disclosure, modification, or destruction of, ePHI — such as routine port scans and pings — are reported in the aggregate on a quarterly basis rather than individually.
+
+Covered Entity is responsible for notifying affected individuals, the Secretary, and the media as 45 C.F.R. 164.404 through 164.408 require, unless the parties agree otherwise in writing. Business Associate will reimburse Covered Entity for the reasonable costs of notification arising from a Breach caused by Business Associate or its Subcontractors.
+
+7. INDIVIDUAL RIGHTS
+
+Business Associate will make PHI in a Designated Record Set available to Covered Entity, or at Covered Entity's direction to the individual, within ten (10) business days of a request, so that Covered Entity may meet its obligations under 45 C.F.R. 164.524, including a request for an electronic copy. Business Associate will make amendments to PHI in a Designated Record Set as Covered Entity directs or agrees, within ten (10) business days, under 45 C.F.R. 164.526. Business Associate will document and make available the information required to provide an accounting of disclosures under 45 C.F.R. 164.528, and will retain that documentation for six (6) years. Business Associate will comply with any restriction on use or disclosure that Covered Entity has agreed to under 45 C.F.R. 164.522 and has communicated to Business Associate.
+
+8. ACCESS BY THE SECRETARY
+
+Business Associate will make its internal practices, books, and records relating to the use and disclosure of PHI available to the Secretary for purposes of determining Covered Entity's compliance with the Privacy Rule. Business Associate will notify Covered Entity of the request, unless prohibited by law.
+
+9. MITIGATION
+
+Business Associate will mitigate, to the extent practicable, any harmful effect known to it of a use or disclosure of PHI in violation of this Agreement.
+
+10. TERM AND TERMINATION
+
+This Agreement begins on the date first written above and continues until the Underlying Agreement terminates and all PHI is returned or destroyed. Covered Entity may terminate this Agreement and the Underlying Agreement if it determines that Business Associate has materially breached this Agreement and Business Associate has not cured the breach within thirty (30) days after written notice, or immediately if cure is not possible.
+
+On termination, Business Associate will return or destroy all PHI it maintains in any form and will retain no copies. If return or destruction is infeasible, Business Associate will notify Covered Entity in writing of the conditions that make it infeasible, will extend the protections of this Agreement to that PHI, and will limit further uses and disclosures to the purposes that make return or destruction infeasible, for so long as it maintains the PHI. Sections 4, 6, 8, 9, and this section survive termination.
+
+11. NO THIRD-PARTY BENEFICIARIES
+
+Nothing in this Agreement confers any right, remedy, or obligation on any person other than the parties and their respective successors and permitted assigns.
+
+12. AMENDMENT
+
+The parties will amend this Agreement as necessary for Covered Entity to comply with the HIPAA Rules as they are amended. No amendment is effective unless in a writing signed by both parties.
+
+13. INTERPRETATION
+
+Any ambiguity in this Agreement is resolved in favor of a meaning that permits Covered Entity and Business Associate to comply with the HIPAA Rules. A reference to a section of the HIPAA Rules means that section as in effect or as amended.
+
+14. GOVERNING LAW
+
+This Agreement is governed by the laws of the State of Illinois, without regard to its conflict of laws principles, except to the extent preempted by federal law.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+NORTHFIELD FAMILY HEALTH, P.C.
+
+By: /s/ Ruth Okonjo
+Name: Ruth Okonjo, M.D.
+Title: President
+Date: March 2, 2026
+
+ALDER REVENUE SYSTEMS, INC.
+
+By: /s/ Daniel Iverson
+Name: Daniel Iverson
+Title: Chief Executive Officer
+Date: March 2, 2026

@@ -1,6 +1,6 @@
 {
   "id": "dpa-multi-state-us",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "DPA — Multi-State US (CCPA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, DPDPA)",
   "description": "Multi-state DPA covering CCPA + VCDPA + CPA + CTDPA + UCPA + TDPSA + OCPA + DPDPA. Selects the §30 DPA-US-state ruleset (25 rules) and applies the strictest-applicable floor.",
   "match_features": {
@@ -14,10 +14,11 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "personal information",
-      "personal data",
       "service provider",
-      "processor",
-      "controller",
+      "business purpose",
+      "sell or share",
+      "cross-context behavioral advertising",
+      "deidentified",
       "1798.140",
       "59.1-579",
       "6-1-1305",

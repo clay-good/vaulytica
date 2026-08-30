@@ -1,17 +1,17 @@
 {
   "id": "teaming-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Teaming Agreement (Government Contracting)",
   "description": "Prime/subcontractor teaming agreement for a federal procurement, including FAR 9.6 treatment and the enforceability problem. Selects the COMM-152..156 ruleset (5 checks).",
   "match_features": {
     "title_keywords": ["teaming agreement", "team agreement", "prime-subcontractor teaming"],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "the prime contractor",
-      "the solicitation",
-      "contemplated subcontract",
-      "far 9.6",
-      "if the prime is awarded",
+      "prime contractor",
+      "contracting officer",
+      "request for proposals",
+      "proposal preparation",
+      "organizational conflict",
       "workshare"
     ],
     "negative_features": ["merger", "lease of the premises", "employment agreement"]

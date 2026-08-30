@@ -6378,7 +6378,7 @@
   },
   {
     "id": "dpa-controller-processor",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "DPA — Controller to Processor (EU/UK)",
     "description": "Data Processing Agreement under GDPR and UK GDPR. Selects the §29 DPA-GDPR ruleset (55 rules) covering Article 28(3) enumerated clauses, Articles 28(2)/(4)/(9) subprocessor governance, Articles 27, 30, 32, 33(2), 35, 37, and Chapter V international transfers. Companion: MSA + SCC-Module-2 if processor is non-EU/UK.",
     "match_features": {
@@ -6434,7 +6434,8 @@
     ],
     "companion_playbooks": [
       "msa-vendor-deep",
-      "scc-module-2"
+      "scc-module-2",
+      "dpa-multi-state-us"
     ],
     "compliance_matrix_columns": [
       "GDPR Art. 28(3) intro",
@@ -6454,7 +6455,7 @@
   },
   {
     "id": "dpa-multi-state-us",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "DPA — Multi-State US (CCPA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, DPDPA)",
     "description": "Multi-state DPA covering CCPA + VCDPA + CPA + CTDPA + UCPA + TDPSA + OCPA + DPDPA. Selects the §30 DPA-US-state ruleset (25 rules) and applies the strictest-applicable floor.",
     "match_features": {
@@ -6468,10 +6469,11 @@
       "required_clauses": [],
       "distinguishing_phrases": [
         "personal information",
-        "personal data",
         "service provider",
-        "processor",
-        "controller",
+        "business purpose",
+        "sell or share",
+        "cross-context behavioral advertising",
+        "deidentified",
         "1798.140",
         "59.1-579",
         "6-1-1305",
@@ -18587,7 +18589,7 @@
   },
   {
     "id": "teaming-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Teaming Agreement (Government Contracting)",
     "description": "Prime/subcontractor teaming agreement for a federal procurement, including FAR 9.6 treatment and the enforceability problem. Selects the COMM-152..156 ruleset (5 checks).",
     "match_features": {
@@ -18598,11 +18600,11 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "the prime contractor",
-        "the solicitation",
-        "contemplated subcontract",
-        "far 9.6",
-        "if the prime is awarded",
+        "prime contractor",
+        "contracting officer",
+        "request for proposals",
+        "proposal preparation",
+        "organizational conflict",
         "workshare"
       ],
       "negative_features": [

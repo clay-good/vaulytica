@@ -1267,7 +1267,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
 const TSA_RULES: Rule[] = [
   presence({
     id: "MNA-055",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Transition services scope / schedule",
     description: "TSA must include a scope schedule listing the services being provided.",
     citation: maPractice(
@@ -1286,11 +1286,26 @@ const TSA_RULES: Rule[] = [
     // met by a schedule that names itself once. "Transition services" is
     // replaced rather than OR'd, for the reason `v34-title-vacuity.test.ts`
     // exists: a `transition-services-agreement` says it in its title.
+    //
+    // A TSA does not head its schedule "Schedule of Services". It heads it
+    // "SCHEDULE A - SERVICES" and refers to it as "the services described on
+    // Schedule A" — the lettered-schedule form every transaction document
+    // uses. The four patterns above read only the unlettered spellings, so a
+    // TSA carrying a five-line Schedule A with a service period and a monthly
+    // fee against each service was told its scope schedule was missing, at
+    // `critical`, by the rule whose own recommendation is "add a Schedule of
+    // Services enumerating each service, duration, and fee".
     present_patterns: [
       /schedule\s+(of\s+)?services/i,
       /services\s+schedule/i,
       /(?:service|services)\s+description/i,
       /description\s+of\s+(?:the\s+)?services/i,
+      // "SCHEDULE A - SERVICES", "Exhibit 1: Services", "Annex B — Services".
+      /(?:schedule|exhibit|annex|appendix)\s+[A-Z0-9][-A-Z0-9.]*\s*[-–—:.]\s*services\b/i,
+      // "each Service described on Schedule A", "the services set forth in
+      // Exhibit 1". The verb is required so a bare cross-reference to a
+      // schedule that holds something else cannot satisfy the rule.
+      /\bservices?\b[^.\n]{0,40}?\b(?:described|listed|set\s+(?:out|forth)|identified|enumerated)\s+(?:in|on)\s+(?:schedule|exhibit|annex|appendix)\s+[A-Z0-9]/i,
     ],
   }),
   presence({

@@ -22,11 +22,18 @@ import {
   type RegulatedRuleConfig,
 } from "../_regulated-rule.js";
 
-const US_STATE_PLAYBOOKS = [
-  "dpa-ccpa-service-provider",
-  "dpa-multi-state-us",
-  "dpa-controller-processor",
-];
+// `dpa-controller-processor` is NOT on this list, and the omission is the
+// point. That family is "DPA — Controller to Processor (EU/UK)": its
+// `regulator_frame` is GDPR, its `applicable_jurisdictions` are EU and UK, and
+// every one of its own 55 rules cites an Article of the GDPR. Running the CCPA
+// service-provider ruleset on it meant a textbook Article 28 agreement between
+// a German controller and an Irish processor was told, at `critical`, that it
+// was missing the CCPA purpose-limitation clause, the no-sale prohibition, the
+// cross-context-advertising prohibition, and seven more — ten criticals no
+// compliant EU DPA could ever clear, because California law does not govern it.
+// A DPA that really does cover both regimes belongs in `dpa-multi-state-us`,
+// which is on this list and which the EU/UK family now names as a companion.
+const US_STATE_PLAYBOOKS = ["dpa-ccpa-service-provider", "dpa-multi-state-us"];
 
 const CONFIG: RegulatedRuleConfig = {
   category: "dpa-us-state",

@@ -23,14 +23,34 @@ import {
 //   SCC_PLAYBOOKS: rules about SCC Module 2/3 clauses (do not run on UK).
 //   UK_PLAYBOOKS:  rules about the UK Addendum/IDTA Tables (do not run on SCC).
 //   ALL_TRANSFER_PLAYBOOKS: cross-cutting rules (adequacy, TIA, onward).
-const SCC_PLAYBOOKS = [
-  "scc-module-2",
-  "scc-module-3",
-  "dpa-controller-processor",
-  "dpa-processor-subprocessor",
-];
+//
+// INCORPORATION BY REFERENCE IS NOT ABSENCE.
+//
+// TRANSFER-001..016 read the SCCs CLAUSE BY CLAUSE — "SCC Clause 1 (Purpose
+// and Scope) missing", "SCC Clause 2 (Effect and Invariability) missing" —
+// which is the right check for a document that IS the Standard Contractual
+// Clauses, and the wrong one for a commercial DPA that incorporates them.
+// The commercial pattern is one sentence ("the Standard Contractual Clauses
+// (Module Three) are incorporated and completed by reference to Annexes 1 and
+// 2"), and no compliant DPA drafted that way can ever satisfy a clause-text
+// check. A textbook Article 28 DPA between a German controller and an Irish
+// processor collected SIX CRITICAL findings on that basis alone.
+//
+// So the clause-text rules now run only on the two families whose document is
+// the SCC instrument itself. The CROSS-CUTTING transfer rules — adequacy
+// fallback, transfer impact assessment, onward transfer, the transfer basis
+// itself — still run on the commercial DPA families, where they read on the
+// text a commercial DPA actually contains and are the checks that matter
+// there.
+const SCC_TEXT_PLAYBOOKS = ["scc-module-2", "scc-module-3"];
+const COMMERCIAL_DPA_PLAYBOOKS = ["dpa-controller-processor", "dpa-processor-subprocessor"];
+const SCC_PLAYBOOKS = SCC_TEXT_PLAYBOOKS;
 const UK_PLAYBOOKS = ["uk-idta-addendum"];
-const ALL_TRANSFER_PLAYBOOKS = [...SCC_PLAYBOOKS, ...UK_PLAYBOOKS];
+const ALL_TRANSFER_PLAYBOOKS = [
+  ...SCC_TEXT_PLAYBOOKS,
+  ...COMMERCIAL_DPA_PLAYBOOKS,
+  ...UK_PLAYBOOKS,
+];
 
 /**
  * Whole-scope disapplication of a numbered SCC clause.
