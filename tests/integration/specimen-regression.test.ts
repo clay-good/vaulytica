@@ -2096,6 +2096,21 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "family-msa",
     findings: ["STRUCT-018", "EST-060", "OBLI-003", "OBLI-005"],
   },
+  // A first set of FRCP 34 requests for production — the 224th specimen, and
+  // the first for `document-requests`. It reports NOTHING, which took two
+  // fixes:
+  //
+  //   - DISC-003 said it stated no relevant time period, on a request set
+  //     whose definitions read `"Relevant Period" means January 1, 2023
+  //     through the date of production` and whose requests use that term. The
+  //     check's second pillar wanted a scoping phrase ("unless otherwise
+  //     stated", "these requests cover") — one way to bound a period, and not
+  //     the way a definitions section does it.
+  //   - STRUCT-006 reported "Purchase Orders" as undefined, from "Purchase
+  //     Orders 44117, 44219, and 44320" — the sentence that identifies exactly
+  //     which orders it means. A phrase followed by an identifying number
+  //     names an instrument; the Title-Case run just stops at the digits.
+  "document-requests.txt": { playbook: "document-requests", findings: [] },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],

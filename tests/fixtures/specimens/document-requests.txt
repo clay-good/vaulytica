@@ -1,0 +1,99 @@
+IN THE UNITED STATES DISTRICT COURT
+FOR THE WESTERN DISTRICT OF WASHINGTON
+AT SEATTLE
+
+CASCADIA MARINE OUTFITTERS, INC.,      )
+                Plaintiff,             )
+                                       )   Case No. 2:26-cv-00918-RAJ
+        v.                             )
+                                       )
+NORTHWIND COMPOSITES LLC,              )
+                Defendant.             )
+
+PLAINTIFF CASCADIA MARINE OUTFITTERS, INC.'S FIRST SET OF REQUESTS FOR PRODUCTION OF DOCUMENTS TO DEFENDANT NORTHWIND COMPOSITES LLC
+
+TO: Defendant Northwind Composites LLC, and its attorneys of record.
+
+Pursuant to Federal Rules of Civil Procedure 26 and 34, Plaintiff Cascadia Marine Outfitters, Inc. requests that Defendant Northwind Composites LLC produce for inspection and copying the documents and electronically stored information described below, at the offices of Halloway & Beaumont LLP, 1201 Third Avenue, Suite 4900, Seattle, Washington 98101, or in a mutually agreeable electronic form, within thirty (30) days after service.
+
+DEFINITIONS
+
+1. "You," "Your," and "Defendant" mean Northwind Composites LLC and its officers, directors, employees, agents, attorneys, predecessors, successors, subsidiaries, affiliates, and any person acting on its behalf.
+
+2. "Plaintiff" means Cascadia Marine Outfitters, Inc.
+
+3. "Document" has the broadest meaning permitted by Federal Rule of Civil Procedure 34(a)(1)(A) and includes electronically stored information, drafts, non-identical copies, and metadata.
+
+4. "Communication" means any transmission of information, whether oral, written, or electronic, including email, text message, instant message, and voicemail.
+
+5. "The Hull Panels" means the carbon-fiber hull panels Defendant manufactured for Plaintiff under Purchase Orders 44117, 44219, and 44320.
+
+6. "The Delamination" means the separation of laminate layers in the Hull Panels first reported by Plaintiff on or about May 14, 2025.
+
+7. "Relevant Period" means January 1, 2023 through the date of production.
+
+INSTRUCTIONS
+
+1. These requests are continuing. If You obtain a responsive document after production, produce it promptly under Federal Rule of Civil Procedure 26(e).
+
+2. Produce documents as they are kept in the usual course of business, or organize and label them to correspond to the categories in these requests, as Federal Rule of Civil Procedure 34(b)(2)(E)(i) requires.
+
+3. Produce electronically stored information in the form the parties agreed in their Rule 26(f) report and in the Stipulated ESI Protocol entered on March 3, 2026 (ECF No. 32): single-page TIFF with extracted text and the agreed metadata fields, native format for spreadsheets and presentations.
+
+4. If You withhold any document on a claim of privilege or work-product protection, produce a log describing the document with reasonable particularity as Federal Rule of Civil Procedure 26(b)(5)(A) requires, within the time the Stipulated ESI Protocol provides.
+
+5. If You object to a request in part, state the objection with specificity and produce the documents responsive to the unobjectionable portion, as Federal Rule of Civil Procedure 34(b)(2)(C) requires.
+
+6. If a responsive document once existed but is no longer in Your possession, custody, or control, identify the document, state what became of it, and identify each person who has knowledge of its disposition.
+
+REQUESTS FOR PRODUCTION
+
+REQUEST NO. 1: All documents concerning the design, engineering, or specification of the Hull Panels.
+
+REQUEST NO. 2: All documents concerning the resin, fiber, and core materials used in the Hull Panels, including certificates of analysis, mill certificates, and supplier specifications.
+
+REQUEST NO. 3: All documents concerning Your quality control and inspection of the Hull Panels, including inspection records, nonconformance reports, and corrective action reports.
+
+REQUEST NO. 4: All documents concerning the cure cycle, autoclave logs, and process parameters for each lot of the Hull Panels.
+
+REQUEST NO. 5: All communications between You and Plaintiff concerning the Hull Panels or the Delamination.
+
+REQUEST NO. 6: All internal communications concerning the Delamination, including communications with Your engineering, quality, and management personnel.
+
+REQUEST NO. 7: All documents concerning any root-cause analysis, failure analysis, or testing of the Hull Panels or the Delamination.
+
+REQUEST NO. 8: All documents concerning any complaint, warranty claim, or return by any other customer relating to delamination in a product manufactured using the same resin system as the Hull Panels during the Relevant Period.
+
+REQUEST NO. 9: All documents concerning any change to Your resin supplier, resin formulation, or cure process during the Relevant Period.
+
+REQUEST NO. 10: All documents concerning Your communications with any insurer regarding the Delamination, excluding documents protected by the attorney-client privilege or the work-product doctrine.
+
+REQUEST NO. 11: All documents concerning the negotiation, formation, and performance of Purchase Orders 44117, 44219, and 44320.
+
+REQUEST NO. 12: Documents sufficient to show Your organizational structure, and the identity and role of each person with responsibility for the Hull Panels during the Relevant Period.
+
+REQUEST NO. 13: Documents sufficient to show Your revenue, cost, and margin on the Hull Panels.
+
+REQUEST NO. 14: All documents concerning Your document-retention policy and any litigation hold issued in connection with this matter.
+
+REQUEST NO. 15: All documents You intend to rely upon to support any defense in this action.
+
+Dated: April 6, 2026
+
+HALLOWAY & BEAUMONT LLP
+
+/s/ Ngozi Adebayo-Sterling
+Ngozi Adebayo-Sterling, WSBA No. 48211
+1201 Third Avenue, Suite 4900
+Seattle, Washington 98101
+(206) 555-0142
+nadebayo@hallowaybeaumont.example
+
+Attorneys for Plaintiff Cascadia Marine Outfitters, Inc.
+
+CERTIFICATE OF SERVICE
+
+I certify that on April 6, 2026 I served the foregoing on counsel of record by electronic mail pursuant to the parties' agreement and by the Court's CM/ECF system.
+
+/s/ Ngozi Adebayo-Sterling
+Ngozi Adebayo-Sterling

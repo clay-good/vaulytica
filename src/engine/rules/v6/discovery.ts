@@ -56,11 +56,18 @@ const RFP = pack("document-requests", C, [
   },
   {
     id: "DISC-003",
+    ver: "1.1.0",
     name: "Relevant time period",
     cite: frcp("26(b)(1)", "scope of discovery — proportionality"),
     pat: [
       /(time\s+period|relevant\s+period|from\s+\w+\s+\d{1,2},?\s+\d{4}|between\s+\w+\s+\d{4})/i,
-      /(unless\s+otherwise\s+(stated|specified)|these\s+requests\s+(cover|seek)|applicable\s+to\s+the\s+period)/i,
+      // The second pillar is that the period is BOUNDED, and a definitions
+      // section is where a request set binds it: `"Relevant Period" means
+      // January 1, 2023 THROUGH THE DATE of production.` The scoping phrases
+      // below are one way to say it and not the only one — requiring them
+      // reported a request set that defines and uses its own Relevant Period
+      // as having stated no time period at all.
+      /(unless\s+otherwise\s+(stated|specified)|these\s+requests\s+(cover|seek)|applicable\s+to\s+the\s+period|\bthrough\s+(?:the\s+(?:date|present|filing)|\w+\s+\d{1,2},?\s+\d{4})|\bto\s+the\s+present\b|\bto\s+and\s+including\b)/i,
     ],
     all: true,
     why: "An unbounded time period is the first proportionality objection any responding party makes, and often a well-taken one. Stating the period up front removes it.",

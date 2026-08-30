@@ -1464,6 +1464,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         )
       )
         continue;
+      // A phrase followed by an IDENTIFYING NUMBER names a specific instrument,
+      // not a term: "Purchase Orders 44117, 44219, and 44320", "Invoice 8842",
+      // "Work Order 51". The Title-Case run stops at the digits, so the noun
+      // arrives on its own and a set of discovery requests was told it uses a
+      // term "Purchase Orders" it never defined — on the sentence that
+      // identifies exactly which orders it means.
+      //
+      // Three digits or more, so an ordinal section reference is untouched and
+      // a two-word phrase followed by a year is not swept in.
+      if (/^\s*(?:Nos?\.\s*)?\d{3,}\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
       // A term the document defines by its COMPOSITION, outside a Definitions
       // section: "The Contract Documents consist of the prime contract between
       // Contractor and Owner, the drawings and specifications listed in

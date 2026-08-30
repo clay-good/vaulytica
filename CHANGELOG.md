@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.258.0] — 2026-08-30
+
+### Added
+- One specimen — a first set of FRCP 34 requests for production — the 224th,
+  and the first for `document-requests`. It reports nothing.
+
+### Fixed
+- **A request set that defines its own Relevant Period was told it stated no
+  time period.** DISC-003's second pillar wanted a scoping phrase — "unless
+  otherwise stated", "these requests cover" — which is one way to bound a
+  period and not the way a definitions section does it. What the pillar is
+  actually for is that the period is BOUNDED, and `"Relevant Period" means
+  January 1, 2023 THROUGH THE DATE of production` is bounded.
+- **A phrase followed by an IDENTIFYING NUMBER read as an undefined term.**
+  "Purchase Orders 44117, 44219, and 44320" is the sentence that says exactly
+  which orders are meant; the Title-Case run stops at the digits, so the noun
+  arrived on its own and the request set was told it uses a term "Purchase
+  Orders" it never defined. Three digits or more, so an ordinal after a term
+  is untouched.
+
 ## [9.257.0] — 2026-08-30
 
 ### Fixed

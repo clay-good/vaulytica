@@ -2366,3 +2366,34 @@ describe("a term defined by its composition is defined", () => {
     ).toContain("Frobnicator Standard");
   });
 });
+
+/**
+ * A phrase followed by an IDENTIFYING NUMBER names a specific instrument. The
+ * Title-Case run stops at the digits, so the noun arrives on its own, and a
+ * set of discovery requests was told it uses a term "Purchase Orders" it never
+ * defined — on the sentence identifying exactly which orders it means.
+ */
+describe("a phrase followed by an identifying number names an instrument", () => {
+  const flagged = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Body", ...paras])).undefined_capitalized.map((e) => e.term);
+
+  it.each([
+    ["Purchase Orders", "the panels supplied under Purchase Orders 44117, 44219, and 44320"],
+    ["Work Order", "the scope stated in Work Order 5108"],
+    ["Invoice No", "the amount shown on Invoice No. 88421"],
+  ])("does not flag %s", (term, phrase) => {
+    expect(flagged(`Plaintiff seeks ${phrase}.`, `Defendant disputes ${phrase}.`)).not.toContain(
+      term,
+    );
+  });
+
+  /** A short ordinal after a term is not an instrument number. */
+  it("still flags a term followed by a short number", () => {
+    expect(
+      flagged(
+        "The Frobnicator Widget 4 ships today.",
+        "Each Frobnicator Widget 4 is inspected before shipment.",
+      ),
+    ).toContain("Frobnicator Widget");
+  });
+});
