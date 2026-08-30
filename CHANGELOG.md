@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.255.0] — 2026-08-30
+
+### Added
+- One specimen — a Minnesota marital settlement agreement — the 223rd, and the
+  first for `family-msa`.
+
+### Fixed
+- **A divorce settlement was audited as a commercial contract.** `family-msa`
+  carried an empty `rule_overrides`, so a marital settlement agreement was
+  told it allocates no intellectual property, states no limitation of
+  liability, caps no indemnity, names no procedure for the hold-harmless on a
+  car loan, states no path to terminate for material breach, and states no
+  effect of termination. It now carries the `cohabitation-agreement` profile —
+  the fullest family-law profile in the catalog — plus TEMP-012, because a
+  survival clause that enumerates indemnification is a commercial convention
+  and a marital settlement survives as an independent contract instead.
+- **Personal health coverage is not a coverage requirement.** RISK-016 read
+  "Wife shall maintain health and dental insurance for the Children through
+  her employer while it is available at reasonable cost" as an insurance
+  requirement with no stated minimum — a minimum no health-coverage clause has
+  ever carried. Fixed at the rule level rather than skipped for the family,
+  because the same sentence appears in every employment and physician
+  agreement. A clause naming a liability policy beside a health policy is a
+  commercial requirement and still reports.
+- **A commercial lease titled "COMMERCIAL REAL ESTATE LEASE" scored no title
+  weight.** It still routed, at 0.6 — one feature from the 0.5 cliff below
+  which a document reaches no family at all.
+
 ## [9.254.0] — 2026-08-30
 
 ### Added

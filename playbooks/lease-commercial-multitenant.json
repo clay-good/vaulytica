@@ -4,7 +4,7 @@
   "name": "Commercial Real Estate Lease (Multi-Tenant Office, US)",
   "description": "Multi-tenant US office lease with operating-expense pass-throughs. High-anxiety contract for small businesses. Drafting standards informed by the ABA Real Property section and Uniform Law Commission commentary.",
   "match_features": {
-    "title_keywords": ["office lease", "commercial lease", "lease agreement", "multi-tenant lease"],
+    "title_keywords": ["office lease", "commercial lease", "commercial real estate lease", "real estate lease", "lease agreement", "multi-tenant lease"],
     "required_clauses": ["term"],
     "distinguishing_phrases": ["Tenant's Proportionate Share", "Common Area", "Rentable Square Feet", "Base Rent", "Operating Expenses", "CAM", "subleasing"],
     "negative_features": ["the Service", "Subscription Term", "Confidential Information", "Customer Data", "Statement of Work", "SOW", "1099", "residential", "apartment", "no smoking", "pets are not permitted"]

@@ -107,3 +107,42 @@ describe("RISK-016 — insurance requirement without coverage minimum", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * HEALTH insurance maintained for a PERSON is not a commercial coverage
+ * requirement and never states a per-occurrence limit. A marital settlement
+ * agreement was reported for stating no coverage minimum on a clause that
+ * could not have one.
+ */
+describe("RISK-016 v1.3.0 — personal health coverage is not a coverage requirement", () => {
+  const doc = (...paras: string[]) => buildContext(["Insurance", ...paras]);
+
+  it.each([
+    "Wife shall maintain health and dental insurance for the Children through her employer while it is available at reasonable cost.",
+    "The Company shall maintain medical insurance for Executive on the same terms as other senior executives.",
+    "Employer shall maintain disability insurance for the Employee during the term.",
+  ])("is silent on: %s", (sentence) => {
+    expect(RISK_016.check(doc(sentence))).toBeNull();
+  });
+
+  it("still fires on a commercial policy with no stated minimum", () => {
+    expect(
+      RISK_016.check(
+        doc(
+          "Contractor shall maintain commercial general liability insurance throughout the term.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  /** A clause naming BOTH is a commercial requirement and still reports. */
+  it("still fires where a liability policy sits beside a health policy", () => {
+    expect(
+      RISK_016.check(
+        doc(
+          "Provider shall maintain professional liability insurance and health insurance for its personnel throughout the term.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -2077,6 +2077,25 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "relocation-agreement",
     findings: ["OBLI-005", "STRUCT-009", "TEMP-008"],
   },
+  // A Minnesota marital settlement agreement — the 223rd specimen, and the
+  // first for `family-msa`. It carried an empty `rule_overrides`, so a divorce
+  // settlement was told it allocates no intellectual property, states no
+  // limitation of liability, caps no indemnity, states no path to terminate
+  // for material breach, and states no effect of termination. It now carries
+  // the `cohabitation-agreement` profile — the fullest family-law profile in
+  // the catalog — plus TEMP-012, because a survival clause that enumerates
+  // indemnification is a commercial convention and a marital settlement
+  // survives as an independent contract instead.
+  //
+  // RISK-016 was fixed at the rule level rather than skipped: "Wife shall
+  // maintain health and dental insurance for the Children through her
+  // employer" was reported as an insurance requirement with no coverage
+  // minimum — a minimum no health-coverage clause has ever stated. The same
+  // sentence shape appears in every employment and physician agreement.
+  "marital-settlement-agreement.txt": {
+    playbook: "family-msa",
+    findings: ["STRUCT-018", "EST-060", "OBLI-003", "OBLI-005"],
+  },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
     findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],

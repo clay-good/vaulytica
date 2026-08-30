@@ -15,7 +15,7 @@ import { emit, enclosingSentence, excerptWindow, firstParagraphMatch } from "../
  */
 export const rule: Rule = {
   id: "RISK-016",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Insurance requirement without coverage minimum",
   category: "risk-allocation",
   default_severity: "warning",
@@ -34,6 +34,22 @@ export const rule: Rule = {
       /\b(?:(?:shall|must|will|agrees?\s+to|(?:is|are)\s+(?:required|obligated)\s+to)\s+(?:maintain|carry|procure|obtain|purchase|secure|keep\s+in\s+force)\s+[^.]{0,80}\binsurance\b|insurance\s+(?:shall|must|will)\s+be\s+(?:maintained|carried|procured|obtained|purchased|secured|kept\s+in\s+force))/i,
     );
     if (!hit) return null;
+    // HEALTH insurance maintained FOR A PERSON is not a commercial coverage
+    // requirement and never carries a per-occurrence limit. A marital
+    // settlement agreement's "Wife shall maintain health and dental insurance
+    // for the Children through her employer while it is available at
+    // reasonable cost" was reported as an insurance requirement with no
+    // coverage minimum — a minimum no such clause has ever stated. The same
+    // sentence shape appears in every employment and physician agreement.
+    if (
+      /\b(?:health|dental|vision|medical|hospitalization|disability|life)\s+(?:and\s+\w+\s+)?insurance\b/i.test(
+        hit.match[0],
+      ) &&
+      !/\b(?:liability|professional|commercial|general|umbrella|excess|property|casualty|cyber|errors\s+and\s+omissions|workers['’]?\s+compensation)\s+insurance\b/i.test(
+        hit.match[0],
+      )
+    )
+      return null;
 
     // Check the same paragraph for a coverage minimum. The minimum
     // can be expressed as `$1,000,000`, `$1M`, `one million dollars`,
