@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.243.0] — 2026-08-29
+
+### Added
+- A petition for a writ of certiorari — the 200th specimen, and the first for
+  `petition`.
+
+### Fixed
+- **A seventh thing above the title: the DOCKET NUMBER.** "No. 26-1147" opens
+  an appellate caption and the court is named on the next line, so the caption
+  reader — which required the court on the FIRST line — threw the whole caption
+  away, and a petition whose own title keyword is exactly "petition for a writ
+  of certiorari" fell to `generic-fallback`.
+- **A federal statute cited WITHOUT the section sign read as a malformed case.**
+  "28 U.S.C. 1254(1)" is the form the Supreme Court's own rules prescribe. Three
+  fixes: the sign is now optional; a reporter token is never a BARE NUMBER (so
+  two sign-less cites joined by the paste path no longer stitch into "volume 28
+  of a reporter called U.S.C. 1254, page 42"); and "U.S.C." and "C.F.R." are
+  code titles, never reporters.
+- **A COURT is an institution the document names, not a term it defines.** A
+  cert petition describing a circuit split writes "the Second, Third, Sixth, and
+  Tenth Circuits" in every section that discusses it, and "Tenth Circuits" was
+  reported as a term the petition forgot to define.
+- **A letter closing after a SENTENCE END.** Stripping a document's blank lines
+  merges the whole filing into one paragraph, so "Respectfully submitted,
+  DEVARSHI NANDAKUMAR" no longer starts a line and the petition reported itself
+  unsigned, at `critical`.
+
 ## [9.242.0] — 2026-08-29
 
 ### Added

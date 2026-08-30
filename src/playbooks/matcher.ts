@@ -348,8 +348,17 @@ const CAPTION_PARTY_BLOCK =
   /,\s*(?:plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|debtors?|intervenors?|claimants?|cross-?(?:claimants?|defendants?)|third-?party\s+(?:plaintiffs?|defendants?))\s*[.,;:)\s-]*$/i;
 
 function captionTitle(paragraphs: readonly string[]): string {
-  if (paragraphs.length === 0 || !CAPTION_COURT.test(paragraphs[0]!)) return "";
-  for (const text of paragraphs.slice(1)) {
+  // The DOCKET NUMBER sits above the court in an appellate caption — a
+  // Supreme Court petition opens "No. 26-1147" and names the court on the
+  // next line. Requiring the court on the FIRST line threw the whole caption
+  // away, and a petition for a writ of certiorari, whose own title keyword is
+  // exactly that phrase, fell to `generic-fallback`.
+  let head = 0;
+  while (head < paragraphs.length && head < 2 && CAPTION_BARE_DOCKET.test(paragraphs[head]!)) {
+    head += 1;
+  }
+  if (head >= paragraphs.length || !CAPTION_COURT.test(paragraphs[head]!)) return "";
+  for (const text of paragraphs.slice(head + 1)) {
     if (text.length === 0) continue;
     if (CAPTION_ROLE.test(text)) continue;
     // A caption that arrived as ONE paragraph carries the docket and the judge

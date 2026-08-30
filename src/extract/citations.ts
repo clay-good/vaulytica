@@ -44,10 +44,16 @@ export type ParsedCitation = {
  * Fed. R. App. P. 32") is not a case citation.
  */
 const CASE_RE =
-  /\b(\d{1,4})[ \t]+([A-Z][A-Za-z0-9.'’]*(?:[ ][A-Z0-9][A-Za-z0-9.'’]*){0,5})[ \t]+(\d+)\b/g;
+  /\b(\d{1,4})[ \t]+([A-Z][A-Za-z0-9.'’]*(?:[ ](?:[A-Z][A-Za-z0-9.'’]*|\d+[A-Za-z][A-Za-z0-9.'’]*)){0,5})[ \t]+(\d+)\b/g;
 
-/** Federal statute: "28 U.S.C. § 1331". */
-const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+§+\s*([\d.]+[a-z0-9()]*)/g;
+/**
+ * Federal statute: "28 U.S.C. § 1331", and — the form the Supreme Court's own
+ * rules prescribe — "28 U.S.C. 1254(1)" with no section sign at all. Without
+ * the optional form, a cert petition's table of authorities read as TWO
+ * malformed case citations, "28 U.S.C. 1254" being volume 28 of a reporter
+ * called "U.S.C." that no reporter table knows.
+ */
+const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+(?:§+\s*)?([\d.]+[a-z0-9()]*)/g;
 
 /**
  * State statute, section-sign form. A run of jurisdiction/subject abbreviation
@@ -163,6 +169,11 @@ function matchCases(text: string): ParsedCitation[] {
     // not a malformed case — and the longer bogus case match would swallow
     // it in overlap resolution (audit).
     if (/^Fed\.\s*R\./.test(reporter) || /^(?:FRAP|FRCP|FRBP|FRE)\b/.test(reporter)) continue;
+    // "U.S.C." and "C.F.R." are CODE titles, never reporters. Written without
+    // the section sign — "28 U.S.C. 1254(1)", the form the Supreme Court's own
+    // rules prescribe — the case pattern reads the same span as the statute
+    // pattern, and the tie was resolved against the statute.
+    if (/^(?:U\.S\.C\.|C\.F\.R\.)$/.test(reporter)) continue;
     // An IDENTIFIER NUMBER is not a citation. A motion's signature block runs
     // a phone number into an attorney registration number — "(312) 555-0192
     // ARDC No. 6318842" — and "0192 ARDC No. 6318842" parsed as volume,

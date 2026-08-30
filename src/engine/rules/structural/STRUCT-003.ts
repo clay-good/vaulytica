@@ -231,7 +231,12 @@ const LETTER_CLOSING_WORDS =
 
 /** True when a line of `text` is a valediction followed by nothing or by a name. */
 function hasLetterClosing(text: string): boolean {
-  for (const line of text.split("\n")) {
+  // A SENTENCE END is the same boundary as a line start once the layout is
+  // flat: stripping a document's blank lines — a PDF copy-paste — merges the
+  // whole filing into one paragraph, and "… Rule 10(c), the conflict … warrant
+  // review. Respectfully submitted, DEVARSHI NANDAKUMAR" no longer starts a
+  // line. A cert petition then reported itself unsigned, at `critical`.
+  for (const line of text.split(/\n|(?<=[.!?])\s+/)) {
     const m = LETTER_CLOSING_WORDS.exec(line);
     if (!m) continue;
     const rest = line.slice(m[0].length);
@@ -284,7 +289,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.31.0",
+  version: "1.32.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

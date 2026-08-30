@@ -145,3 +145,29 @@ describe("STRUCT-003 — a policy is adopted, not signed (v1.31.0)", () => {
     ).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — a letter closing after a sentence end (v1.32.0)", () => {
+  it("stands down when the flat layout merges the closing into the prose", () => {
+    // Stripping a document's blank lines merges the whole filing into one
+    // paragraph, and "Respectfully submitted," no longer starts a line.
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Petition for a Writ of Certiorari",
+          "Under this Court's Rule 10(c), the conflict among the courts of appeals warrants review. The petition should be granted. Respectfully submitted, DEVARSHI NANDAKUMAR Counsel of Record",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not read a mid-sentence 'respectfully submitted' as a closing", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Memorandum",
+          "Counsel respectfully submitted the exhibits to the clerk on Tuesday and awaits a ruling.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

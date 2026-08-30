@@ -489,6 +489,10 @@ const OFFICER_TITLES =
  */
 const CLAUSE_NUMBER_BEFORE = /\b\d{1,3}\.\d{1,4}(?:-\d+)+(?:\([a-z0-9]+\))*,?\s+$/;
 
+/** A court named as an institution: "Ninth Circuit", "Tenth Circuits", "Court of Chancery". */
+const COURT_NAME_TERM =
+  /\b(?:First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Federal|D\.C\.)\s+Circuits?$|\bCourts?(?:\s+of\s+[A-Z][\w'’]*)*$/;
+
 /** The phrase is the PLAINTIFF half of a case name: "Celotex Corp. v. Catrett". */
 const CASE_NAME_PLAINTIFF = /^[.'’]?\s*v\.\s/;
 /** The phrase is the DEFENDANT half: "Reeves v. Sanderson Plumbing Prods.". */
@@ -1380,6 +1384,14 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // is dropped, not just the signed occurrence.
       if (SIGNATURE_LABEL_BEFORE.test(ctx.text.slice(Math.max(0, m.index - 24), m.index))) {
         signedNames.add(canonicalOf(phrase));
+        continue;
+      }
+      // A COURT is an institution the document names, not a term it defines.
+      // A cert petition describing a circuit split writes "the Second, Third,
+      // Sixth, and Tenth Circuits" in every section that discusses it, and
+      // "Tenth Circuits" was reported as a term the petition forgot to define.
+      if (COURT_NAME_TERM.test(phrase)) {
+        caseNames.add(canonicalOf(phrase));
         continue;
       }
       // A REGULATION CLAUSE is cited by number and name — "FAR clause 52.225-5,

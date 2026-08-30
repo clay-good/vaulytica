@@ -1,0 +1,114 @@
+No. 26-1147
+
+IN THE SUPREME COURT OF THE UNITED STATES
+
+MARISOL ONTIVEROS-BAEZ,
+                                        Petitioner,
+v.
+CASCADIA FREIGHT LOGISTICS, INC.,
+                                        Respondent.
+
+ON PETITION FOR A WRIT OF CERTIORARI
+TO THE UNITED STATES COURT OF APPEALS
+FOR THE NINTH CIRCUIT
+
+PETITION FOR A WRIT OF CERTIORARI
+
+Devarshi Nandakumar
+   Counsel of Record
+HOLLOWAY & NANDAKUMAR LLP
+1900 Franklin Street, Suite 1400
+Oakland, California 94612
+(510) 555-0148
+dnandakumar@hollowaynandakumar.com
+
+Counsel for Petitioner
+
+QUESTIONS PRESENTED
+
+1. Whether temporal proximity of eleven days between an employee's protected complaint and her termination is sufficient, standing alone, to establish the causal-link element of a prima facie retaliation case under Title VII, where four circuits hold that it is and three hold that it is not.
+
+2. Whether a district court may decline to consider a sworn declaration on summary judgment on the ground that it is "not probative," without identifying any defect in its form or foundation.
+
+PARTIES TO THE PROCEEDING
+
+Petitioner is Marisol Ontiveros-Baez, plaintiff-appellant below. Respondent is Cascadia Freight Logistics, Inc., defendant-appellee below. There are no other parties to the proceeding.
+
+CORPORATE DISCLOSURE STATEMENT
+
+Petitioner is a natural person and is not a corporation, so no disclosure is required under this Court's Rule 29.6.
+
+TABLE OF CONTENTS
+
+Questions Presented
+Parties to the Proceeding
+Corporate Disclosure Statement
+Table of Authorities
+Opinions Below
+Jurisdiction
+Statutory Provisions Involved
+Statement of the Case
+Reasons for Granting the Petition
+Conclusion
+Appendix
+
+TABLE OF AUTHORITIES
+
+Cases
+Clark County School District v. Breeden, 532 U.S. 268 (2001)
+Dawson v. Entek International, 630 F.3d 928 (9th Cir. 2011)
+Reeves v. Sanderson Plumbing Products, Inc., 530 U.S. 133 (2000)
+University of Texas Southwestern Medical Center v. Nassar, 570 U.S. 338 (2013)
+
+Statutes and Rules
+28 U.S.C. 1254
+42 U.S.C. 2000e-3
+Supreme Court Rule 10
+Supreme Court Rule 29.6
+
+OPINIONS BELOW
+
+The opinion of the court of appeals is reported at 118 F.4th 1042 and is reproduced at Appendix A. The order of the district court granting summary judgment is unreported and is reproduced at Appendix B.
+
+JURISDICTION
+
+The court of appeals entered judgment on May 6, 2026, and denied a timely petition for rehearing en banc on July 1, 2026. This petition is filed within ninety days of that denial. This Court has jurisdiction under 28 U.S.C. 1254(1).
+
+STATUTORY PROVISIONS INVOLVED
+
+The anti-retaliation provision of Title VII, 42 U.S.C. 2000e-3(a), is reproduced at Appendix C.
+
+STATEMENT OF THE CASE
+
+Petitioner worked as a dispatch coordinator for Respondent from March 2019 until her termination on October 24, 2022. On October 13, 2022, she submitted a written complaint to Respondent's human resources department reporting that her supervisor had repeatedly made demeaning remarks about the national origin of two warehouse employees. Eleven days later, Respondent terminated her, citing a reduction in force. No other dispatch coordinator was terminated in that reduction, and Respondent reposted the position six weeks later.
+
+A coworker submitted a sworn declaration stating that, two days after the complaint, the supervisor said Petitioner "would not be here much longer." The district court granted summary judgment, declining to consider the declaration as "not probative," and holding that eleven days was insufficient to establish causation. A divided panel of the court of appeals affirmed, over a dissent that would have followed the Second, Third, Sixth, and Tenth Circuits.
+
+REASONS FOR GRANTING THE PETITION
+
+I. THE CIRCUITS ARE DIVIDED ON WHETHER SHORT TEMPORAL PROXIMITY ALONE ESTABLISHES CAUSATION.
+
+The Second, Third, Sixth, and Tenth Circuits hold that an interval of a few weeks or less between protected activity and an adverse action is by itself sufficient at the prima facie stage. The Fourth, Eighth, and now the Ninth Circuit hold that timing alone never suffices. This Court observed in Clark County School District v. Breeden, 532 U.S. 268, 273 (2001), that temporal proximity must be "very close," but it has not decided whether very close proximity is enough on its own. The conflict is entrenched, has been acknowledged by judges on both sides, and is outcome-determinative in a large share of retaliation cases.
+
+II. THE DECISION BELOW CONFLICTS WITH THIS COURT'S SUMMARY-JUDGMENT PRECEDENT.
+
+A court may not weigh evidence or make credibility determinations on summary judgment. Reeves v. Sanderson Plumbing Products, Inc., 530 U.S. 133, 150 (2000). Disregarding a sworn declaration as "not probative," without identifying a defect in its form or foundation, is a credibility determination in all but name, and it decided this case.
+
+III. THIS CASE IS AN EXCELLENT VEHICLE.
+
+The question was pressed and passed on below, the record is short, the eleven-day interval is undisputed, and no alternative ground supports the judgment. Under this Court's Rule 10(a) and 10(c), the conflict among the courts of appeals and the departure from this Court's precedent each warrant review.
+
+CONCLUSION
+
+The petition for a writ of certiorari should be granted.
+
+Respectfully submitted,
+
+DEVARSHI NANDAKUMAR
+   Counsel of Record
+HOLLOWAY & NANDAKUMAR LLP
+1900 Franklin Street, Suite 1400
+Oakland, California 94612
+(510) 555-0148
+
+August 28, 2026

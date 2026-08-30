@@ -250,3 +250,23 @@ describe("extractCitations — an identifier number is not a citation (v9.230.0)
     expect(cites.some((c) => c.kind === "case" && c.reporter === "U.S.")).toBe(true);
   });
 });
+
+describe("extractCitations — the section sign is optional (v9.243.0)", () => {
+  it('reads "28 U.S.C. 1254(1)" as a statute, not a malformed case', () => {
+    const cites = extractCitations("This Court has jurisdiction under 28 U.S.C. 1254(1).");
+    expect(cites.some((c) => c.kind === "statute")).toBe(true);
+    expect(cites.some((c) => c.kind === "case")).toBe(false);
+  });
+
+  it("does not stitch two sign-less statute cites into one malformed case", () => {
+    // A cert petition's table of authorities lists them on consecutive lines,
+    // which the paste path joins with a space.
+    const cites = extractCitations("28 U.S.C. 1254 42 U.S.C. 2000e-3");
+    expect(cites.filter((c) => c.kind === "case" && !c.well_formed)).toEqual([]);
+  });
+
+  it("still reads a real reporter series", () => {
+    const cites = extractCitations("Dawson v. Entek Int'l, 630 F.3d 928, 934 (9th Cir. 2011).");
+    expect(cites.some((c) => c.kind === "case" && c.reporter === "F.3d")).toBe(true);
+  });
+});

@@ -2196,3 +2196,16 @@ describe("extractDefinitions — a cover block may open with the company name (v
     expect(extractDefinitions(tree).entries.map((e) => e.term)).not.toContain("Wire Instructions");
   });
 });
+
+describe("extractDefinitions — a court is not a defined term (v9.243.0)", () => {
+  it("does not report the circuits a petition names", () => {
+    const tree = buildTree([
+      "Petition for a Writ of Certiorari",
+      "The Second, Third, Sixth, and Tenth Circuits hold that an interval of a few weeks is sufficient.",
+      "The Fourth, Eighth, and Ninth Circuits hold that timing alone never suffices, and the Tenth Circuits' rule is the better one.",
+    ]);
+    expect(extractDefinitions(tree).undefined_capitalized.map((u) => u.term)).not.toContain(
+      "Tenth Circuits",
+    );
+  });
+});

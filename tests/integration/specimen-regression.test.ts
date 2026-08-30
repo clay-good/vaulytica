@@ -679,6 +679,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // A petition for a writ of certiorari — the 200th specimen, and the first
+  // for `petition`. It exposed a seventh thing above the title: the DOCKET
+  // NUMBER. "No. 26-1147" opens an appellate caption and the court is named on
+  // the next line, so the caption reader — which required the court on the
+  // first line — threw the whole caption away and the petition fell to
+  // `generic-fallback`.
+  "petition.txt": {
+    playbook: "petition",
+    findings: ["STRUCT-018"],
+  },
   // A § 423 employee stock purchase plan — the 199th specimen, and the first
   // for `employee-stock-purchase-plan`. EQT-108..113 are all satisfied: the
   // § 423 qualification election with its Non-423 Component, the equal-rights
