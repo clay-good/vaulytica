@@ -175,6 +175,8 @@ What to look for in the output, in the order it usually appears:
 | A rule reports the OPPOSITE of what the document says | a carve-out or a causative read as a denial | `expressDenial` / the rule's disclaimer test |
 | The family matched the title EXACTLY and still lost | a title match is worth 0.3 against a 0.5 threshold, so a family whose `distinguishing_phrases` never occur in a real document of its kind can never be selected at all | rewrite the phrases in the register the document is actually drafted in, then check their base rate against the specimen corpus |
 | A whole pack from another regime fires | `applies_to_playbooks` scope creep — the pack was added to a family in a different jurisdiction | narrow the pack's playbook list; cross-check the family's `regulator_frame` and `applicable_jurisdictions` |
+| The family exists for this document and something else won | the title keywords are exact FULL titles, and a real document interleaves them — "RELOCATION ASSISTANCE AND REPAYMENT AGREEMENT" matches neither "relocation assistance agreement" nor "relocation repayment agreement" | add the short distinctive CORE ("relocation assistance", "flat fee") beside the full titles |
+| A clause is plainly deficient and NOTHING fires | the check cannot fail — see §4d | the pillar with no word boundary, or the locator joined by an `OR` |
 
 Two traps:
 
@@ -203,6 +205,43 @@ set actually changed, with what came off and what came on. Zero is the usual
 and expected result for a false-positive fix. Anything else you must be able to
 explain in the commit message — and if you cannot, it is a regression, not
 churn.
+
+## 4d. Ask whether the check can FAIL
+
+The reachability guards ask whether a rule can FIRE. The quieter failure is
+the other direction: **a check whose patterns are matched by the skeleton every
+contract carries is silent on every document, and a silent check reads to an
+attorney exactly like a clause that is present and correct.**
+
+[`tests/../boilerplate-satisfaction.test.ts`](../src/engine/rules/boilerplate-satisfaction.test.ts)
+probes all 621 v5 columns and all 740 v4 presence rules against a document that
+says nothing — a preamble with a date, a definitions cross-reference, an intent
+recital. It found thirty. Two shapes recur:
+
+- **A pillar with no word boundary.** `cap` matches inside "**Cap**italized
+  terms have the meanings given in Section 1"; `end` inside "int**end**"; `sec`
+  inside "**Sec**tion"; `on 1` inside "secti**on 1**". Two rules accepted a
+  bare `\d`.
+- **A LOCATOR pillar joined by an `OR`.** "Arbitration clause quoted AND
+  located", "Background IP identified AND licensed", "Amount or percentage AND
+  valuation date" — each names two things, and each had its second pillar
+  written as something every document carries. `pat` and `present_patterns`
+  default to an `OR`; the fix is `all` / `require_all_present`, **verified
+  against a compliant document first**, because a conjunction that is right in
+  principle can break a document a previous session deliberately fixed.
+
+Two things the guard depends on, both easy to get wrong:
+
+- **The skeleton's wording IS the experiment.** Every extra phrase is a phrase
+  some rule is right to read. Adding "identified on the signature page" made
+  six signature rules look broken; "named below" made four `name` rules look
+  broken. Governing law, assignment and severability are substantive clauses,
+  not boilerplate.
+- **Probe the patterns directly**, through `PACK_SPECS` and
+  `V4_PRESENCE_SPECS` — never through `check()`. An applicability gate
+  short-circuits before the patterns are consulted, and a conditional column
+  ("Crummey withdrawal rights where applicable") is right to stay silent on an
+  unrelated document.
 
 ## 5. Update playbooks (optional)
 
