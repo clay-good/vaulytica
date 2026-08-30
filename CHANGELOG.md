@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.245.0] — 2026-08-29
+
+### Added
+- An exclusive right to sell listing agreement — the 203rd specimen, and the
+  first for `listing-agreement`. RE-118..122 are all satisfied: the listing type
+  with its period, the commission with a ready-willing-and-able trigger and the
+  negotiability disclosure, the ninety-day protection period limited to a
+  written registered-prospect list, the Idaho agency disclosure with informed
+  written dual-agency consent, and the MLS and marketing authorizations with an
+  Internet opt-out.
+
+### Fixed
+- **`listing-agreement` carried an empty `rule_overrides`.** A residential
+  broker listing was told it does not allocate ownership of intellectual
+  property and has no indemnity or limitation-of-liability clause. It now
+  carries `residential-purchase-agreement`'s profile.
+
 ## [9.244.0] — 2026-08-29
 
 ### Added

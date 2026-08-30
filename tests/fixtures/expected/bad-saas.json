@@ -1230,11 +1230,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "aff9b5e693313e5bdc46a357d7dd759e6fd4a3fbc59e1d3f8a97b53bd446996b",
+  "result_hash": "87fb751f299e5045f9d407dd8608629d72672fce0691a9e6986b52488c1bfd79",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.244.0"
+  "version": "9.245.0"
 }

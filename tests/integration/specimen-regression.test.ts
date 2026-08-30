@@ -679,6 +679,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // An exclusive right to sell listing agreement — the 203rd specimen, and the
+  // first for `listing-agreement`. RE-118..122 are all satisfied: the listing
+  // type with its period, the commission with a ready-willing-and-able trigger
+  // and the negotiability disclosure, the ninety-day protection period limited
+  // to a written registered-prospect list, the Idaho agency disclosure with
+  // informed written dual-agency consent, and the MLS and marketing
+  // authorizations with an Internet opt-out. The family had an empty
+  // `rule_overrides`, so a residential listing was told it does not allocate
+  // IP and has no indemnity or liability cap.
+  "listing-agreement.txt": {
+    playbook: "listing-agreement",
+    findings: ["OBLI-005"],
+  },
   // An enterprise information security policy — the 201st specimen, and the
   // first for `information-security-policy`. POL-101..107 are all satisfied,
   // and the document is clean: scope with an owner and a review cadence,

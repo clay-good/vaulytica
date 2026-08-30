@@ -19,16 +19,39 @@
       "dual agency",
       "ready, willing and able buyer"
     ],
-    "negative_features": ["lease of the premises shall commence", "employment agreement"]
+    "negative_features": [
+      "lease of the premises shall commence",
+      "employment agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Broker", "Seller", "Listing Price", "Commission"],
-  "rule_overrides": {},
+  "expected_defined_terms": [
+    "Broker",
+    "Seller",
+    "Listing Price",
+    "Commission"
+  ],
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-REAL-ESTATE",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["real-estate-psa", "residential-purchase-agreement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "real-estate-psa",
+    "residential-purchase-agreement"
+  ],
   "compliance_matrix_columns": [
     "Listing type and exclusivity",
     "Commission rate and earning trigger",
