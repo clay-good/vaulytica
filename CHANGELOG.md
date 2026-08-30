@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.253.0] — 2026-08-30
+
+### Added
+- **The boilerplate-satisfaction guard now covers the v4 rules too.** A
+  `V4_PRESENCE_SPECS` registry mirrors `PACK_SPECS`, so the same probe reaches
+  all 740 v4 presence rules as well as the 621 v5 columns. The skeleton is
+  deliberately neutral — a preamble, a definitions cross-reference, and an
+  intent recital — because every extra phrase in it is a phrase some rule is
+  right to read.
+
+### Fixed
+- **Twenty-two v4 presence rules were satisfied by a document that says
+  nothing.** All of them are multi-pillar checks named for a conjunction, and
+  in each one a single over-generic pillar carried the whole check:
+  - **A missing word boundary.** `cap` matched inside "**Cap**italized"
+    (MNA-059, BNK-008, BNK-024); `end` inside "int**end**" (SET-022); `sec`
+    inside "**Sec**tion" (POL-023, POL-025, POL-031); `pi` inside
+    "Ca**pi**talized" (HC-007); `give` inside "**give**n" (EST-005); `term`
+    inside "**term**s" (IPL-022); `capitaliz` matching "Capitalized terms" on a
+    trademark-usage check (IPL-016); `on 1` inside "Secti**on 1**" (HC-014);
+    and a bare `to` (INS-002), which matches every document ever written.
+  - **A pillar that is not a signal at all.** HC-020 ("Date of receipt") and
+    INS-009 ("Effective date of endorsement") each listed `\d` — so any
+    document containing a digit scored clean.
+  - **A locator that every document carries.** MNA-043 wanted "Section 1" and
+    "Schedule 1"; the decimal is the discriminator, because a disclosure
+    schedule keyed to an SPA's representations numbers itself "Schedule 3.12".
+    INS-008 and PRV-012 became conjunctions for the same reason — a year alone
+    is not an effective date.
+- **A policy section is numbered with a ROMAN numeral.** Tightening INS-008's
+  locator to require a digit would have reported "Section II — Who Is An
+  Insured is amended" as identifying nothing.
+
 ## [9.252.0] — 2026-08-30
 
 ### Added

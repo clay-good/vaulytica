@@ -57,6 +57,7 @@ const POLICY_SUMMARY_RULES: Rule[] = [
   }),
   presence({
     id: "INS-002",
+    version: "1.1.0",
     name: "Policy period — inception + expiration",
     description: "Declarations must state the policy period (inception and expiration).",
     citation: stateInsCode(),
@@ -70,7 +71,7 @@ const POLICY_SUMMARY_RULES: Rule[] = [
     present_patterns: [
       /policy\s+period/i,
       /(inception|effective\s+date)/i,
-      /(expiration|expir|to)/i,
+      /\b(?:expiration|expires?|expiry)\b/i,
     ],
   }),
   presence({
@@ -178,6 +179,7 @@ const ENDORSEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "INS-008",
+    version: "1.1.0",
     name: "Coverage being modified identified",
     description: "Endorsement must identify the coverage / policy provisions being modified.",
     citation: stateInsCode(),
@@ -191,11 +193,18 @@ const ENDORSEMENT_RULES: Rule[] = [
       "Add 'Coverage Modified' identifying the underlying coverage form, section, and paragraph being amended.",
     present_patterns: [
       /(this\s+endorsement\s+modifies|amends?|changes?\s+the\s+policy)/i,
-      /(section|paragraph|provision)/i,
+      // A policy section is numbered with a ROMAN numeral — "Section II — Who
+      // Is An Insured is amended" — as often as with a digit.
+      /\b(?:section|paragraph|provision)\s+(?:\w*\d|[IVXLC]{1,6}\b)/i,
     ],
+    // Both pillars. The locator alone — "Section 1" — is carried by every
+    // document, so an endorsement that identifies nothing it modifies passed
+    // the column that exists to make it say.
+    require_all_present: true,
   }),
   presence({
     id: "INS-009",
+    version: "1.1.0",
     name: "Effective date of endorsement",
     description:
       "Endorsement must state its effective date (or that it is effective at policy inception).",
@@ -206,7 +215,12 @@ const ENDORSEMENT_RULES: Rule[] = [
     explanation:
       "Endorsements may attach mid-term; the effective date is essential for coverage-trigger / claims analysis.",
     recommendation: "Add 'Effective Date' (date or 'at policy inception').",
-    present_patterns: [/(effective\s+date|effective\s+as\s+of|effective\s+at)/i, /\d|inception/i],
+    // The second pillar was `\d`, which every document carries — including
+    // one that states no effective date at all. It is an OR, so the digit
+    // alone scored every endorsement clean. The concept lives in the first
+    // pillar; what remains beside it is the alternative the recommendation
+    // names, "at policy inception".
+    present_patterns: [/(effective\s+date|effective\s+as\s+of|effective\s+at)/i, /\binception\b/i],
   }),
   language({
     id: "INS-010",

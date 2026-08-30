@@ -154,6 +154,7 @@ const WILL_RULES: Rule[] = [
   }),
   presence({
     id: "EST-005",
+    version: "1.1.0",
     name: "Specific bequests + residuary clause",
     description: "Will must include a residuary clause (and identify any specific bequests).",
     citation: upc("2-606", "Specific devise"),
@@ -166,7 +167,7 @@ const WILL_RULES: Rule[] = [
       "Add 'Residuary Estate' devising the residue to named beneficiaries (and contingent residuary beneficiaries).",
     present_patterns: [
       /(residuary|residue|remainder)\s+(of\s+)?(my\s+)?(estate|property)/i,
-      /(devise|bequeath|give)/i,
+      /\b(?:devises?|bequeaths?|gives?|give)\b/i,
     ],
   }),
   presence({

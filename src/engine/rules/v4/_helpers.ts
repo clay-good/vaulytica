@@ -190,7 +190,23 @@ export { expressDenial } from "../_helpers.js";
 export const V4_PRESENCE_RULE_IDS = new Set<string>();
 export const V4_GATED_PRESENCE_RULE_IDS = new Set<string>();
 
+/**
+ * Every presence spec this factory has built, by rule id, with the two fields
+ * that decide whether the check can be SATISFIED: its patterns and their
+ * conjunction mode. `boilerplate-satisfaction.test.ts` reads this so it can
+ * probe the patterns directly — the only way past an applicability gate that
+ * would otherwise short-circuit the check before the patterns are consulted.
+ *
+ * The v5 sibling is `PACK_SPECS` in `v5/_pack.ts`, and it exists for exactly
+ * the same reason.
+ */
+export const V4_PRESENCE_SPECS = new Map<string, { pat: RegExp[]; all: boolean }>();
+
 export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
+  V4_PRESENCE_SPECS.set(spec.id, {
+    pat: [...spec.present_patterns],
+    all: spec.require_all_present === true,
+  });
   V4_PRESENCE_RULE_IDS.add(spec.id);
   if (spec.applicable_if) V4_GATED_PRESENCE_RULE_IDS.add(spec.id);
   return {

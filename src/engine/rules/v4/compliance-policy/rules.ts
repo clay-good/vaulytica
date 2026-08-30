@@ -570,7 +570,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
 const WHISTLEBLOWER_RULES: Rule[] = [
   presence({
     id: "POL-023",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Reporting channels — internal + external",
     description:
       "Policy must establish internal reporting channels and acknowledge external (SEC / CFTC / DOL) options.",
@@ -584,7 +584,7 @@ const WHISTLEBLOWER_RULES: Rule[] = [
       "Add 'Reporting Channels' establishing hotline / ombudsperson / supervisor + audit-committee channel + acknowledging right to report to SEC / CFTC / DOL.",
     present_patterns: [
       /(hotline|helpline|ombudsperson|audit\s+committee|reporting\s+channels?)/i,
-      /(sec|cftc|dol|nlrb|government\s+agency)/i,
+      /\b(?:SEC|CFTC|DOL|NLRB)\b|government\s+agency/,
     ],
     denied_if: expressDenial(
       String.raw`hotline|helpline|ombudsperson|reporting\s+channels?|anonymous\s+reporting`,
@@ -613,6 +613,7 @@ const WHISTLEBLOWER_RULES: Rule[] = [
   }),
   presence({
     id: "POL-025",
+    version: "1.1.0",
     name: "SEC Rule 21F-17 — no impeding whistleblower communications",
     description:
       "Policy must comply with SEC Rule 21F-17 (17 C.F.R. § 240.21F-17) — no provision shall impede whistleblower communications.",
@@ -630,7 +631,7 @@ const WHISTLEBLOWER_RULES: Rule[] = [
       "Add 'No Impediment to Government Reporting' clause stating nothing in this policy or any company agreement restricts employee's ability to communicate with government agencies or receive any bounty.",
     present_patterns: [
       /(21f.?17|21f17|nothing\s+(in\s+)?this\s+(policy|agreement))/i,
-      /(government\s+(agency|investigation)|communicat\s+with|sec)/i,
+      /government\s+(agency|investigation)|communicat\w*\s+with|\bSEC\b/,
       /(impede|prevent|restrict|interfere)/i,
     ],
   }),
@@ -742,6 +743,7 @@ const DOC_RETENTION_RULES: Rule[] = [
   }),
   presence({
     id: "POL-031",
+    version: "1.1.0",
     name: "SEC / IRS / regulatory minimums",
     description:
       "Policy must align with SEC / IRS / DOL / regulatory minimum retention requirements.",
@@ -758,7 +760,7 @@ const DOC_RETENTION_RULES: Rule[] = [
     recommendation:
       "Add 'Regulatory Minimums' aligning retention with SEC / IRS / DOL / HIPAA / state minimums (the longer applicable period controls).",
     present_patterns: [
-      /(sec|irs|dol|erisa|hipaa)/i,
+      /\b(?:SEC|IRS|DOL|ERISA|HIPAA)\b/,
       /(rule\s+17a.?4|6501|107|164\.530|6\s+years?|7\s+years?)/i,
     ],
     default_severity: "warning",

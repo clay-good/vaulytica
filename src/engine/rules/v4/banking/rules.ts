@@ -256,7 +256,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Interest rate / margin / floor",
     description:
       "Loan agreement must state the interest rate / margin / floor (SOFR / prime / fixed).",
@@ -271,7 +271,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /(sofr|prime\s+rate|libor)/i,
       /(margin|spread|basis\s+points|bps)/i,
-      /(floor|cap|cap\s+and\s+floor)/i,
+      /\b(?:floors?|caps?)\b/i,
       // A fixed-rate loan states its rate as a stated percentage per annum
       // and carries no index at all — the rule's own name/description says
       // "fixed", so recognize it: "fixed rate of eight percent (8.0%) per
@@ -649,6 +649,7 @@ const GUARANTY_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-024",
+    version: "1.1.0",
     name: "Continuing nature + maximum amount (limited guaranty)",
     description:
       "Guaranty should state whether it is continuing and any maximum dollar limitation.",
@@ -666,7 +667,7 @@ const GUARANTY_RULES: Rule[] = [
       "Add 'Continuing Guaranty' (or limited / capped guaranty) specifying scope and any maximum aggregate dollar limit.",
     present_patterns: [
       /continuing\s+guarant/i,
-      /(maximum\s+(amount|liability)|cap|limit\s+of\s+\$|aggregate\s+liability)/i,
+      /(maximum\s+(amount|liability)|\bcaps?\b|limit\s+of\s+\$|aggregate\s+liability)/i,
     ],
     default_severity: "warning",
   }),

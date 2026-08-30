@@ -687,6 +687,7 @@ const TOLLING_RULES: Rule[] = [
   }),
   presence({
     id: "SET-022",
+    version: "1.1.0",
     name: "Tolling period — start and end dates / triggering events",
     description:
       "Tolling agreement must state the tolling period (start date / end date / triggers).",
@@ -702,7 +703,7 @@ const TOLLING_RULES: Rule[] = [
     present_patterns: [
       /(tolling\s+period|effective\s+date)/i,
       /(commences?|begin|start)/i,
-      /(terminates?|ends?|expires?|expir)/i,
+      /\b(?:terminates?|ends?|expires?|expiry|expiration)\b/i,
     ],
   }),
   presence({

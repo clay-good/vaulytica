@@ -993,6 +993,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-043",
+    version: "1.1.0",
     name: "Section-numbered references to SPA reps",
     description: "Disclosure schedules should be organized by SPA representation section number.",
     citation: dealPoints("ds-numbering", "Section-numbering practice"),
@@ -1002,7 +1003,12 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
     explanation:
       "Schedules organized by rep section number give the simplest mapping for the buyer's diligence team.",
     recommendation: "Organize each schedule under the corresponding SPA rep section number.",
-    present_patterns: [/section\s+\d/i, /schedule\s+\d/i],
+    // The DECIMAL is the discriminator, not the noun. "Section 1" appears in
+    // every agreement that numbers its own sections, so the bare locators made
+    // this column impossible to fail; a disclosure schedule keyed to an SPA's
+    // representations numbers itself "Schedule 3.12", and that is the
+    // organization the rule is looking for.
+    present_patterns: [/\bsection\s+\d+\.\d/i, /\bschedule\s+\d+\.\d/i],
   }),
   presence({
     id: "MNA-044",
@@ -1369,6 +1375,7 @@ const TSA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-059",
+    version: "1.1.0",
     name: "Limitation of liability (one-times-fees cap baseline)",
     description: "TSAs typically cap provider liability at fees paid in a defined period.",
     citation: maPractice(
@@ -1384,7 +1391,7 @@ const TSA_RULES: Rule[] = [
     recommendation: "Add 'Limitation of Liability' with cap and standard carve-outs.",
     present_patterns: [
       /limitation\s+of\s+liability/i,
-      /(cap|aggregate\s+liability)/i,
+      /(\bcaps?\b|aggregate\s+liability)/i,
       /(consequential|indirect)\s+damages/i,
     ],
   }),

@@ -308,6 +308,7 @@ const NPP_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-012",
+    version: "1.1.0",
     name: "Effective date of notice",
     description: "NPP must include an effective date.",
     citation: hipaa("520(b)(1)(v)(C)", "Effective date"),
@@ -318,6 +319,9 @@ const NPP_RULES: Rule[] = [
       "§ 164.520(b)(1)(v)(C) requires the NPP to state its effective date. Without it, individuals cannot tell which version applies.",
     recommendation: "Add 'Effective Date' with the date the notice took effect.",
     present_patterns: [/(effective\s+date|effective\s+as\s+of)/i, /(20\d{2}|19\d{2})/],
+    // Both pillars. The year alone — "2026" — appears in every dated notice,
+    // so a privacy notice with no effective date at all satisfied the column.
+    require_all_present: true,
   }),
   presence({
     id: "PRV-013",

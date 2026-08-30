@@ -148,6 +148,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "HC-007",
+    version: "1.1.0",
     name: "Contact persons — research questions + research-related injury + subject rights",
     description:
       "Informed consent must identify contacts for research questions, research-related injuries, and subject rights.",
@@ -161,7 +162,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
     recommendation:
       "Add 'Contact Information' listing the principal investigator (research questions), research-injury contact, and IRB contact (subject rights).",
     present_patterns: [
-      /(contact|principal\s+investigator|pi)/i,
+      /\b(?:contact|principal\s+investigator|PI)\b/,
       /(injury|research.related)/i,
       /(irb|subjects?\s+rights?)/i,
     ],
@@ -297,7 +298,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
   }),
   presence({
     id: "HC-014",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Expiration date or event",
     description: "Authorization must include an expiration date or expiration event.",
     citation: hipaa("508(c)(1)(v)", "Expiration"),
@@ -314,7 +315,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
       // boundary never held. Fold the inflections into one branch and add the
       // British "expiry", which neither branch previously caught.
       /expir(?:es?|ation|ing|y)/i,
-      /((on|by)\s+\d|years?\s+from|end\s+of|conclusion\s+of)/i,
+      /\b(?:on|by)\s+\d|\byears?\s+from\b|\bend\s+of\b|\bconclusion\s+of\b/i,
     ],
   }),
   presence({
@@ -435,7 +436,7 @@ const NPP_ACK_RULES: Rule[] = [
   }),
   presence({
     id: "HC-020",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Date of receipt",
     description: "Acknowledgment must include the date of receipt.",
     citation: hipaa("520(c)(2)(ii)", "Date"),
@@ -452,7 +453,6 @@ const NPP_ACK_RULES: Rule[] = [
     present_patterns: [
       /(date\s+(received|of\s+receipt)|received\s+on|signed\s+on)/i,
       /(?:^|\s)date\s*:\s*(?:_{3,}|\d)/im,
-      /\d/,
     ],
   }),
   presence({

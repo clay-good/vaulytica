@@ -455,6 +455,7 @@ const TM_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-016",
+    version: "1.1.0",
     name: "Proper use guidelines (® / ™ / SM)",
     description:
       "Trademark license must specify proper-use rules (capitalization, ® / ™ markers, adjective use, no genericization).",
@@ -469,7 +470,7 @@ const TM_LICENSE_RULES: Rule[] = [
     present_patterns: [
       /(proper\s+use|use\s+guidelines)/i,
       /(®|™|\(R\)|\(TM\)|registered\s+trademark)/i,
-      /(adjective|capitaliz|generic)/i,
+      /\badjective\b|\bgeneric\b|capitaliz\w*[^.]{0,40}\b(?:marks?|trademarks?)\b|\b(?:marks?|trademarks?)\b[^.]{0,40}capitaliz/i,
     ],
     default_severity: "warning",
   }),
@@ -598,6 +599,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-022",
+    version: "1.1.0",
     name: "Term, territory, media / channels",
     description: "Copyright license must specify term, territory, and media / channels of use.",
     citation: iplPractice(
@@ -613,7 +615,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
     recommendation:
       "Add 'License Scope' specifying Term, Territory, and Media (with explicit treatment of 'now known or hereafter developed').",
     present_patterns: [
-      /(term|territor)/i,
+      /\bterm\b|\bterritor\w*\b/i,
       /(media|channels?|format)/i,
       /(now\s+known|hereafter\s+developed)/i,
     ],
