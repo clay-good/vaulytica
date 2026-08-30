@@ -608,6 +608,22 @@ export function expressDenial(topic: string): RegExp[] {
  * specifically, which only an amending document carries. No corpus fixture
  * contains one.
  */
+/**
+ * The ADDENDUM lead-in: a document that says outright it supplements, or is
+ * made a part of, a NAMED parent instrument. "This Business Associate
+ * Agreement … supplements the Revenue Cycle Services Agreement between the
+ * parties dated January 12, 2026" is how every HIPAA BAA, DPA, and security
+ * addendum opens, and none of them allocates intellectual property, caps
+ * liability, or states its own termination path — those live in the parent.
+ *
+ * Narrow in the same way as its siblings: the parent must be a NAMED,
+ * capitalized instrument. "This Agreement supplements the parties' prior
+ * understanding" names nothing and does not match, and neither does an
+ * ordinary contract that merely mentions an exhibit.
+ */
+const SUPPLEMENTS_PARENT =
+  /\b(?:supplements?|supplemented|amends\s+and\s+supplements|is\s+(?:attached\s+to\s+and\s+)?(?:hereby\s+)?made\s+a\s+part\s+of)\s+(?:that\s+certain\s+)?the\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|MSA)\b/;
+
 const RATIFIES_PARENT =
   /(?:except\s+as\s+(?:expressly\s+|otherwise\s+){0,2}(?:modified|amended|changed|provided|set\s+forth)|all\s+other\s+(?:terms|provisions|covenants)\b)[^.]{0,160}?(?:remains?|shall\s+remain|continues?|shall\s+continue|are\s+unchanged|is\s+unchanged)\s+(?:unchanged\s+and\s+)?in\s+full\s+force|in\s+all\s+other\s+respects[^.]{0,100}?(?:ratified|confirmed|unchanged)/i;
 
@@ -822,6 +838,7 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
     : [ISSUED_UNDER_PARENT, PARENT_CONTROLS];
   return (
     RATIFIES_PARENT.test(text) ||
+    SUPPLEMENTS_PARENT.test(text) ||
     named.some((re) => re.test(text)) ||
     INCORPORATED_INTO_PARENT.test(text) ||
     SIGNED_RIDER_INTO_PARENT.test(text) ||

@@ -2720,6 +2720,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // § 8 gives access to the Secretary, not to the covered entity (BAA-026) —
   // and no indemnity, liability cap, or IP clause, because it leaves them to
   // the underlying agreement without saying so.
+  // IPDATA-001, RISK-001, RISK-005 and CHOICE-003 came off this row in
+  // 9.256.0. The BAA opens "It SUPPLEMENTS the Revenue Cycle Services
+  // Agreement between the parties dated January 12, 2026", which is how every
+  // HIPAA BAA, DPA and security addendum opens — and none of them allocates
+  // intellectual property, caps liability, names an indemnity, or states a
+  // venue, because all four live in the parent. `amendsParentAgreement` knew
+  // the ratification and incorporation recitals and not this one.
   "baa.txt": {
     playbook: "baa",
     findings: [
@@ -2727,11 +2734,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "BAA-031",
       "BAA-034",
       "BAA-040",
-      "IPDATA-001",
-      "RISK-001",
-      "RISK-005",
       "STRUCT-006",
-      "CHOICE-003",
       "OBLI-005",
       "TEMP-006",
       "TEMP-007",

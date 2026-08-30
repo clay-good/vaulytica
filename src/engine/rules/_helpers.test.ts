@@ -632,3 +632,37 @@ describe("amendsParentAgreement — a named STANDARD FORM is a parent (v9.240.0)
     expect(amendsParentAgreement(ctx)).toBe(false);
   });
 });
+
+/**
+ * The ADDENDUM lead-in. A HIPAA business associate agreement opens by saying
+ * it supplements the services agreement it hangs off, and it allocates no
+ * intellectual property, caps no liability, names no indemnity, and states no
+ * venue — all four live in the parent. It was reported for each of them.
+ */
+describe("amendsParentAgreement — a document that supplements a named parent", () => {
+  it.each([
+    "It supplements the Revenue Cycle Services Agreement between the parties dated January 12, 2026.",
+    "This Addendum amends and supplements the Master Services Agreement dated October 4, 2025.",
+    "This Exhibit is attached to and made a part of the Equipment Lease Agreement.",
+  ])("recognizes: %s", (sentence) => {
+    expect(amendsParentAgreement(ctxWith(sentence))).toBe(true);
+  });
+
+  it("does not fire where the parent is not a named instrument", () => {
+    expect(
+      amendsParentAgreement(
+        ctxWith("This Agreement supplements the parties' prior understanding on the subject."),
+      ),
+    ).toBe(false);
+  });
+
+  it("does not fire on a contract that merely attaches an exhibit", () => {
+    expect(
+      amendsParentAgreement(
+        ctxWith(
+          "The specifications are set forth in Exhibit A, which is attached to this Agreement.",
+        ),
+      ),
+    ).toBe(false);
+  });
+});

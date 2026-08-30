@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.256.0] — 2026-08-30
+
+### Fixed
+- **An addendum was asked for the clauses that live in its parent.** Every
+  HIPAA business associate agreement, data processing addendum, and security
+  addendum opens the same way — "It **supplements** the Revenue Cycle Services
+  Agreement between the parties dated January 12, 2026" — and none of them
+  allocates intellectual property, caps liability, names an indemnity, or
+  states a venue, because all four live in the parent.
+  `amendsParentAgreement` knew the ratification recital ("remains in full
+  force and effect"), the incorporation recital, and the borrowed-definitions
+  recital, but not this one. Narrow in the same way as its siblings: the
+  parent must be a NAMED, capitalized instrument, so "this Agreement
+  supplements the parties' prior understanding" still names nothing and an
+  ordinary contract that attaches an exhibit is untouched.
+
 ## [9.255.0] — 2026-08-30
 
 ### Added
