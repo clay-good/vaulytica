@@ -1,0 +1,59 @@
+SECURITY INCIDENT RESPONSE PLAN
+
+Thornapple Instruments Corporation
+Plan Owner: Chief Information Security Officer
+Version: 3.1
+Approved by the Audit Committee on May 6, 2026
+Last reviewed: May 6, 2026
+
+1. PURPOSE AND LIFECYCLE
+
+This plan governs the Corporation's response to a security incident. It follows the lifecycle in NIST SP 800-61r3: preparation; detection and analysis; containment, eradication, and recovery; and post-incident activity. Each phase below states who acts, what is decided, and what is recorded.
+
+2. PREPARATION
+
+The Corporation maintains an on-call rotation, a documented escalation tree with out-of-band contact details, pre-provisioned forensic tooling and evidence storage, retainers with outside counsel and a digital forensics firm, and a cyber insurance policy whose notification requirements are summarized in Appendix B. The response team completes a tabletop exercise at least annually and a technical exercise at least every eighteen (18) months.
+
+3. DETECTION AND ANALYSIS
+
+An incident may be reported by the SIEM, by an employee through the security hotline, by a customer, by a vendor, or by an external researcher. The on-call analyst acknowledges within fifteen (15) minutes, opens a case, and performs an initial triage to determine whether the event is an incident and, if so, its severity under Section 4. All analysis is recorded in the case record contemporaneously.
+
+4. SEVERITY CLASSIFICATION AND ESCALATION
+
+Sev 0 — confirmed compromise of Restricted data, of a production environment, or of the identity provider. Escalates immediately to the Incident Commander, the CISO, the General Counsel, and the Chief Executive Officer.
+Sev 1 — confirmed unauthorized access to Internal or Confidential data, or a material availability loss. Escalates to the Incident Commander and the CISO within thirty (30) minutes.
+Sev 2 — contained malware, a single compromised endpoint, or a policy violation with no confirmed data access. Escalates to the on-call lead within two (2) hours.
+Sev 3 — a suspicious event under investigation with no evidence of compromise. Handled within the security team.
+
+The escalation matrix in Appendix A states the notification path and the decision rights for each severity. Severity is reassessed at every status checkpoint and may be raised or lowered with the Incident Commander's approval.
+
+5. ROLES AND RESPONSIBILITIES
+
+The Incident Commander runs the response, owns the timeline, and is the single decision-maker on containment actions. The CISO is the executive sponsor. The General Counsel directs the investigation for privilege, engages outside counsel, and owns every legal and regulatory determination. Communications owns all internal and external messaging, and no one else may speak about the incident outside the response team. The Privacy Officer determines whether personal data is involved. Human Resources participates in any incident involving an employee. The Incident Commander role is filled from a standing roster and is not held by the person performing the technical investigation.
+
+6. CONTAINMENT, ERADICATION, AND RECOVERY
+
+Containment options — isolating a host, disabling an account, revoking a token, blocking an address, failing over a service — are chosen by the Incident Commander with a written record of the reason and the time. Eradication removes the root cause and any persistence. Recovery restores service from a known-good state, with heightened monitoring for at least fourteen (14) days.
+
+7. EVIDENCE PRESERVATION
+
+Do not wipe, reimage, or power off a suspected system without the Incident Commander's approval. Volatile data is captured first, then a forensic image, before remediation. Every image, log export, and artifact is hashed on collection, recorded in the evidence register with a chain of custody, and stored in the evidence repository with access limited to the forensic team and counsel. A litigation hold is issued by the General Counsel at Sev 0 and Sev 1 and suspends every retention schedule for the affected material.
+
+8. NOTIFICATION CLOCKS AND OWNERS
+
+The General Counsel owns each determination and each clock. The clocks that apply to the Corporation are:
+- GDPR Article 33: notify the lead supervisory authority within 72 hours of awareness where the breach is likely to result in a risk to individuals; affected data subjects without undue delay where the risk is high.
+- HIPAA: notify HHS and affected individuals within 60 days of discovery, and the media where more than 500 residents of a state or jurisdiction are affected.
+- State breach laws: notify affected residents in the most expedient time possible and without unreasonable delay, and notify the state attorney general where the applicable statute requires; the Corporation treats 30 days as its internal target.
+- SEC Item 1.05 of Form 8-K: file within four (4) business days of determining that a cybersecurity incident is material.
+- Contractual: notify affected customers within the period each contract requires, which is 24 to 72 hours for most enterprise agreements.
+
+The Corporation does not start a clock on suspicion alone; each clock starts at the trigger the applicable law defines, and the determination and its time are recorded.
+
+9. THIRD-PARTY AND VENDOR INCIDENTS
+
+An incident at a vendor, service provider, or sub-processor is handled under this plan. The vendor manager notifies the Incident Commander on becoming aware, obtains the vendor's incident report and remediation plan, and coordinates the Corporation's own notification obligations, which are not discharged by the vendor's. Where the Corporation is a processor for a customer, the Corporation notifies that customer within the contractual notification period and provides the information the contract requires.
+
+10. POST-INCIDENT REVIEW
+
+A post-incident review is held within fifteen (15) business days after closure for every Sev 0 and Sev 1 incident. The review establishes the root cause, the detection and response timeline, what worked and what did not, and a corrective action for each gap, each with an owner and a due date. The Incident Commander publishes an after-action report to the CISO and the Audit Committee. Corrective actions are tracked to completion, and this plan is updated to reflect what the review found.

@@ -1,0 +1,51 @@
+INFORMATION SECURITY POLICY
+
+Thornapple Instruments Corporation
+Policy Owner: Chief Information Security Officer
+Version: 4.2
+Approved by the Audit Committee on April 21, 2026
+Last reviewed: April 21, 2026
+
+1. PURPOSE, SCOPE, AND GOVERNANCE
+
+This policy establishes the requirements for protecting the confidentiality, integrity, and availability of the Corporation's information and information systems. It is aligned to the NIST Cybersecurity Framework 2.0 and to the control families of NIST SP 800-53 Revision 5.
+
+This policy applies to every employee, contractor, intern, and third party who accesses the Corporation's information, systems, or facilities, and to every system the Corporation owns, operates, or subscribes to, including cloud services and endpoints. The policy owner is the Chief Information Security Officer. This policy is reviewed at least annually and after any material change to the Corporation's technology or regulatory environment, and each revision is approved by the Audit Committee.
+
+2. ASSET INVENTORY
+
+The Corporation maintains an inventory of hardware, software, cloud services, and data stores. Each asset has an owner, a criticality rating, and a data classification. The inventory is reconciled quarterly against network discovery and cloud provider records. An asset not in the inventory may not be connected to the Corporation's network.
+
+3. ACCESS CONTROL AND LEAST PRIVILEGE
+
+Access is granted on the principles of least privilege and need-to-know. Access is role-based, and each role's entitlements are documented and owned by a business owner.
+
+Provisioning follows a documented request-and-approval workflow, and deprovisioning is completed within four (4) hours of a termination and within one (1) business day of a role change. Multi-factor authentication is required for all remote access, all administrative access, and all access to systems holding Restricted data. Privileged access is issued from separate accounts, is time-bound, and is recorded. A quarterly access review is performed by each business owner, and unreviewed entitlements are revoked.
+
+4. DATA CLASSIFICATION AND ENCRYPTION
+
+Information is classified as Public, Internal, Confidential, or Restricted. The classification determines handling, storage, transmission, and destruction requirements.
+
+Confidential and Restricted data is encrypted at rest using AES-256 and in transit using TLS 1.2 or higher, with TLS 1.3 preferred. Key management uses the Corporation's hardware security module or the cloud provider's managed key service; keys are rotated at least annually, and no key material may be stored in source control. Removable media holding Confidential or Restricted data must be encrypted.
+
+5. VULNERABILITY AND PATCH MANAGEMENT
+
+Authenticated vulnerability scans run weekly against internal and external assets, and container images are scanned at build time. Remediation service levels are measured from the date of detection: critical severity within seven (7) days, high within thirty (30) days, medium within ninety (90) days, and low at the next maintenance window. An internet-facing critical vulnerability with a known exploit is remediated within forty-eight (48) hours. Where remediation is not feasible, a compensating control is documented and an exception is filed under Section 9.
+
+6. LOGGING, MONITORING, AND RETENTION
+
+Security-relevant events — authentication, privilege changes, configuration changes, and access to Restricted data — are logged to the central SIEM. Logs are retained for eighteen (18) months, with the most recent ninety (90) days immediately searchable. Alerting is tuned to the Corporation's detection use cases, alerts are triaged around the clock, and log sources are monitored for silence.
+
+7. INCIDENT RESPONSE
+
+The Corporation maintains an incident response plan that defines severity levels, the response team, escalation paths, and regulatory and contractual notification obligations. The plan is exercised at least annually through a tabletop exercise, and every incident of severity 2 or higher receives a written post-incident review within fifteen (15) business days.
+
+8. THIRD-PARTY AND VENDOR SECURITY
+
+Every third party with access to the Corporation's information or systems is assigned a risk tier before onboarding. Due diligence is proportionate to tier: a tier-1 vendor provides a SOC 2 Type II report or an ISO 27001 certificate and completes a security assessment questionnaire annually. Contractual security requirements — including breach notification within seventy-two (72) hours, a right to audit, subcontractor flow-down, and secure return or destruction of data on termination — are required for every tier-1 and tier-2 vendor. A vendor that cannot meet a requirement is handled through the exception process.
+
+9. EXCEPTIONS AND ENFORCEMENT
+
+A deviation from this policy requires a documented exception describing the requirement, the business justification, the compensating control, and an expiration date not more than twelve (12) months out. An exception is approved by the Chief Information Security Officer, and one affecting Restricted data or an internet-facing system also requires the risk acceptance of the Chief Financial Officer. Open exceptions are reported to the Audit Committee quarterly.
+
+Failure to comply with this policy may result in disciplinary action up to and including termination of employment, and, for a third party, termination of the engagement. Enforcement is administered by the Chief Information Security Officer in coordination with Human Resources and the Legal Department.

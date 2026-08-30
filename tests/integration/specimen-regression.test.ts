@@ -679,6 +679,29 @@ export const EXPECTED: Record<string, Expectation> = {
   // document. The three that stay are real: protective provisions are absent,
   // the Schedules travel separately, and Common/Preferred Stock are defined
   // in the certificate of incorporation rather than here.
+  // An enterprise information security policy — the 201st specimen, and the
+  // first for `information-security-policy`. POL-101..107 are all satisfied,
+  // and the document is clean: scope with an owner and a review cadence,
+  // least-privilege access control with quarterly reviews, classification with
+  // AES-256 and TLS, remediation SLAs by severity, SIEM logging with an
+  // eighteen-month retention, vendor risk tiers with contractual security
+  // requirements, and a time-boxed exception process.
+  "information-security-policy.txt": {
+    playbook: "information-security-policy",
+    findings: ["OBLI-005"],
+  },
+  // A security incident response plan — the 202nd specimen, and the first for
+  // `security-incident-response-plan`. POL-126..132 are all satisfied: the
+  // 800-61r3 lifecycle, a four-level severity matrix, the Incident Commander
+  // and counsel roles, evidence preservation with chain of custody, the GDPR /
+  // HIPAA / state / SEC notification clocks with a named owner, vendor
+  // incident coordination, and the post-incident review. STRUCT-006 stays and
+  // is fair: "Incident Commander" is a role the plan describes rather than
+  // defines.
+  "security-incident-response-plan.txt": {
+    playbook: "security-incident-response-plan",
+    findings: ["STRUCT-006", "STRUCT-018"],
+  },
   // A petition for a writ of certiorari — the 200th specimen, and the first
   // for `petition`. It exposed a seventh thing above the title: the DOCKET
   // NUMBER. "No. 26-1147" opens an appellate caption and the court is named on

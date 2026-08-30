@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.244.0] — 2026-08-29
+
+### Added
+- An enterprise information security policy — the 201st specimen, and the first
+  for `information-security-policy`. POL-101..107 are all satisfied and the
+  document is clean.
+- A security incident response plan — the 202nd specimen, and the first for
+  `security-incident-response-plan`. POL-126..132 are all satisfied: the NIST
+  SP 800-61r3 lifecycle, a four-level severity matrix, the Incident Commander
+  and counsel roles, evidence preservation with chain of custody, the GDPR /
+  HIPAA / state / SEC notification clocks each with a named owner, vendor
+  incident coordination, and the post-incident review.
+
+  Both are clean because of 9.236.0: a policy is adopted, not signed, and each
+  carries the adoption recital that stands STRUCT-003 down.
+
 ## [9.243.0] — 2026-08-29
 
 ### Added
