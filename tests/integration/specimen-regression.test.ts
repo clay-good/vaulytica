@@ -1309,9 +1309,6 @@ export const EXPECTED: Record<string, Expectation> = {
   "legend-nda.txt": {
     playbook: "mutual-nda-deep",
     findings: [
-      "RISK-005",
-      "TERM-002",
-      "TERM-005",
       "OBLI-005",
       "RISK-001",
       "RISK-014",
@@ -1760,6 +1757,26 @@ export const EXPECTED: Record<string, Expectation> = {
 
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
+
+  // A well-drafted unilateral NDA, the 238th specimen and the first for
+  // `unilateral-nda-deep` — a family that was unreachable by auto-routing
+  // until 9.273.0 promoted a deprecated playbook's named successor. All
+  // twenty-five NDA-D rules are silent on it, and three of them were fixed to
+  // get there: "Nothing in this Agreement grants Recipient any LICENCE" is the
+  // textbook no-licence clause with the negation on "nothing" and the noun
+  // spelled with a c (NDA-D-021); "indefinitely for any Confidential
+  // Information that is a trade secret" is the carve-out written as a tail on
+  // the term sentence (NDA-D-004); and "Discloser"/"Recipient" is the other
+  // standard role pair, the one `mutual-nda` itself lists as distinguishing
+  // phrases (NDA-D-025).
+  //
+  // RISK-001 stays at `info`, which is the profile the legacy family already
+  // carried and the deep families now inherit: an NDA has no indemnity by
+  // design, and saying so at `warning` was noise on every one of them.
+  "unilateral-nda.txt": {
+    playbook: "unilateral-nda-deep",
+    findings: ["OBLI-005", "RISK-001"],
+  },
 
   // A work-made-for-hire agreement for commissioned illustration, animation and
   // score, the 237th specimen and the first for `work-for-hire-agreement`. Two

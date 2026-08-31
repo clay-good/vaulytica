@@ -1,0 +1,69 @@
+UNILATERAL NON-DISCLOSURE AGREEMENT
+
+This Unilateral Non-Disclosure Agreement (this "Agreement") is made as of June 1, 2026 between Wrenfield Audio Labs, Inc., a Delaware corporation ("Discloser"), and Thistledown Robotics, Inc., a Delaware corporation ("Recipient"). Only Discloser discloses under this Agreement; Recipient discloses nothing and takes on no disclosure obligation.
+
+1. PURPOSE
+
+1.1 Discloser may disclose Confidential Information to Recipient so that Recipient can evaluate a possible supply relationship for a hearing-diagnostics transducer (the "Purpose"). Recipient shall use the Confidential Information solely to evaluate the Purpose and for no other purpose.
+
+2. CONFIDENTIAL INFORMATION
+
+2.1 "Confidential Information" means any non-public information Discloser or its representatives disclose to Recipient, in any form, that is marked confidential or that a reasonable person would understand to be confidential from its nature or the circumstances of its disclosure. It includes Discloser's designs, tooling drawings, test data, supplier terms, pricing, roadmaps, and customer lists.
+
+2.2 Confidential Information does not include information that: (a) is or becomes publicly available through no act or omission of Recipient; (b) was rightfully known to Recipient without restriction before disclosure; (c) is rightfully received from a third party without restriction; or (d) is independently developed by Recipient without use of or reference to the Confidential Information.
+
+3. OBLIGATIONS
+
+3.1 Recipient shall keep the Confidential Information confidential, shall protect it with at least the care it uses for its own confidential information of like importance and no less than reasonable care, and shall disclose it only to those of its employees and professional advisers who need it for the Purpose and who are bound by confidentiality obligations no less protective than these.
+
+3.2 Recipient is responsible for any breach by a person to whom it discloses the Confidential Information.
+
+3.3 If Recipient is required by law, regulation, or court order to disclose any Confidential Information, it shall, to the extent legally permitted, give Discloser prompt notice and reasonable cooperation so that Discloser may seek a protective order, and shall disclose only the part it is legally required to disclose.
+
+4. TERM
+
+4.1 This Agreement runs for two (2) years from the date above. Recipient's obligations continue for three (3) years from each disclosure, and indefinitely for any Confidential Information that is a trade secret, for as long as it remains a trade secret under applicable law.
+
+5. RETURN OR DESTRUCTION
+
+5.1 On Discloser's written request, Recipient shall promptly return or destroy the Confidential Information and all copies, and shall certify the destruction in writing signed by an officer. Recipient may retain one archival copy in its backup systems or as its regulatory record-keeping requires, subject to these obligations for as long as it is retained.
+
+6. NO LICENCE, NO WARRANTY, NO OBLIGATION TO PROCEED
+
+6.1 Nothing in this Agreement grants Recipient any licence, ownership interest, or other right in the Confidential Information or in any patent, copyright, trademark, or trade secret of Discloser. All rights remain with Discloser.
+
+6.2 Discloser makes no representation or warranty about the accuracy or completeness of the Confidential Information.
+
+6.3 Nothing in this Agreement obliges either party to enter into any further agreement, and this Agreement does not create a precedent or a most-favoured-nation entitlement for any future agreement between the parties.
+
+7. WHISTLEBLOWER IMMUNITY
+
+7.1 Notice under the Defend Trade Secrets Act, 18 U.S.C. § 1833(b): an individual shall not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, solely for the purpose of reporting or investigating a suspected violation of law; or is made in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.
+
+8. REMEDIES
+
+8.1 Recipient agrees that a breach of this Agreement would cause Discloser harm not fully compensable in money, and that Discloser may seek injunctive relief in addition to any other remedy, without the necessity of posting a bond. Discloser must still show the elements a court requires for an injunction.
+
+9. GENERAL
+
+9.1 Each party represents that it has the authority to enter into this Agreement and that doing so does not conflict with any obligation it owes to a third party.
+
+9.2 This Agreement binds and benefits the parties and their respective successors and permitted assigns. Neither party may assign it without the other's prior written consent, except to a successor to all or substantially all of its business.
+
+9.3 Delaware law governs this Agreement, without regard to its conflict-of-laws rules, and the parties submit to the exclusive jurisdiction of the state and federal courts sitting in Wilmington, Delaware.
+
+9.4 This Agreement is the entire agreement between the parties on its subject matter and may be amended only by a writing signed by both parties. If any provision is unenforceable, the rest remains in effect.
+
+WRENFIELD AUDIO LABS, INC.
+
+By: /s/ Marguerite Delacroix-Boone
+Name: Marguerite Delacroix-Boone
+Title: Chief Executive Officer
+Date: June 1, 2026
+
+THISTLEDOWN ROBOTICS, INC.
+
+By: /s/ Ingrid Vasconcelos-Hart
+Name: Ingrid Vasconcelos-Hart
+Title: Chief Executive Officer
+Date: June 1, 2026

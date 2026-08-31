@@ -350,3 +350,67 @@ describe("NDA-D-002 — the three DTSA pillars must sit in the notice itself", (
     ).toBeNull();
   });
 });
+
+describe("the words an NDA is actually drafted in", () => {
+  const nda = (pb: Playbook, ...body: string[]) =>
+    withPb(buildContext(["Non-Disclosure Agreement", ...body] as [string, ...string[]]), pb);
+  const ruleById = (id: string) => NDA_DEEP_RULES.find((r) => r.id === id)!;
+
+  it("NDA-D-021 reads a no-licence clause negated on 'nothing'", () => {
+    // "Nothing in this Agreement grants Recipient any licence or ownership
+    // interest" is the textbook clause: the negation sits on "nothing", not on
+    // the verb, and the noun is spelled with a c in every UK and Commonwealth
+    // NDA.
+    expect(
+      ruleById("NDA-D-021").check(
+        nda(
+          MUTUAL,
+          "Nothing in this Agreement grants Recipient any licence, ownership interest, or other right in the Confidential Information.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("NDA-D-004 reads the trade-secret carve-out written as a tail", () => {
+    expect(
+      ruleById("NDA-D-004").check(
+        nda(
+          MUTUAL,
+          "Recipient's obligations continue for three (3) years from each disclosure, and indefinitely for any Confidential Information that is a trade secret.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("NDA-D-025 reads the Discloser / Recipient role pair", () => {
+    // The other standard pair, and the one `mutual-nda` itself lists as
+    // distinguishing phrases. An NDA that defines both in its preamble was
+    // told it states no role framing at all.
+    expect(
+      ruleById("NDA-D-025").check(
+        nda(
+          UNILATERAL,
+          'This Agreement is made between Wrenfield Audio Labs, Inc. ("Discloser") and Thistledown Robotics, Inc. ("Recipient").',
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("NDA-D-017 and NDA-D-018 read 'Delaware law governs'", () => {
+    const ctx = nda(MUTUAL, "Delaware law governs this Agreement.");
+    expect(ruleById("NDA-D-017").check(ctx)).toBeNull();
+    expect(ruleById("NDA-D-018").check(ctx)).toBeNull();
+  });
+
+  it("NDA-D-007 reads the standard 'known … before disclosure' exclusion", () => {
+    // 42 characters between "known" and "before" against a 40-character cap.
+    expect(
+      ruleById("NDA-D-007").check(
+        nda(
+          MUTUAL,
+          "Confidential Information does not include information that was rightfully known to the Receiving Party without restriction before disclosure.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});

@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.274.0] — 2026-08-31
+
+### Added
+- One specimen — a well-drafted unilateral NDA, the 238th, and the first for
+  `unilateral-nda-deep`, a family that was unreachable by auto-routing until
+  the previous release.
+
+### Fixed
+- **Three NDA rules could not read a well-drafted NDA.** "Nothing in this
+  Agreement grants Recipient any LICENCE or ownership interest" is the textbook
+  no-licence clause — the negation is on "nothing", not on the verb, and the
+  noun is spelled with a c in every UK and Commonwealth NDA (NDA-D-021).
+  "Indefinitely for any Confidential Information that is a trade secret" is the
+  carve-out written as a tail on the term sentence, and "indefinitely" was in
+  neither branch (NDA-D-004). And "Discloser"/"Recipient" is the other standard
+  role pair — the one `mutual-nda` itself lists as distinguishing phrases — so
+  an NDA that defines both in its preamble was told it states no role framing
+  at all (NDA-D-025).
+- **IPDATA-001 could not read a plain-English ownership allocation.** "All
+  rights remain with Discloser" and "all materials Contractor produces belong
+  to Client" both name the owner; neither matched.
+- **`unilateral-nda-deep` penalized its own document.** It carried "each party"
+  and "either party" as NEGATIVE features, meaning "this is not mutual" — and
+  both are ordinary boilerplate in a unilateral NDA ("Each party represents
+  that it has the authority…", "amended only by a writing signed by either
+  party"). Replaced with markers that actually mean mutual: "each party may
+  disclose", "both parties may disclose", "each party's confidential
+  information".
+- **`mutual-nda-deep` claimed "either party" as a distinguishing phrase**,
+  which matches 67 of 238 specimens. The matcher's own comments already blamed
+  that phrase for taking a trademark coexistence agreement.
+
+### Changed
+- `mutual-nda-deep` and `unilateral-nda-deep` inherit the rule profile their
+  deprecated predecessors already carried — the six FIN skips, the four PERS
+  skips, RISK-001 at `info` — plus RISK-005, TERM-002 and TERM-005, which an
+  NDA does not carry by design. They shipped with an empty `rule_overrides`,
+  which only mattered once the promotion put them on the auto-routed path.
+
 ## [9.273.0] — 2026-08-31
 
 ### Changed

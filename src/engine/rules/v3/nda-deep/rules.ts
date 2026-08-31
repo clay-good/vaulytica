@@ -128,9 +128,14 @@ export const NDA_DEEP_RULES: Rule[] = [
       "If the NDA imposes a flat 3- or 5-year confidentiality term with no carve-out for trade secrets, the discloser loses statutory protection once the term lapses — defeating the purpose of UTSA / DTSA.",
     recommendation:
       "Add: 'With respect to trade secrets, the obligations of confidentiality shall continue for as long as the information qualifies as a trade secret under applicable law.'",
+    // The carve-out is usually written as a TAIL on the term sentence, and the
+    // adverb an NDA reaches for is "indefinitely": "Recipient's obligations
+    // continue for three (3) years from disclosure, and indefinitely for any
+    // trade secret." Neither branch read the adverb, and neither read the
+    // carve-out stated BEFORE the noun in that compact form.
     present_patterns: [
-      /trade\s+secret.{0,120}(as\s+long\s+as|so\s+long\s+as|in\s+perpetuity|perpetual|qualifies\s+as)/is,
-      /(perpetual|in\s+perpetuity).{0,80}trade\s+secret/is,
+      /trade\s+secret.{0,120}(as\s+long\s+as|so\s+long\s+as|in\s+perpetuity|perpetual|qualifies\s+as|indefinitely|without\s+(?:limit|expir))/is,
+      /(perpetual|in\s+perpetuity|indefinitely).{0,80}trade\s+secret/is,
     ],
     default_severity: "warning",
   }),
@@ -569,9 +574,15 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Without a no-license clause, an aggressive receiver could argue an implied license arose from disclosure. The fix is a one-line denial.",
     recommendation:
       "Add: 'No license or other right is granted to Receiving Party in or to the Confidential Information except as expressly set forth in this Agreement.'",
+    // "Nothing in this Agreement grants Recipient any licence or ownership
+    // interest" is the textbook no-licence clause and matched none of the
+    // three: the negation is on "nothing", not on the verb, and the noun is
+    // spelled with a c in every UK and Commonwealth NDA (this repo already
+    // reads "licence" beside "license" in its instrument vocabulary).
     present_patterns: [
-      /no\s+license/i,
-      /(does\s+not\s+(grant|convey|transfer)|shall\s+not\s+be\s+construed.{0,40}license)/is,
+      /no\s+licen[cs]e/i,
+      /(does\s+not\s+(grant|convey|transfer)|shall\s+not\s+be\s+construed.{0,40}licen[cs]e)/is,
+      /\bnothing\b[^.]{0,120}?\b(?:grants?|convey(?:s)?|transfers?|confers?)\b[^.]{0,80}?\blicen[cs]e\b/is,
     ],
   }),
 
@@ -655,9 +666,14 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Unilateral NDAs should clearly name one party as the Disclosing Party and the other as Receiving Party, with obligations running only against the receiver.",
     recommendation:
       "Restate the parties as 'Disclosing Party' and 'Receiving Party' and run all obligations against the Receiving Party only.",
+    // "Discloser" and "Recipient" are the OTHER standard pair, and are what
+    // `mutual-nda` itself lists as distinguishing phrases. An NDA that defines
+    // both in its preamble — 'Wrenfield Audio Labs, Inc. ("Discloser") and
+    // Thistledown Robotics, Inc. ("Recipient")' — was told it states no role
+    // framing at all.
     present_patterns: [
-      /disclosing\s+party.{0,200}receiving\s+party/is,
-      /receiving\s+party.{0,200}disclosing\s+party/is,
+      /disclos(?:ing\s+party|er).{0,200}(?:receiving\s+party|recipient)/is,
+      /(?:receiving\s+party|recipient).{0,200}disclos(?:ing\s+party|er)/is,
     ],
     default_severity: "warning",
   }),
