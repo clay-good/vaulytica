@@ -1,6 +1,6 @@
 {
   "id": "safe-yc",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Simple Agreement for Future Equity (Y Combinator SAFE)",
   "description": "Y Combinator SAFE (post-money or pre-money variant). Selects the \u00a76.C equity ruleset (EQT-001..EQT-009).",
   "match_features": {
@@ -14,7 +14,9 @@
       "valuation cap",
       "discount rate",
       "most favored nation",
-      "equity financing"
+      "equity financing",
+      "future equity",
+      "liquidity event"
     ],
     "negative_features": [
       "this convertible promissory note",

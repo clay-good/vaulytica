@@ -3022,7 +3022,7 @@
   },
   {
     "id": "clinical-trial-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Clinical Trial Agreement",
     "description": "Sponsor-site clinical trial agreement, reviewed against 21 C.F.R. Parts 50/56/312 and subject-injury, publication, and data terms. Selects the HC-114..120 ruleset (7 checks).",
     "match_features": {
@@ -3040,7 +3040,10 @@
         "informed consent form",
         "principal investigator",
         "form fda 1572",
-        "publication of the study results"
+        "publication of the study results",
+        "the investigator",
+        "the institution",
+        "enrolled subject"
       ],
       "negative_features": [
         "merger",
@@ -4454,7 +4457,7 @@
   },
   {
     "id": "convertible-note",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Convertible Promissory Note",
     "description": "Convertible promissory note (UCC Article 3 negotiable instrument convertible into preferred stock at next qualified financing). Selects the §6.C equity ruleset (EQT-010..EQT-018).",
     "match_features": {
@@ -4468,7 +4471,10 @@
         "interest rate",
         "maturity date",
         "qualified financing",
-        "subordination"
+        "subordination",
+        "converts into equity",
+        "the holder",
+        "conversion price"
       ],
       "negative_features": [
         "simple agreement for future equity",
@@ -16999,7 +17005,7 @@
   },
   {
     "id": "safe-yc",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Simple Agreement for Future Equity (Y Combinator SAFE)",
     "description": "Y Combinator SAFE (post-money or pre-money variant). Selects the §6.C equity ruleset (EQT-001..EQT-009).",
     "match_features": {
@@ -17013,7 +17019,9 @@
         "valuation cap",
         "discount rate",
         "most favored nation",
-        "equity financing"
+        "equity financing",
+        "future equity",
+        "liquidity event"
       ],
       "negative_features": [
         "this convertible promissory note",

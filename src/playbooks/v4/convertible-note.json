@@ -1,6 +1,6 @@
 {
   "id": "convertible-note",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Convertible Promissory Note",
   "description": "Convertible promissory note (UCC Article 3 negotiable instrument convertible into preferred stock at next qualified financing). Selects the §6.C equity ruleset (EQT-010..EQT-018).",
   "match_features": {
@@ -11,7 +11,10 @@
       "interest rate",
       "maturity date",
       "qualified financing",
-      "subordination"
+      "subordination",
+      "converts into equity",
+      "the holder",
+      "conversion price"
     ],
     "negative_features": [
       "simple agreement for future equity",

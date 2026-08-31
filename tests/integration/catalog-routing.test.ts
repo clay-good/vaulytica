@@ -646,7 +646,44 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
-  it.each(BAD_DOCUMENTS)("a bad document still reaches $id", ({ id, title, body }) => {
+  /**
+   * The same test for three families whose bad document reached them at
+   * EXACTLY 0.5 — the threshold, one negative feature from falling to
+   * `generic-fallback`. All three had the same cause: the phrases were the
+   * protections the ruleset checks for (an IRB and an informed-consent form; a
+   * maturity date and a subordination term; a valuation cap and a discount
+   * rate), and a document with none of them scored its title and one phrase.
+   */
+  const THIN_MARGINS: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "clinical-trial-agreement",
+      title: "CLINICAL TRIAL AGREEMENT",
+      body: [
+        'This Clinical Trial Agreement is between Halcyon Therapeutics, Inc. ("Sponsor"), Calloway State University ("Institution"), and Dr. Priya Raghunathan ("Investigator").',
+        "The Institution will conduct the study described in the protocol. Sponsor will pay the Institution $8,400 per enrolled subject.",
+      ],
+    },
+    {
+      id: "convertible-note",
+      title: "CONVERTIBLE PROMISSORY NOTE",
+      body: [
+        'For value received, Thistledown Robotics, Inc. (the "Company") promises to pay Vantage Growth Fund II, L.P. (the "Holder") $750,000.',
+        "The note converts into equity on a qualified financing at the conversion price.",
+      ],
+    },
+    {
+      id: "safe-yc",
+      title: "SIMPLE AGREEMENT FOR FUTURE EQUITY",
+      body: [
+        'This Simple Agreement for Future Equity is between Thistledown Robotics, Inc. (the "Company") and Vantage Growth Fund II, L.P. (the "Investor").',
+        "On the next equity financing or a liquidity event the Investor gets shares.",
+      ],
+    },
+  ];
+
+  it.each([...BAD_DOCUMENTS, ...THIN_MARGINS])(
+    "a bad document still reaches $id",
+    ({ id, title, body }) => {
     const doc: [string, ...string[]] = ["", title, ...body];
     const tree = buildTree(doc);
     const extracted = extractAll(tree, {
@@ -656,8 +693,9 @@ describe("no family claims a document that is nobody's", () => {
       title: titleCorpus(tree, `${id}.txt`),
       body_text: doc.join("\n"),
     });
-    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe(id);
-  });
+      expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe(id);
+    },
+  );
 
   it("a BARE stock purchase agreement reaches its family", () => {
     // All five of `stock-purchase-agreement`'s distinguishing phrases —

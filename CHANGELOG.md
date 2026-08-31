@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.277.0] — 2026-08-31
+
+### Fixed
+- **Three families reached their own bad document at exactly 0.5** — the
+  threshold, one negative feature from falling to `generic-fallback`. Same
+  cause each time: the routing phrases were the protections the ruleset checks
+  for. `clinical-trial-agreement` claimed the IRB, the informed-consent form,
+  subject injury and Form FDA 1572; `convertible-note` claimed the maturity
+  date and subordination; `safe-yc` claimed the valuation cap and discount
+  rate. A document with none of them scored its title and one phrase. All three
+  now route at 0.7 and are pinned in `catalog-routing`.
+
+### Changed
+- Ten more high-stakes families swept with deliberately bad documents — a BAA
+  letting the business associate use PHI for its own analytics, a DPA with
+  unrestricted sub-processing, a franchise agreement terminable at the
+  franchisor's sole discretion, a separation agreement with no OWBPA period, a
+  residential lease with a three-month deposit and no notice of entry. Seven
+  routed with margin; the three above did not.
+
 ## [9.276.0] — 2026-08-31
 
 ### Fixed

@@ -1,6 +1,6 @@
 {
   "id": "clinical-trial-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Clinical Trial Agreement",
   "description": "Sponsor-site clinical trial agreement, reviewed against 21 C.F.R. Parts 50/56/312 and subject-injury, publication, and data terms. Selects the HC-114..120 ruleset (7 checks).",
   "match_features": {
@@ -18,7 +18,10 @@
       "informed consent form",
       "principal investigator",
       "form fda 1572",
-      "publication of the study results"
+      "publication of the study results",
+      "the investigator",
+      "the institution",
+      "enrolled subject"
     ],
     "negative_features": ["merger", "lease of the premises"]
   },
