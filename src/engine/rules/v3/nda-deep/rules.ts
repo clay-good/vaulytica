@@ -180,7 +180,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-007",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Exclusion: previously known to the recipient",
     description:
       "Confidential Information should exclude information already known to the receiving party prior to disclosure.",
@@ -197,12 +197,19 @@ export const NDA_DEEP_RULES: Rule[] = [
       // "(rightfully) known to the Receiving Party before disclosure" — the
       // "known … before disclosure" order with "before" (not "prior to") is as
       // common as the forms above and was missed.
-      /\bknown\b[^.]{0,40}?\b(?:before|prior\s+to)\s+(?:its\s+|the\s+|such\s+)?disclos/i,
+      // The window is 80 chars and stops at a SEMICOLON as well as a period.
+      // The standard exclusion reads "was rightfully known to the Receiving
+      // Party without restriction before disclosure" — 42 characters between
+      // "known" and "before", two past the old cap, on the commonest wording
+      // there is. The semicolon bound is what keeps the widened window from
+      // pairing one lettered carve-out's "known" with the next one's "prior to
+      // disclosure".
+      /\bknown\b[^.;]{0,80}?\b(?:before|prior\s+to)\s+(?:its\s+|the\s+|such\s+)?disclos/i,
       // The carve-out is also framed on POSSESSION rather than knowledge —
       // "rightfully in its possession before disclosure" — with a possessive
       // ("its"/"the Receiving Party's") the "in the possession OF" pattern above
       // does not reach.
-      /\bpossession\b[^.]{0,40}?\b(?:before|prior\s+to)\s+(?:its\s+|the\s+|such\s+)?disclos/i,
+      /\bpossession\b[^.;]{0,80}?\b(?:before|prior\s+to)\s+(?:its\s+|the\s+|such\s+)?disclos/i,
     ],
   }),
 
@@ -458,8 +465,17 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Without a chosen governing law, default conflict-of-laws rules apply and may produce an unintended jurisdiction.",
     recommendation:
       "Add a governing-law clause naming a viable jurisdiction (Delaware, New York, California, Texas, England & Wales, etc.).",
+    // The ADJECTIVAL forms an NDA actually uses. "New York law governs" and
+    // "governed by Delaware law" name the jurisdiction as an adjective on the
+    // word "law" rather than as "the laws OF X", and every pattern here wanted
+    // the latter — so an NDA whose last sentence picks New York was told it
+    // picks nothing, and NDA-D-018 then reported the jurisdiction it could not
+    // read as unusual. The extractor has read both forms since v1; these rules
+    // carried their own narrower copy.
     present_patterns: [
       /(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+the\s+(State\s+of|country\s+of))/i,
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))/,
+      /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
   }),
 
@@ -478,6 +494,10 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Consider whether a more conventional jurisdiction (Delaware, New York, California, Texas) better serves the parties.",
     present_patterns: [
       /laws\s+of\s+(the\s+(State\s+of\s+)?)?(Delaware|New\s+York|California|Texas|Massachusetts|Illinois|Washington|England|United\s+Kingdom)/i,
+      // The same jurisdictions named adjectivally — "New York law governs",
+      // "governed by Delaware law". Without these the rule reported the most
+      // conventional NDA jurisdiction there is as an unusual one.
+      /\b(Delaware|New\s+York|California|Texas|Massachusetts|Illinois|Washington|England|United\s+Kingdom)\s+law\b/i,
     ],
     default_severity: "info",
   }),

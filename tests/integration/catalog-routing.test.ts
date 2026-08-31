@@ -259,7 +259,10 @@ describe("a legend above the title", () => {
       title: titleCorpus(tree, "nda.txt"),
       body_text: body.join("\n"),
     });
-    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("mutual-nda");
+    // `mutual-nda-deep`, not `mutual-nda`: the point of this test is MUTUAL vs
+    // UNILATERAL, and the legacy mutual family is deprecated in favour of the
+    // deep one, which the matcher now promotes.
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("mutual-nda-deep");
   });
 });
 
@@ -449,6 +452,13 @@ describe("every playbook is reachable by its own name and vocabulary", () => {
         });
         if (match.playbook_id === pb.id) continue;
         if (PERSPECTIVE_PAIRS.get(pb.id)?.includes(match.playbook_id)) continue;
+        // A DEPRECATED family reaching its own named successor is deprecation
+        // working, not shadowing. `mutual-nda` and `unilateral-nda` carry
+        // `superseded_by`, and the matcher promotes the successor whenever it
+        // clears the threshold on its own merits — which is what puts the 23
+        // NDA-D rules on the auto-routed path at all. Both remain reachable by
+        // an explicit `--playbook` and by a golden's sidecar pin.
+        if (pb.deprecated === true && pb.superseded_by === match.playbook_id) continue;
         shadowed.push(`${pb.id} -> ${match.playbook_id} @${match.confidence} (title "${kw}")`);
       }
     }
@@ -490,6 +500,7 @@ describe("every playbook is reachable by its own name and vocabulary", () => {
       });
       if (match.playbook_id === pb.id) continue;
       if (PERSPECTIVE_PAIRS.get(pb.id)?.includes(match.playbook_id)) continue;
+      if (pb.deprecated === true && pb.superseded_by === match.playbook_id) continue;
       shadowed.push(`${pb.id} -> ${match.playbook_id} @${match.confidence} (name "${pb.name}")`);
     }
     expect(checked, "the sweep found no playbooks — it is broken").toBeGreaterThan(250);

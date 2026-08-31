@@ -874,6 +874,38 @@ export function matchPlaybook(
     return a.playbook.id.localeCompare(b.playbook.id, "en");
   });
 
+  // A DEPRECATED playbook must not beat its own successor.
+  //
+  // `docs/adding-a-playbook.md` says the deprecation metadata "lets a successor
+  // playbook (e.g. `mutual-nda-deep`) outrank its legacy v2 sibling", and the
+  // tiebreak above is the whole of that mechanism — so it fires only on an
+  // EXACT score tie, which never happens between these two. The legacy family
+  // carries `required_clauses`, worth 0.4 each against a title keyword's 0.3,
+  // and its successor carries none; `mutual-nda` therefore scored 1.0 against
+  // `mutual-nda-deep`'s 0.9 on a plain two-party NDA and won outright. The
+  // consequence is not a label: NDA-D-001..023 and the unilateral ruleset are
+  // scoped to the `*-deep` families, so **the most common contract there is
+  // received no NDA-specific analysis at all** on the auto-routed path. A
+  // deliberately deficient NDA — no exclusions, no defined Confidential
+  // Information, an obligation that "lasts forever" — drew seven findings and
+  // not one of them about any of that.
+  //
+  // The promotion is conservative: it applies only when the named successor is
+  // itself a candidate that clears the threshold on its own merits. A
+  // successor that does not recognise the document leaves the legacy family in
+  // place, which is what keeps a sidecar-pinned fixture working.
+  const promoteSuccessor = (): void => {
+    const first = scored[0];
+    if (!first || first.playbook.deprecated !== true) return;
+    const successorId = first.playbook.superseded_by;
+    if (!successorId) return;
+    const at = scored.findIndex((s) => s.playbook.id === successorId);
+    if (at <= 0 || scored[at]!.score < MATCH_THRESHOLD) return;
+    const [successor] = scored.splice(at, 1);
+    scored.unshift(successor!);
+  };
+  promoteSuccessor();
+
   const top = scored[0];
   const alternatives: PlaybookMatchAlternative[] = scored.slice(1, 4).map((s) => ({
     playbook_id: s.playbook.id,

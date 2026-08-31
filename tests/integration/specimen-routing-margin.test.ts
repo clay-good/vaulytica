@@ -86,6 +86,15 @@ describe("a specimen beats its runner-up", () => {
         ).toBe(match.raw_confidence);
         return;
       }
+      // A DEPRECATED runner-up that names the winner as its successor is not a
+      // tie and is not luck: the matcher promotes a named successor over its
+      // deprecated predecessor whenever the successor clears the threshold on
+      // its own merits, so the winner is deterministic and is expected to
+      // score LOWER. `mutual-nda` out-scores `mutual-nda-deep` on every NDA —
+      // the legacy family carries `required_clauses` and the successor carries
+      // none — which is exactly why the tiebreak-only mechanism never fired.
+      const runnerUpPb = ALL.find((p) => p.id === runnerUp.playbook_id);
+      if (runnerUpPb?.deprecated === true && runnerUpPb.superseded_by === match.playbook_id) return;
       // The RAW score is what decides the ranking. `confidence` is clamped to
       // 1, so two families can both display 1 while one outscores the other by
       // a wide margin — reading the clamped value called a 1.2-vs-1.0 win a

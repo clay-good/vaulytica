@@ -1294,9 +1294,33 @@ export const EXPECTED: Record<string, Expectation> = {
   },
 
   // A mutual NDA stamped EXECUTION VERSION / CONFIDENTIAL above its title.
+  //
+  // It routes to `mutual-nda-deep` from 9.273.0. `mutual-nda` has carried
+  // `"deprecated": true, "superseded_by": "mutual-nda-deep"` since the deep
+  // family landed, and the matcher's whole deprecation mechanism was a
+  // TIEBREAK — which never fired, because the legacy family carries
+  // `required_clauses` (0.4 each) and its successor carries none. So the 23
+  // NDA-D rules never ran on an auto-routed document, and the six findings
+  // this row used to hold contained nothing about the NDA's own substance.
+  // NDA-D-007 came off it in the same release: the standard exclusion reads
+  // "rightfully known to the Receiving Party without restriction before
+  // disclosure", which is 42 characters between "known" and "before" against
+  // a 40-character window.
   "legend-nda.txt": {
-    playbook: "mutual-nda",
-    findings: ["RISK-005", "TERM-002", "TERM-005", "OBLI-005", "RISK-001", "RISK-014"],
+    playbook: "mutual-nda-deep",
+    findings: [
+      "RISK-005",
+      "TERM-002",
+      "TERM-005",
+      "OBLI-005",
+      "RISK-001",
+      "RISK-014",
+      "NDA-D-014",
+      "NDA-D-016",
+      "NDA-D-019",
+      "NDA-D-022",
+      "NDA-D-023",
+    ],
   },
 
   // A medical director agreement drafted to the Stark and AKS personal-service

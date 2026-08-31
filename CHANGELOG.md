@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.273.0] — 2026-08-31
+
+### Changed
+- **A deprecated playbook no longer beats its own successor.** `mutual-nda` and
+  `unilateral-nda` have carried `"deprecated": true` with `"superseded_by"`
+  since the deep families landed, and `docs/adding-a-playbook.md` says that
+  metadata exists so "a successor playbook … outranks its legacy v2 sibling".
+  The whole of the mechanism was a TIEBREAK, and it never fired: the legacy
+  family carries `required_clauses`, worth 0.4 each against a title keyword's
+  0.3, and its successor carries none — so `mutual-nda` scored 1.0 against
+  `mutual-nda-deep`'s 0.9 on every NDA and won outright. **The consequence was
+  not a label. NDA-D-001..023 are scoped to the `*-deep` families, so the most
+  common contract there is received no NDA-specific analysis at all on the
+  auto-routed path**: a deliberately deficient mutual NDA — no exclusions, no
+  defined "Confidential Information", an obligation that "lasts forever" — drew
+  seven findings, none of them about any of that, and now draws eleven
+  criticals that are all on the page. The promotion is conservative: it applies
+  only when the named successor is itself a candidate clearing the threshold on
+  its own merits. Both legacy families remain reachable by an explicit
+  `--playbook` and by a golden's sidecar pin, and the v2 launch-only corpus is
+  unaffected because the deep families are not among its candidates.
+
+### Fixed
+- **NDA-D-017 and NDA-D-018 could not read "New York law governs".** Both
+  wanted "the laws OF X" and neither read the adjectival form, so an NDA whose
+  last sentence picks New York was told it picks no governing law — and then
+  told that the jurisdiction it could not read was an unusual one. The
+  extractor has read both forms since v1; these rules carried their own
+  narrower copy.
+- **NDA-D-007's window was two characters too short for the standard
+  exclusion.** "Was rightfully known to the Receiving Party without restriction
+  before disclosure" puts 42 characters between "known" and "before" against a
+  40-character cap. Widened to 80 and bounded at a semicolon as well as a
+  period, so the wider window cannot pair one lettered carve-out's "known" with
+  the next one's "prior to disclosure".
+
 ## [Unreleased]
 
 ### Known

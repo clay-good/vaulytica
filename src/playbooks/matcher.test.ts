@@ -116,3 +116,60 @@ describe("scores that are equal are ranked as equal", () => {
     expect(match.playbook_id).toBe("z-titled");
   });
 });
+
+describe("a deprecated playbook does not beat its own successor", () => {
+  // `docs/adding-a-playbook.md` says the deprecation metadata "lets a successor
+  // playbook outrank its legacy v2 sibling", and the tiebreak was the whole of
+  // that mechanism — so it fired only on an exact score tie, which never
+  // happened: the legacy family carries `required_clauses` (0.4 each) and its
+  // successor carries none. `mutual-nda` scored 1.0 against `mutual-nda-deep`'s
+  // 0.9 on every NDA, so the 23 NDA-D rules never ran on an auto-routed
+  // document.
+  const make = (id: string, extra: Record<string, unknown>): Playbook =>
+    parsePlaybook({
+      id,
+      version: "1.0.0",
+      name: id,
+      description: id,
+      match_features: {
+        title_keywords: ["widget agreement"],
+        required_clauses: [],
+        distinguishing_phrases: ["widget", "sprocket", "flange"],
+        negative_features: [],
+      },
+      expected_clauses: [],
+      expected_defined_terms: [],
+      rule_overrides: {},
+      balanced_defaults: [],
+      sources: [],
+      applicable_jurisdictions: ["US"],
+      ...extra,
+    });
+
+  const extracted = { definitions: { entries: [] } } as unknown as ExtractedData;
+  const body = "The widget, the sprocket and the flange are described here.";
+  const run = (candidates: Playbook[]): string =>
+    matchPlaybook(extracted, [], candidates, {
+      title: "widget agreement",
+      body_text: body,
+    }).playbook_id;
+
+  it("promotes the named successor when it clears the threshold", () => {
+    const legacy = make("legacy", { deprecated: true, superseded_by: "legacy-deep" });
+    const successor = make("legacy-deep", {});
+    expect(run([legacy, successor])).toBe("legacy-deep");
+  });
+
+  it("leaves the legacy family in place when the successor does not recognise the document", () => {
+    const legacy = make("legacy", { deprecated: true, superseded_by: "legacy-deep" });
+    const stranger = make("legacy-deep", {
+      match_features: {
+        title_keywords: ["something else entirely"],
+        required_clauses: [],
+        distinguishing_phrases: ["nothing", "here", "at all"],
+        negative_features: [],
+      },
+    });
+    expect(run([legacy, stranger])).toBe("legacy");
+  });
+});

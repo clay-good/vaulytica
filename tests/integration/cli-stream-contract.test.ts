@@ -198,15 +198,15 @@ describe("CLI stream contract (machine formats own stdout)", () => {
     const { runAnalyze } = await import("../../tools/cli/run.js");
     const c = await capture(() => runAnalyze([TXT_FIXTURE, "--format", "json"]));
     expectPureJson("analyze json", c);
-    expect(c.stderr).toMatch(/\[mutual-nda\]\s+\d+C \d+W \d+I/);
-    expect(c.stdout).not.toContain("[mutual-nda]");
+    expect(c.stderr).toMatch(/\[mutual-nda-deep\]\s+\d+C \d+W \d+I/);
+    expect(c.stdout).not.toContain("[mutual-nda-deep]");
   });
 
   it("analyze --format csv: stdout begins with the CSV header row", async () => {
     const { runAnalyze } = await import("../../tools/cli/run.js");
     const c = await capture(() => runAnalyze([TXT_FIXTURE, "--format", "csv"]));
     expect(c.stdout.startsWith("severity,rule_id,")).toBe(true);
-    expect(c.stderr).toContain("[mutual-nda]");
+    expect(c.stderr).toContain("[mutual-nda-deep]");
   });
 
   it("analyze --format sarif: stdout parses as SARIF JSON", async () => {
@@ -219,7 +219,7 @@ describe("CLI stream contract (machine formats own stdout)", () => {
   it("analyze --format md (human format): summary stays on stdout", async () => {
     const { runAnalyze } = await import("../../tools/cli/run.js");
     const c = await capture(() => runAnalyze([TXT_FIXTURE, "--format", "md"]));
-    expect(c.stdout).toContain("[mutual-nda]");
+    expect(c.stdout).toContain("[mutual-nda-deep]");
   });
 
   it("compare --format json emits pure JSON on stdout", async () => {
