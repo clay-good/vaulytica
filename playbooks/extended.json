@@ -1848,7 +1848,7 @@
   },
   {
     "id": "baa",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Business Associate Agreement (HIPAA)",
     "description": "Covered-entity to business-associate BAA under HIPAA. Selects the §28 BAA ruleset (45 rules) covering 45 CFR § 164.504(e) required clauses, § 164.314(a) Security Rule flow-down, § 164.410 breach notification, plus HHS-guidance posture rules.",
     "match_features": {
@@ -1868,7 +1868,11 @@
         "164.410",
         "security incident"
       ],
-      "negative_features": []
+      "negative_features": [
+        "subcontractor business associate",
+        "subcontractor baa",
+        "downstream baa"
+      ]
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -1918,7 +1922,7 @@
   },
   {
     "id": "baa-subcontractor",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "BAA — Business Associate to Subcontractor (HIPAA)",
     "description": "Business-associate to subcontractor BAA under HIPAA. Selects the §28 BAA ruleset (45 rules) covering 45 CFR § 164.504(e) required clauses, § 164.314(a) Security Rule flow-down, § 164.410 breach notification, plus HHS-guidance posture rules — with an emphasis on flow-down (the subcontractor must comply with the same terms the upstream BAA imposes on the business associate, per 45 CFR § 164.502(e)(1)(ii) and § 164.504(e)(5)). Companion: the upstream BAA between the covered entity and the business associate.",
     "match_features": {
@@ -1927,7 +1931,8 @@
         "subcontractor baa",
         "business associate subcontractor agreement",
         "downstream baa",
-        "ba subcontractor agreement"
+        "ba subcontractor agreement",
+        "subcontractor business associate addendum"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -1939,7 +1944,10 @@
         "flow down",
         "164.504(e)(5)",
         "164.502(e)(1)(ii)",
-        "same terms"
+        "same terms",
+        "subcontractor",
+        "protected health information",
+        "business associate"
       ],
       "negative_features": [
         "covered entity directly engages",
@@ -6358,7 +6366,7 @@
   },
   {
     "id": "dpa-ccpa-service-provider",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "DPA — CCPA Service Provider (CPRA-aligned)",
     "description": "Data Processing Agreement asserting CCPA 'Service Provider' status under Cal. Civ. Code § 1798.140(ag) and 11 CCR § 7051. Selects the §30 DPA-US-state ruleset (25 rules).",
     "match_features": {
@@ -6367,7 +6375,9 @@
         "ccpa service provider",
         "cpra service provider",
         "ccpa addendum",
-        "cpra addendum"
+        "cpra addendum",
+        "service provider addendum",
+        "ccpa service provider addendum"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -10959,7 +10969,7 @@
   },
   {
     "id": "loan-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Loan Agreement",
     "description": "Commercial loan agreement (term / revolver) with affirmative + negative + financial covenants. LSTA / ABA model baseline. Selects the §6.L ruleset (BNK-007..BNK-013).",
     "match_features": {
@@ -10980,7 +10990,10 @@
       "negative_features": [
         "this promissory note",
         "this security agreement",
-        "this guaranty"
+        "this guaranty",
+        "small business administration",
+        "sba 7(a)",
+        "sba 504"
       ]
     },
     "expected_clauses": [],
@@ -11226,7 +11239,7 @@
   },
   {
     "id": "ma-restrictive-covenant",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "M&A Restrictive Covenant Agreement",
     "description": "Sale-of-business non-compete / non-solicit covenants, governed by state goodwill doctrine (e.g. Cal. Bus. & Prof. Code § 16601). The FTC Non-Compete Clause Rule, whose § 910.2(a)(2) would likewise have preserved them, was set aside nationwide in Ryan LLC v. FTC and never took effect. Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
     "match_features": {
@@ -11241,7 +11254,10 @@
         "goodwill",
         "non-compete",
         "non-solicitation",
-        "blue pencil"
+        "blue pencil",
+        "after closing",
+        "the acquired business",
+        "purchaser"
       ],
       "negative_features": [
         "employment agreement"
@@ -17052,7 +17068,7 @@
   },
   {
     "id": "sba-loan-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "SBA 7(a) / 504 Loan Agreement",
     "description": "SBA-guaranteed loan documents, reviewed against the SOP 50 10 program requirements including personal guaranties and use of proceeds. Selects the BNK-109..114 ruleset (6 checks).",
     "match_features": {
@@ -17070,7 +17086,10 @@
         "use of proceeds",
         "sop 50 10",
         "eligible passive company",
-        "life insurance assignment"
+        "life insurance assignment",
+        "borrower",
+        "lender",
+        "guaranteed by the"
       ],
       "negative_features": [
         "employment offer",
@@ -17296,7 +17315,7 @@
   },
   {
     "id": "secondary-stock-transfer",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Secondary Stock Transfer Agreement",
     "description": "Private secondary sale of shares by an existing holder, covering ROFR clearance, transfer restrictions, and Rule 144 / § 4(a)(7) posture. Selects the EQT-125..130 ruleset (6 checks).",
     "match_features": {
@@ -17313,12 +17332,17 @@
         "transfer restrictions",
         "rule 144",
         "section 4(a)(7)",
-        "selling stockholder"
+        "selling stockholder",
+        "transferor",
+        "transferee",
+        "per share"
       ],
       "negative_features": [
         "merger",
         "employment agreement",
-        "the company hereby issues"
+        "the company hereby issues",
+        "the undersigned taxpayer hereby elects",
+        "election to include in gross income"
       ]
     },
     "expected_clauses": [],

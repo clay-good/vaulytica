@@ -1,6 +1,6 @@
 {
   "id": "secondary-stock-transfer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Secondary Stock Transfer Agreement",
   "description": "Private secondary sale of shares by an existing holder, covering ROFR clearance, transfer restrictions, and Rule 144 / \u00a7 4(a)(7) posture. Selects the EQT-125..130 ruleset (6 checks).",
   "match_features": {
@@ -17,12 +17,17 @@
       "transfer restrictions",
       "rule 144",
       "section 4(a)(7)",
-      "selling stockholder"
+      "selling stockholder",
+      "transferor",
+      "transferee",
+      "per share"
     ],
     "negative_features": [
       "merger",
       "employment agreement",
-      "the company hereby issues"
+      "the company hereby issues",
+      "the undersigned taxpayer hereby elects",
+      "election to include in gross income"
     ]
   },
   "expected_clauses": [],

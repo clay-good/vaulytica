@@ -1,6 +1,6 @@
 {
   "id": "baa",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Business Associate Agreement (HIPAA)",
   "description": "Covered-entity to business-associate BAA under HIPAA. Selects the §28 BAA ruleset (45 rules) covering 45 CFR § 164.504(e) required clauses, § 164.314(a) Security Rule flow-down, § 164.410 breach notification, plus HHS-guidance posture rules.",
   "match_features": {
@@ -20,7 +20,11 @@
       "164.410",
       "security incident"
     ],
-    "negative_features": []
+    "negative_features": [
+      "subcontractor business associate",
+      "subcontractor baa",
+      "downstream baa"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [

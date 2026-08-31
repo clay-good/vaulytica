@@ -1,6 +1,6 @@
 {
   "id": "loan-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Loan Agreement",
   "description": "Commercial loan agreement (term / revolver) with affirmative + negative + financial covenants. LSTA / ABA model baseline. Selects the \u00a76.L ruleset (BNK-007..BNK-013).",
   "match_features": {
@@ -21,7 +21,10 @@
     "negative_features": [
       "this promissory note",
       "this security agreement",
-      "this guaranty"
+      "this guaranty",
+      "small business administration",
+      "sba 7(a)",
+      "sba 504"
     ]
   },
   "expected_clauses": [],

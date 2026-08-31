@@ -583,6 +583,82 @@ describe("no family claims a document that is nobody's", () => {
     expect(match.playbook_id).toBe("generic-fallback");
   });
 
+  /**
+   * Five families found by one sweep of deliberately bad documents. Each is a
+   * document that states its subject and none of the protections its family
+   * checks for — which is the document that most needs the family, and the one
+   * the family's own vocabulary was least able to recognise.
+   */
+  const BAD_DOCUMENTS: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      // Its own routing phrases were the flow-down terms 164.504(e)(5)
+      // requires, so the GENERAL `baa` took a document whose title says
+      // subcontractor, and audited it as the upstream agreement.
+      id: "baa-subcontractor",
+      title: "SUBCONTRACTOR BUSINESS ASSOCIATE AGREEMENT",
+      body: [
+        'This Subcontractor Business Associate Agreement is between Beacon Ledger Systems, Inc. ("Business Associate") and Sable Notification Services LLC ("Subcontractor"), which will handle protected health information on Business Associate\'s behalf.',
+        "Subcontractor may use the information for its own analytics.",
+      ],
+    },
+    {
+      // Every phrase was a CCPA compliance term. A service provider addendum
+      // that lets the service provider use the personal information for its
+      // own products — the paradigm violation — reached no family at all.
+      id: "dpa-ccpa-service-provider",
+      title: "SERVICE PROVIDER ADDENDUM",
+      body: [
+        'This Service Provider Addendum is between Halcyon Analytics, Inc. ("Business") and Kestrel Data LLC ("Service Provider") and covers personal information Business shares under the California Consumer Privacy Act.',
+        "Service Provider may use the personal information to improve its own products.",
+      ],
+    },
+    {
+      // "sba 7(a)", "sop 50 10", "unconditional guarantee" — all of them
+      // things a compliant SBA loan carries. The general `loan-agreement` took
+      // it, and the SBA ruleset never ran.
+      id: "sba-loan-agreement",
+      title: "SBA LOAN AGREEMENT",
+      body: [
+        'This SBA Loan Agreement is between Summit Commercial Bank, N.A. ("Lender") and Thistledown Robotics, Inc. ("Borrower") for a loan guaranteed by the U.S. Small Business Administration.',
+        "Lender will lend Borrower $1,750,000 at prime plus 2.75%, payable over ten years.",
+      ],
+    },
+    {
+      // Right of first refusal, the company's consent, Rule 144, § 4(a)(7) —
+      // the four things a compliant secondary transfer carries.
+      id: "secondary-stock-transfer",
+      title: "STOCK TRANSFER AGREEMENT",
+      body: [
+        'This Stock Transfer Agreement is between Adaeze Ferreira-Lindqvist ("Transferor"), a former employee, and Vantage Growth Fund II, L.P. ("Transferee").',
+        "Transferor sells to Transferee 250,000 shares of common stock at $6.40 per share.",
+      ],
+    },
+    {
+      // Routed at EXACTLY 0.5, the threshold — one negative feature from
+      // falling off — because four of its five phrases are the covenant's own
+      // protections.
+      id: "ma-restrictive-covenant",
+      title: "NON-COMPETITION AGREEMENT (SALE OF BUSINESS)",
+      body: [
+        'This Agreement is made in connection with the sale of the business of Sablefield Software, Inc. between Pinehurst Capital Partners, L.P. ("Buyer") and Devin Marchetti ("Seller").',
+        "For ten (10) years after closing, Seller will not compete with the acquired business anywhere in the world.",
+      ],
+    },
+  ];
+
+  it.each(BAD_DOCUMENTS)("a bad document still reaches $id", ({ id, title, body }) => {
+    const doc: [string, ...string[]] = ["", title, ...body];
+    const tree = buildTree(doc);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, `${id}.txt`),
+      body_text: doc.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe(id);
+  });
+
   it("a BARE stock purchase agreement reaches its family", () => {
     // All five of `stock-purchase-agreement`'s distinguishing phrases —
     // "purchase and sale", "working capital", "material adverse effect",

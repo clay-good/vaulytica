@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.276.0] — 2026-08-31
+
+### Fixed
+- **Eight deliberately bad documents, five families that could not recognise
+  their own.** Each document states its subject and none of the protections its
+  family checks for — which is the document that most needs the family, and the
+  one the family's vocabulary was least able to reach.
+  - `baa-subcontractor`: its phrases were the flow-down terms 45 C.F.R.
+    § 164.504(e)(5) requires, so the general `baa` took a document whose title
+    says subcontractor and audited it as the upstream agreement. `baa` now
+    names the specialisation as a negative feature.
+  - `dpa-ccpa-service-provider`: a service provider addendum that lets the
+    service provider use the personal information for its own products — the
+    paradigm CCPA violation — reached no family at all. Its title keywords were
+    written as exact full titles and did not include "service provider
+    addendum".
+  - `sba-loan-agreement`: "sba 7(a)", "sop 50 10", "unconditional guarantee" —
+    all things a compliant SBA loan carries — so the general `loan-agreement`
+    took it and the SBA ruleset never ran.
+  - `secondary-stock-transfer`: right of first refusal, the company's consent,
+    Rule 144, § 4(a)(7) — the four things a compliant secondary transfer
+    carries. A bare transfer drew two findings.
+  - `ma-restrictive-covenant`: routed at exactly 0.5, the threshold, one
+    negative feature from falling off.
+
+  All five are pinned by a bad-document routing table in `catalog-routing`.
+
 ## [9.275.0] — 2026-08-31
 
 ### Fixed

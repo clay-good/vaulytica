@@ -1,6 +1,6 @@
 {
   "id": "dpa-ccpa-service-provider",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "DPA — CCPA Service Provider (CPRA-aligned)",
   "description": "Data Processing Agreement asserting CCPA 'Service Provider' status under Cal. Civ. Code § 1798.140(ag) and 11 CCR § 7051. Selects the §30 DPA-US-state ruleset (25 rules).",
   "match_features": {
@@ -9,7 +9,9 @@
       "ccpa service provider",
       "cpra service provider",
       "ccpa addendum",
-      "cpra addendum"
+      "cpra addendum",
+      "service provider addendum",
+      "ccpa service provider addendum"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [

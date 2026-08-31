@@ -1,6 +1,6 @@
 {
   "id": "sba-loan-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "SBA 7(a) / 504 Loan Agreement",
   "description": "SBA-guaranteed loan documents, reviewed against the SOP 50 10 program requirements including personal guaranties and use of proceeds. Selects the BNK-109..114 ruleset (6 checks).",
   "match_features": {
@@ -18,7 +18,10 @@
       "use of proceeds",
       "sop 50 10",
       "eligible passive company",
-      "life insurance assignment"
+      "life insurance assignment",
+      "borrower",
+      "lender",
+      "guaranteed by the"
     ],
     "negative_features": [
       "employment offer",
