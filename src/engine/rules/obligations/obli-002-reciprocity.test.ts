@@ -250,3 +250,64 @@ describe("OBLI-002 v1.5.0 — the warranty SENSE, and a class of counterparties"
     ).not.toBeNull();
   });
 });
+
+describe("OBLI-002 v1.6.0 — the CONTRACTUAL sense of a representation", () => {
+  const twoSides = [
+    { name: "Ridgeline Aerospace Components, Inc", role: "Employer" },
+    { name: "Local 1104", role: "Union" },
+  ] as Partial<Party>[];
+
+  it("does not read being REPRESENTED as making a representation", () => {
+    // A collective bargaining agreement is about representation from its first
+    // sentence — "the exclusive bargaining representative", "a joint safety
+    // committee with equal representation", "union representation at any
+    // investigatory interview". A bare `\brepresentation` matched all three
+    // and told the employer its warranties run one way.
+    expect(
+      obli002.check(
+        ctxWith(twoSides, [
+          {
+            obligor: "Employer",
+            action:
+              "provide a safe workplace; a joint labor-management safety committee, with equal representation, shall meet monthly",
+          },
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still reads a genuine one-sided representation", () => {
+    expect(
+      obli002.check(
+        ctxWith(twoSides, [
+          { obligor: "Employer", action: "represents that it has no other collective agreement" },
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("does not report an asymmetry the document states mutually", () => {
+    // "Each Party represents that …" carries no "shall"/"will", so the
+    // obligation extractor records nothing for it, and `mutualByRole` cannot
+    // see what was never recorded. A single "Subcontractor will furnish … and
+    // represents that the information is current" was then the only
+    // representation in evidence, and a whole section headed REPRESENTATIONS
+    // in which each party represents was reported as one-sided.
+    const base = buildContext([
+      "Teaming Agreement",
+      "8. REPRESENTATIONS",
+      "Each Party represents that it is not suspended, debarred, or proposed for debarment.",
+    ]);
+    const ctx: RuleContext = {
+      ...base,
+      extracted: {
+        ...base.extracted,
+        parties: twoSides as Party[],
+        obligations: [
+          { obligor: "Employer", action: "furnish the information and represents that it is current" },
+        ] as Obligation[],
+      },
+    };
+    expect(obli002.check(ctx)).toBeNull();
+  });
+});

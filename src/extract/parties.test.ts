@@ -674,3 +674,57 @@ describe("the canonical capitalization of a legal-name suffix", () => {
     expect(roles("Each Parent Company shall cause its subsidiaries to comply.")).toEqual([]);
   });
 });
+
+describe("an ALL-CAPS preamble offers no case contrast", () => {
+  const parties = (t: string) =>
+    extractParties(buildTree(["AGREEMENT", t]))
+      .map((p) => `${p.name}|${p.role ?? ""}`)
+      .sort();
+
+  it("does not read the lead-in as part of the first party's name", () => {
+    // Every word of "THIS AGREEMENT IS ENTERED INTO BY AND BETWEEN VERTEX
+    // SYSTEMS LLC" starts with a capital, so the name run walked back through
+    // the lead-in and registered "ENTERED INTO BY AND BETWEEN VERTEX SYSTEMS"
+    // — carrying the real party's role — beside the real party. Two parties
+    // became four, and every rule that tallies by party counted the phantoms.
+    expect(
+      parties(
+        'THIS AGREEMENT IS ENTERED INTO BY AND BETWEEN VERTEX SYSTEMS LLC ("VENDOR") AND NORTHWIND LABS LLC ("CUSTOMER").',
+      ),
+    ).toEqual(["NORTHWIND LABS LLC|CUSTOMER", "VERTEX SYSTEMS LLC|VENDOR"]);
+  });
+
+  it("gives the second party its role when the suffix is INC.", () => {
+    // `BETWEEN_RE`'s second capture terminates at the first sentence period,
+    // which is the one inside "INC.", so the role parenthetical fell outside
+    // it. In mixed case `PARTY_DECL` supplies the role from the same sentence;
+    // in capitals it could not see the suffix at all.
+    expect(
+      parties(
+        'THIS AGREEMENT IS ENTERED INTO BY AND BETWEEN VERTEX SYSTEMS, INC. ("VENDOR") AND NORTHWIND LABS, INC. ("CUSTOMER").',
+      ),
+    ).toEqual(["NORTHWIND LABS, INC|CUSTOMER", "VERTEX SYSTEMS, INC|VENDOR"]);
+  });
+
+  it("keeps a connective that is INSIDE a name", () => {
+    // The lead-in is stripped only from the front, as whole words, so a legal
+    // name that contains one of them keeps it.
+    expect(
+      parties('THIS AGREEMENT IS MADE BY SMITH AND WESSON LLC ("SELLER").'),
+    ).toContain("SMITH AND WESSON|SELLER");
+  });
+
+  it("still stops an ALL-CAPS 'among' list at each member's suffix", () => {
+    // `ENTITY_SUFFIX_BEFORE_COMMA` listed "[Cc]orp" and "[Ll]td", which do not
+    // match "CORP" and "LTD", so the run walked through the comma after the
+    // second member and produced a fourth party, "BETA CORP., AND GAMMA".
+    expect(
+      extractParties(
+        buildTree([
+          "AGREEMENT",
+          "THIS AGREEMENT IS ENTERED INTO BY AND AMONG ACME INC., BETA CORP., AND GAMMA LTD.",
+        ]),
+      ).map((p) => p.name),
+    ).toEqual(["ACME INC", "BETA CORP", "GAMMA LTD"]);
+  });
+});

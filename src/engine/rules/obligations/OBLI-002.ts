@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, topPosition } from "../_helpers.js";
+import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
  * An obligation whose action is DISCLAIMED — "Vendor shall **not have any
@@ -34,7 +35,19 @@ const NEGATED_LIST =
 const RECIPROCAL_PATTERNS = [
   { label: "confidentiality", pattern: /\bconfidential/i },
   { label: "indemnification", pattern: /\bindemnif/i },
-  { label: "representations", pattern: /\brepresentation/i },
+  // The CONTRACTUAL sense only. A bare `\brepresentation` also matches being
+  // REPRESENTED — "the exclusive bargaining representative", "a joint safety
+  // committee with equal representation", "union representation at any
+  // investigatory interview" — and on a collective bargaining agreement, where
+  // representation is the subject matter of the whole instrument, that read as
+  // the Employer bearing a one-sided warranty. Same defect the warranty
+  // pattern below was narrowed for, and the same shape of fix: the verb with
+  // its "that", or the noun beside "warranties".
+  {
+    label: "representations",
+    pattern:
+      /\brepresents?\s+(?:and\s+warrants?\s+)?that\b|\brepresentations?\s+and\s+warrant(?:y|ies)\b|\brepresentations?\s+(?:made|contained|set\s+forth)\b/i,
+  },
   // The WARRANTY sense only. A bare `\bwarrant` also matches the SECURITY —
   // and on a warrant agreement every operative sentence names it: "the Company
   // shall issue a replacement warrant", "the Warrant Shares shall be
@@ -67,10 +80,34 @@ const RECIPROCAL_ROLES = new Set([
   "the parties",
 ]);
 
+/**
+ * A MUTUAL statement of the same obligation, written with a subject that
+ * occupies both sides: "EACH PARTY represents that it is not suspended,
+ * debarred, …". The obligation extractor triggers on "shall"/"will", not on
+ * the bare present-tense "represents", so a whole section headed
+ * REPRESENTATIONS in which each party represents produced NO obligation at
+ * all — while a single "Subcontractor will furnish … and represents that the
+ * information it furnishes is current" produced one, and the document was told
+ * its representations run one way. `mutualByRole` cannot see what the
+ * extractor never recorded, so the document text is consulted directly.
+ */
+function statedMutually(ctx: RuleContext, pattern: RegExp): boolean {
+  const near = new RegExp(
+    String.raw`\b(?:each|either|both)\s+part(?:y|ies)\b[^.;]{0,120}?(?:${pattern.source})`,
+    "i",
+  );
+  let found = false;
+  forEachParagraph(ctx.tree, (p) => {
+    if (!found && near.test(p.text)) found = true;
+
+  });
+  return found;
+}
+
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -154,6 +191,7 @@ export const rule: Rule = {
         // remaining reciprocal patterns for a genuinely party-specific asymmetry.
         if (RECIPROCAL_ROLES.has([...seenObligors][0]!)) continue;
         if (classObligors.has([...seenObligors][0]!)) continue;
+        if (statedMutually(ctx, pattern)) continue;
         return emit(ctx, rule, {
           title: `Asymmetric ${label} obligation`,
           description: `Only ${[...seenObligors][0]} bears this typically-mutual obligation.`,

@@ -1739,6 +1739,13 @@ export const EXPECTED: Record<string, Expectation> = {
 
   // A cross-border exclusive distribution agreement: an ICC seat stated in the
   // participle, and the GDPR cited by its regulation number.
+  //
+  // OBLI-002 came off this row in 9.264.0. Its only "representation" here is
+  // inside the indemnity — "third-party claims arising from Distributor's
+  // representations beyond those Supplier authorizes" — which is the
+  // distributor's sales talk to a customer, not a contractual representation
+  // to the supplier. The rule's noun now has to appear in its contractual
+  // sense.
   "distribution.txt": {
     playbook: "distribution-agreement",
     findings: [
@@ -1751,7 +1758,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "TEMP-005",
       "CHOICE-006",
       "FIN-008",
-      "OBLI-002",
       "OBLI-005",
       "RISK-007",
     ],

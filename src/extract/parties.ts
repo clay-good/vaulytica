@@ -82,6 +82,16 @@ const ENTITY_TYPES = [
   "Corp",
   "corp",
   "Ltd",
+  // And the ALL-CAPS forms, for the instrument set in capitals from the
+  // caption to the signature. `BETWEEN_RE` reads such a preamble's NAMES, but
+  // its second capture terminates at the first sentence period — which is the
+  // one inside "INC." — so the second party's role parenthetical fell outside
+  // the capture and the party was registered roleless. In mixed case
+  // `PARTY_DECL` supplies that role from the same sentence; in capitals it
+  // could not see the suffix at all.
+  "INC",
+  "CORP",
+  "LTD",
   "L\\.P\\.",
   "LP",
   "GmbH",
@@ -112,9 +122,11 @@ const US_STATE =
  * has been written the next comma separates two DIFFERENT parties, and the run
  * walked straight through it: an "among" preamble listing "Acme Inc., Beta
  * LLC, and Gamma Ltd." produced a party named "Acme Inc., Beta". Written in
- * both cases because the same preamble is as often set in capitals.
+ * both cases — including the ALL-CAPS one, where the case-mixed entries
+ * ("[Cc]orp", "[Ll]td") silently did not apply and an "among" list of three
+ * uppercase parties yielded a fourth named "BETA CORP., AND GAMMA".
  */
-const ENTITY_SUFFIX_BEFORE_COMMA = String.raw`\b(?:[Ii][Nn][Cc]|LLC|[Ll]lc|L\.L\.C|[Ll]td|[Cc]orp|LLP|[Ll]lp|L\.L\.P|LLLP|LP|L\.P|PLLC|P\.C|PC|N\.A|S\.A|[Cc]o)\.?,`;
+const ENTITY_SUFFIX_BEFORE_COMMA = String.raw`\b(?:[Ii][Nn][Cc]|[Ll][Ll][Cc]|L\.L\.C|[Ll][Tt][Dd]|[Cc][Oo][Rr][Pp]|[Ll][Ll][Pp]|L\.L\.P|LLLP|LP|L\.P|[Pp][Ll][Ll][Cc]|P\.C|PC|N\.A|S\.A|[Cc][Oo])\.?,`;
 
 const ENTITY_QUALIFIERS =
   "(?:non-?profit|not-for-profit|limited|liability|professional|public|benefit|close|mutual|general|private|registered|statutory|business|cooperative|stock|joint|domestic|foreign|municipal|charitable)";
@@ -307,6 +319,27 @@ const INSTRUMENT =
  */
 const TITLE_BEFORE_NAME = new RegExp(
   String.raw`^(?:this\s+)?(?:[A-Za-z]+\s+){0,2}${INSTRUMENT}\s+of\s+`,
+  "i",
+);
+
+/**
+ * The preamble's own lead-in, where an ALL-CAPS instrument puts it in front of
+ * the party's name. `PARTY_DECL` tells a name from prose by capitalization, and
+ * an all-caps preamble offers no contrast at all: every word of "THIS AGREEMENT
+ * IS ENTERED INTO BY AND BETWEEN VERTEX SYSTEMS LLC" starts with a capital, so
+ * the name run walked back through the whole lead-in and registered a party
+ * named "ENTERED INTO BY AND BETWEEN VERTEX SYSTEMS" — with the real party's
+ * role attached, standing beside the real party that `BETWEEN_RE` reads from
+ * the same sentence. Two parties became four, and every rule that tallies by
+ * party (RISK-002, STRUCT-017, OBLI-002) counted the phantoms.
+ *
+ * Stripped only from the FRONT of the captured name, and only as whole words
+ * followed by a space, so a name that CONTAINS one of these words keeps it
+ * ("SMITH AND WESSON", "BANK OF AMERICA") and a name that merely starts with
+ * the same letters is untouched ("AT&T" is not "AT ").
+ */
+const PREAMBLE_LEADIN_BEFORE_NAME = new RegExp(
+  String.raw`^(?:(?:this|that|the|and|or|by|between|among|with|is|are|be|made|make|entered|enter|into|dated|as|of|effective|on|hereby|witnesseth|now|therefore|whereas|to|for|in|at|it|${INSTRUMENT})\s+)+`,
   "i",
 );
 
@@ -600,7 +633,9 @@ export function extractParties(tree: DocumentTree): Party[] {
       // party literally named "OPERATING AGREEMENT OF HARBOR POINT VENTURES
       // LLC" — which then stood beside the real party and made RISK-002 read
       // the indemnity as running one way.
-      const name = cleanPartyName((m[1] ?? "").replace(TITLE_BEFORE_NAME, ""));
+      const name = cleanPartyName(
+        (m[1] ?? "").replace(TITLE_BEFORE_NAME, "").replace(PREAMBLE_LEADIN_BEFORE_NAME, ""),
+      );
       const state = m[2];
       const entity = m[3];
       const role = m[4];

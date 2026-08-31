@@ -333,7 +333,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1064,11 +1064,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "68d7f03269e1452071f58b4f9df016675de73a29a05350aa99bc80af0eb169f7",
+  "result_hash": "505db7e26930701f7eab2a75df4f76bf666f3c09fd3059a8676038b3bc10f83d",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.263.0"
+  "version": "9.264.0"
 }

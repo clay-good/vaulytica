@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.264.0] — 2026-08-31
+
+### Fixed
+- **An ALL-CAPS preamble turned two parties into four.** `PARTY_DECL` tells a
+  name from prose by capitalization, and an instrument set in capitals from the
+  caption to the signature offers no contrast at all: every word of "THIS
+  AGREEMENT IS ENTERED INTO BY AND BETWEEN VERTEX SYSTEMS LLC" starts with a
+  capital, so the name run walked back through the lead-in and registered a
+  party named "ENTERED INTO BY AND BETWEEN VERTEX SYSTEMS" — carrying the real
+  party's role — standing beside the real party that `BETWEEN_RE` read from the
+  same sentence. Every rule that tallies by party counted the phantoms. The
+  lead-in is now stripped from the front of the captured name, as whole words,
+  so a name that CONTAINS one of them ("SMITH AND WESSON", "BANK OF AMERICA")
+  keeps it.
+- **An ALL-CAPS "among" list produced a party named "BETA CORP., AND GAMMA".**
+  The guard that ends a name at the comma after its own suffix listed `[Cc]orp`
+  and `[Ll]td` — neither of which matches "CORP" or "LTD" — so it silently did
+  not apply to the case it was written for.
+- **The second party of an ALL-CAPS preamble had no role.** `BETWEEN_RE`'s
+  second capture terminates at the first sentence period, which is the one
+  inside "INC.", so the role parenthetical fell outside it. In mixed case
+  `PARTY_DECL` supplies the role from the same sentence; in capitals it could
+  not see the suffix at all, and a roleless party is invisible to every rule
+  that compares an obligor against the party set.
+- **OBLI-002 read being REPRESENTED as making a representation.** A collective
+  bargaining agreement is about representation from its first sentence — "the
+  exclusive bargaining representative", "a joint safety committee with equal
+  representation", "union representation at any investigatory interview" — and
+  a bare `\brepresentation` matched all of them, telling the employer its
+  warranties run one way. It now requires the contractual sense, the same
+  narrowing the warranty pattern already carries. A distribution agreement lost
+  the same false positive: its only "representation" was inside the indemnity,
+  and it meant the distributor's sales talk to a customer.
+- **OBLI-002 reported an asymmetry the document states mutually.** The
+  obligation extractor triggers on "shall"/"will", so a section headed
+  REPRESENTATIONS in which "Each Party represents that …" produced no
+  obligation at all — while one sentence combining a duty with a representation
+  produced one, and the teaming agreement was told its representations run one
+  way. The rule now consults the document text for a reciprocal subject beside
+  the same keyword before reporting.
+
 ## [9.263.0] — 2026-08-31
 
 ### Fixed
