@@ -900,3 +900,37 @@ describe("COMM-107 reads the price terms its own recommendation asks for", () =>
     ).not.toBeNull();
   });
 });
+
+describe("v5 COMM-231 / COMM-233 — the subscriber's words, not the regulator's", () => {
+  const page = (...body: string[]) => doc("Automatic Renewal Terms", ...body);
+
+  it("COMM-231 reads a disclosure written for a subscriber", () => {
+    // The rule wanted "clearly and conspicuously" and "before obtaining
+    // billing information" — the statute's phrases, which a page required to
+    // be understandable has a reason to avoid — and read the adverb only
+    // BEFORE the verb. A model page says "your subscription renews
+    // automatically" and "before you pay, we show you", and drew a CRITICAL
+    // for a disclosure that is its entire first section.
+    const ctx = page(
+      "Your subscription renews automatically. Before you pay, we show you the plan name, the total recurring charge, the length of each billing period and the date of the first renewal.",
+    );
+    expect(rule("COMM-231").check(ctx)).toBeNull();
+  });
+
+  it("COMM-233 is a conjunction, not an OR", () => {
+    // Its own rationale calls phone-only cancellation of an online signup the
+    // paradigm violation, and the bare word "cancel" satisfied the whole
+    // column — so the paradigm violation passed clean.
+    const paradigm = page(
+      "To cancel, call our support line between 9am and 4pm Central and speak to a retention specialist. Cancellations by email or through the website are not accepted.",
+    );
+    expect(rule("COMM-233").check(paradigm)).not.toBeNull();
+  });
+
+  it("COMM-233 still reads a self-service path in the subscriber's words", () => {
+    const ok = page(
+      "You may cancel at any time. Sign in, open Billing and press Cancel subscription — one step. You may also cancel by the same means you used to buy the subscription.",
+    );
+    expect(rule("COMM-233").check(ok)).toBeNull();
+  });
+});

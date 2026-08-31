@@ -1737,6 +1737,31 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A model automatic-renewal page, the 235th specimen and the first for
+  // `auto-renewal-terms`. Two findings of the session's recurring shape, and
+  // the sharper of the two is that the rules were written in the REGULATOR'S
+  // words and a compliant consumer page is written in the SUBSCRIBER'S.
+  // COMM-231 wanted "clearly and conspicuously" and "before obtaining billing
+  // information"; a page that actually discloses before checkout says "before
+  // you pay", and one that renews says "your subscription renews
+  // automatically" — the adverb after the verb, which every branch read only
+  // in the reverse order. It drew a CRITICAL for a disclosure that is its
+  // entire section 1. And COMM-233's two pillars were joined by an OR, so the
+  // bare word "cancel" satisfied "Simple cancellation mechanism" — the page
+  // its own rationale calls the paradigm violation ("to cancel, call our
+  // support line and speak to a retention specialist") passed it clean.
+  //
+  // The family also shipped with an empty `rule_overrides`, so a published
+  // terms page forming part of a subscriber agreement was told it has no
+  // signature block, no governing law, no venue, no payment terms, no IP
+  // allocation, no indemnity, no liability cap and no termination clause.
+  // TEMP-004 is the one finding left, and it is right: the page does contain
+  // automatic-renewal language, which is a fact worth surfacing.
+  "auto-renewal-terms.txt": {
+    playbook: "auto-renewal-terms",
+    findings: ["TEMP-004"],
+  },
+
   // A Colorado non-compete and non-solicitation covenant, the 234th specimen
   // and the first for `employment-restrictive-covenant`. It routed to
   // `mutual-nda-deep` and drew NINE CRITICALS about an NDA it is not — no

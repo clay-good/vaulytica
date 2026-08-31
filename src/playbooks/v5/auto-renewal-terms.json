@@ -1,6 +1,6 @@
 {
   "id": "auto-renewal-terms",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Automatic Renewal / Negative Option Terms",
   "description": "Subscription auto-renewal disclosures under ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws. Selects the COMM-231..236 ruleset (6 checks).",
   "match_features": {
@@ -13,6 +13,11 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "will automatically renew",
+      "renews automatically",
+      "automatically renew",
+      "billing period",
+      "renewal term",
+      "payment method on file",
       "cancel at any time",
       "renewal price",
       "before the renewal date",
@@ -23,7 +28,38 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Subscription", "Renewal Term"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-003": {
+      "skip": true
+    },
+    "STRUCT-004": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "ROSCA-15-USC-8403",

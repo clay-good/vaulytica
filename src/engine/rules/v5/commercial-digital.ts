@@ -430,14 +430,23 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.1",
+    ver: "1.2.0",
     name: "Clear and conspicuous automatic-renewal disclosure",
     cite: usc("15", "8403", "Restore Online Shoppers' Confidence Act — negative option marketing"),
     pat: [
       // "renews for a further term of one year unless you cancel" carries the
       // renewal without the adverb, and TEMP-011 already reads it that way.
-      /(automatic(ally)?[-\s]+renew|auto-?renew|renews?\s+(?:automatically\s+)?for\s+(?:a\s+)?(?:further|additional|successive))/i,
-      /(clear(ly)?\s+and\s+conspicuous|before\s+(obtaining|charging)|prior\s+to\s+(the\s+)?(charge|purchase))/i,
+      // v1.2.0 — both pillars were written in the REGULATOR'S words, and a
+      // compliant consumer page is written in the SUBSCRIBER'S. The adverb
+      // follows the verb in the commonest phrasing there is ("Your
+      // subscription renews automatically"), which every branch here read only
+      // in the reverse order; and a page that actually discloses before
+      // checkout says "before you pay", not "before obtaining billing
+      // information" — the statute's phrase, which a page required to be
+      // understandable has a reason to avoid. A model auto-renewal page drew
+      // this at CRITICAL for a disclosure that is its entire section 1.
+      /(automatic(ally)?[-\s]+renew|auto-?renew|renews?\s+(?:automatically\s+)?for\s+(?:a\s+)?(?:further|additional|successive)|renew(?:s|ed|ing)?\s+automatically|continues?\s+until\s+you\s+cancel)/i,
+      /(clear(ly)?\s+and\s+conspicuous|before\s+(obtaining|charging)|prior\s+to\s+(the\s+)?(charge|purchase)|before\s+you\s+(?:pay|buy|are\s+charged|subscribe)|before\s+we\s+charge|at\s+checkout|on\s+the\s+checkout\s+page|before\s+(?:collecting|we\s+collect)\s+(?:your\s+)?(?:billing|payment))/i,
     ],
     all: true,
     why: "ROSCA § 8403 makes it unlawful to charge on a negative-option basis online without clearly and conspicuously disclosing all material terms before obtaining billing information. This is the FTC's most-used consumer enforcement authority.",
@@ -460,13 +469,27 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     id: "COMM-233",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    // 1.2.0 — the two pillars were joined by an OR, so the bare word "cancel"
+    // satisfied the whole column and the page this rule's own `why` calls the
+    // paradigm violation — "To cancel, call our support line between 9am and
+    // 4pm and speak to a retention specialist; cancellations by email or
+    // through the website are not accepted" — passed it clean. The name states
+    // a conjunction: cancellation AND simplicity. The second pillar also read
+    // only the regulator's vocabulary; a page that offers the thing says "on
+    // the website", "in your account", "one step", "the same means you used to
+    // buy it". A phrase naming the CHANNEL ("on the website", "through the
+    // website") is deliberately not here: the paradigm violation names the same
+    // channel to REFUSE it — "cancellations by email or through the website are
+    // not accepted" — and would have satisfied the pillar with the sentence
+    // that breaks the rule.
+    ver: "1.2.0",
     name: "Simple cancellation mechanism",
     cite: usc("15", "8403", "ROSCA — simple mechanisms for stopping recurring charges"),
     pat: [
       /cancel/i,
-      /(online|same\s+(way|manner|medium)|one\s+click|simple\s+mechanism|self-?service)/i,
+      /(online|same\s+(way|manner|medium|means|method)|one[-\s](?:click|link|step)|simple\s+mechanism|self-?service|in\s+your\s+account)/i,
     ],
+    all: true,
     why: "ROSCA requires a simple mechanism to stop recurring charges, and California and several other states require cancellation in the same medium as enrollment. Phone-only cancellation of an online signup is the paradigm violation.",
     fix: "Provide online, self-service cancellation available in the same medium as enrollment, and describe it in the terms with the exact steps.",
     denied: expressDenial(String.raw`(?:online\s+)?cancellation\s+(?:mechanism|method|option)?`),

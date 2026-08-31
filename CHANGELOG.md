@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.270.0] — 2026-08-31
+
+### Added
+- One specimen — a model automatic-renewal page, the 235th, and the first for
+  `auto-renewal-terms`.
+
+### Fixed
+- **The ROSCA checks were written in the regulator's words; a compliant page is
+  written in the subscriber's.** COMM-231 required "clearly and conspicuously"
+  or "before obtaining billing information" — the statute's phrases, which a
+  page required to be understandable has every reason to avoid — and read the
+  adverb only before the verb. A page that says "your subscription renews
+  automatically" and "before you pay, we show you" drew a `critical` for a
+  disclosure that is its entire first section.
+- **COMM-233's two pillars were joined by an OR**, so the bare word "cancel"
+  satisfied "Simple cancellation mechanism" — and the page its own rationale
+  calls the paradigm violation ("to cancel, call our support line and speak to
+  a retention specialist; cancellations by email or through the website are not
+  accepted") passed it clean. The name states a conjunction: cancellation AND
+  simplicity. The second pillar now also reads the subscriber's words ("one
+  step", "in your account", "the same means you used to buy it"), and
+  deliberately does not read a phrase naming the CHANNEL — the paradigm
+  violation names the same channel to refuse it.
+- **A second family routed on its own compliance.** `auto-renewal-terms`
+  claimed "cancel at any time", "renewal price", "before the renewal date" and
+  "cancellation instructions" — phrases a compliant page carries and an
+  abusive one does not. A page that renews automatically, cancels by telephone
+  only and refuses refunds scored 0.3 on its title alone and fell to
+  `generic-fallback`, so none of the six ROSCA checks ran on it. It now routes
+  at 0.7 and draws five of them, two at `critical`.
+- `auto-renewal-terms` shipped with an empty `rule_overrides`, so a published
+  terms page forming part of a subscriber agreement was told it has no
+  signature block, no governing law, no venue, no payment terms, no IP
+  allocation, no indemnity, no liability cap and no termination clause.
+
 ## [9.269.0] — 2026-08-31
 
 ### Added
