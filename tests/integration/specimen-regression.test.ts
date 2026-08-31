@@ -1737,6 +1737,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // An executed UK IDTA — Part 1's four tables and Part 2's Mandatory Clauses
+  // — the 233rd specimen and the first for `uk-idta-addendum`. The sibling of
+  // the SCC specimen below, and it found four more ways the same relationship
+  // was unread. The ICO writes its adoption NAME-FIRST ("The Mandatory Clauses
+  // are incorporated in full"), which an ordered pattern could not read; the
+  // vocabulary the ICO's own form defines — Appropriate Safeguards, Approved
+  // Addendum, General Authorisation — was reported as six terms the addendum
+  // forgot to define; its references into that form ("as Section 18 permits")
+  // as three references it broke; and the ICO's version string, "the template
+  // Addendum B.1.0", as a reference to a missing attachment "Addendum B".
+  // CHOICE-001 and CHOICE-003 come off the family: Section 17 of the Mandatory
+  // Clauses fixes the law and the forum, and an IDTA never states them itself.
+  //
+  // What is left is on the page: a well-drafted addendum adds a fallback for
+  // the adequacy decision being invalidated, and this one does not.
+  "uk-idta-addendum.txt": {
+    playbook: "uk-idta-addendum",
+    findings: ["TRANSFER-018", "TEMP-002"],
+  },
+
   // An executed EU SCC Module Two set — a cover page, the option selections,
   // and three completed annexes — the 232nd specimen and the first for
   // `scc-module-2`. It drew THIRTY-NINE findings, THIRTEEN of them critical,

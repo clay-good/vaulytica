@@ -78,3 +78,23 @@ describe("a standard form adopted in full", () => {
     expect(fired(ctx, SUPPLIED).length).toBeGreaterThan(0);
   });
 });
+
+describe("the adoption sentence is read in either order", () => {
+  // The Commission's wording puts the verb first — "the parties adopt the
+  // standard contractual clauses … in full". The ICO's puts the NAME first —
+  // "The Mandatory Clauses are incorporated in full and without amendment".
+  // A single ordered pattern read one and not the other, so the UK IDTA
+  // specimen was excused nothing.
+  const supplied = ["TRANSFER-020"];
+  it("reads the ICO's name-first wording", () => {
+    const ctx = sccContext([
+      "The Mandatory Clauses are incorporated in full and without amendment, and no Party may amend them other than as Section 18 permits.",
+    ]);
+    expect(fired(ctx, supplied)).toEqual([]);
+  });
+
+  it("reads the Commission's verb-first wording", () => {
+    const ctx = sccContext([ADOPTION]);
+    expect(fired(ctx, supplied)).toEqual([]);
+  });
+});

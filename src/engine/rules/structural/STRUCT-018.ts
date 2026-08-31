@@ -29,8 +29,19 @@ const ATTACH_KINDS = "Exhibit|Schedule|Annex|Annexure|Appendix|Attachment|Addend
 // attachment, not a reference to "Exhibit A". Capturing only the head both
 // named the wrong attachment and reconciled a reference the document never
 // made.
+/**
+ * A letter designator followed immediately by a dotted number is a VERSION, not
+ * an attachment: "the template Addendum B.1.0 issued by the Information
+ * Commissioner" is the ICO's own version string for the UK IDTA, and every
+ * executed IDTA carries it. Read as a designator it reconciled a reference to
+ * "Addendum B" that the document never makes. The digit must follow the period
+ * immediately, so an ordinary sentence break — "Exhibit A. 3 copies shall be
+ * delivered" — is untouched.
+ */
+const LETTER_DESIGNATOR = String.raw`[A-Z](?!\.\d)`;
+
 const REF_RE = new RegExp(
-  String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|[A-Z])(-\d{1,2})?\b`,
+  String.raw`\b(${ATTACH_KINDS})\s+(\d{1,2}(?:\.\d{1,2})*|${LETTER_DESIGNATOR})(-\d{1,2})?\b`,
   "g",
 );
 
@@ -49,7 +60,7 @@ const IRS_FORM = /^Schedule K-[123]$/i;
 // ("Exhibit No. 3"); without tolerating those, the heading went unrecognized
 // and a plainly attached exhibit read as referenced-but-absent.
 const TITLE_RE = new RegExp(
-  String.raw`^\s*(?:\d+(?:\.\d+)*\.\s+)?(${ATTACH_KINDS})\s+(?:No\.?\s+|Number\s+)?["'“”‘’]?(\d{1,2}(?:\.\d{1,2})*|[A-Z])(-\d{1,2})?(?:["'“”‘’]|\b)`,
+  String.raw`^\s*(?:\d+(?:\.\d+)*\.\s+)?(${ATTACH_KINDS})\s+(?:No\.?\s+|Number\s+)?["'“”‘’]?(\d{1,2}(?:\.\d{1,2})*|${LETTER_DESIGNATOR})(-\d{1,2})?(?:["'“”‘’]|\b)`,
   "i",
 );
 

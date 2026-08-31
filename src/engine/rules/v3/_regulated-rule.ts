@@ -154,8 +154,22 @@ const STANDARD_FORM_PLAYBOOKS = new Set(["scc-module-2", "scc-module-3", "uk-idt
  * transfer occurs" has adopted nothing, and must still carry its own Article
  * 28(3) terms.
  */
-const ADOPTS_STANDARD_FORM =
-  /\b(?:adopt(?:s|ed)?|incorporat(?:e|es|ed)|enter(?:s|ed)?\s+into|agree\s+to|appl(?:y|ies)|form\s+part\s+of)\b[^.;]{0,160}?\b(?:standard\s+contractual\s+clauses|(?:commission\s+)?implementing\s+decision\s*\(?eu\)?\s*2021\/914|international\s+data\s+transfer\s+addendum|idta)\b[^.;]{0,160}?\b(?:in\s+full|in\s+(?:their|its)\s+entirety|without\s+(?:any\s+)?(?:amendment|modification|change)|unamended|unmodified)\b|\b(?:standard\s+contractual\s+clauses|international\s+data\s+transfer\s+addendum)\b[^.;]{0,160}?\b(?:in\s+full|in\s+(?:their|its)\s+entirety|without\s+(?:any\s+)?(?:amendment|modification|change)|unamended|unmodified)\b[^.;]{0,80}?\b(?:adopt(?:s|ed)?|incorporat(?:e|es|ed)|appl(?:y|ies))\b/i;
+/**
+ * The three things an adoption sentence carries: the form's name, an adoption
+ * verb, and an IN-FULL qualifier. All three are required, and they are tested
+ * per sentence rather than in a fixed order — the ICO's own wording puts the
+ * name first ("The Mandatory Clauses are incorporated in full"), the
+ * Commission's puts the verb first ("the parties adopt the standard
+ * contractual clauses … in full"), and a single ordered pattern read one and
+ * not the other. A DPA that merely says the parties "will enter into the SCCs
+ * if a transfer occurs" carries no in-full qualifier and has adopted nothing.
+ */
+const FORM_NAME =
+  /\b(?:standard\s+contractual\s+clauses|(?:commission\s+)?implementing\s+decision\s*\(?eu\)?\s*2021\/914|international\s+data\s+transfer\s+addendum|idta|mandatory\s+clauses|approved\s+addendum)\b/i;
+const ADOPTION_VERB =
+  /\b(?:adopt(?:s|ed)?|incorporat(?:e|es|ed)|enter(?:s|ed)?\s+into|agree\s+to|appl(?:y|ies)|form\s+part\s+of)\b/i;
+const IN_FULL =
+  /\b(?:in\s+full|in\s+(?:their|its)\s+entirety|without\s+(?:any\s+)?(?:amendment|modification|change)|unamended|unmodified)\b/i;
 
 /**
  * True when the clause this rule looks for is supplied by a standard form the
@@ -177,7 +191,9 @@ const ADOPTS_STANDARD_FORM =
  */
 export function adoptsStandardFormInFull(ctx: RuleContext): boolean {
   if (!STANDARD_FORM_PLAYBOOKS.has(ctx.playbook.id)) return false;
-  return ADOPTS_STANDARD_FORM.test(fullText(ctx));
+  return fullText(ctx)
+    .split(/[.;]/)
+    .some((sentence) => FORM_NAME.test(sentence) && ADOPTION_VERB.test(sentence) && IN_FULL.test(sentence));
 }
 
 export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfig): Rule {

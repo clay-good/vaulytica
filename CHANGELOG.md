@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.268.0] — 2026-08-31
+
+### Added
+- One specimen — an executed UK IDTA, the 233rd, and the first for
+  `uk-idta-addendum`.
+
+### Fixed
+- **The adoption sentence is written in either order.** The Commission's
+  wording puts the verb first — "the parties adopt the standard contractual
+  clauses … in full" — and the ICO's puts the form's name first — "The
+  Mandatory Clauses are incorporated in full and without amendment". A single
+  ordered pattern read one and not the other, so yesterday's fix reached the
+  EU form and not the UK one. The three parts (the form's name, an adoption
+  verb, an in-full qualifier) are now required in one sentence, in any order.
+- **The vocabulary a regulator's form defines was reported as terms the
+  document forgot to define.** An executed IDTA drew STRUCT-006 for six
+  Title-Case terms — Appropriate Safeguards, Approved Addendum, General
+  Authorisation, Information Commissioner among them — every one of which is
+  defined in the Mandatory Clauses it adopts. `borrowsParentVocabulary()` knew
+  about a commercial form named in title case ("the IAB Standard Terms and
+  Conditions") and not about a regulator's.
+- **References INTO the adopted form were reported as references the document
+  broke.** An IDTA is Part 1's four tables and Part 2's Mandatory Clauses, and
+  it points into those clauses by bare section number: "as set out in Section
+  19", "as Section 18 permits". It has no Sections of its own for them to
+  resolve against. Same shape as the GDPR-article exemption STRUCT-007 already
+  carries.
+- **A VERSION STRING is not an attachment designator.** "the template Addendum
+  B.1.0 issued by the Information Commissioner" appears in every executed IDTA,
+  and STRUCT-018 reconciled a reference to "Addendum B" the document never
+  makes. A letter designator followed immediately by a dotted number is a
+  version; an ordinary sentence break ("Exhibit A. 3 copies shall be
+  delivered") is not.
+- `uk-idta-addendum` now also skips CHOICE-001 and CHOICE-003: Section 17 of
+  the Mandatory Clauses fixes the governing law and the forum, and an addendum
+  never states them itself.
+
 ## [9.267.0] — 2026-08-31
 
 ### Added

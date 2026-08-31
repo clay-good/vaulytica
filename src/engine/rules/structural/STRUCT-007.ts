@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
+import { adoptsRegulatorFormInFull } from "../_helpers.js";
 
 /**
  * STRUCT-007 — Cross-reference resolution (warning).
@@ -38,6 +39,16 @@ const NAMES_GDPR =
   /\b(?:general\s+data\s+protection\s+regulation|GDPR)\b|\bRegulation\s*\(EU\)\s*2016\/679\b/i;
 const GDPR_ARTICLE_REF = /^Articles?\s+\d/i;
 
+/**
+ * The same reasoning for a REGULATOR-ISSUED FORM adopted in full. An executed
+ * UK IDTA is Part 1's four tables and Part 2's Mandatory Clauses, and it points
+ * into those Mandatory Clauses by bare section number — "as set out in Section
+ * 19", "as Section 18 permits". The document has no Sections of its own for
+ * those to resolve against, and three references into the ICO's text were
+ * reported as references the addendum broke.
+ */
+const FORM_SECTION_REF = /^(?:Sections?|§)\s*\d/i;
+
 function documentText(ctx: RuleContext): string {
   const parts: string[] = [];
   const walk = (sections: RuleContext["tree"]["sections"]): void => {
@@ -60,12 +71,15 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
-    const citesGdpr = NAMES_GDPR.test(documentText(ctx));
+    const text = documentText(ctx);
+    const citesGdpr = NAMES_GDPR.test(text);
+    const adoptsForm = adoptsRegulatorFormInFull(text);
     const broken = ctx.extracted.crossrefs.filter(
       (c) =>
         c.unresolved &&
         !ATTACHMENT_REF.test(c.raw_text) &&
-        !(citesGdpr && GDPR_ARTICLE_REF.test(c.raw_text)),
+        !(citesGdpr && GDPR_ARTICLE_REF.test(c.raw_text)) &&
+        !(adoptsForm && FORM_SECTION_REF.test(c.raw_text)),
     );
     if (broken.length === 0) return null;
     const first = broken[0]!;

@@ -28,6 +28,12 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Exporter", "Importer", "UK GDPR", "Personal Data"],
   "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
     "IPDATA-001": {
       "skip": true
     },

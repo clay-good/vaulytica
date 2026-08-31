@@ -671,6 +671,40 @@ const INCORPORATES_STANDARD_FORM =
   /\b(?:incorporates|is\s+subject\s+to|are\s+subject\s+to|is\s+governed\s+by)\s+(?:the\s+)?(?:[A-Z][\w&.()-]*\s+){1,6}(?:Standard\s+Terms|Terms\s+and\s+Conditions|General\s+Conditions|Master\s+Terms|Standard\s+Form|Uniform\s+Terms)\b/;
 
 /**
+ * The SEVENTH half: a REGULATOR-ISSUED form adopted in full.
+ *
+ * An executed EU SCC set or UK IDTA adopts the Commission's or the ICO's text
+ * unamended and completes the annexes. The vocabulary those forms define —
+ * Appropriate Safeguards, Approved Addendum, General Authorisation, Restricted
+ * Transfer — is defined THERE, and an IDTA was told it uses six Title-Case
+ * terms it never defines, every one of them the ICO's own. Different shape from
+ * `INCORPORATES_STANDARD_FORM` above, which reads a commercial form named in
+ * title case ("the IAB Standard Terms and Conditions"): a regulator's form is
+ * named, adopted, and stated to be unamended, in any order, in one sentence —
+ * the ICO writes "The Mandatory Clauses are incorporated in full" and the
+ * Commission writes "the parties adopt the standard contractual clauses … in
+ * full". All three parts are required, so a DPA that merely says the parties
+ * "will enter into the SCCs if a transfer occurs" borrows nothing.
+ */
+const REGULATOR_FORM_NAME =
+  /\b(?:standard\s+contractual\s+clauses|(?:commission\s+)?implementing\s+decision\s*\(?eu\)?\s*2021\/914|international\s+data\s+transfer\s+addendum|idta|mandatory\s+clauses|approved\s+addendum)\b/i;
+const REGULATOR_FORM_ADOPTED =
+  /\b(?:adopt(?:s|ed)?|incorporat(?:e|es|ed)|enter(?:s|ed)?\s+into|agree\s+to|appl(?:y|ies)|form\s+part\s+of)\b/i;
+const REGULATOR_FORM_UNAMENDED =
+  /\b(?:in\s+full|in\s+(?:their|its)\s+entirety|without\s+(?:any\s+)?(?:amendment|modification|change)|unamended|unmodified)\b/i;
+
+export function adoptsRegulatorFormInFull(text: string): boolean {
+  return text
+    .split(/[.;]/)
+    .some(
+      (sentence) =>
+        REGULATOR_FORM_NAME.test(sentence) &&
+        REGULATOR_FORM_ADOPTED.test(sentence) &&
+        REGULATOR_FORM_UNAMENDED.test(sentence),
+    );
+}
+
+/**
  * The third half of the same shape: an EXHIBIT, schedule, or annex that says
  * it is incorporated into a named parent.
  *
@@ -827,7 +861,8 @@ export function borrowsParentVocabulary(ctx: RuleContext): boolean {
     INCORPORATED_INTO_PARENT.test(text) ||
     SIGNED_RIDER_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text) ||
-    INCORPORATES_STANDARD_FORM.test(text)
+    INCORPORATES_STANDARD_FORM.test(text) ||
+    adoptsRegulatorFormInFull(text)
   );
 }
 
