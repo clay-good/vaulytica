@@ -1,0 +1,76 @@
+RESTRICTED STOCK PURCHASE AGREEMENT
+
+This Restricted Stock Purchase Agreement (this "Agreement") is made as of March 2, 2026 between Thistledown Robotics, Inc., a Delaware corporation (the "Company"), and Yusuf Oyelaran-Bright ("Purchaser").
+
+1. PURCHASE AND SALE
+
+1.1 The Company sells to Purchaser, and Purchaser buys, 1,800,000 shares of the Company's Common Stock (the "Shares") at a purchase price of $0.0001 per share, for a total of $180.00, which the Board determined in good faith to be the fair market value of the Shares on the date of this Agreement.
+
+1.2 Purchaser shall pay the purchase price in cash at the signing of this Agreement. Payment by promissory note is not permitted.
+
+2. VESTING AND REPURCHASE RIGHT
+
+2.1 The Shares are subject to a repurchase right in favor of the Company (the "Repurchase Right"). The Repurchase Right lapses as to 25% of the Shares on March 2, 2027, and as to 1/48th of the Shares on the corresponding day of each month thereafter, so that the Repurchase Right has lapsed in full on March 2, 2030, in each case only if Purchaser is then providing services to the Company as an employee, director, or consultant.
+
+2.2 If Purchaser's service ends for any reason, the Company may, within ninety (90) days after the end of service, repurchase all Shares as to which the Repurchase Right has not lapsed, at the lower of the price Purchaser paid for them and their fair market value on the date of repurchase.
+
+2.3 On a Change of Control, the Repurchase Right lapses as to an additional twelve (12) months of Shares. If Purchaser's service is terminated without Cause or Purchaser resigns for Good Reason within twelve (12) months after a Change of Control, the Repurchase Right lapses in full.
+
+3. SECTION 83(b) ELECTION
+
+3.1 Purchaser understands that the Shares are subject to a substantial risk of forfeiture within the meaning of Section 83 of the Internal Revenue Code, and that unless Purchaser files an election under Section 83(b), Purchaser will recognize ordinary income as and when the Repurchase Right lapses, measured by the excess of the fair market value of the Shares at that time over the price paid for them.
+
+3.2 An election under Section 83(b) must be filed with the Internal Revenue Service NO LATER THAN THIRTY (30) DAYS AFTER THE DATE OF THIS AGREEMENT, as Treasury Regulation § 1.83-2(b) requires. The thirty-day period cannot be extended, and the Company cannot file the election for Purchaser. A form of election is attached as Exhibit B.
+
+3.3 Purchaser acknowledges that the decision to file, the filing itself, and the tax consequences of filing or not filing are Purchaser's own responsibility, and that Purchaser has been advised to consult Purchaser's own tax adviser. The Company makes no representation about the tax consequences of this purchase.
+
+3.4 Purchaser shall deliver a copy of the filed election to the Company promptly after filing.
+
+4. ESCROW AND STOCK POWER
+
+4.1 The certificate or book-entry position for the Shares that remain subject to the Repurchase Right is held in escrow by the Secretary of the Company as escrow agent, together with a stock power executed in blank by Purchaser, in the form attached as Exhibit A. Shares are released from escrow as the Repurchase Right lapses as to them, on Purchaser's written request.
+
+5. TRANSFER RESTRICTIONS
+
+5.1 Purchaser shall not transfer any Share that remains subject to the Repurchase Right. Any purported transfer is void.
+
+5.2 The Company has a right of first refusal on any proposed transfer of Shares that are no longer subject to the Repurchase Right, on the terms of the Company's bylaws. The right of first refusal terminates on the closing of the Company's initial public offering.
+
+5.3 The transfer restrictions in this Section 5 are noted conspicuously on the certificate or in the book-entry notation, as Section 202 of the Delaware General Corporation Law requires for them to bind a transferee.
+
+5.4 Purchaser shall not sell any Share during the one hundred eighty (180) days following the effective date of the Company's initial public offering, if the managing underwriter so requests.
+
+6. SECURITIES LAW
+
+6.1 Purchaser is acquiring the Shares for Purchaser's own account for investment and not with a view to distribution. Purchaser understands that the Shares have not been registered under the Securities Act of 1933 and are issued in reliance on an exemption, that they are restricted securities, and that they may be resold only if registered or if an exemption is available.
+
+6.2 The certificate or book-entry notation bears the restrictive legends required by the Securities Act and by any applicable state securities law.
+
+7. NO SERVICE COMMITMENT
+
+7.1 Nothing in this Agreement gives Purchaser a right to continue in service, and nothing limits the Company's or Purchaser's right to end that service at any time, with or without Cause.
+
+8. GENERAL
+
+8.1 This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules.
+
+8.2 This Agreement, together with Exhibits A and B, is the entire agreement between the parties on its subject matter, and may be amended only by a writing signed by both parties.
+
+8.3 This Agreement binds and benefits the parties and their respective heirs, executors, administrators, successors, and permitted assigns.
+
+THISTLEDOWN ROBOTICS, INC.
+
+By: /s/ Ingrid Vasconcelos-Hart
+Name: Ingrid Vasconcelos-Hart
+Title: Chief Executive Officer
+Date: March 2, 2026
+
+PURCHASER
+
+/s/ Yusuf Oyelaran-Bright
+Name: Yusuf Oyelaran-Bright
+Date: March 2, 2026
+
+EXHIBIT A — STOCK POWER
+
+EXHIBIT B — FORM OF SECTION 83(b) ELECTION

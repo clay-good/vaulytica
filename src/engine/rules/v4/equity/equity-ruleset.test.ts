@@ -518,3 +518,35 @@ describe("EQT-008 / EQT-028 — adverbial negation and the 'consent' synonym", (
     ).toBe(true);
   });
 });
+
+describe("EQT-041 v1.2.0 — a lock-up is a covenant, not a heading", () => {
+  const rspa = (...body: string[]) =>
+    withPb(
+      buildContext(["RESTRICTED STOCK PURCHASE AGREEMENT", ...body] as [string, ...string[]]),
+      { id: "rspa", version: "1.0.0" },
+    );
+  const eqt041 = EQUITY_RULES.find((r) => r.id === "EQT-041")!;
+
+  it("reads the textbook market stand-off written without either term of art", () => {
+    // "Purchaser shall not sell any Share during the one hundred eighty (180)
+    // days following the effective date of the Company's initial public
+    // offering, if the managing underwriter so requests." The `180\s+days`
+    // branch could not read the numeral where every American agreement puts
+    // it — inside the parenthetical after the spelled number.
+    expect(
+      eqt041.check(
+        rspa(
+          "Purchaser shall not sell any Share during the one hundred eighty (180) days following the effective date of the Company's initial public offering, if the managing underwriter so requests.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when the agreement has no stand-off at all", () => {
+    expect(
+      eqt041.check(
+        rspa("The Shares vest over four years and are subject to the Repurchase Right."),
+      ),
+    ).not.toBeNull();
+  });
+});

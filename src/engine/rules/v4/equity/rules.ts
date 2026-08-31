@@ -861,7 +861,7 @@ const RSPA_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-041",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Lock-up / market stand-off",
     description: "Modern RSPAs include a 180-day IPO lock-up.",
     citation: eqtPractice(
@@ -876,7 +876,20 @@ const RSPA_RULES: Rule[] = [
       "Underwriters require 180-day lock-ups in connection with IPO; building it into the RSPA at issuance avoids future amendments.",
     recommendation:
       "Add a 'Market Stand-Off' section requiring the holder to honor a 180-day lock-up requested by the underwriters in connection with an IPO.",
-    present_patterns: [/market\s+stand.?off/i, /lock[-\s]?up/i, /180\s+days?/i],
+    // v1.2.0 — a lock-up is written as a covenant, not as a heading. The
+    // textbook clause is "Purchaser shall not sell any Share during the one
+    // hundred eighty (180) days following the effective date of the Company's
+    // initial public offering, if the managing underwriter so requests" — it
+    // uses neither term of art, and the bare `180\s+days` branch could not
+    // read the numeral where every American agreement puts it, inside the
+    // parenthetical after the spelled number.
+    present_patterns: [
+      /market\s+stand.?off/i,
+      /lock[-\s]?up/i,
+      /\(?\s*180\s*\)?\s*(?:calendar\s+)?days?/i,
+      /one\s+hundred\s+(?:and\s+)?eighty\b/i,
+      /(?:shall\s+not|agrees?\s+not\s+to|may\s+not)\s+(?:sell|transfer|dispose|offer)[^.]{0,140}?(?:initial\s+public\s+offering|managing\s+underwriter|underwriters?\s+(?:so\s+)?request)/i,
+    ],
     default_severity: "warning",
   }),
   presence({

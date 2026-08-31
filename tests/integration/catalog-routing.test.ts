@@ -572,6 +572,35 @@ describe("no family claims a document that is nobody's", () => {
     expect(match.playbook_id).toBe("generic-fallback");
   });
 
+  it("a DEFECTIVE restricted stock purchase agreement reaches its family", () => {
+    // Four of `rspa`'s five distinguishing phrases — "repurchase right",
+    // "83(b)", "stock power", "escrow" — are the clauses EQT-036..042 require.
+    // A founder agreement that takes a promissory note for the purchase price
+    // and states no 83(b) advisory, no escrow, no stock power, no right of
+    // first refusal, no legend and no lock-up scored 0.3 on its title, an
+    // EXACT title keyword, fell to `generic-fallback`, and drew ZERO findings.
+    // The phrases that identify a restricted stock purchase whatever it says —
+    // "restricted stock", "unvested shares", "shares of common stock" — now
+    // carry the routing, with the standalone 83(b) ELECTION FORM excluded by
+    // negative feature so it keeps its own family.
+    const body: [string, ...string[]] = [
+      "",
+      "RESTRICTED STOCK PURCHASE AGREEMENT",
+      'This Agreement is made between Thistledown Robotics, Inc. and Yusuf Oyelaran-Bright ("Purchaser").',
+      "The Company sells to Purchaser 1,800,000 shares of Common Stock at $0.0001 per share. Purchaser shall deliver a promissory note for the purchase price.",
+      "The shares vest over four years. If Purchaser stops providing services, the Company may buy back the unvested shares at the price Purchaser paid.",
+    ];
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "rspa.txt"),
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("rspa");
+  });
+
   it("a university licence reaches its family WITHOUT reciting Bayh-Dole", () => {
     // Six of `technology-transfer-agreement`'s seven distinguishing phrases
     // were the Bayh-Dole clauses its own checks require — "bayh-dole",

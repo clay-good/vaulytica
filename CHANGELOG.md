@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.271.0] — 2026-08-31
+
+### Added
+- One specimen — a founder restricted stock purchase agreement, the 236th, and
+  the first for `rspa`.
+
+### Fixed
+- **A defective founder RSPA drew ZERO findings.** Four of the family's five
+  distinguishing phrases — "repurchase right", "83(b)", "stock power", "escrow"
+  — are the clauses EQT-036..042 require. An agreement that takes a promissory
+  note for the purchase price and states no 83(b) advisory, no escrow, no stock
+  power, no right of first refusal, no restricted-securities legend and no
+  lock-up scored 0.3 on its title — an exact title keyword — and fell to
+  `generic-fallback`. It now routes at 0.9 and draws five findings, three of
+  them critical. The standalone § 83(b) election FORM is excluded by negative
+  feature so it keeps its own family.
+- **EQT-041 could not read the textbook lock-up.** A market stand-off is
+  written as a covenant, not a heading: "Purchaser shall not sell any Share
+  during the one hundred eighty (180) days following the effective date of the
+  Company's initial public offering, if the managing underwriter so requests."
+  It uses neither term of art, and the `180\s+days` branch could not read the
+  numeral where every American agreement puts it — inside the parenthetical
+  after the spelled number.
+- `rspa` shipped with an empty `rule_overrides`, so a stock purchase was told
+  it states no payment terms, allocates no intellectual property, states no
+  indemnity, caps no liability, and gives no path to terminate for cause.
+
 ## [9.270.0] — 2026-08-31
 
 ### Added

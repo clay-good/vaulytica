@@ -1737,6 +1737,28 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A founder restricted stock purchase agreement, the 236th specimen and the
+  // first for `rspa`. The third demonstrated instance of a family routed on
+  // its own compliance, and the sharpest: four of the five distinguishing
+  // phrases — "repurchase right", "83(b)", "stock power", "escrow" — are the
+  // clauses EQT-036..042 require. A founder RSPA that takes a promissory note
+  // for the purchase price and states no 83(b) advisory, no escrow, no stock
+  // power, no right of first refusal, no legend and no lock-up scored 0.3 on
+  // its title — an EXACT title keyword — fell to `generic-fallback`, and drew
+  // ZERO findings. It now routes at 0.9 and draws five, three of them
+  // critical.
+  //
+  // EQT-041 also came off this well-drafted one: a lock-up is written as a
+  // covenant, not a heading — "Purchaser shall not sell any Share during the
+  // one hundred eighty (180) days following the effective date of the
+  // Company's initial public offering" — and the `180\s+days` branch could not
+  // read the numeral where every American agreement puts it, inside the
+  // parenthetical after the spelled number.
+  "restricted-stock-purchase.txt": {
+    playbook: "rspa",
+    findings: ["OBLI-005"],
+  },
+
   // A model automatic-renewal page, the 235th specimen and the first for
   // `auto-renewal-terms`. Two findings of the session's recurring shape, and
   // the sharper of the two is that the rules were written in the REGULATOR'S

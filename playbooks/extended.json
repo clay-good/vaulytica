@@ -16410,7 +16410,7 @@
   },
   {
     "id": "rspa",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Restricted Stock Purchase Agreement",
     "description": "Founder / early-employee restricted stock purchase agreement subject to vesting and a § 83(b) election. Selects the §6.C equity ruleset (EQT-036..EQT-042).",
     "match_features": {
@@ -16424,11 +16424,16 @@
         "vesting",
         "83(b)",
         "stock power",
-        "escrow"
+        "escrow",
+        "restricted stock",
+        "unvested shares",
+        "shares of common stock"
       ],
       "negative_features": [
         "stock option",
-        "rsu"
+        "rsu",
+        "the undersigned taxpayer hereby elects",
+        "election to include in gross income"
       ]
     },
     "expected_clauses": [],
@@ -16438,7 +16443,29 @@
       "Vesting Schedule",
       "Unvested Shares"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "IRC-83",
