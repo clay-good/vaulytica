@@ -21,7 +21,8 @@ All notable changes to this project will be documented in this file. Format adap
   identify a university licence whatever it says ("board of trustees", "office
   of technology", "sublicense income", "principal investigator", "research
   foundation") now carry the routing, and the same document draws the critical
-  finding it should always have drawn.
+  finding it should always have drawn. Checked across all 255 playbooks: no
+  other family is routed on regulatory recitals this way.
 - **A sovereign was reported as a term the document forgot to define.** A
   Title-Case phrase whose LEAD WORD is a state ("Ohio Public Records Act") has
   always been skipped, but `PLACE_NAMES` holds "United States" and "New York"
