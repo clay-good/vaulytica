@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Known
+- **`expected_clauses` and `expected_defined_terms` reach no consumer.** 267
+  playbooks declare them with per-item severities; the engine's `Playbook` type
+  carries `id`, `version` and `rule_overrides` and nothing else, so they are
+  stripped at the boundary and no rule can see them. A deliberately deficient
+  mutual NDA — no exclusions, no defined "Confidential Information", an
+  obligation that "lasts forever" — draws no finding for either of the two
+  expectations `mutual-nda` marks `critical`. The casing corroborates it: the
+  ~120 declarations mix kebab-case categories with Title-Case prose ("Order of
+  Precedence"), because nothing ever rejected one. Filed rather than wired:
+  wiring it adds findings to every document in the corpus and is a product
+  decision. See BUILD_PROGRESS Step 255.
+
 ## [9.272.0] — 2026-08-31
 
 ### Added
