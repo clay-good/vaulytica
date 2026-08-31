@@ -23,7 +23,11 @@ const PROCEDURE = [
     // conducts the defense just as much as "control of the defense" — an
     // indemnity that spells out the defense obligation and counsel selection
     // was wrongly reported as missing this element.
-    /(?:sole\s+|exclusive\s+)?control\s+(?:of|over)\s+the\s+(?:defense|claim|litigation|proceeding|action)|control\s+the\s+defense|(?:assume|conduct)\s+(?:the\s+)?defense|duty\s+to\s+defend|defend[^.]{0,50}\bcounsel\b/i,
+    // The BRITISH spelling is the one a UK or Commonwealth indemnity uses, and
+    // this repo already reads "licence" beside "license" for the same reason.
+    // "gives Contractor control of the defence" is the textbook clause and was
+    // reported as an indemnity missing its defence-control element.
+    /(?:sole\s+|exclusive\s+)?control\s+(?:of|over)\s+the\s+(?:defen[cs]e|claim|litigation|proceeding|action)|control\s+the\s+defen[cs]e|(?:assume|conduct)\s+(?:the\s+)?defen[cs]e|duty\s+to\s+defend|defend[^.]{0,50}\bcounsel\b/i,
   ],
   // "shall not settle any claim in a manner that imposes liability on the
   // indemnified party without the indemnified party's prior written consent"
@@ -45,7 +49,7 @@ const OPERATIVE_INDEMNITY =
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",

@@ -27,3 +27,16 @@ describe("RISK-011 — the notice element stated with the verb", () => {
     expect(f?.title).toContain("notice");
   });
 });
+
+describe("RISK-011 v1.6.0 — the British spelling of a defence", () => {
+  it("reads 'control of the defence'", () => {
+    // A UK or Commonwealth indemnity spells it with a c, and this repo already
+    // reads "licence" beside "license" for the same reason. The textbook
+    // clause was reported as an indemnity missing its defence-control element.
+    const ctx = buildContext([
+      "Indemnity",
+      "Contractor shall indemnify Client against any third-party claim that the Work infringes a copyright, provided that Client promptly notifies Contractor of the claim, gives Contractor control of the defence, and cooperates at Contractor's expense. Contractor shall not settle a claim that admits fault on Client's part without Client's prior written consent.",
+    ]);
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+});

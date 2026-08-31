@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.272.0] — 2026-08-31
+
+### Added
+- One specimen — a work-made-for-hire agreement for commissioned illustration,
+  animation and score, the 237th, and the first for `work-for-hire-agreement`.
+
+### Fixed
+- **A BACKWARDS negative feature.** `work-for-hire-agreement` carried "royalty"
+  as a negative feature, and every work-for-hire agreement licenses the
+  contractor's pre-existing material "royalty-free" — so the family lost 0.1 on
+  the standard clause it exists to read. Narrowed to "royalty rate" and
+  "royalties payable", which are the true licence-deal markers.
+- **The sibling steal runs the other way.** `independent-contractor`'s three
+  required clauses — ip-ownership, term, termination-for-convenience — are
+  clauses a work-for-hire agreement necessarily has, so it took the document at
+  1.0 and the § 101 ruleset never ran. It now names the work-for-hire markers
+  ("work made for hire", "specially ordered", "specially commissioned", "backup
+  assignment") as negative features. `specimen-routing-margin` caught the first
+  attempt, which only produced a 0.9 tie decided by a lexicographic id
+  comparison.
+- **RISK-011 could not read the British spelling of a defence.** "gives
+  Contractor control of the defence" is the textbook clause in a UK or
+  Commonwealth indemnity, and this repo already reads "licence" beside
+  "license" for the same reason.
+
 ## [9.271.0] — 2026-08-31
 
 ### Added

@@ -1,0 +1,82 @@
+WORK MADE FOR HIRE AGREEMENT
+
+This Work Made For Hire Agreement (this "Agreement") is made as of April 6, 2026 between Grindstone Media Group, Inc., a New York corporation ("Client"), and Adaeze Ferreira-Lindqvist, an individual ("Contractor").
+
+1. THE WORK
+
+1.1 Contractor shall create the illustrations, the two-dimensional animation, and the original musical score described in the statement of work attached as Exhibit A (the "Work"), and shall deliver the Work in the formats and by the dates stated there.
+
+1.2 Contractor shall deliver the Work with all layered source files, project files, and font licences necessary for Client to use and modify it.
+
+2. OWNERSHIP
+
+2.1 The Work is a work made for hire as that term is defined in section 101 of the Copyright Act, 17 U.S.C. § 101. Client is the author and owner of all copyright in the Work from the moment of its creation. The Work is specially ordered and commissioned by Client as a contribution to a collective work, as a part of a motion picture or other audiovisual work, and as a supplementary work, and the parties expressly agree in this signed writing that it shall be considered a work made for hire.
+
+2.2 Backup assignment. To the extent any part of the Work does not qualify as a work made for hire, Contractor hereby irrevocably assigns to Client all right, title, and interest in and to that part, including all copyright, and all rights to sue for past, present, and future infringement. This assignment is effective on creation and requires no further act; if a further act is needed in any jurisdiction, Contractor shall perform it at Client's expense, and appoints Client as Contractor's attorney-in-fact for that limited purpose if Contractor does not do so within twenty (20) days of a written request.
+
+2.3 Moral rights. To the extent permitted by applicable law, Contractor waives, and agrees not to assert, any moral right, droit moral, right of attribution, or right of integrity in the Work. Where a waiver is not permitted, Contractor consents to Client's use of the Work in the ways this Agreement contemplates. Contractor does not waive the rights conferred by the Visual Artists Rights Act, 17 U.S.C. § 106A, in a work of visual art to which that section applies, and the parties agree that no part of the Work is such a work.
+
+2.4 Contractor retains no right to use the Work except as Section 3 permits.
+
+3. PORTFOLIO LICENCE
+
+3.1 Client grants Contractor a limited right to display the delivered Work in Contractor's professional portfolio and reel, after Client first publishes it, with attribution to Client and without modification. Contractor shall remove any item from the portfolio within thirty (30) days of Client's written request. This is the only right Contractor retains.
+
+4. PRE-EXISTING AND THIRD-PARTY MATERIAL
+
+4.1 Contractor shall identify on Exhibit B every pre-existing work, stock asset, typeface, and third-party element Contractor incorporates into the Work, together with the licence under which Contractor holds it. Contractor grants Client a perpetual, irrevocable, worldwide, royalty-free, sublicensable licence to use each such element as incorporated in the Work.
+
+4.2 Contractor shall not incorporate any element that is subject to a copyleft or share-alike licence, or that Contractor is not free to licence on the terms of Section 4.1, without Client's prior written consent.
+
+5. CONFIDENTIALITY AND THE DTSA NOTICE
+
+5.1 Contractor shall keep Client's non-public information confidential and shall use it only to perform this Agreement.
+
+5.2 Notice under the Defend Trade Secrets Act, 18 U.S.C. § 1833(b): an individual shall not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, solely for the purpose of reporting or investigating a suspected violation of law; or is made in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal. An individual who files a lawsuit for retaliation by an employer for reporting a suspected violation of law may disclose the trade secret to the attorney of the individual and use the trade secret information in the court proceeding, if the individual files any document containing the trade secret under seal and does not disclose the trade secret except pursuant to court order.
+
+6. CONTRACTOR'S REPRESENTATIONS
+
+6.1 Contractor represents that the Work is Contractor's original creation except for the elements identified on Exhibit B, that it does not infringe any third party's rights, and that Contractor has not granted and will not grant any right in it to anyone else.
+
+6.2 Contractor shall indemnify Client against any third-party claim that the Work as delivered infringes a copyright, trademark, or right of publicity, provided that Client promptly notifies Contractor, gives Contractor control of the defence, and cooperates at Contractor's expense. Contractor shall not settle a claim in a manner that imposes a non-monetary obligation on Client, or that admits fault on Client's part, without Client's prior written consent. Contractor's total liability under this Section is capped at three times the fees paid under this Agreement.
+
+7. PAYMENT
+
+7.1 Client shall pay Contractor $18,000, payable one third on signature, one third on delivery of the first cut, and one third within thirty (30) days after Client accepts the final delivery. Client shall accept or reject each delivery in writing within ten (10) business days, stating the reason for any rejection.
+
+8. INDEPENDENT CONTRACTOR
+
+8.1 Contractor is an independent contractor and not an employee, agent, partner, or joint venturer of Client. Contractor controls the manner and means of performing the Work, supplies Contractor's own equipment, may work for others, and is responsible for Contractor's own taxes, insurance, and benefits. Nothing in this Agreement entitles Contractor to any employee benefit of Client.
+
+8.2 The parties acknowledge that a work made for hire under the first branch of section 101 requires an employment relationship, and that they rely on the second branch — a specially ordered or commissioned work in one of the enumerated categories, agreed in this signed writing — and on the backup assignment in Section 2.2.
+
+9. TERM AND TERMINATION
+
+9.1 This Agreement runs until Contractor completes the Work and Client accepts it, unless terminated earlier.
+
+9.2 Either party may terminate for material breach on ten (10) days' written notice if the breach is not cured within that period. Client may terminate for convenience on written notice, in which case Client shall pay for work performed to the date of termination.
+
+9.3 On termination, Contractor shall deliver all work in progress, and Sections 2, 3, 4, 5, 6, and 10 survive.
+
+10. GENERAL
+
+10.1 This Agreement is governed by the laws of the State of New York, without regard to its conflict-of-laws rules, and the parties submit to the exclusive jurisdiction of the state and federal courts sitting in New York County, New York.
+
+10.2 This Agreement, with Exhibits A and B, is the entire agreement between the parties on its subject matter and may be amended only by a writing signed by both parties.
+
+GRINDSTONE MEDIA GROUP, INC.
+
+By: /s/ Bartholomew Nkemdirim
+Name: Bartholomew Nkemdirim
+Title: Head of Production
+Date: April 6, 2026
+
+CONTRACTOR
+
+/s/ Adaeze Ferreira-Lindqvist
+Name: Adaeze Ferreira-Lindqvist
+Date: April 6, 2026
+
+EXHIBIT A — STATEMENT OF WORK
+
+EXHIBIT B — PRE-EXISTING AND THIRD-PARTY MATERIAL

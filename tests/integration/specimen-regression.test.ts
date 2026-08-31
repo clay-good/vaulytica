@@ -1737,6 +1737,25 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A work-made-for-hire agreement for commissioned illustration, animation and
+  // score, the 237th specimen and the first for `work-for-hire-agreement`. Two
+  // routing defects, both about a sibling.
+  //
+  // The family carried "royalty" as a NEGATIVE feature, which is backwards:
+  // every work-for-hire agreement licenses the contractor's pre-existing
+  // material "royalty-free", so the family lost 0.1 on the standard clause it
+  // is written to see. And `independent-contractor` — whose three required
+  // clauses (ip-ownership, term, termination-for-convenience) a work-for-hire
+  // agreement necessarily has — took the document at 1.0, so the § 101
+  // ruleset never ran. It now names the work-for-hire markers as negative
+  // features, which is the direction the steal actually runs.
+  //
+  // OBLI-002 is right: only Contractor holds anything in confidence here.
+  "work-for-hire.txt": {
+    playbook: "work-for-hire-agreement",
+    findings: ["OBLI-002", "OBLI-005"],
+  },
+
   // A founder restricted stock purchase agreement, the 236th specimen and the
   // first for `rspa`. The third demonstrated instance of a family routed on
   // its own compliance, and the sharpest: four of the five distinguishing

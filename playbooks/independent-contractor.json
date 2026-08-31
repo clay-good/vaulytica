@@ -7,7 +7,7 @@
     "title_keywords": ["independent contractor", "contractor agreement", "freelance agreement", "1099 agreement"],
     "required_clauses": [ "ip-ownership", "term", "termination-for-convenience"],
     "distinguishing_phrases": ["independent contractor", "not an employee", "1099", "contractor's own", "no benefits", "Contractor shall"],
-    "negative_features": ["sponsored content", "material connection", "#ad", "substantial completion", "the Architect", "at-will employee", "exempt employee", "FLSA exempt", "salary", "base compensation", "the Discloser", "subscription"]
+    "negative_features": ["sponsored content", "material connection", "#ad", "substantial completion", "the Architect", "at-will employee", "exempt employee", "FLSA exempt", "salary", "base compensation", "the Discloser", "subscription", "work made for hire", "work-for-hire", "specially ordered", "specially commissioned", "backup assignment"]
   },
   "expected_clauses": [
     {"category": "payment-terms", "severity_if_missing": "critical"},

@@ -1,6 +1,6 @@
 {
   "id": "work-for-hire-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Work-for-Hire Agreement",
   "description": "Work-made-for-hire agreement under 17 U.S.C. § 101 with backup assignment + DTSA notice. Selects the §6.H ruleset (IPL-036..IPL-040).",
   "match_features": {
@@ -13,7 +13,7 @@
       "hereby assigns",
       "dtsa"
     ],
-    "negative_features": ["royalty", "license grant", "non-exclusive"]
+    "negative_features": ["royalty rate", "royalties payable", "license grant", "non-exclusive"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Work Product", "Contractor", "Client"],
