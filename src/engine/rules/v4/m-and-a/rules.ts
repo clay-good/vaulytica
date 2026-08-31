@@ -263,6 +263,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
 const SPA_RULES: Rule[] = [
   presence({
     id: "MNA-010",
+    version: "1.1.0",
     name: "Purchase and sale of shares clause",
     description:
       "SPA must include an operative purchase-and-sale clause identifying the shares and the closing transfer.",
@@ -275,10 +276,18 @@ const SPA_RULES: Rule[] = [
       "The operative clause is the substantive transfer provision; everything else is conditions, reps, indemnification, and mechanics.",
     recommendation:
       "Add 'Article I — Purchase and Sale' identifying the shares, sellers, and consideration.",
+    // The operative clause names the BUYER before the shares as often as
+    // after: "Seller sells to Buyer all of the outstanding shares of the
+    // Company for $42,000,000". Both existing sentence branches read only the
+    // seller-shares-buyer order, so the plainest statement of the sale there
+    // is read as no sale clause at all. The party is matched as a word rather
+    // than the literal "Buyer", because an SPA names it "Purchaser" as often.
     present_patterns: [
       /purchase\s+and\s+sale/i,
       /sell.{0,40}shares?.{0,40}to\s+buyer/is,
       /buyer\s+shall\s+purchase.{0,40}shares?/is,
+      /\bsells?\s+(?:and\s+(?:transfers?|delivers?|assigns?)\s+)?to\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
+      /\b[A-Z]?[\w-]+\s+(?:shall\s+|agrees?\s+to\s+)?purchases?\s+from\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
     ],
   }),
   presence({
@@ -447,7 +456,7 @@ const SPA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-019",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Governing law and forum",
     description: "SPA must include governing-law and forum-selection clauses.",
     citation: dgcl("115"),
@@ -459,10 +468,18 @@ const SPA_RULES: Rule[] = [
     // "This Agreement is governed by the laws of the State of X" is the
     // dominant §-body form; requiring the noun phrase "governing law" called
     // a present clause missing (critical) on a clean APA.
+    // The ADJECTIVAL form, which is how a short agreement states it:
+    // "Delaware law governs", "governed by New York law". Every branch here
+    // wanted "the laws OF X" or the literal heading, so a document whose last
+    // sentence picks a law was told it picks none. Third ruleset carrying its
+    // own narrower copy of a form the jurisdictions extractor has read since
+    // v1 (see NDA-D-017, CHOICE-001).
     present_patterns: [
       /governing\s+law/i,
       /governed\s+by\s+the\s+laws?\b/i,
       /(jurisdiction|forum).{0,40}(chancery|delaware)/is,
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))/,
+      /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
   }),
 ];

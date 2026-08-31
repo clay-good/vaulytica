@@ -583,6 +583,31 @@ describe("no family claims a document that is nobody's", () => {
     expect(match.playbook_id).toBe("generic-fallback");
   });
 
+  it("a BARE stock purchase agreement reaches its family", () => {
+    // All five of `stock-purchase-agreement`'s distinguishing phrases —
+    // "purchase and sale", "working capital", "material adverse effect",
+    // "indemnification", "survival" — are the deal-protection terms
+    // MNA-010..019 check for. An SPA that states the sale and the price and
+    // nothing else scored 0.3 on its title, fell to `generic-fallback`, and
+    // drew one generic finding. It now draws seven of the M&A criticals.
+    const body: [string, ...string[]] = [
+      "",
+      "STOCK PURCHASE AGREEMENT",
+      'This Stock Purchase Agreement is made between Marchetti Holdings LLC ("Seller") and Pinehurst Capital Partners, L.P. ("Buyer").',
+      "Seller sells to Buyer all of the outstanding shares of Sablefield Software, Inc. for $42,000,000 in cash at closing.",
+      "Closing will occur on a closing date the parties agree.",
+    ];
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "spa.txt"),
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe("stock-purchase-agreement");
+  });
+
   it("a DEFECTIVE restricted stock purchase agreement reaches its family", () => {
     // Four of `rspa`'s five distinguishing phrases — "repurchase right",
     // "83(b)", "stock power", "escrow" — are the clauses EQT-036..042 require.

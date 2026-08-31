@@ -722,3 +722,28 @@ describe("MNA-004 — a financing term sheet states its price too", () => {
     ).not.toBeNull();
   });
 });
+
+describe("MNA-010 / MNA-019 — the operative clause and the law, in a short agreement", () => {
+  const spa = (...body: string[]) =>
+    withPb(buildContext(["STOCK PURCHASE AGREEMENT", ...body] as [string, ...string[]]), SPA_PB);
+  const ruleById = (id: string) => M_AND_A_RULES.find((r) => r.id === id)!;
+
+  it("MNA-010 reads the sale stated buyer-first", () => {
+    // "Seller sells to Buyer all of the outstanding shares of the Company for
+    // $42,000,000" is the plainest statement of the sale there is, and both
+    // sentence branches read only the seller-shares-buyer order.
+    expect(
+      ruleById("MNA-010").check(
+        spa(
+          "Seller sells to Buyer all of the outstanding shares of Sablefield Software, Inc. for $42,000,000 in cash at closing.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("MNA-019 reads 'Delaware law governs'", () => {
+    // The adjectival form the jurisdictions extractor has read since v1; this
+    // is the third ruleset found carrying its own narrower copy.
+    expect(ruleById("MNA-019").check(spa("Delaware law governs this Agreement."))).toBeNull();
+  });
+});

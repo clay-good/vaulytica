@@ -1,6 +1,6 @@
 {
   "id": "stock-purchase-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Stock Purchase Agreement (SPA)",
   "description": "Private-target stock purchase agreement. Selects the §6.D M&A ruleset (MNA-010..MNA-019). ABA Private Target Deal Points anchors.",
   "match_features": {
@@ -11,7 +11,11 @@
       "working capital",
       "material adverse effect",
       "indemnification",
-      "survival"
+      "survival",
+      "outstanding shares",
+      "shares of capital stock",
+      "closing date",
+      "purchase price"
     ],
     "negative_features": [
       "accredited investor",

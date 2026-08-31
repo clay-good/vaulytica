@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.275.0] — 2026-08-31
+
+### Fixed
+- **A bare stock purchase agreement drew one generic finding.** All five of
+  `stock-purchase-agreement`'s distinguishing phrases — "purchase and sale",
+  "working capital", "material adverse effect", "indemnification", "survival" —
+  are the deal-protection terms MNA-010..019 check for, so an SPA that states
+  the sale and the price and nothing else scored 0.3 on its title and fell to
+  `generic-fallback`. It now routes and draws seven of the M&A criticals,
+  including the missing reps article and the missing MAE definition. Fourth
+  demonstrated instance of a family routed on its own compliance.
+- **MNA-010 could not read the sale stated buyer-first.** "Seller sells to
+  Buyer all of the outstanding shares of the Company for $42,000,000" is the
+  plainest statement of the sale there is, and both sentence branches read only
+  the seller-shares-buyer order.
+- **MNA-019 could not read "Delaware law governs".** The third ruleset found
+  carrying its own narrower copy of a form the jurisdictions extractor has read
+  since v1, after NDA-D-017 and CHOICE-001.
+- `channel-referral-agreement` routed its own document at exactly the 0.5
+  threshold — four of its six phrases are clauses COMM-014..033 require. Three
+  type phrases added; it now routes at 0.7.
+
 ## [9.274.0] — 2026-08-31
 
 ### Added
