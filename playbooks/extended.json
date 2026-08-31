@@ -18728,7 +18728,7 @@
   },
   {
     "id": "technology-transfer-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "University Technology Transfer License",
     "description": "University or federal-lab license, reviewed against the Bayh-Dole obligations (35 U.S.C. §§ 200-212; 37 C.F.R. Part 401). Selects the IPL-122..128 ruleset (7 checks).",
     "match_features": {
@@ -18746,7 +18746,12 @@
         "substantially manufactured in the united states",
         "diligence milestones",
         "sponsored research",
-        "licensed patents"
+        "licensed patents",
+        "board of trustees",
+        "office of technology",
+        "sublicense income",
+        "principal investigator",
+        "research foundation"
       ],
       "negative_features": [
         "employment offer",

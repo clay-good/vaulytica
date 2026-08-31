@@ -1737,6 +1737,40 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A university exclusive license, the 231st specimen and the first for
+  // `technology-transfer-agreement`. Writing it exposed the family's routing:
+  // six of its seven distinguishing phrases were the Bayh-Dole clauses its own
+  // checks require — "bayh-dole", "march-in rights", "government license
+  // rights", "substantially manufactured in the united states", "diligence
+  // milestones", "sponsored research" — so a licence that omits them scored
+  // 0.5 and lost to `patent-license` at 0.6, and IPL-123, the CRITICAL check
+  // for the government's retained licence, could only fire on a document that
+  // had already recited it. The phrases that identify a UNIVERSITY licence
+  // whatever it says — "board of trustees", "office of technology",
+  // "sublicense income", "principal investigator", "research foundation" —
+  // now carry the routing.
+  //
+  // RISK-005 and RISK-015 stay: this licence caps nothing, which is the
+  // university’s intent and the licensee’s risk, and both are the shape
+  // the rules are written to surface. TERM-003 and OBLI-002 are the same
+  // one-sidedness read from the other two directions.
+  "technology-transfer.txt": {
+    playbook: "technology-transfer-agreement",
+    findings: [
+      "RISK-005",
+      "RISK-015",
+      "TERM-003",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-010",
+      "TEMP-006",
+      "TEMP-008",
+      "TEMP-009",
+      "TERM-001",
+    ],
+  },
+
   // A cross-border exclusive distribution agreement: an ICC seat stated in the
   // participle, and the GDPR cited by its regulation number.
   //
@@ -2342,9 +2376,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // asks to record it: the United States Patent and Trademark Office. It
   // scored 0.4, lost to the general `ip-assignment`, and its five 35 U.S.C.
   // § 261 checks never ran.
+  //
+  // STRUCT-006 came off this row in 9.265.0. It was reporting the UNITED
+  // STATES PATENT AND TRADEMARK OFFICE — the office this assignment exists to
+  // be recorded with — as a term the assignment forgot to define. A phrase
+  // whose lead word is a state has always been skipped; `PLACE_NAMES` holds
+  // "United States" as two words, so only "United" was ever compared.
   "patent-assignment.txt": {
     playbook: "patent-assignment",
-    findings: ["OBLI-005", "STRUCT-006"],
+    findings: ["OBLI-005"],
   },
 
   // A subordination, non-disturbance and attornment agreement. RE-047 —

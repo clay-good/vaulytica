@@ -1,0 +1,122 @@
+EXCLUSIVE TECHNOLOGY TRANSFER AGREEMENT
+
+This Exclusive Technology Transfer Agreement (this "Agreement") is made as of March 9, 2026 between The Board of Trustees of Calloway State University, a body corporate and politic of the State of Ohio acting through its Office of Technology Commercialization ("University"), and Halcyon Bioacoustics, Inc., a Delaware corporation ("Licensee").
+
+RECITALS
+
+A. University owns certain inventions arising from research conducted in the laboratory of Dr. Priya Raghunathan and funded in part by the National Institutes of Health under Grant No. R01-DC-0198442.
+
+B. Licensee wishes to obtain, and University wishes to grant, an exclusive license under the Licensed Patents to develop and commercialize Licensed Products in the Field of Use.
+
+C. University is subject to the Bayh-Dole Act, 35 U.S.C. §§ 200-212, and the implementing regulations at 37 C.F.R. Part 401, and this Agreement is made subject to the rights those provisions reserve to the United States Government.
+
+1. DEFINITIONS
+
+1.1 "Licensed Patents" means the patents and patent applications listed on Exhibit A, together with all continuations, continuations-in-part, divisionals, reissues, reexaminations, and foreign counterparts of them.
+
+1.2 "Licensed Product" means any product, service, or process the manufacture, use, sale, offer for sale, or importation of which would, but for the license granted in Section 2.1, infringe a Valid Claim of the Licensed Patents.
+
+1.3 "Field of Use" means the diagnosis and monitoring of sensorineural hearing loss in human patients. All uses outside the Field of Use are reserved to University.
+
+1.4 "Net Sales" means the gross amounts invoiced by Licensee and its Sublicensees for Licensed Products, less returns actually credited, trade and quantity discounts actually allowed, sales and use taxes, and outbound freight and insurance separately stated on the invoice. No other deduction is permitted.
+
+1.5 "First Commercial Sale" means the first sale of a Licensed Product to a third party for value in an arm's-length transaction, after any required regulatory clearance in the country of sale. Sales for clinical or evaluation purposes are not a First Commercial Sale.
+
+1.6 "Sublicense Income" means all consideration Licensee receives from a Sublicensee for the grant of a sublicense, excluding amounts received as earned royalties on Net Sales, as reimbursement of documented patent expenses, and as bona fide research funding at fair market value.
+
+1.7 "Valid Claim" means a claim of an issued, unexpired patent within the Licensed Patents that has not been held invalid or unenforceable by a court of competent jurisdiction in a decision from which no appeal has been or may be taken.
+
+2. GRANT OF LICENSE
+
+2.1 University grants Licensee an exclusive, worldwide license under the Licensed Patents to make, have made, use, sell, offer for sale, and import Licensed Products in the Field of Use, with the right to grant sublicenses under Section 3.
+
+2.2 University reserves for itself and for other nonprofit research institutions the irrevocable right to practice the Licensed Patents for research, teaching, and other noncommercial educational purposes, including research sponsored by a commercial entity, provided that no rights to Licensed Products in the Field of Use are granted to that entity.
+
+2.3 The license granted in Section 2.1 is subject to the nonexclusive, nontransferable, irrevocable, paid-up license of the United States Government to practice or have practiced the Licensed Patents throughout the world on behalf of the United States, and to the march-in rights of the funding agency under 35 U.S.C. § 203.
+
+2.4 Licensee shall ensure that Licensed Products sold in the United States are substantially manufactured in the United States, as 35 U.S.C. § 204 requires, unless the funding agency waives that requirement in writing on University's petition.
+
+3. SUBLICENSES
+
+3.1 Licensee may grant sublicenses within the Field of Use. Each sublicense shall be in writing, shall be subject to and consistent with this Agreement, and shall bind the Sublicensee to the Government rights in Section 2.3, the manufacturing preference in Section 2.4, and the reporting, indemnity, and insurance obligations of this Agreement.
+
+3.2 Licensee shall deliver a complete copy of each sublicense to University within thirty (30) days after execution, and shall pay University the Sublicense Income share stated in Section 4.3.
+
+3.3 On termination of this Agreement, each sublicense in good standing survives and is assigned to University, provided the Sublicensee agrees in writing to perform its obligations directly to University and University's obligations to the Sublicensee are no greater than University's obligations to Licensee.
+
+4. CONSIDERATION
+
+4.1 Licensee shall pay University a license issue fee of $75,000 within thirty (30) days after the Effective Date, and an annual license maintenance fee of $25,000 on each anniversary, creditable against earned royalties in the same calendar year.
+
+4.2 Licensee shall pay University an earned royalty of four percent (4%) of Net Sales of Licensed Products, subject to a minimum annual royalty of $50,000 beginning in the first calendar year after First Commercial Sale.
+
+4.3 Licensee shall pay University twenty percent (20%) of Sublicense Income received before the first dosing of the first human subject in a pivotal trial, and ten percent (10%) of Sublicense Income received after it.
+
+4.4 Licensee shall deliver a written royalty report and payment within forty-five (45) days after the end of each calendar quarter. Late payments bear interest at one percent (1%) per month or the maximum rate permitted by Ohio law, whichever is less.
+
+5. DILIGENCE
+
+5.1 Licensee shall use commercially reasonable efforts to develop and commercialize Licensed Products in the Field of Use, and shall achieve the following milestones: complete a validation study by December 31, 2027; file an FDA 510(k) submission by June 30, 2029; and achieve First Commercial Sale by December 31, 2030.
+
+5.2 If Licensee fails to achieve a milestone, University shall notify Licensee in writing, and Licensee has ninety (90) days to cure or to propose a revised schedule that University may accept in its reasonable discretion. If Licensee neither cures nor obtains an accepted revision, University may terminate this Agreement or convert the license to nonexclusive on written notice.
+
+6. PATENT PROSECUTION AND ENFORCEMENT
+
+6.1 University controls the preparation, filing, prosecution, and maintenance of the Licensed Patents, using counsel reasonably acceptable to Licensee, and shall give Licensee copies of material filings and a reasonable opportunity to comment. Licensee shall reimburse University for all patent expenses within thirty (30) days after invoice.
+
+6.2 Licensee has the first right, at its expense, to enforce the Licensed Patents against a commercially material infringement in the Field of Use, and shall not settle in a manner that admits invalidity or unenforceability of a Licensed Patent without University's prior written consent. Recoveries are applied first to each party's costs and the balance is shared seventy percent (70%) to Licensee and thirty percent (30%) to University.
+
+7. PUBLICATION
+
+7.1 University and its researchers retain the right to publish the results of research relating to the Licensed Patents. University shall give Licensee a copy of a proposed publication at least thirty (30) days before submission, and shall delay submission for up to sixty (60) additional days on Licensee's written request to permit a patent filing. Nothing in this Agreement restricts the academic freedom of University's faculty or students.
+
+8. CONFIDENTIALITY
+
+8.1 Each party shall hold in confidence the other party's Confidential Information for five (5) years from disclosure, shall use it only to perform this Agreement, and shall protect it with at least the care it uses for its own confidential information of like importance. The obligation does not apply to information that is public through no fault of the receiving party, was already known to it, is independently developed, or is rightfully received from a third party. University may disclose the terms of this Agreement to the funding agency and as the Ohio Public Records Act requires.
+
+9. WARRANTIES AND DISCLAIMER
+
+9.1 University represents that it owns the Licensed Patents and has the authority to grant the license in Section 2.1, subject to the Government rights in Section 2.3. Licensee represents that it has the authority to enter into this Agreement and the resources to perform it.
+
+9.2 EXCEPT AS STATED IN SECTION 9.1, UNIVERSITY MAKES NO REPRESENTATIONS AND EXTENDS NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, VALIDITY OF THE LICENSED PATENTS, OR NONINFRINGEMENT OF THIRD-PARTY RIGHTS.
+
+10. INDEMNITY AND INSURANCE
+
+10.1 Licensee shall indemnify, defend, and hold harmless University, its trustees, officers, employees, and students from any claim arising out of the development, manufacture, use, sale, or other disposition of a Licensed Product by Licensee or a Sublicensee. University shall give Licensee prompt written notice of a claim, allow Licensee to control the defense, and cooperate at Licensee's expense; Licensee shall not settle a claim imposing a non-monetary obligation on University without University's prior written consent.
+
+10.2 Licensee shall maintain commercial general liability insurance of at least $2,000,000 per occurrence and $5,000,000 in the aggregate, naming University as an additional insured, from the first human use of a Licensed Product and for five (5) years after the last sale.
+
+11. TERM AND TERMINATION
+
+11.1 This Agreement runs from the Effective Date until the expiration of the last-to-expire Valid Claim within the Licensed Patents, unless terminated earlier.
+
+11.2 Licensee may terminate for convenience on ninety (90) days' written notice. University may terminate on sixty (60) days' written notice if Licensee materially breaches and does not cure within that period, or immediately if Licensee becomes insolvent or challenges the validity of a Licensed Patent.
+
+11.3 On termination, the license granted in Section 2.1 ends, Licensee shall cease making and selling Licensed Products except that it may sell existing inventory for six (6) months subject to royalties, and all payments accrued before termination become due. Sections 8, 9.2, 10, 11.3, and 12 survive termination.
+
+12. GENERAL
+
+12.1 This Agreement is governed by the laws of the State of Ohio, without regard to its conflict-of-laws rules, and the parties submit to the exclusive jurisdiction of the state and federal courts sitting in Franklin County, Ohio.
+
+12.2 Licensee may not assign this Agreement without University's prior written consent, except to a successor to all or substantially all of its business to which this Agreement relates, on written notice and the assignee's written assumption.
+
+12.3 Neither party may use the other party's name, trademarks, or the name of any of its faculty or students in advertising without that party's prior written consent, except that Licensee may state the existence of this license as securities law requires.
+
+12.4 This Agreement, together with Exhibit A, is the entire agreement between the parties on its subject matter and supersedes all prior discussions. It may be amended only by a writing signed by both parties.
+
+THE BOARD OF TRUSTEES OF CALLOWAY STATE UNIVERSITY
+
+By: /s/ Marguerite Delacroix-Boone
+Name: Marguerite Delacroix-Boone
+Title: Associate Vice President for Research
+
+HALCYON BIOACOUSTICS, INC.
+
+By: /s/ Terrence Okonjo-Whitfield
+Name: Terrence Okonjo-Whitfield
+Title: Chief Executive Officer
+
+EXHIBIT A — LICENSED PATENTS
+
+US Patent No. 11,204,776, "Otoacoustic emission classifier using time-frequency masking," issued December 21, 2021.
+US Patent Application No. 17/883,204, "Portable cochlear response monitor," filed August 8, 2022.

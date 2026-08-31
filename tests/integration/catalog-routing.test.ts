@@ -572,6 +572,38 @@ describe("no family claims a document that is nobody's", () => {
     expect(match.playbook_id).toBe("generic-fallback");
   });
 
+  it("a university licence reaches its family WITHOUT reciting Bayh-Dole", () => {
+    // Six of `technology-transfer-agreement`'s seven distinguishing phrases
+    // were the Bayh-Dole clauses its own checks require — "bayh-dole",
+    // "march-in rights", "government license rights", "substantially
+    // manufactured in the united states", "diligence milestones", "sponsored
+    // research". A licence that recites none of them scored 0.5 on its title
+    // and the one remaining phrase, lost to `patent-license` at 0.6, and
+    // IPL-123 — the CRITICAL check for the government's retained licence —
+    // could only ever fire on a document that had already recited it. A
+    // family whose routing is its own compliance checks is a family that
+    // reviews the documents needing review least.
+    const body: [string, ...string[]] = [
+      "",
+      "TECHNOLOGY TRANSFER AGREEMENT",
+      'This Technology Transfer Agreement is made between The Board of Trustees of Calloway State University ("University") and Halcyon Bioacoustics, Inc. ("Licensee").',
+      "University grants Licensee an exclusive worldwide license under the Licensed Patents listed on Exhibit A to make, use, and sell Licensed Products.",
+      "Licensee shall pay University a royalty of four percent (4%) of net sales and twenty percent (20%) of Sublicense Income.",
+      "The Office of Technology Commercialization administers this Agreement on University's behalf.",
+    ];
+    const tree = buildTree(body);
+    const extracted = extractAll(tree, {
+      classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    });
+    const match = matchPlaybook(extracted, extracted.classified, [...LAUNCH, ...PLAYBOOKS], {
+      title: titleCorpus(tree, "tt.txt"),
+      body_text: body.join("\n"),
+    });
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe(
+      "technology-transfer-agreement",
+    );
+  });
+
   it("a construction subcontract is not routed to the code of conduct", () => {
     // The document the defect was found on. `subcontractor-agreement` also
     // carried "lien waiver" as a NEGATIVE feature, which is backwards — a

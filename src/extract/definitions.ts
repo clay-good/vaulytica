@@ -1304,6 +1304,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         continue;
       const leadWord = phrase.split(/\s+/)[0]!;
       if (PLACE_NAMES.has(leadWord) || US_STATE_NAMES.has(leadWord)) continue;
+      // The same test for the MULTI-WORD place names. A phrase whose lead word
+      // is a state ("Ohio Public Records Act") has always been skipped, but
+      // `PLACE_NAMES` holds "United States" and "New York" as two words, so
+      // only their lead word — "United", "New" — was ever compared, and it
+      // matches nothing. A university licence reciting the retained rights of
+      // the "United States Government" was told it is a term the licence
+      // forgot to define. Every sovereign, agency, and court name in a
+      // document is built this way.
+      if ([...PLACE_NAMES].some((place) => place.includes(" ") && phrase.startsWith(`${place} `)))
+        continue;
       // A candidate followed by a comma and a STATE is a city. "the operations
       // center in Fargo, North Dakota, the co-location facility in Sioux
       // Falls, South Dakota" — a continuity plan names both, and "Sioux Falls"

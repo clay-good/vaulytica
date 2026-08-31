@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.265.0] — 2026-08-31
+
+### Added
+- One specimen — a university exclusive technology-transfer licence, the 231st,
+  and the first for `technology-transfer-agreement`.
+
+### Fixed
+- **A family whose routing was its own compliance checks.** Six of
+  `technology-transfer-agreement`'s seven distinguishing phrases were the
+  Bayh-Dole clauses its own checks require — "bayh-dole", "march-in rights",
+  "government license rights", "substantially manufactured in the united
+  states", "diligence milestones", "sponsored research". A university licence
+  that recites none of them scored 0.5 on its title and the one remaining
+  phrase, lost to `patent-license` at 0.6, and IPL-123 — the CRITICAL check for
+  the government's retained licence in a federally funded invention — could
+  only fire on a document that had already recited it. The phrases that
+  identify a university licence whatever it says ("board of trustees", "office
+  of technology", "sublicense income", "principal investigator", "research
+  foundation") now carry the routing, and the same document draws the critical
+  finding it should always have drawn.
+- **A sovereign was reported as a term the document forgot to define.** A
+  Title-Case phrase whose LEAD WORD is a state ("Ohio Public Records Act") has
+  always been skipped, but `PLACE_NAMES` holds "United States" and "New York"
+  as two words, so only their lead word — "United", "New" — was ever compared,
+  and it matches nothing. STRUCT-006 told a university licence that the United
+  States Government is undefined, and a patent assignment that the United
+  States Patent and Trademark Office is — the office the assignment exists to
+  be recorded with.
+
 ## [9.264.0] — 2026-08-31
 
 ### Fixed

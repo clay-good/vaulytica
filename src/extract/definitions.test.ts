@@ -454,6 +454,26 @@ describe("place names are not undefined defined-terms", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("New York County");
   });
 
+  it("does not flag a sovereign or an agency built on a multi-word place name", () => {
+    // A phrase whose LEAD WORD is a state ("Ohio Public Records Act") has
+    // always been skipped, but `PLACE_NAMES` holds "United States" and "New
+    // York" as two words, so only their lead word — "United", "New" — was ever
+    // compared, and it matches nothing. A university licence reciting the
+    // rights retained by the United States Government was told the Government
+    // is a term it forgot to define, and a patent assignment was told the same
+    // about the office it exists to be recorded with.
+    const map = extractDefinitions(
+      buildTree([
+        "Government Rights",
+        "The licence is subject to the paid-up licence of the United States Government to practise the Licensed Patents. The United States Government may exercise march-in rights.",
+        "Assignor shall record this assignment with the United States Patent and Trademark Office. The United States Patent and Trademark Office charges a recordation fee.",
+      ]),
+    );
+    const terms = map.undefined_capitalized.map((e) => e.term);
+    expect(terms).not.toContain("United States Government");
+    expect(terms).not.toContain("United States Patent and Trademark Office");
+  });
+
   it("a street name ending in Way, Place, or Court is an address, not a defined term", () => {
     // The street-suffix guard listed nine suffixes and not the ones a modern
     // address actually uses. "88 Harbor Way" was reported, twice, as a
