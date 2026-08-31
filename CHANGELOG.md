@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.269.0] — 2026-08-31
+
+### Added
+- One specimen — a Colorado non-competition and non-solicitation covenant, the
+  234th, and the first for `employment-restrictive-covenant`.
+
+### Fixed
+- **NINE CRITICALS about an NDA the document is not.** A covenant headed
+  NON-COMPETITION AND NON-SOLICITATION AGREEMENT routed to `mutual-nda-deep`
+  and was told it defines no Confidential Information, states no
+  publicly-available exclusion, and requires no return or destruction — because
+  the family's title keywords were written as exact full titles ("non-compete
+  agreement", "non-competition agreement") and the words "and
+  non-solicitation" sit between them. The EMP-024..031 ruleset never ran.
+- **EMP-027 accepted `worldwide` as evidence of a bounded geographic scope**,
+  on a rule whose own explanation reads "open-ended geographic scope is
+  unenforceable". The paradigm case of the abuse satisfied the check. The
+  alternatives it stood beside were no better: bare `scope` is in "the scope of
+  this Agreement" and bare `state`, with no word boundary, is inside "the State
+  of Delaware" in every governing-law clause and inside "reSTATEment".
+- **EMP-025 reported a three-year worldwide non-compete as having no duration,
+  at `critical`.** Every duration pattern wanted the word "non-compete" within
+  80 characters, and a standalone covenant agreement writes that word in its
+  title and nowhere else. It now reads the duration where a covenant states it
+  — in the restriction sentence: "During the three (3) years following the
+  termination of Employee's employment …, Employee shall not …".
+- `employment-restrictive-covenant` shipped with an empty `rule_overrides`, so
+  a restrictive covenant was told it allocates no intellectual property, states
+  no indemnity, caps no liability, and gives no path to terminate for cause.
+  A covenant does none of those things by design; it survives termination.
+
 ## [9.268.0] — 2026-08-31
 
 ### Added

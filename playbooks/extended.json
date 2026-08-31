@@ -7070,7 +7070,13 @@
       "title_keywords": [
         "non-compete agreement",
         "non-competition agreement",
-        "restrictive covenant agreement"
+        "restrictive covenant agreement",
+        "non-competition and non-solicitation",
+        "non-solicitation and non-competition",
+        "non-compete and non-solicitation",
+        "confidentiality and non-competition",
+        "non-solicitation agreement",
+        "employee non-compete"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -7090,7 +7096,23 @@
       "Restricted Period",
       "Restricted Territory"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FTC-NCR",

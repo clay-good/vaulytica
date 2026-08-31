@@ -638,7 +638,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-025",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Non-compete duration stated",
     description: "Where permitted, non-compete duration must be stated.",
     citation: stateNonCompete(),
@@ -659,6 +659,14 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // months" and "non-competition … (12) months" (the earlier form used
       // "competit\w*", which excluded the plain "non-compete" spelling).
       /non.?compet\w*.{0,80}?\(?(\d{1,2})\)?\s*(months?|years?)/is,
+      // The duration is stated in the RESTRICTION SENTENCE, which is where a
+      // standalone covenant states it: "During the three (3) years following
+      // the termination of Employee's employment …, Employee shall not …".
+      // Every branch above wants the word "non-compete" within 80 characters,
+      // and a covenant agreement writes that word in its TITLE and nowhere
+      // else — so a three-year worldwide non-compete was reported at CRITICAL
+      // as having no duration at all.
+      /\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,2}\)?\s*(?:months?|years?)\b[^.]{0,160}?\b(?:shall|will|agrees?|covenants?)\s+not\b/is,
       /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:shall\s+not|restrict)/is,
     ],
   }),
@@ -677,6 +685,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-027",
+    version: "1.1.0",
     name: "Geographic scope tied to actual market",
     description: "Geographic scope should be reasonable and tied to where the employee worked.",
     citation: stateNonCompete(),
@@ -687,10 +696,22 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "Open-ended geographic scope is unenforceable; scope should track employee's actual market presence.",
     recommendation:
       "Add 'Geographic Scope' tied to the territory where the employee worked or had customer relationships.",
+    // v1.1.0 — `worldwide` was a PRESENT pattern, so the paradigm case of the
+    // abuse this rule exists to catch satisfied it: a covenant restricting an
+    // employee "anywhere in the world" scored as having a geographic scope
+    // tied to its actual market, on a rule whose own explanation reads
+    // "open-ended geographic scope is unenforceable". The rest of the list was
+    // the skeleton every contract carries — bare `scope` is in "the scope of
+    // this Agreement", and bare `state` (no word boundary) is inside "the
+    // State of Delaware" in every governing-law clause and inside
+    // "reSTATEment". What is left names a BOUNDED area, which is the thing the
+    // rule is looking for.
     present_patterns: [
-      /(geographic|territory|scope)/i,
-      /worldwide/i,
-      /(state|county|country|zip\s+code)/i,
+      /geographic(?:al)?\s+(?:scope|area|limit|limitation|territory|restriction)/i,
+      /restricted\s+territor(?:y|ies)/i,
+      /\bterritory\b/i,
+      /\bwithin\s+(?:a\s+)?[\w()-]+\s*[- ]?mile\s+radius/i,
+      /\bcount(?:y|ies)\s+of\b|\bstates?\s+in\s+which\b|\bcountr(?:y|ies)\s+in\s+which\b/i,
     ],
     default_severity: "warning",
   }),

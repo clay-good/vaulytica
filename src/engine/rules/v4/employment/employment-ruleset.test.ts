@@ -699,3 +699,45 @@ describe("a proprietary-information and inventions agreement", () => {
     ).toEqual([]);
   });
 });
+
+describe("EMP-025 / EMP-027 v1.3.0 / v1.1.0 — the covenant's own drafting", () => {
+  const covenant = (...body: string[]) =>
+    withPb(
+      buildContext(["NON-COMPETITION AND NON-SOLICITATION AGREEMENT", ...body] as [
+        string,
+        ...string[],
+      ]),
+      RC_PB,
+    );
+  const ruleById = (id: string) => EMPLOYMENT_RULES.find((r) => r.id === id)!;
+
+  it("reads a duration stated in the restriction sentence", () => {
+    // Every duration pattern wanted the word "non-compete" within 80
+    // characters, and a covenant agreement writes that word in its TITLE and
+    // nowhere else — so a three-year worldwide non-compete was reported at
+    // CRITICAL as having no duration at all.
+    const ctx = covenant(
+      "During the three (3) years following the termination of Employee's employment for any reason, Employee shall not, anywhere in the world, be employed by any business that competes with the Company.",
+    );
+    expect(ruleById("EMP-025").check(ctx)).toBeNull();
+  });
+
+  it("does not accept a WORLDWIDE restriction as a geographic scope", () => {
+    // `worldwide` was a PRESENT pattern on a rule whose own explanation reads
+    // "open-ended geographic scope is unenforceable", so the paradigm case of
+    // the abuse satisfied the check. The bare `scope` and `state` alternatives
+    // it stood beside are in "the scope of this Agreement" and in the State of
+    // Delaware in every governing-law clause.
+    const ctx = covenant(
+      "Employee shall not, anywhere in the world, be employed by any business that competes with the Company. This Agreement is governed by the laws of the State of Delaware and the scope of this Agreement is as stated.",
+    );
+    expect(ruleById("EMP-027").check(ctx)).not.toBeNull();
+  });
+
+  it("still reads a bounded territory", () => {
+    const ctx = covenant(
+      'Employee shall not perform services within the Restricted Territory. "Restricted Territory" means each state in which the Company sold a product during the last twelve (12) months.',
+    );
+    expect(ruleById("EMP-027").check(ctx)).toBeNull();
+  });
+});

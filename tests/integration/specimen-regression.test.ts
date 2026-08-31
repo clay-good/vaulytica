@@ -1737,6 +1737,24 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A Colorado non-compete and non-solicitation covenant, the 234th specimen
+  // and the first for `employment-restrictive-covenant`. It routed to
+  // `mutual-nda-deep` and drew NINE CRITICALS about an NDA it is not — no
+  // definition of Confidential Information, no publicly-available exclusion,
+  // no return-or-destruction clause — because the family's title keywords were
+  // written as exact full titles ("non-compete agreement", "non-competition
+  // agreement") and this document is headed NON-COMPETITION AND
+  // NON-SOLICITATION AGREEMENT. The EMP-024..031 ruleset never ran on it.
+  //
+  // PERS-005 and PERS-001 both report the covenant, at warning and at info,
+  // which is the intended pair: a non-compete is a fact worth surfacing and a
+  // scope worth reading. PERS-002 is the non-solicit. TEMP-007 is fair — the
+  // survival list omits the $25,000 retention payment.
+  "employment-restrictive-covenant.txt": {
+    playbook: "employment-restrictive-covenant",
+    findings: ["PERS-005", "PERS-001", "PERS-002", "OBLI-005", "TEMP-006", "TEMP-007"],
+  },
+
   // An executed UK IDTA — Part 1's four tables and Part 2's Mandatory Clauses
   // — the 233rd specimen and the first for `uk-idta-addendum`. The sibling of
   // the SCC specimen below, and it found four more ways the same relationship

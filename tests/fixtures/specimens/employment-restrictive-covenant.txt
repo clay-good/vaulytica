@@ -1,0 +1,79 @@
+NON-COMPETITION AND NON-SOLICITATION AGREEMENT
+
+This Non-Competition and Non-Solicitation Agreement (this "Agreement") is made as of May 4, 2026 between Silverthorne Diagnostics, Inc., a Delaware corporation with its principal place of business in Boulder, Colorado ("Company"), and Rosalind Achterberg-Nwosu ("Employee").
+
+NOTICE REQUIRED BY C.R.S. § 8-2-113(4)(a)(I): THIS AGREEMENT CONTAINS A COVENANT NOT TO COMPETE THAT COULD RESTRICT YOUR OPTIONS FOR SUBSEQUENT EMPLOYMENT FOLLOWING YOUR SEPARATION FROM SILVERTHORNE DIAGNOSTICS, INC. THE COVENANT NOT TO COMPETE IS SET OUT IN SECTION 3 OF THIS AGREEMENT. Employee received this notice on April 20, 2026, fourteen (14) days before the earlier of the effective date of this Agreement and the effective date of any additional compensation or change in the terms and conditions of employment that provides consideration for it, and Employee signs this notice separately below.
+
+1. CONSIDERATION
+
+1.1 Employee is being promoted to Director of Assay Development effective May 18, 2026, with an annual base salary of $196,000, which the Company would not offer but for this Agreement. Employee's total annualized cash compensation exceeds the threshold amount for highly compensated workers published by the Colorado Division of Labor Standards and Statistics for 2026, and exceeded it at the time this Agreement was entered into. The Company will pay Employee a one-time retention payment of $25,000 within thirty (30) days after the Effective Date, which Employee retains whether or not Employee's employment continues.
+
+2. DEFINITIONS
+
+2.1 "Competing Business" means the design, development, validation, manufacture, or sale of a multiplex nucleic-acid diagnostic assay for respiratory pathogens intended for use on a benchtop analyzer, being the specific line of business in which Employee worked and about which Employee received trade secrets during the last two (2) years of employment. It does not include any other product line, service, or business activity of any employer.
+
+2.2 "Restricted Period" means the twelve (12) months immediately following the termination of Employee's employment, whether by Employee or by the Company.
+
+2.3 "Restricted Territory" means each state in which the Company sold, or had a pending customer proposal for, a Competing Business product during the last twelve (12) months of Employee's employment, and in which Employee had customer-facing or development responsibility.
+
+2.4 "Trade Secret" has the meaning given in C.R.S. § 7-74-102(4) and in the Defend Trade Secrets Act, 18 U.S.C. § 1839(3).
+
+3. COVENANT NOT TO COMPETE
+
+3.1 During the Restricted Period, Employee shall not, within the Restricted Territory, perform services for a Competing Business that are the same as or substantially similar to the services Employee performed for the Company during the last two (2) years of employment.
+
+3.2 The parties agree that this covenant is no broader than reasonably necessary to protect the Company's legitimate interest in the protection of its Trade Secrets, as C.R.S. § 8-2-113(2)(b) requires, and that it is supported by the consideration in Section 1.
+
+3.3 This covenant does not apply, and the Company will not enforce it, if Employee's employment is terminated by the Company without Cause or by Employee for Good Reason, or if at the time of enforcement Employee's annualized cash compensation is below the applicable Colorado threshold.
+
+3.4 Nothing in this covenant restricts Employee from practicing in a licensed profession, from working for a Competing Business in a role that is not the same as or substantially similar to the role Employee held, or from accepting employment outside the Restricted Territory.
+
+4. NON-SOLICITATION
+
+4.1 During the Restricted Period, Employee shall not solicit any customer of the Company with whom Employee had material contact during the last twelve (12) months of employment, for the purpose of selling a Competing Business product. Employee's annualized cash compensation exceeds sixty percent (60%) of the threshold amount for highly compensated workers, as C.R.S. § 8-2-113(4)(c) requires for a customer non-solicitation covenant.
+
+4.2 During the Restricted Period, Employee shall not solicit for employment any employee of the Company with whom Employee worked during the last twelve (12) months of employment. General advertising not targeted at Company employees is not a solicitation, and responding to an approach the employee initiates is not a solicitation.
+
+5. PROTECTED CONDUCT
+
+5.1 Nothing in this Agreement prohibits Employee from filing a charge with, reporting to, or participating in an investigation by the Equal Employment Opportunity Commission, the National Labor Relations Board, the Securities and Exchange Commission, the Occupational Safety and Health Administration, or any other federal, state, or local agency, or from receiving an award for information provided to any such agency. Employee does not need the Company's authorization or notice to do so.
+
+5.2 Under the Defend Trade Secrets Act, 18 U.S.C. § 1833(b), Employee is not criminally or civilly liable under any federal or state trade secret law for disclosing a trade secret in confidence to a government official or an attorney solely for the purpose of reporting or investigating a suspected violation of law, or in a complaint or other document filed under seal in a lawsuit.
+
+5.3 Nothing in this Agreement prohibits Employee from discussing wages, hours, or other terms and conditions of employment with co-workers or others, or from engaging in any other conduct protected by Section 7 of the National Labor Relations Act.
+
+6. REMEDIES
+
+6.1 Employee agrees that a breach of Section 3 or Section 4 would cause the Company harm not fully compensable in money, and that the Company may seek injunctive relief in addition to any other remedy. The Company must show the elements a court requires for an injunction; nothing here relieves it of that burden, and no liquidated damages are payable.
+
+7. GENERAL
+
+7.1 This Agreement is governed by the laws of the State of Colorado, without regard to its conflict-of-laws rules. Any action to enforce it shall be brought in the state or federal courts sitting in Boulder County, Colorado. C.R.S. § 8-2-113(4)(d) makes a choice of another state's law or forum void as to a Colorado worker, and the parties do not attempt one.
+
+7.2 If a court finds any restriction in Section 3 or Section 4 unenforceable as written, the court shall reform it to the extent necessary to make it enforceable, and shall enforce it as reformed.
+
+7.3 This Agreement does not create a term of employment. Employee's employment remains at will and may be ended by either party at any time, with or without Cause.
+
+7.4 This Agreement, together with the separately signed notice below, is the entire agreement between the parties on its subject matter and supersedes all prior discussions of it. It may be amended only by a writing signed by both parties.
+
+7.5 This Agreement survives the termination of Employee's employment as to Sections 3, 4, 5, 6 and 7.
+
+SILVERTHORNE DIAGNOSTICS, INC.
+
+By: /s/ Devendra Ramaswamy-Pike
+Name: Devendra Ramaswamy-Pike
+Title: Chief People Officer
+Date: May 4, 2026
+
+EMPLOYEE
+
+/s/ Rosalind Achterberg-Nwosu
+Name: Rosalind Achterberg-Nwosu
+Date: May 4, 2026
+
+SEPARATE ACKNOWLEDGEMENT OF NOTICE (C.R.S. § 8-2-113(4)(a))
+
+I received the notice set out above on April 20, 2026, before I accepted the offer of promotion and before I signed the Agreement.
+
+/s/ Rosalind Achterberg-Nwosu
+Date: April 20, 2026
