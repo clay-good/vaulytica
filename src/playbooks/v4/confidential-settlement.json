@@ -1,6 +1,6 @@
 {
   "id": "confidential-settlement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Confidential Settlement Agreement",
   "description": "Confidential settlement agreement with NLRB *McLaren Macomb*, SEC Rule 21F-17 carve-out, and IRC § 162(q) compliance. Selects the §6.G settlement ruleset (SET-003..SET-010).",
   "match_features": {
@@ -12,7 +12,10 @@
       "no admission",
       "protected rights",
       "1099",
-      "w-2"
+      "w-2",
+      "releases all claims",
+      "resolve the lawsuit",
+      "settlement agreement and release"
     ],
     "negative_features": ["demand letter", "cease and desist", "tolling"]
   },

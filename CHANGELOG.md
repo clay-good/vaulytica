@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.278.0] — 2026-08-31
+
+### Fixed
+- **Four bare instruments reached no family at all**, and a fifth reached its
+  own at the threshold. An engagement letter, a demand note, a settlement
+  agreement and release, a will, and a general power of attorney — each stating
+  its subject and none of the protections its family checks for.
+  `engagement-letter` claimed "scope of the representation", "conflicts of
+  interest" and "trust account"; `promissory-note` claimed "maker", "payee" and
+  "maturity"; `confidential-settlement` claimed "no admission" and "protected
+  rights"; `last-will-and-testament` claimed "residue", "devise" and "codicil";
+  `durable-poa-financial` claimed "incapacity", "hot powers" and "third-party
+  reliance". All five now route at 0.7 or better and are pinned in
+  `catalog-routing`, which now covers thirteen bad documents.
+- `promissory-note` now names the convertible note as a negative feature. The
+  three type phrases it needed — "promises to pay", "principal sum", "for value
+  received" — are all things a convertible promissory note says too, and it
+  immediately tied the `convertible-note` specimen at 0.9.
+
+### Known
+- A commercial general liability policy reaches no family and scores 0. The
+  catalog has `cyber-insurance-policy`, `insurance-endorsement` and
+  `insurance-policy-summary` but no general-liability form; so does a subpoena
+  duces tecum, which has no family either. Both are catalog coverage gaps, not
+  routing defects.
+
 ## [9.277.0] — 2026-08-31
 
 ### Fixed

@@ -681,7 +681,58 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
-  it.each([...BAD_DOCUMENTS, ...THIN_MARGINS])(
+  /**
+   * Five more, from a sweep of the estate, litigation and lending families.
+   * Four of the five reached NO family at all, and the fifth reached its own
+   * at the threshold — an engagement letter with no scope and no conflicts
+   * paragraph, a demand note, a settlement with no no-admission clause, a will
+   * with no residue clause, and a power of attorney with no incapacity term.
+   * Each is the document a reviewer most needs the family for.
+   */
+  const BARE_INSTRUMENTS: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "engagement-letter",
+      title: "ENGAGEMENT LETTER",
+      body: [
+        "Thank you for asking Ashford & Reyes LLP to represent you. We will represent you in your dispute with Wrenfield Audio Labs, Inc.",
+        "Our rate is $525 per hour and we will bill you monthly for this engagement.",
+      ],
+    },
+    {
+      id: "promissory-note",
+      title: "PROMISSORY NOTE",
+      body: [
+        "For value received, Thistledown Robotics, Inc. promises to pay Summit Commercial Bank, N.A. the principal sum of $250,000.",
+        "Interest accrues at 9.5% per year and the entire balance is due on demand.",
+      ],
+    },
+    {
+      id: "confidential-settlement",
+      title: "SETTLEMENT AGREEMENT AND RELEASE",
+      body: [
+        "This Settlement Agreement and Release is made to resolve the lawsuit pending in the Franklin County Court of Common Pleas.",
+        "Defendant will pay Plaintiff $325,000 within thirty days, and Plaintiff releases all claims against Defendant.",
+      ],
+    },
+    {
+      id: "last-will-and-testament",
+      title: "LAST WILL AND TESTAMENT OF MARGARET OKAFOR",
+      body: [
+        "I, Margaret Okafor, of Franklin County, Ohio, declare this to be my will.",
+        "I give my estate to my daughter, and I name my brother as executor.",
+      ],
+    },
+    {
+      id: "durable-poa-financial",
+      title: "GENERAL POWER OF ATTORNEY",
+      body: [
+        "I, Margaret Okafor, of Franklin County, Ohio, appoint my brother David Lin as my attorney-in-fact.",
+        "My agent may act on my behalf in anything to do with my property and finances.",
+      ],
+    },
+  ];
+
+  it.each([...BAD_DOCUMENTS, ...THIN_MARGINS, ...BARE_INSTRUMENTS])(
     "a bad document still reaches $id",
     ({ id, title, body }) => {
     const doc: [string, ...string[]] = ["", title, ...body];

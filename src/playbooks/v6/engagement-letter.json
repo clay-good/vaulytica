@@ -1,6 +1,6 @@
 {
   "id": "engagement-letter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Engagement Letter (Law Firm)",
   "description": "Law-firm engagement letter measured against the ABA Model Rules on scope, fees, conflicts, and file return. Selects the ENG-001..008 ruleset.",
   "match_features": {
@@ -18,7 +18,10 @@
       "attorney-client",
       "hourly rate",
       "we represent",
-      "trust account"
+      "trust account",
+      "represent you",
+      "this engagement",
+      "we will bill"
     ],
     "negative_features": [
       "purchase and sale",

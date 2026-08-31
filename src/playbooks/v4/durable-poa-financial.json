@@ -1,6 +1,6 @@
 {
   "id": "durable-poa-financial",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Durable Power of Attorney (Financial)",
   "description": "Durable POA under UPOAA + state POA statutes with 'hot powers' specific grant. Per spec \u00a76.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the \u00a76.N ruleset (EST-031..EST-037).",
   "match_features": {
@@ -16,7 +16,10 @@
       "durable",
       "incapacity",
       "hot powers",
-      "third-party reliance"
+      "third-party reliance",
+      "my agent",
+      "on my behalf",
+      "appoint"
     ],
     "negative_features": [
       "healthcare proxy",

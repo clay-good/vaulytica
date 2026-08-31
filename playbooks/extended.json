@@ -3892,7 +3892,7 @@
   },
   {
     "id": "confidential-settlement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Confidential Settlement Agreement",
     "description": "Confidential settlement agreement with NLRB *McLaren Macomb*, SEC Rule 21F-17 carve-out, and IRC § 162(q) compliance. Selects the §6.G settlement ruleset (SET-003..SET-010).",
     "match_features": {
@@ -3908,7 +3908,10 @@
         "no admission",
         "protected rights",
         "1099",
-        "w-2"
+        "w-2",
+        "releases all claims",
+        "resolve the lawsuit",
+        "settlement agreement and release"
       ],
       "negative_features": [
         "demand letter",
@@ -6772,7 +6775,7 @@
   },
   {
     "id": "durable-poa-financial",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Durable Power of Attorney (Financial)",
     "description": "Durable POA under UPOAA + state POA statutes with 'hot powers' specific grant. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-031..EST-037).",
     "match_features": {
@@ -6788,7 +6791,10 @@
         "durable",
         "incapacity",
         "hot powers",
-        "third-party reliance"
+        "third-party reliance",
+        "my agent",
+        "on my behalf",
+        "appoint"
       ],
       "negative_features": [
         "healthcare proxy",
@@ -7185,7 +7191,7 @@
   },
   {
     "id": "engagement-letter",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Engagement Letter (Law Firm)",
     "description": "Law-firm engagement letter measured against the ABA Model Rules on scope, fees, conflicts, and file return. Selects the ENG-001..008 ruleset.",
     "match_features": {
@@ -7203,7 +7209,10 @@
         "attorney-client",
         "hourly rate",
         "we represent",
-        "trust account"
+        "trust account",
+        "represent you",
+        "this engagement",
+        "we will bill"
       ],
       "negative_features": [
         "purchase and sale",
@@ -10475,7 +10484,7 @@
   },
   {
     "id": "last-will-and-testament",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Last Will and Testament",
     "description": "Last will and testament (text-only lint) under UPC §§ 2-501–509 + state will codes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060 disclaimer). Selects the §6.N ruleset (EST-001..EST-008).",
     "match_features": {
@@ -10491,7 +10500,10 @@
         "bequeath",
         "devise",
         "residue",
-        "codicil"
+        "codicil",
+        "my estate",
+        "i declare this",
+        "i give"
       ],
       "negative_features": [
         "revocable living trust",
@@ -14736,7 +14748,7 @@
   },
   {
     "id": "promissory-note",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Promissory Note",
     "description": "Promissory note under UCC Article 3 with state-usury savings clause. Selects the §6.L ruleset (BNK-001..BNK-006).",
     "match_features": {
@@ -14754,10 +14766,17 @@
         "principal amount",
         "promise to pay",
         "interest rate",
-        "maturity"
+        "maturity",
+        "promises to pay",
+        "principal sum",
+        "for value received"
       ],
       "negative_features": [
-        "guaranty"
+        "guaranty",
+        "convertible promissory note",
+        "converts into equity",
+        "qualified financing",
+        "valuation cap"
       ]
     },
     "expected_clauses": [],

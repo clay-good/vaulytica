@@ -1,6 +1,6 @@
 {
   "id": "last-will-and-testament",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Last Will and Testament",
   "description": "Last will and testament (text-only lint) under UPC §§ 2-501–509 + state will codes. Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060 disclaimer). Selects the §6.N ruleset (EST-001..EST-008).",
   "match_features": {
@@ -16,7 +16,10 @@
       "bequeath",
       "devise",
       "residue",
-      "codicil"
+      "codicil",
+      "my estate",
+      "i declare this",
+      "i give"
     ],
     "negative_features": [
       "revocable living trust",
