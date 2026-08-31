@@ -1737,6 +1737,36 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // An executed EU SCC Module Two set — a cover page, the option selections,
+  // and three completed annexes — the 232nd specimen and the first for
+  // `scc-module-2`. It drew THIRTY-NINE findings, THIRTEEN of them critical,
+  // and every critical one was false: Clause 8's documented instructions,
+  // Clause 8.5's deletion-or-return, Clause 8.6's breach notification and the
+  // rest of Article 28(3) live in the Commission Implementing Decision the
+  // document adopts in full, and Clause 2 (invariability) is why a
+  // well-drafted set does not restate them. `adoptsStandardFormInFull` is the
+  // `amendsParentAgreement` of that relationship, and it is applied PER RULE:
+  // the checks for Annex II and Annex III still fire on a set that arrives
+  // without them, which is the whole point of the family.
+  //
+  // What is left is on the page. The importer is a US processor and no Article
+  // 27 representative is named (DPA-030); the set carries signature dates but
+  // no stated effective date (DPA-044) and no notices clause outside the Annex
+  // I.A contacts (DPA-051); and it adds no fallback for the adequacy decision
+  // being invalidated (TRANSFER-018), which a careful exporter's counsel does.
+  "scc-module-2.txt": {
+    playbook: "scc-module-2",
+    findings: [
+      "DPA-030",
+      "DPA-044",
+      "DPA-051",
+      "TRANSFER-018",
+      "OBLI-005",
+      "OBLI-008",
+      "TEMP-002",
+    ],
+  },
+
   // A university exclusive license, the 231st specimen and the first for
   // `technology-transfer-agreement`. Writing it exposed the family's routing:
   // six of its seven distinguishing phrases were the Bayh-Dole clauses its own

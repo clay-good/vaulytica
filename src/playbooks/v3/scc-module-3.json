@@ -1,6 +1,6 @@
 {
   "id": "scc-module-3",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "EU Standard Contractual Clauses \u2014 Module 3 (Processor to Processor)",
   "description": "Verifies the official EU SCC Module 3 text (Commission Implementing Decision 2021/914) is incorporated and checks Annexes I, II, III. Selects the \u00a729 DPA-GDPR ruleset and \u00a731 transfer-mechanism ruleset.",
   "match_features": {
@@ -37,7 +37,26 @@
     "Sub-processor",
     "Data Subject"
   ],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-004": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [
     {

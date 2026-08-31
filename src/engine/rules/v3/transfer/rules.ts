@@ -74,9 +74,36 @@ function sccDisapplied(clause: number): RegExp[] {
   ];
 }
 
+/**
+ * The SCC clauses whose TEXT the document supplies by adopting the form in
+ * full rather than pasting it. These ten rules ask "is Clause N in this
+ * document", which is the right question for the very common DPA that pastes
+ * the SCC text into itself and then edits or drops a clause — and the wrong
+ * one for the executed set that adopts the Decision unamended and completes
+ * the annexes. That document was told, at CRITICAL, that Clause 1, Clause 2
+ * and Clause 15 are missing from a form it adopted in its entirety.
+ *
+ * TRANSFER-003 and TRANSFER-015 (materially modified), the UK Addendum tables,
+ * the adequacy rules and the TIA reference are NOT here: none of them is text
+ * the form supplies about itself, and they are what still fires.
+ */
+const SUPPLIED_BY_THE_ADOPTED_FORM = new Set([
+  "TRANSFER-001",
+  "TRANSFER-002",
+  "TRANSFER-004",
+  "TRANSFER-005",
+  "TRANSFER-006",
+  "TRANSFER-007",
+  "TRANSFER-008",
+  "TRANSFER-009",
+  "TRANSFER-010",
+  "TRANSFER-020",
+]);
+
 const CONFIG_SCC: RegulatedRuleConfig = {
   category: "transfer",
   applies_to_playbooks: SCC_PLAYBOOKS,
+  supplied_by_standard_form: SUPPLIED_BY_THE_ADOPTED_FORM,
   cite_for(citation: string) {
     const lower = citation.toLowerCase();
     let url = "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj";

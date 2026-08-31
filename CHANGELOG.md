@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.267.0] — 2026-08-31
+
+### Added
+- One specimen — an executed EU SCC Module Two set, the 232nd, and the first
+  for `scc-module-2`.
+
+### Fixed
+- **THIRTEEN CRITICAL false accusations against a correctly executed EU form.**
+  An SCC Module Two set is a cover page, a list of option selections, and three
+  completed annexes. Clause 8's documented-instructions obligation, Clause 8.5's
+  deletion-or-return, Clause 8.6's breach notification, Clause 9's sub-processor
+  flow-down and the rest of Article 28(3) live in the Commission Implementing
+  Decision the document adopts in full — and Clause 2 (invariability) is why a
+  well-drafted set does not restate them. The Article 28(3) ruleset, which this
+  family exists to re-run *by reference*, found none of the words and reported
+  ten of the clauses missing at `critical`, alongside three per-clause SCC
+  checks. `adoptsStandardFormInFull()` is the `amendsParentAgreement()` of that
+  relationship, and it is applied **per rule**: the checks for Annex II and
+  Annex III still fire on a set that arrives without them, which is the whole
+  point of the family. The recognizer needs an adoption verb, the form's name,
+  and an in-full qualifier in the same sentence — a DPA that merely says the
+  parties "will enter into the SCCs if a transfer occurs" is excused nothing.
+- **The Article 28(3) introductory clauses could not read the annex that
+  carries them.** Annex I.B is headed "DESCRIPTION OF TRANSFER" and states the
+  duration as "Period for which the personal data will be retained" and the
+  nature and purpose under separate headings. DPA-001, DPA-002 and DPA-003
+  wanted "subject-matter of the processing", "duration of the processing" and
+  the single conjoined "nature and purpose of the processing", so all three
+  fired at `critical` on a completed annex.
+- **A completed form states its choices as labelled selections.** "Clause 17
+  (Governing law): the law of Ireland" has no verb for any governing-law
+  pattern to anchor on, so CHOICE-001 reported no governing law on a document
+  whose Clause 17 names one, and CHOICE-003 no venue on one whose Clause 18(b)
+  names the courts. Two corpus fixtures write it the same way in an ordinary
+  contract — "Term. This Agreement continues for two (2) years. Governing Law:
+  Delaware."
+- `scc-module-2`, `scc-module-3` and `uk-idta-addendum` shipped with an empty
+  `rule_overrides`, so a data-transfer annex was told it allocates no
+  intellectual property, states no indemnity, caps no liability, and gives no
+  path to terminate for cause. None of the five is part of an SCC set; the
+  liability and termination terms are Clause 12 and Clause 16 of the form.
+
 ## [9.265.0] — 2026-08-31
 
 ### Added

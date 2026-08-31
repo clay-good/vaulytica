@@ -880,3 +880,30 @@ describe("governing law stated as a FEDERAL STATUTE", () => {
     ).toEqual(expect.arrayContaining(["United States", "Ohio"]));
   });
 });
+
+describe("a completed FORM states its choices as labelled selections", () => {
+  // Every executed EU SCC, UK IDTA, order form and cover sheet records the two
+  // choices this way — "Clause 17 (Governing law): the law of Ireland" — because
+  // the operative sentence lives in the incorporated form and the parties are
+  // filling a blank. There is no verb for any of the other patterns to anchor
+  // on, and CHOICE-001 reported no governing law on a document whose Clause 17
+  // names one. Two corpus fixtures write it the same way in a plain contract:
+  // "Term. This Agreement continues for two (2) years. Governing Law: Delaware."
+  const kinds = (t: string) =>
+    extractJurisdictions(buildTree(["Agreement", t])).map(
+      (j) => `${j.clause_kind}:${j.raw_text}`,
+    );
+
+  it("reads a labelled governing-law selection", () => {
+    expect(kinds("Clause 17 (Governing law): the law of Ireland.")).toContain(
+      "governing-law:Ireland",
+    );
+    expect(kinds("Governing Law: Delaware.")).toContain("governing-law:Delaware");
+  });
+
+  it("reads a labelled venue selection", () => {
+    expect(
+      kinds("Clause 18(b) (Choice of forum and jurisdiction): the courts of Ireland."),
+    ).toContain("venue:Ireland");
+  });
+});

@@ -1,6 +1,6 @@
 {
   "id": "uk-idta-addendum",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "UK International Data Transfer Addendum / IDTA",
   "description": "UK Addendum to EU SCCs or standalone UK IDTA. Selects the §31 transfer-mechanism ruleset (20 rules) covering Tables/Parts completion, mandatory-clauses integrity, TIA/TRA, adequacy-decision posture, and onward transfers.",
   "match_features": {
@@ -27,7 +27,26 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Exporter", "Importer", "UK GDPR", "Personal Data"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-004": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [
     {

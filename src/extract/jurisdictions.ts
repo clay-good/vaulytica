@@ -185,6 +185,25 @@ const GOV_LAW_SUBJECT_FIRST = new RegExp(
 );
 
 /**
+ * The LABELLED SELECTION, which is how a completed FORM states its choices:
+ * "Clause 17 (Governing law): the law of Ireland", "Governing law: Delaware",
+ * "Governing Law — England and Wales". Every executed EU SCC, UK IDTA, order
+ * form, and cover sheet records the two choices this way, because the operative
+ * sentence lives in the incorporated form and the parties are filling a blank
+ * — so there is no verb for any of the patterns above to anchor on, and
+ * CHOICE-001 reported no governing law on a document whose Clause 17 names one.
+ *
+ * The label and its value must sit on the same line: a colon at the end of a
+ * heading ("Governing Law:" followed by a paragraph) is the same shape, and the
+ * value is then the first capitalized run after it either way.
+ */
+const GOV_LAW_LABELLED = new RegExp(
+  String.raw`\bgoverning\s+law\b[^:\n]{0,40}:\s*(?:the\s+)?(?:laws?\s+of\s+)?(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+(?:and\s+)?[A-Z][A-Za-z&-]+){0,3})`,
+  "gi",
+);
+
+
+/**
  * The optional "the <division> of" preposition that precedes a locality in a
  * VENUE clause (never in a governing-law clause, where the jurisdiction is a
  * state or a country).
@@ -242,6 +261,15 @@ const CIVIL_DIVISION_OF = String.raw`(?:the\s+(?:[A-Za-z]+\s+){0,2}?Judicial\s+(
  * sentence, and on the explicit "courts located in" locative, so ordinary
  * prose about a court somewhere is not read as a forum selection.
  */
+/**
+ * The same shape for VENUE: "Clause 18(b) (Choice of forum and jurisdiction):
+ * the courts of Ireland", "Venue: Franklin County, Ohio".
+ */
+const VENUE_LABELLED = new RegExp(
+  String.raw`\b(?:venue|forum|jurisdiction)\b[^:\n]{0,40}:\s*(?:the\s+)?(?:${COURT_NAME})?(?:courts?\s+(?:of|in|located\s+in|sitting\s+in)\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)\n]|$)`,
+  "gi",
+);
+
 const VENUE_FALLBACK_FORUM = new RegExp(
   String.raw`\b(?:jurisdiction|venue|forum)\b[^.;]{0,160}?\bcourts?\s+(?:located|sitting)\s+(?:in|within)\s+` +
     String.raw`${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
@@ -617,6 +645,19 @@ export function extractJurisdictions(
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     });
+    runRegex(GOV_LAW_LABELLED, ctx.text, (m) => {
+      const raw = (m[1] ?? "").trim();
+      if (!/^[A-Z]/.test(raw)) return;
+      if (isNegatedGovLaw(ctx.text, m.index)) return;
+      if (seenGovLaw.has(raw.toLowerCase())) return;
+      seenGovLaw.add(raw.toLowerCase());
+      out.push({
+        clause_kind: "governing-law",
+        jurisdiction_id: lookup(raw),
+        raw_text: raw,
+        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+      });
+    });
     runRegex(GOV_LAW_ADJ_SUBJECT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();
       if (!/^[A-Z]/.test(raw)) return;
@@ -688,6 +729,7 @@ export function extractJurisdictions(
     // Only when nothing else in this paragraph named a forum: the fallback
     // branch is a safety net for a two-court clause, not a second opinion on a
     // clause the branches above already read.
+    runRegex(VENUE_LABELLED, ctx.text, recordVenue);
     if (!venueRecorded) runRegex(VENUE_FALLBACK_FORUM, ctx.text, recordVenue);
     runRegex(ARBITRATION_SEAT, ctx.text, (m) => {
       const raw = (m[1] ?? "").trim();

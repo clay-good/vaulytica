@@ -1,0 +1,91 @@
+STANDARD CONTRACTUAL CLAUSES
+
+MODULE TWO: TRANSFER CONTROLLER TO PROCESSOR
+
+Entered into pursuant to Commission Implementing Decision (EU) 2021/914 of 4 June 2021.
+
+The parties named in Annex I.A adopt the standard contractual clauses annexed to that Decision, Module Two, in full and without amendment other than the completion of the Annexes and the selection of options recorded below. Where this document and the annexed clauses conflict, the annexed clauses prevail.
+
+OPTIONS SELECTED
+
+Clause 7 (Docking clause): not used.
+Clause 9 (Use of sub-processors): OPTION 2, GENERAL WRITTEN AUTHORISATION. The data importer shall give the data exporter at least thirty (30) days' notice of the intended addition or replacement of a sub-processor, during which the data exporter may object.
+Clause 11 (Redress): the optional paragraph providing for an independent dispute resolution body is not used.
+Clause 17 (Governing law): the law of Ireland.
+Clause 18(b) (Choice of forum and jurisdiction): the courts of Ireland.
+
+CLAUSE 8 — DATA PROTECTION SAFEGUARDS
+
+The data exporter warrants that it has used reasonable efforts to determine that the data importer is able, through the implementation of appropriate technical and organisational measures, to satisfy its obligations under these Clauses. The data importer shall process the personal data only on documented instructions from the data exporter, as set out in Annex I.B, and shall immediately inform the data exporter if it is unable to follow those instructions. The data importer shall grant the members of its personnel access to the personal data only to the extent strictly necessary and shall ensure that they are bound by confidentiality.
+
+CLAUSE 14 — LOCAL LAWS AND PRACTICES AFFECTING COMPLIANCE
+
+The parties warrant that they have no reason to believe that the laws and practices in the third country of destination applicable to the processing of the personal data by the data importer, including any requirement to disclose personal data or measures authorising access by public authorities, prevent the data importer from fulfilling its obligations under these Clauses. The parties have documented their assessment in the transfer impact assessment dated 14 January 2026, which is retained by the data exporter and made available to the competent supervisory authority on request. The data importer shall notify the data exporter promptly if, after entering into these Clauses, it has reason to believe that it is or has become subject to laws or practices not in line with Clause 14(a).
+
+ANNEX I
+
+A. LIST OF PARTIES
+
+Data exporter: Meridiaan Zorgtechnologie B.V., Keizersgracht 411, 1016 EK Amsterdam, Netherlands. Contact: Aurelie Vandenbroucke, Data Protection Officer, dpo@meridiaanzorg.example. Role: controller.
+
+Data importer: Halcyon Analytics, Inc., 1400 Huron Parkway, Ann Arbor, Michigan 48104, United States. Contact: Terrence Okonjo-Whitfield, Privacy Counsel, privacy@halcyonanalytics.example. Role: processor.
+
+B. DESCRIPTION OF TRANSFER
+
+Categories of data subjects: patients of the data exporter's hospital customers in the Netherlands and Belgium, and the clinical staff who administer their care.
+
+Categories of personal data: name, date of birth, national patient identifier, contact details, appointment history, and device telemetry.
+
+Sensitive data transferred: health data, being audiometric test results and hearing-aid fitting records. The additional restrictions are: encryption in transit and at rest, access limited to named personnel on the data importer's clinical support team, retention limited to twenty-four (24) months, and logging of every access.
+
+Frequency of the transfer: continuous.
+
+Nature of the processing: hosting, storage, statistical analysis, and the generation of clinical reports for the data exporter.
+
+Purpose of the transfer and further processing: providing the data exporter's hearing-diagnostics platform and the support services described in the Services Agreement dated 2 February 2026.
+
+Period for which the personal data will be retained: for the term of the Services Agreement and twenty-four (24) months thereafter, unless the data exporter instructs earlier deletion.
+
+Transfers to sub-processors: as listed in Annex III, for the subject matter, nature, and duration stated there.
+
+C. COMPETENT SUPERVISORY AUTHORITY
+
+The Autoriteit Persoonsgegevens of the Netherlands, being the supervisory authority of the Member State in which the data exporter is established.
+
+ANNEX II — TECHNICAL AND ORGANISATIONAL MEASURES
+
+Pseudonymisation and encryption: personal data is encrypted in transit with TLS 1.3 and at rest with AES-256; national patient identifiers are pseudonymised on ingestion and the key is held only by the data exporter.
+
+Measures for ensuring ongoing confidentiality, integrity, availability and resilience: role-based access control on a least-privilege basis, multi-factor authentication for all administrative access, quarterly access reviews, immutable audit logging, and an availability target of 99.9% with multi-zone replication.
+
+Measures for ensuring the ability to restore availability and access in a timely manner: hourly incremental and nightly full backups held in a separate region, with a recovery time objective of four (4) hours and a recovery point objective of one (1) hour, restored and verified quarterly.
+
+Measures for regularly testing, assessing and evaluating effectiveness: annual ISO 27001 surveillance audit, annual SOC 2 Type II examination, and an independent penetration test every twelve (12) months, the summary reports of which are made available to the data exporter.
+
+Measures for user identification and authorisation, for the protection of data during transmission and storage, for ensuring physical security, for events logging, for system configuration, for internal IT governance, for certification, for ensuring data minimisation, data quality, limited retention, accountability, and for allowing data portability and ensuring erasure: as described in the data importer's Information Security Programme, revision 9, which is incorporated here and may not be amended to a lower standard during the term.
+
+Measures to be taken by the sub-processor to provide assistance to the controller: each sub-processor is bound by the measures in this Annex II under the written contract required by Clause 9(a), and shall assist the data importer in responding to data subject requests and to supervisory authority enquiries within the periods stated in Annex III.
+
+ANNEX III — LIST OF SUB-PROCESSORS
+
+The data exporter has authorised the use of the following sub-processors:
+
+1. Kestrel Cloud Services Ireland Limited, Dublin, Ireland. Subject matter: infrastructure hosting. Nature: storage and compute. Duration: the term of the Services Agreement.
+
+2. Sable Notification Services GmbH, Frankfurt, Germany. Subject matter: transactional messaging. Nature: transmission of appointment reminders. Duration: the term of the Services Agreement.
+
+SIGNATURES
+
+For the data exporter, Meridiaan Zorgtechnologie B.V.
+
+By: /s/ Aurelie Vandenbroucke
+Name: Aurelie Vandenbroucke
+Title: Data Protection Officer
+Date: 3 March 2026
+
+For the data importer, Halcyon Analytics, Inc.
+
+By: /s/ Terrence Okonjo-Whitfield
+Name: Terrence Okonjo-Whitfield
+Title: Privacy Counsel
+Date: 3 March 2026

@@ -26,6 +26,13 @@ export type RegulatedRuleConfig = {
   /** Maps a citation string to (id, url) for the SourceCitation. */
   cite_for(citation: string): { id: string; source_url: string };
   /**
+   * Opt-in: the ids of the rules in this pack whose clause is supplied BY
+   * REFERENCE when the document adopts a standard form in full. Listed per
+   * rule, not per pack: the same ruleset also holds the checks for the form's
+   * own annexes, and those are exactly what must still fire.
+   */
+  supplied_by_standard_form?: ReadonlySet<string>;
+  /**
    * Opt-in (privacy-notice pack): a presence-pattern match immediately
    * governed by a negator ("You have NO right to access", "you may NOT
    * request a correction") is a DENIAL of the item, not its disclosure —
@@ -135,6 +142,44 @@ function cite(config: RegulatedRuleConfig, citation: string): SourceCitation {
   };
 }
 
+/**
+ * The SCC / IDTA families, whose documents ARE a completed standard form.
+ */
+const STANDARD_FORM_PLAYBOOKS = new Set(["scc-module-2", "scc-module-3", "uk-idta-addendum"]);
+
+/**
+ * A reference to the standard form the document is executing, in the same
+ * sentence as an adoption verb and an IN-FULL qualifier. All three are
+ * required: a DPA that merely says the parties "will enter into the SCCs if a
+ * transfer occurs" has adopted nothing, and must still carry its own Article
+ * 28(3) terms.
+ */
+const ADOPTS_STANDARD_FORM =
+  /\b(?:adopt(?:s|ed)?|incorporat(?:e|es|ed)|enter(?:s|ed)?\s+into|agree\s+to|appl(?:y|ies)|form\s+part\s+of)\b[^.;]{0,160}?\b(?:standard\s+contractual\s+clauses|(?:commission\s+)?implementing\s+decision\s*\(?eu\)?\s*2021\/914|international\s+data\s+transfer\s+addendum|idta)\b[^.;]{0,160}?\b(?:in\s+full|in\s+(?:their|its)\s+entirety|without\s+(?:any\s+)?(?:amendment|modification|change)|unamended|unmodified)\b|\b(?:standard\s+contractual\s+clauses|international\s+data\s+transfer\s+addendum)\b[^.;]{0,160}?\b(?:in\s+full|in\s+(?:their|its)\s+entirety|without\s+(?:any\s+)?(?:amendment|modification|change)|unamended|unmodified)\b[^.;]{0,80}?\b(?:adopt(?:s|ed)?|incorporat(?:e|es|ed)|appl(?:y|ies))\b/i;
+
+/**
+ * True when the clause this rule looks for is supplied by a standard form the
+ * document adopts IN FULL rather than restates.
+ *
+ * An executed EU SCC Module Two is a cover page, a set of option selections,
+ * and three completed annexes. Clause 8's documented-instructions obligation,
+ * Clause 8.5's deletion-or-return, Clause 8.6's breach notification and the
+ * rest of Article 28(3) live in the Commission Implementing Decision the
+ * document adopts — restating them is what Clause 2 (invariability) exists to
+ * discourage. The Article 28(3) ruleset was re-run against such a document
+ * looking for the words, found none, and reported TEN of them missing at
+ * CRITICAL on a form that satisfies every one. Same idea as
+ * `amendsParentAgreement()`, with the Decision as the parent.
+ *
+ * Deliberately scoped to the families whose documents ARE the form. A DPA that
+ * name-drops the SCCs for its transfer clause is not excused from stating its
+ * own Article 28(3) terms, and is what an unscoped version would excuse.
+ */
+export function adoptsStandardFormInFull(ctx: RuleContext): boolean {
+  if (!STANDARD_FORM_PLAYBOOKS.has(ctx.playbook.id)) return false;
+  return ADOPTS_STANDARD_FORM.test(fullText(ctx));
+}
+
 export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfig): Rule {
   const { id: dkb_id } = config.cite_for(spec.citation);
   return {
@@ -147,6 +192,8 @@ export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfi
     dkb_citations: [dkb_id],
     applies_to_playbooks: [...config.applies_to_playbooks],
     check(ctx: RuleContext): Finding | null {
+      if (config.supplied_by_standard_form?.has(spec.id) && adoptsStandardFormInFull(ctx))
+        return null;
       const text = fullText(ctx);
       if (spec.denied_if) {
         // An express denial outranks the presence check: the topic words are
@@ -195,6 +242,8 @@ export function buildLanguageRule(spec: LanguageSpec, config: RegulatedRuleConfi
     dkb_citations: [dkb_id],
     applies_to_playbooks: [...config.applies_to_playbooks],
     check(ctx: RuleContext): Finding | null {
+      if (config.supplied_by_standard_form?.has(spec.id) && adoptsStandardFormInFull(ctx))
+        return null;
       type Hit = { text: string; position: DocPosition };
       let hit: Hit | null = null;
       forEachParagraph(ctx.tree, (p) => {

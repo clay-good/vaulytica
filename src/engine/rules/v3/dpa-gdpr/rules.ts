@@ -27,6 +27,61 @@ const DPA_PLAYBOOKS = [
   "scc-module-3",
 ];
 
+/**
+ * The Article 28(3) clauses the EU SCC Module Two and Module Three text SUPPLIES.
+ *
+ * An executed SCC set is a cover page, a list of option selections, and three
+ * completed annexes. Clause 8's documented-instructions obligation, Clause 8.5's
+ * deletion-or-return, Clause 8.6's breach notification, Clause 9's sub-processor
+ * flow-down, Clause 12's liability and Clause 16's termination all live in the
+ * Commission Implementing Decision the document adopts — and Clause 2
+ * (invariability) is why a well-drafted one does not restate them. Re-running
+ * this ruleset against such a document found none of the words and reported ten
+ * of these missing at CRITICAL on a form that satisfies every one.
+ *
+ * The rules NOT listed here are the ones the form cannot supply about itself:
+ * the Annex I.B description (DPA-001..003), the Annex II and Annex III
+ * attachments (DPA-039, DPA-040), the Article 27 representative named in Annex
+ * I.A (DPA-030), the document's own effective date (DPA-044) and its notice
+ * addresses (DPA-051). Those stay live, and are what fires when an SCC arrives
+ * with its annexes missing.
+ */
+const SUPPLIED_BY_THE_SCC_TEXT = new Set([
+  "DPA-006",
+  "DPA-007",
+  "DPA-008",
+  "DPA-009",
+  "DPA-010",
+  "DPA-011",
+  "DPA-012",
+  "DPA-013",
+  "DPA-014",
+  "DPA-015",
+  "DPA-016",
+  "DPA-017",
+  "DPA-018",
+  "DPA-020",
+  "DPA-021",
+  "DPA-022",
+  "DPA-024",
+  "DPA-025",
+  "DPA-028",
+  "DPA-029",
+  // The GDPR vocabulary comes WITH the adopted clauses: the Decision's text is
+  // where "personal data breach" is used as the defined term, and an executed
+  // set that does not restate Clause 8.6 does not restate the term either.
+  // Left live, this told a Module Two set drafted entirely in GDPR vocabulary
+  // that it uses none. The rule keeps its teeth where it earned them — the
+  // corpus fixture that writes "data breach" and disclaims the defined-term
+  // framework is a `dpa-controller-processor` document, not an adopted form.
+  "DPA-041",
+  "DPA-045",
+  "DPA-047",
+  "DPA-052",
+  "DPA-053",
+  "DPA-054",
+]);
+
 const CONFIG: RegulatedRuleConfig = {
   category: "dpa-gdpr",
   applies_to_playbooks: DPA_PLAYBOOKS,
@@ -36,6 +91,7 @@ const CONFIG: RegulatedRuleConfig = {
       source_url: "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
     };
   },
+  supplied_by_standard_form: SUPPLIED_BY_THE_SCC_TEXT,
 };
 
 const presence = (s: PresenceSpec): Rule => buildPresenceRule(s, CONFIG);
@@ -78,6 +134,13 @@ export const DPA_GDPR_RULES: Rule[] = [
       /subject[- ]matter\s+and\s+duration/i,
       /subject[- ]matter\b[^.\n]{0,80}?\bof\s+(?:the\s+)?processing\b/i,
       /subject[- ]matter\s*,\s*(?:and\s+)?duration\b/i,
+      // The SCC form's own heading for the same content. Annex I.B is headed
+      // "DESCRIPTION OF TRANSFER" and is where an executed SCC set states the
+      // subject matter, the duration, the nature and the purpose — the whole
+      // Article 28(3) introductory paragraph. It never uses the phrase
+      // "subject-matter of the processing", so all five patterns above missed
+      // a completed annex and this fired at CRITICAL on it.
+      /description\s+of\s+(?:the\s+)?transfer/i,
     ],
   }),
   presence({
@@ -99,6 +162,11 @@ export const DPA_GDPR_RULES: Rule[] = [
       /duration\s+of\s+(the\s+)?processing|processing\s+(shall|will)\s+continue\s+for/i,
       /duration\b[^.\n]{0,60}?\bof\s+(?:the\s+)?processing\b/i,
       /processing\s+(?:shall\s+|will\s+)?(?:continue|last)s?\s+for/i,
+      // Annex I.B states the duration as a RETENTION period, which is the
+      // wording the Decision's own template uses: "Period for which the
+      // personal data will be retained".
+      /period\s+for\s+which\s+the\s+personal\s+data\s+will\s+be\s+retained/i,
+      /retention\s+period\s+for\s+(?:the\s+)?personal\s+data/i,
     ],
   }),
   presence({
@@ -111,7 +179,13 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation: "Art. 28(3) requires the nature and purpose of the processing to be stated.",
     recommendation:
       "Add a 'Nature and Purpose of Processing' clause naming the services and processing operations.",
-    present_patterns: [/nature\s+and\s+purpose\s+of\s+(the\s+)?processing/i],
+    present_patterns: [
+      /nature\s+and\s+purpose\s+of\s+(the\s+)?processing/i,
+      // Annex I.B states the two SEPARATELY, under their own headings —
+      // "Nature of the processing" and "Purpose of the transfer and further
+      // processing" — and the single conjoined pattern read neither.
+      /nature\s+of\s+(?:the\s+)?processing\b/i,
+    ],
   }),
   presence({
     id: "DPA-004",
