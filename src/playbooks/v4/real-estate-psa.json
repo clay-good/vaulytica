@@ -1,6 +1,6 @@
 {
   "id": "real-estate-psa",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Real-Estate Purchase and Sale Agreement (PSA)",
   "description": "Real-property PSA under state real-property law and the Statute of Frauds. Selects the §6.E real-estate ruleset (RE-009..RE-017).",
   "match_features": {
@@ -12,7 +12,10 @@
       "due diligence period",
       "close of escrow",
       "closing statement",
-      "permitted exceptions"
+      "permitted exceptions",
+      "the purchase price",
+      "the property at",
+      "closing will occur"
     ],
     "negative_features": [
       "lead-based paint","stock purchase agreement", "asset purchase agreement"]

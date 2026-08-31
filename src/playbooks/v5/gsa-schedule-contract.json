@@ -1,6 +1,6 @@
 {
   "id": "gsa-schedule-contract",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "GSA Schedule / MAS Contract Terms",
   "description": "GSA Multiple Award Schedule contract terms, including Price Reductions and Trade Agreements Act compliance. Selects the COMM-163..167 ruleset (5 checks).",
   "match_features": {
@@ -16,7 +16,10 @@
       "basis of award customer",
       "trade agreements act",
       "commercial sales practices",
-      "industrial funding fee"
+      "industrial funding fee",
+      "general services administration",
+      "ordering agency",
+      "ordering agencies"
     ],
     "negative_features": [
       "employment agreement",

@@ -1,12 +1,23 @@
 {
   "id": "consulting-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Consulting Agreement",
   "description": "Hybrid independent-contractor + services agreement for a named consultant. Based on Common Paper PSA with consulting-specific overlays.",
   "match_features": {
     "title_keywords": ["consulting agreement", "consultancy agreement", "advisory agreement", "consultant services"],
     "required_clauses": [ "term", "ip-ownership"],
-    "distinguishing_phrases": ["the Consultant shall", "advisory services", "Consultant's services", "deliverables", "independent contractor", "the Consulting Services"],
+    "distinguishing_phrases": [
+      "the Consultant shall",
+      "advisory services",
+      "Consultant's services",
+      "deliverables",
+      "independent contractor",
+      "the Consulting Services",
+      "the consultant",
+      "consulting services",
+      "advise the company",
+      "consultant"
+    ],
     "negative_features": ["at-will employee", "FLSA exempt", "lease", "Premises", "Tenant", "Subscription Term", "the Discloser"]
   },
   "expected_clauses": [

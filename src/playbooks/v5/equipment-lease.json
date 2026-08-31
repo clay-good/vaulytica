@@ -1,6 +1,6 @@
 {
   "id": "equipment-lease",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Equipment Lease (UCC Article 2A)",
   "description": "Lease of goods under UCC Article 2A, including finance-lease and hell-or-high-water treatment. Selects the COMM-112..117 ruleset (6 checks).",
   "match_features": {
@@ -17,7 +17,10 @@
       "lessee's obligations are absolute",
       "equipment schedule",
       "quiet enjoyment",
-      "return of the equipment"
+      "return of the equipment",
+      "lessor",
+      "lessee",
+      "the equipment"
     ],
     "negative_features": ["lease of the premises", "square feet", "landlord shall deliver"]
   },

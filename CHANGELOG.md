@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.279.0] — 2026-08-31
+
+### Fixed
+- **Five more families reached nothing on their own bad document, including a
+  launch family.** A Software as a Service Agreement fell to
+  `generic-fallback`: `saas-customer` spells its title keyword
+  "software-as-a-service", with hyphens, and its six phrases are the hosted
+  service, the subscription term, the uptime and the service level — the terms
+  a good SaaS contract carries. `consulting-agreement`, `equipment-lease`,
+  `gsa-schedule-contract` and `real-estate-psa` failed the same way, and
+  `api-terms`, `medical-director-agreement` and `privacy-policy-lint` reached
+  their own at the threshold. All ten now route at 0.7 or better and are pinned
+  in `catalog-routing`, which now covers 23 bad documents across 23 families.
+
 ## [9.278.0] — 2026-08-31
 
 ### Fixed

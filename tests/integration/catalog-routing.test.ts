@@ -732,7 +732,81 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
-  it.each([...BAD_DOCUMENTS, ...THIN_MARGINS, ...BARE_INSTRUMENTS])(
+  /**
+   * Ten more, from a sweep of the technology, healthcare, government and real
+   * estate families. Five reached no family at all — including a SaaS
+   * agreement, whose family is one of the ten the product launched with — and
+   * three more reached their own at the threshold.
+   */
+  const BARE_COMMERCIAL: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      // The title keyword was written "software-as-a-service", with hyphens.
+      id: "saas-customer",
+      title: "SOFTWARE AS A SERVICE AGREEMENT",
+      body: [
+        'This Software as a Service Agreement is between Halcyon Analytics, Inc. ("Provider") and Rowan Credit Union ("Customer").',
+        "Provider will make the platform available to Customer for $8,000 per month, and may change it or suspend access at any time.",
+      ],
+    },
+    {
+      id: "consulting-agreement",
+      title: "CONSULTING AGREEMENT",
+      body: [
+        'This Consulting Agreement is between Halcyon Analytics, Inc. ("Company") and Devin Marchetti ("Consultant").',
+        "Consultant will advise the Company on data architecture for $250 per hour, and either party may end this Agreement at any time.",
+      ],
+    },
+    {
+      id: "equipment-lease",
+      title: "EQUIPMENT LEASE AGREEMENT",
+      body: [
+        'This Equipment Lease Agreement is between Kestrel Equipment Finance LLC ("Lessor") and Larkspur Construction Group, Inc. ("Lessee") for one excavator.',
+        "The lease term is thirty-six months at $4,200 per month, and Lessee is responsible for all maintenance, insurance and loss of the equipment.",
+      ],
+    },
+    {
+      id: "gsa-schedule-contract",
+      title: "GSA SCHEDULE CONTRACT",
+      body: [
+        "This contract is between the General Services Administration and Halcyon Analytics, Inc. under Multiple Award Schedule 54151S.",
+        "The contractor will provide information technology services to ordering agencies at its listed prices.",
+      ],
+    },
+    {
+      id: "real-estate-psa",
+      title: "REAL ESTATE PURCHASE AGREEMENT",
+      body: [
+        'This Real Estate Purchase Agreement is between Ashford Property Holdings LLC ("Seller") and Terrence Okonjo-Whitfield ("Buyer") for the property at 14 Colston Avenue, Columbus, Ohio.',
+        "The purchase price is $485,000 and closing will occur on August 15, 2026. Buyer takes the property as is.",
+      ],
+    },
+    {
+      id: "api-terms",
+      title: "API TERMS OF USE",
+      body: [
+        "These API Terms of Use govern your use of the Halcyon API.",
+        "We grant your application api access and may change or withdraw any endpoint at any time without notice.",
+      ],
+    },
+    {
+      id: "medical-director-agreement",
+      title: "MEDICAL DIRECTOR AGREEMENT",
+      body: [
+        'This Medical Director Agreement is between Rowan Regional Health System ("Hospital") and Dr. Priya Raghunathan ("Medical Director").',
+        "Dr. Raghunathan will direct the clinical services of the audiology service and the Hospital will pay her $9,000 per month.",
+      ],
+    },
+    {
+      id: "privacy-policy-lint",
+      title: "PRIVACY POLICY",
+      body: [
+        "This Privacy Policy explains how Wrenfield Audio Labs, Inc. handles information about you.",
+        "We collect your name, email and device identifiers, and we share information with our advertising partners.",
+      ],
+    },
+  ];
+
+  it.each([...BAD_DOCUMENTS, ...THIN_MARGINS, ...BARE_INSTRUMENTS, ...BARE_COMMERCIAL])(
     "a bad document still reaches $id",
     ({ id, title, body }) => {
     const doc: [string, ...string[]] = ["", title, ...body];

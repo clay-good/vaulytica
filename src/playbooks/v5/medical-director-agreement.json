@@ -1,6 +1,6 @@
 {
   "id": "medical-director-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Medical Director Agreement",
   "description": "Medical directorship contract, the classic Stark/Anti-Kickback exposure, reviewed for the personal-services-arrangement conditions. Selects the HC-108..113 ruleset (6 checks).",
   "match_features": {
@@ -17,7 +17,10 @@
       "aggregate services",
       "anti-kickback",
       "commercially reasonable",
-      "one year term"
+      "one year term",
+      "the hospital",
+      "clinical services",
+      "directorship"
     ],
     "negative_features": ["lease of the premises", "merger"]
   },
