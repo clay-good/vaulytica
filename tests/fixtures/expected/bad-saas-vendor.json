@@ -979,7 +979,7 @@
       "title": "Data retention period unspecified"
     },
     {
-      "description": "Indemnity sentence counts by party: vendor co=2, customer inc=0, vince vendor=0, caryn customer=0.",
+      "description": "Indemnity sentence counts by party: vendor co=2, customer inc=0.",
       "document_position": 601,
       "excerpt": {
         "end_offset": 756,
@@ -1241,11 +1241,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "384ee86d18cca134805a1fb33dd1fe4ac32e67e082cacca7b309bec800026521",
+  "result_hash": "159fc926dd2d91723cd42b35361ab1480a8cb719f7886b85e82e73f6c5165279",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.262.0"
+  "version": "9.263.0"
 }

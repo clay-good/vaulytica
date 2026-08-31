@@ -612,3 +612,65 @@ describe("a role parenthetical introduced by an article still names the party", 
     expect(got).not.toContain("SOW");
   });
 });
+
+describe("the canonical capitalization of a legal-name suffix", () => {
+  // `PARTY_DECL` is case-SENSITIVE by design — the `i` flag would let the
+  // capitalized name run slurp lowercase connectives — so every entity type
+  // has to be listed in the case it is actually written in. The LLC family
+  // was; "Inc.", "Corp.", "Ltd." were not, and "Corp." in any case was never
+  // in the list at all. A short-form agreement that names its parties the way
+  // American agreements do — 'Vertex Systems, Inc. ("Vendor")', with no
+  // "a Delaware corporation" appositive to fall back on — was read as having
+  // no parties, and the roles it declares in the same breath went with them.
+  const roles = (t: string) =>
+    extractParties(buildTree(["AGREEMENT", t]))
+      .map((p) => `${p.name}|${p.role ?? ""}`)
+      .sort();
+
+  it("reads Inc., Corp. and Ltd. with no descriptive appositive", () => {
+    for (const suffix of ["Inc.", "Corp.", "Ltd."]) {
+      expect(
+        roles(
+          `This Agreement is entered into by Vertex Systems, ${suffix} ("Vendor") and Northwind Labs, ${suffix} ("Customer").`,
+        ),
+      ).toEqual(["Northwind Labs|Customer", "Vertex Systems|Vendor"]);
+    }
+  });
+
+  it("reads the partnership and foreign abbreviations", () => {
+    expect(
+      roles('This Agreement is entered into by Vertex Holdings, L.P. ("General Partner").'),
+    ).toEqual(["Vertex Holdings|General Partner"]);
+    expect(roles('This Agreement is entered into by Vertex Systeme GmbH ("Vendor").')).toEqual([
+      "Vertex Systeme|Vendor",
+    ]);
+  });
+
+  it("reads a cover block's capitalized entity descriptor", () => {
+    // A policy or a plan states its subject as a two-line cover block, and
+    // `ingestPaste` joins those lines with a space: "Pemberton Ridge Land
+    // Conservancy A Colorado nonprofit corporation Adopted by the Board …".
+    // The article is capitalized there, and it is neither part of the name nor
+    // a reason to give up on the descriptor behind it.
+    expect(
+      extractParties(
+        buildTree([
+          "CONFLICT OF INTEREST POLICY",
+          "Pemberton Ridge Land Conservancy A Colorado nonprofit corporation Adopted by the Board of Directors on February 5, 2026",
+        ]),
+      ).map((p) => `${p.name}|${p.jurisdiction_of_formation ?? ""}`),
+    ).toEqual(["Pemberton Ridge Land Conservancy|Colorado"]);
+  });
+
+  it("does not read a DEFINED TERM as a legal-name suffix", () => {
+    // "the Corporation" / "the Company" / "the Limited Partnership" are what
+    // bylaws and operating agreements call the entity in every section. Set
+    // sentence-initially that is an article followed by an entity type, and
+    // the title-case long forms would manufacture a party named "The".
+    expect(
+      roles("The Company shall pay the Contractor. The Partnership shall not be liable."),
+    ).toEqual([]);
+    expect(roles("The Limited Partnership shall maintain books and records.")).toEqual([]);
+    expect(roles("Each Parent Company shall cause its subsidiaries to comply.")).toEqual([]);
+  });
+});

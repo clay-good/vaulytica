@@ -330,7 +330,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "OBLI-002-s1-0",
+      "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
       "rule_version": "1.5.0"
@@ -1089,6 +1090,23 @@
       "title": "Governing law differs from venue jurisdiction"
     },
     {
+      "description": "Only customer bears this typically-mutual obligation.",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s1",
+        "start_offset": 0,
+        "text": "indemnification obligation"
+      },
+      "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
+      "id": "OBLI-002-s1-0",
+      "rule_id": "OBLI-002",
+      "rule_version": "1.5.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Asymmetric indemnification obligation"
+    },
+    {
       "description": "One party retains sole discretion over a stated determination.",
       "document_position": 900,
       "excerpt": {
@@ -1153,11 +1171,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Master Agreement\".",
-  "result_hash": "93af75bfa46b34d929d92de3d4eb383ed1fae11b8d1ef5180bd4b44d81d6b0b4",
+  "result_hash": "43ca692ef428b3fef583d4146d52ebc694062c988b4ef96468d184d2f8dda3cd",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",
     "size_bytes": 9221
   },
-  "version": "9.262.0"
+  "version": "9.263.0"
 }

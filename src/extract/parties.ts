@@ -47,6 +47,45 @@ const ENTITY_TYPES = [
   "gmbh",
   "ag",
   "plc",
+  // The rest of the canonical capitalizations — the ones an American legal
+  // name is actually written with. The LLC family was added when a party
+  // named "Harbor Point Ventures LLC" turned out to be invisible here, but
+  // the far commoner suffixes were left in their lower-case-only form, so
+  // 'Vertex Systems, Inc. ("Vendor")' was invisible in exactly the same way:
+  // `inc\.?` never matched "Inc." at all, this pattern being case-SENSITIVE
+  // by design. The party and — worse — the role it declares in the same
+  // breath were both lost, and a party with no role is invisible to every
+  // rule that compares an obligor against the party set. The only reason it
+  // ever appeared to work is the descriptive appositive: "…, Inc., a Delaware
+  // CORPORATION" matched on the lower-case long form. Drop the appositive, as
+  // a short-form agreement does, and the document reported no parties.
+  // "Corp." was missing in BOTH cases — the list has never held any form of
+  // it, only the spelled-out "corporation".
+  // ONLY the abbreviations are added in title case. The title-case LONG forms
+  // are not legal-name suffixes so much as DEFINED TERMS and STATUTE NAMES:
+  // bylaws say "the Corporation" in every section and an operating agreement
+  // says "the Company", which sentence-initially reads as the name "The"
+  // followed by an entity type (the probe duly manufactured parties named
+  // "The" and "Each Parent"); and "the Delaware LIMITED LIABILITY COMPANY Act,
+  // 6 Del. C. § 18-101" — the citation every Delaware operating agreement
+  // carries in its formation section — manufactured a party named "Delaware",
+  // which then stood beside the real member and made RISK-002 read the
+  // indemnity as one-sided. The abbreviations carry no such double life.
+  // Written WITHOUT the abbreviation period, unlike their lower-case twins.
+  // The period after "Inc" is also a sentence period, and consuming it here
+  // blinds the role gap's abbreviation guard — the one that refuses to cross
+  // "…and Beta Corp. The Services are described in Exhibit A (\"Services\")"
+  // and hand Beta the role "Services". Leaving the period in the text lets
+  // that guard read it: a period followed by a capital ends the clause, a
+  // period followed by anything else is an abbreviation and is stepped over.
+  "Inc",
+  "Corp",
+  "corp",
+  "Ltd",
+  "L\\.P\\.",
+  "LP",
+  "GmbH",
+  "PLC",
 ];
 
 const US_STATE =
@@ -96,7 +135,24 @@ const PARTY_DECL = new RegExp(
   // adjective ("Stark Cloud Ireland Ltd., an IRISH private limited company"
   // registered a party named "Irish"), and without the ampersand the run broke
   // at the "&" ("Vessel & Roark Architects LLP" registered twice, once as
-  // "Roark Architects LLP").
+  // "Roark Architects LLP"). The article guard is written in BOTH cases and on
+  // BOTH sides of the name's first character: a cover block sets the entity
+  // descriptor on its own line — "Alderbrook Instruments, Inc." over "A
+  // Delaware corporation" — where the article is capitalized and is itself the
+  // first thing the name run can anchor on, so a lower-case-only look-BEHIND
+  // let the whole descriptor through and registered a party named "A
+  // Delaware". No legal name opens with an indefinite article — nor CONTAINS
+  // one as a whole token, which is the same guard one token to the right:
+  // `ingestPaste` joins a block's lines with SPACES, so that cover block
+  // arrives as "Alderbrook Instruments, Inc. A Delaware corporation Adopted by
+  // the Board …" and the name run walked from the legal name straight through
+  // the article into the descriptor. The article SEPARATING the name from its
+  // descriptor is matched in both cases for the same reason — on its own line
+  // the descriptor is capitalized, and reading "Pemberton Ridge Land
+  // Conservancy / A Colorado nonprofit corporation" as a party is the whole
+  // point of the pattern. A capitalized article only ever precedes a real
+  // entity descriptor here, because the state, the qualifiers and the type
+  // that follow it are all closed vocabularies.
   // The entity-type group needs a non-letter boundary on BOTH sides. Without a
   // trailing one the short types match the START of ordinary words — `inc` in
   // "including", `ag` in "agreement". Without a leading one they match the END
@@ -105,7 +161,7 @@ const PARTY_DECL = new RegExp(
   // name is manufactured, and it is not harmless — rules that compare a phrase
   // against the party set (STRUCT-006) treat it as real and party-tallying
   // rules (RISK-002) report counts against it.
-  String.raw`(?<!\b(?:a|an)\s)([A-Z][\w&.,'’-]{0,80}(?:(?<!${ENTITY_SUFFIX_BEFORE_COMMA})\s+(?:&\s+)?[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:a|an)?\s*(?:(${US_STATE})\s+)?(?:${ENTITY_QUALIFIERS}\s+){0,3}(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])` +
+  String.raw`(?<!\b(?:[Aa]|[Aa][Nn])\s)(?![Aa]n?\s)([A-Z][\w&.,'’-]{0,80}(?:(?<!${ENTITY_SUFFIX_BEFORE_COMMA})\s+(?:&\s+)?(?![Aa]n?\s)[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:[Aa]n?)?\s*(?:(${US_STATE})\s+)?(?:${ENTITY_QUALIFIERS}\s+){0,3}(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])` +
     // A QUALIFIER may sit between the entity type and the role parenthetical:
     // "Sonoran Crest Management, Inc., an Arizona corporation HOLDING ARIZONA
     // REAL ESTATE BROKER LICENSE NUMBER BR-558214 (\"Manager\")". Requiring the
@@ -955,9 +1011,18 @@ function cleanPartyName(raw: string): string {
   return n;
 }
 
+/**
+ * A bare DETERMINER is never a party name. The multi-word entity types
+ * ("Limited Partnership") can be written sentence-initially about the entity
+ * rather than to name it — "The Limited Partnership shall maintain books" —
+ * and the name run then captures the article alone.
+ */
+const DETERMINER_ONLY = /^(?:the|a|an|this|that|each|any|all|such|its|our|their|no)$/i;
+
 function isBoilerplateName(name: string): boolean {
   const lower = name.toLowerCase();
   return (
+    DETERMINER_ONLY.test(lower) ||
     lower === "agreement" ||
     lower === "parties" ||
     lower === "preamble" ||

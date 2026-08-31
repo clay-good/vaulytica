@@ -1143,9 +1143,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // after "is", so it saw neither: the exhibit was reported as having no
   // governing law, no venue, no IP allocation, no indemnity, no liability cap
   // and no termination clause. All six live in the agreement it is attached to.
+  // OBLI-002 joined this row in 9.263.0, when the party extractor learned to
+  // read a legal name written the way this document writes it — "Beacon Ledger Systems, Inc. ("Vendor")" with no
+  // "a Delaware corporation" appositive behind it. OBLI-002 needs TWO parties
+  // before it will compare sides, so until the second one was visible the
+  // check was silently inert on this document.
+  // The finding is right: every confidentiality duty in the exhibit runs to
+  // Vendor, which is the shape a security exhibit is normally drafted in and
+  // exactly the "intentional but worth confirming" case the rule reports at
+  // `info`.
   "security-addendum.txt": {
     playbook: "vendor-security-addendum",
-    findings: ["IPDATA-004", "OBLI-005", "TERM-007"],
+    findings: ["IPDATA-004", "OBLI-002", "OBLI-005", "TERM-007"],
   },
   // A general assignment and assumption of a transportation services contract.
   // It routed to `lease-assignment` at 0.9 and drew a `critical` about a
@@ -1155,9 +1164,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // other family's own name. MNA-108 then demanded a SCHEDULE of assigned
   // contracts, at `critical`, from a document that names the one contract it
   // assigns: the pattern read only the plural.
+  // STRUCT-017 joined this row in 9.263.0 for the same reason OBLI-002 joined
+  // the rows below it: 'Vantage Grocery Distribution, Inc. ("Counterparty")'
+  // became visible to the party extractor. The document declares three parties
+  // with roles and gives signature lines to two of them — the Counterparty's
+  // consent is a separate instrument, attached (or here, not attached) as
+  // Exhibit A, which STRUCT-018 reports on the next line.
   "assignment-assumption.txt": {
     playbook: "assignment-and-assumption-agreement",
-    findings: ["STRUCT-018", "OBLI-005", "RISK-011"],
+    findings: ["STRUCT-017", "STRUCT-018", "OBLI-005", "RISK-011"],
   },
   // An AI addendum to a master services agreement. Three false positives, all
   // vocabulary: "Vendor shall not PERMIT any subprocessor ... to use Customer
@@ -1170,9 +1185,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // hosting (ADDENDA-012), states no deletion of fine-tuning data on
   // termination (ADDENDA-016), and adds an indemnity whose cap it leaves to
   // the parent Agreement (RISK-015).
+  // OBLI-002 joined this row in 9.263.0, when the party extractor learned to
+  // read a legal name written the way this document writes it — "Sablefield Software, Inc. ("Vendor")" with no
+  // "a Delaware corporation" appositive behind it. OBLI-002 needs TWO parties
+  // before it will compare sides, so until the second one was visible the
+  // check was silently inert on this document.
+  // Section 8 gives Customer a Vendor IP indemnity and Customer none in
+  // return, so the asymmetry it reports is on the page.
   "ai-addendum.txt": {
     playbook: "ai-addendum",
-    findings: ["ADDENDA-012", "ADDENDA-016", "RISK-015", "OBLI-005", "STRUCT-009"],
+    findings: ["ADDENDA-012", "ADDENDA-016", "OBLI-002", "RISK-015", "OBLI-005", "STRUCT-009"],
   },
   // A NON-BINDING lease letter of intent, countersigned. The family shipped
   // with an empty rule profile while its M&A sibling `loi-term-sheet` already
@@ -2221,9 +2243,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // letter, amendment, SOW, guaranty, and SNDA cites its parent. And MNA-128
   // wanted "only BY a writing" from a letter that says "amended only IN a
   // writing signed by the Company and Kestrel".
+  // OBLI-002 joined this row in 9.263.0, when the party extractor learned to
+  // read a legal name written the way this document writes it — "Thalassa Marine Robotics, Inc. (the "Company")" with no
+  // "a Delaware corporation" appositive behind it. OBLI-002 needs TWO parties
+  // before it will compare sides, so until the second one was visible the
+  // check was silently inert on this document.
+  // Section 6 binds Kestrel alone to keep what it learns confidential; the
+  // Company undertakes nothing in return.
   "side-letter.txt": {
     playbook: "side-letter",
-    findings: ["FIN-007", "OBLI-005", "OBLI-008"],
+    findings: ["FIN-007", "OBLI-002", "OBLI-005", "OBLI-008"],
   },
 
   // A UCC § 9-104(a)(2) deposit account control agreement. RISK-005 reported

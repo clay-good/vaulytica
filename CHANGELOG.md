@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.263.0] — 2026-08-31
+
+### Fixed
+- **A party named the way American contracts name one was invisible.**
+  `PARTY_DECL` — the pattern that reads `X, a Delaware corporation ("Provider")`
+  and is the only path that captures a party's ROLE alongside its name — is
+  case-sensitive by design, and every entity type in its list was written in
+  lower case. Only the period-free abbreviations (`LLC`, `LLP`) had ever been
+  added in their canonical capitalization, so `Vertex Systems, Inc. ("Vendor")`
+  matched nothing at all, and `Corp.` was not in the list in any case. A
+  short-form agreement — one that names its parties without the "a Delaware
+  corporation" appositive to fall back on — reported no parties, and a party
+  with no role is invisible to every rule that compares an obligor against the
+  party set. This was filed rather than forced last release because the
+  abbreviation period bled the role into the next sentence; the fix is to add
+  the abbreviations WITHOUT it (`Inc`, not `Inc\.?`), which leaves the period in
+  the text for the role gap's existing sentence guard to read.
+- **"A Delaware corporation" was read as a party named "A Delaware".** The
+  guard that stops a name from starting at the indefinite article matched only
+  the lower-case article, and a cover block sets the entity descriptor on its
+  own line, capitalized. `ingestPaste` joins those lines with a space, so
+  "Alderbrook Instruments, Inc. A Delaware corporation Adopted by the Board …"
+  arrived as one paragraph and the name run walked from the legal name straight
+  through the article into the descriptor. The article is now matched in both
+  cases, both before the name and between its tokens — and, where it separates
+  the name from a real entity descriptor, read as the separator it is, so a
+  policy's cover block now yields its subject and its state of formation.
+
+### Changed
+- Three specimens and two demo contracts gained an `info` OBLI-002, and one
+  specimen a `STRUCT-017`, because the second party of each finally became
+  visible: OBLI-002 compares sides and does nothing at all until it has two.
+  Each is on the page — a Vendor-only IP indemnity in the AI addendum, a
+  Vendor-only confidentiality duty in the security exhibit, a Kestrel-only one
+  in the side letter, a Customer-only indemnity in the bad-MSA demo, and an
+  assignment that declares a Counterparty and gives it no signature line.
+- RISK-002 stopped listing signatories among its party tallies on the
+  bad-SaaS-vendor demo. It has always dropped party entries carrying neither a
+  role nor an entity type, but only once at least two entries survive the
+  filter — and until the second party carried either, none did.
+
 ## [9.262.0] — 2026-08-30
 
 ### Added
