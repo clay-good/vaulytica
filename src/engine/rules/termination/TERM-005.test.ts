@@ -405,3 +405,63 @@ describe("TERM-005 — the effect of termination stated as a when-clause", () =>
     ).not.toBeNull();
   });
 });
+
+/**
+ * An explicit consequence connector (v1.20.0).
+ *
+ * "Either party may terminate the Tolling Period on thirty (30) days' written
+ * notice to the other, after which the limitations period resumes running" is
+ * the plainest effect-of-termination sentence a tolling agreement can write,
+ * and every branch missed it. The object is a defined term rather than "this
+ * Agreement", and "after which" is not a termination TRIGGER — a trigger has
+ * to lead with "after TERMINATION". A correct tolling agreement was told it
+ * does not state what happens on termination, in the paragraph where it does.
+ */
+describe("TERM-005 — 'after which' states the consequence", () => {
+  const doc = (...paras: string[]) => buildContext(["Agreement", ...paras]);
+
+  it.each([
+    [
+      "a suspended period that resumes",
+      "Either party may terminate the Tolling Period on thirty (30) days' written notice to the other, after which the limitations period resumes running.",
+    ],
+    [
+      "whereupon",
+      "Customer may terminate the Order Form for convenience, whereupon Vendor shall delete all Customer Data within thirty days.",
+    ],
+    [
+      "at which point",
+      "The Company may terminate the Escrow at any time, at which point the Escrow Amount reverts to the Depositor.",
+    ],
+  ])("is silent on %s", (_label, text) => {
+    expect(TERM_005.check(doc(text))).toBeNull();
+  });
+
+  // The branch is load-bearing, not incidental: the same sentences with the
+  // connector and its consequence removed are exactly what the rule reports.
+  it.each([
+    [
+      "a bare right to terminate",
+      "Either party may terminate the Tolling Period on thirty (30) days' written notice to the other.",
+    ],
+    [
+      "a termination right with no stated consequence",
+      "Customer may terminate the Order Form for convenience at any time during the Term.",
+    ],
+  ])("still fires on %s", (_label, text) => {
+    expect(TERM_005.check(doc(text))).not.toBeNull();
+  });
+
+  it("does not stitch a connector to an unrelated later clause", () => {
+    // "after which" here introduces a renewal, not a wind-down, and the
+    // consequence words that follow belong to a different sentence.
+    expect(
+      TERM_005.check(
+        doc(
+          "This Agreement may be terminated for cause. The initial term runs twelve months, after which it renews annually.",
+          "Vendor returns equipment to its own warehouse each quarter.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

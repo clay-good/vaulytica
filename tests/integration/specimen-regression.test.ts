@@ -2738,6 +2738,45 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "RISK-010", "RISK-011"],
   },
 
+  // A SECOND tolling agreement, written after `bare-title-reach` opened forty
+  // families to their own name. Two defects the first specimen did not carry:
+  //
+  //   - RISK-001 asked a tolling agreement for an indemnity. The document
+  //     allocates no risk at all — it suspends a limitations period and says
+  //     so — and `tolling-agreement` had no `rule_overrides` entry for it.
+  //   - TERM-005 reported no effect-of-termination clause on "Either party
+  //     may terminate the Tolling Period on thirty (30) days' written notice
+  //     to the other, AFTER WHICH the limitations period resumes running."
+  //     The object is a defined term rather than "this Agreement", and "after
+  //     which" is not a termination trigger, so every branch missed it.
+  //
+  // OBLI-005 is correct: § 1 is a negative covenant, and it is the operative
+  // provision of the document.
+  "tolling-agreement-standstill.txt": {
+    playbook: "tolling-agreement",
+    findings: ["OBLI-005"],
+  },
+
+  // A litigation hold notice to three departments, with the preservation
+  // scope, the suspension of auto-deletion, and a tracked acknowledgment.
+  // Nothing was wrong: it routes to its own family at full confidence and the
+  // one substantive finding — no privilege reminder — is a fair reading of a
+  // notice that tells recipients what to keep and not what not to discuss.
+  // It is here because `litigation-hold` was on the bare-title worklist, and
+  // a family that could not be reached by its own name had never been shown
+  // a document that opens with it.
+  //
+  // It did find one thing. `litigation-hold` listed "demand letter" as a
+  // NEGATIVE feature, and a hold notice routinely says why the hold exists —
+  // "Hallowell has received a demand letter from counsel for Vestry Partners
+  // LP" — so the family docked itself 0.1 for the sentence that states its own
+  // trigger. `self-penalizing-features` caught it the moment the specimen
+  // landed.
+  "litigation-hold-notice.txt": {
+    playbook: "litigation-hold",
+    findings: ["SET-030", "OBLI-005"],
+  },
+
   // A tolling agreement suspending a limitations period pending settlement
   // talks. TERM-005 reported no effect-of-termination clause on "On
   // termination, the Tolling Period ENDS and any applicable limitations period

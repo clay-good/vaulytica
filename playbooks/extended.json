@@ -11125,7 +11125,6 @@
       "negative_features": [
         "settlement payment",
         "release of all claims",
-        "demand letter",
         "cease and desist"
       ]
     },
@@ -19642,6 +19641,9 @@
         "skip": true
       },
       "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
         "skip": true
       },
       "RISK-005": {

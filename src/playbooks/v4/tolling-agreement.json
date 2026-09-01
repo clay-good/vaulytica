@@ -36,6 +36,9 @@
     "IPDATA-001": {
       "skip": true
     },
+    "RISK-001": {
+      "skip": true
+    },
     "RISK-005": {
       "skip": true
     },

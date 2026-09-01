@@ -128,6 +128,20 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // bare "terminate this Agreement for convenience" with no consequence
     // word still fails this branch and correctly reports none.
     String.raw`|\bterminat(?:es?|ed|ing)\s+(?:this\s+|the\s+)(?:Agreement|Lease|Contract|SOW|Note|Order)\b${SAME_SENTENCE}{0,120}?\b(?:${CONSEQUENCE})\w*` +
+    // An explicit consequence CONNECTOR, which names the effect without naming
+    // the agreement. "Either party may terminate the Tolling Period on thirty
+    // days' written notice, AFTER WHICH the limitations period resumes
+    // running" is the plainest effect-of-termination sentence a tolling
+    // agreement can write, and every branch above missed it: the object is a
+    // defined term rather than "this Agreement", and "after which" is not a
+    // termination TRIGGER, which has to lead with "after TERMINATION".
+    //
+    // "after which" / "whereupon" / "at which point" following a termination
+    // verb states a consequence by construction — that is what the words do —
+    // so this branch needs no agreement-object restriction. The consequence
+    // list is the same one the trigger branches use, plus the intransitive
+    // verbs a suspended right takes when it comes back.
+    String.raw`|\bterminat(?:e|es|ed|ing|ion)\b${SAME_SENTENCE}{0,160}?\b(?:after\s+which|whereupon|at\s+which\s+(?:point|time))\b${SAME_SENTENCE}{0,120}?\b(?:${CONSEQUENCE}|ends?|ended|resumes?|resumed|expires?|lapses?|reverts?)\w*` +
     // A survival clause is the paradigmatic effect-of-termination statement —
     // "Sections 3 through 7 shall survive termination of this Agreement." It
     // takes termination as a bare object of "survive", not "UPON termination",
@@ -198,7 +212,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.19.0",
+  version: "1.20.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

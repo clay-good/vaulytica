@@ -1,0 +1,33 @@
+TOLLING AGREEMENT
+
+This Tolling Agreement is entered into as of March 2, 2026 between Kestrel Analytics, Inc., a Delaware corporation ("Kestrel"), and Bramble Foods LLC, a Michigan limited liability company ("Bramble").
+
+RECITALS
+
+Kestrel has asserted that Bramble breached the Data Services Agreement between them dated May 8, 2022 by disclosing Kestrel's benchmarking outputs to a third party. Bramble denies the assertion. The parties wish to explore resolution without the expense of litigation, and without either of them losing the benefit of any limitations period.
+
+1. Tolling Period. The period from March 2, 2026 through September 2, 2026 (the "Tolling Period") shall not be counted in computing any statute of limitations, statute of repose, laches, or other time-based defense applicable to the Claims. The Tolling Period may be extended only by a writing signed by both parties.
+
+2. Claims Covered. "Claims" means all claims, counterclaims, and defenses arising out of or relating to the Data Services Agreement and the alleged disclosure, whether now known or later discovered.
+
+3. Preservation of Defenses. Except for the running of time during the Tolling Period, nothing in this Agreement waives, revives, or enlarges any claim or defense. Any claim already time-barred on March 2, 2026 remains time-barred. Nothing here revives a claim that has already expired.
+
+4. No Admission. Neither the execution of this Agreement nor anything said in the discussions it facilitates is an admission of liability, and none of it is admissible for any purpose other than enforcing this Agreement.
+
+5. Termination. Either party may terminate the Tolling Period on thirty (30) days' written notice to the other, after which the limitations period resumes running.
+
+6. Governing Law. This Agreement is governed by the laws of the State of Michigan, without regard to its conflict of laws rules.
+
+7. Entire Agreement. This Agreement is the entire agreement between the parties on tolling and supersedes any prior understanding on the subject. It may be amended only in a writing signed by both parties.
+
+IN WITNESS WHEREOF, the parties have executed this Tolling Agreement as of the date first written above.
+
+KESTREL ANALYTICS, INC.
+By: /s/ Amara Devine
+Name: Amara Devine
+Title: General Counsel
+
+BRAMBLE FOODS LLC
+By: /s/ Peter Lindqvist
+Name: Peter Lindqvist
+Title: Managing Member

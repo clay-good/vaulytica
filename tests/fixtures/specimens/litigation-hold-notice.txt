@@ -1,0 +1,20 @@
+LITIGATION HOLD NOTICE
+
+TO: All employees of the Finance, Sales Operations, and Customer Success departments
+FROM: Office of the General Counsel, Hallowell Instruments, Inc.
+DATE: February 11, 2026
+RE: Preservation of documents relating to Vestry Partners LP
+
+This is a legal hold notice. Please read it carefully and follow it until you are told in writing that it has been lifted.
+
+1. Why you are receiving this. Hallowell has received a demand letter from counsel for Vestry Partners LP concerning our 2024 and 2025 rebate calculations. Litigation is reasonably anticipated. That triggers a legal duty to preserve relevant information.
+
+2. What you must preserve. Preserve all documents and electronically stored information relating to Vestry Partners LP, rebate calculations, volume tiers, or the Vestry account, created at any time from January 1, 2023 to the present. This includes email, Slack messages, text messages on personal or company devices, spreadsheets, drafts, notes, voicemails, calendar entries, and documents stored in Drive, Box, or on local disks.
+
+3. What you must not do. Do not delete, overwrite, alter, or move any such material. Do not empty deleted-items folders. If you have set any automatic deletion or retention rule that would reach this material, stop it now and tell the General Counsel.
+
+4. Automatic deletion is suspended. IT has suspended the 90-day email auto-deletion policy and the Slack 12-month message retention policy for every recipient of this notice. Do not attempt to work around the suspension.
+
+5. Questions and acknowledgment. Direct questions to Priya Raghunathan, Associate General Counsel, at legal@hallowell.example. Acknowledge receipt using the link in the covering email within five business days. Your acknowledgment is tracked.
+
+6. This notice remains in effect until the Office of the General Counsel releases it in writing. Failure to comply may result in sanctions against the company and in discipline up to termination.
