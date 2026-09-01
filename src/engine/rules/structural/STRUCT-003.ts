@@ -99,14 +99,6 @@ function isPersonalName(s: string): boolean {
 }
 
 /**
- * True if a paragraph is a bare-name signature line: an underscore rule
- * followed by the printed name of a known signatory party ("____ Alexandra
- * Reyes"), a clean personal name even if not an extracted party
- * ("____ Gregory Halstead"), or a standalone "Notary Public" / "Witness" line.
- * Requiring an extracted party, a clean personal name, or an explicit role
- * keeps a genuine "____ [Insert Name]" placeholder from counting as a signature.
- */
-/**
  * The words a signature CAPTION is built from, and the nouns that make one a
  * signature caption rather than a column header.
  *
@@ -175,6 +167,14 @@ function isSignatureCaption(segment: string): boolean {
   return words.some((w) => CAPTION_NOUNS.has(w));
 }
 
+/**
+ * True if a paragraph is a bare-name signature line: an underscore rule
+ * followed by the printed name of a known signatory party ("____ Alexandra
+ * Reyes"), a clean personal name even if not an extracted party
+ * ("____ Gregory Halstead"), or a standalone "Notary Public" / "Witness" line.
+ * Requiring an extracted party, a clean personal name, or an explicit role
+ * keeps a genuine "____ [Insert Name]" placeholder from counting as a signature.
+ */
 function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
   if (STANDALONE_SIGNATORY_ROLE.test(text)) return true;
   if (!/_{6,}/.test(text)) return false;

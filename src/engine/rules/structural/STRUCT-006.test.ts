@@ -56,3 +56,39 @@ describe("STRUCT-006 — incorporation by reference (v1.2.0)", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A person the document names by their relationship to the declarant.
+ *
+ * A will, trust, power of attorney, or guardianship designation names the
+ * people it benefits and appoints, and none of them is a PARTY — the only
+ * party is the declarant — so the party-name subtraction could not reach them.
+ * A well-drafted will was told that "Thomas Aurelio Harper" and "Nadia Harper
+ * Okonkwo" are Title-Case terms it forgot to define.
+ */
+describe("STRUCT-006 — a named person is not an undefined term (v1.4.0)", () => {
+  const WILL = (appositive: boolean) => {
+    const husband = appositive ? "my husband, Thomas Aurelio Harper," : "Thomas Aurelio Harper";
+    const daughter = appositive ? "my daughter, Nadia Harper Okonkwo," : "Nadia Harper Okonkwo";
+    return buildContext([
+      "Last Will and Testament of Eleanor Marguerite Harper",
+      "I, Eleanor Marguerite Harper, of Columbus, Ohio, being of sound mind, declare this to be my Last Will and Testament.",
+      `I give my residuary estate to ${husband} if he survives me by thirty days.`,
+      `I appoint ${daughter} as successor Executor of this Will.`,
+      "If Thomas Aurelio Harper does not survive me, my estate passes to Nadia Harper Okonkwo in equal shares.",
+      "Thomas Aurelio Harper shall serve without bond, and Nadia Harper Okonkwo shall serve without bond.",
+    ]);
+  };
+
+  it("is silent on the executor and the beneficiary a will appoints", () => {
+    expect(STRUCT_006.check(WILL(true))).toBeNull();
+  });
+
+  // The suppression is load-bearing, not incidental: the identical will with
+  // the relationship appositives removed is exactly what the rule reports.
+  it("still reports the same names where nothing says they are people", () => {
+    const found = STRUCT_006.check(WILL(false));
+    expect(found?.description).toContain("Thomas Aurelio Harper");
+    expect(found?.description).toContain("Nadia Harper Okonkwo");
+  });
+});

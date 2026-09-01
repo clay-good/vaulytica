@@ -29,9 +29,32 @@ function documentText(ctx: RuleContext): string {
   return parts.join(" ");
 }
 
+/**
+ * A person the document introduces by their relationship to the declarant.
+ *
+ * "I appoint my husband, Thomas Aurelio Harper, as Executor"; "I give my
+ * grandmother's pearl brooch to my daughter, Nadia Harper Okonkwo". A will,
+ * trust, power of attorney, or guardianship designation names the people it
+ * benefits and appoints, and none of them is a PARTY — the only party is the
+ * declarant — so the party-name subtraction below could not reach them, and a
+ * well-drafted will was told that its executor and its residuary beneficiary
+ * are Title-Case terms it forgot to define. A person's name is never a defined
+ * term, and the appositive is how the document says it is a person.
+ *
+ * Anchored on the relationship word immediately before the name, so an
+ * ordinary defined term introduced in the same shape ("the Purchase Price")
+ * is untouched: nothing calls a defined term "my daughter".
+ */
+const PERSONAL_APPOSITIVE = String.raw`(?:my|our|his|her|their|the)\s+(?:late\s+)?(?:husband|wife|spouse|son|daughter|child|children|stepson|stepdaughter|mother|father|parent|brother|sister|sibling|grandson|granddaughter|grandchild|niece|nephew|aunt|uncle|cousin|partner|friend|executor|executrix|administrator|trustee|co-trustee|successor\s+trustee|guardian|conservator|attorney-in-fact|agent|personal\s+representative|beneficiary)\s*,\s*`;
+
+function isNamedPerson(documentBody: string, term: string): boolean {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`${PERSONAL_APPOSITIVE}${escaped}\\b`, "i").test(documentBody);
+}
+
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -78,12 +101,16 @@ export const rule: Rule = {
     // party, colloquially shortened — "Halewood Media" for the party
     // "Halewood Media LLC" (TITLE_CASE_PHRASE cannot include the all-caps
     // suffix) — never an undefined term.
+    const body = documentText(ctx);
     const candidates = ctx.extracted.definitions.undefined_capitalized.filter((e) => {
       const lower = e.term.toLowerCase();
       if (partyNames.has(lower)) return false;
       for (const name of partyNames) {
         if (name.startsWith(`${lower} `)) return false;
       }
+      // A person the document names by their relationship to the declarant is
+      // a person, not a term the drafter forgot to define.
+      if (isNamedPerson(body, e.term)) return false;
       return true;
     });
     if (candidates.length === 0) return null;

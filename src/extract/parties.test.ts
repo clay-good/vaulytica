@@ -728,3 +728,48 @@ describe("an ALL-CAPS preamble offers no case contrast", () => {
     ).toEqual(["ACME INC", "BETA CORP", "GAMMA LTD"]);
   });
 });
+
+/**
+ * The first-person self-declaration a PERSONAL INSTRUMENT opens with.
+ *
+ * "I, Eleanor Marguerite Harper, of 412 Sycamore Lane, being of sound mind,
+ * make, publish, and declare this to be my Last Will and Testament." Every
+ * will, codicil, affidavit, declaration under penalty of perjury, power of
+ * attorney, and self-proving affidavit opens this way, and the extractor
+ * recognized none of them: a document with one party and no "between"
+ * reported NO PARTY AT ALL. STRUCT-006 subtracts the party names from its
+ * undefined-Title-Case candidates, so a well-drafted will was told that its
+ * executor and its residuary beneficiary are terms it forgot to define.
+ */
+describe("a first-person self-declaration names a party", () => {
+  const names = (...paras: string[]) =>
+    extractParties(buildTree(["Instrument", ...paras])).map((p) => p.name);
+
+  it.each([
+    [
+      "a will",
+      "I, Eleanor Marguerite Harper, of 412 Sycamore Lane, Columbus, Ohio, being of sound mind and memory, make, publish, and declare this to be my Last Will and Testament.",
+      "Eleanor Marguerite Harper",
+    ],
+    [
+      "an affidavit",
+      "I, Marcus Ellery Doyle, being first duly sworn, depose and say that the foregoing is true.",
+      "Marcus Ellery Doyle",
+    ],
+    [
+      "a power of attorney",
+      "I, Rosalind Achebe Kwan, of Franklin County, Ohio, appoint my sister as my attorney-in-fact.",
+      "Rosalind Achebe Kwan",
+    ],
+  ])("reads %s", (_label, text, want) => {
+    expect(names(text)).toContain(want);
+  });
+
+  // The declaration VERB is required: an "I" that merely narrates is not a
+  // party declaration.
+  it("does not read a narrating first person as a party", () => {
+    expect(
+      names("I, Priya Osei, have reviewed the materials furnished by counsel over the past week."),
+    ).not.toContain("Priya Osei");
+  });
+});

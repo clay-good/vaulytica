@@ -579,6 +579,35 @@ const SIGNATURE_FIELD =
 const DBA_RE =
   /\b(?:d\/b\/a|d\.b\.a\.|dba|doing business as)\s+["“”']?([A-Z][\w&.,'’-]*(?:\s+[A-Z][\w&.,'’-]*){0,5})/gi;
 
+/**
+ * The first-person self-declaration that opens a PERSONAL INSTRUMENT.
+ *
+ * "I, Eleanor Marguerite Harper, of 412 Sycamore Lane, Columbus, Ohio, being
+ * of sound mind and memory, make, publish, and declare this to be my Last Will
+ * and Testament." Every will, codicil, affidavit, declaration under penalty of
+ * perjury, power of attorney, self-proving affidavit, and acknowledgment opens
+ * this way, and the extractor recognized none of them: a document with one
+ * party and no "between" reported **no party at all**.
+ *
+ * The consequence is not a missing row in a table. STRUCT-006 subtracts the
+ * PARTY NAMES from its undefined-Title-Case candidates, so a well-drafted will
+ * was told that its executor and its residuary beneficiary — "Thomas Aurelio
+ * Harper", "Nadia Harper Okonkwo" — are terms it forgot to define. Every rule
+ * that reasons about who the parties are was reading an empty list.
+ *
+ * The declaration VERB is required, and the list is the operative-language
+ * one: an "I" that merely narrates ("I understand that…", "I have reviewed…")
+ * is not a party declaration. The name is bounded to four words and must be
+ * Title-Case, and the address clause that usually follows is skipped by
+ * allowing an "of …" run before the verb.
+ */
+const SELF_DECLARATION_VERB = String.raw`make|makes|made|publish|declare|declares|hereby\s+declare|revoke|nominate|appoint|constitute|give|devise|bequeath|certify|state|depose|swear|affirm|acknowledge|being\s+(?:first\s+)?duly\s+sworn|being\s+of\s+sound\s+mind`;
+const SELF_DECLARATION = new RegExp(
+  String.raw`(?:^|[.;]\s+)I,\s+([A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){1,3}),` +
+    String.raw`(?:[^.;]{0,240}?)\b(?:${SELF_DECLARATION_VERB})\b`,
+  "m",
+);
+
 export function extractParties(tree: DocumentTree): Party[] {
   const partyMap = new Map<string, Party>();
   const allText: { text: string; pos: (start: number, end: number) => DocPosition }[] = [];
@@ -775,6 +804,18 @@ export function extractParties(tree: DocumentTree): Party[] {
   // table has no preamble to scan, and its "Parties" block may sit well past
   // the first quarter.
   for (const { text, pos } of allText) {
+    // The first-person self-declaration a personal instrument opens with, and
+    // that a self-proving affidavit repeats at the end — so every paragraph is
+    // scanned, not just the preamble window.
+    const selfDecl = SELF_DECLARATION.exec(text);
+    if (selfDecl) {
+      const name = cleanPartyName(selfDecl[1] ?? "");
+      if (name && !isBoilerplateName(name)) {
+        registerParty(partyMap, name, {
+          position: pos(selfDecl.index, selfDecl.index + selfDecl[0].length),
+        });
+      }
+    }
     LABELED_PARTY.lastIndex = 0;
     let lm: RegExpExecArray | null;
     while ((lm = LABELED_PARTY.exec(text)) !== null) {
