@@ -1,0 +1,37 @@
+RISK FACTORS
+
+Investing in our common stock involves a high degree of risk. You should carefully consider the risks described below, together with the other information in this prospectus, including our financial statements and the related notes, before deciding to invest. If any of the following risks actually occurs, our business, financial condition, results of operations, and prospects could be materially and adversely affected. In that event, the trading price of our common stock could decline and you could lose all or part of your investment. The risks described below are not the only ones we face; additional risks and uncertainties not currently known to us, or that we currently deem immaterial, may also impair our business.
+
+Risks Related to Our Business and Industry
+
+We have a history of net losses, we expect to continue to incur losses, and we may never achieve or sustain profitability.
+
+We incurred net losses of $48.2 million and $61.7 million for the years ended December 31, 2024 and 2025, and we had an accumulated deficit of $214.3 million as of December 31, 2025. We expect our operating expenses to increase substantially as we expand our laboratory capacity, pursue additional regulatory clearances, and operate as a public company. We may never generate sufficient revenue to offset those expenses, and we may never achieve or sustain profitability.
+
+We derive a substantial majority of our revenue from a small number of customers, and the loss of any of them would materially harm our results.
+
+Our three largest customers accounted for 61%, 58%, and 54% of our revenue in 2023, 2024, and 2025. None of these customers is obligated to purchase any minimum volume, and each may terminate its agreement on ninety days' notice. We may not be able to replace the revenue from any customer we lose.
+
+Our tests are subject to extensive regulation by the FDA, and a change in the FDA's enforcement posture for laboratory developed tests could require us to obtain premarket clearance or approval we do not now have.
+
+We currently market several tests as laboratory developed tests under the FDA's historical policy of enforcement discretion. The FDA has stated its intention to phase out that discretion. If we are required to obtain 510(k) clearance, de novo authorization, or premarket approval for those tests, we would incur substantial expense and could be required to stop marketing them while an application is pending. We cannot predict the timing or the outcome of that process.
+
+Risks Related to Data Privacy and Security
+
+We handle protected health information, and a breach or a failure to comply with HIPAA, state privacy laws, or the GDPR could result in significant liability.
+
+We are a covered entity under HIPAA and a business associate to certain of our customers. We are also subject to state privacy laws including the California Consumer Privacy Act and to the EU General Data Protection Regulation for our operations in Germany. A breach of the security of our systems, or a determination that we have failed to comply with any of these regimes, could result in civil and criminal penalties, private litigation, remediation costs, and reputational harm, and our insurance may not cover the full amount.
+
+Risks Related to Ownership of Our Common Stock
+
+Our dual-class structure concentrates voting control with our founders, who will hold approximately 74.8% of the voting power of our outstanding capital stock after this offering.
+
+Holders of our Class B common stock are entitled to ten votes per share and holders of our Class A common stock, which is the stock we are offering, are entitled to one vote per share. Our founders will therefore control the outcome of matters submitted to a stockholder vote, including the election of directors and any merger or sale of the company, and may take actions that other stockholders do not view as in their interest.
+
+We are an emerging growth company and a smaller reporting company, and the reduced disclosure requirements available to us may make our common stock less attractive to investors.
+
+For as long as we remain an emerging growth company under the JOBS Act, we may take advantage of exemptions from certain disclosure requirements, including the auditor-attestation requirement of Section 404(b) of the Sarbanes-Oxley Act and reduced executive-compensation disclosure. We have elected to use the extended transition period for complying with new or revised accounting standards, which makes our financial statements not comparable to those of companies that comply on the non-delayed basis.
+
+There is no existing market for our common stock, and an active trading market may not develop or be sustained.
+
+The initial public offering price was determined by negotiation between us and the underwriters and may not be indicative of the price at which our common stock will trade. An active, liquid trading market may never develop, and you may not be able to sell your shares at or above the offering price.

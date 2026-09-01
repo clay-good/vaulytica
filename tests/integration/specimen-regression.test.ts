@@ -3152,6 +3152,33 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // The RISK FACTORS section of an IPO prospectus — and the most severe
+  // mis-routing this corpus has recorded. It went to `baa`, the HIPAA Business
+  // Associate Agreement, and drew FORTY-EIGHT findings, SEVENTEEN of them
+  // critical: no permitted-uses clause, no subcontractor flow-down, no
+  // accounting of disclosures, no HHS books-and-records access. One risk factor
+  // in the document mentions protected health information, a covered entity,
+  // and a business associate, which is the BAA family's whole distinguishing
+  // list — a document that TALKS ABOUT HIPAA is not a BAA, and the family now
+  // declines the securities register it never carries.
+  //
+  // The family that should have taken it had no title keyword for its own
+  // heading: `s-1-risk-factors` carried "risk factors" as a distinguishing
+  // phrase and not as the title the section is actually given.
+  //
+  // REG-022 was the third defect. The noun phrase INVERTS, and the inverted
+  // form is a statute's own wording — "a BREACH OF THE SECURITY OF our
+  // systems" is how Cal. Civ. Code § 1798.82 and the state breach-notification
+  // laws after it put it — so a risk factor written in that register carried
+  // none of the forward-order spellings and was reported as absent.
+  //
+  // The three that remain are right: no Item 105 risk-factor summary, no PSLRA
+  // safe-harbor cross-reference, and no climate risk factor.
+  "s1-risk-factors.txt": {
+    playbook: "s-1-risk-factors",
+    findings: ["REG-017", "REG-021", "REG-023", "FIN-008", "OBLI-005", "REG-040"],
+  },
+
   // A law firm's closing letter — the letter that ENDS a representation — and
   // the worst kind of mis-routing there is. It went to `engagement-letter` and
   // drew NINE findings, every one of them a clause an engagement letter has

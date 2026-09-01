@@ -473,7 +473,7 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   presence({
     id: "REG-022",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Cybersecurity / data-breach risk factor",
     description:
       "Risk factors should address cybersecurity / data-breach risk (per 2023 cybersecurity disclosure rules).",
@@ -494,7 +494,12 @@ const RISK_FACTORS_RULES: Rule[] = [
       // Form 8-K Item 1.05 and every incident-response plan call the event —
       // and a filer's risk factor headed "Risks Related to Data Privacy and
       // Security" was reported as having no cybersecurity risk factor.
-      /(cybersecurity|cyber\s+attack|data\s+breach|ransomware|item\s+106|item\s+1\.05|(?:security|information[- ]security|data[- ]security)\s+(?:incident|breach|event)|unauthorized\s+access)/i,
+      // 1.2.0 — the noun phrase INVERTS, and the inverted form is a statute's
+      // own wording: "a BREACH OF THE SECURITY OF our systems" is how Cal.
+      // Civ. Code § 1798.82 and the state breach-notification laws after it
+      // put it, and a risk factor written in that register carried none of the
+      // forward-order spellings.
+      /(cybersecurity|cyber\s+attack|data\s+breach|ransomware|item\s+106|item\s+1\.05|(?:security|information[- ]security|data[- ]security)\s+(?:incident|breach|event)|breach\s+of\s+(?:the\s+)?(?:security|data\s+security|confidentiality)|unauthorized\s+access)/i,
       /(risk|incident|exposure)/i,
     ],
     require_all_present: true,

@@ -1881,6 +1881,11 @@
         "security incident"
       ],
       "negative_features": [
+        "risk factors",
+        "our common stock",
+        "this prospectus",
+        "registration statement",
+        "emerging growth company",
         "subcontractor business associate",
         "subcontractor baa",
         "downstream baa"
@@ -17051,6 +17056,8 @@
     "description": "S-1 risk factors prose under Reg S-K Item 105 + plain-English rule. Per spec §6.P caveat: v4 lints prose only (REG-040). Selects the §6.P shared risk-factors ruleset (REG-016..REG-023).",
     "match_features": {
       "title_keywords": [
+        "risk factors",
+        "risks related to",
         "s-1",
         "form s-1",
         "registration statement",
@@ -17060,6 +17067,11 @@
       "distinguishing_phrases": [
         "risk factors",
         "we may not be able to",
+        "lose all or part of your investment",
+        "materially and adversely affected",
+        "additional risks and uncertainties",
+        "trading price of our common stock",
+        "before deciding to invest",
         "registration statement",
         "item 105"
       ],
