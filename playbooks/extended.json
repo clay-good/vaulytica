@@ -12018,6 +12018,7 @@
         "master subscription agreement",
         "master agreement",
         "customer agreement",
+        "cloud services agreement",
         "cloud service agreement",
         "saas agreement",
         "subscription terms"
@@ -12130,6 +12131,7 @@
         "master subscription agreement",
         "master agreement",
         "vendor agreement",
+        "cloud services agreement",
         "cloud service agreement",
         "saas agreement"
       ],
@@ -18436,6 +18438,7 @@
         "staffing services agreement",
         "contingent labor",
         "temporary staffing",
+        "managed services provider agreement",
         "managed service provider agreement"
       ],
       "required_clauses": [],
