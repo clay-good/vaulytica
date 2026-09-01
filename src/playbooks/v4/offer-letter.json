@@ -1,6 +1,6 @@
 {
   "id": "offer-letter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Offer Letter",
   "description": "Employment offer letter. Selects the §6.F employment ruleset (EMP-009..EMP-014).",
   "match_features": {
@@ -16,7 +16,10 @@
       "base salary",
       "at-will",
       "subject to plan",
-      "accepted and agreed"
+      "accepted and agreed",
+      "pleased to offer",
+      "your annual salary",
+      "the position of"
     ],
     "negative_features": ["executive employment agreement", "separation agreement"]
   },

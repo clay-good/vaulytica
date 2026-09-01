@@ -806,7 +806,77 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
-  it.each([...BAD_DOCUMENTS, ...THIN_MARGINS, ...BARE_INSTRUMENTS, ...BARE_COMMERCIAL])(
+  /**
+   * Ten more, from the commercial and employment families. One reached nothing
+   * and six reached their own at the threshold — the highest thin-margin count
+   * of any batch, and every one of them a document type a reviewer sees weekly.
+   */
+  const BARE_EVERYDAY: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "manufacturing-supply-agreement",
+      title: "SUPPLY AGREEMENT",
+      body: [
+        'This Supply Agreement is between Kestrel Components GmbH ("Supplier") and Wrenfield Audio Labs, Inc. ("Buyer").',
+        "The supplier will sell Buyer transducers at $14.20 each against a purchase order from time to time, and may change the price on thirty days' notice.",
+      ],
+    },
+    {
+      id: "escrow-agreement",
+      title: "ESCROW AGREEMENT",
+      body: [
+        'This Escrow Agreement is between Pinehurst Capital Partners, L.P. ("Buyer"), Marchetti Holdings LLC ("Seller"), and Summit Commercial Bank, N.A. ("Escrow Agent").',
+        "Buyer deposits $4,200,000 at closing and the escrow agent will release the funds when the parties tell it to.",
+      ],
+    },
+    {
+      id: "employee-handbook",
+      title: "EMPLOYEE HANDBOOK",
+      body: [
+        "This handbook describes Silverthorne Diagnostics, Inc.'s company policies for its employees.",
+        "Employees are expected to be at work on time. The Company may change any policy at any time. Employment is at-will.",
+      ],
+    },
+    {
+      id: "offer-letter",
+      title: "OFFER OF EMPLOYMENT",
+      body: [
+        "We are pleased to offer you the position of Director of Assay Development at Silverthorne Diagnostics, Inc.",
+        "Your annual salary will be $196,000 and your employment is at-will.",
+      ],
+    },
+    {
+      id: "sow",
+      title: "STATEMENT OF WORK",
+      body: [
+        "This Statement of Work is issued under the master services agreement between Halcyon Analytics, Inc. and Rowan Credit Union.",
+        "The fee is $180,000, invoiced monthly, and the work starts July 1, 2026.",
+      ],
+    },
+    {
+      id: "subcontractor-agreement",
+      title: "SUBCONTRACT AGREEMENT",
+      body: [
+        'This Subcontract Agreement is between Larkspur Construction Group, Inc. ("Contractor") and Vanterra Mechanical Services, LLC ("Subcontractor").',
+        "The subcontractor will perform the mechanical work, and Contractor will pay $310,000 when contractor is paid by the Owner.",
+      ],
+    },
+    {
+      id: "distribution-agreement",
+      title: "RESELLER AGREEMENT",
+      body: [
+        'This Reseller Agreement is between Halcyon Analytics, Inc. ("Vendor") and Vantage Systems LLC ("Reseller").',
+        "Reseller may resell the Halcyon platform in Texas and buys at a 30% discount off list.",
+      ],
+    },
+  ];
+
+  it.each([
+    ...BAD_DOCUMENTS,
+    ...THIN_MARGINS,
+    ...BARE_INSTRUMENTS,
+    ...BARE_COMMERCIAL,
+    ...BARE_EVERYDAY,
+  ])(
     "a bad document still reaches $id",
     ({ id, title, body }) => {
     const doc: [string, ...string[]] = ["", title, ...body];

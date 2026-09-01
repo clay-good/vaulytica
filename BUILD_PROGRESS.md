@@ -2242,3 +2242,9 @@ Advanced LAUNCH row v3-b from "unit tests only" to "four end-to-end fail-fixture
   **Running total across Steps 258-262: 38 bad documents, 19 families that could not recognise their own — exactly half.** The failure rate has not fallen as the sweep moved from the newest wave to the oldest, which says the class is not a v5 artefact but a property of how every family in this catalog was written: **the author of a family writes down what the good document says, because that is what they are reading while they write it.**
 
   ⚠️ Two golden fixtures changed only their `playbook_match_reasoning` and their CONFIDENCE (0.7 → 0.9 for `saas-customer` on `bad-saas-vendor-uncapped-ip`) — same family, same findings. A confidence that rises on the corpus is the sweep working, not churn.
+
+- **Step 263 — The documents a reviewer sees weekly (shipped 2026-08-31, 9.279.0 → 9.280.0):** Ten more bad documents, this time the ordinary commercial and employment families. **One reached nothing and SIX reached their own at exactly 0.5** — the highest thin-margin count of any batch — and every one of the seven is a document type that crosses a desk weekly: a statement of work, an offer of employment, an employee handbook, an escrow agreement, a subcontract, a reseller agreement, a supply agreement.
+
+  ⚠️ **A PLURAL cost `manufacturing-supply-agreement` its own document.** Its phrase is `purchase orders`; a supply agreement says "against a purchase order from time to time". That is the same singular/plural miss that killed `legal basis` on a GDPR notice in Step 19 — **the phrase list is prose, and prose inflects.**
+
+  **Running total across Steps 258-263: 48 bad documents, 26 families that could not reach their own at a safe margin.** The routing table in `catalog-routing.test.ts` now pins 30 of them.

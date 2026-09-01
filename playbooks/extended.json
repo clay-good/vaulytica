@@ -5940,7 +5940,7 @@
   },
   {
     "id": "distribution-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Reseller / Distribution Agreement",
     "description": "Appointment of a distributor or reseller for goods in a territory. Selects the §6.A.8 ruleset (COMM-008..COMM-013): appointment / territory / exclusivity, minimum purchase, resale-pricing freedom (Leegin), term & termination (dealer statutes), trademark license & quality control, and post-termination inventory / cease-use.",
     "match_features": {
@@ -5959,7 +5959,9 @@
         "appoints",
         "exclusive distributor",
         "resale",
-        "minimum purchase"
+        "minimum purchase",
+        "resell",
+        "off list"
       ],
       "negative_features": [
         "master services agreement",
@@ -6968,7 +6970,7 @@
   },
   {
     "id": "employee-handbook",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Employee Handbook",
     "description": "Employee handbook (scoped subset — at-will, EEO, wage/hour, leave, social media, acknowledgment). Selects the §6.F employment ruleset (EMP-045..EMP-050).",
     "match_features": {
@@ -6982,7 +6984,10 @@
         "equal employment opportunity",
         "harassment",
         "fmla",
-        "acknowledgment of receipt"
+        "acknowledgment of receipt",
+        "this handbook",
+        "employees are expected",
+        "company policies"
       ],
       "negative_features": [
         "offer letter",
@@ -7488,7 +7493,7 @@
   },
   {
     "id": "escrow-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "M&A Escrow Agreement",
     "description": "Tri-party escrow agreement supporting an SPA / APA / merger. Selects the §6.D M&A ruleset (MNA-046..MNA-054).",
     "match_features": {
@@ -7501,7 +7506,10 @@
         "escrow fund",
         "joint written instruction",
         "joint instruction",
-        "interpleader"
+        "interpleader",
+        "the escrow agent will",
+        "deposits",
+        "release the funds"
       ],
       "negative_features": []
     },
@@ -11315,7 +11323,7 @@
   },
   {
     "id": "manufacturing-supply-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Manufacturing / Supply Agreement",
     "description": "Supply of goods for manufacture or resale, governed by UCC Article 2. Selects the §6.A.10 ruleset (COMM-001..COMM-007): quantity term, delivery, specifications/warranty, price, inspection/acceptance, force majeure, and the § 2-306(2) best-efforts obligation.",
     "match_features": {
@@ -11335,7 +11343,10 @@
         "conforming goods",
         "lead time",
         "the Goods",
-        "the Products"
+        "the Products",
+        "purchase order",
+        "the supplier",
+        "supplier will sell"
       ],
       "negative_features": [
         "master services agreement",
@@ -12519,7 +12530,7 @@
   },
   {
     "id": "offer-letter",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Offer Letter",
     "description": "Employment offer letter. Selects the §6.F employment ruleset (EMP-009..EMP-014).",
     "match_features": {
@@ -12535,7 +12546,10 @@
         "base salary",
         "at-will",
         "subject to plan",
-        "accepted and agreed"
+        "accepted and agreed",
+        "pleased to offer",
+        "your annual salary",
+        "the position of"
       ],
       "negative_features": [
         "executive employment agreement",
@@ -18610,7 +18624,7 @@
   },
   {
     "id": "subcontractor-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Subcontractor Agreement",
     "description": "Subcontractor agreement with prime flow-down + pay-when/if-paid screen. ConsensusDocs 750 / AIA A401 baseline. Selects the §6.M ruleset (CON-008..CON-013).",
     "match_features": {
@@ -18625,7 +18639,10 @@
         "flow-down",
         "pay-when-paid",
         "pay-if-paid",
-        "prime contract"
+        "prime contract",
+        "the subcontractor will",
+        "subcontract agreement",
+        "when contractor is paid"
       ],
       "negative_features": [
         "business associate",

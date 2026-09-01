@@ -1,6 +1,6 @@
 {
   "id": "employee-handbook",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Employee Handbook",
   "description": "Employee handbook (scoped subset \u2014 at-will, EEO, wage/hour, leave, social media, acknowledgment). Selects the \u00a76.F employment ruleset (EMP-045..EMP-050).",
   "match_features": {
@@ -14,7 +14,10 @@
       "equal employment opportunity",
       "harassment",
       "fmla",
-      "acknowledgment of receipt"
+      "acknowledgment of receipt",
+      "this handbook",
+      "employees are expected",
+      "company policies"
     ],
     "negative_features": [
       "offer letter",

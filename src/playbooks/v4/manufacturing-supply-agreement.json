@@ -1,6 +1,6 @@
 {
   "id": "manufacturing-supply-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Manufacturing / Supply Agreement",
   "description": "Supply of goods for manufacture or resale, governed by UCC Article 2. Selects the §6.A.10 ruleset (COMM-001..COMM-007): quantity term, delivery, specifications/warranty, price, inspection/acceptance, force majeure, and the § 2-306(2) best-efforts obligation.",
   "match_features": {
@@ -20,7 +20,10 @@
       "conforming goods",
       "lead time",
       "the Goods",
-      "the Products"
+      "the Products",
+      "purchase order",
+      "the supplier",
+      "supplier will sell"
     ],
     "negative_features": [
       "master services agreement",

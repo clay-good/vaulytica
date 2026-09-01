@@ -1,6 +1,6 @@
 {
   "id": "escrow-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "M&A Escrow Agreement",
   "description": "Tri-party escrow agreement supporting an SPA / APA / merger. Selects the §6.D M&A ruleset (MNA-046..MNA-054).",
   "match_features": {
@@ -11,7 +11,10 @@
       "escrow fund",
       "joint written instruction",
       "joint instruction",
-      "interpleader"
+      "interpleader",
+      "the escrow agent will",
+      "deposits",
+      "release the funds"
     ],
     "negative_features": []
   },

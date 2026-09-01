@@ -1,6 +1,6 @@
 {
   "id": "subcontractor-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Subcontractor Agreement",
   "description": "Subcontractor agreement with prime flow-down + pay-when/if-paid screen. ConsensusDocs 750 / AIA A401 baseline. Selects the \u00a76.M ruleset (CON-008..CON-013).",
   "match_features": {
@@ -15,7 +15,10 @@
       "flow-down",
       "pay-when-paid",
       "pay-if-paid",
-      "prime contract"
+      "prime contract",
+      "the subcontractor will",
+      "subcontract agreement",
+      "when contractor is paid"
     ],
     "negative_features": [
       "business associate",

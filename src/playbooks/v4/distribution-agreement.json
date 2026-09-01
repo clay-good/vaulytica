@@ -1,6 +1,6 @@
 {
   "id": "distribution-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Reseller / Distribution Agreement",
   "description": "Appointment of a distributor or reseller for goods in a territory. Selects the §6.A.8 ruleset (COMM-008..COMM-013): appointment / territory / exclusivity, minimum purchase, resale-pricing freedom (Leegin), term & termination (dealer statutes), trademark license & quality control, and post-termination inventory / cease-use.",
   "match_features": {
@@ -19,7 +19,9 @@
       "appoints",
       "exclusive distributor",
       "resale",
-      "minimum purchase"
+      "minimum purchase",
+      "resell",
+      "off list"
     ],
     "negative_features": [
       "master services agreement",

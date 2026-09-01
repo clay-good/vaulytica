@@ -1,12 +1,22 @@
 {
   "id": "sow",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Statement of Work",
   "description": "Child of an MSA. Defines the scope, deliverables, schedule, and fees for a specific engagement. Based on Common Paper SOW under the Professional Services Agreement.",
   "match_features": {
     "title_keywords": ["statement of work", "sow", "scope of work", "work order"],
     "required_clauses": ["term"],
-    "distinguishing_phrases": ["Statement of Work", "this SOW", "Master Agreement", "Deliverables", "milestones", "subject to the Master"],
+    "distinguishing_phrases": [
+      "Statement of Work",
+      "this SOW",
+      "Master Agreement",
+      "Deliverables",
+      "milestones",
+      "subject to the Master",
+      "issued under the master",
+      "the fee is",
+      "the work starts"
+    ],
     "negative_features": ["the Service is a hosted", "Subscription Term", "lease", "Tenant", "Employee", "the Discloser"]
   },
   "expected_clauses": [

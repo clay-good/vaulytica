@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.280.0] — 2026-08-31
+
+### Fixed
+- **Seven everyday documents reached their family at or below the threshold.**
+  A statement of work, an offer of employment, an employee handbook, an escrow
+  agreement, a subcontract, a reseller agreement and a supply agreement — the
+  documents a reviewer sees weekly. `manufacturing-supply-agreement` reached
+  nothing at all: its phrase is "purchase orders", plural, and a supply
+  agreement says "against a purchase order from time to time". The rest each
+  scored their title and one phrase, because the others were the delivery
+  schedule, the conforming goods and the lead time; the joint written
+  instruction and the interpleader; the FMLA policy and the acknowledgment of
+  receipt; the pay-when-paid and the prime contract. All seven now route at 0.7
+  or better.
+
 ## [9.279.0] — 2026-08-31
 
 ### Fixed
