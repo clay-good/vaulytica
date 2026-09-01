@@ -81,6 +81,16 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Add: 'Service Provider shall not retain, use, or disclose personal information for any purpose other than the specific business purpose enumerated in this Agreement.'",
     present_patterns: [
       /(?:specific\s+business\s+purpose|enumerated\s+(?:in\s+this\s+)?(?:contract|agreement)|business\s+purpose\s+enumerated)/i,
+      // The STATUTE'S own words. § 1798.140(ag)(1) says the contract must
+      // prohibit retaining, using or disclosing the information "for any
+      // purpose other than" the business purposes, and a well-drafted addendum
+      // quotes it — "the limited and specified Business Purposes described in
+      // Exhibit A", "for any purpose other than the Business Purposes". The
+      // template phrase "specific business purpose" is one drafter's wording,
+      // not the Act's.
+      /limited\s+and\s+specified/i,
+      /(?:for\s+)?(?:any|no)\s+purpose\s+other\s+than\s+the\s+(?:business\s+)?purposes?/i,
+      /only\s+(?:for|to)\s+(?:perform\s+)?the\s+business\s+purposes?/i,
     ],
   }),
   presence({
@@ -101,6 +111,13 @@ export const DPA_US_STATE_RULES: Rule[] = [
       // modal both broke the rigid "shall not sell personal information"
       // adjacency, so a compliant CCPA addendum was falsely flagged missing.
       /(?:shall|will|may|must)\s+not\s+sell(?:\s+or\s+shar\w+)?\s+(?:the\s+)?personal\s+(?:information|data)/i,
+      // The object is a DEFINED TERM as often as it is the statutory noun. An
+      // addendum that says '"Covered Data" means Personal Information the
+      // Business discloses' then writes "shall not Sell or Share Covered
+      // Data", and every pattern above wants the literal "personal
+      // information". Case-SENSITIVE, because the defined term is the thing
+      // that is capitalized — under `i` this would match any two words.
+      /(?:shall|will|may|must)\s+not\s+[Ss]ell(?:\s+or\s+[Ss]har\w+)?\s+(?:the\s+)?[A-Z][a-z]+\s+(?:Data|Information)\b/,
     ],
   }),
   presence({
@@ -115,7 +132,16 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "§ 1798.140(ag)(1)(A) requires the contract to prohibit sharing including for cross-context behavioral advertising.",
     recommendation:
       "Add: 'Service Provider is prohibited from sharing personal information, including for cross-context behavioral advertising.'",
-    present_patterns: [/cross[- ]context\s+behavioral\s+advertising/i],
+    // The CPRA DEFINES "Share" as disclosure for cross-context behavioral
+    // advertising (§ 1798.140(ah)), so "Service Provider shall not Sell or
+    // Share Covered Data" is the complete statutory prohibition — and is
+    // better drafting than reciting the definition. Requiring the literal
+    // phrase told an addendum that quotes the Act it does not prohibit the
+    // thing the Act's own verb names.
+    present_patterns: [
+      /cross[- ]context\s+behavioral\s+advertising/i,
+      /(?:shall|will|may|must)\s+not\s+(?:[Ss]ell\s+or\s+)?[Ss]hare\b/,
+    ],
   }),
   presence({
     id: "USDPA-004",
@@ -131,7 +157,12 @@ export const DPA_US_STATE_RULES: Rule[] = [
     recommendation:
       "Add: 'Service Provider shall not combine personal information received from Business with personal information received from any other source, except as permitted by 11 CCR § 7050(c).'",
     present_patterns: [
-      /(combin\w+\s+(personal\s+information|the\s+personal\s+data)|7050\(c\)|other\s+sources)/i,
+      // "combine Covered Data with personal information it receives from
+      // ANOTHER SOURCE" is the regulation's own singular; the pattern read only
+      // the plural "other sources", and an addendum that defines its own term
+      // for the data ("Covered Data", "Customer Personal Data") never says
+      // "combine personal information" at all.
+      /(combin\w+\s+(personal\s+information|the\s+personal\s+data)|7050\(c\)|(?:any\s+)?other\s+sources?|another\s+source)/i,
     ],
     default_severity: "warning",
   }),
@@ -149,7 +180,9 @@ export const DPA_US_STATE_RULES: Rule[] = [
     recommendation:
       "Add: 'Service Provider shall comply with all applicable obligations under the CCPA and provide the same level of privacy protection as required by the CCPA.'",
     present_patterns: [
-      /same\s+level\s+of\s+privacy\s+protection|comply\s+with\s+all\s+applicable\s+(?:obligations|ccpa)/i,
+      // A flow-down is written as "the same restrictions this Addendum imposes"
+      // at least as often as "the same level of privacy protection".
+      /same\s+level\s+of\s+privacy\s+protection|comply\s+with\s+all\s+applicable\s+(?:obligations|ccpa)|same\s+(?:restrictions|obligations|requirements|terms)\s+(?:this|the)\s+\w+\s+imposes|no\s+less\s+protective/i,
     ],
     denied_if: expressDenial(String.raw`same\s+level\s+of\s+privacy\s+protection`),
     denied_title: "Same-level-of-privacy-protection duty expressly disclaimed",
@@ -282,7 +315,10 @@ export const DPA_US_STATE_RULES: Rule[] = [
     recommendation:
       "Add a clause stating: 'Processor shall process personal data only pursuant to Controller's documented instructions, as set forth in this Agreement and any Annex.'",
     present_patterns: [
-      /(processing\s+instructions|instructions\s+for\s+processing|documented\s+instructions)/i,
+      // The instruction is as often stated possessively — "on the Business's
+      // instruction", "at Customer's written instruction" — as it is named
+      // "processing instructions".
+      /(processing\s+instructions|instructions\s+for\s+processing|documented\s+instructions|(?:on|at|per)\s+(?:the\s+)?[\w-]+['’]s\s+(?:written\s+)?instructions?|written\s+instructions?\s+(?:of|from))/i,
     ],
   }),
   presence({
@@ -295,7 +331,16 @@ export const DPA_US_STATE_RULES: Rule[] = [
     explanation:
       "VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, DPDPA all require the contract to state the nature and purpose of processing.",
     recommendation: "Add a 'Nature and Purpose of Processing' clause.",
-    present_patterns: [/nature\s+and\s+purpose\s+of\s+(?:the\s+)?processing/i],
+    // The two are as often stated SEPARATELY, and an addendum states the
+    // purposes by listing them: "the limited and specified Business Purposes
+    // described in Exhibit A, which are: hosting and storage; fraud detection;
+    // and the production of analytics reports".
+    present_patterns: [
+      /nature\s+and\s+purpose\s+of\s+(?:the\s+)?processing/i,
+      /purposes?\s+of\s+(?:the\s+)?(?:processing|transfer)/i,
+      /business\s+purposes?\s+(?:are|is|described|listed|set\s+(?:out|forth))/i,
+      /nature\s+of\s+the\s+(?:processing|services)/i,
+    ],
   }),
   presence({
     id: "USDPA-013",
@@ -306,7 +351,12 @@ export const DPA_US_STATE_RULES: Rule[] = [
     missing_description: "No clause was found identifying the type of personal data.",
     explanation: "Each state requires the contract to specify the categories of personal data.",
     recommendation: "Add an Annex listing the categories of personal data processed.",
-    present_patterns: [/(type|categor(?:y|ies))\s+of\s+(personal\s+)?(?:data|information)/i],
+    // The addendum names the data with its own DEFINED TERM and then heads the
+    // clause "Categories of Covered Data" — one word between "of" and the
+    // noun, and the pattern allowed only "personal".
+    present_patterns: [
+      /(type|categor(?:y|ies))\s+of\s+(?:\w+\s+){0,2}(?:data|information)/i,
+    ],
   }),
   presence({
     id: "USDPA-014",
@@ -319,6 +369,11 @@ export const DPA_US_STATE_RULES: Rule[] = [
     recommendation: "State that processing continues for the term of the agreement.",
     present_patterns: [
       /duration\s+of\s+(?:the\s+)?processing|processing\s+(?:shall|will)\s+continue/i,
+      // The duration is stated by TYING it to the agreement's term, which is
+      // how an addendum states it: "shall process Covered Data only for the
+      // term of the Agreement and the ninety (90) days after it ends".
+      /\bprocess\w*[^.]{0,80}?\bonly\s+(?:for|during)\s+(?:the\s+)?(?:term|duration|period)\b/i,
+      /(?:for|during)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|addendum)[^.]{0,80}?\bprocess/i,
     ],
   }),
   presence({
@@ -339,6 +394,9 @@ export const DPA_US_STATE_RULES: Rule[] = [
       // phrasing for the same disposal-or-return obligation; the delete-only
       // pattern reported those documents as missing the clause.
       /(?:(?:delet\w*|destroy\w*|destruct\w*)\s+or\s+return\w*|return\w*\s+or\s+(?:delet\w*|destroy\w*|destruct\w*)).{0,80}(personal\s+(data|information)|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
+      // Same defined-term object as USDPA-002, and case-sensitive for the same
+      // reason: "shall return or delete all Covered Data".
+      /(?:(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*)\s+or\s+[Rr]eturn\w*|[Rr]eturn\w*\s+or\s+(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*))[^.]{0,80}[A-Z][a-z]+\s+(?:Data|Information)\b/,
     ],
     // Express-denial guard: the refusal names the same deletion-or-return duty
     // the requirement does. Every US state processor statute requires it at
@@ -392,7 +450,11 @@ export const DPA_US_STATE_RULES: Rule[] = [
     // GDPR Art. 28(3)(h)'s own wording is "allow FOR and contribute to
     // audits" — a DPA quoting the regulation verbatim must count.
     present_patterns: [
-      /(reasonable\s+assessments|allow\s+(?:for\s+)?(?:and\s+)?(?:cooperate\s+with|contribute\s+to)\s+(?:audits|assessments)|right\s+to\s+(?:audit|assess))/i,
+      // § 1798.140(ag)(1)(E) says the business may "take reasonable and
+      // appropriate steps to ensure" the service provider's use is compliant,
+      // and that is the phrase a compliant addendum quotes. A right to conduct
+      // an audit is the same right written as a mechanism.
+      /(reasonable\s+assessments|allow\s+(?:for\s+)?(?:and\s+)?(?:cooperate\s+with|contribute\s+to)\s+(?:audits|assessments)|right\s+to\s+(?:audit|assess)|reasonable\s+and\s+appropriate\s+steps|conduct(?:ing)?\s+(?:an?\s+|one\s+)?audit)/i,
     ],
   }),
   presence({
@@ -422,7 +484,12 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Most state privacy statutes require the processor to make information available demonstrating compliance.",
     recommendation:
       "Add: 'Processor shall make available to Controller information necessary to demonstrate compliance with this Agreement and applicable state privacy law.'",
-    present_patterns: [/(demonstrate\s+compliance|information\s+necessary\s+to\s+demonstrate)/i],
+    // Compliance is demonstrated with a REPORT, and the addendum names it: a
+    // SOC 2 Type II report, an ISO 27001 certificate, an audit report.
+    present_patterns: [
+      /(demonstrate\s+compliance|information\s+necessary\s+to\s+demonstrate)/i,
+      /soc\s*2|iso\s*27001|audit\s+report|assessment\s+report/i,
+    ],
   }),
 
   // ────────────────────────────────────────────────────────────────

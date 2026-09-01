@@ -1758,6 +1758,29 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A model CCPA service-provider addendum, the 241st specimen and the first
+  // for `dpa-ccpa-service-provider` — a family that reached NO family at all
+  // on its own bad document until 9.276.0. It drew THIRTEEN CRITICALS, and
+  // eleven were false.
+  //
+  // The systemic cause is one sentence: the pack was written to the words a
+  // model TEMPLATE uses, and it required the literal object "personal
+  // information" — while a real addendum defines its own term for it. '"Covered
+  // Data" means Personal Information the Business discloses' and then "shall
+  // not Sell or Share Covered Data" matched nothing. USDPA-002 and USDPA-015
+  // now read a defined-term object (case-SENSITIVELY: the capital is what makes
+  // it a defined term). The rest wanted a template phrase where the STATUTE has
+  // its own: "limited and specified" for USDPA-001, "another source" singular
+  // for USDPA-004, "the same restrictions this Addendum imposes" for USDPA-005,
+  // "reasonable and appropriate steps" — § 1798.140(ag)(1)(E)'s own words — for
+  // USDPA-017, and a SOC 2 report for USDPA-019. USDPA-003 required the literal
+  // "cross-context behavioral advertising" from a document that says "shall not
+  // Sell or Share", which is the prohibition the Act's own verb states.
+  "ccpa-service-provider.txt": {
+    playbook: "dpa-ccpa-service-provider",
+    findings: ["OBLI-002", "OBLI-005", "TERM-007"],
+  },
+
   // A well-drafted SBA 7(a) loan agreement, the 240th specimen and the first
   // for `sba-loan-agreement` — a family the general `loan-agreement` was
   // taking until 9.276.0. Three rule defects on the first real one, and all

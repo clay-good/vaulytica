@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.284.0] — 2026-08-31
+
+### Added
+- One specimen — a model CCPA service-provider addendum, the 241st, and the
+  first for `dpa-ccpa-service-provider`.
+
+### Fixed
+- **THIRTEEN criticals against a model CCPA addendum, eleven of them false.**
+  The systemic cause is one sentence: the pack requires the literal object
+  "personal information", and a real addendum defines its own term for it.
+  `"Covered Data" means Personal Information the Business discloses` and then
+  "shall not Sell or Share Covered Data" matched nothing at all. USDPA-002 and
+  USDPA-015 now read a defined-term object, case-SENSITIVELY — the capital is
+  what makes it a defined term.
+- **Seven more wanted a template's phrase where the statute has its own.**
+  USDPA-001 wanted "specific business purpose" where § 1798.140(ag)(1) says
+  "for any purpose other than"; USDPA-004 read only the plural "other sources"
+  where the regulation says "another source"; USDPA-005 wanted "the same level
+  of privacy protection" where a flow-down says "the same restrictions this
+  Addendum imposes"; USDPA-011 wanted "processing instructions" where an
+  addendum says "on the Business's instruction"; USDPA-012 wanted the conjoined
+  "nature and purpose"; USDPA-017 wanted "reasonable assessments" where
+  § 1798.140(ag)(1)(E)'s own words are "reasonable and appropriate steps"; and
+  USDPA-019 wanted "demonstrate compliance" where an addendum offers a SOC 2
+  Type II report.
+- **USDPA-003 required the literal "cross-context behavioral advertising"** from
+  a document that says "shall not Sell or Share" — which is the prohibition the
+  Act's own verb states, since § 1798.140(ah) defines Share as exactly that.
+
 ## [9.283.0] — 2026-08-31
 
 ### Added

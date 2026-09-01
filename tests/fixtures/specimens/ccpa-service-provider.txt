@@ -1,0 +1,85 @@
+SERVICE PROVIDER ADDENDUM
+
+This Service Provider Addendum (this "Addendum") is entered into as of September 1, 2026 between Halcyon Analytics, Inc., a Delaware corporation ("Business"), and Kestrel Data LLC, a Texas limited liability company ("Service Provider"), and forms part of the Master Services Agreement between them dated January 14, 2026 (the "Agreement").
+
+1. DEFINITIONS
+
+1.1 "Personal Information", "Business", "Service Provider", "Sell", "Share", "Consumer", "Processing", "Deidentified", and "Business Purpose" have the meanings given in the California Consumer Privacy Act of 2018, as amended by the California Privacy Rights Act, Cal. Civ. Code §§ 1798.100 to 1798.199.100, and its regulations.
+
+1.2 "Covered Data" means Personal Information the Business discloses to the Service Provider, or that the Service Provider collects on the Business's behalf, under the Agreement.
+
+2. ROLES AND PERMITTED PURPOSES
+
+2.1 The Business discloses Covered Data to the Service Provider for the limited and specified Business Purposes described in Exhibit A, which are: hosting and storage; fraud detection; and the production of analytics reports for the Business. The Service Provider is a service provider as Cal. Civ. Code § 1798.140(ag) defines that term, and this Addendum is the written contract § 1798.140(ag)(1) requires.
+
+2.2 The Service Provider shall not Sell or Share Covered Data.
+
+2.3 The Service Provider shall not retain, use, or disclose Covered Data for any purpose other than the Business Purposes in Section 2.1, including for a commercial purpose of its own, and shall not retain, use, or disclose it outside the direct business relationship between the parties.
+
+2.4 The Service Provider shall not combine Covered Data with personal information it receives from another source, except as § 1798.140(ag)(1)(D) and its regulations permit for the detection of a security incident or the prevention of fraudulent or illegal activity.
+
+2.5 The Service Provider certifies that it understands the restrictions in Sections 2.2 to 2.4 and will comply with them.
+
+2.6 Categories of Covered Data. The Covered Data consists of identifiers (name, email address, postal address, account identifier and IP address), commercial information (transaction and product-interaction history), internet activity, and approximate geolocation derived from IP address. No sensitive personal information is disclosed under the Agreement.
+
+2.7 Duration. The Service Provider shall process Covered Data only for the term of the Agreement and the ninety (90) days after it ends that Section 8.1 allows for return or deletion.
+
+2.8 Data minimization. The Service Provider shall collect, retain and use only such Covered Data as is reasonably necessary and proportionate to the Business Purposes in Section 2.1.
+
+2.9 Inability to comply. The Service Provider shall notify the Business promptly, and in any event within five (5) business days, if it determines that it can no longer meet its obligations under the CCPA or this Addendum, and shall on that notice stop processing Covered Data or take other reasonable and appropriate steps the Business directs to remediate the unauthorized use.
+
+3. ASSISTANCE WITH CONSUMER RIGHTS
+
+3.1 The Service Provider shall assist the Business in responding to a verifiable Consumer request to know, delete, correct, opt out of Sale or Sharing, or limit the use of sensitive personal information, and shall do so within ten (10) business days of the Business's request so that the Business can meet the forty-five (45) day statutory deadline.
+
+3.2 On the Business's instruction, the Service Provider shall delete or deidentify Covered Data about a Consumer, and shall pass the instruction to each of its own subcontractors.
+
+4. SUBCONTRACTORS
+
+4.1 The Service Provider may engage a subcontractor only under a written contract that imposes the same restrictions this Addendum imposes on the Service Provider, and shall notify the Business of an intended addition or replacement at least thirty (30) days beforehand, during which the Business may object.
+
+4.2 The current subcontractors are listed on Exhibit B. The Service Provider remains responsible for each subcontractor's performance.
+
+5. SECURITY
+
+5.0 The Service Provider shall ensure that each of its personnel with access to Covered Data is bound by a written duty of confidentiality no less protective than this Addendum, and shall limit access to those personnel who need it for the Business Purposes.
+
+5.1 The Service Provider shall implement and maintain reasonable security procedures and practices appropriate to the nature of the Covered Data, as Cal. Civ. Code § 1798.81.5 requires, including encryption in transit and at rest, role-based access control, multi-factor authentication for administrative access, and annual penetration testing.
+
+5.2 The Service Provider shall notify the Business without undue delay, and in any event within forty-eight (48) hours, after becoming aware of a breach of the security of the system affecting Covered Data, and shall give the Business the information it needs to meet its own notification obligations.
+
+6. AUDIT AND COMPLIANCE
+
+6.1 The Business may take reasonable and appropriate steps to ensure that the Service Provider uses Covered Data consistently with the Business's obligations under the CCPA, including by reviewing the Service Provider's most recent SOC 2 Type II report on request, and by conducting one audit in any twelve-month period on thirty (30) days' notice.
+
+6.2 If the Business notifies the Service Provider of an unauthorized use of Covered Data, the Service Provider shall stop the use and remediate it within ten (10) business days, and shall report to the Business what it did.
+
+7. DEIDENTIFIED DATA
+
+7.1 If the Service Provider creates Deidentified data from Covered Data, it shall take reasonable measures to ensure the data cannot be associated with a Consumer or household, shall publicly commit to maintain and use the data in deidentified form, shall not attempt to reidentify it, and shall contractually obligate any recipient to the same.
+
+8. RETURN OR DELETION
+
+8.1 On expiration or termination of the Agreement, or on the Business's earlier written request, the Service Provider shall return or delete all Covered Data and shall certify the deletion in writing, except for a copy it must retain by law, which remains subject to this Addendum for as long as it is retained.
+
+9. GENERAL
+
+9.1 This Addendum supplements the Agreement. Except as expressly modified here, the Agreement remains in full force and effect, and its governing law, venue, liability and indemnity terms apply to this Addendum. Where this Addendum and the Agreement conflict on the treatment of Personal Information, this Addendum controls.
+
+HALCYON ANALYTICS, INC.
+
+By: /s/ Terrence Okonjo-Whitfield
+Name: Terrence Okonjo-Whitfield
+Title: Privacy Counsel
+Date: September 1, 2026
+
+KESTREL DATA LLC
+
+By: /s/ Aurelie Vandenbroucke
+Name: Aurelie Vandenbroucke
+Title: General Counsel
+Date: September 1, 2026
+
+EXHIBIT A — BUSINESS PURPOSES
+
+EXHIBIT B — SUBCONTRACTORS
