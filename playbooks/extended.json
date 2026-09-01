@@ -1881,6 +1881,12 @@
         "security incident"
       ],
       "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes",
         "risk factors",
         "our common stock",
         "this prospectus",
@@ -1967,6 +1973,12 @@
         "business associate"
       ],
       "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes",
         "covered entity directly engages",
         "Data Processing Agreement",
         "Standard Contractual Clauses",
@@ -6454,7 +6466,14 @@
         "1798.140",
         "1798.100"
       ],
-      "negative_features": []
+      "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes"
+      ]
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -6520,7 +6539,14 @@
         "gdpr",
         "documented instructions"
       ],
-      "negative_features": []
+      "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes"
+      ]
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -6600,7 +6626,14 @@
         "6-1-1305",
         "42-520"
       ],
-      "negative_features": []
+      "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes"
+      ]
     },
     "expected_clauses": [],
     "expected_defined_terms": [
@@ -6681,6 +6714,12 @@
         "documented instructions"
       ],
       "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes",
         "controller-to-processor",
         "between the controller and the processor",
         "Business Associate Agreement",
@@ -17392,6 +17431,12 @@
         "personal data"
       ],
       "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes",
         "uk addendum",
         "international data transfer addendum",
         "idta",
@@ -17479,6 +17524,12 @@
         "personal data"
       ],
       "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes",
         "module 2",
         "module two",
         "controller to processor",
@@ -20170,7 +20221,14 @@
         "mandatory clauses",
         "approved addendum"
       ],
-      "negative_features": []
+      "negative_features": [
+        "this memorandum",
+        "this memo",
+        "this training",
+        "this presentation",
+        "no action is requested",
+        "for discussion purposes"
+      ]
     },
     "expected_clauses": [],
     "expected_defined_terms": [

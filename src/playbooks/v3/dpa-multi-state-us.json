@@ -24,7 +24,14 @@
       "6-1-1305",
       "42-520"
     ],
-    "negative_features": []
+    "negative_features": [
+      "this memorandum",
+      "this memo",
+      "this training",
+      "this presentation",
+      "no action is requested",
+      "for discussion purposes"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [

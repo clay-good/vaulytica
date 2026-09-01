@@ -35,6 +35,12 @@
       "documented instructions"
     ],
     "negative_features": [
+      "this memorandum",
+      "this memo",
+      "this training",
+      "this presentation",
+      "no action is requested",
+      "for discussion purposes",
       "controller-to-processor",
       "between the controller and the processor",
       "Business Associate Agreement",
