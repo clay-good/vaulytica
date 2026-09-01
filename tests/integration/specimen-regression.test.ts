@@ -3152,6 +3152,34 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A limited-scope engagement letter, drafted to Rule 1.2(c): two enumerated
+  // lists of what the firm will and will not do, an express statement that the
+  // client keeps every deadline outside the scope, and informed consent that
+  // can be withdrawn. It drew a `critical` on each of the two things that make
+  // it what it is.
+  //
+  // ENG-027 wanted "the LAWYER will perform"; the letter's two headings are
+  // "WHAT WE WILL DO" and "WHAT WE WILL NOT DO", and the actor list held
+  // lawyer / attorney / firm / client but not the first person every
+  // engagement letter is written in.
+  //
+  // STRUCT-013 read the client's signature block as two unfilled template
+  // placeholders. Two rules on one line over two captions on the next arrive,
+  // once the ingest collapses the whitespace between the columns, as "Marcus
+  // Ellery Doyle Date" — and every signature test there is anchored to the
+  // WHOLE remainder, so the neighbouring column's caption spoiled all of them.
+  // STRUCT-003 reads the same construct correctly, and its comments already
+  // claimed the parity.
+  //
+  // ENG-030 stays: the letter is transactional and says nothing about
+  // disclosing a limited-scope appearance to a court, which is a fair
+  // checklist item even where no court is involved. CHOICE-006 is reading the
+  // word "arbitration" inside the list of EXCLUDED matters in section 2(d).
+  "limited-scope-representation.txt": {
+    playbook: "limited-scope-representation",
+    findings: ["CHOICE-001", "ENG-030", "CHOICE-003", "CHOICE-006", "OBLI-005", "STRUCT-004"],
+  },
+
   // A private secondary — a former employee selling 250,000 shares of common
   // to a fund, with the company signing only for the ROFR waiver and the
   // transfer agent instruction. It routed to `stock-purchase-agreement`, the

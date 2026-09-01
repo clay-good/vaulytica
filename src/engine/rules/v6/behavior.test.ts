@@ -696,3 +696,38 @@ describe("DISC-003 — the relevant time period", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * ENG-027 — a letter says "WE", not "the lawyer".
+ *
+ * The two headings a limited-scope letter is built around are "WHAT WE WILL
+ * DO" and "WHAT WE WILL NOT DO". The actor list held lawyer / attorney / firm
+ * / client and not the first person every engagement letter is written in, so
+ * the defining clause of the document was invisible and the check fired at
+ * `critical` on a letter that enumerates both halves at length.
+ */
+describe("ENG-027 — the tasks a limited-scope letter will and will not perform", () => {
+  it("reads the two headings the letter is built around", () => {
+    expect(
+      rule("ENG-027").check(
+        doc(
+          "Limited Scope Representation",
+          "This letter sets out the limited scope of what we will and will not do.",
+          "WHAT WE WILL DO. We will review the proposed commercial lease, advise you in writing on its terms, and negotiate revisions with the landlord's counsel.",
+          "WHAT WE WILL NOT DO. We will not advise on zoning, permitting, financing, any dispute arising from the lease, or any tax question.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a limited-scope letter that enumerates nothing", () => {
+    expect(
+      rule("ENG-027").check(
+        doc(
+          "Limited Scope Representation",
+          "This is a limited scope representation. Our fee is $450 per hour, billed monthly.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

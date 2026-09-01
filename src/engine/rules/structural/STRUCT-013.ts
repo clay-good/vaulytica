@@ -81,7 +81,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.16.0",
+  version: "1.17.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -312,11 +312,29 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
   // own witness lines — as it does the moment its blank lines are gone —
   // reported them as unfilled template placeholders, at `critical`.
   // (Parity with STRUCT-003's reading of the same construct.)
-  for (const after of text
+  // The remainder after a rule may carry the NEIGHBOURING COLUMN's caption. A
+  // two-column signature block lays out two rules on one line and their two
+  // captions on the next — "____   ____" over "Marcus Ellery Doyle   Date" —
+  // and the ingest collapses the whitespace that separated the columns, so the
+  // segment arrives as "Marcus Ellery Doyle Date". Every test below is
+  // anchored to the WHOLE remainder, so the neighbour's caption spoiled all of
+  // them and a limited-scope engagement letter reported its own signature
+  // block as two unfilled template placeholders, at `critical`. STRUCT-003
+  // reads the same construct correctly; this is the parity its comments claim.
+  const withoutTrailingCaption = (seg: string): string =>
+    seg
+      .replace(/(?:\s+(?:Date|Dated|Title|Signature|Print(?:ed)?\s+Name|Name))+[.:]?$/i, "")
+      .trim();
+  for (const raw of text
     .split(/_{6,}/)
     .slice(1)
     .map((seg) => seg.replace(/\/s\//g, " ").trim())
-    .filter((seg) => seg.length > 0)) {
+    .filter((seg) => seg.length > 0)
+    .flatMap((seg) => {
+      const trimmed = withoutTrailingCaption(seg);
+      return trimmed && trimmed !== seg ? [seg, trimmed] : [seg];
+    })) {
+    const after = raw;
     if (STANDALONE_SIGNATORY_ROLE.test(after)) return true;
     // A signature line labeled by OFFICE ALONE, with no name printed beneath it
     // — "_______________________  Judge        Date" is how a proposed order,

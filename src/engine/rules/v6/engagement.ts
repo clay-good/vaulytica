@@ -454,7 +454,13 @@ const LIMITED_SCOPE = pack("limited-scope-representation", C, [
       // the petition, and appear at all other hearings." None of the three
       // forms below appears in that, and the first pillar is met by the
       // family's own title — so the whole check rested on words nobody writes.
-      /(will\s+(not\s+)?(perform|handle|include)|the\s+lawyer\s+(shall|will)\s+only|excluded\s+tasks|(?:lawyer|attorney|firm|client)\s+will\s+(?:not\s+)?[a-z]+)/i,
+      // A letter says "WE", not "the lawyer". The two headings a limited-scope
+      // letter is built around are "WHAT WE WILL DO" and "WHAT WE WILL NOT
+      // DO", and the actor list held lawyer / attorney / firm / client and not
+      // the first person every engagement letter is written in — so the
+      // defining clause of the document was invisible and the check fired at
+      // `critical` on a letter that enumerates both halves.
+      /(will\s+(not\s+)?(perform|handle|include|do\b)|the\s+lawyer\s+(shall|will)\s+only|excluded\s+tasks|(?:lawyer|attorney|firm|client|we)\s+will\s+(?:not\s+)?[a-z]+)/i,
     ],
     all: true,
     why: "Rule 1.2(c) permits a limited scope only if it is reasonable and the client consents after being informed. An itemized division of labor is what makes both findings possible.",

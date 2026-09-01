@@ -659,7 +659,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-013",
-      "rule_version": "1.16.0"
+      "rule_version": "1.17.0"
     },
     {
       "elapsed_ms": 0,
@@ -887,7 +887,7 @@
       "id": "STRUCT-013-s1-128",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
-      "rule_version": "1.16.0",
+      "rule_version": "1.17.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Unfilled template placeholders: 1"
@@ -1098,11 +1098,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "ab567c77f6dd7222d29b093a07176b0e310ecbc5257c8474ee3c801d79df0e50",
+  "result_hash": "949e999c9b53157f8f3df4615d9bd3aa5a993c103abfb1592edd15e1e7a4cba1",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.329.0"
+  "version": "9.330.0"
 }

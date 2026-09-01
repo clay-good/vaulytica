@@ -407,3 +407,49 @@ describe("STRUCT-013 — a blank the reader is meant to fill in", () => {
     expect(STRUCT_013.check(ctx)).toBeNull();
   });
 });
+
+/**
+ * A two-column signature block, after the ingest has collapsed the whitespace
+ * that separated the columns (v1.17.0).
+ *
+ * Two rules on one line and their two captions on the next — "____   ____"
+ * over "Marcus Ellery Doyle   Date" — arrive as one segment reading "Marcus
+ * Ellery Doyle Date". Every signature test here is anchored to the WHOLE
+ * remainder, so the neighbouring column's caption spoiled all of them, and a
+ * limited-scope engagement letter reported its own signature block as two
+ * unfilled template placeholders, at `critical`. STRUCT-003 reads the same
+ * construct correctly; this is the parity this file's comments already claim.
+ */
+describe("STRUCT-013 — a two-column signature block", () => {
+  it.each([
+    ["a name beside a date caption", "Marcus Ellery Doyle                        Date"],
+    ["a name beside a title caption", "Priya Osei                                 Title"],
+    ["two captions", "Signature                                  Date"],
+  ])("accepts %s under the rules", (_label, captions) => {
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Limited Scope Representation",
+          "We will review and negotiate the proposed commercial lease and nothing else.",
+          "AGREED AND ACCEPTED:",
+          "_________________________________          _________________________________",
+          captions,
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  // Load-bearing: a genuine placeholder under a rule still reports.
+  it("still reports a genuine unfilled placeholder", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext([
+          "Limited Scope Representation",
+          "We will review and negotiate the proposed commercial lease and nothing else.",
+          "_________________________________          _________________________________",
+          "[Insert Client Name]                       [Insert Date]",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
