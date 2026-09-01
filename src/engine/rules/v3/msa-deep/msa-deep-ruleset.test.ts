@@ -429,3 +429,74 @@ describe("MSA-015 — UCC disclaimer overreach recognizes hyphenated 'AS-IS' & '
     expect(await fires(b)).toBe(false);
   });
 });
+
+/**
+ * The MSA pack reads AMERICAN drafting, and an English master services
+ * agreement says the same things in different words.
+ *
+ * All four of these are the same class, found on one document: an English-law
+ * MSA with a 125%-of-charges cap, the unlimitable-liability floor, service
+ * levels in a schedule, and an IP allocation by vesting. It drew a `critical`
+ * for having no aggregate cap, and three warnings for clauses it plainly
+ * contains.
+ */
+describe("MSA pack — English drafting conventions", () => {
+  const fires = async (id: string, b: string) =>
+    (
+      await runEngine({
+        rules: MSA_DEEP_RULES,
+        ctx: withPb(buildContext(["Master Services Agreement", b]), VENDOR),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  it("MSA-006 reads a cap stated past the causes of action", async () => {
+    // The enumeration between the subject and the verb is 110 characters.
+    expect(
+      await fires(
+        "MSA-006",
+        "Each party's total liability in contract, tort (including negligence), breach of statutory duty or otherwise arising under this Agreement is limited to 125% of the Charges paid and payable in the 12 months before the date on which the claim arose.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-007 reads carve-outs stated as an unlimitable floor", async () => {
+    expect(
+      await fires(
+        "MSA-007",
+        "Nothing in this Agreement limits or excludes either party's liability for death or personal injury caused by negligence, for fraud or fraudulent misrepresentation, or for any other liability that cannot lawfully be limited or excluded.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-016 reads service levels held in a schedule", async () => {
+    expect(
+      await fires(
+        "MSA-016",
+        "The Supplier shall use reasonable endeavours to supply the Services in accordance with the service levels in Schedule 2.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-011 reads an IP allocation made by vesting and retention", async () => {
+    expect(
+      await fires(
+        "MSA-011",
+        "All Intellectual Property Rights in the Deliverables shall vest in the Customer on payment in full. The Supplier retains all Intellectual Property Rights in its pre-existing materials and grants the Customer a perpetual licence to use them as incorporated in the Deliverables.",
+      ),
+    ).toBe(false);
+  });
+
+  // Load-bearing: an agreement that states none of them still reports all four.
+  it.each(["MSA-006", "MSA-007", "MSA-016", "MSA-011"])(
+    "%s still fires on an agreement that states nothing",
+    async (id) => {
+      expect(
+        await fires(
+          id,
+          "The Supplier shall supply the Services described in each Statement of Work.",
+        ),
+      ).toBe(true);
+    },
+  );
+});

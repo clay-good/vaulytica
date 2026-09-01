@@ -3156,6 +3156,61 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // An Illinois secured promissory note with a usury savings clause, an express
+  // refusal of any confession of judgment, and no jury waiver — the two things
+  // Illinois practice watches. Clean.
+  "il-secured-promissory-note.txt": {
+    playbook: "promissory-note",
+    findings: ["FIN-009", "STRUCT-005"],
+  },
+
+  // An ENGLISH-law master services agreement, and the first document in the
+  // corpus drafted in English rather than American conventions. The MSA pack
+  // reads American drafting, and four of its checks could not read the same
+  // clause said the other way:
+  //
+  // MSA-006 wanted "total liability … limited to" within eighty characters, and
+  // English drafting enumerates the causes of action in between — "each party's
+  // TOTAL LIABILITY in contract, tort (including negligence), breach of
+  // statutory duty or otherwise arising under this Agreement IS LIMITED TO 125%
+  // of the Charges" is a hundred and ten. It drew a `critical` for having no
+  // cap. MSA-007 wanted carve-outs stated as exceptions to a ceiling; English
+  // drafting states them BEFORE the cap as an unlimitable floor — "Nothing in
+  // this Agreement limits or excludes … death or personal injury … fraud …".
+  // MSA-016 wanted an "SLA"; the service levels are a SCHEDULE to this
+  // agreement, not a separate one. MSA-011 wanted "Background IP"; the
+  // allocation is made by vesting and retention, over "pre-existing materials".
+  //
+  // What remains is fair and is the real gap in the draft: it has no indemnity
+  // at all, and no compliance-with-laws or non-infringement warranty. MSA-030
+  // is recorded rather than argued — it asks an English-law agreement for a
+  // UCC § 2-719 limited-remedy escape, which is a jurisdiction-scope question
+  // for the pack rather than a defect in this rule.
+  "uk-master-services-agreement.txt": {
+    playbook: "msa-vendor-deep",
+    findings: [
+      "MSA-001",
+      "MSA-002",
+      "MSA-004",
+      "MSA-013",
+      "MSA-014",
+      "RISK-001",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-012",
+      "MSA-003",
+      "MSA-020",
+      "MSA-022",
+      "MSA-023",
+      "MSA-025",
+      "MSA-028",
+      "MSA-030",
+      "OBLI-005",
+      "STRUCT-005",
+      "TERM-007",
+    ],
+  },
+
   // A Texas conditional waiver and release on progress payment, in the
   // statutory form: the notice block verbatim, the through-date, the sum, the
   // downstream-payment warranty, and retainage expressly excluded. Completely

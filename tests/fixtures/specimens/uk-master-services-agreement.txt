@@ -1,0 +1,84 @@
+MASTER SERVICES AGREEMENT
+
+This Agreement is dated 14 April 2026 and is made between:
+
+(1) NORTHBRIDGE CLOUD LIMITED, a company incorporated in England and Wales with company number 09123456 whose registered office is at 88 Bishopsgate, London EC2N 4AJ (the "Supplier"); and
+
+(2) HALBROOK DIAGNOSTICS LIMITED, a company incorporated in England and Wales with company number 08765432 whose registered office is at 40 Rosenthaler Street, Manchester M1 2AB (the "Customer").
+
+BACKGROUND
+
+(A) The Supplier provides cloud hosting and data-processing services.
+(B) The Customer wishes to procure those services on the terms of this Agreement.
+
+IT IS AGREED as follows:
+
+1. DEFINITIONS AND INTERPRETATION
+
+1.1 In this Agreement: "Charges" means the charges set out in each Statement of Work; "Services" means the services described in each Statement of Work; "Statement of Work" means a document in the form of Schedule 1 signed by both parties; "Business Day" means a day other than a Saturday, Sunday or public holiday in England.
+
+1.2 Clause headings do not affect interpretation. A reference to a statute is to that statute as amended or re-enacted. "Including" is not limiting.
+
+2. SUPPLY OF THE SERVICES
+
+2.1 The Supplier shall use reasonable endeavours to supply the Services in accordance with each Statement of Work and with the service levels in Schedule 2.
+
+2.2 The Supplier shall use all reasonable endeavours to meet any performance dates specified, but those dates are estimates only and time is not of the essence.
+
+3. CHARGES AND PAYMENT
+
+3.1 The Customer shall pay the Charges within 30 days of the date of a correctly rendered invoice.
+
+3.2 All Charges are exclusive of VAT, which the Customer shall pay at the prevailing rate on delivery of a valid VAT invoice.
+
+3.3 If the Customer fails to pay any undisputed sum by its due date, the Supplier may charge interest under the Late Payment of Commercial Debts (Interest) Act 1998.
+
+4. INTELLECTUAL PROPERTY
+
+4.1 All Intellectual Property Rights in the Deliverables created for the Customer under a Statement of Work shall vest in the Customer on payment in full, and the Supplier assigns them with full title guarantee.
+
+4.2 The Supplier retains all Intellectual Property Rights in its pre-existing materials and grants the Customer a non-exclusive, perpetual, royalty-free licence to use them as incorporated in the Deliverables.
+
+5. DATA PROTECTION
+
+5.1 Each party shall comply with the UK GDPR and the Data Protection Act 2018. The Customer is the controller and the Supplier is the processor, and the parties shall comply with the data processing terms in Schedule 3, which satisfy Article 28(3) of the UK GDPR.
+
+6. CONFIDENTIALITY
+
+6.1 Each party shall keep the other's Confidential Information confidential and shall not use it except to perform this Agreement. This clause does not apply to information that is or becomes public other than by breach, or that a party is required to disclose by law or by a regulator.
+
+7. LIMITATION OF LIABILITY
+
+7.1 Nothing in this Agreement limits or excludes either party's liability for death or personal injury caused by negligence, for fraud or fraudulent misrepresentation, or for any other liability that cannot lawfully be limited or excluded.
+
+7.2 Subject to clause 7.1, neither party is liable for any loss of profit, loss of business, loss of anticipated savings, or any indirect or consequential loss.
+
+7.3 Subject to clause 7.1, each party's total liability in contract, tort (including negligence), breach of statutory duty or otherwise arising under this Agreement is limited to 125% of the Charges paid and payable in the 12 months before the date on which the claim arose.
+
+8. TERM AND TERMINATION
+
+8.1 This Agreement begins on the date above and continues for 24 months, and thereafter until terminated by either party on 90 days' written notice.
+
+8.2 Either party may terminate immediately by written notice if the other commits a material breach that is irremediable, or that is remediable and is not remedied within 30 days of written notice, or if the other becomes insolvent within the meaning of the Insolvency Act 1986.
+
+8.3 On termination, the Customer shall pay for Services supplied up to the termination date, the Supplier shall return or delete the Customer's data as clause 5 and Schedule 3 provide, and clauses 4, 6, 7 and this clause 8.3 survive.
+
+9. GENERAL
+
+9.1 Neither party may assign this Agreement without the other's written consent, not to be unreasonably withheld, save to an affiliate.
+
+9.2 This Agreement and the documents referred to in it constitute the entire agreement between the parties and supersede all previous agreements. Each party acknowledges that it has not relied on any statement not set out in this Agreement, but nothing limits liability for fraudulent misrepresentation.
+
+9.3 A person who is not a party has no right under the Contracts (Rights of Third Parties) Act 1999 to enforce any term.
+
+9.4 This Agreement is governed by the law of England and Wales, and the parties submit to the exclusive jurisdiction of the courts of England and Wales.
+
+Signed for and on behalf of NORTHBRIDGE CLOUD LIMITED
+
+/s/ Rosalind Achebe Kwan
+Director
+
+Signed for and on behalf of HALBROOK DIAGNOSTICS LIMITED
+
+/s/ Marisol Trent
+Director

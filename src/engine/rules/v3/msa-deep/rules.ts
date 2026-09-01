@@ -303,7 +303,14 @@ export const MSA_DEEP_RULES: Rule[] = [
     explanation: "Absent a cap, liability is unbounded — an unusual posture for a commercial MSA.",
     recommendation: "Add an aggregate cap (commonly 12 months' fees) with explicit carve-outs.",
     present_patterns: [
-      /(aggregate\s+liability|total\s+liability).{0,80}(?:not\s+exceed|capped\s+at|limited\s+to)/i,
+      // The window has to clear the CAUSES OF ACTION. English drafting
+      // enumerates them between the subject and the verb — "each party's TOTAL
+      // LIABILITY in contract, tort (including negligence), breach of
+      // statutory duty or otherwise arising under this Agreement IS LIMITED TO
+      // 125% of the Charges" — which is 110 characters, and an English-law
+      // master services agreement was told at `critical` that it had no
+      // aggregate cap at all.
+      /(aggregate\s+liability|total\s+liability).{0,170}(?:not\s+exceed|capped\s+at|limited\s+to)/i,
       /(twelve\s+months\s+(?:of\s+)?fees|12\s*months\s+(?:of\s+)?fees)/i,
       // The single most common cap construction fronts the negation — "In no
       // event shall [either party's] [aggregate/total] liability exceed …" —
@@ -329,6 +336,15 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Carve fraud, wilful misconduct, IP indemnification, confidentiality breach, and data-protection breach out of the cap.",
     present_patterns: [
       /(cap|limitation).{0,200}(?:shall\s+not\s+apply|excluded|carved\s+out).{0,200}(fraud|wil[l]?ful\s+misconduct|IP\s+indemn|confidentiality|data\s+protection)/is,
+      // English drafting puts the carve-outs BEFORE the cap, as a
+      // "nothing in this agreement" clause: "Nothing in this Agreement LIMITS
+      // OR EXCLUDES either party's liability for death or personal injury
+      // caused by negligence, for FRAUD or fraudulent misrepresentation, or
+      // for any other liability that CANNOT LAWFULLY BE limited or excluded."
+      // That is the same list, stated as an unlimitable floor rather than as
+      // an exception to a ceiling, and the branch above wants the noun "cap"
+      // or "limitation" where this uses the verb.
+      /nothing\s+in\s+this\s+agreement\s+(?:limits?|excludes?|restricts?)[^.]{0,220}?(fraud|death\s+or\s+personal\s+injury|cannot\s+lawfully\s+be|wil[l]?ful\s+misconduct)/is,
       /supercap\b/i,
     ],
     default_severity: "warning",
@@ -430,7 +446,12 @@ export const MSA_DEEP_RULES: Rule[] = [
       // "retains … its pre-existing intellectual property; Deliverables created
       // under this Agreement are owned by Customer" allocation was falsely
       // flagged missing.
-      /(background\s+(?:IP|intellectual\s+property)|pre[- ]existing\s+(?:IP|intellectual\s+property))/i,
+      // English drafting says "its PRE-EXISTING MATERIALS" rather than
+      // "Background IP", and allocates by vesting: "all Intellectual Property
+      // Rights in the Deliverables shall VEST IN the Customer … the Supplier
+      // RETAINS all Intellectual Property Rights in its pre-existing
+      // materials".
+      /(background\s+(?:IP|intellectual\s+property)|pre[- ]existing\s+(?:IP|intellectual\s+property|materials?|works?|tools?|know-how))/i,
       /(foreground\s+(?:IP|intellectual\s+property)|(?:developed|created|made|conceived)\s+(?:hereunder|under\s+this\s+Agreement))/i,
     ],
     // Express-denial guard: a clause that explicitly DECLINES to allocate IP
@@ -570,7 +591,12 @@ export const MSA_DEEP_RULES: Rule[] = [
       "An MSA for hosted services without an SLA leaves availability promises unenforceable.",
     recommendation:
       "Reference an SLA (attached or linked) with uptime, support response, and remedy schedules.",
-    present_patterns: [/(service\s+level\s+agreement|\bSLA\b|uptime|availability\s+commitment)/i],
+    // "the SERVICE LEVELS in Schedule 2" is how an English agreement refers to
+    // them, and it names no "service level agreement" and no "SLA" because the
+    // levels are a schedule to this agreement rather than a separate one.
+    present_patterns: [
+      /(service\s+level\s+agreement|\bSLA\b|uptime|availability\s+commitment|service\s+levels?\b)/i,
+    ],
     default_severity: "warning",
     denied_if: expressDenial(String.raw`service\s+level\s+agreement|\bSLA\b|service\s+levels?`),
     denied_title: "Service-level commitment expressly disclaimed",
