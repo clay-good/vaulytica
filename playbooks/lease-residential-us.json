@@ -23,6 +23,9 @@
     {"term": "Security Deposit", "severity_if_missing": "warning"}
   ],
   "rule_overrides": {
+    "RISK-005": {
+      "skip": true
+    },
     "RISK-009": {"severity": "warning"},
     "DARK-001": {"severity": "warning"},
     "DARK-002": {"severity": "warning"},

@@ -249,7 +249,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -480,9 +480,8 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-005-s1-0",
-      "fired": true,
-      "ran": true,
+      "fired": false,
+      "ran": false,
       "rule_id": "RISK-005",
       "rule_version": "1.7.0"
     },
@@ -944,7 +943,7 @@
       "id": "FIN-009-s1.2-446",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
-      "rule_version": "1.5.0",
+      "rule_version": "1.6.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1002,24 +1001,6 @@
       "severity": "warning",
       "source_citations": [],
       "title": "No indemnification clause detected"
-    },
-    {
-      "description": "Vaulytica did not find a limitation-of-liability clause.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no LoL clause)"
-      },
-      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
-      "id": "RISK-005-s1-0",
-      "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
-      "rule_id": "RISK-005",
-      "rule_version": "1.7.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No limitation-of-liability clause detected"
     },
     {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
@@ -1203,11 +1184,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.8). Title matched: \"residential rental agreement\", \"rental agreement\". Distinguishing phrases: \"residential\".",
-  "result_hash": "592b54d92739f22e067f177ae49a21a979136a33df56e9d21d65e4589aef4f36",
+  "result_hash": "59b6be04e1c525381a3a5de81d60accb9415a4d6fea9be68f4f6e6301d2958c0",
   "source_file": {
     "name": "bad-residential-lease.docx",
     "sha256": "e9329baa96e35c934a6bdbb32721f88752314e62fbcce83220e7bfa5c353c638",
     "size_bytes": 9203
   },
-  "version": "9.314.0"
+  "version": "9.315.0"
 }

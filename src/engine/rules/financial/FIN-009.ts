@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -94,8 +94,16 @@ export const rule: Rule = {
       // overdue installment" — and the closing paren sat between the "%" and
       // the "of", so a plainly one-time charge was reported as a rate whose
       // period the drafter had failed to state.
+      //
+      // The noun list was written for an INVOICE. A residential lease measures
+      // its late fee against the RENT, and in New York that is not a drafting
+      // choice: RPL § 238-a caps the fee at "the lesser of fifty dollars or
+      // five percent of the monthly rent", which is the statutory maximum
+      // written out. A lease drafted to that cap was told its rate had no
+      // stated period — a note asking the drafter to fix the one thing the
+      // statute fixed for them.
       const flatFee =
-        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))[^.]{0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced)\b/i.test(
+        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))[^.]{0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+installment|installment|balance|amount\s+due|rental\s+payment)\b/i.test(
           hit.text,
         );
 

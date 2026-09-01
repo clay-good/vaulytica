@@ -202,3 +202,31 @@ describe("FIN-009 v1.5.0 — the two meanings of 'interest'", () => {
     expect(FIN_009.check(ctx)).not.toBeNull();
   });
 });
+
+/**
+ * A lease measures its late fee against the RENT, not against an invoice
+ * (v1.6.0). New York RPL § 238-a caps the fee at "the lesser of fifty dollars
+ * or five percent of the monthly rent" — the statutory maximum written out —
+ * and a lease drafted to it was told its rate had no stated period.
+ */
+describe("FIN-009 — a rent-based late fee is one-time", () => {
+  it.each([
+    ["monthly rent", "A late fee of the lesser of $50 or 5% of the monthly rent may be charged."],
+    [
+      "base rent",
+      "A late charge of 5% of the base rent is due if rent is more than five days late.",
+    ],
+    ["the installment", "A late charge equal to five percent (5%) of the installment is due."],
+  ])("reads a fee measured against %s as one-time", (_label, clause) => {
+    const found = FIN_009.check(buildContext(["Residential Lease", clause]));
+    expect(found?.title).toBe("One-time late fee of 5% (not annualized)");
+  });
+
+  // Load-bearing: a rate that DOES state a period still annualizes.
+  it("still annualizes a stated monthly rate on rent", () => {
+    const found = FIN_009.check(
+      buildContext(["Residential Lease", "A late fee of 5% per month accrues on unpaid rent."]),
+    );
+    expect(found?.severity).toBe("warning");
+  });
+});

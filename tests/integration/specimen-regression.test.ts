@@ -3128,6 +3128,43 @@ export const EXPECTED: Record<string, Expectation> = {
   // section no demand has.
   "demand-for-inspection.txt": { playbook: "document-requests", findings: [] },
 
+  // A New York residential lease, drafted to the statutes it names: the
+  // one-month deposit cap of GOL § 7-108, the fourteen-day itemized return,
+  // the § 226-c renewal-notice ladder, the § 235-b warranty of habitability
+  // that cannot be waived. It was asked for a LIMITATION OF LIABILITY — a
+  // clause GOL § 5-321 makes VOID in a residential lease, so the finding was
+  // not merely irrelevant but recommended an unenforceable term. RISK-005 is
+  // now declined by the family, the way the same family already declines the
+  // IP-ownership and personal-data checks.
+  //
+  // RISK-001 stays and is recorded rather than argued: a residential lease can
+  // carry a tenant indemnity for the tenant's own negligence and many do, so
+  // its absence is a fair thing to surface. STRUCT-018 is fair — the three
+  // exhibits the lease names really are not attached. The two TERM findings
+  // are fair on their face: this lease leaves termination to the RPAPL summary
+  // proceeding rather than stating it.
+  //
+  // FIN-009 found the second defect. Its flat-fee recognizer was written for
+  // an INVOICE — "% of the overdue / past-due / outstanding / unpaid amount" —
+  // and a lease measures its late fee against the RENT. In New York that is
+  // not a drafting choice: RPL § 238-a caps the fee at "the lesser of fifty
+  // dollars or five percent of the monthly rent", so a lease drafted to the
+  // statutory maximum was told its rate had no stated period, a note asking
+  // the drafter to fix the one thing the statute fixed for them. It now reads
+  // as the one-time charge it is.
+  "ny-residential-lease.txt": {
+    playbook: "lease-residential-us",
+    findings: [
+      "RISK-001",
+      "STRUCT-018",
+      "TERM-002",
+      "TERM-005",
+      "CHOICE-003",
+      "FIN-009",
+      "OBLI-005",
+    ],
+  },
+
   // A telehealth consent, addressed to the patient as "you" throughout — which
   // is what HC-132 could not read. It required "in THE state where THE
   // PATIENT", and a patient-facing consent writes "only when you are
