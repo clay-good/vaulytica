@@ -174,3 +174,39 @@ describe("RISK-015 — the statutory indemnity without the 'fullest extent' form
     ).not.toBeNull();
   });
 });
+
+/**
+ * The THIRD-PARTY RELIANCE indemnity of a personal instrument (v1.8.0).
+ *
+ * "Any person who in good faith accepts this instrument without actual
+ * knowledge that it is void may rely on it. I agree to indemnify any such
+ * person for claims arising from that good-faith reliance" is UPOAA § 119, and
+ * every durable power of attorney in the country carries it. A well-drafted POA
+ * was told at `warning` that its indemnity had no aggregate cap — in a document
+ * that has no liability cap because a power of attorney is not a bargain, which
+ * is why the family already declines RISK-001 and RISK-005.
+ */
+describe("RISK-015 — a statutory reliance indemnity needs no cap", () => {
+  const POA = [
+    "Durable Power of Attorney",
+    "I, Rosalind Achebe Kwan, of Columbus, Ohio, appoint my brother as my attorney-in-fact.",
+    "Any person who in good faith accepts this instrument without actual knowledge that it is void, invalid, or terminated may rely on it. I agree to indemnify any such person for claims arising from that good-faith reliance.",
+  ];
+
+  it("is silent on the reliance indemnity", () => {
+    expect(RISK_015.check(buildContext(POA))).toBeNull();
+  });
+
+  // Load-bearing: an ordinary commercial indemnity in the same document still
+  // reports, so the carve-out reads the reliance pair and not the word.
+  it("still reports a commercial indemnity with no cap", () => {
+    expect(
+      RISK_015.check(
+        buildContext([
+          "Services Agreement",
+          "Vendor shall indemnify Customer against any third-party claim that the Services infringe a patent or copyright.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -63,13 +63,32 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // its cap; "The Partnership shall indemnify the General Partner" does not.
     /\b(?:the\s+)?(?:Partnership|Company|Corporation|Trust|LLC|Limited\s+Liability\s+Company)\s+(?:shall|will|must|agrees\s+to)\s+indemnif\w+[^.]{0,100}?\b(?:General\s+Partner|Managing\s+Member|Manager|Managers|Members?|Directors?|Officers?|Trustees?)\b[^.]{0,200}?\b(?:fraud|willful\s+misconduct|gross\s+negligence|knowing\s+violation\s+of\s+law)\b/i.test(
       text,
+    ) ||
+    // The THIRD-PARTY RELIANCE indemnity of a personal instrument, which is
+    // statutory and uncapped by design. "Any person who in good faith accepts
+    // this instrument without actual knowledge that it is void may rely on it.
+    // I agree to indemnify any such person for claims arising from that
+    // good-faith reliance" — that is UPOAA § 119, and every durable power of
+    // attorney in the country carries it. A well-drafted POA was told at
+    // `warning` that its indemnity had no aggregate cap, in a document that has
+    // no liability cap because a power of attorney is not a bargain: the
+    // family already declines RISK-001 and RISK-005 for exactly that reason.
+    //
+    // The discriminator is the pair — a FIRST-PERSON or fiduciary-role
+    // indemnitor and GOOD-FAITH RELIANCE on the instrument as the trigger. A
+    // commercial indemnity has neither.
+    /\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+[^.]{0,160}?\b(?:good[-\s]faith|reliance|relies|relying|accepts?\s+this\s+(?:instrument|power))\b/i.test(
+      text,
+    ) ||
+    /\b(?:good[-\s]faith|accepts?\s+this\s+(?:instrument|power))\b[^.]{0,160}?\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+/i.test(
+      text,
     )
   );
 }
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
