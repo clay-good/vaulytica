@@ -1,0 +1,63 @@
+ORDER FORM
+Northbridge Cloud, Inc.
+
+Order Form No.:          OF-2026-0412
+Effective Date:          April 14, 2026
+Master Agreement:        Cloud Services Agreement dated June 3, 2025 (the "MSA")
+Customer:                Halbrook Diagnostics, Inc.
+Customer Address:        1400 Foundry Road, Akron, Ohio 44305
+Billing Contact:         Marisol Trent, ap@halbrook.example, (330) 555-0148
+Currency:                USD
+Payment Terms:           Net 45 from invoice date
+Invoicing Frequency:     Annually in advance
+Order Term:              24 months from the Subscription Start Date
+Subscription Start Date: May 1, 2026
+Subscription End Date:   April 30, 2028
+Renewal:                 Auto-renews for successive 12-month terms unless either party gives written notice at least 60 days before the end of the then-current term.
+Uplift Cap at Renewal:   The subscription fee at any renewal will not increase by more than 5% over the fee for the immediately preceding term.
+
+SUBSCRIPTION DETAIL
+
+Line 1
+  Product:               Northbridge Vault, Enterprise Tier
+  Quantity:              1,200 Authorized Users
+  Unit Price:            $18.00 per Authorized User per month
+  Annual Fee:            $259,200.00
+Line 2
+  Product:               Northbridge Vault, Additional Storage
+  Quantity:              80 TB
+  Unit Price:            $220.00 per TB per month
+  Annual Fee:            $211,200.00
+Line 3
+  Product:               Premier Support
+  Quantity:              1
+  Unit Price:            Included
+  Annual Fee:            $0.00
+
+Total Annual Fee:        $470,400.00
+Total Order Value:       $940,800.00 over the Order Term
+
+ADDITIONAL TERMS
+
+1. Order of Precedence. This Order Form is governed by the MSA. In the event of a conflict between this Order Form and the MSA, this Order Form controls as to its subject matter only. Capitalized terms not defined here have the meanings given in the MSA.
+
+2. Overage. Authorized Users above the Quantity above are billed monthly in arrears at the Unit Price, prorated for the remainder of the then-current term. Storage above the Quantity is billed at the Unit Price per TB per month. Northbridge will notify the Billing Contact within 10 business days of any month in which usage exceeds the Quantity.
+
+3. Service Levels. The Service Level Agreement in Exhibit 1 to the MSA applies, with a monthly uptime commitment of 99.9% and service credits as that exhibit provides. Service credits are the Customer's sole remedy for a failure to meet the uptime commitment, except where the failure continues for three consecutive months, in which case the Customer may terminate this Order Form for cause without penalty.
+
+4. Data Location. Customer Data is stored and processed in the United States only. Northbridge will give the Customer at least 60 days' written notice before changing the region, and the Customer may terminate this Order Form without penalty if it objects.
+
+5. Termination for Convenience. Neither party may terminate this Order Form for convenience during the Order Term. This does not limit either party's termination rights for cause under the MSA.
+
+6. Fee Reduction on Reduced Usage. At each anniversary the Customer may reduce the Quantity on Line 1 by up to 10% with 30 days' notice, and the Annual Fee is reduced proportionately.
+
+7. Purchase Order. A purchase order number is required on each invoice. The Customer will provide it before the Subscription Start Date. No preprinted term on any purchase order applies.
+
+ACCEPTED:
+
+NORTHBRIDGE CLOUD, INC.                   HALBROOK DIAGNOSTICS, INC.
+
+By: /s/ Devon Achebe                      By: /s/ Marisol Trent
+Name: Devon Achebe                        Name: Marisol Trent
+Title: VP, Revenue                        Title: Chief Financial Officer
+Date: April 14, 2026                      Date: April 14, 2026

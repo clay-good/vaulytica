@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "IPDATA-008",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Cross-border data transfer without safeguard",
   category: "ip-and-data",
   default_severity: "warning",
@@ -66,10 +66,22 @@ export const rule: Rule = {
         // for a disclaimer FRAME — does not read.
         const PROHIBITED = /\b(?:shall|may|will|must|can|does|do|is|are)\s+not\s+(?:be\s+)?$/i;
         const before = p.text.slice(Math.max(0, m ? m.index - 24 : 0), m ? m.index : 0);
+        // A RESIDENCY COMMITMENT is the opposite of a transfer, and it is
+        // stated by confining the location rather than by negating a verb:
+        // "Customer Data is stored and processed in the United States ONLY."
+        // The `processed in <country>` branch above exists to catch an
+        // EU-perspective document — processing in the United States IS the
+        // transfer, seen from the EEA — and read from a US order form between
+        // two US companies it inverts the sentence. `PROHIBITED` cannot see
+        // it, because the confinement word comes AFTER the location and there
+        // is no negated verb anywhere.
+        const CONFINED = /^\s*(?:,\s*)?(?:and\s+nowhere\s+else|only|solely|exclusively)\b/i;
+        const after = m ? p.text.slice(m.index + m[0].length, m.index + m[0].length + 24) : "";
         if (
           m &&
           DATA_CONTEXT.test(p.text) &&
           !PROHIBITED.test(before) &&
+          !CONFINED.test(after) &&
           !isPresenceDisclaimed(p.text, m.index)
         ) {
           transferHit = {

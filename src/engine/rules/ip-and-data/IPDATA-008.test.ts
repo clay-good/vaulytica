@@ -124,3 +124,36 @@ describe("IPDATA-008 — a prohibition is not an authorization", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A RESIDENCY COMMITMENT is the opposite of a transfer (v1.4.0).
+ *
+ * "Customer Data is stored and processed in the United States ONLY" confines
+ * the location rather than negating a verb, so the prohibition guard cannot see
+ * it — the confinement word comes AFTER the location and there is no negated
+ * verb anywhere. The `processed in <country>` branch exists to catch an
+ * EU-perspective document, where processing in the United States IS the
+ * transfer; read from a US order form between two US companies it inverts what
+ * the sentence says.
+ */
+describe("IPDATA-008 — data confined to one location", () => {
+  it.each([
+    ["only", "Customer Data is stored and processed in the United States only."],
+    ["solely", "Customer Data is processed in the United States solely, and nowhere else."],
+    ["exclusively", "Personal data is processed in the United Kingdom exclusively."],
+  ])("is silent on a residency commitment stated with %s", (_label, clause) => {
+    expect(IPDATA_008.check(buildContext(["Order Form", clause]))).toBeNull();
+  });
+
+  // Load-bearing: a real transfer with no safeguard still reports.
+  it("still reports an unsafeguarded transfer out of the EEA", () => {
+    expect(
+      IPDATA_008.check(
+        buildContext([
+          "Data Processing Addendum",
+          "Personal data may be transferred to the United States for support purposes.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

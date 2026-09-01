@@ -3164,6 +3164,37 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["FIN-009", "STRUCT-005"],
   },
 
+  // A field-heavy SaaS ORDER FORM under a master agreement — a header block of
+  // colon-separated fields, three priced lines, and $940,800 of order value. It
+  // drew twelve findings, one of them a `critical`, and five of those were
+  // clauses of the MSA rather than of the order form: no indemnification, no
+  // governing law, no IP ownership, no limitation of liability, no
+  // effect-of-termination.
+  //
+  // The machinery for that already exists — `amendsParentAgreement` reads a
+  // document issued under a named parent — and both halves of its pattern
+  // missed this one. It wanted "governed by the TERMS OF", and the order form
+  // says "This Order Form is GOVERNED BY THE MSA"; and it wanted a parent
+  // ending in "Agreement", where this one is named by its acronym.
+  // `PARENT_CONTROLS`, in the same file, already admitted "MSA" as a parent
+  // noun.
+  //
+  // IPDATA-008 then read the residency commitment backwards. "Customer Data is
+  // stored and processed in the United States ONLY" confines the location
+  // rather than negating a verb, so the prohibition guard could not see it —
+  // the confinement word comes after the location and no verb is negated
+  // anywhere. That branch exists to catch an EU-perspective document, where
+  // processing in the United States IS the transfer; read from a US order form
+  // between two US companies it inverts the sentence.
+  //
+  // What remains is fair. TEMP-004 surfaces the auto-renewal, which is what a
+  // reader wants surfaced even with the 5% uplift cap beside it, and the SLA
+  // exhibit really is not attached.
+  "saas-order-form-fields.txt": {
+    playbook: "saas-customer",
+    findings: ["IPDATA-007", "STRUCT-018", "TEMP-004", "IPDATA-004", "OBLI-005"],
+  },
+
   // An ENGLISH mutual NDA between two English companies, drafted the way
   // English NDAs are. Five checks could not read it, three of them at
   // `critical`, and all five are one class:

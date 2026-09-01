@@ -652,8 +652,20 @@ const RATIFIES_PARENT =
  * what keeps it from matching an ordinary agreement: a standalone contract
  * never says another agreement governs it.
  */
+// The parent is named by its ACRONYM as often as by its full title, and the
+// verb is as often a bare "governed by". An ORDER FORM opens "This Order Form
+// is GOVERNED BY THE MSA" and lists the master agreement in its header block —
+// and both halves of the old pattern missed it, so a $940,800 order form was
+// told at `critical` that it had no indemnification clause, and then that it
+// had no governing law, no IP ownership, no limitation of liability, and no
+// effect-of-termination clause. All five are clauses of the MSA, and reporting
+// them has no answer short of restating the master inside its own order form.
+//
+// `PARENT_CONTROLS` below already admits "MSA" as a parent noun; this is the
+// same list, and the acronyms are capitalised, so a lowercase "under the
+// agreement" still names no instrument.
 const ISSUED_UNDER_PARENT =
-  /\b(?:under|pursuant\s+to|issued\s+under|governed\s+by\s+the\s+terms\s+of)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)\b/;
+  /\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
 const PARENT_CONTROLS =
   // Case-SENSITIVE by design: the parent has to be a NAMED instrument, which
   // is what `[A-Z]` and the capitalized "Agreement" enforce. Only the leading

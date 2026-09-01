@@ -689,3 +689,44 @@ describe("GOVERNING_LAW_PRESENT — the adjectival form six rulesets missed", ()
     expect(hit("federal law applies to the extent it preempts.")).toBe(false);
   });
 });
+
+/**
+ * A document ISSUED UNDER a named parent, where the parent is named by its
+ * ACRONYM and the verb is a bare "governed by".
+ *
+ * An ORDER FORM opens "This Order Form is GOVERNED BY THE MSA" and lists the
+ * master agreement in its header block. Both halves of the old pattern missed
+ * it — it wanted "governed by the TERMS OF" and a parent ending in
+ * "Agreement" — so a $940,800 order form was told at `critical` that it had no
+ * indemnification clause, and then that it had no governing law, no IP
+ * ownership, no limitation of liability, and no effect-of-termination clause.
+ * All five are clauses of the MSA.
+ */
+describe("amendsParentAgreement — a parent named by its acronym", () => {
+  const ctx = (...paras: string[]) => buildContext(["Order Form", ...paras]);
+
+  it.each([
+    [
+      "a bare 'governed by the MSA'",
+      "This Order Form is governed by the MSA. Capitalized terms not defined here have the meanings given in the MSA.",
+    ],
+    [
+      "'pursuant to the SOW'",
+      "The Services are provided pursuant to the SOW and the rates stated in it.",
+    ],
+    [
+      "the full title, unchanged",
+      "This Order Form is issued under the Cloud Services Agreement dated June 3, 2025.",
+    ],
+  ])("recognizes %s", (_label, text) => {
+    expect(amendsParentAgreement(ctx(text))).toBe(true);
+  });
+
+  it("does not treat a lowercase 'under the agreement' as a named parent", () => {
+    expect(
+      amendsParentAgreement(
+        ctx("The parties will perform their obligations under the agreement in good faith."),
+      ),
+    ).toBe(false);
+  });
+});

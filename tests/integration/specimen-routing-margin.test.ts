@@ -47,6 +47,10 @@ const DECLARED_TIES = new Map<string, string>([
     "order-form.txt:saas-vendor",
     "the customer and vendor packs read the same order form from two sides",
   ],
+  [
+    "saas-order-form-fields.txt:saas-vendor",
+    "the same two sides, on a field-heavy order form issued under a master agreement",
+  ],
   ["saas-tos.txt:saas-vendor", "the same two sides, on a set of published terms"],
   [
     "privacy-notice.txt:privacy-policy-lint",
