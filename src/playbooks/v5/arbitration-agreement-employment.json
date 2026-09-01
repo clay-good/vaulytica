@@ -19,23 +19,46 @@
       "arbitrator shall be selected",
       "each party shall bear"
     ],
-    "negative_features": ["lease of the premises", "merger", "purchase and sale"]
+    "negative_features": [
+      "lease of the premises",
+      "merger",
+      "purchase and sale"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Arbitration", "Covered Claims"],
+  "expected_defined_terms": [
+    "Covered Claims"
+  ],
   "rule_overrides": {
-    "FIN-005": { "skip": true },
-    "IPDATA-001": { "skip": true },
-    "RISK-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "TERM-002": { "skip": true },
-    "TERM-005": { "skip": true }
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FAA-EFAA",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["employment-at-will-us", "offer-letter"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "employment-at-will-us",
+    "offer-letter"
+  ],
   "compliance_matrix_columns": [
     "Mutuality of the obligation to arbitrate",
     "EFAA carve-out for sexual harassment/assault claims",

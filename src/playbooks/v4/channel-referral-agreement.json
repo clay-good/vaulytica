@@ -31,12 +31,18 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Referral", "Qualified Referral", "Referral Fee", "Partner"],
+  "expected_defined_terms": [
+    "Qualified Referral",
+    "Referral Fee",
+    "Partner"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "RESPA-SECTION-8-ANTITRUST",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Qualified-referral definition",

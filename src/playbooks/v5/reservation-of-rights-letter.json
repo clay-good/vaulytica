@@ -18,10 +18,16 @@
       "declaratory relief",
       "we may disclaim coverage"
     ],
-    "negative_features": ["employment offer", "merger agreement"]
+    "negative_features": [
+      "employment offer",
+      "merger agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Policy", "Claim", "Insured"],
+  "expected_defined_terms": [
+    "Claim",
+    "Insured"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -60,8 +66,12 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-INSURANCE",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["insurance-policy-summary"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "insurance-policy-summary"
+  ],
   "compliance_matrix_columns": [
     "Specific policy provisions cited",
     "Facts giving rise to each reservation",

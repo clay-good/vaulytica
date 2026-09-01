@@ -31,8 +31,7 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": [
-    "Testator",
-    "Executor"
+    "Testator"
   ],
   "rule_overrides": {
     "CHOICE-001": {

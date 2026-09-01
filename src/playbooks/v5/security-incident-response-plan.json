@@ -20,10 +20,17 @@
       "incident commander",
       "notification timeline"
     ],
-    "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
+    "negative_features": [
+      "merger agreement",
+      "lease of the premises",
+      "purchase order"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Incident", "Severity", "Incident Commander"],
+  "expected_defined_terms": [
+    "Incident",
+    "Severity"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -62,7 +69,9 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "NIST-SP-800-61",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [
     "incident-notification",
     "business-continuity-plan",

@@ -19,24 +19,50 @@
       "expiration date of this warrant",
       "anti-dilution adjustment"
     ],
-    "negative_features": ["option grant notice", "restricted stock unit", "employment agreement"]
+    "negative_features": [
+      "option grant notice",
+      "restricted stock unit",
+      "employment agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Warrant", "Exercise Price", "Warrant Shares"],
+  "expected_defined_terms": [
+    "Exercise Price",
+    "Warrant Shares"
+  ],
   "rule_overrides": {
-    "CHOICE-003": { "skip": true },
-    "FIN-005": { "skip": true },
-    "IPDATA-001": { "skip": true },
-    "RISK-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "TERM-002": { "skip": true },
-    "TERM-005": { "skip": true }
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-SECURITIES",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["convertible-note", "safe-yc"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "convertible-note",
+    "safe-yc"
+  ],
   "compliance_matrix_columns": [
     "Number of shares, class, and exercise price",
     "Cashless / net exercise mechanics",

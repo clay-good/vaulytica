@@ -300,7 +300,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Insertion Order",
       "Media Company",
       "Agency"
     ],
@@ -1191,7 +1190,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Arbitration",
       "Covered Claims"
     ],
     "rule_overrides": {
@@ -2874,7 +2872,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Referral",
       "Qualified Referral",
       "Referral Fee",
       "Partner"
@@ -4050,7 +4047,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Judgment",
       "Stipulation"
     ],
     "rule_overrides": {
@@ -8542,7 +8538,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Issuer",
       "Accredited Investor"
     ],
     "rule_overrides": {
@@ -10712,8 +10707,7 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Testator",
-      "Executor"
+      "Testator"
     ],
     "rule_overrides": {
       "CHOICE-001": {
@@ -12656,7 +12650,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Notice of Privacy Practices",
       "Covered Entity"
     ],
     "rule_overrides": {
@@ -12859,7 +12852,6 @@
     "expected_clauses": [],
     "expected_defined_terms": [
       "Member",
-      "Manager",
       "Capital Contribution",
       "Membership Interest"
     ],
@@ -13872,9 +13864,7 @@
       ]
     },
     "expected_clauses": [],
-    "expected_defined_terms": [
-      "Spouses"
-    ],
+    "expected_defined_terms": [],
     "rule_overrides": {
       "CHOICE-003": {
         "skip": true
@@ -15546,7 +15536,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Alternate Payee",
       "Participant",
       "Plan"
     ],
@@ -16343,7 +16332,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Policy",
       "Claim",
       "Insured"
     ],
@@ -17891,8 +17879,7 @@
     "expected_clauses": [],
     "expected_defined_terms": [
       "Incident",
-      "Severity",
-      "Incident Commander"
+      "Severity"
     ],
     "rule_overrides": {
       "CHOICE-001": {
@@ -18371,7 +18358,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Trust",
       "Beneficiary",
       "Trustee"
     ],
@@ -20155,8 +20141,7 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Trust",
-      "Amendment"
+      "Trust"
     ],
     "rule_overrides": {
       "CHOICE-001": {
@@ -20240,7 +20225,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Debtor",
       "Secured Party",
       "Filing Office"
     ],
@@ -20333,8 +20317,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Exporter",
-      "Importer",
       "UK GDPR",
       "Personal Data"
     ],
@@ -21171,7 +21153,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Warrant",
       "Exercise Price",
       "Warrant Shares"
     ],

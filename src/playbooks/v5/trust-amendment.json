@@ -22,10 +22,15 @@
       "trust dated",
       "the settlor reserved the right to amend"
     ],
-    "negative_features": ["last will and testament", "merger agreement"]
+    "negative_features": [
+      "last will and testament",
+      "merger agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Trust", "Amendment"],
+  "expected_defined_terms": [
+    "Trust"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -64,8 +69,13 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UTC-602",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["revocable-living-trust", "codicil"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "revocable-living-trust",
+    "codicil"
+  ],
   "compliance_matrix_columns": [
     "Original trust identified by name and date",
     "Power to amend cited and method followed",

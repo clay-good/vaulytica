@@ -4,7 +4,11 @@
   "name": "Qualified Domestic Relations Order (QDRO)",
   "description": "Domestic relations order measured against the ERISA § 206(d)(3) / 26 U.S.C. § 414(p) qualification requirements. Selects the EST-419..425 ruleset (7 checks).",
   "match_features": {
-    "title_keywords": ["qualified domestic relations order", "qdro", "domestic relations order"],
+    "title_keywords": [
+      "qualified domestic relations order",
+      "qdro",
+      "domestic relations order"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "alternate payee",
@@ -15,10 +19,16 @@
       "shared payment",
       "earnings and losses"
     ],
-    "negative_features": ["merger agreement", "employment offer"]
+    "negative_features": [
+      "merger agreement",
+      "employment offer"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Alternate Payee", "Participant", "Plan"],
+  "expected_defined_terms": [
+    "Participant",
+    "Plan"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -183,8 +193,12 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "ERISA-206d3",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["family-msa"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "family-msa"
+  ],
   "compliance_matrix_columns": [
     "Plan named and participant/alternate payee identified",
     "Amount or percentage and valuation date",

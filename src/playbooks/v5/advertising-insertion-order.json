@@ -19,16 +19,28 @@
       "ad verification",
       "flight dates"
     ],
-    "negative_features": ["employment agreement", "lease of the premises", "software as a service"]
+    "negative_features": [
+      "employment agreement",
+      "lease of the premises",
+      "software as a service"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Insertion Order", "Media Company", "Agency"],
+  "expected_defined_terms": [
+    "Media Company",
+    "Agency"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "IAB-3.0",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["marketing-services-agreement", "influencer-agreement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "marketing-services-agreement",
+    "influencer-agreement"
+  ],
   "compliance_matrix_columns": [
     "Flight dates, inventory, and impressions",
     "Pricing, discrepancy, and third-party measurement",

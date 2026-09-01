@@ -28,7 +28,9 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Judgment", "Stipulation"],
+  "expected_defined_terms": [
+    "Stipulation"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -193,8 +195,13 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FRCP-58",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["confidential-settlement", "stipulation-of-dismissal"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "confidential-settlement",
+    "stipulation-of-dismissal"
+  ],
   "compliance_matrix_columns": [
     "Court, caption, and case number",
     "Retention of jurisdiction to enforce",

@@ -27,7 +27,6 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": [
-    "Issuer",
     "Accredited Investor"
   ],
   "rule_overrides": {

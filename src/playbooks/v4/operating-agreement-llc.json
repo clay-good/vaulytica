@@ -4,7 +4,10 @@
   "name": "LLC Operating Agreement",
   "description": "Operating agreement of a Delaware (or similar) LLC. Selects the §6.B governance ruleset (GOV-013..GOV-022).",
   "match_features": {
-    "title_keywords": ["operating agreement", "limited liability company agreement"],
+    "title_keywords": [
+      "operating agreement",
+      "limited liability company agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "members",
@@ -13,20 +16,39 @@
       "membership interest",
       "operating agreement"
     ],
-    "negative_features": ["bylaws", "stockholders", "partnership agreement"]
+    "negative_features": [
+      "bylaws",
+      "stockholders",
+      "partnership agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Member", "Manager", "Capital Contribution", "Membership Interest"],
+  "expected_defined_terms": [
+    "Member",
+    "Capital Contribution",
+    "Membership Interest"
+  ],
   "rule_overrides": {
-    "IPDATA-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "TERM-002": { "skip": true },
-    "RISK-015": { "severity": "info" }
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "RISK-015": {
+      "severity": "info"
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "DE-LLC-Act",
-  "applicable_jurisdictions": ["US-DE", "US"],
+  "applicable_jurisdictions": [
+    "US-DE",
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "DE LLC Act § 18-201",

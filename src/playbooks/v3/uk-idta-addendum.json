@@ -33,7 +33,10 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Exporter", "Importer", "UK GDPR", "Personal Data"],
+  "expected_defined_terms": [
+    "UK GDPR",
+    "Personal Data"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -72,8 +75,13 @@
     }
   ],
   "regulator_frame": "UK-GDPR",
-  "applicable_jurisdictions": ["UK"],
-  "companion_playbooks": ["dpa-controller-processor", "scc-module-2"],
+  "applicable_jurisdictions": [
+    "UK"
+  ],
+  "companion_playbooks": [
+    "dpa-controller-processor",
+    "scc-module-2"
+  ],
   "compliance_matrix_columns": [
     "UK Addendum Table 1 (Parties)",
     "UK Addendum Table 2 (SCC Modules)",

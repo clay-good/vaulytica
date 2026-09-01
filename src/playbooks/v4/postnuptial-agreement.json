@@ -2,7 +2,7 @@
   "id": "postnuptial-agreement",
   "version": "1.0.0",
   "name": "Postnuptial Agreement",
-  "description": "Postnuptial agreement under state postnup law (varies sharply). Per spec \u00a76.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the \u00a76.N ruleset (EST-046..EST-052).",
+  "description": "Postnuptial agreement under state postnup law (varies sharply). Per spec §6.N caveat: execution formalities cannot be verified from text alone (EST-060). Selects the §6.N ruleset (EST-046..EST-052).",
   "match_features": {
     "title_keywords": [
       "postnuptial agreement",
@@ -24,9 +24,7 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": [
-    "Spouses"
-  ],
+  "expected_defined_terms": [],
   "rule_overrides": {
     "CHOICE-003": {
       "skip": true
