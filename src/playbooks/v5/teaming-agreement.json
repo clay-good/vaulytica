@@ -4,7 +4,11 @@
   "name": "Teaming Agreement (Government Contracting)",
   "description": "Prime/subcontractor teaming agreement for a federal procurement, including FAR 9.6 treatment and the enforceability problem. Selects the COMM-152..156 ruleset (5 checks).",
   "match_features": {
-    "title_keywords": ["teaming agreement", "team agreement", "prime-subcontractor teaming"],
+    "title_keywords": [
+      "teaming agreement",
+      "team agreement",
+      "prime-subcontractor teaming"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "prime contractor",
@@ -12,18 +16,33 @@
       "request for proposals",
       "proposal preparation",
       "organizational conflict",
-      "workshare"
+      "workshare",
+      "the solicitation",
+      "submit the proposal",
+      "the prime"
     ],
-    "negative_features": ["merger", "lease of the premises", "employment agreement"]
+    "negative_features": [
+      "merger",
+      "lease of the premises",
+      "employment agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Prime", "Team Member", "Program"],
+  "expected_defined_terms": [
+    "Prime",
+    "Team Member",
+    "Program"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FAR-9.6",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["far-subcontract-flowdown"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "far-subcontract-flowdown"
+  ],
   "compliance_matrix_columns": [
     "Identified program / solicitation",
     "Workshare and scope commitment",

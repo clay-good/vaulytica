@@ -7162,7 +7162,7 @@
   },
   {
     "id": "employment-restrictive-covenant",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "Employment Restrictive Covenant Agreement",
     "description": "Employment-side non-compete / non-solicit covenant. Selects the §6.F employment ruleset (EMP-024..EMP-031). Subject to FTC NCR § 910 and state non-compete law.",
     "match_features": {
@@ -7182,7 +7182,11 @@
         "non-compete",
         "non-solicitation",
         "restricted period",
-        "garden leave"
+        "garden leave",
+        "will not work for",
+        "competes with the company",
+        "after leaving",
+        "any competitor"
       ],
       "negative_features": [
         "m&a restrictive covenant",
@@ -18878,7 +18882,7 @@
   },
   {
     "id": "subscription-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Securities Subscription Agreement",
     "description": "Investor subscription for privately-placed securities, reviewed for the Reg D exemption representations and transfer legend. Selects the MNA-117..123 ruleset (7 checks).",
     "match_features": {
@@ -18895,7 +18899,10 @@
         "the securities have not been registered",
         "investment intent",
         "restrictive legend",
-        "suitability"
+        "suitability",
+        "subscribes for",
+        "payable at closing",
+        "shares of series"
       ],
       "negative_features": [
         "merger",
@@ -19053,7 +19060,10 @@
         "request for proposals",
         "proposal preparation",
         "organizational conflict",
-        "workshare"
+        "workshare",
+        "the solicitation",
+        "submit the proposal",
+        "the prime"
       ],
       "negative_features": [
         "merger",

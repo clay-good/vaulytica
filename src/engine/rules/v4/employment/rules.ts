@@ -44,6 +44,17 @@ import {
 
 const CATEGORY = "employment";
 
+/**
+ * A same-clause window that survives an ABBREVIATION PERIOD. `[^.]{0,160}` is
+ * the obvious way to stay inside one sentence, and it dies at the first "Inc."
+ * — which in a covenant is almost always the employer's own name, standing
+ * between the duration and the restriction verb: "for five years after leaving
+ * Halcyon Analytics, Inc. he will not work for any competitor". EMP-025 read
+ * that as stating no duration and said so at CRITICAL, on the sentence that
+ * states it.
+ */
+const CLAUSE_GAP = String.raw`(?:[^.]|\b(?:Inc|Corp|Ltd|Co|LLC|L\.L\.C|L\.P|No|Mr|Ms|Mrs|Dr|St|Jr|Sr)\.)`;
+
 const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
   buildV4PresenceRule({ ...s, category: CATEGORY });
 const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
@@ -638,7 +649,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-025",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "Non-compete duration stated",
     description: "Where permitted, non-compete duration must be stated.",
     citation: stateNonCompete(),
@@ -666,8 +677,24 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // and a covenant agreement writes that word in its TITLE and nowhere
       // else — so a three-year worldwide non-compete was reported at CRITICAL
       // as having no duration at all.
-      /\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,2}\)?\s*(?:months?|years?)\b[^.]{0,160}?\b(?:shall|will|agrees?|covenants?)\s+not\b/is,
+      new RegExp(
+        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,2}\)?\s*(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|agrees?|covenants?)\s+not\b`,
+        "is",
+      ),
       /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:shall\s+not|restrict)/is,
+      // The duration SPELLED OUT with no numeral at all — "for five years
+      // after leaving the Company he will not work for any competitor". Every
+      // branch above requires digits somewhere: the two bare-digit forms, the
+      // parenthetical form, the restriction-sentence form, and the
+      // spelled-then-numeric form, which still needs its `(12)`. Plain
+      // drafting spells the number and stops, so a five-year nationwide
+      // covenant was reported at CRITICAL as stating no duration — on the
+      // sentence that states it. Bounded to the same clause by `[^.]` so a
+      // "three years" from an unrelated term clause cannot satisfy it.
+      new RegExp(
+        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|eighteen|twenty-four|thirty-six)\s+(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|agrees?|covenants?)\s+not\b`,
+        "is",
+      ),
     ],
   }),
   presence({

@@ -972,9 +972,54 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
+  /**
+   * Three more of the same class, and the third is the one that mattered.
+   *
+   * `subscription-agreement` listed the whole Regulation D apparatus
+   * ("accredited investor", "rule 506", "the securities have not been
+   * registered", "restrictive legend", "suitability") and `teaming-agreement`
+   * the whole FAR one ("contracting officer", "organizational conflict",
+   * "workshare"). Both reached 0.3 — their own title and nothing else.
+   *
+   * The NON-COMPETITION AGREEMENT below runs five years, nationwide, against
+   * any competitor, and chooses California law, where Bus. & Prof. Code
+   * § 16600 voids it outright. Its title is a keyword of BOTH restrictive-
+   * covenant families, so each scored 0.3 and neither reached: the worst
+   * covenant in the catalog got `generic-fallback` and four findings. The
+   * employment family now also claims the words a plainly-drafted covenant
+   * actually uses.
+   */
+  const BARE_COVENANTS: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "subscription-agreement",
+      title: "SUBSCRIPTION AGREEMENT",
+      body: [
+        "The undersigned subscribes for 400,000 shares of Series Seed Preferred Stock of Thistledown Robotics, Inc. at $2.50 per share.",
+        "The purchase price is $1,000,000, payable at closing. The undersigned has reviewed the materials the Company provided.",
+      ],
+    },
+    {
+      id: "teaming-agreement",
+      title: "TEAMING AGREEMENT",
+      body: [
+        'This Teaming Agreement is between Larkspur Systems, Inc. ("Prime") and Kestrel Analytics LLC ("Subcontractor") for the Department of Energy solicitation DE-SOL-0014772.',
+        "Prime will submit the proposal. If Prime wins, Prime will decide what work to give Subcontractor.",
+      ],
+    },
+    {
+      id: "employment-restrictive-covenant",
+      title: "NON-COMPETITION AGREEMENT",
+      body: [
+        "Desmond Vaillancourt agrees that for five years after leaving Halcyon Analytics, Inc. he will not work for any competitor anywhere in the United States.",
+        "This applies to any business that competes with the Company in any way. California law governs.",
+      ],
+    },
+  ];
+
   it.each([
     ...BAD_DOCUMENTS,
     ...BARE_LICENCES,
+    ...BARE_COVENANTS,
     ...THIN_MARGINS,
     ...BARE_INSTRUMENTS,
     ...BARE_COMMERCIAL,

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.301.0] — 2026-09-01
+
+### Fixed
+- **The jurisdiction overlays never reached the CLI's JSON report.**
+  `buildJsonReport` builds `jurisdiction_overlays` from the governing-law
+  clauses in its `extracted` argument and the CLI passed `undefined`, so the
+  field could not appear for any document. A standalone California non-compete
+  reported thirteen findings and said nothing about Cal. Bus. & Prof. Code
+  § 16600, which voids it. Now threaded, and asserted by a guard.
+- **EMP-025 reported "Non-compete duration missing" on the sentence stating
+  the duration.** Every branch required digits, so a duration spelled out in
+  words ("for five years") was invisible; and the same-clause window `[^.]`
+  died at the employer's own "Inc.", which stands between the duration and the
+  restriction verb.
+- **A standalone non-competition agreement reached no family at all.** Its
+  title is a keyword of both `employment-restrictive-covenant` and
+  `ma-restrictive-covenant`, so each scored 0.3 and neither cleared the
+  threshold. `subscription-agreement` and `teaming-agreement` failed the same
+  way, listing only Regulation D and FAR vocabulary respectively.
+
+### Known
+- EMP-027 reports "Geographic scope clause missing" on "anywhere in the United
+  States". The logic is intended — an unbounded scope is the abuse the rule
+  exists to catch — but the wording states something false about the document.
+  A finding-title problem, tracked separately.
+
 ## [9.300.0] — 2026-08-31
 
 ### Fixed

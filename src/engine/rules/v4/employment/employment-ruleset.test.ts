@@ -741,3 +741,38 @@ describe("EMP-025 / EMP-027 v1.3.0 / v1.1.0 — the covenant's own drafting", ()
     expect(ruleById("EMP-027").check(ctx)).toBeNull();
   });
 });
+
+describe("EMP-025 v1.4.0 — a duration spelled out, past the employer's own 'Inc.'", () => {
+  const covenant = (...body: string[]) =>
+    withPb(buildContext(["NON-COMPETITION AGREEMENT", ...body] as [string, ...string[]]), RC_PB);
+  const emp025 = () => EMPLOYMENT_RULES.find((r) => r.id === "EMP-025")!;
+
+  it("reads a duration written in words with no numeral", () => {
+    // Every branch required digits somewhere — the two bare-digit forms, the
+    // parenthetical form, the restriction-sentence form, and the
+    // spelled-then-numeric form, which still needs its "(12)". Plain drafting
+    // spells the number and stops.
+    const ctx = covenant(
+      "Desmond Vaillancourt agrees that for five years after leaving Halcyon Analytics he will not work for any competitor anywhere in the United States.",
+    );
+    expect(emp025().check(ctx)).toBeNull();
+  });
+
+  it("reads it across the employer's abbreviated name", () => {
+    // `[^.]{0,160}` is the obvious same-clause window and it dies at the first
+    // "Inc." — which in a covenant is almost always the employer's own name,
+    // standing between the duration and the restriction verb. The five-year
+    // nationwide covenant was reported at CRITICAL as stating no duration.
+    const ctx = covenant(
+      "Desmond Vaillancourt agrees that for five years after leaving Halcyon Analytics, Inc. he will not work for any competitor anywhere in the United States.",
+    );
+    expect(emp025().check(ctx)).toBeNull();
+  });
+
+  it("still fires when no duration is stated at all", () => {
+    const ctx = covenant(
+      "Desmond Vaillancourt agrees that after leaving Halcyon Analytics, Inc. he will not work for any competitor anywhere in the United States.",
+    );
+    expect(emp025().check(ctx)).not.toBeNull();
+  });
+});

@@ -680,7 +680,20 @@ async function renderFormat(
         r.ingest,
         undefined,
         undefined,
-        undefined,
+        // The jurisdiction overlays (spec-v6 Part VI §21) are built from the
+        // governing-law clauses in `extracted`, and this argument was
+        // `undefined` — so `jurisdiction_overlays` could never appear in a CLI
+        // report, for any document. A standalone California non-compete
+        // reported thirteen findings and said nothing about California, where
+        // Bus. & Prof. Code § 16600 voids the covenant outright and § 16600.5
+        // makes attempting to enforce it an independent violation. The overlay
+        // catalog knows this, the selector resolves it, and the DOCX report
+        // prints it; the one surface a script can read did not. Re-extracted
+        // here rather than threaded through `AnalyzeResult`, matching the
+        // `--critical-dates` and `--posture` paths above: the overlay is not
+        // part of `run.result_hash`, so this cannot change what a run verifies
+        // to.
+        extractAll(r.ingest.tree),
         r.delivery,
         r.critical_dates,
         r.closing_checklist,
