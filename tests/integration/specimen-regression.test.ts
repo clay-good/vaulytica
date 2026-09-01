@@ -3164,6 +3164,43 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["FIN-009", "STRUCT-005"],
   },
 
+  // An ENGLISH mutual NDA between two English companies, drafted the way
+  // English NDAs are. Five checks could not read it, three of them at
+  // `critical`, and all five are one class:
+  //
+  // NDA-D-007 wanted "already known" or "prior to disclosure"; the exclusion is
+  // written as availability BEFORE disclosure. NDA-D-008 wanted "third party";
+  // English drafting says "a PERSON who is not under a confidentiality
+  // obligation". NDA-D-017 and NDA-D-018 both wanted the PLURAL "laws of" —
+  // and NDA-D-018's list of viable jurisdictions already names England, so the
+  // most conventional English choice of law was reported both as absent and as
+  // not viable, over one letter. NDA-D-012 wanted "solely for the purpose"; the
+  // Purpose is defined by a parenthetical in the recitals and used as "except
+  // for the Purpose".
+  //
+  // NDA-D-001 stays and is the jurisdiction question, not a defect in the rule:
+  // the DTSA whistleblower-immunity notice is 18 U.S.C. § 1833(b), and two
+  // English companies contracting under English law owe no such notice. It is
+  // the same shape as MSA-030 on the English MSA, and is filed as its own
+  // change. NDA-D-016 is the same in kind — an English court requires a
+  // cross-undertaking in damages, not a bond.
+  //
+  // NDA-D-022 and NDA-D-023 are fair in any jurisdiction: the agreement carries
+  // no authority representation and says nothing about assignment.
+  "uk-mutual-nda.txt": {
+    playbook: "mutual-nda-deep",
+    findings: [
+      "NDA-D-001",
+      "NDA-D-016",
+      "NDA-D-022",
+      "NDA-D-023",
+      "NDA-D-019",
+      "OBLI-005",
+      "RISK-001",
+      "TERM-007",
+    ],
+  },
+
   // An English CONTRACT OF EMPLOYMENT — the section 1 particulars required by
   // the Employment Rights Act 1996, the Working Time Regulations opt-out, SSP,
   // garden leave, and covenants stated as no wider than reasonably necessary.

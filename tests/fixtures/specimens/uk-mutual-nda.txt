@@ -1,0 +1,70 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Agreement is dated 14 April 2026 and is made between:
+
+(1) NORTHBRIDGE CLOUD LIMITED, a company incorporated in England and Wales (company number 09123456) whose registered office is at 88 Bishopsgate, London EC2N 4AJ; and
+
+(2) HALBROOK DIAGNOSTICS LIMITED, a company incorporated in England and Wales (company number 08765432) whose registered office is at 40 Rosenthaler Street, Manchester M1 2AB,
+
+each a "party" and together the "parties".
+
+BACKGROUND
+
+The parties wish to explore a possible commercial relationship concerning the hosting of laboratory data (the "Purpose") and each may disclose Confidential Information to the other for that Purpose.
+
+IT IS AGREED:
+
+1. DEFINITIONS
+
+1.1 "Confidential Information" means all information of a confidential nature disclosed (whether in writing, orally or by any other means, and whether directly or indirectly) by one party to the other, whether before or after the date of this Agreement, including information relating to that party's business, affairs, customers, clients, suppliers, plans, operations, processes, product information, know-how, designs, trade secrets, software, market opportunities and customers, together with any analysis or note derived from it.
+
+2. CONFIDENTIALITY UNDERTAKINGS
+
+2.1 Each party shall keep the other's Confidential Information confidential and shall not use it except for the Purpose.
+
+2.2 Each party may disclose the other's Confidential Information to its employees, officers, professional advisers and subcontractors who need to know it for the Purpose, provided that it informs them of its confidential nature and procures that they comply with this Agreement as if they were a party, and it remains liable for their acts and omissions.
+
+2.3 Each party may disclose the other's Confidential Information to the extent required by law, by a court of competent jurisdiction or by a regulatory or governmental body, provided that, so far as it is lawfully able, it gives the other reasonable prior notice.
+
+3. EXCEPTIONS
+
+3.1 Clause 2 does not apply to information that: is or becomes generally available to the public other than by breach of this Agreement; was available to the receiving party on a non-confidential basis before disclosure; was, is or becomes available to the receiving party on a non-confidential basis from a person who is not under a confidentiality obligation; or was independently developed by the receiving party without reference to the Confidential Information.
+
+4. NO LICENCE, NO WARRANTY
+
+4.1 Nothing in this Agreement grants any licence or right in any Intellectual Property Rights other than the right to use the Confidential Information for the Purpose.
+
+4.2 Neither party makes any representation or warranty as to the accuracy or completeness of its Confidential Information, save that each party warrants that it is entitled to disclose it.
+
+5. RETURN AND DESTRUCTION
+
+5.1 On written request, and in any event on termination, each party shall return or destroy the other's Confidential Information and any copy of it, and shall certify that it has done so, save that it may retain one copy to the extent required by law or by its bona fide document-retention policy, and any copy held in routine backup, and this Agreement continues to apply to anything so retained.
+
+6. NO OBLIGATION TO PROCEED
+
+6.1 Nothing in this Agreement obliges either party to enter into any further agreement or to disclose any particular information.
+
+7. TERM
+
+7.1 This Agreement begins on the date above and continues for two years, and the obligations in clauses 2, 3, 4, 5 and 8 continue for five years from the date of disclosure, save that the obligations in respect of any trade secret continue for so long as the information remains a trade secret.
+
+8. REMEDIES
+
+8.1 Each party acknowledges that damages alone may not be an adequate remedy for breach, and that the other is entitled to seek the remedies of injunction, specific performance or other equitable relief, without proof of special damages.
+
+9. GENERAL
+
+9.1 No variation of this Agreement is effective unless it is in writing and signed by both parties.
+9.2 No failure or delay in exercising a right is a waiver of it.
+9.3 A person who is not a party has no right under the Contracts (Rights of Third Parties) Act 1999 to enforce any term.
+9.4 This Agreement is governed by the law of England and Wales, and each party irrevocably submits to the exclusive jurisdiction of the courts of England and Wales.
+
+Signed for and on behalf of NORTHBRIDGE CLOUD LIMITED
+
+/s/ Rosalind Achebe Kwan
+Director
+
+Signed for and on behalf of HALBROOK DIAGNOSTICS LIMITED
+
+/s/ Marisol Trent
+Director

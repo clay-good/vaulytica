@@ -414,3 +414,65 @@ describe("the words an NDA is actually drafted in", () => {
     ).toBeNull();
   });
 });
+
+/**
+ * An ENGLISH NDA says the same things in different words, and five checks
+ * could not read them — three of them at `critical`.
+ *
+ * All five are one class, found on one document: a mutual NDA between two
+ * English companies, drafted the way English NDAs are.
+ */
+describe("the words an ENGLISH NDA is drafted in", () => {
+  const nda = (pb: Playbook, ...body: string[]) =>
+    withPb(buildContext(["Mutual Non-Disclosure Agreement", ...body] as [string, ...string[]]), pb);
+  const ruleById = (id: string) => NDA_DEEP_RULES.find((r) => r.id === id)!;
+
+  const EXCLUSIONS =
+    "Clause 2 does not apply to information that: is or becomes generally available to the public other than by breach of this Agreement; was available to the receiving party on a non-confidential basis before disclosure; was, is or becomes available to the receiving party on a non-confidential basis from a person who is not under a confidentiality obligation; or was independently developed by the receiving party without reference to the Confidential Information.";
+
+  it("NDA-D-007 reads the already-known exclusion as availability BEFORE disclosure", () => {
+    expect(ruleById("NDA-D-007").check(nda(MUTUAL, EXCLUSIONS))).toBeNull();
+  });
+
+  it("NDA-D-008 reads a third party described as 'a person who is not under' an obligation", () => {
+    expect(ruleById("NDA-D-008").check(nda(MUTUAL, EXCLUSIONS))).toBeNull();
+  });
+
+  it.each(["NDA-D-017", "NDA-D-018"])(
+    "%s reads the SINGULAR 'the law of England and Wales'",
+    (id) => {
+      expect(
+        ruleById(id).check(
+          nda(
+            MUTUAL,
+            "This Agreement is governed by the law of England and Wales, and each party irrevocably submits to the exclusive jurisdiction of the courts of England and Wales.",
+          ),
+        ),
+      ).toBeNull();
+    },
+  );
+
+  it("NDA-D-012 reads a Purpose defined by parenthetical and used as an exception", () => {
+    expect(
+      ruleById("NDA-D-012").check(
+        nda(
+          MUTUAL,
+          'The parties wish to explore a possible commercial relationship concerning the hosting of laboratory data (the "Purpose").',
+          "Each party shall keep the other's Confidential Information confidential and shall not use it except for the Purpose.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  // Load-bearing: an NDA that states none of them still reports all five.
+  it.each(["NDA-D-007", "NDA-D-008", "NDA-D-012", "NDA-D-017"])(
+    "%s still fires on an NDA that states nothing",
+    (id) => {
+      expect(
+        ruleById(id).check(
+          nda(MUTUAL, "Each party shall keep the other's Confidential Information confidential."),
+        ),
+      ).not.toBeNull();
+    },
+  );
+});

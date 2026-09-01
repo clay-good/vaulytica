@@ -198,7 +198,11 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add: 'Confidential Information does not include information already known to Receiving Party prior to disclosure, as evidenced by its written records.'",
     present_patterns: [
-      /(already\s+known|prior\s+to\s+disclos|previously\s+known|in\s+the\s+possession\s+of)/i,
+      // "BEFORE disclosure" is the English form of "prior to disclosure", and
+      // an English NDA writes the exclusion as availability rather than
+      // knowledge: "was available to the receiving party on a non-confidential
+      // basis BEFORE DISCLOSURE".
+      /(already\s+known|prior\s+to\s+disclos|before\s+disclos|previously\s+known|in\s+the\s+possession\s+of)/i,
       // "(rightfully) known to the Receiving Party before disclosure" — the
       // "known … before disclosure" order with "before" (not "prior to") is as
       // common as the forms above and was missed.
@@ -233,7 +237,11 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add: 'Confidential Information does not include information received from a third party not under an obligation of confidentiality to Disclosing Party.'",
     present_patterns: [
-      /(third\s+party).{0,80}(without\s+(breach|restriction)|lawfully|not\s+(under|subject\s+to))/is,
+      // English drafting says "a PERSON who is not under a confidentiality
+      // obligation" where American drafting says "a third party". The noun is
+      // bounded to the relative-clause forms so a bare "person" in prose
+      // cannot trip it.
+      /(third\s+part(?:y|ies)|(?:a|another|any)\s+person\s+who|persons?\s+who\s+(?:is|are)\s+not).{0,80}(without\s+(breach|restriction)|lawfully|not\s+(under|subject\s+to))/is,
       // The carve-out uses many receipt verbs and either "from a third party" or
       // "... to the Receiving Party BY a third party". The original verb list
       // (received/obtained) and required "from a" article missed disclosed /
@@ -344,6 +352,12 @@ export const NDA_DEEP_RULES: Rule[] = [
       /solely\s+(for|to)\s+(the\s+)?purpose/i,
       /to\s+(evaluate|assess|consider)\s+(a\s+)?(potential|the)\s+(business|transaction)/i,
       /\bpurpose\b.{0,40}(means|defined)/i,
+      // The Purpose is as often defined by a PARENTHETICAL in the recitals —
+      // "concerning the hosting of laboratory data (the 'Purpose')" — and used
+      // as "shall not use it EXCEPT FOR THE PURPOSE". Both are the narrow
+      // framing this check asks for.
+      /\(\s*(?:the\s+)?["“”'’]?Purpose["“”'’]?\s*\)/,
+      /\b(?:except|save|other\s+than)\s+for\s+the\s+Purpose\b/i,
     ],
     default_severity: "warning",
   }),
@@ -478,7 +492,16 @@ export const NDA_DEEP_RULES: Rule[] = [
     // read as unusual. The extractor has read both forms since v1; these rules
     // carried their own narrower copy.
     present_patterns: [
-      /(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+the\s+(State\s+of|country\s+of))/i,
+      // SINGULAR, and the place is not always a State or a country. "This
+      // Agreement is governed by THE LAW OF ENGLAND AND WALES" is how every
+      // English agreement says it — one law, and a jurisdiction that is
+      // neither — and the plural-and-State-only branch reported a `critical`
+      // for having no governing-law clause at all.
+      // No `[A-Z]` anchor here: it is INERT under the `i` flag this pattern
+      // needs for the case-varying heading. The place name is not tested at
+      // all — "governed by the law of" is the whole signal, and NDA-D-018 is
+      // the rule that asks WHICH law it is.
+      /(governing\s+law|governed\s+by\s+the\s+laws?\s+of|laws?\s+of\s+(?:the\s+)?(?:State|Commonwealth|country|Republic)\s+of)/i,
       /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))/,
       /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
@@ -498,7 +521,11 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Consider whether a more conventional jurisdiction (Delaware, New York, California, Texas) better serves the parties.",
     present_patterns: [
-      /laws\s+of\s+(the\s+(State\s+of\s+)?)?(Delaware|New\s+York|California|Texas|Massachusetts|Illinois|Washington|England|United\s+Kingdom)/i,
+      // SINGULAR. The list already names England, and an English agreement
+      // says "the LAW of England and Wales" — one law — so the plural-only
+      // branch reported the most conventional English choice of law as not
+      // being from a viable jurisdiction.
+      /laws?\s+of\s+(the\s+(State\s+of\s+)?)?(Delaware|New\s+York|California|Texas|Massachusetts|Illinois|Washington|England|United\s+Kingdom)/i,
       // The same jurisdictions named adjectivally — "New York law governs",
       // "governed by Delaware law". Without these the rule reported the most
       // conventional NDA jurisdiction there is as an unusual one.
