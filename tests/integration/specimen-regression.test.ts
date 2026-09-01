@@ -3156,6 +3156,33 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A California employment arbitration agreement drafted to Armendariz: a
+  // mutual obligation with no carve-out for the claims the employer is likelier
+  // to bring, a neutral arbitrator, adequate discovery, every remedy available
+  // in court, a written award, the employer paying all costs unique to
+  // arbitration, and the CCP §§ 1281.97 / 1281.98 late-payment waiver. Every
+  // employment check passes, which is the direction that matters.
+  //
+  // STRUCT-006 is the one finding, and it is recorded rather than fixed. The
+  // agreement defines Covered Claims in a section headed COVERED CLAIMS whose
+  // first sentence restates the term and defines it with a copula — "Covered
+  // Claims ARE all claims arising out of…" — which nothing in the definitions
+  // extractor reads, so the singular "Covered Claim" is reported undefined.
+  //
+  // A recognizer for that shape was WRITTEN AND REVERTED, and the measurement
+  // is here so it is not written again unchanged. Requiring the section heading
+  // and the sentence subject to be the same phrase is not tight enough: it also
+  // reads "FINAL PAYMENT. Final payment IS due thirty days after…" and
+  // "BACKUPS. Backups ARE replicated hourly…" as definitions, which are
+  // provisions about a topic and not definitions of a term. Two of the 269
+  // specimens grew a spurious defined-term-never-used finding on the first try.
+  // A version that works has to tell a definitional predicate from an operative
+  // one, or gate on the term being used elsewhere in the document.
+  "ca-employment-arbitration.txt": {
+    playbook: "arbitration-agreement-employment",
+    findings: ["STRUCT-006", "CHOICE-003", "CHOICE-006", "OBLI-005"],
+  },
+
   // A Regulation A Tier 2 offering circular, with the Rule 251(d)(2)(i)(C)
   // investment limitation, the SEC legend verbatim, the Form 1-K / 1-SA / 1-U
   // ongoing-reporting undertaking, and the no-minimum / no-escrow disclosure
