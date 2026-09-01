@@ -13306,7 +13306,6 @@
     "expected_clauses": [],
     "expected_defined_terms": [
       "Principal",
-      "Surety",
       "Obligee",
       "Penal Sum"
     ],
@@ -19198,7 +19197,6 @@
     },
     "expected_clauses": [],
     "expected_defined_terms": [
-      "Sponsor",
       "Entrant",
       "Prize"
     ],

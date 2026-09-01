@@ -64,8 +64,17 @@ export const rule: Rule = {
             dateLine = true;
         }
       }
+      // The FORMAL EXECUTION LINE of an instrument: "SIGNED AND SEALED this
+      // 2nd day of February, 2026", "EXECUTED this 6th day of February,
+      // 2026", "WITNESS my hand this 14th day of March, 2026". Every bond,
+      // deed, will, affidavit, and acknowledgment dates itself there and
+      // nowhere else, and the branch here read only "Dated this Nth day of" —
+      // so a payment and performance bond whose foot carries its own date in
+      // the oldest form there is was told it states no effective date. The
+      // verb list is spelled in both cases rather than flagged `i`, because
+      // the month anchor beside it has to stay case-sensitive.
       if (
-        /\b[Dd]ated\s+(?:as\s+of\s+)?this\s+\d{1,2}(?:st|nd|rd|th)?\s+day\s+of\s+[A-Z][a-z]+,?\s+\d{4}/.test(
+        /\b(?:[Dd]ated|DATED|[Ss]igned|SIGNED|[Ss]ealed|SEALED|[Ee]xecuted|EXECUTED|[Dd]elivered|DELIVERED|hand)\b[^.]{0,60}?\bthis\s+\d{1,2}(?:st|nd|rd|th)?\s+day\s+of\s+(?:[A-Z][a-z]+|[A-Z]{3,}),?\s+\d{4}/.test(
           p.text,
         )
       )

@@ -467,7 +467,7 @@ const BOND_RULES: Rule[] = [
   }),
   presence({
     id: "CON-021",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Bond type — payment / performance / dual-obligee",
     description: "Bond must clearly state whether it is a payment bond, performance bond, or dual.",
     citation: millerAct(),
@@ -488,9 +488,26 @@ const BOND_RULES: Rule[] = [
     // real state bond — reported at `critical` on a document titled "PAYMENT
     // AND PERFORMANCE BOND". The pillar now recognizes the authority the way
     // a bond states it.
+    // 1.2.0 — the second pillar now accepts the UNDERTAKING. Widening it to a
+    // code section in 1.1.0 still could not be satisfied by a COMMON-LAW
+    // bond, which is what a school district takes from a general contractor:
+    // it names no statute at all, because none compels it. A document headed
+    // PAYMENT AND PERFORMANCE BOND, with a section headed Performance and a
+    // section headed Payment, was told at `critical` that it does not say
+    // which kind of bond it is.
+    //
+    // Dropping the pillar outright was the wrong repair and is recorded in
+    // the test file: the first pillar reads the TITLE, and every document
+    // routed to this family is titled for the bond, so the check would have
+    // become one no document could fail. The second pillar has to stay, and
+    // what it should ask is what the rule's name means in substance — does
+    // the document say what the surety undertakes? A performance bond
+    // promises to complete or faithfully perform; a payment bond promises to
+    // pay the claimants who furnished labor and materials. A bond that says
+    // neither has not stated its type, whatever its title says.
     present_patterns: [
-      /(payment\s+bond|performance\s+bond)/i,
-      /(aia\s+a312|miller\s+act|little\s+miller|dual[-\s]obligee|§+\s*\d+[-–.]\d+|\b\d+\s+U\.?\s?S\.?\s?C\.?\s*§*\s*\d)/i,
+      /(payment\s+bond|performance\s+bond|dual[-\s]obligee)/i,
+      /(aia\s+a312|miller\s+act|little\s+miller|dual[-\s]obligee|§+\s*\d+[-–.]\d+|\b\d+\s+U\.?\s?S\.?\s?C\.?\s*§*\s*\d|faithfully\s+perform|complete\s+the\s+contract|pay\s+all\s+(?:claimants|persons|bills)|furnished\s+labor)/i,
     ],
     require_all_present: true,
   }),

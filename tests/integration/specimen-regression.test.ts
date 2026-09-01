@@ -591,13 +591,14 @@ export const EXPECTED: Record<string, Expectation> = {
   // An export control and trade sanctions compliance policy. Routes on its
   // register alone — the family's title keywords are all of the form "export
   // control policy", and a real one is titled for both halves of the subject
-  // ("Export Control and Trade Sanctions Compliance Policy"). Clean: the two
-  // findings are STRUCT-006 on "Trade Compliance" (a department, the same
-  // shape the employee handbook's "People Operations" carries) and OBLI-005's
-  // tally of the two prohibitions.
+  // ("Export Control and Trade Sanctions Compliance Policy"). STRUCT-006 on
+  // "Trade Compliance" came off in 9.354.0: a department is not a defined
+  // term, the same call made on the employee handbook's "People Operations"
+  // and the commission plan's "Sales Operations". OBLI-005 tallies the two
+  // prohibitions and is correct.
   "export-control-policy.txt": {
     playbook: "export-control-policy",
-    findings: ["OBLI-005", "STRUCT-006"],
+    findings: ["OBLI-005"],
   },
 
   // An FCPA/UKBA anti-bribery policy, drafted the way a multinational's
@@ -2750,6 +2751,43 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "RISK-010", "RISK-011"],
   },
 
+  // A payment and performance bond from a surety to a school district. Two
+  // defects, both about the oldest document shapes there are.
+  //
+  // CON-021 reported at `critical` that the bond does not say which kind of
+  // bond it is — on a document headed PAYMENT AND PERFORMANCE BOND, with a
+  // section headed Performance and a section headed Payment. The check
+  // required a SECOND pillar: a statutory citation. A common-law bond, which
+  // is what a school district takes from a general contractor, names no
+  // statute at all because none compels it. The pillar never served the rule
+  // either — its name, description, and recommendation are all about the
+  // TYPE, and a rule whose own fix does not satisfy it is a broken rule.
+  //
+  // STRUCT-002 reported no effective date on a bond whose foot reads "SIGNED
+  // AND SEALED this 2nd day of February, 2026". The formal-execution branch
+  // read only "Dated this Nth day of", so every bond, deed, will, and
+  // affidavit that dates itself in the oldest form there is fell through.
+  //
+  // CHOICE-001 and CHOICE-003 stay and are fair: the bond names Colorado law
+  // only as a savings clause on the suit-limitation period, and a surety bond
+  // that does not choose its law leaves the claimant to find out where.
+  "payment-performance-bond.txt": {
+    playbook: "payment-performance-bond",
+    findings: ["CHOICE-001", "CHOICE-003", "OBLI-005"],
+  },
+
+  // Sweepstakes official rules with no-purchase-necessary, the free alternate
+  // method of entry with equal chances, eligibility, the entry period with a
+  // timekeeper, the prize ARV, odds, winner selection and notification, the
+  // 1099, publicity consent, and the winner list. Nothing was wrong.
+  // DARK-005 is correct and expected: § 10 waives class-wide relief, which is
+  // lawful and near-universal in official rules, and a reader is entitled to
+  // be told it is there.
+  "sweepstakes-official-rules.txt": {
+    playbook: "sweepstakes-official-rules",
+    findings: ["DARK-005"],
+  },
+
   // A UK cookie notice with the category breakdown, a named-cookie table, the
   // legal basis for each category, reject-all as easy as accept-all,
   // withdrawal as easy as consent, the transfer mechanism, and the ICO. It
@@ -2774,7 +2812,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // STRUCT-006 reported "Trade Compliance" as a term the policy forgot to
   // define, in the paragraph telling employees to call them. Every policy
   // names the team that administers it and none defines its own org chart.
-  "export-control-policy.txt": {
+  "export-control-policy-itar.txt": {
     playbook: "export-control-policy",
     findings: [],
   },

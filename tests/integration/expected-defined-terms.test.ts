@@ -61,7 +61,13 @@ const dkb = loadStarterDkbSync();
 const SPECIMEN_DIR = join(ROOT, "tests", "fixtures", "specimens");
 
 /**
- * The count as of 9.349.0. **This may only shrink.** It is the number of
+ * The count as of 9.355.0. **This may only shrink**, with one exception
+ * recorded here rather than encoded: a specimen for a family that had none
+ * can legitimately reveal list entries nobody had measured. That happened
+ * once, at 9.355.0 — a payment and performance bond and a set of sweepstakes
+ * official rules were added, and their families listed "Surety" and "Sponsor",
+ * both party ROLES. The answer was to curate them out, not to raise the
+ * number, and that is the answer every time it happens. It is the number of
  * correct, hand-written specimens that a naive wiring of
  * `expected_defined_terms` would accuse of a drafting defect.
  */

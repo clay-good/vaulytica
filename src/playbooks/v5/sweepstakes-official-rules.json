@@ -19,10 +19,16 @@
       "approximate retail value",
       "alternate method of entry"
     ],
-    "negative_features": ["this agreement is entered into by and between", "employment agreement"]
+    "negative_features": [
+      "this agreement is entered into by and between",
+      "employment agreement"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Sponsor", "Entrant", "Prize"],
+  "expected_defined_terms": [
+    "Entrant",
+    "Prize"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -64,8 +70,12 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-LOTTERY-LAW",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["website-terms-of-use"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "website-terms-of-use"
+  ],
   "compliance_matrix_columns": [
     "No-purchase-necessary and AMOE statement",
     "Odds of winning disclosure",

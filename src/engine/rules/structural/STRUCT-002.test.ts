@@ -85,3 +85,40 @@ describe("STRUCT-002 — the execution recital at the foot of an instrument", ()
     ).not.toBeNull();
   });
 });
+
+/**
+ * The FORMAL EXECUTION LINE of an instrument.
+ *
+ * "SIGNED AND SEALED this 2nd day of February, 2026". Every bond, deed, will,
+ * affidavit, and acknowledgment dates itself there and nowhere else. The
+ * branch that read the "Nth day of" scaffold wanted the word "Dated" in front
+ * of it, so a payment and performance bond whose foot carries its own date in
+ * the oldest form there is was told it states no effective date.
+ */
+describe("STRUCT-002 — the formal execution line", () => {
+  const bond = (closing: string) =>
+    buildContext([
+      "Payment and Performance Bond",
+      "KNOW ALL PERSONS BY THESE PRESENTS, that we, the Principal and the Surety, are held and firmly bound unto the Obligee in the penal sum stated above.",
+      "Surety's aggregate liability under this Bond shall not exceed the penal sum.",
+      closing,
+    ]);
+
+  it.each([
+    ["all caps with a sealing verb", "SIGNED AND SEALED this 2nd day of February, 2026."],
+    ["mixed case", "Executed this 6th day of February, 2026."],
+    ["the attesting hand", "WITNESS my hand this 14th day of March, 2026."],
+    ["the older form still", "Dated this 3rd day of April, 2026."],
+  ])("finds the date in %s", (_label, closing) => {
+    expect(STRUCT_002.check(bond(closing))).toBeNull();
+  });
+
+  // Load-bearing: the identical instrument with an UNDATED execution line is
+  // exactly what the rule exists to report.
+  it.each([
+    ["a blank day", "SIGNED AND SEALED this ____ day of ____________, 20__."],
+    ["no execution line at all", "The Surety executes this Bond by its Attorney-in-Fact."],
+  ])("still fires on %s", (_label, closing) => {
+    expect(STRUCT_002.check(bond(closing))).not.toBeNull();
+  });
+});

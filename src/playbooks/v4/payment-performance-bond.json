@@ -4,7 +4,11 @@
   "name": "Payment / Performance Bond",
   "description": "Construction payment or performance bond under Miller Act + state Little Miller Acts. AIA A312 baseline. Selects the §6.M ruleset (CON-020..CON-025).",
   "match_features": {
-    "title_keywords": ["payment bond", "performance bond", "surety bond"],
+    "title_keywords": [
+      "payment bond",
+      "performance bond",
+      "surety bond"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "principal",
@@ -17,19 +21,37 @@
     "negative_features": []
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Principal", "Surety", "Obligee", "Penal Sum"],
+  "expected_defined_terms": [
+    "Principal",
+    "Obligee",
+    "Penal Sum"
+  ],
   "rule_overrides": {
-    "FIN-005": { "skip": true },
-    "IPDATA-001": { "skip": true },
-    "RISK-001": { "skip": true },
-    "TERM-002": { "skip": true },
-    "TERM-005": { "skip": true }
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "MILLER-ACT-AIA-A312",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["construction-contract"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "construction-contract"
+  ],
   "compliance_matrix_columns": [
     "Principal / surety / obligee",
     "Bond type (payment / performance / dual)",

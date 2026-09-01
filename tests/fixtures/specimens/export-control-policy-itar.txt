@@ -1,0 +1,48 @@
+EXPORT CONTROL AND SANCTIONS POLICY
+
+Vantablade Aerospace Components, Inc.
+Adopted by the Board of Directors on January 12, 2026
+
+1. PURPOSE AND SCOPE
+
+This Policy states how Vantablade complies with U.S. export control and economic sanctions laws. It applies to every director, officer, employee, contractor, and agent of Vantablade and its subsidiaries, worldwide, and to every transfer of hardware, software, technology, and technical data.
+
+2. GOVERNING LAWS
+
+Vantablade complies with the Export Administration Regulations (EAR, 15 C.F.R. Parts 730-774) administered by the Bureau of Industry and Security; the International Traffic in Arms Regulations (ITAR, 22 C.F.R. Parts 120-130) administered by the Directorate of Defense Trade Controls; and the sanctions programs administered by the Office of Foreign Assets Control (OFAC, 31 C.F.R. Chapter V).
+
+3. CLASSIFICATION
+
+Every product, software item, and technology is classified before it is shipped, transferred, or released. The Trade Compliance team assigns an Export Control Classification Number (ECCN) under the EAR or determines that an item is subject to the U.S. Munitions List under the ITAR. Classifications are recorded in the ERP system and reviewed annually and on any design change.
+
+4. RESTRICTED PARTY SCREENING
+
+Every customer, supplier, freight forwarder, and end user is screened against the Consolidated Screening List, the OFAC Specially Designated Nationals and Blocked Persons List, the Entity List, the Denied Persons List, and the Unverified List before any transaction and on a rolling basis thereafter. A screening hit stops the transaction until Trade Compliance clears it in writing. Screening results are retained for five years.
+
+5. DEEMED EXPORTS
+
+Releasing controlled technology or source code to a foreign person inside the United States is an export to that person's country of nationality. No controlled technology may be released to a foreign-person employee or contractor without a license or a documented license exception.
+
+6. EMBARGOED DESTINATIONS
+
+Vantablade does not do business, directly or indirectly, with Cuba, Iran, North Korea, Syria, or the Crimea, Donetsk, and Luhansk regions of Ukraine, and does not do business with any party owned fifty percent or more by a blocked person.
+
+7. ANTIBOYCOTT
+
+Employees must report any request to participate in or cooperate with an unsanctioned foreign boycott to Trade Compliance within five business days, whether or not the request is refused.
+
+8. RECORDKEEPING
+
+Export records are retained for five years from the date of export or the expiration of a license, whichever is later, as required by 15 C.F.R. Part 762 and 22 C.F.R. Part 122.5.
+
+9. TRAINING
+
+All employees complete export control training on hire and annually. Engineering, sales, and shipping personnel complete role-specific training.
+
+10. REPORTING AND NON-RETALIATION
+
+Report suspected violations to the Chief Compliance Officer or through the anonymous ethics line at 1-888-555-0177. Vantablade does not retaliate against anyone who reports in good faith. Vantablade voluntarily self-discloses violations to the appropriate agency where warranted.
+
+11. CONSEQUENCES
+
+Violation of this Policy may result in discipline up to and including termination, and may expose the individual and Vantablade to criminal and civil penalties.

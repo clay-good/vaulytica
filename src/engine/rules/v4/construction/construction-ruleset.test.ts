@@ -263,6 +263,35 @@ describe("the surety bond as a bond is actually written (v1.1.0)", () => {
     ).not.toBeNull();
   });
 
+  /**
+   * v1.2.0 — the second pillar accepts the UNDERTAKING. The 1.1.0 widening to
+   * a code section still could not be satisfied by a COMMON-LAW bond, which
+   * is what a school district takes from a general contractor: it names no
+   * statute at all, because none compels it.
+   *
+   * Dropping the pillar outright was the wrong repair, and the test below is
+   * why: the FIRST pillar reads the title, every document routed to this
+   * family is titled for the bond, and the check would have become one no
+   * document could fail. What the second pillar should ask is what the rule's
+   * name means in substance — does the document say what the surety
+   * undertakes?
+   */
+  it("CON-021 reads a common-law bond that cites no statute", () => {
+    expect(
+      check(
+        "CON-021",
+        "This is a payment bond and a performance bond for the construction of the Meadowbrook Elementary School addition.",
+        "On Obligee's declaration of default, Surety shall complete the Contract or pay the amount for which it is liable.",
+      ),
+    ).toBeNull();
+  });
+
+  it("CON-021 reads a dual-obligee rider", () => {
+    expect(
+      check("CON-021", "This dual-obligee rider names the Lender as an additional obligee."),
+    ).toBeNull();
+  });
+
   it("CON-023 reads the incorporation clause in the recital", () => {
     expect(
       check(
