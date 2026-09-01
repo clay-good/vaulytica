@@ -1,0 +1,37 @@
+COMMON STOCK PURCHASE AGREEMENT (SECONDARY TRANSFER)
+
+This Common Stock Purchase Agreement (this "Agreement") is made as of April 14, 2026 between Priya Venkataraman (the "Seller"), Harbourline Ventures II, L.P. (the "Purchaser"), and, for the limited purposes of Sections 3 and 8, Corvid Bioworks, Inc., a Delaware corporation (the "Company").
+
+1. PURCHASE AND SALE. The Seller sells to the Purchaser, and the Purchaser buys from the Seller, 250,000 shares of the Company's Common Stock (the "Shares") at $4.80 per share, for an aggregate purchase price of $1,200,000 (the "Purchase Price"), payable by wire transfer at the Closing.
+
+2. CLOSING. The Closing occurs on the third business day after the last condition in Section 4 is satisfied or waived. At the Closing the Seller delivers a stock power endorsed in blank and the certificate or book-entry instruction for the Shares, and the Purchaser pays the Purchase Price.
+
+3. COMPANY CONSENT AND RIGHT OF FIRST REFUSAL. The Company's bylaws and the Amended and Restated Investors' Rights Agreement dated March 2, 2024 give the Company and then the Major Investors a right of first refusal and a right of co-sale on any transfer of Common Stock. The Seller has delivered the required transfer notice, the Company and the Major Investors have waived or declined to exercise those rights in writing, and the Company's board has consented to the transfer. Copies of the waivers and the consent are attached as Exhibit A.
+
+4. CONDITIONS. Each party's obligation to close is conditioned on: the waivers and consent in Section 3; the accuracy of the other party's representations; and the absence of any order enjoining the transfer.
+
+5. SELLER'S REPRESENTATIONS. The Seller represents that: the Seller owns the Shares free of any lien, pledge, or adverse claim other than the transfer restrictions in Section 3; the Seller has full authority to sell them; the Seller acquired the Shares on August 2, 2021 and has held them, within the meaning of Rule 144(d), for more than one year; the Seller is not an "affiliate" of the Company as Rule 144(a)(1) defines it and has not been one for the preceding three months; and the Seller has not offered the Shares by any general solicitation or general advertising.
+
+6. PURCHASER'S REPRESENTATIONS. The Purchaser represents that: it is an "accredited investor" as Rule 501(a) of Regulation D defines it; it is acquiring the Shares for its own account for investment and not with a view to distribution; it can bear the complete loss of the investment; it has had the opportunity to ask questions of the Seller; and it understands that the Shares are RESTRICTED SECURITIES that have not been registered under the Securities Act of 1933 and may be resold only pursuant to registration or an available exemption, and that a legend to that effect will be placed on the certificate.
+
+7. NO COMPANY INFORMATION AND WAIVER. The Purchaser acknowledges that the Company has provided no information to it in connection with this transfer, that the Seller may possess material non-public information about the Company that the Seller has not disclosed and is not obliged to disclose, and that the Purchaser has nonetheless determined to buy. The Purchaser irrevocably waives, to the fullest extent permitted by law, any claim against the Seller or the Company arising from the non-disclosure of that information, and acknowledges that this waiver is a material inducement to the Seller. Nothing in this Section waives any claim under Section 10(b) of the Securities Exchange Act of 1934 or Rule 10b-5, which may not be waived.
+
+8. LEGEND AND TRANSFER AGENT. The Company will instruct its transfer agent to record the transfer on receipt of this Agreement, the stock power, and the waivers, and will place the Rule 144 legend on the Purchaser's certificate.
+
+9. TAXES. Each party bears its own taxes. The Seller will deliver a properly completed IRS Form W-9 at the Closing.
+
+10. NO BROKER. Neither party has engaged any broker or finder entitled to a fee in connection with this transfer.
+
+11. GOVERNING LAW. Delaware law governs this Agreement.
+
+SELLER                                    PURCHASER
+
+/s/ Priya Venkataraman                    By: /s/ Marcus Ellery Doyle
+Priya Venkataraman                        Name: Marcus Ellery Doyle
+                                          Title: General Partner
+
+CORVID BIOWORKS, INC. (as to Sections 3 and 8)
+
+By: /s/ Ilona Reyes
+Name: Ilona Reyes
+Title: Chief Executive Officer

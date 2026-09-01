@@ -5,6 +5,9 @@
   "description": "Private secondary sale of shares by an existing holder, covering ROFR clearance, transfer restrictions, and Rule 144 / \u00a7 4(a)(7) posture. Selects the EQT-125..130 ruleset (6 checks).",
   "match_features": {
     "title_keywords": [
+      "secondary stock purchase agreement",
+      "secondary stock transfer agreement",
+      "secondary transfer",
       "stock transfer agreement",
       "secondary purchase agreement",
       "share transfer agreement",
@@ -13,6 +16,8 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "right of first refusal",
+      "right of co-sale",
+      "stock power endorsed in blank",
       "the company's consent to transfer",
       "transfer restrictions",
       "rule 144",

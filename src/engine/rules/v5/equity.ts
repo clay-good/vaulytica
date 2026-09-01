@@ -393,11 +393,22 @@ const SECONDARY = pack("secondary-stock-transfer", C, [
   },
   {
     id: "EQT-129",
+    ver: "1.1.0",
     name: "Information asymmetry acknowledgment",
     cite: usc("15", "78j", "Securities Exchange Act § 10(b) — manipulative and deceptive devices"),
+    // 1.1.0 — the clause is written the other way round, and with the words
+    // the market actually uses. A secondary's section 7 reads: "the Company
+    // HAS PROVIDED NO INFORMATION to it, … the Seller MAY POSSESS MATERIAL
+    // NON-PUBLIC INFORMATION that the Seller is NOT OBLIGED TO DISCLOSE, …
+    // the Purchaser irrevocably WAIVES any claim arising from the
+    // NON-DISCLOSURE of that information, and acknowledges that this waiver is
+    // a MATERIAL INDUCEMENT to the Seller." Neither pillar could read any of
+    // it: the first wanted the negation before the verb, and the second wanted
+    // "sophisticated" or "independent investigation" from a clause that
+    // allocates the risk rather than describing the buyer.
     pat: [
-      /(no\s+(representation|information)\s+(has\s+been\s+)?(made|provided)|information\s+asymmetry|big\s+boy)/i,
-      /(sophisticated|independent\s+investigation|own\s+(analysis|due\s+diligence))/i,
+      /(no\s+(representation|information)\s+(has\s+been\s+)?(made|provided)|(?:has|have|having)\s+(?:provided|made)\s+no\s+(?:information|representation)|may\s+(?:possess|have|hold)\s+material\s+non-?public\s+information|information\s+asymmetry|big\s+boy)/i,
+      /(sophisticated|independent\s+investigation|own\s+(analysis|due\s+diligence)|material\s+inducement|not\s+(?:obliged|obligated|required)\s+to\s+disclose|waives?[^.]{0,80}?non-?disclosure)/i,
     ],
     why: "The seller may hold material non-public information the buyer does not. A 'big boy' acknowledgment does not waive Rule 10b-5 liability, but it is the market-standard allocation and evidence of non-reliance.",
     fix: "Add mutual acknowledgments of possible information asymmetry, non-reliance, and the parties' sophistication — without purporting to waive federal securities-law liability.",

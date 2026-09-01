@@ -18,6 +18,9 @@
       "purchase price"
     ],
     "negative_features": [
+      "secondary transfer",
+      "rule 144",
+      "right of co-sale",
       "accredited investor",
       "restated certificate",
       "investors' rights agreement","asset purchase", "merger agreement"]

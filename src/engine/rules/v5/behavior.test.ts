@@ -1200,3 +1200,40 @@ describe("GOV-142 — the undertaking to repay", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * EQT-129 — the big-boy clause in the words the market uses (v1.1.0).
+ *
+ * A secondary's section 7 reads: "the Company HAS PROVIDED NO INFORMATION to
+ * it, … the Seller MAY POSSESS MATERIAL NON-PUBLIC INFORMATION that the Seller
+ * is NOT OBLIGED TO DISCLOSE, … the Purchaser irrevocably WAIVES any claim
+ * arising from the NON-DISCLOSURE of that information, and acknowledges that
+ * this waiver is a MATERIAL INDUCEMENT to the Seller." Neither pillar could
+ * read any of it: the first wanted the negation before the verb, and the
+ * second wanted "sophisticated" or "independent investigation" from a clause
+ * that allocates the risk rather than describing the buyer.
+ */
+describe("EQT-129 — the information-asymmetry acknowledgment", () => {
+  it("reads the acknowledgment as a secondary actually writes it", () => {
+    expect(
+      rule("EQT-129").check(
+        doc(
+          "Secondary Stock Transfer Agreement",
+          "The Purchaser acknowledges that the Company has provided no information to it in connection with this transfer, that the Seller may possess material non-public information about the Company that the Seller has not disclosed and is not obliged to disclose, and that the Purchaser has nonetheless determined to buy.",
+          "The Purchaser irrevocably waives any claim against the Seller arising from the non-disclosure of that information, and acknowledges that this waiver is a material inducement to the Seller.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a transfer that acknowledges nothing", () => {
+    expect(
+      rule("EQT-129").check(
+        doc(
+          "Secondary Stock Transfer Agreement",
+          "The Seller sells to the Purchaser 250,000 shares of Common Stock at $4.80 per share.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

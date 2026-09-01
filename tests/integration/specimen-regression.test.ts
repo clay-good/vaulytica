@@ -3152,6 +3152,30 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A private secondary — a former employee selling 250,000 shares of common
+  // to a fund, with the company signing only for the ROFR waiver and the
+  // transfer agent instruction. It routed to `stock-purchase-agreement`, the
+  // M&A control acquisition, and drew four criticals about a reps-and-
+  // warranties article, an MAE definition, a stockholder representative, and a
+  // sandbagging clause. None of those belongs to a secondary, and the family
+  // for it existed: its title list knew "stock transfer agreement" but not
+  // "secondary transfer", which is what such an agreement is captioned.
+  //
+  // EQT-129, the single most important check on a secondary, then could not
+  // read the clause it exists for. The big-boy acknowledgment is written "the
+  // Company HAS PROVIDED NO INFORMATION … the Seller MAY POSSESS MATERIAL
+  // NON-PUBLIC INFORMATION … NOT OBLIGED TO DISCLOSE … a MATERIAL INDUCEMENT",
+  // and the rule wanted the negation before the verb and the word
+  // "sophisticated".
+  //
+  // What stays is fair. EQT-130 is right that the agreement allocates taxes
+  // without addressing 409A. STRUCT-018 is right that Exhibit A is not
+  // attached.
+  "secondary-stock-transfer.txt": {
+    playbook: "secondary-stock-transfer",
+    findings: ["EQT-130", "RISK-001", "STRUCT-006", "STRUCT-018", "CHOICE-003", "OBLI-005"],
+  },
+
   // A lobbying and political contributions policy. It fell to
   // `generic-fallback` at 0.4 and then, once routed, drew a `critical` on each
   // of the two things it is entirely about.
