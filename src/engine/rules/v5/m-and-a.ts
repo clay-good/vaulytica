@@ -378,9 +378,25 @@ const SIDE_LETTER = pack("side-letter", C, [
       "side-letter-precedence",
       "order of precedence between side letters and principal documents",
     ),
+    // 1.1.0 — the NOTWITHSTANDING form, which is how a side letter usually
+    // states its precedence and is at least as common as the conflict clause:
+    // "NOTWITHSTANDING ANYTHING TO THE CONTRARY IN the Purchase Agreement or
+    // the IRA, the Company agrees as follows", closed at the end by "EXCEPT AS
+    // EXPRESSLY PROVIDED HERE, the Purchase Agreement and the IRA REMAIN IN
+    // FULL FORCE AND EFFECT". Together those two sentences say exactly what
+    // this check asks for — the letter controls where it speaks, the principal
+    // agreements control everywhere else — and a venture side letter carrying
+    // both drew a `critical` for stating no precedence at all.
+    //
+    // The named principal agreement is required in the same clause, so a
+    // "notwithstanding anything to the contrary herein" that points at the
+    // letter's OWN terms is not mistaken for an order of precedence.
+    ver: "1.1.0",
     pat: [
       /(in\s+the\s+event\s+of\s+(any\s+)?conflict|to\s+the\s+extent\s+(of\s+any\s+)?inconsisten)/i,
       /(this\s+letter\s+(shall\s+)?(control|govern|prevail)|the\s+purchase\s+agreement\s+(shall\s+)?(control|govern))/i,
+      /notwithstanding\s+anything\s+(?:to\s+the\s+contrary\s+)?(?:contained\s+)?in\s+(?:the\s+)[^.]{0,80}?\b(?:Agreement|IRA|Purchase\s+Agreement|Charter|Certificate)\b/i,
+      /except\s+as\s+(?:expressly\s+)?(?:provided|set\s+forth|modified)\s+(?:here|herein|in\s+this\s+letter)[^.]{0,120}?\bremains?\s+in\s+full\s+force\b/i,
     ],
     why: "Two documents signed the same day with inconsistent terms is a construction problem no court enjoys. The precedence clause is what makes the side letter operative rather than ambiguous.",
     fix: "State expressly that this letter controls over inconsistent provisions of the named principal agreement, or that it does not.",

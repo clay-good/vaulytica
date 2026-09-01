@@ -23,7 +23,7 @@
     ],
     "negative_features": [
       "construction contract",
-      "subcontract",
+      "this subcontract",
       "performance bond",
       "adjustment of contract sum",
       "change order number"

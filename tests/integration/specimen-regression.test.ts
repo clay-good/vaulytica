@@ -3156,6 +3156,36 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A Texas conditional waiver and release on progress payment, in the
+  // statutory form: the notice block verbatim, the through-date, the sum, the
+  // downstream-payment warranty, and retainage expressly excluded. Completely
+  // clean, which for a statutory form is the answer that matters — this one is
+  // in the corpus to keep it that way.
+  //
+  // Adding it made `self-penalizing-features` fire: the family declined
+  // "subcontract", and every lien waiver names the claimant's SUBCONTRACTORS
+  // in its downstream-payment warranty, which is the statutory form's own
+  // language. The negative is narrowed to "this subcontract", which is a
+  // subcontract AGREEMENT talking about itself and not a waiver listing who
+  // must be paid.
+  "tx-conditional-lien-waiver.txt": { playbook: "construction-lien-waiver", findings: [] },
+
+  // A venture side letter granting information rights, pro rata rights, and a
+  // board observer seat below the Major Investor thresholds. Short, which is
+  // its own test: a one-page letter puts everything in the last three quarters
+  // of the document and manufactures false misses in any position-dependent
+  // rule.
+  //
+  // MNA-125 wanted a conflict clause — "in the event of any conflict … this
+  // letter shall control" — and a side letter usually states its precedence
+  // the other way, which this one does at both ends: "NOTWITHSTANDING ANYTHING
+  // TO THE CONTRARY IN the Purchase Agreement or the IRA, the Company agrees
+  // as follows", closed by "EXCEPT AS EXPRESSLY PROVIDED HERE, the Purchase
+  // Agreement and the IRA REMAIN IN FULL FORCE AND EFFECT". Together those say
+  // exactly what the check asks for, and it drew a `critical` for stating no
+  // precedence at all.
+  "vc-side-letter.txt": { playbook: "side-letter", findings: ["OBLI-005"] },
+
   // A five-year non-compete given by a founder selling all her equity, with the
   // consideration allocated to goodwill stated, the § 16601 sale-of-business
   // framing in terms, and independent counsel. That is a different legal regime

@@ -1237,3 +1237,46 @@ describe("EQT-129 — the information-asymmetry acknowledgment", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * MNA-125 — the NOTWITHSTANDING form of a side letter's precedence (v1.1.0).
+ *
+ * "NOTWITHSTANDING ANYTHING TO THE CONTRARY IN the Purchase Agreement or the
+ * IRA, the Company agrees as follows", closed at the end by "EXCEPT AS
+ * EXPRESSLY PROVIDED HERE, the Purchase Agreement and the IRA REMAIN IN FULL
+ * FORCE AND EFFECT". Together those say exactly what the check asks for — the
+ * letter controls where it speaks, the principal agreements everywhere else —
+ * and a venture side letter carrying both drew a `critical` for stating no
+ * precedence at all.
+ */
+describe("MNA-125 — a side letter's order of precedence", () => {
+  it.each([
+    [
+      "the notwithstanding form",
+      "Notwithstanding anything to the contrary in the Purchase Agreement or the IRA, the Company agrees as follows.",
+    ],
+    [
+      "the closing ratification",
+      "Except as expressly provided here, the Purchase Agreement and the IRA remain in full force and effect.",
+    ],
+    [
+      "the conflict form",
+      "In the event of any conflict between this letter and the Purchase Agreement, this letter shall control.",
+    ],
+  ])("reads %s", (_label, clause) => {
+    expect(rule("MNA-125").check(doc("Side Letter", clause))).toBeNull();
+  });
+
+  // A "notwithstanding anything herein" that points at the letter's OWN terms
+  // is not an order of precedence over anything.
+  it("still fires on a letter that states no precedence", () => {
+    expect(
+      rule("MNA-125").check(
+        doc(
+          "Side Letter",
+          "Notwithstanding anything to the contrary herein, the rights in this letter are personal to Harbourline and may not be assigned.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
