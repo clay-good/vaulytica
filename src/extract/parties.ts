@@ -487,7 +487,21 @@ const LABELED_PARTY = new RegExp(
 // captioned POA. "Agent"/"Principal" are quote-anchored on both sides here, so
 // a credit agreement's "Administrative Agent" (a space, not a quote, precedes
 // "Agent") is untouched.
-const ONE_SIDED_ROLE = String.raw`Guarantor|Grantor|Grantee|Settlor|Trustor|Trustee|Beneficiary|Debtor|Secured\s+Party|Creditor|Mortgagor|Mortgagee|Pledgor|Pledgee|Assignor|Assignee|Surety|Maker|Payee|Borrower|Lender|Insured|Insurer|Named\s+Insured|Indemnitor|Indemnitee|Principal|Attorney-in-Fact|Agent`;
+// The CONVEYANCE, TENANCY, and EMPLOYMENT pairs belong here by the same test
+// the paragraph above states: a seller is never also the buyer, a landlord
+// never also the tenant. They were missing, and the form that names parties
+// this way is not a rarity — a Texas One to Four Family Residential Contract
+// opens "The seller, Thomas Aurelio Harper and Eleanor Marguerite Harper (the
+// \"Seller\"), agrees to sell and convey to the buyer, Nadia Harper Okonkwo
+// (the \"Buyer\")", which is a numbered PARTIES section rather than a
+// "between" preamble. It reported STRUCT-001 "No parties identified" about a
+// contract whose first numbered paragraph is headed PARTIES.
+//
+// Licensor / Licensee and Discloser / Recipient stay OUT: a cross-licence and
+// a mutual NDA put both parties in both roles, and surfacing one of them as a
+// single party would make OBLI-002 read a role-stated mutual obligation as
+// one-sided.
+const ONE_SIDED_ROLE = String.raw`Guarantor|Grantor|Grantee|Settlor|Trustor|Trustee|Beneficiary|Debtor|Secured\s+Party|Creditor|Mortgagor|Mortgagee|Pledgor|Pledgee|Assignor|Assignee|Surety|Maker|Payee|Borrower|Lender|Insured|Insurer|Named\s+Insured|Indemnitor|Indemnitee|Principal|Attorney-in-Fact|Agent|Seller|Buyer|Purchaser|Landlord|Tenant|Lessor|Lessee|Sublessor|Sublessee|Sublandlord|Subtenant|Franchisor|Franchisee|Employer|Employee`;
 // The paren may carry more than the one role — a revocable trust names one
 // person as both settlor and trustee: "Margaret Okafor (the \"Grantor\" and
 // initial \"Trustee\")" — so allow trailing content (no nested close paren)

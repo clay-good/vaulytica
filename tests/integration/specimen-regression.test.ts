@@ -3152,6 +3152,25 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A Texas One to Four Family Residential Contract — TREC's resale form, the
+  // contract used in every Texas house sale, and a shape the catalog had never
+  // seen. It fell to `generic-fallback` at 0.4: the family knew the CAR-style
+  // names and not the form names half the country actually uses. Two more
+  // defects behind that. The party extractor read no parties at all from a
+  // numbered PARTIES paragraph, because `ONE_SIDED_ROLE` — the roles only one
+  // party holds — was missing Seller, Buyer, Landlord, and Tenant, though a
+  // seller is never also the buyer. And RE-139 wanted the NOUN "financing
+  // contingency", which appears in no state's form: they all write the verb,
+  // "this contract is contingent on Buyer obtaining a conventional loan".
+  //
+  // What stays is fair. CHOICE-001 and CHOICE-003: a TREC contract states no
+  // governing law or venue, leaning on the property's situs. STRUCT-006:
+  // "Option Fee" is used in Title Case and never formally defined.
+  "tx-residential-contract.txt": {
+    playbook: "residential-purchase-agreement",
+    findings: ["CHOICE-001", "STRUCT-006", "CHOICE-003", "CHOICE-006", "FIN-006"],
+  },
+
   "ny-residential-lease.txt": {
     playbook: "lease-residential-us",
     findings: [

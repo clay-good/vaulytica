@@ -1118,3 +1118,38 @@ describe("COMM-107 — the price term of a master purchase agreement", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * RE-139 wanted the NOUN a summary uses; a form contract writes the VERB.
+ *
+ * "This contract is contingent on Buyer obtaining a conventional loan of
+ * $720,000 within twenty-one days" is how the Texas One to Four Family
+ * Residential Contract and most state forms state it — the phrase "financing
+ * contingency" appears in none of them, so a contract whose paragraph 4 IS the
+ * financing contingency drew a `critical` for having none.
+ */
+describe("RE-139 — the financing contingency stated as a verb", () => {
+  it.each([
+    [
+      "a conventional loan",
+      "This contract is contingent on Buyer obtaining a conventional loan of $720,000 within twenty-one days, and the appraisal must support the Sales Price.",
+    ],
+    [
+      "Buyer Approval",
+      "This contract is contingent upon Buyer obtaining Buyer Approval within twenty-one days; Buyer has 21 days to obtain it.",
+    ],
+  ])("reads %s", (_label, text) => {
+    expect(rule("RE-139").check(doc("Residential Purchase Agreement", text))).toBeNull();
+  });
+
+  it("still fires on a contract that states no contingency at all", () => {
+    expect(
+      rule("RE-139").check(
+        doc(
+          "Residential Purchase Agreement",
+          "Buyer agrees to buy and Seller agrees to sell the Property for $900,000, all cash at closing.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

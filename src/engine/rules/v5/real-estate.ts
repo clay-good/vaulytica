@@ -565,13 +565,22 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
   },
   {
     id: "RE-139",
+    // 1.1.0 — the rule wanted the NOUN a summary uses and the contract writes
+    // the VERB. A form contract states the contingency as what it does: "This
+    // contract is contingent on Buyer obtaining a conventional loan of
+    // $720,000 within twenty-one days", which is how the Texas One to Four
+    // Family Residential Contract and most state forms put it — the phrase
+    // "financing contingency" appears in none of them. A contract whose
+    // paragraph 4 IS the financing contingency drew a `critical` for having
+    // none.
+    ver: "1.1.0",
     name: "Financing and appraisal contingencies",
     cite: practice(
       "financing-contingency",
       "financing and appraisal contingencies in residential purchases",
     ),
     pat: [
-      /(financ(e|ing)\s+contingenc|loan\s+contingenc|mortgage\s+contingenc)/i,
+      /(financ(e|ing)\s+contingenc|loan\s+contingenc|mortgage\s+contingenc|contingent\s+(?:up)?on\s+[^.]{0,80}?\b(?:loan|financing|mortgage|buyer\s+approval|credit\s+approval|lender[''’]?s?\s+approval)\b)/i,
       /(apprais|loan\s+approval|days\s+to\s+obtain|waive[sd]?\s+the\s+financing)/i,
     ],
     why: "Waiving the financing contingency puts the deposit at risk if the loan fails; waiving the appraisal contingency puts the buyer on the hook for the shortfall in cash. Both need to be conscious decisions.",

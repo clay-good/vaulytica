@@ -1208,11 +1208,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "409cbcf39da6678efdcda65e03252f33ae86ee6955b72357018e673ea165b3c7",
+  "result_hash": "d273dbd9f2c8e1bc5ad9a3a4c4bb5cc4fc7a848a4290e416e9c7d243fe24c9a8",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.315.0"
+  "version": "9.316.0"
 }

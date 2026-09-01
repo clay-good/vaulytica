@@ -5,6 +5,9 @@
   "description": "One-to-four-family residential purchase contract, reviewed for the financing, inspection, and disclosure contingencies US residential practice requires. Selects the RE-138..145 ruleset (8 checks).",
   "match_features": {
     "title_keywords": [
+      "one to four family residential contract",
+      "residential resale purchase contract",
+      "residential purchase contract",
       "residential purchase agreement",
     "residential purchase and sale agreement",
     "residential real estate",
@@ -16,6 +19,9 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "earnest money",
+      "option fee",
+      "title policy",
+      "termination option",
       "inspection contingency",
       "financing contingency",
       "lead-based paint",

@@ -773,3 +773,42 @@ describe("a first-person self-declaration names a party", () => {
     ).not.toContain("Priya Osei");
   });
 });
+
+/**
+ * A numbered PARTIES section, with the roles the conveyance and tenancy pairs
+ * use.
+ *
+ * `ONE_SIDED_ROLE` reads `<Name> (the "Role")` for a guarantor, a settlor, an
+ * insured — the roles only one party holds — and Seller, Buyer, Landlord, and
+ * Tenant were missing, though a seller is never also the buyer. A Texas One to
+ * Four Family Residential Contract opens on a numbered PARTIES paragraph
+ * rather than a "between" preamble, and reported STRUCT-001 "No parties
+ * identified" about a contract whose first paragraph is headed PARTIES.
+ */
+describe("the conveyance and tenancy role pairs name a party", () => {
+  const names = (...paras: string[]) =>
+    extractParties(buildTree(["Contract", ...paras])).map((p) => p.name);
+
+  it("reads a numbered PARTIES paragraph in a residential contract", () => {
+    expect(
+      names(
+        '1. PARTIES. The seller, Eleanor Marguerite Harper (the "Seller"), agrees to sell and convey to the buyer, Nadia Harper Okonkwo (the "Buyer"), and Buyer agrees to buy the Property described below.',
+      ),
+    ).toEqual(expect.arrayContaining(["Eleanor Marguerite Harper", "Nadia Harper Okonkwo"]));
+  });
+
+  it.each([
+    [
+      "Landlord / Tenant",
+      'Harborview Ridge Holdings LLC (the "Landlord") and Nadia Okonkwo (the "Tenant") agree as follows.',
+      "Nadia Okonkwo",
+    ],
+    [
+      "Lessor / Lessee",
+      'Kestrel Leasing Inc (the "Lessor") leases to Tallow Ridge Components LLC (the "Lessee") the equipment described.',
+      "Tallow Ridge Components LLC",
+    ],
+  ])("reads %s", (_label, text, want) => {
+    expect(names(text)).toContain(want);
+  });
+});
