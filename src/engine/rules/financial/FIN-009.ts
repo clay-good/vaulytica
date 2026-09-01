@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -40,11 +40,30 @@ export const rule: Rule = {
     // undetected and a plainly per-annum rate was reported as period-less.
     const hit = firstParagraphMatch(
       ctx,
+      // A loan's OWN interest rate is not a late fee. "The Loan BEARS INTEREST at
+      // the prime rate plus 2.75%" is the rate the borrower pays for the money,
+      // and reading it as a late-payment charge told an SBA loan agreement that
+      // its 2.75% margin over prime was a periodless penalty. A late-payment
+      // clause never says "bears interest"; it says the overdue amount accrues
+      // interest, which the branch still reads. An INTEREST IN something is an
+      // ownership stake, not money: "Franchisee shall not have any interest in
+      // a restaurant deriving more than twenty percent (20%) of its revenue
+      // from bowl-style prepared meals" is a competition covenant, and the 20%
+      // is a revenue threshold. It surfaced only once the loan-rate exclusion
+      // above stopped an earlier paragraph from being the first match, which
+      // is worth remembering: `firstParagraphMatch` means a narrowing can
+      // MOVE a finding rather than remove it. Excluding "interest in" was not
+      // enough — the next paragraph said "an ownership interest of less than
+      // two percent (2%)" — so the branch now states POSITIVELY what a money
+      // interest looks like: interest AT a rate, ON an amount, THEREON, or one
+      // that ACCRUES. Everything an ownership stake can be ("ownership
+      // interest of 2%", "any interest in a restaurant", "membership
+      // interest") falls outside it without needing to be enumerated.
       // "NET INTEREST MARGIN declined from 3.4%" is a financial METRIC, not a
       // late-payment rate — the bare "interest" token matched every 10-K's
       // margin discussion. The lookarounds confine the token to interest
       // that is charged, not measured.
-      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)interest(?!\s+margin|\s+income|\s+expense|\s+rate\s+risk)|finance\s+charge)[:\s][^.]{0,80}?(\d+(?:\.\d+)?)\s*%\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
+      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s][^.]{0,80}?(\d+(?:\.\d+)?)\s*%\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
     const rate = Number(hit.match[1]);

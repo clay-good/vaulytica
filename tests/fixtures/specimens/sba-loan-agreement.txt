@@ -1,0 +1,79 @@
+SBA LOAN AGREEMENT
+
+This SBA Loan Agreement (this "Agreement") is made as of August 3, 2026 between Summit Commercial Bank, N.A., a national banking association ("Lender"), and Thistledown Robotics, Inc., an Ohio corporation ("Borrower").
+
+1. THE LOAN
+
+1.1 Lender will lend Borrower $1,750,000 (the "Loan") under section 7(a) of the Small Business Act, guaranteed in part by the U.S. Small Business Administration ("SBA").
+
+1.2 The Loan bears interest at the Wall Street Journal prime rate plus 2.75%, adjusted quarterly, and is repayable in one hundred twenty (120) monthly installments of principal and interest beginning October 1, 2026.
+
+1.3 The SBA Authorization issued for the Loan, and any amendment to it, is incorporated into this Agreement. If this Agreement and the SBA Authorization conflict, the SBA Authorization controls, and Lender may amend this Agreement without Borrower's consent to the extent necessary to conform it to the SBA Authorization or to SOP 50 10.
+
+2. USE OF PROCEEDS
+
+2.1 Borrower shall use the proceeds only as the SBA Authorization permits: $1,150,000 for working capital, $420,000 for machinery and equipment, and $180,000 to refinance the equipment note held by Kestrel Equipment Finance LLC.
+
+2.2 Borrower shall not use any proceeds to: repay a debt owed to an associate of Borrower; make a distribution to an owner; purchase real property held for investment; finance an activity outside the United States; refinance a debt on which Lender or an associate of Lender is already in a position to sustain a loss; or for any purpose the SBA prohibits.
+
+2.3 Borrower shall give Lender documentation of each disbursement and its use within thirty (30) days.
+
+3. GUARANTIES
+
+3.1 Each person who owns twenty percent (20%) or more of Borrower shall execute an unconditional guarantee on SBA Form 148, and each such guarantor is listed on Schedule 3.1. As of the date of this Agreement those persons are Ingrid Vasconcelos-Hart (54%) and Devendra Ramaswamy-Pike (26%).
+
+3.2 If an owner of twenty percent (20%) or more is a trust, the trust and its trustee shall guarantee the Loan, and the trustor shall provide the guarantee required by SOP 50 10 where the trust is revocable.
+
+3.3 Borrower shall notify Lender within ten (10) business days of any change in ownership that creates a new twenty percent (20%) owner, and shall cause that person to execute a guarantee.
+
+4. COLLATERAL AND INSURANCE
+
+4.1 Borrower grants Lender a first-priority security interest in all of Borrower's business assets, including accounts, inventory, equipment, and general intangibles, and shall execute the financing statements Lender requires.
+
+4.2 Borrower shall maintain hazard insurance on the collateral for at least its full replacement cost, with Lender named as loss payee, and shall give Lender evidence of the coverage annually and on request.
+
+4.3 Borrower shall maintain flood insurance on any collateral located in a special flood hazard area, as the Flood Disaster Protection Act requires.
+
+4.4 Borrower shall assign to Lender a collateral assignment of a key-person life insurance policy on Ingrid Vasconcelos-Hart in the amount of $1,750,000, as SOP 50 10 requires for a loan of this size to a business dependent on one owner.
+
+5. PREPAYMENT
+
+5.1 Borrower may prepay the Loan in whole or in part at any time without penalty, except that if Borrower voluntarily prepays more than twenty-five percent (25%) of the outstanding balance within the first three years, Borrower shall pay the subsidy recoupment fee section 7(a)(4)(B) of the Small Business Act prescribes: 5% of the prepayment in year one, 3% in year two, and 1% in year three. No other prepayment charge applies.
+
+6. COVENANTS
+
+6.1 Borrower shall give Lender its annual financial statements within one hundred twenty (120) days after each fiscal year end and its quarterly statements within forty-five (45) days after each quarter.
+
+6.2 Borrower shall maintain a debt service coverage ratio of at least 1.15 to 1.00, tested annually.
+
+6.3 Borrower shall not, without Lender's prior written consent, sell substantially all of its assets, merge, change its ownership by more than twenty percent (20%), or incur additional secured debt.
+
+6.4 Borrower shall comply with all applicable law, shall not use the proceeds for a purpose the SBA prohibits, and shall permit Lender and the SBA to inspect its books and its premises on reasonable notice.
+
+7. DEFAULT
+
+7.1 Borrower is in default if it fails to pay when due, breaches a covenant and does not cure within thirty (30) days of notice, becomes insolvent, or makes a materially false statement to Lender or the SBA.
+
+7.2 On default Lender may declare the Loan immediately due, exercise its rights in the collateral, and pursue the guarantors. Lender shall give the notice and opportunity to cure that applicable law and the SBA Authorization require.
+
+8. GENERAL
+
+8.1 This Agreement is governed by federal law and, to the extent state law applies and is not preempted, by the laws of the State of Ohio. Any action shall be brought in the state or federal courts sitting in Franklin County, Ohio.
+
+8.2 This Agreement, the note, the security agreement, the guarantees, and the SBA Authorization are the entire agreement between the parties on the Loan.
+
+SUMMIT COMMERCIAL BANK, N.A.
+
+By: /s/ Harold Vance
+Name: Harold Vance
+Title: Senior Vice President
+Date: August 3, 2026
+
+THISTLEDOWN ROBOTICS, INC.
+
+By: /s/ Ingrid Vasconcelos-Hart
+Name: Ingrid Vasconcelos-Hart
+Title: Chief Executive Officer
+Date: August 3, 2026
+
+SCHEDULE 3.1 — GUARANTORS

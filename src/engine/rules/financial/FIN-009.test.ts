@@ -172,3 +172,33 @@ describe("FIN-009 — a flat late charge written with a parenthetical numeral", 
     expect(finding!.title).toContain("24");
   });
 });
+
+describe("FIN-009 v1.5.0 — the two meanings of 'interest'", () => {
+  it("does not read a loan's own rate as a late-payment penalty", () => {
+    // "The Loan bears interest at the prime rate plus 2.75%" is the price of
+    // the money, not a charge for paying late.
+    const ctx = buildContext([
+      "The Loan",
+      "The Loan bears interest at the Wall Street Journal prime rate plus 2.75%, adjusted quarterly, and is repayable in one hundred twenty (120) monthly installments.",
+    ]);
+    expect(FIN_009.check(ctx)).toBeNull();
+  });
+
+  it("does not read an OWNERSHIP interest as money", () => {
+    // "an ownership interest of less than two percent (2%) in a publicly
+    // traded company" is a competition carve-out, and the 2% is a threshold.
+    const ctx = buildContext([
+      "Competition",
+      "Franchisee shall not have any interest in a restaurant deriving more than twenty percent (20%) of its revenue from bowl-style prepared meals. This does not apply to an ownership interest of less than two percent (2%) in a publicly traded company.",
+    ]);
+    expect(FIN_009.check(ctx)).toBeNull();
+  });
+
+  it("still reads the late-payment interest it exists for", () => {
+    const ctx = buildContext([
+      "Late Payment",
+      "Past-due amounts accrue interest at the rate of two percent (2%) per month until paid.",
+    ]);
+    expect(FIN_009.check(ctx)).not.toBeNull();
+  });
+});

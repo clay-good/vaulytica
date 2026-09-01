@@ -15,7 +15,7 @@ import { emit, enclosingSentence, excerptWindow, firstParagraphMatch } from "../
  */
 export const rule: Rule = {
   id: "RISK-016",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Insurance requirement without coverage minimum",
   category: "risk-allocation",
   default_severity: "warning",
@@ -51,11 +51,15 @@ export const rule: Rule = {
     )
       return null;
 
+    // PROPERTY and HAZARD insurance state their minimum as a STANDARD rather
+    // than a number — "hazard insurance for at least its full replacement
+    // cost" is the minimum every secured lender requires and every SBA loan
+    // agreement carries, and there is no dollar figure in it to find.
     // Check the same paragraph for a coverage minimum. The minimum
     // can be expressed as `$1,000,000`, `$1M`, `one million dollars`,
     // `at least $X`, `not less than $X`, or `$X per occurrence`.
     const COVERAGE_MIN =
-      /\$\s*[\d,]+(?:\.\d+)?\s*(?:k|m|mm|million|thousand)?|(?:at\s+least|not\s+less\s+than|minimum\s+of)\s+\$?[\d,]+|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?|per\s+occurrence|aggregate\s+(?:of|limit)|combined\s+single\s+limit/i;
+      /\$\s*[\d,]+(?:\.\d+)?\s*(?:k|m|mm|million|thousand)?|(?:at\s+least|not\s+less\s+than|minimum\s+of)\s+\$?[\d,]+|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?|per\s+occurrence|aggregate\s+(?:of|limit)|combined\s+single\s+limit|(?:full\s+)?replacement\s+(?:cost|value)|actual\s+cash\s+value/i;
     // Scope the GENERAL coverage-minimum check (which includes a bare dollar
     // figure) to the insurance clause's own sentence — otherwise an unrelated
     // dollar elsewhere in the paragraph (e.g. the contract fee) suppressed the

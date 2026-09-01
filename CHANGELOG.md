@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.283.0] — 2026-08-31
+
+### Added
+- One specimen — a well-drafted SBA 7(a) loan agreement, the 240th, and the
+  first for `sba-loan-agreement`.
+
+### Fixed
+- **FIN-009 read a loan's own interest rate as a late-payment penalty.** "The
+  Loan bears interest at the prime rate plus 2.75%" is the price of the money,
+  not a charge for paying late, and the rule reported the 2.75% margin as a
+  periodless penalty. Narrowing it then MOVED the finding rather than removing
+  it — `firstParagraphMatch` found the next paragraph, "an ownership interest
+  of less than two percent (2%) in a publicly traded company" — so the branch
+  now states positively what a money interest looks like: interest AT a rate,
+  ON an amount, THEREON, or one that ACCRUES. Every ownership sense falls
+  outside that without being enumerated.
+- **FIN-005 told a loan repayable in 120 monthly installments that it states no
+  payment term**, because it wanted "Net 30". Every note, credit agreement and
+  equipment lease in the catalog states its term as an amortization schedule.
+- **RISK-016 told an SBA loan that hazard insurance "for at least its full
+  replacement cost" states no coverage minimum**, because it wanted a dollar
+  figure. Replacement cost is the minimum every secured lender requires, and
+  property and hazard policies state it as a standard rather than a number.
+
 ## [9.282.0] — 2026-08-31
 
 ### Added

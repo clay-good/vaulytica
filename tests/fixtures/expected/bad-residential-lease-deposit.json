@@ -221,7 +221,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.15.0"
+      "rule_version": "1.16.0"
     },
     {
       "elapsed_ms": 0,
@@ -249,7 +249,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -559,7 +559,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-016",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -919,7 +919,7 @@
       "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
       "id": "FIN-005-s1-0",
       "rule_id": "FIN-005",
-      "rule_version": "1.15.0",
+      "rule_version": "1.16.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1040,11 +1040,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.7). Title matched: \"residential lease\". Distinguishing phrases: \"security deposit\", \"residential\".",
-  "result_hash": "ff2f6e8793b50aa0e6086067fa53cb2d0e3668577df4523a3b5faf7435d320f7",
+  "result_hash": "373332222acee219be84aaf3663ed9e93d3153bafe79261123171fdcc17b3e0a",
   "source_file": {
     "name": "bad-residential-lease-deposit.docx",
     "sha256": "a3aaac8da5682c5a7ff4d3cd79191c3344d5f3bc6ec7abe5d833f6234acf6973",
     "size_bytes": 9410
   },
-  "version": "9.282.0"
+  "version": "9.283.0"
 }

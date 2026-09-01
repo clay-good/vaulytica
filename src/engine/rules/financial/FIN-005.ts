@@ -25,6 +25,13 @@ const NUM_WORDS =
 const PAYMENT_TERMS = new RegExp(
   [
     `\\bNet\\s+\\d{1,3}\\b`,
+    // A LOAN states its payment term as an amortization schedule, not as a
+    // net-days term: "repayable in one hundred twenty (120) monthly
+    // installments of principal and interest beginning October 1, 2026". Every
+    // note, credit agreement and equipment lease in the catalog says it this
+    // way, and each was told it references fees and states no payment term.
+    `\\b(?:repayable|payable|amortiz(?:ed|able)|due)\\s+in\\s+[\\s\\w,()-]{0,40}?\\b(?:monthly|quarterly|annual|equal|consecutive|successive)\\s+installments?\\b`,
+    `\\b(?:monthly|quarterly|annual)\\s+installments?\\s+of\\s+(?:principal|interest|rent|\\$)`,
     `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed|owing|(?:you|he|she|they|it)\\s+owes?)|balance|fees?|royalt(?:y|ies))\\s+[\\s\\w,%]{0,40}?(?:is|are|shall\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+|made\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
@@ -155,7 +162,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.15.0",
+  version: "1.16.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

@@ -1758,6 +1758,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A well-drafted SBA 7(a) loan agreement, the 240th specimen and the first
+  // for `sba-loan-agreement` — a family the general `loan-agreement` was
+  // taking until 9.276.0. Three rule defects on the first real one, and all
+  // three were a word with two meanings.
+  //
+  // FIN-009 read "the Loan BEARS INTEREST at the prime rate plus 2.75%" as a
+  // periodless late-payment penalty. FIN-005 told a loan repayable in 120
+  // monthly installments that it states no payment term, because it wanted
+  // "Net 30". RISK-016 told it that hazard insurance "for at least its full
+  // replacement cost" states no coverage minimum, because it wanted a dollar
+  // figure — and replacement cost is the minimum every secured lender
+  // requires.
+  //
+  // All six BNK-109..114 columns are satisfied, which is what a document
+  // drafted to SOP 50 10 should produce.
+  "sba-loan-agreement.txt": {
+    playbook: "sba-loan-agreement",
+    findings: ["OBLI-005"],
+  },
+
   // A well-drafted private-target stock purchase agreement, the 239th specimen
   // and the first for `stock-purchase-agreement` — a family that reached its
   // own bare document only from 9.275.0. Two rule defects on the first real

@@ -218,7 +218,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.15.0"
+      "rule_version": "1.16.0"
     },
     {
       "elapsed_ms": 0,
@@ -247,7 +247,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -562,7 +562,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-016",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -886,7 +886,7 @@
       "id": "FIN-009-s1.4-1246",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1110,11 +1110,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\".",
-  "result_hash": "df096c6d9a0ebba5eae349be9c99be65eeab22ecbcde17d0e49e04a595782503",
+  "result_hash": "83a99f0b10506ea2bf1941940d8a73d3c556258e501fa7e7b8e9f688647b7253",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.282.0"
+  "version": "9.283.0"
 }
