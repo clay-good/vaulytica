@@ -673,7 +673,22 @@ const WARN = pack("warn-notice", C, [
     // mini-WARN statute is cited by its own code name, and the federal-only
     // notice this check exists to catch cites the U.S. Code and the C.F.R.
     // and none of these.
-    ver: "1.0.2",
+    // 1.1.0 — the check fired in all fifty states, and its own `why` says it
+    // should not: "A federal-only notice is non-compliant IN THOSE STATES."
+    // A plant closing in Akron, Ohio — a state with no plant-closing statute
+    // at all — was told at `critical` that it addressed no state overlay, for
+    // a notice that was federal-only because federal is all there is. The
+    // check now gates on the three states the sentence above names, which
+    // makes no legal claim the rule was not already making.
+    //
+    // The gate is deliberately NARROWER than the law: Illinois, Wisconsin,
+    // Tennessee, Hawaii, Maryland, Maine, Minnesota, New Hampshire, and Iowa
+    // all have plant-closing statutes this gate will not fire on, and adding
+    // them means asserting a statute and a citation for each, which is the
+    // work of a sourced overlay node (`src/dkb/state-overlays.ts`), not of a
+    // pattern. A missed flag in Illinois is the safer side of a check whose
+    // false form is a `critical` on a compliant notice.
+    ver: "1.1.0",
     name: "State mini-WARN overlay",
     cite: stateLaw(
       "mini-warn",
@@ -683,6 +698,7 @@ const WARN = pack("warn-notice", C, [
     pat: [
       /(mini-?warn|state\s+(warn|plant[-\s]closing)|labor\s+code\s+§?\s*1400|worker\s+adjustment.{0,40}state|revised\s+statutes|compiled\s+statutes|statutes\s+annotated|code\s+annotated|general\s+business\s+law|labor\s+(?:code|law)\s+§|consolidated\s+laws)/i,
     ],
+    when: [/\b(?:California|New\s+York|New\s+Jersey)\b/i],
     why: "California triggers at 50 employees regardless of percentage, New York requires 90 days, and New Jersey requires 90 days plus mandatory severance. A federal-only notice is non-compliant in those states.",
     fix: "Identify the states involved and satisfy the longest notice period and broadest content requirement among the federal and applicable state statutes.",
     sev: "critical",

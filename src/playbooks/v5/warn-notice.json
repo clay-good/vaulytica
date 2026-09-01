@@ -33,6 +33,9 @@
     "Separation Date"
   ],
   "rule_overrides": {
+    "STRUCT-003": {
+      "skip": true
+    },
     "CHOICE-001": {
       "skip": true
     },

@@ -398,14 +398,28 @@ describe("v5 — the WARN notice a real plant closing produces", () => {
     }
   });
 
-  it("EMP-147 still fires on a federal-only notice", () => {
+  // The notice must name one of the three states whose statute the rule's own
+  // `why` asserts: since 1.1.0 the check is gated on them, because in Ohio a
+  // federal-only notice is federal-only for the reason that federal is all
+  // there is.
+  it("EMP-147 still fires on a federal-only notice in a state that has one", () => {
     expect(
       rule("EMP-147").check(
         notice(
-          "This notice is given under 29 U.S.C. §§ 2101-2109 and 20 C.F.R. Part 639. Separations begin on November 5, 2026.",
+          "The affected site is in Fresno, California. This notice is given under 29 U.S.C. §§ 2101-2109 and 20 C.F.R. Part 639. Separations begin on November 5, 2026.",
         ),
       ),
     ).not.toBeNull();
+  });
+
+  it("EMP-147 is silent in a state with no plant-closing statute", () => {
+    expect(
+      rule("EMP-147").check(
+        notice(
+          "The affected site is in Akron, Ohio. This notice is given under 29 U.S.C. §§ 2101-2109 and 20 C.F.R. Part 639. Separations begin on November 5, 2026.",
+        ),
+      ),
+    ).toBeNull();
   });
 
   it("EMP-146 reads a contact official named without the word 'contact'", () => {
@@ -1000,5 +1014,76 @@ describe("EMP-142 — sixty-day advance timing", () => {
       "WORKER ADJUSTMENT AND RETRAINING NOTIFICATION ACT NOTICE\n\nTo: Affected employees of Kestrel Manufacturing, Inc., Plant 3, Akron, Ohio.\n\nKestrel Manufacturing, Inc. will permanently close Plant 3 and eliminate all 212 positions there. There is no bumping right. Questions to Marisol Trent, Director of Human Resources.\n";
     const f = await emp142(bare);
     expect(f?.title).toBe("Sixty-day advance timing — not found");
+  });
+});
+
+/**
+ * EMP-147 fires where the law it names exists.
+ *
+ * The rule's own `why` says a federal-only notice is non-compliant "in those
+ * states" — California, New York, New Jersey — and the check fired in all
+ * fifty. An Ohio plant closing, in a state with no plant-closing statute at
+ * all, was told at `critical` that it addressed no state overlay.
+ */
+describe("EMP-147 — state mini-WARN overlay", () => {
+  const NOTICE = (city: string, state: string) =>
+    [
+      "WORKER ADJUSTMENT AND RETRAINING NOTIFICATION ACT NOTICE",
+      "Date: September 1, 2026",
+      `To: Affected employees of Kestrel Manufacturing, Inc., Plant 3, ${city}, ${state}.`,
+      "Kestrel Manufacturing, Inc. is providing this notice under the federal Worker Adjustment and Retraining Notification Act, 29 U.S.C. 2101 et seq.",
+      "The company will permanently close Plant 3. The closing is expected to begin on November 30, 2026. The action is permanent, not a temporary layoff.",
+      "All 212 positions will be eliminated. There is no bumping right.",
+      "Questions to Marisol Trent, Director of Human Resources, (330) 555-0148.",
+    ].join("\n\n");
+
+  const emp147 = async (text: string) => {
+    const result = await analyzeText(text, "warn.txt");
+    expect(result.run.playbook_id).toBe("warn-notice");
+    return result.run.findings.find((f) => f.rule_id === "EMP-147") ?? null;
+  };
+
+  it("is silent in a state with no plant-closing statute", async () => {
+    expect(await emp147(NOTICE("Akron", "Ohio"))).toBeNull();
+  });
+
+  it("fires on a federal-only notice for a California closing", async () => {
+    expect((await emp147(NOTICE("Fresno", "California")))?.severity).toBe("critical");
+  });
+
+  it("is satisfied when the California notice cites the state statute", async () => {
+    const cited = NOTICE("Fresno", "California").replace(
+      "There is no bumping right.",
+      "There is no bumping right. This notice is also given under the California Labor Code § 1400 et seq.",
+    );
+    expect(await emp147(cited)).toBeNull();
+  });
+});
+
+/**
+ * A WARN notice is ISSUED, not executed.
+ *
+ * `warn-notice` already declined STRUCT-001, -002, and -004 — the other
+ * structural checks written for a two-party bargain — and kept STRUCT-003, so
+ * every WARN notice was told at `critical` that "the end of this Agreement
+ * does not contain the standard signature pattern". 20 C.F.R. § 639.7 lists
+ * what the notice must contain and a signature block is not on the list; the
+ * DOL's own model notice closes with a contact name.
+ */
+describe("warn-notice structural posture", () => {
+  it("is not told it is unsigned", async () => {
+    const result = await analyzeText(
+      [
+        "WORKER ADJUSTMENT AND RETRAINING NOTIFICATION ACT NOTICE",
+        "Date: September 1, 2026",
+        "To: Affected employees of Kestrel Manufacturing, Inc., Plant 3, Akron, Ohio.",
+        "The company will permanently close Plant 3. The closing is expected to begin on November 30, 2026. The action is permanent.",
+        "All 212 positions will be eliminated. There is no bumping right.",
+        "Questions to Marisol Trent, Director of Human Resources, (330) 555-0148.",
+      ].join("\n\n"),
+      "warn.txt",
+    );
+    expect(result.run.playbook_id).toBe("warn-notice");
+    expect(result.run.findings.map((f) => f.rule_id)).not.toContain("STRUCT-003");
   });
 });
