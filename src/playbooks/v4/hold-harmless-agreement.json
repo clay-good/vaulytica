@@ -1,6 +1,6 @@
 {
   "id": "hold-harmless-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Hold-Harmless Agreement",
   "description": "Standalone hold-harmless agreement (typically participant / event release) with Tunkl-factor and assumption-of-risk screen. Selects the §6.K ruleset (INS-020..INS-025).",
   "match_features": {
@@ -9,7 +9,10 @@
       "hold harmless",
       "release and hold harmless",
       "participant release",
-      "waiver and release"
+      "waiver and release",
+      "release and waiver",
+      "waiver of liability",
+      "release of liability"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
@@ -17,7 +20,10 @@
       "assumption of risk",
       "indemnitor",
       "indemnitee",
-      "voluntary"
+      "voluntary",
+      "release",
+      "accept the risk",
+      "arising from my use"
     ],
     "negative_features": ["indemnification agreement", "declarations page"]
   },

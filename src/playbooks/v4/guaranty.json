@@ -1,6 +1,6 @@
 {
   "id": "guaranty",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Guaranty",
   "description": "Continuing guaranty of payment with suretyship-defenses waiver and reinstatement clause. Selects the §6.L ruleset (BNK-021..BNK-026).",
   "match_features": {
@@ -12,7 +12,10 @@
       "guaranty of payment",
       "absolute and unconditional",
       "subrogation",
-      "reinstatement"
+      "reinstatement",
+      "guarantees the payment",
+      "unconditional and continuing",
+      "guarantees the obligations"
     ],
     "negative_features": [
       "promises to pay to the order of",

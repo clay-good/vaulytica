@@ -1,12 +1,15 @@
 {
   "id": "stockholders-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Stockholders' Agreement",
   "description": "Venture-style stockholders' / investors' rights agreement. Selects the §6.B governance ruleset (GOV-033..GOV-042). NVCA-anchored.",
   "match_features": {
     "title_keywords": [
       "stockholders agreement",
-      "stockholders' agreement"
+      "stockholders' agreement",
+      "shareholders agreement",
+      "shareholders' agreement",
+      "shareholder agreement"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
@@ -15,7 +18,10 @@
       "right of first refusal",
       "co-sale",
       "preemptive",
-      "protective provisions"
+      "protective provisions",
+      "the shareholders",
+      "the stockholders",
+      "transfer shares"
     ],
     "negative_features": ["these bylaws", "operating agreement"]
   },

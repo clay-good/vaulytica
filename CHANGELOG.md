@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.290.0] — 2026-08-31
+
+### Fixed
+- **A SHAREHOLDERS agreement reached no family at all.**
+  `stockholders-agreement` listed "stockholders agreement" and "stockholders'
+  agreement" and not the other spelling of the same instrument — the one a
+  British or British-trained drafter uses, and the commoner one outside
+  Delaware. It drew three generic findings; it now draws eighteen.
+- **A gym waiver reached no family either.** `hold-harmless-agreement` listed
+  "waiver and release" and "participant release" but not "release and waiver",
+  "waiver of liability" or "release of liability" — the three commonest
+  headings on the document itself.
+- `guaranty` and `quitclaim-deed` were reaching their own bad documents at 0.5
+  and 0.6, both because their phrases were the formal recitals a complete
+  instrument carries ("continuing guaranty", "absolute and unconditional",
+  "does hereby remise, release and quitclaim").
+
 ## [9.289.0] — 2026-08-31
 
 ### Fixed

@@ -1,6 +1,6 @@
 {
   "id": "quitclaim-deed",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Quitclaim Deed",
   "description": "Quitclaim conveyance, reviewed for the granting words, legal description, and the absence of any title warranty. Selects the RE-128..132 ruleset (5 checks).",
   "match_features": {
@@ -12,7 +12,10 @@
       "without any covenants of warranty",
       "without covenant or warranty",
       "right, title, and interest, if any",
-      "makes no representation as to the state of title"
+      "makes no representation as to the state of title",
+      "quitclaims to",
+      "interest in the real property",
+      "all of her interest"
     ],
     "negative_features": ["warranty deed", "lease of the premises", "employment agreement"]
   },

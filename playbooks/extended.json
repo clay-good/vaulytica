@@ -8873,7 +8873,7 @@
   },
   {
     "id": "guaranty",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Guaranty",
     "description": "Continuing guaranty of payment with suretyship-defenses waiver and reinstatement clause. Selects the §6.L ruleset (BNK-021..BNK-026).",
     "match_features": {
@@ -8889,7 +8889,10 @@
         "guaranty of payment",
         "absolute and unconditional",
         "subrogation",
-        "reinstatement"
+        "reinstatement",
+        "guarantees the payment",
+        "unconditional and continuing",
+        "guarantees the obligations"
       ],
       "negative_features": [
         "promises to pay to the order of",
@@ -9107,7 +9110,7 @@
   },
   {
     "id": "hold-harmless-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Hold-Harmless Agreement",
     "description": "Standalone hold-harmless agreement (typically participant / event release) with Tunkl-factor and assumption-of-risk screen. Selects the §6.K ruleset (INS-020..INS-025).",
     "match_features": {
@@ -9116,7 +9119,10 @@
         "hold harmless",
         "release and hold harmless",
         "participant release",
-        "waiver and release"
+        "waiver and release",
+        "release and waiver",
+        "waiver of liability",
+        "release of liability"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -9124,7 +9130,10 @@
         "assumption of risk",
         "indemnitor",
         "indemnitee",
-        "voluntary"
+        "voluntary",
+        "release",
+        "accept the risk",
+        "arising from my use"
       ],
       "negative_features": [
         "indemnification agreement",
@@ -15496,7 +15505,7 @@
   },
   {
     "id": "quitclaim-deed",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Quitclaim Deed",
     "description": "Quitclaim conveyance, reviewed for the granting words, legal description, and the absence of any title warranty. Selects the RE-128..132 ruleset (5 checks).",
     "match_features": {
@@ -15512,7 +15521,10 @@
         "without any covenants of warranty",
         "without covenant or warranty",
         "right, title, and interest, if any",
-        "makes no representation as to the state of title"
+        "makes no representation as to the state of title",
+        "quitclaims to",
+        "interest in the real property",
+        "all of her interest"
       ],
       "negative_features": [
         "warranty deed",
@@ -18594,13 +18606,16 @@
   },
   {
     "id": "stockholders-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Stockholders' Agreement",
     "description": "Venture-style stockholders' / investors' rights agreement. Selects the §6.B governance ruleset (GOV-033..GOV-042). NVCA-anchored.",
     "match_features": {
       "title_keywords": [
         "stockholders agreement",
-        "stockholders' agreement"
+        "stockholders' agreement",
+        "shareholders agreement",
+        "shareholders' agreement",
+        "shareholder agreement"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -18609,7 +18624,10 @@
         "right of first refusal",
         "co-sale",
         "preemptive",
-        "protective provisions"
+        "protective provisions",
+        "the shareholders",
+        "the stockholders",
+        "transfer shares"
       ],
       "negative_features": [
         "these bylaws",

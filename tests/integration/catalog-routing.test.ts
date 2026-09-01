@@ -912,6 +912,31 @@ describe("no family claims a document that is nobody's", () => {
     ...BARE_COMMERCIAL,
     ...BARE_EVERYDAY,
     ...BARE_SPECIALIST,
+    // A SHAREHOLDERS agreement. `stockholders-agreement`'s title keywords were
+    // "stockholders agreement" and "stockholders' agreement" only, so the
+    // other spelling of the same instrument — the one a British or
+    // British-trained drafter uses, and the commoner one outside Delaware —
+    // reached no family at all and drew three generic findings. It now draws
+    // eighteen.
+    {
+      id: "stockholders-agreement",
+      title: "SHAREHOLDERS AGREEMENT",
+      body: [
+        "This Shareholders Agreement is among Thistledown Robotics, Inc. and the shareholders listed on Schedule A.",
+        "The shareholders will vote their shares to elect three directors, and a shareholder may not transfer shares without the board's consent.",
+      ],
+    },
+    // A gym waiver. `hold-harmless-agreement` listed "waiver and release" and
+    // "participant release" but not "release and waiver" or "waiver of
+    // liability" — the two commonest headings on the document itself.
+    {
+      id: "hold-harmless-agreement",
+      title: "RELEASE AND WAIVER OF LIABILITY",
+      body: [
+        "I release Ashford Climbing Gym LLC from all claims arising from my use of its facilities.",
+        "I understand climbing is dangerous and I accept the risk, and I waive any claim, including for the gym's negligence.",
+      ],
+    },
     // A plainly-drafted motion to compel. `trial-motion`'s phrases were the
     // formal components of a filed motion — "points and authorities",
     // "declaration in support", "proposed order", "wherefore" — so a motion
