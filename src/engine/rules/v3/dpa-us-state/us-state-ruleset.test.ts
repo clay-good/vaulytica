@@ -297,3 +297,46 @@ describe("USDPA-015 — deletion-or-return expressly excused", () => {
     expect(titles(text)).toEqual([]);
   });
 });
+
+/**
+ * USDPA-013 — the noun is as often PLURAL as singular.
+ *
+ * An addendum that lists more than one category writes "The TYPES of Personal
+ * Information Processed are patient name, date of birth, insurance identifier,
+ * …". The pattern carried `type` with no `s?` and no word boundary, so it
+ * matched the first four letters of "types" and then required a space that was
+ * not there — and a clause that answers the question in terms was reported
+ * missing at `critical`. The GDPR sibling had the identical hole.
+ */
+describe("USDPA-013 — the plural form of the type-of-data clause", () => {
+  const rule = DPA_US_STATE_RULES.find((r) => r.id === "USDPA-013")!;
+  const withUs = (clause: string) =>
+    withPb(
+      buildContext(
+        ["US State Privacy Addendum", "This Addendum is between Business and Service Provider."],
+        [clause],
+      ),
+      CCPA,
+    );
+
+  it.each([
+    [
+      "the plural",
+      "The types of Personal Information Processed are patient name, date of birth, and diagnostic result.",
+    ],
+    ["the singular", "The type of personal data processed is the patient name."],
+    ["the category form", "The categories of Covered Data processed are listed in Exhibit 1."],
+  ])("reads %s", (_label, clause) => {
+    expect(rule.check(withUs(clause))).toBeNull();
+  });
+
+  it("still fires on an addendum that names no data at all", () => {
+    expect(
+      rule.check(
+        withUs(
+          "Service Provider will process personal information only on the Business's documented instructions.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

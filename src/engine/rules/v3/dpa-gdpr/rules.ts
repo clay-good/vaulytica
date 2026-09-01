@@ -206,7 +206,10 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Add an Annex listing the categories of personal data (e.g., name, email, IP, account identifiers).",
     present_patterns: [
-      /(type|categories)\s+of\s+personal\s+data|personal\s+data\s+(processed|categories)/i,
+      // `types` (plural) had the same hole its US sibling did: no `s?` and no
+      // word boundary, so the four letters of "type" matched inside "types"
+      // and the required space was not there.
+      /\b(?:types?|categories)\s+of\s+personal\s+data|personal\s+data\s+(?:processed|categories)/i,
       // Every major vendor DPA defines its own term — "Customer Personal
       // Data", "Client Personal Data", "Covered Data" — and then writes "the
       // types of Customer Personal Data and categories of data subjects are

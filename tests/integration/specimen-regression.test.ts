@@ -3152,6 +3152,49 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // Three more of the twenty-six families that had never been put through the
+  // engine as a real document. Two came back clean, which is worth recording
+  // as much as a defect is.
+  //
+  // A Model A (comprehensive) fiscal sponsorship agreement, with the variance
+  // power Treas. Reg. § 1.170A-9(f)(11)(v)(B) requires, the § 170(c)(2)(B)
+  // purpose limitation, and the transfer-to-a-qualified-successor clause. The
+  // findings are the draft's own: it names a Project Director in Title Case
+  // and never defines it, and it has no material-breach termination path
+  // (section 9 terminates on notice or on a threat to exempt status).
+  "fiscal-sponsorship.txt": {
+    playbook: "fiscal-sponsorship-agreement",
+    findings: ["FIN-005", "STRUCT-006", "TERM-002", "CHOICE-003", "OBLI-005"],
+  },
+
+  // A cohabitation agreement, drafted to the things that make one enforceable:
+  // full disclosure by schedule, independent counsel or a knowing waiver of
+  // it, voluntariness, a thirty-day consideration period, and an express
+  // waiver of Marvin-style palimony claims. Clean on both findings — the two
+  // schedules really are not attached, and the 1991 date really is far before
+  // the others.
+  "cohabitation-agreement.txt": {
+    playbook: "cohabitation-agreement",
+    findings: ["STRUCT-018", "TEMP-002"],
+  },
+
+  // A multi-state US privacy addendum covering CCPA/CPRA, VCDPA, CPA, CTDPA,
+  // UCPA, TDPSA, OCPA, and DPDPA. Three criticals on the first draft, and two
+  // of them were right — it had no duration-of-processing clause and no duty
+  // of confidentiality on the processor's personnel, both of which the state
+  // acts require by name. Adding them silenced both, which is the direction
+  // that matters.
+  //
+  // USDPA-013 kept firing on a clause that answers it in terms: "The TYPES of
+  // Personal Information Processed are patient name, date of birth, …". The
+  // pattern carried `type` with no `s?` and no word boundary, so it matched
+  // the first four letters of "types" and then required a space that was not
+  // there. Its GDPR sibling had the identical hole and is fixed with it.
+  "us-state-privacy-addendum.txt": {
+    playbook: "dpa-multi-state-us",
+    findings: ["STRUCT-018", "OBLI-005", "TERM-007"],
+  },
+
   // A D&O indemnification agreement of the kind every venture-backed company
   // signs with each director: mandatory indemnification on success,
   // advancement within twenty days, Independent Counsel, a

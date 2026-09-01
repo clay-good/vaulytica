@@ -354,7 +354,14 @@ export const DPA_US_STATE_RULES: Rule[] = [
     // The addendum names the data with its own DEFINED TERM and then heads the
     // clause "Categories of Covered Data" — one word between "of" and the
     // noun, and the pattern allowed only "personal".
-    present_patterns: [/(type|categor(?:y|ies))\s+of\s+(?:\w+\s+){0,2}(?:data|information)/i],
+    //
+    // And the noun is as often PLURAL as singular: an addendum that lists more
+    // than one category writes "The TYPES of Personal Information Processed
+    // are patient name, date of birth, …". `type` carries no `s?` and no word
+    // boundary, so it matched the first four letters of "types" and then
+    // required a space that was not there. A clause that answers the question
+    // in terms was reported as missing.
+    present_patterns: [/\b(?:types?|categor(?:y|ies))\s+of\s+(?:\w+\s+){0,2}(?:data|information)/i],
   }),
   presence({
     id: "USDPA-014",

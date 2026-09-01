@@ -1,0 +1,39 @@
+US STATE PRIVACY ADDENDUM
+
+This US State Privacy Addendum (this "Addendum") supplements the Master Services Agreement dated June 3, 2025 (the "Agreement") between Halbrook Diagnostics, Inc. ("Business") and Northbridge Cloud Ltd ("Service Provider"). Capitalized terms not defined here have the meanings given in the Agreement.
+
+1. DEFINITIONS. "Applicable Privacy Law" means, as applicable, the California Consumer Privacy Act as amended by the California Privacy Rights Act (Cal. Civ. Code § 1798.100 et seq.), the Virginia Consumer Data Protection Act, the Colorado Privacy Act, the Connecticut Data Privacy Act, the Utah Consumer Privacy Act, the Texas Data Privacy and Security Act, the Oregon Consumer Privacy Act, and the Delaware Personal Data Privacy Act. "Personal Information" means information that identifies, relates to, describes, is reasonably capable of being associated with, or could reasonably be linked with a particular consumer or household, and includes "personal data" as each Applicable Privacy Law defines it. "Business Purpose", "Commercial Purpose", "Consumer", "Sell", "Share", "Process", "Deidentified", and "Sensitive Personal Information" have the meanings given in the Applicable Privacy Law.
+
+2. ROLES. For the California act, Halbrook is the Business and Northbridge is the Service Provider. For every other Applicable Privacy Law, Halbrook is the controller and Northbridge is the processor. Northbridge is not a Third Party.
+
+3. LIMITED PURPOSE. Northbridge will Process Personal Information only on Halbrook's documented instructions and only for the specific Business Purposes set out in Exhibit 1, which are the purposes for which Halbrook disclosed the Personal Information. Northbridge may not Process Personal Information for any other purpose, including any Commercial Purpose of its own.
+
+3A. NATURE, TYPE, AND DURATION OF PROCESSING. The nature and purpose of the Processing is the hosting, storage, and transmission of laboratory result data on Halbrook's behalf. The types of Personal Information Processed are patient name, date of birth, insurance identifier, specimen identifier, and diagnostic result, which includes Sensitive Personal Information consisting of information concerning health. The categories of Consumers are patients of Halbrook's contracted clinics. The duration of the Processing is the term of the Agreement plus the ninety (90) day period in Section 12, after which no Personal Information is retained.
+
+3B. CONFIDENTIALITY OF PERSONNEL. Northbridge will ensure that each person it authorizes to Process Personal Information is subject to a written duty of confidentiality that survives the end of that person's engagement, and will limit access to those personnel who need it to perform the Business Purposes.
+
+4. NO SALE OR SHARE. Northbridge will not Sell or Share Personal Information. Northbridge will not retain, use, or disclose Personal Information outside the direct business relationship between the parties, and will not combine Personal Information with information it receives from another source, except as § 7050(a) of the CCPA regulations permits.
+
+5. CERTIFICATION. Northbridge understands the restrictions in Sections 3 and 4 and certifies that it will comply with them.
+
+6. SUBPROCESSORS. Northbridge may engage a subcontractor only under a written contract imposing the same obligations this Addendum imposes on Northbridge. Northbridge remains liable for each subcontractor's performance and will maintain a current list of them at northbridge.example/subprocessors, giving Halbrook thirty (30) days' notice of any addition and a right to object.
+
+7. ASSISTANCE WITH CONSUMER RIGHTS. Northbridge will assist Halbrook in responding to a Consumer's request to know, delete, correct, opt out of Sale or Share, opt out of targeted advertising or profiling, or limit the use of Sensitive Personal Information, within the periods the Applicable Privacy Law sets, and will pass through any deletion or correction to its subcontractors.
+
+8. SECURITY. Northbridge will implement and maintain reasonable security procedures and practices appropriate to the nature of the Personal Information, and will notify Halbrook without undue delay and in no case later than forty-eight (48) hours after becoming aware of a breach of the security of the system.
+
+9. DEIDENTIFIED DATA. If Northbridge receives Deidentified data, it will take reasonable measures to ensure the data cannot be associated with a consumer or household, will publicly commit to maintain and use it in deidentified form, will not attempt to reidentify it, and will contractually obligate any recipient to the same.
+
+10. ASSESSMENTS AND AUDITS. Northbridge will make available to Halbrook the information reasonably necessary to demonstrate compliance, and will allow and cooperate with reasonable assessments by Halbrook or its designated assessor no more than once every twelve months, or on Halbrook's reasonable belief of unauthorized Processing.
+
+11. NOTICE OF INABILITY. Northbridge will notify Halbrook promptly if it determines that it can no longer meet its obligations under Applicable Privacy Law, and Halbrook may then take reasonable and appropriate steps to stop and remediate unauthorized Processing.
+
+12. RETURN OR DELETION. On termination of the Agreement, Northbridge will, at Halbrook's election, return or delete all Personal Information, and will delete existing copies unless retention is required by law.
+
+13. ORDER OF PRECEDENCE. In a conflict between this Addendum and the Agreement on the Processing of Personal Information, this Addendum controls.
+
+HALBROOK DIAGNOSTICS, INC.                NORTHBRIDGE CLOUD LTD
+
+By: /s/ Marisol Trent                     By: /s/ Devon Achebe
+Name: Marisol Trent                       Name: Devon Achebe
+Title: General Counsel                    Title: Director
