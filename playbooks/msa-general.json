@@ -1,13 +1,26 @@
 {
   "id": "msa-general",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Master Services Agreement (General)",
   "description": "Generic professional-services MSA. Fallback for B2B services contracts that are not specifically SaaS or consulting. Based on Common Paper Professional Services Agreement.",
   "match_features": {
     "title_keywords": ["master services agreement", "master service agreement", "msa", "professional services agreement", "services agreement"],
     "required_clauses": ["term", "termination-for-cause", "indemnification"],
     "distinguishing_phrases": ["Statement of Work", "SOW", "perform the Services", "Deliverables", "Master Agreement"],
-    "negative_features": ["foreground ip", "joint steering committee", "the Service is a hosted", "Subscription Term", "lease", "Premises", "Tenant", "Employee", "the Discloser"]
+    "negative_features": [
+      "foreground ip",
+      "joint steering committee",
+      "the Service is a hosted",
+      "Subscription Term",
+      "lease",
+      "Premises",
+      "Tenant",
+      "Employee",
+      "the Discloser",
+      "Consulting Services",
+      "the Consultant",
+      "consulting agreement"
+    ]
   },
   "expected_clauses": [
     {"category": "payment-terms", "severity_if_missing": "critical"},

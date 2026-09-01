@@ -2481,3 +2481,33 @@ describe("a term defined and then used in the same clause", () => {
     expect(map.unused_terms).toContain("Residual Knowledge");
   });
 });
+
+describe("two defined terms in one parenthetical, with no collective connective", () => {
+  it("finds both", () => {
+    // '(each, an "SOW", and the services under all SOWs, the "Consulting
+    // Services")'. The failure was not that the second term was missed —
+    // NEITHER was found, because the plain parenthetical pattern needs its
+    // quote closed by ")", the trailing-prose pattern's run cannot cross the
+    // first quote, and the pair pattern requires a collective connective.
+    const map = extractDefinitions(
+      buildTree([
+        "Services",
+        'The Consultant shall perform the services described in each statement of work the parties sign (each, an "SOW", and the services under all SOWs, the "Consulting Services").',
+      ]),
+    );
+    const terms = map.entries.map((e) => e.term);
+    expect(terms).toContain("SOW");
+    expect(terms).toContain("Consulting Services");
+  });
+
+  it("does not read a term merely USED inside the parenthetical as a pair", () => {
+    // The run between the two names admits neither a quote nor a paren.
+    const map = extractDefinitions(
+      buildTree([
+        "Services",
+        'The Vendor shall deliver the items (the "Services" described in the "Statement of Work") by the date stated.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Statement of Work");
+  });
+});

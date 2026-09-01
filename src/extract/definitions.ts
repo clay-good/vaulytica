@@ -156,6 +156,29 @@ const DEFINITION_PAIR_PARENTHETICAL =
   /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter|THE|THIS|THESE|EACH|AN?|COLLECTIVELY|TOGETHER|INDIVIDUALLY|SEVERALLY|HEREINAFTER)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D][\s,]+and\b[^)]*?\b(?:collectively|together|individually|each|severally)\b[^)]*?\bthe\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
+ * The two-term parenthetical WITHOUT a collective connective — the shape
+ * `DEFINITION_PAIR_PARENTHETICAL` cannot see because it requires one of
+ * "collectively / together / individually / each / severally" between the two
+ * quoted names:
+ *
+ *   `(each, an "SOW", and the services under all SOWs, the "Consulting Services")`
+ *   `(the "Note", and the security agreement securing it, the "Loan Documents")`
+ *
+ * The failure is not that the second term is missed: NEITHER term is found,
+ * because `DEFINITION_PARENTHETICAL` needs its quote closed by `)`, the
+ * trailing pattern's run cannot cross the first quote, and the pair pattern
+ * wants a connective. Both names are then reported by STRUCT-006 as terms the
+ * document forgot to define, on the sentence that defines them.
+ *
+ * Tight by construction: the second quoted name must close the parenthetical
+ * behind `, the`, and the run between the two names admits neither a quote nor
+ * a paren — so `(the "Services" described in the "Statement of Work")` is not
+ * a pair.
+ */
+const DEFINITION_APPOSITIVE_PAIR_PARENTHETICAL =
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*,\s+and\b[^)"\u201C\u201D]*,\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
+
+/**
  * A single defined term that trails a PROSE preamble inside its parenthetical:
  *
  *   `the sum of $2,000,000 (together with all interest and earnings thereon,
@@ -1967,27 +1990,29 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
       form: "parenthetical",
     });
   }
-  DEFINITION_PAIR_PARENTHETICAL.lastIndex = 0;
-  while ((m = DEFINITION_PAIR_PARENTHETICAL.exec(text)) !== null) {
-    const before = text.slice(Math.max(0, m.index - 160), m.index);
-    const definition =
-      before
-        .split(/[.;]\s/)
-        .pop()
-        ?.trim() ?? "";
-    for (const g of [m[1]!, m[2]!]) {
-      out.push({
-        term: g.trim(),
-        definition,
-        defined_at: {
-          section_id: base.section_id,
-          paragraph_id: base.paragraph_id,
-          start: base.start + m.index,
-          end: base.start + m.index + m[0].length,
-        },
-        used_at: [],
-        form: "parenthetical",
-      });
+  for (const pairRe of [DEFINITION_PAIR_PARENTHETICAL, DEFINITION_APPOSITIVE_PAIR_PARENTHETICAL]) {
+    pairRe.lastIndex = 0;
+    while ((m = pairRe.exec(text)) !== null) {
+      const before = text.slice(Math.max(0, m.index - 160), m.index);
+      const definition =
+        before
+          .split(/[.;]\s/)
+          .pop()
+          ?.trim() ?? "";
+      for (const g of [m[1]!, m[2]!]) {
+        out.push({
+          term: g.trim(),
+          definition,
+          defined_at: {
+            section_id: base.section_id,
+            paragraph_id: base.paragraph_id,
+            start: base.start + m.index,
+            end: base.start + m.index + m[0].length,
+          },
+          used_at: [],
+          form: "parenthetical",
+        });
+      }
     }
   }
   return out;

@@ -1,0 +1,94 @@
+CONSULTING AGREEMENT
+
+This Consulting Agreement (this "Agreement") is made as of September 8, 2026 between Halcyon Analytics, Inc., a Delaware corporation (the "Company"), and Devin Marchetti, an individual (the "Consultant").
+
+1. SERVICES
+
+1.1 The Consultant shall perform the services described in each statement of work the parties sign (each, an "SOW", and the services under all SOWs, the "Consulting Services"), and the first SOW is attached as Exhibit A. The Consulting Services under Exhibit A are the design of the Company's data-warehouse architecture and a written migration plan.
+
+1.2 The Consultant controls the manner and means of performing the Consulting Services, supplies the Consultant's own equipment, and may perform services for others provided that doing so does not breach Section 5 or Section 6.
+
+1.3 The Consultant shall not subcontract any part of the Consulting Services without the Company's prior written consent, and remains responsible for any permitted subcontractor.
+
+2. FEES AND EXPENSES
+
+2.1 The Company shall pay the Consultant $250 per hour, invoiced monthly. The Company shall pay each undisputed invoice within thirty (30) days of receipt. The Company shall notify the Consultant of a disputed amount within fifteen (15) days of the invoice and shall pay the undisputed balance on time.
+
+2.2 The Company shall reimburse pre-approved travel and out-of-pocket expenses at cost, on receipts, within thirty (30) days.
+
+2.3 The fees are the Consultant's whole compensation. The Consultant is not entitled to overtime, bonus, equity, or any employee benefit of the Company.
+
+3. TERM AND TERMINATION
+
+3.1 This Agreement runs for twelve (12) months from the date above and renews for successive twelve-month terms unless either party gives thirty (30) days' written notice of non-renewal.
+
+3.2 Either party may terminate this Agreement or any SOW for convenience on thirty (30) days' written notice, and for material breach on ten (10) days' written notice if the breach is not cured in that period.
+
+3.3 On termination the Company shall pay for Consulting Services performed and expenses incurred to the date of termination, and the Consultant shall deliver all work in progress and return or destroy the Company's Confidential Information. Sections 4, 5, 6, 7, 8 and 10 survive.
+
+4. INTELLECTUAL PROPERTY
+
+4.1 All deliverables and other work product the Consultant creates in performing the Consulting Services (the "Work Product") belong to the Company. The Work Product is a work made for hire under section 101 of the Copyright Act to the extent it qualifies, and to the extent it does not, the Consultant hereby irrevocably assigns to the Company all right, title, and interest in and to the Work Product, including all copyright, patent, and trade-secret rights.
+
+4.2 The Consultant shall, at the Company's expense, sign any further document the Company reasonably needs to record or perfect that assignment, and appoints the Company as the Consultant's attorney-in-fact for that limited purpose if the Consultant does not do so within twenty (20) days of a written request.
+
+4.3 Pre-existing material. The Consultant retains ownership of anything the Consultant created before this Agreement or independently of it, and lists it on Exhibit B. The Consultant grants the Company a perpetual, irrevocable, worldwide, royalty-free, sublicensable licence to use any such material that the Consultant incorporates into the Work Product.
+
+4.4 To the extent permitted by law, the Consultant waives any moral right in the Work Product and agrees not to assert one.
+
+5. CONFIDENTIALITY
+
+5.1 The Consultant shall keep the Company's Confidential Information confidential, shall use it only to perform the Consulting Services, and shall protect it with at least reasonable care. "Confidential Information" means the Company's non-public information in any form, and does not include information that is or becomes public through no fault of the Consultant, that the Consultant knew without restriction before disclosure, that the Consultant receives from a third party without restriction, or that the Consultant develops independently.
+
+5.2 If the Consultant is required by law to disclose Confidential Information, the Consultant shall, where legally permitted, give the Company prompt notice and disclose only what is required.
+
+5.3 Notice under the Defend Trade Secrets Act, 18 U.S.C. § 1833(b): an individual shall not be held criminally or civilly liable under any federal or state trade secret law for disclosing a trade secret in confidence to a government official or an attorney solely for the purpose of reporting or investigating a suspected violation of law, or in a document filed under seal in a lawsuit.
+
+6. NON-SOLICITATION
+
+6.1 During the term and for twelve (12) months after it, the Consultant shall not solicit for employment any employee of the Company with whom the Consultant worked. General advertising not targeted at Company employees is not a solicitation. This Agreement contains no covenant restricting where or for whom the Consultant may work.
+
+7. REPRESENTATIONS AND INDEMNITY
+
+7.1 The Consultant represents that the Consultant has the authority to enter into this Agreement, that performing it does not breach any obligation the Consultant owes anyone else, and that the Work Product is the Consultant's original creation except for the material on Exhibit B.
+
+7.2 The Consultant shall indemnify the Company against any third-party claim that the Work Product as delivered infringes a copyright, patent, or trade secret, provided that the Company promptly notifies the Consultant of the claim, gives the Consultant control of the defence, and cooperates at the Consultant's expense. The Consultant shall not settle a claim that imposes a non-monetary obligation on the Company without the Company's prior written consent.
+
+8. LIMITATION OF LIABILITY
+
+8.1 Neither party is liable to the other for indirect, incidental, consequential, special, or punitive damages. Except for the Consultant's obligations under Sections 5 and 7.2 and for either party's fraud or wilful misconduct, each party's total liability under this Agreement is limited to the fees paid or payable in the twelve (12) months before the claim.
+
+9. INDEPENDENT CONTRACTOR
+
+9.1 The Consultant is an independent contractor and not an employee, agent, partner, or joint venturer of the Company. The Consultant is responsible for the Consultant's own taxes, insurance, and any licence the Consulting Services require, and shall indemnify the Company against any claim that the Consultant was misclassified, other than a claim arising from the Company's own direction of the manner of performance.
+
+9.2 The Company shall issue a Form 1099 for amounts it pays the Consultant.
+
+10. GENERAL
+
+10.1 This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules, and the parties submit to the exclusive jurisdiction of the state and federal courts sitting in Wilmington, Delaware.
+
+10.2 Neither party may assign this Agreement without the other's prior written consent, except that the Company may assign it to a successor to all or substantially all of its business.
+
+10.3 Notices under this Agreement are given in writing to the addresses on the signature page, and are effective on receipt.
+
+10.4 This Agreement, with its Exhibits and each SOW, is the entire agreement between the parties on its subject matter and supersedes all prior discussions. It may be amended only by a writing signed by both parties. If any provision is unenforceable, the rest remains in effect.
+
+HALCYON ANALYTICS, INC.
+
+By: /s/ Terrence Okonjo-Whitfield
+Name: Terrence Okonjo-Whitfield
+Title: Chief Operating Officer
+Date: September 8, 2026
+Address: 1200 Guadalupe Street, Suite 400, Austin, Texas 78701
+
+CONSULTANT
+
+/s/ Devin Marchetti
+Name: Devin Marchetti
+Date: September 8, 2026
+Address: 88 Harbor Way, Austin, Texas 78702
+
+EXHIBIT A — STATEMENT OF WORK
+
+EXHIBIT B — PRE-EXISTING MATERIAL

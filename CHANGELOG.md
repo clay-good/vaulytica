@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.293.0] — 2026-08-31
+
+### Added
+- One specimen — a well-drafted consulting agreement, the 244th, and the first
+  for `consulting-agreement`, one of the ten families the product launched
+  with. Its rules came back clean: nine findings, every one a fact about the
+  document rather than an accusation.
+
+### Fixed
+- **Two defined terms in one parenthetical, and NEITHER was found.** `(each, an
+  "SOW", and the services under all SOWs, the "Consulting Services")` defines
+  two terms without a collective connective between them, and all three
+  parenthetical patterns missed it: the plain one needs its quote closed by
+  `)`, the trailing-prose one's run cannot cross the first quote, and the pair
+  one requires "collectively / together / individually / each / severally".
+  Both names were then reported by STRUCT-006 as terms the document forgot to
+  define, on the sentence that defines them.
+- `msa-general` now names the consulting specialisation. A consulting agreement
+  that works through statements of work carries the MSA vocabulary, and the two
+  families tied at 0.9.
+
 ## [9.292.0] — 2026-08-31
 
 ### Fixed

@@ -1758,6 +1758,38 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A well-drafted consulting agreement, the 244th specimen and the first for
+  // `consulting-agreement`, one of the ten families the product launched with.
+  // The RULES came back clean — nine findings, every one a fact about the
+  // document rather than an accusation — and the defect the specimen exposed
+  // was in the EXTRACTOR.
+  //
+  // '(each, an "SOW", and the services under all SOWs, the "Consulting
+  // Services")' defines two terms in one parenthetical without a
+  // collective connective, and NEITHER was found: the plain parenthetical
+  // pattern needs its quote closed by ")", the trailing-prose pattern's run
+  // cannot cross the first quote, and the pair pattern requires one of
+  // "collectively / together / individually / each / severally" between the
+  // two names. Both were then reported by STRUCT-006 as terms the document
+  // forgot to define, on the sentence that defines them.
+  //
+  // `msa-general` also had to name the specialisation: a consulting agreement
+  // that works through statements of work carries the MSA vocabulary, and the
+  // two tied at 0.9.
+  "consulting-agreement.txt": {
+    playbook: "consulting-agreement",
+    findings: [
+      "OBLI-002",
+      "OBLI-005",
+      "PERS-002",
+      "RISK-002",
+      "RISK-007",
+      "TEMP-004",
+      "TERM-001",
+      "TERM-007",
+    ],
+  },
+
   // A sale-of-business non-competition and non-solicitation covenant, the 243rd
   // specimen and the first for `ma-restrictive-covenant`. It was written to
   // check that 9.269.0's title-keyword fix for the EMPLOYMENT covenant had not
