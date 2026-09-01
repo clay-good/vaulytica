@@ -9022,6 +9022,18 @@
       "Underlying Obligation"
     ],
     "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      },
       "FIN-005": {
         "skip": true
       },

@@ -3156,6 +3156,32 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A New York "good guy" guaranty of a retail lease — the commonest
+  // commercial guaranty in the country, universal in New York retail leasing,
+  // and one the catalog had never seen. It bounds the guarantor's exposure by
+  // TIME rather than by amount: everything accruing "from the Commencement
+  // Date THROUGH THE SURRENDER DATE, AND NOT THEREAFTER", with the surrender
+  // date defined by ninety days' notice, a broom-clean vacatur, payment
+  // through the date of surrender, and no other default.
+  //
+  // BNK-024 told it that it left the guaranty's scope ambiguous, which is the
+  // one thing it does not do: the check wanted either the phrase "continuing
+  // guaranty" or a dollar figure, and a good-guy guaranty carries neither
+  // while stating its scope more precisely than a cap does.
+  //
+  // The family also asked a guaranty for an IP-ownership clause, a limitation
+  // of liability, a termination-for-cause path, and an effect-of-termination
+  // clause, while its closest sibling `promissory-note` — the other one-sided
+  // payment instrument — declines all four.
+  //
+  // BNK-026 stays and is right: the draft has no reinstatement-on-avoidance
+  // clause, so a preference payment clawed back from the landlord would not
+  // revive the guaranty.
+  "ny-good-guy-guaranty.txt": {
+    playbook: "guaranty",
+    findings: ["BNK-026", "STRUCT-006", "CHOICE-008", "OBLI-005"],
+  },
+
   // A California separation agreement for an employee over 40: the full OWBPA
   // apparatus (written advice to consult counsel, twenty-one days to consider,
   // seven to revoke, not effective until the revocation period expires), the

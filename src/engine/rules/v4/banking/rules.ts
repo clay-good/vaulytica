@@ -665,9 +665,21 @@ const GUARANTY_RULES: Rule[] = [
       "Continuing guaranties cover future advances; limited guaranties cap exposure. Ambiguity causes disputes over scope.",
     recommendation:
       "Add 'Continuing Guaranty' (or limited / capped guaranty) specifying scope and any maximum aggregate dollar limit.",
+    // A guaranty can bound its scope by TIME instead of by amount, and the
+    // commonest commercial guaranty in the country does exactly that: a "good
+    // guy" guaranty runs "from the Commencement Date THROUGH THE SURRENDER
+    // DATE, AND NOT THEREAFTER", with the surrender date defined by notice,
+    // vacatur, and payment through the date of surrender. It is universal in
+    // New York retail leasing and states its scope more precisely than a
+    // dollar cap does — and it carries neither the phrase "continuing
+    // guaranty" nor any figure, so this check reported it as leaving scope
+    // ambiguous. Ambiguity is what the rule's own explanation says it is for.
     present_patterns: [
       /continuing\s+guarant/i,
       /(maximum\s+(amount|liability)|\bcaps?\b|limit\s+of\s+\$|aggregate\s+liability)/i,
+      /\bgood[-\s]guy\b/i,
+      /\band\s+not\s+thereafter\b/i,
+      /\b(?:liability|obligations?|guaranty)\b[^.]{0,80}?\b(?:ends?|terminates?|ceases?|expires?)\s+(?:on|upon|as\s+of)\b/i,
     ],
     default_severity: "warning",
   }),

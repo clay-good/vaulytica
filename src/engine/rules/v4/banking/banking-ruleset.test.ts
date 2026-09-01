@@ -441,3 +441,49 @@ describe("BNK-006 / BNK-025 — waivers expressly refused", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * BNK-024 — a guaranty can bound its scope by TIME instead of by amount.
+ *
+ * The commonest commercial guaranty in the country does exactly that: a "good
+ * guy" guaranty runs "from the Commencement Date THROUGH THE SURRENDER DATE,
+ * AND NOT THEREAFTER", with the surrender date defined by notice, vacatur, and
+ * payment through the date of surrender. It is universal in New York retail
+ * leasing and states its scope more precisely than a dollar cap does — and it
+ * carries neither the phrase "continuing guaranty" nor any figure, so the
+ * check reported it as leaving scope ambiguous, which is the one thing it does
+ * not do.
+ */
+describe("BNK-024 — a scope bounded by time", () => {
+  const fires = async (text: string) =>
+    (
+      await runEngine({
+        rules: BANKING_RULES,
+        ctx: withPb(buildContext(["Guaranty of Lease", text]), GTY_PB),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "BNK-024");
+
+  it.each([
+    [
+      "the good-guy formula",
+      "The Guarantor guarantees every sum the Tenant owes accruing from the Commencement Date through the Surrender Date, and not thereafter. This is a good guy guaranty.",
+    ],
+    [
+      "an express end to liability",
+      "The Guarantor's liability ends on the date the Tenant surrenders the Premises in accordance with Section 2.",
+    ],
+    ["the continuing form", "This is a continuing guaranty of all present and future obligations."],
+    ["a dollar cap", "The Guarantor's maximum liability under this Guaranty is $250,000."],
+  ])("is silent where the scope is stated by %s", async (_label, text) => {
+    expect(await fires(text)).toBe(false);
+  });
+
+  it("still fires where the guaranty bounds its scope neither way", async () => {
+    expect(
+      await fires(
+        "The Guarantor guarantees the payment of every sum the Tenant owes under the Lease.",
+      ),
+    ).toBe(true);
+  });
+});
