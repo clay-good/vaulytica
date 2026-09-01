@@ -3152,6 +3152,56 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A processor-to-SUB-PROCESSOR agreement under Article 28(4) — the downstream
+  // half of a DPA, which answers two Article 28 questions differently from the
+  // upstream half, and both answers were read as absences at `critical`.
+  //
+  // DPA-016's own description says the notification and objection right applies
+  // "WHERE GENERAL AUTHORISATION IS USED". Art. 28(2) offers two options, and
+  // a contract requiring PRIOR SPECIFIC WRITTEN AUTHORISATION for every
+  // sub-processor has taken the stricter one — so the recommended fix would
+  // have LOOSENED it.
+  //
+  // DPA-006 wants the obligations and rights of the controller, and a
+  // sub-processing agreement states them BY REFERENCE, which is the mechanism
+  // Art. 28(4) prescribes: the controller is not a party to that contract, and
+  // its rights live in the one it did sign. Both suppressions are confined to
+  // documents that carry the specific-authorisation option or cite Art. 28(4),
+  // and the corpus's own controller-to-processor DPA still reports DPA-006.
+  //
+  // The rest are the draft's own: its Article 32 measures and its sub-processor
+  // list live in schedules that are not attached (STRUCT-018 says so), and it
+  // names no Article 27 representative and no DPO.
+  "sub-processing-agreement.txt": {
+    playbook: "dpa-processor-subprocessor",
+    findings: [
+      "DPA-018",
+      "DPA-019",
+      "DPA-020",
+      "DPA-021",
+      "DPA-022",
+      "DPA-028",
+      "DPA-030",
+      "DPA-031",
+      "DPA-040",
+      "DPA-051",
+      "DPA-052",
+      "DPA-053",
+      "DPA-054",
+      "DPA-055",
+      "IPDATA-001",
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TERM-002",
+      "TRANSFER-018",
+      "TRANSFER-020",
+      "CHOICE-003",
+      "OBLI-005",
+    ],
+  },
+
   // An independent contractor agreement, drafted to the control factors the
   // classification tests turn on: the contractor sets her own hours and
   // methods, supplies her own equipment, bears profit and loss, holds herself

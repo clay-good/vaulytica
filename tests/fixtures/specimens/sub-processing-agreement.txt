@@ -1,0 +1,46 @@
+SUB-PROCESSING AGREEMENT (PROCESSOR TO SUB-PROCESSOR)
+
+This Sub-Processing Agreement (this "Agreement") is made as of April 14, 2026 between Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland (the "Processor"), and Larkspur Data Services Pte Ltd, 14 Marina Boulevard, Singapore 018983 (the "Sub-Processor").
+
+RECITALS
+
+The Processor processes personal data on behalf of Halbrook Diagnostics GmbH (the "Controller") under a data processing agreement dated June 3, 2025 (the "Principal DPA"). The Controller has given the Processor general written authorisation to engage sub-processors. The Processor engages the Sub-Processor to perform part of that processing, and Article 28(4) of the GDPR requires the Processor to impose on the Sub-Processor the same data protection obligations the Principal DPA imposes on the Processor.
+
+1. DEFINITIONS. "GDPR" means Regulation (EU) 2016/679. "Personal Data", "Processing", "Data Subject", "Controller", "Processor", and "Personal Data Breach" have the meanings given in Article 4 of the GDPR. "Applicable Data Protection Law" means the GDPR and the UK GDPR as applicable.
+
+2. SUBJECT MATTER, NATURE, AND DURATION. The subject matter of the Processing is the hosting and batch reconciliation of laboratory result data. The nature and purpose of the Processing are storage, overnight reconciliation, and deletion. The types of Personal Data are patient name, date of birth, insurance identifier, specimen identifier, and diagnostic result. The categories of Data Subjects are patients of clinics contracted to the Controller. Special categories of Personal Data — data concerning health — are Processed. The duration of the Processing is the term of this Agreement plus the ninety (90) day period in Section 12.
+
+3. DOCUMENTED INSTRUCTIONS. The Sub-Processor Processes Personal Data only on the Processor's documented instructions, including as to any transfer to a third country, unless required to do otherwise by Union or Member State law, in which case it will inform the Processor of that requirement before Processing unless the law prohibits it on important grounds of public interest. The Sub-Processor will immediately inform the Processor if, in its opinion, an instruction infringes Applicable Data Protection Law.
+
+4. SAME OBLIGATIONS. The obligations this Agreement imposes on the Sub-Processor are the same as those the Principal DPA imposes on the Processor, as Article 28(4) requires. Where the Principal DPA imposes a stricter obligation than this Agreement, the stricter obligation applies. A copy of the data-protection provisions of the Principal DPA is attached as Schedule 1.
+
+5. CONFIDENTIALITY. The Sub-Processor ensures that each person authorised to Process Personal Data is bound by a written duty of confidentiality that survives the end of that person's engagement.
+
+6. SECURITY. The Sub-Processor implements the technical and organisational measures in Schedule 2, taking account of the state of the art, the costs of implementation, and the nature, scope, context, and purposes of the Processing, as Article 32 requires.
+
+7. FURTHER SUB-PROCESSING. The Sub-Processor engages no further sub-processor without the Processor's prior specific written authorisation, and remains fully liable to the Processor for the performance of any it does engage.
+
+8. ASSISTANCE WITH DATA-SUBJECT RIGHTS. The Sub-Processor assists the Processor, by appropriate technical and organisational measures, in fulfilling the Controller's obligation to respond to a Data Subject's request under Chapter III, and will not respond to such a request itself except on the Processor's documented instruction.
+
+9. ASSISTANCE WITH ARTICLES 32 TO 36. The Sub-Processor assists the Processor in ensuring compliance with Articles 32 to 36, taking into account the nature of the Processing and the information available to it, including with any data protection impact assessment and prior consultation.
+
+10. PERSONAL DATA BREACH. The Sub-Processor notifies the Processor without undue delay, and in any event within twenty-four (24) hours, after becoming aware of a Personal Data Breach, and provides the information the Processor needs to meet its own notification obligations.
+
+11. AUDIT. The Sub-Processor makes available to the Processor all information necessary to demonstrate compliance with Article 28 and allows for and contributes to audits, including inspections, conducted by the Processor or an auditor it mandates, once every twelve months or after a Personal Data Breach.
+
+12. RETURN OR DELETION. On the end of the Processing, the Sub-Processor, at the Processor's election, returns or deletes all Personal Data and deletes existing copies within ninety (90) days, unless Union or Member State law requires storage.
+
+13. INTERNATIONAL TRANSFERS. Personal Data is transferred to Singapore under the standard contractual clauses adopted by Commission Implementing Decision (EU) 2021/914, Module Three, executed contemporaneously with this Agreement, together with the transfer impact assessment dated April 14, 2026.
+
+14. LIABILITY. Each party is liable to the other for its own breach. Nothing in this Agreement limits a Data Subject's rights or either party's liability under Article 82.
+
+15. TERM. This Agreement runs for the term of the Principal DPA and ends automatically when it ends.
+
+16. GOVERNING LAW. This Agreement is governed by the law of Ireland, and the courts of Ireland have jurisdiction.
+
+NORTHBRIDGE CLOUD LTD                     LARKSPUR DATA SERVICES PTE LTD
+
+By: /s/ Rosalind Achebe Kwan              By: /s/ Devon Achebe
+Name: Rosalind Achebe Kwan                Name: Devon Achebe
+Title: Director                           Title: Head of Privacy
+Date: April 14, 2026                      Date: April 14, 2026

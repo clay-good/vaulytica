@@ -692,3 +692,59 @@ describe("an executed SCC's own form fields (v1.1.0)", () => {
     },
   );
 });
+
+/**
+ * A processor-to-SUB-PROCESSOR agreement answers two Article 28 questions
+ * differently from a controller-to-processor one, and both answers were read
+ * as absences.
+ *
+ * DPA-016's own description says the notification and objection right applies
+ * "WHERE GENERAL AUTHORISATION IS USED". Art. 28(2) offers two options, and a
+ * contract that requires PRIOR SPECIFIC WRITTEN AUTHORISATION for every
+ * sub-processor has taken the stricter one. It was told at `critical` that it
+ * gave no objection right — a drafting fix that would LOOSEN it.
+ *
+ * DPA-006 wants the obligations and rights of the controller, and a
+ * sub-processing agreement states them BY REFERENCE, which is the mechanism
+ * Art. 28(4) prescribes. The controller is not a party to that contract.
+ */
+describe("Article 28 as a sub-processing agreement answers it", () => {
+  const fires = async (id: string, ...body: string[]) =>
+    (
+      await runEngine({
+        rules: DPA_GDPR_RULES,
+        ctx: withDpa(buildContext(["Sub-Processing Agreement", ...body])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  it("DPA-016 accepts prior specific written authorisation", async () => {
+    expect(
+      await fires(
+        "DPA-016",
+        "The Sub-Processor engages no further sub-processor without the Processor's prior specific written authorisation, and remains fully liable for any it does engage.",
+      ),
+    ).toBe(false);
+  });
+
+  it("DPA-006 accepts the Article 28(4) incorporation of the principal DPA", async () => {
+    expect(
+      await fires(
+        "DPA-006",
+        "The obligations this Agreement imposes on the Sub-Processor are the same as those the Principal DPA imposes on the Processor, as Article 28(4) requires.",
+      ),
+    ).toBe(false);
+  });
+
+  // Load-bearing: an ordinary controller-to-processor DPA carries neither the
+  // specific-authorisation option nor an Art. 28(4) incorporation, and still
+  // has to answer both itself.
+  it.each(["DPA-006", "DPA-016"])("%s still fires on a DPA that answers neither", async (id) => {
+    expect(
+      await fires(
+        id,
+        "Processor shall process personal data only on Controller's documented instructions.",
+      ),
+    ).toBe(true);
+  });
+});

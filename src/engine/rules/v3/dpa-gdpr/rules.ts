@@ -247,8 +247,20 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation: "Art. 28(3) requires the controller's obligations and rights to be set out.",
     recommendation:
       "Add a clause cross-referencing the controller's responsibilities under the agreement and GDPR.",
+    // A SUB-PROCESSING agreement states them BY REFERENCE, which is the
+    // mechanism Art. 28(4) prescribes: "the obligations this Agreement imposes
+    // on the Sub-Processor are the same as those the Principal DPA imposes on
+    // the Processor, as Article 28(4) requires." The controller is not a party
+    // to that contract and its rights live in the one it did sign, so
+    // demanding a restatement of them here is a fix that would add nothing and
+    // risk contradicting the principal DPA. Confined to a document that cites
+    // Art. 28(4) or names the upstream contract, so an ordinary
+    // controller-to-processor DPA — which carries neither — still has to state
+    // them itself.
     present_patterns: [
       /(obligations\s+and\s+rights\s+of\s+the\s+controller|controller\s+(shall|will)\s+(comply|determine))/i,
+      /\barticle\s*28\s*\(\s*4\s*\)/i,
+      /\bsame\s+(?:data[- ]protection\s+)?obligations\b[^.]{0,160}?\b(?:principal|main|upstream|head)\s+(?:dpa|data\s+processing\s+agreement|contract|agreement)/is,
     ],
   }),
 
@@ -484,7 +496,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-016",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subprocessor change notification + objection right",
     description:
       "Where general authorisation is used, controller must be informed of intended changes and have the opportunity to object.",
@@ -500,9 +512,23 @@ export const DPA_GDPR_RULES: Rule[] = [
     // the Art. 28(2) "opportunity to object" wording. The processor mention
     // may come BEFORE the objection ("… replacement of a Sub-processor, and
     // Controller may object …"), so that order is accepted too.
+    // SPECIFIC authorisation is the other lawful answer, and this rule's own
+    // description says so: "WHERE GENERAL AUTHORISATION IS USED, controller
+    // must be informed of intended changes and have the opportunity to
+    // object." Art. 28(2) offers the two options, and the notification and
+    // objection right belongs only to the general one — a contract that
+    // requires PRIOR SPECIFIC WRITTEN AUTHORISATION for every sub-processor
+    // has taken the stricter option and owes nothing further. A
+    // processor-to-sub-processor agreement whose section 7 says the
+    // Sub-Processor "engages no further sub-processor without the Processor's
+    // prior specific written authorisation" was told at `critical` that it
+    // gave no objection right, which is a drafting fix that would LOOSEN it.
     present_patterns: [
       /(opportunity\s+to\s+object|right\s+to\s+object|may\s+(reasonably\s+)?object).*?(sub[- ]?processor|processor)/is,
       /(sub[- ]?processor|processor).*?(opportunity\s+to\s+object|right\s+to\s+object|may\s+(reasonably\s+)?object)/is,
+      /\bprior\s+specific\s+(?:written\s+)?authoris?z?ation\b/i,
+      /\bspecific\s+(?:prior\s+)?(?:written\s+)?(?:authoris|authoriz)ation\b[^.]{0,80}?\bsub[- ]?processor\b/is,
+      /\bsub[- ]?processor\b[^.]{0,120}?\bspecific\s+(?:prior\s+)?(?:written\s+)?(?:authoris|authoriz)ation\b/is,
     ],
   }),
   presence({
