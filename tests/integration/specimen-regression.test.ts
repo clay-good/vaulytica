@@ -1758,6 +1758,28 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A sale-of-business non-competition and non-solicitation covenant, the 243rd
+  // specimen and the first for `ma-restrictive-covenant`. It was written to
+  // check that 9.269.0's title-keyword fix for the EMPLOYMENT covenant had not
+  // taken this family's documents, and it had: "non-competition and
+  // non-solicitation" and "non-solicitation agreement" both matched, the
+  // employment family scored two title keywords, and the M&A covenant was
+  // audited as an employment one. Both sides are corrected — the M&A family
+  // gains the conjoined titles and the sale-of-business vocabulary, and the
+  // employment family names the sale-of-business context as a negative
+  // feature.
+  //
+  // Three MNA rules then failed on the document itself, all the same shape: a
+  // covenant is drafted as a PROHIBITION, not as a noun. MNA-077 and MNA-078
+  // wanted "non-solicit" or "not to solicit" and could not read "Seller shall
+  // not solicit any customer of the Company"; MNA-079 wanted the nouns
+  // "blue-pencil" or "reformation" and could not read "the court shall reform
+  // it to the narrowest terms that are enforceable".
+  "ma-restrictive-covenant.txt": {
+    playbook: "ma-restrictive-covenant",
+    findings: ["PERS-005", "PERS-001", "PERS-002", "OBLI-002", "OBLI-005"],
+  },
+
   // A vendor DPA that DEFINES ITS OWN TERM for the regulated data — "Customer
   // Personal Data" — which is how every major vendor DPA is drafted, the 242nd
   // specimen. Written to test whether the CCPA pack's object-noun defect was

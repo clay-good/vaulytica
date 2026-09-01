@@ -1,0 +1,74 @@
+NON-COMPETITION AND NON-SOLICITATION AGREEMENT (SALE OF BUSINESS)
+
+This Non-Competition and Non-Solicitation Agreement (this "Agreement") is made as of July 14, 2026 between Pinehurst Capital Partners, L.P., a Delaware limited partnership ("Buyer"), and Devin Marchetti, an individual ("Seller"), in connection with the Stock Purchase Agreement of even date between Buyer, Marchetti Holdings LLC and Sablefield Software, Inc. (the "Company"), under which Buyer acquires all of the outstanding stock of the Company (the "Acquisition").
+
+RECITALS
+
+A. Seller is the sole member of Marchetti Holdings LLC and, through it, has been the controlling owner of the Company since 2014. Seller founded the Company, holds its customer relationships, and knows its pricing, roadmap and supplier terms.
+
+B. Buyer is paying $42,000,000 for the Company, a material part of which is attributable to the goodwill Seller built. Buyer would not complete the Acquisition without this Agreement, and Seller enters into it to induce Buyer to do so and in consideration of the purchase price Seller receives.
+
+1. DEFINITIONS
+
+1.1 "Restricted Business" means the design, development and sale of multiplex nucleic-acid diagnostic assay software for benchtop analyzers, which is the business the Company conducted in the twelve (12) months before the Closing and the business Buyer is acquiring. It does not include any other line of business.
+
+1.2 "Restricted Period" means the three (3) years beginning on the Closing Date.
+
+1.3 "Restricted Territory" means each state of the United States, and each other country, in which the Company sold, or had a pending customer proposal for, a Restricted Business product in the twelve (12) months before the Closing. Those states and countries are listed on Schedule 1.3.
+
+2. COVENANT NOT TO COMPETE
+
+2.1 During the Restricted Period, Seller shall not, within the Restricted Territory, engage in the Restricted Business, whether as owner, partner, member, director, officer, employee, consultant or lender.
+
+2.2 Nothing in Section 2.1 prevents Seller from owning up to two percent (2%) of a class of securities of a publicly traded company, from working in a line of business that is not the Restricted Business, or from continuing the passive real-estate investments listed on Schedule 2.2.
+
+3. NON-SOLICITATION
+
+3.1 During the Restricted Period, Seller shall not solicit any customer of the Company with whom the Company did business in the twelve (12) months before the Closing, for the purpose of providing a Restricted Business product.
+
+3.2 During the Restricted Period, Seller shall not solicit for employment or hire any employee of the Company. General advertising not targeted at Company employees, and responding to an approach an employee initiates without solicitation, are not breaches of this Section.
+
+4. CONFIDENTIALITY
+
+4.1 Seller shall keep confidential, and shall not use for the benefit of anyone other than Buyer, the Company's non-public information, including its customer lists, pricing, source code and supplier terms. This obligation continues indefinitely as to any information that is a trade secret and for five (5) years as to other information.
+
+5. GOODWILL AND ENFORCEABILITY
+
+5.1 The parties agree that these covenants are ancillary to the sale of a business and are reasonable in duration, geography and scope, that they protect the goodwill and the confidential information Buyer is purchasing, and that Seller has been separately advised by counsel of Seller's choosing.
+
+5.2 The parties acknowledge that a covenant ancillary to the sale of a business is enforceable in California under Business and Professions Code section 16601, which excepts such covenants from section 16600's general prohibition, and that Seller sells the whole of Seller's ownership interest in the Company.
+
+5.3 If a court finds any covenant in Sections 2 or 3 unenforceable as written, the court shall reform it to the narrowest terms that are enforceable and shall enforce it as reformed. If it cannot be reformed, it shall be severed and the rest of this Agreement remains in effect.
+
+6. REMEDIES
+
+6.1 Seller agrees that a breach of Sections 2, 3 or 4 would cause Buyer harm not fully compensable in money, and that Buyer may seek injunctive relief in addition to any other remedy. Buyer must still show the elements a court requires for an injunction. The Restricted Period is extended, as to Seller, by the period of any breach.
+
+6.2 Buyer's remedies under this Agreement are in addition to, and not in place of, its remedies under the Stock Purchase Agreement. Nothing here limits Buyer's indemnification rights under that agreement.
+
+7. GENERAL
+
+7.1 This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules, and each party submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware.
+
+7.2 This Agreement binds Seller's heirs and assigns and benefits Buyer's successors and permitted assigns, including any purchaser of the Company or the Restricted Business.
+
+7.3 This Agreement, with its Schedules, is the entire agreement between the parties on its subject matter, and may be amended only by a writing signed by both parties.
+
+7.4 This Agreement takes effect at the Closing and terminates if the Stock Purchase Agreement terminates before the Closing.
+
+PINEHURST CAPITAL PARTNERS, L.P.
+
+By: /s/ Caryn Okonjo
+Name: Caryn Okonjo
+Title: Managing Partner
+Date: July 14, 2026
+
+SELLER
+
+/s/ Devin Marchetti
+Name: Devin Marchetti
+Date: July 14, 2026
+
+SCHEDULE 1.3 — RESTRICTED TERRITORY
+
+SCHEDULE 2.2 — PERMITTED INVESTMENTS

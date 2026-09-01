@@ -1805,6 +1805,7 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-077",
+    version: "1.1.0",
     name: "Non-solicit of customers",
     description: "Non-solicit-of-customers covenant should be present.",
     citation: maPractice(
@@ -1819,10 +1820,20 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "Even where non-competes face state-law scrutiny, customer non-solicits are widely enforced.",
     recommendation:
       "Add 'Non-Solicitation of Customers' covering customers of the acquired business.",
-    present_patterns: [/non.?solicit.{0,40}customers?/is, /not\s+to\s+solicit.{0,40}customers?/is],
+    // A covenant is drafted as a PROHIBITION, not as a noun: "Seller shall
+    // not solicit any customer of the Company with whom the Company did
+    // business in the twelve months before the Closing". Both patterns wanted
+    // the noun "non-solicit" or the infinitive "not to solicit", so the plain
+    // modal form — the commonest drafting there is — read as no clause at all.
+    present_patterns: [
+      /non.?solicit.{0,40}customers?/is,
+      /not\s+to\s+solicit.{0,40}customers?/is,
+      /(?:shall|will|may|must|agrees?\s+to)\s+not\s+(?:directly\s+or\s+indirectly\s+)?solicit[^.]{0,80}?\b(?:customer|client|account)s?\b/i,
+    ],
   }),
   presence({
     id: "MNA-078",
+    version: "1.1.0",
     name: "Non-solicit of employees",
     description: "Employee non-solicit (no-poach) should be present.",
     citation: maPractice(
@@ -1835,10 +1846,15 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     missing_description: "No employee non-solicit clause was found.",
     explanation: "Standard for M&A restrictive-covenant agreements with key sellers.",
     recommendation: "Add 'Non-Solicitation of Employees' for a defined period.",
-    present_patterns: [/non.?solicit.{0,40}employees?/is, /no.?(hire|poach)/i],
+    present_patterns: [
+      /non.?solicit.{0,40}employees?/is,
+      /no.?(hire|poach)/i,
+      /(?:shall|will|may|must|agrees?\s+to)\s+not\s+(?:directly\s+or\s+indirectly\s+)?solicit[^.]{0,80}?\b(?:employ(?:ee|ment)|personnel|staff|worker)s?\b/i,
+    ],
   }),
   presence({
     id: "MNA-079",
+    version: "1.1.0",
     name: "Blue-pencil / reformation clause",
     description: "Restrictive-covenant agreement should empower courts to reform overbroad terms.",
     citation: maPractice(
@@ -1853,7 +1869,18 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "Reformation is permissive in many states; a blue-pencil clause increases the chance of partial enforcement if the original terms are overbroad.",
     recommendation:
       "Add a 'Reformation' clause authorizing a court to modify any overbroad covenant to the maximum enforceable scope.",
-    present_patterns: [/blue.?pencil/i, /reformation/i, /maximum\s+enforceable/i],
+    // The clause is written as an instruction to the court, and the word
+    // "reform" appears as a VERB: "if a court finds any covenant
+    // unenforceable as written, the court shall reform it to the narrowest
+    // terms that are enforceable and shall enforce it as reformed". None of
+    // the three nouns is in it.
+    present_patterns: [
+      /blue.?pencil/i,
+      /reformation/i,
+      /maximum\s+enforceable/i,
+      /\b(?:court|tribunal|arbitrator)\b[^.]{0,120}?\b(?:reform|modify|reduce|narrow|revise)\b[^.]{0,80}?\b(?:enforceab|permitted|extent)\b/i,
+      /\b(?:reform|modif(?:y|ied)|reduce[d]?|narrow(?:ed)?)\b[^.]{0,80}?\bto\s+the\s+(?:narrowest|maximum|greatest|broadest)\s+(?:terms?|extent|scope)\b/i,
+    ],
     default_severity: "warning",
   }),
   presence({

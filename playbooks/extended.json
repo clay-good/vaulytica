@@ -7140,7 +7140,7 @@
   },
   {
     "id": "employment-restrictive-covenant",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Employment Restrictive Covenant Agreement",
     "description": "Employment-side non-compete / non-solicit covenant. Selects the §6.F employment ruleset (EMP-024..EMP-031). Subject to FTC NCR § 910 and state non-compete law.",
     "match_features": {
@@ -7164,7 +7164,12 @@
       ],
       "negative_features": [
         "m&a restrictive covenant",
-        "sale of business"
+        "sale of business",
+        "ancillary to the sale",
+        "in connection with the sale",
+        "the acquisition",
+        "16601",
+        "goodwill"
       ]
     },
     "expected_clauses": [],
@@ -11296,14 +11301,17 @@
   },
   {
     "id": "ma-restrictive-covenant",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "M&A Restrictive Covenant Agreement",
     "description": "Sale-of-business non-compete / non-solicit covenants, governed by state goodwill doctrine (e.g. Cal. Bus. & Prof. Code § 16601). The FTC Non-Compete Clause Rule, whose § 910.2(a)(2) would likewise have preserved them, was set aside nationwide in Ryan LLC v. FTC and never took effect. Selects the §6.D M&A ruleset (MNA-072..MNA-080).",
     "match_features": {
       "title_keywords": [
         "restrictive covenant agreement",
         "non-compete agreement",
-        "non-competition agreement"
+        "non-competition agreement",
+        "non-competition and non-solicitation",
+        "non-solicitation and non-competition",
+        "non-compete and non-solicitation"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -11314,7 +11322,11 @@
         "blue pencil",
         "after closing",
         "the acquired business",
-        "purchaser"
+        "purchaser",
+        "sale of a business",
+        "the acquisition",
+        "ancillary to the sale",
+        "16601"
       ],
       "negative_features": [
         "employment agreement"

@@ -1,6 +1,6 @@
 {
   "id": "employment-restrictive-covenant",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Employment Restrictive Covenant Agreement",
   "description": "Employment-side non-compete / non-solicit covenant. Selects the §6.F employment ruleset (EMP-024..EMP-031). Subject to FTC NCR § 910 and state non-compete law.",
   "match_features": {
@@ -22,7 +22,15 @@
       "restricted period",
       "garden leave"
     ],
-    "negative_features": ["m&a restrictive covenant", "sale of business"]
+    "negative_features": [
+      "m&a restrictive covenant",
+      "sale of business",
+      "ancillary to the sale",
+      "in connection with the sale",
+      "the acquisition",
+      "16601",
+      "goodwill"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Competing Business", "Restricted Period", "Restricted Territory"],

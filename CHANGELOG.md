@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.291.0] — 2026-08-31
+
+### Added
+- One specimen — a sale-of-business non-competition and non-solicitation
+  covenant, the 243rd, and the first for `ma-restrictive-covenant`.
+
+### Fixed
+- **9.269.0's title-keyword fix for the employment covenant had taken this
+  family's documents.** "Non-competition and non-solicitation" and
+  "non-solicitation agreement" both matched a sale-of-business covenant, the
+  employment family scored two title keywords, and an M&A covenant was audited
+  as an employment one. Both sides are corrected: the M&A family gains the
+  conjoined titles and the sale-of-business vocabulary, and the employment
+  family names the sale-of-business context as a negative feature.
+- **Three M&A covenant rules could not read a covenant.** A covenant is drafted
+  as a PROHIBITION, not as a noun. MNA-077 and MNA-078 wanted "non-solicit" or
+  "not to solicit" and could not read "Seller shall not solicit any customer of
+  the Company" — the commonest drafting there is. MNA-079 wanted the nouns
+  "blue-pencil" or "reformation" and could not read "the court shall reform it
+  to the narrowest terms that are enforceable".
+
 ## [9.290.0] — 2026-08-31
 
 ### Fixed
