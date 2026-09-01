@@ -16,7 +16,7 @@ function countWaiverBeneficiaries(text: string): number {
 /** RISK-008 — Consequential damages waiver mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-008",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Consequential damages waiver mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -49,6 +49,8 @@ export const rule: Rule = {
       excerpt: oneSided.text.slice(0, 280),
       explanation:
         "Consequential-damages waivers are usually mutual. A one-sided version shifts risk significantly toward the unprotected party.",
+      recommendation:
+        "Make the consequential-damages waiver mutual, or state why it is not. A one-sided waiver leaves the drafting party able to recover a category of loss it has excluded for the other, which is the first thing a reviewer on the other side will strike.",
       position: oneSided.position,
     });
   },

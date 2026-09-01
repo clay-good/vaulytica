@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
 /** PERS-004 — Anti-poaching language (warning). */
 export const rule: Rule = {
   id: "PERS-004",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Anti-poaching / no-hire between parties",
   category: "personnel",
   default_severity: "warning",
@@ -42,6 +42,8 @@ export const rule: Rule = {
       excerpt: hit.text.slice(0, 280),
       explanation:
         "Mutual no-hire clauses between competitors raise antitrust scrutiny under FTC Act § 5. DOJ has prosecuted no-poach agreements between competitors.",
+      recommendation:
+        "Confirm the no-hire is ancillary to a legitimate transaction and narrow — the employees who actually worked on this engagement, for a bounded period. A naked no-poach between competitors is a per se antitrust risk, not merely an unenforceable term.",
       position: hit.position,
     });
   },

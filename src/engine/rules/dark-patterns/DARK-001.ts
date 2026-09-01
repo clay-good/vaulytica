@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-001 — Unilateral modification right (warning). */
 export const rule: Rule = {
   id: "DARK-001",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Unilateral modification right",
   category: "dark-patterns",
   default_severity: "warning",
@@ -43,6 +43,8 @@ export const rule: Rule = {
       excerpt: hit.text.slice(0, 280),
       explanation:
         "A unilateral modification right without a corresponding customer termination right shifts re-pricing and re-negotiation power to the drafter.",
+      recommendation:
+        "Bound the modification right: notice before a change takes effect (30 days is the norm), no retroactive application to a period already paid for, and a right to terminate without penalty if the change is adverse. A bare right to amend at will is what makes the rest of the contract provisional.",
       position: hit.position,
     });
   },

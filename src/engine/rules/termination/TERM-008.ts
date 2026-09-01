@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 /** TERM-008 — Termination linked to payment status (warning). */
 export const rule: Rule = {
   id: "TERM-008",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Termination linked to payment status",
   category: "termination",
   default_severity: "warning",
@@ -38,6 +38,8 @@ export const rule: Rule = {
       excerpt: hit.text.slice(0, 280),
       explanation:
         "Termination on payment default without a cure period gives one party a fast trigger that can be triggered by routine payment delays.",
+      recommendation:
+        "Add a cure period before immediate termination for payment default — 10 days after written notice is the norm — so an invoice lost in a mailbox does not end the contract. Keep the immediate right for repeated or wilful non-payment if you need it.",
       position: hit.position,
     });
   },

@@ -28,7 +28,7 @@ const AUTO_RENEW_RE =
 
 export const rule: Rule = {
   id: "TEMP-003",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Deadline-to-term inconsistency",
   category: "temporal",
   default_severity: "warning",
@@ -58,6 +58,8 @@ export const rule: Rule = {
         excerpt: sameParaNotice[0],
         explanation:
           "If the notice required to terminate is longer than the contract itself, the termination right is effectively unavailable.",
+        recommendation:
+          "Reconcile the notice period with the term. A notice period longer than the term the notice is given during makes the right unusable — shorten the notice, lengthen the term, or state that notice may be given from the effective date.",
         position: term.position,
       });
     }

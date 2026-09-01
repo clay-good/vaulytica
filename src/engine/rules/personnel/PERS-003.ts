@@ -31,7 +31,7 @@ const EMPLOYEE_INDICATORS = [
 /** PERS-003 — Independent contractor classification language (warning). */
 export const rule: Rule = {
   id: "PERS-003",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Independent contractor classification risk",
   category: "personnel",
   default_severity: "warning",
@@ -51,6 +51,8 @@ export const rule: Rule = {
           excerpt: hit.text.slice(0, 280),
           explanation:
             "Language consistent with an employer-employee relationship (set hours, mandatory reporting, employer-provided tools) can cause misclassification risk under the IRS 20-factor test (Rev. Rul. 87-41).",
+          recommendation:
+            'Remove the employee-like terms or reclassify. Set hours, a title, a supervisor, benefits, training and "performance reviews" are the facts an agency weighs; a contract that reads like employment invites a misclassification finding whatever it calls the relationship.',
           position: hit.position,
         });
       }

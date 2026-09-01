@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-004 — Mandatory arbitration with class waiver in consumer contract (warning). */
 export const rule: Rule = {
   id: "DARK-004",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Mandatory arbitration + class waiver (consumer)",
   category: "dark-patterns",
   default_severity: "warning",
@@ -54,6 +54,8 @@ export const rule: Rule = {
       excerpt: cw.text.slice(0, 280),
       explanation:
         "Mandatory arbitration combined with a class-action waiver effectively immunizes widespread small-dollar harms from collective redress. Enforceable in many jurisdictions, but worth surfacing prominently when the agreement is consumer-facing.",
+      recommendation:
+        "Confirm the pairing is enforceable for this consumer population, that the individual mechanism is genuinely usable (venue, cost-sharing, small-claims carve-out), and that a public-injunctive claim survives where state law preserves one.",
       position: cw.position,
     });
   },

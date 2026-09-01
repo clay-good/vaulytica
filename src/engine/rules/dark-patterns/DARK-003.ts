@@ -38,7 +38,7 @@ const ASYMMETRIC_FEE_SHIFT = new RegExp(
 /** DARK-003 — Asymmetric fee-shifting (warning). */
 export const rule: Rule = {
   id: "DARK-003",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Asymmetric fee-shifting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -58,6 +58,8 @@ export const rule: Rule = {
       excerpt: oneSided.text.slice(0, 280),
       explanation:
         "Fee-shifting that runs only one way stacks the cost of disputes asymmetrically. The standard 'prevailing party' formulation runs both ways.",
+      recommendation:
+        "Make the fee-shifting mutual, or delete it. A one-way clause is unenforceable or reciprocal by statute in several states, and where it stands it discourages a meritorious claim by the party that did not draft it.",
       position: oneSided.position,
     });
   },

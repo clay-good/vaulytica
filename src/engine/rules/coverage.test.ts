@@ -287,6 +287,24 @@ describe("an absence WARNING tells the reader what to add", () => {
   // the thirteen where the tool tells an attorney a clause is missing, so the
   // next step is the whole value of the finding.
   const MUST_RECOMMEND = [
+    // 9.295.0 completed the set: every WARNING-severity launch rule now
+    // carries one. What is left without a recommendation is the info-level
+    // statements of fact ("Auto-renewal clause present", "Survival clause
+    // present"), where the finding IS the fact and advice would be noise.
+    "DARK-001",
+    "DARK-002",
+    "DARK-003",
+    "DARK-004",
+    "PERS-003",
+    "PERS-004",
+    "RISK-002",
+    "RISK-004",
+    "RISK-008",
+    "TEMP-003",
+    "TEMP-004",
+    "TEMP-005",
+    "TERM-003",
+    "TERM-008",
     "CHOICE-001",
     "CHOICE-002",
     "CHOICE-004",

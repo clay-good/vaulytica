@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 /** TEMP-005 — Auto-renewal notice window unusual (warning). */
 export const rule: Rule = {
   id: "TEMP-005",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Auto-renewal notice window unusual",
   category: "temporal",
   default_severity: "warning",
@@ -45,6 +45,8 @@ export const rule: Rule = {
       excerpt: hit.match[0],
       explanation:
         "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review under ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes.",
+      recommendation:
+        "Bring the notice window to something a diarised reviewer can meet — 30 to 60 days before renewal is the norm. A longer window is enforceable in most places and is still the term most likely to catch a counterparty out.",
       position: hit.position,
     });
   },

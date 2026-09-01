@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.295.0] — 2026-08-31
+
+### Added
+- **A recommendation on the remaining fourteen launch-wave warnings.** Every
+  WARNING-severity rule in the launch wave now tells the reader what to do:
+  DARK-001..004 (the unilateral amendment right, the buried renewal window, the
+  one-way fee-shifting, the arbitration-plus-class-waiver pairing), PERS-003,
+  PERS-004, RISK-002, RISK-004, RISK-008, TEMP-003..005, TERM-003 and TERM-008.
+  What is left without one is forty `info`-level statements of fact —
+  "Auto-renewal clause present", "Survival clause present" — where the finding
+  IS the fact and advice would be noise.
+
 ## [9.294.0] — 2026-08-31
 
 ### Added

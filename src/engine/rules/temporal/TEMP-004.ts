@@ -4,7 +4,7 @@ import { emit, excerptWindow, firstUnnegatedParagraphMatch } from "../_helpers.j
 /** TEMP-004 — Auto-renewal present and parseable (warning). */
 export const rule: Rule = {
   id: "TEMP-004",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Auto-renewal present",
   category: "temporal",
   default_severity: "warning",
@@ -45,6 +45,8 @@ export const rule: Rule = {
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 200),
       explanation:
         "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
+      recommendation:
+        "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       position: hit.position,
     });
   },

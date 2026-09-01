@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -64,6 +64,8 @@ export const rule: Rule = {
       excerpt: auto.text.slice(0, 200),
       explanation:
         "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes address this pattern.",
+      recommendation:
+        "Move the cancellation window and the renewal date into the same paragraph as the renewal itself, make the window no shorter than the notice you are able to give, and send a reminder before it opens. A window that closes months before renewal is the term most often litigated as unfair.",
       position: auto.position,
     });
   },

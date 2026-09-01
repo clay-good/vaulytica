@@ -15,7 +15,7 @@ const CARVE_OUT =
 /** RISK-004 — Indemnity cap vs. LoL cap interaction (warning). */
 export const rule: Rule = {
   id: "RISK-004",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Indemnity vs. LoL cap interaction",
   category: "risk-allocation",
   default_severity: "warning",
@@ -52,6 +52,8 @@ export const rule: Rule = {
       excerpt: carveOut.text.slice(0, 320),
       explanation:
         "When indemnity is carved out of the LoL cap, the indemnifying party may face uncapped exposure on third-party claims. Verify a separate indemnity-specific cap exists, or that the carve-out is intended.",
+      recommendation:
+        "Confirm the carve-out is what you intend. An indemnity outside the cap is standard for third-party IP claims and is uncapped exposure everywhere else; if it is meant to be bounded, give it its own super-cap rather than leaving it outside the general one.",
       position: carveOut.position,
     });
   },

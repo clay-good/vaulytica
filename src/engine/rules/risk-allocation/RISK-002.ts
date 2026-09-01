@@ -4,7 +4,7 @@ import { emit, allMatches, topPosition } from "../_helpers.js";
 /** RISK-002 — Indemnity mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-002",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Indemnity mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -94,6 +94,8 @@ export const rule: Rule = {
       excerpt: lines[0]!.match[0].slice(0, 200),
       explanation:
         "One party appears to bear materially more indemnity scope than the other. Confirm the asymmetry is intentional and reciprocated by other consideration (e.g., a fee discount).",
+      recommendation:
+        "Confirm the asymmetry is intentional. A one-way indemnity is normal where one party controls the risk (a vendor's IP indemnity, a licensee's use indemnity); where it is not, state what the indemnifying party gets in return, or make it reciprocal for the claims both parties can cause.",
       position: lines[0]?.position ?? topPosition(ctx),
     });
   },

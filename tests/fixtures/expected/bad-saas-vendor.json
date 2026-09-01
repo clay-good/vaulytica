@@ -92,28 +92,28 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-001",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "DARK-003",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "DARK-004",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -408,14 +408,14 @@
       "fired": false,
       "ran": false,
       "rule_id": "PERS-003",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": false,
       "rule_id": "PERS-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -465,7 +465,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-002",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -480,7 +480,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-004",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -508,7 +508,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-008",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -730,7 +730,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-003",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -738,14 +738,14 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -816,7 +816,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TERM-003",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -852,7 +852,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TERM-008",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -990,8 +990,9 @@
       },
       "explanation": "One party appears to bear materially more indemnity scope than the other. Confirm the asymmetry is intentional and reciprocated by other consideration (e.g., a fee discount).",
       "id": "RISK-002-s1.3-601",
+      "recommendation": "Confirm the asymmetry is intentional. A one-way indemnity is normal where one party controls the risk (a vendor's IP indemnity, a licensee's use indemnity); where it is not, state what the indemnifying party gets in return, or make it reciprocal for the claims both parties can cause.",
       "rule_id": "RISK-002",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnity appears asymmetric"
@@ -1007,8 +1008,9 @@
       },
       "explanation": "When indemnity is carved out of the LoL cap, the indemnifying party may face uncapped exposure on third-party claims. Verify a separate indemnity-specific cap exists, or that the carve-out is intended.",
       "id": "RISK-004-s1.4-784",
+      "recommendation": "Confirm the carve-out is what you intend. An indemnity outside the cap is standard for third-party IP claims and is uncapped exposure everywhere else; if it is meant to be bounded, give it its own super-cap rather than leaving it outside the general one.",
       "rule_id": "RISK-004",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnity carved out of the liability cap"
@@ -1060,8 +1062,9 @@
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
       "id": "TEMP-004-s1.5-956",
+      "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1244,11 +1247,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "8f84f02b7b7a2287d90677b891b897e251ab8601442688a09274ffc3abbde822",
+  "result_hash": "51f9710de0bc5f41f73e1b029e9b709ef7e744a5e4763017f4909001100c1b1a",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.294.0"
+  "version": "9.295.0"
 }

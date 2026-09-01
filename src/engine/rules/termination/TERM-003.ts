@@ -16,7 +16,7 @@ function countConvenienceGrantees(text: string): number {
 /** TERM-003 — Termination asymmetry (warning). */
 export const rule: Rule = {
   id: "TERM-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Termination asymmetry",
   category: "termination",
   default_severity: "warning",
@@ -49,6 +49,8 @@ export const rule: Rule = {
       excerpt: oneSided.text.slice(0, 240),
       explanation:
         "An asymmetric termination-for-convenience right is sometimes intentional (e.g., paid-up vendors), but the asymmetry should be deliberate.",
+      recommendation:
+        "Make the convenience right mutual, or state why only one party has it. A one-way right is normal in a services contract the customer can exit; where it runs the other way, the counterparty is committed for the term and the drafter is not.",
       position: oneSided.position,
     });
   },
