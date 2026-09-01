@@ -629,3 +629,35 @@ describe("a deposition notice names its deponent", () => {
     ).not.toBeNull();
   });
 });
+
+describe("DISC-012 — the rule's own wording (v1.2.0)", () => {
+  // Rule 36(a)(3) says "A matter is admitted unless, within 30 days after
+  // being served, the party to whom the request is directed serves ... a
+  // written answer or objection". An instruction that quotes that sentence
+  // back — the careful way to state the consequence — matched none of
+  // `deemed admitted` / `admitted if you fail` / `automatically admitted`, so
+  // a well-drafted first set of requests was told at `critical` that it stated
+  // no deadline and no consequence, in a paragraph that stated both.
+  it("reads the deemed-admitted consequence stated as Rule 36(a)(3) states it", () => {
+    expect(
+      rule("DISC-012").check(
+        doc(
+          "Plaintiff's First Set of Requests for Admission",
+          "A matter is admitted unless, within 30 days after service, You serve a written answer or objection addressed to the matter and signed by You or Your attorney.",
+          "REQUEST NO. 1: Admit that You executed the Agreement.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on requests that state neither", () => {
+    expect(
+      rule("DISC-012").check(
+        doc(
+          "Plaintiff's First Set of Requests for Admission",
+          "REQUEST NO. 1: Admit that You executed the Agreement.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

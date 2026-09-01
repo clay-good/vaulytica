@@ -208,12 +208,20 @@ const RFA = pack("requests-for-admission", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    // 1.2.0 — the check could not read the rule it cites. Rule 36(a)(3) says
+    // "A matter is admitted unless, within 30 days after being served, the
+    // party to whom the request is directed serves ... a written answer or
+    // objection", and an instruction that quotes that sentence back —
+    // the careful way to state the consequence — matched none of
+    // `deemed admitted` / `admitted if you fail` / `automatically admitted`.
+    // A well-drafted first set of requests was told at `critical` that it
+    // stated no deadline and no consequence, in a paragraph that stated both.
+    ver: "1.2.0",
     name: "Response deadline and the deemed-admitted consequence",
     cite: frcp("36(a)(3)", "requests for admission — time to respond and the effect of failing to"),
     pat: [
       /(30\s+days|thirty\s+\(?30\)?\s+days|within\s+\d+\s+days)/i,
-      /(deemed[-\s]+admitted|admitted\s+if\s+(you\s+)?(fail|do\s+not)|automatically\s+admitted)/i,
+      /(deemed[-\s]+admitted|admitted\s+if\s+(you\s+)?(fail|do\s+not)|automatically\s+admitted|(?:matter|request)s?\s+(?:is|are)\s+admitted\s+unless)/i,
     ],
     all: true,
     why: "Rule 36(a)(3) deems a matter admitted if no timely written answer or objection is served — the only discovery device with an automatic, case-dispositive default. Stating it removes any argument that the responding party did not understand the stakes.",

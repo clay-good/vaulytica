@@ -171,3 +171,60 @@ describe("STRUCT-003 — a letter closing after a sentence end (v1.32.0)", () =>
     ).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 — the bare caption under the rule (v1.34.0)", () => {
+  // A consent form, a release, a release of information, an application, an HR
+  // acknowledgment: all are signed on a ruled line with a caption underneath,
+  // and there is no "of" and no party name to match, because the person
+  // signing is the reader and the form does not know their name yet. A BIPA
+  // biometric consent laid out exactly this way reported itself unsigned at
+  // `critical` — a finding with no answer, because the signature block it was
+  // told to add was already there.
+  it.each([
+    ["a role-qualified caption", "Employee signature"],
+    ["a bare caption", "Signature"],
+    ["a printed-name caption", "Printed name"],
+    ["a parenthetical print caption", "Name (printed)"],
+  ])("accepts %s under the rule", (_label, caption) => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Biometric Data Consent",
+          "Halbrook Diagnostics, Inc. collects a fingerprint template for timekeeping.",
+          "By signing below you consent to the collection described above.",
+          `_________________________          ${caption}`,
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads the caption beside its column neighbour", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Biometric Data Consent",
+          "Halbrook Diagnostics, Inc. collects a fingerprint template for timekeeping.",
+          "_________________________          _________________________",
+          "Employee signature                 Date",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  // The captions are matched WHOLE, which is what keeps a fill-in blank in the
+  // body from standing the check down on a document nobody signed.
+  it.each([
+    [
+      "a fill-in blank followed by a parenthetical",
+      "between ________________ (Name) and the Company",
+    ],
+    ["a bare date column", "________________          Date"],
+    ["a blank amount", "the sum of $________________ payable on the Closing Date"],
+  ])("still reports %s", (_label, line) => {
+    expect(
+      STRUCT_003.check(
+        buildContext(["Diligence Memorandum", "This memorandum summarizes the findings.", line]),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -106,6 +106,75 @@ function isPersonalName(s: string): boolean {
  * Requiring an extracted party, a clean personal name, or an explicit role
  * keeps a genuine "____ [Insert Name]" placeholder from counting as a signature.
  */
+/**
+ * The words a signature CAPTION is built from, and the nouns that make one a
+ * signature caption rather than a column header.
+ *
+ * A caption is recognized by requiring EVERY word to come from this small
+ * vocabulary, which is what keeps ordinary prose out: the ingest collapses the
+ * whitespace that laid the columns out, so "Employee signature        Date"
+ * arrives as three words with nothing to split on, and a prefix test would
+ * also accept "Name) and the Company" out of a fill-in blank in the body.
+ */
+const CAPTION_WORDS = new Set([
+  "employee",
+  "employer",
+  "client",
+  "customer",
+  "patient",
+  "participant",
+  "subject",
+  "witness",
+  "parent",
+  "guardian",
+  "applicant",
+  "member",
+  "owner",
+  "tenant",
+  "landlord",
+  "buyer",
+  "seller",
+  "purchaser",
+  "donor",
+  "declarant",
+  "principal",
+  "agent",
+  "grantor",
+  "grantee",
+  "assignor",
+  "assignee",
+  "borrower",
+  "lender",
+  "contractor",
+  "licensee",
+  "licensor",
+  "authorized",
+  "representative",
+  "signature",
+  "signed",
+  "printed",
+  "print",
+  "name",
+  "date",
+  "dated",
+  "title",
+]);
+/** Without one of these the line is a column header, not a signature line. */
+const CAPTION_NOUNS = new Set(["signature", "signed", "printed", "print"]);
+/** Longer than this and it is a sentence, not a caption. */
+const CAPTION_MAX_WORDS = 6;
+
+function isSignatureCaption(segment: string): boolean {
+  const words = segment
+    .toLowerCase()
+    .replace(/[().,:;/-]+/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 0);
+  if (words.length === 0 || words.length > CAPTION_MAX_WORDS) return false;
+  if (!words.every((w) => CAPTION_WORDS.has(w))) return false;
+  return words.some((w) => CAPTION_NOUNS.has(w));
+}
+
 function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
   if (STANDALONE_SIGNATORY_ROLE.test(text)) return true;
   if (!/_{6,}/.test(text)) return false;
@@ -126,6 +195,19 @@ function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
     // "____ Signature of Subject" / "____ Print Name of Witness" — the label
     // form a consent, affidavit, or application signs with.
     if (/^(?:signature|signed|print(?:ed)?\s+name)\s+(?:of|by)\b/i.test(seg)) return true;
+    // The BARE caption under the rule — "Employee signature", "Printed name",
+    // "Signature" — which is how a consent form, a release, a release of
+    // information, an application, and an HR acknowledgment are signed. There
+    // is no "of" and no party name to match, because the person signing is the
+    // reader and the form does not know their name yet. A BIPA consent laid
+    // out exactly this way, with a rule over "Employee signature" and another
+    // over "Printed name", reported itself unsigned at `critical`.
+    //
+    // See {@link isSignatureCaption}: EVERY word must be a caption word and
+    // one of them must be a signature noun. A bare "Date" is a column header,
+    // not a signature line, and "Name) and the Company" out of a fill-in blank
+    // in the body is neither.
+    if (isSignatureCaption(seg)) return true;
     if (isPersonalName(seg)) return true;
     const lower = seg.toLowerCase();
     const named = partyNames.some((n) => {
@@ -296,7 +378,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.33.0",
+  version: "1.34.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
