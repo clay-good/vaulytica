@@ -1325,3 +1325,50 @@ describe("POL-117 — escalation described rather than named", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * The hell-or-high-water pillar could not read its own `fix` (COMM-112 v1.2.0).
+ *
+ * The rule's recommendation quotes "Lessee's obligation to pay Rent is
+ * absolute and unconditional and is not subject to abatement, setoff, or
+ * counterclaim", and the pillar meant to recognize it wanted the PLURAL
+ * "obligations", with no words between the noun and the copula, and offered
+ * only "are" and "shall be". Three misses in one phrase, all of them the
+ * singular/plural trap this repo keeps finding. It is an OR pillar, so the
+ * rule still fired on the finance-lease designation and the defect was a dead
+ * alternative rather than a false accusation — which is why nothing had
+ * caught it until `recommendation-satisfies-check.test.ts` asked whether a
+ * rule is satisfied by the clause it tells you to write.
+ */
+describe("COMM-112 — the covenant as a drafter writes it", () => {
+  const lease = (covenant: string) =>
+    rule("COMM-112").check(
+      doc(
+        "Equipment Lease",
+        "Lessor leases to Lessee the equipment described in Schedule A.",
+        covenant,
+      ),
+    );
+
+  it.each([
+    [
+      "the singular with an intervening object",
+      "Lessee's obligation to pay Rent is absolute and unconditional and is not subject to abatement, setoff, or counterclaim.",
+    ],
+    [
+      "the plural in the older form",
+      "Lessee's obligations under this Lease are absolute and unconditional.",
+    ],
+    ["the future copula", "Lessee's obligations shall be absolute and unconditional."],
+  ])("is satisfied by %s", (_label, covenant) => {
+    expect(lease(covenant)).toBeNull();
+  });
+
+  // Load-bearing: a lease with neither the designation nor the covenant is
+  // what the rule exists to report.
+  it("still fires on a lease with neither half", () => {
+    expect(
+      lease("Rent is payable monthly in advance on the first day of each month."),
+    ).not.toBeNull();
+  });
+});

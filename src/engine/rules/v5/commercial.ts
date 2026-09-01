@@ -177,12 +177,20 @@ const EQUIPMENT_LEASE = pack("equipment-lease", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Finance-lease designation and hell-or-high-water covenant",
     cite: ucc("2A-407", "Irrevocable promises: finance leases"),
     pat: [
       /(finance[-\s]+lease|hell\s+or\s+high\s+water)/i,
-      /(lessee['’]?s?\s+obligations?\s+(are|shall\s+be)\s+absolute\s+and\s+unconditional)/i,
+      // The pillar could not read the drafting this rule's OWN `fix` quotes:
+      // "Lessee's obligation to pay Rent is absolute and unconditional". Three
+      // misses in one phrase — the SINGULAR "obligation", the words "to pay
+      // Rent" between the noun and the copula, and "is" where the pattern
+      // offered only "are" and "shall be". It is an OR pillar, so the rule
+      // still fired on the designation, but the half a drafter is most likely
+      // to write was dead. Found by
+      // `recommendation-satisfies-check.test.ts`.
+      /(lessee['’]?s?\s+(?:\w+\s+){0,4}?obligations?\b[^.]{0,40}?\b(?:is|are|shall\s+be)\s+absolute\s+and\s+unconditional)/i,
     ],
     why: "§ 2A-407 makes the lessee's promises irrevocable and independent only in a finance lease of goods that is not a consumer lease. Without the designation and the supporting language, the lessee keeps setoff and abatement rights the lessor's pricing assumed away.",
     fix: 'Designate the transaction a finance lease under § 2A-103(1)(g) and add: "Lessee\'s obligation to pay Rent is absolute and unconditional and is not subject to abatement, setoff, or counterclaim."',
