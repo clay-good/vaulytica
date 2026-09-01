@@ -84,7 +84,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",
@@ -99,6 +99,32 @@ export const rule: Rule = {
       position: DocPosition;
       matchIndex: number;
     };
+    // The sale-of-business character is a fact about the DOCUMENT, not about
+    // the paragraph. A well-drafted seller covenant states it ONCE — in the
+    // recitals, or in a section that says in terms that the covenant is "given
+    // in connection with the sale of the goodwill of a business, enforceable
+    // under California Business and Professions Code § 16601" — and its
+    // operative covenants do not repeat it. The paragraph-scoped test below
+    // therefore stood down on the non-COMPETE paragraph that recited the
+    // goodwill and not on the non-SOLICIT one three paragraphs later, so a
+    // five-year seller covenant was told its duration was "well beyond the
+    // consensus 12-month bound" — a bound drawn from post-employment
+    // authorities that § 16601 exists to displace.
+    const parts: string[] = [];
+    forEachParagraph(ctx.tree, (p) => parts.push(p.text));
+    const whole = parts.join(" ");
+    if (
+      /\b16601\b/.test(whole) ||
+      /\bsale\s+of\s+(?:the\s+)?goodwill\b/i.test(whole) ||
+      (/\bgoodwill\b/i.test(whole) &&
+        /\b(?:purchas\w*|sale|sell(?:s|ing)?|acquir\w*)\b/i.test(whole) &&
+        /\ball\s+(?:of\s+)?(?:the\s+)?(?:outstanding\s+)?(?:equity|stock|shares|membership\s+interests|assets)\b/i.test(
+          whole,
+        ))
+    ) {
+      return null;
+    }
+
     let hit: Hit | null = null;
     forEachParagraph(ctx.tree, (p) => {
       if (hit) return;

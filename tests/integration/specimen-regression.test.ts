@@ -3156,6 +3156,27 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A five-year non-compete given by a founder selling all her equity, with the
+  // consideration allocated to goodwill stated, the § 16601 sale-of-business
+  // framing in terms, and independent counsel. That is a different legal regime
+  // from a post-employment covenant, and § 16601 exists to say so.
+  //
+  // PERS-009 told it the non-solicit duration was "well beyond the consensus
+  // 12-month bound" — a bound drawn from the post-employment authorities the
+  // statute displaces. The guard for exactly this case already existed and was
+  // PARAGRAPH-scoped, so it stood down on the non-COMPETE paragraph that
+  // recites the purchased goodwill and not on the non-SOLICIT one three
+  // paragraphs later. A well-drafted seller covenant states its character ONCE,
+  // in a recital or a dedicated section, and its operative covenants do not
+  // repeat it — so the test is now document-wide.
+  //
+  // PERS-005 and PERS-001/002 stay: surfacing the covenant and asking the
+  // reader to check its scope is the point of reviewing this document.
+  "ma-sale-of-goodwill-covenant.txt": {
+    playbook: "ma-restrictive-covenant",
+    findings: ["PERS-005", "OBLI-005", "PERS-001", "PERS-002"],
+  },
+
   // A New York "good guy" guaranty of a retail lease — the commonest
   // commercial guaranty in the country, universal in New York retail leasing,
   // and one the catalog had never seen. It bounds the guarantor's exposure by
