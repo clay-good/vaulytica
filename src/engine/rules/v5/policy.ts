@@ -249,12 +249,18 @@ const EXPORT = pack("export-control-policy", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Red-flag escalation and voluntary disclosure",
     cite: cfr("15", "732 Supp. 3", "EAR — BIS 'Know Your Customer' guidance and red flags"),
     pat: [
-      /red[-\s]+flag/i,
-      /(escalat|inquire|resolve|voluntary\s+(self-?)?disclosure|stop\s+the\s+transaction)/i,
+      // "Red flag" is the BIS term of art, and a compliance policy is not
+      // required to use it. An export policy that screens every counterparty
+      // against the Consolidated Screening List, stops the transaction on a
+      // hit until Trade Compliance clears it in writing, and voluntarily
+      // self-discloses was told it addressed neither escalation nor
+      // disclosure — because it described the mechanism instead of naming it.
+      /(red[-\s]+flags?|screening\s+(?:hit|match)|potential\s+violations?|suspected\s+violations?|indicat(?:or|ion)s?\s+of\s+diversion)/i,
+      /(escalat|inquire|resolve|voluntary\s+(self-?)?disclosure|voluntarily\s+self-?disclos|stop(?:s)?\s+the\s+transaction|report)/i,
     ],
     why: "BIS's Know Your Customer guidance requires that red flags be resolved, not ignored — self-blinding is itself a violation. Voluntary self-disclosure is the principal mitigation once something has gone wrong.",
     fix: "List the red flags, require escalation and resolution before proceeding, and describe the voluntary self-disclosure decision process with counsel.",

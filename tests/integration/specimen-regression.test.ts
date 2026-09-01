@@ -880,11 +880,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // with a stated payment date, post-termination commissions with a state
   // wage-law savings clause, chargebacks with a twelve-month limit, the
   // prospective-only modification right, recoverable versus non-recoverable
-  // draw, and the statement-and-dispute procedure. STRUCT-006 stays and is
-  // fair: Sales Operations is named three times and introduced nowhere.
+  // draw, and the statement-and-dispute procedure.
+  //
+  // STRUCT-006 came off in 9.354.0, REVERSING the judgment recorded here that
+  // it was fair. The term was "Sales Operations", and the same shape turned up
+  // in an export control policy as "Trade Compliance" and in an employee
+  // handbook as "People Operations": the internal function that administers
+  // the document. A plan does not define its own org chart, and no drafting
+  // change answers the finding. Naming a department three times is what makes
+  // it the administrator, not what makes it an undefined term.
   "commission-plan.txt": {
     playbook: "commission-plan",
-    findings: ["OBLI-005", "OBLI-006", "STRUCT-006"],
+    findings: ["OBLI-005", "OBLI-006"],
   },
   // A GSA Multiple Award Schedule contract — the 193rd specimen, and the first
   // for `gsa-schedule-contract`. COMM-163..167 are all satisfied: the
@@ -1234,8 +1241,9 @@ export const EXPECTED: Record<string, Expectation> = {
   },
 
   // An employee handbook: a policy nobody signs, which says so in its first
-  // substantive sentence.
-  "handbook.txt": { playbook: "employee-handbook", findings: ["STRUCT-006", "OBLI-005"] },
+  // substantive sentence. STRUCT-006 came off in 9.354.0 — the term was
+  // "People Operations", the internal function that administers the handbook.
+  "handbook.txt": { playbook: "employee-handbook", findings: ["OBLI-005"] },
 
   // A union collective bargaining agreement, with arabic-numbered articles.
   "cba.txt": {
@@ -2740,6 +2748,35 @@ export const EXPECTED: Record<string, Expectation> = {
   "easement.txt": {
     playbook: "easement-agreement",
     findings: ["OBLI-005", "RISK-010", "RISK-011"],
+  },
+
+  // A UK cookie notice with the category breakdown, a named-cookie table, the
+  // legal basis for each category, reject-all as easy as accept-all,
+  // withdrawal as easy as consent, the transfer mechanism, and the ICO. It
+  // reports NOTHING, which is the point: `cookie-notice` was on the
+  // bare-title worklist until 9.350.0, and this is the first document that
+  // reaches it by opening with its own name.
+  "cookie-notice-uk.txt": {
+    playbook: "cookie-notice",
+    findings: [],
+  },
+
+  // A US export control and sanctions policy — classification, restricted
+  // party screening, deemed exports, embargoed destinations, antiboycott,
+  // recordkeeping, training, and an anonymous reporting line. Two defects.
+  //
+  // POL-117 reported no red-flag escalation and no voluntary disclosure, on a
+  // policy that stops the transaction on a screening hit until Trade
+  // Compliance clears it in writing, requires suspected violations to be
+  // reported, and self-discloses. "Red flag" is BIS's term of art and the
+  // rule required the NAME; this policy described the MECHANISM.
+  //
+  // STRUCT-006 reported "Trade Compliance" as a term the policy forgot to
+  // define, in the paragraph telling employees to call them. Every policy
+  // names the team that administers it and none defines its own org chart.
+  "export-control-policy.txt": {
+    playbook: "export-control-policy",
+    findings: [],
   },
 
   // A US employee handbook with the at-will disclaimer, EEO, anti-harassment,

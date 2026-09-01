@@ -177,3 +177,36 @@ describe("STRUCT-006 — a document's own name", () => {
     expect(found?.description).toContain("Settlement Escrow");
   });
 });
+
+/**
+ * An INTERNAL FUNCTION is a department, not a defined term (v1.7.0).
+ *
+ * Every policy names the team that administers it — "report it to Trade
+ * Compliance", "escalate to Information Security" — in Title Case, and no
+ * policy stops to define its own org chart. An export control policy was told
+ * that "Trade Compliance" is a term it forgot to define, in the paragraph
+ * that tells employees to call them.
+ */
+describe("STRUCT-006 — an internal function", () => {
+  const POLICY = (team: string) =>
+    buildContext([
+      "Export Control Policy",
+      `Every counterparty is screened before shipment, and ${team} clears any hit in writing.`,
+      `No controlled technology is released without a licence approved by ${team}.`,
+      `${team} retains screening records for five years.`,
+    ]);
+
+  it.each([["Trade Compliance"], ["Information Security"], ["Global Procurement"]])(
+    "is silent on %s",
+    (team) => {
+      expect(STRUCT_006.check(POLICY(team))).toBeNull();
+    },
+  );
+
+  // Load-bearing: a Title-Case phrase that is NOT a function is still
+  // reported from the identical sentences.
+  it("still reports an ordinary undefined term in the same shape", () => {
+    const found = STRUCT_006.check(POLICY("the Restricted Party List"));
+    expect(found?.description).toContain("Restricted Party List");
+  });
+});

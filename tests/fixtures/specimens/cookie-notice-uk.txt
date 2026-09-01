@@ -1,0 +1,39 @@
+COOKIE NOTICE
+
+Larkmoor Publishing Ltd
+Last updated: March 3, 2026
+
+This Cookie Notice explains how Larkmoor Publishing Ltd ("we", "us") uses cookies and similar technologies on larkmoor.example and what choices you have. It supplements our Privacy Policy.
+
+WHAT COOKIES ARE
+
+A cookie is a small text file placed on your device when you visit a website. We also use local storage, pixels, and software development kits, and we refer to all of them as "cookies" in this notice.
+
+CATEGORIES OF COOKIES WE USE
+
+Strictly necessary cookies. These are required for the site to work — they keep you signed in, remember items in your basket, and balance load across our servers. They cannot be switched off in our preference centre. Legal basis: our legitimate interest in operating the site.
+
+Analytics cookies. These tell us which pages are read, how long visitors stay, and where they leave. We use them to decide what to publish. Legal basis: your consent.
+
+Advertising cookies. These are set by our advertising partners to build a profile of your interests and show you relevant advertisements on other sites. Legal basis: your consent.
+
+SPECIFIC COOKIES
+
+lm_session — strictly necessary — expires at the end of the browser session — set by us.
+lm_prefs — strictly necessary — 12 months — set by us.
+_ga — analytics — 24 months — set by Google Analytics.
+_fbp — advertising — 3 months — set by Meta Platforms Ireland Ltd.
+
+YOUR CHOICES
+
+We ask for your consent before setting analytics or advertising cookies. You can accept all, reject all, or choose by category, and rejecting is as easy as accepting — both are single buttons in the same banner. You can change or withdraw your consent at any time through the "Cookie preferences" link in the footer of every page, and withdrawal is as easy as giving consent. Withdrawing consent does not affect the lawfulness of processing before withdrawal.
+
+You can also block or delete cookies through your browser settings, though strictly necessary cookies cannot be blocked without affecting how the site works.
+
+INTERNATIONAL TRANSFERS
+
+Some of our analytics and advertising partners process data outside the United Kingdom and the European Economic Area. Where they do, we rely on the UK International Data Transfer Addendum or the EU Standard Contractual Clauses.
+
+CONTACT
+
+Questions about this notice go to our Data Protection Officer at dpo@larkmoor.example, or to Larkmoor Publishing Ltd, 44 Ashfield Row, Bristol BS1 4TR, United Kingdom. You may also complain to the Information Commissioner's Office.

@@ -1280,3 +1280,48 @@ describe("MNA-125 — a side letter's order of precedence", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * "Red flag" is a term of art, not a requirement (POL-117 v1.2.0).
+ *
+ * BIS's Know Your Customer guidance names the concept; a compliance policy is
+ * not required to use the name. An export control policy that screens every
+ * counterparty against the Consolidated Screening List, stops the transaction
+ * on a hit until Trade Compliance clears it in writing, requires suspected
+ * violations to be reported, and voluntarily self-discloses was told it
+ * addressed neither escalation nor disclosure — because it described the
+ * mechanism instead of naming it.
+ */
+describe("POL-117 — escalation described rather than named", () => {
+  const policy = (...paras: string[]) => doc("Export Control and Sanctions Policy", ...paras);
+  const fires = (...paras: string[]) => rule("POL-117").check(policy(...paras)) !== null;
+
+  it("is satisfied by a screening hit that stops the transaction", () => {
+    expect(
+      fires(
+        "Every customer and end user is screened against the Consolidated Screening List before any transaction.",
+        "A screening hit stops the transaction until Trade Compliance clears it in writing.",
+        "Vantablade voluntarily self-discloses violations to the appropriate agency where warranted.",
+      ),
+    ).toBe(false);
+  });
+
+  it("is still satisfied by the term of art itself", () => {
+    expect(
+      fires(
+        "Employees must escalate any red flag to Trade Compliance before proceeding with the order.",
+      ),
+    ).toBe(false);
+  });
+
+  // Load-bearing: a policy that classifies and screens but says nothing about
+  // what happens when something turns up is what the rule exists to report.
+  it("still fires on a policy with no escalation path at all", () => {
+    expect(
+      fires(
+        "Every product is classified under the EAR and assigned an ECCN before shipment.",
+        "Export records are retained for five years from the date of export.",
+      ),
+    ).toBe(true);
+  });
+});

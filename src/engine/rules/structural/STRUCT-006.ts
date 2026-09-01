@@ -47,6 +47,21 @@ function documentText(ctx: RuleContext): string {
  */
 const TITLE_SCAN_CHARS = 140;
 
+/**
+ * An INTERNAL FUNCTION is a department, not a defined term.
+ *
+ * Every policy names the team that administers it — "report it to Trade
+ * Compliance", "escalate to Information Security", "the People team
+ * investigates" — in Title Case, and no policy stops to define its own org
+ * chart. An export control policy was told that "Trade Compliance" is a term
+ * it forgot to define, in the paragraph that tells employees to call them.
+ *
+ * Anchored on the FUNCTION word at the end of the phrase, so an ordinary
+ * defined term is untouched: nothing calls a defined term "Trade Compliance".
+ */
+const INTERNAL_FUNCTION =
+  /\b(?:compliance|legal|finance|accounting|engineering|security|procurement|operations|marketing|payroll|treasury|audit|human\s+resources|people\s+(?:team|operations))$/i;
+
 const PUBLIC_OFFICE =
   /^(?:notary\s+public|justice\s+of\s+the\s+peace|commissioner\s+of\s+deeds|clerk\s+of\s+(?:the\s+)?court|register\s+of\s+deeds|recorder\s+of\s+deeds|county\s+(?:clerk|recorder)|secretary\s+of\s+state|attorney\s+general|clerk\s+of\s+the\s+circuit\s+court)$/i;
 
@@ -75,7 +90,7 @@ function isNamedPerson(documentBody: string, term: string): boolean {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -147,6 +162,8 @@ export const rule: Rule = {
       if (isNamedPerson(body, e.term)) return false;
       // A public office is defined by the state, not by this document.
       if (PUBLIC_OFFICE.test(e.term.trim())) return false;
+      // An internal function is a department, not a defined term.
+      if (INTERNAL_FUNCTION.test(e.term.trim())) return false;
       // The document's OWN NAME is not a term it forgot to define. Every
       // instrument refers to itself in Title Case throughout — "this Written
       // Consent", "this Guaranty", "this Tolling Agreement" — and the name is
