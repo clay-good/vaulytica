@@ -647,10 +647,11 @@ const VENUE = pack("venue-rental-agreement", C, [
   },
   {
     id: "COMM-244",
+    ver: "1.1.0",
     name: "Force majeure and impossibility standard",
     cite: practice("venue-force-majeure", "force majeure standards in event contracts"),
     pat: [
-      /force\s+majeure/i,
+      /force\s+majeure|(?:event|cause|circumstance)s?\s+beyond\s+(?:its|their|the\s+party['’]s|a\s+party['’]s|its\s+reasonable|their\s+reasonable)\s*(?:reasonable\s+)?control/i,
       /(impossible|impracticab|inadvisable|commercially\s+impracticable|government\s+order)/i,
     ],
     why: "The 2020 cancellations turned on whether the clause required impossibility or merely inadvisability, and whether government orders and epidemics were enumerated. Both parties need the standard stated.",

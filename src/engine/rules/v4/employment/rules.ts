@@ -811,7 +811,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
 const PIIA_RULES: Rule[] = [
   presence({
     id: "EMP-032",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Confidentiality / proprietary information obligation",
     description:
       "PIIA must include a confidentiality obligation covering employer's proprietary information.",
@@ -835,7 +835,10 @@ const PIIA_RULES: Rule[] = [
     // outside the Company."
     present_patterns: [
       /(confidential|proprietary)\s+information/i,
-      /(non.?disclos|hold[^.;]{0,50}?\bin\s+confidence|(?:will|shall|agree\s+to)\s+not\s+disclose|keep[^.;]{0,40}?\bconfidential\b|maintain[^.;]{0,40}?\bconfiden)/i,
+      // "MAY not disclose" and "shall PROTECT … from disclosure" are the two
+      // standard formulations the modal list and the verb list between them
+      // could not read.
+      /(non.?disclos|hold[^.;]{0,50}?\bin\s+confidence|(?:will|shall|may|must|agree\s+to)\s+not\s+disclose|keep[^.;]{0,40}?\bconfidential\b|maintain[^.;]{0,40}?\bconfiden|protect[^.;]{0,40}?\bfrom\s+disclosure)/i,
     ],
     require_all_present: true,
   }),

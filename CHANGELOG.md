@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.289.0] — 2026-08-31
+
+### Fixed
+- **Four force-majeure and termination checks that required the term of art.**
+  A force-majeure clause is as often drafted without the Latin — "a failure to
+  perform caused by an event beyond its reasonable control" is the same clause,
+  and is the usual formulation in consumer and UK drafting — and COMM-111,
+  COMM-176 and COMM-244 all required the literal words. COMM-138 required
+  "terminate this agreement" and could not read "either party may terminate if
+  the other party breaches".
+- **EMP-032 could not read "may not disclose" or "shall protect from
+  disclosure"**, two of the standard formulations of a confidentiality
+  obligation, because its modal list stopped at will/shall/agree-to and its
+  verb list at disclose/keep/maintain.
+
 ## [9.288.0] — 2026-08-31
 
 ### Fixed

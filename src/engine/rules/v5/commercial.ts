@@ -145,10 +145,16 @@ const MASTER_PURCHASE = pack("master-purchase-agreement", C, [
   },
   {
     id: "COMM-111",
+    ver: "1.1.0",
     name: "Excuse and force majeure",
     cite: ucc("2-615", "Excuse by failure of presupposed conditions"),
     pat: [
-      /force\s+majeure/i,
+      // A force-majeure clause is as often drafted WITHOUT the Latin — "a
+      // failure to perform caused by an event beyond its reasonable control"
+      // is the same clause, and is the usual formulation in consumer and UK
+      // drafting. The first pillar identifies the clause, so it has to read
+      // both names for it.
+      /force\s+majeure|(?:event|cause|circumstance)s?\s+beyond\s+(?:its|their|the\s+party['’]s|a\s+party['’]s|its\s+reasonable|their\s+reasonable)\s*(?:reasonable\s+)?control/i,
       /(commercial(ly)?\s+impracticab|excuse(d)?\s+(from\s+)?performance)/i,
     ],
     why: "§ 2-615 excuses a seller only for impracticability caused by an unforeseen contingency, and requires allocation among customers and prompt notice. Buyers routinely need a longer list, a notice deadline, and a termination right the statute does not supply.",
@@ -490,6 +496,7 @@ const FRANCHISE = pack("franchise-agreement", C, [
   },
   {
     id: "COMM-138",
+    ver: "1.1.0",
     name: "Termination and post-term covenants",
     cite: stateLaw(
       "franchise-relationship",
@@ -497,7 +504,10 @@ const FRANCHISE = pack("franchise-agreement", C, [
       "https://www.law.cornell.edu/wex/franchise",
     ),
     pat: [
-      /(terminat(e|ion)\s+(of\s+)?this\s+agreement|default\s+by\s+franchisee)/i,
+      // "Either party may terminate IF the other party breaches" states the
+      // termination right without naming the instrument, which the
+      // "terminate this agreement" bigram could not read.
+      /(terminat(e|ion)\s+(of\s+)?this\s+agreement|default\s+by\s+franchisee|may\s+terminate\b|right\s+to\s+terminate\b)/i,
       /(post-?term|de-?identif|covenant\s+not\s+to\s+compete)/i,
     ],
     why: "About twenty states impose good-cause, notice, and cure requirements on franchise termination and non-renewal that override the contract. Post-term covenants are separately limited by state non-compete law.",
@@ -1059,13 +1069,14 @@ const SPONSORSHIP = pack("sponsorship-agreement", C, [
   },
   {
     id: "COMM-176",
+    ver: "1.1.0",
     name: "Event cancellation and force majeure remedy",
     cite: practice(
       "sponsorship-cancellation",
       "cancellation and force majeure remedies in sponsorship",
     ),
     pat: [
-      /(force\s+majeure|cancel(l)?ation\s+of\s+the\s+event|postpone)/i,
+      /(force\s+majeure|cancel(l)?ation\s+of\s+the\s+event|postpone|(?:event|cause|circumstance)s?\s+beyond\s+(?:its|their|the\s+party['’]s|a\s+party['’]s|its\s+reasonable|their\s+reasonable)\s*(?:reasonable\s+)?control)/i,
       /(refund|pro\s?rata|credit\s+against\s+future)/i,
     ],
     why: "The 2020 season cancellations proved that sponsorship force majeure clauses usually excused the property's performance without refunding the sponsor. The remedy — refund, proration, or make-good year — has to be stated.",
