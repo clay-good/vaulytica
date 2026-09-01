@@ -821,3 +821,49 @@ describe("EMP-022 — severance over and above accrued amounts", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * "acknowledge" does not match "ACKNOWLEDGMENT" (EMP-050 v1.2.0).
+ *
+ * A handbook whose closing section is headed ACKNOWLEDGMENT and reads "I have
+ * received the Employee Handbook" was told at `critical` that it had no
+ * acknowledgment-of-receipt page. Three patterns and none of them read it:
+ * two wanted the literal "acknowledge", which the inflection "acknowledgment"
+ * does not contain, and the third wanted "receipt of this handbook" — while a
+ * signature page puts the acknowledgment in the HEADING and the receipt in
+ * the sentence below it.
+ */
+describe("EMP-050 — the acknowledgment page as a signature block", () => {
+  const emp050 = EMPLOYMENT_RULES.find((r) => r.id === "EMP-050");
+  const handbook = (...paras: string[]) =>
+    withPb(
+      buildContext([
+        "Employee Handbook",
+        "Employment at the Company is at-will and this Handbook is not a contract.",
+        ...paras,
+      ]),
+      HANDBOOK_PB,
+    );
+
+  it.each([
+    [
+      "the heading plus a receipt sentence",
+      [
+        "ACKNOWLEDGMENT",
+        "I have received the Employee Handbook and understand it is not a contract.",
+      ],
+    ],
+    ["a copy-of receipt", ["I have received a copy of the Employee Handbook."]],
+    ["the plural signer", ["We have received the Employee Handbook."]],
+  ])("is satisfied by %s", (_label, paras) => {
+    expect(emp050?.check(handbook(...paras))).toBeNull();
+  });
+
+  // Load-bearing: a handbook that ends without any acknowledgment is what the
+  // rule exists to report, and it still does.
+  it("still fires on a handbook with no acknowledgment", () => {
+    expect(
+      emp050?.check(handbook("Paid time off accrues at 1.54 hours per pay period.")),
+    ).not.toBeNull();
+  });
+});

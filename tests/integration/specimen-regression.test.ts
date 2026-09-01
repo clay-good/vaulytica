@@ -2742,6 +2742,49 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "RISK-010", "RISK-011"],
   },
 
+  // A US employee handbook with the at-will disclaimer, EEO, anti-harassment,
+  // meal and rest periods, overtime, PTO and sick leave, and a signed
+  // acknowledgment page. EMP-050 reported at `critical` that it had no
+  // acknowledgment-of-receipt page, on a document whose closing section is
+  // headed ACKNOWLEDGMENT and reads "I have received the Employee Handbook."
+  //
+  // Three patterns and none of them read it. Two wanted the word
+  // "acknowledge", which does not match "ACKNOWLEDGMENT" — the literal has an
+  // "e" the inflection does not. The third wanted "receipt of this handbook",
+  // and this handbook puts the acknowledgment in the HEADING and the receipt
+  // in the sentence below it, which is where a signature page puts them.
+  //
+  // DARK-001 is correct and expected: the Company does reserve the right to
+  // change any policy, which is what makes a handbook not a contract, and an
+  // employee is entitled to be told so.
+  "employee-handbook-us.txt": {
+    playbook: "employee-handbook",
+    findings: ["DARK-001", "OBLI-005"],
+  },
+
+  // A trademark license with the full naked-licensing apparatus — quality
+  // standards, sample approval, inspection rights, goodwill inuring to the
+  // licensor, prescribed form of use, and a royalty audit. Nothing was wrong.
+  // Every finding is a real gap in the document as written: "Net Sales" is
+  // the royalty base and is genuinely never defined, "Territory" is defined
+  // and then never used again, Schedule 1 is referenced and not attached, and
+  // the indemnity is carved out of the cap.
+  "trademark-license-food.txt": {
+    playbook: "trademark-license",
+    findings: [
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "CHOICE-003",
+      "OBLI-005",
+      "RISK-003",
+      "RISK-006",
+      "RISK-007",
+      "RISK-011",
+      "STRUCT-005",
+    ],
+  },
+
   // A payment guaranty by an individual for a company's equipment financing.
   // Nothing was wrong. BNK-026 is correct — the guaranty has no reinstatement
   // clause, so a preference recovery would leave the lender unsecured — and

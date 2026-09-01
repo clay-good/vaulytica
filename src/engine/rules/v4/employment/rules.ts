@@ -1305,6 +1305,7 @@ const HANDBOOK_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-050",
+    version: "1.2.0",
     name: "Handbook acknowledgment receipt page",
     description: "Handbook must include an acknowledgment-of-receipt page.",
     citation: empPractice(
@@ -1320,7 +1321,16 @@ const HANDBOOK_RULES: Rule[] = [
     recommendation: "Add an 'Acknowledgment of Receipt' page with employee signature and date.",
     present_patterns: [
       /acknowledgment\s+of\s+receipt/i,
-      /(employee|i).{0,40}acknowledge.{0,40}received.{0,40}handbook/is,
+      /(employee|i).{0,40}acknowledg\w*.{0,40}received.{0,40}handbook/is,
+      // The acknowledgment stated as a RECEIPT, which is what the signature
+      // block above the line actually says: "ACKNOWLEDGMENT — I have received
+      // the Employee Handbook. I understand it is not a contract…". The
+      // patterns above all want the word "acknowledge" and the word
+      // "receipt"/"received" in one order or another, and this shape puts the
+      // acknowledgment in the HEADING and the receipt in the sentence, so a
+      // handbook whose closing section is a signed acknowledgment page was
+      // told at `critical` that it had none.
+      /\b(?:i|we|employee)\s+(?:have|has)\s+received\s+(?:the|this|a\s+copy\s+of\s+(?:the|this))\s+[\w\s]{0,30}handbook/i,
       // The ordinary phrasing of the acknowledgment section itself:
       // "Employees are asked to acknowledge receipt of this Handbook."
       // Neither pattern above reads it — the first wants the noun form
