@@ -209,6 +209,31 @@ describe("CROSS-DEFTERM-001", () => {
     expect(run.findings[0]!.title).toMatch(/Customer Data/);
   });
 
+  it("does not compare two PREAMBLE parentheticals", async () => {
+    // For a parenthetical term the `definition` field is the text that
+    // PRECEDES the parenthetical, sliced back to the last sentence break —
+    // for a preamble, an arbitrary run of the preamble itself. Two documents
+    // that both name a Buyer and a Seller in their preambles therefore always
+    // "disagreed", and the finding quoted two garbage strings at the reader.
+    // A stock purchase agreement and the covenant ancillary to it produced
+    // four, one of which compared an EMPTY definition against a slice
+    // beginning mid-word.
+    const spa = makeDoc("spa", "stock-purchase-agreement", [
+      "Stock Purchase Agreement",
+      'This Stock Purchase Agreement (this "Agreement") is made among Pinehurst Capital Partners, L.P. ("Buyer"), Marchetti Holdings LLC ("Seller"), and Sablefield Software, Inc. (the "Company").',
+    ]);
+    const cov = makeDoc("cov", "ma-restrictive-covenant", [
+      "Non-Competition Agreement",
+      'This Non-Competition Agreement (this "Agreement") is made between Pinehurst Capital Partners, L.P. ("Buyer") and Devin Marchetti ("Seller").',
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_DEFTERM_001],
+      documents: [spa, cov],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("does not fire when definitions match", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Definitions",

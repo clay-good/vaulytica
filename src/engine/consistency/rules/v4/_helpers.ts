@@ -113,7 +113,21 @@ export function findDefinedTermMismatches(
   for (const eb of docB.extracted.definitions.entries) {
     const ea = byTermA.get(eb.term.toLowerCase());
     if (!ea) continue;
-    if (normalizeDefinition(ea.definition) === normalizeDefinition(eb.definition)) continue;
+    // Compare EXPRESS definitions only. For a PARENTHETICAL term the
+    // `definition` field is the text that PRECEDES the parenthetical, sliced
+    // back to the last sentence break — for a preamble that is an arbitrary
+    // run of the preamble itself. Two documents that both define "Buyer",
+    // "Seller", "Company" or "Agreement" in their preambles therefore always
+    // "disagree", and the finding quotes two garbage strings at the reader:
+    // a stock purchase agreement and the covenant ancillary to it produced
+    // four, one of which compared an EMPTY definition against a slice
+    // beginning mid-word. A term defined differently in two documents is a
+    // real and serious thing; it cannot be detected from the preamble.
+    if (ea.form === "parenthetical" || eb.form === "parenthetical") continue;
+    const da = normalizeDefinition(ea.definition);
+    const db = normalizeDefinition(eb.definition);
+    if (!da || !db) continue;
+    if (da === db) continue;
     out.push({
       term: eb.term,
       a: {

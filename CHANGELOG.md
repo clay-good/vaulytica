@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.297.0] — 2026-08-31
+
+### Fixed
+- **CROSS-DEFTERM-001 compared a preceding-text slice, not a definition.** For
+  a PARENTHETICAL term the extractor's `definition` field is the text that
+  precedes the parenthetical, cut back to the last sentence break — for a
+  preamble, an arbitrary run of the preamble itself. Two documents that both
+  name a Buyer and a Seller in their preambles therefore always "disagreed",
+  and the finding quoted two garbage strings at the reader. A stock purchase
+  agreement and the covenant ancillary to it produced four, one of which
+  compared an EMPTY definition against a slice beginning mid-word, and one of
+  which reported that "Agreement" is defined differently in two contracts —
+  which it is, in every pair of contracts ever written. The rule now compares
+  express definitions only, and skips a pair where either side is empty.
+
 ## [9.296.0] — 2026-08-31
 
 ### Added
