@@ -167,6 +167,11 @@ export const DPA_GDPR_RULES: Rule[] = [
       // personal data will be retained".
       /period\s+for\s+which\s+the\s+personal\s+data\s+will\s+be\s+retained/i,
       /retention\s+period\s+for\s+(?:the\s+)?personal\s+data/i,
+      // The completed annex states it as a LABELLED FIELD and a value —
+      // "Retention period: 90 days from receipt" — which is how the
+      // Decision's own template is filled in. Requiring the trailing "for the
+      // personal data" read the template's prose and not the completed form.
+      /\bretention\s+period\s*[:\u2014-]\s*\S/i,
       // Article 28(3) asks for the duration, and a DPA answers it by TYING the
       // processing to the agreement's term: "the duration is the term of the
       // Agreement and the ninety (90) days after it". Nothing above reads a
@@ -1086,7 +1091,12 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation: "DPAs must be in writing (Art. 28(9)); a signature block evidences execution.",
     recommendation: "Add signature blocks for both parties with name, title, and date.",
     present_patterns: [
-      /By:\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by/i,
+      // A conformed "/s/ Name" and a Name:/Title: grid are signature blocks,
+      // and STRUCT-003 has read both for a long time. An executed SCC signs
+      // "FOR THE DATA EXPORTER / /s/ Rosalind Achebe Kwan / Name: … / Title: …
+      // / Date: …" and carries no "By:" at all, so this rule lagged its
+      // sibling and reported an executed form as unsigned.
+      /By:\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by|(?:^|[^\w/])\/s\/\s*\S|\bName:\s*\S[^\n]{0,80}?\bTitle:|\bfor\s+the\s+data\s+(?:exporter|importer)\b/i,
     ],
     default_severity: "warning",
   }),
@@ -1099,7 +1109,15 @@ export const DPA_GDPR_RULES: Rule[] = [
     missing_description: "No effective date was detected.",
     explanation: "An effective date anchors the timing rules in the DPA.",
     recommendation: "Add an 'Effective Date' clause near the preamble.",
-    present_patterns: [/effective\s+date/i],
+    // A document that carries its date does not have to call it an "effective
+    // date". An executed SCC is "dated April 14, 2026" on its face and signs
+    // "Date: April 14, 2026" in Annex I.A, which is the field the Decision's
+    // own template gives it.
+    present_patterns: [
+      /effective\s+date/i,
+      /\bdated\s+(?:as\s+of\s+)?\w+\s+\d{1,2},?\s+\d{4}/i,
+      /\bdate\s*:\s*\w+\s+\d{1,2},?\s+\d{4}/i,
+    ],
     default_severity: "warning",
   }),
   presence({
@@ -1126,7 +1144,11 @@ export const DPA_GDPR_RULES: Rule[] = [
       "GDPR does not specify governing law, but SCC clauses require a Member State choice; DPAs commonly mirror this.",
     recommendation: "Add a governing-law clause naming the applicable Member State (or UK) law.",
     present_patterns: [
-      /(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+(?:the\s+)?(?:republic\s+of\s+)?[A-Za-z])/i,
+      // SINGULAR too. Clause 17's own wording is "the LAW of the EU Member
+      // State", and an executed set selects it that way — "In Clause 17, the
+      // Parties select the law of Ireland" — which the plural-only branch
+      // could not read.
+      /(governing\s+law|governed\s+by\s+the\s+laws?|laws?\s+of\s+(?:the\s+)?(?:republic\s+of\s+)?[A-Za-z])/i,
       // "Irish law governs this DPA" — the adjectival form, and the fourth
       // ruleset found carrying its own narrower copy of a clause the
       // jurisdictions extractor has read since v1 (CHOICE-001, NDA-D-017,

@@ -3152,6 +3152,46 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A properly executed EU SCC MODULE THREE (processor to processor): the
+  // Decision's text adopted in full, the Clause 7 / 11 / 17 / 18 options
+  // selected, and Annexes I, II, and III completed. It drew THIRTY-NINE
+  // findings, EIGHTEEN of them critical.
+  //
+  // Most were the clauses the adopted text supplies, and the guard that exists
+  // for exactly that — `adoptsStandardFormInFull` — missed them because the
+  // adoption is written in TWO sentences, which is what reads well: one names
+  // the form and adopts it, the next says it is unamended. Requiring all three
+  // signals in ONE sentence saw neither. It now reads a sentence PAIR, and
+  // "Module Three" counts as naming the form, because the modules exist only
+  // inside the Decision.
+  //
+  // Four survived that fix, each the same shape — the rule reads the template's
+  // PROSE and not the COMPLETED FORM. DPA-002 wanted "retention period FOR THE
+  // PERSONAL DATA" where the annex is filled in as "Retention period: 90 days
+  // from receipt". DPA-043 wanted "By:" where an SCC signs "/s/ …  Name: …
+  // Title: …", which STRUCT-003 has read for a long time. DPA-044 wanted the
+  // phrase "effective date" from a document that is "dated April 14, 2026" on
+  // its face. DPA-046 wanted the PLURAL "laws of" where Clause 17's own
+  // wording, and the selection made under it, is "the LAW of Ireland".
+  //
+  // The nine that remain are fair: no transfer impact assessment is referenced,
+  // no Article 27 representative is named, and there is no separate notice
+  // clause.
+  "scc-module-3.txt": {
+    playbook: "scc-module-3",
+    findings: [
+      "TRANSFER-019",
+      "CHOICE-001",
+      "DPA-030",
+      "DPA-034",
+      "DPA-051",
+      "DPA-055",
+      "STRUCT-007",
+      "TRANSFER-018",
+      "CHOICE-003",
+    ],
+  },
+
   // A D&O liability policy — Side A/B/C, a final-non-appealable-adjudication
   // conduct exclusion, full severability, order of payments, and a six-year
   // run-off. It found the enumeration guard blind in two ways at once.
@@ -3623,11 +3663,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // neither the trigger noun "end" nor the third-person "deletes"/"returns".
   "dpa-controller-processor.txt": {
     playbook: "dpa-controller-processor",
+    // DPA-044 came off when the effective-date check stopped requiring the
+    // phrase "effective date" from a document that carries its date on its
+    // face (v9.326.0).
     findings: [
       "DPA-006",
       "DPA-028",
       "DPA-030",
-      "DPA-044",
       "DPA-051",
       "DPA-052",
       "DPA-054",

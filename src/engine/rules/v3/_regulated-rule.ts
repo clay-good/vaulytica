@@ -164,8 +164,12 @@ const STANDARD_FORM_PLAYBOOKS = new Set(["scc-module-2", "scc-module-3", "uk-idt
  * not the other. A DPA that merely says the parties "will enter into the SCCs
  * if a transfer occurs" carries no in-full qualifier and has adopted nothing.
  */
+// "Module Two" / "Module Three" names the form as squarely as its full title
+// does: the modules exist only inside Implementing Decision (EU) 2021/914, and
+// the second sentence of an adoption usually refers to the form that way
+// rather than repeating its name.
 const FORM_NAME =
-  /\b(?:standard\s+contractual\s+clauses|(?:commission\s+)?implementing\s+decision\s*\(?eu\)?\s*2021\/914|international\s+data\s+transfer\s+addendum|idta|mandatory\s+clauses|approved\s+addendum)\b/i;
+  /\b(?:standard\s+contractual\s+clauses|(?:commission\s+)?implementing\s+decision\s*\(?eu\)?\s*2021\/914|international\s+data\s+transfer\s+addendum|idta|mandatory\s+clauses|approved\s+addendum|module\s+(?:one|two|three|four|[1-4]))\b/i;
 const ADOPTION_VERB =
   /\b(?:adopt(?:s|ed)?|incorporat(?:e|es|ed)|enter(?:s|ed)?\s+into|agree\s+to|appl(?:y|ies)|form\s+part\s+of)\b/i;
 const IN_FULL =
@@ -191,12 +195,27 @@ const IN_FULL =
  */
 export function adoptsStandardFormInFull(ctx: RuleContext): boolean {
   if (!STANDARD_FORM_PLAYBOOKS.has(ctx.playbook.id)) return false;
-  return fullText(ctx)
-    .split(/[.;]/)
-    .some(
-      (sentence) =>
-        FORM_NAME.test(sentence) && ADOPTION_VERB.test(sentence) && IN_FULL.test(sentence),
-    );
+  // Across a SENTENCE PAIR, not one sentence.
+  //
+  // The adoption is written in two moves, because that is what reads well:
+  // "The Parties adopt the standard contractual clauses set out in the Annex
+  // to Commission Implementing Decision (EU) 2021/914 … and select MODULE
+  // THREE. The Parties incorporate the text of Module Three IN FULL, WITHOUT
+  // AMENDMENT." The first sentence names the form and adopts it; the second
+  // says it is unamended. Requiring all three signals in ONE sentence saw
+  // neither, and a properly executed Module Three drew thirty-nine findings,
+  // eighteen of them critical, for clauses the Decision it adopts supplies —
+  // which is the exact defect this guard was written to prevent.
+  //
+  // A pair is still a tight window, and the conjunction of all three signals
+  // is what carries the weight; the guard is scoped to the three families
+  // whose documents ARE the form.
+  const sentences = fullText(ctx).split(/[.;]/);
+  const windows = sentences.map((sentence, i) => `${sentence} ${sentences[i + 1] ?? ""}`);
+  return windows.some(
+    (sentence) =>
+      FORM_NAME.test(sentence) && ADOPTION_VERB.test(sentence) && IN_FULL.test(sentence),
+  );
 }
 
 export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfig): Rule {

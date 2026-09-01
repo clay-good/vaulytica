@@ -1,0 +1,51 @@
+STANDARD CONTRACTUAL CLAUSES — MODULE THREE (PROCESSOR TO PROCESSOR)
+
+Annexed to the Sub-Processing Agreement dated April 14, 2026 between Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland (the "data exporter") and Larkspur Data Services Pte Ltd, 14 Marina Boulevard, Singapore 018983 (the "data importer").
+
+The Parties adopt the standard contractual clauses set out in the Annex to Commission Implementing Decision (EU) 2021/914 of 4 June 2021 for the transfer of personal data to third countries, and select MODULE THREE: Transfer processor to processor. The optional docking clause in Clause 7 is included. In Clause 11, the optional independent dispute-resolution body is NOT included. In Clause 17, the Parties select the law of Ireland. In Clause 18(b), the Parties select the courts of Ireland.
+
+The Parties incorporate the text of Module Three in full, without amendment, and agree that in a conflict between these Clauses and any other agreement between them, these Clauses prevail. Nothing in these Clauses may be read as contradicting the rights and obligations they provide.
+
+ANNEX I
+
+A. LIST OF PARTIES
+
+Data exporter: Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland. Contact: Data Protection Officer, dpo@northbridge.example, +353 1 555 0182. Activities relevant to the transfer: hosting and processing laboratory result data on behalf of Halbrook Diagnostics GmbH, the controller. Role: processor. Signature and date: as at the foot of this Annex.
+
+Data importer: Larkspur Data Services Pte Ltd, 14 Marina Boulevard, Singapore 018983. Contact: Devon Achebe, Head of Privacy, privacy@larkspur.example, +65 6555 0148. Activities relevant to the transfer: providing overnight batch reconciliation and archival storage. Role: processor (sub-processor). Signature and date: as at the foot of this Annex.
+
+B. DESCRIPTION OF THE TRANSFER
+
+Categories of data subjects: patients of clinics contracted to the controller.
+Categories of personal data transferred: name, date of birth, insurance identifier, specimen identifier, diagnostic result.
+Sensitive data transferred: data concerning health. The restrictions applied are: encryption at rest and in transit, access limited to four named administrators, pseudonymised identifiers in all non-production environments, retention limited to 90 days, and a documented deletion log.
+Frequency of the transfer: continuous.
+Nature of the processing: storage, batch reconciliation, and deletion.
+Purpose of the transfer and further processing: overnight reconciliation of laboratory results and archival storage.
+Retention period: 90 days from receipt, after which the data are deleted and the deletion is logged.
+Transfers to sub-processors: none. The data importer engages no further sub-processor.
+
+C. COMPETENT SUPERVISORY AUTHORITY
+
+The Data Protection Commission of Ireland, as the controller is not established in the Union and the data exporter is established in Ireland, in accordance with Clause 13.
+
+ANNEX II — TECHNICAL AND ORGANISATIONAL MEASURES
+
+Pseudonymisation and encryption: AES-256 at rest, TLS 1.3 in transit, pseudonymised identifiers outside production.
+Ongoing confidentiality, integrity, availability and resilience: multi-region replication, quarterly restore testing, documented RTO of 4 hours and RPO of 15 minutes.
+Restoration of availability after an incident: documented and tested business continuity plan, exercised twice yearly.
+Regular testing and evaluation: annual penetration test by an independent assessor, quarterly access review, ISO/IEC 27001 certification maintained.
+Identification and authorisation of users: role-based access control, mandatory multi-factor authentication, joiner-mover-leaver process with 24-hour deprovisioning.
+Data minimisation, quality, retention, accountability, portability and erasure: retention schedule above, documented deletion, records of processing maintained under Article 30.
+Measures for transfers to sub-processors: not applicable; no sub-processor is engaged.
+
+ANNEX III — LIST OF SUB-PROCESSORS
+
+Not applicable. The data importer engages no sub-processor. Any future engagement requires the controller's prior specific or general written authorisation under Clause 9(a), Option 2, with a minimum of thirty (30) days' notice.
+
+FOR THE DATA EXPORTER                      FOR THE DATA IMPORTER
+
+/s/ Rosalind Achebe Kwan                   /s/ Devon Achebe
+Name: Rosalind Achebe Kwan                 Name: Devon Achebe
+Title: Director                            Title: Head of Privacy
+Date: April 14, 2026                       Date: April 14, 2026

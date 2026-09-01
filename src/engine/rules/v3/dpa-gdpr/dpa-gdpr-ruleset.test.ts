@@ -623,3 +623,72 @@ describe("DPA-049 — audit-cost allocation recognizes 'be responsible for' / 'p
     expect(await fires(b)).toBe(false);
   });
 });
+
+/**
+ * An executed SCC set is a COMPLETED FORM, and its fields carry the
+ * Commission's own labels rather than the prose an Article 28(3) DPA writes.
+ *
+ * A properly executed Module Three — adopting the Decision's text in full and
+ * supplying Annexes I, II, and III — drew thirty-nine findings, eighteen of
+ * them critical. Most were the clauses the adopted text supplies, and the
+ * guard that exists for exactly that missed them because the adoption is
+ * written in TWO sentences: one naming the form and adopting it, the next
+ * saying it is unamended. These four are the ones that survived that fix, and
+ * each is the same shape — the rule reads the template's prose and not the
+ * completed form.
+ */
+describe("an executed SCC's own form fields (v1.1.0)", () => {
+  const silent = async (id: string, ...body: string[]) =>
+    !(
+      await runEngine({
+        rules: DPA_GDPR_RULES,
+        ctx: withDpa(buildContext(["Standard Contractual Clauses — Module Three", ...body])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  it("DPA-002 reads the Annex I.B retention field", async () => {
+    expect(
+      await silent(
+        "DPA-002",
+        "Retention period: 90 days from receipt, after which the data are deleted.",
+      ),
+    ).toBe(true);
+  });
+
+  it("DPA-043 reads a conformed signature and a Name/Title grid", async () => {
+    expect(
+      await silent(
+        "DPA-043",
+        "FOR THE DATA EXPORTER",
+        "/s/ Rosalind Achebe Kwan",
+        "Name: Rosalind Achebe Kwan Title: Director",
+      ),
+    ).toBe(true);
+  });
+
+  it("DPA-044 reads a document that carries its date without calling it effective", async () => {
+    expect(
+      await silent("DPA-044", "Annexed to the Sub-Processing Agreement dated April 14, 2026."),
+    ).toBe(true);
+  });
+
+  it("DPA-046 reads Clause 17's singular 'the law of'", async () => {
+    expect(await silent("DPA-046", "In Clause 17, the Parties select the law of Ireland.")).toBe(
+      true,
+    );
+  });
+
+  // Load-bearing in the other direction: a set with none of these still reports.
+  it.each(["DPA-002", "DPA-043", "DPA-044", "DPA-046"])(
+    "%s still fires on a form with the field left blank",
+    async (id) => {
+      expect(
+        await silent(
+          id,
+          "The Parties adopt the standard contractual clauses and select Module Three.",
+        ),
+      ).toBe(false);
+    },
+  );
+});
