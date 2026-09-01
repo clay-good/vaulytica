@@ -905,3 +905,36 @@ describe("a completed FORM states its choices as labelled selections", () => {
     ).toContain("venue:Ireland");
   });
 });
+
+/**
+ * The forum is a TRIBUNAL as often as a court outside the United States.
+ *
+ * An English clause names both — "the parties submit to the exclusive
+ * jurisdiction of the EMPLOYMENT TRIBUNALS AND COURTS of England and Wales" —
+ * and the chain from "jurisdiction of" to "courts" admitted only court
+ * adjectives and court names, so the tribunal noun and its "and" broke it. An
+ * English contract of employment was reported as stating no forum at all.
+ */
+describe("a forum stated as a tribunal", () => {
+  const venues = (text: string) =>
+    extractJurisdictions(buildTree(["Contract of Employment", text]))
+      .filter((j) => j.clause_kind === "venue")
+      .map((j) => j.raw_text);
+
+  it.each([
+    [
+      "tribunals and courts",
+      "This Contract is governed by the law of England and Wales, and the parties submit to the exclusive jurisdiction of the employment tribunals and courts of England and Wales.",
+    ],
+    [
+      "a tribunal alone",
+      "Each party submits to the exclusive jurisdiction of the tribunals of Scotland.",
+    ],
+    [
+      "courts alone, unchanged",
+      "Each party irrevocably submits to the jurisdiction of the courts of England and Wales.",
+    ],
+  ])("reads %s", (_label, text) => {
+    expect(venues(text).length).toBeGreaterThan(0);
+  });
+});

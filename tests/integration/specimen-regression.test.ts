@@ -3164,6 +3164,42 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["FIN-009", "STRUCT-005"],
   },
 
+  // An English CONTRACT OF EMPLOYMENT — the section 1 particulars required by
+  // the Employment Rights Act 1996, the Working Time Regulations opt-out, SSP,
+  // garden leave, and covenants stated as no wider than reasonably necessary.
+  //
+  // Its forum clause was invisible. The chain from "jurisdiction of" to
+  // "courts" admitted only court adjectives and court names, and outside the
+  // United States the forum is a TRIBUNAL as often as a court — this one names
+  // both, "the exclusive jurisdiction of the EMPLOYMENT TRIBUNALS AND COURTS of
+  // England and Wales" — so the tribunal noun and its "and" broke it and the
+  // contract was reported as stating no forum at all.
+  //
+  // OBLI-008 got its half right without help: it names the efforts standard as
+  // "best endeavours", which is the English term, and asks for it to be
+  // defined.
+  //
+  // The ROUTING is recorded rather than fixed, and it is the honest state of
+  // the catalog: this is an at-will family applied to a jurisdiction that has
+  // no at-will doctrine and a three-month statutory notice period. There is no
+  // UK employment family, and `generic-fallback` would give the reader nothing
+  // at all — every finding above is a generic one that holds in either
+  // country. The jurisdiction-mismatch disclosure this wants is filed as its
+  // own change; see the note on `uk-master-services-agreement.txt`.
+  "uk-contract-of-employment.txt": {
+    playbook: "employment-at-will-us",
+    findings: [
+      "IPDATA-001",
+      "IPDATA-007",
+      "RISK-001",
+      "TERM-005",
+      "OBLI-004",
+      "OBLI-005",
+      "OBLI-008",
+      "PERS-002",
+    ],
+  },
+
   // An ENGLISH-law master services agreement, and the first document in the
   // corpus drafted in English rather than American conventions. The MSA pack
   // reads American drafting, and four of its checks could not read the same

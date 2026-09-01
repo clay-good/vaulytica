@@ -379,8 +379,15 @@ const VENUE_RESOLVED_IN = new RegExp(
 // "the" before the jurisdiction adjectives is optional ("consents to personal
 // jurisdiction …"), and the clause reads "jurisdiction OF the courts" OR
 // "jurisdiction IN the courts".
+//
+// The forum is a TRIBUNAL as often as a court outside the United States, and
+// an English clause names both: "the parties submit to the exclusive
+// jurisdiction of the EMPLOYMENT TRIBUNALS AND COURTS of England and Wales".
+// The chain from "jurisdiction of" to "courts" admitted only court adjectives
+// and court names, so the tribunal noun and its "and" broke it, and an English
+// contract of employment was reported as stating no forum at all.
 const VENUE_CONSENT = new RegExp(
-  String.raw`\b(?:consent|submit|agree|attorn|subject)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+(?:the\s+)?(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?(?:of|in)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:consent|submit|agree|attorn|subject)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+(?:the\s+)?(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?(?:of|in)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?(?:${COURT_NAME})?(?:(?:[A-Za-z-]+\s+){0,2}tribunals?\s+and\s+)?(?:tribunals?|courts?)\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 // "The parties agree to venue in Harris County, Texas" — venue selected as the
