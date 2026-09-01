@@ -202,7 +202,6 @@ const GOV_LAW_LABELLED = new RegExp(
   "gi",
 );
 
-
 /**
  * The optional "the <division> of" preposition that precedes a locality in a
  * VENUE clause (never in a governing-law clause, where the jurisdiction is a

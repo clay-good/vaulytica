@@ -99,7 +99,6 @@ function statedMutually(ctx: RuleContext, pattern: RegExp): boolean {
   let found = false;
   forEachParagraph(ctx.tree, (p) => {
     if (!found && near.test(p.text)) found = true;
-
   });
   return found;
 }

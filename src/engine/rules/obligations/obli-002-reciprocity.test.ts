@@ -304,7 +304,10 @@ describe("OBLI-002 v1.6.0 — the CONTRACTUAL sense of a representation", () => 
         ...base.extracted,
         parties: twoSides as Party[],
         obligations: [
-          { obligor: "Employer", action: "furnish the information and represents that it is current" },
+          {
+            obligor: "Employer",
+            action: "furnish the information and represents that it is current",
+          },
         ] as Obligation[],
       },
     };

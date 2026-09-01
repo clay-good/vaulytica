@@ -2049,15 +2049,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // being invalidated (TRANSFER-018), which a careful exporter's counsel does.
   "scc-module-2.txt": {
     playbook: "scc-module-2",
-    findings: [
-      "DPA-030",
-      "DPA-044",
-      "DPA-051",
-      "TRANSFER-018",
-      "OBLI-005",
-      "OBLI-008",
-      "TEMP-002",
-    ],
+    findings: ["DPA-030", "DPA-044", "DPA-051", "TRANSFER-018", "OBLI-005", "OBLI-008", "TEMP-002"],
   },
 
   // A university exclusive license, the 231st specimen and the first for

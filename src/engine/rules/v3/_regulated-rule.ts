@@ -193,7 +193,10 @@ export function adoptsStandardFormInFull(ctx: RuleContext): boolean {
   if (!STANDARD_FORM_PLAYBOOKS.has(ctx.playbook.id)) return false;
   return fullText(ctx)
     .split(/[.;]/)
-    .some((sentence) => FORM_NAME.test(sentence) && ADOPTION_VERB.test(sentence) && IN_FULL.test(sentence));
+    .some(
+      (sentence) =>
+        FORM_NAME.test(sentence) && ADOPTION_VERB.test(sentence) && IN_FULL.test(sentence),
+    );
 }
 
 export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfig): Rule {

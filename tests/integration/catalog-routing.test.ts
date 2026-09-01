@@ -952,9 +952,7 @@ describe("no family claims a document that is nobody's", () => {
         "In support of this motion, Plaintiff states that it served the requests on March 3, 2026 and Defendant has produced nothing.",
       ],
     },
-  ])(
-    "a bad document still reaches $id",
-    ({ id, title, body }) => {
+  ])("a bad document still reaches $id", ({ id, title, body }) => {
     const doc: [string, ...string[]] = ["", title, ...body];
     const tree = buildTree(doc);
     const extracted = extractAll(tree, {
@@ -964,9 +962,8 @@ describe("no family claims a document that is nobody's", () => {
       title: titleCorpus(tree, `${id}.txt`),
       body_text: doc.join("\n"),
     });
-      expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe(id);
-    },
-  );
+    expect(match.playbook_id, `routed to ${match.playbook_id}`).toBe(id);
+  });
 
   it("a BARE stock purchase agreement reaches its family", () => {
     // All five of `stock-purchase-agreement`'s distinguishing phrases —

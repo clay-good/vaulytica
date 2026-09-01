@@ -890,9 +890,7 @@ describe("a completed FORM states its choices as labelled selections", () => {
   // names one. Two corpus fixtures write it the same way in a plain contract:
   // "Term. This Agreement continues for two (2) years. Governing Law: Delaware."
   const kinds = (t: string) =>
-    extractJurisdictions(buildTree(["Agreement", t])).map(
-      (j) => `${j.clause_kind}:${j.raw_text}`,
-    );
+    extractJurisdictions(buildTree(["Agreement", t])).map((j) => `${j.clause_kind}:${j.raw_text}`);
 
   it("reads a labelled governing-law selection", () => {
     expect(kinds("Clause 17 (Governing law): the law of Ireland.")).toContain(

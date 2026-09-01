@@ -354,9 +354,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
     // The addendum names the data with its own DEFINED TERM and then heads the
     // clause "Categories of Covered Data" — one word between "of" and the
     // noun, and the pattern allowed only "personal".
-    present_patterns: [
-      /(type|categor(?:y|ies))\s+of\s+(?:\w+\s+){0,2}(?:data|information)/i,
-    ],
+    present_patterns: [/(type|categor(?:y|ies))\s+of\s+(?:\w+\s+){0,2}(?:data|information)/i],
   }),
   presence({
     id: "USDPA-014",

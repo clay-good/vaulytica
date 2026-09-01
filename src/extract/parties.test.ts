@@ -709,9 +709,9 @@ describe("an ALL-CAPS preamble offers no case contrast", () => {
   it("keeps a connective that is INSIDE a name", () => {
     // The lead-in is stripped only from the front, as whole words, so a legal
     // name that contains one of them keeps it.
-    expect(
-      parties('THIS AGREEMENT IS MADE BY SMITH AND WESSON LLC ("SELLER").'),
-    ).toContain("SMITH AND WESSON|SELLER");
+    expect(parties('THIS AGREEMENT IS MADE BY SMITH AND WESSON LLC ("SELLER").')).toContain(
+      "SMITH AND WESSON|SELLER",
+    );
   });
 
   it("still stops an ALL-CAPS 'among' list at each member's suffix", () => {
