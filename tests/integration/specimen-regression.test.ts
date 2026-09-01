@@ -3152,6 +3152,25 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A lobbying and political contributions policy. It fell to
+  // `generic-fallback` at 0.4 and then, once routed, drew a `critical` on each
+  // of the two things it is entirely about.
+  //
+  // The family knew "political CONTRIBUTION policy" and the document is a
+  // "political CONTRIBUTIONS policy" — the matcher tolerates an inflection on
+  // a feature's LAST word ("conflicts of interest" finds "Conflicts of
+  // Interest Policy") and not on an interior one, so the plural on the middle
+  // word was fatal. It knew "lobbying policy" as an adjacent pair, and the
+  // document's title separates them.
+  //
+  // POL-047 wanted the compound noun "pre-approval" or "prior approval"; a
+  // policy writes the requirement as a verb phrase, "must be approved in
+  // advance", and its whole section 7 was invisible. POL-048 wanted the
+  // acronym "FECA" or the Act's full name; a policy that states the corporate
+  // ban and cites "52 U.S.C. § 30118" for it has addressed the statute more
+  // precisely than one that names it.
+  "lobbying-policy.txt": { playbook: "lobbying-policy", findings: ["OBLI-005"] },
+
   // A properly executed EU SCC MODULE THREE (processor to processor): the
   // Decision's text adopted in full, the Clause 7 / 11 / 17 / 18 options
   // selected, and Annexes I, II, and III completed. It drew THIRTY-NINE

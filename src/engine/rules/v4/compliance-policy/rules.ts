@@ -1164,7 +1164,12 @@ const LOBBYING_POLICY_RULES: Rule[] = [
     recommendation:
       "Add 'Pre-Approval' requiring written approval for lobbying activities, contacts with covered officials, and related expenditures.",
     present_patterns: [
-      /(pre.?approval|pre.?approve|prior\s+approval)/i,
+      // "Approved IN ADVANCE" is the same requirement as "pre-approval", and
+      // it is how a policy usually writes it: "Any third party retained to
+      // contact a government official on the Company's behalf must be approved
+      // in advance." The compound-noun forms alone read a policy whose whole
+      // section 7 is the pre-approval requirement as having none.
+      /(pre.?approval|pre.?approve|prior\s+(?:written\s+)?approval|approv\w*\s+in\s+advance|advance\s+(?:written\s+)?approval|approved?\s+beforehand)/i,
       /(lobby|lobbying|covered\s+official)/i,
     ],
     require_all_present: true,
@@ -1189,7 +1194,11 @@ const LOBBYING_POLICY_RULES: Rule[] = [
     present_patterns: [
       /(political\s+contributions?|campaign\s+contributions?)/i,
       /(corporate|pac|individual)/i,
-      /(feca|federal\s+election\s+campaign\s+act)/i,
+      // The statute is as often cited by its SECTION as by its name. A policy
+      // that states the ban and cites "52 U.S.C. § 30118" for it has addressed
+      // FECA more precisely than one that names the Act, and the acronym-only
+      // pillar reported it as having no political-contributions clause at all.
+      /(feca|federal\s+election\s+campaign\s+act|52\s*u\.?\s*s\.?\s*c\.?[^.]{0,12}?30118|§\s*30118)/i,
     ],
     require_all_present: true,
   }),

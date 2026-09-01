@@ -128,3 +128,51 @@ describe("POL-010 — the way an American policy names the UK Bribery Act", () =
     ).not.toBeNull();
   });
 });
+
+/**
+ * POL-047 and POL-048 — the two checks a lobbying policy exists to satisfy,
+ * neither of which could read the policy that satisfies them.
+ *
+ * POL-047 wanted the compound noun "pre-approval" or "prior approval"; a
+ * policy writes the requirement as a verb phrase — "must be approved in
+ * advance" — and its whole section 7 was invisible. POL-048 wanted the acronym
+ * "FECA" or the Act's full name; a policy that states the corporate ban and
+ * cites "52 U.S.C. § 30118" for it has addressed the statute more precisely
+ * than one that names it, and was reported as having no political-contributions
+ * clause at all.
+ */
+describe("POL-047 / POL-048 — a lobbying policy in its own words", () => {
+  const title = "Lobbying and Political Contributions Policy";
+
+  it("POL-047 reads a pre-approval requirement written as a verb phrase", () => {
+    expect(
+      rule("POL-047").check(
+        buildContext([
+          title,
+          "Any third party retained to contact a government official on the Company's behalf, including any outside lobbyist, must be approved in advance by the Compliance Officer.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("POL-048 reads the corporate ban cited by its section number", () => {
+    expect(
+      rule("POL-048").check(
+        buildContext([
+          title,
+          "The Company makes no corporate political contribution to any candidate, party, or political committee. Federal law prohibits corporate contributions in connection with a federal election, 52 U.S.C. § 30118, and this Policy extends that prohibition to state and local elections. An individual contribution is never reimbursed.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it.each([
+    ["POL-047", "Employees may contact legislators about matters affecting the Company."],
+    [
+      "POL-048",
+      "The Company engages with government officials through its Government Affairs team.",
+    ],
+  ])("%s still fires on a policy that addresses neither", (id, body) => {
+    expect(rule(id).check(buildContext([title, body]))).not.toBeNull();
+  });
+});

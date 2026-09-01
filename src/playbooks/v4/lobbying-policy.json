@@ -5,6 +5,10 @@
   "description": "Lobbying + political-contribution policy under federal LDA + FECA + state lobbying laws + federal gift rules. Selects the §6.O ruleset (POL-046..POL-050).",
   "match_features": {
     "title_keywords": [
+      "lobbying and political contributions policy",
+      "political contributions policy",
+      "lobbying and political activity policy",
+      "government relations policy",
       "lobbying policy",
       "political contribution policy",
       "government affairs policy"
@@ -12,6 +16,9 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "lobbying disclosure",
+      "pay-to-play",
+      "government official",
+      "trade association",
       "lda",
       "feca",
       "pac",
