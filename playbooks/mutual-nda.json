@@ -4,7 +4,7 @@
   "name": "Mutual Non-Disclosure Agreement",
   "description": "Two parties exchanging confidential information for a defined purpose. Based on the Common Paper Mutual NDA v1.1.",
   "match_features": {
-    "title_keywords": ["mutual non-disclosure", "mutual nda", "mutual confidentiality", "non-disclosure agreement", "confidentiality agreement"],
+    "title_keywords": ["mutual non-disclosure", "mutual nda", "mutual confidentiality", "mutual non-disclosure agreement", "reciprocal non-disclosure agreement", "bilateral non-disclosure agreement"],
     "required_clauses": ["confidentiality-obligation", "permitted-disclosures", "term"],
     "distinguishing_phrases": ["Discloser", "Permitted Purpose", "disclosing party", "receiving party", "each party may disclose"],
     "negative_features": ["foreground ip", "joint steering committee", "fees", "monthly subscription", "services to be performed", "rent", "premises", "employment agreement", "salary", "scope of work", "one-way", "unilateral"]

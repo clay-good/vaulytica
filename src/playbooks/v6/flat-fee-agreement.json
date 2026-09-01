@@ -4,14 +4,17 @@
   "name": "Flat Fee Agreement",
   "description": "Fixed-fee legal services agreement measured against ABA Model Rules 1.5 and 1.15(c). Selects the ENG-016..020 ruleset.",
   "match_features": {
-    "title_keywords": ["flat fee agreement", "fixed fee agreement", "flat fee engagement", "flat fee", "fixed fee"],
+    "title_keywords": ["flat fee legal services agreement", "fixed fee legal services agreement", "flat fee retainer agreement", "flat fee agreement", "fixed fee agreement", "flat fee engagement", "flat fee", "fixed fee"],
     "required_clauses": [],
     "distinguishing_phrases": [
       "flat fee",
       "fixed fee",
       "earned upon receipt",
+      "earned on receipt",
       "trust account",
       "scope of the work",
+      "scope of the engagement",
+      "flat fee covers",
       "out of scope"
     ],
     "negative_features": ["contingent fee", "merger agreement", "lease of the premises"]

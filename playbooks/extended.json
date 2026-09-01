@@ -427,6 +427,10 @@
     "description": "AI / generative-AI acceptable use policy under NIST AI RMF + EU AI Act + USPTO guidance. Selects the §6.O ruleset (POL-037..POL-041).",
     "match_features": {
       "title_keywords": [
+        "artificial intelligence acceptable use",
+        "ai acceptable use policy",
+        "artificial intelligence use policy",
+        "generative ai policy",
         "ai use policy",
         "ai policy",
         "generative ai",
@@ -7273,6 +7277,9 @@
         "we will bill"
       ],
       "negative_features": [
+        "flat fee",
+        "contingency fee",
+        "contingent fee",
         "purchase and sale",
         "merger agreement",
         "lease of the premises",
@@ -8241,6 +8248,9 @@
     "description": "Fixed-fee legal services agreement measured against ABA Model Rules 1.5 and 1.15(c). Selects the ENG-016..020 ruleset.",
     "match_features": {
       "title_keywords": [
+        "flat fee legal services agreement",
+        "fixed fee legal services agreement",
+        "flat fee retainer agreement",
         "flat fee agreement",
         "fixed fee agreement",
         "flat fee engagement",
@@ -8252,8 +8262,11 @@
         "flat fee",
         "fixed fee",
         "earned upon receipt",
+        "earned on receipt",
         "trust account",
         "scope of the work",
+        "scope of the engagement",
+        "flat fee covers",
         "out of scope"
       ],
       "negative_features": [
@@ -10597,6 +10610,7 @@
         "i give"
       ],
       "negative_features": [
+        "this codicil",
         "revocable living trust",
         "advance directive",
         "power of attorney",
@@ -17326,7 +17340,6 @@
         "standard contractual clauses",
         "scc module 2",
         "module two",
-        "controller to processor",
         "commission implementing decision 2021/914"
       ],
       "required_clauses": [],
@@ -17428,6 +17441,9 @@
         "personal data"
       ],
       "negative_features": [
+        "module 2",
+        "module two",
+        "controller to processor",
         "idta",
         "international data transfer addendum",
         "issued by the information commissioner",

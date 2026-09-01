@@ -198,17 +198,24 @@ The matcher weights are fixed and live in [`src/playbooks/matcher.ts`](../src/pl
 | Feature               | Weight per match | Cap              |
 | --------------------- | ---------------- | ---------------- |
 | Title keyword         | +0.30            | 2× weight (0.60) |
-| Required clause       | +0.40            | 2× weight (0.80) |
+| Required clause       | +0.40            | 1× weight (0.40) |
 | Distinguishing phrase | +0.20            | 3× weight (0.60) |
 | Negative feature      | −0.10            | uncapped         |
 
+**A title keyword of three or more words counts twice.** A family's `title_keywords` are alternative NAMES for the same instrument — "consulting agreement", "consultancy agreement", "advisory agreement" — and a document is titled exactly one of them, so the 2× cap was unreachable in practice and the title, the strongest identity signal there is, topped out at 0.30 against a 0.5 threshold. The title alone could never route a document: 135 of 266 families did not recognise a document titled exactly their own name (`tests/integration/bare-title-reach.test.ts`). A three-word keyword is a document's proper name — "expert witness retention agreement", "requests for production" — and nothing else is called that; a one- or two-word keyword is a noun a dozen families' documents contain ("charter", "endorsement", "msa", "master agreement", "trust agreement"). Only the first kind earns the second count.
+
+The consequence for authoring: **do not give a SPECIES family the GENUS's name.** `mutual-nda` listed "non-disclosure agreement" and "confidentiality agreement", which name the genus and not the mutual species — on a document titled "Unilateral Non-Disclosure Agreement" that scored the mutual family a full proper-name match. Name your family what a document of _that_ family is called, and let `distinguishing_phrases` carry the species signal. When the genus family is the one over-reaching, give it a `negative_feature` naming the species: `engagement-letter` yields to `flat-fee-agreement` on "flat fee".
+
 Threshold for picking a non-fallback playbook is **0.5**. Ties between playbooks are broken in this order, all deterministic:
 
-1. **`raw_score` desc** — the highest raw score wins outright.
-2. **Non-deprecated beats deprecated** — when two playbooks score the same `raw_score`, a non-deprecated playbook beats one whose JSON carries `"deprecated": true`. This lets a successor playbook (e.g. `mutual-nda-deep`) outrank its legacy v2 sibling (`mutual-nda`) on a perfect score tie without renaming the legacy id.
-3. **Lexicographic id** — final fallback.
+1. **`raw_score` desc** — the highest raw score wins outright. Compared at display precision, not IEEE-754 precision, so 0.2 × 3 and 0.3 × 2 are the tie they look like.
+2. **Non-deprecated beats deprecated** — when two playbooks score the same `raw_score`, a non-deprecated playbook beats one whose JSON carries `"deprecated": true`.
+3. **More matched title keywords** — the family the document's title named is the better guess.
+4. **Lexicographic id** — final fallback.
 
-If two of your candidates score similarly, lean on `negative_features` rather than inflating `title_keywords` — clear "this is _not_ a …" signals are cleaner than dueling weight bumps.
+A named successor is then promoted over a deprecated winner outright (not just on a tie), provided the successor clears the threshold on its own merits — that is the whole of what `superseded_by` does at match time.
+
+If two of your candidates score similarly, lean on `negative_features` rather than inflating `title_keywords` — clear "this is _not_ a …" signals are cleaner than dueling weight bumps. `tests/integration/specimen-routing-margin.test.ts` fails on an undeclared tie, because a tie means the catalog cannot tell the two apart on that document whichever way the alphabet falls.
 
 ## Deprecating a playbook
 

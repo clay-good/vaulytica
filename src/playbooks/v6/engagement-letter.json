@@ -24,6 +24,9 @@
       "we will bill"
     ],
     "negative_features": [
+      "flat fee",
+      "contingency fee",
+      "contingent fee",
       "purchase and sale",
       "merger agreement",
       "lease of the premises",

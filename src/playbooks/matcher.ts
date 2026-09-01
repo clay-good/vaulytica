@@ -756,6 +756,23 @@ export function matchesFeature(corpusRaw: string, feature: string): boolean {
 }
 
 /**
+ * How many words a title keyword needs before it reads as a document's proper
+ * NAME rather than a noun that appears in one. Hyphens split, so
+ * "cease-and-desist" and "design-build agreement" are counted as written
+ * rather than as one token.
+ */
+const PROPER_NAME_WORDS = 3;
+
+function isProperName(keyword: string): boolean {
+  return (
+    keyword
+      .trim()
+      .split(/[\s-]+/)
+      .filter((w) => w.length > 0).length >= PROPER_NAME_WORDS
+  );
+}
+
+/**
  * Ranking tolerance for {@link matchPlaybook}. Scores are sums of decimal
  * tenths, so anything below this is float noise, not a difference.
  */
@@ -789,8 +806,34 @@ export function matchPlaybook(
     // few. Title and required-clause contributions cap at 2x their
     // weight; distinguishing phrases cap at 3x to reward several
     // independent textual hits.
+    // A document's PROPER NAME counts as two title keywords.
+    //
+    // The cap below was written to let two independent title signals outweigh
+    // one, and in practice a document can never collect them: a family's
+    // `title_keywords` are ALTERNATIVE NAMES for the same instrument —
+    // "consulting agreement", "consultancy agreement", "advisory agreement" —
+    // and a document is titled exactly one of them. The title, the single
+    // strongest identity signal there is, therefore topped out at 0.3 against
+    // a 0.5 threshold, which means **the title alone could never route a
+    // document**. Every document had to find a required clause or two
+    // distinguishing phrases as well, and `bare-title-reach.test.ts` measured
+    // the consequence: 135 of 266 families did not recognise a document titled
+    // exactly their own name.
+    //
+    // The discriminator is the keyword's own specificity. A three-word keyword
+    // is a document's proper name — "expert witness retention agreement",
+    // "declaration of covenants", "requests for production" — and nothing else
+    // is called that. A one- or two-word keyword is a noun that a dozen
+    // families' documents contain: "charter", "endorsement", "msa", "master
+    // agreement", "trust agreement", "provider agreement". Only the first kind
+    // earns the second count, so the generic ones cannot start outbidding the
+    // specific family that owns the document.
+    const title_credit = matched_title_keywords.reduce(
+      (n, kw) => n + (isProperName(kw) ? 2 : 1),
+      0,
+    );
     const tkw_score = Math.min(
-      matched_title_keywords.length * MATCH_WEIGHTS.title_keyword,
+      title_credit * MATCH_WEIGHTS.title_keyword,
       MATCH_WEIGHTS.title_keyword * 2,
     );
     // ONE required clause, not two.
