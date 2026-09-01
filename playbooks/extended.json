@@ -12117,7 +12117,7 @@
   },
   {
     "id": "mutual-nda-deep",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "name": "Mutual NDA — Deep Analysis",
     "description": "Mutual / two-way non-disclosure agreement under US trade-secret law. Selects the §32 NDA-deep ruleset (25 rules) covering DTSA whistleblower-immunity notice (18 U.S.C. § 1833(b)), Confidential-Information definition completeness, four standard exclusions (publicly available, prior knowledge, lawful third-party, independent development), permitted-use scope, residuals, return-or-destruction with attestation, injunctive relief with waiver-of-bond, governing-law viability, no-precedent / MFN, non-solicit carve-outs, no-license, authority representation, successors-and-assigns, plus the mutual-NDA symmetry check.",
     "match_features": {
@@ -12131,7 +12131,9 @@
         "bilateral nda",
         "reciprocal confidentiality agreement",
         "reciprocal non-disclosure agreement",
-        "reciprocal nda"
+        "reciprocal nda",
+        "mutual non-disclosure",
+        "mutual confidentiality"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -20118,7 +20120,7 @@
   },
   {
     "id": "unilateral-nda-deep",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "Unilateral NDA — Deep Analysis",
     "description": "One-way / unilateral non-disclosure agreement under US trade-secret law. Selects the §32 NDA-deep ruleset (25 rules) covering DTSA whistleblower-immunity notice (18 U.S.C. § 1833(b)), Confidential-Information definition completeness, four standard exclusions, permitted-use scope, residuals, return-or-destruction with attestation, injunctive relief with waiver-of-bond, governing-law viability, no-precedent / MFN, non-solicit carve-outs, no-license, authority representation, successors-and-assigns, plus the unilateral-NDA role-framing check (disclosing-party / receiving-party labels must be present).",
     "match_features": {
@@ -20128,7 +20130,10 @@
         "unilateral non-disclosure agreement",
         "unilateral nda",
         "confidentiality agreement",
-        "non-disclosure agreement"
+        "non-disclosure agreement",
+        "one-way confidentiality",
+        "one-way non-disclosure",
+        "unilateral non-disclosure"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [

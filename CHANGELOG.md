@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.299.0] — 2026-08-31
+
+### Fixed
+- **The deep NDA families did not cover their predecessors' shorter titles.**
+  `mutual-nda` claims "mutual non-disclosure" and "mutual confidentiality";
+  `mutual-nda-deep` claimed only the longer forms ending in "agreement", so a
+  document titled "MUTUAL NON-DISCLOSURE" or "MUTUAL CONFIDENTIALITY" could not
+  reach the successor and the promotion could not fire. Same for
+  `unilateral-nda`'s "one-way confidentiality", "one-way non-disclosure" and
+  "unilateral non-disclosure".
+
+### Known
+- The predecessors also claim the two NEUTRAL titles — "non-disclosure
+  agreement" and "confidentiality agreement" — which their mutual successor
+  deliberately does not: those belong to `unilateral-nda-deep`, because a
+  plainly-titled NDA is more often one-way and "mutual" is the distinguishing
+  word. Adding them to `mutual-nda-deep` made it shadow its sibling on both,
+  which `catalog-routing`'s sweep caught. So "a successor must cover its
+  predecessor's vocabulary" is not a rule that can be mechanised: the coverage
+  is sometimes correctly provided by a sibling instead.
+
 ## [9.298.0] — 2026-08-31
 
 ### Fixed
