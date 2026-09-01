@@ -3152,6 +3152,59 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // An independent contractor agreement, drafted to the control factors the
+  // classification tests turn on: the contractor sets her own hours and
+  // methods, supplies her own equipment, bears profit and loss, holds herself
+  // out to the public, and is free to work for competitors. `independent-
+  // contractor` is a LAUNCH playbook and had never been run against a document
+  // until now. Clean: every finding is about the draft's own allocation, not
+  // about a clause the family cannot see.
+  "independent-contractor.txt": {
+    playbook: "independent-contractor",
+    findings: [
+      "RISK-015",
+      "STRUCT-018",
+      "OBLI-005",
+      "RISK-003",
+      "RISK-006",
+      "RISK-007",
+      "RISK-010",
+      "RISK-011",
+      "TEMP-006",
+      "TERM-001",
+    ],
+  },
+
+  // A marketing services agreement, with the media-rebate transparency and
+  // principal-based-buying disclosure that is the live issue in agency
+  // contracting, and the FTC Endorsement Guides monitoring obligation. Also
+  // clean, and COMM-035 is the useful catch: the agreement gives an IP
+  // INDEMNITY but no rights-CLEARANCE provision — who clears the music, the
+  // stock imagery, and the talent releases — which is the classic agency gap
+  // and is not answered by an indemnity after the fact.
+  //
+  // `specimen-routing-margin` caught the genus tie behind it: `msa-general`
+  // matched the two-word "services agreement" inside "Marketing Services
+  // Agreement" and tied at 1.2, so which family won was the alphabet. The
+  // genus now declines the agency register — a media buy, an influencer,
+  // campaign assets, a media rebate, the Endorsement Guides — none of which a
+  // general master services agreement carries.
+  "marketing-services-agreement.txt": {
+    playbook: "marketing-services-agreement",
+    findings: [
+      "COMM-035",
+      "STRUCT-018",
+      "TEMP-004",
+      "OBLI-005",
+      "PERS-002",
+      "RISK-003",
+      "RISK-006",
+      "RISK-007",
+      "RISK-011",
+      "TERM-001",
+    ],
+  },
+
   // A limited-scope engagement letter, drafted to Rule 1.2(c): two enumerated
   // lists of what the firm will and will not do, an express statement that the
   // client keeps every deadline outside the scope, and informed consent that

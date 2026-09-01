@@ -1,0 +1,41 @@
+MARKETING SERVICES AGREEMENT
+
+This Marketing Services Agreement (this "Agreement") is made as of April 14, 2026 between Halbrook Diagnostics, Inc., a Delaware corporation (the "Client"), and Larkspur Creative Group LLC, an Ohio limited liability company (the "Agency").
+
+1. SERVICES. The Agency will provide the marketing services described in each statement of work the parties sign (each, an "SOW"). This Agreement governs every SOW; in a conflict, this Agreement controls except where the SOW expressly amends a numbered section of it.
+
+2. APPROVALS. No campaign asset, claim, or media buy is released without the Client's written approval. The Client's approval of a deliverable is not approval of any underlying claim substantiation, which remains the Client's responsibility under Section 6.
+
+3. FEES AND PASS-THROUGH COSTS. Agency fees are stated in each SOW. Third-party media, production, and talent costs are passed through at the Agency's actual net cost, with no markup, supported by vendor invoices on request. The Agency will not commit the Client to any pass-through cost above $10,000 without prior written approval. Invoices are due within forty-five (45) days.
+
+4. MEDIA REBATES AND TRANSPARENCY. The Agency will disclose, and will credit to the Client, any rebate, discount, incentive, or other consideration it receives from a media vendor attributable to the Client's spend. The Agency does not engage in principal-based or inventory-media buying for the Client, and will not do so without the Client's written consent and a separate written disclosure of its economics. The Client may audit the Agency's records relating to Client spend once each year on thirty (30) days' notice.
+
+5. INTELLECTUAL PROPERTY. On payment in full for the applicable SOW, the Agency assigns to the Client all right, title, and interest in the deliverables created for the Client under that SOW, and waives any moral rights to the extent permitted. The Agency retains its pre-existing tools, methodologies, and know-how, and grants the Client a perpetual, worldwide, non-exclusive licence to use them as embedded in the deliverables. Unused concepts the Client has not paid for remain the Agency's.
+
+6. ADVERTISING CLAIMS AND SUBSTANTIATION. The Client is responsible for the accuracy of, and for possessing competent and reliable evidence substantiating, every claim about its products before it is made. The Agency will not knowingly disseminate a claim it has reason to believe is false or unsubstantiated, and will comply with the FTC Act, the FTC Endorsement Guides (16 C.F.R. Part 255), and the FDA's requirements for the promotion of in vitro diagnostic products.
+
+7. INFLUENCERS AND ENDORSEMENTS. Where an SOW includes an influencer or endorser, the Agency will contract for a clear and conspicuous disclosure of the material connection, will monitor compliance during the campaign, and will document that monitoring.
+
+8. DATA AND PRIVACY. Client data the Agency processes is the Client's. The Agency processes it only on the Client's documented instructions and under the Data Processing Addendum attached as Exhibit 1. The Agency will not use Client data to build or train any model or audience segment for its own or another client's benefit.
+
+9. THIRD-PARTY VENDORS. The Agency remains responsible for each vendor it engages, and will flow down Sections 5, 6, 8, and 10 to each.
+
+10. CONFIDENTIALITY. Each party will protect the other's confidential information with at least reasonable care and use it only to perform this Agreement, for three (3) years after disclosure.
+
+11. NON-SOLICITATION. Neither party will solicit the other's employees engaged on the account for twelve (12) months, except through a general advertisement not targeted at them.
+
+12. INDEMNIFICATION. The Client indemnifies the Agency against claims arising from Client-supplied materials and from claims about the Client's products. The Agency indemnifies the Client against claims that a deliverable it created infringes a third party's intellectual property and against its own wilful misconduct.
+
+13. LIMITATION OF LIABILITY. Except for the indemnities in Section 12 and a breach of Section 8 or 10, neither party is liable for indirect or consequential damages, and each party's aggregate liability is limited to the fees paid under the applicable SOW in the twelve months before the claim.
+
+14. TERM AND TERMINATION. The initial term is one year and renews for successive one-year terms unless either party gives sixty (60) days' notice before a renewal date. Either party may terminate for convenience on sixty (60) days' notice and for material breach not cured within thirty (30) days.
+
+15. TRANSITION ON TERMINATION. On termination the Agency will, at the Client's request and expense, transfer the Client's assets, media authorisations, account credentials, and campaign files to the Client or its successor agency, and will not withhold them pending resolution of any fee dispute.
+
+16. GOVERNING LAW. Ohio law governs. Venue lies in the state and federal courts in Franklin County, Ohio.
+
+HALBROOK DIAGNOSTICS, INC.                LARKSPUR CREATIVE GROUP LLC
+
+By: /s/ Marisol Trent                     By: /s/ Marcus Ellery Doyle
+Name: Marisol Trent                       Name: Marcus Ellery Doyle
+Title: Chief Marketing Officer            Title: Managing Member

@@ -8,6 +8,12 @@
     "required_clauses": ["term", "termination-for-cause", "indemnification"],
     "distinguishing_phrases": ["Statement of Work", "SOW", "perform the Services", "Deliverables", "Master Agreement"],
     "negative_features": [
+      "media buy",
+      "influencer",
+      "campaign assets",
+      "media rebate",
+      "endorsement guides",
+      "creative deliverables",
       "foreground ip",
       "joint steering committee",
       "the Service is a hosted",
