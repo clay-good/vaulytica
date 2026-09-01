@@ -5,6 +5,8 @@
   "description": "Statutory preliminary notice or notice of intent to lien, reviewed for the parties, property description, and statutory deadlines. Selects the CON-113..117 ruleset (5 checks).",
   "match_features": {
     "title_keywords": [
+      "notice of furnishing",
+      "notice of commencement",
       "preliminary notice",
       "notice of intent to lien",
       "notice to owner",
@@ -14,6 +16,8 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "mechanic's lien",
+      "mechanics' lien",
+      "mechanics lien",
       "estimated total price",
       "notice to property owner",
       "court foreclosure proceedings",

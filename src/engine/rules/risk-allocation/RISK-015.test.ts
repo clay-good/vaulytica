@@ -187,7 +187,7 @@ describe("RISK-015 — the statutory indemnity without the 'fullest extent' form
  * is why the family already declines RISK-001 and RISK-005.
  */
 describe("RISK-015 — a statutory reliance indemnity needs no cap", () => {
-  const POA = [
+  const POA: [string, ...string[]] = [
     "Durable Power of Attorney",
     "I, Rosalind Achebe Kwan, of Columbus, Ohio, appoint my brother as my attorney-in-fact.",
     "Any person who in good faith accepts this instrument without actual knowledge that it is void, invalid, or terminated may rely on it. I agree to indemnify any such person for claims arising from that good-faith reliance.",

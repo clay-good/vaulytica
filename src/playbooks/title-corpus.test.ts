@@ -29,7 +29,12 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { titleCorpus, TITLE_PREAMBLE_CHARS, TITLE_SUBJECT_SCAN_PARAGRAPHS } from "./matcher.js";
+import {
+  titleCorpus,
+  TITLE_PREAMBLE_CHARS,
+  TITLE_SUBJECT_SCAN_CHARS,
+  TITLE_SUBJECT_SCAN_PARAGRAPHS,
+} from "./matcher.js";
 
 type Tree = Parameters<typeof titleCorpus>[0];
 
@@ -382,8 +387,10 @@ describe("the title corpus is documented as built", () => {
 
   it("states the preamble cap and the subject-line scan depth the code uses", () => {
     expect(DOC).toContain("capped at " + TITLE_PREAMBLE_CHARS + " characters");
-    expect(DOC).toContain("first twelve paragraphs");
-    expect(TITLE_SUBJECT_SCAN_PARAGRAPHS).toBe(12);
+    expect(DOC).toContain("first twenty-four paragraphs");
+    expect(DOC).toContain(TITLE_SUBJECT_SCAN_CHARS + " characters");
+    expect(TITLE_SUBJECT_SCAN_PARAGRAPHS).toBe(24);
+    expect(TITLE_SUBJECT_SCAN_CHARS).toBe(1200);
   });
 
   it("names every shape the corpus skips or reaches past", () => {

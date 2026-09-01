@@ -174,7 +174,7 @@ Not the filename, and not the whole document — a short **title corpus** built 
 
 1. the first section's heading, when the document has a styled one;
 2. its first paragraph, capped at 240 characters;
-3. a letter's subject line — `Re:`, `Subject:`, or `In re:` — from the first twelve paragraphs;
+3. a letter's subject line — `Re:`, `Subject:`, or `In re:` — from the first twenty-four paragraphs or 1200 characters, whichever ends the window first (a paragraph count is a fact about the layout: the same letter arrives as six paragraphs with its blank lines and sixteen without, and a construction preliminary notice is addressed by statute to the owner _and_ the lender, so its subject line sits under two address blocks);
 4. a court filing's own title, taken from below its caption.
 
 Steps 3 and 4 exist because **the first line of a real document is very often not its title**. Five shapes were found producing exactly that, each of which cost a family its routing:

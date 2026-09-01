@@ -51,8 +51,28 @@ export const TITLE_PREAMBLE_CHARS = 240;
  * block — several paragraphs, but always near the top. The bound keeps a
  * "Re:" appearing deep in the body (a quoted piece of correspondence, an
  * exhibit) from being mistaken for the document's own subject.
+ *
+ * A PARAGRAPH COUNT is a fact about the layout, not about the document. The
+ * same letter arrives as six paragraphs with its blank lines and as sixteen
+ * without them, and a construction preliminary notice is required by statute
+ * to be addressed to the owner AND the construction lender — two address
+ * blocks over a letterhead, a delivery legend, and a date. An Ohio Notice of
+ * Furnishing reached its "Re:" line at paragraph sixteen when double-spaced
+ * and fell to `generic-fallback`, having routed correctly in its original
+ * layout: the same words, a different export.
+ *
+ * So the window is bounded BOTH ways and stops at whichever comes second —
+ * enough paragraphs for three address blocks, and enough characters that the
+ * body cannot be reached however the lines were laid out.
  */
-export const TITLE_SUBJECT_SCAN_PARAGRAPHS = 12;
+export const TITLE_SUBJECT_SCAN_PARAGRAPHS = 24;
+
+/**
+ * The character bound on the same window. A letterhead, a delivery legend, a
+ * date, and three address blocks run well under this; a document's body does
+ * not begin inside it.
+ */
+export const TITLE_SUBJECT_SCAN_CHARS = 1200;
 
 /**
  * A letter states its title in its subject line, not in a heading.
@@ -115,9 +135,14 @@ function leadingLines(
   }[],
 ): string[] {
   const out: string[] = [];
+  let chars = 0;
   const push = (text: string): boolean => {
-    if (out.length >= TITLE_SUBJECT_SCAN_PARAGRAPHS) return false;
-    out.push(text.trim());
+    if (out.length >= TITLE_SUBJECT_SCAN_PARAGRAPHS || chars >= TITLE_SUBJECT_SCAN_CHARS) {
+      return false;
+    }
+    const trimmed = text.trim();
+    out.push(trimmed);
+    chars += trimmed.length;
     return true;
   };
   for (const section of sections) {

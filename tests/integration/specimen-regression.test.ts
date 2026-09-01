@@ -3104,6 +3104,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // one of thirty catalog features whose apostrophe made them invisible.
   "lien-notice.txt": { playbook: "preliminary-lien-notice", findings: [] },
 
+  // The SAME instrument under the name the other half of the country gives it.
+  // Ohio, Michigan, Indiana, Missouri, and Nebraska call it a Notice of
+  // Furnishing (R.C. § 1311.05); the family knew only California's names —
+  // "preliminary notice", "20-day preliminary notice", "notice to owner" — and
+  // spelled the lien "mechanic's" where those states write "mechanics'". A
+  // textbook Ohio notice on the sender's letterhead fell to
+  // `generic-fallback` at 0.4, so CON-113..117 never ran on it: with the
+  // amount, the first-furnishing date, and the statutory legend removed, the
+  // same document now draws the critical and the warning that are its point.
+  "notice-of-furnishing.txt": { playbook: "preliminary-lien-notice", findings: [] },
+
   // A telehealth consent, addressed to the patient as "you" throughout — which
   // is what HC-132 could not read. It required "in THE state where THE
   // PATIENT", and a patient-facing consent writes "only when you are

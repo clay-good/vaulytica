@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { matchPlaybook } from "./matcher.js";
+import { matchPlaybook, titleCorpus } from "./matcher.js";
+import { buildTree } from "../extract/_fixtures.js";
 import { parsePlaybook } from "./loader.js";
 import type { Playbook } from "./types.js";
 import type { ClassifiedParagraph, ExtractedData } from "../extract/types.js";
@@ -171,5 +172,63 @@ describe("a deprecated playbook does not beat its own successor", () => {
       },
     });
     expect(run([legacy, stranger])).toBe("legacy");
+  });
+});
+
+/**
+ * The subject-line window is bounded BOTH ways.
+ *
+ * A paragraph count is a fact about the layout, not about the document: the
+ * same letter arrives as six paragraphs with its blank lines and as sixteen
+ * without them. A construction preliminary notice is required by statute to be
+ * addressed to the owner AND the construction lender — two address blocks over
+ * a letterhead, a delivery legend, and a date — so an Ohio Notice of
+ * Furnishing reached its "Re:" line at paragraph sixteen when double-spaced,
+ * and lost the title it had routed on in its original layout.
+ */
+describe("titleCorpus — a letter with two address blocks", () => {
+  const LETTERHEAD = [
+    "TALLOW RIDGE COMPONENTS, LLC",
+    "1180 Foundry Road",
+    "Grand Rapids, Michigan 49503",
+    "(616) 555-0177",
+    "CERTIFIED MAIL, RETURN RECEIPT REQUESTED",
+    "AND FIRST-CLASS MAIL",
+    "April 14, 2026",
+    "Kestrel Development Partners, LLC",
+    "Attn: Marisol Trent, Manager",
+    "1400 Foundry Road",
+    "Akron, Ohio 44305",
+    "Northbridge Savings Bank, as Construction Lender",
+    "Attn: Loan Administration",
+    "88 Superior Avenue",
+    "Cleveland, Ohio 44114",
+  ];
+
+  it("reaches the subject line past two address blocks", () => {
+    const tree = buildTree([
+      "",
+      ...LETTERHEAD,
+      "Re: Notice of Furnishing — Kestrel Plant 3 Expansion",
+      "To the Owner and the Lender:",
+    ] as [string, ...string[]]);
+    expect(titleCorpus(tree, "letter.txt")).toContain("Notice of Furnishing");
+  });
+
+  // The character bound is what keeps the window off the body however the
+  // lines were laid out: a "Re:" that only appears after a page of prose is a
+  // quoted piece of correspondence, not this document's own subject.
+  it("does not reach a subject line buried under a page of body prose", () => {
+    const body = Array.from(
+      { length: 12 },
+      (_, i) =>
+        `${i + 1}. The parties acknowledge that the foregoing recitals are incorporated by reference and made a part of this Agreement for all purposes, and that each of them has had the opportunity to consult counsel.`,
+    );
+    const tree = buildTree([
+      "",
+      ...body,
+      "Re: Notice of Furnishing — Kestrel Plant 3 Expansion",
+    ] as [string, ...string[]]);
+    expect(titleCorpus(tree, "letter.txt")).not.toContain("Notice of Furnishing");
   });
 });
