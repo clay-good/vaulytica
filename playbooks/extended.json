@@ -585,7 +585,7 @@
   },
   {
     "id": "answer",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Answer and Affirmative Defenses",
     "description": "Answer checked for the paragraph-by-paragraph response, the Rule 8(b)(5) formulation, and the defenses Rules 8(c) and 12(h) require be raised now. Selects the PLDG-009..016 ruleset.",
     "match_features": {
@@ -602,7 +602,10 @@
         "lacks knowledge or information sufficient",
         "affirmative defense",
         "wherefore",
-        "paragraph"
+        "paragraph",
+        "answers the complaint",
+        "denies the allegations",
+        "asks the court to dismiss"
       ],
       "negative_features": [
         "this agreement is entered into",
@@ -9930,7 +9933,7 @@
   },
   {
     "id": "interrogatories",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Interrogatories (FRCP 33)",
     "description": "Rule 33 interrogatories checked for the numerical limit, oath requirement, and service elements. Selects the DISC-007..011 ruleset.",
     "match_features": {
@@ -9945,7 +9948,10 @@
         "answer under oath",
         "discrete subparts",
         "definitions",
-        "state the following"
+        "state the following",
+        "answer the following under oath",
+        "identify every person",
+        "identify all documents"
       ],
       "negative_features": [
         "this agreement is entered into",
@@ -10753,7 +10759,7 @@
   },
   {
     "id": "limited-scope-representation",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Limited Scope Representation Agreement",
     "description": "Unbundled legal services agreement measured against ABA Model Rule 1.2(c). Selects the ENG-027..031 ruleset.",
     "match_features": {
@@ -10770,7 +10776,10 @@
         "you are responsible",
         "notice of limited appearance",
         "discrete task",
-        "will not perform"
+        "will not perform",
+        "for the limited purpose",
+        "we will not appear",
+        "this task"
       ],
       "negative_features": [
         "merger agreement",
@@ -14524,7 +14533,7 @@
   },
   {
     "id": "privilege-log",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Privilege Log (FRCP 26(b)(5))",
     "description": "Privilege log checked against Rule 26(b)(5)(A): an express claim and a description sufficient to assess it. Selects the DISC-024..029 ruleset.",
     "match_features": {
@@ -14540,7 +14549,11 @@
         "work-product doctrine",
         "withheld",
         "recipients",
-        "bates"
+        "bates",
+        "withholds the following",
+        "basis for withholding",
+        "privilege asserted",
+        "withheld from production"
       ],
       "negative_features": [
         "this agreement is entered into",
@@ -15887,7 +15900,7 @@
   },
   {
     "id": "requests-for-admission",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Requests for Admission (FRCP 36)",
     "description": "Rule 36 requests for admission checked for the deemed-admitted warning, single-fact form, and answer requirements. Selects the DISC-012..016 ruleset.",
     "match_features": {
@@ -15903,7 +15916,10 @@
         "deemed admitted",
         "genuineness of the document",
         "admit or deny",
-        "reasonable inquiry"
+        "reasonable inquiry",
+        "asks defendant to admit",
+        "asks plaintiff to admit",
+        "admit the following"
       ],
       "negative_features": [
         "this agreement is entered into",
@@ -19230,7 +19246,7 @@
   },
   {
     "id": "termination-of-representation",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Closing / Termination of Representation Letter",
     "description": "Closing letter measured against ABA Model Rules 1.16(d), 1.15(d), and 1.9. Selects the ENG-032..036 ruleset.",
     "match_features": {
@@ -19247,7 +19263,11 @@
         "your file",
         "final statement",
         "former client",
-        "retention period"
+        "retention period",
+        "representation of you",
+        "has concluded",
+        "closing our file",
+        "our representation"
       ],
       "negative_features": [
         "merger agreement",

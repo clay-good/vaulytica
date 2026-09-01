@@ -912,6 +912,55 @@ describe("no family claims a document that is nobody's", () => {
     ...BARE_COMMERCIAL,
     ...BARE_EVERYDAY,
     ...BARE_SPECIALIST,
+    // Six litigation-practice families, from a sweep of the v6 wave. A closing
+    // letter and a privilege log reached NO family; requests for admission, a
+    // limited-scope agreement and interrogatories reached their own at or near
+    // the threshold. Same cause throughout: `termination-of-representation`
+    // claimed "representation has concluded" as an adjacent bigram, and a real
+    // letter says "our representation OF YOU IN THE WRENFIELD MATTER has
+    // concluded"; `requests-for-admission` claimed "deemed admitted" and
+    // "genuineness of the document", which appear in the RESPONSE, not the
+    // request.
+    {
+      id: "termination-of-representation",
+      title: "CLOSING LETTER",
+      body: [
+        "This letter confirms that our representation of you in the Wrenfield matter has concluded.",
+        "We are closing our file. Please let us know if you would like your documents.",
+      ],
+    },
+    {
+      id: "privilege-log",
+      title: "PRIVILEGE LOG",
+      body: [
+        "Defendant withholds the following documents from production. The basis for withholding is stated for each entry.",
+        "Bates THIS-000412. Date: March 5, 2025. Description: email seeking legal advice. Privilege asserted: attorney-client.",
+      ],
+    },
+    {
+      id: "requests-for-admission",
+      title: "PLAINTIFF'S FIRST REQUESTS FOR ADMISSION",
+      body: [
+        "Plaintiff asks Defendant to admit the following.",
+        "Admit that you received Plaintiff's design files on March 3, 2025.",
+      ],
+    },
+    {
+      id: "limited-scope-representation",
+      title: "LIMITED SCOPE REPRESENTATION AGREEMENT",
+      body: [
+        "Ashford & Reyes LLP will represent Terrence Okonjo-Whitfield for the limited purpose of drafting a response to the motion to dismiss.",
+        "We will not appear in court or handle any other part of the case. Our fee for this task is $4,500.",
+      ],
+    },
+    {
+      id: "interrogatories",
+      title: "PLAINTIFF'S FIRST SET OF INTERROGATORIES TO DEFENDANT",
+      body: [
+        "Plaintiff asks Defendant to answer the following under oath.",
+        "Identify every person who worked on the transducer design, and identify all documents relating to the matters in the complaint.",
+      ],
+    },
     // A SHAREHOLDERS agreement. `stockholders-agreement`'s title keywords were
     // "stockholders agreement" and "stockholders' agreement" only, so the
     // other spelling of the same instrument — the one a British or

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.292.0] — 2026-08-31
+
+### Fixed
+- **A closing letter and a privilege log reached no family at all**, and
+  requests for admission, a limited-scope agreement and interrogatories reached
+  their own at or near the threshold. `termination-of-representation` claimed
+  "representation has concluded" as an adjacent bigram, and a real letter says
+  "our representation OF YOU IN THE WRENFIELD MATTER has concluded";
+  `requests-for-admission` claimed "deemed admitted" and "genuineness of the
+  document", which appear in the RESPONSE, not the request; `privilege-log`
+  claimed "log of documents withheld" and "bates" and not the sentence a log
+  opens on. All six now route at 0.6 or better.
+
 ## [9.291.0] — 2026-08-31
 
 ### Added

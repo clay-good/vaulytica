@@ -1,6 +1,6 @@
 {
   "id": "privilege-log",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Privilege Log (FRCP 26(b)(5))",
   "description": "Privilege log checked against Rule 26(b)(5)(A): an express claim and a description sufficient to assess it. Selects the DISC-024..029 ruleset.",
   "match_features": {
@@ -12,7 +12,11 @@
       "work-product doctrine",
       "withheld",
       "recipients",
-      "bates"
+      "bates",
+      "withholds the following",
+      "basis for withholding",
+      "privilege asserted",
+      "withheld from production"
     ],
     "negative_features": [
       "this agreement is entered into",

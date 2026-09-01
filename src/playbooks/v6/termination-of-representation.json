@@ -1,6 +1,6 @@
 {
   "id": "termination-of-representation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Closing / Termination of Representation Letter",
   "description": "Closing letter measured against ABA Model Rules 1.16(d), 1.15(d), and 1.9. Selects the ENG-032..036 ruleset.",
   "match_features": {
@@ -17,7 +17,11 @@
       "your file",
       "final statement",
       "former client",
-      "retention period"
+      "retention period",
+      "representation of you",
+      "has concluded",
+      "closing our file",
+      "our representation"
     ],
     "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
   },

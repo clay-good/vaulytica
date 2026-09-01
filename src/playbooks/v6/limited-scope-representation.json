@@ -1,6 +1,6 @@
 {
   "id": "limited-scope-representation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Limited Scope Representation Agreement",
   "description": "Unbundled legal services agreement measured against ABA Model Rule 1.2(c). Selects the ENG-027..031 ruleset.",
   "match_features": {
@@ -17,7 +17,10 @@
       "you are responsible",
       "notice of limited appearance",
       "discrete task",
-      "will not perform"
+      "will not perform",
+      "for the limited purpose",
+      "we will not appear",
+      "this task"
     ],
     "negative_features": ["merger agreement", "lease of the premises", "purchase order"]
   },

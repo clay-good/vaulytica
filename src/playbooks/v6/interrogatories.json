@@ -1,6 +1,6 @@
 {
   "id": "interrogatories",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Interrogatories (FRCP 33)",
   "description": "Rule 33 interrogatories checked for the numerical limit, oath requirement, and service elements. Selects the DISC-007..011 ruleset.",
   "match_features": {
@@ -15,7 +15,10 @@
       "answer under oath",
       "discrete subparts",
       "definitions",
-      "state the following"
+      "state the following",
+      "answer the following under oath",
+      "identify every person",
+      "identify all documents"
     ],
     "negative_features": [
       "this agreement is entered into",

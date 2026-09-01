@@ -1,6 +1,6 @@
 {
   "id": "requests-for-admission",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Requests for Admission (FRCP 36)",
   "description": "Rule 36 requests for admission checked for the deemed-admitted warning, single-fact form, and answer requirements. Selects the DISC-012..016 ruleset.",
   "match_features": {
@@ -16,7 +16,10 @@
       "deemed admitted",
       "genuineness of the document",
       "admit or deny",
-      "reasonable inquiry"
+      "reasonable inquiry",
+      "asks defendant to admit",
+      "asks plaintiff to admit",
+      "admit the following"
     ],
     "negative_features": [
       "this agreement is entered into",
