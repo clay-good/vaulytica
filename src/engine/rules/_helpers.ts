@@ -664,8 +664,26 @@ const RATIFIES_PARENT =
 // `PARENT_CONTROLS` below already admits "MSA" as a parent noun; this is the
 // same list, and the acronyms are capitalised, so a lowercase "under the
 // agreement" still names no instrument.
+// The document must say that IT is issued under the parent — the same
+// discipline `INCORPORATED_INTO_PARENT` above states as "the document must call
+// ITSELF the exhibit", and this sibling did not have it.
+//
+// The docstring above claims "a standalone contract never says another
+// agreement governs it", and a membership interest purchase agreement disproves
+// it by saying "under the Escrow Agreement" once, in passing, about a related
+// document. That single phrase was standing down SEVEN absence checks — the
+// governing law, the IP allocation, the indemnity, the liability cap, and the
+// termination machinery of a standalone acquisition agreement — on the theory
+// that some other document supplied them. An intercreditor agreement did the
+// same on "under the Senior Credit Agreement".
+//
+// A document that really is subordinate names itself first: "THIS STATEMENT OF
+// WORK is entered into … under the Master Services Agreement", "THIS ORDER FORM
+// is governed by the MSA". A document whose conflict clause says the parent
+// controls is still caught by `PARENT_CONTROLS` below, which needs no
+// self-reference.
 const ISSUED_UNDER_PARENT =
-  /\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
+  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Statement\s+of\s+Work|SOW|Order\s+Form|Order|Addendum|Rider|Schedule|Annex|Exhibit|Amendment|Letter|Agreement|Attachment)\b[^.;]{0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
 const PARENT_CONTROLS =
   // Case-SENSITIVE by design: the parent has to be a NAMED instrument, which
   // is what `[A-Z]` and the capitalized "Agreement" enforce. Only the leading

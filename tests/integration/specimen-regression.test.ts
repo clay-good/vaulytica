@@ -1382,6 +1382,7 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "MNA-103",
       "FIN-005",
+      "IPDATA-001",
       "STRUCT-006",
       "STRUCT-018",
       "TEMP-012",
@@ -1963,6 +1964,7 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "stock-purchase-agreement",
     findings: [
       "RISK-002",
+      "RISK-005",
       "STRUCT-018",
       "OBLI-002",
       "OBLI-005",
@@ -2881,7 +2883,20 @@ export const EXPECTED: Record<string, Expectation> = {
   // consent — the genitive reversed, the adjective inserted.
   "sublease.txt": {
     playbook: "sublease-agreement",
-    findings: ["OBLI-005", "OBLI-006", "RE-103", "RISK-010", "RISK-011", "RISK-015", "STRUCT-018"],
+    // RISK-005 appeared in v9.348.0. A sublease is subordinate to the prime
+    // lease for the SUBLANDLORD's obligations, and carries its own commercial
+    // terms between sublandlord and subtenant — including, or not, a limitation
+    // of liability. `lease-commercial-multitenant` keeps the same check.
+    findings: [
+      "RE-103",
+      "RISK-005",
+      "RISK-015",
+      "STRUCT-018",
+      "OBLI-005",
+      "OBLI-006",
+      "RISK-010",
+      "RISK-011",
+    ],
   },
 
   // Buyer-form purchase order terms: standing terms nobody signs and no two
@@ -3164,6 +3179,21 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["FIN-009", "STRUCT-005"],
   },
 
+  // A statement of work issued under a master services agreement, with
+  // deliverables, acceptance, key personnel, client dependencies, and change
+  // control. It is here as the OTHER side of the parent-agreement guard: the
+  // MSA supplies its governing law, its liability cap, and its indemnity, and
+  // this document correctly reports none of them missing.
+  //
+  // FIN-005 was the exception, and it is now the eighth rule to take that
+  // guard: the SOW states its fee and its invoicing milestones and leaves "net
+  // 45 from invoice date" to the MSA, and was reported as stating no payment
+  // term at all.
+  "sow-under-msa.txt": {
+    playbook: "sow",
+    findings: ["OBLI-005", "TEMP-002"],
+  },
+
   // A field-heavy SaaS ORDER FORM under a master agreement — a header block of
   // colon-separated fields, three priced lines, and $940,800 of order value. It
   // drew twelve findings, one of them a `critical`, and five of those were
@@ -3363,7 +3393,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // reader to check its scope is the point of reviewing this document.
   "ma-sale-of-goodwill-covenant.txt": {
     playbook: "ma-restrictive-covenant",
-    findings: ["PERS-005", "OBLI-005", "PERS-001", "PERS-002"],
+    // CHOICE-003 appeared in v9.348.0: the covenant names the Delaware Court of
+    // Chancery as its venue, and `amendsParentAgreement` had been standing the
+    // check down because the recitals mention the Purchase Agreement once.
+    findings: ["PERS-005", "CHOICE-003", "OBLI-005", "PERS-001", "PERS-002"],
   },
 
   // A New York "good guy" guaranty of a retail lease — the commonest

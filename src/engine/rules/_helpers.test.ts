@@ -711,8 +711,14 @@ describe("amendsParentAgreement — a parent named by its acronym", () => {
       "This Order Form is governed by the MSA. Capitalized terms not defined here have the meanings given in the MSA.",
     ],
     [
-      "'pursuant to the SOW'",
-      "The Services are provided pursuant to the SOW and the rates stated in it.",
+      // Narrowed in v9.348.0. This case used to read "The Services are provided
+      // pursuant to the SOW" — a sentence about the SERVICES, not about this
+      // document, and the same shape that let one passing mention of an escrow
+      // stand down seven checks on a standalone acquisition agreement. The
+      // acronym support it was written to prove is kept; the missing
+      // self-reference is not.
+      "'issued pursuant to the SOW'",
+      "This Order Form is issued pursuant to the SOW and the rates stated in it.",
     ],
     [
       "the full title, unchanged",
@@ -728,5 +734,47 @@ describe("amendsParentAgreement — a parent named by its acronym", () => {
         ctx("The parties will perform their obligations under the agreement in good faith."),
       ),
     ).toBe(false);
+  });
+});
+
+/**
+ * The document must say that IT is issued under the parent.
+ *
+ * The docstring on `ISSUED_UNDER_PARENT` claimed "a standalone contract never
+ * says another agreement governs it", and a membership interest purchase
+ * agreement disproves it by saying "under the Escrow Agreement" once, in
+ * passing, about a related document. That single phrase was standing down
+ * SEVEN absence checks — the governing law, the IP allocation, the indemnity,
+ * the liability cap, and the termination machinery of a standalone acquisition
+ * agreement — on the theory that some other document supplied them. An
+ * intercreditor agreement did the same on "under the Senior Credit Agreement".
+ *
+ * `INCORPORATED_INTO_PARENT`, in the same file, already required the document
+ * to call ITSELF the exhibit. This is that discipline applied to its sibling.
+ */
+describe("amendsParentAgreement — a passing reference is not subordination", () => {
+  const ctx = (...paras: string[]) => buildContext(["Agreement", ...paras]);
+
+  it.each([
+    [
+      "an acquisition agreement mentioning an escrow",
+      "The Escrow Amount shall be held and released under the Escrow Agreement dated the date hereof.",
+    ],
+    [
+      "an intercreditor agreement mentioning the credit agreement",
+      "Each Senior Obligation incurred under the Senior Credit Agreement is entitled to the priority stated in Section 2.",
+    ],
+  ])("does NOT treat %s as subordinate", (_label, text) => {
+    expect(amendsParentAgreement(ctx(text))).toBe(false);
+  });
+
+  it("still recognizes a document that names itself as the subordinate one", () => {
+    expect(
+      amendsParentAgreement(
+        ctx(
+          "This Statement of Work is entered into as of April 14, 2026 under the Master Services Agreement dated June 3, 2025.",
+        ),
+      ),
+    ).toBe(true);
   });
 });

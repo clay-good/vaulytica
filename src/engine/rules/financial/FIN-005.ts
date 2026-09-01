@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isIncorporatedExhibit, topPosition } from "../_helpers.js";
+import {
+  amendsParentAgreement,
+  emit,
+  firstParagraphMatch,
+  isIncorporatedExhibit,
+  topPosition,
+} from "../_helpers.js";
 
 // The hyphenated compound ("forty-five") comes FIRST: alternation is ordered,
 // so listing the bare ten ("forty") before it would match only "forty" and
@@ -175,6 +181,18 @@ export const rule: Rule = {
     // A FAR flowdown exhibit dropped in on its own was reported for stating no payment term —
     // which lives in the subcontract the exhibit is attached to.
     if (isIncorporatedExhibit(ctx)) return null;
+    // The same reasoning one step out: a document ISSUED UNDER a named parent
+    // takes its payment term from the parent, and a well-drafted one does not
+    // restate it. A statement of work under a master services agreement states
+    // its fee and its invoicing milestones — "$186,000, invoiced 30% on
+    // signature, 40% on acceptance of D2" — and leaves "net 45 from invoice
+    // date" to the MSA, and was reported as stating no payment term at all.
+    //
+    // This is the eighth rule to take the guard; the other seven are TERM-002,
+    // TERM-005, CHOICE-001, CHOICE-003, IPDATA-001, RISK-001, and RISK-005,
+    // and they are absence checks for exactly the same kind of generic
+    // commercial clause.
+    if (amendsParentAgreement(ctx)) return null;
 
     if (!firstParagraphMatch(ctx, ANY_PAYMENT)) return null;
     return emit(ctx, rule, {

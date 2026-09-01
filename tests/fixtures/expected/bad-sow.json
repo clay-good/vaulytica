@@ -214,8 +214,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-005-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "FIN-005",
       "rule_version": "1.17.0"
@@ -890,24 +889,6 @@
       "title": "Unfilled template placeholders: 1"
     },
     {
-      "description": "The document references fees but no 'Net X' or 'due within' clause was found.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no payment-term clause)"
-      },
-      "explanation": "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
-      "id": "FIN-005-s1-0",
-      "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
-      "rule_id": "FIN-005",
-      "rule_version": "1.17.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No payment-term clause detected"
-    },
-    {
       "description": "The contract specifies a late-payment rate of 2% per month, which annualizes to approximately 24.0%.",
       "document_position": 407,
       "excerpt": {
@@ -1034,11 +1015,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected sow (score 1). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "ab3061c571860f1d9a6897bb0cc9c8e6050197f49cab1b698e7032eb8c4dec5a",
+  "result_hash": "dc23be275bcf8bb9e1175f278bbb68e66b90600de2b19ffcea249f637865e18c",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.347.0"
+  "version": "9.348.0"
 }

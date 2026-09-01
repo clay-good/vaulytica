@@ -22,7 +22,11 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Deposit Materials", "Escrow Agent", "Release Condition"],
-  "rule_overrides": {},
+  "rule_overrides": {
+    "RISK-005": {
+      "skip": true
+    }
+  },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "11-USC-365n",
