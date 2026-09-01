@@ -1016,10 +1016,69 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
+  /**
+   * Five more, and the class has now held on twenty-three families across
+   * three steps: the distinguishing list is the vocabulary of a WELL-DRAFTED
+   * instance, and a bad one reaches 0.3 — its own title, alone, below the
+   * threshold.
+   *
+   * `union-cba` claimed "bargaining unit", "grievance procedure", "no strike",
+   * "management rights", "union security", "dues checkoff" — the whole
+   * apparatus a thin CBA has not yet bargained for. `change-order` claimed
+   * "original contract sum" and "revised contract sum" where a real change
+   * order writes "the contract sum increases by". `litigation-hold` claimed
+   * "preserve", "suspend deletion" and "custodian"; the notice that most needs
+   * auditing is the one that says only "keep all documents. Do not delete
+   * anything."
+   */
+  const BARE_ADMINISTRATIVE: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "union-cba",
+      title: "COLLECTIVE BARGAINING AGREEMENT",
+      body: [
+        "This Agreement is between Foundry Logistics LLC and Local 417 of the International Brotherhood of Warehouse Workers.",
+        "The Union is the exclusive bargaining representative of the warehouse employees. Wages increase 2% each year for three years.",
+      ],
+    },
+    {
+      id: "change-order",
+      title: "CHANGE ORDER NO. 3",
+      body: [
+        "Project: Foundry Road warehouse. Contractor: Larkspur Construction Group, Inc.",
+        "Add a second loading dock. The contract sum increases by $214,000 and the completion date moves to November 15, 2026.",
+      ],
+    },
+    {
+      id: "commission-plan",
+      title: "SALES COMMISSION PLAN",
+      body: [
+        "Halcyon Analytics, Inc. adopts this Sales Commission Plan for its account executives, effective January 1, 2027.",
+        "Commission is 8% of bookings. The Company may change or end this Plan at any time, and commissions are not earned until paid.",
+      ],
+    },
+    {
+      id: "litigation-hold",
+      title: "LITIGATION HOLD NOTICE",
+      body: [
+        "To: All Foundry Logistics employees",
+        "Please keep all documents about the Route 9 accident. Do not delete anything.",
+      ],
+    },
+    {
+      id: "option-to-purchase-real-estate",
+      title: "OPTION TO PURCHASE REAL ESTATE",
+      body: [
+        'Pemberton Ridge Holdings LLC ("Optionor") grants Foundry Development Partners LLC ("Optionee") the option to buy the property at 400 Foundry Road for $2,400,000.',
+        "The option runs until December 31, 2027. Optionee pays $50,000 for the option.",
+      ],
+    },
+  ];
+
   it.each([
     ...BAD_DOCUMENTS,
     ...BARE_LICENCES,
     ...BARE_COVENANTS,
+    ...BARE_ADMINISTRATIVE,
     ...THIN_MARGINS,
     ...BARE_INSTRUMENTS,
     ...BARE_COMMERCIAL,

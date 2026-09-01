@@ -1,6 +1,6 @@
 {
   "id": "option-to-purchase-real-estate",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Option to Purchase Real Estate",
   "description": "Option agreement over real property, reviewed for consideration, exercise mechanics, and recordation. Selects the RE-123..127 ruleset (5 checks).",
   "match_features": {
@@ -16,7 +16,10 @@
       "exercise the option",
       "memorandum of option",
       "the option price",
-      "time is of the essence"
+      "time is of the essence",
+      "the option to buy",
+      "for the option",
+      "option to buy the property"
     ],
     "negative_features": [
       "lease of the premises shall commence",

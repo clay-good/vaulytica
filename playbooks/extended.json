@@ -2762,7 +2762,7 @@
   },
   {
     "id": "change-order",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Change Order",
     "description": "Construction change order under AIA G701 baseline with contract-sum + time-adjustment summary. Selects the §6.M ruleset (CON-026..CON-030).",
     "match_features": {
@@ -2777,7 +2777,10 @@
         "revised contract sum",
         "description of change",
         "time adjustment",
-        "substantial completion"
+        "substantial completion",
+        "the contract sum",
+        "completion date",
+        "contract sum increases"
       ],
       "negative_features": [
         "construction contract",
@@ -3537,7 +3540,7 @@
   },
   {
     "id": "commission-plan",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Sales Commission Plan",
     "description": "Sales incentive plan, reviewed for the earning trigger, post-termination commissions, and state wage-law exposure. Selects the EMP-109..114 ruleset (6 checks).",
     "match_features": {
@@ -3554,7 +3557,10 @@
         "commission is earned when",
         "clawback of commissions",
         "draw against commissions",
-        "on-target earnings"
+        "on-target earnings",
+        "account executive",
+        "of bookings",
+        "not earned until"
       ],
       "negative_features": [
         "lease of the premises",
@@ -10986,7 +10992,7 @@
   },
   {
     "id": "litigation-hold",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Litigation Hold Notice",
     "description": "Litigation hold / preservation notice (FRCP 37(e), *Zubulake*). Selects the §6.G settlement ruleset (SET-025..SET-030).",
     "match_features": {
@@ -11003,7 +11009,10 @@
         "esi",
         "suspend deletion",
         "custodian",
-        "attorney work product"
+        "attorney work product",
+        "do not delete",
+        "keep all documents",
+        "all documents about"
       ],
       "negative_features": [
         "settlement payment",
@@ -12742,7 +12751,7 @@
   },
   {
     "id": "option-to-purchase-real-estate",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Option to Purchase Real Estate",
     "description": "Option agreement over real property, reviewed for consideration, exercise mechanics, and recordation. Selects the RE-123..127 ruleset (5 checks).",
     "match_features": {
@@ -12758,7 +12767,10 @@
         "exercise the option",
         "memorandum of option",
         "the option price",
-        "time is of the essence"
+        "time is of the essence",
+        "the option to buy",
+        "for the option",
+        "option to buy the property"
       ],
       "negative_features": [
         "lease of the premises shall commence",
@@ -20302,7 +20314,7 @@
   },
   {
     "id": "union-cba",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Collective Bargaining Agreement",
     "description": "Union contract, reviewed for the recognition, grievance/arbitration, no-strike, and management-rights architecture the NLRA presumes. Selects the EMP-135..141 ruleset (7 checks).",
     "match_features": {
@@ -20320,7 +20332,10 @@
         "management rights",
         "union security",
         "seniority",
-        "dues checkoff"
+        "dues checkoff",
+        "exclusive bargaining representative",
+        "the union is",
+        "the union and the"
       ],
       "negative_features": [
         "at-will employment",

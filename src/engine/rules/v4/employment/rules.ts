@@ -712,13 +712,22 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-027",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Geographic scope tied to actual market",
     description: "Geographic scope should be reasonable and tied to where the employee worked.",
     citation: stateNonCompete(),
     playbooks: [EMP_PLAYBOOK_RC],
-    missing_title: "Geographic scope clause missing",
-    missing_description: "No geographic scope clause was found.",
+    // The title and description say NOT BOUNDED rather than NOT PRESENT.
+    // "worldwide" and "anywhere in the United States" are deliberately not
+    // present patterns — an open-ended scope is the abuse this rule exists to
+    // catch — but the old wording then reported "Geographic scope clause
+    // missing" on a covenant that states its geographic scope in so many
+    // words. The conclusion was right and the sentence was false, which is the
+    // worse of the two failures: an attorney who reads it and looks at the
+    // document stops trusting the tool.
+    missing_title: "Geographic scope not bounded",
+    missing_description:
+      'No bounded geographic scope was found — the covenant either states none at all or states an open-ended one ("worldwide", "anywhere in the United States").',
     explanation:
       "Open-ended geographic scope is unenforceable; scope should track employee's actual market presence.",
     recommendation:

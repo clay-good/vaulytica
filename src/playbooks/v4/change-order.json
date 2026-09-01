@@ -1,28 +1,47 @@
 {
   "id": "change-order",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Change Order",
   "description": "Construction change order under AIA G701 baseline with contract-sum + time-adjustment summary. Selects the §6.M ruleset (CON-026..CON-030).",
   "match_features": {
-    "title_keywords": ["change order", "co", "g701"],
+    "title_keywords": [
+      "change order",
+      "co",
+      "g701"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "original contract sum",
       "revised contract sum",
       "description of change",
       "time adjustment",
-      "substantial completion"
+      "substantial completion",
+      "the contract sum",
+      "completion date",
+      "contract sum increases"
     ],
-    "negative_features": ["construction contract", "subcontract", "lien waiver", "performance bond"]
+    "negative_features": [
+      "construction contract",
+      "subcontract",
+      "lien waiver",
+      "performance bond"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Original Contract Sum", "Revised Contract Sum"],
+  "expected_defined_terms": [
+    "Original Contract Sum",
+    "Revised Contract Sum"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "AIA-G701",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["construction-contract"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "construction-contract"
+  ],
   "compliance_matrix_columns": [
     "Original + revised contract sum",
     "Description of change",

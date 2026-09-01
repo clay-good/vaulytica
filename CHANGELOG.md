@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.302.0] — 2026-09-01
+
+### Fixed
+- **EMP-027 reported "Geographic scope clause missing" on a covenant that
+  states its geographic scope.** "worldwide" and "anywhere in the United
+  States" are deliberately not present patterns — an open-ended scope is the
+  abuse the rule catches — but the wording then asserted absence. It now reads
+  "Geographic scope not bounded" and names both shapes.
+- **Five more families could not recognise a thin instance of themselves:**
+  `union-cba`, `change-order`, `commission-plan`, `litigation-hold` and
+  `option-to-purchase-real-estate`. Each listed only the vocabulary of a
+  well-drafted instance and reached 0.3 — its own title, below the threshold.
+  A litigation hold notice saying only "keep all documents, do not delete
+  anything" now routes and reports its missing triggering event, preservation
+  scope, custodian list and privilege reminder.
+
 ## [9.301.0] — 2026-09-01
 
 ### Fixed

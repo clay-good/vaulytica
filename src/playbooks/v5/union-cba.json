@@ -1,6 +1,6 @@
 {
   "id": "union-cba",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Collective Bargaining Agreement",
   "description": "Union contract, reviewed for the recognition, grievance/arbitration, no-strike, and management-rights architecture the NLRA presumes. Selects the EMP-135..141 ruleset (7 checks).",
   "match_features": {
@@ -18,26 +18,55 @@
       "management rights",
       "union security",
       "seniority",
-      "dues checkoff"
+      "dues checkoff",
+      "exclusive bargaining representative",
+      "the union is",
+      "the union and the"
     ],
-    "negative_features": ["at-will employment", "merger agreement", "purchase and sale"]
+    "negative_features": [
+      "at-will employment",
+      "merger agreement",
+      "purchase and sale"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Bargaining Unit", "Union", "Grievance"],
+  "expected_defined_terms": [
+    "Bargaining Unit",
+    "Union",
+    "Grievance"
+  ],
   "rule_overrides": {
-    "CHOICE-001": { "skip": true },
-    "CHOICE-003": { "skip": true },
-    "FIN-005": { "skip": true },
-    "IPDATA-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "TERM-002": { "skip": true },
-    "TERM-005": { "skip": true }
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "NLRA",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["employee-handbook"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "employee-handbook"
+  ],
   "compliance_matrix_columns": [
     "Recognition and bargaining-unit description",
     "Union security and dues checkoff (right-to-work states)",

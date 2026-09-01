@@ -1,6 +1,6 @@
 {
   "id": "litigation-hold",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Litigation Hold Notice",
   "description": "Litigation hold / preservation notice (FRCP 37(e), *Zubulake*). Selects the §6.G settlement ruleset (SET-025..SET-030).",
   "match_features": {
@@ -17,7 +17,10 @@
       "esi",
       "suspend deletion",
       "custodian",
-      "attorney work product"
+      "attorney work product",
+      "do not delete",
+      "keep all documents",
+      "all documents about"
     ],
     "negative_features": [
       "settlement payment",
