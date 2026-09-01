@@ -755,7 +755,15 @@ const REG_A_RULES: Rule[] = [
     recommendation:
       "Follow Form 1-A structure with Part I notification + Part II offering circular + Part III exhibits.",
     present_patterns: [
-      /(form\s+1.?a|part\s+i|part\s+ii)/i,
+      // An offering circular IS Part II of Form 1-A and never says so on its
+      // face: the form caption lives on the EDGAR wrapper, not in the document
+      // an investor receives. What the circular does carry is the Regulation A
+      // vocabulary — the OFFERING STATEMENT that gets qualified, the Form 1-K
+      // / 1-SA / 1-U ongoing reports, and Part II's own distinctive item
+      // captions "Securities Being Offered" and "Significant Employees". A
+      // circular that follows the item structure exactly was told it followed
+      // none of it.
+      /(form\s+1.?a|part\s+i|part\s+ii|offering\s+statement|form\s+1-[kus]\b|securities\s+being\s+offered|significant\s+employees)/i,
       /(notification|offering\s+circular|exhibits)/i,
     ],
     require_all_present: true,

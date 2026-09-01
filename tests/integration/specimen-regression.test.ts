@@ -3152,6 +3152,27 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A Regulation A Tier 2 offering circular, with the Rule 251(d)(2)(i)(C)
+  // investment limitation, the SEC legend verbatim, the Form 1-K / 1-SA / 1-U
+  // ongoing-reporting undertaking, and the no-minimum / no-escrow disclosure
+  // that is the real risk in a best-efforts Reg A deal.
+  //
+  // REG-034 told it that it followed none of the Form 1-A item structure, in a
+  // document whose table of contents IS that structure in order. An offering
+  // circular is Part II of Form 1-A and never says so on its face — the form
+  // caption lives on the EDGAR wrapper, not in the document an investor
+  // receives. What the circular does carry is the Regulation A vocabulary: the
+  // OFFERING STATEMENT that gets qualified, the Form 1-K / 1-SA / 1-U reports,
+  // and Part II's own item captions.
+  //
+  // What remains is fair, and OBLI-004 / OBLI-008 are the useful pair: the
+  // offering is made on a "best efforts" basis and the standard is never
+  // defined, which is exactly what a purchaser would want defined.
+  "reg-a-plus-circular.txt": {
+    playbook: "reg-a-plus-circular",
+    findings: ["OBLI-004", "OBLI-008", "REG-040", "TEMP-002"],
+  },
+
   // A standalone COMMERCIAL indemnity — a subcontractor indemnifying a
   // developer, with the comparative-fault limitation that keeps it inside Ohio
   // Rev. Code § 2305.31, additional-insured endorsements by ISO form number,
