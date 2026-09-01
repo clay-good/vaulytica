@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.285.0] — 2026-08-31
+
+### Added
+- One specimen — a vendor DPA that defines its own term for the regulated data
+  ("Customer Personal Data"), which is how every major vendor DPA is drafted.
+  The 242nd, written to test whether the CCPA pack's object-noun defect was
+  systemic.
+
+### Fixed
+- **It was systemic. A textbook Article 28(3) DPA drew SIX false criticals from
+  the GDPR pack.** DPA-004 wanted "types of personal data" where the document
+  says "the types of Customer Personal Data"; DPA-024 anchored the breach
+  notice on the word "controller" where the document names that party by its
+  role ("shall notify Customer"); DPA-002 wanted "duration of the processing"
+  where a DPA ties the duration to the agreement's term; DPA-029 wanted
+  "Article 35" where the Regulation's own range is "Articles 32 to 36"; and
+  DPA-046 could not read "Irish law governs this DPA" — the fourth ruleset
+  found carrying its own narrower copy of a clause the jurisdictions extractor
+  has read since v1, after CHOICE-001, NDA-D-017 and MNA-019.
+- One corpus fixture was repaired rather than the rule loosened around it:
+  `dpa-controller-processor-missing-dpia-assistance-fail.txt` promised
+  assistance with "Articles 32 to 36", and Article 35 is the DPIA — so the
+  document it was built to prove a point about did not have the gap. It now
+  promises Article 32 only.
+- One broadening was reverted for the opposite reason: DPA-016 was widened to
+  accept a thirty-day notice of an intended sub-processor change as the
+  Article 28(2) objection right, and the corpus fixture is right that notice is
+  not objection. The specimen states the objection right instead.
+
 ## [9.284.0] — 2026-08-31
 
 ### Added

@@ -33,10 +33,6 @@ const DECLARED = new Map<string, string>([
     "the exhibit LETTER in 'Exhibit A'; a lowercase 'exhibit a' is the same reference and should match",
   ],
   [
-    "src/engine/rules/v3/dpa-gdpr/rules.ts",
-    "the trailing 'laws of <X>' anchor of a presence pattern — the branch fires on the phrase, not the capitalization",
-  ],
-  [
     "src/engine/rules/v3/msa-deep/rules.ts",
     "a negative lookahead after 'as-is'; excluding any letter is what it wants",
   ],

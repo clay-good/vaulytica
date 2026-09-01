@@ -167,6 +167,12 @@ export const DPA_GDPR_RULES: Rule[] = [
       // personal data will be retained".
       /period\s+for\s+which\s+the\s+personal\s+data\s+will\s+be\s+retained/i,
       /retention\s+period\s+for\s+(?:the\s+)?personal\s+data/i,
+      // Article 28(3) asks for the duration, and a DPA answers it by TYING the
+      // processing to the agreement's term: "the duration is the term of the
+      // Agreement and the ninety (90) days after it". Nothing above reads a
+      // duration stated that way.
+      /\bduration\b[^.]{0,60}?\b(?:is|shall\s+be|will\s+be)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|dpa|addendum)/i,
+      /(?:for|during)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|dpa|addendum)[^.]{0,80}?\bprocess/i,
     ],
   }),
   presence({
@@ -201,6 +207,13 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Add an Annex listing the categories of personal data (e.g., name, email, IP, account identifiers).",
     present_patterns: [
       /(type|categories)\s+of\s+personal\s+data|personal\s+data\s+(processed|categories)/i,
+      // Every major vendor DPA defines its own term — "Customer Personal
+      // Data", "Client Personal Data", "Covered Data" — and then writes "the
+      // types of Customer Personal Data and categories of data subjects are
+      // set out in Annex 1". Requiring the bare statutory noun as the object
+      // reads none of them. Case-SENSITIVE: the capital is what makes it a
+      // defined term.
+      /(?:[Tt]ypes?|[Cc]ategor(?:y|ies))\s+of\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Data|Information)\b/,
     ],
   }),
   presence({
@@ -656,6 +669,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       // too weak/broad.
       /(personal\s+data\s+breach|breach\s+of\s+personal\s+data|data\s+breach).{0,160}(notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)/is,
       /(notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice).{0,80}(controller).{0,80}(breach|incident)/is,
+      // The controller is named by its ROLE in the agreement — "shall notify
+      // Customer without undue delay after becoming aware of a personal data
+      // breach" — not by the word "controller", so the second pattern's
+      // controller anchor missed it and the first needs the breach FIRST. The
+      // look-behind keeps the WRONG DIRECTION out: "the Controller shall
+      // inform the Processor of a personal data breach" is not the Article
+      // 33(2) obligation and `dpa-gdpr-ruleset.test.ts` pins it as a finding.
+      /(?<!\bcontroller\s)(?<!\bcontroller\s+shall\s)(?:notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)[^.]{0,120}?\b(?:personal\s+data\s+breach|data\s+breach|security\s+breach)\b/i,
     ],
     // Express-denial guard: a refusal names the same notification duty the
     // requirement does. Art. 33(2) has no exception, so a processor that
@@ -766,7 +787,16 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation:
       "Art. 35 requires a DPIA for high-risk processing; the processor is required by Art. 28(3)(f) to assist.",
     recommendation: "Add a DPIA assistance clause referencing Article 35 and the processor's role.",
-    present_patterns: [/(data\s+protection\s+impact\s+assessment|DPIA|article\s*35)/i],
+    // A DPA states the assistance as the Article 28(3)(f) RANGE — "assist
+    // Customer in ensuring compliance with the obligations in Articles 32 to
+    // 36" — which is the Regulation's own drafting and includes Articles 35
+    // and 36, the DPIA and the prior consultation. Reading only the article
+    // number 35 told a DPA that quotes the Regulation that it omits the
+    // assistance it promises.
+    present_patterns: [
+      /(data\s+protection\s+impact\s+assessment|DPIA|article\s*35)/i,
+      /articles?\s*3[26]\s*(?:to|-|–|through)\s*3[56]/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -1093,7 +1123,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       "GDPR does not specify governing law, but SCC clauses require a Member State choice; DPAs commonly mirror this.",
     recommendation: "Add a governing-law clause naming the applicable Member State (or UK) law.",
     present_patterns: [
-      /(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+(?:the\s+)?(?:republic\s+of\s+)?[A-Z])/i,
+      /(governing\s+law|governed\s+by\s+the\s+laws|laws\s+of\s+(?:the\s+)?(?:republic\s+of\s+)?[A-Za-z])/i,
+      // "Irish law governs this DPA" — the adjectival form, and the fourth
+      // ruleset found carrying its own narrower copy of a clause the
+      // jurisdictions extractor has read since v1 (CHOICE-001, NDA-D-017,
+      // MNA-019). Written case-SENSITIVELY because the jurisdiction is a
+      // proper noun; under `i` the leading [A-Z] would match any word.
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))/,
+      /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
     default_severity: "warning",
   }),

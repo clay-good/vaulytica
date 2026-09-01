@@ -18,7 +18,7 @@ This Data Processing Agreement ("DPA") is entered into as of February 1, 2026, p
 
 8. Assistance with Data Subject Rights. Processor shall assist Controller by appropriate technical and organizational measures, insofar as this is possible, for the fulfilment of Controller's obligation to respond to requests for exercising data subject rights under Chapter III of the GDPR, including rights of access, rectification, erasure, restriction, portability, and objection.
 
-9. Assistance with Articles 32 to 36 Obligations. Processor shall assist Controller in ensuring compliance with the obligations under Articles 32 to 36 of the GDPR, taking into account the nature of the processing and the information available to Processor, including obligations relating to security, breach notification, prior consultation with supervisory authorities, and the supplementary measures appropriate to those obligations.
+9. Assistance with Security Obligations. Processor shall assist Controller in ensuring compliance with the obligations under Article 32 of the GDPR, taking into account the nature of the processing and the information available to Processor, including obligations relating to the security of processing and to breach notification.
 
 10. Breach Notification (Article 33 GDPR). In the event of a personal data breach, Processor shall notify Controller without undue delay after becoming aware of a personal data breach, and in any event within 48 hours, providing Controller with sufficient information to allow it to meet its obligations to notify the competent supervisory authority within 72 hours and, where required, affected data subjects.
 

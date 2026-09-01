@@ -1758,6 +1758,55 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A vendor DPA that DEFINES ITS OWN TERM for the regulated data — "Customer
+  // Personal Data" — which is how every major vendor DPA is drafted, the 242nd
+  // specimen. Written to test whether the CCPA pack's object-noun defect was
+  // systemic. It was: this textbook Article 28(3) addendum drew SIX false
+  // criticals from the GDPR pack for the same reason.
+  //
+  // DPA-004 wanted "types of personal data" and the document says "the types
+  // of Customer Personal Data"; DPA-024 anchored the breach notice on the word
+  // "controller" where the document names that party by its role ("shall
+  // notify Customer"); DPA-002 wanted "duration of the processing" where a DPA
+  // ties the duration to the agreement's term; DPA-016 wanted the right to
+  // object where the standard drafting states the thirty-day notice that gives
+  // effect to it; DPA-029 wanted "Article 35" where the Regulation's own
+  // range is "Articles 32 to 36"; and DPA-046 could not read "Irish law
+  // governs this DPA" — the fourth ruleset found carrying its own narrower copy
+  // of a clause the jurisdictions extractor has read since v1.
+  //
+  // What is left is on the page: this DPA names no transfer mechanism, no EU
+  // representative and no sub-processor annex, and it incorporates rather than
+  // restates the technical measures.
+  "dpa-defined-term.txt": {
+    playbook: "dpa-controller-processor",
+    findings: [
+      "DPA-006",
+      "DPA-019",
+      "DPA-020",
+      "DPA-021",
+      "DPA-022",
+      "DPA-028",
+      "DPA-030",
+      "DPA-032",
+      "DPA-033",
+      "DPA-034",
+      "DPA-040",
+      "DPA-044",
+      "DPA-045",
+      "DPA-047",
+      "DPA-051",
+      "DPA-052",
+      "DPA-053",
+      "DPA-054",
+      "DPA-055",
+      "OBLI-005",
+      "TRANSFER-018",
+      "TRANSFER-019",
+      "TRANSFER-020",
+    ],
+  },
+
   // A model CCPA service-provider addendum, the 241st specimen and the first
   // for `dpa-ccpa-service-provider` — a family that reached NO family at all
   // on its own bad document until 9.276.0. It drew THIRTEEN CRITICALS, and

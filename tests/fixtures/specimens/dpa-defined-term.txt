@@ -1,0 +1,53 @@
+DATA PROCESSING ADDENDUM
+
+This Data Processing Addendum (this "DPA") forms part of the Master Subscription Agreement between Meridiaan Zorgtechnologie B.V. ("Customer") and Halcyon Analytics, Inc. ("Halcyon") dated 2 February 2026 (the "Agreement").
+
+1. DEFINITIONS
+
+1.1 "Customer Personal Data" means personal data that Halcyon processes on Customer's behalf under the Agreement. "Controller", "processor", "data subject", "personal data breach" and "processing" have the meanings given in the GDPR.
+
+2. ROLES AND INSTRUCTIONS
+
+2.1 Customer is the controller and Halcyon is the processor of Customer Personal Data.
+
+2.2 Halcyon shall process Customer Personal Data only on Customer's documented instructions, including with regard to transfers, unless required to do otherwise by Union or Member State law, in which case Halcyon shall inform Customer of that requirement before processing unless the law prohibits it.
+
+2.3 The subject-matter of the processing is the provision of the Services; the duration is the term of the Agreement and the ninety (90) days after it; the nature and purpose of the processing are hosting, storage and analytics for Customer; the types of Customer Personal Data and categories of data subjects are set out in Annex 1.
+
+3. CONFIDENTIALITY, SECURITY, SUB-PROCESSORS
+
+3.1 Halcyon shall ensure that persons authorised to process Customer Personal Data have committed themselves to confidentiality.
+
+3.2 Halcyon shall implement the technical and organisational measures described in Annex 2, taking account of Article 32 of the GDPR.
+
+3.3 Halcyon shall not engage a sub-processor without Customer's general written authorisation, shall give Customer thirty (30) days' notice of any intended change during which Customer has the right to object on reasonable data-protection grounds, and shall impose on each sub-processor the same data protection obligations as are set out in this DPA by way of a written contract.
+
+4. ASSISTANCE
+
+4.1 Halcyon shall assist Customer by appropriate technical and organisational measures, insofar as possible, in fulfilling Customer's obligation to respond to requests to exercise data subject rights.
+
+4.2 Halcyon shall assist Customer in ensuring compliance with the obligations in Articles 32 to 36 of the GDPR, taking into account the nature of processing and the information available to Halcyon.
+
+4.3 Halcyon shall notify Customer without undue delay after becoming aware of a personal data breach affecting Customer Personal Data.
+
+5. DELETION AND AUDIT
+
+5.1 At Customer's choice, Halcyon shall delete or return all Customer Personal Data to Customer after the end of the provision of services relating to processing, and shall delete existing copies unless Union or Member State law requires storage.
+
+5.2 Halcyon shall make available to Customer all information necessary to demonstrate compliance with Article 28 of the GDPR, and shall allow for and contribute to audits, including inspections, conducted by Customer or another auditor Customer mandates.
+
+6. GENERAL
+
+6.1 Except as expressly modified here, the Agreement remains in full force and effect. Irish law governs this DPA.
+
+MERIDIAAN ZORGTECHNOLOGIE B.V.
+By: /s/ Aurelie Vandenbroucke
+Title: Data Protection Officer
+
+HALCYON ANALYTICS, INC.
+By: /s/ Terrence Okonjo-Whitfield
+Title: Privacy Counsel
+
+ANNEX 1 — DESCRIPTION OF PROCESSING
+
+ANNEX 2 — TECHNICAL AND ORGANISATIONAL MEASURES
