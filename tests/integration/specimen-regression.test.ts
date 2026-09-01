@@ -3152,6 +3152,34 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // An executive employment agreement drafted to the Illinois Freedom to Work
+  // Act, 820 ILCS 90 — the fourteen-day review period, the written advice to
+  // consult counsel, both earnings thresholds, the public-health-emergency
+  // carve-out, the construction and CBA exclusions, garden-leave pay, and the
+  // § 1060/2 invention carve-out. It drew two findings its own family cannot
+  // answer.
+  //
+  // RISK-005 asked an employment agreement for a LIMITATION OF LIABILITY. No
+  // employment agreement has one, and every other employment family in the
+  // catalog already declines the check — `offer-letter`, `employee-handbook`,
+  // `pip`, `arbitration-agreement-employment`, `internship-agreement`. The
+  // at-will family was the only one keeping it. TERM-002 asked for a path to
+  // terminate for MATERIAL BREACH from an agreement whose section 2 says
+  // either party may end it at any time with or without cause: an at-will
+  // right is strictly broader than a for-cause one, and the family is named
+  // for it.
+  //
+  // What stays is fair. PERS-005/001/002 surface the covenant and its scope,
+  // which is the point of reviewing this document at all. RISK-001 is recorded
+  // rather than argued — `executive-employment` keeps it too. TERM-005 is a
+  // real gap in the draft's own terms: its severance paragraph is written as a
+  // condition ("if the Company ends employment without Cause") rather than as
+  // an effect of termination.
+  "il-employment-noncompete.txt": {
+    playbook: "employment-at-will-us",
+    findings: ["PERS-005", "RISK-001", "TERM-005", "OBLI-005", "PERS-001", "PERS-002"],
+  },
+
   // A Texas One to Four Family Residential Contract — TREC's resale form, the
   // contract used in every Texas house sale, and a shape the catalog had never
   // seen. It fell to `generic-fallback` at 0.4: the family knew the CAR-style

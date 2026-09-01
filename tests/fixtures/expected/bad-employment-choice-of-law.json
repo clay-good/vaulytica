@@ -478,9 +478,8 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-005-s1-0",
-      "fired": true,
-      "ran": true,
+      "fired": false,
+      "ran": false,
       "rule_id": "RISK-005",
       "rule_version": "1.7.0"
     },
@@ -795,9 +794,8 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TERM-002-s1-0",
-      "fired": true,
-      "ran": true,
+      "fired": false,
+      "ran": false,
       "rule_id": "TERM-002",
       "rule_version": "1.10.0"
     },
@@ -926,24 +924,6 @@
       "title": "No indemnification clause detected"
     },
     {
-      "description": "Vaulytica did not find a limitation-of-liability clause.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no LoL clause)"
-      },
-      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
-      "id": "RISK-005-s1-0",
-      "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
-      "rule_id": "RISK-005",
-      "rule_version": "1.7.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No limitation-of-liability clause detected"
-    },
-    {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
       "document_position": 0,
       "excerpt": {
@@ -960,24 +940,6 @@
       "severity": "warning",
       "source_citations": [],
       "title": "No Effective Date found"
-    },
-    {
-      "description": "The contract does not state a path to terminate for material breach.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no for-cause termination)"
-      },
-      "explanation": "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
-      "id": "TERM-002-s1-0",
-      "recommendation": "Add a termination-for-cause clause: what counts as a material breach, the cure period (30 days is the norm), who may terminate, and whether insolvency or a change of control is an immediate-termination event.",
-      "rule_id": "TERM-002",
-      "rule_version": "1.10.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No termination-for-cause clause detected"
     },
     {
       "description": "The contract does not state what happens upon termination.",
@@ -1052,11 +1014,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.5,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.5). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "a615e949b718738509fa50a095a592f08131f5d2c9a5732de80afb43f7455b28",
+  "result_hash": "4352ba043a4a8dc878acd254184a9ef781deca0e28a1f19403acfb4983d9b858",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.316.0"
+  "version": "9.317.0"
 }

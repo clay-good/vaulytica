@@ -483,9 +483,8 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-005-s1-0",
-      "fired": true,
-      "ran": true,
+      "fired": false,
+      "ran": false,
       "rule_id": "RISK-005",
       "rule_version": "1.7.0"
     },
@@ -801,7 +800,7 @@
     {
       "elapsed_ms": 0,
       "fired": false,
-      "ran": true,
+      "ran": false,
       "rule_id": "TERM-002",
       "rule_version": "1.10.0"
     },
@@ -1009,24 +1008,6 @@
       "title": "No indemnification clause detected"
     },
     {
-      "description": "Vaulytica did not find a limitation-of-liability clause.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no LoL clause)"
-      },
-      "explanation": "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
-      "id": "RISK-005-s1-0",
-      "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
-      "rule_id": "RISK-005",
-      "rule_version": "1.7.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No limitation-of-liability clause detected"
-    },
-    {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
       "document_position": 0,
       "excerpt": {
@@ -1152,11 +1133,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.7). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "9d06472bd651e29874e65f8182ddbd4b3fc5f20ccd7f664edb18b62a42a53b94",
+  "result_hash": "e066b856a46c99ff9dbe73f4999e2aa976a91b3acd3c71388746cde2088bbdec",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.316.0"
+  "version": "9.317.0"
 }

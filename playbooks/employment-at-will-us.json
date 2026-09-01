@@ -23,6 +23,12 @@
     {"term": "Effective Date", "severity_if_missing": "info"}
   ],
   "rule_overrides": {
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
     "RISK-009": {"severity": "info"},
     "RISK-010": {"severity": "info"},
     "FIN-005": {"skip": true},
