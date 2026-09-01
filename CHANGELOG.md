@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.286.0] — 2026-08-31
+
+### Fixed
+- **An attorney who asserted `--regime ccpa` on a deficient privacy policy got
+  one warning.** The 27-rule privacy-notice pack fires only when a regime is
+  asserted AND the document routed to `privacy-notice-us` or
+  `privacy-notice-gdpr` — and both of those families carry the disclosures
+  themselves as distinguishing phrases ("categories of personal information",
+  "do not sell or share", "right to opt-out", "legal basis", "right to
+  erasure"). A policy that makes none of them scores nothing on either and
+  lands on `privacy-policy-lint`, which runs one rule. That is exactly the
+  policy the pack exists for. `privacy-policy-lint` is now the third
+  privacy-notice family, and the same document with `--regime ccpa` draws the
+  eight CCPA disclosure findings. The pack still fires only on an asserted
+  regime, so a run without `--regime` is byte-identical.
+
 ## [9.285.0] — 2026-08-31
 
 ### Added

@@ -41,7 +41,20 @@ import {
   type RegimeId,
 } from "../../../privacy/regime-data.js";
 
-export const PRIVACY_NOTICE_PLAYBOOK_IDS = ["privacy-notice-us", "privacy-notice-gdpr"] as const;
+export const PRIVACY_NOTICE_PLAYBOOK_IDS = [
+  "privacy-notice-us",
+  "privacy-notice-gdpr",
+  // `privacy-policy-lint` is the third privacy-notice family, and the one a
+  // DEFICIENT policy actually reaches: the other two carry the disclosures
+  // themselves as distinguishing phrases — "categories of personal
+  // information", "do not sell or share", "right to opt-out", "legal basis",
+  // "right to erasure" — so a policy that makes none of them scores nothing on
+  // either and lands here. That is the policy the pack exists for, and an
+  // attorney who asserts `--regime ccpa` on it was getting one generic
+  // warning. The pack still fires only on an asserted regime, so a run without
+  // `--regime` is byte-identical.
+  "privacy-policy-lint",
+] as const;
 
 export type PnotRule = Rule & {
   regime: RegimeId;

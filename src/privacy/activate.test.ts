@@ -73,3 +73,19 @@ describe("buildRegimeCoverage", () => {
     expect(fired!.total).toBe(quiet!.total + 1);
   });
 });
+
+describe("the family a deficient policy actually reaches", () => {
+  it("activates on privacy-policy-lint when a regime is asserted", () => {
+    const base = [{ id: "X", version: "1.0.0" }] as unknown as Rule[];
+    const wired = activatePrivacyNotice(["ccpa"], "privacy-policy-lint", base);
+    expect(wired.rules.length).toBeGreaterThan(base.length);
+    expect(wired.asserted_regimes).toEqual(["ccpa"]);
+  });
+
+  it("still returns the base rules untouched with no regime asserted", () => {
+    const base = [{ id: "X", version: "1.0.0" }] as unknown as Rule[];
+    const wired = activatePrivacyNotice([], "privacy-policy-lint", base);
+    expect(wired.rules).toBe(base);
+    expect(wired.asserted_regimes).toBeUndefined();
+  });
+});

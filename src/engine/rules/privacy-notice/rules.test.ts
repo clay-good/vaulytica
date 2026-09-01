@@ -47,8 +47,20 @@ describe("PNOT rules — registry contract", () => {
     }
   });
 
-  it("PRIVACY_NOTICE_PLAYBOOK_IDS is the exact expected pair", () => {
-    expect(PRIVACY_NOTICE_PLAYBOOK_IDS).toEqual(["privacy-notice-us", "privacy-notice-gdpr"]);
+  it("PRIVACY_NOTICE_PLAYBOOK_IDS is the exact expected set", () => {
+    // `privacy-policy-lint` joined in 9.286.0. It is the family a DEFICIENT
+    // privacy policy actually reaches: the other two carry the disclosures
+    // themselves as distinguishing phrases — "categories of personal
+    // information", "do not sell or share", "right to opt-out", "legal basis",
+    // "right to erasure" — so a policy that makes none of them scores nothing
+    // on either. That is the policy the pack exists for, and an attorney who
+    // asserted `--regime ccpa` on it was getting one generic warning instead of
+    // the eight CCPA disclosure findings.
+    expect(PRIVACY_NOTICE_PLAYBOOK_IDS).toEqual([
+      "privacy-notice-us",
+      "privacy-notice-gdpr",
+      "privacy-policy-lint",
+    ]);
   });
 });
 
