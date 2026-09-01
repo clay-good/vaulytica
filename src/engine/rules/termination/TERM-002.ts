@@ -36,7 +36,12 @@ const UNCURED = String.raw`\b(?:(?:does\s+|has\s+|is\s+|are\s+)?not\s+(?:been\s+
 // `terminat\w+` alone, so a document whose Default section says "we may close
 // the Account and require you to pay the full balance immediately" was
 // reported as stating no path to terminate for material breach.
-const TERMINATE = String.raw`\b(?:terminat\w+|clos(?:e|es|ed|ing)\s+(?:the\s+|your\s+)?(?:account|membership)|end(?:s|ed|ing)?\s+(?:the\s+|this\s+|your\s+)?(?:membership|internship|engagement|agreement|relationship|arrangement)|cancel(?:s|led|ling|ed|ing)?\s+(?:the\s+|your\s+)?(?:account|membership|subscription))`;
+// The determiner is not always "the" or "your". Published consumer terms are
+// written about a class of accounts, not about the reader's: "We may suspend or
+// close AN account for fraud, abuse, a violation of these Terms, or a
+// chargeback." A loyalty program whose section 8 is a for-cause termination
+// clause was told it had none, over the indefinite article.
+const TERMINATE = String.raw`\b(?:terminat\w+|clos(?:e|es|ed|ing)\s+(?:the\s+|your\s+|an?\s+|any\s+|a\s+member(?:'s|’s)?\s+)?(?:account|membership)|end(?:s|ed|ing)?\s+(?:the\s+|this\s+|your\s+|an?\s+)?(?:membership|internship|engagement|agreement|relationship|arrangement)|cancel(?:s|led|ling|ed|ing)?\s+(?:the\s+|your\s+|an?\s+|any\s+)?(?:account|membership|subscription))`;
 
 const FOR_CAUSE = new RegExp(
   // Termination on ENUMERATED cause grounds. A regulated-services agreement
@@ -122,7 +127,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

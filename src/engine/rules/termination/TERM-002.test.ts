@@ -284,3 +284,36 @@ describe("TERM-002 v1.9.0 — enumerated cause grounds", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * The determiner is not always "the" or "your" (v1.11.0).
+ *
+ * Published consumer terms are written about a class of accounts, not about
+ * the reader's: "We may suspend or close AN account for fraud, abuse, a
+ * violation of these Terms, or a chargeback." A loyalty program whose section
+ * 8 is a for-cause termination clause was told it had none, over the
+ * indefinite article.
+ */
+describe("TERM-002 — a published program's for-cause clause", () => {
+  it.each([
+    [
+      "an account",
+      "We may suspend or close an account for fraud, abuse, or a violation of these Terms.",
+    ],
+    ["any account", "We may close any account for a violation of these Terms after notice."],
+    ["your account", "We may close your account for a violation of these Terms."],
+  ])("reads a clause that closes %s", (_label, clause) => {
+    expect(TERM_002.check(buildContext(["Rewards Program Terms", clause]))).toBeNull();
+  });
+
+  it("still fires on terms with no for-cause path at all", () => {
+    expect(
+      TERM_002.check(
+        buildContext([
+          "Rewards Program Terms",
+          "You earn 1 point per dollar spent on qualifying purchases.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

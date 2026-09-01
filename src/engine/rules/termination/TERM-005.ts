@@ -24,7 +24,22 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
  * or "expiration". The trigger is conjunctive with a CONSEQUENCE verb, so an
  * ordinary "on the end of each month" does not satisfy it on its own.
  */
-const TERMINATION_TRIGGER = String.raw`(?:(?:up)?on|after|following)\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:expiration|expiry|termination|cessation|end|conclusion|completion)(?:\s+or\s+(?:expiration|expiry|termination|cessation|end|conclusion|completion))?`;
+// The trigger is as often a WHEN-clause with a VERB as a prepositional phrase
+// with a noun. "Unredeemed points are forfeited WHEN THE PROGRAM ENDS" states
+// the effect of termination exactly as plainly as "upon termination of the
+// program, unredeemed points are forfeited" — and only the second was read, so
+// a set of loyalty terms whose sections 7 and 8 say what happens to the points
+// was told it says nothing. The verb forms are bounded to a short subject run
+// so the clause cannot reach across a sentence.
+//
+// "if" is deliberately NOT a connector here. Widening to it let a severance
+// clause — "IF the Company ENDS employment without Cause, the Company will pay
+// twelve months of base salary, conditioned on a signed RELEASE" — satisfy the
+// check on the noun "release" in the consequence list, which is a coincidence
+// and not a statement of what happens on termination.
+const TERMINATION_NOUN = String.raw`expiration|expiry|termination|cessation|end|conclusion|completion`;
+const TERMINATION_VERB = String.raw`ends?|ended|terminates?|terminated|expires?|expired|ceases?|ceased|concludes?|concluded`;
+const TERMINATION_TRIGGER = String.raw`(?:(?:(?:up)?on|after|following)\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:${TERMINATION_NOUN})(?:\s+or\s+(?:${TERMINATION_NOUN}))?|(?:when|once)\s+(?:the\s+|this\s+|your\s+)?(?:\w+\s+){0,2}?(?:${TERMINATION_VERB})\b)`;
 
 /**
  * What the clause says happens. "delete" and "export" belong here: a modern
@@ -183,7 +198,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.18.0",
+  version: "1.19.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

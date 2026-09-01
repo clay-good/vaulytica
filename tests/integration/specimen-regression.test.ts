@@ -3152,6 +3152,30 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // An annual incentive plan with a funding threshold, a three-point payout
+  // curve, documented Committee discretion, the § 409A short-term-deferral
+  // intent, and a Rule 10D-1 clawback hook. Clean.
+  "annual-incentive-plan.txt": { playbook: "bonus-plan", findings: ["OBLI-005"] },
+
+  // Published loyalty-program terms, with the CCPA § 1798.125(b) financial-
+  // incentive notice and its estimate of the value of the personal
+  // information, which is the disclosure most programs omit. It found two
+  // recognizers written for a NEGOTIATED contract rather than for published
+  // terms. TERM-002 read "close THE account" and "close YOUR account" but not
+  // "close AN account", which is how terms addressed to a class of members are
+  // written — so a section 8 that is a for-cause termination clause was
+  // reported as none, over the indefinite article. TERM-005 read "upon
+  // termination of the program" but not "when the program ends", which says
+  // the same thing with a verb.
+  //
+  // RISK-001 and RISK-005 stay and are fair: these terms really do carry
+  // neither an indemnity nor a limitation of liability, and published consumer
+  // terms usually carry both.
+  "loyalty-program-terms.txt": {
+    playbook: "loyalty-program-terms",
+    findings: ["RISK-001", "RISK-005", "OBLI-005", "STRUCT-004"],
+  },
+
   // Three more of the twenty-six families that had never been put through the
   // engine as a real document. Two came back clean, which is worth recording
   // as much as a defect is.

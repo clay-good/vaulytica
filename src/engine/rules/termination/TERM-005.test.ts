@@ -368,3 +368,40 @@ describe("TERM-005 v1.17.0 — the inflected verb and the subsection number", ()
     ).not.toBeNull();
   });
 });
+
+/**
+ * The trigger is as often a WHEN-clause with a VERB as a prepositional phrase
+ * with a noun (v1.19.0).
+ *
+ * "Unredeemed points are forfeited WHEN THE PROGRAM ENDS" states the effect of
+ * termination exactly as plainly as "upon termination of the program,
+ * unredeemed points are forfeited", and only the second was read — so a set of
+ * loyalty terms whose sections 7 and 8 say what happens to the points was told
+ * it says nothing.
+ *
+ * "if" is deliberately not a connector: widening to it let a severance clause
+ * satisfy the check on the noun "release" in the consequence list, which is a
+ * coincidence and not a statement of what happens on termination.
+ */
+describe("TERM-005 — the effect of termination stated as a when-clause", () => {
+  it.each([
+    [
+      "when the program ends",
+      "We may end the program on 90 days' notice. Unredeemed points are forfeited when the program ends.",
+    ],
+    ["the noun form", "Upon termination of the program, unredeemed points are forfeited."],
+  ])("reads %s", (_label, clause) => {
+    expect(TERM_005.check(buildContext(["Terms", clause]))).toBeNull();
+  });
+
+  it("still fires on a document that says nothing about what follows", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Terms",
+          "You earn 1 point per dollar spent on qualifying purchases before tax.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
