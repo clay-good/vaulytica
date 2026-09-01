@@ -1758,6 +1758,40 @@ export const EXPECTED: Record<string, Expectation> = {
   // A SaaS order form issued under a named master subscription agreement.
   "order-form.txt": { playbook: "saas-customer", findings: ["TEMP-004", "OBLI-005"] },
 
+  // A well-drafted private-target stock purchase agreement, the 239th specimen
+  // and the first for `stock-purchase-agreement` — a family that reached its
+  // own bare document only from 9.275.0. Two rule defects on the first real
+  // one.
+  //
+  // MNA-018's pattern was "stockholder.s?\\s+representative", where the `.`
+  // was meant to be an optional apostrophe and MUST match a character — so it
+  // required "Stockholders' Representative" with both the apostrophe and a
+  // space, and could not read the plain "Stockholder Representative" a
+  // private-target SPA defines. And STRUCT-005 reported "Closing Working
+  // Capital" as a term the drafter defined and never used, on the clause that
+  // uses it three times: the "definition talking about itself" suppression ran
+  // to the end of the PARAGRAPH rather than the end of the definition's own
+  // SENTENCE.
+  //
+  // What is left is on the page. RISK-002 and OBLI-002 both read the indemnity
+  // as running from Seller alone, which is what a private-target indemnity
+  // does; STRUCT-018 counts the seven schedules the agreement references and
+  // does not attach; RISK-003 reads the $4,200,000 cap; PERS-002 the
+  // sale-of-business non-solicit.
+  "stock-purchase-agreement.txt": {
+    playbook: "stock-purchase-agreement",
+    findings: [
+      "RISK-002",
+      "STRUCT-018",
+      "OBLI-002",
+      "OBLI-005",
+      "PERS-002",
+      "RISK-003",
+      "TEMP-002",
+      "TEMP-006",
+    ],
+  },
+
   // A well-drafted unilateral NDA, the 238th specimen and the first for
   // `unilateral-nda-deep` — a family that was unreachable by auto-routing
   // until 9.273.0 promoted a deprecated playbook's named successor. All

@@ -1,6 +1,6 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { DefinitionMap, DefinitionEntry, DocPosition } from "./types.js";
-import { forEachParagraph, forEachSection, posInParagraph } from "./walk.js";
+import { forEachParagraph, forEachSection, posInParagraph, SENTENCE_END } from "./walk.js";
 
 /**
  * Find every defined term and every use of each. Two recognition paths:
@@ -838,6 +838,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // never used.
       const inDefiningParagraph =
         entry.form !== "parenthetical" && ctx.paragraph.id === entry.defined_at.paragraph_id;
+      // The end of the sentence the definition marker sits in, in paragraph
+      // coordinates. Falls back to the paragraph end when the definition is
+      // the paragraph's last sentence, which is the previous behaviour.
+      let definitionSentenceEnd = ctx.start + ctx.text.length;
+      if (inDefiningParagraph) {
+        const markerAt = entry.defined_at.start - ctx.start;
+        const after = new RegExp(SENTENCE_END, "g");
+        after.lastIndex = Math.max(0, markerAt);
+        const end = after.exec(ctx.text);
+        if (end) definitionSentenceEnd = ctx.start + end.index + end[0].length;
+      }
       needle.lastIndex = 0;
       let m: RegExpExecArray | null;
       while ((m = needle.exec(ctx.text)) !== null) {
@@ -849,7 +860,21 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         // by the clause that precedes it, while a repetition AFTER the marker
         // is the definition body talking about itself ("… but Confidential
         // Information does not include …").
-        if (inDefiningParagraph && pos.end > entry.defined_at.start) continue;
+        //
+        // That self-reference ends with the DEFINITION'S OWN SENTENCE, not
+        // with the paragraph. A drafter defines a term and then uses it three
+        // times in the sentences that follow, in the same numbered clause:
+        // '"Closing Working Capital" means current assets less current
+        // liabilities. The Purchase Price assumes Closing Working Capital of
+        // $3,100,000. If Closing Working Capital exceeds the Target …'. All
+        // three uses were suppressed and the term was reported as one the
+        // drafter defined and never used — on the clause that uses it most.
+        if (
+          inDefiningParagraph &&
+          pos.end > entry.defined_at.start &&
+          pos.start < definitionSentenceEnd
+        )
+          continue;
         entry.used_at.push(pos);
       }
     });

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.282.0] — 2026-08-31
+
+### Added
+- One specimen — a well-drafted private-target stock purchase agreement, the
+  239th, and the first for `stock-purchase-agreement`.
+
+### Fixed
+- **MNA-018 could not read the stockholder representative a private SPA
+  defines.** Its pattern was `stockholder.s?\s+representative`, where the `.`
+  was meant to be an optional apostrophe — and a `.` must match a character, so
+  the pattern required "Stockholders' Representative" with both the apostrophe
+  and a space. The plain "Stockholder Representative" read as absent. It now
+  also reads the securityholder, equityholder and member forms, and
+  "representative of the Sellers".
+- **STRUCT-005 reported a term as never used, on the clause that uses it three
+  times.** The "definition talking about itself" suppression ran to the end of
+  the PARAGRAPH rather than the end of the definition's own SENTENCE, so
+  `"Closing Working Capital" means current assets less current liabilities. The
+  Purchase Price assumes Closing Working Capital of $3,100,000. If Closing
+  Working Capital exceeds the Target …` counted zero uses. A repetition inside
+  the definition's own sentence — '"Residual Knowledge" means …, but Residual
+  Knowledge does not include …' — is still a self-reference.
+
 ## [9.281.0] — 2026-08-31
 
 ### Fixed

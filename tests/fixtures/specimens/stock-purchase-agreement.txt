@@ -1,0 +1,96 @@
+STOCK PURCHASE AGREEMENT
+
+This Stock Purchase Agreement (this "Agreement") is made as of July 14, 2026 among Pinehurst Capital Partners, L.P., a Delaware limited partnership ("Buyer"), Marchetti Holdings LLC, a Delaware limited liability company ("Seller"), and Sablefield Software, Inc., a Delaware corporation (the "Company").
+
+1. PURCHASE AND SALE
+
+1.1 At the Closing, Seller shall sell, assign, transfer and deliver to Buyer, and Buyer shall purchase from Seller, all of the issued and outstanding shares of capital stock of the Company (the "Shares"), free and clear of all liens.
+
+1.2 The aggregate purchase price for the Shares is $42,000,000 (the "Purchase Price"), payable as follows: $37,800,000 in cash at the Closing, and $4,200,000 deposited with the Escrow Agent under the Escrow Agreement attached as Exhibit A.
+
+1.3 Purchase price adjustment. "Closing Working Capital" means the Company's current assets less its current liabilities as of the Closing, determined on a cash-free, debt-free basis. The Purchase Price assumes Closing Working Capital of $3,100,000 (the "Target"). Within sixty (60) days after the Closing, Buyer shall deliver a statement of Closing Working Capital prepared on a cash-free, debt-free basis and in accordance with the Accounting Principles set out on Schedule 1.3. If Closing Working Capital exceeds the Target, Buyer shall pay Seller the excess; if it is less, Seller shall pay Buyer the shortfall. A dispute not resolved within thirty (30) days is referred to an independent accounting firm, whose determination is final and binding and whose fees are allocated in proportion to the amounts in dispute.
+
+2. CLOSING
+
+2.1 The Closing takes place on the third business day after the last of the conditions in Section 5 is satisfied or waived.
+
+2.2 At the Closing, Seller delivers the certificates for the Shares endorsed in blank, the resignations of the directors, a FIRPTA certificate, and the Company's minute books and stock ledger; Buyer delivers the cash portion of the Purchase Price and the escrow deposit.
+
+3. REPRESENTATIONS AND WARRANTIES OF SELLER
+
+3.1 Seller represents and warrants to Buyer that: it owns the Shares free and clear of all liens; it has the authority to enter into this Agreement; this Agreement is enforceable against it; and no consent of any third party is required for the sale other than those listed on Schedule 3.1.
+
+3.2 Seller represents and warrants as to the Company that: the Company is duly organized and in good standing; its capitalization is as stated on Schedule 3.2 and there are no other equity rights outstanding; the Financial Statements attached as Schedule 3.3 fairly present the Company's financial position and were prepared in accordance with GAAP consistently applied; since December 31, 2025 there has been no Material Adverse Effect and the Company has operated in the ordinary course; the Company owns or has the right to use all Intellectual Property necessary for its business; the Company is in compliance with applicable law; the Company has filed all tax returns and paid all taxes due; there is no litigation pending or, to Seller's knowledge, threatened; the Material Contracts listed on Schedule 3.9 are in full force; and the Company's employee benefit plans are as listed on Schedule 3.10.
+
+3.3 "Material Adverse Effect" means a change, event or effect that is materially adverse to the business, assets, financial condition or results of operations of the Company, excluding any change arising from: general economic, financial or capital-market conditions; conditions generally affecting the industry in which the Company operates; changes in law or accounting principles; acts of war, terrorism, epidemic or natural disaster; the announcement of this Agreement; or any failure to meet a projection (though the underlying cause may be considered), except in each case to the extent the change has a disproportionate effect on the Company relative to other participants in its industry.
+
+4. REPRESENTATIONS AND WARRANTIES OF BUYER
+
+4.1 Buyer represents and warrants that it is duly organized, has the authority to enter into this Agreement, has sufficient funds to pay the Purchase Price, and is acquiring the Shares for investment and not with a view to distribution.
+
+5. CONDITIONS TO CLOSING
+
+5.1 Each party's obligation to close is conditioned on: the other party's representations being true in all material respects at the Closing; the other party having performed its covenants in all material respects; no law or order prohibiting the transaction; and the expiration of any applicable waiting period under the Hart-Scott-Rodino Antitrust Improvements Act.
+
+5.2 Buyer's obligation is further conditioned on: no Material Adverse Effect having occurred since the date of this Agreement; delivery of the consents listed on Schedule 3.1; and delivery of the closing certificates described in Section 2.2.
+
+6. COVENANTS
+
+6.1 Between the date of this Agreement and the Closing, Seller shall cause the Company to operate in the ordinary course and shall not, without Buyer's consent, declare a dividend, issue equity, incur indebtedness outside the ordinary course, sell a material asset, or amend a Material Contract.
+
+6.2 Seller shall give Buyer and its representatives reasonable access to the Company's books, records and personnel during normal business hours.
+
+6.3 Restrictive covenants. For three (3) years after the Closing, Seller shall not, within the states in which the Company sold its products in the twelve months before the Closing, engage in the business of multiplex diagnostic assay software, and shall not solicit any employee or customer of the Company with whom Seller had material contact. The parties agree these covenants protect the goodwill Buyer is purchasing and are no broader than reasonably necessary; if a court finds any of them unenforceable, it shall reform them to the extent necessary to make them enforceable.
+
+7. INDEMNIFICATION AND SURVIVAL
+
+7.1 The representations and warranties in Sections 3.1, 3.2 (first sentence), 4.1 and the tax representations (the "Fundamental Representations") survive the Closing until sixty (60) days after the expiration of the applicable statute of limitations. All other representations and warranties survive for eighteen (18) months after the Closing. The covenants survive until performed.
+
+7.2 Seller shall indemnify Buyer against losses arising from a breach of Seller's representations, warranties or covenants, and from pre-Closing taxes.
+
+7.3 Seller's indemnification obligation for a breach of a representation other than a Fundamental Representation is subject to a deductible of $420,000, applies only to the amount of losses above it, and is capped at $4,200,000, which is the escrow amount and Buyer's sole recourse for such breaches. Indemnification for a breach of a Fundamental Representation, for fraud, and for pre-Closing taxes is capped at the Purchase Price.
+
+7.4 Buyer's right to indemnification is not affected by any knowledge Buyer acquired before the Closing, whether from due diligence or otherwise (a "pro-sandbagging" provision). Buyer shall give Seller prompt written notice of a claim, allow Seller to control the defense of a third-party claim with counsel reasonably acceptable to Buyer, and shall not settle without Seller's consent, which shall not be unreasonably withheld.
+
+7.5 The Stockholder Representative named on Schedule 7.5 is authorized to act on behalf of Seller in respect of any indemnification claim, any purchase price adjustment, and any release from escrow, and Buyer may rely on its instructions.
+
+8. TERMINATION
+
+8.1 This Agreement may be terminated before the Closing: by mutual written consent; by either party if the Closing has not occurred by October 14, 2026, provided the terminating party is not in breach; or by either party if the other party breaches a representation or covenant and does not cure within twenty (20) days of notice.
+
+8.2 On termination, Sections 7, 9 and 10 survive, and no party has further liability except for fraud or a willful breach before termination.
+
+9. CONFIDENTIALITY AND ANNOUNCEMENTS
+
+9.1 Each party shall keep the terms of this Agreement and the other party's confidential information confidential, except as law or a stock exchange requires. Neither party may issue a press release about the transaction without the other's prior written consent.
+
+10. GENERAL
+
+10.1 This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules, and each party submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware, or if that court lacks jurisdiction, the federal and state courts sitting in Wilmington, Delaware.
+
+10.2 This Agreement, together with the Schedules and Exhibit A, is the entire agreement between the parties on its subject matter and supersedes all prior discussions. It may be amended only by a writing signed by all parties.
+
+10.3 Each party bears its own transaction expenses.
+
+PINEHURST CAPITAL PARTNERS, L.P.
+
+By: /s/ Caryn Okonjo
+Name: Caryn Okonjo
+Title: Managing Partner
+Date: July 14, 2026
+
+MARCHETTI HOLDINGS LLC
+
+By: /s/ Devin Marchetti
+Name: Devin Marchetti
+Title: Manager
+Date: July 14, 2026
+
+SABLEFIELD SOFTWARE, INC.
+
+By: /s/ Terrence Okonjo-Whitfield
+Name: Terrence Okonjo-Whitfield
+Title: Chief Executive Officer
+Date: July 14, 2026
+
+EXHIBIT A — ESCROW AGREEMENT

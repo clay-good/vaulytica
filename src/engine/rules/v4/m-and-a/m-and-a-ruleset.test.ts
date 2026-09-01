@@ -747,3 +747,21 @@ describe("MNA-010 / MNA-019 — the operative clause and the law, in a short agr
     expect(ruleById("MNA-019").check(spa("Delaware law governs this Agreement."))).toBeNull();
   });
 });
+
+describe("MNA-018 v1.1.0 — the stockholder representative a private SPA defines", () => {
+  it("reads the plain 'Stockholder Representative'", () => {
+    // The pattern was `stockholder.s?\s+representative`, where the `.` was
+    // meant to be an optional apostrophe and must match a character — so it
+    // required "Stockholders' Representative" with both the apostrophe AND a
+    // space, and could not read the form a private-target SPA actually
+    // defines.
+    const ctx = withPb(
+      buildContext([
+        "STOCK PURCHASE AGREEMENT",
+        "The Stockholder Representative named on Schedule 7.5 is authorized to act on behalf of Seller in respect of any indemnification claim, and Buyer may rely on its instructions.",
+      ]),
+      SPA_PB,
+    );
+    expect(M_AND_A_RULES.find((r) => r.id === "MNA-018")!.check(ctx)).toBeNull();
+  });
+});

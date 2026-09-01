@@ -436,6 +436,7 @@ const SPA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-018",
+    version: "1.1.0",
     name: "Stockholder representative provision",
     description:
       "Multi-seller SPAs need a stockholder representative for post-closing administration.",
@@ -447,10 +448,18 @@ const SPA_RULES: Rule[] = [
       "Without a designated representative the buyer must negotiate with every selling stockholder individually post-closing.",
     recommendation:
       "Add 'Article X — Stockholder Representative' identifying the representative and granting binding authority.",
+    // The `.` in "stockholder.s?" was meant to be an optional apostrophe, and
+    // it MUST match a character — so the pattern required "Stockholders'
+    // Representative" with both the apostrophe AND a space, and could not read
+    // the plain "Stockholder Representative" that a private-target SPA
+    // actually defines. The plural/possessive is optional in every form, and
+    // the role goes by four other names.
     present_patterns: [
-      /stockholder.s?\s+representative/i,
-      /sellers.?\s+representative/i,
-      /shareholders.?\s+agent/i,
+      /stockholders?['’]?s?\s+representative/i,
+      /sellers?['’]?s?\s+representative/i,
+      /shareholders?['’]?s?\s+(?:agent|representative)/i,
+      /(?:securityholders?|equityholders?|members?)['’]?s?\s+representative/i,
+      /representative\s+of\s+the\s+(?:sellers?|stockholders?|shareholders?)/i,
     ],
     default_severity: "warning",
   }),

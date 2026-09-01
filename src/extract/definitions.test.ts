@@ -2451,3 +2451,33 @@ describe("a regulatory instrument is not a term the document forgot to define", 
     ).toContain("Frobnicator Report");
   });
 });
+
+describe("a term defined and then used in the same clause", () => {
+  it("counts the uses that follow the definition's own sentence", () => {
+    // The "definition talking about itself" suppression ran to the end of the
+    // PARAGRAPH. A drafter defines a term and then uses it three times in the
+    // sentences that follow, inside the same numbered clause — and every use
+    // was suppressed, so the clause that uses the term most was reported as
+    // defining a term it never uses.
+    const map = extractDefinitions(
+      buildTree([
+        "Purchase Price",
+        '1.3 Purchase price adjustment. "Closing Working Capital" means the Company\'s current assets less its current liabilities as of the Closing. The Purchase Price assumes Closing Working Capital of $3,100,000. If Closing Working Capital exceeds that amount, Buyer shall pay Seller the excess.',
+      ]),
+    );
+    expect(map.unused_terms).not.toContain("Closing Working Capital");
+  });
+
+  it("still treats the definition body's own repetition as a self-reference", () => {
+    // '"Confidential Information" means X, but Confidential Information does
+    // not include Y' is one sentence, and the second mention is the definition
+    // talking about itself.
+    const map = extractDefinitions(
+      buildTree([
+        "Definitions",
+        '"Residual Knowledge" means information retained in unaided memory, but Residual Knowledge does not include anything written down.',
+      ]),
+    );
+    expect(map.unused_terms).toContain("Residual Knowledge");
+  });
+});
