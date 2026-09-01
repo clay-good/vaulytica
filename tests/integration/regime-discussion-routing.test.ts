@@ -100,8 +100,23 @@ describe("a document that discusses a regime is not an instrument under it", () 
    *
    * It is not fixed by another negative feature — "workforce training" is a
    * clause BAA-031 requires a real BAA to contain, so the word cannot be
-   * declined. The fix is a routing-level one (a family of agreements wanting
-   * agreement-shaped evidence) and is left for its own change.
+   * declined.
+   *
+   * The obvious routing-level fix was TRIED AND REJECTED, and the measurement
+   * is recorded here so it is not tried again. `matcher.ts`'s own header says a
+   * playbook must score ABOVE the threshold and the comparison admits a score
+   * EQUAL to it, so making the comparison match the contract (at display
+   * precision — three phrases less one negative feature is 0.5000000000000001,
+   * not 0.5) answers this case exactly. Of the 259 routing SPECIMENS, none
+   * sits at 0.5, so the change looked free.
+   *
+   * It is not. The synthetic probes are where documents sit at exactly the
+   * bar: a golden cookie-notice fixture fell to `generic-fallback`,
+   * `grant-agreement` and `teaming-agreement` stopped reaching their own
+   * names, and `bare-title-reach` regressed. Losing families that route
+   * correctly is a worse trade than admitting one training document, so the
+   * threshold stays inclusive and this case stays open. A real fix has to
+   * raise the SPECIFIC family's score rather than lower the global bar.
    */
   it("an employee training document still reaches the BAA family", async () => {
     const TRAINING = [
