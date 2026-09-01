@@ -1,0 +1,105 @@
+SUBCONTRACTOR BUSINESS ASSOCIATE AGREEMENT
+
+This Subcontractor Business Associate Agreement (this "Agreement") is made as of October 5, 2026 between Beacon Ledger Systems, Inc., a Delaware corporation ("Business Associate"), and Sable Notification Services LLC, a Delaware limited liability company ("Subcontractor").
+
+RECITALS
+
+A. Business Associate provides revenue-cycle services to Rowan Regional Health System (the "Covered Entity") under a business associate agreement between them dated January 12, 2026 (the "Upstream BAA").
+
+B. Subcontractor will create, receive, maintain or transmit Protected Health Information on Business Associate's behalf, and is therefore a subcontractor as 45 C.F.R. § 160.103 defines that term. 45 C.F.R. § 164.502(e)(1)(ii) requires Business Associate to obtain satisfactory assurances from Subcontractor, and § 164.504(e)(5) requires that those assurances meet the same requirements that apply to Business Associate under the Upstream BAA.
+
+1. DEFINITIONS
+
+1.1 Terms used but not defined here have the meanings given them in the Privacy Rule, the Security Rule, the Breach Notification Rule and the Enforcement Rule at 45 C.F.R. Parts 160 and 164 (the "HIPAA Rules"). "Protected Health Information" or "PHI" means protected health information as 45 C.F.R. § 160.103 defines it, limited to information Subcontractor creates, receives, maintains or transmits for or on behalf of Business Associate. "Electronic Protected Health Information" or "ePHI" means PHI transmitted by or maintained in electronic media. "Breach", "Required by Law", "Secretary", "Security Incident" and "Unsecured Protected Health Information" have the meanings given them in the HIPAA Rules.
+
+2. FLOW-DOWN OF THE UPSTREAM BAA
+
+2.1 Subcontractor is bound by the same terms that bind Business Associate under the Upstream BAA with respect to PHI, and shall comply with them as if it were the business associate named there. A copy of the Upstream BAA, redacted of commercial terms, is attached as Exhibit A.
+
+2.2 Where the Upstream BAA and this Agreement differ, the more protective of PHI controls. Business Associate shall give Subcontractor written notice of any amendment to the Upstream BAA that changes Subcontractor's obligations, within ten (10) business days of the amendment, and Subcontractor shall comply from the effective date of the amendment.
+
+3. PERMITTED USES AND DISCLOSURES
+
+3.1 Subcontractor shall not use or disclose PHI other than as this Agreement permits, as the Upstream BAA permits Business Associate to use or disclose it, or as law requires.
+
+3.2 Subcontractor may use PHI for its own proper management and administration and to carry out its legal responsibilities. Subcontractor may disclose PHI for those purposes only if the disclosure is required by law, or if Subcontractor obtains reasonable assurances from the recipient that the recipient will hold the PHI confidentially, use or further disclose it only as required by law or for the purpose for which it was disclosed, and notify Subcontractor of any breach of its confidentiality.
+
+3.3 Subcontractor shall not sell PHI, shall not use or disclose PHI for marketing, and shall not use or disclose PHI in a way that would violate Subpart E of 45 C.F.R. Part 164 if Business Associate or the Covered Entity did it.
+
+3.4 Subcontractor shall make reasonable efforts to use, disclose and request only the minimum necessary PHI to accomplish the purpose, as 45 C.F.R. § 164.502(b) requires.
+
+4. SAFEGUARDS
+
+4.1 Subcontractor shall use appropriate administrative, physical and technical safeguards, and shall comply with Subpart C of 45 C.F.R. Part 164 with respect to ePHI, to prevent use or disclosure of PHI other than as this Agreement provides.
+
+4.2 Subcontractor shall encrypt PHI in transit and at rest to the standard NIST SP 800-111 and SP 800-52 describe, so that PHI it holds is not Unsecured Protected Health Information within the meaning of 45 C.F.R. § 164.402.
+
+4.3 Subcontractor shall train each member of its workforce with access to PHI on its HIPAA obligations and on this Agreement, on hire and at least annually, and shall keep a record of that training for six (6) years.
+
+4.4 Subcontractor shall apply its written sanctions policy to any member of its workforce who violates the HIPAA Rules or this Agreement, and shall document the sanction applied.
+
+4.5 Subcontractor shall conduct an accurate and thorough risk analysis under 45 C.F.R. § 164.308(a)(1)(ii)(A), shall implement a risk management plan, and shall give Business Associate its most recent risk-analysis summary on request.
+
+5. REPORTING AND BREACH NOTIFICATION
+
+5.1 Subcontractor shall report to Business Associate any use or disclosure of PHI not permitted by this Agreement, any Security Incident, and any Breach of Unsecured Protected Health Information.
+
+5.2 Subcontractor shall make that report without unreasonable delay and in no case later than ten (10) calendar days after discovery, so that Business Associate can meet its own sixty (60) day obligation to the Covered Entity and the Covered Entity can meet its obligation to individuals and to the Secretary. A Breach is treated as discovered on the first day it is known, or by exercising reasonable diligence would have been known, to Subcontractor or to any of its employees or agents other than the person committing the Breach.
+
+5.3 The report shall identify each individual whose PHI was or is reasonably believed to have been involved, and shall include the information 45 C.F.R. § 164.410(c) requires, as Subcontractor then knows it, with the rest to follow promptly.
+
+5.4 Subcontractor shall mitigate, to the extent practicable, any harmful effect of a use or disclosure of PHI in violation of this Agreement that is known to it.
+
+6. SUBCONTRACTORS OF THE SUBCONTRACTOR
+
+6.1 Subcontractor shall not engage a further subcontractor that will create, receive, maintain or transmit PHI without a written agreement that binds that subcontractor to the same restrictions and conditions that apply to Subcontractor, as 45 C.F.R. § 164.502(e)(1)(ii) and § 164.308(b)(2) require, and shall give Business Associate notice of each such engagement.
+
+7. INDIVIDUAL RIGHTS
+
+7.1 Subcontractor shall make PHI in a designated record set available to Business Associate within ten (10) business days of a request, so that Business Associate and the Covered Entity can meet the access obligation in 45 C.F.R. § 164.524.
+
+7.2 Subcontractor shall make an amendment to PHI in a designated record set as Business Associate directs, within ten (10) business days, under 45 C.F.R. § 164.526.
+
+7.3 Subcontractor shall document each disclosure of PHI and the information needed for an accounting under 45 C.F.R. § 164.528, shall retain that documentation for six (6) years, and shall provide it to Business Associate within ten (10) business days of a request.
+
+8. AVAILABILITY TO THE SECRETARY
+
+8.1 Subcontractor shall make its internal practices, books and records relating to the use and disclosure of PHI available to the Secretary of Health and Human Services for determining compliance with the HIPAA Rules, and shall notify Business Associate of the request unless prohibited from doing so.
+
+9. TERM AND TERMINATION
+
+9.1 This Agreement takes effect on the date above and continues until the Upstream BAA terminates or Business Associate terminates this Agreement.
+
+9.2 Business Associate may terminate this Agreement if Subcontractor materially breaches it and does not cure within thirty (30) days of written notice, and shall terminate it immediately if cure is not possible.
+
+9.3 On termination Subcontractor shall return or destroy all PHI it maintains in any form, and shall retain no copies. If return or destruction is infeasible, Subcontractor shall tell Business Associate why, shall extend the protections of this Agreement to that PHI for as long as it retains it, and shall limit further use and disclosure to the purposes that make return or destruction infeasible.
+
+9.4 Sections 3, 4, 5, 7, 8, 9.3 and 10 survive termination.
+
+10. GENERAL
+
+10.1 This Agreement is governed by the laws of the State of Ohio, without regard to its conflict-of-laws rules.
+
+10.2 Any ambiguity in this Agreement is resolved to permit Business Associate and the Covered Entity to comply with the HIPAA Rules.
+
+10.3 A reference to a section of the HIPAA Rules means that section as amended from time to time.
+
+10.4 Business Associate may, on thirty (30) days' written notice and not more than once in any twelve-month period, audit Subcontractor's handling of PHI or review Subcontractor's most recent independent security assessment, and shall pass the results to the Covered Entity if the Upstream BAA requires it.
+
+10.5 A notice under this Agreement is given in writing to the address on the signature page, and is effective on receipt.
+
+BEACON LEDGER SYSTEMS, INC.
+
+By: /s/ Anders Ruhl
+Name: Anders Ruhl
+Title: Chief Information Security Officer
+Date: October 5, 2026
+
+SABLE NOTIFICATION SERVICES LLC
+
+By: /s/ Aurelie Vandenbroucke
+Name: Aurelie Vandenbroucke
+Title: General Counsel
+Date: October 5, 2026
+
+EXHIBIT A — UPSTREAM BUSINESS ASSOCIATE AGREEMENT (REDACTED)

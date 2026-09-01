@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.296.0] — 2026-08-31
+
+### Added
+- One specimen — a downstream (subcontractor) BAA, the 245th, and the first for
+  `baa-subcontractor`.
+
+### Fixed
+- **An INVERTED critical: the tool reported that the agreement disclaims the
+  flow-down, on the sentence that requires it.** BAA-005 read § 6.1 — "shall
+  not engage a further subcontractor that will create, receive, maintain or
+  transmit PHI without a written agreement that binds that subcontractor to the
+  same restrictions", which is the drafting 45 C.F.R. § 164.502(e)(1)(ii) asks
+  for — as an express denial. `expressDenial`'s conditional-tail guard, the one
+  that keeps "may not engage a subcontractor WITHOUT a written contract" out,
+  allowed only 40 characters between the topic and the connective, and the
+  HIPAA definition spelled out inline is 52.
+- **The BAA pack assumes the counterparty is the Covered Entity.** In a
+  downstream BAA it is the Business Associate, and the subcontractor has no
+  relationship with the covered entity at all. BAA-004 wanted "report to the
+  Covered Entity" from a section headed REPORTING AND BREACH NOTIFICATION;
+  BAA-026 wanted covered-entity audit rights where the audit right runs
+  upstream.
+- **Three more wanted a noun phrase where the document uses the verb.** BAA-031
+  wanted "workforce training" and could not read "shall train each member of
+  its workforce"; BAA-034 wanted "sanctions policy" as an adjacent bigram and
+  could not read "shall apply its written sanctions policy to any member of its
+  workforce"; BAA-040 wanted "notice shall be" and could not read "a notice is
+  given in writing to the address on the signature page". BAA-035 and BAA-038
+  are fixed for the downstream forms of the same clauses.
+- `baa-subcontractor` gains the profile the other annex families have: a BAA
+  allocates no IP, states no indemnity, caps no liability and names no venue,
+  because the underlying services agreement does all four.
+
 ## [9.295.0] — 2026-08-31
 
 ### Added

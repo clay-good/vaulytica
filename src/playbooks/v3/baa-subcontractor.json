@@ -1,6 +1,6 @@
 {
   "id": "baa-subcontractor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "name": "BAA \u2014 Business Associate to Subcontractor (HIPAA)",
   "description": "Business-associate to subcontractor BAA under HIPAA. Selects the \u00a728 BAA ruleset (45 rules) covering 45 CFR \u00a7 164.504(e) required clauses, \u00a7 164.314(a) Security Rule flow-down, \u00a7 164.410 breach notification, plus HHS-guidance posture rules \u2014 with an emphasis on flow-down (the subcontractor must comply with the same terms the upstream BAA imposes on the business associate, per 45 CFR \u00a7 164.502(e)(1)(ii) and \u00a7 164.504(e)(5)). Companion: the upstream BAA between the covered entity and the business associate.",
   "match_features": {
@@ -50,6 +50,18 @@
   ],
   "rule_overrides": {
     "OBLI-002": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
       "skip": true
     }
   },

@@ -101,7 +101,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-004",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Report improper uses or disclosures",
     description:
       "BAA must require BA to report to the covered entity any use or disclosure not provided for by the contract.",
@@ -118,7 +118,14 @@ export const BAA_RULES: Rule[] = [
       // same obligation; the original required the article to be absent, so
       // the ordinary "report to the Covered Entity any use or disclosure …"
       // read as missing.
-      /(report\s+(?:to\s+)?(?:the\s+)?covered\s+entity|notify\s+(?:the\s+)?covered\s+entity).*?(use|disclosure|breach|incident)/i,
+      // In a SUBCONTRACTOR BAA the report runs UPSTREAM to the business
+      // associate, not to the covered entity — § 164.502(e)(1)(ii) makes the
+      // business associate the one who must obtain the assurances, and the
+      // subcontractor has no relationship with the covered entity at all. A
+      // model downstream BAA was told at CRITICAL that it has no
+      // incident-reporting clause, on a section headed REPORTING AND BREACH
+      // NOTIFICATION.
+      /(report\s+(?:to\s+)?(?:the\s+)?(?:covered\s+entity|business\s+associate)|notify\s+(?:the\s+)?(?:covered\s+entity|business\s+associate)).*?(use|disclosure|breach|incident)/i,
     ],
     denied_if: expressDenial(
       String.raw`report\s+(?:to\s+)?(?:the\s+)?covered\s+entity|notify\s+(?:the\s+)?covered\s+entity`,
@@ -601,6 +608,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-026",
+    version: "1.1.0",
     name: "Covered entity audit rights preserved",
     description: "BAA should preserve the covered entity's right to audit BA's HIPAA compliance.",
     citation: "45 C.F.R. § 164.504(e)(2)(ii)(H)",
@@ -611,7 +619,15 @@ export const BAA_RULES: Rule[] = [
       "HHS guidance encourages audit rights as a substantive complement to the books-and-records access requirement. Without audit rights, the covered entity has limited ability to verify ongoing compliance.",
     recommendation:
       "Add an audit-rights clause permitting reasonable on-site or remote audits of BA's HIPAA compliance.",
-    present_patterns: [/(audit\s+rights|right\s+to\s+audit|reasonable\s+audit|conduct.*audit)/i],
+    // The right is stated as a PERMISSION, and in a downstream BAA it runs to
+    // the BUSINESS ASSOCIATE rather than to the covered entity: "Business
+    // Associate may, on thirty (30) days' written notice, audit
+    // Subcontractor's handling of PHI or review its most recent independent
+    // security assessment". None of the four nouns is in that sentence.
+    present_patterns: [
+      /(audit\s+rights|right\s+to\s+audit|reasonable\s+audit|conduct.*audit)/i,
+      /\bmay\b[^.]{0,140}?\b(?:audit|inspect|review)\b[^.]{0,100}?\b(?:PHI|protected\s+health\s+information|security\s+assessment|records|practices)\b/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -702,6 +718,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-031",
+    version: "1.1.0",
     name: "Workforce training requirement",
     description:
       "BAA should require BA's workforce members handling PHI to be trained on its obligations.",
@@ -712,7 +729,14 @@ export const BAA_RULES: Rule[] = [
     explanation:
       "Sections 164.530(b) and 164.308(a)(5) require workforce training; BAs should flow this obligation down to their personnel.",
     recommendation: "Add a workforce-training clause referring to BA's HIPAA training program.",
-    present_patterns: [/(workforce\s+training|HIPAA\s+training|trained\s+on.{0,40}(HIPAA|PHI))/i],
+    // The obligation is stated with the VERB and the workforce as its object —
+    // "shall train each member of its workforce with access to PHI on its
+    // HIPAA obligations" — where all three patterns wanted the noun phrase.
+    present_patterns: [
+      /(workforce\s+training|HIPAA\s+training|trained\s+on.{0,40}(HIPAA|PHI))/i,
+      /\btrain(?:s|ing)?\b[^.]{0,100}?\b(?:workforce|personnel|employees?|staff)\b/i,
+      /\b(?:workforce|personnel|employees?|staff)\b[^.]{0,80}?\btrain(?:s|ed|ing)?\b/i,
+    ],
     default_severity: "warning",
   }),
 
@@ -750,6 +774,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-034",
+    version: "1.1.0",
     name: "Sanctions policy / personnel discipline",
     description:
       "BAA should reference BA's sanctions policy for workforce members who violate HIPAA/BAA.",
@@ -760,12 +785,20 @@ export const BAA_RULES: Rule[] = [
     explanation: "Section 164.308(a)(1)(ii)(C) requires workforce sanctions for HIPAA violations.",
     recommendation:
       "Add a sanctions / discipline clause noting that BA maintains a written sanctions policy.",
-    present_patterns: [/(sanction|discipline)\s+(policy|workforce|employees)/i],
+    // "shall apply its written SANCTIONS POLICY to any member of its workforce
+    // who violates the HIPAA Rules" puts the noun before the modifier, which
+    // the adjacent bigram could not read.
+    present_patterns: [
+      /(sanction|discipline)\s+(policy|workforce|employees)/i,
+      /\bsanctions?\s+polic(?:y|ies)/i,
+      /\b(?:sanction|discipline|disciplinary)\w*\b[^.]{0,100}?\b(?:workforce|personnel|employees?|staff)\b/i,
+    ],
     default_severity: "warning",
   }),
 
   presence({
     id: "BAA-035",
+    version: "1.1.0",
     name: "Subprocessor / vendor disclosure",
     description:
       "BAA should require BA to disclose subprocessors / downstream vendors that handle PHI.",
@@ -777,7 +810,12 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add: 'Business Associate shall maintain and make available to Covered Entity a current list of subcontractors that create, receive, maintain, or transmit PHI.'",
     present_patterns: [
+      // The disclosure is as often a NOTICE OF EACH ENGAGEMENT as a standing
+      // list — "shall give Business Associate notice of each such engagement"
+      // is how a downstream BAA states it, and there is no list to find.
       /(list\s+of\s+subprocessors|list\s+of\s+subcontractors|subprocessor.{0,60}(disclos|maintain.*list))/is,
+      /\bsub[- ]?(?:processor|contractor)[^.]{0,120}?\b(?:notice|notify|inform|disclos)/i,
+      /\b(?:notice|notify|inform|disclos)\w*[^.]{0,120}?\bsub[- ]?(?:processor|contractor)/i,
     ],
     default_severity: "warning",
   }),
@@ -827,7 +865,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-038",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Term / duration clause present",
     description: "BAA should specify its term.",
     citation: "45 C.F.R. § 164.504(e)",
@@ -848,6 +886,13 @@ export const BAA_RULES: Rule[] = [
       // all PHI is returned or destroyed" is how a supplementing BAA states
       // its term, and it matched neither of the patterns above.
       /(?:continues?|remains?\s+in\s+effect|is\s+in\s+effect|is\s+effective)\b[^.\n]{0,40}?\buntil\b[^.\n]{0,120}?\b(?:PHI|protected\s+health\s+information)\b/i,
+      // A DOWNSTREAM BAA ties its term to the UPSTREAM one rather than to PHI
+      // disposition — "takes effect on the date above and continues until the
+      // Upstream BAA terminates" — which is the right way to state it, since
+      // the subcontractor's obligations exist only for as long as the business
+      // associate's do.
+      /(?:takes\s+effect|is\s+effective|commences?|begins?)\b[^.\n]{0,80}?\b(?:continues?|remains?\s+in\s+effect|ends?|terminates?)\b/i,
+      /(?:continues?|remains?\s+in\s+effect)\b[^.\n]{0,60}?\buntil\b[^.\n]{0,80}?\b(?:upstream|underlying|prime|master)\b/i,
     ],
     default_severity: "warning",
   }),
@@ -871,6 +916,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-040",
+    version: "1.1.0",
     name: "Notice clause present",
     description: "BAA should specify how formal notices (including breach notices) are delivered.",
     citation: "45 C.F.R. § 164.410(c) (content of notification)",
@@ -882,6 +928,11 @@ export const BAA_RULES: Rule[] = [
       "Add a notice clause naming the methods (email, certified mail), addresses, and timing requirements.",
     present_patterns: [
       /(notice\s+(shall|must)\s+be|notices\s+(under|hereunder|shall)|notice\s+address)/i,
+      // "A notice under this Agreement is given in writing to the address on
+      // the signature page, and is effective on receipt" — the present tense
+      // every modern drafter uses, where the patterns above want a modal.
+      /\bnotices?\b[^.]{0,60}?\b(?:is|are)\s+given\b[^.]{0,80}?\b(?:in\s+writing|address)/i,
+      /\bnotices?\b[^.]{0,80}?\b(?:effective\s+on\s+receipt|deemed\s+(?:given|received))/i,
     ],
     default_severity: "warning",
   }),

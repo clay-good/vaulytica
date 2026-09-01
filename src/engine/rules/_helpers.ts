@@ -539,7 +539,16 @@ export function expressDenial(topic: string): RegExp[] {
   // REQUIREMENT, not a denial: "may not engage a subcontractor WITHOUT a
   // written contract" demands the contract, it does not disclaim it. The gap's
   // blocked list cannot see this one, because the connective trails the topic.
-  const tail = String.raw`(?![^.]{0,40}?\b(?:without|unless|except)\b)`;
+  // The window is 120 characters, not 40. The HIPAA subcontractor covenant —
+  // the exact drafting § 164.502(e)(1)(ii) asks for — spells the definition out
+  // inline: "shall not engage a further subcontractor THAT WILL CREATE,
+  // RECEIVE, MAINTAIN OR TRANSMIT PHI without a written agreement that binds
+  // that subcontractor to the same restrictions". That is 52 characters from
+  // the topic to "without", and at 40 the guard could not see it: the sentence
+  // demanding the flow-down was reported at CRITICAL as the agreement
+  // DISCLAIMING it, which tells the reader the document says the opposite of
+  // what it says. `[^.]` keeps the widened window inside the one sentence.
+  const tail = String.raw`(?![^.]{0,120}?\b(?:without|unless|except)\b)`;
   // A CAUSATIVE with an object and an infinitive is not a denial: "Vendor
   // shall not PERMIT any subprocessor or model provider TO USE Customer Data
   // to train a model" is a negative covenant about what a subprocessor may do,

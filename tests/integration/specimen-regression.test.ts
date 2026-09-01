@@ -1861,6 +1861,37 @@ export const EXPECTED: Record<string, Expectation> = {
     ],
   },
 
+  // A downstream (subcontractor) BAA, the 245th specimen and the first for
+  // `baa-subcontractor` — a family the general `baa` was taking until 9.276.0.
+  // It drew SEVENTEEN findings including two CRITICALS, and one of the two was
+  // INVERTED: BAA-005 reported that the agreement "states that subcontractors
+  // handling PHI are not bound by the same restrictions", on § 6.1, which says
+  // the opposite. `expressDenial`'s conditional-tail guard — the one that keeps
+  // "may not engage a subcontractor WITHOUT a written contract" out — allowed
+  // only 40 characters between the topic and the connective, and the drafting
+  // § 164.502(e)(1)(ii) actually asks for spells the definition out inline:
+  // "shall not engage a further subcontractor THAT WILL CREATE, RECEIVE,
+  // MAINTAIN OR TRANSMIT PHI without a written agreement".
+  //
+  // The other five were one class: **the pack assumes the counterparty is the
+  // COVERED ENTITY, and in a downstream BAA it is the BUSINESS ASSOCIATE.**
+  // BAA-004 wanted "report to the Covered Entity" from a subcontractor that
+  // has no relationship with the covered entity at all; BAA-026 wanted covered-
+  // entity audit rights where the audit right runs upstream. BAA-031, BAA-034
+  // and BAA-040 wanted noun phrases ("workforce training", "sanctions policy",
+  // "notice shall be") where the document uses the verb.
+  //
+  // What is left is the generic commercial set a BAA does not carry — no IP
+  // allocation, no indemnity, no liability cap, no venue — which is the same
+  // shape as the SCC and NDA families, and the family's near-empty
+  // `rule_overrides` is now a profile: a BAA allocates no IP, states no
+  // indemnity, caps no liability and names no venue, because the underlying
+  // services agreement does all four.
+  "baa-subcontractor.txt": {
+    playbook: "baa-subcontractor",
+    findings: ["OBLI-005", "OBLI-008", "TEMP-006", "TERM-007"],
+  },
+
   // A model CCPA service-provider addendum, the 241st specimen and the first
   // for `dpa-ccpa-service-provider` — a family that reached NO family at all
   // on its own bad document until 9.276.0. It drew THIRTEEN CRITICALS, and
