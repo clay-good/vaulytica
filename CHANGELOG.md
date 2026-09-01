@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.298.0] — 2026-08-31
+
+### Fixed
+- **A severance agreement and a SaaS order form reached no family**, and a
+  certificate of insurance and a deed of trust reached their own at the
+  threshold. `separation-agreement` claimed "21 days", "45 days", "seven days",
+  "revocation" and "adea" — the entire OWBPA apparatus, which is precisely what
+  a deficient severance agreement omits. `saas-customer` and `saas-vendor` had
+  no "order form" title keyword at all, so an order form reached them only
+  through SaaS body vocabulary.
+- **A RECIPROCAL confidentiality agreement was not a mutual NDA.**
+  `mutual-nda-deep` listed "mutual non-disclosure agreement", "two-way nda" and
+  "bilateral nda" but not "reciprocal" — so the successor could not clear the
+  threshold, the deprecated `mutual-nda` was not promoted, and the document got
+  the legacy family's ten findings instead of the deep family's twenty-four.
+- The `order-form.txt` specimen's declared TIE with `saas-vendor` is preserved:
+  the title keyword went on both sides. Which of the two you want is `--role`,
+  not the document's, and breaking that tie is a product decision.
+
 ## [9.297.0] — 2026-08-31
 
 ### Fixed

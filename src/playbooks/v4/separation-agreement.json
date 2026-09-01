@@ -1,6 +1,6 @@
 {
   "id": "separation-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Separation / Severance Agreement",
   "description": "Separation / severance agreement with ADEA waiver (OWBPA § 626(f)) and NLRB *McLaren Macomb* compliance. Selects the §6.F employment ruleset (EMP-015..EMP-023).",
   "match_features": {
@@ -17,7 +17,11 @@
       "45 days",
       "seven days",
       "revocation",
-      "adea"
+      "adea",
+      "employment ends",
+      "gives up all claims",
+      "weeks of base salary",
+      "the company will pay"
     ],
     "negative_features": ["offer letter", "executive employment agreement"]
   },

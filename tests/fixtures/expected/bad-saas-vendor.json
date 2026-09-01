@@ -1246,12 +1246,12 @@
   ],
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
-  "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\".",
-  "result_hash": "5ee62065552d1546599cc83f33268ff9b85df56b9334f9bc715aa4dfddca2541",
+  "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
+  "result_hash": "05d0447d205e6702c19b9be2e1a2e7919f5dff636c52d5dd954858cb525789df",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.297.0"
+  "version": "9.298.0"
 }

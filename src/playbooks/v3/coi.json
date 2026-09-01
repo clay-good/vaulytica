@@ -1,6 +1,6 @@
 {
   "id": "coi",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Certificate of Insurance (COI) Check",
   "description": "Linter for an ACORD 25 Certificate of Liability Insurance. Extracts carrier, AM Best rating, coverage amounts, and endorsements and lints against the \u00a712 default requirements profile or a customer-supplied profile. The AM Best rating threshold is consulted from the DKB node `am-best-ratings.json` (curated for the build; cited as 'AM Best public ratings as of [DKB build date]'). Note: the ACORD-25 binary spatial-layout extractor lands in a follow-up commit alongside the COI test fixture corpus; this playbook is text-extraction-driven for now.",
   "match_features": {
@@ -19,7 +19,10 @@
       "additional insured",
       "carrier",
       "policy effective date",
-      "limits of insurance"
+      "limits of insurance",
+      "certificate holder",
+      "each occurrence",
+      "the insured"
     ],
     "negative_features": [
       "conflict of interest",

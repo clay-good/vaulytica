@@ -912,6 +912,36 @@ describe("no family claims a document that is nobody's", () => {
     ...BARE_COMMERCIAL,
     ...BARE_EVERYDAY,
     ...BARE_SPECIALIST,
+    // Five more instrument families. A severance agreement and a SaaS order
+    // form reached nothing; a certificate of insurance and a deed of trust
+    // reached their own at the threshold. `separation-agreement` claimed "21
+    // days", "45 days", "seven days", "revocation" and "adea" — the entire
+    // OWBPA apparatus, which is precisely what the deficient severance
+    // agreement omits.
+    {
+      id: "separation-agreement",
+      title: "SEVERANCE AGREEMENT",
+      body: [
+        "Silverthorne Diagnostics, Inc. and Rosalind Achterberg-Nwosu, whose employment ends June 30, 2026, agree as follows.",
+        "The Company will pay twelve weeks of base salary. Employee gives up all claims against the Company, of every kind.",
+      ],
+    },
+    {
+      id: "coi",
+      title: "CERTIFICATE OF LIABILITY INSURANCE",
+      body: [
+        "This certificate is issued as a matter of information only and confers no rights upon the certificate holder.",
+        "The insured is Larkspur Construction Group, Inc. Commercial General Liability: $1,000,000 each occurrence.",
+      ],
+    },
+    {
+      id: "deed-of-trust",
+      title: "DEED OF TRUST",
+      body: [
+        'Margaret Okafor ("Borrower") conveys to First Title Agency ("Trustee"), in trust for Summit Commercial Bank, N.A., the property at 14 Colston Avenue, to secure a note of $340,000.',
+        "If Borrower defaults, Trustee may sell the property at public auction.",
+      ],
+    },
     // Six litigation-practice families, from a sweep of the v6 wave. A closing
     // letter and a privilege log reached NO family; requests for admission, a
     // limited-scope agreement and interrogatories reached their own at or near

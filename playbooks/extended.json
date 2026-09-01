@@ -3345,7 +3345,7 @@
   },
   {
     "id": "coi",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Certificate of Insurance (COI) Check",
     "description": "Linter for an ACORD 25 Certificate of Liability Insurance. Extracts carrier, AM Best rating, coverage amounts, and endorsements and lints against the §12 default requirements profile or a customer-supplied profile. The AM Best rating threshold is consulted from the DKB node `am-best-ratings.json` (curated for the build; cited as 'AM Best public ratings as of [DKB build date]'). Note: the ACORD-25 binary spatial-layout extractor lands in a follow-up commit alongside the COI test fixture corpus; this playbook is text-extraction-driven for now.",
     "match_features": {
@@ -3364,7 +3364,10 @@
         "additional insured",
         "carrier",
         "policy effective date",
-        "limits of insurance"
+        "limits of insurance",
+        "certificate holder",
+        "each occurrence",
+        "the insured"
       ],
       "negative_features": [
         "conflict of interest",
@@ -5029,7 +5032,7 @@
   },
   {
     "id": "deed-of-trust",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Deed of Trust / Mortgage",
     "description": "Deed of trust or mortgage with power-of-sale + due-on-sale + state recording-act compliance. Selects the §6.L ruleset (BNK-039..BNK-044).",
     "match_features": {
@@ -5046,7 +5049,10 @@
         "mortgagor",
         "power of sale",
         "due on sale",
-        "legal description"
+        "legal description",
+        "conveys to",
+        "in trust for",
+        "public auction"
       ],
       "negative_features": []
     },
@@ -12111,7 +12117,7 @@
   },
   {
     "id": "mutual-nda-deep",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "Mutual NDA — Deep Analysis",
     "description": "Mutual / two-way non-disclosure agreement under US trade-secret law. Selects the §32 NDA-deep ruleset (25 rules) covering DTSA whistleblower-immunity notice (18 U.S.C. § 1833(b)), Confidential-Information definition completeness, four standard exclusions (publicly available, prior knowledge, lawful third-party, independent development), permitted-use scope, residuals, return-or-destruction with attestation, injunctive relief with waiver-of-bond, governing-law viability, no-precedent / MFN, non-solicit carve-outs, no-license, authority representation, successors-and-assigns, plus the mutual-NDA symmetry check.",
     "match_features": {
@@ -12122,7 +12128,10 @@
         "two-way nda",
         "two-way non-disclosure agreement",
         "bilateral non-disclosure agreement",
-        "bilateral nda"
+        "bilateral nda",
+        "reciprocal confidentiality agreement",
+        "reciprocal non-disclosure agreement",
+        "reciprocal nda"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -17727,7 +17736,7 @@
   },
   {
     "id": "separation-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Separation / Severance Agreement",
     "description": "Separation / severance agreement with ADEA waiver (OWBPA § 626(f)) and NLRB *McLaren Macomb* compliance. Selects the §6.F employment ruleset (EMP-015..EMP-023).",
     "match_features": {
@@ -17744,7 +17753,11 @@
         "45 days",
         "seven days",
         "revocation",
-        "adea"
+        "adea",
+        "employment ends",
+        "gives up all claims",
+        "weeks of base salary",
+        "the company will pay"
       ],
       "negative_features": [
         "offer letter",

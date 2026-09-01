@@ -1,6 +1,6 @@
 {
   "id": "deed-of-trust",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Deed of Trust / Mortgage",
   "description": "Deed of trust or mortgage with power-of-sale + due-on-sale + state recording-act compliance. Selects the §6.L ruleset (BNK-039..BNK-044).",
   "match_features": {
@@ -13,7 +13,10 @@
       "mortgagor",
       "power of sale",
       "due on sale",
-      "legal description"
+      "legal description",
+      "conveys to",
+      "in trust for",
+      "public auction"
     ],
     "negative_features": []
   },
