@@ -4,7 +4,7 @@ import { emit } from "../_helpers.js";
 /** CHOICE-002 — Governing law unspecified or ambiguous (warning). */
 export const rule: Rule = {
   id: "CHOICE-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Governing law unspecified state",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -26,6 +26,8 @@ export const rule: Rule = {
       excerpt: gov.raw_text || "(empty)",
       explanation:
         "A governing-law clause that does not specify a state or country is functionally absent.",
+      recommendation:
+        'Name the jurisdiction: "the laws of the State of Delaware" or "the laws of England and Wales". "Applicable law" or "the laws of the parties\' respective jurisdictions" leaves the question to a conflict-of-laws analysis at the worst possible moment.',
       position: gov.position,
     });
   },

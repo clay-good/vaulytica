@@ -278,3 +278,53 @@ describe("Dark patterns — DARK-001, DARK-003", () => {
     expect(DARK_003.check(ctx)).not.toBeNull();
   });
 });
+
+describe("an absence WARNING tells the reader what to add", () => {
+  // Half the rules that fire emitted findings with an empty `recommendation`,
+  // and the fix list and CSV export both have a column for it. The gap was in
+  // the LAUNCH wave, which predates the convention every later wave follows:
+  // v3, v4 and v5 presence rules take a required `recommendation`. These are
+  // the thirteen where the tool tells an attorney a clause is missing, so the
+  // next step is the whole value of the finding.
+  const MUST_RECOMMEND = [
+    "CHOICE-001",
+    "CHOICE-002",
+    "CHOICE-004",
+    "CHOICE-005",
+    "CHOICE-007",
+    "FIN-003",
+    "FIN-005",
+    "IPDATA-001",
+    "IPDATA-002",
+    "RISK-001",
+    "RISK-005",
+    "TERM-002",
+    "TERM-005",
+  ];
+
+  it("every one of them carries a recommendation in its source", async () => {
+    const { readFile } = await import("node:fs/promises");
+    const { glob } = await import("node:fs/promises").then(async () => ({
+      glob: async (id: string) => {
+        const { readdirSync } = await import("node:fs");
+        const { join } = await import("node:path");
+        const root = join(process.cwd(), "src", "engine", "rules");
+        for (const dir of readdirSync(root, { withFileTypes: true })) {
+          if (!dir.isDirectory()) continue;
+          const p = join(root, dir.name, `${id}.ts`);
+          try {
+            return await readFile(p, "utf8");
+          } catch {
+            /* keep looking */
+          }
+        }
+        return "";
+      },
+    }));
+    for (const id of MUST_RECOMMEND) {
+      const src = await glob(id);
+      expect(src.length, `${id}: source not found`).toBeGreaterThan(0);
+      expect(src.includes("recommendation:"), `${id} emits no recommendation`).toBe(true);
+    }
+  });
+});

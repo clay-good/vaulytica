@@ -4,7 +4,7 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 /** RISK-001 — Indemnification clause present (warning). */
 export const rule: Rule = {
   id: "RISK-001",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Indemnification clause present",
   category: "risk-allocation",
   default_severity: "warning",
@@ -42,6 +42,8 @@ export const rule: Rule = {
       excerpt: "(no indemnification language)",
       explanation:
         "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
+      recommendation:
+        "Add an indemnity, or say expressly that the parties allocate no risk that way. If you add one, state who indemnifies whom, for which claims, and the procedure — prompt notice, control of the defence, and no settlement imposing a non-monetary obligation without consent.",
       position: topPosition(ctx),
     });
   },

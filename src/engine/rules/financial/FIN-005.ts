@@ -162,7 +162,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.16.0",
+  version: "1.17.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",
@@ -183,6 +183,8 @@ export const rule: Rule = {
       excerpt: "(no payment-term clause)",
       explanation:
         "Commercial contracts should state when payment is due. 'Net 30' or 'due within X days of invoice' is the typical formulation. Without it, payment timing defaults to the governing-law rule.",
+      recommendation:
+        'Add a payment term stating when payment is due — "Net 30", "payable within thirty (30) days of invoice" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.',
       position: topPosition(ctx),
     });
   },

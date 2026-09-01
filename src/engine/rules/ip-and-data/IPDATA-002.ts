@@ -16,7 +16,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "IPDATA-002",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Pre-existing IP carve-out",
   category: "ip-and-data",
   default_severity: "warning",
@@ -51,6 +51,8 @@ export const rule: Rule = {
       excerpt: hit.text.slice(0, 280),
       explanation:
         "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
+      recommendation:
+        "Add a pre-existing-IP carve-out: list or describe what each party brings, state that it stays with its owner, and grant the other party only the licence it needs to use the deliverable. A bare assignment of everything created can sweep in tools the assignor uses on every engagement.",
       position: hit.position,
     });
   },

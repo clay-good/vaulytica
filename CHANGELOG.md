@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.294.0] — 2026-08-31
+
+### Added
+- **A recommendation on the thirteen absence warnings that had none.** Half the
+  rules that fire were emitting findings with an empty `recommendation`, and
+  the fix-list and CSV exports both carry a column for it. The gap was entirely
+  in the LAUNCH wave, which predates the convention every later wave follows —
+  v3, v4 and v5 presence rules all take a required recommendation. These
+  thirteen are the ones where the tool tells an attorney a clause is missing,
+  so the next step is the whole value of the finding: CHOICE-001, CHOICE-002,
+  CHOICE-004, CHOICE-005, CHOICE-007, FIN-003, FIN-005, IPDATA-001, IPDATA-002,
+  RISK-001, RISK-005, TERM-002 and TERM-005.
+
 ## [9.293.0] — 2026-08-31
 
 ### Added

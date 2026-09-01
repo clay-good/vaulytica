@@ -41,7 +41,7 @@ const LIMITATION_OF_LIABILITY =
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
   id: "RISK-005",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Limitation of liability present",
   category: "risk-allocation",
   default_severity: "warning",
@@ -62,6 +62,8 @@ export const rule: Rule = {
       excerpt: "(no LoL clause)",
       explanation:
         "Without a limitation-of-liability clause, exposure is bounded only by what the parties can prove in damages. Most commercial contracts cap liability.",
+      recommendation:
+        "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
       position: topPosition(ctx),
     });
   },

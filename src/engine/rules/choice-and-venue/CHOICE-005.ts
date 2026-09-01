@@ -24,7 +24,7 @@ const NY_CONVENTION_PARTIES =
 /** CHOICE-005 — Foreign venue without enforceability treaty (warning). */
 export const rule: Rule = {
   id: "CHOICE-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Foreign venue without enforceability treaty",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -41,6 +41,8 @@ export const rule: Rule = {
       excerpt: venue.raw_text,
       explanation:
         "Enforcing a US judgment in a jurisdiction outside the New York or Hague convention can be expensive and uncertain. Confirm a clear path to enforcement exists.",
+      recommendation:
+        "Consider a seat in a New York Convention state, or add an arbitration clause with a Convention seat, so an award is enforceable where the counterparty's assets are. A judgment from a non-Convention forum may be unenforceable against them.",
       position: venue.position,
     });
   },

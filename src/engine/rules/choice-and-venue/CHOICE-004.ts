@@ -4,7 +4,7 @@ import { emit } from "../_helpers.js";
 /** CHOICE-004 — Venue / governing-law mismatch (warning). */
 export const rule: Rule = {
   id: "CHOICE-004",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Venue / governing-law mismatch",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -28,6 +28,8 @@ export const rule: Rule = {
       excerpt: `${gov.raw_text} → ${venue.raw_text}`,
       explanation:
         "Choosing one jurisdiction's law but another's courts is sometimes deliberate, but courts in the chosen-venue jurisdiction may apply their own procedural rules differently than the governing-law jurisdiction would expect.",
+      recommendation:
+        "State why the law and the forum differ, or align them. A court applying another state's substantive law is ordinary, but it costs expert evidence on that law and invites a forum fight; if the split is deliberate (a Delaware-law entity dispute heard where the assets are), say so in the clause.",
       position: gov.position,
     });
   },

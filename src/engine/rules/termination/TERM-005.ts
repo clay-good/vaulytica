@@ -183,7 +183,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.17.0",
+  version: "1.18.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",
@@ -204,6 +204,8 @@ export const rule: Rule = {
       excerpt: "(no effect-of-termination clause)",
       explanation:
         "An effect-of-termination clause spells out the rights and obligations that survive, the return or destruction of materials, and the wind-down rules.",
+      recommendation:
+        'Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not "the provisions that by their nature survive".',
       position: topPosition(ctx),
     });
   },

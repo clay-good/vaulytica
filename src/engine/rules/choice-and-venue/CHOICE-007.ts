@@ -9,7 +9,7 @@ const CONSUMER_HEADINGS = /\b(lease|residential|terms\s+of\s+service|employment|
 /** CHOICE-007 — Class-action waiver in consumer-facing contract (warning). */
 export const rule: Rule = {
   id: "CHOICE-007",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Class-action waiver in consumer contract",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -55,6 +55,8 @@ export const rule: Rule = {
       excerpt: hit.text.slice(0, 280),
       explanation:
         "Class-action waivers are enforceable in many jurisdictions under AT&T Mobility v. Concepcion, but they materially change the economics of small claims. Flag for review when the agreement is consumer-facing.",
+      recommendation:
+        "Confirm the waiver is enforceable for this contract and this consumer population, that it sits with a workable individual-dispute mechanism, and that it does not foreclose a public-injunctive claim in a state that preserves one. State-law treatment varies and a waiver struck down takes the arbitration clause with it in some drafting.",
       position: hit.position,
     });
   },

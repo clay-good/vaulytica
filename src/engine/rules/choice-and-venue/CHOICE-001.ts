@@ -4,7 +4,7 @@ import { amendsParentAgreement, emit, topPosition } from "../_helpers.js";
 /** CHOICE-001 — Governing law clause present (warning). */
 export const rule: Rule = {
   id: "CHOICE-001",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Governing law clause present",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -26,6 +26,8 @@ export const rule: Rule = {
       excerpt: "(no governing-law clause)",
       explanation:
         "A governing-law clause picks the legal system that interprets the contract. Without it, courts apply conflict-of-laws rules, which may produce unexpected results.",
+      recommendation:
+        'Add a governing-law clause naming one jurisdiction — "This Agreement is governed by the laws of the State of X, without regard to its conflict-of-laws rules" — and pick a jurisdiction with a connection to a party or to performance.',
       position: topPosition(ctx),
     });
   },

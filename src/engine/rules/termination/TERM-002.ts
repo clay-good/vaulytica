@@ -122,7 +122,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
@@ -143,6 +143,8 @@ export const rule: Rule = {
       excerpt: "(no for-cause termination)",
       explanation:
         "Without a for-cause termination path, parties must rely on common-law material-breach doctrines, which are jurisdiction-dependent.",
+      recommendation:
+        "Add a termination-for-cause clause: what counts as a material breach, the cure period (30 days is the norm), who may terminate, and whether insolvency or a change of control is an immediate-termination event.",
       position: topPosition(ctx),
     });
   },

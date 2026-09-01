@@ -4,7 +4,7 @@ import { emit, topPosition } from "../_helpers.js";
 /** FIN-003 — Currency consistency (warning). */
 export const rule: Rule = {
   id: "FIN-003",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Currency consistency",
   category: "financial",
   default_severity: "warning",
@@ -19,6 +19,8 @@ export const rule: Rule = {
       excerpt: [...currencies].sort().join(", "),
       explanation:
         "Multi-currency contracts need a conversion rule or a clear allocation of currency risk. The mere presence of two currencies is not wrong but should be reviewed.",
+      recommendation:
+        "Add a currency clause: name the contract currency, state that all amounts are payable in it, and give the conversion rule (the source and the date of the rate) for any amount incurred in another. Without it each party books a different number.",
       position: topPosition(ctx),
     });
   },
