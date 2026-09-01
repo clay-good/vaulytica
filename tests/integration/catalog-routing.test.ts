@@ -1074,11 +1074,105 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
+  /**
+   * The first batch drawn from `bare-title-reach`'s worklist rather than from
+   * guesswork — and NINE OF TEN failed, which is the measure earning its keep.
+   *
+   * Every one is the same class: `bill-of-sale` wanted "hereby sells,
+   * transfers and delivers" and "good and marketable title" from a document
+   * that says "sells to … the equipment listed below"; `warn-notice` wanted
+   * "bumping rights" and "the name and telephone number of a company
+   * official" — the § 639.7(d) contents — from the notice whose whole defect
+   * is that it omits them; `mutual-release` wanted "section 1542" and
+   * "forever discharge" from two sentences that release each other from all
+   * claims.
+   *
+   * `meeting-minutes` failed differently and is worth separating: it scored
+   * 0.0, not 0.3. Its title keywords are the four spellings beginning
+   * "minutes of the …", and board minutes are headed MINUTES OF THE BOARD OF
+   * DIRECTORS. A title-keyword gap, not a phrase gap.
+   */
+  const BARE_INSTRUMENTS_2: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "bill-of-sale",
+      title: "BILL OF SALE",
+      body: [
+        "Wrenfield Audio Labs, Inc. sells to Halcyon Analytics, Inc. the equipment listed below for $85,000.",
+        "Two CNC routers, serial numbers 4417 and 4418. Seller has been paid in full. The equipment is sold as is.",
+      ],
+    },
+    {
+      id: "warranty-deed",
+      title: "WARRANTY DEED",
+      body: [
+        "Pemberton Ridge Holdings LLC conveys to Foundry Development Partners LLC the property at 400 Foundry Road, Cleveland, Ohio, described on Exhibit A.",
+        "Grantor warrants the title against all claims.",
+      ],
+    },
+    {
+      id: "meeting-minutes",
+      title: "MINUTES OF THE BOARD OF DIRECTORS",
+      body: [
+        "Thistledown Robotics, Inc. — meeting of May 4, 2026, 10:00 a.m. Present: all five directors.",
+        "The board approved the credit facility with Summit Commercial Bank, N.A. and adjourned at 10:40 a.m.",
+      ],
+    },
+    {
+      id: "mutual-release",
+      title: "MUTUAL RELEASE",
+      body: [
+        "Larkspur Holdings LLC and Wrenfield Audio Labs, Inc. release each other from all claims arising out of invoice 4417.",
+        "Ohio law governs.",
+      ],
+    },
+    {
+      id: "tolling-agreement",
+      title: "TOLLING AGREEMENT",
+      body: [
+        "Larkspur Holdings LLC and Wrenfield Audio Labs, Inc. agree that the time to bring any claim about invoice 4417 stops running from May 4, 2026 until November 4, 2026.",
+        "Ohio law governs.",
+      ],
+    },
+    {
+      id: "warn-notice",
+      title: "NOTICE OF PLANT CLOSING",
+      body: [
+        "To: Employees of the Foundry Road warehouse",
+        "Foundry Logistics LLC will close the Foundry Road warehouse on November 15, 2026. All 214 positions will end.",
+      ],
+    },
+    {
+      id: "media-release",
+      title: "TALENT RELEASE",
+      body: [
+        "I, Margaret Okafor, let Wrenfield Audio Labs, Inc. use my photograph and my voice in its advertising.",
+        "I will not be paid for this.",
+      ],
+    },
+    {
+      id: "arbitration-demand",
+      title: "DEMAND FOR ARBITRATION",
+      body: [
+        "Larkspur Holdings LLC demands arbitration against Wrenfield Audio Labs, Inc. under the parties' agreement of June 1, 2024.",
+        "The dispute is about invoice 4417. Larkspur seeks $120,000.",
+      ],
+    },
+    {
+      id: "factoring-agreement",
+      title: "FACTORING AGREEMENT",
+      body: [
+        'Wrenfield Audio Labs, Inc. ("Seller") sells its accounts receivable to Foundry Capital LLC ("Factor").',
+        "Factor will advance 80% of the face amount of each invoice. Factor's fee is 2.5% per month.",
+      ],
+    },
+  ];
+
   it.each([
     ...BAD_DOCUMENTS,
     ...BARE_LICENCES,
     ...BARE_COVENANTS,
     ...BARE_ADMINISTRATIVE,
+    ...BARE_INSTRUMENTS_2,
     ...THIN_MARGINS,
     ...BARE_INSTRUMENTS,
     ...BARE_COMMERCIAL,

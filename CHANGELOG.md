@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.304.0] — 2026-09-01
+
+### Fixed
+- **Nine more families could not recognise a thin instance of themselves**,
+  drawn from the `bare-title-reach` worklist rather than from guesswork —
+  nine of the ten sampled failed. `bill-of-sale`, `warranty-deed`,
+  `mutual-release`, `tolling-agreement`, `warn-notice`, `media-release`,
+  `arbitration-demand` and `factoring-agreement` each listed only
+  well-drafted vocabulary; `warn-notice` demanded the § 639.7(d) contents
+  from the notice whose defect is omitting them.
+- **`meeting-minutes` could not be reached by board minutes.** All four of its
+  title keywords begin "minutes of the meeting / annual meeting", and board
+  minutes are headed "MINUTES OF THE BOARD OF DIRECTORS" — it scored 0.0, not
+  0.3. "minutes of the board" added.
+
 ## [9.303.0] — 2026-09-01
 
 ### Added

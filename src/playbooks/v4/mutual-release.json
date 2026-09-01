@@ -1,6 +1,6 @@
 {
   "id": "mutual-release",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Mutual / General Release",
   "description": "Mutual or general release of claims with optional California Civil Code § 1542 waiver. Selects the §6.G settlement ruleset (SET-001..SET-005, SET-008).",
   "match_features": {
@@ -19,24 +19,48 @@
       "section 1542",
       "no admission",
       "fully and finally release",
-      "forever discharge"
+      "forever discharge",
+      "release each other",
+      "from all claims"
     ],
-    "negative_features": ["settlement payment", "demand letter", "cease and desist"]
+    "negative_features": [
+      "settlement payment",
+      "demand letter",
+      "cease and desist"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Releasor", "Releasee", "Effective Date"],
+  "expected_defined_terms": [
+    "Releasor",
+    "Releasee",
+    "Effective Date"
+  ],
   "rule_overrides": {
-    "IPDATA-001": { "skip": true },
-    "RISK-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "TERM-002": { "skip": true },
-    "TERM-005": { "skip": true }
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-RELEASE-LAW",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["confidential-settlement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "confidential-settlement"
+  ],
   "compliance_matrix_columns": [
     "Cal. Civ. § 1542 waiver",
     "FRE 408 — no admission",

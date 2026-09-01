@@ -1,31 +1,54 @@
 {
   "id": "tolling-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Tolling Agreement",
   "description": "Tolling agreement pausing the statute of limitations during pre-suit negotiations. Selects the §6.G settlement ruleset (SET-021..SET-024).",
   "match_features": {
-    "title_keywords": ["tolling agreement", "limitations tolling agreement"],
+    "title_keywords": [
+      "tolling agreement",
+      "limitations tolling agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "statute of limitations",
       "tolling period",
       "no revival",
-      "terminates on notice"
+      "terminates on notice",
+      "time to bring",
+      "stops running"
     ],
-    "negative_features": ["settlement payment", "release", "demand letter", "cease and desist"]
+    "negative_features": [
+      "settlement payment",
+      "release",
+      "demand letter",
+      "cease and desist"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Tolling Period", "Effective Date"],
+  "expected_defined_terms": [
+    "Tolling Period",
+    "Effective Date"
+  ],
   "rule_overrides": {
-    "CHOICE-003": { "skip": true },
-    "IPDATA-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "TERM-002": { "skip": true }
+    "CHOICE-003": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-LIMITATIONS",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Tolled claims identified",

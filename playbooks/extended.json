@@ -1233,7 +1233,7 @@
   },
   {
     "id": "arbitration-demand",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Demand for Arbitration",
     "description": "Arbitration demand under AAA or JAMS rules, reviewed for the clause citation, relief statement, and filing/service mechanics. Selects the SET-123..127 ruleset (5 checks).",
     "match_features": {
@@ -1251,7 +1251,9 @@
         "the relief sought",
         "locale",
         "the nature of the dispute",
-        "arbitrator selection"
+        "arbitrator selection",
+        "demands arbitration",
+        "the dispute is about"
       ],
       "negative_features": [
         "this agreement is entered into",
@@ -2124,7 +2126,7 @@
   },
   {
     "id": "bill-of-sale",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Bill of Sale",
     "description": "Conveyance of personal property at an asset closing, reviewed for the title warranty and free-and-clear recital. Selects the MNA-113..116 ruleset (4 checks).",
     "match_features": {
@@ -2139,7 +2141,10 @@
         "free and clear of all liens",
         "as is, where is",
         "the purchased assets",
-        "good and marketable title"
+        "good and marketable title",
+        "sells to",
+        "sold as is",
+        "paid in full"
       ],
       "negative_features": [
         "lease of the premises",
@@ -7946,7 +7951,7 @@
   },
   {
     "id": "factoring-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Accounts Receivable Factoring Agreement",
     "description": "Sale of receivables, reviewed for the true-sale vs. secured-loan characterization, recourse, and notification terms. Selects the BNK-121..126 ruleset (6 checks).",
     "match_features": {
@@ -7964,7 +7969,9 @@
         "advance rate",
         "reserve account",
         "notification to account debtors",
-        "chargeback"
+        "chargeback",
+        "sells its accounts receivable",
+        "face amount"
       ],
       "negative_features": [
         "employment offer",
@@ -11572,7 +11579,7 @@
   },
   {
     "id": "media-release",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Model / Talent Release",
     "description": "Release of name, image, and likeness for commercial use, measured against state right-of-publicity statutes. Selects the COMM-184..188 ruleset (5 checks).",
     "match_features": {
@@ -11597,7 +11604,9 @@
         "no further compensation",
         "right to inspect or approve",
         "no payment or other compensation",
-        "my name, likeness"
+        "my name, likeness",
+        "my photograph",
+        "my voice"
       ],
       "negative_features": [
         "employment agreement",
@@ -11717,7 +11726,7 @@
   },
   {
     "id": "meeting-minutes",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Board / Shareholder Meeting Minutes",
     "description": "Minutes of a directors' or shareholders' meeting, reviewed for the notice, quorum, vote, and adjournment record that makes the minutes evidence. Selects the GOV-111..116 ruleset (6 checks).",
     "match_features": {
@@ -11725,7 +11734,8 @@
         "minutes of the meeting",
         "meeting minutes",
         "minutes of a regular meeting",
-        "minutes of the annual meeting"
+        "minutes of the annual meeting",
+        "minutes of the board"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -11734,7 +11744,9 @@
         "called to order",
         "the motion carried",
         "there being no further business",
-        "abstained"
+        "abstained",
+        "the board approved",
+        "adjourned at"
       ],
       "negative_features": [
         "this agreement is entered into by and between",
@@ -12293,7 +12305,7 @@
   },
   {
     "id": "mutual-release",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Mutual / General Release",
     "description": "Mutual or general release of claims with optional California Civil Code § 1542 waiver. Selects the §6.G settlement ruleset (SET-001..SET-005, SET-008).",
     "match_features": {
@@ -12312,7 +12324,9 @@
         "section 1542",
         "no admission",
         "fully and finally release",
-        "forever discharge"
+        "forever discharge",
+        "release each other",
+        "from all claims"
       ],
       "negative_features": [
         "settlement payment",
@@ -19396,7 +19410,7 @@
   },
   {
     "id": "tolling-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Tolling Agreement",
     "description": "Tolling agreement pausing the statute of limitations during pre-suit negotiations. Selects the §6.G settlement ruleset (SET-021..SET-024).",
     "match_features": {
@@ -19409,7 +19423,9 @@
         "statute of limitations",
         "tolling period",
         "no revival",
-        "terminates on notice"
+        "terminates on notice",
+        "time to bring",
+        "stops running"
       ],
       "negative_features": [
         "settlement payment",
@@ -20819,7 +20835,7 @@
   },
   {
     "id": "warn-notice",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "WARN Act Notice",
     "description": "Plant-closing or mass-layoff notice measured against the federal WARN Act content requirements (29 U.S.C. § 2102; 20 C.F.R. § 639.7). Selects the EMP-142..147 ruleset (6 checks).",
     "match_features": {
@@ -20837,7 +20853,9 @@
         "bumping rights",
         "expected date of separation",
         "permanent or temporary",
-        "the name and telephone number of a company official"
+        "the name and telephone number of a company official",
+        "positions will end",
+        "will close the"
       ],
       "negative_features": [
         "this agreement is entered into by and between",
@@ -20978,7 +20996,7 @@
   },
   {
     "id": "warranty-deed",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Warranty Deed",
     "description": "General or special warranty deed, reviewed for the covenants of title, legal description, and acknowledgment. Selects the RE-133..137 ruleset (5 checks).",
     "match_features": {
@@ -20997,7 +21015,9 @@
         "free and clear of all encumbrances",
         "grant, bargain, sell",
         "grants, bargains, sells",
-        "legal description"
+        "legal description",
+        "conveys to",
+        "warrants the title"
       ],
       "negative_features": [
         "quitclaim",
