@@ -776,3 +776,48 @@ describe("EMP-025 v1.4.0 — a duration spelled out, past the employer's own 'In
     expect(emp025().check(ctx)).not.toBeNull();
   });
 });
+
+/**
+ * EMP-022 — the § 626(f)(1)(D) consideration, in the two ways a California
+ * agreement writes it.
+ *
+ * The clause says severance is over and above what is already owed, and the
+ * branch that reads it in terms offered only "the employee WOULD not otherwise"
+ * and "you ARE not otherwise" — not the singular copula the phrase actually
+ * takes: "consideration to which the Employee IS not otherwise entitled".
+ *
+ * The structural form missed for a different reason. It reads the earned wages
+ * being paid "whether or not the Employee signs", and its window was two
+ * characters short of the sentence a California agreement writes, because
+ * Labor Code §§ 201 and 227.3 make it name the accrued vacation as well as the
+ * wages.
+ */
+describe("EMP-022 — severance over and above accrued amounts", () => {
+  const sep = (...body: string[]) =>
+    withPb(
+      buildContext(["Separation Agreement and General Release", ...body] as [string, ...string[]]),
+      { id: "separation-agreement", version: "1.0.0" },
+    );
+  const emp022 = () => EMPLOYMENT_RULES.find((r) => r.id === "EMP-022")!;
+
+  it.each([
+    [
+      "the singular copula",
+      "The Company will pay the Employee $84,000 in twelve monthly installments. This payment is consideration to which the Employee is not otherwise entitled.",
+    ],
+    [
+      "the structural form, with vacation named",
+      "The Employee will be paid all wages earned and all accrued unused vacation through that date, on that date, whether or not the Employee signs this Agreement.",
+    ],
+  ])("reads %s", (_label, body) => {
+    expect(emp022().check(sep(body))).toBeNull();
+  });
+
+  it("still fires where the severance is not distinguished from what is owed", () => {
+    expect(
+      emp022().check(
+        sep("The Company will pay the Employee $84,000 in twelve monthly installments."),
+      ),
+    ).not.toBeNull();
+  });
+});

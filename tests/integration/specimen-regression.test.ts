@@ -3156,6 +3156,30 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A California separation agreement for an employee over 40: the full OWBPA
+  // apparatus (written advice to consult counsel, twenty-one days to consider,
+  // seven to revoke, not effective until the revocation period expires), the
+  // Civil Code § 1542 waiver quoted verbatim, and the CCP § 1001 /
+  // Gov. Code § 12964.5 carve-outs that keep the confidentiality and
+  // non-disparagement clauses enforceable in California.
+  //
+  // EMP-022 — the § 626(f)(1)(D) consideration — missed it in BOTH of the ways
+  // the document states it. The branch that reads the clause in terms offered
+  // "the employee WOULD not otherwise" and "you ARE not otherwise" but not the
+  // singular copula the phrase actually takes, "consideration to which the
+  // Employee IS not otherwise entitled". And the structural branch, which
+  // reads the earned wages being paid "whether or not the Employee signs", had
+  // a window two characters short of the sentence a California agreement
+  // writes — because Labor Code §§ 201 and 227.3 make it name the accrued
+  // vacation as well as the wages.
+  //
+  // OBLI-002 is fair and worth leaving: the confidentiality obligation really
+  // does run one way.
+  "ca-separation-agreement.txt": {
+    playbook: "separation-agreement",
+    findings: ["CHOICE-003", "OBLI-002", "OBLI-005"],
+  },
+
   // A California employment arbitration agreement drafted to Armendariz: a
   // mutual obligation with no carve-out for the claims the employer is likelier
   // to bring, a neutral arbitrator, adequate discovery, every remedy available

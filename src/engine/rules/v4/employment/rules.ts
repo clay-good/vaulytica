@@ -571,9 +571,18 @@ const SEPARATION_RULES: Rule[] = [
     // above what is owed, without using the phrase.
     present_patterns: [
       /(over\s+and\s+above|in\s+addition\s+to).{0,80}(entitled|owe|accrued)/is,
-      /(?:paid|receive|pay)[^.;]{0,80}?whether\s+or\s+not[^.;]{0,40}?\bsigns?\b/is,
+      // The window was two characters short of the sentence a California
+      // agreement writes, because § 201 and § 227.3 make it name the accrued
+      // vacation as well as the wages: "will be paid all wages earned and all
+      // accrued unused vacation through that date, on that date, whether or
+      // not the Employee signs".
+      /(?:paid|receive|pay)[^.;]{0,130}?whether\s+or\s+not[^.;]{0,40}?\bsigns?\b/is,
       /(?:if|provided\s+that)\s+(?:you|the\s+Employee)\s+signs?[^.;]{0,140}?(?:will\s+pay|shall\s+pay|will\s+receive)/is,
-      /consideration.{0,40}(to\s+which\s+(you|the\s+employee)\s+(would|are)\s+not\s+otherwise)/is,
+      // "the Employee IS not otherwise entitled" — the singular copula the
+      // phrase takes with a singular subject. The branch offered only "would"
+      // and "are", so the clause that states the § 626(f)(1)(D) consideration
+      // in terms was the one form it could not read.
+      /consideration.{0,40}(to\s+which\s+(you|the\s+employee)\s+(?:is|are|was|were|would\s+be|would)\s+not\s+otherwise)/is,
     ],
     default_severity: "warning",
   }),
