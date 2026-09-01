@@ -1,0 +1,58 @@
+DIRECTORS AND OFFICERS LIABILITY INSURANCE POLICY
+
+Meridian Casualty Insurance Company
+Policy No. DO-2026-44812
+Named Insured: Corvid Bioworks, Inc.
+Policy Period: April 1, 2026 to April 1, 2027, 12:01 a.m. at the address of the Named Insured
+Limit of Liability: $10,000,000 aggregate for all Loss under all Insuring Agreements combined
+Retention: $0 for Insuring Agreement A; $500,000 for Insuring Agreements B and C
+
+THIS IS A CLAIMS-MADE AND REPORTED POLICY. IT APPLIES ONLY TO CLAIMS FIRST MADE AGAINST THE INSUREDS DURING THE POLICY PERIOD OR ANY APPLICABLE EXTENDED REPORTING PERIOD AND REPORTED TO THE INSURER IN ACCORDANCE WITH ITS TERMS. AMOUNTS INCURRED AS DEFENSE COSTS REDUCE AND MAY EXHAUST THE LIMIT OF LIABILITY. PLEASE READ THE ENTIRE POLICY CAREFULLY.
+
+INSURING AGREEMENTS
+
+A. Individual Non-Indemnified Loss (Side A). The Insurer will pay on behalf of an Insured Person Loss resulting from a Claim first made during the Policy Period for a Wrongful Act, except to the extent the Company has indemnified the Insured Person.
+
+B. Company Reimbursement (Side B). The Insurer will reimburse the Company for Loss the Company has indemnified an Insured Person for, resulting from a Claim first made during the Policy Period for a Wrongful Act.
+
+C. Securities Claims Coverage (Side C). The Insurer will pay on behalf of the Company Loss resulting from a Securities Claim first made against the Company during the Policy Period.
+
+DEFINITIONS
+
+"Claim" means a written demand for monetary or non-monetary relief; a civil, criminal, administrative, regulatory, or arbitral proceeding; a formal regulatory investigation of an Insured Person commenced by a Wells notice, target letter, or subpoena; or a books-and-records demand.
+
+"Insured Person" means any past, present, or future director, officer, or the general counsel of the Company, and the lawful spouse, estate, and legal representatives of any of them.
+
+"Loss" means damages, settlements, judgments, pre- and post-judgment interest, Defense Costs, and civil fines and penalties where insurable by law, and includes punitive and exemplary damages where insurable under the law most favorable to their insurability.
+
+"Wrongful Act" means any actual or alleged act, error, omission, misstatement, misleading statement, neglect, or breach of duty by an Insured Person in that capacity.
+
+EXCLUSIONS
+
+The Insurer will not be liable for Loss on account of a Claim:
+
+1. Conduct. Arising from any deliberate criminal or fraudulent act, or any personal profit or advantage to which the Insured was not legally entitled, established by a FINAL, NON-APPEALABLE ADJUDICATION IN THE UNDERLYING PROCEEDING. No fact or conduct of any Insured Person is imputed to any other Insured Person, and only the conduct of a past or present chief executive officer or chief financial officer is imputed to the Company.
+
+2. Prior Notice and Prior Litigation. Arising from any fact or Wrongful Act noticed under a prior policy, or from litigation pending before April 1, 2020.
+
+3. Bodily Injury and Property Damage, except for emotional distress in a Securities Claim.
+
+4. ERISA. For any violation of ERISA, other than a Securities Claim.
+
+5. Insured versus Insured. Brought by or on behalf of the Company, other than: a derivative action brought without the assistance or participation of any Insured Person; a Claim brought by a bankruptcy trustee, examiner, receiver, or creditors' committee; a Claim by a former Insured Person who has not served in an insured capacity for at least four years; a whistleblower Claim under Section 806 of the Sarbanes-Oxley Act; or a Claim brought outside the United States.
+
+CONDITIONS
+
+6. Severability of the Application. The Application is severable. No statement in it or knowledge possessed by any Insured Person is imputed to any other Insured Person, and the Insurer may not rescind Insuring Agreement A on any ground.
+
+7. Order of Payments. Where Loss exceeds the remaining Limit, the Insurer will pay Loss under Insuring Agreement A first, then, at the written direction of the chief executive officer, Loss under Insuring Agreements B and C.
+
+8. Defense and Settlement. The Insureds have the duty to defend. The Insurer will advance Defense Costs within sixty (60) days of receipt of invoices, before final disposition. The Insurer may not withhold consent to a settlement unreasonably.
+
+9. Extended Reporting Period. On non-renewal or cancellation for any reason other than non-payment, the Company may buy an Extended Reporting Period of six (6) years for 225% of the annual premium, exercisable within ninety (90) days.
+
+10. Change of Control. If the Company is merged or acquired, coverage continues but only for Wrongful Acts committed before the transaction, and no Extended Reporting Period is available beyond the six years above.
+
+11. Allocation. In a Claim involving both covered and uncovered matters or parties, allocation is made on the relative legal exposure, and Defense Costs are allocated 100% to covered matters.
+
+12. Other Insurance. This policy is excess of any other valid insurance, except that Insuring Agreement A is primary and non-contributory.

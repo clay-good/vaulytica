@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, enclosingSentence, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 
 const DISPUTE_SIBLING = String.raw`(?:action|suit|proceeding|hearing|investigation|claim)s?`;
 /**
@@ -20,15 +20,24 @@ const DISPUTE_SIBLING = String.raw`(?:action|suit|proceeding|hearing|investigati
 const INSTITUTION_NAME_TAIL =
   /^\s+(?:Association|Institute|Centre|Center|Chamber|Forum|Society|Council|Board|Rules)\b/;
 
+// 1.4.0 — the list item is as often the ADJECTIVE as the noun. A D&O policy
+// defines its trigger as '"Claim" means a written demand …; a civil, criminal,
+// administrative, regulatory, or ARBITRAL PROCEEDING; a formal regulatory
+// investigation …' — where "arbitral" modifies the sibling noun rather than
+// standing beside it, so the comma-adjacency both branches required is never
+// there. The policy was reported as having an arbitration clause "with the
+// seat not specified", which is a drafting fix for a clause it does not
+// contain. Still confined to a definitional sentence, so a real arbitration
+// clause that speaks of "the arbitral proceeding" is untouched.
 const ENUMERATED_IN_DEFINITION = new RegExp(
-  String.raw`\b(?:means|shall\s+mean)\b[^.]{0,300}?(?:${DISPUTE_SIBLING}\s*,\s*(?:or\s+)?arbitration\b|\barbitration\s*,\s*(?:or\s+)?${DISPUTE_SIBLING})`,
+  String.raw`\b(?:means|shall\s+mean)\b[^.]{0,300}?(?:${DISPUTE_SIBLING}\s*,\s*(?:or\s+)?arbitration\b|\barbitration\s*,\s*(?:or\s+)?${DISPUTE_SIBLING}|\barbitral\s+${DISPUTE_SIBLING})`,
   "i",
 );
 
 /** CHOICE-006 — Arbitration clause present (info). */
 export const rule: Rule = {
   id: "CHOICE-006",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Arbitration clause present",
   category: "choice-and-venue",
   default_severity: "info",
@@ -44,7 +53,17 @@ export const rule: Rule = {
       /\barbitrat(?:e|ed|ing|ion|ors?)\b|\barbitral\b/i,
       undefined,
       (paragraph, index) =>
-        ENUMERATED_IN_DEFINITION.test(enclosingSentence(paragraph, index)) ||
+        // Tested from the PARAGRAPH START, not from the enclosing sentence. A
+        // multi-limb definition separates its limbs with SEMICOLONS — '"Claim"
+        // means a written demand …; a civil, criminal, administrative,
+        // regulatory, or arbitral proceeding; a formal regulatory
+        // investigation …' — and `enclosingSentence` treats a semicolon as a
+        // boundary, so it returned " a civil, criminal, administrative,
+        // regulatory, or arbitral proceeding;" and the "means" the guard is
+        // anchored on was never in the window. The `[^.]{0,300}` bound inside
+        // the pattern is what still stops it reaching into a previous
+        // SENTENCE.
+        ENUMERATED_IN_DEFINITION.test(paragraph.slice(0, index + 40)) ||
         INSTITUTION_NAME_TAIL.test(paragraph.slice(index + "arbitration".length, index + 40)),
     );
     if (!hit) return null;

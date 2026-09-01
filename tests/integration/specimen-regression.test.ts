@@ -3152,6 +3152,28 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A D&O liability policy — Side A/B/C, a final-non-appealable-adjudication
+  // conduct exclusion, full severability, order of payments, and a six-year
+  // run-off. It found the enumeration guard blind in two ways at once.
+  // CHOICE-006 already declines a definition that LISTS arbitration among the
+  // forums, and this policy's list carries the ADJECTIVE modifying the sibling
+  // noun — "a civil, criminal, administrative, regulatory, or ARBITRAL
+  // PROCEEDING" — so the comma-adjacency both branches required is never
+  // there. And the guard tested `enclosingSentence`, which treats a SEMICOLON
+  // as a boundary; a multi-limb definition is semicolon-separated by
+  // convention, so the window held the list limb without the "means" the guard
+  // is anchored on.
+  //
+  // What stays is right. STRUCT-006 names "Defense Costs" and "Securities
+  // Claim", which this draft uses in Title Case throughout and never defines.
+  // STRUCT-003 is the position the corpus already takes on an insurance
+  // document (see `insurance-policy-summary.txt`). TEMP-002 is accurate: the
+  // prior-litigation date really is six years before the rest.
+  "do-liability-policy.txt": {
+    playbook: "do-policy",
+    findings: ["STRUCT-003", "STRUCT-006", "OBLI-005", "RISK-007", "TEMP-002"],
+  },
+
   // The RISK FACTORS section of an IPO prospectus — and the most severe
   // mis-routing this corpus has recorded. It went to `baa`, the HIPAA Business
   // Associate Agreement, and drew FORTY-EIGHT findings, SEVENTEEN of them

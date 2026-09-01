@@ -75,3 +75,39 @@ describe("CHOICE-006 — arbitration named in a definition is not an arbitration
     ).not.toBeNull();
   });
 });
+
+/**
+ * A multi-limb definition separates its limbs with SEMICOLONS (v1.4.0).
+ *
+ * A D&O policy defines its trigger as '"Claim" means a written demand …; a
+ * civil, criminal, administrative, regulatory, or ARBITRAL PROCEEDING; a
+ * formal regulatory investigation …'. Two things defeated the enumeration
+ * guard at once: the list item is the ADJECTIVE modifying the sibling noun
+ * rather than the noun standing beside it, so the comma-adjacency both
+ * branches required is never there; and `enclosingSentence` treats a semicolon
+ * as a boundary, so the window it returned held the list limb without the
+ * "means" the guard is anchored on. The policy was reported as having an
+ * arbitration clause "with the seat not specified" — a drafting fix for a
+ * clause it does not contain.
+ */
+describe("CHOICE-006 — a semicolon-separated definition of Claim", () => {
+  const CLAIM_DEFINITION =
+    '"Claim" means a written demand for monetary or non-monetary relief; a civil, criminal, administrative, regulatory, or arbitral proceeding; a formal regulatory investigation of an Insured Person commenced by a Wells notice, target letter, or subpoena; or a books-and-records demand.';
+
+  it("is silent on the definition's list of forums", () => {
+    expect(CHOICE_006.check(buildContext(["D&O Liability Policy", CLAIM_DEFINITION]))).toBeNull();
+  });
+
+  // Load-bearing: the same policy that also AGREES to arbitrate still fires.
+  it("still fires when the document actually agrees to arbitrate", () => {
+    expect(
+      CHOICE_006.check(
+        buildContext([
+          "D&O Liability Policy",
+          CLAIM_DEFINITION,
+          "Any dispute over coverage shall be finally resolved by binding arbitration.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
