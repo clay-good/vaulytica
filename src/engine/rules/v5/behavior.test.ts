@@ -17,6 +17,7 @@
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../../_test-fixtures.js";
 import { V5_RULES } from "./index.js";
+import { analyzeText } from "../../../../tools/cli/api.js";
 
 const rule = (id: string) => {
   const r = V5_RULES.find((x) => x.id === id);
@@ -932,5 +933,72 @@ describe("v5 COMM-231 / COMM-233 — the subscriber's words, not the regulator's
       "You may cancel at any time. Sign in, open Billing and press Cancel subscription — one step. You may also cancel by the same means you used to buy the subscription.",
     );
     expect(rule("COMM-233").check(ok)).toBeNull();
+  });
+});
+
+/**
+ * EMP-142 measures an interval, not a vocabulary.
+ *
+ * The four cases are the whole contract, and two of them were wrong before the
+ * rule was computed: a compliant notice was told at `critical` that it gave no
+ * sixty days, and a ten-day notice that merely SAID "60-day advance notice"
+ * was silent.
+ */
+describe("EMP-142 — sixty-day advance timing", () => {
+  const NOTICE = (dated: string, action: string, extra = "") =>
+    [
+      "WORKER ADJUSTMENT AND RETRAINING NOTIFICATION ACT NOTICE",
+      `Date: ${dated}`,
+      "To: Affected employees of Kestrel Manufacturing, Inc., Plant 3, Akron, Ohio 44305.",
+      "Kestrel Manufacturing, Inc. is providing this notice under the federal Worker Adjustment and Retraining Notification Act, 29 U.S.C. 2101 et seq.",
+      `${extra}The company will permanently close Plant 3. The closing is expected to begin on ${action}. The action is permanent, not a temporary layoff.`,
+      "All 212 positions at Plant 3 will be eliminated. There is no bumping right.",
+      "Questions to Marisol Trent, Director of Human Resources, (330) 555-0148.",
+    ].join("\n\n");
+
+  const emp142 = async (text: string) => {
+    const result = await analyzeText(text, "warn.txt");
+    expect(result.run.playbook_id).toBe("warn-notice");
+    return result.run.findings.find((f) => f.rule_id === "EMP-142") ?? null;
+  };
+
+  it("is silent on a notice that gives ninety days without saying so", async () => {
+    expect(await emp142(NOTICE("September 1, 2026", "November 30, 2026"))).toBeNull();
+  });
+
+  it("fires on a ten-day notice, and names the interval it measured", async () => {
+    const f = await emp142(NOTICE("September 1, 2026", "September 11, 2026"));
+    expect(f?.severity).toBe("critical");
+    expect(f?.title).toBe("Sixty-day advance timing — 10 days given");
+    expect(f?.description).toContain("2026-09-11");
+  });
+
+  it("still fires when the ten-day notice CALLS itself a sixty-day notice", async () => {
+    const f = await emp142(
+      NOTICE(
+        "September 1, 2026",
+        "September 11, 2026",
+        "This is your 60-day advance written notice under the WARN Act. ",
+      ),
+    );
+    expect(f?.title).toBe("Sixty-day advance timing — 10 days given");
+  });
+
+  it("is silent when the notice invokes a § 2102(b) exception", async () => {
+    const f = await emp142(
+      NOTICE(
+        "September 1, 2026",
+        "September 11, 2026",
+        "The period is shortened because of unforeseeable business circumstances: the sole customer cancelled on August 29, 2026. ",
+      ),
+    );
+    expect(f).toBeNull();
+  });
+
+  it("falls back to the words when there is nothing to subtract", async () => {
+    const bare =
+      "WORKER ADJUSTMENT AND RETRAINING NOTIFICATION ACT NOTICE\n\nTo: Affected employees of Kestrel Manufacturing, Inc., Plant 3, Akron, Ohio.\n\nKestrel Manufacturing, Inc. will permanently close Plant 3 and eliminate all 212 positions there. There is no bumping right. Questions to Marisol Trent, Director of Human Resources.\n";
+    const f = await emp142(bare);
+    expect(f?.title).toBe("Sixty-day advance timing — not found");
   });
 });

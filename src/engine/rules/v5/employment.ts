@@ -3,7 +3,10 @@
  * ids continue the EMP namespace at 101.
  */
 
-import type { Rule } from "../../finding.js";
+import type { Finding, Rule, RuleContext } from "../../finding.js";
+import { makeFinding } from "../../finding.js";
+import { forEachParagraph } from "../../../extract/walk.js";
+import { topPosition } from "../_helpers.js";
 import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, irs, practice, stateLaw, usc } from "./_helpers.js";
 
@@ -605,22 +608,6 @@ const CBA = pack("union-cba", C, [
 
 const WARN = pack("warn-notice", C, [
   {
-    id: "EMP-142",
-    name: "Sixty-day advance timing",
-    cite: usc(
-      "29",
-      "2102",
-      "Worker Adjustment and Retraining Notification Act — notice required before plant closings and mass layoffs",
-    ),
-    pat: [
-      /(60|sixty)\s+(calendar\s+)?days/i,
-      /(advance\s+(written\s+)?notice|prior\s+to\s+(the\s+)?(separation|closing|layoff))/i,
-    ],
-    why: "§ 2102 requires 60 days' notice before a covered plant closing or mass layoff, with only three narrow exceptions (faltering company, unforeseeable business circumstances, natural disaster) that must themselves be explained in the notice.",
-    fix: "Give the notice at least 60 days before the first separation, or state the statutory exception relied on and the basis for reducing the period.",
-    sev: "critical",
-  },
-  {
     id: "EMP-143",
     name: "Permanent or temporary and expected separation date",
     cite: cfr("20", "639.7", "WARN regulations — what must the notice contain"),
@@ -812,6 +799,131 @@ const FCRA = pack("background-check-disclosure", C, [
   },
 ]);
 
+/**
+ * EMP-142 — Sixty-day advance timing (critical). COMPUTED, not read.
+ *
+ * The check shipped as a compliance-matrix column, which is a search for
+ * words: `/(60|sixty) (calendar )?days/` OR `/advance (written )?notice/`. A
+ * WARN notice is one of the few documents where that is wrong in BOTH
+ * directions at once.
+ *
+ * It was wrong on the COMPLIANT notice. A plant-closing notice does not do the
+ * arithmetic out loud — it gives its own date and the expected date of the
+ * action and lets the reader subtract. A notice dated September 1 for a
+ * November 30 closing gives NINETY days, exceeds § 2102 outright, and was told
+ * at `critical` that it did not give sixty.
+ *
+ * And it was wrong on the VIOLATING one. A notice handed out ten days before
+ * the plant closes, opening "this is your 60-day advance notice under the WARN
+ * Act", matched both patterns and passed. The column was measuring vocabulary,
+ * and vocabulary is the one thing a ten-day notice gets right.
+ *
+ * § 2102 is a rule about an INTERVAL, so this reads the interval. The notice
+ * date is the earliest resolvable calendar date in the document; the action
+ * date is the latest one standing in a paragraph that names the action — the
+ * closing, the layoff, the separation, the last day of work. Sixty or more
+ * days between them and the check is silent.
+ *
+ * Two deliberate silences:
+ *
+ *   - **A stated statutory exception.** § 2102(b) lets a faltering company, an
+ *     unforeseeable business circumstance, or a natural disaster shorten the
+ *     period. A notice invoking one is not answering this question; EMP-146 is
+ *     the check that asks whether the basis was explained.
+ *   - **Nothing to subtract.** With no pair of resolvable dates the interval is
+ *     unknown, and the check falls back to the words — which is the right
+ *     standard for a notice that states no dates at all, and the only case the
+ *     original patterns were ever right about.
+ */
+const WARN_ACTION_PARAGRAPH =
+  /\b(?:clos(?:ing|ure|e|ed)|layoffs?|laid\s+off|separations?|separated|terminat\w*|reduction\s+in\s+force|last\s+day\s+of\s+(?:work|employment))\b/i;
+
+/** § 2102(b) — the three exceptions that lawfully shorten the period. */
+const WARN_EXCEPTION =
+  /\b(?:faltering\s+compan\w*|unforeseeable\s+business\s+circumstance\w*|natural\s+disaster|2102\s*\(\s*b\s*\))/i;
+
+/** The words the shipped column looked for, kept as the no-dates fallback. */
+const WARN_TIMING_WORDS =
+  /\b(?:60|sixty)\s+(?:calendar\s+)?days\b|\badvance\s+(?:written\s+)?notice\b|\bprior\s+to\s+the\s+(?:separation|closing|layoff)\b/i;
+
+/** § 2102 itself, cited on the finding the way the pack cites its columns. */
+const WARN_2102 = usc(
+  "29",
+  "2102",
+  "Worker Adjustment and Retraining Notification Act — notice required before plant closings and mass layoffs",
+);
+
+const WARN_NOTICE_DAYS = 60;
+const MS_PER_DAY = 86_400_000;
+
+const WARN_ADVANCE_TIMING: Rule = {
+  id: "EMP-142",
+  version: "2.0.0",
+  name: "Sixty-day advance timing",
+  category: C,
+  default_severity: "critical",
+  description:
+    "Measures the interval between the notice date and the expected date of the plant closing or mass layoff against the sixty days § 2102 requires.",
+  dkb_citations: [WARN_2102.id],
+  applies_to_playbooks: ["warn-notice"],
+
+  check(ctx: RuleContext): Finding | null {
+    const paragraphs: { text: string; start: number; end: number }[] = [];
+    forEachParagraph(ctx.tree, (p) =>
+      paragraphs.push({ text: p.text, start: p.start, end: p.end }),
+    );
+    const whole = paragraphs.map((p) => p.text).join(" ");
+    if (WARN_EXCEPTION.test(whole)) return null;
+
+    const calendar = ctx.extracted.dates
+      .filter((d) => d.type === "absolute" && typeof d.iso === "string")
+      .map((d) => ({ d, ms: Date.parse(`${d.iso!}T00:00:00Z`) }))
+      .filter((x) => Number.isFinite(x.ms))
+      .sort((a, b) => a.ms - b.ms);
+
+    const actionParagraphs = paragraphs.filter((p) => WARN_ACTION_PARAGRAPH.test(p.text));
+    const notice = calendar[0];
+    const action = [...calendar]
+      .reverse()
+      .find((x) =>
+        actionParagraphs.some((p) => x.d.position.start >= p.start && x.d.position.end <= p.end),
+      );
+
+    if (!notice || !action || action.ms <= notice.ms) {
+      if (WARN_TIMING_WORDS.test(whole)) return null;
+      return makeFinding({
+        rule: WARN_ADVANCE_TIMING,
+        title: "Sixty-day advance timing — not found",
+        description:
+          "This notice states neither a sixty-day advance period nor a pair of dates from which the period can be computed.",
+        excerptText: paragraphs[0]?.text.slice(0, 200) ?? "",
+        explanation:
+          "§ 2102 requires 60 days' notice before a covered plant closing or mass layoff. A notice that gives no date for the action cannot be measured against that period by its reader either.",
+        recommendation:
+          "State the date of the notice and the expected date of the closing or layoff, or state the statutory exception relied on and the basis for reducing the period.",
+        position: topPosition(ctx),
+        source_citations: [WARN_2102],
+      });
+    }
+
+    const days = Math.round((action.ms - notice.ms) / MS_PER_DAY);
+    if (days >= WARN_NOTICE_DAYS) return null;
+
+    return makeFinding({
+      rule: WARN_ADVANCE_TIMING,
+      title: `Sixty-day advance timing — ${days} days given`,
+      description: `The notice is dated ${notice.d.iso} and the action is expected on ${action.d.iso}, which is ${days} days, not the ${WARN_NOTICE_DAYS} that § 2102 requires.`,
+      excerptText: action.d.raw_text,
+      explanation:
+        "§ 2102 requires 60 days' notice before a covered plant closing or mass layoff, with only three narrow exceptions (faltering company, unforeseeable business circumstances, natural disaster) that must themselves be explained in the notice. This notice states none of them.",
+      recommendation:
+        "Give the notice at least 60 days before the first separation, or state the statutory exception relied on and the basis for reducing the period.",
+      position: action.d.position,
+      source_citations: [WARN_2102],
+    });
+  },
+};
+
 export const V5_EMPLOYMENT_RULES: readonly Rule[] = [
   ...ARBITRATION,
   ...COMMISSION,
@@ -821,5 +933,6 @@ export const V5_EMPLOYMENT_RULES: readonly Rule[] = [
   ...INTERNSHIP,
   ...CBA,
   ...WARN,
+  WARN_ADVANCE_TIMING,
   ...FCRA,
 ];
