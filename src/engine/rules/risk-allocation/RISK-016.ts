@@ -15,7 +15,7 @@ import { emit, enclosingSentence, excerptWindow, firstParagraphMatch } from "../
  */
 export const rule: Rule = {
   id: "RISK-016",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Insurance requirement without coverage minimum",
   category: "risk-allocation",
   default_severity: "warning",
@@ -71,8 +71,19 @@ export const rule: Rule = {
     // dollars" — none of which a bare contract fee matches.
     const COVERAGE_MIN_ANYWHERE =
       /\bper\s+occurrence\b|\bcombined\s+single\s+limit\b|\baggregate\s+(?:limit|of)\b|\bin\s+the\s+aggregate\b|\b(?:limits?|coverage)\b[^.]{0,40}?\$\s*[\d,]+|\b(?:not\s+less\s+than|at\s+least|minimum\s+of)\s+\$\s*[\d,]+|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?\b/i;
+    // The minimum can live in ANOTHER SECTION, and the clause point at it. A
+    // venue rental requires the caterer to "carry THE INSURANCE DESCRIBED IN
+    // SECTION 5", and Section 5 states $1,000,000 per occurrence and
+    // $2,000,000 aggregate — so the requirement has its minimum, one
+    // cross-reference away, and the finding asked the drafter to add a figure
+    // the document already gives. Scoped to the clause's own sentence, so a
+    // paragraph that merely mentions another section elsewhere is untouched.
+    const MINIMUM_BY_CROSS_REFERENCE =
+      /\b(?:insurance|coverages?|limits?|policies)\b[^.]{0,40}?\b(?:described|set\s+forth|required|specified|listed|provided\s+for)\s+(?:in|under|by)\s+(?:this\s+)?(?:Section|Article|Exhibit|Schedule|Annex|Appendix|Paragraph|Clause)\b/i;
+    const sentence = enclosingSentence(hit.text, hit.match.index);
     if (
-      COVERAGE_MIN.test(enclosingSentence(hit.text, hit.match.index)) ||
+      COVERAGE_MIN.test(sentence) ||
+      MINIMUM_BY_CROSS_REFERENCE.test(sentence) ||
       COVERAGE_MIN_ANYWHERE.test(hit.text)
     )
       return null;

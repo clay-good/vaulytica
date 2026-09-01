@@ -169,7 +169,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // one out in tiered day windows — it wanted the words "cancellation fee".
   "venue-rental.txt": {
     playbook: "venue-rental-agreement",
-    findings: ["RISK-015", "RISK-016", "OBLI-005", "RISK-010", "RISK-011", "RISK-013", "TEMP-002"],
+    // RISK-016 came off in v9.336.0: the caterer's insurance requirement
+    // points at Section 5, which states $1,000,000 per occurrence and
+    // $2,000,000 in the aggregate, so the minimum was one cross-reference
+    // away and the finding asked for a figure the document already gives.
+    findings: ["RISK-015", "OBLI-005", "RISK-010", "RISK-011", "RISK-013", "TEMP-002"],
   },
   // An equipment finance agreement — a loan secured by the equipment, which
   // the document says in terms ("This Agreement is a loan secured by the

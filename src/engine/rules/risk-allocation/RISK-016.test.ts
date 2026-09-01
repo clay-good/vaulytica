@@ -146,3 +146,44 @@ describe("RISK-016 v1.3.0 — personal health coverage is not a coverage require
     ).not.toBeNull();
   });
 });
+
+/**
+ * The minimum can live in ANOTHER SECTION (v1.5.0).
+ *
+ * A venue rental requires the caterer to "carry THE INSURANCE DESCRIBED IN
+ * SECTION 5", and Section 5 states $1,000,000 per occurrence and $2,000,000 in
+ * the aggregate. The requirement has its minimum, one cross-reference away,
+ * and the finding asked the drafter to add a figure the document already
+ * gives.
+ */
+describe("RISK-016 — a coverage minimum stated by cross-reference", () => {
+  it.each([
+    [
+      "a section",
+      "The caterer shall carry the insurance described in Section 5 and shall name Venue as an additional insured.",
+    ],
+    [
+      "an exhibit",
+      "Contractor shall maintain the insurance coverages set forth in Exhibit B throughout the term.",
+    ],
+    [
+      "a required-by form",
+      "Vendor shall procure the insurance required by Section 9.3 before commencing work.",
+    ],
+  ])("is silent where the clause points at %s", (_label, clause) => {
+    expect(RISK_016.check(buildContext(["Venue Rental Agreement", clause]))).toBeNull();
+  });
+
+  // Load-bearing: an insurance mandate that points nowhere and states nothing
+  // still reports.
+  it("still reports a mandate with no minimum and no cross-reference", () => {
+    expect(
+      RISK_016.check(
+        buildContext([
+          "Property Management Agreement",
+          "Owner shall maintain property and commercial general liability insurance covering the Property, naming Manager as an additional insured.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
