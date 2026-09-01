@@ -1,0 +1,35 @@
+INDEMNITY AGREEMENT
+
+This Indemnity Agreement (this "Agreement") is made as of April 14, 2026 between Kestrel Development Partners, LLC, an Ohio limited liability company (the "Indemnitee"), and Meridian Steel Erectors, Inc., an Ohio corporation (the "Indemnitor").
+
+RECITALS
+
+The Indemnitee owns the property at 1400 Foundry Road, Akron, Ohio. The Indemnitor is performing structural steel erection at that property under a subcontract dated March 30, 2026. The parties are entering into this Agreement to allocate the risk of loss arising from that work.
+
+1. INDEMNITY. The Indemnitor will indemnify, defend, and hold harmless the Indemnitee and its members, managers, officers, employees, and agents (each an "Indemnified Party") from and against any and all claims, demands, actions, causes of action, losses, damages, liabilities, fines, penalties, judgments, settlements, and expenses, including reasonable attorneys' fees and the costs of investigation and defense (collectively, "Losses"), arising out of or resulting from:
+   (a) bodily injury to or death of any person, or damage to or destruction of any property, arising out of the Indemnitor's performance of the work;
+   (b) any breach by the Indemnitor of the subcontract or of any representation in it;
+   (c) any lien or claim asserted against the property by any person supplying labor or materials through the Indemnitor; and
+   (d) any violation by the Indemnitor of any law, ordinance, or regulation.
+
+2. COMPARATIVE FAULT LIMITATION. The Indemnitor's obligation under Section 1 does NOT extend to Losses caused by the sole negligence or wilful misconduct of an Indemnified Party. Where an Indemnified Party's own negligence contributes to a Loss, the Indemnitor's obligation is reduced in proportion to the Indemnified Party's share of fault. This Section is intended to keep this Agreement within the limits of Ohio Revised Code § 2305.31, which voids an agreement to indemnify a party against liability for harm caused by that party's own negligence in a construction contract.
+
+3. DUTY TO DEFEND. The duty to defend is independent of and broader than the duty to indemnify, and arises on tender of a claim that is potentially within Section 1, whether or not the claim is groundless, false, or fraudulent.
+
+4. NOTICE AND CONTROL. An Indemnified Party will give the Indemnitor written notice of a claim within thirty (30) days of learning of it. A failure to give timely notice relieves the Indemnitor only to the extent it is actually prejudiced. The Indemnitor controls the defense with counsel reasonably acceptable to the Indemnified Party, and the Indemnified Party may participate at its own expense.
+
+5. SETTLEMENT. The Indemnitor may not settle a claim without the Indemnified Party's prior written consent unless the settlement is solely for money the Indemnitor pays in full, releases every Indemnified Party unconditionally, and includes no admission of fault by, and no injunctive relief against, any Indemnified Party.
+
+6. INSURANCE. The Indemnitor maintains commercial general liability insurance of not less than $2,000,000 per occurrence and $4,000,000 aggregate, umbrella coverage of not less than $5,000,000, and workers' compensation at statutory limits. Each policy names each Indemnified Party as an ADDITIONAL INSURED on a primary and non-contributory basis, on ISO form CG 20 10 04 13 and CG 20 37 04 13 or their equivalent, and each policy carries a WAIVER OF SUBROGATION in favor of each Indemnified Party. The insurance is in addition to and not in satisfaction of the indemnity, and the indemnity is not limited to the amount of insurance.
+
+7. NO CAP. The Indemnitor's obligations under this Agreement are not subject to any limitation of liability, cap, or exclusion of consequential damages in the subcontract or in any other agreement between the parties.
+
+8. SURVIVAL. This Agreement survives completion of the work, final payment, and termination of the subcontract, and continues for the applicable statute of repose.
+
+9. GOVERNING LAW. Ohio law governs. Venue lies in the Court of Common Pleas of Summit County, Ohio.
+
+KESTREL DEVELOPMENT PARTNERS, LLC          MERIDIAN STEEL ERECTORS, INC.
+
+By: /s/ Marisol Trent                      By: /s/ Devon Achebe
+Name: Marisol Trent                        Name: Devon Achebe
+Title: Manager                             Title: President

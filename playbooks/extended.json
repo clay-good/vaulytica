@@ -9404,7 +9404,6 @@
         "waiver of subrogation"
       ],
       "negative_features": [
-        "hold harmless",
         "declarations",
         "endorsement",
         "section 145",
@@ -9420,7 +9419,20 @@
       "Indemnitee",
       "Loss"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "ANTI-INDEMNITY-STATE",

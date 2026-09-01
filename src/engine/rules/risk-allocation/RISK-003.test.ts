@@ -31,3 +31,41 @@ describe("RISK-003 — indemnity cap present", () => {
     ).toBeNull();
   });
 });
+
+/**
+ * "NOT limited to" is the OPPOSITE of a cap (v1.3.0).
+ *
+ * A construction indemnity closes its insurance section "the insurance is in
+ * addition to and not in satisfaction of the indemnity, and THE INDEMNITY IS
+ * NOT LIMITED TO the amount of insurance" — and the `limited to` branch
+ * carried no negation guard, so the same run reported both "Indemnity cap
+ * stated" and "Indemnification without aggregate cap" about a document whose
+ * next section is headed NO CAP.
+ */
+describe("RISK-003 — a cap phrase that inverts under negation", () => {
+  it.each([
+    [
+      "not limited to",
+      "The insurance is in addition to the indemnity, and the indemnity is not limited to the amount of insurance.",
+    ],
+    ["never capped at", "The Indemnitor's obligation is never capped at the policy limits."],
+  ])("is silent on %s", (_label, clause) => {
+    expect(RISK_003.check(buildContext(["Indemnity Agreement", clause]))).toBeNull();
+  });
+
+  // Load-bearing: "shall NOT EXCEED" is a cap and must keep matching, and so
+  // must the unnegated forms.
+  it.each([
+    [
+      "not exceed",
+      "The Indemnitor's indemnification obligations shall not exceed $2,000,000 in the aggregate.",
+    ],
+    [
+      "limited to",
+      "The indemnity is limited to the amount of the insurance proceeds actually received.",
+    ],
+    ["capped at", "The indemnity is capped at the Contract Sum."],
+  ])("still reports %s", (_label, clause) => {
+    expect(RISK_003.check(buildContext(["Indemnity Agreement", clause]))).not.toBeNull();
+  });
+});

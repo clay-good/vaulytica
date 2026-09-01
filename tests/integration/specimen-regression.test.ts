@@ -3152,6 +3152,41 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A standalone COMMERCIAL indemnity — a subcontractor indemnifying a
+  // developer, with the comparative-fault limitation that keeps it inside Ohio
+  // Rev. Code § 2305.31, additional-insured endorsements by ISO form number,
+  // and a section headed NO CAP.
+  //
+  // The same run reported both "Indemnity cap stated" and "Indemnification
+  // without aggregate cap". RISK-003's `limited to` branch carried no negation
+  // guard, and the sentence it matched is "the indemnity is NOT LIMITED TO the
+  // amount of insurance" — the opposite of a cap. Only the phrases that INVERT
+  // under negation are now guarded; "shall NOT EXCEED" is a cap and keeps
+  // matching, which the rule's tests assert.
+  //
+  // The family also had an EMPTY `rule_overrides` while all three of its
+  // siblings — `director-indemnification-agreement`, `hold-harmless-agreement`,
+  // `covenant-not-to-sue` — decline the same commercial checks. A pure
+  // indemnity has no payment terms, no IP allocation, no limitation of
+  // liability, and is not terminated for cause; it survives.
+  //
+  // `self-penalizing-features` then caught the third defect, which only became
+  // visible once the family had a document: `indemnification-agreement` listed
+  // "HOLD HARMLESS" as a NEGATIVE feature. That is one third of the standard
+  // triad — "indemnify, defend, and hold harmless" — and appears in every
+  // indemnity clause there is, so the family was penalizing its own document's
+  // most characteristic phrase. The discriminator for
+  // `hold-harmless-agreement` is its TITLE, not a phrase both families carry.
+  //
+  // RISK-015 stays ON deliberately: an uncapped indemnity is the substantive
+  // point of reviewing one, and a negotiated commercial indemnity often IS
+  // capped, so the check still discriminates. INS-017 is right — the procedure
+  // gives notice, control, and settlement consent but no cooperation covenant.
+  "commercial-indemnity-agreement.txt": {
+    playbook: "indemnification-agreement",
+    findings: ["INS-017", "RISK-015", "TEMP-012", "OBLI-002", "OBLI-005", "RISK-010", "TEMP-007"],
+  },
+
   // A processor-to-SUB-PROCESSOR agreement under Article 28(4) — the downstream
   // half of a DPA, which answers two Article 28 questions differently from the
   // upstream half, and both answers were read as absences at `critical`.
