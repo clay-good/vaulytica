@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  GOVERNING_LAW_PRESENT,
   allMatches,
   enclosingSentence,
   firstParagraphMatch,
@@ -664,5 +665,27 @@ describe("amendsParentAgreement — a document that supplements a named parent",
         ),
       ),
     ).toBe(false);
+  });
+});
+
+describe("GOVERNING_LAW_PRESENT — the adjectival form six rulesets missed", () => {
+  const hit = (t: string) => GOVERNING_LAW_PRESENT.some((p) => p.test(t));
+
+  it("reads the adjectival form a short agreement uses", () => {
+    expect(hit("Delaware law governs this Agreement.")).toBe(true);
+    expect(hit("This Agreement is governed by New York law.")).toBe(true);
+    expect(hit("Ohio law shall govern.")).toBe(true);
+  });
+
+  it("still reads the canonical form", () => {
+    expect(hit("This Agreement is governed by the laws of the State of Delaware.")).toBe(true);
+    expect(hit("12. Governing Law. …")).toBe(true);
+  });
+
+  it("does not read an ordinary sentence about law", () => {
+    // The adjectival branches are case-SENSITIVE: the jurisdiction is a proper
+    // noun, and under `i` the leading [A-Z] would match any word at all.
+    expect(hit("The parties shall comply with applicable law.")).toBe(false);
+    expect(hit("federal law applies to the extent it preempts.")).toBe(false);
   });
 });

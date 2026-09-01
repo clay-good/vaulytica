@@ -11,6 +11,7 @@
  * `GOVERNANCE_RULES`.
  */
 
+import { GOVERNING_LAW_PRESENT } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
@@ -962,6 +963,7 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-042",
+    version: "1.1.0",
     name: "Governing law and forum",
     description: "Governing-law and forum selection are baseline.",
     citation: dgcl("115"),
@@ -972,7 +974,9 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
       "DGCL § 115 permits Delaware-forum selection for internal-affairs claims. The stockholders' agreement should pick a governing law and forum.",
     recommendation:
       "Add 'Governing Law' (Delaware) and 'Exclusive Forum' (Delaware Chancery) clauses.",
-    present_patterns: [/governing\s+law/i, /governed\s+by\s+the\s+laws/i],
+    // The shared set, which reads the ADJECTIVAL form this rule missed:
+    // "Delaware law governs this Agreement".
+    present_patterns: [...GOVERNING_LAW_PRESENT],
   }),
 ];
 

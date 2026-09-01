@@ -11,6 +11,7 @@
  * `applies_to_playbooks` restricts execution.
  */
 
+import { GOVERNING_LAW_PRESENT } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildV4PresenceRule,
@@ -220,6 +221,7 @@ const SAFE_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-009",
+    version: "1.1.0",
     name: "Governing law and forum (Delaware)",
     description: "YC SAFE governing law is Delaware unless modified.",
     citation: ycSafe("post-money"),
@@ -229,7 +231,9 @@ const SAFE_RULES: Rule[] = [
     explanation:
       "YC templates govern by Delaware law. Silence creates ambiguity about which corporate-law regime controls conversion mechanics.",
     recommendation: "Add 'Governing Law' selecting Delaware.",
-    present_patterns: [/governing\s+law/i, /governed\s+by\s+the\s+laws/i],
+    // The shared set, which reads the ADJECTIVAL form this rule missed:
+    // "Delaware law governs this Agreement".
+    present_patterns: [...GOVERNING_LAW_PRESENT],
     default_severity: "warning",
   }),
 ];

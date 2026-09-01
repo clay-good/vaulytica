@@ -866,6 +866,31 @@ export function borrowsParentVocabulary(ctx: RuleContext): boolean {
   );
 }
 
+/**
+ * The GOVERNING-LAW clause, as a presence-pattern set.
+ *
+ * Six rulesets have now been found carrying their own narrower copy of this —
+ * CHOICE-001, NDA-D-017/018, MNA-019, DPA-046, GOV-042 and EQT-009 — and every
+ * one of them missed the same thing: the ADJECTIVAL form. "Delaware law
+ * governs this Agreement" and "governed by New York law" name the jurisdiction
+ * as an adjective on the word "law" rather than as "the laws OF X", and a
+ * short agreement writes it that way far more often than a long one does.
+ *
+ * `src/extract/jurisdictions.ts` has read both forms since v1 and reads ten
+ * more besides; a rule that only needs to know whether the clause is PRESENT
+ * should prefer `ctx.extracted.jurisdictions`, as CHOICE-001 does. This exists
+ * for the presence rules that cannot, so that the seventh copy is this one.
+ *
+ * The adjectival branches are case-SENSITIVE because the jurisdiction is a
+ * proper noun; under `i` the leading `[A-Z]` would match any word at all.
+ */
+export const GOVERNING_LAW_PRESENT: readonly RegExp[] = [
+  /governing\s+law/i,
+  /governed\s+by\s+the\s+laws/i,
+  /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))/,
+  /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
+];
+
 export function amendsParentAgreement(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
   const named = isAllCaps(text)

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LAUNCH_RULES } from "../engine/rules/index.js";
 import { PNOT_RULES, pnotRulesForRegimes } from "../engine/rules/privacy-notice/rules.js";
+import type { Rule } from "../engine/finding.js";
 import { activatePrivacyNotice } from "./activate.js";
 import { buildRegimeCoverage } from "./coverage.js";
 import { REGIME_IDS } from "./regime-data.js";

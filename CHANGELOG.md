@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.288.0] — 2026-08-31
+
+### Fixed
+- **The fifth and sixth rulesets carrying their own narrower copy of the
+  governing-law clause.** A sweep of every v4 and v5 presence rule for one that
+  reads "governed by the laws of the State of Delaware" but not "Delaware law
+  governs this Agreement" found GOV-042 and EQT-009, after CHOICE-001,
+  NDA-D-017/018, MNA-019 and DPA-046. Both now use a single shared
+  `GOVERNING_LAW_PRESENT` set, so the seventh copy is that one — and its
+  doc-comment points a rule that only needs to know whether the clause is
+  present at `ctx.extracted.jurisdictions`, which has read the adjectival form
+  and ten others since v1.
+
 ## [9.287.0] — 2026-08-31
 
 ### Fixed
