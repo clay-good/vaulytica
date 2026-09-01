@@ -57,6 +57,15 @@ const FOR_CAUSE = new RegExp(
   // "terminate immediately upon written notice" carries no list.
   String.raw`${TERMINATE}[^.]{0,60}\b(?:immediately|forthwith|at\s+once)\b[^.]{0,60}?\bupon\b[^.:]{0,30}?:` +
     "|" +
+    // The same enumeration written INLINE, with "for" and commas instead of
+    // "upon" and a colon: "Plan may terminate immediately FOR Provider's loss
+    // of licensure, exclusion from a federal health care program, OR conduct
+    // posing an imminent risk to Members." A participating provider agreement
+    // with a full termination section was told it states no path to terminate
+    // for cause. The comma-then-"or" is what makes this a list of GROUNDS —
+    // "terminate immediately for convenience" carries none and still reports.
+    String.raw`${TERMINATE}[^.]{0,60}\b(?:immediately|forthwith|at\s+once)\b[^.]{0,40}?\bfor\b[^.]{0,90}?,[^.]{0,90}?\bor\b` +
+    "|" +
     String.raw`${TERMINATE}[^.]{0,80}\bupon\s+the\s+occurrence\s+of\s+any\s+of\s+the\s+following\b` +
     "|" +
     String.raw`${TERMINATE}[^.]{0,120}\bfor\s+cause\b` +
@@ -127,7 +136,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

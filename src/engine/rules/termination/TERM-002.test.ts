@@ -317,3 +317,46 @@ describe("TERM-002 — a published program's for-cause clause", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * The enumeration of cause grounds written INLINE (v1.12.0).
+ *
+ * A regulated-services agreement names its grounds rather than saying
+ * "material breach", and it does not always set them out as a colon-
+ * introduced list. "Plan may terminate immediately FOR Provider's loss of
+ * licensure, exclusion from a federal health care program, OR conduct posing
+ * an imminent risk to Members" is one sentence with three grounds in it, and
+ * a participating provider agreement with a full termination section was told
+ * it states no path to terminate for cause.
+ *
+ * The comma-then-"or" is what makes this a list of grounds rather than a
+ * convenience clause.
+ */
+describe("TERM-002 — cause grounds enumerated inline", () => {
+  const doc = (...paras: string[]) => buildContext(["Agreement", ...paras]);
+
+  it.each([
+    [
+      "a provider agreement",
+      "Plan may terminate immediately for Provider's loss of licensure, exclusion from a federal health care program, or conduct posing an imminent risk to Members.",
+    ],
+    [
+      "a lender's grounds",
+      "Lender may terminate the commitment forthwith for Borrower's insolvency, a judgment in excess of $500,000, or the loss of any material permit.",
+    ],
+  ])("is satisfied by %s", (_label, text) => {
+    expect(TERM_002.check(doc(text))).toBeNull();
+  });
+
+  // Load-bearing: an immediate CONVENIENCE right carries no list of grounds
+  // and is exactly what the rule exists to report.
+  it.each([
+    ["termination for convenience", "Either party may terminate immediately for convenience."],
+    [
+      "an immediate right with no grounds at all",
+      "Plan may terminate this Agreement immediately on written notice to Provider.",
+    ],
+  ])("still fires on %s", (_label, text) => {
+    expect(TERM_002.check(doc(text))).not.toBeNull();
+  });
+});

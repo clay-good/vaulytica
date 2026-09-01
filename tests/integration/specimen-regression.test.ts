@@ -2751,6 +2751,61 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "RISK-010", "RISK-011"],
   },
 
+  // An Ohio exclusive-right-to-sell listing agreement with the protection
+  // period, the agency and dual-agency disclosure, fair housing, the
+  // negotiable-commission statement, and the MLS opt-out. Nothing was wrong.
+  "listing-agreement-exclusive-right.txt": {
+    playbook: "listing-agreement",
+    findings: ["OBLI-005", "TEMP-006", "TEMP-007"],
+  },
+
+  // An ISO CG 20 10 additional-insured endorsement — the schedule, the
+  // ongoing-operations grant, the completed-operations exclusions, primary
+  // and non-contributory, and the excess clause.
+  //
+  // INS-012 is a KNOWN false accusation, filed as task_5a6a52d5 rather than
+  // guessed at: it asks this endorsement to be a DIFFERENT endorsement. Its
+  // own name says "(where required by contract)" and its description states a
+  // condition, but it is an ungated presence check, so it fires on every
+  // endorsement that is not itself a waiver of subrogation. Whether the
+  // family reviews one endorsement or a package is a product decision.
+  "insurance-endorsement-additional-insured.txt": {
+    playbook: "insurance-endorsement",
+    findings: ["INS-012"],
+  },
+
+  // An Ohio participating provider agreement — credentialing, prompt pay with
+  // the ORC interest cite, the hold-harmless that survives insolvency, the
+  // anti-gag clause, continuity of care, and a BAA by reference.
+  //
+  // TERM-002 reported no termination-for-cause clause on § 9: "Plan may
+  // terminate immediately for Provider's loss of licensure, exclusion from a
+  // federal health care program, or conduct posing an imminent risk to
+  // Members." A regulated-services agreement names its grounds instead of
+  // saying "material breach", and the branch that reads an enumeration wanted
+  // a colon-introduced list. This one is inline, with commas and an "or".
+  //
+  // STRUCT-018 is correct: none of the three exhibits is attached, which is
+  // what a specimen of a document that lives on its exhibits looks like.
+  //
+  // The draft originally left "Covered Services" undefined and STRUCT-006
+  // said so. It is defined now, because the undefined version was carrying a
+  // defect the document should not have: a real participating provider
+  // agreement defines the term its every obligation turns on, and a specimen
+  // is only worth what it tells you about a correct document.
+  "payer-provider-participation.txt": {
+    playbook: "payer-provider-agreement",
+    findings: [
+      "STRUCT-018",
+      "CHOICE-003",
+      "OBLI-005",
+      "RISK-010",
+      "TEMP-006",
+      "TEMP-007",
+      "TERM-001",
+    ],
+  },
+
   // A payment and performance bond from a surety to a school district. Two
   // defects, both about the oldest document shapes there are.
   //
