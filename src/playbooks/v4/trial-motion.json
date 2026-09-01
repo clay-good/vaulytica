@@ -1,6 +1,6 @@
 {
   "id": "trial-motion",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Trial Motion (filing-format)",
   "description": "A trial-court motion. Selects the filing-format-lint pack when a court profile is chosen via --court; dormant otherwise. Contract-lint rules are suppressed as on generic-fallback.",
   "match_features": {
@@ -19,7 +19,11 @@
       "proposed order",
       "memorandum in support",
       "the court should grant",
-      "wherefore"
+      "wherefore",
+      "moves the court",
+      "moves this court",
+      "asks the court",
+      "in support of this motion"
     ],
     "negative_features": [
       "this agreement",

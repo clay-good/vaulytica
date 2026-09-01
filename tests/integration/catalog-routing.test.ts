@@ -912,6 +912,21 @@ describe("no family claims a document that is nobody's", () => {
     ...BARE_COMMERCIAL,
     ...BARE_EVERYDAY,
     ...BARE_SPECIALIST,
+    // A plainly-drafted motion to compel. `trial-motion`'s phrases were the
+    // formal components of a filed motion — "points and authorities",
+    // "declaration in support", "proposed order", "wherefore" — so a motion
+    // that just states what it wants scored its title and nothing else. The
+    // consequence reaches past the finding list: `--court` scopes the filing
+    // format lint to three families, so a motion that cannot route to one of
+    // them cannot be format-linted at all, however the user invokes the tool.
+    {
+      id: "trial-motion",
+      title: "MOTION TO COMPEL DISCOVERY",
+      body: [
+        "Plaintiff Wrenfield Audio Labs, Inc. moves the Court to compel Defendant Thistledown Robotics, Inc. to produce the documents requested in Plaintiff's First Request for Production.",
+        "In support of this motion, Plaintiff states that it served the requests on March 3, 2026 and Defendant has produced nothing.",
+      ],
+    },
   ])(
     "a bad document still reaches $id",
     ({ id, title, body }) => {

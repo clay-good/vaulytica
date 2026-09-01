@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.287.0] — 2026-08-31
+
+### Fixed
+- **A plainly-drafted motion to compel could not be format-linted at all.**
+  `trial-motion`'s distinguishing phrases were the formal components of a filed
+  motion — "points and authorities", "declaration in support", "proposed
+  order", "memorandum in support", "wherefore" — so a motion that simply states
+  what it wants scored its title and nothing else and fell to
+  `generic-fallback`. `--court` scopes the filing format lint to three
+  families, so no invocation could reach it. The same motion now routes at 0.7
+  and `--court frap-default` draws all eight FILE checks.
+
+### Changed
+- Checked the other two flag-gated packs for the same "second, invisible gate".
+  The estate pack is sound: a bare will routes to `last-will-and-testament` and
+  `--estate-checks --state OH` draws eight EST findings including the missing
+  attestation clause and the missing witness blocks.
+
 ## [9.286.0] — 2026-08-31
 
 ### Fixed
