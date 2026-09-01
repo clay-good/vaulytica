@@ -222,6 +222,24 @@ const EXTERNAL_INSTRUMENT_RE =
 // contract that numbers its own sections 101, 102 and writes "Section 101(a)"
 // is untouched unless it also names one.
 const STATUTE_SUBSECTION_LABEL = /^\d{2,4}\([a-z]\)/;
+/**
+ * The code declared by CHAPTER rather than by section.
+ *
+ * "The Developer submits the land to the condominium form of ownership under
+ * CHAPTER 718, FLORIDA STATUTES (the 'Condominium Act')" is how a Florida
+ * declaration names the statute it is written under, and every later citation
+ * is a bare "section 718.110(4)". Neither declaration recognizer saw it: one
+ * wants "Section N of the … Code" and the other "Code … section N", and this
+ * names no section at all. A textbook Declaration of Condominium reported
+ * TWELVE broken internal references to sections no declaration has.
+ *
+ * The chapter number is captured so the siblings that share its prefix are
+ * covered by the `declaresCode` floor below, and the code noun is required so
+ * "Chapter 11 of this Agreement" is not a statutory declaration.
+ */
+const STATUTE_CHAPTER_DECLARATION =
+  /\b(?:Chapter|Title|Article|Division|Part)\s+[\w.-]+\s*,?\s+(?:of\s+(?:the\s+)?)?(?:[A-Z][\w.'’]*\s+){0,4}(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)\b(?:\s+Annotated)?/g;
+
 const NAMES_A_CODE =
   /\b(?:Internal\s+Revenue\s+Code|Bankruptcy\s+Code|Uniform\s+Commercial\s+Code|Securities\s+Act|Exchange\s+Act|ERISA|U\.S\.C\.|C\.F\.R\.)\b/;
 
@@ -407,6 +425,8 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       statutoryLabels.add(sm[1]!.toUpperCase());
       declaresCode = true;
     }
+    STATUTE_CHAPTER_DECLARATION.lastIndex = 0;
+    if (STATUTE_CHAPTER_DECLARATION.test(ctx.text)) declaresCode = true;
     STATUTE_LABEL_DECLARATION_LEADING.lastIndex = 0;
     let lm: RegExpExecArray | null;
     while ((lm = STATUTE_LABEL_DECLARATION_LEADING.exec(ctx.text)) !== null) {

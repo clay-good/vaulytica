@@ -1292,3 +1292,46 @@ describe("a decimal-numbered code named before its section", () => {
     expect(got.some((r) => r.unresolved)).toBe(true);
   });
 });
+
+/**
+ * The code declared by CHAPTER rather than by section.
+ *
+ * "The Developer submits the land to the condominium form of ownership under
+ * CHAPTER 718, FLORIDA STATUTES" is how a Florida declaration names the
+ * statute it is written under, and every later citation is a bare "section
+ * 718.110(4)". Neither declaration recognizer saw it: one wants "Section N of
+ * the … Code" and the other "Code … section N", and this names no section at
+ * all. A textbook Declaration of Condominium reported TWELVE broken internal
+ * references to sections no declaration has.
+ */
+describe("a code declared by its chapter", () => {
+  const refs = (...paras: string[]) => {
+    const t = buildTree(["Declaration of Condominium", ...paras]);
+    return extractCrossRefs(t, extractSections(t));
+  };
+
+  it.each([
+    [
+      "Florida Statutes",
+      "The Developer submits the land to the condominium form of ownership under Chapter 718, Florida Statutes.",
+    ],
+    ["a state code", "This instrument is given under Chapter 5312 of the Ohio Revised Code."],
+    ["a title", "The Company is organized under Title 8 of the Delaware Code."],
+  ])("reads the bare siblings once the code is declared by %s", (_label, declaration) => {
+    const got = refs(
+      declaration,
+      "An unpaid assessment bears interest at 18% per annum, as section 718.116(3) permits.",
+      "The association will have a structural integrity reserve study performed as section 718.112(2)(g) requires.",
+    );
+    expect(got.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual([]);
+  });
+
+  // "Chapter 11 of this Agreement" names no code and declares nothing.
+  it("does not treat a document's own chapter as a code declaration", () => {
+    const got = refs(
+      "The obligations in Chapter 11 of this Agreement survive termination.",
+      "The remedies in Section 412 apply to every breach.",
+    );
+    expect(got.some((r) => r.unresolved)).toBe(true);
+  });
+});
