@@ -24,8 +24,7 @@ export const rule: Rule = {
   name: "Auto-renewal notice window shorter than 30 days",
   category: "temporal",
   default_severity: "warning",
-  description:
-    "Flags auto-renewal clauses whose non-renewal notice window is fewer than 30 days.",
+  description: "Flags auto-renewal clauses whose non-renewal notice window is fewer than 30 days.",
   dkb_citations: ["stat-16-cfr-425"],
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(ctx, /(?:automatically|automatic|auto-?)\s+renew/i);
@@ -147,11 +146,27 @@ carrying the compliant clause, so the repair stays repaired.
 
 ## 4b. Write the document, then run the CLI on it
 
-Every rule defect worth fixing in the last four sessions was found the same
-way: **write a realistic document of a family that has no specimen yet, run
-`node bin/vaulytica.mjs analyze` on it, and read what comes back.** None was
-reachable from the unit suite — fixtures are shorter, cleaner and more
-cooperative than anything a lawyer would actually upload.
+Every rule defect worth fixing in the last several sessions was found the same
+way: **write a realistic document, run `node bin/vaulytica.mjs analyze` on it,
+and read what comes back.** None was reachable from the unit suite — fixtures
+are shorter, cleaner and more cooperative than anything a lawyer would actually
+upload.
+
+Every family now has a specimen, so there are two ways left to pick the
+document, and both keep paying:
+
+- **A JURISDICTION VARIANT of a family that already has one.** A family's
+  vocabulary is the vocabulary of the one document somebody wrote for it, and
+  that document came from one state. The corpus's preliminary-notice specimen
+  was Californian, so the family knew "preliminary notice" and "mechanic's
+  lien" and had never heard of Ohio's "Notice of Furnishing" or its
+  "mechanics' lien". Its discovery specimens were federal, so a California
+  Demand for Inspection under CCP § 2031.010 found two more. A Louisiana Act of
+  Cash Sale — a civil-law state, where the words differ entirely — found three.
+- **The SAME document from the other side, or in the other posture.** A
+  processor-to-sub-processor DPA answers Article 28 differently from a
+  controller-to-processor one; a secondary stock sale is not an acquisition; a
+  closing letter is not an engagement letter.
 
 ```bash
 node bin/vaulytica.mjs analyze tests/fixtures/specimens/<your-doc>.txt
@@ -167,16 +182,21 @@ activates six other whole-corpus guards for that family at once —
 
 What to look for in the output, in the order it usually appears:
 
-| Symptom | Class | Where the fix goes |
-| --- | --- | --- |
-| Wrong `playbook_id` | the family penalizes its own vocabulary, or a rival's phrase has a high base rate | `src/playbooks/*/**.json` `match_features` |
-| A `warning` for a clause this document type never carries | the family shipped with empty `rule_overrides` | copy the nearest sibling's skip profile |
-| A rule reports a clause missing that is plainly there | rigid adjacency, the plural, or somebody else's vocabulary | the rule's `present_patterns` |
-| A rule reports the OPPOSITE of what the document says | a carve-out or a causative read as a denial | `expressDenial` / the rule's disclaimer test |
-| The family matched the title EXACTLY and still lost | a title match is worth 0.3 against a 0.5 threshold, so a family whose `distinguishing_phrases` never occur in a real document of its kind can never be selected at all | rewrite the phrases in the register the document is actually drafted in, then check their base rate against the specimen corpus |
-| A whole pack from another regime fires | `applies_to_playbooks` scope creep — the pack was added to a family in a different jurisdiction | narrow the pack's playbook list; cross-check the family's `regulator_frame` and `applicable_jurisdictions` |
-| The family exists for this document and something else won | the title keywords are exact FULL titles, and a real document interleaves them — "RELOCATION ASSISTANCE AND REPAYMENT AGREEMENT" matches neither "relocation assistance agreement" nor "relocation repayment agreement" | add the short distinctive CORE ("relocation assistance", "flat fee") beside the full titles |
-| A clause is plainly deficient and NOTHING fires | the check cannot fail — see §4d | the pillar with no word boundary, or the locator joined by an `OR` |
+| Symptom                                                                  | Class                                                                                                                                                                                                                                              | Where the fix goes                                                                                                                                                                                        |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wrong `playbook_id`                                                      | the family penalizes its own vocabulary, or a rival's phrase has a high base rate                                                                                                                                                                  | `src/playbooks/*/**.json` `match_features`                                                                                                                                                                |
+| A `warning` for a clause this document type never carries                | the family shipped with empty `rule_overrides`                                                                                                                                                                                                     | copy the nearest sibling's skip profile                                                                                                                                                                   |
+| A rule reports a clause missing that is plainly there                    | rigid adjacency, the plural, or somebody else's vocabulary                                                                                                                                                                                         | the rule's `present_patterns`                                                                                                                                                                             |
+| A rule reports the OPPOSITE of what the document says                    | a carve-out or a causative read as a denial                                                                                                                                                                                                        | `expressDenial` / the rule's disclaimer test                                                                                                                                                              |
+| The family matched the title EXACTLY and still lost                      | a title match is worth 0.3 against a 0.5 threshold, so a family whose `distinguishing_phrases` never occur in a real document of its kind can never be selected at all                                                                             | rewrite the phrases in the register the document is actually drafted in, then check their base rate against the specimen corpus                                                                           |
+| A whole pack from another regime fires                                   | `applies_to_playbooks` scope creep — the pack was added to a family in a different jurisdiction                                                                                                                                                    | narrow the pack's playbook list; cross-check the family's `regulator_frame` and `applicable_jurisdictions`                                                                                                |
+| The family exists for this document and something else won               | the title keywords are exact FULL titles, and a real document interleaves them — "RELOCATION ASSISTANCE AND REPAYMENT AGREEMENT" matches neither "relocation assistance agreement" nor "relocation repayment agreement"                            | add the short distinctive CORE ("relocation assistance", "flat fee") beside the full titles                                                                                                               |
+| A clause is plainly deficient and NOTHING fires                          | the check cannot fail — see §4d                                                                                                                                                                                                                    | the pillar with no word boundary, or the locator joined by an `OR`                                                                                                                                        |
+| Two findings in the same report say OPPOSITE things                      | one of them is asserting an absence that is not there — "no limitation-of-liability clause" beside "consequential damages waiver present"                                                                                                          | make the false one say the true, narrower thing; add the pair to [`contradictory-findings.test.ts`](../tests/integration/contradictory-findings.test.ts)                                                  |
+| A rule fires where its own `description` says it should not              | the description states a condition and the code never gates on it — DPA-016's said "where GENERAL authorisation is used" and it fired on the specific-authorisation option too, so the recommended fix would have LOOSENED the contract            | read the rule's own prose before its patterns; it usually already knows                                                                                                                                   |
+| The document answers BY REFERENCE                                        | an SCC adopts the Decision's text in full, a sub-processing agreement incorporates the principal DPA under Art. 28(4), an insurance clause points at the section that states the limits                                                            | accept the incorporating form, scoped so a document that merely name-drops it is not excused                                                                                                              |
+| A document that merely DISCUSSES a regime routes to that regime's family | the routing-level form of "a rule that names the regulated noun fires on every document that mentions it" — a prospectus's risk factors reached the HIPAA BAA pack and drew 17 criticals                                                           | give the regime family a `negative_feature` for the register the discussing document is written in, and see [`regime-discussion-routing.test.ts`](../tests/integration/regime-discussion-routing.test.ts) |
+| The title matches except for a PLURAL in the middle                      | a feature may extend inside its own LAST word ("conflicts of interest" finds "Conflicts of Interest Policy") and an interior inflection has no tolerance at all — "political contributions policy" is invisible to "political contribution policy" | add the sibling spelling to the family; do NOT widen the matcher, which admits 489 variants of which nearly all are nonsense                                                                              |
 
 Two traps:
 
