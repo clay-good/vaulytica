@@ -3152,6 +3152,36 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A D&O indemnification agreement of the kind every venture-backed company
+  // signs with each director: mandatory indemnification on success,
+  // advancement within twenty days, Independent Counsel, a
+  // clear-and-convincing burden on the Company, indemnitor-of-first-resort,
+  // and six years of run-off insurance.
+  //
+  // GOV-142 told it that it carried no § 145(e) undertaking to repay. The
+  // statute's own sentence is "an undertaking BY OR ON BEHALF OF SUCH DIRECTOR
+  // OR OFFICER to repay", and a drafter who names the person writes "an
+  // undertaking BY THE INDEMNITEE to repay" — both put an actor between the
+  // noun and the verb, which neither branch allowed.
+  //
+  // `specimen-routing-margin` then caught the genus/species tie behind it:
+  // `indemnification-agreement` — the COMMERCIAL indemnity, whose own register
+  // is "additional insured", "waiver of subrogation", "duty to defend" — tied
+  // the D&O family at 0.9 on the shared title, and which one won was the
+  // alphabet. The genus now declines the corporate register it never carries.
+  //
+  // The rest are fair, and two of them are the point of the review. GOV-139 is
+  // right: this draft grants indemnification to the fullest extent the DGCL
+  // permits but never states the § 145(a) standard of conduct the grant is
+  // measured against. GOV-148 is right: there is no notice, defense, or
+  // settlement-consent procedure. RISK-016 notes that the insurance covenant
+  // sets no coverage minimum, which is true. CHOICE-003 is fair — "may bring
+  // suit in the Delaware Court of Chancery" is permissive, not a venue clause.
+  "do-indemnification-agreement.txt": {
+    playbook: "director-indemnification-agreement",
+    findings: ["GOV-139", "GOV-148", "RISK-016", "CHOICE-003", "OBLI-005"],
+  },
+
   // A Louisiana Act of Cash Sale — the deed used in every property transfer in
   // the state, and the sharpest test of whether the catalog knows more than one
   // jurisdiction's words. It scored 0.0 and reported "No parties identified".

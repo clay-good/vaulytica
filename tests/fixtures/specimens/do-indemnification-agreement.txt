@@ -1,0 +1,37 @@
+INDEMNIFICATION AGREEMENT
+
+This Indemnification Agreement (this "Agreement") is made as of April 14, 2026 between Corvid Bioworks, Inc., a Delaware corporation (the "Company"), and Ilona Reyes (the "Indemnitee"), who is a director of the Company.
+
+RECITALS
+
+The Company desires to attract and retain qualified directors and officers. The Company's certificate of incorporation and bylaws permit indemnification to the fullest extent the Delaware General Corporation Law permits, and Section 145 of that Law authorizes contracts of indemnification beyond the statute's own terms. The Indemnitee is willing to serve in reliance on this Agreement.
+
+1. INDEMNIFICATION — THIRD-PARTY PROCEEDINGS. The Company shall indemnify the Indemnitee if the Indemnitee is a party to or threatened to be made a party to any proceeding, other than an action by or in the right of the Company, by reason of the fact that the Indemnitee is or was a director, officer, employee, or agent of the Company, against all expenses, judgments, fines, and amounts paid in settlement actually and reasonably incurred, to the fullest extent permitted by the Delaware General Corporation Law.
+
+2. INDEMNIFICATION — PROCEEDINGS BY OR IN THE RIGHT OF THE COMPANY. The Company shall indemnify the Indemnitee against all expenses actually and reasonably incurred in connection with any proceeding by or in the right of the Company, except that no indemnification shall be made for a claim as to which the Indemnitee is adjudged liable to the Company unless the Court of Chancery or the court in which the proceeding was brought determines that the Indemnitee is fairly and reasonably entitled to indemnity.
+
+3. MANDATORY INDEMNIFICATION ON SUCCESS. To the extent the Indemnitee is successful on the merits or otherwise in defense of any proceeding, the Company shall indemnify the Indemnitee against all expenses actually and reasonably incurred, without any determination of entitlement.
+
+4. ADVANCEMENT OF EXPENSES. The Company shall advance all expenses incurred by the Indemnitee within twenty (20) days after receipt of a written request, in advance of the final disposition of the proceeding and without regard to the Indemnitee's ultimate entitlement to indemnification. The request need not be accompanied by supporting documentation beyond a reasonable itemization. Advancement is conditioned only on an undertaking by the Indemnitee to repay amounts advanced if it is ultimately determined that the Indemnitee is not entitled to be indemnified, and no security, interest, or credit evaluation is required for that undertaking.
+
+5. DETERMINATION OF ENTITLEMENT. Any determination that indemnification is proper shall be made by Independent Counsel selected by the Indemnitee and approved by the Board, whose approval may not be unreasonably withheld. If the determination is not made within sixty (60) days after the Company receives the request, entitlement is deemed established.
+
+6. PRESUMPTIONS AND BURDEN OF PROOF. On any determination or judicial proceeding, the Indemnitee is presumed to be entitled to indemnification, and the Company has the burden of proving otherwise by clear and convincing evidence. The termination of a proceeding by judgment, settlement, or a plea of nolo contendere does not by itself create a presumption that the Indemnitee did not meet the applicable standard of conduct.
+
+7. REMEDIES. If a request is denied in whole or in part, the Indemnitee may bring suit in the Delaware Court of Chancery to enforce this Agreement, and the Company shall pay the Indemnitee's expenses in that suit if the Indemnitee prevails in whole or in part.
+
+8. EXCLUSIONS. The Company is not obligated to indemnify or advance expenses for: (a) a claim under Section 16(b) of the Securities Exchange Act of 1934; (b) a claim for which payment is actually made to the Indemnitee under a valid insurance policy, except for amounts exceeding that payment; (c) a proceeding the Indemnitee initiated, unless the Board authorized it or the proceeding enforces this Agreement; or (d) a claim arising from the Indemnitee's fraud, deliberate dishonesty, or willful misconduct, as established by a final adjudication.
+
+9. INSURANCE. The Company shall maintain directors' and officers' liability insurance covering the Indemnitee on terms no less favorable than the broadest coverage the Company provides any other director, for so long as the Indemnitee may be subject to any proceeding, and for six (6) years afterward.
+
+10. PRIORITY. The Company is the indemnitor of first resort. Any indemnification or advancement available to the Indemnitee from a venture-capital fund or its affiliates is secondary, and the Company waives every claim of contribution or subrogation against them.
+
+11. NON-EXCLUSIVITY AND CONTINUATION. The rights in this Agreement are not exclusive of any other right under the certificate of incorporation, the bylaws, the Delaware General Corporation Law, any other agreement, or a vote of stockholders. They continue after the Indemnitee ceases to serve and inure to the benefit of the Indemnitee's heirs and personal representatives. No amendment to the certificate, the bylaws, or this Agreement may reduce a right with respect to conduct occurring before the amendment.
+
+12. GOVERNING LAW. Delaware law governs this Agreement.
+
+CORVID BIOWORKS, INC.                     INDEMNITEE
+
+By: /s/ Marisol Trent                     /s/ Ilona Reyes
+Name: Marisol Trent                       Ilona Reyes
+Title: Chief Executive Officer

@@ -18,7 +18,7 @@
       "additional insured",
       "waiver of subrogation"
     ],
-    "negative_features": ["hold harmless", "declarations", "endorsement"]
+    "negative_features": ["hold harmless", "declarations", "endorsement", "section 145", "advancement of expenses", "independent counsel", "by or in the right of the corporation", "indemnitor of first resort"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Indemnitor", "Indemnitee", "Loss"],

@@ -582,12 +582,24 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
     // and only the noun form ("undertaking to repay") was matched, so an
     // agreement carrying the § 145(e) undertaking verbatim was told it had
     // none.
-    ver: "1.0.1",
+    // 1.0.2 — § 145(e)'s own sentence is "an undertaking BY OR ON BEHALF OF
+    // SUCH DIRECTOR OR OFFICER to repay", and a drafter who names the person
+    // instead writes "an undertaking BY THE INDEMNITEE to repay". Both put an
+    // actor between the noun and the verb, and neither branch allowed one: the
+    // first wanted them adjacent, the second stopped at "on behalf" and never
+    // reached "to repay". A D&O agreement carrying the § 145(e) undertaking in
+    // the statute's own shape was told it had none.
+    //
+    // The second pillar gained the negated form for the same reason. The
+    // undertaking is as often made unsecured by saying what is NOT required —
+    // "no security, interest, or credit evaluation is required" — as by the
+    // adjective "unsecured".
+    ver: "1.0.2",
     name: "Undertaking to repay, unsecured and without regard to ability to pay",
     cite: dgcl("145(e)"),
     pat: [
-      /(?:undertaking|undertakes?|undertake|agrees?|covenants?|promises?)\s+to\s+(?:repay|reimburse)|undertaking\s+by\s+or\s+on\s+behalf/i,
-      /unsecured|without\s+(?:security|bond|interest|reference\s+to|regard\s+to)/i,
+      /(?:undertaking|undertakes?|undertake|agrees?|covenants?|promises?)\s+(?:by\s+(?:or\s+on\s+behalf\s+of\s+)?[^.]{0,60}?\s+)?to\s+(?:repay|reimburse)/i,
+      /unsecured|without\s+(?:security|bond|interest|reference\s+to|regard\s+to)|no\s+(?:security|bond|collateral)[^.]{0,60}?\b(?:is|shall\s+be|will\s+be|are)?\s*(?:required|necessary)|need\s+not\s+be\s+secured/i,
     ],
     all: true,
     why: "§ 145(e) conditions advancement on an undertaking to repay if it is ultimately determined the person is not entitled to be indemnified. An undertaking that must be secured, or that is measured against the director's ability to repay, converts the right into one only a wealthy director can use.",

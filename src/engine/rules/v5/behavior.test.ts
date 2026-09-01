@@ -1153,3 +1153,50 @@ describe("RE-139 — the financing contingency stated as a verb", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * GOV-142 — the § 145(e) undertaking names who is making it (v1.0.2).
+ *
+ * The statute's own sentence is "an undertaking BY OR ON BEHALF OF SUCH
+ * DIRECTOR OR OFFICER to repay", and a drafter who names the person instead
+ * writes "an undertaking BY THE INDEMNITEE to repay". Both put an actor
+ * between the noun and the verb, and neither branch allowed one — so a D&O
+ * agreement carrying the undertaking in the statute's own shape was told it
+ * had none.
+ */
+describe("GOV-142 — the undertaking to repay", () => {
+  const AGREEMENT = (undertaking: string) =>
+    doc(
+      "Indemnification Agreement",
+      "The Company shall advance all expenses incurred by the Indemnitee within twenty days after a written request.",
+      undertaking,
+    );
+
+  it.each([
+    [
+      "the statute's own wording",
+      "Advancement is conditioned on an undertaking by or on behalf of such director or officer to repay the amounts advanced, unsecured.",
+    ],
+    [
+      "a named indemnitee",
+      "Advancement is conditioned only on an undertaking by the Indemnitee to repay amounts advanced, and no security or bond is required.",
+    ],
+    [
+      "the negated security form",
+      "The Indemnitee undertakes to repay the amounts advanced; no security, interest, or credit evaluation is required for that undertaking.",
+    ],
+  ])("reads %s", (_label, undertaking) => {
+    expect(rule("GOV-142").check(AGREEMENT(undertaking))).toBeNull();
+  });
+
+  it("still fires when advancement is conditioned on nothing", () => {
+    expect(
+      rule("GOV-142").check(
+        doc(
+          "Indemnification Agreement",
+          "The Company shall advance all expenses incurred by the Indemnitee within twenty days after a written request.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
