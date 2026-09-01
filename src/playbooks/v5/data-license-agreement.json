@@ -1,6 +1,6 @@
 {
   "id": "data-license-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Data License Agreement",
   "description": "License of a dataset or data feed, covering permitted use, derived data, redistribution, and AI training rights. Selects the COMM-213..218 ruleset (6 checks).",
   "match_features": {
@@ -17,7 +17,12 @@
       "redistribution",
       "train any machine learning",
       "data source attribution",
-      "usage reporting"
+      "usage reporting",
+      "the licensor",
+      "the licensee",
+      "dataset",
+      "licensor",
+      "licensee"
     ],
     "negative_features": [
       "personal data of the data subject shall be processed",

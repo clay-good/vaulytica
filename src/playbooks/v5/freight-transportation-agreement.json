@@ -1,6 +1,6 @@
 {
   "id": "freight-transportation-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Freight / Transportation Agreement",
   "description": "Motor-carrier or broker transportation agreement under 49 U.S.C. and the Carmack Amendment. Selects the COMM-118..123 ruleset (6 checks).",
   "match_features": {
@@ -18,7 +18,12 @@
       "cargo liability",
       "motor carrier",
       "freight charges",
-      "detention and demurrage"
+      "detention and demurrage",
+      "the carrier",
+      "the shipper",
+      "transport",
+      "carrier",
+      "shipper"
     ],
     "negative_features": ["warehouse", "software as a service", "lease of the premises"]
   },

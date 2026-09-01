@@ -1,6 +1,6 @@
 {
   "id": "saas-customer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "name": "SaaS Agreement (Customer Side)",
   "description": "Customer reviewing a SaaS subscription agreement. Watches for vendor-favorable risk allocation, weak SLAs, and aggressive auto-renewal. Based on Common Paper Cloud Service Agreement.",
   "match_features": {
@@ -10,7 +10,8 @@
       "subscription agreement",
       "software-as-a-service",
       "master subscription",
-      "software as a service"
+      "software as a service",
+      "cloud services agreement"
     ],
     "required_clauses": ["limitation-of-liability", "indemnification"],
     "distinguishing_phrases": [

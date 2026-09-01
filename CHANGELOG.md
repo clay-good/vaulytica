@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.281.0] — 2026-08-31
+
+### Fixed
+- **A transportation agreement, a data licence and a board resolution could not
+  reach their own families.** `freight-transportation-agreement` claimed the
+  bill of lading, the Carmack amendment, cargo liability and detention and
+  demurrage; `data-license-agreement` claimed derived data, redistribution and
+  the machine-learning restriction; `board-resolution` claimed the quorum and
+  the unanimous written consent. Each is what a complete instrument carries.
+  All three now route at 0.8 or better.
+
+### Known
+- Four more document types have no family at all and score 0.0 or fall to
+  `generic-fallback`: a charitable gift agreement, a power purchase agreement,
+  a student enrollment agreement, and (from the previous sweep) a commercial
+  general liability policy and a subpoena duces tecum. These are catalog
+  coverage gaps rather than routing defects.
+
 ## [9.280.0] — 2026-08-31
 
 ### Fixed

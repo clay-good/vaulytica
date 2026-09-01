@@ -870,12 +870,48 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
+  /**
+   * Governance, transport, data and media. Three of these reached NOTHING and
+   * one its own at the threshold — and the sweep also found three document
+   * types with no family at all (a commercial general liability policy, a
+   * charitable gift agreement, a power purchase agreement, a student
+   * enrollment agreement), which are catalog gaps rather than routing defects
+   * and are recorded in BUILD_PROGRESS rather than papered over here.
+   */
+  const BARE_SPECIALIST: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "freight-transportation-agreement",
+      title: "TRANSPORTATION SERVICES AGREEMENT",
+      body: [
+        'This Transportation Services Agreement is between Vantage Grocery Distribution, Inc. ("Shipper") and Larkspur Freight Systems, LLC ("Carrier").',
+        "Carrier will transport Shipper's freight between the warehouses at the rates in the attached schedule.",
+      ],
+    },
+    {
+      id: "data-license-agreement",
+      title: "DATA LICENSE AGREEMENT",
+      body: [
+        'This Data License Agreement is between Kestrel Data LLC ("Licensor") and Halcyon Analytics, Inc. ("Licensee").',
+        "Licensor grants Licensee the right to use the Kestrel consumer dataset for $240,000 per year.",
+      ],
+    },
+    {
+      id: "board-resolution",
+      title: "BOARD RESOLUTION",
+      body: [
+        "RESOLVED, that Thistledown Robotics, Inc. is authorized to enter into the credit facility with Summit Commercial Bank, N.A.",
+        "RESOLVED FURTHER, that any officer may sign the documents. Adopted May 4, 2026.",
+      ],
+    },
+  ];
+
   it.each([
     ...BAD_DOCUMENTS,
     ...THIN_MARGINS,
     ...BARE_INSTRUMENTS,
     ...BARE_COMMERCIAL,
     ...BARE_EVERYDAY,
+    ...BARE_SPECIALIST,
   ])(
     "a bad document still reaches $id",
     ({ id, title, body }) => {

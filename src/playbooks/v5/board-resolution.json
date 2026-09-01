@@ -1,6 +1,6 @@
 {
   "id": "board-resolution",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Board Resolution (Standalone)",
   "description": "Standalone resolution of a board of directors, reviewed for the recitals, quorum, and authorization language a corporate record needs. Selects the GOV-106..110 ruleset (5 checks).",
   "match_features": {
@@ -17,7 +17,10 @@
       "the board of directors of",
       "further resolved",
       "duly adopted",
-      "authorized officer"
+      "authorized officer",
+      "resolved further",
+      "is authorized to",
+      "adopted"
     ],
     "negative_features": ["this agreement is entered into by and between", "employment agreement"]
   },

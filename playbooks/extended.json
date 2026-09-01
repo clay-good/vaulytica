@@ -2263,7 +2263,7 @@
   },
   {
     "id": "board-resolution",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Board Resolution (Standalone)",
     "description": "Standalone resolution of a board of directors, reviewed for the recitals, quorum, and authorization language a corporate record needs. Selects the GOV-106..110 ruleset (5 checks).",
     "match_features": {
@@ -2280,7 +2280,10 @@
         "the board of directors of",
         "further resolved",
         "duly adopted",
-        "authorized officer"
+        "authorized officer",
+        "resolved further",
+        "is authorized to",
+        "adopted"
       ],
       "negative_features": [
         "this agreement is entered into by and between",
@@ -4890,7 +4893,7 @@
   },
   {
     "id": "data-license-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Data License Agreement",
     "description": "License of a dataset or data feed, covering permitted use, derived data, redistribution, and AI training rights. Selects the COMM-213..218 ruleset (6 checks).",
     "match_features": {
@@ -4907,7 +4910,12 @@
         "redistribution",
         "train any machine learning",
         "data source attribution",
-        "usage reporting"
+        "usage reporting",
+        "the licensor",
+        "the licensee",
+        "dataset",
+        "licensor",
+        "licensee"
       ],
       "negative_features": [
         "personal data of the data subject shall be processed",
@@ -8621,7 +8629,7 @@
   },
   {
     "id": "freight-transportation-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Freight / Transportation Agreement",
     "description": "Motor-carrier or broker transportation agreement under 49 U.S.C. and the Carmack Amendment. Selects the COMM-118..123 ruleset (6 checks).",
     "match_features": {
@@ -8639,7 +8647,12 @@
         "cargo liability",
         "motor carrier",
         "freight charges",
-        "detention and demurrage"
+        "detention and demurrage",
+        "the carrier",
+        "the shipper",
+        "transport",
+        "carrier",
+        "shipper"
       ],
       "negative_features": [
         "warehouse",
