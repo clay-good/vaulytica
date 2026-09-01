@@ -3115,6 +3115,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // same document now draws the critical and the warning that are its point.
   "notice-of-furnishing.txt": { playbook: "preliminary-lien-notice", findings: [] },
 
+  // California civil discovery, which is a different vocabulary from the FRCP
+  // one the corpus was written in: a Demand for Inspection under Code Civ.
+  // Proc. § 2031.010, not a Rule 34 request. Two gaps it found. DISC-003 could
+  // not read a two-ended DATE RANGE as a bounded time period — "between
+  // January 1, 2025 and June 30, 2025" satisfied neither pillar, so a demand
+  // that bounds every category it propounds was told it bounded none. And the
+  // cross-reference extractor's declared-code sibling guard was written for
+  // Delaware: a plain integer, and the code named AFTER the section.
+  // California numbers with a decimal and names the code first, so
+  // "waives objections under section 2031.300" read as a broken reference to a
+  // section no demand has.
+  "demand-for-inspection.txt": { playbook: "document-requests", findings: [] },
+
   // A telehealth consent, addressed to the patient as "you" throughout — which
   // is what HC-132 could not read. It required "in THE state where THE
   // PATIENT", and a patient-facing consent writes "only when you are

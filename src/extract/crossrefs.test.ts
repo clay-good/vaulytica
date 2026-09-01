@@ -1255,3 +1255,40 @@ describe("a statute named by its acronym after the section is external", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * A California filing cites its code the other way round, and numbers it with
+ * a decimal.
+ *
+ * The sibling guard was written for Delaware: the document must tie a section
+ * to a named code, and the bare sibling must be a plain three-digit-or-longer
+ * INTEGER. California, Texas, and Florida all number with a decimal — and they
+ * name the code FIRST ("Code of Civil Procedure section 2031.010"), which the
+ * declaration recognizer, written for the trailing "of the … Code" form, never
+ * saw. A demand for inspection that cites the CCP by name four times and then
+ * writes "waives objections under section 2031.300" reported that sibling as a
+ * broken reference to a section no demand has.
+ */
+describe("a decimal-numbered code named before its section", () => {
+  const refs = (...paras: string[]) => {
+    const t = buildTree(["Demand for Inspection and Production of Documents", ...paras]);
+    return extractCrossRefs(t, extractSections(t));
+  };
+
+  it("reads the bare decimal sibling once the code is declared", () => {
+    const got = refs(
+      "Plaintiff demands, under Code of Civil Procedure section 2031.010, that Defendant produce the documents described below.",
+      "Produce the documents as they are kept in the usual course of business, under Code of Civil Procedure section 2031.280(a).",
+      "Failure to respond waives objections, including privilege, under section 2031.300.",
+    );
+    expect(got.filter((r) => r.unresolved).map((r) => r.raw_text)).toEqual([]);
+  });
+
+  it("does not suppress this document's own decimal numbering", () => {
+    const got = refs(
+      "Plaintiff demands, under Code of Civil Procedure section 2031.010, that Defendant produce the documents.",
+      "The categories are limited as set out in Section 4.2 of this demand.",
+    );
+    expect(got.some((r) => r.unresolved)).toBe(true);
+  });
+});

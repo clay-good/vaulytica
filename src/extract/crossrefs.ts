@@ -238,6 +238,21 @@ const STATUTE_SECTION_LABEL = /^\d{4,}$/;
 const STATUTE_LABEL_DECLARATION =
   /\b(?:[Ss]ections?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
 
+/**
+ * The same declaration written the other way round: the code NAMED FIRST.
+ *
+ * "Code of Civil Procedure section 2031.010", "Texas Property Code section
+ * 202.010", "Minnesota Statutes Section 582.30" — the plainest citation form
+ * there is, and the one most state practice uses.
+ * {@link EXTERNAL_NAMED_CODE_LEADING_RE} already suppresses the individual
+ * reference, but it did not set `declaresCode`, so the SIBLINGS a filing then
+ * cites bare stayed broken. A California demand for inspection that cites the
+ * CCP by name four times and then writes "waives objections under section
+ * 2031.300" reported that sibling as a reference to a section no demand has.
+ */
+const STATUTE_LABEL_DECLARATION_LEADING =
+  /\b(?:[A-Z][\w.'’]*\s+){0,5}(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+Annotated|\s+Ann\.?)?(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?\s*,?\s+(?:[Ss]ections?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*/g;
+
 // A statute the document abbreviates — "the Delaware General Corporation Law
 // (the 'DGCL')", "the Delaware Revised Uniform Limited Partnership Act
 // ('DRULPA')". A later "Section 262 of the DGCL" cites that authority's own
@@ -392,6 +407,12 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       statutoryLabels.add(sm[1]!.toUpperCase());
       declaresCode = true;
     }
+    STATUTE_LABEL_DECLARATION_LEADING.lastIndex = 0;
+    let lm: RegExpExecArray | null;
+    while ((lm = STATUTE_LABEL_DECLARATION_LEADING.exec(ctx.text)) !== null) {
+      statutoryLabels.add(lm[1]!.toUpperCase());
+      declaresCode = true;
+    }
     STATUTE_ACRONYM_DEFINITION.lastIndex = 0;
     let am: RegExpExecArray | null;
     while ((am = STATUTE_ACRONYM_DEFINITION.exec(ctx.text)) !== null) {
@@ -489,11 +510,20 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         statutoryLabels.has(bareLabel.toUpperCase()) ||
         // A SIBLING of a declared code section. Bounded three ways: the
         // document must have tied some section to a named code, the reference
-        // must be a plain three-digit-or-longer integer (a contract numbers
-        // its own sections 1..99, and a decimal or letter suffix is this
-        // document's own style), and it must already have failed to resolve
+        // must open with a three-digit-or-longer integer (a contract numbers
+        // its own sections 1..99), and it must already have failed to resolve
         // against the outline.
-        (declaresCode && /^\d{3,}$/.test(bareLabel)) ||
+        //
+        // The DECIMAL suffix is part of the code's numbering, not this
+        // document's style: California, Texas, and Florida all number their
+        // sections that way, which the file already says two guards above. The
+        // integer-only form could not cover them, so a California demand for
+        // inspection that cites "Code of Civil Procedure section 2031.010"
+        // and then its siblings bare — "waives objections under section
+        // 2031.300" — reported the sibling as a broken reference to a section
+        // no demand has. The leading run still has to clear three digits, so a
+        // document's own "Section 4.2" is untouched.
+        (declaresCode && /^\d{3,}(?:\.\d+)*(?:\([a-z0-9]+\))*$/i.test(bareLabel)) ||
         (acronymTail != null &&
           (statuteAcronyms.has(acronymTail[1]!.toUpperCase()) ||
             instrumentAcronyms.has(acronymTail[1]!.toUpperCase())))

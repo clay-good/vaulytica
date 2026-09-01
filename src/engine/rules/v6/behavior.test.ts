@@ -661,3 +661,38 @@ describe("DISC-012 — the rule's own wording (v1.2.0)", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * DISC-003 — a two-ended date range IS a bounded period (v1.2.0).
+ *
+ * "All DOCUMENTS concerning YOUR capacity to perform between January 1, 2025
+ * and June 30, 2025" satisfied neither pillar: the first pillar's `between`
+ * branch wanted the year to follow the month directly, so the DAY stopped it,
+ * and the second pillar's scoping list had `through` but not `and`. A demand
+ * for inspection that bounds every category it propounds was told it stated no
+ * time period at all.
+ */
+describe("DISC-003 — the relevant time period", () => {
+  it.each([
+    ["a between-and range", "between January 1, 2025 and June 30, 2025"],
+    ["a from-through range", "from January 1, 2025 through June 30, 2025"],
+    ["a from-to range", "from January 1, 2025 to June 30, 2025"],
+  ])("reads %s", (_label, range) => {
+    expect(
+      rule("DISC-003").check(
+        doc(
+          "Requests for Production",
+          `REQUEST NO. 1: All DOCUMENTS concerning YOUR capacity to perform ${range}.`,
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a request set that bounds nothing", () => {
+    expect(
+      rule("DISC-003").check(
+        doc("Requests for Production", "REQUEST NO. 1: All DOCUMENTS concerning the Agreement."),
+      ),
+    ).not.toBeNull();
+  });
+});
