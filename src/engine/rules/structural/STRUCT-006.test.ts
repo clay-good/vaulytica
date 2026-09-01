@@ -92,3 +92,34 @@ describe("STRUCT-006 — a named person is not an undefined term (v1.4.0)", () =
     expect(found?.description).toContain("Nadia Harper Okonkwo");
   });
 });
+
+/**
+ * A public OFFICE is defined by the state, not by this document (v1.5.0).
+ * Every acknowledgment, affidavit, and recorded instrument names the officer
+ * before whom it was taken, and none of them defines the office. A Louisiana
+ * Act of Cash Sale was told that "Notary Public" is a term it forgot to
+ * define.
+ */
+describe("STRUCT-006 — a public office is not an undefined term", () => {
+  const ACT = (extra: string) =>
+    buildContext([
+      "Act of Cash Sale",
+      "BE IT KNOWN that on this day, before me, the undersigned Notary Public, personally came and appeared the Vendor.",
+      "The Vendor declared that he does grant, bargain, and sell the described property to the Purchaser.",
+      "THUS DONE AND PASSED before me, Notary Public, and the undersigned competent witnesses.",
+      extra,
+    ]);
+
+  it("is silent on the notary before whom the act was passed", () => {
+    expect(STRUCT_006.check(ACT("The price is nine hundred thousand dollars cash."))).toBeNull();
+  });
+
+  it("still reports a Title-Case term beside it", () => {
+    const found = STRUCT_006.check(
+      ACT(
+        "The sale is subject to the Permitted Exceptions, and the Permitted Exceptions are listed nowhere.",
+      ),
+    );
+    expect(found?.description).toContain("Permitted Exceptions");
+  });
+});

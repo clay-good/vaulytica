@@ -812,3 +812,50 @@ describe("the conveyance and tenancy role pairs name a party", () => {
     expect(names(text)).toContain(want);
   });
 });
+
+/**
+ * A NATURAL PERSON introduced by a personal descriptor before the role.
+ *
+ * `PARTY_DECL` reaches the entity form — "Acme Inc., a Delaware corporation
+ * with its principal place of business at … (the 'Company')" — because it
+ * requires an entity TYPE, and a human being has none. The role-parenthetical
+ * readers reach it only when the paren follows the name directly. A Louisiana
+ * Act of Cash Sale, the deed used in every property transfer in the state,
+ * puts a clause of description between them and reported "No parties
+ * identified" about a document whose two appearing parties are named in
+ * capitals on its face.
+ */
+describe("a natural person named before the role parenthetical", () => {
+  const names = (...paras: string[]) =>
+    extractParties(buildTree(["Act of Cash Sale", ...paras])).map((p) => p.name);
+
+  it("reads a Louisiana act of sale's appearing parties", () => {
+    const got = names(
+      'THOMAS AURELIO HARPER, a person of the full age of majority, domiciled in the Parish of Orleans, State of Louisiana, whose mailing address is 412 Sycamore Lane, New Orleans, Louisiana 70118 (the "Vendor"),',
+      'NADIA HARPER OKONKWO, a person of the full age of majority, domiciled in the Parish of Orleans, State of Louisiana, whose mailing address is 88 Beech Row, New Orleans, Louisiana 70119 (the "Purchaser"),',
+    );
+    expect(got).toEqual(expect.arrayContaining(["THOMAS AURELIO HARPER", "NADIA HARPER OKONKWO"]));
+  });
+
+  it.each([
+    [
+      "an individual residing at",
+      'Eleanor Marguerite Harper, an individual residing at 412 Sycamore Lane, Columbus, Ohio (the "Seller"), conveys the property.',
+    ],
+    [
+      "an adult resident",
+      'Devon Achebe, an adult resident of Travis County, Texas (the "Buyer"), accepts the conveyance.',
+    ],
+  ])("reads %s", (_label, text) => {
+    expect(names(text).length).toBeGreaterThan(0);
+  });
+
+  // The whole chain is required, so ordinary prose cannot trip it.
+  it("does not read a descriptive sentence with no role parenthetical", () => {
+    expect(
+      names(
+        "Marcus Ellery Doyle, a person of the full age of majority, appeared and signed as a witness to the foregoing act.",
+      ),
+    ).not.toContain("Marcus Ellery Doyle");
+  });
+});

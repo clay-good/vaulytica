@@ -529,6 +529,44 @@ const ROLE_LABELED_PARTY_CAPS = new RegExp(
   "gi",
 );
 
+/**
+ * A NATURAL PERSON introduced by a personal descriptor before the role.
+ *
+ * Every deed, affidavit, and personal instrument names its human parties this
+ * way, and a Louisiana Act of Cash Sale — the deed used in every property
+ * transfer in the state — is the plainest example there is:
+ *
+ *   THOMAS AURELIO HARPER, a person of the full age of majority, domiciled in
+ *   the Parish of Orleans, State of Louisiana, whose mailing address is 412
+ *   Sycamore Lane, New Orleans, Louisiana 70118 (the "Vendor"),
+ *
+ * `PARTY_DECL` reaches the entity form of that sentence — "Acme Inc., a
+ * Delaware corporation with its principal place of business at … (the
+ * 'Company')" — because it requires an ENTITY TYPE, and a human being has
+ * none. The two role-parenthetical readers reach it only when the paren
+ * FOLLOWS the name directly, and here a clause of description stands between
+ * them. So the act of sale reported "No parties identified" about a document
+ * whose two appearing parties are named in capitals on its face.
+ *
+ * The whole chain is required — a name, a comma, an article, a
+ * natural-person noun, and the role parenthetical within the same
+ * paren-free run — so ordinary prose cannot trip it.
+ */
+const NATURAL_PERSON_NOUN = String.raw`person|individual|adult|natural\s+person|resident|citizen|widow|widower|majority|(?:un)?married\s+(?:man|woman|person)|single\s+(?:man|woman|person)`;
+/**
+ * The roles this reader accepts. It is NOT {@link ONE_SIDED_ROLE}: that list is
+ * shared with the readers that also see ENTITY parties, and widening it there
+ * makes the paren reader shadow `PARTY_DECL` with a differently-normalized name
+ * — "Vertex Systeme GmbH (the 'Vendor')" registered with its suffix where
+ * `PARTY_DECL` registers it without. A human being is never a GmbH, so this
+ * reader can take the commercial roles the shared list must leave out.
+ */
+const NATURAL_PERSON_ROLE = String.raw`${ONE_SIDED_ROLE}|Vendor|Customer|Client|Contractor|Consultant|Licensor|Licensee|Company|Executive`;
+const NATURAL_PERSON_ROLE_PARTY = new RegExp(
+  String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s*,\s*(?:an?|the)\s+(?:${NATURAL_PERSON_NOUN})\b[^)(]{0,240}?\(\s*(?:the\s+)?["“”'](${NATURAL_PERSON_ROLE})["“”'][^)]{0,60}\)`,
+  "gi",
+);
+
 /** True when the text offers no case contrast, so capitalization is not evidence. */
 function isAllCapsText(text: string): boolean {
   return /[A-Z]/.test(text) && text === text.toUpperCase();
@@ -707,6 +745,17 @@ export function extractParties(tree: DocumentTree): Party[] {
       registerParty(partyMap, name, {
         role,
         position: pos(rm.index, rm.index + rm[0].length),
+      });
+    }
+    // A natural person named with a descriptive clause before the role.
+    NATURAL_PERSON_ROLE_PARTY.lastIndex = 0;
+    let nm: RegExpExecArray | null;
+    while ((nm = NATURAL_PERSON_ROLE_PARTY.exec(text)) !== null) {
+      const name = cleanPartyName(nm[1] ?? "");
+      if (!name || isBoilerplateName(name)) continue;
+      registerParty(partyMap, name, {
+        role: nm[2],
+        position: pos(nm.index, nm.index + nm[0].length),
       });
     }
     DBA_RE.lastIndex = 0;

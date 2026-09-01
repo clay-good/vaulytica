@@ -21036,6 +21036,9 @@
     "description": "General or special warranty deed, reviewed for the covenants of title, legal description, and acknowledgment. Selects the RE-133..137 ruleset (5 checks).",
     "match_features": {
       "title_keywords": [
+        "act of cash sale",
+        "act of sale",
+        "cash sale deed",
         "warranty deed",
         "general warranty deed",
         "special warranty deed",
@@ -21049,6 +21052,8 @@
         "free from all encumbrances",
         "free and clear of all encumbrances",
         "grant, bargain, sell",
+        "full warranty of title",
+        "subrogation to all rights and actions of warranty",
         "grants, bargains, sells",
         "legal description",
         "conveys to",

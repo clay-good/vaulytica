@@ -30,6 +30,19 @@ function documentText(ctx: RuleContext): string {
 }
 
 /**
+ * A public OFFICE is not a defined term.
+ *
+ * "before me, the undersigned Notary Public", "sworn before a Commissioner of
+ * Deeds", "recorded with the Register of Deeds": every acknowledgment,
+ * affidavit, and recorded instrument names the officer before whom it was
+ * taken, in Title Case, and none of them defines the office — the state does.
+ * A Louisiana Act of Cash Sale was told that "Notary Public" is a term it
+ * forgot to define.
+ */
+const PUBLIC_OFFICE =
+  /^(?:notary\s+public|justice\s+of\s+the\s+peace|commissioner\s+of\s+deeds|clerk\s+of\s+(?:the\s+)?court|register\s+of\s+deeds|recorder\s+of\s+deeds|county\s+(?:clerk|recorder)|secretary\s+of\s+state|attorney\s+general|clerk\s+of\s+the\s+circuit\s+court)$/i;
+
+/**
  * A person the document introduces by their relationship to the declarant.
  *
  * "I appoint my husband, Thomas Aurelio Harper, as Executor"; "I give my
@@ -54,7 +67,7 @@ function isNamedPerson(documentBody: string, term: string): boolean {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -111,6 +124,8 @@ export const rule: Rule = {
       // A person the document names by their relationship to the declarant is
       // a person, not a term the drafter forgot to define.
       if (isNamedPerson(body, e.term)) return false;
+      // A public office is defined by the state, not by this document.
+      if (PUBLIC_OFFICE.test(e.term.trim())) return false;
       return true;
     });
     if (candidates.length === 0) return null;

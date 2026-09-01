@@ -3152,6 +3152,24 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A Louisiana Act of Cash Sale — the deed used in every property transfer in
+  // the state, and the sharpest test of whether the catalog knows more than one
+  // jurisdiction's words. It scored 0.0 and reported "No parties identified".
+  //
+  // `warranty-deed` had never heard of it: Louisiana conveys by an act of sale
+  // passed before a notary and two witnesses, not by a "warranty deed". And
+  // the party extractor could not see either appearing party, because a human
+  // being has no entity type for `PARTY_DECL` to key on and the role
+  // parenthetical stands behind a clause of description — "THOMAS AURELIO
+  // HARPER, a person of the full age of majority, domiciled in the Parish of
+  // Orleans … (the 'Vendor')". STRUCT-006 then reported "Notary Public" as a
+  // term the act forgot to define; the state defines it.
+  //
+  // RE-134 stays and is right: an act of sale made "with full warranty of
+  // title" that excepts nothing warrants against every recorded servitude on
+  // the parcel, which is exactly the exposure the check exists to name.
+  "la-act-of-cash-sale.txt": { playbook: "warranty-deed", findings: ["RE-134"] },
+
   // An executive employment agreement drafted to the Illinois Freedom to Work
   // Act, 820 ILCS 90 — the fourteen-day review period, the written advice to
   // consult counsel, both earnings thresholds, the public-health-emergency
