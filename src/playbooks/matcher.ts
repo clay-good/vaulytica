@@ -788,6 +788,78 @@ export function matchesFeature(corpusRaw: string, feature: string): boolean {
  */
 const PROPER_NAME_WORDS = 3;
 
+/**
+ * A keyword the document OPENS with is the document's own name.
+ *
+ * A title keyword is worth 0.3 against a 0.5 threshold, so a document whose
+ * heading is exactly its family's name — "PROMISSORY NOTE", "CODICIL",
+ * "WARRANTY DEED", "MERGER AGREEMENT" — scored 0.3 and fell to
+ * `generic-fallback` unless a distinguishing phrase happened to fire.
+ * `bare-title-reach` measured that at 86 of 266 families, and the failure had
+ * the same shape every time: the bare title matched exactly one keyword.
+ *
+ * The matcher could not tell those apart from a document that merely MENTIONS
+ * the phrase somewhere in its first twenty-four paragraphs — "as set forth in
+ * the Promissory Note", "the Escrow Agreement dated the date hereof". A phrase
+ * in the opening position is a document announcing what it is; anywhere else
+ * it is a document referring to something else. That is the strongest title
+ * signal there is, and it scored the same as the weakest.
+ *
+ * It earns the same double credit as a proper name, capped at 2× exactly as
+ * before.
+ */
+function openingKeywordLength(title: Corpus, keyword: string): number {
+  const needle = stripApostrophes(keyword.toLowerCase()).replace(/-/g, " ").trim();
+  // An ACRONYM in the opening position does not name the document. "DPA",
+  // "BAA", "MSA", and "CO" open four, two, three, and two families' documents
+  // respectively, and a probe titled "DPA — Multi-State US" was taken by
+  // `dpa-controller-processor` on the strength of three letters. Only a phrase
+  // earns the credit — the same line the feature matcher already draws.
+  if (needle.length <= ACRONYM_MAX_LENGTH && /^[a-z0-9][a-z0-9. ]*$/.test(needle)) return 0;
+  if (needle.length === 0) return 0;
+  const head = title.spaced.trimStart();
+  if (!head.startsWith(needle)) return 0;
+  // The keyword must END where a word ends, so "guaranty" does not claim the
+  // opening of a document titled "Guarantyship Waiver".
+  const next = head.charAt(needle.length);
+  if (next !== "" && /[a-z0-9]/.test(next)) return 0;
+  return needle.length;
+}
+
+/**
+ * Only the LONGEST name the document opens with earns the credit.
+ *
+ * Families nest. "Business Associate Agreement" opens a `baa` document and the
+ * first three words of a `baa-subcontractor` one; "Data Processing Agreement"
+ * opens four different DPAs. Awarding the opening credit to every family whose
+ * keyword fits moved nine documents off `generic-fallback` and onto a SIBLING
+ * family — a tie the general scoring then broke by something other than the
+ * name, so a subcontractor BAA was checked as a BAA and a US privacy notice as
+ * a GDPR one. A document opens with exactly one name: the longest one that
+ * fits. That is the family it belongs to.
+ */
+function longestOpeningKeyword(title: Corpus, playbooks: readonly Playbook[]): number {
+  let longest = 0;
+  const owners = new Map<number, Set<string>>();
+  for (const pb of playbooks) {
+    for (const kw of pb.match_features.title_keywords) {
+      const len = openingKeywordLength(title, kw);
+      if (len === 0) continue;
+      if (len > longest) longest = len;
+      const at = owners.get(len) ?? new Set<string>();
+      at.add(pb.id);
+      owners.set(len, at);
+    }
+  }
+  // A name TWO families claim is not a name that identifies one of them.
+  // `indemnification-agreement` and `director-indemnification-agreement` both
+  // list "indemnification agreement"; `privacy-notice-us` and
+  // `privacy-notice-gdpr` both list "privacy notice". Doubling both leaves the
+  // tie to be broken by something other than the name, and the sibling won
+  // four times out of nine. Where the opening name is shared, nobody earns it.
+  return (owners.get(longest)?.size ?? 0) === 1 ? longest : 0;
+}
+
 function isProperName(keyword: string): boolean {
   return (
     keyword
@@ -813,6 +885,8 @@ export function matchPlaybook(
   const body = buildCorpus((input.body_text ?? input.title ?? "").toLowerCase());
   const present_categories = new Set(classified.map((c) => c.category));
   const defined_terms = new Set(extracted.definitions.entries.map((e) => e.term.toLowerCase()));
+
+  const opening_len = longestOpeningKeyword(title, available);
 
   const scored: ScoredPlaybook[] = available.map((playbook) => {
     const f = playbook.match_features;
@@ -854,7 +928,11 @@ export function matchPlaybook(
     // earns the second count, so the generic ones cannot start outbidding the
     // specific family that owns the document.
     const title_credit = matched_title_keywords.reduce(
-      (n, kw) => n + (isProperName(kw) ? 2 : 1),
+      (n, kw) =>
+        n +
+        (isProperName(kw) || (opening_len > 0 && openingKeywordLength(title, kw) === opening_len)
+          ? 2
+          : 1),
       0,
     );
     const tkw_score = Math.min(
