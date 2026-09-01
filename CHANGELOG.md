@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.303.0] — 2026-09-01
+
+### Added
+- **`bare-title-reach.test.ts` — can a family recognise a document titled
+  exactly its own name and saying nothing else?** 135 of 266 cannot. The
+  existing self-reachability sweep builds each family's probe document from
+  that family's own distinguishing phrases, so it is blind by construction to
+  a family whose distinguishing list is the vocabulary of a well-drafted
+  instance — the defect behind the last three releases. The new guard is a
+  ratchet in both directions: the list may not grow, and a family that has
+  been fixed must be removed from it.
+
 ## [9.302.0] — 2026-09-01
 
 ### Fixed
