@@ -33,6 +33,14 @@ const REF_RE =
 // after the article, with no "of the", so the "of the …" form alone missed
 // every "Article NN GDPR" — 140+ in the corpus — and STRUCT-007 reported each
 // as a broken internal reference to an "Article 32" the document never has.
+// A statute abbreviated by its own ACRONYM, trailing the section with no
+// "of the" at all, is the same shape as "Article 32 GDPR" and the list above
+// had only the data-protection ones. A German Article 30 record citing
+// "section 630f BGB" for its retention period and "section 26 BDSG" for its
+// legal basis reported two broken internal references to sections no record
+// of processing has. The list is curated rather than a bare all-caps wildcard,
+// because a wildcard would suppress a genuine broken reference whenever the
+// next word happened to be capitalized.
 // A state statute numbers its sections with a DECIMAL — "Sections 202.010 and
 // 202.007 of the Texas Property Code", "Sections 1798.100 and 1798.105 of the
 // CCPA" — and the connective run below admitted only whole numbers, so the
@@ -88,7 +96,7 @@ const REF_RE =
 // the optional statute-name phrase is `[A-Za-z]` rather than `[A-Z]` to say
 // what it means under the flag, since `[A-Z]` matches lowercase under `i`.
 const EXTERNAL_TRAILER_RE =
-  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))*)*(?:\([a-z0-9]+\))*(?:\s*(?:to|through|and|or|,)\s*\d+(?:\.\d+)*[A-Za-z]?(?:-\d+[a-z]?)?(?:\([a-z0-9]+\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d)\b)/i;
+  /^(?:-\d+[a-z]?(?:\([a-z0-9]+\))*)*(?:\([a-z0-9]+\))*(?:\s*(?:to|through|and|or|,)\s*\d+(?:\.\d+)*[A-Za-z]?(?:-\d+[a-z]?)?(?:\([a-z0-9]+\))*)*\s+(?:of\s+(?:the\s+)?(?:[A-Za-z][^.;,]*?\s+)?(?:Code|Acts?|Laws?|Regulations?|Rules?|Directives?|Conventions?|Treat(?:y|ies)|Charters?|Constitutions?|Protocols?|Ordinances?|Statutes?|U\.?\s?S\.?\s?C\.?|C\.?\s?F\.?\s?R\.?)\b|(?:of\s+(?:the\s+)?)?(?:UK\s+|EU\s+)?(?:GDPR|CCPA|CPRA|HIPAA|LGPD|PIPEDA|UCC|DPA\s+20\d\d|BIPA|FCRA|ERISA|FLSA|NLRA|ADEA|FMLA|TCPA|COPPA|GLBA|FERPA|DMCA|VCDPA|CTDPA|UCPA|TDPSA|OCPA|DPDPA|PIPL|APPI|POPIA|BGB|BDSG|HGB|AktG|GmbHG|StGB|ZPO|TKG|TMG|UWG|IRC)\b)/i;
 // "Title 7, Article 80" — a state code and the United States Code both number
 // their divisions that way, and a reference under a Title is part of the
 // citation, not a division of this document. Colorado's articles of

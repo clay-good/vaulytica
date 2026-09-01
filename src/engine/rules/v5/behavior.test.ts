@@ -1087,3 +1087,34 @@ describe("warn-notice structural posture", () => {
     expect(result.run.findings.map((f) => f.rule_id)).not.toContain("STRUCT-003");
   });
 });
+
+/**
+ * COMM-107 reads where a MASTER purchase agreement keeps its prices.
+ *
+ * Two adjacency gaps at once: the verb had to sit immediately against the
+ * noun, so "Prices are THOSE stated in the applicable purchase order" matched
+ * nothing over the one intervening word; and the list of places a price can
+ * live was Exhibit / Schedule / Appendix / Annex, which omits the purchase
+ * order — the document a master purchase agreement exists to govern, and where
+ * its prices live by definition.
+ */
+describe("COMM-107 — the price term of a master purchase agreement", () => {
+  it.each([
+    ["an intervening word", "Prices are those stated in the applicable purchase order."],
+    [
+      "the purchase order as the place",
+      "Prices for the Goods are set forth in each purchase order.",
+    ],
+    ["a quoted price", "Prices are quoted in the order form and are firm on acceptance."],
+  ])("reads %s", (_label, text) => {
+    expect(rule("COMM-107").check(doc("Master Purchase Agreement", text))).toBeNull();
+  });
+
+  it("still fires on an agreement that states no price term at all", () => {
+    expect(
+      rule("COMM-107").check(
+        doc("Master Purchase Agreement", "Seller will sell and Buyer will purchase the Goods."),
+      ),
+    ).not.toBeNull();
+  });
+});

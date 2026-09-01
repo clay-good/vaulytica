@@ -1221,3 +1221,37 @@ describe("a code name trailed by ANNOTATED is still a code name", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * A statute abbreviated by its own ACRONYM, trailing the section with no "of
+ * the" at all. "Article 32 GDPR" was already read as external; the same shape
+ * for every other statute was not, so an Article 30 record of processing
+ * citing "section 630f BGB" for its retention period and "section 26 BDSG"
+ * for its legal basis reported two broken internal references to sections no
+ * record of processing has.
+ */
+describe("a statute named by its acronym after the section is external", () => {
+  const refs = (...paras: string[]) => {
+    const t = buildTree(["Record of Processing Activities", ...paras]);
+    return extractCrossRefs(t, extractSections(t));
+  };
+
+  it.each([
+    ["a German civil-code section", "Erased 30 years after the last entry, per section 630f BGB."],
+    ["a German data-protection section", "Processed under section 26 BDSG."],
+    ["a BIPA section", "The disclosure required by section 15(b) BIPA is given above."],
+    ["an ERISA section", "The plan is governed by section 404 ERISA."],
+  ])("reads %s as external", (_label, text) => {
+    expect(
+      refs(text)
+        .filter((r) => r.unresolved)
+        .map((r) => r.raw_text),
+    ).toEqual([]);
+  });
+
+  it("does not suppress a genuine broken reference to this document", () => {
+    expect(
+      refs("The measures in Section 12 apply to every activity above.").some((r) => r.unresolved),
+    ).toBe(true);
+  });
+});
