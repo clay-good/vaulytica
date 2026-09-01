@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { CONSEQ_WAIVER } from "./RISK-007.js";
 
 /**
  * A limitation of liability is the CAP, not the heading. Matching only the
@@ -41,7 +42,7 @@ const LIMITATION_OF_LIABILITY =
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
   id: "RISK-005",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Limitation of liability present",
   category: "risk-allocation",
   default_severity: "warning",
@@ -56,6 +57,33 @@ export const rule: Rule = {
     // inside its own amendment.
     if (amendsParentAgreement(ctx)) return null;
     if (firstParagraphMatch(ctx, LIMITATION_OF_LIABILITY)) return null;
+    // A consequential-damages WAIVER is a limitation of liability, and this
+    // rule's own recommendation says so: it asks for "a cap …, A
+    // CONSEQUENTIAL-DAMAGES WAIVER, and the carve-outs". A master purchase
+    // agreement whose section 9.4 waives consequential, incidental, indirect,
+    // special, and punitive damages, with carve-outs, was told that Vaulytica
+    // "did not find a limitation-of-liability clause" — while RISK-007
+    // reported the waiver in the same run. Two findings, one document,
+    // opposite claims.
+    //
+    // What that document actually lacks is the CAP, so the finding now says
+    // that instead of asserting an absence that is not there. The waiver
+    // pattern is IMPORTED from RISK-007 rather than copied, so the two rules
+    // cannot drift into disagreeing about what a waiver is.
+    const waiver = firstParagraphMatch(ctx, CONSEQ_WAIVER);
+    if (waiver) {
+      return emit(ctx, rule, {
+        title: "Liability limited by waiver only; no cap stated",
+        description:
+          "A consequential-damages waiver is present, but no clause caps the aggregate liability either party can incur.",
+        excerpt: waiver.text.slice(0, 240),
+        explanation:
+          "A waiver of indirect and consequential damages bounds the KIND of loss recoverable; it does not bound the AMOUNT. Direct damages remain open-ended, and on a supply or services contract those are usually the larger exposure.",
+        recommendation:
+          "Add an aggregate cap tied to something knowable — the fees paid in a stated period, or a figure — and state the carve-outs that sit outside it.",
+        position: waiver.position,
+      });
+    }
     return emit(ctx, rule, {
       title: "No limitation-of-liability clause detected",
       description: "Vaulytica did not find a limitation-of-liability clause.",

@@ -163,3 +163,49 @@ describe("RISK-005 — two cap shapes it could not read", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A consequential-damages WAIVER is a limitation of liability (v1.8.0).
+ *
+ * This rule's own recommendation says so: it asks for "a cap …, A
+ * CONSEQUENTIAL-DAMAGES WAIVER, and the carve-outs". A master purchase
+ * agreement whose section 9.4 waives consequential, incidental, indirect,
+ * special, and punitive damages, with carve-outs, was told that Vaulytica "did
+ * not find a limitation-of-liability clause" — while RISK-007 reported the
+ * waiver in the same run. Two findings, one document, opposite claims.
+ *
+ * What that document lacks is the CAP, and the finding now says that.
+ */
+describe("RISK-005 — a waiver without a cap", () => {
+  it("names the cap as what is missing, not the whole clause", () => {
+    const found = RISK_005.check(
+      buildContext([
+        "Master Purchase Agreement",
+        "Seller shall deliver the Goods in accordance with each purchase order.",
+        "Neither Party is liable to the other for consequential, incidental, indirect, special, or punitive damages, or for lost profits, arising out of this Agreement.",
+      ]),
+    );
+    expect(found?.title).toBe("Liability limited by waiver only; no cap stated");
+  });
+
+  it("still reports the whole clause absent where there is no waiver either", () => {
+    const found = RISK_005.check(
+      buildContext([
+        "Master Purchase Agreement",
+        "Seller shall deliver the Goods in accordance with each purchase order.",
+      ]),
+    );
+    expect(found?.title).toBe("No limitation-of-liability clause detected");
+  });
+
+  it("stays silent where a cap is stated", () => {
+    expect(
+      RISK_005.check(
+        buildContext([
+          "Master Purchase Agreement",
+          "Each Party's aggregate liability under this Agreement shall not exceed the amounts paid in the twelve months before the claim.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

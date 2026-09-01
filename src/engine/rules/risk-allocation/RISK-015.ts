@@ -88,7 +88,7 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
@@ -96,7 +96,7 @@ export const rule: Rule = {
     "Flags contracts that contain indemnification language but no clause caps the indemnity exposure.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    type Hit = { sectionId: string; start: number; end: number; raw: string };
+    type Hit = { sectionId: string; start: number; end: number; raw: string; sentence: string };
     let indemnityHit: Hit | null = null;
     let hasCap = false;
     let capCarvesOutIndemnity = false;
@@ -172,6 +172,16 @@ export const rule: Rule = {
             start: p.start + m.index,
             end: p.start + m.index + m[0].length,
             raw: m[0],
+            // The SENTENCE, not the two words that matched. "shall indemnify"
+            // is not evidence a reader can act on, and it is actively
+            // confusing where a document carries more than one indemnity: an
+            // investors' rights agreement caps the investor's indemnity at the
+            // net proceeds and leaves the company's uncapped, so the same run
+            // reports "Indemnity cap stated" and "Indemnification without
+            // aggregate cap" — both true, about different clauses, and
+            // indistinguishable when the second one's evidence is the bare
+            // verb.
+            sentence: enclosingSentence(p.text, m.index).trim(),
           };
         }
       }
@@ -202,7 +212,7 @@ export const rule: Rule = {
       description: hasCap
         ? `Indemnification language is present (\`${hit.raw}\`) and the liability cap explicitly carves it out — indemnity exposure is uncapped.`
         : `Indemnification language is present (\`${hit.raw}\`) but no clause caps the aggregate exposure.`,
-      excerpt: hit.raw,
+      excerpt: hit.sentence.length > 0 ? hit.sentence.slice(0, 280) : hit.raw,
       explanation:
         "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
       recommendation:

@@ -15,7 +15,15 @@ const DMG = "(?:indirect|special|incidental|consequential|punitive|exemplary)";
 // is retained.
 const NO_LIABILITY =
   "(?:not\\s+(?:be\\s+)?liable\\s+for|(?:in\\s+no\\s+event|under\\s+no\\s+circumstances)[^.]*?\\bliable\\s+for|exclude(?:s|d)?\\s+(?:any|all)?|waive(?:s|d)?\\s+(?:any|all)?)";
-const CONSEQ_WAIVER = new RegExp(
+/**
+ * Exported so RISK-005 reads the SAME waiver this rule reports, rather than a
+ * copy of it. RISK-005's own recommendation calls a consequential-damages
+ * waiver one of the three parts of a limitation-of-liability clause, so a
+ * document that has the waiver and no cap must not be told it has no
+ * limitation of liability at all — and the two rules agreeing on what a waiver
+ * is, is the only thing that keeps that honest.
+ */
+export const CONSEQ_WAIVER = new RegExp(
   `\\b(?:no\\s+${DMG}|${NO_LIABILITY}\\s+(?:[^.]*?\\b)?${DMG}|${DMG}(?:[,\\s]+(?:and\\s+|or\\s+)?${DMG}){1,3})[^.]*?\\bdamages?\\b`,
   "i",
 );
