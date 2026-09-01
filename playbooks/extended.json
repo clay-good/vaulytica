@@ -7281,6 +7281,11 @@
         "we will bill"
       ],
       "negative_features": [
+        "no longer represent",
+        "representation has ended",
+        "not your lawyers",
+        "closing of representation",
+        "disengagement",
         "flat fee",
         "contingency fee",
         "contingent fee",
@@ -19364,6 +19369,9 @@
     "description": "Closing letter measured against ABA Model Rules 1.16(d), 1.15(d), and 1.9. Selects the ENG-032..036 ruleset.",
     "match_features": {
       "title_keywords": [
+        "closing of representation",
+        "conclusion of our representation",
+        "termination of our representation",
         "closing letter",
         "termination of representation",
         "conclusion of representation",
@@ -19372,6 +19380,9 @@
       "required_clauses": [],
       "distinguishing_phrases": [
         "representation has concluded",
+        "no longer represent",
+        "representation has ended",
+        "not your lawyers",
         "no further obligation",
         "your file",
         "final statement",

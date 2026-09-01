@@ -749,6 +749,13 @@ const REFERRAL_RULES: Rule[] = [
       /(survive|surviving|continue|remain\s+payable)[\s\S]{0,60}(termination|expiration)/is,
       /(termination|expiration)[\s\S]{0,80}(referral\s+fee|fee\s+shall\s+(still\s+)?be\s+(paid|payable)|earned\s+prior)/is,
       /\btail\b[\s\S]{0,30}(period|fee)|trailing\s+(fee|commission)/i,
+      // The tail is most often written as what the Company WILL PAY, with the
+      // referral dated by when it was accepted rather than by the word "tail":
+      // "On termination, the Company will pay fees earned on Referrals ACCEPTED
+      // BEFORE termination that convert within the 180-day window." Every
+      // branch above wanted a different sentence, so an agreement whose
+      // section 10 IS the tail clause was told it had none.
+      /(?:pay|paid|payable)[^.]{0,90}?\bfees?\b[^.]{0,90}?(?:accepted|introduced|submitted|referred|made)\s+(?:before|prior\s+to)\b/is,
       /referrals?\s+(introduced|made|submitted)[\s\S]{0,60}(prior\s+to|before)[\s\S]{0,40}(terminat|expir)/is,
     ],
   }),
@@ -768,7 +775,14 @@ const REFERRAL_RULES: Rule[] = [
       "Add a clause requiring the Partner to use only Company-approved marketing materials and to make no representations, warranties, or guarantees about the Company or its products beyond those materials.",
     present_patterns: [
       /(approved|authorized)\s+(marketing\s+)?materials/i,
-      /(no|not\s+make\s+any)\s+(representation|warrant|guarantee)\w*[\s\S]{0,40}(product|service|company)/is,
+      /(no|not\s+make\s+any)\s+(representation|warrant|guarantee|claim)\w*[\s\S]{0,40}(product|service|company)/is,
+      // The restriction is usually stated as an absence of AUTHORITY, which is
+      // the same sentence that disclaims agency: "It has NO AUTHORITY to
+      // negotiate, quote, price, contract, or MAKE ANY REPRESENTATION OR
+      // WARRANTY on the Company's behalf." And the noun is as often "claim" as
+      // "representation": "will not make any CLAIM about the Company's
+      // products the Company has not approved in writing."
+      /\b(?:no|without\s+any)\s+(?:actual\s+or\s+apparent\s+)?authority\s+to\b[^.]{0,80}?\b(?:represent\b|warrant\b|make\s+any\s+(?:representation|warranty|guarantee|claim))/is,
       /shall\s+not\s+.{0,40}(misrepresent|make\s+false)/is,
       /only\s+.{0,30}(materials|statements)\s+(provided|approved)\s+by/is,
     ],

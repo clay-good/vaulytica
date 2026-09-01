@@ -3152,6 +3152,50 @@ export const EXPECTED: Record<string, Expectation> = {
   // statutory maximum was told its rate had no stated period, a note asking
   // the drafter to fix the one thing the statute fixed for them. It now reads
   // as the one-time charge it is.
+  // A law firm's closing letter — the letter that ENDS a representation — and
+  // the worst kind of mis-routing there is. It went to `engagement-letter` and
+  // drew NINE findings, every one of them a clause an engagement letter has
+  // and a closing letter must not: fee basis and rates, the retainer and where
+  // it is held, billing frequency, future-conflict consent. The family for it
+  // existed and lost the tie to the alphabet, because the letter's subject
+  // line says "Closing OF Representation" and the family knew only "closing
+  // letter", "termination of representation", and "disengagement letter". The
+  // genus now declines the closing register it never carries.
+  //
+  // ENG-036 stays and is right: the letter says confidentiality survives but
+  // never states the firm's post-engagement conflicts posture.
+  "closing-of-representation.txt": {
+    playbook: "termination-of-representation",
+    findings: ["ENG-036"],
+  },
+
+  // A channel-partner referral agreement, with the Anti-Kickback and Stark
+  // carve-out a health-care referral arrangement needs. Two of its three
+  // criticals were the checks unable to read their own clauses. COMM-032 wanted
+  // the word "tail", or "referral fee" within eighty characters of
+  // "termination"; the tail is written as what the Company WILL PAY, dated by
+  // when the referral was accepted — "the Company will pay fees earned on
+  // Referrals accepted before termination". COMM-033 wanted "no representation
+  // … product"; the restriction is stated as an absence of AUTHORITY, in the
+  // same sentence that disclaims agency, and the noun is as often "claim".
+  //
+  // COMM-029 stays and is right — there is no non-circumvention clause.
+  // IPDATA-001 and RISK-001 are fair on their face.
+  "channel-referral-agreement.txt": {
+    playbook: "channel-referral-agreement",
+    findings: [
+      "COMM-029",
+      "IPDATA-001",
+      "RISK-001",
+      "TEMP-004",
+      "OBLI-005",
+      "RISK-006",
+      "RISK-007",
+      "TEMP-006",
+      "TERM-001",
+    ],
+  },
+
   // An annual incentive plan with a funding threshold, a three-point payout
   // curve, documented Committee discretion, the § 409A short-term-deferral
   // intent, and a Rule 10D-1 clawback hook. Clean.
