@@ -1,10 +1,14 @@
 {
   "id": "trademark-license",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Trademark License Agreement",
   "description": "Trademark license with naked-license avoidance (quality control) and proper-use guidelines. Selects the §6.H ruleset (IPL-013..IPL-018).",
   "match_features": {
-    "title_keywords": ["trademark license", "service mark license", "brand license"],
+    "title_keywords": [
+      "trademark license",
+      "service mark license",
+      "brand license"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "licensed marks",
@@ -12,17 +16,31 @@
       "goodwill",
       "inures",
       "channels of trade",
-      "field of use"
+      "field of use",
+      "license to use the mark",
+      "use the mark",
+      "the licensed mark",
+      "the mark in connection with"
     ],
-    "negative_features": ["patent license agreement", "copyright license agreement", "assignment of the marks"]
+    "negative_features": [
+      "patent license agreement",
+      "copyright license agreement",
+      "assignment of the marks"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Licensed Marks", "Quality Standards", "Territory"],
+  "expected_defined_terms": [
+    "Licensed Marks",
+    "Quality Standards",
+    "Territory"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "LANHAM-ACT",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Lanham Act §§ 5 / 32 / 45",

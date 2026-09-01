@@ -18,11 +18,10 @@
       "train any machine learning",
       "data source attribution",
       "usage reporting",
-      "the licensor",
-      "the licensee",
       "dataset",
-      "licensor",
-      "licensee"
+      "data feed",
+      "the data may be used",
+      "license to the data"
     ],
     "negative_features": [
       "personal data of the data subject shall be processed",
@@ -31,13 +30,22 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Licensed Data", "Derived Data", "Permitted Use"],
+  "expected_defined_terms": [
+    "Licensed Data",
+    "Derived Data",
+    "Permitted Use"
+  ],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "US-COMMERCIAL",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["api-terms", "ip-assignment"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "api-terms",
+    "ip-assignment"
+  ],
   "compliance_matrix_columns": [
     "Scope of permitted use and field of use",
     "Derived-data and model-training rights",

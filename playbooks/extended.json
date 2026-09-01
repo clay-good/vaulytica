@@ -2538,7 +2538,7 @@
   },
   {
     "id": "bylaws-corporation",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Corporate Bylaws",
     "description": "Bylaws of a Delaware (or MBCA-modeled) corporation. Selects the §6.B governance ruleset (GOV-001..GOV-012) plus the cross-applicable governance rules.",
     "match_features": {
@@ -2562,7 +2562,9 @@
         "partnership",
         "501(c)(3)",
         "nonprofit corporation",
-        "no part of the net earnings"
+        "no part of the net earnings",
+        "organized exclusively for",
+        "charitable and educational"
       ]
     },
     "expected_clauses": [],
@@ -4929,11 +4931,10 @@
         "train any machine learning",
         "data source attribution",
         "usage reporting",
-        "the licensor",
-        "the licensee",
         "dataset",
-        "licensor",
-        "licensee"
+        "data feed",
+        "the data may be used",
+        "license to the data"
       ],
       "negative_features": [
         "personal data of the data subject shall be processed",
@@ -8720,7 +8721,7 @@
   },
   {
     "id": "grant-agreement",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Grant Agreement (Foundation / Government)",
     "description": "Grant award agreement from a foundation or government funder, reviewed for the restricted-purpose, reporting, and clawback terms. Selects the GOV-133..138 ruleset (6 checks).",
     "match_features": {
@@ -8738,12 +8739,17 @@
         "reporting requirements",
         "the grantee shall",
         "return of grant funds",
-        "no lobbying"
+        "no lobbying",
+        "the grantee",
+        "the grant funds",
+        "charitable purpose"
       ],
       "negative_features": [
         "employment offer",
         "merger agreement",
-        "purchase and sale"
+        "purchase and sale",
+        "warranty deed",
+        "conveys to grantee"
       ]
     },
     "expected_clauses": [],
@@ -10640,7 +10646,7 @@
   },
   {
     "id": "lease-assignment",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Assignment of Lease",
     "description": "Assignment of a commercial or residential lease with landlord consent and assignee assumption. Selects the §6.E real-estate ruleset (RE-054..RE-060).",
     "match_features": {
@@ -10656,7 +10662,10 @@
         "the premises",
         "landlord consents",
         "assumes and agrees to perform",
-        "arising on and after the effective date"
+        "arising on and after the effective date",
+        "interest in the lease",
+        "assumes all of",
+        "assignor's obligations"
       ],
       "negative_features": []
     },
@@ -12386,7 +12395,7 @@
   },
   {
     "id": "nonprofit-bylaws",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Nonprofit Bylaws (501(c)(3))",
     "description": "Bylaws of a 501(c)(3) tax-exempt nonprofit corporation. Selects the §6.B governance ruleset (GOV-071..GOV-080).",
     "match_features": {
@@ -12401,7 +12410,11 @@
         "tax-exempt",
         "no part of the net earnings",
         "charitable purposes",
-        "conflict of interest"
+        "conflict of interest",
+        "organized exclusively for",
+        "charitable and educational",
+        "educational purposes",
+        "directors of the corporation shall"
       ],
       "negative_features": [
         "operating agreement",
@@ -19555,7 +19568,7 @@
   },
   {
     "id": "trademark-license",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Trademark License Agreement",
     "description": "Trademark license with naked-license avoidance (quality control) and proper-use guidelines. Selects the §6.H ruleset (IPL-013..IPL-018).",
     "match_features": {
@@ -19571,7 +19584,11 @@
         "goodwill",
         "inures",
         "channels of trade",
-        "field of use"
+        "field of use",
+        "license to use the mark",
+        "use the mark",
+        "the licensed mark",
+        "the mark in connection with"
       ],
       "negative_features": [
         "patent license agreement",

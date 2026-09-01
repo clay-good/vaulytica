@@ -1,6 +1,6 @@
 {
   "id": "grant-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Grant Agreement (Foundation / Government)",
   "description": "Grant award agreement from a foundation or government funder, reviewed for the restricted-purpose, reporting, and clawback terms. Selects the GOV-133..138 ruleset (6 checks).",
   "match_features": {
@@ -18,12 +18,17 @@
       "reporting requirements",
       "the grantee shall",
       "return of grant funds",
-      "no lobbying"
+      "no lobbying",
+      "the grantee",
+      "the grant funds",
+      "charitable purpose"
     ],
     "negative_features": [
       "employment offer",
       "merger agreement",
-      "purchase and sale"
+      "purchase and sale",
+      "warranty deed",
+      "conveys to grantee"
     ]
   },
   "expected_clauses": [],
@@ -59,6 +64,6 @@
     "Narrative and financial reporting deadlines",
     "Unexpended-funds and clawback terms",
     "Lobbying, political-activity, and use restrictions",
-    "Audit, records access, and retention (2 C.F.R. \u00a7 200 for federal funds)"
+    "Audit, records access, and retention (2 C.F.R. § 200 for federal funds)"
   ]
 }

@@ -905,8 +905,76 @@ describe("no family claims a document that is nobody's", () => {
     },
   ];
 
+  /**
+   * Five more, chosen where a family's whole distinguishing list was
+   * vocabulary a THIN instance of it does not have.
+   *
+   * `trademark-license` listed "licensed marks", "quality control",
+   * "goodwill", "inures", "channels of trade" and "field of use" — the
+   * naked-licensing protections, which is exactly what a bad trademark
+   * licence leaves out. It reached 0.3, its own title and nothing else, and
+   * LOST to `data-license-agreement` at 0.4 on a document titled TRADEMARK
+   * LICENSE AGREEMENT — because that family listed "licensor", "licensee",
+   * "the licensor" and "the licensee": four of its eleven phrase slots spent
+   * on the two role words of EVERY licence in the catalog. A bare party role
+   * is the genus, not the species, and here it outscored a family that named
+   * itself in its own title.
+   *
+   * `grant-agreement` and `lease-assignment` failed the same way and reached
+   * nothing at all. `nonprofit-bylaws` lost to `bylaws-corporation`: it
+   * claimed "501(c)(3)", "tax-exempt" and "no part of the net earnings", and
+   * its sibling's negative features were the same three words, so a
+   * conservancy's bylaws saying only that it "is organized exclusively for
+   * charitable and educational purposes" — the § 501(c)(3) organizational
+   * test, in the words the IRS itself uses — was audited as a stock
+   * corporation's.
+   */
+  const BARE_LICENCES: Array<{ id: string; title: string; body: string[] }> = [
+    {
+      id: "trademark-license",
+      title: "TRADEMARK LICENSE AGREEMENT",
+      body: [
+        'This Trademark License Agreement is between Wrenfield Audio Labs, Inc. ("Licensor") and Ashford Retail Group LLC ("Licensee").',
+        "Licensor grants Licensee a non-exclusive license to use the Mark in connection with retail packaging. Licensee will pay $40,000 per year.",
+      ],
+    },
+    {
+      id: "grant-agreement",
+      title: "GRANT AGREEMENT",
+      body: [
+        'This Grant Agreement is between the Ashford Family Foundation ("Foundation") and Pemberton Ridge Land Conservancy ("Grantee").',
+        "The Foundation will give the Grantee $500,000 over two years for trail restoration. The Grantee will send a report each year.",
+      ],
+    },
+    {
+      id: "lease-assignment",
+      title: "ASSIGNMENT OF LEASE",
+      body: [
+        'Wrenfield Audio Labs, Inc. ("Assignor") assigns to Halcyon Analytics, Inc. ("Assignee") all of its interest in the lease of Suite 400, 1200 Guadalupe Street, Austin, Texas, dated June 1, 2024.',
+        "Assignee assumes all of Assignor's obligations under the lease from the effective date.",
+      ],
+    },
+    {
+      id: "nonprofit-bylaws",
+      title: "BYLAWS OF PEMBERTON RIDGE LAND CONSERVANCY",
+      body: [
+        "The Conservancy is organized exclusively for charitable and educational purposes.",
+        "The board of directors will have between five and fifteen members. The board may amend these bylaws by majority vote.",
+      ],
+    },
+    {
+      id: "patent-license",
+      title: "PATENT LICENSE AGREEMENT",
+      body: [
+        'This Patent License Agreement is between Halcyon Bioacoustics, Inc. ("Licensor") and Kestrel Devices LLC ("Licensee").',
+        "Licensor grants Licensee a licence under the patents listed on Exhibit A to make and sell hearing devices. Licensee will pay a royalty of five percent (5%) of net sales.",
+      ],
+    },
+  ];
+
   it.each([
     ...BAD_DOCUMENTS,
+    ...BARE_LICENCES,
     ...THIN_MARGINS,
     ...BARE_INSTRUMENTS,
     ...BARE_COMMERCIAL,

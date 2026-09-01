@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.300.0] — 2026-08-31
+
+### Fixed
+- **A bare party role is not a distinguishing phrase.** `data-license-agreement`
+  listed "licensor", "licensee", "the licensor" and "the licensee" — the two
+  role words of every licence in the catalog, each counted twice — and beat
+  `trademark-license` 0.4 to 0.3 on a document titled "TRADEMARK LICENSE
+  AGREEMENT". The four are replaced by phrases in the family's own register.
+- **Four families could not recognise a thin instance of themselves**, because
+  every phrase they listed was a protection such an instance omits:
+  `trademark-license` (naked-licensing apparatus), `grant-agreement`,
+  `lease-assignment` and `nonprofit-bylaws`. Each now also claims the operative
+  vocabulary a bare instance does have.
+- **`nonprofit-bylaws` lost its own document to `bylaws-corporation`.** The two
+  were separated only by "501(c)(3)", "tax-exempt" and "no part of the net
+  earnings" — claimed by one and negated by the other — so bylaws reciting the
+  § 501(c)(3) organizational test in the IRS's own words ("organized exclusively
+  for charitable and educational purposes") were audited as a stock
+  corporation's. That wording now separates them.
+
+### Known
+- An on-premises enterprise "SOFTWARE LICENSE AGREEMENT" routes to `eula` at
+  0.5. There is no enterprise software-licence family; `eula` is the nearest
+  available, not the right one. Catalog gap, not a matcher defect.
+
 ## [9.299.0] — 2026-08-31
 
 ### Fixed
