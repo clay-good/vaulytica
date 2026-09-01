@@ -19,6 +19,8 @@
       "indemnification"
     ],
     "negative_features": [
+      "nonprofit",
+      "not-for-profit",
       "operating agreement",
       "limited liability company",
       "partnership",

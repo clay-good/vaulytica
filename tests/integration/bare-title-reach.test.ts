@@ -35,6 +35,7 @@ import { describe, expect, it } from "vitest";
 import { matchPlaybook, titleCorpus } from "../../src/playbooks/matcher.js";
 import { parsePlaybook, parsePlaybooks } from "../../src/playbooks/loader.js";
 import { LAUNCH_PLAYBOOK_IDS } from "../../src/playbooks/registry.js";
+import { GENERIC_FALLBACK_ID } from "../../src/playbooks/types.js";
 import { buildTree } from "../../src/extract/_fixtures.js";
 import { extractAll } from "../../src/extract/index.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
@@ -49,7 +50,9 @@ const dkb = loadStarterDkbSync();
 
 /**
  * The families that cannot yet be reached by their own bare title, as of
- * 9.305.0 — 90 of 266, down from 135. **This list may only shrink.** Removing
+ * 9.306.0 — 86 of 266, down from 135. A family that routes to a DIFFERENT
+ * family is not listed here: it is a worse defect and has its own assertion
+ * below. **This list may only shrink.** Removing
  * an entry is the work; adding one is a regression.
  */
 const UNREACHED_BY_OWN_TITLE: ReadonlySet<string> = new Set([
@@ -73,7 +76,6 @@ const UNREACHED_BY_OWN_TITLE: ReadonlySet<string> = new Set([
   "copyright-license",
   "do-policy",
   "dpa-multi-state-us",
-  "dpa-processor-subprocessor",
   "employee-handbook",
   "engagement-letter",
   "equipment-lease",
@@ -102,10 +104,8 @@ const UNREACHED_BY_OWN_TITLE: ReadonlySet<string> = new Set([
   "merger-agreement",
   "msa-customer-deep",
   "msa-vendor-deep",
-  "mutual-nda",
   "mutual-nda-deep",
   "mutual-release",
-  "nonprofit-bylaws",
   "offer-letter",
   "oss-compliance",
   "partnership-agreement",
@@ -136,7 +136,6 @@ const UNREACHED_BY_OWN_TITLE: ReadonlySet<string> = new Set([
   "trademark-license",
   "trial-motion",
   "trust-amendment",
-  "unilateral-nda",
   "unilateral-nda-deep",
   "venue-rental-agreement",
   "voting-agreement",
@@ -145,7 +144,7 @@ const UNREACHED_BY_OWN_TITLE: ReadonlySet<string> = new Set([
   "written-consent",
 ]);
 
-function reachedByOwnTitle(name: string): string {
+function routeOfOwnTitle(name: string): string {
   const body: [string, ...string[]] = [
     "",
     name.toUpperCase(),
@@ -163,15 +162,44 @@ function reachedByOwnTitle(name: string): string {
 
 describe("a family's own bare title reaches it", () => {
   const unreached: string[] = [];
+  const shadowed: string[] = [];
   let checked = 0;
   for (const pb of [...LAUNCH, ...PLAYBOOKS]) {
     if (pb.id === "generic-fallback") continue;
     checked += 1;
-    if (reachedByOwnTitle(pb.name) !== pb.id) unreached.push(pb.id);
+    const routed = routeOfOwnTitle(pb.name);
+    if (routed === pb.id) continue;
+    if (routed === GENERIC_FALLBACK_ID) unreached.push(pb.id);
+    else shadowed.push(`${pb.id} -> ${routed}`);
   }
 
   it("the sweep ran over the whole catalog", () => {
     expect(checked).toBeGreaterThan(250);
+  });
+
+  /**
+   * A family whose own name routes to a DIFFERENT family is a worse defect
+   * than one that falls to the fallback, and it is not on the ratchet above:
+   * falling to `generic-fallback` costs the document its family's rules, but
+   * being taken by a sibling runs the WRONG rules over it and reports their
+   * absences as findings. An insurance endorsement was read as an influencer
+   * agreement because `influencer-agreement` claimed the bare word
+   * "endorsement" as a title keyword AND as a distinguishing phrase; a
+   * 501(c)(3)'s bylaws were read against business-corporation law.
+   *
+   * The only entries that belong here are the ones where routing elsewhere is
+   * CORRECT: a deprecated family whose named successor the matcher promotes.
+   */
+  it("no family's own name is taken by a different family", () => {
+    const allowed = new Set([
+      "mutual-nda -> mutual-nda-deep",
+      "unilateral-nda -> unilateral-nda-deep",
+    ]);
+    const stolen = shadowed.filter((s) => !allowed.has(s)).sort();
+    expect(
+      stolen,
+      `these families' own names route to a different family, which runs the wrong rules over the document:\n  ${stolen.join("\n  ")}`,
+    ).toEqual([]);
   });
 
   it("no family that was reachable has become unreachable", () => {

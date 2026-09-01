@@ -2566,6 +2566,8 @@
         "indemnification"
       ],
       "negative_features": [
+        "nonprofit",
+        "not-for-profit",
         "operating agreement",
         "limited liability company",
         "partnership",
@@ -6644,6 +6646,8 @@
     "description": "Data Processing Agreement from a processor to its sub-processor under GDPR and UK GDPR. Selects the §29 DPA-GDPR ruleset (55 rules) covering Article 28(3) enumerated clauses, Articles 28(2)/(4)/(9) subprocessor governance, Articles 27, 30, 32, 33(2), 35, 37, and Chapter V international transfers — with an emphasis on Article 28(4) flow-down (the sub-processor must be bound by the same data-protection obligations as the upstream processor-controller DPA). Companion: the upstream controller-processor DPA and SCC Module 3 when the sub-processor is non-EU/UK.",
     "match_features": {
       "title_keywords": [
+        "processor to sub-processor",
+        "processor to subprocessor",
         "sub-processor agreement",
         "subprocessor data processing agreement",
         "sub-processor data processing agreement",
@@ -9389,7 +9393,7 @@
       "title_keywords": [
         "influencer agreement",
         "influencer",
-        "endorsement",
+        "influencer endorsement agreement",
         "endorsement agreement",
         "creator agreement",
         "brand ambassador agreement",
@@ -9399,7 +9403,6 @@
       "distinguishing_phrases": [
         "material connection",
         "#ad",
-        "endorsement",
         "sponsored content",
         "deliverables per month",
         "usage rights"
@@ -9692,6 +9695,9 @@
     "description": "Insurance endorsement review (ISO / AAIS forms + state filings). Selects the §6.K ruleset (INS-007..INS-012).",
     "match_features": {
       "title_keywords": [
+        "insurance policy endorsement",
+        "this endorsement modifies insurance",
+        "amendatory endorsement to policy",
         "endorsement",
         "policy endorsement",
         "amendatory endorsement"
