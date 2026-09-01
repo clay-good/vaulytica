@@ -1438,7 +1438,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // true.
   "interrogatories.txt": {
     playbook: "interrogatories",
-    findings: ["DISC-010"],
+    // DISC-010 came off in 9.352.0. This set has a DEFINITIONS AND
+    // INSTRUCTIONS section and bounds several interrogatories "between
+    // January 1, 2025 and December 31, 2025"; the pattern wanted the words
+    // "time period" or "from <Month> <year>" with no day number.
+    findings: [],
   },
 
   // A Washington quitclaim deed, whose granting words are the statutory short
@@ -2736,6 +2740,51 @@ export const EXPECTED: Record<string, Expectation> = {
   "easement.txt": {
     playbook: "easement-agreement",
     findings: ["OBLI-005", "RISK-010", "RISK-011"],
+  },
+
+  // A payment guaranty by an individual for a company's equipment financing.
+  // Nothing was wrong. BNK-026 is correct — the guaranty has no reinstatement
+  // clause, so a preference recovery would leave the lender unsecured — and
+  // DARK-003 correctly reads § 9 as one-way fee-shifting, which it is.
+  "guaranty-payment-individual.txt": {
+    playbook: "guaranty",
+    findings: ["BNK-026", "DARK-003", "OBLI-005"],
+  },
+
+  // A Texas general warranty deed with the habendum, the warranty clause, and
+  // a notarial acknowledgment. Nothing was wrong. TEMP-002 is correct and
+  // expected: the grantee trust is dated 2019 and the plat is older still,
+  // which is what a conveyance's dated references look like.
+  "tx-general-warranty-deed.txt": {
+    playbook: "warranty-deed",
+    findings: ["TEMP-002"],
+  },
+
+  // An action by written consent of a board, adopting an equity plan and
+  // appointing an officer. STRUCT-006 reported "Written Consent" as a term
+  // the document forgot to define — in a document titled ACTION BY WRITTEN
+  // CONSENT OF THE BOARD OF DIRECTORS. A document's own name is established
+  // by the line at the top of the page, and there is no drafting change that
+  // answers the finding short of `this Written Consent (this "Written
+  // Consent")`. Reading `sections[0].heading` was not enough: the ingest
+  // gives an unstyled document the empty string, so the suppression had to
+  // fall back to the opening line to reach any pasted document at all.
+  //
+  // STRUCT-018 is correct: Exhibit A is referenced and not attached.
+  "board-written-consent.txt": {
+    playbook: "written-consent",
+    findings: ["STRUCT-018"],
+  },
+
+  // A first set of Rule 33 interrogatories. DISC-010 reported no definitions
+  // and no relevant time period on a document with a DEFINITIONS AND
+  // INSTRUCTIONS section that defines "You" and "Shipment" and bounds itself
+  // "between January 1, 2024 and December 31, 2025". The pattern wanted the
+  // words "time period", or "from <Month> <year>" with no day number — a
+  // range nobody writes.
+  "first-set-interrogatories.txt": {
+    playbook: "interrogatories",
+    findings: [],
   },
 
   // A SECOND tolling agreement, written after `bare-title-reach` opened forty

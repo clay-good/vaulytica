@@ -1,0 +1,50 @@
+IN THE UNITED STATES DISTRICT COURT
+FOR THE NORTHERN DISTRICT OF ILLINOIS
+EASTERN DIVISION
+
+MERIDIAN COLDCHAIN LLC,
+                    Plaintiff,
+v.                                          Case No. 1:25-cv-04417
+BRIGHTFOLD LOGISTICS, INC.,
+                    Defendant.
+
+PLAINTIFF'S FIRST SET OF INTERROGATORIES TO DEFENDANT
+
+Pursuant to Rule 33 of the Federal Rules of Civil Procedure, Plaintiff Meridian Coldchain LLC serves the following interrogatories on Defendant Brightfold Logistics, Inc. Defendant shall answer each interrogatory separately and fully, in writing and under oath, within thirty (30) days after service.
+
+DEFINITIONS AND INSTRUCTIONS
+
+1. "You" and "Your" mean Defendant Brightfold Logistics, Inc. and its officers, directors, employees, and agents.
+
+2. "Shipment" means any transport of temperature-controlled goods tendered by Plaintiff to Defendant between January 1, 2024 and December 31, 2025.
+
+3. If You withhold any information on a claim of privilege, state the nature of the information withheld in a manner that, without revealing the privileged information itself, will enable Plaintiff to assess the claim, as required by Rule 26(b)(5)(A).
+
+4. These interrogatories are continuing. If You learn that an answer was incomplete or incorrect when made, You must supplement under Rule 26(e).
+
+INTERROGATORIES
+
+INTERROGATORY NO. 1: Identify each person who participated in setting or monitoring the temperature parameters for any Shipment.
+
+INTERROGATORY NO. 2: For each Shipment in which the recorded temperature exceeded 8 degrees Celsius, state the date, the origin, the destination, the trailer identification number, and the name of the driver.
+
+INTERROGATORY NO. 3: Describe in detail Your document retention policy applicable to telematics and temperature-logger data, including the retention period and the date of any change to that policy since January 1, 2024.
+
+INTERROGATORY NO. 4: Identify all communications between You and any third-party carrier concerning the refrigeration failure alleged in Paragraph 34 of the Complaint.
+
+INTERROGATORY NO. 5: State whether You contend that Plaintiff's packaging contributed to any spoilage, and if so, state all facts supporting that contention.
+
+Dated: March 9, 2026
+
+                              /s/ Nnenna Adebayo-Lindgren
+                              Nnenna Adebayo-Lindgren
+                              GRAYSON & PELL LLP
+                              200 West Adams Street, Suite 2100
+                              Chicago, Illinois 60606
+                              Counsel for Plaintiff
+
+CERTIFICATE OF SERVICE
+
+I certify that on March 9, 2026 I served the foregoing on counsel of record by electronic mail pursuant to the parties' service agreement.
+
+                              /s/ Nnenna Adebayo-Lindgren

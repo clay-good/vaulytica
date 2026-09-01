@@ -185,7 +185,13 @@ const ROGS = pack("interrogatories", C, [
     cite: frcp("26(b)(1)", "scope of discovery — proportionality"),
     pat: [
       /(definitions?|as\s+used\s+herein)/i,
-      /(time\s+period|relevant\s+period|from\s+\w+\s+\d{4})/i,
+      // A relevant period is written as a DATE RANGE, not as the words
+      // "time period". "between January 1, 2024 and December 31, 2025" is how
+      // every set of interrogatories bounds itself, and the old pattern
+      // wanted "from <Month> <year>" with no day number — so a set that
+      // opened with a definitions section and a two-year bound was told it
+      // had neither.
+      /(time\s+period|relevant\s+period|(?:from|between)\s+\w+\.?\s+\d{1,2},?\s+\d{4}|(?:from|between)\s+\w+\s+\d{4})/i,
     ],
     all: true,
     why: "The same proportionality objection that meets an unbounded document request meets an unbounded interrogatory, and definitions carry more weight here because each interrogatory is scarce.",

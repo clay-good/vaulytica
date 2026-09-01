@@ -731,3 +731,33 @@ describe("ENG-027 — the tasks a limited-scope letter will and will not perform
     ).not.toBeNull();
   });
 });
+
+/**
+ * A relevant period is written as a DATE RANGE (DISC-010, 9.352.0).
+ *
+ * "between January 1, 2024 and December 31, 2025" is how every set of
+ * interrogatories bounds itself. The pattern wanted the words "time period"
+ * or "from <Month> <year>" with no day number, so a set that opened with a
+ * DEFINITIONS AND INSTRUCTIONS section, defined "You" and "Shipment", and
+ * bounded itself to two years was told it had neither.
+ */
+describe("DISC-010 — the relevant period as a date range", () => {
+  const DEFS = "DEFINITIONS AND INSTRUCTIONS. As used herein, the following definitions apply.";
+  const fires = (body: string): boolean =>
+    rule("DISC-010").check(
+      doc("Plaintiff's First Set of Interrogatories to Defendant", DEFS, body),
+    ) !== null;
+
+  it.each([
+    ["a between-range with day numbers", "between January 1, 2024 and December 31, 2025"],
+    ["a from-range with day numbers", "from March 15, 2023 through the present"],
+    ["a month-and-year bound", "from January 2024 to the date of service"],
+  ])("is satisfied by %s", (_label, period) => {
+    expect(fires(`"Shipment" means any transport of goods tendered ${period}.`)).toBe(false);
+  });
+
+  // Load-bearing: definitions with no period at all still report.
+  it("still fires when the definitions state no period", () => {
+    expect(fires('"Shipment" means any transport of goods tendered to You.')).toBe(true);
+  });
+});

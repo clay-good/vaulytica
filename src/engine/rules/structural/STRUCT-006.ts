@@ -39,6 +39,14 @@ function documentText(ctx: RuleContext): string {
  * A Louisiana Act of Cash Sale was told that "Notary Public" is a term it
  * forgot to define.
  */
+/**
+ * How far into the opening line to look for the document's own name. Long
+ * enough for "ACTION BY WRITTEN CONSENT OF THE BOARD OF DIRECTORS OF
+ * THISTLEDOWN ROBOTICS, INC.", short enough that a document with no heading
+ * and a body paragraph first cannot suppress terms from its own prose.
+ */
+const TITLE_SCAN_CHARS = 140;
+
 const PUBLIC_OFFICE =
   /^(?:notary\s+public|justice\s+of\s+the\s+peace|commissioner\s+of\s+deeds|clerk\s+of\s+(?:the\s+)?court|register\s+of\s+deeds|recorder\s+of\s+deeds|county\s+(?:clerk|recorder)|secretary\s+of\s+state|attorney\s+general|clerk\s+of\s+the\s+circuit\s+court)$/i;
 
@@ -67,7 +75,7 @@ function isNamedPerson(documentBody: string, term: string): boolean {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -115,6 +123,19 @@ export const rule: Rule = {
     // "Halewood Media LLC" (TITLE_CASE_PHRASE cannot include the all-caps
     // suffix) — never an undefined term.
     const body = documentText(ctx);
+    // The heading, or — when the ingest gives an unstyled document none, which
+    // is what every pasted or plain-text document gets — the opening line.
+    // Reading `sections[0].heading` alone found the empty string and
+    // suppressed nothing on exactly the documents that need it.
+    const firstSection = ctx.tree.sections[0];
+    const headingText = (firstSection?.heading ?? "").trim();
+    const openingLine = (firstSection?.paragraphs[0]?.runs ?? [])
+      .map((r) => r.text)
+      .join("")
+      .trim();
+    const title = (headingText.length > 0 ? headingText : openingLine)
+      .slice(0, TITLE_SCAN_CHARS)
+      .toLowerCase();
     const candidates = ctx.extracted.definitions.undefined_capitalized.filter((e) => {
       const lower = e.term.toLowerCase();
       if (partyNames.has(lower)) return false;
@@ -126,6 +147,16 @@ export const rule: Rule = {
       if (isNamedPerson(body, e.term)) return false;
       // A public office is defined by the state, not by this document.
       if (PUBLIC_OFFICE.test(e.term.trim())) return false;
+      // The document's OWN NAME is not a term it forgot to define. Every
+      // instrument refers to itself in Title Case throughout — "this Written
+      // Consent", "this Guaranty", "this Tolling Agreement" — and the name is
+      // established by the heading at the top of the page, not by a
+      // definitions section. An action by written consent of the board was
+      // told that "Written Consent" is an undefined term, in a document
+      // titled ACTION BY WRITTEN CONSENT. There is no drafting change that
+      // answers it: a document cannot define its own title without saying
+      // "this Written Consent (this "Written Consent")".
+      if (title.includes(e.term.toLowerCase())) return false;
       return true;
     });
     if (candidates.length === 0) return null;

@@ -123,3 +123,57 @@ describe("STRUCT-006 — a public office is not an undefined term", () => {
     expect(found?.description).toContain("Permitted Exceptions");
   });
 });
+
+/**
+ * The document's OWN NAME is not a term it forgot to define (v1.6.0).
+ *
+ * Every instrument refers to itself in Title Case throughout — "this Written
+ * Consent", "this Guaranty", "this Tolling Agreement" — and the name is
+ * established by the line at the top of the page, not by a definitions
+ * section. An action by written consent of a board was told that "Written
+ * Consent" is an undefined term, in a document titled ACTION BY WRITTEN
+ * CONSENT OF THE BOARD OF DIRECTORS. There is no drafting change that answers
+ * it short of `this Written Consent (this "Written Consent")`.
+ *
+ * The title is read from the heading, or — when the ingest gives an unstyled
+ * document none, which is what every pasted or plain-text document gets —
+ * from the opening line. Reading the heading alone found the empty string and
+ * suppressed nothing on exactly the documents that need it.
+ */
+describe("STRUCT-006 — a document's own name", () => {
+  const CONSENT = (opening: string) =>
+    buildContext([
+      "",
+      opening,
+      "The undersigned, being all of the directors, adopt the following resolutions.",
+      "This Written Consent may be executed in counterparts and shall be filed with the minutes.",
+      "This Written Consent is effective as of February 24, 2026, and each Written Consent counterpart is an original.",
+    ]);
+
+  it("is silent on the name in the document's opening line", () => {
+    expect(
+      STRUCT_006.check(CONSENT("ACTION BY WRITTEN CONSENT OF THE BOARD OF DIRECTORS")),
+    ).toBeNull();
+  });
+
+  // The suppression is load-bearing, not incidental: the identical body under
+  // a title that does NOT name the document is exactly what the rule reports.
+  it("still reports the term when the document is titled something else", () => {
+    const found = STRUCT_006.check(CONSENT("MINUTES OF A SPECIAL MEETING"));
+    expect(found?.description).toContain("Written Consent");
+  });
+
+  it("does not let a long opening paragraph suppress terms from its prose", () => {
+    // The scan is capped, so a document whose first paragraph is body prose
+    // cannot silence a term buried two hundred characters into it.
+    const found = STRUCT_006.check(
+      buildContext([
+        "",
+        "The parties acknowledge that the transactions contemplated by this instrument were negotiated at arm's length over a period of several months, and that each of them was represented by counsel of its own choosing throughout, and that the Settlement Escrow was funded accordingly.",
+        "The Settlement Escrow shall be released in three tranches.",
+        "Interest on the Settlement Escrow accrues to the depositor.",
+      ]),
+    );
+    expect(found?.description).toContain("Settlement Escrow");
+  });
+});
