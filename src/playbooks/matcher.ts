@@ -601,9 +601,31 @@ export function titleCorpus(
   const subject = subjectLine(tree.sections);
   const caption = captionTitle(dropLegends(leadingLines(tree.sections)));
   const recorded = recordedInstrumentTitle(dropLegends(leadingLines(tree.sections)));
-  const parts = [heading, preamble, subtitle, subject, caption, recorded].filter(
-    (p) => p.length > 0,
-  );
+  // The name recovered from BEHIND the scaffolding leads the corpus.
+  //
+  // A letter, a filing, and a recorded instrument all state their own name
+  // somewhere other than the first line — after the letterhead, under the
+  // caption, below the recorder's block — and each of the three walks above
+  // recovers it. Appending it after the preamble left the SCAFFOLDING at the
+  // opening of the corpus, and the opening position is where a title keyword
+  // earns the second credit that carries a document over the 0.5 threshold
+  // (see {@link longestOpeningKeyword}). A Washington quitclaim deed reached
+  // the matcher as "Recording requested by and when recorded return to: Calder
+  // & Vance, PLLC 615 Second Avenue … QUITCLAIM DEED" and earned one credit
+  // for a name it states in full at the top of its own first page.
+  //
+  // The scaffolding stays in the corpus — it is where a filing's court and a
+  // deed's parcel live — it just no longer stands in front of the title.
+  //
+  // A document that already leads with a styled HEADING is untouched: the
+  // heading is its name, stated in the first position, and a "Re:" line under
+  // it is a subject, not a title.
+  const recovered = [subject, caption, recorded].filter((p) => p.length > 0);
+  const parts = (
+    heading.length > 0
+      ? [heading, preamble, subtitle, ...recovered]
+      : [...recovered, preamble, subtitle]
+  ).filter((p) => p.length > 0);
   return parts.length > 0 ? parts.join(" ") : fallback;
 }
 
@@ -860,6 +882,42 @@ function longestOpeningKeyword(title: Corpus, playbooks: readonly Playbook[]): n
   return (owners.get(longest)?.size ?? 0) === 1 ? longest : 0;
 }
 
+/**
+ * A name that sits INSIDE a longer name is not the document's own name.
+ *
+ * `longestOpeningKeyword` already says this about the opening position: a
+ * document opens with exactly one name, the longest one that fits. The same is
+ * true anywhere in the title, and until this it was not enforced — a keyword of
+ * three or more words earns the proper-name double credit unconditionally, so
+ * a family that read PART of the title tied the family that read ALL of it and
+ * won the tie on the alphabet.
+ *
+ * That is how "ASSIGNMENT AND ASSUMPTION OF LEASE" went to
+ * `assignment-and-assumption-agreement` on "assignment and assumption",
+ * "RESIDENTIAL PURCHASE AND SALE AGREEMENT" to `real-estate-psa` on "purchase
+ * and sale agreement", "INTERNATIONAL DATA TRANSFER AGREEMENT" to
+ * `data-sharing-agreement` on "data transfer agreement", and "CONFLICT OF
+ * INTEREST WAIVER" — a waiver signed by two clients — to `coi-policy`, the
+ * company's own conflicts POLICY.
+ *
+ * Two rules, one doctrine:
+ *
+ *  - Within a family, nested matches are ONE name, not two. A subcontractor
+ *    agreement family matching both "subcontract" and "subcontractor
+ *    agreement" has read one name at two lengths; counting it twice collected
+ *    the full title cap on a single signal.
+ *  - Across families, a keyword strictly CONTAINED in another family's matched
+ *    keyword loses the double credit. It is the genus; the containing keyword
+ *    is the species, and the species is what the document is called.
+ *
+ * Containment is the test, not raw length: a title that names two things
+ * ("MASTER SERVICES AGREEMENT AND STATEMENT OF WORK") has two independent
+ * names in it, and neither is inside the other.
+ */
+function maximalKeywords(matched: readonly string[]): string[] {
+  return matched.filter((kw) => !matched.some((other) => other !== kw && other.includes(kw)));
+}
+
 function isProperName(keyword: string): boolean {
   return (
     keyword
@@ -888,10 +946,24 @@ export function matchPlaybook(
 
   const opening_len = longestOpeningKeyword(title, available);
 
-  const scored: ScoredPlaybook[] = available.map((playbook) => {
+  // Every family's matched title keywords, collapsed to the maximal ones, so
+  // the credit below can ask whether some OTHER family read more of this
+  // title. See {@link maximalKeywords}.
+  const matched_by_playbook = available.map((pb) =>
+    pb.match_features.title_keywords.filter((kw) => matchesIn(title, kw)),
+  );
+  const maximal_anywhere = new Set(matched_by_playbook.flatMap(maximalKeywords));
+  const insideALongerName = (kw: string): boolean => {
+    for (const other of maximal_anywhere) {
+      if (other.length > kw.length && other.includes(kw)) return true;
+    }
+    return false;
+  };
+
+  const scored: ScoredPlaybook[] = available.map((playbook, index) => {
     const f = playbook.match_features;
 
-    const matched_title_keywords = f.title_keywords.filter((kw) => matchesIn(title, kw));
+    const matched_title_keywords = matched_by_playbook[index]!;
     const matched_required_clauses = f.required_clauses.filter(
       (cat) => present_categories.has(cat) || defined_terms.has(cat.toLowerCase()),
     );
@@ -927,10 +999,12 @@ export function matchPlaybook(
     // agreement", "trust agreement", "provider agreement". Only the first kind
     // earns the second count, so the generic ones cannot start outbidding the
     // specific family that owns the document.
-    const title_credit = matched_title_keywords.reduce(
+    const title_credit = maximalKeywords(matched_title_keywords).reduce(
       (n, kw) =>
         n +
-        (isProperName(kw) || (opening_len > 0 && openingKeywordLength(title, kw) === opening_len)
+        ((isProperName(kw) ||
+          (opening_len > 0 && openingKeywordLength(title, kw) === opening_len)) &&
+        !insideALongerName(kw)
           ? 2
           : 1),
       0,

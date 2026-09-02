@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.358.0] — 2026-09-02
+
+### Fixed
+- **Seven documents were routed by PART of their own title.** Where two
+  families both matched — one on the whole name, one on a shorter name inside
+  it — both earned the proper-name double credit, both scored 0.6, and the tie
+  went to the alphabet. "ASSIGNMENT AND ASSUMPTION OF LEASE" went to
+  `assignment-and-assumption-agreement` on "assignment and assumption",
+  "RESIDENTIAL PURCHASE AND SALE AGREEMENT" to `real-estate-psa`,
+  "INTERNATIONAL DATA TRANSFER AGREEMENT" to `data-sharing-agreement`, "BA
+  SUBCONTRACTOR AGREEMENT" to the construction `subcontractor-agreement`, and
+  "CONFLICT OF INTEREST WAIVER" — a waiver two clients sign — to `coi-policy`,
+  a company's own conflicts policy. A name that sits inside a longer name is
+  not the document's name: nested matches within a family now count once, and
+  a keyword another family's matched keyword strictly contains does not earn
+  the second credit.
+- **A recorded instrument's own name no longer sits behind the recorder's
+  block in the title corpus.** The recording-block, court-caption and
+  subject-line walks each recover the name a document states somewhere other
+  than its first line, and all three appended it after the scaffolding — so
+  the scaffolding held the opening position, where a title keyword earns the
+  second credit. A Washington quitclaim deed reached the matcher as "Recording
+  requested by and when recorded return to: Calder & Vance, PLLC 615 Second
+  Avenue … QUITCLAIM DEED". A document that already leads with a styled
+  heading is untouched.
+- **`saas-tos` no longer claims "terms of use".** A document titled exactly
+  that is a website's terms of use, and `website-terms-of-use` lost every one
+  of them to the SaaS family on the alphabet. A SaaS ToS titled "Terms of Use"
+  still reaches `saas-tos` on its own register (subscription, billing,
+  auto-renew).
+
+### Added
+- **`title-keyword-reach.test.ts` — does a document titled exactly one of a
+  family's DECLARED names reach it?** `bare-title-reach` asks the question of
+  the family's display name, and a display name is a catalog label rather than
+  a title anyone writes: half its standing worklist is the slash, the em-dash
+  and the parenthetical ("Mutual / General Release", "MSA — Vendor-Side Deep
+  Analysis", "Privacy Policy Linter"). The new sweep asks it of all 1,000-odd
+  declared names instead, one at a time, and is a ratchet in both directions
+  over two lists: families no declared name reaches, and names a different
+  family takes.
+
 ## [9.304.0] — 2026-09-01
 
 ### Fixed

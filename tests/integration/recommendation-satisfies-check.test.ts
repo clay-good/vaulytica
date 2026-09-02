@@ -74,14 +74,11 @@ describe("a presence check is satisfied by the drafting its own recommendation q
       probed += 1;
 
       const written = {
-        ...buildContext([
-          r.name,
-          ...drafting,
-          "Executed as of the date first written above.",
-        ]),
+        ...buildContext([r.name, ...drafting, "Executed as of the date first written above."]),
         playbook: pb,
       };
-      if (r.check(written) !== null) failed.push(`${r.id}  ${r.name}\n      → ${drafting.join(" | ")}`);
+      if (r.check(written) !== null)
+        failed.push(`${r.id}  ${r.name}\n      → ${drafting.join(" | ")}`);
     }
 
     expect(presence, "the sweep found no presence rules — it is broken").toBeGreaterThan(1000);
