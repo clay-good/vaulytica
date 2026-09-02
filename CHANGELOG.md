@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.371.0] — 2026-09-02
+
+### Fixed
+- **The launcher could not find `tsx` from anywhere but the install root.**
+  `bin/vaulytica.mjs` spawns `node --import tsx …`, and the child resolves that
+  bare specifier against ITS OWN working directory. `tsx` sits beside the
+  package, so it resolved only where the two coincided: the GitHub Action, which
+  runs from the consumer's `github.workspace` while the tool lives in
+  `github.action_path`, failed on every run, as did `npx vaulytica` from any
+  directory but the one it was installed into. The launcher now resolves `tsx`
+  from itself and hands the child an absolute URL, which no working directory
+  can affect.
+
+### Added
+- `published-package.test.ts` now runs the launcher end to end from a temporary
+  working directory — the same shape the Action gives it — and was confirmed to
+  fail with the bare specifier put back.
+
 ## [9.370.0] — 2026-09-02
 
 ### Fixed

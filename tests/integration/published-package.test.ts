@@ -15,13 +15,22 @@
  *      package ships `dkb/dist/v0.0.1-starter/`, and the user's directory does
  *      not, so `analyze` died with "no DKB artifact found under ./dkb/dist".
  *
+ * A third lived in the launcher. `bin/vaulytica.mjs` spawned
+ * `node --import tsx …`, and the child resolves that bare specifier against ITS
+ * OWN working directory — the consumer's repository under the GitHub Action, or
+ * wherever `npx vaulytica` was typed. `tsx` sits beside the package, so the
+ * specifier resolved only when the two coincided and every other invocation
+ * died with "Cannot find package 'tsx'". The launcher now resolves it from
+ * itself and hands the child an absolute URL.
+ *
  * Neither is visible from inside the repo, which is why nothing caught them.
  * These two assertions are the cheap, deterministic stand-ins for an install:
  * every local module the CLI entry can reach must fall inside a `files` entry,
  * and the default DKB root must resolve to a real artifact when the working
  * directory has none.
  */
-import { existsSync, mkdtempSync, readFileSync, statSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
@@ -106,6 +115,32 @@ describe("the published package", () => {
   it("prefers the working directory's artifact when there is one", () => {
     expect(defaultDistRoot()).toBe(join(ROOT, "dkb", "dist"));
   });
+
+  it("runs from a working directory that is not the package", () => {
+    // The end-to-end form of the two assertions above plus the launcher's own:
+    // a foreign cwd is exactly what the GitHub Action gives the CLI, and what
+    // `npx vaulytica` gives it from any directory but the install root.
+    const dir = mkdtempSync(join(tmpdir(), "vaulytica-run-"));
+    const doc = join(dir, "nda.txt");
+    writeFileSync(
+      doc,
+      [
+        "MUTUAL NON-DISCLOSURE AGREEMENT",
+        "",
+        "This Agreement is made as of January 1, 2026 between Acme Inc. and Globex Inc.",
+        "",
+        "1. Confidential Information. Each party may disclose confidential information.",
+        "",
+        "2. Governing Law. This Agreement is governed by the laws of the State of New York.",
+      ].join("\n"),
+    );
+    const out = execFileSync(process.execPath, [join(ROOT, pkg.bin.vaulytica!), "analyze", doc], {
+      cwd: dir,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    expect(out).toMatch(/nda\.txt/);
+  }, 120_000);
 
   it("ships the DKB artifact the resolver falls back to", () => {
     const shipped = pkg.files.find((f) => f.startsWith("dkb/dist/"));
