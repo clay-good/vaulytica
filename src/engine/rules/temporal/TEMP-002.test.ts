@@ -273,3 +273,20 @@ describe("TEMP-002 — the indefinite article introduces a referenced instrument
     ).not.toBeNull();
   });
 });
+
+describe("TEMP-002 — 'that certain <instrument> dated' is another instrument's date", () => {
+  it("is silent on an assignment reciting the lease it assigns", () => {
+    // "that certain" is the determiner a recital reaches for first, and the
+    // exclusion admitted only the/a/an. An assignment of a 2021 retail lease
+    // was reported as dated 1,659 days before its own next date.
+    expect(
+      TEMP_002.check(
+        buildContext([
+          "Assignment and Assumption of Lease",
+          "Assignor, as tenant, and Landlord entered into that certain Retail Lease dated August 14, 2021, covering Suite 140.",
+          "This Assignment is made as of March 2, 2026, and Base Rent has been paid through February 28, 2026.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

@@ -913,6 +913,32 @@ export function describesCovenantElsewhere(paragraph: string, matchIndex: number
 const NAMED_AS_A_PROVISION =
   /\b(?:is|are)\s+(?:all\s+|both\s+|each\s+|among\s+the\s+)?(?:provisions?|terms?|clauses?|matters?|issues?|questions?|topics?|subjects?)\b/i;
 
+/**
+ * The fifth half: a document that ASSUMES another instrument's obligations.
+ *
+ * An assignment and assumption steps one party into another's place under a
+ * lease, a note, or a contract, and it uses that instrument's vocabulary
+ * throughout without redefining a word of it. An assignment of a Virginia
+ * retail lease was told that Base Rent, Additional Rent and Retail Lease are
+ * terms it forgot to define — three terms the lease it assumes exists to
+ * define, and which no drafting change could answer short of restating the
+ * lease inside its own assignment.
+ *
+ * Neither of the two tells is a thing a standalone contract says about itself.
+ * The first names a ROLE the assuming party did not hold AND the instrument it
+ * held it under: "assumes and agrees to perform all of the obligations OF THE
+ * TENANT UNDER THE LEASE". The second is the substitution said outright: "as
+ * if Assignee were the original tenant named in it".
+ *
+ * Both halves are wanted. An asset purchase agreement says "the Buyer shall
+ * assume only the liabilities expressly set forth on Schedule 2.4 and shall
+ * not assume any other liabilities OF THE SELLER" — the role without the
+ * instrument — and it is a standalone deal document that defines its own
+ * vocabulary. Accepting the role alone stood down its undefined-term check.
+ */
+const ASSUMES_PARENT_OBLIGATIONS =
+  /\bassum(?:e|es|ed|ing|ption\s+of)\b[^.;]{0,140}?\bobligations\s+of\s+the\s+(?:tenant|lessee|sublessee|landlord|lessor|borrower|obligor|debtor|maker|seller|purchaser|buyer|contractor|subcontractor|licensee|licensor|franchisee|assignor|transferor|member|partner|employer)\b[^.;]{0,80}?\bunder\s+the\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Lease|Sublease|Agreement|Contract|Note|Indenture|Mortgage|Plan)\b|\bas\s+if\s+\w[^.;]{0,80}?\bwere\s+(?:the\s+)?(?:an\s+)?original\s+(?:tenant|lessee|borrower|party|signatory|contractor|licensee|member|partner)\b/;
+
 export function borrowsParentVocabulary(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
   return (
@@ -921,6 +947,7 @@ export function borrowsParentVocabulary(ctx: RuleContext): boolean {
     SIGNED_RIDER_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text) ||
     INCORPORATES_STANDARD_FORM.test(text) ||
+    ASSUMES_PARENT_OBLIGATIONS.test(text) ||
     adoptsRegulatorFormInFull(text)
   );
 }

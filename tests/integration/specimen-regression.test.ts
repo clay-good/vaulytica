@@ -837,13 +837,18 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005"],
   },
   // A first codicil to a will — the 198th specimen, and the first for
-  // `codicil`. TEMP-002 is fair: the will it amends is five years older. It
-  // exposed STRUCT-007 reporting the WILL's articles as broken references —
-  // "I revoke Article VII of my Will", and, in a sentence whose subject is the
-  // will, "the tax-apportionment clause in Article VIII".
+  // `codicil`. It exposed STRUCT-007 reporting the WILL's articles as broken
+  // references — "I revoke Article VII of my Will", and, in a sentence whose
+  // subject is the will, "the tax-apportionment clause in Article VIII".
+  //
+  // TEMP-002 was pinned here as fair until 9.360.0, on the reasoning that the
+  // will it amends is five years older. That is what a codicil IS. The date
+  // belongs to the will — "the First Codicil to my Last Will and Testament
+  // dated March 6, 2021" — and the referenced-instrument exclusion now reads
+  // the estate and real-property instruments alongside the commercial ones.
   "codicil.txt": {
     playbook: "codicil",
-    findings: ["TEMP-002"],
+    findings: [],
   },
   // A Form D narrative supplement — the 196th specimen, and the first for
   // `form-d-narrative`. REG-001..007 are all satisfied: issuer identification
@@ -2669,9 +2674,25 @@ export const EXPECTED: Record<string, Expectation> = {
   // neither. RE-057 then reported the release / continuing-liability clause
   // missing on a section headed "Assignor's Continuing Liability" that says
   // "Assignor is not released … Assignor remains liable".
+  // TEMP-002 was pinned here as known-false until 9.360.0: the earliest date
+  // in the document is the First Amendment's, and the referenced-instrument
+  // exclusion listed "addendum" but not "amendment", so a recital naming the
+  // lease and its amendment in one breath read as 828 days of back-dating.
   "lease-assignment.txt": {
     playbook: "lease-assignment",
-    findings: ["OBLI-005", "RE-060", "TEMP-002"],
+    findings: ["OBLI-005", "RE-060"],
+  },
+
+  // The two-party posture of the same family: the landlord consents on a
+  // separate exhibit rather than signing the assignment. It reaches its
+  // family for the first time in 9.358.0 — "assignment and assumption of
+  // lease" had been losing on the alphabet to the family that read only
+  // "assignment and assumption". STRUCT-018 is fair (the exhibits are named
+  // and not attached), and so is RISK-011: the mutual indemnity states no
+  // notice, defense-control or settlement-consent machinery.
+  "lease-assignment-retail.txt": {
+    playbook: "lease-assignment",
+    findings: ["STRUCT-018", "RE-060", "RISK-011"],
   },
 
   // A patent covenant not to sue. Its playbook's distinguishing phrases were
@@ -3240,9 +3261,11 @@ export const EXPECTED: Record<string, Expectation> = {
   },
 
   // A bank forbearance agreement with a reaffirming guarantor and a release.
+  // TEMP-002 came off in 9.360.0: the date it was reading is the Continuing
+  // Guaranty's, recited alongside the loan agreement it forbears under.
   "forbearance.txt": {
     playbook: "forbearance-agreement",
-    findings: ["CHOICE-008", "OBLI-005", "TEMP-002"],
+    findings: ["CHOICE-008", "OBLI-005"],
   },
 
   // A consumer cardholder agreement, with a Schumer box and a governing-law

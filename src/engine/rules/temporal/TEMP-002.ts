@@ -17,9 +17,29 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * be wrong English. Accepting only "the" reported every one of them as
  * back-dated by however old the underlying lease is; the specimen that found
  * it was off by 1,219 days.
+ *
+ * "THAT CERTAIN" is the third determiner, and it is the one a recital reaches
+ * for first: "Assignor, as tenant, and Landlord entered into THAT CERTAIN
+ * Retail Lease dated August 14, 2021". An assignment of a five-year-old lease
+ * was reported as dated 1,659 days before its own next date.
+ *
+ * "AMENDMENT" belongs in the noun list beside "addendum" for the same reason:
+ * a recital that names a lease names its amendments in the same breath — "as
+ * amended by a First Amendment dated September 8, 2024" — and the amendment's
+ * date is no more this document's date than the lease's is. The determiner
+ * still does the discriminating, so a document's own "This Amendment, dated …"
+ * is untouched.
+ *
+ * The estate and real-property instruments are here for the same reason, and
+ * a second amendment to a revocable trust is what made the case: with the
+ * First Amendment's date excluded and the TRUST's own 2011 date still counted,
+ * the settlor's fifteen-year-old trust became an outlier against her 2026
+ * amendment. Each of these is named the same way — "to the Harrowgate Family
+ * Revocable Living Trust dated March 14, 2011", "under a Deed of Trust dated
+ * …" — and none of them is the date of the document naming it.
  */
 const REFERENCED_INSTRUMENT_DATE =
-  /\b(?:the|a|an)\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|indenture)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
+  /\b(?:the|a|an|that|those|such)\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|amendment|indenture|trust|will|deed|mortgage|guaranty)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
 
 /**
  * A header-field label naming another instrument's date — "Original Contract
@@ -115,7 +135,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",

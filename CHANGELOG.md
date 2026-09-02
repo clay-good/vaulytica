@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.360.0] — 2026-09-02
+
+### Fixed
+- **An assignment of a lease was told that Base Rent, Additional Rent and
+  Retail Lease are terms it forgot to define.** An assignment steps one party
+  into another's place and uses the assumed instrument's vocabulary without
+  redefining a word of it — there is no drafting change that answers the
+  finding short of restating the lease inside its own assignment.
+  `borrowsParentVocabulary` now reads the assumption clause, and it wants both
+  halves: the ROLE the assuming party did not hold and the INSTRUMENT it held
+  it under. An asset purchase agreement's "shall not assume any other
+  liabilities of the Seller" is the role without the instrument, and it stays
+  a standalone document that defines its own vocabulary.
+- **Four referenced instruments dated a document that merely names them.**
+  TEMP-002 excludes another instrument's date, and the determiner is the
+  discriminator — but the list admitted only "the", "a" and "an", so "THAT
+  CERTAIN Retail Lease dated August 14, 2021" was read as 1,659 days of
+  back-dating on the assignment reciting it. The noun list also gained
+  "amendment", "trust", "will", "deed", "mortgage" and "guaranty": a recital
+  names an instrument and its amendments in one breath, and a codicil, a trust
+  amendment and a forbearance agreement each recite an instrument older than
+  themselves because that is what those documents are. Three specimens carried
+  the finding, one of them pinned as fair.
+
+### Added
+- A two-party retail lease assignment, where the landlord consents on a
+  separate exhibit rather than signing. It reaches `lease-assignment` for the
+  first time in 9.358.0. 299 specimens.
+
 ## [9.359.0] — 2026-09-02
 
 ### Fixed

@@ -210,3 +210,40 @@ describe("STRUCT-006 — an internal function", () => {
     expect(found?.description).toContain("Restricted Party List");
   });
 });
+
+describe("STRUCT-006 — a document that ASSUMES a lease takes its vocabulary", () => {
+  // An assignment steps one party into another's place and uses the assumed
+  // instrument's vocabulary without redefining a word of it. A Virginia
+  // retail-lease assignment was told that Base Rent, Additional Rent and
+  // Retail Lease are terms it forgot to define — three terms the lease it
+  // assumes exists to define, and which no drafting change could answer short
+  // of restating the lease inside its own assignment.
+  const PREAMBLE: [string, ...string[]] = [
+    "Assignment and Assumption of Lease",
+    'This Assignment and Assumption of Lease is made as of March 2, 2026 by and between Brambleton Optics LLC ("Assignor") and Corridor Dental Partners, PLLC ("Assignee").',
+    'Assignor, as tenant, and Loudoun Gateway Holdings, L.P., as landlord, entered into that certain Retail Lease dated August 14, 2021 (the "Lease").',
+  ];
+  const ASSUMPTION =
+    "Assignee assumes and agrees to perform all of the obligations of the tenant under the Lease, including the payment of Base Rent and Additional Rent.";
+  const RETAINED =
+    "Assignor remains liable for unpaid Base Rent and Additional Rent for the period ending on the Effective Date.";
+
+  it("is silent once the assumption clause is present", () => {
+    expect(
+      STRUCT_006.check(buildContext([...PREAMBLE, ASSUMPTION, RETAINED] as [string, ...string[]])),
+    ).toBeNull();
+  });
+
+  it("still reports the same terms when nothing is assumed", () => {
+    // The assumption sentence is the whole of the difference. Say the same
+    // thing WITHOUT stepping into the tenant's obligations — a direct
+    // covenant to pay — and "Base Rent" is an undefined Title-Case term
+    // again, which is the finding this rule is for.
+    const covenant =
+      "Assignee shall pay Base Rent and Additional Rent directly to Landlord on the first day of each month.";
+    const finding = STRUCT_006.check(
+      buildContext([...PREAMBLE, covenant, RETAINED] as [string, ...string[]]),
+    );
+    expect(finding?.description).toContain("Base Rent");
+  });
+});
