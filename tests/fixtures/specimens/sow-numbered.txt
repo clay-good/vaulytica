@@ -1,0 +1,81 @@
+STATEMENT OF WORK NO. 4
+
+This Statement of Work No. 4 ("SOW") is entered into under and subject to the Master Services Agreement dated March 9, 2024 between Ravensworth Analytics LLC ("Supplier") and Calder Municipal Utility District ("Client"). Capitalized terms used but not defined in this SOW have the meanings given in the MSA. If this SOW conflicts with the MSA, the MSA controls except where this SOW says expressly that it amends a stated section of the MSA.
+
+SOW Number: 4
+Effective Date: October 1, 2026
+Client Contact: Ines Bhattacharya-Kovács, Director of Metering
+Supplier Contact: Desmond Achebe-Lindström, Engagement Lead
+MSA Reference: Master Services Agreement dated March 9, 2024
+
+1. Background
+
+Client operates 61,400 residential and commercial water meters and is replacing its monthly manual read process with an automated metering infrastructure. Supplier will build the data pipeline and reporting layer that ingests the new meter telemetry and produces the billing determinants Client's billing system consumes.
+
+2. Scope of Services
+
+Supplier will:
+
+(a) design and build an ingestion service that accepts hourly interval reads from the AMI head-end system over a mutually agreed API;
+
+(b) implement validation, estimation, and editing (VEE) rules per the specification in Appendix 1, including gap-filling for missed reads and outlier detection;
+
+(c) build a nightly job that produces billing determinants in the format described in Appendix 2 and delivers them to Client's SFTP endpoint by 04:00 Central Time;
+
+(d) build four operational reports (read completeness, estimation rate, consumption anomalies, and meter health) in Client's existing reporting tool; and
+
+(e) provide knowledge transfer and documentation sufficient for Client staff to operate the pipeline without Supplier assistance.
+
+Anything not listed above is out of scope, including changes to the AMI head-end system, meter installation, changes to Client's billing system, and any customer-facing portal.
+
+3. Deliverables and Acceptance
+
+D1 — Solution design document. Due November 14, 2026.
+D2 — Ingestion service in Client's staging environment. Due January 16, 2027.
+D3 — VEE rules implemented and unit tested. Due February 27, 2027.
+D4 — Billing determinant job and four reports in production. Due April 24, 2027.
+D5 — Documentation and knowledge-transfer sessions. Due May 15, 2027.
+
+Client will review each Deliverable within ten (10) business days after Supplier notifies Client that it is ready, and will either accept it in writing or give Supplier a written statement of the specific ways it fails to meet the acceptance criteria in Appendix 3. Supplier will correct the identified failures and resubmit within ten (10) business days. If Client does not respond within the review period, the Deliverable is deemed accepted.
+
+4. Term
+
+This SOW begins on the Effective Date and ends on acceptance of D5 or on May 29, 2027, whichever is earlier, unless extended by a written change order.
+
+5. Fees
+
+Fixed fee of $486,000, invoiced on acceptance of each Deliverable as follows: D1 $58,000; D2 $146,000; D3 $97,000; D4 $146,000; D5 $39,000. Invoices are payable Net 45 from receipt as provided in Section 6 of the MSA. Supplier will invoice pre-approved travel at cost, capped at $18,000 for the SOW; no other expenses are reimbursable.
+
+6. Client Responsibilities
+
+Client will: provide Supplier access to a staging environment and to the AMI head-end test API within fifteen (15) business days after the Effective Date; make the Director of Metering or a delegate available for a weekly one-hour working session; supply the current billing determinant specification and two years of historical read data; and give written responses to Supplier's questions within five (5) business days. A delay by Client extends each affected Deliverable date day for day and, where the delay exceeds twenty (20) business days in aggregate, entitles Supplier to a change order for demonstrated re-mobilization cost.
+
+7. Change Control
+
+A change to scope, Deliverables, dates, or fees takes effect only in a written change order signed by an authorized representative of each party. Supplier will not begin work on a change before the change order is signed, and Client is not obliged to pay for work performed before then.
+
+8. Key Personnel
+
+Desmond Achebe-Lindström will serve as Engagement Lead for the duration of this SOW. Supplier will not remove or reassign him without Client's prior written consent except on his resignation, incapacity, or termination for cause, and in that event will propose a replacement of comparable experience within ten (10) business days.
+
+9. Location and Data
+
+Work will be performed remotely from Supplier's United States facilities. Supplier will not transfer Client Data outside the United States and will not use Client Data to train any machine-learning model. Client Data is Client Confidential Information under Section 9 of the MSA.
+
+10. Signatures
+
+This SOW does not amend the MSA except as expressly stated in Section 1.
+
+RAVENSWORTH ANALYTICS LLC
+
+By: /s/ Solveig Marchetti-Nakamura
+Name: Solveig Marchetti-Nakamura
+Title: Chief Delivery Officer
+Date: September 22, 2026
+
+CALDER MUNICIPAL UTILITY DISTRICT
+
+By: /s/ Ines Bhattacharya-Kovács
+Name: Ines Bhattacharya-Kovács
+Title: Director of Metering
+Date: September 25, 2026

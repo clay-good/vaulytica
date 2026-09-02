@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.366.0] — 2026-09-02
+
+### Fixed
+- **A statement of work that numbers itself reached none of the subordination
+  machinery.** "This Statement of Work No. 4 (\"SOW\") is entered into under and
+  subject to the Master Services Agreement dated March 9, 2024" — and the
+  issued-under reader's window is `[^.;]`, which stops at the period in "No.".
+  It now steps over an abbreviation period, as its siblings do. The SOW had been
+  told it has no governing law, no IP allocation, no liability cap, no venue and
+  no effect-of-termination clause: five clauses of the MSA it names in its first
+  sentence.
+- **The parent named by its ACRONYM was not a named parent.** "Capitalized
+  terms used but not defined in this SOW have the meanings given in the MSA"
+  wanted a multi-word instrument title. The acronym list `ISSUED_UNDER_PARENT`
+  already carries belongs here for the same reason — and it took five false
+  absences off ten vendor-security-addendum golden fixtures as well.
+- **The order-of-precedence clause is written with the VERB as often as the
+  noun.** "If this SOW conflicts with the MSA, the MSA controls" reached no
+  branch of a reader that wanted "in the event of any conflict".
+- **A colon stands in for the determiner in a header block.** TEMP-002's
+  referenced-instrument exclusion wanted "the"/"a"/"that certain" before the
+  instrument, and a SOW states its parent as "MSA Reference: Master Services
+  Agreement dated March 9, 2024", where no determiner is grammatical.
+- **`sow` listed "Services" among its `expected_defined_terms`**, a term a SOW
+  takes from the master agreement along with everything else it does not
+  restate.
+
+### Added
+- A numbered statement of work under a municipal-utility MSA, with a header
+  block, five dated deliverables and a change-control clause. 306 specimens.
+
 ## [9.365.0] — 2026-09-02
 
 ### Fixed

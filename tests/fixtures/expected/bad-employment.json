@@ -724,7 +724,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1318,11 +1318,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "9b7e5ff92a58ad34132c0c7826b12d808fca8f57828c89d16d0876945d4db3d3",
+  "result_hash": "2ecfa8e720b72e4a63d609bef79179b5c3e65dfca17e67f378fac8f50c2e7602",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.365.0"
+  "version": "9.366.0"
 }

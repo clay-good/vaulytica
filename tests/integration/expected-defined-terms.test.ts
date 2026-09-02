@@ -70,8 +70,14 @@ const SPECIMEN_DIR = join(ROOT, "tests", "fixtures", "specimens");
  * number, and that is the answer every time it happens. It is the number of
  * correct, hand-written specimens that a naive wiring of
  * `expected_defined_terms` would accuse of a drafting defect.
+ *
+ * 28 → 27 at 9.366.0, on the same answer: a numbered statement of work was
+ * added, which would have made it 29, and it named the cause — `sow` listed
+ * "Services", a term a SOW takes from the master agreement it is issued under
+ * along with everything else it does not restate. Curated out, and both SOW
+ * specimens came off with it.
  */
-const FALSE_ACCUSATIONS = 28;
+const FALSE_ACCUSATIONS = 27;
 
 /** A term used fewer times than this is not being used as a defined term. */
 const DEFINED_TERM_USE_FLOOR = 3;

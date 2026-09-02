@@ -1,6 +1,6 @@
 {
   "id": "sow",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "name": "Statement of Work",
   "description": "Child of an MSA. Defines the scope, deliverables, schedule, and fees for a specific engagement. Based on Common Paper SOW under the Professional Services Agreement.",
   "match_features": {
@@ -26,7 +26,6 @@
     {"category": "ip-ownership", "severity_if_missing": "info"}
   ],
   "expected_defined_terms": [
-    {"term": "Services", "severity_if_missing": "critical"},
     {"term": "Deliverables", "severity_if_missing": "critical"},
     {"term": "Fees", "severity_if_missing": "warning"}
   ],

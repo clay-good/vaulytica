@@ -682,13 +682,25 @@ const RATIFIES_PARENT =
 // is governed by the MSA". A document whose conflict clause says the parent
 // controls is still caught by `PARENT_CONTROLS` below, which needs no
 // self-reference.
+// The gap admits an ABBREVIATION period, because a statement of work numbers
+// itself: "This Statement of Work No. 4 (\"SOW\") is entered into under and
+// subject to the Master Services Agreement dated March 9, 2024". `[^.;]` stops
+// at the period in "No.", so the commonest SOW opening there is reached none of
+// this machinery, and the SOW was told it has no governing law, no IP
+// allocation, no liability cap, no venue and no effect-of-termination clause —
+// five clauses of the MSA it names in its first sentence. A period followed by
+// a capital across a space still ends the run, so it cannot cross into the next
+// sentence.
 const ISSUED_UNDER_PARENT =
-  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Statement\s+of\s+Work|SOW|Order\s+Form|Order|Addendum|Rider|Schedule|Annex|Exhibit|Amendment|Letter|Agreement|Attachment)\b[^.;]{0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
+  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Statement\s+of\s+Work|SOW|Order\s+Form|Order|Addendum|Rider|Schedule|Annex|Exhibit|Amendment|Letter|Agreement|Attachment)\b(?:[^.;]|\.(?!\s+[A-Z])){0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
 const PARENT_CONTROLS =
   // Case-SENSITIVE by design: the parent has to be a NAMED instrument, which
   // is what `[A-Z]` and the capitalized "Agreement" enforce. Only the leading
   // conflict phrase is case-folded, by hand, because it opens a sentence.
-  /\b(?:[Ii]n\s+the\s+event\s+of\s+(?:any\s+)?(?:a\s+)?conflict|[Tt]o\s+the\s+extent\s+of\s+(?:any\s+)?conflict|[Ii]f\s+there\s+is\s+(?:any\s+)?conflict)[^.]{0,140}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Agreement|Lease|Contract|MSA)\s*(?:controls|prevails|governs|shall\s+control|shall\s+prevail|shall\s+govern|takes\s+precedence)/;
+  // The order-of-precedence clause is written with the VERB as often as with
+  // the noun — "If this SOW conflicts with the MSA, the MSA controls" — and a
+  // noun-only opening reached none of them.
+  /\b(?:[Ii]n\s+the\s+event\s+of\s+(?:any\s+)?(?:a\s+)?conflict|[Tt]o\s+the\s+extent\s+of\s+(?:any\s+)?conflict|[Ii]f\s+there\s+is\s+(?:any\s+)?conflict|[Ii]f\s+(?:this|the)\s+[\w\s]{0,40}?conflicts?\s+with|[Ww]here\s+(?:this|the)\s+[\w\s]{0,40}?conflicts?\s+with)[^.]{0,140}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Agreement|Lease|Contract|MSA)\s*(?:controls|prevails|governs|shall\s+control|shall\s+prevail|shall\s+govern|takes\s+precedence)/;
 
 /**
  * The SIXTH half: an order form that incorporates a NAMED STANDARD FORM.
@@ -835,7 +847,10 @@ const BORROWS_DEFINITIONS_FROM_PARENT =
   // instrument. It could therefore never match a sentence-initial occurrence,
   // which is nearly all of them. Case-folded by hand, exactly as PARENT_CONTROLS
   // folds its own leading phrase.
-  /\b[Cc]apitali[sz]ed\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,160}?\b(?:have|has|shall\s+have)\s+the\s+meanings?\b[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|Indenture|Plan|Note)\b/;
+  // The parent is named by its ACRONYM as often as by its full title — "the
+  // meanings given in the MSA" — and the same acronym list `ISSUED_UNDER_PARENT`
+  // carries belongs here for the same reason.
+  /\b[Cc]apitali[sz]ed\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,160}?\b(?:have|has|shall\s+have)\s+the\s+meanings?\b[^.]{0,80}?\bthe\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|Indenture|Plan|Note)|MSA|SOW|IRA|SPA|LPA|DPA)\b/;
 
 /**
  * Whether the document is subordinate to a named parent agreement — either

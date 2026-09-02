@@ -2811,6 +2811,23 @@ export const EXPECTED: Record<string, Expectation> = {
   // deadline to ACCEPT — as the agreement's expiration and reported the
   // September start date as falling after it. CHOICE-001 asked an offer letter
   // for a governing-law clause, which the family skipped the venue twin of.
+  // A statement of work that NUMBERS itself — "This Statement of Work No. 4
+  // ('SOW') is entered into under and subject to the Master Services Agreement
+  // dated March 9, 2024". The subordination machinery reached none of it: the
+  // issued-under reader's window is `[^.;]`, which stops at the period in
+  // "No."; the borrows-definitions reader wanted a multi-word instrument title
+  // where this one says "the meanings given in the MSA"; and the
+  // order-of-precedence reader wanted the NOUN where this one says "If this
+  // SOW conflicts with the MSA, the MSA controls". So the SOW was told it has
+  // no governing law, no IP allocation, no liability cap, no venue and no
+  // effect-of-termination clause — five clauses of the MSA it names in its
+  // first sentence. TEMP-002 read the MSA's 2024 date from the header block,
+  // where a colon stands in for the determiner.
+  "sow-numbered.txt": {
+    playbook: "sow",
+    findings: ["OBLI-005", "STRUCT-018"],
+  },
+
   "offer-letter-equity.txt": {
     playbook: "offer-letter",
     findings: ["CHOICE-006", "OBLI-005", "PERS-002"],

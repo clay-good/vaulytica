@@ -23,6 +23,11 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * Retail Lease dated August 14, 2021". An assignment of a five-year-old lease
  * was reported as dated 1,659 days before its own next date.
  *
+ * A COLON stands in for the determiner in a header block, which is where a
+ * statement of work states its parent: "MSA Reference: Master Services
+ * Agreement dated March 9, 2024". No determiner is grammatical there, and the
+ * same instrument named in the body two paragraphs above was already excluded.
+ *
  * "AMENDMENT" belongs in the noun list beside "addendum" for the same reason:
  * a recital that names a lease names its amendments in the same breath — "as
  * amended by a First Amendment dated September 8, 2024" — and the amendment's
@@ -39,7 +44,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * …" — and none of them is the date of the document naming it.
  */
 const REFERENCED_INSTRUMENT_DATE =
-  /\b(?:the|a|an|that|those|such)\s+[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|amendment|indenture|trust|will|deed|mortgage|guaranty)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
+  /(?:\b(?:the|a|an|that|those|such)\s+|:\s*)[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|amendment|indenture|trust|will|deed|mortgage|guaranty)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
 
 /**
  * A header-field label naming another instrument's date — "Original Contract
@@ -135,7 +140,7 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",
