@@ -1,6 +1,6 @@
 {
   "id": "ai-aup-policy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "AI Acceptable Use Policy",
   "description": "AI / generative-AI acceptable use policy under NIST AI RMF + EU AI Act + USPTO guidance. Selects the \u00a76.O ruleset (POL-037..POL-041).",
   "match_features": {
@@ -11,7 +11,6 @@
       "generative ai policy",
       "ai use policy",
       "ai policy",
-      "generative ai",
       "ai acceptable use"
     ],
     "required_clauses": [],

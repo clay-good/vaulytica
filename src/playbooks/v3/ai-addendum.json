@@ -1,13 +1,12 @@
 {
   "id": "ai-addendum",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "AI Usage Addendum",
   "description": "Linter for an AI / Generative-AI Addendum to a commercial agreement. Selects the §34 addenda ruleset (AI portion, ADDENDA-010..016): definitions (Generative AI / Foundation Model / Output / Training Data), prohibited training-on-customer-data without opt-in, transparency (features + default state + hosting), IP ownership of outputs, AI hallucination disclaimer + human-review obligation, AI subprocessor disclosure, deletion of fine-tuning data on termination. Citations are NIST AI RMF / EU AI Act / FTC enforcement — explicitly labeled 'consensus practice, not statute' where no controlling regulator applies.",
   "match_features": {
     "title_keywords": [
       "ai addendum",
       "artificial intelligence addendum",
-      "generative ai",
       "ai usage",
       "ai services addendum",
       "machine learning addendum"

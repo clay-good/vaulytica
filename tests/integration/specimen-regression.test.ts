@@ -2830,6 +2830,26 @@ export const EXPECTED: Record<string, Expectation> = {
   // and "Indemnification carved out of liability cap". Four other specimens
   // carried the pair. Where the CAP ITSELF excepts the indemnity it is
   // RISK-004's finding; RISK-015 keeps the indemnity with no cap anywhere.
+  // A FAR/DFARS flowdown addendum to an Air Force subcontract, with the clause
+  // list set out as a run of bare citations. It routes and reads correctly, and
+  // COMM-162 is a fair catch: the addendum flows down twelve FAR clauses and
+  // omits prompt payment. STRUCT-009 is fair too — the FAR's own "covered
+  // contractor information systems" is lowercase beside the addendum's defined
+  // "Contractor". Kept as the clean case for the government-contracting pack.
+  "far-flowdown-addendum.txt": {
+    playbook: "far-subcontract-flowdown",
+    findings: ["COMM-162", "OBLI-005", "STRUCT-009", "TEMP-006", "TEMP-007"],
+  },
+
+  // A secured promissory note with a usury savings clause, a default rate
+  // bounded by Oregon's maximum, and a $ amount and place set out as a
+  // right-aligned header block. Clean; STRUCT-005 is fair and small — "Maturity
+  // Date" is defined in Section 2 and never used again.
+  "promissory-note-secured.txt": {
+    playbook: "promissory-note",
+    findings: ["FIN-009", "OBLI-005", "STRUCT-005", "TEMP-008"],
+  },
+
   "consulting-regulatory.txt": {
     playbook: "consulting-agreement",
     findings: [

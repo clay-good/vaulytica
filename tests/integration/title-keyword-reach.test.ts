@@ -69,10 +69,21 @@ const UNREACHED_BY_ANY_DECLARED_NAME: ReadonlySet<string> = new Set([
  * "letter of intent", "risk factors", "data processing agreement" — and each
  * has to be settled in the playbooks by giving one family the name and the
  * other a longer one, not in the matcher.
+ *
+ * Three came off at 9.368.0, and all three were the same mistake: a title
+ * keyword that is not a title. "generative ai" is a TOPIC, claimed by both AI
+ * families, each of which also declares its own name ("generative ai policy",
+ * "ai addendum"). "waiver and release" is the genus a participant release is
+ * called, while a lien waiver is called "waiver and release OF LIEN" and
+ * declares four names of its own.
+ *
+ * "bylaws of" was the fourth candidate and stays: it looks like the same
+ * mistake and is not. A nonprofit's bylaws really are titled "BYLAWS OF
+ * PEMBERTON RIDGE LAND CONSERVANCY", with nothing in the title to say which
+ * kind of corporation it is, and dropping the keyword cost that document its
+ * family outright. The collision is live because the ambiguity is.
  */
 const NAME_TAKEN_BY_ANOTHER_FAMILY: ReadonlySet<string> = new Set([
-  "ai-aup-policy :: generative ai -> ai-addendum",
-  "construction-lien-waiver :: waiver and release -> hold-harmless-agreement",
   "dpa-multi-state-us :: data processing addendum -> dpa-controller-processor",
   "dpa-multi-state-us :: data processing agreement -> dpa-controller-processor",
   "loi-term-sheet :: letter of intent -> letter-of-intent-lease",

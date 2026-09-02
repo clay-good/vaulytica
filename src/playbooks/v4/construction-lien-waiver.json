@@ -1,12 +1,11 @@
 {
   "id": "construction-lien-waiver",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Construction Lien Waiver",
   "description": "Mechanic's-lien waiver (conditional / unconditional, progress / final) under state-prescribed forms (CA Civ. § 8132–8138 and analogous). Selects the §6.M ruleset (CON-014..CON-019).",
   "match_features": {
     "title_keywords": [
       "lien waiver",
-      "waiver and release",
       "release of lien",
       "conditional waiver",
       "unconditional waiver"

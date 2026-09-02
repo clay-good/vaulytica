@@ -1,0 +1,54 @@
+FAR FLOWDOWN ADDENDUM
+
+This FAR Flowdown Addendum (this "Addendum") is entered into under and subject to the Subcontract Agreement dated April 6, 2026 between Thorne & Vasquez Aerospace, Inc. ("Prime") and Belrose Precision Machining LLC ("Subcontractor"). Capitalized terms used but not defined in this Addendum have the meanings given in the Subcontract. If this Addendum conflicts with the Subcontract, this Addendum controls as to the clauses it flows down.
+
+1. Prime Contract. Prime holds Prime Contract No. FA8620-26-C-0114 with the Department of the Air Force (the "Prime Contract"). This Addendum flows down to Subcontractor the clauses of the Prime Contract that apply to this subcontract by their terms, by FAR 52.244-6, or by the terms of the Prime Contract.
+
+2. Incorporation by Reference. The following FAR clauses are incorporated into the Subcontract by reference, with the same force and effect as if set out in full. In each clause "Contractor" means Subcontractor, "Contracting Officer" means Prime's authorized representative, and "Government" retains its meaning, except where the context or the clause requires otherwise:
+
+FAR 52.203-13, Contractor Code of Business Ethics and Conduct (NOV 2021)
+FAR 52.203-19, Prohibition on Requiring Certain Internal Confidentiality Agreements (JAN 2017)
+FAR 52.204-21, Basic Safeguarding of Covered Contractor Information Systems (NOV 2021)
+FAR 52.204-25, Prohibition on Contracting for Certain Telecommunications and Video Surveillance Services or Equipment (NOV 2021)
+FAR 52.219-8, Utilization of Small Business Concerns (OCT 2022)
+FAR 52.222-26, Equal Opportunity (SEP 2016)
+FAR 52.222-35, Equal Opportunity for Veterans (JUN 2020)
+FAR 52.222-36, Equal Opportunity for Workers with Disabilities (JUN 2020)
+FAR 52.222-50, Combating Trafficking in Persons (NOV 2021)
+FAR 52.225-13, Restrictions on Certain Foreign Purchases (FEB 2021)
+FAR 52.244-6, Subcontracts for Commercial Products and Commercial Services (JAN 2025)
+FAR 52.247-64, Preference for Privately Owned U.S.-Flag Commercial Vessels (NOV 2021)
+
+DFARS 252.204-7012, Safeguarding Covered Defense Information and Cyber Incident Reporting (JAN 2023)
+DFARS 252.225-7009, Restriction on Acquisition of Certain Articles Containing Specialty Metals (OCT 2014)
+DFARS 252.246-7003, Notification of Potential Safety Issues (JAN 2023)
+
+3. Cybersecurity. Subcontractor shall provide adequate security on all covered contractor information systems as required by DFARS 252.204-7012 and shall implement NIST SP 800-171 Rev. 2. Subcontractor shall report a cyber incident to the Department of Defense at dibnet.dod.mil within seventy-two (72) hours of discovery and shall notify Prime within twenty-four (24) hours of submitting that report. Subcontractor shall flow down DFARS 252.204-7012 to its own subcontractors without alteration except to identify the parties.
+
+4. Counterfeit Parts. Subcontractor shall maintain a counterfeit electronic part detection and avoidance system meeting DFARS 252.246-7007 and shall purchase electronic parts only from the original manufacturer, an authorized dealer, or a Prime-approved supplier. Subcontractor shall notify Prime within five (5) business days of becoming aware of a suspect counterfeit part delivered under the Subcontract.
+
+5. Audit and Records. Subcontractor shall maintain records relating to the Subcontract for three (3) years after final payment and shall make them available to Prime, the Contracting Officer, and the Comptroller General as required by FAR 52.215-2.
+
+6. Changes. Prime may, by written order, make changes within the general scope of the Subcontract. If a change causes an increase or decrease in Subcontractor's cost or time of performance, Subcontractor shall submit a written request for equitable adjustment within thirty (30) days after receipt of the change order, and the parties shall negotiate an equitable adjustment.
+
+7. Termination for Convenience of the Government. If the Government terminates the Prime Contract for convenience, in whole or in part, Prime may terminate the Subcontract correspondingly. In that event Subcontractor's recovery is limited to the amount Prime actually recovers from the Government allocable to the Subcontract, and Subcontractor shall submit its settlement proposal to Prime within sixty (60) days of the notice of termination.
+
+8. Assignment of Claims. Subcontractor may not assert a claim directly against the Government. Prime shall, at Subcontractor's request and expense, sponsor a certified claim on Subcontractor's behalf under the Contract Disputes Act, 41 U.S.C. §§ 7101-7109, where Prime reasonably determines the claim has merit.
+
+9. Order of Precedence. In the event of a conflict, the order of precedence is: (a) the Prime Contract clauses incorporated here; (b) this Addendum; (c) the Subcontract; and (d) any purchase order issued under the Subcontract.
+
+10. Survival. Sections 3, 4, 5, and 8 survive expiration or termination of the Subcontract.
+
+THORNE & VASQUEZ AEROSPACE, INC.
+
+By: /s/ Rosalind Thorne-Achebe
+Name: Rosalind Thorne-Achebe
+Title: Vice President, Supply Chain
+Date: April 6, 2026
+
+BELROSE PRECISION MACHINING LLC
+
+By: /s/ Casimir Belrose-Nakagawa
+Name: Casimir Belrose-Nakagawa
+Title: President
+Date: April 9, 2026

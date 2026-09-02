@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.368.0] — 2026-09-02
+
+### Fixed
+- **Three title keywords that are not titles.** "generative ai" is a TOPIC and
+  both AI families claimed it, each of which also declares its own name
+  ("generative ai policy", "ai addendum"); "waiver and release" is the genus a
+  participant release is called, while a lien waiver is called "waiver and
+  release OF LIEN" and declares four names of its own. Each was a live
+  collision on `title-keyword-reach`, and the ratchet is three entries shorter.
+  A fourth candidate, "bylaws of", stays: a nonprofit's bylaws really are
+  titled "BYLAWS OF PEMBERTON RIDGE LAND CONSERVANCY", and dropping it cost
+  that document its family outright — the collision is live because the
+  ambiguity is.
+
+### Added
+- A FAR/DFARS flowdown addendum to an Air Force subcontract and a secured
+  Oregon promissory note with a usury savings clause. Both were clean, and both
+  are pinned as the clean case for packs that had one specimen apiece. 309
+  specimens.
+
 ## [9.367.0] — 2026-09-02
 
 ### Fixed

@@ -324,14 +324,13 @@
   },
   {
     "id": "ai-addendum",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "AI Usage Addendum",
     "description": "Linter for an AI / Generative-AI Addendum to a commercial agreement. Selects the §34 addenda ruleset (AI portion, ADDENDA-010..016): definitions (Generative AI / Foundation Model / Output / Training Data), prohibited training-on-customer-data without opt-in, transparency (features + default state + hosting), IP ownership of outputs, AI hallucination disclaimer + human-review obligation, AI subprocessor disclosure, deletion of fine-tuning data on termination. Citations are NIST AI RMF / EU AI Act / FTC enforcement — explicitly labeled 'consensus practice, not statute' where no controlling regulator applies.",
     "match_features": {
       "title_keywords": [
         "ai addendum",
         "artificial intelligence addendum",
-        "generative ai",
         "ai usage",
         "ai services addendum",
         "machine learning addendum"
@@ -421,7 +420,7 @@
   },
   {
     "id": "ai-aup-policy",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "AI Acceptable Use Policy",
     "description": "AI / generative-AI acceptable use policy under NIST AI RMF + EU AI Act + USPTO guidance. Selects the §6.O ruleset (POL-037..POL-041).",
     "match_features": {
@@ -432,7 +431,6 @@
         "generative ai policy",
         "ai use policy",
         "ai policy",
-        "generative ai",
         "ai acceptable use"
       ],
       "required_clauses": [],
@@ -4292,13 +4290,12 @@
   },
   {
     "id": "construction-lien-waiver",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Construction Lien Waiver",
     "description": "Mechanic's-lien waiver (conditional / unconditional, progress / final) under state-prescribed forms (CA Civ. § 8132–8138 and analogous). Selects the §6.M ruleset (CON-014..CON-019).",
     "match_features": {
       "title_keywords": [
         "lien waiver",
-        "waiver and release",
         "release of lien",
         "conditional waiver",
         "unconditional waiver"
@@ -12556,7 +12553,7 @@
   },
   {
     "id": "nonprofit-bylaws",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "Nonprofit Bylaws (501(c)(3))",
     "description": "Bylaws of a 501(c)(3) tax-exempt nonprofit corporation. Selects the §6.B governance ruleset (GOV-071..GOV-080).",
     "match_features": {
