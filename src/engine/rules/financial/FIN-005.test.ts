@@ -509,4 +509,14 @@ describe("FIN-005 v1.15.0 — the amount a person owes", () => {
   ])("reads a recurring due date stated as %s", (clause) => {
     expect(FIN_005.check(buildContext(["Rent", clause]))).toBeNull();
   });
+  // v1.5.2 — the run-up window between the payment noun and its deadline is a
+  // character class, and the section SIGN was not in it. "Any amount you owe
+  // under § 4 is due within sixty (60) days" is the same term as the one
+  // written "under Section 4".
+  it.each([
+    ["Any amount you owe under Section 4 is due within sixty (60) days after your last day."],
+    ["Any amount you owe under § 4 is due within sixty (60) days after your last day."],
+  ])("reads a repayment term stated as %s", (clause) => {
+    expect(FIN_005.check(buildContext(["Repayment", clause]))).toBeNull();
+  });
 });

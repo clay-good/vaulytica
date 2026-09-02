@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.377.0] — 2026-09-02
+
+### Fixed
+- **`§` is how a lawyer writes "Section", and the engine could not read it.**
+  `\b` asserts a boundary between a word character and a non-word one, and `§`
+  is non-word, so `\b§` matches only where the sign directly follows a letter —
+  which no citation ever does. The cross-reference extractor carried `§§?` in
+  its alternation from the start and its own doc comment promises to resolve
+  "`§ 12(b)`"; the branch had never fired. Three statutory-declaration
+  recognizers in the same file were written the same way.
+
+  Making the sign readable surfaced eight references across the specimen
+  corpus, every one a state statute cited by its abbreviated reporter —
+  "A.R.S. § 32-125", "C.R.S. § 8-2-113(4)", "6 Del. C. § 17-101",
+  "N.C. Gen. Stat. § 45-21.16 and § 45-21.17". What they share is the
+  NUMBERING, not the reporter: a statute numbers its sections "45-21.16" and
+  "164.504", a contract numbers its own "4.2". That is what the new suppression
+  tests, so it needs no list of reporters to keep current and a genuinely
+  broken "§ 4.2" still reports.
+
+- **Four rules read the word and not the sign.**
+  - **MNA-031 (v1.2.0)** — spells the citation "DGCL § 262" in its own name,
+    description, explanation and recommendation, and could only match
+    `section\s+262`. A merger agreement citing the statute the way the rule
+    does was told its appraisal-rights notice was missing.
+  - **RISK-016 (v1.6.0)** — an insurance minimum "described in § 5": the
+    locator list ran Section / Article / Exhibit / Schedule / Annex and stopped.
+  - **FIN-005 (v1.5.2)** — "any amount you owe under § 4 is due within sixty
+    (60) days": the run-up window between the payment noun and its deadline is
+    a character class, and the sign was not in it.
+  - **SET-008 (v1.3.0)** — the sharpest. The whistleblower carve-out matched
+    "sec" INSIDE the word "Section", so a settlement passed on "Ridgeline may
+    file the stipulated judgment described in SECtion 8" — while the carve-out
+    it actually carries, "This Section does not restrict either Party from
+    communicating with any government agency", was invisible, because the
+    reader required the word "nothing". A true finding held up by an accident
+    is worse than a false one. The acronyms are now bounded and the negative is
+    read on the operative verb as well as on "nothing".
+
+### Added
+- **`section-sign.test.ts`.** A static ratchet — no regex in `src/` may put
+  `\b` in front of the section sign, a one-line grep that would have caught
+  this the day the sign was added — and the metamorphic relation: writing a
+  section REFERENCE with the sign changes no finding, over every specimen that
+  names a numbered section. Headings are left alone, since a heading is the
+  outline's own source rather than a reference into it.
+
+### Fixed (release hygiene)
+- 9.376.0 shipped with its golden fixtures and one README line stamped at
+  9.375.0: the fixtures were regenerated BEFORE the version bump, and the
+  README quotes the suite size twice. Both are corrected here. Bump the
+  version first, then regenerate.
+
 ## [9.376.0] — 2026-09-02
 
 ### Fixed

@@ -17,7 +17,7 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 // a bare roman numeral from matching inside a word ("Schedule i" must not match
 // "Schedule identifying"; "Article V" must not match "Article Video").
 const REF_RE =
-  /\b(Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*[A-Za-z]?(?:\([a-z]\))?|[IVXLCDM]+)(?![A-Za-z])/gi;
+  /(?<![A-Za-z0-9_])(Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*[A-Za-z]?(?:\([a-z]\))?|[IVXLCDM]+)(?![A-Za-z])/gi;
 
 // An external statutory citation ("Section 409A of the Internal Revenue Code",
 // "Section 12 of the Securities Exchange Act of 1934") is NOT a broken
@@ -166,6 +166,32 @@ const EXTERNAL_LEADING_RE =
 const EXTERNAL_NAMED_CODE_LEADING_RE =
   /\b(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+Annotated|\s+Ann\.?)?(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?(?:\s*,?\s*(?:chapter|ch\.?|title|tit\.?|article|art\.?|part|division|div\.?)\s+[\w.-]+)?\s*,?\s+$/i;
 
+/**
+ * The section SIGN carrying a number no contract ever gives its own sections.
+ *
+ * `§` was unreadable until 9.377.0 — `\b` cannot match between a space and a
+ * non-word character, so the sign was in the reference alternation and could
+ * never fire (see {@link REF_RE}). Making it readable surfaced eight
+ * references across the specimen corpus, and every one was a state statute
+ * cited by its abbreviated reporter: "A.R.S. § 32-125", "C.R.S. § 8-2-113(4)",
+ * "6 Del. C. § 17-101", "N.C. Gen. Stat. § 45-21.16 and § 45-21.17",
+ * "§ 164.504(e)(5)".
+ *
+ * What they share is not the reporter — the second of a pair is introduced by
+ * nothing but "and" — but the NUMBERING. A statute numbers its sections
+ * "45-21.16", "8-2-113", "164.504"; a contract numbers its own "4.2" and
+ * "12.1.3", never with a hyphen and never past two digits in the leading run.
+ * So the test is the number, which needs no list of reporters to keep current
+ * and still leaves a genuinely broken "§ 4.2" reporting.
+ *
+ * Tested only for the sign. The WORD "Section" carries no such implication —
+ * "Section 220" is how a bylaw cites the DGCL and how a long agreement numbers
+ * its own clause — and the leading- and trailing-qualifier guards above are
+ * what settle those.
+ */
+const STATUTORY_NUMBER_AFTER_SIGN = /^-\d/;
+const STATUTORY_LEADING_RUN = /^\d{3,}/;
+
 const EXTERNAL_REG_LEADING_RE =
   /\b(?:Treasury\s+Regulations?|Treas\.?\s+Reg(?:ulation)?s?\.?)\s+$/i;
 
@@ -254,7 +280,7 @@ const STATUTE_SECTION_LABEL = /^\d{4,}$/;
 // bare letter-suffixed reference with no statutory context anywhere still
 // reports as an unresolved internal reference.
 const STATUTE_LABEL_DECLARATION =
-  /\b(?:[Ss]ections?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
+  /(?<![A-Za-z0-9_])(?:[Ss]ections?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
 
 /**
  * The same declaration written the other way round: the code NAMED FIRST.
@@ -309,7 +335,7 @@ const EXTERNAL_ACRONYM_TAIL = /^(?:\(\d+[a-z]?\))*\s+of\s+(?:the\s+)?([A-Za-z]{2
 // agreement cites "under Section 262 of the DGCL" once and then "the rights
 // provided under Section 262" without the qualifier.
 const STATUTE_ACRONYM_CITE =
-  /\b(?:Section|Sections|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
+  /(?<![A-Za-z0-9_])(?:Section|Sections|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
 
 // Statute acronyms so ubiquitous they are cited bare, without a local
 // definition — Delaware corporate law and the UCC head every M&A and secured-
@@ -339,7 +365,7 @@ const LEADING_SECTION_RE = /^\s*(?:(?:Section|Sec\.?|§)\s+)?(\d+(?:\.\d+)*)\.\s
 // subsection of every article reported as a broken reference to itself. This
 // captures that section number where it trails the article heading.
 const ARTICLE_THEN_SECTION_RE =
-  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?\b(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
+  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?(?<![A-Za-z0-9_])(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
 
 // Bylaws style writes the multi-level number with NO trailing period —
 // "7.1 Exclusive Forum. Unless …" — so LEADING_SECTION_RE never registered
@@ -526,6 +552,8 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         EXTERNAL_REG_LEADING_RE.test(before) ||
         EXTERNAL_NAMED_CODE_LEADING_RE.test(before) ||
         STATUTE_SECTION_LABEL.test(bareLabel) ||
+        (/^§/.test(keyword) &&
+          (STATUTORY_NUMBER_AFTER_SIGN.test(after) || STATUTORY_LEADING_RUN.test(bareLabel))) ||
         (namesACode && STATUTE_SUBSECTION_LABEL.test(m[2] ?? "")) ||
         statutoryLabels.has(bareLabel.toUpperCase()) ||
         // A SIBLING of a declared code section. Bounded three ways: the

@@ -702,7 +702,7 @@ const MERGER_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-031",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Appraisal rights notice (DGCL § 262)",
     description: "Stockholders must be advised of appraisal rights under DGCL § 262.",
     citation: dgcl("262"),
@@ -713,7 +713,7 @@ const MERGER_RULES: Rule[] = [
       "DGCL § 262 entitles dissenting stockholders to appraisal in qualifying mergers. The notice obligation is statutory and the agreement should restate it.",
     recommendation:
       "Add 'Appraisal Rights' describing dissenters' rights under DGCL § 262 and the notice mechanics.",
-    present_patterns: [/(section\s+262|appraisal\s+rights|dissenters)/i],
+    present_patterns: [/((?:section|§§?)\s*262|appraisal\s+rights|dissenters)/i],
     denied_if: expressDenial(String.raw`appraisal\s+rights?|dissenters?.?\s+rights?`),
     denied_title: "Appraisal rights expressly denied",
     denied_description:

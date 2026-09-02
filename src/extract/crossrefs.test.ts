@@ -1335,3 +1335,59 @@ describe("a code declared by its chapter", () => {
     expect(got.some((r) => r.unresolved)).toBe(true);
   });
 });
+
+/**
+ * The section SIGN, which `\b` made unreadable.
+ *
+ * `REF_RE` carried `§§?` in its alternation from the start and the file's own
+ * doc comment promises to resolve "`§ 12(b)`", but the alternation opened with
+ * `\b` — a boundary between a word character and a non-word one — and `§` is
+ * itself non-word. `\b§` can therefore only match where the sign directly
+ * follows a letter, which no citation ever does. The branch was dead, and so
+ * were the three statutory-declaration recognizers written the same way.
+ *
+ * Making it readable surfaced eight references across the specimen corpus and
+ * every one was a state statute cited by its abbreviated reporter. What they
+ * share is the NUMBERING rather than the reporter — a statute numbers its
+ * sections "45-21.16", "8-2-113", "164.504"; a contract numbers its own "4.2"
+ * — so that is what the suppression tests, and a genuinely broken "§ 4.2"
+ * still reports.
+ */
+describe("the section sign", () => {
+  const refs = (...paras: string[]) => {
+    const t = buildTree(["Agreement", "1. Payment. The fee is $500.", ...paras]);
+    return extractCrossRefs(t, extractSections(t));
+  };
+  const unresolved = (...paras: string[]) =>
+    refs(...paras)
+      .filter((r) => r.unresolved)
+      .map((r) => r.raw_text);
+
+  it("reads a reference written with the sign at all", () => {
+    expect(refs("The fee is payable as § 1 provides.").length).toBeGreaterThan(0);
+  });
+
+  it("resolves a sign reference that points at a real section", () => {
+    expect(unresolved("The fee is payable as § 1 provides.")).toEqual([]);
+  });
+
+  it("still reports a sign reference that points at nothing", () => {
+    expect(unresolved("The fee is payable as § 12.4 provides.")).not.toEqual([]);
+  });
+
+  it.each([
+    ["an Arizona reporter", "The seal shall appear on the drawings as A.R.S. § 32-125 requires."],
+    ["a Colorado reporter", "This notice is required by C.R.S. § 8-2-113(4)(a)(I)."],
+    ["the Delaware code", 'The Act means 6 Del. C. § 17-101 et seq. (the "Act").'],
+    [
+      "a sibling introduced by nothing but 'and'",
+      "Notice of sale is required by N.C. Gen. Stat. § 45-21.16 and § 45-21.17.",
+    ],
+    [
+      "a bare C.F.R. sibling",
+      "45 C.F.R. § 164.502(e)(1)(ii) requires assurances, and § 164.504(e)(5) requires that they match.",
+    ],
+  ])("does not read a statute cited by %s as an internal reference", (_label, clause) => {
+    expect(unresolved(clause)).toEqual([]);
+  });
+});

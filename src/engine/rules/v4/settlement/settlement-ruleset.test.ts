@@ -214,6 +214,49 @@ describe("SET-008 — an agency prohibition is not a whistleblower carve-out (v1
   });
 });
 
+/**
+ * v1.3.0 — the acronyms carried no word boundary, so "sec" matched inside
+ * "Section", "prosecute" and "second", and a settlement passed the carve-out
+ * on a sentence about a stipulated judgment. The carve-out the same document
+ * actually carries puts the negative on the operative verb rather than on
+ * "nothing", which the reader could not see: a true finding held up by an
+ * accident, which is worse than a false one.
+ */
+describe("SET-008 — the carve-out has to be the carve-out (v1.3.0)", () => {
+  const run = async (...paras: [string, ...string[]]) =>
+    (
+      await runEngine({
+        rules: SETTLEMENT_RULES,
+        ctx: withPb(buildContext(paras), SETTLEMENT_PB),
+        source_file: SRC,
+      })
+    ).findings.map((f) => f.rule_id);
+
+  it.each([
+    ["a stipulated judgment described in a numbered Section", "Section 8"],
+    ["the same reference written with the sign", "§ 8"],
+  ])("still fires where the only match was %s", async (_label, ref) => {
+    expect(
+      await run("Default", `Ridgeline may file the stipulated judgment described in ${ref}.`),
+    ).toContain("SET-008");
+  });
+
+  it("reads a carve-out whose negative sits on the operative verb", async () => {
+    expect(
+      await run(
+        "Confidentiality",
+        "This Section does not restrict either Party from communicating with any government agency.",
+      ),
+    ).not.toContain("SET-008");
+  });
+
+  it("does not read 'may prosecute' as a preserved right to reach the SEC", async () => {
+    expect(await run("Remedies", "Either Party may prosecute a claim for breach.")).toContain(
+      "SET-008",
+    );
+  });
+});
+
 describe("SET-007 — overbroad non-disparagement in its dominant wording (v1.1.0)", () => {
   it("fires on 'shall not make any disparaging statement'", async () => {
     const ctx = withPb(

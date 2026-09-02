@@ -797,3 +797,36 @@ describe("MNA-052 v1.1.0 — a 'Tax Matters' section is the tax-reporting clause
     expect(rule.check(ctx)?.title).toBe("Tax-reporting clause missing");
   });
 });
+
+/**
+ * MNA-031 spells the citation "DGCL § 262" in its own name, its description,
+ * its explanation and its recommendation, and could only READ it written
+ * "section 262". A merger agreement that cites the statute the way the rule
+ * itself does was told its appraisal-rights notice was missing.
+ */
+describe("MNA-031 reads DGCL § 262 written with the sign", () => {
+  const MERGER_PB: Playbook = { id: "merger-agreement", version: "1.0.0" };
+  const fired = async (body: string, heading = "Appraisal Rights") => {
+    const ctx = withPb(buildContext([heading, body]), MERGER_PB);
+    const run = await runEngine({ rules: M_AND_A_RULES, ctx, source_file: SRC });
+    return new Set(run.findings.map((f) => f.rule_id)).has("MNA-031");
+  };
+
+  it.each([
+    ["the word", "Stockholders are entitled to the rights that section 262 of the DGCL confers."],
+    ["the sign", "Stockholders are entitled to the rights that § 262 of the DGCL confers."],
+  ])("is silent where the notice cites the statute by %s", async (_label, body) => {
+    expect(await fired(body)).toBe(false);
+  });
+
+  it("still fires where the agreement says nothing about appraisal", async () => {
+    // The heading has to change too: "Appraisal Rights" is itself one of the
+    // three things the rule reads.
+    expect(
+      await fired(
+        "The Merger becomes effective on the filing of the certificate.",
+        "Effective Time",
+      ),
+    ).toBe(true);
+  });
+});

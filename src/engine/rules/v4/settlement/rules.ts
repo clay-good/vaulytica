@@ -275,7 +275,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "SET-008",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Whistleblower / agency-communication carve-out",
     description:
       "Confidential settlements must preserve the parties' right to communicate with regulators (SEC Rule 21F-17, EEOC, NLRB, DOL).",
@@ -295,7 +295,18 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       // free to report). "shall not disclose … to any government agency" is the
       // very prohibition this carve-out is meant to undo — the same
       // fake-carve-out false negative fixed in EMP-021.
-      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to|free\s+to)[^.]{0,80}(?:government\s+agency|sec|eeoc|nlrb|dol)/is,
+      // The agency acronyms carried NO word boundary, and "sec" is inside
+      // "Section", "prosecute" and "second". A settlement whose only match was
+      // "Ridgeline MAY file the stipulated judgment described in SECtion 8"
+      // was read as preserving the right to talk to the SEC — a carve-out
+      // found in a sentence about a stipulated judgment (v1.3.0).
+      //
+      // The carve-out itself is as often written with the negative on the
+      // OPERATIVE verb — "This Section does not restrict either Party from
+      // communicating with any government agency" — as with "nothing".
+      // Requiring the word "nothing" missed the commoner drafting, and the
+      // specimen carrying it passed only by the accident above.
+      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|(?:does|do|shall|will|may)\s+not\s+(?:prevent|prohibit|restrict|limit|preclude|bar)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to|free\s+to)[^.]{0,80}(?:government\s+agency|\b(?:sec|eeoc|nlrb|dol)\b)/is,
       // The bare `/(sec|eeoc|nlrb|dol)/` and a second unguarded whistleblower
       // pattern were removed: an agency acronym or "whistleblower" in a
       // PROHIBITION ("shall not report to the SEC", "no whistleblower rights")

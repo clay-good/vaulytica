@@ -174,6 +174,20 @@ describe("RISK-016 — a coverage minimum stated by cross-reference", () => {
     expect(RISK_016.check(buildContext(["Venue Rental Agreement", clause]))).toBeNull();
   });
 
+  // The same locator written with the SIGN — the list ran Section / Article /
+  // Exhibit / Schedule / Annex and stopped, so "described in § 5" was read as
+  // pointing nowhere.
+  it("is silent where the clause points at a section written with the sign", () => {
+    expect(
+      RISK_016.check(
+        buildContext([
+          "Venue Rental Agreement",
+          "Caterer shall carry the insurance described in § 5 and name Owner as an additional insured.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
   // Load-bearing: an insurance mandate that points nowhere and states nothing
   // still reports.
   it("still reports a mandate with no minimum and no cross-reference", () => {
