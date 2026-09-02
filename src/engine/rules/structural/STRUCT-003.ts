@@ -378,7 +378,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.34.0",
+  version: "1.20.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -510,7 +510,27 @@ export const rule: Rule = {
         );
         if (!m) continue;
         const distinct = new Set(m.map((t) => t.toLowerCase().replace(/\s+/g, " ")));
-        if (SIG_LINE.test(counted) || SIG_TOKEN.test(counted)) signals += distinct.size;
+        // De-duplicating the labels is what keeps one signer's "By: ___ Name:
+        // ___ Title: ___" from counting as three signers. It also collapsed
+        // TWO SIGNERS into one, because the commonest commercial block writes
+        // nothing but "By:":
+        //
+        //   PROVIDER: Northwind Analytics, Inc.   CUSTOMER: Belmont Regional …
+        //   By: ______________________            By: ______________________
+        //
+        // One distinct label, one signal, against a floor of two — so a cloud
+        // services agreement signed by both parties reported "No signature
+        // block detected" at `critical`. Plain-text and pasted ingest joins
+        // the block's lines into one paragraph, so laying the two signers out
+        // stacked rather than side by side did not help.
+        //
+        // Each anchored rule is one signer's line, so where there are more
+        // rules than distinct labels the rules are the better count. A
+        // document with two of these has a signature block, whatever it omits.
+        const signatureRules = counted.match(/\b(?:By|Signature|Signed)\b\s*:?\s*_{4,}/gi);
+        if (SIG_LINE.test(counted) || SIG_TOKEN.test(counted)) {
+          signals += Math.max(distinct.size, signatureRules?.length ?? 0);
+        }
       }
       return signals;
     };

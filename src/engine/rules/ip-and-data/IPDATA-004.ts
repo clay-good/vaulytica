@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 /** IPDATA-004 — Data ownership distinction from IP (info). */
 export const rule: Rule = {
   id: "IPDATA-004",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Data ownership distinguished from IP",
   category: "ip-and-data",
   default_severity: "info",
@@ -34,7 +34,15 @@ export const rule: Rule = {
         // object first — "Customer Data shall belong to / is owned by / is the
         // property of the Customer" — and the "owns ALL Customer Data" form
         // (an intervening "all"/"its") are recognized too.
-        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:all\s+|the\s+|its\s+)*(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b|(?:owns?|retains?|shall\s+(?:own|retain))\s+(?:all\s+)?right,?\s+title,?\s+and\s+interest\s+(?:in|to)\b[^.]{0,40}?\b(?:customer|usage|service)\s+data\b|(?:customer|usage|service)\s+data\b[^.]{0,40}?\b(?:belongs?\s+to|owned\s+by|(?:is|are|shall\s+be)\s+(?:the\s+)?(?:sole\s+|exclusive\s+)*property\s+of)\b/i,
+        // The RIGHT-TITLE-AND-INTEREST branch's object is a bare `data`, not
+        // the qualified term. A section HEADED "Customer Data" allocates it in
+        // the words "Customer retains all right, title and interest in data
+        // Customer submits to the Service" — the qualifier is in the heading,
+        // where the trigger already found it, and requiring it again in the
+        // allocating sentence reported a cloud services agreement's own
+        // ownership clause as unaddressed. Whichever party the sentence gives
+        // the data to, it addressed the question, which is all this rule asks.
+        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:all\s+|the\s+|its\s+)*(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b|(?:owns?|retains?|shall\s+(?:own|retain))\s+(?:all\s+)?right,?\s+title,?\s+and\s+interest\s+(?:in|to)\b[^.]{0,40}?\bdata\b|(?:customer|usage|service)\s+data\b[^.]{0,40}?\b(?:belongs?\s+to|owned\s+by|(?:is|are|shall\s+be)\s+(?:the\s+)?(?:sole\s+|exclusive\s+)*property\s+of)\b/i,
       )
     )
       return null;

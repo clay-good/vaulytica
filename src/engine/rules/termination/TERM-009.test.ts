@@ -61,4 +61,31 @@ describe("TERM-009 — convenience trigger recognizes 'without cause' / bare 'fo
   ])("stays silent on a bilateral / for-cause-only right: %s", (conv) => {
     expect(fires(conv)).toBe(false);
   });
+  // v1.2.0 — the gate is written with the adverb on either side of the verb,
+  // and only one order was read. A cloud services agreement whose provider
+  // could walk at any time while the customer needed cause produced no finding
+  // at all: "Customer may terminate only for …" rather than "may only
+  // terminate for …".
+  it("reads the cure gate written 'may terminate only for'", () => {
+    const f = TERM_009.check(
+      buildContext([
+        "Termination",
+        "Provider may terminate this Agreement at any time upon thirty (30) days notice.",
+        "Customer may terminate only for Provider's uncured material breach.",
+      ]),
+    );
+    expect(f?.title).toMatch(/asymmetric/i);
+  });
+
+  it("stays silent where the counterparty's cause right is not confined", () => {
+    expect(
+      TERM_009.check(
+        buildContext([
+          "Termination",
+          "Provider may terminate this Agreement at any time upon thirty (30) days notice.",
+          "Customer may terminate for Provider's uncured material breach or for convenience on like notice.",
+        ]),
+      ),
+    ).toBeNull();
+  });
 });

@@ -27,4 +27,29 @@ describe("IPDATA-004 — the standard ownership formulation", () => {
       ),
     ).not.toBeNull();
   });
+  // v1.4.0 — a section HEADED "Customer Data" allocates it in the words
+  // "Customer retains all right, title and interest in data Customer submits",
+  // and requiring the qualifier again in the allocating sentence reported a
+  // cloud services agreement's own ownership clause as unaddressed.
+  it("reads the right-title-and-interest form over the bare noun 'data'", () => {
+    expect(
+      IPDATA_004.check(
+        buildContext([
+          "Customer Data",
+          "Customer retains all right, title and interest in data Customer submits to the Service.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires where nothing allocates ownership of the Customer Data", () => {
+    expect(
+      IPDATA_004.check(
+        buildContext([
+          "Customer Data",
+          "Provider will process Customer Data in accordance with its documentation.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });

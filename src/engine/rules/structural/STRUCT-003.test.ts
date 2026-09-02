@@ -227,4 +227,32 @@ describe("STRUCT-003 — the bare caption under the rule (v1.34.0)", () => {
       ),
     ).not.toBeNull();
   });
+  // v1.20.0 — the commonest commercial block writes nothing but "By:", and
+  // de-duplicating the label collapsed two signers into one signal against a
+  // floor of two. Plain-text ingest joins the block's lines, so laying the
+  // signers out stacked rather than side by side did not help either.
+  it("reads a two-party block that carries nothing but By: lines", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Agreement",
+          "Provider will make the Service available to Customer.",
+          "PROVIDER: Northwind Analytics, Inc.        CUSTOMER: Belmont Regional Health Partners, LLC",
+          "By: _______________________                By: _______________________",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a single By: line with nothing beside it", () => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Agreement",
+          "Provider will make the Service available to Customer.",
+          "By: _______________________",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });

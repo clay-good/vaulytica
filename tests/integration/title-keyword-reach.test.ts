@@ -70,6 +70,12 @@ const UNREACHED_BY_ANY_DECLARED_NAME: ReadonlySet<string> = new Set([
  * has to be settled in the playbooks by giving one family the name and the
  * other a longer one, not in the matcher.
  *
+ * Two came off at 9.373.0: a SaaS playbook has no claim to "master services
+ * agreement" — that is `msa-general`'s own name, `msa-general` already won
+ * both, and `saas-vendor` keeps "msa for software" for the case it actually
+ * covers. Where a family claims a name it never wins and does not need, the
+ * settlement is to stop claiming it.
+ *
  * Three came off at 9.368.0, and all three were the same mistake: a title
  * keyword that is not a title. "generative ai" is a TOPIC, claimed by both AI
  * families, each of which also declares its own name ("generative ai policy",
@@ -109,8 +115,6 @@ const NAME_TAKEN_BY_ANOTHER_FAMILY: ReadonlySet<string> = new Set([
   "saas-customer :: cloud services agreement -> msa-customer-deep",
   "saas-vendor :: cloud service agreement -> msa-customer-deep",
   "saas-vendor :: cloud services agreement -> msa-customer-deep",
-  "saas-vendor :: master service agreement -> msa-general",
-  "saas-vendor :: master services agreement -> msa-general",
   "saas-vendor :: subscription order form -> saas-customer",
   "scc-module-3 :: commission implementing decision 2021/914 -> scc-module-2",
   "scc-module-3 :: standard contractual clauses -> scc-module-2",

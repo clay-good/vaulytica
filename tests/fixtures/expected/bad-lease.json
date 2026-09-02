@@ -278,7 +278,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "IPDATA-004",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -592,7 +592,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.34.0"
+      "rule_version": "1.20.0"
     },
     {
       "elapsed_ms": 0,
@@ -857,7 +857,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TERM-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     }
   ],
   "findings": [
@@ -1221,11 +1221,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "8f2c69a1c9091e69401a6ccbe3fcde31ef0c9ee86a98ca48498848ad63f92d9a",
+  "result_hash": "c3a77227338b89235b2a2afe4db8006181c8ce06a7dcfd516be5440504f809c0",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.372.1"
+  "version": "9.373.0"
 }

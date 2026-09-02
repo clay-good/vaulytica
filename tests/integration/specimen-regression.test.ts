@@ -177,6 +177,36 @@ export const EXPECTED: Record<string, Expectation> = {
   // "food and beverage minimum") that a conservatory hire does not use. Once
   // routed, COMM-243 reported no cancellation schedule on a clause that sets
   // one out in tiered day windows — it wanted the words "cancellation fee".
+  // A thin cloud services agreement, customer-side. Three defects, all on
+  // one document. STRUCT-003 reported "No signature block detected" at
+  // `critical` on a block signed by both parties, because the commonest
+  // commercial layout writes nothing but "By: ____" and the token count
+  // de-duplicated the label — two signers, one signal, against a floor of
+  // two. IPDATA-004 reported data ownership unaddressed on a section headed
+  // "Customer Data" that says the customer retains all right, title and
+  // interest in it: the qualifier is in the heading, and the allocating
+  // sentence's object is the bare noun. And TERM-009, the finding that
+  // matters most here, was silent: the provider may walk at any time while
+  // the customer needs cause, written "may terminate only for" rather than
+  // "may only terminate for" — the asymmetry missed on a word order.
+  //
+  // What remains is fair. There is no indemnity, no venue, no
+  // effect-of-termination clause and no payment due date; the ninety-day
+  // non-renewal window on a twelve-month term is what DARK-002 exists for;
+  // and "commercially reasonable efforts" is the availability commitment.
+  "cloud-services-agreement.txt": {
+    playbook: "saas-customer",
+    findings: [
+      "RISK-001",
+      "DARK-002",
+      "FIN-005",
+      "TEMP-004",
+      "TERM-005",
+      "TERM-009",
+      "CHOICE-003",
+      "OBLI-008",
+    ],
+  },
   "venue-rental.txt": {
     playbook: "venue-rental-agreement",
     // RISK-016 came off in v9.336.0: the caterer's insurance requirement

@@ -53,6 +53,10 @@ const DECLARED_TIES = new Map<string, string>([
   ],
   ["saas-tos.txt:saas-vendor", "the same two sides, on a set of published terms"],
   [
+    "cloud-services-agreement.txt:saas-vendor",
+    "the same two sides again, on a subscription agreement titled CLOUD SERVICES AGREEMENT — which lens you want is --role, not the document's",
+  ],
+  [
     "privacy-notice.txt:privacy-policy-lint",
     "the lint pack is a second lens on the same notice, not a rival family",
   ],

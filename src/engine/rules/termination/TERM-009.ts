@@ -19,7 +19,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "TERM-009",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Asymmetric termination-for-convenience",
   category: "termination",
   default_severity: "warning",
@@ -56,7 +56,18 @@ export const rule: Rule = {
         // ordinary notice requirement, not a cure gate — including it fired this
         // warning (with its "wait through a cure period or prove a material
         // breach" explanation) on a symmetric notice-based termination right.
-        /\b(Customer|Licensee|Recipient|Employee|Tenant|Receiving\s+Party|Contractor)\s+(?:shall|must|may\s+only)\s+terminate[^.]{0,160}\b(?:material\s+breach|cure\s+(?:period|window)|30\s+days?\s+to\s+cure)/i.test(
+        // v1.2.0 — the gate is written with the adverb on EITHER side of the
+        // verb, and only one order was read. "Customer may terminate ONLY FOR
+        // Provider's uncured material breach" is at least as common as
+        // "Customer may ONLY TERMINATE for …", and careful drafters prefer it
+        // because it does not split the verb. A cloud services agreement whose
+        // provider could walk at any time while the customer needed cause
+        // produced no finding at all — the asymmetry this rule exists for,
+        // missed on a word order. "only" is still required in one position or
+        // the other: without it the sentence states the customer's cause right
+        // rather than confining it, and every mutual termination clause in the
+        // catalog would fire.
+        /\b(Customer|Licensee|Recipient|Employee|Tenant|Receiving\s+Party|Contractor)\s+(?:(?:shall|must)\s+terminate|may\s+only\s+terminate|may\s+terminate\s+only)\b[^.]{0,160}\b(?:material\s+breach|cure\s+(?:period|window)|30\s+days?\s+to\s+cure)/i.test(
           p.text,
         )
       ) {

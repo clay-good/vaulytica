@@ -1,0 +1,24 @@
+CLOUD SERVICES AGREEMENT
+
+This Cloud Services Agreement (this "Agreement") is entered into as of March 3, 2026 by and between Northwind Analytics, Inc., a Delaware corporation ("Provider"), and Belmont Regional Health Partners, LLC, an Ohio limited liability company ("Customer").
+
+1. Services. Provider will make its hosted analytics platform (the "Service") available to Customer on a subscription basis during the Subscription Term. Provider will provide the Service in accordance with Provider's then-current documentation.
+
+2. Subscription Term; Renewal. The initial subscription term is twelve (12) months beginning on the Effective Date. The term renews automatically for successive twelve-month periods unless either party gives written notice of non-renewal at least ninety (90) days before the end of the then-current term. Provider may increase the subscription fee for any renewal term.
+
+3. Fees. Customer will pay the subscription fees set forth in the applicable order. Fees are non-refundable. Provider may suspend the Service if any invoice is more than fifteen (15) days past due.
+
+4. Customer Data. Customer retains all right, title and interest in data Customer submits to the Service. Provider may use Customer Data to operate and improve the Service.
+
+5. Availability. Provider will use commercially reasonable efforts to make the Service available.
+
+6. Warranty Disclaimer. THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND.
+
+7. Limitation of Liability. IN NO EVENT WILL PROVIDER'S AGGREGATE LIABILITY EXCEED THE FEES PAID BY CUSTOMER IN THE THREE (3) MONTHS PRECEDING THE CLAIM. NEITHER PARTY WILL BE LIABLE FOR CONSEQUENTIAL DAMAGES.
+
+8. Termination. Provider may terminate this Agreement at any time upon thirty (30) days notice. Customer may terminate only for Provider's uncured material breach.
+
+9. Governing Law. This Agreement is governed by the laws of the State of Delaware.
+
+PROVIDER: Northwind Analytics, Inc.        CUSTOMER: Belmont Regional Health Partners, LLC
+By: _______________________                By: _______________________

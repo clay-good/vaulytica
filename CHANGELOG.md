@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.373.0] — 2026-09-02
+
+### Fixed
+- **A two-party signature block that carries nothing but `By:` lines read as
+  unsigned.** STRUCT-003 de-duplicates the label words so one signer's
+  "By: ___ Name: ___ Title: ___" is not counted as three signers — and it
+  collapsed two signers into one signal against a floor of two, because the
+  commonest commercial block writes nothing else. Where there are more anchored
+  rules than distinct labels, the rules are now the count.
+- **IPDATA-004 reported data ownership unaddressed on a section headed
+  "Customer Data" that allocates it.** The right-title-and-interest branch
+  required the qualified term as its object where the drafting writes the bare
+  noun — "Customer retains all right, title and interest in data Customer
+  submits to the Service". Eleven golden fixtures carried the false finding,
+  including one whose section heading is "Data Ownership".
+- **TERM-009 missed the asymmetry it exists to catch, on a word order.** The
+  counterparty's cure gate is written with the adverb on either side of the
+  verb, and only "may only terminate for" was read; "may terminate only for" —
+  at least as common, and preferred by drafters who do not split the verb —
+  produced no finding at all on a document whose provider may walk at any time.
+- **`saas-vendor` stopped claiming "master services agreement".** That is
+  `msa-general`'s own name, `msa-general` already won both spellings, and
+  `saas-vendor` keeps "msa for software" for the case it covers. Two entries off
+  the `title-keyword-reach` ratchet.
+
+### Added
+- A thin cloud services agreement, customer-side, as the 309th specimen — the
+  document all three rule defects above were found on.
+
 ## [9.372.1] — 2026-09-02
 
 ### Fixed
