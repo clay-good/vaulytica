@@ -1570,9 +1570,27 @@ export const EXPECTED: Record<string, Expectation> = {
   // CHOICE-001, CHOICE-003, and STRUCT-004 stay: this family shares the
   // five-skip engagement profile with the four fee agreements, and a waiver
   // letter can state its governing law as readily as they can.
+  // CHOICE-001 and CHOICE-003 were pinned here as known-false until 9.359.0:
+  // a consent letter under Rule 1.7 has no governing-law clause and no forum
+  // clause, and is not defective for it. The family now skips both, along
+  // with FIN-005 — the fees are in the engagement letter this one references.
   "joint-representation-waiver.txt": {
     playbook: "joint-representation-waiver",
-    findings: ["CHOICE-001", "CHOICE-003", "STRUCT-004"],
+    findings: ["STRUCT-004"],
+  },
+
+  // The same waiver from the other common posture: two founders forming an
+  // LLC together, where the conflict is over the operating agreement's own
+  // terms rather than over an existing dispute. Paragraph 3 lists what the
+  // founders are opposed on — including "the scope of any non-competition
+  // covenant" — and PERS-001 and PERS-005 both read the sentence WARNING the
+  // clients about a covenant as a covenant the letter imposes. OBLI-005 is
+  // fair: "We will not thereafter represent either of you individually
+  // against the other" is a negative covenant, and it is the operative
+  // promise of the paragraph.
+  "joint-representation-waiver-founders.txt": {
+    playbook: "joint-representation-waiver",
+    findings: ["OBLI-005"],
   },
 
   // An Article 35 data protection impact assessment — an assessment document,

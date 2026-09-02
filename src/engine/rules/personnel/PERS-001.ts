@@ -30,7 +30,7 @@ const GEOGRAPHY =
  */
 export const rule: Rule = {
   id: "PERS-001",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Non-compete present",
   category: "personnel",
   default_severity: "info",

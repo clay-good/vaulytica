@@ -387,7 +387,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "PERS-001",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -415,7 +415,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -987,11 +987,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.8). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "19cd993ec9ef52c4c4677ab59eed26c0e599d3858a2a47f13676b29a01c978a5",
+  "result_hash": "ef8f37efbba3dcc00e51587cb5e0f1b7047228eb18a2d4883641fb5db6b16689",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",
     "size_bytes": 1565
   },
-  "version": "9.358.0"
+  "version": "9.359.0"
 }

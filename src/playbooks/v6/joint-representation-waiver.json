@@ -1,6 +1,6 @@
 {
   "id": "joint-representation-waiver",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Joint Representation Conflict Waiver",
   "description": "Common-representation conflict waiver measured against ABA Model Rules 1.7 and 1.0(e). Selects the ENG-021..026 ruleset.",
   "match_features": {
@@ -24,6 +24,15 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Joint Clients", "Common Representation"],
   "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
     "IPDATA-001": {
       "skip": true
     },

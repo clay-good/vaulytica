@@ -399,7 +399,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-001",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -428,7 +428,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1021,7 +1021,7 @@
       "id": "PERS-005-s1.5-764",
       "recommendation": "Confirm the controlling jurisdiction's enforceability bucket (use the DKB jurisdiction record). If the controlling state voids non-competes, either delete the clause or convert to a narrower non-solicitation. If the clause is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
-      "rule_version": "1.5.0",
+      "rule_version": "1.6.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1258,7 +1258,7 @@
       "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
       "id": "PERS-001-s1.5-764",
       "rule_id": "PERS-001",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1318,11 +1318,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "3a26d75add950b722171bf14d0bf9ebc8ef3c8da415a4af038dc10770e3bd236",
+  "result_hash": "300a72b796ce1c6c6ed8105a3f41566daafb015ba2157fad4ad8974c4e65a5c3",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.358.0"
+  "version": "9.359.0"
 }

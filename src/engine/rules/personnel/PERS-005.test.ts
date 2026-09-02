@@ -152,3 +152,28 @@ describe("PERS-005 / PERS-001 — a drag-along's carve-out is not a non-compete"
     expect(PERS_001.check(buildContext(["Non-Competition", real]))).not.toBeNull();
   });
 });
+
+describe("PERS-005 / PERS-001 — a covenant NAMED as a provision is not one imposed", () => {
+  // A joint-representation conflict waiver tells two founders which terms of
+  // the operating agreement they are opposed on. The existing guard reads the
+  // shape where the letter says the covenant will be SIGNED elsewhere; this
+  // letter lists it among the provisions instead, and both rules reported the
+  // sentence warning the clients about a covenant as a covenant.
+  const CLAUSE =
+    'The vesting schedule, the buy-sell price, the definition of "cause" for removal, and the scope of any non-competition covenant are all provisions on which what is favorable to one of you is unfavorable to the other.';
+
+  it("is silent in PERS-005", () => {
+    expect(PERS_005.check(buildContext(["Actual and Potential Conflicts", CLAUSE]))).toBeNull();
+  });
+
+  it("is silent in PERS-001", () => {
+    expect(PERS_001.check(buildContext(["Actual and Potential Conflicts", CLAUSE]))).toBeNull();
+  });
+
+  it("still reports the covenant the operating agreement then imposes", () => {
+    const real =
+      "For so long as a Member holds Units and for two (2) years thereafter, the Member shall not compete with the Company within Philadelphia County.";
+    expect(PERS_005.check(buildContext(["Non-Competition", real]))).not.toBeNull();
+    expect(PERS_001.check(buildContext(["Non-Competition", real]))).not.toBeNull();
+  });
+});

@@ -38,7 +38,7 @@ export const NON_COMPETE_DISCLAIMED =
 
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",

@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.359.0] — 2026-09-02
+
+### Fixed
+- **A conflict waiver was told it has no governing law, no forum, and no
+  payment term.** A consent letter under Model Rule 1.7 has none of the three,
+  and the engagement letter it references sets the fees. The specimen had been
+  carrying two of them as known-false since it was written;
+  `joint-representation-waiver` now skips all three, and the engagement and
+  fee families — which really do state a payment term — are untouched.
+- **PERS-001 and PERS-005 read the sentence WARNING two clients about a
+  non-compete as a non-compete.** The guard for an advice letter already knew
+  the shape where the covenant will be SIGNED elsewhere; a waiver more often
+  lists it among the terms the clients are opposed on — "the vesting schedule,
+  the buy-sell price, … and the scope of any non-competition covenant are all
+  provisions on which what is favorable to one of you is unfavorable to the
+  other". A sentence whose verb says the matched thing IS a provision, a term,
+  or an issue is describing it; an operative covenant never says that about
+  itself.
+
+### Added
+- A founders' joint-representation waiver, the second posture of that family —
+  two people forming an LLC, opposed on the operating agreement's own terms
+  rather than on an existing dispute. 298 specimens.
+
 ## [9.358.0] — 2026-09-02
 
 ### Fixed

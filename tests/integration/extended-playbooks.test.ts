@@ -246,20 +246,27 @@ describe("extended playbook manifest", () => {
       id: string;
       rule_overrides?: Record<string, { skip?: boolean }>;
     }>;
-    for (const id of [
-      "engagement-letter",
-      "contingency-fee-agreement",
-      "flat-fee-agreement",
-      "joint-representation-waiver",
-      "limited-scope-representation",
-    ]) {
+    const ENGAGEMENT = ["IPDATA-001", "RISK-001", "RISK-005", "TERM-002", "TERM-005"];
+    // The conflict waiver is the one of the five that is not an ENGAGEMENT.
+    // It is a consent letter under Model Rule 1.7 — it states no governing
+    // law, names no forum, and sets no payment term, because the engagement
+    // letter it references does all three. Those were pinned as known-false
+    // findings on the specimen until 9.359.0.
+    const WAIVER = [...ENGAGEMENT, "CHOICE-001", "CHOICE-003", "FIN-005"].sort();
+    for (const [id, expected] of [
+      ["engagement-letter", ENGAGEMENT],
+      ["contingency-fee-agreement", ENGAGEMENT],
+      ["flat-fee-agreement", ENGAGEMENT],
+      ["joint-representation-waiver", WAIVER],
+      ["limited-scope-representation", ENGAGEMENT],
+    ] as const) {
       const pb = raw.find((p) => p.id === id);
       expect(pb, `${id} missing from manifest`).toBeDefined();
       const skipped = Object.entries(pb!.rule_overrides ?? {})
         .filter(([, v]) => v.skip)
         .map(([k]) => k)
         .sort();
-      expect(skipped).toEqual(["IPDATA-001", "RISK-001", "RISK-005", "TERM-002", "TERM-005"]);
+      expect(skipped, id).toEqual([...expected].sort());
     }
   });
 

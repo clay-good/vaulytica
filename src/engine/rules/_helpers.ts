@@ -888,10 +888,30 @@ function caseBlind(re: RegExp): RegExp {
  */
 export function describesCovenantElsewhere(paragraph: string, matchIndex: number): boolean {
   const sentence = enclosingSentence(paragraph, matchIndex);
-  return /\b(?:will|shall|to)\s+(?:be\s+)?(?:sign|signs|signed|execute|executes|executed|enter\s+into|entered\s+into)\b|\b(?:contained|set\s+forth|included|provided)\s+in\s+the\s+[A-Z]/.test(
-    sentence,
+  return (
+    /\b(?:will|shall|to)\s+(?:be\s+)?(?:sign|signs|signed|execute|executes|executed|enter\s+into|entered\s+into)\b|\b(?:contained|set\s+forth|included|provided)\s+in\s+the\s+[A-Z]/.test(
+      sentence,
+    ) || NAMED_AS_A_PROVISION.test(sentence)
   );
 }
+
+/**
+ * The other way an advice letter raises a covenant: by NAMING it as one of the
+ * provisions still to be negotiated.
+ *
+ * The guard above reads the shape where the letter says the covenant will be
+ * SIGNED elsewhere. A conflict waiver more often lists it among the terms the
+ * clients are opposed on — "the vesting schedule, the buy-sell price, … and
+ * the scope of any non-competition covenant are all provisions on which what
+ * is favorable to one of you is unfavorable to the other" — and PERS-001 and
+ * PERS-005 both read that as a covenant the letter imposes.
+ *
+ * The predicate is the test, not the noun: a sentence whose verb says the
+ * matched thing IS a provision, a term, or an issue is describing it. An
+ * operative covenant never says that about itself.
+ */
+const NAMED_AS_A_PROVISION =
+  /\b(?:is|are)\s+(?:all\s+|both\s+|each\s+|among\s+the\s+)?(?:provisions?|terms?|clauses?|matters?|issues?|questions?|topics?|subjects?)\b/i;
 
 export function borrowsParentVocabulary(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
