@@ -1,6 +1,6 @@
 {
   "id": "sublease-agreement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Sublease Agreement",
   "description": "Sublease of leased premises, reviewed for prime-lease incorporation, landlord consent, and the recapture risk. Selects the RE-101..106 ruleset (6 checks).",
   "match_features": {
@@ -19,6 +19,9 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Prime Lease", "Sublandlord", "Subtenant", "Subleased Premises"],
   "rule_overrides": {
+    "RISK-015": {
+      "skip": true
+    },
     "IPDATA-001": {
       "skip": true
     }

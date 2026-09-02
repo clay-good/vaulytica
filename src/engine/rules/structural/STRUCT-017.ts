@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
+import { enclosingSentence } from "../_helpers.js";
 import type { Party } from "../../../extract/types.js";
 
 /**
@@ -36,12 +37,41 @@ const EXHIBIT_HEADING = /\b(?:exhibit|schedule|attachment|appendix|annex|annexur
 // signature block and manufacture a false closing blocker.
 const SIG_SIGNAL = /\b(?:By|Name|Title|Signature|Signed|Authorized\s+Signatory)\s*:/i;
 
-/** Max length of a paragraph treated as a short "label line" above a By: line. */
-const LABEL_LINE_MAX = 60;
+/**
+ * Max length of a paragraph treated as a "label line" above a By: line.
+ *
+ * A signature block labels its signatory the way the preamble named it —
+ * "PELLWORTH & KIRUNA DESIGN LLC, an Illinois limited liability company" — and
+ * that is 68 characters. At 60 the label fell outside the block, the "By:"
+ * line named only the human signing, and a sublease was reported as having no
+ * signature line for the subtenant whose signature block it was standing in.
+ * Any legal name plus a formation clause runs past 60.
+ *
+ * A terminal-period test looked like the natural second filter and is not:
+ * "ASSIGNEE: MERIDIAN TYPEWORKS INC." ends in a period because the legal name
+ * does, and dropping it reported the assignee as unsigned in the block bearing
+ * its own signature.
+ */
+const LABEL_LINE_MAX = 140;
+
+/**
+ * A label line is a NAME. A sentence has a finite VERB, and that is the filter
+ * the length bound needs beside it — widening the bound alone folded in a
+ * short definition paragraph ('"Northwind Trust" MEANS the Delaware statutory
+ * trust …') and reconciled a party that had no signature line at all.
+ */
+const FINITE_VERB =
+  /\b(?:means?|shall|will|is|are|was|were|has|have|had|agrees?|acknowledges?|executed|hereby|represents?|warrants?)\b/i;
+
+/** True when a paragraph reads as a signature-block LABEL rather than prose. */
+function labelLike(text: string): boolean {
+  const t = text.trim();
+  return t.length > 0 && t.length <= LABEL_LINE_MAX && !FINITE_VERB.test(t);
+}
 
 export const rule: Rule = {
   id: "STRUCT-017",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Signature-block completeness",
   category: "structural",
   default_severity: "warning",
@@ -50,7 +80,9 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
-    const principals = ctx.extracted.parties.filter(isDeclaredParty);
+    const principals = ctx.extracted.parties
+      .filter(isDeclaredParty)
+      .filter((p) => !isPartyToAnotherInstrument(p, ctx));
     if (principals.length < 2) return null;
 
     // Collect paragraphs (skipping exhibits — a signature block does not
@@ -81,8 +113,14 @@ export const rule: Rule = {
         // corporation") — never a full operative or preamble paragraph,
         // which would drag every party name into the block and defeat the
         // reconciliation.
-        const above = i > 0 ? paragraphs[i - 1]! : undefined;
-        if (above && above.text.trim().length <= LABEL_LINE_MAX) {
+        // A RUN of label lines, not just one. A party-labeled block states the
+        // ROLE on one line and the legal name on the next — "SUBTENANT:" over
+        // "PELLWORTH & KIRUNA DESIGN LLC, an Illinois limited liability
+        // company" — and reading only the nearer of the two loses whichever
+        // one the reconciliation needs.
+        for (let k = i - 1; k >= 0 && i - k <= 2; k--) {
+          const above = paragraphs[k]!;
+          if (!labelLike(above.text)) break;
           blockParas.set(above.start, above);
         }
         blockParas.set(paragraphs[i]!.start, paragraphs[i]!);
@@ -162,13 +200,62 @@ function isDeclaredParty(p: Party): boolean {
   return Boolean(p.entity_type) && CORP_SUFFIX.test(p.name.trim());
 }
 
+/**
+ * A party to a DIFFERENT, named instrument is not a signatory of this one.
+ *
+ * A sublease introduces the prime landlord in its recitals — "Sublandlord, as
+ * tenant, and FULTON MARKET REALTY III LLC, as landlord, are parties to that
+ * certain Office Lease dated June 15, 2022" — and it is a fully declared,
+ * entity-typed, role-bearing party that will never sign the sublease. It
+ * consents separately, under its own section. The same shape carries the
+ * escrow agent named in a purchase agreement, the senior lender named in an
+ * SNDA, and the guarantor named in a note.
+ *
+ * The discriminator is WHERE the party is first named. A contracting party is
+ * named in the preamble; a third party is named in a recital that says whose
+ * agreement it is a party to. Only the FIRST position is tested, so the
+ * sublandlord — named in the preamble and again in that same recital — keeps
+ * its place.
+ */
+const PARTY_TO_ANOTHER_INSTRUMENT =
+  /\bpart(?:y|ies)\s+to\s+(?:that\s+certain\s+|the\s+)?(?:[A-Z][\w&.'’-]*\s+){0,4}(?:Lease|Agreement|Contract|Note|Indenture|Mortgage|Plan|Policy)\b|\bentered\s+into\s+that\s+certain\b/;
+
+function isPartyToAnotherInstrument(p: Party, ctx: RuleContext): boolean {
+  const at = p.positions?.[0]?.start;
+  if (at === undefined) return false;
+  let found = false;
+  forEachParagraph(ctx.tree, (para) => {
+    if (found) return;
+    if (at < para.start || at >= para.start + para.text.length) return;
+    found = PARTY_TO_ANOTHER_INSTRUMENT.test(enclosingSentence(para.text, at - para.start));
+  });
+  return found;
+}
+
 /** Surface forms to look for in the signature region: name, role, aliases, d/b/a. */
+/**
+ * The surfaces a signature block might use for a party.
+ *
+ * A ONE-WORD TRUNCATION of the party's own name is not one of them. The
+ * extractor registers "FULTON" alongside "FULTON MARKET REALTY III LLC", and a
+ * signature block that gives the signatory's address — "1130 West Fulton
+ * Market, 9th Floor, Chicago, Illinois" — then reconciled the prime landlord
+ * as having signed. A signature block names a party by its full legal name;
+ * the short forms are for the body. A one-word ROLE ("Sublandlord",
+ * "Subtenant") is kept, because that is exactly how a party-labeled block
+ * heads each line.
+ */
 function surfacesOf(p: Party): string[] {
   const out = new Set<string>();
   out.add(p.name);
   if (p.role) out.add(p.role);
   if (p.dba) out.add(p.dba);
-  for (const a of p.aliases ?? []) out.add(a);
+  const name = p.name.toLowerCase();
+  for (const a of p.aliases ?? []) {
+    const lower = a.toLowerCase();
+    if (!/\s/.test(a) && lower !== name && name.startsWith(lower)) continue;
+    out.add(a);
+  }
   return [...out].filter(Boolean);
 }
 

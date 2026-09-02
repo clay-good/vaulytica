@@ -2779,6 +2779,24 @@ export const EXPECTED: Record<string, Expectation> = {
   // invisible takes its role with it. NDA-D-001 (the § 1833(b) notice),
   // NDA-D-019 and NDA-D-022 are all fair absences. OBLI-008 is fair too: the
   // compelled-disclosure clause says "reasonable efforts" and defines nothing.
+  // A Chicago office sublease with a prime-landlord consent condition. Three
+  // false findings, all about the same thing — a document that stands between
+  // two instruments and names a party to the other one.
+  //
+  // STRUCT-017 reported the subtenant as having no signature line while
+  // standing in its signature block: the label "PELLWORTH & KIRUNA DESIGN
+  // LLC, an Illinois limited liability company" is 68 characters and the
+  // label bound was 60. With that fixed it reported the PRIME LANDLORD, which
+  // never signs a sublease — and it had been reconciling the prime landlord
+  // as SIGNED all along, on the one-word alias "FULTON" matching the
+  // sublandlord's address at 1130 West Fulton Market. RISK-015 asked a
+  // leasehold indemnity for an aggregate cap, which `lease-assignment` — the
+  // nearest sibling — has skipped since it was written.
+  "sublease-office.txt": {
+    playbook: "sublease-agreement",
+    findings: ["OBLI-005", "OBLI-006", "OBLI-008", "RISK-010", "RISK-011", "STRUCT-018"],
+  },
+
   "mutual-nda-letter.txt": {
     playbook: "mutual-nda-deep",
     findings: ["NDA-D-001", "NDA-D-019", "NDA-D-022", "OBLI-005", "OBLI-008", "RISK-001"],
@@ -3212,16 +3230,11 @@ export const EXPECTED: Record<string, Expectation> = {
     // lease for the SUBLANDLORD's obligations, and carries its own commercial
     // terms between sublandlord and subtenant — including, or not, a limitation
     // of liability. `lease-commercial-multitenant` keeps the same check.
-    findings: [
-      "RE-103",
-      "RISK-005",
-      "RISK-015",
-      "STRUCT-018",
-      "OBLI-005",
-      "OBLI-006",
-      "RISK-010",
-      "RISK-011",
-    ],
+    //
+    // RISK-015 came off in 9.363.0 with the family override: a leasehold
+    // indemnity is not capped, and `lease-assignment` — the nearest sibling —
+    // has skipped the check since it was written.
+    findings: ["RE-103", "RISK-005", "STRUCT-018", "OBLI-005", "OBLI-006", "RISK-010", "RISK-011"],
   },
 
   // Buyer-form purchase order terms: standing terms nobody signs and no two

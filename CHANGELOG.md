@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.363.0] — 2026-09-02
+
+### Fixed
+- **STRUCT-017 told a subtenant it had no signature line while standing in its
+  signature block.** A block labels its signatory the way the preamble named it
+  — "PELLWORTH & KIRUNA DESIGN LLC, an Illinois limited liability company" —
+  and that is 68 characters against a 60-character label bound, so the label
+  fell outside the block and the "By:" line named only the human signing. The
+  bound is now 140, filtered by a finite-verb test rather than by length alone:
+  a label line is a name, a sentence has a verb. The block also reads a RUN of
+  label lines, because a party-labeled block puts the role on one line
+  ("SUBTENANT:") and the legal name on the next.
+- **STRUCT-017 asked the prime landlord to sign the sublease.** A sublease
+  names it in the recitals as a party to the PRIME LEASE — fully declared,
+  entity-typed, role-bearing, and never a signatory; it consents separately.
+  The same shape carries the escrow agent named in a purchase agreement and the
+  senior lender named in an SNDA. A party first named in a sentence saying
+  whose agreement it is a party to is no longer reconciled against this
+  document's signature block.
+- **STRUCT-017 counted a street name as a signature.** The extractor registers
+  "FULTON" alongside "FULTON MARKET REALTY III LLC", and a signature block that
+  states the signatory's address — "1130 West Fulton Market, Chicago" —
+  reconciled the landlord as having signed. One-word truncations of a party's
+  own name are no longer surfaces; a signature block names a party by its full
+  legal name, and one-word ROLES are kept.
+- **RISK-015 asked a leasehold indemnity for an aggregate cap.**
+  `lease-assignment` — the nearest sibling — has skipped that check since it
+  was written, and `sublease-agreement` carried a single override.
+
+### Added
+- A Chicago office sublease with a prime-landlord consent condition. 302
+  specimens.
+
 ## [9.362.0] — 2026-09-02
 
 ### Fixed
