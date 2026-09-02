@@ -57,6 +57,10 @@ const DECLARED_TIES = new Map<string, string>([
     "the lint pack is a second lens on the same notice, not a rival family",
   ],
   [
+    "privacy-notice-multistate.txt:privacy-policy-lint",
+    "the same second lens; ADDENDA-020 now runs on both families, so which one wins costs the document nothing",
+  ],
+  [
     "loan-agreement.txt:revolving-credit-agreement",
     "a credit agreement can be a term loan or a revolver; this one is both-shaped and the document does not say which pack you want",
   ],

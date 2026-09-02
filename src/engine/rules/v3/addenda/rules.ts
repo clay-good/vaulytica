@@ -29,7 +29,19 @@ const SECURITY_PLAYBOOKS = ["vendor-security-addendum"];
 const AI_PLAYBOOKS = ["ai-addendum"];
 const EULA_PLAYBOOKS = ["eula"];
 const TOS_PLAYBOOKS = ["saas-tos"];
-const PRIVACY_PLAYBOOKS = ["privacy-policy-lint"];
+// The baseline privacy-disclosure check belongs to every privacy NOTICE, not
+// only to the generic linter.
+//
+// `privacy-notice-us` and `privacy-notice-gdpr` carry the regime-specific PNOT
+// content checks, and those are assertion-gated — dormant unless the reviewer
+// asserts `--regime`, because which law applies is the attorney's call. That
+// left the SPECIFIC families with less review than the generic one by default:
+// a deliberately deficient US consumer privacy notice, routed to
+// `privacy-notice-us`, reported nothing at all, while the same document read
+// as `privacy-policy-lint` reported the missing disclosures. ADDENDA-020 opines
+// on none of the regime questions — it asks only whether the enumerated
+// disclosures are there — so it is the right floor under all three.
+const PRIVACY_PLAYBOOKS = ["privacy-policy-lint", "privacy-notice-us", "privacy-notice-gdpr"];
 
 const URL_BY_CITATION: Record<string, string> = {
   "NIST SP 800-53": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final",

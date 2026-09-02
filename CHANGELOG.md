@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.364.0] — 2026-09-02
+
+### Fixed
+- **The SPECIFIC privacy families got less review than the generic linter.**
+  ADDENDA-020 — the baseline check that the enumerated disclosures are present
+  — was scoped to `privacy-policy-lint` alone, while `privacy-notice-us` and
+  `privacy-notice-gdpr` carry only the PNOT content checks, which are
+  assertion-gated on `--regime` because which law applies is the attorney's
+  call. A privacy notice rich enough to route to one of the specific families
+  therefore reported nothing at all unless a regime was asserted. ADDENDA-020
+  opines on no regime question, so it is the right floor under all three.
+- **A privacy policy was told at `critical` that it has no signature block.**
+  Nobody signs one, and both sibling notice families had always skipped
+  STRUCT-003; `privacy-policy-lint` was the one that did not.
+
+### Added
+- Two privacy notices for the same fictional company: a well-drafted
+  multi-state consumer notice (clean) and the thin version a startup actually
+  ships — no retention periods, no rights section, no opt-out mechanism, "any
+  other purpose we consider appropriate". The thin one routes to
+  `privacy-policy-lint` by design: the other two families carry the disclosures
+  themselves as distinguishing phrases, so the policy that makes none of them
+  lands there, which is why the PNOT pack lists that family. 304 specimens.
+
 ## [9.363.0] — 2026-09-02
 
 ### Fixed

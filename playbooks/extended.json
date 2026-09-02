@@ -14601,7 +14601,7 @@
   },
   {
     "id": "privacy-policy-lint",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "Privacy Policy Linter",
     "description": "Linter for a published privacy policy. Not a contract — checks that the regulator-required disclosures are present (CCPA § 1798.130 categories, GDPR Articles 13/14 lawful basis + rights, COPPA § 312.4 child-data disclosures). Selects the §34 addenda ruleset (privacy portion, ADDENDA-020). When paired with a DPA, a follow-up consistency check verifies the privacy-policy claims match the DPA terms.",
     "match_features": {
@@ -14665,6 +14665,9 @@
         "skip": true
       },
       "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-003": {
         "skip": true
       },
       "STRUCT-001": {

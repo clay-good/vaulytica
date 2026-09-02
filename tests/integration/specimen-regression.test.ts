@@ -2792,6 +2792,31 @@ export const EXPECTED: Record<string, Expectation> = {
   // sublandlord's address at 1130 West Fulton Market. RISK-015 asked a
   // leasehold indemnity for an aggregate cap, which `lease-assignment` — the
   // nearest sibling — has skipped since it was written.
+  // A well-drafted US multi-state consumer privacy notice — category-by-
+  // category collection, sources, purposes, retention periods, the full rights
+  // list, GPC, an appeal path. Clean, and pinned so it stays clean. The PNOT
+  // content checks are assertion-gated (`--regime`), so what runs here is the
+  // baseline: ADDENDA-020, which 9.364.0 extended to the two notice families
+  // — until then the SPECIFIC families got less review than the generic linter
+  // by default.
+  "privacy-notice-multistate.txt": {
+    playbook: "privacy-notice-us",
+    findings: [],
+  },
+
+  // The same company's notice as a startup actually writes it: no retention
+  // periods, no rights section, no opt-out mechanism, "any other purpose we
+  // consider appropriate". It routes to `privacy-policy-lint`, which is by
+  // design — the other two families carry the disclosures themselves as
+  // distinguishing phrases, so the policy that makes none of them lands here,
+  // and the PNOT pack lists this family for exactly that reason. STRUCT-003
+  // reported "No signature block detected" at CRITICAL until 9.364.0: nobody
+  // signs a privacy policy, and both sibling families had always skipped it.
+  "privacy-policy-thin.txt": {
+    playbook: "privacy-policy-lint",
+    findings: ["ADDENDA-020"],
+  },
+
   "sublease-office.txt": {
     playbook: "sublease-agreement",
     findings: ["OBLI-005", "OBLI-006", "OBLI-008", "RISK-010", "RISK-011", "STRUCT-018"],
