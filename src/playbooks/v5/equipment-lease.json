@@ -17,23 +17,35 @@
       "lessee's obligations are absolute",
       "equipment schedule",
       "quiet enjoyment",
-      "return of the equipment",
-      "lessor",
-      "lessee",
-      "the equipment"
+      "return of the equipment"
     ],
-    "negative_features": ["lease of the premises", "square feet", "landlord shall deliver"]
+    "negative_features": [
+      "lease of the premises",
+      "square feet",
+      "landlord shall deliver"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Equipment", "Lessee", "Lessor", "Rent"],
+  "expected_defined_terms": [
+    "Equipment",
+    "Lessee",
+    "Lessor",
+    "Rent"
+  ],
   "rule_overrides": {
-    "IPDATA-001": { "skip": true }
+    "IPDATA-001": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "UCC-2A",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["equipment-finance-agreement"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "equipment-finance-agreement"
+  ],
   "compliance_matrix_columns": [
     "Finance-lease designation and § 2A-407 waiver",
     "Rent, term, and end-of-term options",

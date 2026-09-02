@@ -38,6 +38,22 @@ const PAYMENT_TERMS = new RegExp(
     // way, and each was told it references fees and states no payment term.
     `\\b(?:repayable|payable|amortiz(?:ed|able)|due)\\s+in\\s+[\\s\\w,()-]{0,40}?\\b(?:monthly|quarterly|annual|equal|consecutive|successive)\\s+installments?\\b`,
     `\\b(?:monthly|quarterly|annual)\\s+installments?\\s+of\\s+(?:principal|interest|rent|\\$)`,
+    // A LEASE states its payment term as a RECURRING DUE DATE, and states it
+    // in the ACTIVE voice: "Lessee shall pay rent of $4,180.00 per month in
+    // advance on the first day of each month". The due-date branch below leads
+    // on "due / payable / paid", so it reads the passive form and not this
+    // one, and every equipment lease, ground lease and sublease written this
+    // way was told it references fees and states no payment term.
+    //
+    // The window admits a period ONLY when a digit follows it. A plain `[^.]`
+    // window dies at the period inside the amount — "$4,180.00" stands between
+    // the verb and the due date in exactly this drafting, the same defect this
+    // repo has found in EMP-025, the SOW readers and STRUCT-017 — while an
+    // unbounded one runs past the end of the sentence and reads "shall pay the
+    // fees set out in Exhibit A. Contractor shall deliver a status report on
+    // the first day of each month" as a payment term. The decimal point is the
+    // only period this clause ever contains.
+    `\\b(?:shall|will|must|agrees\\s+to)\\s+(?:pay|remit)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bon\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
     `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed|owing|(?:you|he|she|they|it)\\s+owes?)|balance|fees?|royalt(?:y|ies))\\s+[\\s\\w,%]{0,40}?(?:is|are|shall\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+|made\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
@@ -168,7 +184,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.17.0",
+  version: "1.5.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

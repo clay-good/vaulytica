@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.374.0] — 2026-09-02
+
+### Fixed
+- **A lease states its payment term in the active voice, and FIN-005 read only
+  the passive.** "Lessee shall pay rent of $4,180.00 per month in advance on the
+  first day of each month" is a payment term; the recurring-due-date branch
+  leads on "due / payable / paid", so every lease written this way was told it
+  references fees and states none. The new branch's window admits a period only
+  when a digit follows it — a plain `[^.]` window dies at the decimal inside the
+  amount, which stands between the verb and the due date in exactly this
+  drafting, and an unbounded one runs past the end of the sentence and reads a
+  monthly REPORTING obligation as a payment term.
+- **A document titled EQUIPMENT FINANCE LEASE tied two families and won by the
+  alphabet.** `equipment-lease` spent three of its nine phrase slots on
+  "lessor", "lessee" and "the equipment" — the genus every equipment lease
+  carries, invisible to `distinguishing-base-rate` because the base rate that
+  matters is across the SIBLINGS competing for the document. Dropping them
+  settles the tie on the merits.
+
+### Added
+- A sixty-month equipment finance lease with a $1 buyout as the 310th specimen.
+  Its § 6 waives "any right to notice, hearing, or redemption" and lets the
+  lessor repossess "without notice or legal process" — Article 9 Part 6
+  protections that cannot be waived — and nothing reports it: BNK-143 finds the
+  words "default" and "repossess" and reads the clause as compliant. Filed on
+  the specimen, not fixed; a presence check reading an unlawful waiver as
+  compliance needs its own rule, not a suppression.
+
 ## [9.373.0] — 2026-09-02
 
 ### Fixed

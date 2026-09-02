@@ -207,6 +207,40 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-008",
     ],
   },
+  // A sixty-month equipment finance lease with a $1 buyout, on a lessor's
+  // paper. FIN-005 reported "No payment-term clause detected" on "rent of
+  // $4,180.00 per month in advance on the first day of each month": a lease
+  // states its term as a RECURRING DUE DATE rather than a net-days window or
+  // an installment count, and no branch read that.
+  //
+  // The rest is fair, and it is a lot. There is no indemnity and no liability
+  // cap; the term commences on an undefined "Acceptance Date"; Schedule A is
+  // referenced and not attached; the jury-trial waiver is real. BNK-139 and
+  // BNK-141 are right for the reason they exist — the document never states
+  // its intended characterization, and quotes a payment amount with no rate
+  // and no prepayment formula.
+  //
+  // ⚠️ FILED, NOT FIXED: § 6 waives "any right to notice, hearing, or
+  // redemption" and lets the lessor repossess "without notice or legal
+  // process". Those are UCC Article 9 Part 6 protections that cannot be
+  // waived, and nothing reports them — BNK-143 finds the words "default" and
+  // "repossess", reads the clause as compliant, and its own `why` says the
+  // protections "apply whatever the contract says". A presence check reading
+  // an unlawful waiver as compliance needs its own rule, not a suppression.
+  "equipment-finance-lease.txt": {
+    playbook: "equipment-finance-agreement",
+    findings: [
+      "BNK-139",
+      "BNK-140",
+      "BNK-141",
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-002",
+      "STRUCT-018",
+      "CHOICE-008",
+      "OBLI-005",
+    ],
+  },
   "venue-rental.txt": {
     playbook: "venue-rental-agreement",
     // RISK-016 came off in v9.336.0: the caterer's insurance requirement

@@ -458,4 +458,32 @@ describe("FIN-005 v1.15.0 — the amount a person owes", () => {
       FIN_005.check(doc("The Company will pay a relocation fee to the vendor it selects.")),
     ).not.toBeNull();
   });
+  // v1.5.0 — a LEASE states its payment term as a recurring due date, not as a
+  // net-days window or an installment count. The window is [\s\S] because a
+  // [^.] one dies at the period inside "$4,180.00", which stands between the
+  // payment noun and the due date in exactly this drafting.
+  it("reads a lease's recurring due date as a payment term", () => {
+    expect(
+      FIN_005.check(
+        buildContext([
+          "Term and Rent",
+          "Lessee shall pay rent of $4,180.00 per month in advance on the first day of each month.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  // The window is bounded at the sentence, so a monthly REPORTING obligation
+  // beside a fee with no due date is still reported as having no payment term.
+  it("still fires where the monthly obligation is not the payment one", () => {
+    expect(
+      FIN_005.check(
+        buildContext([
+          "Fees",
+          "Customer shall pay Provider a fee of $5,000.00 for the Services.",
+          "Provider shall deliver a status report on the first day of each month.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
 });
