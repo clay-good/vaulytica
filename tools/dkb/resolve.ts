@@ -19,7 +19,8 @@
  */
 
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import type { DKB } from "../../src/dkb/types.js";
 import {
@@ -33,9 +34,26 @@ import {
   StatutorySchema,
 } from "../../src/dkb/schema.js";
 
-/** Repo-default artifact root: `dkb/dist/`. */
+/**
+ * Default artifact root: `dkb/dist/` under the working directory, and
+ * failing that the one INSIDE THE INSTALLED PACKAGE.
+ *
+ * `process.cwd()` alone is right for everything run from a checkout — the
+ * repo, the site build, the accuracy harness — and wrong for the surface the
+ * package exists to provide. `npx vaulytica analyze contract.docx` runs in the
+ * user's own directory, which has no `dkb/dist`, so every published install
+ * died on "no DKB artifact found under ./dkb/dist" before reading a single
+ * byte of the document. The package ships `dkb/dist/v0.0.1-starter/` for
+ * exactly this, two levels up from this file.
+ *
+ * The working directory keeps priority, so a checkout still runs its own
+ * artifact (which may be newer than the shipped starter) and a user who
+ * places one beside their documents still gets it without `--dkb`.
+ */
 export function defaultDistRoot(): string {
-  return join(process.cwd(), "dkb", "dist");
+  const cwdRoot = join(process.cwd(), "dkb", "dist");
+  if (existsSync(cwdRoot)) return cwdRoot;
+  return join(dirname(fileURLToPath(import.meta.url)), "..", "..", "dkb", "dist");
 }
 
 /**
@@ -61,7 +79,8 @@ export type ResolveDkbOptions = {
    * otherwise resolution falls through to latest.
    */
   pinnedVersion?: string;
-  /** Defaults to `dkb/dist/` under the current working directory. */
+  /** Defaults to {@link defaultDistRoot} — the working directory's
+   * `dkb/dist/`, else the one shipped inside the package. */
   distRoot?: string;
 };
 

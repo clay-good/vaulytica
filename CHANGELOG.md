@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.370.0] — 2026-09-02
+
+### Fixed
+- **`npx vaulytica` could never have worked.** Two defects in the gap between a
+  checkout and an install, each fatal on the first command, and neither visible
+  from inside the repository — where the working directory and the package root
+  are the same directory and every path resolves whichever way you write it.
+  `tools/dkb/resolve.ts` was missing from `files` although
+  `tools/accuracy/pipeline.ts` imports it, so `analyze` died with
+  ERR_MODULE_NOT_FOUND before parsing an argument; and the DKB artifact root was
+  `join(process.cwd(), "dkb", "dist")`, which is the user's own directory rather
+  than the package that ships `dkb/dist/v0.0.1-starter/`, so it then died with
+  "no DKB artifact found". The resolver now falls back to the package's own
+  tree, keeping the working directory's artifact first so a checkout still runs
+  its own. Verified the way it should have been all along: `npm pack`, install
+  the tarball into an empty directory, and analyze a document.
+
+### Added
+- `tests/integration/published-package.test.ts` — the two assertions that stand
+  in for an install without running one. Every local module reachable from the
+  CLI entry must fall inside a `files` entry, and the default DKB root must
+  resolve to a real artifact from a working directory that has none.
+
 ## [9.369.0] — 2026-09-02
 
 ### Fixed
