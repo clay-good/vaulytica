@@ -77,11 +77,14 @@ const UNREACHED_BY_ANY_DECLARED_NAME: ReadonlySet<string> = new Set([
  * called, while a lien waiver is called "waiver and release OF LIEN" and
  * declares four names of its own.
  *
- * "bylaws of" was the fourth candidate and stays: it looks like the same
- * mistake and is not. A nonprofit's bylaws really are titled "BYLAWS OF
- * PEMBERTON RIDGE LAND CONSERVANCY", with nothing in the title to say which
- * kind of corporation it is, and dropping the keyword cost that document its
- * family outright. The collision is live because the ambiguity is.
+ * Two candidates looked like the same mistake and are not, and both were tried
+ * and backed out. A nonprofit's bylaws really are titled "BYLAWS OF PEMBERTON
+ * RIDGE LAND CONSERVANCY", and a lease LOI's subject line really does read
+ * "Non-Binding Letter of Intent — Lease of Suite 400": drop the shared keyword
+ * and each of those documents loses its family outright, which
+ * `catalog-routing` and the specimen corpus caught. Where the bare name is
+ * genuinely how BOTH documents are titled, the collision is live because the
+ * ambiguity is, and the body has to carry it.
  */
 const NAME_TAKEN_BY_ANOTHER_FAMILY: ReadonlySet<string> = new Set([
   "dpa-multi-state-us :: data processing addendum -> dpa-controller-processor",
