@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.6.0",
+  version: "1.6.1",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -63,7 +63,12 @@ export const rule: Rule = {
       // late-payment rate — the bare "interest" token matched every 10-K's
       // margin discussion. The lookarounds confine the token to interest
       // that is charged, not measured.
-      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s][^.]{0,80}?(\d+(?:\.\d+)?)\s*%\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
+      // The window admits a period only when a digit follows it. A lease's
+      // "late fee of the lesser of $50.00 or 5% of the monthly rent" puts an
+      // amount between the trigger and the rate, and a plain `[^.]` window
+      // dies at the cents — the same late fee written "$50" was read and the
+      // one written "$50.00" was not (v1.6.1).
+      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)){0,80}?(\d+(?:\.\d+)?)\s*%\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
     const rate = Number(hit.match[1]);
@@ -103,7 +108,7 @@ export const rule: Rule = {
       // stated period — a note asking the drafter to fix the one thing the
       // statute fixed for them.
       const flatFee =
-        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))[^.]{0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+installment|installment|balance|amount\s+due|rental\s+payment)\b/i.test(
+        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))(?:[^.]|\.(?=\d)){0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+installment|installment|balance|amount\s+due|rental\s+payment)\b/i.test(
           hit.text,
         );
 

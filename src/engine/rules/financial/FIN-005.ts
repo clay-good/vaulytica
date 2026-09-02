@@ -87,7 +87,7 @@ const PAYMENT_TERMS = new RegExp(
     // following month". The digits-only slot read neither the word nor the
     // parenthetical, so a management fee with a stated monthly due date
     // warned that no payment term was stated.
-    `\\b(?:due|payable|paid)\\s+(?:[^.;]{0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
+    `\\b(?:due|payable|paid)\\s+(?:(?:[^.;]|\\.(?=\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
     `\\b(?:due|payable|paid)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
     `\\b(?:monthly|quarterly|annually)\\s+in\\s+(?:advance|arrears)\\b`,
     // "payable on a monthly basis" — the cadence carries an "on a … basis"
@@ -123,7 +123,15 @@ const PAYMENT_TERMS = new RegExp(
     // was admitted only by the ordinal-day-of-each-month branch above, so this
     // branch — which knows "each anniversary" — could not reach it, and a
     // plainly stated annual fee warned that no payment term was stated.
-    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?(?:[^.;]{0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}(?:,?\\s+\\d{4})?|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
+    //
+    // Both remaining `[^.;]` windows in this file now admit a period followed
+    // by a digit, for the reason spelled out on the active-voice branch above:
+    // the AMOUNT sits between the verb and the due date, and a whole-dollar
+    // figure written with cents ends the window. "payable $425,000.00 on
+    // January 31 and $425,000.00 on June 30 of each year" is the same
+    // sponsorship fee as "$425,000", and only one of the two was read as a
+    // payment term (v1.5.1).
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?(?:(?:[^.;]|\\.(?=\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}(?:,?\\s+\\d{4})?|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
     // An M&A or real-estate purchase price states its term as the CLOSING
     // event, not an interval or a fixed date: "the Purchase Price … payable in
     // cash at the Closing", "the balance is due and payable at closing". The
@@ -184,7 +192,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.5.0",
+  version: "1.5.1",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

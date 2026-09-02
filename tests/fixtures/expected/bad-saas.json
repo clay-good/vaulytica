@@ -230,7 +230,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.5.1"
     },
     {
       "elapsed_ms": 0,
@@ -258,7 +258,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.6.0"
+      "rule_version": "1.6.1"
     },
     {
       "elapsed_ms": 0,
@@ -989,7 +989,7 @@
       "id": "FIN-005-s1-0",
       "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
       "rule_id": "FIN-005",
-      "rule_version": "1.5.0",
+      "rule_version": "1.5.1",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1244,7 +1244,7 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "89b387a6dc8f16950c876de77fabf12baaf4527e405a7ccf2497afd938fa80c6",
+  "result_hash": "50e543c3ec18b9ab8c45a55a3933bf3017c51789b5231f7c70f906d2d73c698c",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",

@@ -486,4 +486,27 @@ describe("FIN-005 v1.15.0 — the amount a person owes", () => {
       ),
     ).not.toBeNull();
   });
+  // v1.5.1 — the same decimal, one branch over. A sponsorship fee names the
+  // amount between the verb and the date; written with cents, the due-date
+  // window died at the decimal and the clause read as no payment term.
+  it.each([
+    ["$425,000 on January 31 and $425,000 on June 30 of each year"],
+    ["$425,000.00 on January 31 and $425,000.00 on June 30 of each year"],
+  ])("reads a named-date installment schedule stated as %s", (schedule) => {
+    expect(
+      FIN_005.check(
+        buildContext([
+          "Fee",
+          `Sponsor shall pay Property $850,000.00 per Event year, payable ${schedule} of the Term.`,
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it.each([
+    ["Base Rent: $20,000 per month, payable in advance on the first of each month."],
+    ["Base Rent: $20,000.00 per month, payable in advance on the first of each month."],
+  ])("reads a recurring due date stated as %s", (clause) => {
+    expect(FIN_005.check(buildContext(["Rent", clause]))).toBeNull();
+  });
 });

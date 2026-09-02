@@ -224,7 +224,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.5.1"
     },
     {
       "elapsed_ms": 0,
@@ -253,7 +253,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.6.0"
+      "rule_version": "1.6.1"
     },
     {
       "elapsed_ms": 0,
@@ -908,7 +908,7 @@
       "id": "FIN-009-s1.3-407",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
-      "rule_version": "1.6.0",
+      "rule_version": "1.6.1",
       "severity": "warning",
       "source_citations": [
         {
@@ -1022,7 +1022,7 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected sow (score 1). Title matched: \"statement of work\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "bc0701689301657ab98d92862df3f77fcb4e846b22c6843cbee3f1e38893a13e",
+  "result_hash": "3265702ed1342590c97c4f01ff0a12a49e4725ef9e4063c9032d73e3b4c49a04",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",

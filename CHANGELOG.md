@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.376.0] — 2026-09-02
+
+### Fixed
+- **An interior period is not a sentence end, and two more clause readers ended
+  at one.** Almost every clause reader here is a regex with a window between two
+  anchors, and almost every window is written `[^.]` on the theory that the
+  clause ends at the period. A period also sits inside `$4,180.00`, inside
+  "Section 7.2", inside "Statement of Work No. 4" — and a window that stops
+  there stops BEFORE the anchor it was written to reach, so the rule reports the
+  absence of a clause the document plainly states. The class had been found by
+  hand four times (EMP-025, the subordinate-document readers, STRUCT-017, and
+  FIN-005's recurring-due-date branch); it is now asked mechanically.
+
+  - **FIN-005 (v1.5.1)** — a sponsorship fee "payable $425,000 on January 31 and
+    $425,000 on June 30 of each year" was read as a payment term, and the same
+    sentence written with cents was reported as stating none. Both remaining
+    `[^.;]` windows now admit a period only when a digit follows it.
+  - **FIN-009 (v1.6.1)** — the New York statutory late fee, "the lesser of $50
+    or 5% of the monthly rent", was read; "$50.00 or 5%" was not, because the
+    amount sits between the trigger and the rate.
+
+### Added
+- **`interior-period.test.ts` — the metamorphic form of the question.** Writing
+  a whole-dollar amount with cents changes nothing about what a document says,
+  so the finding set must be identical; where it is not, a window died at the
+  decimal. Asserted over every specimen naming an amount, in both directions.
+  Confirmed to fail with each defect put back.
+
+  The mirror transformation — taking cents off — has always held, and the
+  asymmetry is the point: rules are written by people looking at "$50", so it is
+  the cents that surprise them.
+
+  Zero substantive golden churn: 366 fixtures moved on the two rule-version
+  strings and their hashes, and on nothing else. 13,590 tests.
+
 ## [9.375.0] — 2026-09-02
 
 ### Added

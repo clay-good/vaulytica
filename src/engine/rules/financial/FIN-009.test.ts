@@ -229,4 +229,16 @@ describe("FIN-009 — a rent-based late fee is one-time", () => {
     );
     expect(found?.severity).toBe("warning");
   });
+  // v1.6.1 — the same fee written with cents. The amount sits between the
+  // trigger and the rate, and a `[^.]` window ended at the decimal, so the
+  // statutory New York fee was read in one spelling and not in the other.
+  it("reads the same fee written with cents", () => {
+    const found = FIN_009.check(
+      buildContext([
+        "Residential Lease",
+        "A late fee of the lesser of $50.00 or 5% of the monthly rent may be charged.",
+      ]),
+    );
+    expect(found?.title).toBe("One-time late fee of 5% (not annualized)");
+  });
 });
