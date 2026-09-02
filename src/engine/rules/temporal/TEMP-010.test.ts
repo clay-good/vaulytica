@@ -106,3 +106,20 @@ describe("a notary's commission is not the document's expiration", () => {
     expect(f?.title).toContain("2036-03-14");
   });
 });
+
+describe("TEMP-010 — an offer's expiry is the deadline to accept it", () => {
+  it("is silent on a start date after the offer expires", () => {
+    // "This offer expires on August 10, 2026" sits at the foot of every offer
+    // letter, above a start date weeks later. The same shape as the notary's
+    // commission the guard was written for.
+    expect(
+      TEMP_010.check(
+        buildContext([
+          "Re: Offer of Employment",
+          "Your anticipated start date is September 14, 2026, and your first review will be on March 1, 2027.",
+          "This offer expires on August 10, 2026. To accept, sign below and return a copy.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

@@ -177,3 +177,19 @@ describe("PERS-005 / PERS-001 — a covenant NAMED as a provision is not one imp
     expect(PERS_001.check(buildContext(["Non-Competition", real]))).not.toBeNull();
   });
 });
+
+describe("PERS-005 / PERS-001 — an offer letter that says it is asking for none", () => {
+  // Washington, Colorado, California and Minnesota offer letters increasingly
+  // say so in terms, and both rules read the sentence disclaiming the covenant
+  // as the covenant.
+  const CLAUSE =
+    "For twelve months after your employment ends, you agree not to solicit any Company employee to leave the Company. The Company is not asking you to agree to any noncompetition covenant, and none is a condition of this offer.";
+
+  it("is silent in PERS-005", () => {
+    expect(PERS_005.check(buildContext(["9. Non-Solicitation", CLAUSE]))).toBeNull();
+  });
+
+  it("is silent in PERS-001", () => {
+    expect(PERS_001.check(buildContext(["9. Non-Solicitation", CLAUSE]))).toBeNull();
+  });
+});

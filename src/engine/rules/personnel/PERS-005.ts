@@ -34,11 +34,11 @@ import { allMatches, describesCovenantElsewhere, emit, excerptWindow } from "../
  * imposes.
  */
 export const NON_COMPETE_DISCLAIMED =
-  /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b|\b(?:no|not)\s+[^.;]{0,50}?\brequired\s*(?:,[^.;]{0,60},)?\s*to\s+(?:accept|sign|execute|enter\s+into|agree\s+to|be\s+bound\s+by|become\s+subject\s+to|be\s+subject\s+to)\b/i;
+  /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:is|are|am)\s+not\s+(?:asking|requiring|requesting)\b|\b(?:none|neither)\s+(?:is|are)\s+(?:a\s+)?(?:condition|required|requested)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b|\b(?:no|not)\s+[^.;]{0,50}?\brequired\s*(?:,[^.;]{0,60},)?\s*to\s+(?:accept|sign|execute|enter\s+into|agree\s+to|be\s+bound\s+by|become\s+subject\s+to|be\s+subject\s+to)\b/i;
 
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",

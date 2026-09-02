@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** TEMP-010 — Specific dates near or after expiry (info). */
 export const rule: Rule = {
   id: "TEMP-010",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Specific dates after expiry",
   category: "temporal",
   default_severity: "info",
@@ -34,8 +34,14 @@ export const rule: Rule = {
     // clause is written ("commencing ... and expiring ..."), and without it
     // the only expiration such a document states is the recited one.
     const EXPIRY_KEYWORD = /\b(?:expires?|expiring|expiration\s+date)\b/gi;
+    // An OFFER's expiry is the deadline to ACCEPT it, not the term of anything.
+    // "This offer expires on August 10, 2026" sits at the foot of every offer
+    // letter, quotation and proposal, above a start date or a delivery date
+    // weeks later — and an offer letter was told its September start date
+    // falls after its own expiration. The same is true of a notary's
+    // commission, which is why that guard was written.
     const NON_CONTRACT_EXPIRY =
-      /\b(?:commission|notar\w*|licen[sc]e|registration|permit|passport)\b[^.]{0,40}$/i;
+      /\b(?:commission|notar\w*|licen[sc]e|registration|permit|passport|offer|quotation|proposal)\b[^.]{0,40}$/i;
     const expiryIsos: string[] = [];
     forEachParagraph(ctx.tree, (p) => {
       EXPIRY_KEYWORD.lastIndex = 0;

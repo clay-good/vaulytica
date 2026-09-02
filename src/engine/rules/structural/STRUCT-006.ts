@@ -88,9 +88,38 @@ function isNamedPerson(documentBody: string, term: string): boolean {
   return new RegExp(`${PERSONAL_APPOSITIVE}${escaped}\\b`, "i").test(documentBody);
 }
 
+/**
+ * A JOB TITLE is not a defined term.
+ *
+ * An offer letter is written in Title Case throughout about the one thing it
+ * exists to offer — "the position of Staff Mechanical Engineer", "You will be
+ * a Staff Mechanical Engineer reporting to …" — and it was told that Staff
+ * Mechanical Engineer is a term it forgot to define. There is no drafting
+ * change that answers it: a letter cannot define the job it is offering
+ * without writing 'the position of Staff Mechanical Engineer (the "Staff
+ * Mechanical Engineer")'.
+ *
+ * The introduction is the test, not a vocabulary list — job titles are
+ * unbounded, and the phrases below are how an EMPLOYMENT document says the
+ * Title-Case run that follows is the job. An ordinary defined term introduced
+ * the same way does not exist: nothing reads "the position of the Purchase
+ * Price".
+ *
+ * A bare "as" is deliberately not one of them. It reads "as Settlor and
+ * initial Trustee", "shall serve as Successor Trustee", "as Escrow Agent" —
+ * every fiduciary role in every estate and escrow instrument — and admitting
+ * it stood down the check on four revocable-trust fixtures.
+ */
+const POSITION_INTRODUCTION = String.raw`(?:the\s+(?:position|role|title|job|post)\s+of|(?:employed|hired|engaged|promoted|appointed)\s+(?:as|to)\s+(?:an?\s+|the\s+)?|you\s+will\s+be\s+(?:an?\s+|the\s+)?)`;
+
+function isJobTitle(documentBody: string, term: string): boolean {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`${POSITION_INTRODUCTION}\\s*${escaped}\\b`, "i").test(documentBody);
+}
+
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -162,6 +191,8 @@ export const rule: Rule = {
       if (isNamedPerson(body, e.term)) return false;
       // A public office is defined by the state, not by this document.
       if (PUBLIC_OFFICE.test(e.term.trim())) return false;
+      // The job the document offers is a role, not a term it forgot to define.
+      if (isJobTitle(body, e.term)) return false;
       // An internal function is a department, not a defined term.
       if (INTERNAL_FUNCTION.test(e.term.trim())) return false;
       // The document's OWN NAME is not a term it forgot to define. Every

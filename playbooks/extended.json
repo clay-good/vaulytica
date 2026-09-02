@@ -12769,7 +12769,7 @@
   },
   {
     "id": "offer-letter",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "Offer Letter",
     "description": "Employment offer letter. Selects the §6.F employment ruleset (EMP-009..EMP-014).",
     "match_features": {
@@ -12798,6 +12798,9 @@
     "expected_clauses": [],
     "expected_defined_terms": [],
     "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
       "CHOICE-003": {
         "skip": true
       },

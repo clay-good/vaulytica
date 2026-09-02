@@ -247,3 +247,31 @@ describe("STRUCT-006 — a document that ASSUMES a lease takes its vocabulary", 
     expect(finding?.description).toContain("Base Rent");
   });
 });
+
+describe("STRUCT-006 — a job title is not a defined term", () => {
+  it("is silent on the position an offer letter offers", () => {
+    // An offer letter is written in Title Case about the one thing it exists
+    // to offer, and there is no drafting change that answers the finding: a
+    // letter cannot define the job without writing 'the position of Staff
+    // Mechanical Engineer (the "Staff Mechanical Engineer")'.
+    const ctx = buildContext([
+      "Re: Offer of Employment",
+      "We are delighted to offer you the position of Staff Mechanical Engineer at Thistledown Robotics, Inc.",
+      "You will be a Staff Mechanical Engineer reporting to the VP of Hardware, and your base salary will be $214,000.",
+    ]);
+    expect(STRUCT_006.check(ctx)).toBeNull();
+  });
+
+  it("still reports a fiduciary role introduced with a bare 'as'", () => {
+    // A bare "as" reads "as Settlor and initial Trustee", "shall serve as
+    // Successor Trustee", "as Escrow Agent" — every fiduciary role in every
+    // estate and escrow instrument — so it is not a position introduction.
+    const ctx = buildContext([
+      "Revocable Living Trust Agreement",
+      'This Revocable Living Trust Agreement (this "Trust") is made by Jane Doe as Settlor and initial Trustee.',
+      "Upon the death of the Settlor, John Doe shall serve as Successor Trustee and shall distribute the Residuary Estate.",
+      "The Successor Trustee shall distribute the Residuary Estate to the Settlor's issue by right of representation.",
+    ]);
+    expect(STRUCT_006.check(ctx)?.description).toMatch(/Successor Trustee/);
+  });
+});

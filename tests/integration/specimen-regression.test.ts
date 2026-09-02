@@ -2799,6 +2799,23 @@ export const EXPECTED: Record<string, Expectation> = {
   // baseline: ADDENDA-020, which 9.364.0 extended to the two notice families
   // — until then the SPECIFIC families got less review than the generic linter
   // by default.
+  // A Seattle staff-engineer offer letter with an option grant, an arbitration
+  // clause carved for the EFAA, and a Washington RCW 49.44.140 invention
+  // carve-out. Four false findings. PERS-001 and PERS-005 read "The Company is
+  // not asking you to agree to any noncompetition covenant, and none is a
+  // condition of this offer" as a non-compete — the disclaimer guard knew
+  // "you are not subject to", which is the incoming-obligations shape, and not
+  // the state-law disclaimer offer letters increasingly carry. STRUCT-006
+  // asked the letter to define "Staff Mechanical Engineer", the job it exists
+  // to offer. TEMP-010 read "This offer expires on August 10, 2026" — the
+  // deadline to ACCEPT — as the agreement's expiration and reported the
+  // September start date as falling after it. CHOICE-001 asked an offer letter
+  // for a governing-law clause, which the family skipped the venue twin of.
+  "offer-letter-equity.txt": {
+    playbook: "offer-letter",
+    findings: ["CHOICE-006", "OBLI-005", "PERS-002"],
+  },
+
   "privacy-notice-multistate.txt": {
     playbook: "privacy-notice-us",
     findings: [],

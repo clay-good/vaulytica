@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.365.0] — 2026-09-02
+
+### Fixed
+- **PERS-001 and PERS-005 read a state-law non-compete DISCLAIMER as a
+  non-compete.** "The Company is not asking you to agree to any noncompetition
+  covenant, and none is a condition of this offer" is a sentence offer letters
+  in Washington, Colorado, California and Minnesota increasingly carry, and the
+  disclaimer guard knew only the incoming-obligations shape ("you are not
+  subject to any…").
+- **STRUCT-006 asked an offer letter to define the job it offers.** "the
+  position of Staff Mechanical Engineer" is a role, and there is no drafting
+  change that answers the finding. The introduction is the test rather than a
+  vocabulary list; a bare "as" is deliberately not one of them, because it
+  reads "as Settlor and initial Trustee" in every estate instrument.
+- **TEMP-010 read an offer's acceptance deadline as the agreement's
+  expiration.** "This offer expires on August 10, 2026" sits at the foot of
+  every offer letter, above a start date weeks later, and the letter was told
+  its September start date falls after its own expiry. The same shape as the
+  notary's commission the guard was written for.
+- **`offer-letter` was asked for a governing-law clause** while skipping the
+  venue check beside it.
+
+### Added
+- A Seattle staff-engineer offer letter — option grant, EFAA-carved
+  arbitration clause, RCW 49.44.140 invention carve-out. 305 specimens.
+
 ## [9.364.0] — 2026-09-02
 
 ### Fixed
