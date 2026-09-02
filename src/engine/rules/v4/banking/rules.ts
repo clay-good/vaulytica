@@ -801,7 +801,7 @@ const INTERCREDITOR_RULES: Rule[] = [
       "Add 'Junior Standstill' barring junior enforcement actions during a stated standstill period (typically 180 days) after notice of senior default.",
     present_patterns: [
       /(standstill\s+period|standstill)/i,
-      /(180\s+days?|junior\s+enforcement|enforcement\s+actions?)/i,
+      /(180\s*\)?\s*days?|junior\s+enforcement|enforcement\s+actions?)/i,
     ],
     default_severity: "warning",
   }),
@@ -935,7 +935,7 @@ const SUBORDINATION_RULES: Rule[] = [
       "Add 'Payment Subordination' deferring junior payment during senior default plus 'Blockage' (windows) and 'Turnover' clauses.",
     present_patterns: [
       /(payment\s+subordination|defer|blockage)/i,
-      /(turnover|hold\s+in\s+trust|180\s+days?)/i,
+      /(turnover|hold\s+in\s+trust|180\s*\)?\s*days?)/i,
     ],
   }),
   presence({
@@ -1239,8 +1239,8 @@ const UCC1_RULES: Rule[] = [
     recommendation:
       "Reference the 5-year duration and the 6-month continuation window so the filing party tracks calendar deadlines.",
     present_patterns: [
-      /(5\s+years?|five\s+years?|lapse|expir)/i,
-      /(continuation|6\s+months?|six\s+months?)/i,
+      /(5\s*\)?\s*years?|five\s+years?|lapse|expir)/i,
+      /(continuation|6\s*\)?\s*months?|six\s+months?)/i,
     ],
     // `info`, not `warning`. The national UCC1 form has no box for a lapse
     // date and no realistic filing carries one — the § 9-515 calendar lives in

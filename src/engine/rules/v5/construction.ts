@@ -73,7 +73,7 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
     cite: practice("design-review", "owner design review in design-build agreements"),
     pat: [
       /(design\s+review|submittal|review\s+of\s+the\s+(design|documents))/i,
-      /(approv|comment|shall\s+not\s+relieve|within\s+\d+\s+days)/i,
+      /(approv|comment|shall\s+not\s+relieve|within\s+\d+\s*\)?\s*days)/i,
     ],
     why: "Owner review has to be real enough to catch problems but must not shift design responsibility back to the owner. The no-relief clause is what preserves the single point of responsibility.",
     fix: "Set review periods with deemed-approval consequences, and state that the owner's review or approval does not relieve the design-builder of responsibility for the design.",
@@ -268,7 +268,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     ),
     pat: [
       /(serv(e|ed|ice)|mail(ed)?|deliver)/i,
-      /(certified\s+mail|return\s+receipt|within\s+\d+\s+days|20\s+days|proof\s+of\s+service)/i,
+      /(certified\s+mail|return\s+receipt|within\s+\d+\s*\)?\s*days|20\s*\)?\s*days|proof\s+of\s+service)/i,
     ],
     why: "Deadlines run from first furnishing (20 days in California, other periods elsewhere) and late notice limits the lien to work performed in the lookback window. The service method is equally prescribed.",
     fix: "State the date of first furnishing, serve by the statutory method (usually certified or registered mail with return receipt), and retain the proof of service.",

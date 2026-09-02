@@ -105,7 +105,7 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
     present_patterns: [
       /waiver/i,
       /(board|audit\s+committee|nominating)/i,
-      /(disclos|8.?k|form\s+8.?k|4\s+business\s+days?)/i,
+      /(disclos|8.?k|form\s+8.?k|4\s*\)?\s*business\s+days?)/i,
     ],
   }),
   presence({
@@ -369,7 +369,7 @@ const AML_RULES: Rule[] = [
       "Add 'Suspicious Activity Reports' specifying detection / escalation / filing within 30 days + SAR confidentiality.",
     present_patterns: [
       /(suspicious\s+activity\s+report|sar)/i,
-      /(30\s+days?|thirty\s+days?|fincen)/i,
+      /(30\s*\)?\s*days?|thirty\s+days?|fincen)/i,
       /(confidential|tipping.?off)/i,
     ],
     denied_if: expressDenial(String.raw`suspicious\s+activity\s+reports?|sars?\b`),
@@ -446,7 +446,7 @@ const AML_RULES: Rule[] = [
       "Add 'Recordkeeping' specifying 5-year retention for SARs, CTRs, CIP records, and other BSA documentation.",
     present_patterns: [
       /(recordkeeping|records?\s+retention|retain)/i,
-      /(5\s+years?|five\s+years?)/i,
+      /(5\s*\)?\s*years?|five\s+years?)/i,
     ],
     denied_if: expressDenial(String.raw`aml\s+records?|bsa\s+records?`),
     denied_title: "AML recordkeeping expressly disclaimed",
@@ -767,7 +767,7 @@ const DOC_RETENTION_RULES: Rule[] = [
       "Add 'Regulatory Minimums' aligning retention with SEC / IRS / DOL / HIPAA / state minimums (the longer applicable period controls).",
     present_patterns: [
       /\b(?:SEC|IRS|DOL|ERISA|HIPAA)\b/,
-      /(rule\s+17a.?4|6501|107|164\.530|6\s+years?|7\s+years?)/i,
+      /(rule\s+17a.?4|6501|107|164\.530|6\s*\)?\s*years?|7\s*\)?\s*years?)/i,
     ],
     default_severity: "warning",
   }),

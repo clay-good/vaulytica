@@ -327,7 +327,7 @@ const FREIGHT = pack("freight-transportation-agreement", C, [
     ),
     pat: [
       /(claim\s+(must|shall)\s+be\s+filed|filing\s+of\s+claims)/i,
-      /(nine\s+months|9\s+months|two\s+years|limitation\s+period)/i,
+      /(nine\s+months|9\s*\)?\s*months|two\s+years|limitation\s+period)/i,
     ],
     why: "Carmack permits a minimum nine-month claim-filing period and a two-year suit limitation. Agreements routinely shorten these below the statutory floor, which makes the shortened term unenforceable and leaves neither party sure of the real deadline.",
     fix: "State the claim-filing period (no less than nine months from delivery) and the suit limitation (no less than two years from claim disallowance), and the required claim contents.",
@@ -613,7 +613,10 @@ const FDD = pack("franchise-disclosure-document", C, [
     ver: "1.0.1",
     name: "Receipt page and 14-day disclosure timing",
     cite: cfr("16", "436.2", "FTC Franchise Rule — obligation to furnish documents"),
-    pat: [/receipt/i, /(14\s+calendar\s+days|fourteen\s+\(?14\)?\s+days|at\s+least\s+14\s+days)/i],
+    pat: [
+      /receipt/i,
+      /(14\s*\)?\s*calendar\s+days|fourteen\s+\(?14\)?\s+days|at\s+least\s+14\s*\)?\s*days)/i,
+    ],
     all: true,
     why: "§ 436.2(a) requires delivery at least 14 calendar days before signing or payment. The dual receipt pages are the franchisor's only proof of timing, and their absence defeats the defense.",
     fix: "Include both copies of the Item 23 receipt with the issuance date, the franchise seller's identity, and the 14-day statement.",
@@ -898,7 +901,7 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
     ),
     pat: [
       /(prompt[-\s]+payment|accelerated\s+payment)/i,
-      /(52\.232|payment\s+within\s+\d+\s+days|pay\s+when\s+paid|pay\s+if\s+paid)/i,
+      /(52\.232|payment\s+within\s+\d+\s*\)?\s*days|pay\s+when\s+paid|pay\s+if\s+paid)/i,
     ],
     why: "FAR 52.232-40 requires primes to accelerate payments to small-business subcontractors after receiving accelerated payment themselves. Pay-if-paid clauses are separately unenforceable in many states.",
     fix: "State the payment terms and days, flow down FAR 52.232-40 where the subcontractor is a small business, and confirm whether payment is conditioned on the prime's receipt.",

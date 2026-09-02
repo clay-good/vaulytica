@@ -385,7 +385,7 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
     ),
     pat: [
       /(destroy|destruction|return\s+the\s+data)/i,
-      /(upon\s+(completion|termination|the\s+end)|certif|within\s+\d+\s+days|retain)/i,
+      /(upon\s+(completion|termination|the\s+end)|certif|within\s+\d+\s*\)?\s*days|retain)/i,
     ],
     why: "Research datasets accumulate in institutional storage for decades after the project ends. A destruction obligation with certification is what converts the purpose limitation into an actual endpoint.",
     fix: "Require return or certified destruction within a stated period after the purpose is complete, with any retention exception (archival, regulatory, IRB) stated expressly.",

@@ -1372,7 +1372,7 @@ const TSA_RULES: Rule[] = [
     explanation:
       "Standard pattern: 6–12 month service period with limited extension at buyer's option.",
     recommendation: "Add 'Service Period' with default term + extension trigger + extension limit.",
-    present_patterns: [/service\s+period/i, /extension/i, /\d+\s+months?\s+from\s+closing/i],
+    present_patterns: [/service\s+period/i, /extension/i, /\d+\s*\)?\s*months?\s+from\s+closing/i],
   }),
   presence({
     id: "MNA-057",

@@ -298,7 +298,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     ),
     pat: [
       /publi(sh|cation)/i,
-      /(review|\d+\s+days\s+(prior|before)|delay|multicenter|primary\s+publication|shall\s+not\s+(prohibit|prevent))/i,
+      /(review|\d+\s*\)?\s*days\s+(prior|before)|delay|multicenter|primary\s+publication|shall\s+not\s+(prohibit|prevent))/i,
     ],
     why: "Academic sites will not sign an agreement that gives the sponsor a veto over publication, and ICMJE requires that investigators have access to the data and control over publication decisions.",
     fix: "Give the sponsor a stated review window with a short delay for patent filing and removal of confidential information, and confirm the sponsor has no right to suppress or alter the results.",
@@ -311,7 +311,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     cite: cfr("21", "312.62", "FDA — investigator recordkeeping and record retention"),
     pat: [
       /(data\s+(ownership|shall\s+be\s+owned)|study\s+data)/i,
-      /(access|retain|records\s+for\s+(a\s+period\s+of\s+)?\d+\s+years|source\s+documents)/i,
+      /(access|retain|records\s+for\s+(a\s+period\s+of\s+)?\d+\s*\)?\s*years|source\s+documents)/i,
     ],
     why: "§ 312.62(c) requires the investigator to retain records for two years after marketing approval or after the IND is discontinued. Sponsors own the study data but the site needs continuing access for its own publication and defense.",
     fix: "State sponsor ownership of study data, the site's retained copy and access rights, and the record-retention period consistent with § 312.62(c).",
@@ -354,7 +354,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     ),
     pat: [
       /fee\s+schedule/i,
-      /(attached|exhibit|amend|change|notice\s+of\s+(any\s+)?(rate|fee)\s+change|\d+\s+days['’]?\s+(prior\s+)?notice)/i,
+      /(attached|exhibit|amend|change|notice\s+of\s+(any\s+)?(rate|fee)\s+change|\d+\s*\)?\s*days['’]?\s+(prior\s+)?notice)/i,
     ],
     all: true,
     why: "Payer forms routinely incorporate a fee schedule by reference to a website and reserve unilateral amendment. A provider that cannot see the rates and cannot terminate on a cut has signed an open-ended discount.",
@@ -375,7 +375,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     ),
     pat: [
       /clean[-\s]+claim/i,
-      /(within\s+\d+\s+days|prompt[-\s]+pay|interest\s+(on|shall\s+accrue)|adjudicat)/i,
+      /(within\s+\d+\s*\)?\s*days|prompt[-\s]+pay|interest\s+(on|shall\s+accrue)|adjudicat)/i,
     ],
     why: "Every state has a prompt-pay statute with a clean-claim definition and an interest penalty. A contract that defines clean claim more narrowly than the statute is unenforceable to that extent, but providers rarely notice.",
     fix: "Define clean claim consistent with the governing state's statute, state the payment deadline and interest, and describe the process for pended and denied claims.",
@@ -428,7 +428,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     cite: usc("42", "300gg-113", "No Surprises Act — continuity of care"),
     pat: [
       /terminat/i,
-      /(continuity\s+of\s+care|transition(al)?\s+care|continuing\s+care\s+patient|\d+\s+days['’]?\s+notice|90\s+days)/i,
+      /(continuity\s+of\s+care|transition(al)?\s+care|continuing\s+care\s+patient|\d+\s*\)?\s*days['’]?\s+notice|90\s*\)?\s*days)/i,
     ],
     why: "The No Surprises Act requires up to 90 days of continued in-network terms for continuing care patients after a contract terminates. The contract has to accommodate the obligation it cannot contract out of.",
     fix: "State the termination notice period for each party and the continuity-of-care obligations, including the 90-day transitional period for continuing care patients.",

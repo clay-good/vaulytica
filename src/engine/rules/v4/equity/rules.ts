@@ -560,7 +560,7 @@ const OPTION_GRANT_RULES: Rule[] = [
       "Add 'Post-Termination Exercise' specifying 3 months (ISO), 12 months disability, and a chosen post-death window.",
     present_patterns: [
       /post.termination/i,
-      /3\s+months?\s+after\s+termination/i,
+      /3\s*\)?\s*months?\s+after\s+termination/i,
       /ninety\s*\(?90\)?\s+days?/i,
       /exercise\s+period.{0,40}termination/is,
       // The canonical ISO phrasing — "the vested portion shall remain
@@ -1190,7 +1190,7 @@ const IRA_RULES: Rule[] = [
     explanation: "Underwriters require 180-day IPO lock-ups from significant pre-IPO holders.",
     recommendation:
       "Add a 180-day market-stand-off section with the customary underwriter-flexibility clause.",
-    present_patterns: [/market\s+stand.?off/i, /lock[-\s]?up/i, /180\s+days?/i],
+    present_patterns: [/market\s+stand.?off/i, /lock[-\s]?up/i, /180\s*\)?\s*days?/i],
     default_severity: "warning",
   }),
   presence({

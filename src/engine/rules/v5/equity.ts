@@ -31,7 +31,7 @@ const PLAN = pack("equity-incentive-plan", C, [
     cite: irs("26 U.S.C. § 422(d)", "incentive stock options — $100,000 per year limitation"),
     pat: [
       /(incentive\s+stock\s+option|\bisos?\b)/i,
-      /(\$100,000|100,000|ten\s+years|10\s+years|five\s+years|10%\s+(share|stock)holder)/i,
+      /(\$100,000|100,000|ten\s+years|10\s*\)?\s*years|five\s+years|10%\s+(share|stock)holder)/i,
     ],
     why: "§ 422 conditions ISO treatment on a ten-year maximum term, the $100,000 first-exercisable limit, and a five-year term and 110% exercise price for 10% shareholders. A plan that omits them cannot grant valid ISOs.",
     fix: "State the ISO limits: ten-year maximum term, the $100,000 per-calendar-year first-exercisable limit, and the 10%-shareholder five-year / 110% rules.",
@@ -134,7 +134,7 @@ const ESPP = pack("employee-stock-purchase-plan", C, [
     ),
     pat: [
       /(eligib|all\s+employees)/i,
-      /(same\s+rights\s+and\s+privileges|equal(ly)?|two\s+years|20\s+hours|five\s+months|highly\s+compensated)/i,
+      /(same\s+rights\s+and\s+privileges|equal(ly)?|two\s+years|20\s*\)?\s*hours|five\s+months|highly\s+compensated)/i,
     ],
     why: "§ 423(b)(4)-(5) require that all eligible employees participate on the same terms, with only the statutory exclusions permitted. A discretionary exclusion disqualifies the plan.",
     fix: "State the eligibility rule using only permitted exclusions (service under two years, under 20 hours per week, under five months per year, and highly compensated employees), and confirm equal rights and privileges.",
@@ -227,7 +227,7 @@ const PROFITS_INTEREST = pack("profits-interest-award", C, [
     cite: irs("26 U.S.C. § 83(b)", "election to include in gross income in year of transfer"),
     pat: [
       /83\(b\)/i,
-      /(30\s+days|thirty\s+days|election|file\s+with\s+the\s+internal\s+revenue\s+service)/i,
+      /(30\s*\)?\s*days|thirty\s+days|election|file\s+with\s+the\s+internal\s+revenue\s+service)/i,
     ],
     why: "For an unvested profits interest, Rev. Proc. 2001-43 relief and the § 83(b) election are the standard belt-and-braces. The 30-day deadline is jurisdictional and cannot be extended.",
     fix: "Direct the participant to consider filing a § 83(b) election within 30 days of grant, state that the participant is solely responsible for filing, and attach a form.",

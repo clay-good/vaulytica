@@ -85,7 +85,7 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
       // "Defendants may MOVE TO TERMINATE this Consent Judgment after they
       // have maintained compliance for twenty-four (24) consecutive months".
       /(satisfaction\s+of\s+judgment|satisfied|vacat|(?:move|motion)\s+to\s+terminate|terminat\w+[^.;]{0,80}?(?:consent\s+(?:judgment|decree)|this\s+Decree))/i,
-      /(upon\s+(full\s+)?payment|file\s+(a\s+)?(satisfaction|acknowledgment)|within\s+\d+\s+days)/i,
+      /(upon\s+(full\s+)?payment|file\s+(a\s+)?(satisfaction|acknowledgment)|within\s+\d+\s*\)?\s*days)/i,
     ],
     why: "An unsatisfied judgment of record damages credit and title for years. The obligation to file a satisfaction, with a deadline, is the defendant's principal protection.",
     fix: "Require the plaintiff to file a satisfaction of judgment (or a stipulation to vacate) within a stated number of days after final payment, with a remedy if it does not.",
@@ -273,7 +273,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
     cite: frcp("26(c)", "protective orders — procedure"),
     pat: [
       /designat/i,
-      /(stamp|legend|at\s+the\s+time\s+of\s+production|within\s+\d+\s+days|de-?designat|withdraw\s+(a\s+)?designation)/i,
+      /(stamp|legend|at\s+the\s+time\s+of\s+production|within\s+\d+\s*\)?\s*days|de-?designat|withdraw\s+(a\s+)?designation)/i,
     ],
     why: "Documents get produced faster than they get reviewed. The order needs a mechanism for late designation of inadvertently unmarked material and for deposition-transcript designation windows.",
     fix: "State how material is designated, the window for designating deposition testimony, and the procedure for correcting an omitted designation.",
@@ -340,7 +340,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
     cite: practice("po-return", "return or destruction obligations at the end of litigation"),
     pat: [
       /(return\s+or\s+destroy|destruction)/i,
-      /(within\s+\d+\s+days\s+(of|after)\s+(the\s+)?(final|conclusion|termination)|certif)/i,
+      /(within\s+\d+\s*\)?\s*days\s+(of|after)\s+(the\s+)?(final|conclusion|termination)|certif)/i,
     ],
     why: "Without a wind-down obligation, protected material stays in vendor systems and former experts' files indefinitely, and the order's protections outlive anyone's ability to enforce them.",
     fix: "Require return or certified destruction within a stated period after final disposition, with the usual carve-outs for work product, archival backups, and court filings.",

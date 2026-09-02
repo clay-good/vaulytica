@@ -309,7 +309,7 @@ const JDA = pack("joint-development-agreement", C, [
     cite: practice("publication-review", "publication review windows in research collaborations"),
     pat: [
       /publi(sh|cation)/i,
-      /(review|delay|\d+\s+days\s+(prior|before)|remove\s+confidential|defer\s+publication)/i,
+      /(review|delay|\d+\s*\)?\s*days\s+(prior|before)|remove\s+confidential|defer\s+publication)/i,
     ],
     why: "Publication before filing destroys foreign patent rights and starts the US grace period running. A short review-and-delay window is the standard reconciliation of academic and commercial interests.",
     fix: "Require pre-submission review with a stated period, a short delay to permit filing, and the right to remove the reviewing party's confidential information.",
@@ -466,7 +466,7 @@ const ESCROW = pack("source-code-escrow-agreement", C, [
     ),
     pat: [
       /release\s+(condition|event)/i,
-      /(bankrupt|insolven|ceases?\s+to\s+(support|do\s+business)|material\s+breach|dispute|objection\s+within\s+\d+\s+days)/i,
+      /(bankrupt|insolven|ceases?\s+to\s+(support|do\s+business)|material\s+breach|dispute|objection\s+within\s+\d+\s*\)?\s*days)/i,
     ],
     why: "The depositor almost always objects to a release demand. Without a defined objection window and a fast adjudication, the escrow agent will interplead and the beneficiary waits months.",
     fix: "Define the release conditions objectively, set the demand and objection windows, and provide expedited arbitration of any dispute with the agent's duties fixed in the interim.",

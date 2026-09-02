@@ -364,7 +364,7 @@ const SWEEPSTAKES = pack("sweepstakes-official-rules", C, [
     cite: practice("sweeps-eligibility", "eligibility and geographic limits in US promotions"),
     pat: [
       /(eligib|open\s+(only\s+)?to|must\s+be\s+at\s+least)/i,
-      /(legal\s+residents?|18\s+years|void\s+where\s+prohibited|excluding)/i,
+      /(legal\s+residents?|18\s*\)?\s*years|void\s+where\s+prohibited|excluding)/i,
     ],
     why: "Eligibility limits are how a sponsor stays out of registration and bonding states, out of jurisdictions that ban the promotion type, and out of COPPA territory.",
     fix: "State the eligible jurisdictions and minimum age, exclude employees and immediate family, and add the void-where-prohibited limitation.",
@@ -509,7 +509,7 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     ),
     pat: [
       /(reminder|notice\s+(before|prior\s+to)\s+(the\s+)?renewal|renewal\s+notice)/i,
-      /(price[-\s]+(increase|change)|amount\s+of\s+the\s+charge|\d+\s+days\s+before)/i,
+      /(price[-\s]+(increase|change)|amount\s+of\s+the\s+charge|\d+\s*\)?\s*days\s+before)/i,
     ],
     why: "California, New York, and others require a renewal reminder for longer terms and advance notice of any material price change. The notice windows differ by state and by term length.",
     fix: "Commit to a renewal reminder within the statutory window for terms that require it, and to advance notice of any price increase before it takes effect.",

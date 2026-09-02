@@ -111,7 +111,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     present_patterns: [
       /\b(\d{1,2}|two|three|four|five|seven|ten)\s*\(?\d?\)?\s*years?\b.{0,80}(confidential|disclos)/is,
       /(confidential|disclos).{0,80}\b(\d{1,2}|two|three|four|five|seven|ten)\s*\(?\d?\)?\s*years?\b/is,
-      /period\s+of\s+\d+\s+years/i,
+      /period\s+of\s+\d+\s*\)?\s*years/i,
     ],
   }),
 

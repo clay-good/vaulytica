@@ -32,7 +32,7 @@ const RFP = pack("document-requests", C, [
     cite: frcp("34(b)(2)(A)", "producing documents — time to respond"),
     pat: [
       /(respond|response|answer|produce|production)/i,
-      /(30\s+days|thirty\s+\(?30\)?\s+days|within\s+\d+\s+days|no\s+later\s+than)/i,
+      /(30\s*\)?\s*days|thirty\s+\(?30\)?\s+days|within\s+\d+\s*\)?\s*days|no\s+later\s+than)/i,
     ],
     all: true,
     why: "Rule 34(b)(2)(A) gives 30 days from service (or, for requests delivered before the Rule 26(f) conference, 30 days after that conference). Stating the date on the face of the requests avoids the most common calendaring dispute in discovery.",
@@ -161,7 +161,10 @@ const ROGS = pack("interrogatories", C, [
     id: "DISC-008",
     name: "Response deadline stated",
     cite: frcp("33(b)(2)", "interrogatories — time to respond"),
-    pat: [/(respond|answer)/i, /(30\s+days|thirty\s+\(?30\)?\s+days|within\s+\d+\s+days)/i],
+    pat: [
+      /(respond|answer)/i,
+      /(30\s*\)?\s*days|thirty\s+\(?30\)?\s+days|within\s+\d+\s*\)?\s*days)/i,
+    ],
     all: true,
     why: "Rule 33(b)(2) gives 30 days after service. Stating it on the face of the interrogatories fixes the date both sides calendar.",
     fix: "State the response deadline and the rule it runs from.",
@@ -235,7 +238,7 @@ const RFA = pack("requests-for-admission", C, [
     name: "Response deadline and the deemed-admitted consequence",
     cite: frcp("36(a)(3)", "requests for admission — time to respond and the effect of failing to"),
     pat: [
-      /(30\s+days|thirty\s+\(?30\)?\s+days|within\s+\d+\s+days)/i,
+      /(30\s*\)?\s*days|thirty\s+\(?30\)?\s+days|within\s+\d+\s*\)?\s*days)/i,
       /(deemed[-\s]+admitted|admitted\s+if\s+(you\s+)?(fail|do\s+not)|automatically\s+admitted|(?:matter|request)s?\s+(?:is|are)\s+admitted\s+unless)/i,
     ],
     all: true,
@@ -386,7 +389,7 @@ const RESPONSES = pack("discovery-responses", C, [
     cite: frcp("34(b)(2)(B)", "responding to document requests — time for production"),
     pat: [
       /(produc(e|tion))/i,
-      /((?:by|on\s+or\s+before|no[t]?\s+later\s+than)\s+\w+\s+\d{1,2},?\s+\d{4}|on\s+a\s+rolling\s+basis|complete[d]?\s+by|within\s+\d+\s+days\s+of)/i,
+      /((?:by|on\s+or\s+before|no[t]?\s+later\s+than)\s+\w+\s+\d{1,2},?\s+\d{4}|on\s+a\s+rolling\s+basis|complete[d]?\s+by|within\s+\d+\s*\)?\s*days\s+of)/i,
     ],
     all: true,
     why: "Rule 34(b)(2)(B) permits production by a stated later date but requires that date to be stated. 'Will produce responsive documents' with no date is not a compliant response and gives the requesting party nothing to enforce.",
@@ -573,7 +576,7 @@ const RULE_26F = pack("rule-26f-report", C, [
     cite: frcp("26(a)(1)(C)", "required disclosures — time for initial disclosures"),
     pat: [
       /(initial\s+disclosures?|rule\s+26\(a\)\(1\))/i,
-      /(within\s+14\s+days|by\s+\w+\s+\d{1,2},?\s+\d{4}|have\s+been\s+(made|exchanged)|will\s+be\s+(made|served))/i,
+      /(within\s+14\s*\)?\s*days|by\s+\w+\s+\d{1,2},?\s+\d{4}|have\s+been\s+(made|exchanged)|will\s+be\s+(made|served))/i,
     ],
     all: true,
     why: "Initial disclosures are due within 14 days after the Rule 26(f) conference unless the parties or the court set another time. The report is where that other time gets set.",

@@ -71,7 +71,10 @@ const INFOSEC = pack("information-security-policy", C, [
       "SP 800-53 Rev. 5 — Risk Assessment (RA) and System and Information Integrity (SI) families",
       "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
     ),
-    pat: [/(vulnerabilit|patch)/i, /(scan|remediat|severity|critical|within\s+\d+\s+days|sla)/i],
+    pat: [
+      /(vulnerabilit|patch)/i,
+      /(scan|remediat|severity|critical|within\s+\d+\s*\)?\s*days|sla)/i,
+    ],
     why: "Unpatched known vulnerabilities remain the leading initial access vector. A policy without remediation timeframes by severity gives nobody a deadline to miss.",
     fix: "State the scanning cadence, the remediation timeframes by severity, the exception process, and the handling of end-of-life systems.",
   },
@@ -470,7 +473,7 @@ const IRP = pack("security-incident-response-plan", C, [
     ),
     pat: [
       /(notif(y|ication))/i,
-      /(72\s+hours|\d+\s+(business\s+)?days|regulator|attorney\s+general|state\s+breach|hhs|securities\s+and\s+exchange|deadline)/i,
+      /(72\s*\)?\s*hours|\d+\s*\)?\s*(business\s+)?days|regulator|attorney\s+general|state\s+breach|hhs|securities\s+and\s+exchange|deadline)/i,
     ],
     all: true,
     why: "The clocks are short and they differ: GDPR is 72 hours, the SEC cyber rule is four business days after materiality, HIPAA is 60 days, and the state statutes run from 30 to 90 days with different triggers. Nobody can reconstruct them mid-incident.",
@@ -501,7 +504,7 @@ const IRP = pack("security-incident-response-plan", C, [
     ),
     pat: [
       /(post-?incident|lessons\s+learned|after-?action)/i,
-      /(review|within\s+\d+\s+days|update\s+the\s+plan|corrective\s+action|root\s+cause)/i,
+      /(review|within\s+\d+\s*\)?\s*days|update\s+the\s+plan|corrective\s+action|root\s+cause)/i,
     ],
     why: "The corrective actions from a real incident are the highest-value security work an organization ever identifies, and they evaporate without a review that assigns and tracks them.",
     fix: "Require a post-incident review within a stated period, with root-cause analysis, assigned corrective actions with owners and dates, and a plan update.",

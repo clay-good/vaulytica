@@ -33,7 +33,7 @@ const DO = pack("do-policy", C, [
     cite: practice("claims-made", "claims-made-and-reported triggers and notice conditions"),
     pat: [
       /claims?[- ]made/i,
-      /(reported\s+(to\s+the\s+insurer\s+)?during|notice\s+(of\s+(a\s+)?claim)|as\s+soon\s+as\s+practicable|within\s+\d+\s+days\s+of)/i,
+      /(reported\s+(to\s+the\s+insurer\s+)?during|notice\s+(of\s+(a\s+)?claim)|as\s+soon\s+as\s+practicable|within\s+\d+\s*\)?\s*days\s+of)/i,
     ],
     why: "A claims-made-and-reported policy covers only claims both made and reported during the period. Late notice is the most common ground for denial, and in most states no prejudice to the insurer need be shown.",
     fix: "State the trigger, the notice deadline and recipient, and the notice-of-circumstances provision that locks coverage into the current period.",
@@ -97,7 +97,7 @@ const DO = pack("do-policy", C, [
     cite: practice("defense-costs", "duty to defend versus duty to advance in D&O policies"),
     pat: [
       /defen(se|ce)[-\s]+costs?/i,
-      /(duty\s+to\s+defend|advance|within\s+\d+\s+days|allocation|reimburse)/i,
+      /(duty\s+to\s+defend|advance|within\s+\d+\s*\)?\s*days|allocation|reimburse)/i,
     ],
     why: "Most D&O is non-duty-to-defend with an advancement obligation. Whether costs are advanced as incurred or reimbursed later, and how mixed covered/uncovered matters are allocated, determines whether the policy funds the defense in real time.",
     fix: "State whether the insurer has a duty to defend or to advance, the advancement deadline, the consent-to-counsel process, and the allocation standard for mixed claims.",
@@ -108,7 +108,7 @@ const DO = pack("do-policy", C, [
     cite: practice("do-runoff", "change of control and run-off coverage in D&O policies"),
     pat: [
       /(change\s+(in|of)\s+control|transaction|merger)/i,
-      /(run-?off|tail|extended\s+reporting\s+period|discovery\s+period|\d+\s+years)/i,
+      /(run-?off|tail|extended\s+reporting\s+period|discovery\s+period|\d+\s*\)?\s*years)/i,
     ],
     why: "On a change of control the policy typically converts to run-off for claims arising from pre-closing acts. Negotiating the run-off length and premium after signing is far more expensive than before.",
     fix: "Confirm the change-of-control provision, the run-off period available, and the premium formula, and negotiate a six-year tail option at a pre-agreed rate.",
@@ -144,7 +144,7 @@ const CYBER = pack("cyber-insurance-policy", C, [
     ),
     pat: [
       /(business[-\s]+interruption|income\s+loss|period\s+of\s+(restoration|indemnity))/i,
-      /(waiting\s+period|\d+\s+hours|hourly|actual\s+loss\s+sustained|contingent)/i,
+      /(waiting\s+period|\d+\s*\)?\s*hours|hourly|actual\s+loss\s+sustained|contingent)/i,
     ],
     why: "The waiting period — commonly 8 to 12 hours — is a deductible measured in time, and most outages resolve inside it. How the income loss is measured and whether dependent business interruption is included decide whether the grant pays anything.",
     fix: "State the waiting period, the period of restoration, the measurement basis for income loss, and whether contingent/dependent business interruption is covered.",

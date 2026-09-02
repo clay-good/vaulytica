@@ -832,7 +832,7 @@ const REG_A_RULES: Rule[] = [
       "Add 'Financial Statements' cross-reference to the audited financials (Tier 2) or reviewed financials (Tier 1).",
     present_patterns: [
       /(audited\s+financial(s|\s+statements?))/i,
-      /(2\s+years?|two\s+years?|fiscal\s+year)/i,
+      /(2\s*\)?\s*years?|two\s+years?|fiscal\s+year)/i,
     ],
     default_severity: "warning",
   }),

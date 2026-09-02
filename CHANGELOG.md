@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.378.0] — 2026-09-02
+
+### Fixed
+- **"sixty (60) days" is how a lawyer writes "60 days", and sixty-five
+  recognizers could read only the second form.** The spelled-then-numeric
+  convention is the dominant form in drafted instruments — the words and the
+  digits check each other — so the number a recognizer has to find is preceded
+  by "(" rather than by a space, and every pattern written `60\s+days` misses
+  it.
+
+  Found by the metamorphic probe: rewriting "within 60 days" as "within sixty
+  (60) days" says the same thing, so the finding set must not change, and on
+  `incident-notice.txt` it did. PRV-039 lost the HIPAA sixty-day breach-notice
+  timing it exists to read. A static sweep then found the same shape in
+  sixty-five rules across nineteen files and every vertical: a FINRA six-year
+  retention, the GDPR 72-hour deadline, a 180-day market stand-off, a 45-day
+  account-change notice, a 30-day discovery response, a one-year suit
+  limitation.
+
+  `\)?` between the digits and the noun costs nothing and reads both. Zero
+  golden churn — this removes false absences and adds no finding to any
+  fixture.
+
+### Added
+- **`parenthetical-numeral.test.ts`**, in the shape `apostrophe-tolerance`
+  established for a spelling every real document uses and no hand-typed fixture
+  does: a static sweep through the TypeScript scanner for the blind spelling,
+  plus the corpus relation that found it, asserted in both directions. One
+  declared exception — IRC § 409A's "2.5 months", a fractional period nobody
+  parenthesizes. Both halves confirmed to fail with the defect put back.
+
 ## [9.377.0] — 2026-09-02
 
 ### Fixed

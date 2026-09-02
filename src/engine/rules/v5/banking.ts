@@ -78,7 +78,7 @@ const REVOLVER = pack("revolving-credit-agreement", C, [
     cite: practice("events-of-default", "event of default architecture and equity cure rights"),
     pat: [
       /event\s+of\s+default/i,
-      /(cure\s+period|grace\s+period|\d+\s+days\s+after\s+(notice|the\s+earlier)|equity\s+cure|cross-?default)/i,
+      /(cure\s+period|grace\s+period|\d+\s*\)?\s*days\s+after\s+(notice|the\s+earlier)|equity\s+cure|cross-?default)/i,
     ],
     why: "The cross-default threshold and the cure periods determine how much runway a borrower has. An equity cure right, and its frequency limits, is often the difference between a workout and an acceleration.",
     fix: "Enumerate the events of default with notice and cure periods, state the cross-default threshold, and state any equity cure right with its usage and consecutive-quarter limits.",
@@ -225,7 +225,7 @@ const SBA = pack("sba-loan-agreement", C, [
     ),
     pat: [
       /prepay/i,
-      /(penalty|subsidy\s+recapture|no\s+prepayment\s+(penalty|premium)|15\s+years|fee)/i,
+      /(penalty|subsidy\s+recapture|no\s+prepayment\s+(penalty|premium)|15\s*\)?\s*years|fee)/i,
     ],
     why: "SBA caps prepayment charges (a declining 5/3/1 schedule on loans of 15 years or more) and restricts what fees a lender may charge. Charging outside the program is both a borrower claim and a lender finding.",
     fix: "State the prepayment terms within the SBA schedule and confirm that all lender fees are within program limits.",
@@ -450,7 +450,7 @@ const DACA = pack("deposit-account-control-agreement", C, [
     ),
     pat: [
       /terminat/i,
-      /(\d+\s+days['’]?\s+(prior\s+)?(written\s+)?notice|successor|transfer\s+the\s+account|closes?\s+the\s+account)/i,
+      /(\d+\s*\)?\s*days['’]?\s+(prior\s+)?(written\s+)?notice|successor|transfer\s+the\s+account|closes?\s+the\s+account)/i,
     ],
     why: "If the bank can resign or close the account on short notice, the secured party can lose perfection between the notice and the replacement account's DACA.",
     fix: "Require advance notice of termination or account closure to the secured party, and require the customer to establish a replacement account under a new control agreement before the old one closes.",
@@ -506,7 +506,7 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
     ),
     pat: [
       /(change\s+in\s+terms|we\s+may\s+change)/i,
-      /(45\s+days|forty-?five\s+days|advance\s+(written\s+)?notice|right\s+to\s+reject)/i,
+      /(45\s*\)?\s*days|forty-?five\s+days|advance\s+(written\s+)?notice|right\s+to\s+reject)/i,
     ],
     why: "The CARD Act requires 45 days' advance notice of significant changes and, for rate increases, a right to reject that closes the account and repays at the old rate. It also generally bars rate increases in the first year.",
     fix: "State the 45-day notice for significant changes, the consumer's right to reject a rate increase, and the first-year rate-increase limitation.",
@@ -522,7 +522,7 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
     cite: usc("15", "1666", "Fair Credit Billing Act — correction of billing errors"),
     pat: [
       /(billing[-\s]+(rights|error)|your\s+rights\s+if\s+you\s+(are\s+dissatisfied|think))/i,
-      /(60\s+days|written\s+notice|investigat|resolve)/i,
+      /(60\s*\)?\s*days|written\s+notice|investigat|resolve)/i,
     ],
     why: "The FCBA long-form billing rights summary must be provided at account opening and annually. It carries the 60-day dispute window and the claims-and-defenses right for disputed purchases.",
     fix: "Include the billing rights summary with the 60-day notice period, the investigation timeline, and the claims-and-defenses provision for purchases.",
@@ -548,7 +548,7 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
     cite: usc("9", "2", "Federal Arbitration Act — validity of arbitration agreements"),
     pat: [
       /arbitrat/i,
-      /(opt\s?-?out|reject\s+(this\s+)?(arbitration|provision)|within\s+\d+\s+days|class\s+action\s+waiver)/i,
+      /(opt\s?-?out|reject\s+(this\s+)?(arbitration|provision)|within\s+\d+\s*\)?\s*days|class\s+action\s+waiver)/i,
     ],
     why: "Card arbitration clauses are enforceable, but they must be conspicuous, and the opt-out window and method are what most courts point to when upholding them. Military Lending Act accounts cannot carry them at all.",
     fix: "Set the arbitration and class-waiver provision in a conspicuous, separately headed section with a stated opt-out window and method, and exclude covered borrowers under the Military Lending Act.",

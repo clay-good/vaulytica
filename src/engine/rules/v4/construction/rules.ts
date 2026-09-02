@@ -289,7 +289,7 @@ const SUBCONTRACTOR_RULES: Rule[] = [
     present_patterns: [
       /warrant/i,
       /(workmanship|materials|conformance)/i,
-      /(one\s+year|1\s+year|period\s+of)/i,
+      /(one\s+year|1\s*\)?\s*year|period\s+of)/i,
     ],
   }),
   presence({
@@ -563,8 +563,8 @@ const BOND_RULES: Rule[] = [
       "Add 'Claimants' definition and 'Notice / Suit Procedure' with applicable 90-day notice and 1-year suit limit.",
     present_patterns: [
       /(claimant|persons\s+having\s+a\s+direct\s+contract|second.tier)/i,
-      /(90\s+days?|ninety\s+days?|notice)/i,
-      /(1\s+year|one\s+year|suit\s+limit)/i,
+      /(90\s*\)?\s*days?|ninety\s+days?|notice)/i,
+      /(1\s*\)?\s*year|one\s+year|suit\s+limit)/i,
     ],
     default_severity: "warning",
   }),

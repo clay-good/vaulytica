@@ -382,7 +382,7 @@ const DISTRIBUTION_RULES: Rule[] = [
     present_patterns: [
       /terminat\w*[\s\S]{0,60}(for\s+cause|good\s+cause|material\s+breach|convenience)/is,
       /(notice|cure)\s+period/i,
-      /\d+\s+days.{0,20}(notice|prior\s+written\s+notice)/is,
+      /\d+\s*\)?\s*days.{0,20}(notice|prior\s+written\s+notice)/is,
       /\bterm\s+of\s+(this\s+)?agreement\b/i,
     ],
   }),

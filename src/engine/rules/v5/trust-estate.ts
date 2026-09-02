@@ -85,7 +85,7 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
     cite: irs("26 U.S.C. § 2503(b)", "gift tax — annual exclusion for present-interest gifts"),
     pat: [
       /(crummey|withdrawal\s+right|power\s+of\s+withdrawal)/i,
-      /(notice|30\s+days|annual\s+exclusion|lapse|5\s+(and|or)\s+5|hanging\s+power)/i,
+      /(notice|30\s*\)?\s*days|annual\s+exclusion|lapse|5\s+(and|or)\s+5|hanging\s+power)/i,
     ],
     why: "The annual exclusion requires a present interest, which a Crummey withdrawal right supplies — but only with real notice and a real window. Lapses above the 5-or-5 amount are themselves taxable gifts by the beneficiary.",
     fix: "Grant withdrawal rights with a stated notice procedure and window, and address the lapse using a 5-or-5 limit or a hanging power.",

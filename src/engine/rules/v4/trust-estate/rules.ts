@@ -394,7 +394,7 @@ const ADVANCE_DIRECTIVE_RULES: Rule[] = [
       "Add 'Declarant' clause identifying the declarant and reciting capacity at execution.",
     present_patterns: [
       /(declarant|principal|patient|i,\s+the\s+undersigned)/i,
-      /(competent|sound\s+mind|of\s+legal\s+age|18\s+years)/i,
+      /(competent|sound\s+mind|of\s+legal\s+age|18\s*\)?\s*years)/i,
     ],
   }),
   presence({

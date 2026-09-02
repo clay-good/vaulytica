@@ -867,9 +867,9 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     recommendation:
       "Add 'Timing' addressing the GDPR 72-hour deadline, HIPAA 60-day timing, and applicable state-specific maxima.",
     present_patterns: [
-      /(72\s+hours?|without\s+undue\s+delay)/i,
+      /(72\s*\)?\s*hours?|without\s+undue\s+delay)/i,
       /(art\.?\s*33|article\s+33)/i,
-      /(60\s+days?|expedient|practicable)/i,
+      /(60\s*\)?\s*days?|expedient|practicable)/i,
     ],
   }),
   presence({

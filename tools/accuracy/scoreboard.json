@@ -2,7 +2,7 @@
   "schema_version": 1,
   "corpus_version": "v0.0.0-seed",
   "dkb_version": "v2026-08-30-local",
-  "engine_version": "9.377.0",
+  "engine_version": "9.378.0",
   "catalog": {
     "rules": 1825,
     "playbooks": 267

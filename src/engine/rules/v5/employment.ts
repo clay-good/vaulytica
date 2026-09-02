@@ -125,7 +125,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     ),
     pat: [
       /(opt\s?-?out|decline\s+to\s+(participate|be\s+bound))/i,
-      /(within\s+\d+\s+days|consideration|continued\s+employment|no\s+(adverse|retaliat))/i,
+      /(within\s+\d+\s*\)?\s*days|consideration|continued\s+employment|no\s+(adverse|retaliat))/i,
     ],
     why: "An opt-out with a real window and no retaliation is strong evidence against procedural unconscionability, and in states where continued employment alone is not consideration, it may be the only support for the agreement.",
     fix: "Provide a stated opt-out period with a simple method, promise no adverse action for opting out, and recite the consideration supporting the agreement.",
@@ -190,7 +190,7 @@ const COMMISSION = pack("commission-plan", C, [
     ),
     pat: [
       /(modify|change|amend|revise)\s+(the\s+)?(plan|quota|rate)/i,
-      /(prospective(ly)?|upon\s+\d+\s+days['’]?\s+notice|at\s+any\s+time|in\s+its\s+(sole\s+)?discretion)/i,
+      /(prospective(ly)?|upon\s+\d+\s*\)?\s*days['’]?\s+notice|at\s+any\s+time|in\s+its\s+(sole\s+)?discretion)/i,
     ],
     why: "Mid-year quota or rate changes applied retroactively to closed deals are wage claims. Prospective-only modification with notice is the enforceable form.",
     fix: "Reserve modification prospectively only, on stated notice, and confirm that deals closed before the effective date are paid under the prior plan.",
@@ -216,7 +216,7 @@ const COMMISSION = pack("commission-plan", C, [
     cite: practice("commission-reconciliation", "commission statements and dispute procedures"),
     pat: [
       /(commission\s+statement|reconcil|report\s+of\s+commissions)/i,
-      /(dispute|object|within\s+\d+\s+days\s+of\s+receipt|inquir)/i,
+      /(dispute|object|within\s+\d+\s*\)?\s*days\s+of\s+receipt|inquir)/i,
     ],
     why: "Commission math is opaque and errors are routine. A statement plus a short dispute window is how both sides avoid a multi-year reconstruction at termination.",
     fix: "Require a periodic commission statement showing the calculation, and set a window and method for raising disputes.",
@@ -423,7 +423,7 @@ const REMOTE = pack("remote-work-agreement", C, [
     cite: practice("remote-revocation", "revocability of telework arrangements"),
     pat: [
       /(revoke|discontinue|terminate\s+(this\s+)?(arrangement|agreement))/i,
-      /(at\s+any\s+time|upon\s+\d+\s+days['’]?\s+notice|return\s+to\s+the\s+office|in\s+its\s+discretion)/i,
+      /(at\s+any\s+time|upon\s+\d+\s*\)?\s*days['’]?\s+notice|return\s+to\s+the\s+office|in\s+its\s+discretion)/i,
     ],
     why: "A remote arrangement described as permanent becomes an accommodation the employer cannot withdraw. Reserving revocability with notice preserves flexibility and clarifies the ADA analysis separately.",
     fix: "State that the arrangement is not permanent, may be revoked on stated notice, and is separate from any reasonable accommodation the employee may request.",

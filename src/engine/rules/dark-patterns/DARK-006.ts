@@ -34,7 +34,7 @@ export const rule: Rule = {
     // notify" clause still suppresses the finding.
     const hit = firstParagraphMatch(
       ctx,
-      /\b(Customer|Licensee|Recipient|Tenant|Employee|Contractor|Consumer|User|Buyer|Purchaser)\s+(?:shall|must|will)\s+(?:(?:provide|give|deliver|furnish)\s+[^.]{0,80}?\bnotice\b|notif(?:y|ies|ied))\b[^.]{0,80}\b(?:before|prior\s+to|at\s+least\s+\d+\s+days?\s+(?:before|prior))[^.]{0,80}\b(?:suit|claim|action|arbitration|complaint|litigation)/i,
+      /\b(Customer|Licensee|Recipient|Tenant|Employee|Contractor|Consumer|User|Buyer|Purchaser)\s+(?:shall|must|will)\s+(?:(?:provide|give|deliver|furnish)\s+[^.]{0,80}?\bnotice\b|notif(?:y|ies|ied))\b[^.]{0,80}\b(?:before|prior\s+to|at\s+least\s+\d+\s*\)?\s*days?\s+(?:before|prior))[^.]{0,80}\b(?:suit|claim|action|arbitration|complaint|litigation)/i,
     );
     if (!hit) return null;
     // Skip if the same paragraph imposes a symmetric obligation —

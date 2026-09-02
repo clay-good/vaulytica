@@ -545,7 +545,7 @@ const NPP_ACK_RULES: Rule[] = [
       "Add 'Retention' notation (or process reference) noting 6-year retention per § 164.530(j).",
     present_patterns: [
       /(retain(ed|ing)?|retention|preserved?)/i,
-      /(6\s+years?|six\s+years?|164\.530)/i,
+      /(6\s*\)?\s*years?|six\s+years?|164\.530)/i,
     ],
     default_severity: "warning",
   }),

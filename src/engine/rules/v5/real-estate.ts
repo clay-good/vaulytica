@@ -368,7 +368,7 @@ const OPTION = pack("option-to-purchase-real-estate", C, [
     ),
     pat: [
       /(rule\s+against\s+perpetuit|perpetuit)/i,
-      /(twenty-?one\s+years|21\s+years|savings\s+clause|in\s+no\s+event\s+shall)/i,
+      /(twenty-?one\s+years|21\s*\)?\s*years|savings\s+clause|in\s+no\s+event\s+shall)/i,
     ],
     why: "Options in gross are subject to the rule against perpetuities in states that have not abolished it for commercial options; an option exercisable beyond the period is void.",
     fix: "Add a savings clause capping the option period within the applicable perpetuities period, or confirm the state has exempted commercial options.",
