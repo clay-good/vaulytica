@@ -744,28 +744,28 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-006",
-      "rule_version": "1.1.0"
-    },
-    {
-      "elapsed_ms": 0,
-      "fired": false,
-      "ran": true,
-      "rule_id": "TEMP-007",
-      "rule_version": "1.4.0"
-    },
-    {
-      "elapsed_ms": 0,
-      "fired": false,
-      "ran": true,
-      "rule_id": "TEMP-008",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
-      "rule_id": "TEMP-009",
+      "rule_id": "TEMP-007",
+      "rule_version": "1.5.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "ran": true,
+      "rule_id": "TEMP-008",
       "rule_version": "1.3.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "ran": true,
+      "rule_id": "TEMP-009",
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -1078,11 +1078,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "ad916862d1557d38cdd64991d1055c044b5b08c59028c548fdb87784e4bee5a4",
+  "result_hash": "98d66deaefbe45d2d80f6e80e1a292382e0948b706d913c8c7551f80b859642d",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.368.0"
+  "version": "9.369.0"
 }

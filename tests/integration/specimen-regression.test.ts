@@ -16,6 +16,16 @@
  * that starts reporting a lease amendment's own defined terms as undefined,
  * fails here rather than in a user's hands.
  *
+ * TEMP-006 came off twenty-five rows at 9.369.0 and TEMP-008 off one, for
+ * one reason: a presence note whose sibling audits the same clause is that
+ * sibling's opening words restated at the same severity on the same sentence.
+ * "Survival clause present" sat directly above "Survival list may be missing
+ * categories: indemnity, governing law"; "Cure period: 90 days" directly above
+ * "Cure period of 90 days is unusual". Each presence rule now defers on its
+ * sibling's own exported predicate and keeps every case the sibling cannot see
+ * — a survival list with no gap, a cure period inside the customary band.
+ * `redundant-findings.test.ts` asks the question of the whole corpus.
+ *
  * The set is the assertion, in both directions — a new false finding fails,
  * and so does a real one that stops firing. When a change legitimately alters
  * one, update the row and say why in the commit.
@@ -638,7 +648,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // and caps no liability.
   "trademark-coexistence-agreement.txt": {
     playbook: "trademark-coexistence-agreement",
-    findings: ["CHOICE-008", "OBLI-005", "STRUCT-006", "STRUCT-018", "TEMP-006", "TEMP-007"],
+    findings: ["CHOICE-008", "OBLI-005", "STRUCT-006", "STRUCT-018", "TEMP-007"],
   },
 
   // A Delaware director indemnification agreement. GOV-142 reported no
@@ -652,7 +662,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // procedure.
   "indemnification-agreement.txt": {
     playbook: "director-indemnification-agreement",
-    findings: ["GOV-139", "GOV-148", "RISK-016", "STRUCT-018", "STRUCT-009", "TEMP-006"],
+    findings: ["GOV-139", "GOV-148", "RISK-016", "STRUCT-018", "STRUCT-009"],
   },
 
   // A motor carrier transportation agreement. FIN-005 reported no payment
@@ -733,7 +743,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "TEMP-004",
       "OBLI-005",
       "RISK-010",
-      "TEMP-006",
       "TEMP-007",
       "TERM-001",
       "TERM-007",
@@ -1015,7 +1024,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-015",
       "RISK-016",
       "STRUCT-018",
-      "TEMP-006",
       "TEMP-007",
     ],
   },
@@ -1083,7 +1091,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-002",
       "OBLI-003",
       "OBLI-005",
-      "TEMP-006",
       "TEMP-007",
     ],
   },
@@ -1125,7 +1132,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "STRUCT-018",
       "OBLI-005",
       "RISK-010",
-      "TEMP-006",
       "TEMP-007",
     ],
   },
@@ -1149,7 +1155,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // none of those and is not supposed to.
   "expert-retention.txt": {
     playbook: "expert-witness-retention",
-    findings: ["CHOICE-003", "OBLI-005", "TEMP-006", "TEMP-007", "TERM-007"],
+    findings: ["CHOICE-003", "OBLI-005", "TEMP-007", "TERM-007"],
   },
   // A vendor information-security exhibit. It carries no ratification clause —
   // an exhibit changes nothing, so it has none — and relies on the recital
@@ -1222,7 +1228,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // section, and every use beneath it read as an undefined Title-Case term.
   "lease-loi.txt": {
     playbook: "letter-of-intent-lease",
-    findings: ["STRUCT-006", "CHOICE-003", "OBLI-005", "TEMP-006"],
+    findings: ["STRUCT-006", "CHOICE-003", "OBLI-005"],
   },
   // A three-party technology escrow. The escrow pack (IPL-129..133) is silent
   // on a well-drafted deposit, and the specimen pins three repairs it exposed:
@@ -1240,7 +1246,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-005",
       "RISK-011",
       "STRUCT-005",
-      "TEMP-006",
       "TEMP-007",
       "TERM-007",
     ],
@@ -2112,7 +2117,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // survival list omits the $25,000 retention payment.
   "employment-restrictive-covenant.txt": {
     playbook: "employment-restrictive-covenant",
-    findings: ["PERS-005", "PERS-001", "PERS-002", "OBLI-005", "TEMP-006", "TEMP-007"],
+    findings: ["PERS-005", "PERS-001", "PERS-002", "OBLI-005", "TEMP-007"],
   },
 
   // An executed UK IDTA — Part 1's four tables and Part 2's Mandatory Clauses
@@ -2185,7 +2190,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-008",
       "RISK-010",
       "TEMP-006",
-      "TEMP-008",
       "TEMP-009",
       "TERM-001",
     ],
@@ -2283,7 +2287,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "STRUCT-006",
       "STRUCT-017",
       "STRUCT-018",
-      "TEMP-006",
       "TEMP-007",
       "TEMP-008",
     ],
@@ -2327,7 +2330,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // price stated no price — it knew only the M&A vocabulary.
   "term-sheet.txt": {
     playbook: "loi-term-sheet",
-    findings: ["CHOICE-003", "OBLI-005", "STRUCT-006", "TEMP-006"],
+    findings: ["CHOICE-003", "OBLI-005", "STRUCT-006"],
   },
 
   // A WARN Act plant-closing notice, titled only in its "Re:" line. Two
@@ -2417,7 +2420,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-007",
       "RISK-010",
       "RISK-011",
-      "TEMP-006",
       "TEMP-007",
       "TERM-001",
     ],
@@ -2660,7 +2662,7 @@ export const EXPECTED: Record<string, Expectation> = {
   "aml-policy.txt": { playbook: "aml-policy", findings: ["OBLI-005"] },
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
-    findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-007"],
   },
 
   // An assignment and assumption of a commercial lease, with the landlord's
@@ -2738,7 +2740,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // family, because no bank's control agreement states a dollar cap.
   "daca.txt": {
     playbook: "deposit-account-control-agreement",
-    findings: ["OBLI-005", "RISK-007", "STRUCT-006", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-005", "RISK-007", "STRUCT-006", "TEMP-007"],
   },
 
   // A venture-lender warrant behind the same restrictive-securities legend as
@@ -2760,7 +2762,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // indemnifies its agent one way and always has.
   "escrow-agreement.txt": {
     playbook: "escrow-agreement",
-    findings: ["OBLI-005", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-005", "TEMP-007"],
   },
 
   // A second M&A escrow, drafted the way a bank's own form is: a "Tax
@@ -2838,7 +2840,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // "Contractor". Kept as the clean case for the government-contracting pack.
   "far-flowdown-addendum.txt": {
     playbook: "far-subcontract-flowdown",
-    findings: ["COMM-162", "OBLI-005", "STRUCT-009", "TEMP-006", "TEMP-007"],
+    findings: ["COMM-162", "OBLI-005", "STRUCT-009", "TEMP-007"],
   },
 
   // A secured promissory note with a usury savings clause, a default rate
@@ -2940,7 +2942,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // negotiable-commission statement, and the MLS opt-out. Nothing was wrong.
   "listing-agreement-exclusive-right.txt": {
     playbook: "listing-agreement",
-    findings: ["OBLI-005", "TEMP-006", "TEMP-007"],
+    findings: ["OBLI-005", "TEMP-007"],
   },
 
   // An ISO CG 20 10 additional-insured endorsement — the schedule, the
@@ -2979,15 +2981,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // is only worth what it tells you about a correct document.
   "payer-provider-participation.txt": {
     playbook: "payer-provider-agreement",
-    findings: [
-      "STRUCT-018",
-      "CHOICE-003",
-      "OBLI-005",
-      "RISK-010",
-      "TEMP-006",
-      "TEMP-007",
-      "TERM-001",
-    ],
+    findings: ["STRUCT-018", "CHOICE-003", "OBLI-005", "RISK-010", "TEMP-007", "TERM-001"],
   },
 
   // A payment and performance bond from a surety to a school district. Two
@@ -3236,7 +3230,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // parity with other directors and states no dollar minimum).
   "do-indemnification.txt": {
     playbook: "director-indemnification-agreement",
-    findings: ["OBLI-005", "RISK-016", "TEMP-006"],
+    findings: ["OBLI-005", "RISK-016"],
   },
 
   // A restricted stock unit award agreement, under the same plan-header shape
@@ -3532,7 +3526,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "PERS-001",
       "PERS-002",
       "RISK-010",
-      "TEMP-006",
       "TEMP-007",
       "TEMP-008",
       "TERM-001",
@@ -4495,7 +4488,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-011",
       "RISK-015",
       "TEMP-004",
-      "TEMP-006",
       "TEMP-007",
       "TEMP-008",
       "TERM-007",
@@ -4625,7 +4617,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "BAA-040",
       "STRUCT-006",
       "OBLI-005",
-      "TEMP-006",
       "TEMP-007",
       "TERM-007",
     ],
@@ -4700,7 +4691,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-005",
       "OBLI-008",
       "RISK-007",
-      "TEMP-006",
       "TEMP-007",
     ],
   },
@@ -4727,15 +4717,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // exactly what the document already had.
   "transition-services-agreement.txt": {
     playbook: "transition-services-agreement",
-    findings: [
-      "OBLI-005",
-      "OBLI-008",
-      "RISK-007",
-      "STRUCT-009",
-      "TEMP-006",
-      "TEMP-007",
-      "TERM-006",
-    ],
+    findings: ["OBLI-005", "OBLI-008", "RISK-007", "STRUCT-009", "TEMP-007", "TERM-006"],
   },
 };
 

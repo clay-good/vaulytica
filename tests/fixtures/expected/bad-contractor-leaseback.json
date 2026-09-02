@@ -742,28 +742,28 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-006",
-      "rule_version": "1.1.0"
-    },
-    {
-      "elapsed_ms": 0,
-      "fired": false,
-      "ran": true,
-      "rule_id": "TEMP-007",
-      "rule_version": "1.4.0"
-    },
-    {
-      "elapsed_ms": 0,
-      "fired": false,
-      "ran": true,
-      "rule_id": "TEMP-008",
       "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
-      "rule_id": "TEMP-009",
+      "rule_id": "TEMP-007",
+      "rule_version": "1.5.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "ran": true,
+      "rule_id": "TEMP-008",
       "rule_version": "1.3.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "ran": true,
+      "rule_id": "TEMP-009",
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -1005,11 +1005,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "34d0925e2b9b1cf736afd4b58c5e9519eff2c8ec2c6e2d203a3060af851fcc62",
+  "result_hash": "48d9f29d2cc64ef3020a9242e982d6e65da42f1fba7874099d44749ffec182b1",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.368.0"
+  "version": "9.369.0"
 }

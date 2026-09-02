@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.369.0] — 2026-09-02
+
+### Fixed
+- **The linter said one thing twice, on 26 specimens and 72 golden fixtures.**
+  A presence note whose sibling audits the very clause it noted is that
+  sibling's opening words restated at the same severity on the same sentence.
+  "Survival clause present" (TEMP-006) sat directly above "Survival list may be
+  missing categories: indemnity, governing law" (TEMP-007); "Cure period: 90
+  days" (TEMP-008) directly above "Cure period of 90 days is unusual"
+  (TEMP-009). Each presence rule now defers on its sibling's OWN exported
+  predicate — `survivalListGaps`, `isUnusualCurePeriod` — so the deference and
+  the finding cannot drift apart, and each keeps every case the sibling cannot
+  see: a survival list with no gap, a cure period inside the customary 10–60
+  day band. TEMP-006 still fires on 23 specimens and TEMP-008 on 14.
+
+### Added
+- `tests/integration/redundant-findings.test.ts` — the mechanical form of the
+  question Step 288 asked by hand. It sweeps all 308 specimens for two
+  DIFFERENT rules reporting overlapping spans at the same severity, and pins
+  the result as a ratchet in both directions. Nine pairs overlap on purpose
+  (a limitation of liability has both a carve-out count and a damages waiver in
+  it) and each carries its reason; one is a real duplicate filed rather than
+  fixed, because the suppression that removes it removes the rule.
+
 ## [9.368.0] — 2026-09-02
 
 ### Fixed

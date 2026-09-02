@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { rule as TEMP_006 } from "./TEMP-006.js";
+import { rule as TEMP_007 } from "./TEMP-007.js";
 import { buildContext } from "../../_test-fixtures.js";
 
 const doc = (heading: string, ...rest: string[]) => buildContext([heading, ...rest]);
@@ -49,5 +50,27 @@ describe("TEMP-006 — survival clause present", () => {
     expect(
       TEMP_006.check(doc("Term", "Either party may effect termination on 30 days written notice.")),
     ).toBeNull();
+  });
+  // v1.2.0 — TEMP-007 audits the same clause and only speaks when it has a gap
+  // to report, so wherever it fires this note is its opening words restated at
+  // the same severity on the same sentence.
+  it("stands down where TEMP-007 has a gap to report about the same clause", () => {
+    const withGap = doc(
+      "Survival",
+      "Sections 5 through 8 shall survive the termination of this Agreement.",
+      "Confidentiality. Each party shall keep the other's Confidential Information confidential.",
+      "Indemnity. Supplier shall indemnify Customer against third-party claims.",
+    );
+    expect(TEMP_007.check(withGap)).not.toBeNull();
+    expect(TEMP_006.check(withGap)).toBeNull();
+  });
+
+  it("still fires where the survival list has no gap to report", () => {
+    const noGap = doc(
+      "Survival",
+      "Sections 5 through 8, covering confidentiality, indemnity, payment of fees accrued, and governing law, shall survive the termination of this Agreement.",
+    );
+    expect(TEMP_007.check(noGap)).toBeNull();
+    expect(TEMP_006.check(noGap)).not.toBeNull();
   });
 });

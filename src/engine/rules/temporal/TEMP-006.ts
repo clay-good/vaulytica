@@ -1,10 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { survivalListGaps } from "./TEMP-007.js";
 
 /** TEMP-006 — Survival clause present (info). */
 export const rule: Rule = {
   id: "TEMP-006",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Survival clause present",
   category: "temporal",
   default_severity: "info",
@@ -24,6 +25,14 @@ export const rule: Rule = {
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
+    // TEMP-007 audits the SAME clause and only speaks when it has something to
+    // say about it, so wherever it fires this note is its opening words
+    // restated at the same severity on the same sentence — "Survival clause
+    // present" directly above "Survival list may be missing categories:
+    // indemnity, governing law". A reader told what the list omits has already
+    // been told the list exists. Deferring on TEMP-007's own computation
+    // rather than on a second guess at it keeps the two in step.
+    if ((survivalListGaps(ctx)?.missing.length ?? 0) > 0) return null;
     return emit(ctx, rule, {
       title: "Survival clause present",
       description: "Provisions are stated to survive termination.",

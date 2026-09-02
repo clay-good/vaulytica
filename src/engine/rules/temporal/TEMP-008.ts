@@ -1,11 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
-import { CURE_PERIOD, curePeriodDays } from "./_cure.js";
+import { CURE_PERIOD, curePeriodDays, isUnusualCurePeriod } from "./_cure.js";
 
 /** TEMP-008 — Cure period present (info). */
 export const rule: Rule = {
   id: "TEMP-008",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Cure period present",
   category: "temporal",
   default_severity: "info",
@@ -15,6 +15,11 @@ export const rule: Rule = {
     const hit = firstParagraphMatch(ctx, CURE_PERIOD);
     if (!hit) return null;
     const days = curePeriodDays(hit.match);
+    // TEMP-009 reports the same match, the same number, and the same severity
+    // when the length is outside the customary band, so this presence note is
+    // its own headline restated. Defer to the sibling that carries the
+    // judgment.
+    if (isUnusualCurePeriod(days)) return null;
     return emit(ctx, rule, {
       title: `Cure period: ${days} days`,
       description: `Material breach cure period of ${days} days is stated.`,

@@ -1,11 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
-import { CURE_PERIOD, curePeriodDays } from "./_cure.js";
+import { CURE_PERIOD, curePeriodDays, isUnusualCurePeriod } from "./_cure.js";
 
 /** TEMP-009 — Cure period length unusual (info). */
 export const rule: Rule = {
   id: "TEMP-009",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Cure period length unusual",
   category: "temporal",
   default_severity: "info",
@@ -15,7 +15,7 @@ export const rule: Rule = {
     const hit = firstParagraphMatch(ctx, CURE_PERIOD);
     if (!hit) return null;
     const days = curePeriodDays(hit.match);
-    if (days >= 10 && days <= 60) return null;
+    if (!isUnusualCurePeriod(days)) return null;
     return emit(ctx, rule, {
       title: `Cure period of ${days} days is unusual`,
       description: `Cure period: ${days} days.`,

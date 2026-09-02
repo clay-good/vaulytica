@@ -90,7 +90,7 @@ describe("TEMP-008 / TEMP-009 — breach-cure period", () => {
     ).toBeNull();
   });
 
-  // v1.2.0 (TEMP-008) / v1.3.0 (TEMP-009) — both rules share ./temporal/_cure.ts,
+  // v1.3.0 (TEMP-008) / v1.4.0 (TEMP-009) — both rules share ./temporal/_cure.ts,
   // which reads the count-first order and the remedy/correct synonyms that the
   // presence rule previously missed entirely.
   it("TEMP-008 reads the count-first order and remedy/correct synonyms", () => {
@@ -105,9 +105,31 @@ describe("TEMP-008 / TEMP-009 — breach-cure period", () => {
     expect(
       TEMP008.check(clause("Borrower shall have ten (10) days to correct any default."))!.title,
     ).toContain("10 days");
+    // The hyphen-joined adjacent form. Read through TEMP-009 because 5 days is
+    // outside the customary band, where TEMP-008 v1.3.0 stands down in favour
+    // of the sibling that says something about the length — the shared matcher
+    // is the thing under test, and both rules read it.
     expect(
-      TEMP008.check(clause("A 5-day cure period applies to any monetary default."))!.title,
+      TEMP009.check(clause("A 5-day cure period applies to any monetary default."))!.title,
     ).toContain("5 days");
+    expect(
+      TEMP008.check(clause("A 15-day cure period applies to any monetary default."))!.title,
+    ).toContain("15 days");
+  });
+
+  // v1.3.0 — TEMP-009 reports the same match, the same number and the same
+  // severity, so where the length is unusual the presence note was its own
+  // headline restated. It stands down there and keeps every length TEMP-009
+  // says nothing about.
+  it("TEMP-008 stands down where TEMP-009 has the same sentence", () => {
+    const unusual = clause("The defaulting party shall have ninety (90) days to cure such breach.");
+    expect(TEMP008.check(unusual)).toBeNull();
+    expect(TEMP009.check(unusual)!.title).toContain("90 days");
+    const customary = clause(
+      "The defaulting party shall have thirty (30) days to cure such breach.",
+    );
+    expect(TEMP008.check(customary)!.title).toContain("30 days");
+    expect(TEMP009.check(customary)).toBeNull();
   });
 
   it("TEMP-008 locks onto the adjacent cure count, not a leading notice count", () => {

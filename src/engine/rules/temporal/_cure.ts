@@ -37,3 +37,18 @@ export const CURE_PERIOD = new RegExp(
 export function curePeriodDays(m: RegExpMatchArray): number {
   return parseInt(m[1] ?? m[2] ?? "0", 10);
 }
+
+/**
+ * Is this length outside the customary 10–60 day band?
+ *
+ * TEMP-009's whole test, exported so TEMP-008 can defer to it on the same
+ * predicate rather than on a second guess at it. Both rules read the same
+ * match and print the same number, so where the length is unusual they said
+ * one thing twice on one sentence — "Cure period: 90 days" directly above
+ * "Cure period of 90 days is unusual". The sibling that carries the judgment
+ * is the one worth the reader's attention, so the bare presence note stands
+ * down there and keeps every length TEMP-009 says nothing about.
+ */
+export function isUnusualCurePeriod(days: number): boolean {
+  return days < 10 || days > 60;
+}
