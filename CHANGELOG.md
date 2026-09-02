@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.372.1] — 2026-09-02
+
+### Fixed
+- **The new packaging guard failed on Windows**, and it was the guard's own bug:
+  `files` globs are POSIX and `path.relative` is not, so every path came back
+  with backslashes, no prefix matched, and it reported the entire import graph as
+  unshipped. Paths are normalized to `/` before comparison. Same lesson as the
+  two releases before it — a check verified in one environment is not verified.
+
 ## [9.372.0] — 2026-09-02
 
 ### Fixed

@@ -32,7 +32,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, relative, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { defaultDistRoot } from "../../tools/dkb/resolve.js";
 
@@ -60,6 +60,16 @@ function resolveLocal(from: string, spec: string): string | null {
   return base;
 }
 
+/**
+ * Repo-relative, always with `/` separators. `files` globs are POSIX and
+ * `relative()` is not: on Windows every path came back with backslashes, no
+ * prefix ever matched, and the guard reported the entire import graph as
+ * unshipped. A guard that fails on one runner is a guard nobody trusts.
+ */
+function repoPath(file: string): string {
+  return relative(ROOT, file).split(sep).join("/");
+}
+
 function reachableFrom(entry: string): string[] {
   const seen = new Set<string>();
   const queue = [entry];
@@ -85,7 +95,7 @@ describe("the published package", () => {
     // package.json is always packed by npm, whatever `files` says.
     const dirs = pkg.files.filter((f) => !f.startsWith("!") && f.endsWith("/"));
     const outside = reached
-      .map((f) => relative(ROOT, f))
+      .map(repoPath)
       .filter((f) => f !== "package.json" && !dirs.some((d) => f.startsWith(d)))
       .sort();
     expect(
@@ -99,7 +109,7 @@ describe("the published package", () => {
   it("still reaches a real module for every file it resolved", () => {
     const missing = reachableFrom(join(ROOT, "tools", "cli", "run.ts"))
       .filter((f) => !existsSync(f))
-      .map((f) => relative(ROOT, f))
+      .map(repoPath)
       .sort();
     expect(missing).toEqual([]);
   });
@@ -109,7 +119,7 @@ describe("the published package", () => {
     const root = defaultDistRoot();
     expect(existsSync(root), `default DKB root does not exist: ${root}`).toBe(true);
     // …and it is the package's own, not a stray directory above the temp dir.
-    expect(relative(ROOT, root)).toBe(join("dkb", "dist"));
+    expect(repoPath(root)).toBe("dkb/dist");
   });
 
   it("prefers the working directory's artifact when there is one", () => {
