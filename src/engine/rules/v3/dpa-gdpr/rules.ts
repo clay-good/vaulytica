@@ -1141,8 +1141,8 @@ export const DPA_GDPR_RULES: Rule[] = [
     // own template gives it.
     present_patterns: [
       /effective\s+date/i,
-      /\bdated\s+(?:as\s+of\s+)?\w+\s+\d{1,2},?\s+\d{4}/i,
-      /\bdate\s*:\s*\w+\s+\d{1,2},?\s+\d{4}/i,
+      /\bdated\s+(?:as\s+of\s+)?(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})/i,
+      /\bdate\s*:\s*(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})/i,
     ],
     default_severity: "warning",
   }),

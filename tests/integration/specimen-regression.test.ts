@@ -1959,7 +1959,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "DPA-033",
       "DPA-034",
       "DPA-040",
-      "DPA-044",
       "DPA-045",
       "DPA-047",
       "DPA-051",
@@ -2220,13 +2219,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // without them, which is the whole point of the family.
   //
   // What is left is on the page. The importer is a US processor and no Article
-  // 27 representative is named (DPA-030); the set carries signature dates but
-  // no stated effective date (DPA-044) and no notices clause outside the Annex
-  // I.A contacts (DPA-051); and it adds no fallback for the adequacy decision
-  // being invalidated (TRANSFER-018), which a careful exporter's counsel does.
+  // 27 representative is named (DPA-030); there is no notices clause outside
+  // the Annex I.A contacts (DPA-051); and it adds no fallback for the adequacy
+  // decision being invalidated (TRANSFER-018), which a careful exporter's
+  // counsel does.
+  //
+  // DPA-044 came off at 9.379.0, and it was a false accusation the whole time:
+  // the set signs "Date: 2 February 2026" in Annex I.A, which is the field the
+  // Decision's own template gives it, and the reader could only see a US
+  // month-first date. A European instrument dates itself day-first, which is
+  // the one thing this family can rely on about its documents.
   "scc-module-2.txt": {
     playbook: "scc-module-2",
-    findings: ["DPA-030", "DPA-044", "DPA-051", "TRANSFER-018", "OBLI-005", "OBLI-008", "TEMP-002"],
+    findings: ["DPA-030", "DPA-051", "TRANSFER-018", "OBLI-005", "OBLI-008", "TEMP-002"],
   },
 
   // A university exclusive license, the 231st specimen and the first for

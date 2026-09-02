@@ -228,7 +228,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.5.2"
+      "rule_version": "1.5.3"
     },
     {
       "elapsed_ms": 0,
@@ -597,7 +597,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.20.0"
+      "rule_version": "1.21.0"
     },
     {
       "elapsed_ms": 0,
@@ -948,7 +948,7 @@
       "id": "FIN-005-s1-0",
       "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
       "rule_id": "FIN-005",
-      "rule_version": "1.5.2",
+      "rule_version": "1.5.3",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1143,11 +1143,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "48c5be7a6b662ae3d60a54cbce66a33695904e6271625063a3f7ae6b401f2a25",
+  "result_hash": "7d4aa1eaebc990016d3e30e7923bf63539eb9178f068ee667898b2d220368770",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.378.0"
+  "version": "9.379.0"
 }

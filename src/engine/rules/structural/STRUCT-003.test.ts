@@ -117,6 +117,26 @@ describe("STRUCT-003 — a policy is adopted, not signed (v1.31.0)", () => {
     ).toBeNull();
   });
 
+  // The same recital dated the way a UK or international instrument dates it.
+  // The catalog carries UK families by design, and a day-first date left every
+  // one of their policies and charters with a `critical` "No signature block
+  // detected" (v1.21.0).
+  it.each([
+    ["day-first", "Approved by the Audit Committee on 2 March 2026."],
+    ["ISO", "Approved by the Audit Committee on 2026-03-02."],
+    ["US", "Approved by the Audit Committee on March 2, 2026."],
+  ])("stands down on an adoption recital dated %s", (_label, recital) => {
+    expect(
+      STRUCT_003.check(
+        buildContext([
+          "Records Retention and Destruction Policy",
+          `${recital} Owner: General Counsel.`,
+          "The retention period for each record type is set out in the schedule below.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
   it("reports the SAME policy when the adoption recital is removed", () => {
     // The load-bearing half: without the recital the document is identical and
     // still unsigned, so the recital is what stands the check down.

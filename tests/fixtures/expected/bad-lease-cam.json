@@ -226,7 +226,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.5.2"
+      "rule_version": "1.5.3"
     },
     {
       "elapsed_ms": 0,
@@ -595,7 +595,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.20.0"
+      "rule_version": "1.21.0"
     },
     {
       "elapsed_ms": 0,
@@ -875,7 +875,7 @@
       "id": "FIN-005-s1-0",
       "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
       "rule_id": "FIN-005",
-      "rule_version": "1.5.2",
+      "rule_version": "1.5.3",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1070,11 +1070,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "e85e8b45b428a09a67ea6cd87e9a20104f2733e9a2a958ecff1a86466bf25b87",
+  "result_hash": "7c3bfb5aeb92cce0488df2fc1e342aad4f739ed22c12decb13bb7f23234c2e57",
   "source_file": {
     "name": "bad-lease-cam.docx",
     "sha256": "1de7804edf376ad66d1a78b0c998aa4a479a18835fa4e104e20057385337a0b6",
     "size_bytes": 9885
   },
-  "version": "9.378.0"
+  "version": "9.379.0"
 }

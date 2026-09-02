@@ -519,4 +519,13 @@ describe("FIN-005 v1.15.0 — the amount a person owes", () => {
   ])("reads a repayment term stated as %s", (clause) => {
     expect(FIN_005.check(buildContext(["Repayment", clause]))).toBeNull();
   });
+  // v1.5.3 — a note's maturity written day-first. "due and payable on 15
+  // September 2028" is the same term as "on September 15, 2028", and the
+  // month-first branch was the only one.
+  it.each([
+    ["Principal and accrued interest are due and payable on September 15, 2028."],
+    ["Principal and accrued interest are due and payable on 15 September 2028."],
+  ])("reads a maturity date stated as %s", (clause) => {
+    expect(FIN_005.check(buildContext(["Maturity Date", clause]))).toBeNull();
+  });
 });

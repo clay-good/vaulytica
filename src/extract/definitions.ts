@@ -542,6 +542,37 @@ const CLAUSE_NUMBER_BEFORE = /\b\d{1,3}\.\d{1,4}(?:-\d+)+(?:\([a-z0-9]+\))*,?\s+
 const COURT_NAME_TERM =
   /\b(?:First|Second|Third|Fourth|Fifth|Sixth|Seventh|Eighth|Ninth|Tenth|Eleventh|Federal|D\.C\.)\s+Circuits?$|\bCourts?(?:\s+of\s+[A-Z][\w'’]*)*$/;
 
+/**
+ * A SPELLED-OUT AMOUNT is a number, not a defined term.
+ *
+ * Drafted instruments write a figure twice — "Fifty Thousand Dollars
+ * ($50,000)", "One Million Dollars ($1,000,000)", "Twenty-Five Percent (25%)"
+ * — because the words and the digits check each other, and the words are in
+ * Title Case for exactly the same reason a defined term is. A well-drafted
+ * agreement therefore hands the undefined-term scan its most common Title-Case
+ * phrase that nobody could ever define: the fixture corpus writes its amounts
+ * in digits, so every specimen was clean until the corpus was rewritten in the
+ * convention every real contract uses, and six documents were then told that
+ * "Fifty Thousand Dollars" and "Ten Thousand Dollars" are terms they forgot to
+ * define.
+ *
+ * A phrase made of nothing but number words, optionally closed by a unit noun,
+ * is an amount. Requiring the whole phrase to be number words keeps a real term
+ * that merely opens with one — "Second Closing", "First Refusal Notice" — where
+ * it belongs.
+ */
+const NUMBER_WORD =
+  "(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|" +
+  "fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|" +
+  "ninety|hundred|thousand|million|billion|trillion|and|no)";
+const AMOUNT_UNIT =
+  "(?:dollars?|cents?|pounds?|euros?|pesos?|rupees?|yen|percent|shares?|units?|days?|weeks?|" +
+  "months?|years?|hours?|installments?)";
+const SPELLED_AMOUNT_TERM = new RegExp(
+  `^(?:${NUMBER_WORD}[-\\s]+)+(?:${NUMBER_WORD}|${AMOUNT_UNIT})$|^(?:${NUMBER_WORD}[-\\s]+)*${NUMBER_WORD}\\s+${AMOUNT_UNIT}$`,
+  "i",
+);
+
 /** The phrase is the PLAINTIFF half of a case name: "Celotex Corp. v. Catrett". */
 const CASE_NAME_PLAINTIFF = /^[.'’]?\s*v\.\s/;
 /** The phrase is the DEFENDANT half: "Reeves v. Sanderson Plumbing Prods.". */
@@ -1682,6 +1713,13 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // is dropped, not just the signed occurrence.
       if (SIGNATURE_LABEL_BEFORE.test(ctx.text.slice(Math.max(0, m.index - 24), m.index))) {
         signedNames.add(canonicalOf(phrase));
+        continue;
+      }
+      // A spelled-out amount is a number, not a term. Dropped wherever it
+      // appears, like a signatory: a contract states the same figure in the
+      // fee clause, the cap, and the schedule.
+      if (SPELLED_AMOUNT_TERM.test(phrase.trim())) {
+        caseNames.add(canonicalOf(phrase));
         continue;
       }
       // A COURT is an institution the document names, not a term it defines.

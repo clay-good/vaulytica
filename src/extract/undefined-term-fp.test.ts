@@ -148,3 +148,42 @@ describe("a sentence-initial connective does not head a defined term", () => {
     });
   }
 });
+
+/**
+ * A spelled-out amount is a number, not a term the drafter forgot to define.
+ *
+ * "Fifty Thousand Dollars ($50,000)" writes the figure twice so the words and
+ * the digits check each other, and the words are Title Case for exactly the
+ * reason a defined term is. The fixture corpus writes its amounts in digits,
+ * so this was invisible until the corpus was rewritten in the convention every
+ * real contract uses — and a golden fixture was already carrying the finding
+ * for "Two Million Dollars", unread.
+ */
+describe("a spelled-out amount", () => {
+  const flagged = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Agreement", ...paras])).undefined_capitalized.map((e) => e.term);
+
+  it.each([
+    [
+      "Fifty Thousand Dollars",
+      "Client shall pay Fifty Thousand Dollars ($50,000) on the Effective Date.",
+    ],
+    [
+      "Two Million Dollars",
+      "Vendor shall carry liability insurance of Two Million Dollars ($2,000,000) per occurrence.",
+    ],
+    ["Twenty-Five Percent", "The holdback is Twenty-Five Percent (25%) of the Purchase Price."],
+  ])("is not reported as an undefined term: %s", (term, sentence) => {
+    expect(flagged(sentence, sentence)).not.toContain(term);
+  });
+
+  // Load-bearing: a real term that merely OPENS with a number word still reports.
+  it("still reports a term that only begins with a number word", () => {
+    expect(
+      flagged(
+        "The Second Closing occurs on the Milestone Date.",
+        "Buyer shall fund the Second Closing in full.",
+      ),
+    ).toContain("Second Closing");
+  });
+});

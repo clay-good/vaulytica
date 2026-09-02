@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.379.0] — 2026-09-02
+
+### Fixed
+- **A spelled-out money amount was read as a term the drafter forgot to
+  define.** "Fifty Thousand Dollars ($50,000)" writes the figure twice so the
+  words and the digits check each other, and the words are in Title Case for
+  exactly the reason a defined term is. A well-drafted agreement therefore
+  hands the undefined-term scan its most common Title-Case phrase that nobody
+  could ever define. A phrase made of nothing but number words, optionally
+  closed by a unit noun, is now an amount; a term that merely opens with one
+  ("Second Closing") still reports.
+
+  A golden fixture was already carrying the finding for "Two Million Dollars",
+  unread — 27 fixtures move on this.
+
+- **A date written day-first was invisible, and it cost the international
+  families the most.** "21 January 2026" is "January 21, 2026", and it is what
+  the UK and European documents in this catalog carry.
+  - **STRUCT-003 (v1.21.0)** — the adoption recital that stands in for a
+    policy's execution ("Adopted by the Board of Directors on …") could only
+    read a US date, so twenty-six policies and charters drew a `critical` "No
+    signature block detected", a finding with no answer. ISO dates are read too.
+  - **DPA-044** — an executed set of standard contractual clauses signs
+    "Date: 2 February 2026" in Annex I.A, which is the field the Commission
+    Decision's own template gives it, and was told it stated no effective date.
+    A false accusation on two specimens, now off both.
+  - **FIN-005 (v1.5.3)** — a note "due and payable on 15 September 2028".
+  - Nine more date readers across discovery, IP licensing and trust-estate.
+
+### Added
+- **`drafting-spellings.test.ts`.** The rest of the mutation batch, each
+  asserted in both directions over the specimen corpus: a money amount written
+  out and back, a date written day-first and back, a rate written out. Each
+  rewriting carries the number of specimens it must reach, so a relation cannot
+  pass by never firing — and the reverse directions carry a lower floor for an
+  honest reason: the corpus is hand-typed in US style, which is the thinness
+  these probes exist to work around.
+
 ## [9.378.0] — 2026-09-02
 
 ### Fixed

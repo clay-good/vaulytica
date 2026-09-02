@@ -246,7 +246,7 @@ const DATED_ADOPTION =
   // by the board — "Adopted by the Chief Technology Officer on March 9,
   // 2026" — and demanding a board resolution of one is the same critical
   // false positive the board form was added to answer.
-  /\b(?:adopted|approved|ratified)\s+by\s+the\s+(?:board(?:\s+of\s+directors)?|(?:audit|compensation|nominating|governance|risk|executive|finance)\s+committee|chief\s+\w+\s+officer|general\s+counsel|president|c[eftoi]o)\s+(?:on|as\s+of)\s+[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
+  /\b(?:adopted|approved|ratified)\s+by\s+the\s+(?:board(?:\s+of\s+directors)?|(?:audit|compensation|nominating|governance|risk|executive|finance)\s+committee|chief\s+\w+\s+officer|general\s+counsel|president|c[eftoi]o)\s+(?:on|as\s+of)\s+(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2})/i;
 
 // A delivery instrument — disclosure schedules, closing certificates,
 // officer's certificates — is DELIVERED pursuant to a parent agreement, not
@@ -290,12 +290,14 @@ const ADOPTION_RECITAL = new RegExp(
     // The month name is the only part that must stay case-SENSITIVE, and it
     // cannot be spelled inside an `i`-flagged pattern, where `[A-Z]` is inert.
     "(?=(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)" +
-    String.raw`\s+\d{1,2},\s+\d{4}|\d{4}-\d{2}-\d{2})`,
+    String.raw`\s+\d{1,2},\s+\d{4}|\d{1,2}\s+` +
+    "(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)" +
+    String.raw`\s+\d{4}|\d{4}-\d{2}-\d{2})`,
   "i",
 );
 
 const PUBLICATION_STAMP =
-  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*:?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/i;
+  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*:?\s*(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2})/i;
 
 // A formal valediction opening a line — "Very truly yours,", "Sincerely,",
 // "Respectfully submitted," — is the execution of CORRESPONDENCE (a demand
@@ -378,7 +380,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.20.0",
+  version: "1.21.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
