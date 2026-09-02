@@ -562,6 +562,29 @@ const NATURAL_PERSON_NOUN = String.raw`person|individual|adult|natural\s+person|
  * reader can take the commercial roles the shared list must leave out.
  */
 const NATURAL_PERSON_ROLE = String.raw`${ONE_SIDED_ROLE}|Vendor|Customer|Client|Contractor|Consultant|Licensor|Licensee|Company|Executive`;
+/**
+ * A party named with a FOREIGN entity suffix, declaring its role in the same
+ * breath.
+ *
+ * `ENTITY_TYPES` is a US list with three European strays (GmbH, AG, PLC), and
+ * a cross-border agreement is the ordinary case rather than the exotic one. A
+ * mutual NDA between a Delaware corporation and 'Vantablack Therapeutics AS
+ * ("Vantablack")' reported ONE party: the Norwegian side was invisible, and a
+ * party that is invisible takes its role with it — every rule that compares an
+ * obligor against the party set then reads a mutual agreement as one-sided.
+ *
+ * The suffixes cannot go in `ENTITY_TYPES`, where the role parenthetical is
+ * OPTIONAL: "AS", "SA", "BV", "NV", "SL" and "KK" are ordinary words or
+ * abbreviations, and an ALL-CAPS instrument would manufacture a party out of
+ * every "SUCH AS". Requiring the parenthetical to follow the suffix IMMEDIATELY
+ * is what makes them safe — no prose reads "… AS (\"Vantablack\")".
+ */
+const FOREIGN_ENTITY_SUFFIX = String.raw`A/S|AS|ASA|AB|Oyj|Oy|ApS|B\.V\.|BV|N\.V\.|NV|S\.A\.S\.|SAS|S\.A\.|SA|S\.p\.A\.|SpA|S\.r\.l\.|Srl|S\.L\.|SL|SARL|S\.à\s?r\.l\.|KGaA|GmbH|K\.K\.|KK|Pte\.?\s+Ltd\.?|Pty\.?\s+Ltd\.?|Sdn\.?\s+Bhd\.?`;
+const FOREIGN_ENTITY_ROLE_PARTY = new RegExp(
+  String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s+(${FOREIGN_ENTITY_SUFFIX})\s*\(\s*(?:(?:the|each|collectively,?|together|individually)\s+){0,2}["“”']([^"”'’)]{1,60})["“”']\s*\)`,
+  "g",
+);
+
 const NATURAL_PERSON_ROLE_PARTY = new RegExp(
   String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s*,\s*(?:an?|the)\s+(?:${NATURAL_PERSON_NOUN})\b[^)(]{0,240}?\(\s*(?:the\s+)?["“”'](${NATURAL_PERSON_ROLE})["“”'][^)]{0,60}\)`,
   "gi",
@@ -756,6 +779,17 @@ export function extractParties(tree: DocumentTree): Party[] {
       registerParty(partyMap, name, {
         role: nm[2],
         position: pos(nm.index, nm.index + nm[0].length),
+      });
+    }
+    FOREIGN_ENTITY_ROLE_PARTY.lastIndex = 0;
+    let fm: RegExpExecArray | null;
+    while ((fm = FOREIGN_ENTITY_ROLE_PARTY.exec(text)) !== null) {
+      const name = cleanPartyName(fm[1] ?? "");
+      if (!name || isBoilerplateName(name)) continue;
+      registerParty(partyMap, name, {
+        role: fm[3],
+        entity_type: (fm[2] ?? "").toUpperCase().replace(/[.\s]/g, ""),
+        position: pos(fm.index, fm.index + fm[0].length),
       });
     }
     DBA_RE.lastIndex = 0;

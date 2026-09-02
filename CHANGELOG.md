@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.362.0] — 2026-09-02
+
+### Fixed
+- **A cross-border party was invisible.** `ENTITY_TYPES` is a US list with
+  three European strays (GmbH, AG, PLC), and a mutual NDA between a Delaware
+  corporation and "Vantablack Therapeutics AS" reported ONE party — a party
+  that is invisible takes its role with it, and every rule that compares an
+  obligor against the party set then reads a mutual agreement as one-sided. A
+  new reader takes the Nordic, Benelux, Iberian, Italian, French, German,
+  Japanese and Singapore/Malaysia forms. They cannot go in `ENTITY_TYPES`,
+  where the role parenthetical is optional: "AS", "SA", "BV", "NV", "SL" and
+  "KK" are ordinary words, and an ALL-CAPS instrument would manufacture a party
+  out of every "SUCH AS". Requiring the parenthetical to follow the suffix
+  immediately is what makes them safe.
+
+### Added
+- A mutual NDA in LETTER form — a letterhead, a "Re:" line, a salutation, and
+  a countersignature block — between a US corporation and a Norwegian AS. 301
+  specimens.
+
 ## [9.361.0] — 2026-09-02
 
 ### Fixed

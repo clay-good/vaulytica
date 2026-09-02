@@ -2772,6 +2772,18 @@ export const EXPECTED: Record<string, Expectation> = {
   // neutral agent was audited as a commercial indemnity. STRUCT-018 is fair:
   // Schedule 1 (the agent's fees) and Schedule 2 (notice addresses) are named
   // and not attached.
+  // A mutual NDA in LETTER form between a Delaware corporation and a
+  // Norwegian AS — the shape a business-development contact actually sends.
+  // `ENTITY_TYPES` is a US list with three European strays, so the Norwegian
+  // side was invisible and the document reported ONE party; a party that is
+  // invisible takes its role with it. NDA-D-001 (the § 1833(b) notice),
+  // NDA-D-019 and NDA-D-022 are all fair absences. OBLI-008 is fair too: the
+  // compelled-disclosure clause says "reasonable efforts" and defines nothing.
+  "mutual-nda-letter.txt": {
+    playbook: "mutual-nda-deep",
+    findings: ["NDA-D-001", "NDA-D-019", "NDA-D-022", "OBLI-005", "OBLI-008", "RISK-001"],
+  },
+
   "escrow-agreement-indemnity.txt": {
     playbook: "escrow-agreement",
     findings: ["STRUCT-018", "OBLI-005", "RISK-006", "RISK-007", "TEMP-006"],

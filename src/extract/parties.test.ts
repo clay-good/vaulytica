@@ -859,3 +859,36 @@ describe("a natural person named before the role parenthetical", () => {
     ).not.toContain("Marcus Ellery Doyle");
   });
 });
+
+describe("a foreign entity suffix, declaring its role in the same breath", () => {
+  it("reads a Norwegian AS, a Dutch B.V., and a Japanese K.K.", () => {
+    // ENTITY_TYPES is a US list with three European strays, and a
+    // cross-border agreement is the ordinary case. A mutual NDA between a
+    // Delaware corporation and 'Vantablack Therapeutics AS ("Vantablack")'
+    // reported ONE party, and a party that is invisible takes its role with
+    // it.
+    const p = extractParties(
+      buildTree([
+        "Mutual Confidentiality Agreement",
+        'This letter sets out the terms on which Calloway Biosciences, Inc. ("Calloway"), Vantablack Therapeutics AS ("Vantablack"), Meerhoven Diagnostiek B.V. ("Meerhoven") and Sakuragi Kenkyu K.K. ("Sakuragi") will exchange information.',
+      ]),
+    );
+    const names = p.map((x) => x.name);
+    expect(names).toContain("Vantablack Therapeutics");
+    expect(names).toContain("Meerhoven Diagnostiek");
+    expect(names).toContain("Sakuragi Kenkyu");
+  });
+
+  it("manufactures no party out of an ALL-CAPS 'SUCH AS'", () => {
+    // The two-letter suffixes are ordinary words. The role parenthetical must
+    // follow the suffix IMMEDIATELY, which is what keeps them off prose — no
+    // document reads '… SUCH AS ("Something")'.
+    const p = extractParties(
+      buildTree([
+        "GUARANTY",
+        "THE GUARANTOR SHALL PAY ALL OBLIGATIONS SUCH AS PRINCIPAL, INTEREST AND FEES.",
+      ]),
+    );
+    expect(p.map((x) => x.name)).not.toContain("ALL OBLIGATIONS SUCH");
+  });
+});
