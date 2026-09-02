@@ -2511,3 +2511,44 @@ describe("two defined terms in one parenthetical, with no collective connective"
     expect(map.entries.map((e) => e.term)).not.toContain("Statement of Work");
   });
 });
+
+describe("a definiendum that TRAILS its definition", () => {
+  it('reads `… is the "Escrow Fund"`', () => {
+    // The inline-copula matcher wants the quoted term BEFORE the verb, which
+    // is the shape a term defined by a single value takes. A term defined by
+    // aggregating things already named takes the reverse, and an M&A escrow
+    // agreement's central defined term was invisible because of it.
+    const d = extractDefinitions(
+      buildTree([
+        "2. Escrow Fund",
+        'Buyer shall deposit $4,750,000 (the "Escrow Amount") with the Escrow Agent. The Escrow Amount, together with all interest and earnings on it, is the "Escrow Fund".',
+      ]),
+    );
+    expect(d.entries.map((e) => e.term)).toContain("Escrow Fund");
+  });
+
+  it("leaves the sentence's own period out of the term", () => {
+    // American style puts the closing period INSIDE the quotation, and the
+    // term class admits a period — so the capture defined "Parties." and a
+    // joint development agreement was then told that "Parties." is defined
+    // and never used.
+    const d = extractDefinitions(
+      buildTree([
+        "Joint Development Agreement",
+        'Each is a "Party" and together they are the "Parties."',
+      ]),
+    );
+    expect(d.entries.map((e) => e.term)).toContain("Parties");
+    expect(d.entries.map((e) => e.term)).not.toContain("Parties.");
+  });
+
+  it("does not read a quoted usage that continues past the quote", () => {
+    const d = extractDefinitions(
+      buildTree([
+        "3. Valuation",
+        'The result is the "Fair Market Value" determined under Section 3 by the Appraiser.',
+      ]),
+    );
+    expect(d.entries.map((e) => e.term)).not.toContain("Fair Market Value");
+  });
+});

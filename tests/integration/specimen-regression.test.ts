@@ -2764,6 +2764,19 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["OBLI-005", "TEMP-006", "TEMP-007"],
   },
 
+  // A second M&A escrow, drafted the way a bank's own form is: a "Tax
+  // Matters" section in place of a "Tax Reporting" one, and the three-verb
+  // "indemnify, defend, and hold harmless the Escrow Agent". MNA-052 could
+  // not read the first and RISK-011's stakeholder carve-out could not reach
+  // past the inserted verb in the second, so the clause that PROTECTS the
+  // neutral agent was audited as a commercial indemnity. STRUCT-018 is fair:
+  // Schedule 1 (the agent's fees) and Schedule 2 (notice addresses) are named
+  // and not attached.
+  "escrow-agreement-indemnity.txt": {
+    playbook: "escrow-agreement",
+    findings: ["STRUCT-018", "OBLI-005", "RISK-006", "RISK-007", "TEMP-006"],
+  },
+
   // An Idaho payment and performance bond. Three defects, two at `critical`.
   // CON-021's second pillar wanted "AIA A312", "Miller Act", or "Little
   // Miller" — a statutory bond cites the enacting state's code by section, and

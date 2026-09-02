@@ -530,7 +530,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -1210,7 +1210,7 @@
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.4-1029",
       "rule_id": "RISK-011",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1237,11 +1237,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "5ae03fa5a2fe161f86cebdb2ee7334fce5e7f4d1b42030acac4a0fb5d1d3282c",
+  "result_hash": "952e065a4de78e6e1745bc7664921640608ecae682f1122d43bb86352995bccb",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.360.0"
+  "version": "9.361.0"
 }

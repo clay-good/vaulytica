@@ -40,3 +40,26 @@ describe("RISK-011 v1.6.0 — the British spelling of a defence", () => {
     expect(RISK_011.check(ctx)).toBeNull();
   });
 });
+
+describe("RISK-011 v1.7.0 — 'indemnify, defend, and hold harmless the Escrow Agent'", () => {
+  it("stays silent on the stakeholder's own protection", () => {
+    // The carve-out for a neutral agent's fiduciary indemnity wanted
+    // "indemnify and hold harmless the Escrow Agent" adjacently, and the
+    // three-verb form is at least as common. An M&A escrow agreement was told
+    // that the clause protecting its escrow agent controls no defense and
+    // requires no settlement consent.
+    const ctx = buildContext([
+      "9. Indemnification of the Escrow Agent",
+      "Buyer and the Sellers, jointly and severally, shall indemnify, defend, and hold harmless the Escrow Agent and its officers, directors, employees, and agents from and against all claims, losses, liabilities, and reasonable out-of-pocket expenses arising out of this Escrow Agreement, except to the extent caused by the Escrow Agent's gross negligence or willful misconduct.",
+    ]);
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+
+  it("still audits a commercial indemnity that names a party, not an agent", () => {
+    const ctx = buildContext([
+      "9. Indemnification",
+      "Supplier shall indemnify, defend, and hold harmless Buyer and its officers, directors, employees, and agents from and against all claims arising out of the Products.",
+    ]);
+    expect(RISK_011.check(ctx)).not.toBeNull();
+  });
+});

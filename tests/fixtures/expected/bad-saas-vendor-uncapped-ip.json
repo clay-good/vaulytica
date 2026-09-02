@@ -524,7 +524,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -1017,7 +1017,7 @@
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.1-207",
       "rule_id": "RISK-011",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1078,11 +1078,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "47e515927a300325f53b5a98e581338087a01dba94876cb75b0c25b0e832aed8",
+  "result_hash": "5d27cd2675ca4b1033c6b26e4254f478334bc6b29488520b95a24c20bbe31e8b",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.360.0"
+  "version": "9.361.0"
 }

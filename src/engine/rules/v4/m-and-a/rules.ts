@@ -1224,6 +1224,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-052",
+    version: "1.1.0",
     name: "Tax reporting and treatment",
     description: "Escrow agreement should specify tax-reporting party and treatment of interest.",
     citation: maPractice(
@@ -1238,7 +1239,23 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       "IRS treats interest as earned by one party (typically seller) for tax purposes; the agreement should designate.",
     recommendation:
       "Add 'Tax Reporting' designating the tax owner of escrow income and the agent's 1099 reporting obligation.",
-    present_patterns: [/tax\s+reporting/i, /(1099|tax\s+owner|grantor\s+trust)/i],
+    // The rule wanted vocabulary an escrow agreement does not use. A section
+    // headed "Tax Matters" saying that "the Sellers are treated as the owners
+    // of the Escrow Fund for federal income tax purposes, and all interest and
+    // earnings on the Escrow Fund shall be reported as income of the Sellers",
+    // and requiring IRS Forms W-9 before funding, is the tax-reporting clause
+    // this rule asks for — and matched none of "tax reporting", "1099", "tax
+    // owner" or "grantor trust". The two things such a clause always does are
+    // to fix the OWNER of the income for tax purposes and to name the
+    // reporting mechanic, so both are read here.
+    present_patterns: [
+      /tax\s+reporting/i,
+      /(1099|tax\s+owner|grantor\s+trust)/i,
+      /\bfor\s+(?:federal\s+|u\.?s\.?\s+|united\s+states\s+|state\s+and\s+local\s+)*income[\s-]tax\s+purposes/i,
+      /\breport(?:ed|s|able|ing)\b[^.]{0,80}?\b(?:as\s+)?income\b/i,
+      /\bforms?\s+w-?\s?9\b/i,
+      /\bwithhold(?:ing|s|ings)?\b[^.]{0,60}?\btax(?:es)?\b/i,
+    ],
     default_severity: "warning",
   }),
   presence({

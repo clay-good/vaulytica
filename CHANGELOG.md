@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.361.0] — 2026-09-02
+
+### Fixed
+- **MNA-052 asked an escrow agreement for a "Tax Reporting" section and could
+  not read a "Tax Matters" one.** The clause it wants fixes the OWNER of the
+  escrow income for tax purposes and names the reporting mechanic; a bank's own
+  form does both without ever writing "tax reporting", "1099", "tax owner" or
+  "grantor trust". Both of those things are now read.
+- **RISK-011 audited the clause that protects the escrow agent.** The carve-out
+  for a neutral stakeholder's fiduciary indemnity wanted "indemnify and hold
+  harmless the Escrow Agent" adjacently, and the three-verb form — "indemnify,
+  DEFEND, and hold harmless" — is at least as common. The escrow agreement was
+  told its agent controls no defense and requires no settlement consent.
+- **A defined term that TRAILS its definition was invisible.** "The Escrow
+  Amount, together with all interest and earnings on it, is the 'Escrow Fund'"
+  defines the central term of the document, and the inline-copula matcher wants
+  the quoted term before the verb — the shape a term defined by a single value
+  takes. A term defined by aggregating things already named takes this one. The
+  matcher also leaves the sentence's own period out of the term: American style
+  puts it inside the quotation, and a joint development agreement was being
+  told that "Parties." is defined and never used.
+
+### Added
+- A second M&A escrow agreement, drafted the way a bank's own form is. 300
+  specimens.
+
 ## [9.360.0] — 2026-09-02
 
 ### Fixed

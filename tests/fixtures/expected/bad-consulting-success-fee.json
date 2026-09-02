@@ -527,7 +527,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -1090,7 +1090,7 @@
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.5-1484",
       "rule_id": "RISK-011",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1099,11 +1099,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "6dd2bead07111fdd9073213905a0bc3190f4588f9a69cedd3de44e5ac86070d1",
+  "result_hash": "7b59885c9a9d21ee2424801e34d52e2501fd6fe15d64d0a35cca1fb8e83e21ea",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.360.0"
+  "version": "9.361.0"
 }

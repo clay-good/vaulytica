@@ -765,3 +765,35 @@ describe("MNA-018 v1.1.0 — the stockholder representative a private SPA define
     expect(M_AND_A_RULES.find((r) => r.id === "MNA-018")!.check(ctx)).toBeNull();
   });
 });
+
+describe("MNA-052 v1.1.0 — a 'Tax Matters' section is the tax-reporting clause", () => {
+  const ESCROW_PB: Playbook = { id: "escrow-agreement", version: "1.0.0" };
+  const rule = M_AND_A_RULES.find((r) => r.id === "MNA-052")!;
+
+  it("reads the clause an escrow agreement actually writes", () => {
+    // The rule wanted "tax reporting", "1099", "tax owner" or "grantor
+    // trust". A bank's own form says none of them: it heads the section "Tax
+    // Matters", fixes the owner "for federal income tax purposes", says the
+    // earnings "shall be reported as income of the Sellers", and requires
+    // IRS Forms W-9 before funding.
+    const ctx = withPb(
+      buildContext([
+        "11. Tax Matters",
+        "The Sellers are treated as the owners of the Escrow Fund for federal income tax purposes, and all interest and earnings on the Escrow Fund shall be reported as income of the Sellers. Buyer and the Sellers' Representative shall deliver to the Escrow Agent properly completed IRS Forms W-9 on or before the date of this Escrow Agreement.",
+      ]),
+      ESCROW_PB,
+    );
+    expect(rule.check(ctx)).toBeNull();
+  });
+
+  it("still reports an escrow agreement that says nothing about tax", () => {
+    const ctx = withPb(
+      buildContext([
+        "11. Miscellaneous",
+        "This Escrow Agreement may be executed in counterparts, each of which is an original, and may be amended only by a writing signed by all parties.",
+      ]),
+      ESCROW_PB,
+    );
+    expect(rule.check(ctx)?.title).toBe("Tax-reporting clause missing");
+  });
+});

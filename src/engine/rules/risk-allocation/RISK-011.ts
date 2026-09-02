@@ -49,7 +49,7 @@ const OPERATIVE_INDEMNITY =
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",
@@ -83,8 +83,16 @@ export const rule: Rule = {
     // severally indemnify and hold harmless the Escrow Agent") — the agent's
     // protection is good-faith reliance and ministerial duties, not
     // commercial claims-procedure mechanics.
+    //
+    // The verb string is "indemnify, DEFEND, and hold harmless" at least as
+    // often as the two-verb form, and the adjacent pattern could not reach
+    // past the inserted word: an M&A escrow agreement whose Section 9 reads
+    // "Buyer and the Sellers, jointly and severally, shall indemnify, defend,
+    // and hold harmless the Escrow Agent" was audited as a commercial
+    // indemnity and told it controls no defense and requires no settlement
+    // consent — of the clause that protects the neutral stakeholder.
     if (
-      /indemnify\s+and\s+hold\s+harmless\s+the\s+(?:escrow\s+agent|trustee|administrative\s+agent|depositary|custodian)\b/i.test(
+      /\bindemnify\b[^.;]{0,60}?\bhold\s+(?:harmless\s+)?the\s+(?:escrow\s+agent|trustee|administrative\s+agent|collateral\s+agent|paying\s+agent|depositary|custodian)\b/i.test(
         sectionText,
       )
     ) {

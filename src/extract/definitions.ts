@@ -70,6 +70,25 @@ const DEFINITION_INLINE_REFERS =
 // article is matched explicitly instead.
 const DEFINITION_INLINE_COPULA =
   /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be)\s+(?=[^.]{0,60}?(?:[$€£¥₹]\s?\d|\b\d))/g;
+// The same copula with the definiendum at the END of the clause — `The Escrow
+// Amount, together with all interest and earnings on it, is the "Escrow Fund"`,
+// `Sections 8, 9 and 13, collectively, are the "Surviving Provisions"`. The
+// matcher above wants the quoted term BEFORE the verb, which is the shape a
+// term defined by a single value takes; a term defined by AGGREGATING things
+// already named takes this one, and an M&A escrow agreement's central defined
+// term was invisible because of it.
+//
+// The trailing punctuation is what makes it a definition rather than a quoted
+// usage: the quoted term has to CLOSE the clause. "The result is the 'Fair
+// Market Value' determined under Section 3" continues past the quote and does
+// not match.
+const DEFINITION_TRAILING_COPULA =
+  // The closing period is INSIDE the quotation in American style — `together
+  // they are the "Parties."` — and the term class admits a period, so the
+  // capture swallowed it and defined "Parties." instead of "Parties". The
+  // optional period before the closing quote is what keeps the sentence's own
+  // punctuation out of the term.
+  /\b(?:is|are|shall\s+be|will\s+be|constitutes?|constitute)\s+(?:collectively\s*,?\s*)?the\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)\.?["“”']\s*(?=[.;,)]|$)/g;
 // A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
 // Period" shall begin on the Effective Date and shall continue until …`, `the
 // "Restricted Period" shall commence on the Closing`. The quoted term is the
@@ -1866,6 +1885,25 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     out.push({
       term,
       definition: after,
+      defined_at: {
+        section_id: base.section_id,
+        paragraph_id: base.paragraph_id,
+        start: base.start + m.index,
+        end: base.start + m.index + m[0].length,
+      },
+      used_at: [],
+    });
+  }
+  DEFINITION_TRAILING_COPULA.lastIndex = 0;
+  while ((m = DEFINITION_TRAILING_COPULA.exec(text)) !== null) {
+    const term = m[1]!.trim();
+    // The definition is what came BEFORE the copula — this is the one matcher
+    // whose definiendum trails its definiens.
+    const before = text.slice(0, m.index).trim();
+    if (!before) continue;
+    out.push({
+      term,
+      definition: before,
       defined_at: {
         section_id: base.section_id,
         paragraph_id: base.paragraph_id,

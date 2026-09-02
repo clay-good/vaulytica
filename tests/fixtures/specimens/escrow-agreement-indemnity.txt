@@ -1,0 +1,63 @@
+ESCROW AGREEMENT
+
+THIS ESCROW AGREEMENT (this "Escrow Agreement") is entered into as of April 30, 2026, by and among HAWTHORNE RIDGE HOLDINGS, INC., a Delaware corporation ("Buyer"), TREVELYAN FAMILY TRUST, as representative of the Sellers (the "Sellers' Representative"), and NORTHPOINT TRUST COMPANY, N.A., a national banking association, as escrow agent (the "Escrow Agent").
+
+RECITALS
+
+A. Buyer, Larkspur Instrumentation LLC (the "Company"), the Sellers, and the Sellers' Representative are parties to a Stock Purchase Agreement dated April 30, 2026 (the "Purchase Agreement"), under which Buyer is acquiring all of the outstanding equity of the Company.
+
+B. The Purchase Agreement requires that a portion of the purchase price be deposited with the Escrow Agent to secure the Sellers' indemnification obligations, and this Escrow Agreement sets out the terms on which the Escrow Agent holds and disburses that amount.
+
+C. Capitalized terms used but not defined in this Escrow Agreement have the meanings given in the Purchase Agreement.
+
+AGREEMENT
+
+1. Appointment. Buyer and the Sellers' Representative appoint Northpoint Trust Company, N.A. as escrow agent, and the Escrow Agent accepts the appointment, on the terms of this Escrow Agreement. The Escrow Agent's duties are solely those expressly set out here; no duties are implied.
+
+2. Escrow Fund. On the date of this Escrow Agreement, Buyer shall deposit $4,750,000 (the "Escrow Amount") with the Escrow Agent by wire transfer of immediately available funds. The Escrow Amount, together with all interest and earnings on it, is the "Escrow Fund". The Escrow Fund shall be held in a segregated account and shall not be commingled with the Escrow Agent's own assets or with the assets of any other person.
+
+3. Investment. The Escrow Agent shall invest the Escrow Fund solely in a money market fund invested exclusively in obligations of the United States government with a maturity of ninety (90) days or less, as directed in writing jointly by Buyer and the Sellers' Representative. Absent joint written direction, the Escrow Agent shall hold the Escrow Fund in a non-interest-bearing deposit account. The Escrow Agent is not liable for any loss on an investment made in accordance with this Section 3.
+
+4. Claims. At any time before the Release Date, Buyer may deliver to the Escrow Agent and the Sellers' Representative a written notice (a "Claim Notice") stating the amount claimed and, in reasonable detail, the basis for the claim under Article IX of the Purchase Agreement.
+
+5. Objection and Disbursement. The Sellers' Representative may object to a Claim Notice by written notice delivered to the Escrow Agent and Buyer within thirty (30) days after receipt of the Claim Notice. If no objection is delivered within that period, the Escrow Agent shall disburse the claimed amount to Buyer on the thirty-first (31st) day. If an objection is delivered, the Escrow Agent shall disburse the disputed amount only on receipt of (a) a joint written instruction signed by Buyer and the Sellers' Representative, or (b) a final, non-appealable order of a court of competent jurisdiction accompanied by an opinion of counsel that the order is final and non-appealable.
+
+6. Release Date. On the date that is eighteen (18) months after the date of this Escrow Agreement (the "Release Date"), the Escrow Agent shall disburse to the Sellers' Representative, for distribution to the Sellers, the balance of the Escrow Fund less the aggregate amount of all Claim Notices then pending and unresolved. Any amount retained for a pending claim shall be disbursed on resolution of that claim in accordance with Section 5.
+
+7. Fees and Expenses. The Escrow Agent's fees are set out on Schedule 1 and shall be borne one-half by Buyer and one-half by the Sellers. The Escrow Agent shall not deduct its fees from the Escrow Fund without the prior written consent of both Buyer and the Sellers' Representative.
+
+8. Standard of Care; Limitation of Liability. The Escrow Agent shall not be liable for any act or omission under this Escrow Agreement except for its own gross negligence or willful misconduct as determined by a final, non-appealable order of a court of competent jurisdiction. In no event shall the Escrow Agent be liable for indirect, special, punitive, or consequential damages, and the Escrow Agent's aggregate liability under this Escrow Agreement shall not exceed the amount of its fees actually received. The Escrow Agent may rely on any instruction it reasonably believes to be genuine and signed by an authorized person, and it has no duty to inquire into the Purchase Agreement or to determine whether any claim is well founded.
+
+9. Indemnification of the Escrow Agent. Buyer and the Sellers, jointly and severally, shall indemnify, defend, and hold harmless the Escrow Agent and its officers, directors, employees, and agents from and against all claims, losses, liabilities, and reasonable out-of-pocket expenses, including reasonable attorneys' fees, arising out of this Escrow Agreement, except to the extent caused by the Escrow Agent's gross negligence or willful misconduct.
+
+10. Resignation and Removal. The Escrow Agent may resign on thirty (30) days' prior written notice to Buyer and the Sellers' Representative, and may be removed by their joint written instruction. On resignation or removal, the Escrow Agent shall deliver the Escrow Fund to a successor escrow agent jointly designated in writing. If no successor is designated within thirty (30) days, the Escrow Agent may deposit the Escrow Fund with a court of competent jurisdiction and be discharged.
+
+11. Tax Matters. The Sellers are treated as the owners of the Escrow Fund for federal income tax purposes, and all interest and earnings on the Escrow Fund shall be reported as income of the Sellers. Buyer and the Sellers' Representative shall deliver to the Escrow Agent properly completed IRS Forms W-9 on or before the date of this Escrow Agreement.
+
+12. Notices. All notices under this Escrow Agreement shall be in writing and delivered by hand, by nationally recognized overnight courier, or by email with confirmation of receipt, to the addresses on Schedule 2, and shall be effective on receipt.
+
+13. Governing Law; Jurisdiction. This Escrow Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules. Each party irrevocably submits to the exclusive jurisdiction of the Court of Chancery of the State of Delaware and, if that court lacks subject-matter jurisdiction, the federal and state courts sitting in Wilmington, Delaware.
+
+14. Termination. This Escrow Agreement terminates when the Escrow Fund has been disbursed in full. Sections 8, 9, and 13 survive termination.
+
+15. Miscellaneous. This Escrow Agreement may be amended only by a writing signed by Buyer, the Sellers' Representative, and the Escrow Agent. This Escrow Agreement may be executed in counterparts, including by electronic signature, each of which is an original. This Escrow Agreement, together with the Purchase Agreement, is the entire agreement of the parties as to the escrow.
+
+IN WITNESS WHEREOF, the parties have executed this Escrow Agreement as of the date first written above.
+
+HAWTHORNE RIDGE HOLDINGS, INC.
+
+By: /s/ Ingrid Solheim
+Name: Ingrid Solheim
+Title: Chief Financial Officer
+
+TREVELYAN FAMILY TRUST, as Sellers' Representative
+
+By: /s/ Oyelaran Trevelyan
+Name: Oyelaran Trevelyan
+Title: Trustee
+
+NORTHPOINT TRUST COMPANY, N.A., as Escrow Agent
+
+By: /s/ Marguerite Delacroix-Bell
+Name: Marguerite Delacroix-Bell
+Title: Vice President
