@@ -1,0 +1,46 @@
+CONSULTING AGREEMENT
+
+This Consulting Agreement (this "Agreement") is made as of February 2, 2026 (the "Effective Date") between Wrenmoor Diagnostics, Inc., a Delaware corporation with its principal place of business at 88 Kendall Court, Cambridge, Massachusetts 02142 ("Company"), and Ndidi Okafor-Lindgren, an individual residing at 1440 Blackstone Boulevard, Providence, Rhode Island 02906 ("Consultant").
+
+1. Services. Consultant will provide the regulatory-affairs consulting services described in Exhibit A (the "Services"). Consultant will perform the Services personally and will not subcontract any part of them without the Company's prior written consent.
+
+2. Independent Contractor. Consultant is an independent contractor and not an employee, agent, partner, or joint venturer of the Company. Consultant controls the manner and means of performing the Services, supplies her own equipment, and may perform services for others so long as doing so does not conflict with Section 8. Consultant is responsible for all taxes on the fees paid under this Agreement, and the Company will report them on IRS Form 1099-NEC. Consultant is not eligible for any Company employee benefit plan.
+
+3. Fees and Expenses. The Company will pay Consultant $225 per hour, invoiced monthly in arrears with a statement of hours by task. The Company will pay each undisputed invoice within thirty (30) days of receipt. The Company will reimburse pre-approved travel and out-of-pocket expenses at cost, supported by receipts, up to $8,000 in any calendar year. Total fees under this Agreement will not exceed $180,000 without a written amendment.
+
+4. Term and Termination. This Agreement begins on the Effective Date and continues until January 31, 2027, unless terminated earlier. Either party may terminate this Agreement for convenience on thirty (30) days' written notice. Either party may terminate immediately on the other party's material breach that remains uncured ten (10) business days after written notice describing it. On termination the Company will pay Consultant for Services performed and expenses incurred through the termination date, and Consultant will promptly return or destroy all Company Confidential Information and deliver all work in progress.
+
+5. Ownership of Work Product. All deliverables, reports, protocols, submissions, and other materials Consultant creates in performing the Services (the "Work Product") are works made for hire under the U.S. Copyright Act to the extent they qualify. To the extent any Work Product does not qualify, Consultant hereby irrevocably assigns to the Company all right, title, and interest in it, including all patent, copyright, trade secret, and other intellectual property rights. Consultant will execute any document the Company reasonably requests to perfect or record that assignment, at the Company's expense.
+
+6. Consultant's Background IP. Consultant retains ownership of any methodology, template, checklist, or know-how she owned before the Effective Date or develops independently of the Services (the "Background IP"). To the extent any Background IP is incorporated into the Work Product, Consultant grants the Company a perpetual, worldwide, irrevocable, non-exclusive, royalty-free, sublicensable licence to use, reproduce, modify, and distribute it as part of the Work Product.
+
+7. Confidentiality. Each party may disclose confidential information to the other. The receiving party will use it only to perform this Agreement, will not disclose it to a third party, and will protect it with at least reasonable care. These obligations do not apply to information that is or becomes public without the receiving party's fault, that the receiving party lawfully had before disclosure, that it receives from a third party free of any duty of confidence, or that it develops independently. The receiving party may disclose confidential information if compelled by law, provided it gives the disclosing party prompt notice where legally permitted. These obligations continue for three (3) years after termination, and for as long as the information remains a trade secret.
+
+8. Conflicts. Consultant represents that entering this Agreement does not breach any agreement with a third party, and that she will not perform services for any company developing an in-vitro diagnostic for the same analyte panel the Services address during the term of this Agreement.
+
+9. Compliance. Consultant represents that she is not, and has never been, debarred under 21 U.S.C. § 335a, excluded from a federal health care program, or disqualified as a clinical investigator. Consultant will notify the Company within three (3) business days if any of that changes.
+
+10. Indemnification. Consultant will indemnify and hold harmless the Company from any third-party claim arising out of Consultant's gross negligence, willful misconduct, or breach of Section 5, 7, or 8. The Company will indemnify and hold harmless Consultant from any third-party claim arising out of the Company's use of the Work Product other than as Consultant advised.
+
+11. Limitation of Liability. Except for a party's indemnification obligations, breach of Section 7, or gross negligence or willful misconduct, neither party will be liable for indirect, incidental, special, consequential, or punitive damages, and each party's total liability under this Agreement will not exceed the total fees paid and payable to Consultant.
+
+12. Insurance. Consultant will maintain professional liability insurance of at least $1,000,000 per claim during the term and for two years after it, and will provide a certificate on request.
+
+13. Governing Law and Venue. This Agreement is governed by the laws of the Commonwealth of Massachusetts, without regard to its conflict-of-laws rules. The parties consent to the exclusive jurisdiction and venue of the state and federal courts located in Suffolk County, Massachusetts.
+
+14. Notices. Notices must be in writing and are effective on personal delivery, on the next business day after deposit with a nationally recognized overnight courier, or on confirmed email delivery to the addresses in the preamble.
+
+15. Miscellaneous. This Agreement is the entire agreement between the parties about its subject matter and supersedes all prior discussions. It may be amended only in a writing signed by both parties. Neither party may assign it without the other's written consent, except that the Company may assign it to a successor to all or substantially all of its business. If any provision is held unenforceable, the rest remains in effect. Sections 5, 6, 7, 10, 11, and 13 survive termination. This Agreement may be signed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.
+
+WRENMOOR DIAGNOSTICS, INC.
+
+By: /s/ Aurelio Santangelo-Beck
+Name: Aurelio Santangelo-Beck
+Title: Chief Regulatory Officer
+
+CONSULTANT
+
+/s/ Ndidi Okafor-Lindgren
+Ndidi Okafor-Lindgren

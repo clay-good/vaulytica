@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.367.0] — 2026-09-02
+
+### Fixed
+- **RISK-004 and RISK-015 reported the same clause, at `warning`, in the same
+  words.** "Indemnity carved out of the liability cap" and "Indemnification
+  carved out of liability cap", on the same sentence of five specimens and a
+  golden fixture — a linter that says one thing twice at its second-highest
+  severity is spending the reader's attention on its own bookkeeping. Where the
+  CAP ITSELF excepts the indemnity it is RISK-004's finding, and RISK-015 now
+  stands down. RISK-015 keeps what RISK-004 cannot see: the carve-out written
+  from the indemnity's side, and the indemnity with no cap anywhere — both
+  still pinned.
+
+### Added
+- A regulatory-affairs consulting agreement with an individual consultant —
+  work-made-for-hire plus assignment, a background-IP licence back, a debarment
+  representation, and a cap with the usual carve-outs. It is the document that
+  showed the duplication, because it is well drafted and the pair was the whole
+  top of its report. 307 specimens.
+
 ## [9.366.0] — 2026-09-02
 
 ### Fixed

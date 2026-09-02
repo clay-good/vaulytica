@@ -12,10 +12,37 @@ import { emit } from "../_helpers.js";
 const CARVE_OUT =
   /\b(?:limitation\s+of\s+liability|aggregate\s+liability|liability\s+cap|cap\s+on\s+liability)\b[\s\S]{0,400}?\b(?:except\s+for|excluding|other\s+than|(?:shall|does|do|will|would)\s+not\s+apply\s+to)\b[^.;\n]{0,200}\bindemnif/i;
 
+/**
+ * The paragraph in which the CAP itself excepts the indemnity, if any.
+ *
+ * Exported so RISK-015 can stand down where this rule speaks. Both rules were
+ * reporting the same clause of a well-drafted consulting agreement, at
+ * `warning`, in the same words — "Indemnity carved out of the liability cap"
+ * and "Indemnification carved out of liability cap" — and a linter that says
+ * one thing twice at its second-highest severity is spending the reader's
+ * attention on its own bookkeeping. RISK-015's own subject is the indemnity
+ * with NO cap anywhere, which this cannot see.
+ */
+export function capExceptsIndemnity(ctx: RuleContext): {
+  text: string;
+  position: ReturnType<typeof positionOf>;
+} | null {
+  const hits: Array<{ text: string; position: ReturnType<typeof positionOf> }> = [];
+  let heading = "";
+  forEachParagraph(ctx.tree, (p) => {
+    const lead = p.section.heading.trim() || heading;
+    heading = isHeadingLine(p.text) ? p.text.trim() : "";
+    if (hits.length > 0) return;
+    if (!CARVE_OUT.test(lead ? `${lead} ${p.text}` : p.text)) return;
+    hits.push({ text: p.text, position: positionOf(p) });
+  });
+  return hits[0] ?? null;
+}
+
 /** RISK-004 — Indemnity cap vs. LoL cap interaction (warning). */
 export const rule: Rule = {
   id: "RISK-004",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Indemnity vs. LoL cap interaction",
   category: "risk-allocation",
   default_severity: "warning",
@@ -32,18 +59,9 @@ export const rule: Rule = {
     // cap in exactly that shape, and neither was reported. The heading is
     // read together with the paragraph; the excerpt and position stay the
     // paragraph's.
-    const hits: Array<{ text: string; position: ReturnType<typeof positionOf> }> = [];
-    let heading = "";
-    forEachParagraph(ctx.tree, (p) => {
-      const lead = p.section.heading.trim() || heading;
-      // Plain-text and pasted documents carry no styled headings at all, so
-      // the "heading" is simply the short line before the clause.
-      heading = isHeadingLine(p.text) ? p.text.trim() : "";
-      if (hits.length > 0) return;
-      if (!CARVE_OUT.test(lead ? `${lead} ${p.text}` : p.text)) return;
-      hits.push({ text: p.text, position: positionOf(p) });
-    });
-    const carveOut = hits[0];
+    // Plain-text and pasted documents carry no styled headings at all, so the
+    // "heading" a clause is read under is simply the short line before it.
+    const carveOut = capExceptsIndemnity(ctx);
     if (!carveOut) return null;
     return emit(ctx, rule, {
       title: "Indemnity carved out of the liability cap",

@@ -138,7 +138,9 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
     "STRUCT-013", // `[TBD methodology]` placeholder
     "FIN-009", // 2.5%/month late fee = 30%/year
     "IPDATA-007", // data retention period unspecified (DPA ref only)
-    "RISK-015", // indemnification carved out of cap
+    // RISK-004 since 9.367.0. Both rules had been reporting the carve-out;
+    // where the CAP itself excepts the indemnity, it is RISK-004's finding.
+    "RISK-004", // indemnification carved out of cap
     "OBLI-008", // `best efforts` undefined
   ],
 

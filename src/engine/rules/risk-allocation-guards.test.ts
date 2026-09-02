@@ -246,16 +246,21 @@ describe("RISK-015 — a consequential-damages carve-out is not a cap carve-out 
     ).toBeNull();
   });
 
-  it("still fires when the cap sentence itself carves out indemnification", () => {
-    expect(
-      R015.check(
-        doc(
-          "Limitation of Liability",
-          "8. Indemnification. Each party shall indemnify, defend, and hold harmless the other party from third-party claims.",
-          "9. Limitation of Liability. Except for indemnification obligations, each party's total cumulative liability under this Agreement shall not exceed the fees paid in the twelve months preceding the claim.",
-        ),
-      )?.title,
-    ).toMatch(/carved out/);
+  it("hands the cap's own carve-out to RISK-004 and says nothing (v1.11.0)", () => {
+    // Both rules had been reporting this clause at `warning` in the same
+    // words — "Indemnity carved out of the liability cap" and
+    // "Indemnification carved out of liability cap" — on five specimens and a
+    // golden fixture. Where the CAP ITSELF excepts the indemnity it is
+    // RISK-004's finding. RISK-015 keeps what RISK-004 cannot see: the
+    // carve-out written from the indemnity's side, and the indemnity with no
+    // cap anywhere.
+    const ctx = doc(
+      "Limitation of Liability",
+      "8. Indemnification. Each party shall indemnify, defend, and hold harmless the other party from third-party claims.",
+      "9. Limitation of Liability. Except for indemnification obligations, each party's total cumulative liability under this Agreement shall not exceed the fees paid in the twelve months preceding the claim.",
+    );
+    expect(R015.check(ctx)).toBeNull();
+    expect(R004.check(ctx)?.title).toMatch(/carved out/);
   });
 });
 

@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, enclosingSentence, isPresenceDisclaimed } from "../_helpers.js";
+import { capExceptsIndemnity } from "./RISK-004.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -88,7 +89,7 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
 
 export const rule: Rule = {
   id: "RISK-015",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Indemnification without aggregate cap",
   category: "risk-allocation",
   default_severity: "warning",
@@ -203,6 +204,12 @@ export const rule: Rule = {
 
     if (!indemnityHit) return null;
     if (hasCap && !capCarvesOutIndemnity) return null;
+    // Where the CAP ITSELF excepts the indemnity, that is RISK-004's finding
+    // and this rule says nothing. Both were reporting the same clause of a
+    // well-drafted consulting agreement at `warning`, in the same words.
+    // RISK-015 keeps the case RISK-004 cannot see: the carve-out written from
+    // the indemnity's side, and the indemnity with no cap anywhere.
+    if (hasCap && capExceptsIndemnity(ctx)) return null;
 
     const hit: Hit = indemnityHit;
     return emit(ctx, rule, {

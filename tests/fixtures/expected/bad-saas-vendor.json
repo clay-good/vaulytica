@@ -480,7 +480,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-004",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -555,11 +555,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-015-s1.3-610",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "RISK-015",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -1010,28 +1009,10 @@
       "id": "RISK-004-s1.4-784",
       "recommendation": "Confirm the carve-out is what you intend. An indemnity outside the cap is standard for third-party IP claims and is uncapped exposure everywhere else; if it is meant to be bounded, give it its own super-cap rather than leaving it outside the general one.",
       "rule_id": "RISK-004",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnity carved out of the liability cap"
-    },
-    {
-      "description": "Indemnification language is present (`shall indemnify`) and the liability cap explicitly carves it out — indemnity exposure is uncapped.",
-      "document_position": 610,
-      "excerpt": {
-        "end_offset": 625,
-        "section_id": "s1.3",
-        "start_offset": 610,
-        "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
-      },
-      "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
-      "id": "RISK-015-s1.3-610",
-      "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
-      "rule_id": "RISK-015",
-      "rule_version": "1.9.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Indemnification carved out of liability cap"
     },
     {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
@@ -1247,11 +1228,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "d4a62a3983be0501f3c2619d64bc2f95074f1eb4e4ef649c814dfffeda19cead",
+  "result_hash": "bd9b86352fb6fc883037a81d3424920f880698e3d137c76c4a6040278c0ed3ee",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.366.0"
+  "version": "9.367.0"
 }

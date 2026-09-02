@@ -2279,7 +2279,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-006",
       "RISK-007",
       "RISK-010",
-      "RISK-015",
       "STRUCT-005",
       "STRUCT-006",
       "STRUCT-017",
@@ -2823,6 +2822,30 @@ export const EXPECTED: Record<string, Expectation> = {
   // effect-of-termination clause — five clauses of the MSA it names in its
   // first sentence. TEMP-002 read the MSA's 2024 date from the header block,
   // where a colon stands in for the determiner.
+  // A regulatory-affairs consulting agreement with an individual consultant —
+  // work-made-for-hire plus assignment, a background-IP licence back, a
+  // debarment representation, and a cap with the usual carve-outs. It is well
+  // drafted, and RISK-004 and RISK-015 both reported its Section 11 at
+  // `warning`, in the same words: "Indemnity carved out of the liability cap"
+  // and "Indemnification carved out of liability cap". Four other specimens
+  // carried the pair. Where the CAP ITSELF excepts the indemnity it is
+  // RISK-004's finding; RISK-015 keeps the indemnity with no cap anywhere.
+  "consulting-regulatory.txt": {
+    playbook: "consulting-agreement",
+    findings: [
+      "OBLI-005",
+      "RISK-004",
+      "RISK-006",
+      "RISK-007",
+      "RISK-010",
+      "RISK-011",
+      "STRUCT-018",
+      "TEMP-006",
+      "TERM-001",
+      "TERM-007",
+    ],
+  },
+
   "sow-numbered.txt": {
     playbook: "sow",
     findings: ["OBLI-005", "STRUCT-018"],
@@ -3340,7 +3363,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "IPDATA-005",
       "OBLI-005",
       "RISK-007",
-      "RISK-015",
       "TEMP-004",
       "TEMP-005",
       "TEMP-006",
@@ -4539,7 +4561,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-002",
       "RISK-004",
       "RISK-007",
-      "RISK-015",
       "TEMP-004",
     ],
   },
@@ -4653,7 +4674,6 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "teaming-agreement",
     findings: [
       "RISK-004",
-      "RISK-015",
       "STRUCT-018",
       "TEMP-012",
       "CHOICE-006",
