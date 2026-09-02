@@ -220,19 +220,22 @@ export const EXPECTED: Record<string, Expectation> = {
   // its intended characterization, and quotes a payment amount with no rate
   // and no prepayment formula.
   //
-  // ⚠️ FILED, NOT FIXED: § 6 waives "any right to notice, hearing, or
-  // redemption" and lets the lessor repossess "without notice or legal
-  // process". Those are UCC Article 9 Part 6 protections that cannot be
-  // waived, and nothing reports them — BNK-143 finds the words "default" and
-  // "repossess", reads the clause as compliant, and its own `why` says the
-  // protections "apply whatever the contract says". A presence check reading
-  // an unlawful waiver as compliance needs its own rule, not a suppression.
+  // DARK-015 is the rule this document was filed for. § 6 waives "any right
+  // to notice, hearing, or redemption" and lets the lessor repossess "without
+  // notice or legal process" — UCC Article 9 Part 6 protections § 9-602 makes
+  // non-waivable — and nothing reported it, because BNK-143 is a PRESENCE
+  // check for "default, acceleration, and disposition of collateral" and those
+  // are the words the waiving clause is made of. Its own `why` says the
+  // protections "apply whatever the contract says"; nothing said so to the
+  // reader. The answer was a rule that reports the waiver, not a suppression
+  // on the rule the waiver satisfied.
   "equipment-finance-lease.txt": {
     playbook: "equipment-finance-agreement",
     findings: [
       "BNK-139",
       "BNK-140",
       "BNK-141",
+      "DARK-015",
       "RISK-001",
       "RISK-005",
       "STRUCT-002",

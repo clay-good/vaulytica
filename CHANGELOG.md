@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.375.0] — 2026-09-02
+
+### Added
+- **DARK-015 — Waiver of non-waivable Article 9 debtor protections (critical).**
+  Closes the gap Step 294 filed. U.C.C. § 9-602 lists the debtor protections a
+  security agreement may not waive — the breach-of-the-peace limit on self-help
+  repossession, commercial reasonableness of the disposition, notification of
+  the disposition, the right to redeem, and the deficiency calculation — and
+  nothing reported a clause purporting to waive them, because BNK-143 is a
+  PRESENCE check for "default, acceleration, and disposition of collateral" and
+  those are the words the waiving clause is made of. A presence check reading an
+  unlawful waiver as compliance needs a rule that reports the waiver, not a
+  suppression on the rule the waiver satisfied. The catalog holds 1,825 rules;
+  the always-on launch set is 121.
+
+  The compliant drafting does not fire, and an existing specimen is why: a
+  clause taking possession "without judicial process **if it can do so without a
+  breach of the peace**" is quoting § 9-609(b)(2) rather than escaping it, and a
+  disposition made "as Article 9 of the Uniform Commercial Code requires" names
+  the article by its full title. The first form of the rule reported both, and
+  both are now pinned.
+
 ## [9.374.0] — 2026-09-02
 
 ### Fixed

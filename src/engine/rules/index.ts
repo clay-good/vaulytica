@@ -152,6 +152,7 @@ import { rule as DARK_011 } from "./dark-patterns/DARK-011.js";
 import { rule as DARK_012 } from "./dark-patterns/DARK-012.js";
 import { rule as DARK_013 } from "./dark-patterns/DARK-013.js";
 import { rule as DARK_014 } from "./dark-patterns/DARK-014.js";
+import { rule as DARK_015 } from "./dark-patterns/DARK-015.js";
 
 export const LAUNCH_RULES: readonly Rule[] = [
   // Structural — 19
@@ -284,4 +285,5 @@ export const LAUNCH_RULES: readonly Rule[] = [
   DARK_012,
   DARK_013,
   DARK_014,
+  DARK_015,
 ];
