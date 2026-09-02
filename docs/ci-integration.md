@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Lint contracts
-        uses: clay-good/vaulytica@v8        # pin a tag/SHA in production
+        uses: clay-good/vaulytica@v9        # pin a tag/SHA in production
         with:
           command: analyze
           files: contracts/                 # a path, dir, or *.docx glob
@@ -55,7 +55,7 @@ exposure — "this redline added a critical finding."
 
 ```yaml
       - name: Compare the negotiated redline against the template
-        uses: clay-good/vaulytica@v8
+        uses: clay-good/vaulytica@v9
         with:
           command: compare
           base: templates/msa.docx

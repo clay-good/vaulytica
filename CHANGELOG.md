@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.372.0] — 2026-09-02
+
+### Fixed
+- **The workflow snippet in the README and the CI guide named a tag that does
+  not exist.** Both told a reader to paste `uses: clay-good/vaulytica@v8`; the
+  repository carried exactly one tag, `v6.0.0`, so every reader who copied it
+  got "unable to resolve action clay-good/vaulytica, unable to find version v8"
+  before a document was read. The three references now name `v9`, and the moving
+  major tag is published alongside this release.
+
+### Added
+- `tests/integration/action-ref-drift.test.ts` — the snippet is prose, and prose
+  does not fail a build, which is how the number stayed two majors stale. The
+  guard pins the two facts that drifted: the major in the snippet is the major
+  we ship, and every snippet agrees.
+
 ## [9.371.0] — 2026-09-02
 
 ### Fixed
