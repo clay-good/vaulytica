@@ -1034,7 +1034,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
     // this column impossible to fail; a disclosure schedule keyed to an SPA's
     // representations numbers itself "Schedule 3.12", and that is the
     // organization the rule is looking for.
-    present_patterns: [/\bsection\s+\d+\.\d/i, /\bschedule\s+\d+\.\d/i],
+    present_patterns: [/\b(?:section|clause)\s+\d+\.\d/i, /\bschedule\s+\d+\.\d/i],
   }),
   presence({
     id: "MNA-044",

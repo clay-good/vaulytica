@@ -17,7 +17,7 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 // a bare roman numeral from matching inside a word ("Schedule i" must not match
 // "Schedule identifying"; "Article V" must not match "Article Video").
 const REF_RE =
-  /(?<![A-Za-z0-9_])(Section|Sections|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*[A-Za-z]?(?:\([a-z]\))?|[IVXLCDM]+)(?![A-Za-z])/gi;
+  /(?<![A-Za-z0-9_])(Section|Sections|Clause|Clauses|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*[A-Za-z]?(?:\([a-z]\))?|[IVXLCDM]+)(?![A-Za-z])/gi;
 
 // An external statutory citation ("Section 409A of the Internal Revenue Code",
 // "Section 12 of the Securities Exchange Act of 1934") is NOT a broken
@@ -192,6 +192,18 @@ const EXTERNAL_NAMED_CODE_LEADING_RE =
 const STATUTORY_NUMBER_AFTER_SIGN = /^-\d/;
 const STATUTORY_LEADING_RUN = /^\d{3,}/;
 
+// A FAR or GSAR clause is a REGULATION's clause, not this document's. A GSA
+// schedule contract incorporates "clause 52.212-4", "clause 52.233-1",
+// "clause 552.238-75" by the dozen, and admitting "Clause" as an
+// intra-document keyword — which every contract drafted outside the United
+// States needs — made each of them a broken internal reference.
+//
+// The discriminator is the NUMBERING, not a list of regulations, for the
+// reason session 28 settled on: a list needs maintaining forever. A contract
+// numbers its clauses 4, 4.2, 12.3 — at most two digits at any level, and
+// never a hyphen. A regulation numbers 52.212-4 and 552.238.
+const REGULATION_CLAUSE_LABEL = /^\d{3,}|\.\d{3,}/;
+
 const EXTERNAL_REG_LEADING_RE =
   /\b(?:Treasury\s+Regulations?|Treas\.?\s+Reg(?:ulation)?s?\.?)\s+$/i;
 
@@ -335,7 +347,7 @@ const EXTERNAL_ACRONYM_TAIL = /^(?:\(\d+[a-z]?\))*\s+of\s+(?:the\s+)?([A-Za-z]{2
 // agreement cites "under Section 262 of the DGCL" once and then "the rights
 // provided under Section 262" without the qualifier.
 const STATUTE_ACRONYM_CITE =
-  /(?<![A-Za-z0-9_])(?:Section|Sections|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
+  /(?<![A-Za-z0-9_])(?:Section|Sections|Clause|Clauses|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
 
 // Statute acronyms so ubiquitous they are cited bare, without a local
 // definition — Delaware corporate law and the UCC head every M&A and secured-
@@ -356,7 +368,7 @@ const SEED_STATUTE_ACRONYMS = ["DGCL", "UCC", "DRULPA", "DLLCA", "ERISA", "FLSA"
 // "Section" word, so the bare-number pattern never registered it and every one
 // of those headings was BOTH unregistered AND re-read as a broken reference to
 // itself (a clean set of bylaws drew a dozen unresolved-reference findings).
-const LEADING_SECTION_RE = /^\s*(?:(?:Section|Sec\.?|§)\s+)?(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
+const LEADING_SECTION_RE = /^\s*(?:(?:Section|Sec\.?|Clause|§)\s+)?(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
 
 // The ingester keeps an article heading and its FIRST subsection in one
 // paragraph — "ARTICLE II — STOCKHOLDERS Section 2.1. Annual Meeting. …" — so
@@ -365,7 +377,7 @@ const LEADING_SECTION_RE = /^\s*(?:(?:Section|Sec\.?|§)\s+)?(\d+(?:\.\d+)*)\.\s
 // subsection of every article reported as a broken reference to itself. This
 // captures that section number where it trails the article heading.
 const ARTICLE_THEN_SECTION_RE =
-  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?(?<![A-Za-z0-9_])(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
+  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?(?<![A-Za-z0-9_])(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
 
 // Bylaws style writes the multi-level number with NO trailing period —
 // "7.1 Exclusive Forum. Unless …" — so LEADING_SECTION_RE never registered
@@ -382,7 +394,7 @@ const LEADING_SUBSECTION_RE = /^\s*(\d+(?:\.\d+)+)\.?\s+[A-Z(]/;
 // broken reference to itself: 28 unresolved cross-references on a document
 // with none. The "Section" keyword is REQUIRED here — without it, a paragraph
 // opening "5 Business Days after the Closing" would register as a section.
-const LEADING_SECTION_NO_PERIOD_RE = /^\s*(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\s+[A-Z(]/;
+const LEADING_SECTION_NO_PERIOD_RE = /^\s*(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\s+[A-Z(]/;
 
 // A RUN-IN section heading anywhere in a paragraph — "… continues in effect.
 // Section 6.4. Definitions. \"Descendants\" means …". Stripping a document's
@@ -393,7 +405,7 @@ const LEADING_SECTION_NO_PERIOD_RE = /^\s*(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*
 //
 // The trailing period after the number is what separates a heading from a
 // reference: "Section 3.4. Vacancies." declares, "under Section 3.4" refers.
-const RUN_IN_SECTION_RE = /(?:^|[.!?]\s+)(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z(]/g;
+const RUN_IN_SECTION_RE = /(?:^|[.!?]\s+)(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z(]/g;
 
 // The same run-in heading in the NO-PERIOD numbering a Delaware corporation's
 // bylaws use — "… by the Board. Section 3.5 Committees. The Board of Directors
@@ -404,7 +416,7 @@ const RUN_IN_SECTION_RE = /(?:^|[.!?]\s+)(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)
 // not apply" continues in lowercase, and "See Section 2.3 for notice
 // requirements." never closes a Title-Case run — none of them register.
 const RUN_IN_SECTION_NO_PERIOD_RE =
-  /(?:^|[.!?]\s+)(?:Section|Sec\.?|§)\s+(\d+(?:\.\d+)*)\s+[A-Z][\w'’-]*[;,]?(?:\s+(?:[A-Z][\w'’-]*|of|and|the|to|by|for|in)[;,]?)*\.\s+[A-Z]/g;
+  /(?:^|[.!?]\s+)(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\s+[A-Z][\w'’-]*[;,]?(?:\s+(?:[A-Z][\w'’-]*|of|and|the|to|by|for|in)[;,]?)*\.\s+[A-Z]/g;
 
 // The flat-paste ARTICLE heading — "ARTICLE VII — FORUM SELECTION" — is a
 // DECLARATION of the article, not a reference to it. It both feeds the
@@ -420,7 +432,7 @@ const LEADING_ARTICLE_RE = /^\s*(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/;
 // re-read as a broken reference to itself, and the real "Section VI" reference
 // in the body failed too. Exactly the defect the ARTICLE comment above
 // describes, left unfixed for the sibling keyword.
-const LEADING_SECTION_ROMAN_RE = /^\s*(?:SECTION|Section)\s+([IVXLCDM]+|\d+)\s*(?:[—–-]|$)/;
+const LEADING_SECTION_ROMAN_RE = /^\s*(?:SECTION|Section|CLAUSE|Clause)\s+([IVXLCDM]+|\d+)\s*(?:[—–-]|$)/;
 
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];
@@ -554,6 +566,8 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         STATUTE_SECTION_LABEL.test(bareLabel) ||
         (/^§/.test(keyword) &&
           (STATUTORY_NUMBER_AFTER_SIGN.test(after) || STATUTORY_LEADING_RUN.test(bareLabel))) ||
+        (/^Clauses?$/i.test(keyword) &&
+          (REGULATION_CLAUSE_LABEL.test(bareLabel) || /^-\d/.test(after))) ||
         (namesACode && STATUTE_SUBSECTION_LABEL.test(m[2] ?? "")) ||
         statutoryLabels.has(bareLabel.toUpperCase()) ||
         // A SIBLING of a declared code section. Bounded three ways: the
@@ -598,7 +612,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // entity instead. The keyword is known here; pass it.
       const namespace = /^Articles?$/i.test(keyword)
         ? "article"
-        : /^(?:Sections?|§§?)$/i.test(keyword)
+        : /^(?:Sections?|Clauses?|§§?)$/i.test(keyword)
           ? "section"
           : undefined;
       const normalized = isAttachment

@@ -47,7 +47,23 @@ const GDPR_ARTICLE_REF = /^Articles?\s+\d/i;
  * those to resolve against, and three references into the ICO's text were
  * reported as references the addendum broke.
  */
-const FORM_SECTION_REF = /^(?:Sections?|§)\s*\d/i;
+const FORM_SECTION_REF = /^(?:Sections?|Clauses?|§)\s*\d/i;
+
+/**
+ * The same reasoning for a set of STANDARD CONTRACTUAL CLAUSES, which
+ * `adoptsRegulatorFormInFull` deliberately does not cover: that helper asks
+ * whether the form is adopted UNAMENDED, and an SCC set that carries a side
+ * letter — "the audit cadence in Clause 8.9 is reduced from annual to
+ * biennial" — is by definition amended. Its Clause numbering is still the
+ * Commission's, and the document does not restate the text it points into.
+ *
+ * Bounded to a document that NAMES the form, and to a bare "Clause N"
+ * reference. An ordinary English-law agreement names no such form, so its own
+ * broken clause references still report.
+ */
+const NAMES_REGULATOR_CLAUSES =
+  /\b(?:standard\s+contractual\s+clauses|SCCs?\b|international\s+data\s+transfer\s+addendum|IDTA\b|mandatory\s+clauses|approved\s+addendum)/i;
+const REGULATOR_CLAUSE_REF = /^Clauses?\s*\d/i;
 
 function documentText(ctx: RuleContext): string {
   const parts: string[] = [];
@@ -63,7 +79,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-007",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Cross-reference resolution",
   category: "structural",
   default_severity: "warning",
@@ -74,12 +90,14 @@ export const rule: Rule = {
     const text = documentText(ctx);
     const citesGdpr = NAMES_GDPR.test(text);
     const adoptsForm = adoptsRegulatorFormInFull(text);
+    const namesRegulatorClauses = NAMES_REGULATOR_CLAUSES.test(text);
     const broken = ctx.extracted.crossrefs.filter(
       (c) =>
         c.unresolved &&
         !ATTACHMENT_REF.test(c.raw_text) &&
         !(citesGdpr && GDPR_ARTICLE_REF.test(c.raw_text)) &&
-        !(adoptsForm && FORM_SECTION_REF.test(c.raw_text)),
+        !(adoptsForm && FORM_SECTION_REF.test(c.raw_text)) &&
+        !(namesRegulatorClauses && REGULATOR_CLAUSE_REF.test(c.raw_text)),
     );
     if (broken.length === 0) return null;
     const first = broken[0]!;

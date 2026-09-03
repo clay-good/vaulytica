@@ -52,7 +52,7 @@ const TOC_SHORT_PARAGRAPH = 160;
  * Section 7.1, Section 8.2, and Section 9.3.") ends in a period and is read
  * normally.
  */
-const SECTION_LOCATOR = /\bSection\s+\d+(?:\.\d+)*\b/g;
+const SECTION_LOCATOR = /\b(?:Section|Clause)\s+\d+(?:\.\d+)*\b/g;
 const SECTION_NUMBER = /\d+(?:\.\d+)+|\d+/g;
 const TOC_MIN_SECTION_ENTRIES = 3;
 
@@ -453,12 +453,12 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // Section limits the publication rights in Section 11") became the whole
   // incorporated list, so the operative enumeration was never read and
   // TEMP-012 reported the indemnity as unnamed in a clause that names it.
-  const LIST = /\bSections?\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
+  const LIST = /\b(?:Sections?|Clauses?)\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
   // A RANGE is as common as an enumeration — "Sections 2 through 5 and Section
   // 7 survive", "Sections 9-12 survive" — and the enumeration pattern reads
   // only its first endpoint, so the sections in between were never
   // incorporated.
-  const RANGE = /\bSections?\s+(\d+)\s*(?:through|thru|to|[-–—])\s*(\d+)\b/gi;
+  const RANGE = /\b(?:Sections?|Clauses?)\s+(\d+)\s*(?:through|thru|to|[-–—])\s*(\d+)\b/gi;
   const nums = new Set<string>();
   LIST.lastIndex = 0;
   let m: RegExpExecArray | null;

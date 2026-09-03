@@ -13,7 +13,7 @@ import type { SectionOutline, SectionOutlineNode } from "./types.js";
  */
 
 const NUMBER_PREFIX =
-  /^\s*(?:(\d+(?:\.\d+)*)\.?|(?:Article\s+([IVXLCDM]+|\d+))|(?:Section\s+(\d+(?:\.\d+)*))|§\s*(\d+(?:\.\d+)*))\b/i;
+  /^\s*(?:(\d+(?:\.\d+)*)\.?|(?:Article\s+([IVXLCDM]+|\d+))|(?:(?:Section|Clause)\s+(\d+(?:\.\d+)*))|§\s*(\d+(?:\.\d+)*))\b/i;
 
 export function extractSections(tree: DocumentTree): SectionOutline {
   const by_id: Record<string, SectionOutlineNode> = {};

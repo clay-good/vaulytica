@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.384.0] — 2026-09-02
+
+### Fixed
+- **A contract drafted in England numbers its CLAUSES, and the whole
+  cross-reference layer could read only "Section".** "Section 8.2" and
+  "clause 8.2" are the same reference; only the noun moved. The corpus
+  relation reached 157 specimens and **35 diverged** — by a wide margin the
+  largest divergence any probe in this repo has produced.
+
+  The survival machinery was the centre of it. `expandSurvivalSectionRefs`
+  reads "Sections 5, 6, 9 and 12 survive termination" to learn which
+  obligations a survival clause names; against "Clauses 5, 6, 9 and 12
+  survive" it found no enumeration at all, so **TEMP-012 reported the
+  indemnity and the confidentiality obligation as unnamed on twenty-five
+  documents**, TEMP-006 went silent and TEMP-007 fired in its place.
+  `crossrefs.ts` and `sections.ts` — the reader of the document's own
+  numbering and the reader of its headings — were blind the same way, and
+  INS-008, MNA-031, STRUCT-007 and the survival range reader with them.
+
+  `uk-master-services-agreement.txt` has been in the corpus carrying the
+  defect in plain sight: its "clauses 4, 6, 7 and this clause 8.3 survive"
+  names intellectual property, confidentiality and limitation of liability by
+  number, and TEMP-012 accused it of naming nothing. That expectation is now
+  one finding shorter.
+
+- **STRUCT-007 (v1.4.0)** no longer reads a REGULATOR's clause numbering as
+  this document's. A set of standard contractual clauses carrying a side
+  letter — "the audit cadence in Clause 8.9 is reduced from annual to
+  biennial" — is amended by definition, so `adoptsRegulatorFormInFull` does
+  not cover it, and its Clause numbering is still the Commission's. Bounded to
+  a document that NAMES the form: an ordinary English-law agreement names none,
+  so its own broken clause references still report.
+
+### Added
+- **`tests/integration/clause-numbering.test.ts`**, both halves, each confirmed
+  to fail with the defect put back.
+
+  **The mutation's first draft was wrong, and instructively so.** Renaming
+  every "Section" produced nine further divergences that were not defects:
+  "Section 409A of the Internal Revenue Code" became "Clause 409A", and a
+  statutory section is a section in London too. The rewriting is confined to a
+  CONTRACT-shaped number not followed by "of the <Named Act>" — and the static
+  half applies the same discipline: a recognizer naming a literal number
+  (`section\s+1542`) cites a statute, one reading a digit CLASS
+  (`section\s+\d+\.\d`) reads the document's own numbering, and only the
+  second must admit "clause".
+
+  The mirror of that line appears in `crossrefs.ts`: a GSA schedule contract
+  incorporates "clause 52.212-4" and "clause 552.238-75" by the dozen, which
+  are a REGULATION's clauses. Suppressed on the NUMBERING rather than on a list
+  of regulations — a contract numbers its clauses 4, 4.2, 12.3, at most two
+  digits at any level and never a hyphen.
+
 ## [9.383.0] — 2026-09-02
 
 ### Fixed

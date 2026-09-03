@@ -1706,7 +1706,7 @@ const NONPROFIT_RULES: Rule[] = [
       // the membership structure; the "shall have" -only form missed "has".
       /(?:the\s+)?corporation\s+(?:shall\s+have|has|will\s+have|does\s+not\s+have)\s+(?:no\s+)?members/i,
       /members?\s+of\s+the\s+corporation/i,
-      /(?:^|\n)\s*(?:section\s+[\d.]+\.?\s*)?no\s+members\b/i,
+      /(?:^|\n)\s*(?:(?:section|clause)\s+[\d.]+\.?\s*)?no\s+members\b/i,
     ],
     default_severity: "warning",
   }),

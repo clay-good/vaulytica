@@ -3826,6 +3826,14 @@ export const EXPECTED: Record<string, Expectation> = {
   // is recorded rather than argued — it asks an English-law agreement for a
   // UCC § 2-719 limited-remedy escape, which is a jurisdiction-scope question
   // for the pack rather than a defect in this rule.
+  //
+  // TEMP-012 came off this list when the survival machinery learned to read a
+  // CLAUSE. "clauses 4, 6, 7 and this clause 8.3 survive" names the
+  // intellectual-property, confidentiality and liability clauses by number,
+  // and the reader — which spelled only "Sections" — saw no enumeration at
+  // all, so it reported a survival clause that names nothing sticky. It was
+  // the only English-numbered document in the corpus and it carried the
+  // defect in plain sight for as long as it has been here.
   "uk-master-services-agreement.txt": {
     playbook: "msa-vendor-deep",
     findings: [
@@ -3837,7 +3845,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-001",
       "STRUCT-006",
       "STRUCT-018",
-      "TEMP-012",
       "MSA-003",
       "MSA-020",
       "MSA-022",
