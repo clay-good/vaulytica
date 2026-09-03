@@ -205,7 +205,11 @@ export const rule: Rule = {
  * EVERY underscore run in the paragraph must be labeled, so a row that mixes
  * one labeled field with a bare template blank still reports.
  */
-const LABELED_FIELD = /[A-Za-z][A-Za-z\s'’()/-]{0,40}:\s*$/;
+// The separator is a PIPE as often as a colon: a signature block or a fee
+// schedule laid out as a TABLE flattens to "cell | cell" (`src/ingest/docx.ts`),
+// so the label arrives as "Date | ____________" and the blank after it is a
+// signature line rather than an unfilled template placeholder.
+const LABELED_FIELD = /[A-Za-z][A-Za-z\s'’()/-]{0,40}[:|]\s*$/;
 
 function labeledRuns(text: string): { total: number; labeled: number } {
   const runs = [...text.matchAll(/_{10,}/g)];
@@ -456,7 +460,7 @@ function isSignatureContext(text: string): boolean {
   if (SIGNATURE_LINE_BY_OFFICE.test(text)) return true;
   const tokens = (
     text.match(
-      /\b(By|Name|Title|Date|Signature|Signed|Print(?:ed)?\s+Name|Authorized\s+Signatory)\b\s*:?/gi,
+      /\b(By|Name|Title|Date|Signature|Signed|Print(?:ed)?\s+Name|Authorized\s+Signatory)\b\s*[:|]?/gi,
     ) ?? []
   ).length;
   return tokens >= 2;

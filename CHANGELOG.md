@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.391.0] — 2026-09-02
+
+### Fixed
+- **A label that arrives from a TABLE ROW, not from a typed line.**
+  `src/ingest/docx.ts` flattens a table to one paragraph per row with the cells
+  joined by " | ", and a signature block, an effective-date header and a fee
+  schedule are laid out as two-column tables in a large share of real .docx
+  contracts. The corpus is 310 hand-typed `.txt` files and contains **not one
+  pipe character**, so every rule that reads "Name:" and not "Name |" was blind
+  to the commonest layout there is, and nothing could have shown it.
+
+  Retyping the corpus's `Label: value` lines as `Label | value` moved a finding
+  on fifteen specimens. Four sites fixed: **STRUCT-003**'s signature-line and
+  signature-token labels, so a two-column signature table is a signature block;
+  **STRUCT-003**'s publication stamp ("Last updated | February 2, 2026"), which
+  is what stands in for execution on a policy that is published rather than
+  signed; **STRUCT-002** and `src/extract/dates.ts`, so "Date | April 6, 2026"
+  and "Effective Date | 2026-01-01" are the date the document adopts — the
+  STRUCT-002 label already anticipated the pipe on its LEFT, as a cell
+  boundary, while requiring a colon on its right; and **STRUCT-013**'s labeled
+  field, so "Date | ____________" is an unsigned signature line and not an
+  unfilled template placeholder.
+
+### Added
+- **`tests/integration/table-flattened-labels.test.ts`**, and a paragraph in it
+  recording what is NOT fixed. Seven specimens still move a finding under the
+  same rewriting — STRUCT-006 (a Title-Case run that a colon terminates and a
+  pipe does not), STRUCT-001, STRUCT-017, BAA-036 — and each needs its own
+  judgement about what a cell boundary means to that rule. Widening them
+  together would be guessing, so there is **no whole-corpus relation here yet**:
+  it would be red, and a red guard teaches nothing. The five assertions that
+  are here were each confirmed to fail with their fix put back.
+
 ## [9.390.0] — 2026-09-02
 
 ### Fixed

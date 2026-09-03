@@ -84,6 +84,11 @@ export default defineConfig({
       "src/extract/parties.test.ts",
       "src/extract/relative-deadline-phrasing.test.ts",
       "src/extract/sections.test.ts",
+      // Reaches `src/extract/dates.ts` for the named-anchor date a two-column
+      // table flattens to a pipe. Unit-speed (~130ms), so unlike the
+      // whole-corpus relations it belongs IN the per-mutant run, and its kills
+      // count toward the published score.
+      "tests/integration/table-flattened-labels.test.ts",
       "src/extract/venue-phrasing.test.ts",
     ],
     environment: "node",

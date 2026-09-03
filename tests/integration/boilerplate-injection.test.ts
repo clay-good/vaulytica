@@ -130,7 +130,70 @@ const INJECTIONS: Record<string, [(s: string) => string, number]> = {
  *     divergences into 59 real ones.
  */
 
+/**
+ * The recital block, which is where a real agreement starts and this corpus
+ * usually does not: only EIGHT of 310 specimens open on WHEREAS.
+ *
+ * It is the position probe. This engine leans hard on where a thing sits — a
+ * `firstParagraphMatch`, a `topPosition`, an effective date required in the
+ * top quarter of the document — and a recital block pushes the whole operative
+ * text down by nine paragraphs. The relation holds on all 143 agreements,
+ * which is the answer, and it is here so that it goes on holding.
+ */
+const RECITALS = [
+  "",
+  "RECITALS",
+  "",
+  "WHEREAS, the parties have discussed the matters set out below and wish to record their agreement;",
+  "WHEREAS, the parties have exchanged the information they consider relevant to the matters below;",
+  "WHEREAS, the parties intend that this agreement supersede their prior discussions on its subject matter;",
+  "",
+  "NOW, THEREFORE, in consideration of the mutual covenants and promises set out below, and for other good and valuable consideration, the receipt and sufficiency of which are acknowledged, the parties agree as follows:",
+  "",
+].join("\n");
+
+/**
+ * Two exclusions, and both were found by getting it wrong first.
+ *
+ * A recital block belongs on an AGREEMENT: prepending "NOW, THEREFORE, in
+ * consideration of the mutual covenants" to an appellate brief, a codicil, a
+ * set of interrogatories or a GDPR privacy notice makes a different document,
+ * and the routing collapse that follows is not a defect.
+ *
+ * And the recitals must carry no SUBSTANCE. The first draft recited that "each
+ * party has the corporate power and authority to enter into this agreement",
+ * which is exactly the representation NDA-D-022 asks for — so the rule went
+ * correctly silent, and the probe called it a defect.
+ */
+const TAKES_RECITALS = /\b(agreement|contract|lease|addendum|amendment|sublease|note|guaranty)\b/i;
+
 describe("the boilerplate a real contract carries", () => {
+  it("a recital block moves no finding on any agreement", async () => {
+    const deps = await loadAccuracyDeps({});
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      if (/WHEREAS/i.test(text)) continue;
+      if (!TAKES_RECITALS.test(text.split("\n")[0] ?? "")) continue;
+      const i = text.indexOf("\n");
+      if (i < 0) continue;
+      const mutated = `${text.slice(0, i)}\n${RECITALS}${text.slice(i)}`;
+      probed++;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(before).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(before).includes(id));
+      if (lost.length || gained.length) {
+        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      }
+    }
+    expect(probed, "the corpus has no agreement without recitals").toBeGreaterThanOrEqual(100);
+    expect(broken).toEqual([]);
+  }, 300_000);
+
   it.each(Object.keys(INJECTIONS))(
     "%s changes no finding",
     async (label) => {

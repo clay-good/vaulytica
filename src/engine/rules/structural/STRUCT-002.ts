@@ -48,7 +48,11 @@ export const rule: Rule = {
       // same paragraph let a blank line borrow one from elsewhere in a joined
       // signature block — which is how the corpus's own unsigned fixtures
       // stopped reporting the effective date they genuinely lack.
-      const LABEL = /(?:^|[\s>|])[Dd]ated?\s*(?::|\s+as\s+of)\s*/g;
+      // The separator is a PIPE as often as a colon: a signature block laid out
+      // as a table flattens to "Date | April 6, 2026" (`src/ingest/docx.ts`),
+      // and this label already anticipated the pipe on its LEFT — as a cell
+      // boundary — while requiring a colon on its right.
+      const LABEL = /(?:^|[\s>|])[Dd]ated?\s*(?::|\||\s+as\s+of)\s*/g;
       LABEL.lastIndex = 0;
       let m: RegExpExecArray | null;
       while ((m = LABEL.exec(p.text)) !== null) {

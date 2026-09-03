@@ -168,7 +168,7 @@ const NAMED_ANCHOR = new RegExp(String.raw`\bthe\s+(${ANCHOR_ALIASES})\s+Date\b`
  * reference to the anchor, not a statement of it.
  */
 const LABELED_ANCHOR = new RegExp(
-  String.raw`\b(${ANCHOR_ALIASES})\s+Date\b(?=\s*[:=—-]|\s+(?:is|(?:shall|will)\s+be|means)\b)`,
+  String.raw`\b(${ANCHOR_ALIASES})\s+Date\b(?=\s*[:=|—-]|\s+(?:is|(?:shall|will)\s+be|means)\b)`,
   "gi",
 );
 

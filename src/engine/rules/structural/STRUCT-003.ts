@@ -4,13 +4,18 @@ import { findStatuteCitation, makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { isIncorporatedExhibit } from "../_helpers.js";
 
+// A signature block is as often laid out as a TABLE as typed as lines, and
+// `src/ingest/docx.ts` flattens a table row to "cell | cell" — so the label
+// arrives as "Name | Jane Ellis", not "Name: Jane Ellis". Every one of these
+// labels admits the pipe for that reason; it is the same separator doing the
+// same job, and a two-column signature table is the commonest layout there is.
 // A signature-block label is followed by a colon ("By:") or an underscore fill
 // line ("By ____"). WITHOUT that anchor the bare words "by" / "date" / "title"
 // occur constantly as ordinary prose ("passes by that date", "Title to the
 // Goods"), which counted as signature signals and SILENTLY SUPPRESSED the
 // critical "no signature block" finding on documents that have none.
-const SIG_LINE = /^\s*(?:By|Name|Title|Date|Signed|Print(?:ed)?\s+Name)\b\s*(?::|_)/im;
-const SIG_TOKEN = /\b(?:By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b\s*:/i;
+const SIG_LINE = /^\s*(?:By|Name|Title|Date|Signed|Print(?:ed)?\s+Name)\b\s*(?::|\||_)/im;
+const SIG_TOKEN = /\b(?:By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b\s*[:|]/i;
 const EXHIBIT_HEADING = new RegExp(`\\b(?:${ATTACHMENT_KIND})\\b`, "i");
 
 // The attestation formula that introduces every executed signature page. An
@@ -298,7 +303,7 @@ const ADOPTION_RECITAL = new RegExp(
 );
 
 const PUBLICATION_STAMP =
-  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*:?\s*(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2})/i;
+  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*[:|]?\s*(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2})/i;
 
 // A formal valediction opening a line — "Very truly yours,", "Sincerely,",
 // "Respectfully submitted," — is the execution of CORRESPONDENCE (a demand
