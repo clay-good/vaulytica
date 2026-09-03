@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.394.0] — 2026-09-03
+
+### Docs
+- **The README now says what the testing method actually is.** The metamorphic
+  section described one whitespace relation from spec-v7; it is now the repo's
+  primary defect-finding instrument, and the two tables record what each
+  rewriting and each injection found — down to "limited" being read as a
+  liability cap and a running page footer being read as a clause's heading.
+
+  Both disciplines are stated with it, because both were learned by getting
+  them wrong: **the rewriting must preserve meaning exactly** (a statutory
+  section is not a clause; a pound sign beside the word DOLLARS is a document
+  in two currencies), and **suppress on the numbering, not on a list of names**
+  (a statute numbers `1542` and `52.212-4`; a contract numbers `4.2`).
+
 ## [9.393.0] — 2026-09-03
 
 ### Fixed

@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,666+ passing tests` · `v9.393.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,666+ passing tests` · `v9.394.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -1378,6 +1378,16 @@ That relation has since grown into the repo's **primary defect-finding instrumen
 | `Section 8.2` → `clause 8.2` | **35 of 157 specimens.** A survival clause that names "Clauses 5, 6 and 9" named nothing the engine could see, so 25 documents were told their indemnity does not survive |
 | `$5,000,000` → `£5,000,000` / `€5,000,000` | 36 recognizers that could read only the dollar glyph |
 | `Exhibit A` → `Annexure A` / `Appendix A`, `Schedule 3.7` → `Annex 3.7` | six lists with five different answers about what a contract calls the thing it staples to the back — and a security addendum titled "Information Security Annexure" routed to the wrong playbook entirely |
+
+And where the corpus lacks a shape entirely, the probe runs the other way and **injects** it. Not one of the 310 specimens says "including but not limited to"; none carries a table, a running page footer, or a recital block. Each of those is ordinary in a real contract, and a corpus cannot be rewritten out of what it does not contain:
+
+| what a real contract carries | what putting it in found |
+|---|---|
+| `including` → `including, but not limited to,` | **"limited" read as a liability cap.** The commonest phrase in commercial English silenced RISK-005 and RISK-015 on indemnities that state no cap |
+| `shall pay` → `shall, at its sole cost and expense, pay` / `shall promptly pay` | 59 + 52 specimens: eight rules required the verb to sit immediately after the modal |
+| `Name: Jane Ellis` → `Name \| Jane Ellis` (how a .docx table flattens) | a signature block, an effective date and a policy's publication stamp, none of them readable in the layout most contracts actually use |
+| a running `Page 3 of 9` footer every page | a short line between a clause and its neighbour read as that clause's **heading** — two liability caps lost, two signature grids called unfilled placeholders |
+| a `WHEREAS` recital block | nothing: the engine is position-robust, and the relation is kept so it stays that way |
 
 Two disciplines make the difference between a probe and a noise generator, and both were learned by getting them wrong first. **The rewriting must preserve meaning exactly** — "Section 409A of the Internal Revenue Code" is not "Clause 409A", and a pound sign next to the word "DOLLARS" is a document in two currencies, not a defect. And **suppress on the numbering, not on a list of names**: a statute numbers its sections `1542` and `52.212-4`, a contract numbers its own `4.2`, and that distinction settles which references are the document's own without a list anyone has to maintain forever.
 
