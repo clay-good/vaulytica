@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.401.0] — 2026-09-03
+
+### Fixed
+- **A quadratic in `extractDefinitions`, and it is a denial of service.**
+  `\\([^)…]*` on a paragraph of unclosed parentheses rescans to the end of the
+  paragraph from every "(" it finds. Sixty thousand of them took **four seconds
+  in the extractor alone**; eighty thousand took eight once this session's
+  fullwidth fold made "（" reach the same path. This tool runs in the reader's
+  own tab, on a document the reader did not write, so a quadratic in the ingest
+  path is not a slow test.
+
+  The three parenthetical runs are now bounded at 200 characters — a
+  defined-term parenthetical is a few words long, and the repo bounds every
+  other window for exactly this reason. **80,000 parentheses: 3,998 ms → 48 ms**,
+  and half a megabyte now finishes in 285 ms. No finding changed.
+
+  The quadratic was pre-existing; the fullwidth fold made it reachable through
+  a second character, which is how it was found.
+
+### Added
+- **A linear-time assertion** in `fuzz-boundary.test.ts` over `(`, `（`, `"`,
+  `'` and `[`. It asserts a RATIO, not a wall-clock budget: a machine-speed
+  threshold is a flaky test, but quadratic growth shows up as a ratio however
+  fast the machine is. Confirmed to fail — 4.2 s and 8.0 s — with the bound
+  removed.
+
 ## [9.400.0] — 2026-09-03
 
 ### Fixed

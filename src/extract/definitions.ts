@@ -195,7 +195,7 @@ const DEFINITION_PAIR_PARENTHETICAL =
  * a pair.
  */
 const DEFINITION_APPOSITIVE_PAIR_PARENTHETICAL =
-  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*,\s+and\b[^)"\u201C\u201D]*,\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*,\s+and\b[^)"\u201C\u201D]{0,200},\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * A single defined term that trails a PROSE preamble inside its parenthetical:
@@ -211,10 +211,17 @@ const DEFINITION_APPOSITIVE_PAIR_PARENTHETICAL =
  * comma followed by `the`/`collectively the`/`together the` immediately before
  * the quoted term at the close of the parenthetical; a quoted term merely USED
  * mid-parenthetical (`(a sum equal to the "Base Amount")`) has no such comma
- * and the `[^)"\u201C\u201D]*` run cannot cross another quote.
+ * and the `[^)"\u201C\u201D]{0,200}` run cannot cross another quote.
  */
+// The run is BOUNDED, and that is a denial-of-service fix as much as a
+// correctness one: `\([^)…]*` on a paragraph of unclosed parentheses rescans to
+// the end of the paragraph from every "(" it finds, which is quadratic. Sixty
+// thousand of them took four seconds in `extractDefinitions` alone, and this
+// tool runs in the reader's own tab on a document the reader did not write. A
+// defined-term parenthetical is a few words long; two hundred characters is
+// already generous.
 const DEFINITION_TRAILING_PARENTHETICAL =
-  /\([^)"\u201C\u201D]*,\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\([^)"\u201C\u201D]{0,200},\s+(?:collectively\s+|together\s+|individually\s+)?the\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * Meaning-by-reference: a term (or a list of terms) is defined by pointing at
