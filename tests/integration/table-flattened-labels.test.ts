@@ -24,16 +24,30 @@
  *   - **STRUCT-013**'s labeled field, so "Date | ____________" is an unsigned
  *     signature line and not an unfilled template placeholder.
  *
+ *   - **`src/extract/definitions.ts`**'s label terminator, so "Title | Chief
+ *     Executive Officer" is a label and not a Title-Case term the document
+ *     forgot to define. The colon had marked a label there since it was
+ *     written; the pipe is the cell boundary doing the same job.
+ *
  * ── what is NOT fixed, and is recorded rather than hidden ──
  *
- * Seven specimens still move a finding under the same rewriting — STRUCT-006
- * (a Title-Case run that a colon terminates and a pipe does not), STRUCT-001,
- * STRUCT-017, BAA-036. Each needs its own judgement about what a cell boundary
- * means to that rule, and widening them together would be guessing. There is
- * therefore no whole-corpus relation here yet: it would be red, and a red
- * guard teaches nothing. This file asserts the four that are settled.
+ * The sweep is at five specimens, down from fifteen. What remains needs a
+ * DESIGN answer rather than a wider pattern: should "Plan Year | January 1 –
+ * December 31" DEFINE the term, the way "Plan Year: …" does? A definitions
+ * table is ordinary drafting and the answer is probably yes, but it is a
+ * change to what a definition IS, not a tolerance — so it is written down
+ * here rather than guessed at. `insurance-policy-summary` (a Title-Case run
+ * that crosses a cell boundary), `scc-module-3` (DPA-002) and `sow-numbered`
+ * (TEMP-002) are the others.
+ *
+ * There is therefore no whole-corpus relation here yet: it would be red, and a
+ * red guard teaches nothing. This file asserts what is settled.
  */
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { analyzeText } from "../../tools/cli/api.js";
+import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 import { extractDates } from "../../src/extract/dates.js";
 import { buildTree } from "../../src/extract/_fixtures.js";
 import { rule as STRUCT_003 } from "../../src/engine/rules/structural/STRUCT-003.js";
@@ -41,6 +55,8 @@ import { rule as STRUCT_013 } from "../../src/engine/rules/structural/STRUCT-013
 import { buildContext } from "../../src/engine/_test-fixtures.js";
 
 /** The same block, typed as lines and flattened from a two-column table. */
+const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
+
 const SIGNED_TYPED = [
   "Agreement",
   "This Agreement is between Acme Corp. and Globex Inc. Provider shall provide the Services.",
@@ -52,13 +68,10 @@ const SIGNED_TYPED = [
 const SIGNED_TABLE = SIGNED_TYPED.map((l) => l.replace(/^(By|Name|Title|Date): /, "$1 | "));
 
 describe("a label flattened out of a table row", () => {
-  it("the corpus contains no pipe at all, which is why nothing could show this", async () => {
-    const { readFileSync, readdirSync } = await import("node:fs");
-    const { join } = await import("node:path");
-    const dir = join(process.cwd(), "tests", "fixtures", "specimens");
-    const withPipe = readdirSync(dir)
+  it("the corpus contains no pipe at all, which is why nothing could show this", () => {
+    const withPipe = readdirSync(DIR)
       .filter((f) => f.endsWith(".txt"))
-      .filter((f) => readFileSync(join(dir, f), "utf8").includes(" | "));
+      .filter((f) => readFileSync(join(DIR, f), "utf8").includes(" | "));
     expect(withPipe).toEqual([]);
   });
 
@@ -92,6 +105,23 @@ describe("a label flattened out of a table row", () => {
       );
     expect(anchored("|"), "a pipe-separated Effective Date").toBe(anchored(":"));
   });
+
+  it("a table-flattened label is a label, not a term the document forgot to define", async () => {
+    // Asserted on the specimen that showed it, because the bleed needs a real
+    // signature block: the Title-Case run picks up the NEXT label as its last
+    // word, and a synthetic three-line fixture does not reproduce it. Every
+    // label in the document is retyped as a table row; nothing may move.
+    const deps = await loadAccuracyDeps({});
+    const name = "unilateral-nda.txt";
+    const text = readFileSync(join(DIR, name), "utf8");
+    const mutated = text.replace(/^([A-Z][A-Za-z /'’-]{2,40}):[ \t]+(?=\S)/gm, "$1 | ");
+    expect(mutated, "the specimen has no label to retype").not.toBe(text);
+    const ids = async (t: string): Promise<string[]> =>
+      [
+        ...new Set((await analyzeText(t, name, { deps })).run.findings.map((f) => f.rule_id)),
+      ].sort();
+    expect(await ids(mutated)).toEqual(await ids(text));
+  }, 120_000);
 
   it("STRUCT-013 reads a blank after a table-flattened label as a signature line", () => {
     const placeholder = (sep: string): boolean =>

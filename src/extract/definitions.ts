@@ -1196,8 +1196,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // across a field boundary in a signature or cover block — ingest joins
       // "Name: Eleanor Vance" and "Title: Chief Executive Officer" into one
       // paragraph, so the phrase "Eleanor Vance Title" swept up the next label.
-      // The trailing ":" marks a label, not a defined-term use.
+      // The trailing ":" marks a label, not a defined-term use — and so does a
+      // trailing "|", because a signature block laid out as a TABLE flattens to
+      // "Title | Chief Executive Officer" (`src/ingest/docx.ts`). The pipe is
+      // the cell boundary doing exactly the job the colon does here.
       if (ctx.text[m.index + m[0].length] === ":") continue;
+      if (/^\s*\|/.test(ctx.text.slice(m.index + m[0].length))) continue;
       // "in this Annual Report on Form 10-K" — a "this"-prefixed phrase is
       // the document referring to ITSELF (or to a companion instrument it
       // just named), not an undefined term.

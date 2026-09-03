@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.392.0] — 2026-09-02
+
+### Fixed
+- **`src/extract/definitions.ts`'s label terminator.** A trailing ":" has marked
+  a label rather than a defined-term use since that check was written — "Title:
+  Chief Executive Officer" is a designation, not a term the document forgot to
+  define. A signature block laid out as a TABLE flattens to "Title | Chief
+  Executive Officer", and the pipe is the cell boundary doing exactly the same
+  job. The table sweep is now at five diverging specimens, down from fifteen.
+
+### Notes
+- The rest of the sweep needs a DESIGN answer rather than a wider pattern:
+  should "Plan Year | January 1 – December 31" DEFINE the term, the way "Plan
+  Year: …" does? A definitions table is ordinary drafting and the answer is
+  probably yes, but that is a change to what a definition IS, not a tolerance —
+  so it is written into the test file rather than guessed at, along with the
+  three other open specimens.
+
 ## [9.391.0] — 2026-09-02
 
 ### Fixed
