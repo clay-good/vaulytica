@@ -64,9 +64,28 @@ export function normalize(tree: DocumentTree): DocumentTree {
     // producing an OOXML part a strict parser (or Word) rejects as corrupt.
     // \t (#x9), \n (#xA), \r (#xD) are legal and, along with the illegal but
     // whitespace #xB/#xC, are handled by the `\s+`\u2192space collapse below.
+    // Then expand the LATIN LIGATURES a PDF text layer emits for these letter
+    // pairs: U+FB00 ff, U+FB01 fi, U+FB02 fl, U+FB03 ffi, U+FB04 ffl. They are
+    // the VISIBLE sibling of the invisible characters above — "notiﬁcation",
+    // "conﬁdential", "beneﬁciary", "eﬀective", "conﬂict" all read correctly to
+    // a human and match nothing at all, because no recognizer in the catalog
+    // spells them. Not one of the 310 specimens contains a ligature; ligating
+    // the corpus moved a finding on **125 of 307** of them, which is the widest
+    // divergence any probe in this repo has produced. Every PDF this tool
+    // ingests is a candidate.
+    //
+    // Expansion is length-CHANGING, exactly as the removals around it are, and
+    // the offsets a finding carries are computed after this fold — so an
+    // excerpt still quotes the normalized text it was found in.
     return (
       text
         .replace(/[\u00AD\u200B-\u200D\u2060]/g, "")
+        .replace(/\uFB00/g, "ff")
+        .replace(/\uFB01/g, "fi")
+        .replace(/\uFB02/g, "fl")
+        .replace(/\uFB03/g, "ffi")
+        .replace(/\uFB04/g, "ffl")
+        .replace(/\uFB05|\uFB06/g, "st")
         // eslint-disable-next-line no-control-regex
         .replace(/[\x00-\x08\x0E-\x1F\x7F]/g, "")
         .replace(/\s+/g, " ")

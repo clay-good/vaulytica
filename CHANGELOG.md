@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.398.0] — 2026-09-03
+
+### Fixed
+- **The normalizer now folds the LATIN LIGATURES a PDF text layer emits.**
+  U+FB01 for "fi", U+FB02 for "fl", U+FB00/03/04 for "ff"/"ffi"/"ffl" — so
+  "notiﬁcation", "conﬁdential", "beneﬁciary", "eﬀective" and "conﬂict" all read
+  correctly to a human and match **nothing at all**, because no recognizer in
+  the catalog spells them.
+
+  They are the visible sibling of the soft hyphen and the zero-width family
+  this same function has folded since it was written, and they were the only
+  ones missing. **Not one of the 310 specimens contains a ligature, and
+  ligating the corpus moved a finding on 125 of 307** — the widest divergence
+  any probe in this repo has produced, from a defect that lives in one
+  function. This tool ingests PDFs; every one of them was a candidate.
+
+### Added
+- The ligature relation in `format-invariance.test.ts`, confirmed to fail with
+  the fold removed.
+
 ## [9.397.0] — 2026-09-03
 
 ### Fixed

@@ -162,6 +162,45 @@ describe("format is not load-bearing", () => {
     120_000,
   );
 
+  it("the ligatures a PDF text layer emits move no finding", async () => {
+    // The VISIBLE sibling of the soft hyphen and the zero-width characters the
+    // normalizer has always folded. A PDF text layer emits U+FB01 for "fi" and
+    // U+FB02 for "fl", so "notiﬁcation", "conﬁdential", "beneﬁciary",
+    // "eﬀective" and "conﬂict" all read correctly to a human and match nothing
+    // at all — no recognizer in the catalog spells them.
+    //
+    // Not one of the 310 specimens contains a ligature, and ligating the
+    // corpus moved a finding on 125 of 307 before the fold was added: the
+    // widest divergence any probe in this repo has produced, from a defect
+    // that lives in one function. Every PDF this tool ingests is a candidate.
+    const ligate = (text: string): string =>
+      text
+        .replace(/ffi/g, "\uFB03")
+        .replace(/ffl/g, "\uFB04")
+        .replace(/ff/g, "\uFB00")
+        .replace(/fi/g, "\uFB01")
+        .replace(/fl/g, "\uFB02");
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const ligated = ligate(text);
+      if (ligated === text) continue;
+      probed++;
+      const normal = await analyzeText(text, name);
+      const after = await analyzeText(ligated, name);
+      const ids = (r: typeof normal): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(normal).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(normal).includes(id));
+      if (lost.length || gained.length) {
+        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      }
+    }
+    expect(probed, "no specimen carries an f-ligature pair").toBeGreaterThanOrEqual(250);
+    expect(broken).toEqual([]);
+  }, 300_000);
+
   it("one sentence per line moves no finding", async () => {
     // The OTHER direction from stripping blank lines, and the one a PDF text
     // layer actually produces: hard line breaks at every sentence, so a
