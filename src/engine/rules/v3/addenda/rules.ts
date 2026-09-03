@@ -282,7 +282,11 @@ export const ADDENDA_RULES: Rule[] = [
       // "quarter\w+" required a suffix, so it matched "quarterly" / "quarters"
       // but not a bare "every quarter" cadence — the sibling "annual\w*" allows
       // the zero-suffix form, so quarter should too. Use "quarter\w*".
-      /(penetration\s+test\w*|pen[- ]test\w*)[^.]{0,80}(?:annual\w*|annually|quarter\w*|every\s+\d+\s+(?:months?|years?))/i,
+      // The gap holds the SCOPE of the test — "a penetration test of the
+      // environment used to deliver the Services (as defined in Section 1) at
+      // least annually" — and a defined term carrying its own back-reference,
+      // which is ordinary drafting, ran the sentence past eighty characters.
+      /(penetration\s+test\w*|pen[- ]test\w*)[^.]{0,140}(?:annual\w*|annually|quarter\w*|every\s+\d+\s+(?:months?|years?))/i,
       /(annual\w*|annually|quarter\w*)[^.]{0,40}(?:penetration\s+test|pen[- ]test)/i,
     ],
     default_severity: "info",

@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.388.0] — 2026-09-02
+
+### Fixed
+- **"limited" is not a cap when it is "not limited to".** An ordinary indemnity
+  opens "any and all claims … losses, damages, LIABILITIES, fines, penalties,
+  judgments, settlements, and expenses, including, but not LIMITED to,
+  reasonable attorneys' fees" — and the sixty-five characters between
+  "liabilities" and "limited" fit inside RISK-015's cap window. So **the
+  commonest phrase in commercial English read as a liability cap**, and RISK-015
+  and RISK-005 both went silent on documents that state no cap at all.
+
+- **TERM-002** and **ADDENDA-009** were windows a few characters too short. The
+  gap between a default and the termination verb is where a sentence lists the
+  remedies — "On a default, Sublandlord may exercise all remedies available to a
+  landlord under the laws of the State of Washington, including … termination of
+  this Sublease" is 135 characters against a window of 120 — and the gap between
+  a penetration test and its cadence is where the sentence states its scope.
+
+### Added
+- **`tests/integration/boilerplate-injection.test.ts`** — the first probe in
+  this repo that runs the other way.
+
+  Every earlier one REWRITES a specimen into another spelling of the same
+  thing. This one starts from a measurement: **not one of 310 specimens says
+  "including but not limited to"**, and none says "provided, however, that".
+  They are hand-written in plain modern style, and a real commercial contract
+  is full of both. A corpus cannot be rewritten out of a phrase it does not
+  contain — so the phrase goes in, and the question becomes which recognizer a
+  few extra words inside a clause knock over. The answer, over and over in this
+  codebase, is a bounded window between two anchors.
+
+  Four specimens showed the RISK-015 defect the moment the phrase was injected.
+  No specimen could ever have shown it before.
+
+  Not injected: "up to and including termination" is a fixed idiom and "but not
+  limited to" does not go there. An injection that produces an unreal document
+  produces unreal defects — the same discipline the rewriting probes reached
+  from the other direction.
+
 ## [9.387.0] — 2026-09-02
 
 ### Fixed

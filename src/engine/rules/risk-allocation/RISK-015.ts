@@ -133,8 +133,18 @@ export const rule: Rule = {
     // section as its indemnity was reported as having an uncapped indemnity.
     // The gap is bounded to one sentence, and the "not exceed" branches
     // already read the same shape the other way.
+    // "LIMITED" IS NOT A CAP WHEN IT IS "NOT LIMITED TO".
+    //
+    // "any and all claims … losses, damages, LIABILITIES, fines, penalties,
+    // judgments, settlements, and expenses, including, but not LIMITED to,
+    // reasonable attorneys' fees" is the opening sentence of an ordinary
+    // indemnity, and the sixty-five characters between "liabilities" and
+    // "limited" fit inside this window. The commonest phrase in commercial
+    // drafting therefore read as a liability cap, and the rule went silent on
+    // an indemnity that has none. Not one of 310 specimens writes "including
+    // but not limited to", which is why the corpus never showed it.
     const CAP_PRESENT =
-      /\b(?:liabilit(?:y|ies)\b[^.]{0,80}?\b(?:shall|will|is|are|may)?\s*(?:be\s+)?(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
+      /\b(?:liabilit(?:y|ies)\b[^.]{0,80}?\b(?:shall|will|is|are|may)?\s*(?:be\s+)?(?<!\bnot\s)(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
     // The stem is `indemni(f|t)`: a carve-out names the "indemnity
     // obligations" as often as the verb, and `indemnif` matches none of them.
     const CARVE_OUT_INDEMNITY =

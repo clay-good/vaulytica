@@ -106,7 +106,14 @@ const FOR_CAUSE = new RegExp(
     // and the connector set had only if / upon / in the event of. The article
     // is required after "on" so an ordinary "on delivery" / "on notice" cannot
     // open the branch.
-    String.raw`\b(?:if|upon|in\s+the\s+event\s+(?:of|that)|on\s+(?:a|an|any|the))\b[^.]{0,80}?${BREACH}[^.]{0,120}?${TERMINATE}` +
+    // The gap between the default and the termination verb is where the
+    // sentence LISTS THE REMEDIES: "On a default, Sublandlord may exercise all
+    // remedies available to a landlord under the laws of the State of
+    // Washington, including, but not limited to, termination of this Sublease
+    // and recovery of damages." That is a hundred and thirty-five characters,
+    // and the window was a hundred and twenty. Both anchors are still required
+    // and the window still cannot leave the sentence.
+    String.raw`\b(?:if|upon|in\s+the\s+event\s+(?:of|that)|on\s+(?:a|an|any|the))\b[^.]{0,80}?${BREACH}[^.]{0,160}?${TERMINATE}` +
     // The "Event of Default" idiom splits the for-cause path across sentences: a
     // Default section defines "Event of Default" (a rent/obligation failure not
     // cured within a notice period), and a separate Remedies section says "Upon
