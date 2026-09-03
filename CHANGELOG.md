@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.399.0] — 2026-09-03
+
+### Fixed
+- **The rest of the ligature's class: presentation forms that render as
+  ordinary characters and match none of them.**
+
+  - **Fullwidth ASCII (U+FF01–FF5E).** An English contract typed on a CJK input
+    method, or exported from one, carries "（a）" and "Ｓｅｃｔｉｏｎ".
+    Rewriting the corpus with fullwidth parentheses alone moved a finding on
+    **182 of 290 specimens** — wider even than the ligatures.
+  - **MINUS SIGN (U+2212)**, which a PDF emits for the hyphen in a range:
+    "30−60 days", "Sections 5−9". Eleven specimens.
+  - **NUMERO (U+2116)** for "No.", as in "Statement of Work № 4".
+  - **ROMAN NUMERAL FORMS (U+2160–216F)** for "Article Ⅶ". A document that
+    numbers its articles that way had no articles at all.
+
+  All four fold in `src/ingest/normalize.ts`, beside the ligatures and the
+  invisible characters that were already there.
+
+### Notes
+- **Not folded, and recorded rather than guessed at: the SUPERSCRIPT digits**
+  (U+00B9, U+2070–2079). A PDF puts a footnote marker inline — "…as set out
+  below.¹" — and 33 specimens move when one is injected. But a superscript is
+  not always noise ("10²", an ordinal "1ˢᵗ"), and dropping it is a decision
+  about meaning rather than a fold of presentation.
+
 ## [9.398.0] — 2026-09-03
 
 ### Fixed

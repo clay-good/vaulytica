@@ -46,6 +46,26 @@ export function normalize(tree: DocumentTree): DocumentTree {
   // extractors and drove several regexes into O(n²) backtracking (a ReDoS hang,
   // spec-v8 §5). Folding them here removes the run at the source for every
   // extractor at once. ASCII-only documents (every fixture) are byte-unchanged.
+  /** U+2160-216F, in codepoint order. */
+  const ROMAN_NUMERAL_FORMS = [
+    "I",
+    "II",
+    "III",
+    "IV",
+    "V",
+    "VI",
+    "VII",
+    "VIII",
+    "IX",
+    "X",
+    "XI",
+    "XII",
+    "L",
+    "C",
+    "D",
+    "M",
+  ] as const;
+
   const normalizeRunText = (text: string): string => {
     // First strip zero-width / soft-hyphen format characters that carry no
     // semantic content and, crucially, are NOT matched by JS `\s`: SOFT HYPHEN
@@ -86,6 +106,23 @@ export function normalize(tree: DocumentTree): DocumentTree {
         .replace(/\uFB03/g, "ffi")
         .replace(/\uFB04/g, "ffl")
         .replace(/\uFB05|\uFB06/g, "st")
+        // The rest of the same class: PRESENTATION FORMS that render as
+        // ordinary characters and match none of them.
+        //
+        //  - FULLWIDTH ASCII (U+FF01-FF5E). An English contract typed on a
+        //    CJK input method, or exported from one, carries "（a）" and
+        //    "Ｓｅｃｔｉｏｎ". 182 of 290 specimens moved a finding when the
+        //    corpus was rewritten with fullwidth parentheses alone — the
+        //    widest of all of them. The offset is a fixed 0xFEE0.
+        //  - MINUS SIGN (U+2212), which a PDF emits for the hyphen in a range:
+        //    "30−60 days", "Sections 5−9".
+        //  - NUMERO (U+2116) for "No.", as in "Statement of Work № 4".
+        //  - ROMAN NUMERAL FORMS (U+2160-216F) for "Article Ⅶ". A document
+        //    that numbers its articles this way had no articles at all.
+        .replace(/[\uFF01-\uFF5E]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+        .replace(/\u2212/g, "-")
+        .replace(/\u2116/g, "No.")
+        .replace(/[\u2160-\u216F]/g, (c) => ROMAN_NUMERAL_FORMS[c.charCodeAt(0) - 0x2160] ?? c)
         // eslint-disable-next-line no-control-regex
         .replace(/[\x00-\x08\x0E-\x1F\x7F]/g, "")
         .replace(/\s+/g, " ")

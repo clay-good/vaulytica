@@ -201,6 +201,65 @@ describe("format is not load-bearing", () => {
     expect(broken).toEqual([]);
   }, 300_000);
 
+  it.each([
+    [
+      "fullwidth punctuation",
+      (t: string): string => t.replace(/\(/g, "（").replace(/\)/g, "）"),
+      250,
+    ],
+    [
+      "the minus sign a PDF emits for a hyphen",
+      (t: string): string => t.replace(/(\d)\s*-\s*(\d)/g, "$1\u2212$2"),
+      80,
+    ],
+    ["the numero sign", (t: string): string => t.replace(/\bNo\.\s*(?=\d)/g, "\u2116 "), 30],
+    [
+      "Roman-numeral codepoints",
+      (t: string): string =>
+        t.replace(
+          /\b(Article|ARTICLE|Section|Annex|Exhibit|Schedule)\s+(I{1,3}|IV|VI{0,3}|IX|X)\b/g,
+          (_m, kind: string, roman: string) =>
+            `${kind} ${String.fromCharCode(0x2160 + ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"].indexOf(roman))}`,
+        ),
+      15,
+    ],
+  ])(
+    "%s moves no finding",
+    async (_label, mutate, floor) => {
+      // The rest of the ligature's class: presentation forms that render as
+      // ordinary characters and match none of them. Fullwidth ASCII is what an
+      // English contract typed on a CJK input method carries, and rewriting the
+      // corpus with fullwidth parentheses alone moved a finding on 182 of 290
+      // specimens — wider even than the ligatures.
+      //
+      // NOT folded, and recorded rather than guessed at: the SUPERSCRIPT digits
+      // (U+00B9, U+2070-2079). A PDF puts a footnote marker inline — "…as set
+      // out below.¹" — and 33 specimens move when one is injected, but a
+      // superscript is not always noise ("10²", an ordinal "1ˢᵗ"), and dropping
+      // it is a decision about meaning rather than a fold of presentation.
+      const broken: string[] = [];
+      let probed = 0;
+      for (const name of SPECIMENS) {
+        const text = readFileSync(join(DIR, name), "utf8");
+        const mutated = mutate(text);
+        if (mutated === text) continue;
+        probed++;
+        const normal = await analyzeText(text, name);
+        const after = await analyzeText(mutated, name);
+        const ids = (r: typeof normal): string[] =>
+          [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+        const lost = ids(normal).filter((id) => !ids(after).includes(id));
+        const gained = ids(after).filter((id) => !ids(normal).includes(id));
+        if (lost.length || gained.length) {
+          broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+        }
+      }
+      expect(probed, "the corpus never carries this shape").toBeGreaterThanOrEqual(floor);
+      expect(broken).toEqual([]);
+    },
+    300_000,
+  );
+
   it("one sentence per line moves no finding", async () => {
     // The OTHER direction from stripping blank lines, and the one a PDF text
     // layer actually produces: hard line breaks at every sentence, so a
