@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { ATTACHMENT_KIND } from "../../../extract/attachment-kinds.js";
 import { makeFinding } from "../../finding.js";
 import { adoptsRegulatorFormInFull } from "../_helpers.js";
 
@@ -16,7 +17,7 @@ import { adoptsRegulatorFormInFull } from "../_helpers.js";
 // section" both mislabels it and duplicates STRUCT-016/STRUCT-018, which own
 // attachment presence — a well-formed SOW referencing Attachments 1–3 drew
 // three findings for one drafting fact.
-const ATTACHMENT_REF = /^(?:Exhibit|Schedule|Attachment)\b/i;
+const ATTACHMENT_REF = new RegExp(`^(?:${ATTACHMENT_KIND})\\b`, "i");
 
 // A document that names the General Data Protection Regulation cites its
 // articles by bare number — "processors acting on our instructions under

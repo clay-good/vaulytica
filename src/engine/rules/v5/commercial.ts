@@ -112,7 +112,7 @@ const MASTER_PURCHASE = pack("master-purchase-agreement", C, [
       // list of places a price can live was Exhibit / Schedule / Appendix /
       // Annex, which omits the purchase order — the document a master purchase
       // agreement exists to govern, and where its prices live by definition.
-      /(price\s+(list|schedule)|pricing\s+set\s+forth|(?:unit\s+)?prices?\b[^.]{0,30}?\b(?:are|is|shall\s+be|will\s+be)\s+(?:those\s+|the\s+ones\s+|as\s+)?(?:set\s+forth|stated|listed|specified|quoted)|(?:unit\s+)?prices?\s+(?:set\s+forth|stated|listed|specified|quoted)\b|prices?\b[^.]{0,30}?\b(?:in|on)\s+(?:the\s+)?(?:applicable\s+|each\s+)?(?:Exhibit|Schedule|Appendix|Annex|purchase\s+order|order\s+form))/i,
+      /(price\s+(list|schedule)|pricing\s+set\s+forth|(?:unit\s+)?prices?\b[^.]{0,30}?\b(?:are|is|shall\s+be|will\s+be)\s+(?:those\s+|the\s+ones\s+|as\s+)?(?:set\s+forth|stated|listed|specified|quoted)|(?:unit\s+)?prices?\s+(?:set\s+forth|stated|listed|specified|quoted)\b|prices?\b[^.]{0,30}?\b(?:in|on)\s+(?:the\s+)?(?:applicable\s+|each\s+)?(?:Exhibit|Schedule|Appendix|Annexure|Annex|purchase\s+order|order\s+form))/i,
       /(price\s+adjustment|indexed|most\s+favored|price\s+escalation|cost\s+pass-?through|(?:propose|negotiate)\s+an?\s+(?:equitable\s+)?adjustment|adjust(?:ment)?\s+(?:to|in|of)\s+(?:the\s+)?prices?|prices?\b[^.]{0,80}?\bfirm\s+(?:through|until|for)\b)/i,
     ],
     why: "Multi-year goods agreements need an adjustment mechanism; without one the price is either frozen against input inflation or open under § 2-305 and set by a good-faith standard neither side can predict.",

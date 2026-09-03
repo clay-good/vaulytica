@@ -136,7 +136,7 @@ const ASSIGNMENT = pack("assignment-and-assumption-agreement", C, [
       // ... (the 'Assigned Contract')" — identifies exactly what moved, which
       // is what this rule exists to require, and the plural-only pattern
       // reported it at `critical` as having no schedule of assigned contracts.
-      /(assigned\s+contracts?|schedule\s+[a-z0-9]|set\s+forth\s+(on|in)\s+(exhibit|schedule))/i,
+      /(assigned\s+contracts?|(?:schedule|exhibit|annexure|annex|appendix)\s+[a-z0-9]|set\s+forth\s+(on|in)\s+(exhibit|schedule|annexure|annex|appendix))/i,
       // The second pillar keeps the OR — a singly-named "Assigned Contract"
       // identifies what moved just as a schedule does, which is why the first
       // pillar reads the singular — but it may not be satisfied by an ordinary
@@ -200,7 +200,7 @@ const BILL_OF_SALE = pack("bill-of-sale", C, [
     cite: ucc("2-401", "Passing of title; reservation for security"),
     pat: [
       /(purchased\s+assets|assets\s+(described|listed|set\s+forth))/i,
-      /(schedule|exhibit|annex)/i,
+      /(schedule|exhibit|annexure|annex|appendix)/i,
     ],
     why: "A bill of sale is the instrument of conveyance for tangible property. Conveying 'the assets' without a schedule leaves the identification to the purchase agreement, which is not what a lender or a court will be handed.",
     fix: "Identify the conveyed assets by schedule reference and incorporate the schedule into the bill of sale itself.",

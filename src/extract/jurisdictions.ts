@@ -461,7 +461,7 @@ const ARBITRATION_SEAT = new RegExp(
     // language. A wrong seat is worse than a missing one — it reconciles
     // against the venue clause — so the exclusion is explicit rather than
     // left to the capture's shape.
-    String.raw`(?:arbitrators?|tribunal|arbitration)\s+in\s+(?!(?:Section|Article|Exhibit|Schedule|Annex|Appendix|Rule|Rules|English|Spanish|French|German|Mandarin|Portuguese|Accordance)\b)` +
+    String.raw`(?:arbitrators?|tribunal|arbitration)\s+in\s+(?!(?:Section|Article|Exhibit|Schedule|Annexure|Annex|Appendix|Rule|Rules|English|Spanish|French|German|Mandarin|Portuguese|Accordance)\b)` +
     String.raw`|` +
     // institution-first: "administered by JAMS in X", "before the ICC in X",
     // "under the ICC Rules in X" — the named arbitral body fixes the clause as an

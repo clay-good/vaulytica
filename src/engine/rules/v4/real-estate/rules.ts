@@ -303,7 +303,7 @@ const PSA_RULES: Rule[] = [
     present_patterns: [
       /legal\s+description/i,
       /(real\s+property|the\s+property)\s+(described\s+(in|on)|located\s+at)/i,
-      /exhibit\s+[a-z].{0,40}legal\s+description/is,
+      /(?:exhibit|schedule|annexure|annex|appendix)\s+[a-z].{0,40}legal\s+description/is,
       // The practice baseline this rule's own explanation endorses: the
       // property is identified in the body and its legal description lives on
       // an exhibit — "the real property commonly known as <address> … more
@@ -313,7 +313,7 @@ const PSA_RULES: Rule[] = [
       // property noun and "described". Anchored on a property noun in the same
       // sentence so a "Permitted Exceptions described on Exhibit B" reference
       // does not satisfy it.
-      /\b(?:real\s+property|the\s+property|premises|land)\b[^.]{0,200}?\bdescribed\s+(?:in|on)\s+(?:the\s+)?exhibit\s+[a-z]/i,
+      /\b(?:real\s+property|the\s+property|premises|land)\b[^.]{0,200}?\bdescribed\s+(?:in|on)\s+(?:the\s+)?(?:exhibit|schedule|annexure|annex|appendix)\s+[a-z]/i,
       // The legal description IN LINE, which is how a residential contract and
       // plenty of commercial ones do it: "legally described as Lot 17, Block
       // 4, Fernbank Estates, Plat Book 42, Page 118, Buncombe County

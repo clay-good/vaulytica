@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.387.0] — 2026-09-02
+
+### Fixed
+- **Six lists had five different answers about what a contract calls the thing
+  it staples to the back.** An American agreement attaches an Exhibit, an
+  English one a Schedule, an EU instrument an Annex, and Indian and South
+  African drafting an Annexure. Three rewritings over 73–83 specimens each
+  found:
+
+  - `crossrefs.ts`, STRUCT-007 and STRUCT-018 could not read an Annexure or an
+    Appendix as an attachment at all, so a document that attached one and
+    referred to it was told the attachment is missing.
+  - The four subordinate-document recitals in `rules/_helpers.ts` — the ones
+    that stand a whole column of absence checks down because the parent
+    supplies the clause — knew Annex but not Annexure, and the statement-of-work
+    recital knew neither Annexure nor Appendix.
+  - RE-009 and BNK-040 wanted a legal description on an "Exhibit A"; DISC-040 a
+    document request on a "Schedule A"; IPL-101 patents on a schedule or
+    exhibit; MNA-043 an SPA-keyed "Schedule 3.12". Thirty more were found by
+    the static half.
+
+- **The MATCHER, which is where it actually hurt.** A vendor security addendum
+  titled "Information Security Annexure" fell from `vendor-security-addendum`
+  at confidence 1 to `incident-notification` at 0.6 — a different playbook and
+  a different set of findings — and a set of disclosure schedules retitled as
+  annexes fell to `generic-fallback` outright. The nouns are now folded on both
+  sides, exactly as the apostrophe and the hyphen already were.
+
+  Folding them also had to reach `openingKeywordLength`, which compares a
+  keyword against the folded title with an unfolded needle. Missing that halved
+  a correctly routed family's score (0.8 → 0.5) while its reasoning line still
+  listed every keyword as matched — a silent loss of the opening-position
+  credit that is worth double.
+
+- **`src/extract/attachment-kinds.ts`** is now the one list. Deliberately
+  SINGULAR: a caller that lower-cases the matched kind to build a key —
+  STRUCT-018 reconciles `appendix:a` against `appendix:a` — reads "Appendices"
+  as a seventh kind and reports the attachment it just found as missing.
+
+### Added
+- **`tests/integration/attachment-kinds.test.ts`**, both halves.
+
+  Three drafts of the rewriting were wrong before one was right, and each in a
+  way already recorded this session. A heading reads "EXHIBIT A — STATEMENT OF
+  WORK", and renaming every reference while leaving the ALL-CAPS heading
+  standing makes a document that really does refer to a missing attachment:
+  nine non-defects. A VESTING schedule and a FEE schedule are timetables, not
+  attachments: five more. And "Schedule K-1" is a form the IRS issues while a
+  "Disclosure Schedule" is the M&A instrument of that name — terms of art that
+  keep their noun in London too, exactly as "Section 409A" does.
+
 ## [9.386.0] — 2026-09-02
 
 ### Fixed

@@ -16,7 +16,7 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
     cite: usc("35", "261", "Patents — ownership and assignment"),
     pat: [
       /(patent\s+(no|number)|application\s+(no|number|serial)|u\.?s\.?\s*\d{1,2},?\d{3},?\d{3})/i,
-      /(schedule|exhibit|listed|set\s+forth)/i,
+      /(schedule|exhibit|annexure|annex|appendix|listed|set\s+forth)/i,
     ],
     why: "The USPTO records assignments against identified property. An assignment of 'all patents' with no schedule cannot be recorded and leaves the chain of title broken for every later transaction.",
     fix: "Attach a schedule listing each patent and application by number, title, filing date, and country.",
@@ -94,7 +94,7 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
     cite: usc("15", "1060", "Lanham Act § 10 — assignment of marks"),
     pat: [
       /(registration\s+(no|number)|serial\s+(no|number)|reg\.?\s*no)/i,
-      /(schedule|exhibit|listed|the\s+assigned\s+marks)/i,
+      /(schedule|exhibit|annexure|annex|appendix|listed|the\s+assigned\s+marks)/i,
     ],
     why: "USPTO recordation requires identification of each mark by registration or serial number. Unlisted common-law marks do not transfer with the registrations.",
     fix: "Attach a schedule listing each mark with its registration or serial number, class, and jurisdiction, and expressly include the associated common-law rights.",

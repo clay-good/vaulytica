@@ -138,10 +138,10 @@ function buildPrecedenceConsistencyRule(): Rule {
         );
       if (!msaOverSow) return null;
       const operativeInSow =
-        /(?:SOW|Statement\s+of\s+Work|Order\s+Form|Schedule|Exhibit)[^.]{0,200}(?:indemn|liability\s+cap|aggregate\s+liability|intellectual\s+property|IP\s+ownership|warrant)/is.test(
+        /(?:SOW|Statement\s+of\s+Work|Order\s+Form|Schedule|Exhibit|Annexure|Annex|Appendix|Attachment)[^.]{0,200}(?:indemn|liability\s+cap|aggregate\s+liability|intellectual\s+property|IP\s+ownership|warrant)/is.test(
           text,
         ) ||
-        /(?:indemn\w+|liability\s+cap|aggregate\s+liability|intellectual\s+property|IP\s+ownership|warrant\w+)[^.]{0,200}(?:set\s+out\s+in|set\s+forth\s+in|contained\s+in|provided\s+in|appears\s+in)\s+(?:the\s+)?(?:SOW|Statement\s+of\s+Work|Order\s+Form|Schedule|Exhibit)/is.test(
+        /(?:indemn\w+|liability\s+cap|aggregate\s+liability|intellectual\s+property|IP\s+ownership|warrant\w+)[^.]{0,200}(?:set\s+out\s+in|set\s+forth\s+in|contained\s+in|provided\s+in|appears\s+in)\s+(?:the\s+)?(?:SOW|Statement\s+of\s+Work|Order\s+Form|Schedule|Exhibit|Annexure|Annex|Appendix|Attachment)/is.test(
           text,
         );
       if (!operativeInSow) return null;

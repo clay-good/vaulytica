@@ -1,4 +1,5 @@
 import type { DocumentTree } from "../ingest/types.js";
+import { ATTACHMENT_KIND } from "./attachment-kinds.js";
 import type { CrossRef, SectionOutline } from "./types.js";
 import { forEachParagraph, posInParagraph } from "./walk.js";
 
@@ -16,8 +17,13 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 // citation guard below sees the whole label. The trailing `(?![A-Za-z])` keeps
 // a bare roman numeral from matching inside a word ("Schedule i" must not match
 // "Schedule identifying"; "Article V" must not match "Article Video").
-const REF_RE =
-  /(?<![A-Za-z0-9_])(Section|Sections|Clause|Clauses|Article|Articles|Exhibit|Schedule|Attachment|§§?)\s+([0-9]+(?:\.[0-9]+)*[A-Za-z]?(?:\([a-z]\))?|[IVXLCDM]+)(?![A-Za-z])/gi;
+// The attachment nouns come from one list: an EU instrument attaches an Annex,
+// Indian and South African drafting an Annexure, and a reference to either
+// resolved to nothing at all — see `src/extract/attachment-kinds.ts`.
+const REF_RE = new RegExp(
+  `(?<![A-Za-z0-9_])(Section|Sections|Clause|Clauses|Article|Articles|${ATTACHMENT_KIND}|§§?)\\s+([0-9]+(?:\\.[0-9]+)*[A-Za-z]?(?:\\([a-z]\\))?|[IVXLCDM]+)(?![A-Za-z])`,
+  "gi",
+);
 
 // An external statutory citation ("Section 409A of the Internal Revenue Code",
 // "Section 12 of the Securities Exchange Act of 1934") is NOT a broken
@@ -246,7 +252,7 @@ function enclosingSentenceOf(text: string, index: number): string {
 }
 
 const EXTERNAL_INSTRUMENT_RE =
-  /^(?:\.\d+[a-z]?|\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Sub-?leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Sub-?contracts?|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?|Terms?|Orders?|SOWs?|Statements?\s+of\s+Work|Guarant(?:y|ies|ee|ees)|Warrant(?:y|ies)|Rules?|Manuals?|Handbooks?|Schedules?|Wills?|Codicils?|Testaments?)\b|thereof\b)/i;
+  /^(?:\.\d+[a-z]?|\(\d+[a-z]?\))*\s+(?:of\s+(?:the\s+)?(?!th(?:is|ese)\b)(?:[A-Za-z][\w'’]*\s+){0,4}(?:Agreements?|Leases?|Sub-?leases?|Notes?|Indentures?|MSA|SPA|DPA|BAA|Contracts?|Sub-?contracts?|Annexure|Annex|Appendix|By-?laws?|Charters?|Certificates?|Plans?|Polic(?:y|ies)|Declarations?|Trusts?|Deeds?|Mortgages?|Terms?|Orders?|SOWs?|Statements?\s+of\s+Work|Guarant(?:y|ies|ee|ees)|Warrant(?:y|ies)|Rules?|Manuals?|Handbooks?|Schedules?|Wills?|Codicils?|Testaments?)\b|thereof\b)/i;
 
 // A FLAT number with a lettered subsection — "Section 414(q)", "Section
 // 424(d)", "Section 423(b)(5)" — in a document that names a CODE.
@@ -601,7 +607,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // to an unrelated section (unresolved:false). Attachment-type refs key
       // into a namespace absent from the section index, so they surface as
       // unresolved for STRUCT-007 instead of a wrong-entity link.
-      const isAttachment = /^(?:Exhibit|Schedule|Attachment)$/i.test(keyword);
+      const isAttachment = new RegExp(`^(?:${ATTACHMENT_KIND})$`, "i").test(keyword);
       // An ARABIC-numbered article reference — "Article 9", "Articles 3 and 4"
       // — reaches `normalizeLabel` as the bare number "9", which normalizes to
       // `section:9` and can never match the `article:9` the declaration

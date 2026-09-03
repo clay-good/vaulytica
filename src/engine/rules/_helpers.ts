@@ -693,7 +693,7 @@ const RATIFIES_PARENT =
 // a capital across a space still ends the run, so it cannot cross into the next
 // sentence.
 const ISSUED_UNDER_PARENT =
-  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Statement\s+of\s+Work|SOW|Order\s+Form|Order|Addendum|Rider|Schedule|Annex|Exhibit|Amendment|Letter|Agreement|Attachment)\b(?:[^.;]|\.(?!\s+[A-Z])){0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
+  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Statement\s+of\s+Work|SOW|Order\s+Form|Order|Rider|Amendment|Letter|Agreement|Annexure|Annex|Appendix|Appendices|Addendum|Schedule|Exhibit|Attachment)\b(?:[^.;]|\.(?!\s+[A-Z])){0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
 const PARENT_CONTROLS =
   // Case-SENSITIVE by design: the parent has to be a NAMED instrument, which
   // is what `[A-Z]` and the capitalized "Agreement" enforce. Only the leading
@@ -780,7 +780,7 @@ const INCORPORATED_INTO_PARENT =
   // level annex — each opens on its own name, and requiring the bare noun
   // immediately after "This" saw none of them. The capitalized run keeps the
   // test on a document that calls itself the exhibit.
-  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Exhibit|Schedule|Annex|Appendix|Attachment)\b[^.]{0,80}?(?:\b(?:is|are)\s+(?:hereby\s+)?(?:attached\s+to\s+and\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)|\bforms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
+  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Exhibit|Schedule|Annexure|Annex|Appendix|Attachment)\b[^.]{0,80}?(?:\b(?:is|are)\s+(?:hereby\s+)?(?:attached\s+to\s+and\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)|\bforms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
 
 /**
  * The same recital, in a document that IS separately signed.
@@ -796,7 +796,7 @@ const INCORPORATED_INTO_PARENT =
  */
 const SIGNED_RIDER_INTO_PARENT = new RegExp(
   INCORPORATED_INTO_PARENT.source.replace(
-    "(?:Exhibit|Schedule|Annex|Appendix|Attachment)",
+    "(?:Exhibit|Schedule|Annexure|Annex|Appendix|Attachment)",
     "(?:Addendum|Addenda|Rider|Supplement|Work\\s+Letter)",
   ),
 );

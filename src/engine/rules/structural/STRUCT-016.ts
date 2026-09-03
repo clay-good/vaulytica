@@ -94,7 +94,7 @@ export const rule: Rule = {
     // mentions, while STRUCT-018 named "Schedule 2.3" correctly.
     const exhibitRefs = allMatches(
       ctx,
-      /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|specified\s+in|incorporated\s+(?:into|by\s+reference\s+(?:in|from))|provided\s+in|listed\s+in)\s+(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z](?:-\d{1,2})?|\d{1,2}(?:\.(?:\d{1,2}))*)/i,
+      /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|specified\s+in|incorporated\s+(?:into|by\s+reference\s+(?:in|from))|provided\s+in|listed\s+in)\s+(Exhibit|Schedule|Attachment|Appendix|Annexure|Annex)\s+([A-Z](?:-\d{1,2})?|\d{1,2}(?:\.(?:\d{1,2}))*)/i,
     );
     if (exhibitRefs.length === 0) return null;
 
@@ -103,7 +103,7 @@ export const rule: Rule = {
     const anchorParaCounts = new Map<string, number>();
     forEachSection(ctx.tree, (s) => {
       const m =
-        /^\s*(Exhibit|Schedule|Attachment|Appendix|Annex)\s+([A-Z](?:-\d{1,2})?|\d{1,2}(?:\.(?:\d{1,2}))*)/i.exec(
+        /^\s*(Exhibit|Schedule|Attachment|Appendix|Annexure|Annex)\s+([A-Z](?:-\d{1,2})?|\d{1,2}(?:\.(?:\d{1,2}))*)/i.exec(
           s.heading,
         );
       if (m) {

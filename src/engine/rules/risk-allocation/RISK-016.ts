@@ -79,7 +79,7 @@ export const rule: Rule = {
     // the document already gives. Scoped to the clause's own sentence, so a
     // paragraph that merely mentions another section elsewhere is untouched.
     const MINIMUM_BY_CROSS_REFERENCE =
-      /\b(?:insurance|coverages?|limits?|policies)\b[^.]{0,40}?\b(?:described|set\s+forth|required|specified|listed|provided\s+for)\s+(?:in|under|by)\s+(?:this\s+)?(?:Section|Article|Exhibit|Schedule|Annex|Appendix|Paragraph|Clause|§§?)/i;
+      /\b(?:insurance|coverages?|limits?|policies)\b[^.]{0,40}?\b(?:described|set\s+forth|required|specified|listed|provided\s+for)\s+(?:in|under|by)\s+(?:this\s+)?(?:Section|Article|Exhibit|Schedule|Annexure|Annex|Appendix|Paragraph|Clause|§§?)/i;
     const sentence = enclosingSentence(hit.text, hit.match.index);
     if (
       COVERAGE_MIN.test(sentence) ||

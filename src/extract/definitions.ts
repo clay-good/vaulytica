@@ -272,7 +272,7 @@ const FIELD_BLOCK_PREFIX = /^\s*(?:[A-Z][^\s]*\s+){0,8}$/;
 
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
-  /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
+  /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annexure|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
 
 /** A scope-gating prefix that confines a definition to a section/clause. */
 const DEFINITION_SCOPE =
@@ -1659,7 +1659,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // pasted out of a PDF, where the schedule label runs on into the notary
       // block, was told "Trust Property" was a term it forgot to define.
       if (
-        /\b(?:Exhibit|Schedule|Appendix|Annex|Attachment)\s+[A-Z0-9][\w.-]*\s*[—–-]\s*$/.test(
+        /\b(?:Exhibit|Schedule|Appendix|Annexure|Annex|Attachment)\s+[A-Z0-9][\w.-]*\s*[—–-]\s*$/.test(
           ctx.text.slice(Math.max(0, m.index - 40), m.index),
         )
       )

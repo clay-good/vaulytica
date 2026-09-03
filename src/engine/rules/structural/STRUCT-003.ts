@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { ATTACHMENT_KIND } from "../../../extract/attachment-kinds.js";
 import { findStatuteCitation, makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { isIncorporatedExhibit } from "../_helpers.js";
@@ -10,7 +11,7 @@ import { isIncorporatedExhibit } from "../_helpers.js";
 // critical "no signature block" finding on documents that have none.
 const SIG_LINE = /^\s*(?:By|Name|Title|Date|Signed|Print(?:ed)?\s+Name)\b\s*(?::|_)/im;
 const SIG_TOKEN = /\b(?:By|Name|Title|Date|Signature|Signed|Authorized\s+Signatory)\b\s*:/i;
-const EXHIBIT_HEADING = /\b(?:exhibit|schedule|attachment|appendix|annex|annexure)\b/i;
+const EXHIBIT_HEADING = new RegExp(`\\b(?:${ATTACHMENT_KIND})\\b`, "i");
 
 // The attestation formula that introduces every executed signature page. An
 // individual party signs with a bare typed name — no "By:/Name:/Title:"

@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { ATTACHMENT_KIND } from "../../../extract/attachment-kinds.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 
@@ -20,7 +21,7 @@ import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
  * separate attachment file is not flagged. Internal-consistency only.
  */
 
-const ATTACH_KINDS = "Exhibit|Schedule|Annex|Annexure|Appendix|Attachment|Addendum";
+const ATTACH_KINDS = ATTACHMENT_KIND;
 // A reference in running text: "see Exhibit C", "as set forth in Schedule 2".
 // Decimal designators ("Schedule 3.7") are the disclosure-schedule norm —
 // the integer-only capture truncated them to "Schedule 3" and reconciled a

@@ -654,7 +654,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Replace with a specific Annex of technical and organisational measures (TOMs).",
     bad_patterns: [
       /commercially\s+reasonable\s+(security|measures)/i,
-      /industry[- ]standard\s+security\b(?!.*?(?:annex|appendix|exhibit))/is,
+      /industry[- ]standard\s+security\b(?!.*?(?:annexure|annex|appendix|exhibit))/is,
       // v1.0.0 caught only "commercially reasonable" / "industry-standard"; the
       // equally-common bare weasel adjective — "reasonable security measures",
       // "reasonable technical and organizational measures", "adequate security
@@ -674,7 +674,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     // security") did not suppress it. This rule's own description is "without
     // an Annex of technical and organisational measures", so a paragraph that
     // cites one anywhere is by definition not the hand-waving it targets.
-    exclude_if: [/\b(?:annex|appendix|exhibit|schedule)\b/i],
+    exclude_if: [/\b(?:annexure|annex|appendix|exhibit|schedule)\b/i],
   }),
 
   // ────────────────────────────────────────────────────────────────
@@ -1022,7 +1022,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation:
       "Modern DPAs and SCCs require an Annex describing the parties, transfer scope, and processing operations.",
     recommendation: "Add an 'Annex I — Description of Transfer' or equivalent appendix.",
-    present_patterns: [/(annex|appendix|exhibit|schedule)\s+(I|1|A)/i],
+    present_patterns: [/(annexure|annex|appendix|exhibit|schedule)\s+(I|1|A)/i],
     default_severity: "warning",
   }),
   presence({
@@ -1040,9 +1040,9 @@ export const DPA_GDPR_RULES: Rule[] = [
     // named BEFORE the annex ("technical and organizational measures …
     // described in Annex 2") as after it.
     present_patterns: [
-      /(annex|appendix|exhibit|schedule)\s+(II|2|B).{0,40}(technical|organi[sz]ational|TOM)/i,
+      /(annexure|annex|appendix|exhibit|schedule)\s+(II|2|B).{0,40}(technical|organi[sz]ational|TOM)/i,
       /annex\s+of\s+technical\s+and\s+organi[sz]ational/i,
-      /(technical\s+and\s+organi[sz]ational\s+measures|TOMs?\b).{0,160}(annex|appendix|exhibit|schedule)\s+(II|2|B)\b/is,
+      /(technical\s+and\s+organi[sz]ational\s+measures|TOMs?\b).{0,160}(annexure|annex|appendix|exhibit|schedule)\s+(II|2|B)\b/is,
     ],
     default_severity: "warning",
   }),
@@ -1062,9 +1062,9 @@ export const DPA_GDPR_RULES: Rule[] = [
     // "the Sub-processors listed in Annex 3" names the subprocessors BEFORE
     // the annex; the annex-first pattern alone missed that order.
     present_patterns: [
-      /(annex|appendix|exhibit|schedule)\s+(III|3|C).{0,40}(sub[- ]?processor|sub-processor\s+list)/i,
+      /(annexure|annex|appendix|exhibit|schedule)\s+(III|3|C).{0,40}(sub[- ]?processor|sub-processor\s+list)/i,
       /list\s+of\s+sub[- ]?processors/i,
-      /sub[- ]?processors?\s+(listed|set\s+(out|forth)|identified|specified|named)\s+(in|on)\s+(annex|appendix|exhibit|schedule)\s+(III|3|C)\b/i,
+      /sub[- ]?processors?\s+(listed|set\s+(out|forth)|identified|specified|named)\s+(in|on)\s+(annexure|annex|appendix|exhibit|schedule)\s+(III|3|C)\b/i,
     ],
     default_severity: "warning",
   }),

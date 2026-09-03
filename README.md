@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,644+ passing tests` · `v9.386.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,648+ passing tests` · `v9.387.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -1341,7 +1341,7 @@ npm run dev          # open the printed URL
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 13,644+ tests, ~140s
+npm run test         # vitest — 13,648+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed
@@ -1368,6 +1368,17 @@ Beyond the percentage, the **report itself — the thing you cite — is structu
 The suite also tests **invariants no example could enumerate** (spec-v7 Step 118): [`fast-check`](https://github.com/dubzzz/fast-check) property tests over generated `DocumentTree`s prove the normalizer is idempotent and assigns exact, non-overlapping offsets, and that any US-dollar amount or valid ISO date round-trips through its extractor. A **fixed seed** makes the generated inputs identical on every machine and run — a property gate that drew fresh randomness would be non-deterministic, which this codebase forbids.
 
 And it tests **what the engine *means*** with metamorphic relations (spec-v7 Step 119): a document and a copy of it with non-semantic whitespace noise must produce the **same `result_hash` and the same findings**. That relation immediately earned its keep — it caught a real determinism leak (the normalizer collapsed whitespace in run text but *not* in headings, so heading whitespace bled into the offset stream and the hash) which is now fixed, with zero change to any committed golden report.
+
+That relation has since grown into the repo's **primary defect-finding instrument**. The question it asks is: *rewrite every specimen in the corpus so it says exactly what it said, and see which findings move.* Each divergence is a recognizer that could read one spelling of a clause and not another — and because the corpus is hand-typed, the spellings it never uses are precisely the ones nobody wrote a pattern for. The rewritings now shipped, each paired with a **static ratchet** so the next recognizer written the narrow way fails at once:
+
+| the same document, rewritten | what it found |
+|---|---|
+| `$425,000` → `$425,000.00`, `Section 8` → `§ 8`, `60 days` → `sixty (60) days`, `shall` → `will` | clause windows dying at a decimal point; a `\b` that can never match before `§`; 65 recognizers blind to a parenthesized numeral; 227 that read only "shall" |
+| `authorized` → `authorised`, `installments` → `instalments`, `license` → `licence` | 172 recognizers that could read only American spelling — including a loan repayable in instalments reported as stating no payment term |
+| `Section 8.2` → `clause 8.2` | **35 of 157 specimens.** A survival clause that names "Clauses 5, 6 and 9" named nothing the engine could see, so 25 documents were told their indemnity does not survive |
+| `$5,000,000` → `£5,000,000` / `€5,000,000` | 36 recognizers that could read only the dollar glyph |
+
+Two disciplines make the difference between a probe and a noise generator, and both were learned by getting them wrong first. **The rewriting must preserve meaning exactly** — "Section 409A of the Internal Revenue Code" is not "Clause 409A", and a pound sign next to the word "DOLLARS" is a document in two currencies, not a defect. And **suppress on the numbering, not on a list of names**: a statute numbers its sections `1542` and `52.212-4`, a contract numbers its own `4.2`, and that distinction settles which references are the document's own without a list anyone has to maintain forever.
 
 Two more proofs round it out: the DKB schemas are **fuzzed with a known oracle** (spec-v7 Step 121) — every artifact round-trips through `parse → serialize → parse`, and a battery of single-field mutations (bad enum, missing-required, out-of-range, malformed URL/hash) is each rejected, because a schema's real job is to *refuse* corruption before it reaches the engine. And a **per-rule completeness gate** (spec-v7 Step 117) aggregates execution logs across the golden corpus to prove every always-on launch rule actually runs, holding a regression-only floor on how many are seen both to fire *and* to stay silent — so the always-on core can never quietly lose its positive or negative coverage.
 

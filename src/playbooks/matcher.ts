@@ -725,6 +725,30 @@ function stripApostrophes(text: string): string {
 }
 
 /**
+ * The six nouns a contract uses for the thing it staples to the back.
+ *
+ * An American vendor security addendum is an "Information Security EXHIBIT";
+ * the same instrument drafted in London, Delhi or Brussels is an Annexure, an
+ * Annex or an Appendix. Retitle it and the family's own title keyword stops
+ * matching, and it falls from `vendor-security-addendum` at confidence 1 to
+ * `incident-notification` at 0.6 — a different playbook and a different set of
+ * findings. A set of disclosure schedules retitled as annexes fell to
+ * `generic-fallback` outright.
+ *
+ * Folded on BOTH sides, exactly as the apostrophe and the hyphen are, so a
+ * feature written with any of the six matches a document written with any
+ * other. The nouns are interchangeable as a matter of drafting convention, and
+ * `src/extract/attachment-kinds.ts` is where the engine's other five readers of
+ * them now agree.
+ */
+function foldAttachmentNouns(text: string): string {
+  return text.replace(
+    /\b(?:schedules|schedule|annexures|annexure|annexes|annex|appendices|appendix|attachments|attachment|exhibits)\b/gi,
+    (m) => (/s$|ices$|es$/.test(m) && m !== "annex" ? "exhibits" : "exhibit"),
+  );
+}
+
+/**
  * The three spellings of a compound a drafter may use, precomputed once for
  * the whole corpus.
  *
@@ -743,7 +767,7 @@ function stripApostrophes(text: string): string {
 type Corpus = { plain: string; noHyphen: string; spaced: string };
 
 function buildCorpus(text: string): Corpus {
-  const plain = stripApostrophes(text);
+  const plain = foldAttachmentNouns(stripApostrophes(text));
   return {
     plain,
     noHyphen: plain.replace(/-/g, ""),
@@ -752,7 +776,7 @@ function buildCorpus(text: string): Corpus {
 }
 
 function matchesIn(corpus: Corpus, feature: string): boolean {
-  const needle = stripApostrophes(feature.toLowerCase());
+  const needle = foldAttachmentNouns(stripApostrophes(feature.toLowerCase()));
   if (needle.length === 0) return false;
   const variants: Array<[string, string]> = [
     [corpus.plain, needle],
@@ -831,7 +855,13 @@ const PROPER_NAME_WORDS = 3;
  * before.
  */
 function openingKeywordLength(title: Corpus, keyword: string): number {
-  const needle = stripApostrophes(keyword.toLowerCase()).replace(/-/g, " ").trim();
+  // Folded exactly as the corpus is (see {@link foldAttachmentNouns}). This
+  // compares against `title.spaced`, which IS folded, so a needle that is not
+  // stops matching and the family silently loses the opening-position credit —
+  // which is worth double, and halved a correctly routed family's score.
+  const needle = foldAttachmentNouns(stripApostrophes(keyword.toLowerCase()))
+    .replace(/-/g, " ")
+    .trim();
   // An ACRONYM in the opening position does not name the document. "DPA",
   // "BAA", "MSA", and "CO" open four, two, three, and two families' documents
   // respectively, and a probe titled "DPA — Multi-State US" was taken by

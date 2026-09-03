@@ -1034,7 +1034,10 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
     // this column impossible to fail; a disclosure schedule keyed to an SPA's
     // representations numbers itself "Schedule 3.12", and that is the
     // organization the rule is looking for.
-    present_patterns: [/\b(?:section|clause)\s+\d+\.\d/i, /\bschedule\s+\d+\.\d/i],
+    present_patterns: [
+      /\b(?:section|clause)\s+\d+\.\d/i,
+      /\b(?:schedule|annexure|annex|appendix|exhibit)\s+\d+\.\d/i,
+    ],
   }),
   presence({
     id: "MNA-044",
@@ -1350,11 +1353,11 @@ const TSA_RULES: Rule[] = [
       /(?:service|services)\s+description/i,
       /description\s+of\s+(?:the\s+)?services/i,
       // "SCHEDULE A - SERVICES", "Exhibit 1: Services", "Annex B — Services".
-      /(?:schedule|exhibit|annex|appendix)\s+[A-Z0-9][-A-Z0-9.]*\s*[-–—:.]\s*services\b/i,
+      /(?:schedule|exhibit|annexure|annex|appendix)\s+[A-Z0-9][-A-Z0-9.]*\s*[-–—:.]\s*services\b/i,
       // "each Service described on Schedule A", "the services set forth in
       // Exhibit 1". The verb is required so a bare cross-reference to a
       // schedule that holds something else cannot satisfy the rule.
-      /\bservices?\b[^.\n]{0,40}?\b(?:described|listed|set\s+(?:out|forth)|identified|enumerated)\s+(?:in|on)\s+(?:schedule|exhibit|annex|appendix)\s+[A-Z0-9]/i,
+      /\bservices?\b[^.\n]{0,40}?\b(?:described|listed|set\s+(?:out|forth)|identified|enumerated)\s+(?:in|on)\s+(?:schedule|exhibit|annexure|annex|appendix)\s+[A-Z0-9]/i,
     ],
   }),
   presence({

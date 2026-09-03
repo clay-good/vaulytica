@@ -693,7 +693,7 @@ const DEPO = pack("deposition-notice", C, [
     cite: frcp("30(b)(2)", "depositions — producing documents"),
     pat: [
       /(document|material|produce)/i,
-      /(rule\s+34|attached|schedule\s+[a-z]|request(ed)?\s+(to\s+be\s+)?produced|subpoena\s+duces\s+tecum)/i,
+      /(rule\s+34|attached|(?:schedule|exhibit|annexure|annex|appendix)\s+[a-z]|request(ed)?\s+(to\s+be\s+)?produced|subpoena\s+duces\s+tecum)/i,
     ],
     all: true,
     why: "Rule 30(b)(2) allows a document request with the notice, but it must comply with Rule 34 — which means the deponent gets the full Rule 34 response period, not until the deposition date.",

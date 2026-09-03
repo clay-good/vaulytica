@@ -1048,7 +1048,7 @@ const DEED_OF_TRUST_RULES: Rule[] = [
     recommendation:
       "Add 'Legal Description' or Exhibit A with metes-and-bounds, lot-and-block, or recorded-plat reference (including book / page or instrument number).",
     present_patterns: [
-      /(legal\s+description|exhibit\s+a)/i,
+      /(legal\s+description|(?:exhibit|schedule|annexure|annex|appendix)\s+a)/i,
       /(metes\s+and\s+bounds|lot\s+\d|block\s+\d|book\s+\d.+page\s+\d|instrument\s+no)/i,
     ],
   }),
