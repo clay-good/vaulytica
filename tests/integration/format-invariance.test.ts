@@ -162,6 +162,42 @@ describe("format is not load-bearing", () => {
     120_000,
   );
 
+  it("one sentence per line moves no finding", async () => {
+    // The OTHER direction from stripping blank lines, and the one a PDF text
+    // layer actually produces: hard line breaks at every sentence, so a
+    // paragraph that carried two signals together — a cap phrase and the
+    // carve-out beneath it — becomes several paragraphs that carry one each.
+    // Three hundred and one specimens, and the engine holds on all of them.
+    // Recorded as a standing relation because paragraph boundaries are the
+    // one piece of structure a rule cannot see across.
+    const perSentence = (text: string): string =>
+      text
+        .split("\n")
+        .map((line) =>
+          line.length > 200 ? line.replace(/(?<=[a-z0-9)”"']\.)\s+(?=[A-Z])/g, "\n") : line,
+        )
+        .join("\n");
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const split = perSentence(text);
+      if (split === text) continue;
+      probed++;
+      const normal = await analyzeText(text, name);
+      const after = await analyzeText(split, name);
+      const ids = (r: typeof normal): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(normal).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(normal).includes(id));
+      if (lost.length || gained.length) {
+        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      }
+    }
+    expect(probed, "no specimen has a paragraph long enough to split").toBeGreaterThanOrEqual(250);
+    expect(broken).toEqual([]);
+  }, 300_000);
+
   it.each(SPECIMENS.filter((n) => !KNOWN_UNSTABLE.has(n)))(
     "%s reports the same findings with its blank lines stripped",
     async (name) => {

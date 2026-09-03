@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.396.0] — 2026-09-03
+
+### Added
+- **The one-sentence-per-line relation** in `format-invariance.test.ts` — the
+  other direction from stripping blank lines, and the one a PDF text layer
+  actually produces. Hard line breaks at every sentence turn a paragraph that
+  carried two signals together (a cap phrase and the carve-out beneath it) into
+  several that carry one each, and **paragraph boundaries are the one piece of
+  structure a rule cannot see across**.
+
+  Three hundred and one specimens, and the engine holds on all of them. A clean
+  relation is worth keeping when it covers a shape the corpus cannot otherwise
+  reach: this one is what a scanned or exported contract looks like, and
+  nothing else in the suite asserts it.
+
 ## [9.395.0] — 2026-09-03
 
 ### Fixed
