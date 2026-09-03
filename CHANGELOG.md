@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.406.0] — 2026-09-03
+
+### Fixed
+- One more unbounded per-match slice, in `crossrefs.ts`: the subsection run
+  after a reference (`Section 4.2(a)(ii)`) sliced the whole remainder to read a
+  few characters from it. Found by a STATIC sweep for the shape, which the
+  timing sweep had missed.
+
+### Removed
+- **The timing assertions.** They were tried three ways and each took `main`
+  red: a growth ratio (noise — the "[" case failed on macOS at 31 ms), a
+  wall-clock budget (CI runs under coverage instrumentation, so laptop-derived
+  budgets failed at 13 s against a 12 s bound), and a ratio against a prose
+  baseline measured in the same process, which should have normalized both and
+  still read **28.9x on a CI runner against ~2x locally**. Wall-clock timing is
+  not a signal this CI can carry at this granularity, however it is framed.
+
+  A static ratchet over the source was tried next and found four more real
+  instances immediately — but its honest form has to tell a slice inside a
+  `while ((m = RE.exec(text)))` loop from the same call made once per paragraph,
+  and the line-number-keyed exception list standing in for that distinction
+  would go stale on the next edit above it. **A guard whose declarations rot is
+  worse than none.**
+
+  So the shape is written down in `fuzz-boundary.test.ts`, the instances it
+  found are fixed, and the sweep lives in the session notes rather than in CI —
+  worth re-running by hand after any widening pass, since a widening is exactly
+  what made the first of these reachable. The fixes themselves are proven by the
+  measurements in 9.400.0-9.405.0, each confirmed by putting the quadratic back.
+
 ## [9.405.0] — 2026-09-03
 
 ### Fixed
