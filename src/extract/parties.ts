@@ -620,6 +620,23 @@ const LEADING_ROLE = new RegExp(String.raw`^(${PARTY_ROLE_LABEL})\s*,\s*(?=[A-Z]
  * deliberately refuses to cross the word "between" — there the lead ends
  * before it. Here the names sit AFTER the connective, so the lead contains it.
  */
+/**
+ * How far back a per-match guard reads.
+ *
+ * Each of these asks a question about the text BEFORE a match — is this
+ * occurrence inside a disclaimed relationship, does a preamble lead into this
+ * "between", which party declaration is nearest before this d/b/a — and each
+ * used to slice the whole preceding document to ask it. That is O(n) per match,
+ * and a preamble naming many parties is an ordinary contract: 480 KB of party
+ * list spent twelve SECONDS here.
+ *
+ * A window is also the more correct reading. `DISCLAIMED_RELATIONSHIP` cannot
+ * cross a `.`, `;` or newline, so it can only fire within one sentence, and a
+ * disclaimer four thousand characters earlier suppressing a party here was
+ * never the intent — it is a preamble lead, not the whole instrument.
+ */
+const LEAD_WINDOW = 4000;
+
 const DISCLAIMED_RELATIONSHIP =
   /\b(?:not|no|nothing|never|neither)\b[^.;\n]{0,120}?\b(?:constitute|create|form|imply|establish|give\s+rise\s+to|amount\s+to)\w*/i;
 
@@ -750,7 +767,8 @@ export function extractParties(tree: DocumentTree): Party[] {
       // guarded this way; this path never was, because it could not read an
       // upper-case entity abbreviation at all and so never reached such a
       // sentence.
-      if (DISCLAIMED_RELATIONSHIP.test(text.slice(0, m.index))) continue;
+      if (DISCLAIMED_RELATIONSHIP.test(text.slice(Math.max(0, m.index - LEAD_WINDOW), m.index)))
+        continue;
       registerParty(partyMap, name, {
         role,
         entity_type: entity,
@@ -803,7 +821,7 @@ export function extractParties(tree: DocumentTree): Party[] {
       if (!dba || !/^[A-Z]/.test(dba)) continue;
       // Attach to the party whose declaration ends nearest before the
       // d/b/a phrase (the legal name it operates under).
-      const before = text.slice(0, dm.index);
+      const before = text.slice(Math.max(0, dm.index - LEAD_WINDOW), dm.index);
       PARTY_DECL.lastIndex = 0;
       let pm: RegExpExecArray | null;
       let legal = "";
@@ -830,7 +848,7 @@ export function extractParties(tree: DocumentTree): Party[] {
     // sentence and ends in a period, so this cannot swallow one.
     if (isDocumentTitleLine(text)) continue;
     while ((betweenMatch = BETWEEN_RE.exec(text)) !== null) {
-      const lead = text.slice(0, betweenMatch.index);
+      const lead = text.slice(Math.max(0, betweenMatch.index - LEAD_WINDOW), betweenMatch.index);
       // A DISCLAIMED relationship is the opposite of a preamble: "THIS
       // CERTIFICATE DOES NOT CONSTITUTE A CONTRACT BETWEEN THE ISSUING
       // INSURER(S) … AND THE CERTIFICATE HOLDER" names the two roles precisely
@@ -880,7 +898,7 @@ export function extractParties(tree: DocumentTree): Party[] {
     AMONG_RE.lastIndex = 0;
     let amongMatch: RegExpExecArray | null;
     while ((amongMatch = AMONG_RE.exec(text)) !== null) {
-      const lead = text.slice(0, amongMatch.index);
+      const lead = text.slice(Math.max(0, amongMatch.index - LEAD_WINDOW), amongMatch.index);
       if (NEGATED_PREAMBLE.test(lead)) continue;
       if (!hasPreambleLead(lead)) continue;
       const listStart = amongMatch.index + amongMatch[0].indexOf(amongMatch[1] ?? "");
