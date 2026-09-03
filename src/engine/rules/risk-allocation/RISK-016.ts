@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, enclosingSentence, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import {
+  emit,
+  enclosingSentence,
+  excerptWindow,
+  firstParagraphMatch,
+  MODAL_QUALIFIER,
+} from "../_helpers.js";
 
 /**
  * RISK-016 — Insurance requirement without coverage minimum
@@ -31,7 +37,10 @@ export const rule: Rule = {
       // matched only in the active shall-maintain voice. "provide / have" are
       // deliberately omitted so "shall provide insurance CERTIFICATES" and
       // "shall have insurance PROCEEDS applied" are not misread as the mandate.
-      /\b(?:(?:shall|must|will|agrees?\s+to|(?:is|are)\s+(?:required|obligated)\s+to)\s+(?:maintain|carry|procure|obtain|purchase|secure|keep\s+in\s+force)\s+[^.]{0,80}\binsurance\b|insurance\s+(?:shall|must|will)\s+be\s+(?:maintained|carried|procured|obtained|purchased|secured|kept\s+in\s+force))/i,
+      new RegExp(
+        `\\b(?:(?:shall|must|will|agrees?\\s+to|(?:is|are)\\s+(?:required|obligated)\\s+to)${MODAL_QUALIFIER}(?:maintain|carry|procure|obtain|purchase|secure|keep\\s+in\\s+force)\\s+[^.]{0,80}\\binsurance\\b|insurance\\s+(?:shall|must|will)\\s+be\\s+(?:maintained|carried|procured|obtained|purchased|secured|kept\\s+in\\s+force))`,
+        "i",
+      ),
     );
     if (!hit) return null;
     // HEALTH insurance maintained FOR A PERSON is not a commercial coverage

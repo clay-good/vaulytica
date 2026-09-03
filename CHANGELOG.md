@@ -2,6 +2,68 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.389.0] — 2026-09-02
+
+### Fixed
+- **A qualifier between a modal and its verb.** "Tenant shall, AT ITS SOLE COST
+  AND EXPENSE, maintain commercial general liability insurance"; "Seller shall,
+  IN ACCORDANCE WITH APPLICABLE LAW, indemnify Buyer". The obligor, the
+  obligation and the verb are all exactly where they were — only a
+  comma-delimited adverbial has been inserted between two of them, and every
+  recognizer that required the verb to sit immediately after the modal read
+  none of them.
+
+  Injecting one moved a finding on **fifty-nine specimens**. RISK-016 lost the
+  insurance mandate on nine documents; RISK-011, RISK-015, FIN-005, GOV-140,
+  DARK-003, RE-028 and TERM-005 were the rest. `MODAL_QUALIFIER` in
+  `rules/_helpers.ts` is now the one answer — comma-anchored on both sides,
+  bounded to sixty characters, and confined to a single clause, so the adjacent
+  form still matches and the window cannot run away.
+
+- **RISK-015 could not read "shall defend, indemnify, and hold harmless"** — the
+  standard tripartite formula. Its verb list wanted "defend AND indemnify" and
+  its hold-harmless branch required a word between "hold" and "harmless", so
+  "hold harmless Grantor" matched neither, and an easement's only indemnity —
+  uncapped — went unreported. RISK-011 has carried the `(?:defend,?\s+)?` slot
+  since it was written.
+
+  Two golden fixtures gained the finding, and both are documents written to
+  have it: `bad-saas-vendor-uncapped-ip` ("Provider shall defend, indemnify,
+  and hold harmless Customer from any claim that the Services infringe any
+  third-party intellectual property right") and `bad-contractor-leaseback`
+  ("Contractor shall defend, indemnify, and hold harmless Company … from and
+  against any and all claims"). A fixture named for an uncapped indemnity was
+  not being reported for one. Four specimens joined them — an easement, a
+  deposit account control agreement, a freight agreement and an assignment of
+  claim, each with a plainly uncapped indemnity nobody had been told about.
+
+  Widening the hold-harmless branch on its own was WRONG, and three false
+  accusations said so at once: a bare section heading ("MEMBER HOLD HARMLESS",
+  "Hold Harmless."), a power of attorney's statutory reliance protection ("I
+  hold harmless any third party who acts in good faith reliance on this
+  instrument"), and a managed-care participation agreement's balance-billing
+  prohibition ("Provider shall hold harmless each Member, and shall not bill,
+  charge, collect a deposit from … a Member for Covered Services"). None is a
+  commercial indemnity and none has a cap to state. **An indemnity says what it
+  holds you harmless FROM, and names a claim, loss, liability or damage when it
+  does** — requiring that keeps the branch on the clause it is about.
+
+- **TERM-002, TERM-005 and ADDENDA-009** were windows a few characters short.
+  The gap between a default and the termination verb is where a sentence lists
+  the remedies; the gap between a termination right and "in which case" is
+  where it states the notice mechanics; the gap between a penetration test and
+  its cadence is where it states the scope.
+
+### Added
+- Three more insertions in `boilerplate-injection.test.ts`, and two REJECTED
+  ones recorded rather than shipped. **"Customer AND ITS AFFILIATES"** adds
+  parties to the obligation, so OBLI-002's role-mutuality finding moves for a
+  reason that is not a defect — forty-one divergences, not one of them a bug.
+  **"as set forth in Section 12"** invents a reference to a section the document
+  does not have, so STRUCT-007 reports a broken cross-reference that really is
+  broken; replacing it with ", in accordance with applicable law," — the same
+  length, no dangling reference — turned 99 divergences into 59 real ones.
+
 ## [9.388.0] — 2026-09-02
 
 ### Fixed

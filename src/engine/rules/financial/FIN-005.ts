@@ -2,6 +2,7 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { CURRENCY_GLYPHS } from "../../../extract/amounts.js";
 import {
   amendsParentAgreement,
+  MODAL_QUALIFIER,
   emit,
   firstParagraphMatch,
   isIncorporatedExhibit,
@@ -54,7 +55,7 @@ const PAYMENT_TERMS = new RegExp(
     // fees set out in Exhibit A. Contractor shall deliver a status report on
     // the first day of each month" as a payment term. The decimal point is the
     // only period this clause ever contains.
-    `\\b(?:shall|will|must|agrees\\s+to)\\s+(?:pay|remit)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bon\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
+    `\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|remit)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bon\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
     `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed|owing|(?:you|he|she|they|it)\\s+owes?)|balance|fees?|royalt(?:y|ies))\\s+[\\s\\w,%§]{0,40}?(?:is|are|(?:shall|will)\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+|made\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
@@ -77,7 +78,7 @@ const PAYMENT_TERMS = new RegExp(
     // upon completion and monitoring of each visit, within forty-five (45)
     // days after receipt of a proper invoice" is a plainly stated payment
     // term, and one hyphen stopped the branch from reaching it.
-    `\\b(?:shall|will|must|agrees\\s+to)\\s+(?:pay|fund|advance|disburse|reimburse)\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|fund|advance|disburse|reimburse)\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     // A recurring charge states its term as a DUE DATE, not an interval from
     // an invoice: "Base Rent: $20,000 per month, payable in advance on the
     // first of each month" is a payment term, and every branch above is
@@ -151,7 +152,7 @@ const PAYMENT_TERMS = new RegExp(
     // right from the verb, so a plainly stated payment term was reported as
     // none. Same window and same character class as the "shall pay … within"
     // branch, read the other way.
-    `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?\\b(?:shall|will|must|agrees\\s+to)\\s+(?:pay|remit)\\b`,
+    `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|remit)\\b`,
     // A subscription states its payment term with "billed", not with
     // "due"/"payable"/"paid" — "Subscription fees are billed in advance,
     // monthly or annually", "you will be charged monthly". Every branch above

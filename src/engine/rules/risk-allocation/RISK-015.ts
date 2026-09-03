@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, enclosingSentence, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, enclosingSentence, isPresenceDisclaimed, MODAL_QUALIFIER } from "../_helpers.js";
 import { capExceptsIndemnity } from "./RISK-004.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
@@ -62,9 +62,10 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // ... other than a claim arising from Manager's gross negligence" is a
     // property-management indemnity between two businesses, and it still needs
     // its cap; "The Partnership shall indemnify the General Partner" does not.
-    /\b(?:the\s+)?(?:Partnership|Company|Corporation|Trust|LLC|Limited\s+Liability\s+Company)\s+(?:shall|will|must|agrees\s+to)\s+indemnif\w+[^.]{0,100}?\b(?:General\s+Partner|Managing\s+Member|Manager|Managers|Members?|Directors?|Officers?|Trustees?)\b[^.]{0,200}?\b(?:fraud|willful\s+misconduct|gross\s+negligence|knowing\s+violation\s+of\s+law)\b/i.test(
-      text,
-    ) ||
+    new RegExp(
+      `\\b(?:the\\s+)?(?:Partnership|Company|Corporation|Trust|LLC|Limited\\s+Liability\\s+Company)\\s+(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}indemnif\\w+[^.]{0,100}?\\b(?:General\\s+Partner|Managing\\s+Member|Manager|Managers|Members?|Directors?|Officers?|Trustees?)\\b[^.]{0,200}?\\b(?:fraud|willful\\s+misconduct|gross\\s+negligence|knowing\\s+violation\\s+of\\s+law)\\b`,
+      "i",
+    ).test(text) ||
     // The THIRD-PARTY RELIANCE indemnity of a personal instrument, which is
     // statutory and uncapped by design. "Any person who in good faith accepts
     // this instrument without actual knowledge that it is void may rely on it.
@@ -102,8 +103,32 @@ export const rule: Rule = {
     let hasCap = false;
     let capCarvesOutIndemnity = false;
 
-    const INDEMNITY =
-      /\b(?:shall|will|agrees?\s+to)\s+indemnify|\bhold\s+\w+\s+harmless|\bdefend\s+and\s+indemnify\b|\bindemnification\s+obligations?\b/i;
+    // The tripartite formula is one obligation: "Grantee shall DEFEND,
+    // INDEMNIFY, AND HOLD HARMLESS Grantor". The verb list needed "and"
+    // between defend and indemnify, and the hold-harmless branch required a
+    // word between "hold" and "harmless" — so "hold harmless Grantor" matched
+    // neither, and an easement's only indemnity, uncapped, went unreported.
+    // RISK-011 has carried the `(?:defend,?\s+)?` slot since it was written.
+    //
+    // An indemnity says what it holds you harmless FROM, and requiring that is
+    // what keeps the widened branch off a bare SECTION HEADING — "MEMBER HOLD
+    // HARMLESS", "Hold Harmless." — and off a power of attorney's statutory
+    // reliance protection, "I hold harmless any third party who acts in good
+    // faith reliance on this instrument", which is not a commercial indemnity
+    // and has no cap to state. All three fired the moment the object was
+    // optional and nothing followed it.
+    //
+    // The harm has to be an INDEMNITY's harm, too. A managed-care participation
+    // agreement's "Provider shall hold harmless each Member, and shall not
+    // bill, charge, collect a deposit FROM … a Member for Covered Services" is
+    // the balance-billing protection every payer contract carries — a
+    // regulatory prohibition, not a commercial indemnity, and it has no
+    // aggregate cap to state. Requiring a claim / loss / liability / damage
+    // after the preposition keeps the branch on the clause it is about.
+    const INDEMNITY = new RegExp(
+      `\\b(?:shall|will|agrees?\\s+to)${MODAL_QUALIFIER}(?:defend,?\\s+(?:and\\s+)?)?indemnify|\\bhold\\s+(?:\\w+\\s+)?harmless\\b[^.]{0,80}?\\b(?:from|against)\\b[^.]{0,40}?\\b(?:claims?|loss|losses|liabilit(?:y|ies)|damages?|costs?|expenses?|suits?|actions?|proceedings?|judgments?|penalt(?:y|ies)|fines?)\\b|\\bdefend\\s+and\\s+indemnify\\b|\\bindemnification\\s+obligations?\\b`,
+      "i",
+    );
     // "Each party's total liability under this Agreement shall not exceed
     // the Contract Price" — the dominant aggregate-cap sentence — matched no
     // branch ("not to exceed" is not "shall not exceed", and the adjective is

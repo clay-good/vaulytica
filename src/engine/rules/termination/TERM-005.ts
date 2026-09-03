@@ -205,7 +205,13 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // introduces a consequence and nothing else, so pairing it with a
     // termination word in the same sentence is specific without needing to
     // enumerate the consequence verb at all.
-    String.raw`|\bterminat(?:e|es|ed|ing|ion)\b${SAME_SENTENCE}{0,120}?\bin\s+which\s+case\b`,
+    // The gap holds the NOTICE MECHANICS — "Buyer may terminate this Agreement
+    // for any reason or no reason by written notice (as described below) given
+    // before the Due Diligence Period expires, in which case the Deposit is
+    // returned" — and a defined term carrying its own back-reference, which is
+    // ordinary drafting, ran it past a hundred and twenty characters. Still
+    // confined to one sentence.
+    String.raw`|\bterminat(?:e|es|ed|ing|ion)\b${SAME_SENTENCE}{0,160}?\bin\s+which\s+case\b`,
   "i",
 );
 

@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, MODAL_QUALIFIER } from "../_helpers.js";
 import { isStatutoryDandOIndemnity } from "./RISK-015.js";
 
 const PROCEDURE = [
@@ -43,8 +43,10 @@ const PROCEDURE = [
 // cross-reference for defense-control and settlement-consent mechanics
 // accused a correctly drafted document of an incomplete clause it never
 // purported to contain.
-const OPERATIVE_INDEMNITY =
-  /\b(?:shall|will|must|agrees?\s+to|hereby)\s+(?:(?:further|also|fully|jointly\s+and\s+severally|at\s+all\s+times)\s+)?(?:defend,?\s+)?indemnif|\bindemnifies\b|\bindemnification\s+by\b/i;
+const OPERATIVE_INDEMNITY = new RegExp(
+  `\\b(?:shall|will|must|agrees?\\s+to|hereby)${MODAL_QUALIFIER}(?:(?:further|also|fully|jointly\\s+and\\s+severally|at\\s+all\\s+times)\\s+)?(?:defend,?\\s+)?indemnif|\\bindemnifies\\b|\\bindemnification\\s+by\\b`,
+  "i",
+);
 
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {

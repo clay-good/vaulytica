@@ -557,7 +557,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "RISK-015-s1.1-193",
+      "fired": true,
       "ran": true,
       "rule_id": "RISK-015",
       "rule_version": "1.10.0"
@@ -882,6 +883,24 @@
       "title": "Data retention period unspecified"
     },
     {
+      "description": "Indemnification language is present (`shall defend, indemnify`) but no clause caps the aggregate exposure.",
+      "document_position": 193,
+      "excerpt": {
+        "end_offset": 216,
+        "section_id": "s1.1",
+        "start_offset": 193,
+        "text": "Provider shall defend, indemnify, and hold harmless Customer from any claim that the Services infringe any third-party intellectual property right, and shall pay all damages and costs awarded."
+      },
+      "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
+      "id": "RISK-015-s1.1-193",
+      "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
+      "rule_id": "RISK-015",
+      "rule_version": "1.10.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Indemnification without aggregate cap"
+    },
+    {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
       "document_position": 0,
       "excerpt": {
@@ -1085,11 +1104,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "085b9b1668dcf48b9f72bd70013472af9c614a9af2dba259b947735ac5ef9053",
+  "result_hash": "4a60f7bbefa7b4a9caf65ad4103f90e9be5c20c562d49c06e4ab42d393d11160",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.388.0"
+  "version": "9.389.0"
 }

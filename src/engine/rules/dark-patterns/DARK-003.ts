@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { MODAL_QUALIFIER } from "../_helpers.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 
 // Consumer terms address the reader in the second person — "YOU shall pay
@@ -28,8 +29,8 @@ const FEES =
 //                           fees" — "for (its)" separates the drafter from the fees.
 const ASYMMETRIC_FEE_SHIFT = new RegExp(
   [
-    `\\b${READER}\\s+${VERB}\\s+(?:pay|reimburse)\\s+(?:the\\s+)?${DRAFTER}['’]?s?\\s+${FEES}`,
-    `\\b${READER}\\s+${VERB}\\s+(?:pay|reimburse)\\s+[^.]{0,40}?${FEES}[^.]{0,40}?\\bincurred\\s+by\\s+(?:the\\s+)?${DRAFTER}\\b`,
+    `\\b${READER}\\s+${VERB}${MODAL_QUALIFIER}(?:pay|reimburse)\\s+(?:the\\s+)?${DRAFTER}['’]?s?\\s+${FEES}`,
+    `\\b${READER}\\s+${VERB}${MODAL_QUALIFIER}(?:pay|reimburse)\\s+[^.]{0,40}?${FEES}[^.]{0,40}?\\bincurred\\s+by\\s+(?:the\\s+)?${DRAFTER}\\b`,
     `\\b${READER}\\s+${VERB}\\s+reimburse\\s+(?:the\\s+)?${DRAFTER}\\s+for\\s+(?:its\\s+)?${FEES}`,
   ].join("|"),
   "i",

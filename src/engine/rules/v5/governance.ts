@@ -6,6 +6,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, irs, practice, uniformAct } from "./_helpers.js";
+import { MODAL_QUALIFIER } from "../_helpers.js";
 import { dgcl } from "../v4/governance/_helpers.js";
 
 const C = "governance";
@@ -552,7 +553,10 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
     cite: dgcl("145(c)"),
     pat: [
       /success(?:ful)?[^.;]{0,60}?(?:on\s+the\s+merits|or\s+otherwise)/i,
-      /(?:(?:shall|will)|must|is\s+entitled\s+to\s+be)\s+indemnif\w+/i,
+      new RegExp(
+        `(?:(?:shall|will)|must|is\\s+entitled\\s+to\\s+be)${MODAL_QUALIFIER}indemnif\\w+`,
+        "i",
+      ),
     ],
     all: true,
     why: "§ 145(c) makes indemnification MANDATORY, not permissive, where the director succeeds on the merits or otherwise in defense of a proceeding or of any claim in it. Restating it contractually removes the argument that a dismissal without prejudice or a favorable settlement was not a 'success'.",

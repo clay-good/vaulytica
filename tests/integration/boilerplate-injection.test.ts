@@ -66,7 +66,49 @@ const INJECTIONS: Record<string, [(s: string) => string, number]> = {
     (s) => s.replace(/\bthe Services\b(?!\s*\()/g, "the Services (as defined in Section 1)"),
     10,
   ],
+  // The interstitial between a modal and its verb. "Tenant shall, AT ITS SOLE
+  // COST AND EXPENSE, maintain commercial general liability insurance" is how
+  // a lease allocates the premium, and RISK-016 lost the insurance mandate on
+  // nine documents to it.
+  "the obligor bears its own cost": [
+    (s) =>
+      s.replace(
+        /\b(shall|will)\s+(?=(?:provide|perform|maintain|deliver|obtain|keep|procure|repair)\b)/g,
+        "$1, at its sole cost and expense, ",
+      ),
+    100,
+  ],
+  // The same shape in front of the verbs that carry money and risk. Fifty-nine
+  // specimens moved a finding: RISK-011, RISK-015, FIN-005, GOV-140, DARK-003
+  // and RE-028 all required the verb to sit immediately after the modal.
+  "the obligation is qualified by law": [
+    (s) =>
+      s.replace(
+        /\b(shall|will)\s+(?=(?:indemnify|defend|pay|reimburse)\b)/g,
+        "$1, in accordance with applicable law, ",
+      ),
+    100,
+  ],
+  "the notice gains its back-reference": [
+    (s) => s.replace(/\bwritten\s+notice\b/g, "written notice (as described below)"),
+    100,
+  ],
 };
+
+/**
+ * REJECTED, and recorded rather than shipped — an injection that produces an
+ * unreal document produces unreal defects, which is the same discipline the
+ * rewriting probes reached from the other direction:
+ *
+ *   - **"Customer AND ITS AFFILIATES"** adds parties to the obligation, so
+ *     OBLI-002's role-mutuality finding moves for a reason that is not a
+ *     defect. Forty-one specimens diverged, and none of them was a bug.
+ *   - **"as set forth in Section 12"** invents a reference to a section the
+ *     document does not have, so STRUCT-007 reports a broken cross-reference
+ *     that really is broken. Replaced with ", in accordance with applicable
+ *     law," — the same length, no dangling reference — which is what turned 99
+ *     divergences into 59 real ones.
+ */
 
 describe("the boilerplate a real contract carries", () => {
   it.each(Object.keys(INJECTIONS))(

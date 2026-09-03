@@ -556,7 +556,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "RISK-015-s1.4-1222",
+      "fired": true,
       "ran": true,
       "rule_id": "RISK-015",
       "rule_version": "1.10.0"
@@ -896,6 +897,24 @@
       "title": "No limitation-of-liability clause detected"
     },
     {
+      "description": "Indemnification language is present (`shall defend, indemnify`) but no clause caps the aggregate exposure.",
+      "document_position": 1222,
+      "excerpt": {
+        "end_offset": 1245,
+        "section_id": "s1.4",
+        "start_offset": 1222,
+        "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in an"
+      },
+      "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
+      "id": "RISK-015-s1.4-1222",
+      "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
+      "rule_id": "RISK-015",
+      "rule_version": "1.10.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Indemnification without aggregate cap"
+    },
+    {
       "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
       "document_position": 0,
       "excerpt": {
@@ -1012,11 +1031,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "ec82676180e50a79f079f1675aeeb77640269e7808fa9ef1acecd9882ef1572d",
+  "result_hash": "74899278ed1a864359111a1ed4676feb0fbfc37d1c6be55185f71f172dba51ca",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.388.0"
+  "version": "9.389.0"
 }

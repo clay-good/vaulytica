@@ -506,7 +506,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // assignable, and this one does not.
   "assignment-of-claim.txt": {
     playbook: "assignment-of-claim",
-    findings: ["SET-112", "STRUCT-018", "OBLI-002", "RISK-011"],
+    findings: ["RISK-015", "SET-112", "STRUCT-018", "OBLI-002", "RISK-011"],
   },
   // A one-step cash merger of a private target approved at a stockholder
   // MEETING. Two false positives: OBLI-004 reported the agreement as using
@@ -743,7 +743,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // is 49 U.S.C. § 14706, not a contractual cap.
   "freight-transportation-agreement.txt": {
     playbook: "freight-transportation-agreement",
-    findings: ["OBLI-005", "RISK-010", "RISK-011", "STRUCT-018", "TEMP-004", "TEMP-006"],
+    findings: [
+      "RISK-015",
+      "OBLI-005",
+      "RISK-010",
+      "RISK-011",
+      "STRUCT-018",
+      "TEMP-004",
+      "TEMP-006",
+    ],
   },
 
   "cla.txt": {
@@ -2812,7 +2820,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // family, because no bank's control agreement states a dollar cap.
   "daca.txt": {
     playbook: "deposit-account-control-agreement",
-    findings: ["OBLI-005", "RISK-007", "STRUCT-006", "TEMP-007"],
+    findings: ["RISK-015", "OBLI-005", "RISK-007", "STRUCT-006", "TEMP-007"],
   },
 
   // A venture-lender warrant behind the same restrictive-securities legend as
@@ -3006,7 +3014,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // "easement / premises / property / area / improvements / surface".
   "easement.txt": {
     playbook: "easement-agreement",
-    findings: ["OBLI-005", "RISK-010", "RISK-011"],
+    findings: ["RISK-015", "OBLI-005", "RISK-010", "RISK-011"],
   },
 
   // An Ohio exclusive-right-to-sell listing agreement with the protection

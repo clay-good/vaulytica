@@ -808,6 +808,23 @@ const SIGNED_RIDER_INTO_PARENT = new RegExp(
  * identification use this one, because an amendment IS separately signed by
  * both parties and an exhibit is not.
  */
+/**
+ * The qualifier a drafter drops between a modal and its verb.
+ *
+ * "Tenant shall, AT ITS SOLE COST AND EXPENSE, maintain commercial general
+ * liability insurance of $2,000,000 per occurrence"; "Seller shall, IN
+ * ACCORDANCE WITH APPLICABLE LAW, indemnify Buyer". The obligor, the
+ * obligation and the verb are all exactly where they were — only a
+ * comma-delimited adverbial has been inserted between two of them, and every
+ * recognizer that required the verb to sit immediately after the modal read
+ * none of them. Fifty-nine specimens moved a finding when one was injected.
+ *
+ * Comma-anchored on BOTH sides and bounded to sixty characters, so it cannot
+ * swallow the rest of the sentence, and `[^.;]` keeps it inside one clause.
+ * The whole group is optional, so the adjacent form still matches.
+ */
+export const MODAL_QUALIFIER = String.raw`(?:,\s*[^.;]{0,60}?,)?\s+`;
+
 export function isIncorporatedExhibit(ctx: RuleContext): boolean {
   return INCORPORATED_INTO_PARENT.test(documentTextOf(ctx));
 }
