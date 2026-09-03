@@ -2,6 +2,88 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.405.0] — 2026-09-03
+
+### Fixed
+- **A long party list took twelve seconds.** A syndicated credit agreement or a
+  multi-party joint venture opens by naming every party, and each of four guards
+  in `extractParties` asked a question about the text BEFORE a match — is this
+  occurrence inside a disclaimed relationship, does a preamble lead into this
+  "between", which party declaration is nearest before this d/b/a — **by slicing
+  the whole preceding document to ask it.** 480 KB of party list spent twelve
+  seconds there; it is 4.8 s now, and a realistic 160 KB is well under a second.
+
+  The window is also the more correct reading. `DISCLAIMED_RELATIONSHIP` cannot
+  cross a `.`, `;` or newline, so it only ever fires inside one sentence — a
+  disclaimer four thousand characters earlier suppressing a party here was never
+  the intent.
+
+### Notes
+- **The performance guard is a BASELINE ratio now, and that took three tries.**
+  A growth ratio was wrong: these paths finish in single-digit milliseconds,
+  where scheduling noise swamps it, and the "[" case failed on macOS CI at 31
+  ms. A wall-clock budget was wrong too, and took **three workflows red** with
+  it: CI runs the suite under **coverage instrumentation**, which inflates every
+  timing by an unknown factor, so budgets set from a laptop failed at 13 s
+  against a 12 s bound.
+
+  Ordinary prose of the same length, measured in the SAME process, is linear by
+  construction and normalizes for both machine speed and instrumentation. Every
+  pathological input is within ~2x of it; the bound is 25x. The one exception is
+  the table-of-contents gate, where a prose baseline is meaningless — it does
+  almost nothing on prose and real work on a page of dot leaders — so that one
+  keeps a generous absolute bound with sixty times the headroom it needs.
+
+- **The party and definition scans are still superlinear above ~300 KB**, and
+  that is recorded rather than smoothed over: the fix above is a 2.6x
+  improvement, not a removal.
+
+## [9.404.0] — 2026-09-03
+
+### Fixed
+- **A contract pasted as ONE paragraph took 42 seconds at 563 KB.** Pasting a
+  whole agreement with no blank lines is an ordinary thing to do, and the
+  cross-reference loop sliced **the whole preamble and the whole remainder for
+  every reference** — some 27 GB of string copying — then called an unbounded
+  sentence scan on top of it. Every guard it feeds is anchored (`^` forward, `$`
+  backward) with a reach of a couple of hundred characters, so both are windowed
+  now, and `enclosingSentenceOf` searches inside a window instead of running to
+  the start and then the end of the paragraph whenever the text contains no
+  sentence break at all.
+
+  **563 KB: 42,028 ms → 585 ms**, and linear — 2.25 MB now finishes in 2.4 s
+  where it would have taken most of an hour. The paste cap is twenty million
+  characters, so a quadratic here defeats the cap that exists to prevent exactly
+  this.
+
+- **A nested quantifier in the instrument-acronym reader** — an outer `*` over a
+  group containing `[A-Za-z]*`, which backtracks quadratically on Title-Case
+  prose that never reaches an instrument noun. Bounded at eight words:
+  **3,026 ms → 12 ms**.
+
+- **`insideOccurrenceOf` scanned the whole document for every match**, and
+  walked every occurrence of the container. Only an occurrence starting within
+  one container-length of the index can contain it. Eleven per-match slices in
+  the same scan were bounded with it.
+
+### Notes
+- The pair sweep that found these repeats a two-to-three character UNIT rather
+  than one character — a nested quantifier needs a repeating unit to chew on.
+  `extractCrossRefs` was missed by the first sweep for a duller reason: it takes
+  two arguments, so the loop over every exported extractor skipped it.
+
+- The shape has now appeared **five times in one session**: an unbounded slice
+  or search per match, feeding a guard that only ever reads a bounded window.
+  Worth grepping for directly — `text.slice(i)`, `text.slice(0, i)`, and a bare
+  `indexOf`/`lastIndexOf` inside a match loop.
+
+## [9.403.0] — 2026-09-03
+
+### Fixed
+- Two more superlinear recognizers found by the same sweep: `§+` in a
+  construction surety pattern, and a greedy `/\(.*\)$/` stripping a subsection
+  from a cross-reference label.
+
 ## [9.402.0] — 2026-09-03
 
 ### Fixed
