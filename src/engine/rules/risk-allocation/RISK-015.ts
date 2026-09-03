@@ -134,7 +134,7 @@ export const rule: Rule = {
     // aggregate cap to state. Requiring a claim / loss / liability / damage
     // after the preposition keeps the branch on the clause it is about.
     const INDEMNITY = new RegExp(
-      `\\b(?:shall|will|agrees?\\s+to)${MODAL_QUALIFIER}(?:defend,?\\s+(?:and\\s+)?)?indemnify|\\bhold\\s+(?:\\w+\\s+)?harmless\\b(?:[^.]|\.(?=\d)){0,80}?\\b(?:from|against)\\b(?:[^.]|\.(?=\d)){0,40}?\\b(?:claims?|loss|losses|liabilit(?:y|ies)|damages?|costs?|expenses?|suits?|actions?|proceedings?|judgments?|penalt(?:y|ies)|fines?)\\b|\\bdefend\\s+and\\s+indemnify\\b|\\bindemnification\\s+obligations?\\b`,
+      `\\b(?:shall|will|agrees?\\s+to)${MODAL_QUALIFIER}(?:defend,?\\s+(?:and\\s+)?)?indemnify|\\bhold\\s+(?:\\w+\\s+)?harmless\\b(?:[^.]|\\.(?=\\d)){0,80}?\\b(?:from|against)\\b(?:[^.]|\\.(?=\\d)){0,40}?\\b(?:claims?|loss|losses|liabilit(?:y|ies)|damages?|costs?|expenses?|suits?|actions?|proceedings?|judgments?|penalt(?:y|ies)|fines?)\\b|\\bdefend\\s+and\\s+indemnify\\b|\\bindemnification\\s+obligations?\\b`,
       "i",
     );
     // "Each party's total liability under this Agreement shall not exceed
