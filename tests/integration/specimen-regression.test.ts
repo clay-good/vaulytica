@@ -1314,6 +1314,7 @@ export const EXPECTED: Record<string, Expectation> = {
   "source-code-escrow.txt": {
     playbook: "source-code-escrow-agreement",
     findings: [
+      "RISK-015",
       "STRUCT-018",
       "CHOICE-006",
       "IPDATA-003",

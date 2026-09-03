@@ -46,7 +46,15 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // partnership statute rather than the DGCL. The governance-role indemnitee
     // is the discriminator — a commercial "indemnify Customer to the fullest
     // extent permitted by law" carries no such role and still requires its cap.
-    /\bindemnif\w+[^.]{0,80}?\b(?:Managers?|Members?|Partners?|Directors?|Officers?|Trustees?)\b[^.]{0,80}?\bfullest\s+extent\s+permitted\b/i.test(
+    // The verb is not always the PARTICIPLE. "The Company shall continue to
+    // indemnify its directors, officers, employees, and agents to the fullest
+    // extent its Certificate of Incorporation, its Bylaws, and Delaware law
+    // PERMIT" is the same statutory indemnification a plan of dissolution
+    // always carries, and requiring "permitted" read it as a commercial
+    // indemnity that had forgotten its cap. The authority must still be named
+    // between the two, which is what keeps this off "to the fullest extent
+    // permitted" standing alone in a vendor contract.
+    /\bindemnif\w+[^.]{0,80}?\b(?:Managers?|Members?|Partners?|Directors?|Officers?|Trustees?)\b[^.]{0,80}?\bfullest\s+extent\b[^.]{0,120}?\b(?:permits?|permitted|allows?|allowed)\b/i.test(
       text,
     ) ||
     // The same statutory indemnity written WITHOUT the "fullest extent"

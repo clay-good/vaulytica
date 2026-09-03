@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.390.0] — 2026-09-02
+
+### Fixed
+- **The same qualifier with no commas at all** — "shall PROMPTLY pay", "shall
+  AT ALL TIMES maintain", "shall IMMEDIATELY notify". Fifty-two more specimens
+  moved a finding. `MODAL_QUALIFIER` now admits at most THREE lowercase words
+  as well as the comma-delimited form, which is what RISK-011 had been doing
+  with a hand-curated five-adverb list since it was written — the shape of a
+  list that needs a sixth adverb forever.
+
+  **And it refuses a NEGATION.** A bare-word slot that swallowed any word would
+  read "shall NOT indemnify", "shall NEVER pay" and "shall in NO event be
+  liable" as the obligation, turning every rule that uses it into a false
+  accusation — which is exactly why that list was curated rather than open. The
+  three-word cap also keeps "shall have the right to indemnify" and "shall use
+  commercially reasonable efforts to indemnify" out: those are different
+  obligations, not qualified ones. All of it is asserted directly.
+
+  The apostrophe guard caught the first draft of the slot within the hour:
+  `[\w'-]` admits the straight apostrophe and not the curly one, so "shall, at
+  Vendor's expense, pay" would have matched a hand-typed fixture and not a Word
+  document. That is the guard this session widened to read string-assembled
+  recognizers, doing exactly what it was widened for.
+
+- **Two more uncapped indemnities surfaced, and one false accusation retired.**
+  `bad-lease-cam` ("Tenant shall FURTHER indemnify Landlord for all direct,
+  indirect and consequential damages") and a source-code escrow ("Depositor and
+  Beneficiary shall JOINTLY AND SEVERALLY indemnify Escrow Agent against any
+  loss") both state no cap. A plan of dissolution does not: "The Company shall
+  CONTINUE TO indemnify its directors, officers, employees, and agents to the
+  fullest extent its Certificate of Incorporation, its Bylaws, and Delaware law
+  PERMIT" is statutory D&O indemnification, uncapped by design — and the
+  exemption for it read only the participle "permitted by", never the verb with
+  the authority named in between.
+
 ## [9.389.0] — 2026-09-02
 
 ### Fixed

@@ -555,7 +555,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "RISK-015-s1.5-1743",
+      "fired": true,
       "ran": true,
       "rule_id": "RISK-015",
       "rule_version": "1.10.0"
@@ -899,6 +900,24 @@
       "title": "Liability limited by waiver only; no cap stated"
     },
     {
+      "description": "Indemnification language is present (`shall further indemnify`) but no clause caps the aggregate exposure.",
+      "document_position": 1743,
+      "excerpt": {
+        "end_offset": 1766,
+        "section_id": "s1.5",
+        "start_offset": 1743,
+        "text": "If Tenant remains in possession after expiration, Tenant shall pay holdover rent equal to two hundred percent (200%) of the Base Rent in effect immediately prior to expiration, and Tenant shall further indemnify Landlord for all direct, indirect and consequential damages arising "
+      },
+      "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
+      "id": "RISK-015-s1.5-1743",
+      "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
+      "rule_id": "RISK-015",
+      "rule_version": "1.10.0",
+      "severity": "warning",
+      "source_citations": [],
+      "title": "Indemnification without aggregate cap"
+    },
+    {
       "description": "shall maintain commercial general liability insurance",
       "document_position": 2375,
       "excerpt": {
@@ -1070,11 +1089,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "86396c82678cb8b946c7eb49d5c20d554443d47cdba3278df189ab53d3769676",
+  "result_hash": "2622925e78cd4977e762bdfb136adbb4e7250f7699acafd45c56176c8269e636",
   "source_file": {
     "name": "bad-lease-cam.docx",
     "sha256": "1de7804edf376ad66d1a78b0c998aa4a479a18835fa4e104e20057385337a0b6",
     "size_bytes": 9885
   },
-  "version": "9.389.0"
+  "version": "9.390.0"
 }

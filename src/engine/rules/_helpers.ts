@@ -819,11 +819,28 @@ const SIGNED_RIDER_INTO_PARENT = new RegExp(
  * recognizer that required the verb to sit immediately after the modal read
  * none of them. Fifty-nine specimens moved a finding when one was injected.
  *
- * Comma-anchored on BOTH sides and bounded to sixty characters, so it cannot
- * swallow the rest of the sentence, and `[^.;]` keeps it inside one clause.
+ * The second half is the same qualifier with no commas at all — "shall
+ * PROMPTLY pay", "shall AT ALL TIMES maintain", "shall IMMEDIATELY notify" —
+ * which moved a finding on fifty-two more specimens. RISK-011 has carried a
+ * hand-curated five-adverb list for this since it was written, which is the
+ * shape of a list that needs a sixth adverb forever.
+ *
+ * Bounded three ways so it stays a qualifier and cannot become a clause. The
+ * comma form is anchored on BOTH sides, capped at sixty characters, and
+ * `[^.;]` keeps it inside one clause. The bare form takes at most THREE
+ * lowercase words, so "shall have the right to indemnify" (four) and "shall
+ * use commercially reasonable efforts to indemnify" (five) are still outside
+ * it, and a capitalized party name can never be swallowed.
+ *
+ * **And it refuses a NEGATION.** "shall NOT indemnify", "shall NEVER pay",
+ * "shall in NO event be liable" are the opposite of the obligation these
+ * recognizers look for, and a bare-word slot that admitted them would turn
+ * every one of these rules into a false accusation. That is exactly why
+ * RISK-011's list was curated rather than open.
+ *
  * The whole group is optional, so the adjacent form still matches.
  */
-export const MODAL_QUALIFIER = String.raw`(?:,\s*[^.;]{0,60}?,)?\s+`;
+export const MODAL_QUALIFIER = String.raw`(?:,\s*[^.;]{0,60}?,|(?:\s+(?!not\b|never\b|no\b|nor\b)[a-z][\w'’-]*){1,3})?\s+`;
 
 export function isIncorporatedExhibit(ctx: RuleContext): boolean {
   return INCORPORATED_INTO_PARENT.test(documentTextOf(ctx));

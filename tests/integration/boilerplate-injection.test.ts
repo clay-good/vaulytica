@@ -42,6 +42,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { MODAL_QUALIFIER } from "../../src/engine/rules/_helpers.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
@@ -86,6 +87,25 @@ const INJECTIONS: Record<string, [(s: string) => string, number]> = {
       s.replace(
         /\b(shall|will)\s+(?=(?:indemnify|defend|pay|reimburse)\b)/g,
         "$1, in accordance with applicable law, ",
+      ),
+    100,
+  ],
+  // The same qualifier with NO COMMAS — fifty-two more specimens. RISK-011 has
+  // carried a hand-curated five-adverb list for this since it was written,
+  // which is the shape of a list that needs a sixth adverb forever.
+  "a bare adverb, promptly": [
+    (s) =>
+      s.replace(
+        /\b(shall|will)\s+(?=(?:indemnify|defend|pay|reimburse|maintain|provide|deliver|notify|obtain|perform|keep|procure|repair)\b)/g,
+        "$1 promptly ",
+      ),
+    100,
+  ],
+  "a bare adverb, at all times": [
+    (s) =>
+      s.replace(
+        /\b(shall|will)\s+(?=(?:indemnify|defend|pay|reimburse|maintain|provide|deliver|notify|obtain|perform|keep|procure|repair)\b)/g,
+        "$1 at all times ",
       ),
     100,
   ],
@@ -138,6 +158,37 @@ describe("the boilerplate a real contract carries", () => {
     },
     300_000,
   );
+
+  it("the modal qualifier admits an adverbial and refuses a negation", () => {
+    // The bare-word half of MODAL_QUALIFIER is the dangerous one: a slot that
+    // swallowed any word would read "shall NOT indemnify" as an indemnity and
+    // turn every rule that uses it into a false accusation. That is exactly
+    // why RISK-011's adverb list was curated rather than open, and this is the
+    // proof that opening it did not open that door.
+    const re = new RegExp(`\\b(?:shall|will)${MODAL_QUALIFIER}indemnify`, "i");
+    for (const yes of [
+      "Vendor shall indemnify Customer",
+      "Vendor shall promptly indemnify Customer",
+      "Vendor shall at all times indemnify Customer",
+      "Vendor shall, at its sole cost and expense, indemnify Customer",
+      "Vendor shall, in accordance with applicable law, indemnify Customer",
+    ]) {
+      expect(re.test(yes), yes).toBe(true);
+    }
+    for (const no of [
+      "Vendor shall not indemnify Customer",
+      "Vendor shall never indemnify Customer",
+      "Vendor shall in no event indemnify Customer",
+      "Vendor shall under no circumstances indemnify Customer",
+      "Vendor shall have no obligation to indemnify Customer",
+      // Not a qualifier at all — a different obligation, and a different rule's
+      // business. Three words is the cap that keeps these out.
+      "Vendor shall use commercially reasonable efforts to indemnify Customer",
+      "Vendor shall have the right to indemnify Customer",
+    ]) {
+      expect(re.test(no), no).toBe(false);
+    }
+  });
 
   it("no cap detector reads 'not limited to' as a cap", () => {
     // The static half, and the cheap one: a window that ends on "limited" or
