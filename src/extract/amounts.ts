@@ -94,7 +94,15 @@ const COMPOSITE_DOLLAR: Record<string, string> = {
 // dropped it. The digit lookahead is additive and cannot introduce a false
 // match — a code followed by a LETTER ("USDT", "USDA") still fails both `\b` and
 // `(?=\d)`, and a code followed by a digit is a currency amount in practice.
-const CUR = String.raw`\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
+/**
+ * Exported for the RULE layer, which had hard-coded the dollar GLYPH in some
+ * forty recognizers while this file has read the ISO codes and the other
+ * symbols all along. An insurance minimum written "USD 2,000,000 per
+ * occurrence" — the way an international contract writes it — was not read as
+ * a coverage limit at all, on forty documents.
+ */
+export const CURRENCY_TOKEN = String.raw`\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
+const CUR = CURRENCY_TOKEN;
 // Digit counts are BOUNDED (`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
 // the amount is followed by a REQUIRED range connector, so an unbounded `\d+`
 // matches a whole pasted digit run, fails to find the connector, then

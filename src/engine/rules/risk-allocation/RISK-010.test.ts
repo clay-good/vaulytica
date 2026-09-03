@@ -29,4 +29,19 @@ describe("RISK-010 — insurance requirement levels", () => {
   it("does not read an 'umbrella clause of $X' (non-insurance) as a coverage limit", () => {
     expect(fires("The umbrella clause of $5,000 governs the parties' relationship.")).toBe(false);
   });
+
+  // v1.2.0 — an international contract states its minimum in an ISO code or a
+  // non-dollar symbol, and the rule wanted the dollar GLYPH. The extractor has
+  // read the codes since it was written; the rule layer now shares its token.
+  it.each([
+    ["the glyph", "Vendor shall maintain cyber liability insurance of $2,000,000 per occurrence."],
+    ["USD", "Vendor shall maintain cyber liability insurance of USD 2,000,000 per occurrence."],
+    ["EUR", "Vendor shall maintain cyber liability insurance of EUR 2.000.000 per occurrence."],
+    [
+      "a pound sign",
+      "Vendor shall maintain cyber liability insurance of £2,000,000 per occurrence.",
+    ],
+  ])("reads a coverage minimum stated in %s", (_label, body) => {
+    expect(fires(body), body).toBe(true);
+  });
 });

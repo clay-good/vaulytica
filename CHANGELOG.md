@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.381.0] — 2026-09-02
+
+### Fixed
+- **The rule layer had its own, narrower spelling of "money".** `src/extract/
+  amounts.ts` has read the ISO codes and the non-dollar symbols since it was
+  written; some forty rule patterns hard-coded the dollar GLYPH. An
+  international contract that states "USD 2,000,000 per occurrence" or
+  "€5.000.000" lost its coverage minimum on **forty documents** — RISK-010
+  (v1.2.0) now imports the extractor's own `CURRENCY_TOKEN` rather than keeping
+  a second answer to the same question. RISK-016 (v1.7.0), SET-012 and RE-136
+  were the others the corpus reached.
+
+### Added
+- **The ISO-currency relation** in `drafting-spellings.test.ts`. It has **no
+  reverse**, and that is the finding rather than an omission: not one of 310
+  specimens writes an ISO-code amount to turn back into a glyph. A relation
+  that cannot fire is not asserted — the per-rewriting floors exist to say so
+  out loud — and the missing direction measures the corpus itself. It is
+  American, and so was every recognizer that read it.
+
 ## [9.380.0] — 2026-09-02
 
 ### Fixed

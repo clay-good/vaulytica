@@ -526,7 +526,7 @@ const WARRANTY_DEED = pack("warranty-deed", C, [
       "https://www.law.cornell.edu/wex/transfer_tax",
     ),
     pat: [
-      /(consideration|\$)/i,
+      /(consideration|[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*\d)/i,
       /(transfer[-\s]+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps|affidavit\s+of\s+consideration)/i,
     ],
     why: "Transfer-tax declarations are a recording prerequisite in most counties, and an understated consideration is a tax matter separate from the conveyance.",

@@ -1,6 +1,5 @@
 /**
- * The three spellings a drafted instrument uses that a hand-typed fixture does
- * not.
+ * The spellings a drafted instrument uses that a hand-typed fixture does not.
  *
  * `interior-period`, `section-sign` and `parenthetical-numeral` each asked one
  * such question. These are the rest of the batch, and each is a rewriting that
@@ -22,10 +21,22 @@
  *     US date. A note's maturity, a discovery period, a DPA's date line and a
  *     QDRO's valuation date were the others.
  *
+ *   - **An amount in an ISO currency code.** "USD 2,000,000" is "$2,000,000",
+ *     and it is how an international contract states a figure. Forty documents
+ *     lost their insurance minimum: RISK-010 required the dollar GLYPH, while
+ *     `src/extract/amounts.ts` has read the codes and the other symbols since
+ *     it was written. The rule layer now imports that file's own token.
+ *
+ *     This one has no reverse: not one specimen writes an ISO-code amount to
+ *     turn back into a glyph. A relation that cannot fire is not asserted —
+ *     the floors below exist to say so out loud — and the missing direction is
+ *     itself the measurement: the corpus is American, and so was every
+ *     recognizer that read it.
+ *
  *   - **A rate written out.** "five percent (5%)" is "5%". This one has always
  *     held, and it is here so that it goes on holding.
  *
- * Each relation is asserted in both directions.
+ * Every relation with a reverse is asserted in both directions.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -123,6 +134,7 @@ const MUTATIONS: Record<string, [(s: string) => string, number]> = {
       ),
     5,
   ],
+  "an amount in an ISO currency code": [(s) => s.replace(/\$([\d,]+(?:\.\d{2})?)/g, "USD $1"), 20],
   "a rate written out": [
     (s) =>
       s.replace(/(?<![\d.(])(\d{1,2})%/g, (m, d: string) =>
