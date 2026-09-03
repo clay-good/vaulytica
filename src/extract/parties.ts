@@ -219,13 +219,25 @@ const LEGAL_SUFFIX = String.raw`l\.?p\.?|l\.?l\.?c\.?|inc\.?|corp\.?|corporation
  * "Purchaser")` — and the capture stopped at it, losing the role and with it
  * the only handle a descriptor-named party has.
  *
- * `(?![^()]*\))` reads: from here, a ")" is not reachable without crossing a
+ * `(?![^()]{0,300}\))` reads: from here, a ")" is not reachable without crossing a
  * paren. Inside a parenthetical the next paren character IS ")", so the
  * lookahead fails and the comma is passed over; outside one it is "(" (or
  * there is none), so the comma terminates as before.
  */
+// The parenthesis lookahead is BOUNDED too, and it was the expensive half:
+// `(?![^()]*\))` scans FORWARD to the end of the document from every comma it
+// tests, looking for a closing parenthesis that a paragraph without any will
+// never have. That is O(n) per occurrence — 3,081 ms for a 480 KB preamble
+// against 8 ms bounded. A parenthetical that matters closes within a clause.
+//
+// The two captures are BOUNDED and cannot cross a line. `(.+?)` with `$` among
+// the terminators means that on a paragraph with no sentence break — a contract
+// pasted with no blank lines — each "between" scans to the end of the document
+// looking for one, which is O(n) per occurrence and quadratic overall: a
+// preamble naming parties took 3.5 seconds at 480 KB. A party's name and
+// descriptor together are a couple of hundred characters.
 const BETWEEN_RE = new RegExp(
-  String.raw`\bbetween\s+(.+?)\s+and\s+(.+?)(?:[.;]|,(?!\s*(?:${LEGAL_SUFFIX})(?![A-Za-z]))(?![^()]*\))|$)`,
+  String.raw`\bbetween\s+([^\n]{1,400}?)\s+and\s+([^\n]{1,400}?)(?:[.;]|,(?!\s*(?:${LEGAL_SUFFIX})(?![A-Za-z]))(?![^()]{0,300}\))|$)`,
   "gi",
 );
 

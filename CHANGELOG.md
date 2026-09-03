@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.407.0] — 2026-09-03
+
+### Fixed
+- **The last three quadratics on the ingest path.** A 2 MB contract pasted as
+  one paragraph — no blank lines, which is what pasting a whole agreement looks
+  like — now finishes in **~1.5 s in every shape**, where the party preamble
+  alone took 3.5 s at a quarter of that size.
+
+  - **`BETWEEN_RE`'s parenthesis lookahead.** `(?![^()]*\\))` scans FORWARD to
+    the end of the document from every comma it tests, looking for a closing
+    parenthesis a paragraph without any will never have. **3,081 ms → 8 ms** on
+    the pattern alone. Its two captures are bounded with it: `(.+?)` with `$`
+    among the terminators means each "between" scans to the end looking for a
+    sentence break.
+  - **Two paragraph-invariant scans hoisted out of the Title-Case match loop**
+    in `definitions.ts` — `.trim()` copies the whole paragraph and the
+    federal-citation test scans it, both once per match. A third depends on the
+    phrase and cannot be hoisted, so it is memoized: paid once per DISTINCT
+    phrase rather than once per occurrence.
+  - **Nine definition-parsing loops** took "everything after the defining verb"
+    as the definition, sliced and trimmed per match. A definition that runs past
+    four thousand characters is not a definition any more.
+
+### Notes
+- That closes the vein: **eight quadratics in one session**, every one the same
+  shape — an unbounded slice, scan or lookahead per match, feeding something
+  that only ever reads a bounded window. The bounds are all generous enough that
+  no finding changed anywhere, on any fixture.
+
 ## [9.406.0] — 2026-09-03
 
 ### Fixed

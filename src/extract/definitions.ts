@@ -310,6 +310,17 @@ const DEFINITIONS_HEADING = /\b(definitions?|defined\s+terms|glossary|interpreta
  */
 const GUARD_WINDOW = 400;
 
+/**
+ * How much text a definition may carry.
+ *
+ * These loops take "everything after the defining verb" as the definition, and
+ * on a paragraph that is one long blob that is the whole document — sliced and
+ * trimmed once per definition, which is quadratic. A definition that runs past
+ * four thousand characters is not a definition any more, and every one in the
+ * corpus is orders of magnitude shorter.
+ */
+const DEFINITION_TEXT_MAX = 4000;
+
 const TITLE_CASE_PHRASE =
   /\b((?:[A-Z][a-z]+(?:-[A-Z][a-z]+)*(?:\s+[A-Z][a-z]+(?:-[A-Z][a-z]+)*){1,4}))\b/g;
 
@@ -1196,6 +1207,26 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     // paragraph ("Risks Related to Our Lending Business") — is heading
     // style throughout; none of its phrases are defined-term uses.
     const trimmed = ctx.text.trim();
+    // Hoisted out of the match loop below. Both are facts about the PARAGRAPH,
+    // and computing them per match — `.trim()` copies the whole string, and the
+    // citation test scans it — is O(n) per match, which is quadratic on a
+    // paragraph carrying thousands of Title-Case phrases. A contract pasted with
+    // no blank lines is one paragraph.
+    const citesFederalCode = /\b\d+\s*(?:U\.S\.C\.|C\.F\.R\.)/.test(ctx.text);
+    // The composition test builds a pattern FROM the phrase, so it cannot be
+    // hoisted — but the same phrase recurs, and the answer does not change
+    // within a paragraph. Memoized, it is paid once per DISTINCT phrase.
+    const compositionCache = new Map<string, boolean>();
+    const definedByComposition = (phrase: string): boolean => {
+      const cached = compositionCache.get(phrase);
+      if (cached !== undefined) return cached;
+      const answer = new RegExp(
+        `\\b(?:the\\s+)?${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+(?:(?:shall|will)\\s+)?(?:consists?\\s+of|comprises?|are\\s+comprised\\s+of|is\\s+comprised\\s+of)\\b`,
+        "i",
+      ).test(ctx.text);
+      compositionCache.set(phrase, answer);
+      return answer;
+    };
     // A NUMBERED standalone heading ("4. Due Diligence Materials.") is the
     // same construct, and drafters end it with a period as often as not. The
     // section number is what distinguishes it from a Title-Case sentence, so
@@ -1528,7 +1559,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       const fieldValue = /^\s*[A-Z][A-Za-z]*(?:\s+[A-Za-z]+){0,4}\s*(?::|\|)\s*/.exec(ctx.text);
       if (
         fieldValue &&
-        ctx.text.trim().length <= FIELD_BLOCK_MAX_LENGTH &&
+        trimmed.length <= FIELD_BLOCK_MAX_LENGTH &&
         m.index === fieldValue[0].length
       )
         continue;
@@ -1652,7 +1683,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // the same sentence, so an ordinary "Annual Report" is untouched.
       if (
         /\b(?:Report|Return|Form|Statement|Certificate|Registration|Notice)s?$/.test(phrase) &&
-        /\b\d+\s*(?:U\.S\.C\.|C\.F\.R\.)/.test(ctx.text)
+        citesFederalCode
       )
         continue;
       // A phrase followed by an IDENTIFYING NUMBER names a specific instrument,
@@ -1681,13 +1712,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // "consist of" and "comprise" are unmistakably definitional, which is
       // what makes it safe to read them anywhere; "means" is not read here for
       // the same reason `DEFINITION_BARE` stays section-scoped.
-      if (
-        new RegExp(
-          `\\b(?:the\\s+)?${phrase.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\s+(?:(?:shall|will)\\s+)?(?:consists?\\s+of|comprises?|are\\s+comprised\\s+of|is\\s+comprised\\s+of)\\b`,
-          "i",
-        ).test(ctx.text)
-      )
-        continue;
+      if (definedByComposition(phrase)) continue;
       // The same unit, named after the PERSON WHO LEADS IT, where the leading
       // noun is lower-case and so is not itself part of the Title-Case run:
       // "the head of Corporate Communications", "the director of Human
@@ -1890,7 +1915,7 @@ function cleanRef(raw: string | undefined): string | undefined {
 /** The first clause of a string — up to the first sentence-ending `.`/`;`. */
 function firstClause(text: string): string {
   const m = /[.;]/.exec(text);
-  return m ? text.slice(0, m.index) : text;
+  return m ? text.slice(Math.max(0, m.index - DEFINITION_TEXT_MAX), m.index) : text;
 }
 
 function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry[] {
@@ -1898,7 +1923,9 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   DEFINITION_ALIASED.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = DEFINITION_ALIASED.exec(text)) !== null) {
-    const definition = text.slice(m.index + m[0].length).trim();
+    const definition = text
+      .slice(m.index + m[0].length, m.index + m[0].length + DEFINITION_TEXT_MAX)
+      .trim();
     if (!definition) continue;
     // The `i` flag the defining verb needs also weakens the leading `[A-Z]` of
     // each alias to "any letter"; restore the anchor explicitly.
@@ -1928,14 +1955,18 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     // defined and never used. The anchor is restored explicitly here rather
     // than by dropping the flag, which would lose every ALL-CAPS definition.
     if (!/^[A-Z]/.test(term)) continue;
-    const after = text.slice(m.index + m[0].length).trim();
+    const after = text
+      .slice(m.index + m[0].length, m.index + m[0].length + DEFINITION_TEXT_MAX)
+      .trim();
     if (!after) continue;
     // Only the term's own defining clause (up to the first sentence break) can
     // supply its by-reference target — otherwise an unrelated later sentence in
     // the same paragraph ("… Exhibit B for reference only.") is mis-attributed
     // as this term's reference.
     const reference = cleanRef(DEFINITION_REFERENCE.exec(firstClause(after))?.[1]);
-    const scope = cleanRef(DEFINITION_SCOPE.exec(text.slice(0, m.index))?.[1]);
+    const scope = cleanRef(
+      DEFINITION_SCOPE.exec(text.slice(Math.max(0, m.index - DEFINITION_TEXT_MAX), m.index))?.[1],
+    );
     out.push({
       term,
       definition: after,
@@ -1958,7 +1989,9 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     // capitalization anchor explicitly — a quoted LOWERCASE phrase is not a
     // defined term. (Dropping the flag would lose every ALL-CAPS definition.)
     if (!/^[A-Z]/.test(term)) continue;
-    const after = text.slice(m.index + m[0].length).trim();
+    const after = text
+      .slice(m.index + m[0].length, m.index + m[0].length + DEFINITION_TEXT_MAX)
+      .trim();
     if (!after) continue;
     out.push({
       term,
@@ -1980,7 +2013,9 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     // capitalization anchor explicitly — a quoted LOWERCASE phrase is not a
     // defined term. (Dropping the flag would lose every ALL-CAPS definition.)
     if (!/^[A-Z]/.test(term)) continue;
-    const after = text.slice(m.index + m[0].length).trim();
+    const after = text
+      .slice(m.index + m[0].length, m.index + m[0].length + DEFINITION_TEXT_MAX)
+      .trim();
     if (!after) continue;
     out.push({
       term,
@@ -1999,7 +2034,7 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     const term = m[1]!.trim();
     // The definition is what came BEFORE the copula — this is the one matcher
     // whose definiendum trails its definiens.
-    const before = text.slice(0, m.index).trim();
+    const before = text.slice(Math.max(0, m.index - DEFINITION_TEXT_MAX), m.index).trim();
     if (!before) continue;
     out.push({
       term,
@@ -2026,7 +2061,9 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     if (!/\b(?:Period|Term)$/.test(term)) continue;
     out.push({
       term,
-      definition: text.slice(m.index + m[0].length).trim(),
+      definition: text
+        .slice(m.index + m[0].length, m.index + m[0].length + DEFINITION_TEXT_MAX)
+        .trim(),
       defined_at: {
         section_id: base.section_id,
         paragraph_id: base.paragraph_id,
@@ -2042,7 +2079,9 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     if (!/^[A-Z]/.test(m[1]!.trim())) continue;
     out.push({
       term: m[1]!.trim(),
-      definition: text.slice(m.index + m[0].length).trim(),
+      definition: text
+        .slice(m.index + m[0].length, m.index + m[0].length + DEFINITION_TEXT_MAX)
+        .trim(),
       defined_at: {
         section_id: base.section_id,
         paragraph_id: base.paragraph_id,
