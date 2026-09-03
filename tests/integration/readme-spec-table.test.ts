@@ -21,6 +21,14 @@ import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const README = readFileSync("README.md", "utf8");
+/**
+ * Prettier owns the column padding in a markdown table and re-aligns it
+ * whenever a cell's width changes, so `| v4 |` becomes `| v4  |` the moment a
+ * wider row lands. Every row test below reads the squeezed text: the row's
+ * CONTENT is the thing being guarded, and asserting its padding made this test
+ * fail exactly when `format:check` was satisfied.
+ */
+const SQUEEZED = README.replace(/[ \t]+/g, " ");
 
 /** `spec-v45.md` → 45. Ignores `spec.md`, which is the umbrella document. */
 function specVersions(): number[] {
@@ -35,7 +43,7 @@ describe("README spec table", () => {
   it("every docs/spec-vN.md has a row that links it", () => {
     const missing: string[] = [];
     for (const v of specVersions()) {
-      const hasRow = new RegExp(`^\\| v${v} \\|`, "m").test(README);
+      const hasRow = new RegExp(`^\\| v${v} \\|`, "m").test(SQUEEZED);
       const linksSpec = README.includes(`docs/spec-v${v}.md`);
       if (!hasRow || !linksSpec) {
         missing.push(`v${v}${hasRow ? " (row present, spec not linked)" : " (no row)"}`);
@@ -50,7 +58,7 @@ describe("README spec table", () => {
   it("every row in the table names a spec that exists", () => {
     const shipped = new Set(specVersions());
     // v1 predates the numbered spec files and is described inline.
-    const orphans = [...README.matchAll(/^\| v(\d+) \|/gm)]
+    const orphans = [...SQUEEZED.matchAll(/^\| v(\d+) \|/gm)]
       .map((m) => Number(m[1]))
       .filter((v) => v !== 1 && !shipped.has(v));
     expect(orphans, `rows naming a spec with no file: ${orphans.join(", ")}`).toEqual([]);

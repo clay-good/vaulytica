@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.411.0] — 2026-09-03
+
+### Fixed
+- **A running header is not a paragraph boundary either.** The other half of a
+  PDF paste: the document's own title, stamped on every page, landing wherever
+  the page ended. It is handled like a page number, but it cannot be recognized
+  the same way — a repeated line is not by itself suspicious. Ten of the 311
+  specimens carry a line that appears three or more times, and every one of
+  those repetitions is content ("ANSWER:" eight times in a set of
+  interrogatories, counsel's name four in an appellate brief, an execution
+  date in three others).
+
+  So only a repetition of the OPENING BLOCK's leading text is claimed, matched
+  as a prefix rather than as a whole paragraph: a letter opens with a letterhead
+  that arrives as one paragraph while the header carries only its first line.
+  Twenty-six specimens moved a finding under a running header; none does now.
+
+  A header that ABBREVIATES the title is still not caught — that needs a
+  document-wide repeat analysis whose false-positive risk the list above
+  measures, and it is a separate mechanism.
+
+### Fixed (process)
+- Two README guards asserted a markdown table row's exact column padding, which
+  Prettier owns and re-aligns whenever a cell's width changes — so they failed
+  precisely when `format:check` was satisfied, the gate contradicting itself.
+  Both now match on the row's content.
+
 ## [9.410.0] — 2026-09-03
 
 ### Fixed

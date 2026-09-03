@@ -1,7 +1,7 @@
 import type { DocumentTree, Paragraph, Run, Section } from "./types.js";
 import { makeParagraphId, makeRunId, makeSectionId } from "./types.js";
 import { MAX_SECTION_DEPTH } from "./limits.js";
-import { stripPageFurniture } from "./page-furniture.js";
+import { runningHeaderCopies, stripPageFurniture } from "./page-furniture.js";
 
 /**
  * Iteratively collect every paragraph in a subtree in document order, without
@@ -36,6 +36,11 @@ function collectDescendantParagraphs(sections: Section[]): Paragraph[] {
  */
 export function normalize(tree: DocumentTree): DocumentTree {
   let cursor = 0;
+
+  // The running header can only be recognized across the whole document — it is
+  // the document's own title, repeated — so it is identified once here and
+  // handed to the per-section pass alongside the page numbers.
+  const headerCopies = runningHeaderCopies(collectDescendantParagraphs(tree.sections));
 
   // Collapse runs of ANY Unicode whitespace (`\s`) to a single ASCII space —
   // not just `[ \t\r\n]`. Two reasons: (1) determinism — a finding's text and
@@ -228,7 +233,7 @@ export function normalize(tree: DocumentTree): DocumentTree {
 
     const paragraphs: Paragraph[] = [];
     let pIdx = 0;
-    for (const p of stripPageFurniture(ownParagraphs)) {
+    for (const p of stripPageFurniture(ownParagraphs, headerCopies)) {
       const np = normalizeParagraph(p, id, pIdx);
       if (np) {
         paragraphs.push(np);

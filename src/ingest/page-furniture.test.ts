@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Paragraph } from "./types.js";
-import { PAGE_FURNITURE, stripPageFurniture } from "./page-furniture.js";
+import { PAGE_FURNITURE, runningHeaderCopies, stripPageFurniture } from "./page-furniture.js";
 
 const p = (text: string): Paragraph => ({
   id: "",
@@ -103,5 +103,48 @@ describe("stripPageFurniture", () => {
     stripPageFurniture(input);
     expect(first.runs).toHaveLength(snapshot);
     expect(input).toHaveLength(3);
+  });
+});
+
+describe("runningHeaderCopies", () => {
+  it("claims the title repeated twice more, and never the opening itself", () => {
+    const opening = p("FACILITY AGREEMENT");
+    const paras = [opening, p("body"), p("FACILITY AGREEMENT"), p("more"), p("FACILITY AGREEMENT")];
+    const drop = runningHeaderCopies(paras);
+    expect(drop.size).toBe(2);
+    expect(drop.has(opening)).toBe(false);
+  });
+
+  it("claims a header that is the FIRST LINE of a letterhead block", () => {
+    const paras = [
+      p("NORTHFIELD PATHOLOGY ASSOCIATES, P.C. 1220 Sherman Avenue Evanston, Illinois"),
+      p("body"),
+      p("NORTHFIELD PATHOLOGY ASSOCIATES, P.C."),
+      p("more"),
+      p("NORTHFIELD PATHOLOGY ASSOCIATES, P.C."),
+    ];
+    expect(runningHeaderCopies(paras).size).toBe(2);
+  });
+
+  it("claims nothing from a single restatement of the title", () => {
+    const paras = [p("FACILITY AGREEMENT"), p("body"), p("FACILITY AGREEMENT")];
+    expect(runningHeaderCopies(paras).size).toBe(0);
+  });
+
+  it("claims nothing from three identical paragraphs in a row — a header has a page between copies", () => {
+    const line = "The parties agree to indemnify each other.";
+    expect(runningHeaderCopies([p(line), p(line), p(line)]).size).toBe(0);
+  });
+
+  it("claims nothing from repeated CONTENT — the shape ten specimens actually have", () => {
+    // interrogatories repeats "ANSWER:" eight times; an appellate brief repeats
+    // counsel's name four. None of those is a prefix of the opening block.
+    const paras = [
+      p("PLAINTIFF'S FIRST SET OF INTERROGATORIES"),
+      p("ANSWER:"),
+      p("ANSWER:"),
+      p("ANSWER:"),
+    ];
+    expect(runningHeaderCopies(paras).size).toBe(0);
   });
 });

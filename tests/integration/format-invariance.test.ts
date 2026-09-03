@@ -235,6 +235,30 @@ describe("format is not load-bearing", () => {
       250,
     ],
     [
+      // The other half of the same paste: the RUNNING HEADER, which repeats the
+      // document's own title on every page. A repeated line is not by itself
+      // suspicious — ten specimens carry one, and every one of those is content
+      // ("ANSWER:" eight times, counsel's name four, an execution date) — so
+      // only a repetition of the OPENING BLOCK's leading text is claimed.
+      "a running header every 45 lines of a PDF paste",
+      (t: string): string => {
+        const lines = hardWrap(t).split("\n");
+        const title = t
+          .split("\n")
+          .find((l) => l.trim().length > 0)!
+          .trim();
+        const pages = Math.ceil(lines.length / 45);
+        const out: string[] = [];
+        for (let i = 0; i < lines.length; i += 1) {
+          out.push(lines[i]!);
+          if ((i + 1) % 45 === 0)
+            out.push("", `Page ${Math.ceil((i + 1) / 45)} of ${pages}`, "", title, "");
+        }
+        return out.join("\n");
+      },
+      250,
+    ],
+    [
       "Roman-numeral codepoints",
       (t: string): string =>
         t.replace(

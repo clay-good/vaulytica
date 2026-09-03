@@ -85,15 +85,70 @@ const SIGNATURE_LINE = /_{3,}/;
 const ATTACHMENT_TITLE = new RegExp(String.raw`^(?:${ATTACHMENT_KIND})\s`, "i");
 
 /**
+ * A RUNNING HEADER interrupts a paragraph exactly the way a page number does,
+ * and it is much harder to recognize, because a repeated line is not by itself
+ * suspicious: `interrogatories` repeats "ANSWER:" eight times, an appellate
+ * brief repeats counsel's name four, and three specimens repeat an execution
+ * date. Ten of the 311 carry a line that appears three or more times, and every
+ * one of those repetitions is content.
+ *
+ * What no body paragraph does is repeat the document's OWN TITLE. That is the
+ * one shape reserved for the header a PDF stamps on every page, so it is the
+ * only shape claimed here — and matched as a PREFIX of the document's opening
+ * block rather than as the whole of it, because a letter opens with a
+ * letterhead ("NORTHFIELD PATHOLOGY ASSOCIATES, P.C." and the street address
+ * under it) that arrives as ONE paragraph while the running header carries only
+ * its first line. Comparing whole paragraphs found no header at all there, and
+ * the breach-notification letter kept reporting a privacy contact it names.
+ *
+ * A header that ABBREVIATES the title ("Facility Agmt — Halbrook") is not
+ * caught; catching it needs a document-wide repeat analysis whose
+ * false-positive risk the list above measures, and that is a separate mechanism.
+ */
+export function runningHeaderCopies(paragraphs: Paragraph[]): Set<Paragraph> {
+  const drop = new Set<Paragraph>();
+  const opening = paragraphs.find((p) => textOf(p).length > 0);
+  if (!opening) return drop;
+  const openingText = textOf(opening);
+
+  const byText = new Map<string, number[]>();
+  for (const [i, p] of paragraphs.entries()) {
+    if (p === opening) continue;
+    const text = textOf(p);
+    // Long enough not to be a stray fragment, and short enough to be a header.
+    if (text.length < 8 || text.length > 120) continue;
+    if (!openingText.startsWith(text)) continue;
+    byText.set(text, [...(byText.get(text) ?? []), i]);
+  }
+  for (const copies of byText.values()) {
+    // Two copies BEYOND the opening: one repetition could be a genuine
+    // restatement of the title (a cover page, a signature-block caption); a
+    // header repeats. And a header always has a PAGE between its copies, so
+    // consecutive ones are content — three identical paragraphs in a row are
+    // whatever the drafter wrote three times, not a header.
+    if (copies.length < 2) continue;
+    if (copies.some((at, k) => k > 0 && at - copies[k - 1]! < 2)) continue;
+    for (const at of copies) drop.add(paragraphs[at]!);
+  }
+  return drop;
+}
+
+/**
  * Drop page-furniture paragraphs, rejoining a paragraph one split in two.
  * Pure: neither the input paragraphs nor their runs are mutated.
+ *
+ * `alsoDrop` carries the running-header copies, which can only be identified
+ * across the whole document — the same treatment, decided a level up.
  */
-export function stripPageFurniture(paragraphs: Paragraph[]): Paragraph[] {
+export function stripPageFurniture(
+  paragraphs: Paragraph[],
+  alsoDrop: ReadonlySet<Paragraph> = new Set(),
+): Paragraph[] {
   const out: Paragraph[] = [];
   let dropped = false;
   for (const p of paragraphs) {
     const text = textOf(p);
-    if (text && PAGE_FURNITURE.test(text)) {
+    if (alsoDrop.has(p) || (text && PAGE_FURNITURE.test(text))) {
       dropped = true;
       continue;
     }

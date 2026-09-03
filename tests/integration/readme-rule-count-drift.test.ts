@@ -76,9 +76,14 @@ describe("README rule counts", () => {
     expect(readme).toContain(`**v4 (+${V4_RULES.length} rules)**`);
     expect(readme).toContain(`**v5 (+${V5_RULES.length} rules)**`);
     expect(readme).toContain(`**v6 (+${V6_RULES.length} rules)**`);
-    expect(readme).toContain(`| v4 | Every operative document | +${V4_RULES.length} rules,`);
-    expect(readme).toContain(`| v5 | The US catalog | +${V5_RULES.length} rules,`);
-    expect(readme).toContain(`| v6 | The lawyer's own documents | +${V6_RULES.length} rules,`);
+    // Prettier owns the column padding in a markdown table and re-aligns it
+    // whenever a cell's width changes, so the row is matched on its CONTENT.
+    // Asserting the single-spaced form made these two tests fail the moment
+    // `format:check` was satisfied — the gate contradicting itself.
+    const squeezed = readme.replace(/[ \t]+/g, " ");
+    expect(squeezed).toContain(`| v4 | Every operative document | +${V4_RULES.length} rules,`);
+    expect(squeezed).toContain(`| v5 | The US catalog | +${V5_RULES.length} rules,`);
+    expect(squeezed).toContain(`| v6 | The lawyer's own documents | +${V6_RULES.length} rules,`);
   });
 
   it("quotes the live catalog total", () => {
