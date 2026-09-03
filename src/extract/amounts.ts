@@ -101,7 +101,16 @@ const COMPOSITE_DOLLAR: Record<string, string> = {
  * occurrence" — the way an international contract writes it — was not read as
  * a coverage limit at all, on forty documents.
  */
-export const CURRENCY_TOKEN = String.raw`\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
+/**
+ * The bare glyphs, for the one place a rule cannot use {@link CURRENCY_TOKEN}:
+ * inside a character CLASS. FIN-005's clause windows list the characters a
+ * payment sentence may contain on the way to its deadline, and listing only
+ * "$" meant "shall pay £425,000 … within thirty (30) days" ended the window at
+ * the pound sign. One set, used by both.
+ */
+export const CURRENCY_GLYPHS = "$€£¥₹₩₽";
+
+export const CURRENCY_TOKEN = String.raw`\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[${CURRENCY_GLYPHS}]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
 const CUR = CURRENCY_TOKEN;
 // Digit counts are BOUNDED (`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
 // the amount is followed by a REQUIRED range connector, so an unbounded `\d+`

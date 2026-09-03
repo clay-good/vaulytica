@@ -157,7 +157,7 @@ const PROPERTY_MGMT = pack("property-management-agreement", C, [
     cite: practice("pma-authority", "authority limits in property management agreements"),
     pat: [
       /(authority|authori[sz]ed\s+to)/i,
-      /(without\s+(the\s+)?owner['’]?s?\s+(prior\s+)?(written\s+)?(approval|consent)|expenditures?\s+(in\s+excess\s+of|exceeding)|\$)/i,
+      /(without\s+(the\s+)?owner['’]?s?\s+(prior\s+)?(written\s+)?(approval|consent)|expenditures?\s+(in\s+excess\s+of|exceeding)|[$€£¥₹₩₽])/i,
     ],
     why: "A manager with unbounded spending authority can commit the owner to capital work it never approved. The dollar threshold and the emergency exception are the central controls.",
     fix: "State the manager's authority, the per-item and annual expenditure limits requiring owner approval, and the emergency exception with a notice duty.",
@@ -338,7 +338,7 @@ const OPTION = pack("option-to-purchase-real-estate", C, [
     cite: practice("option-price", "price determination in real property options"),
     pat: [
       /(purchase\s+price|option\s+price)/i,
-      /(\$|formula|apprais|fair\s+market\s+value|determined\s+by)/i,
+      /([$€£¥₹₩₽]|formula|apprais|fair\s+market\s+value|determined\s+by)/i,
     ],
     why: "An option with an open price term is often unenforceable for indefiniteness. Where price is by appraisal, the appraiser-selection mechanism has to be complete enough to work without cooperation.",
     fix: "State the price, or a complete formula including the appraisal process, appraiser qualifications, selection method, and tie-breaking.",
@@ -444,7 +444,7 @@ const QUITCLAIM = pack("quitclaim-deed", C, [
       "https://www.law.cornell.edu/wex/transfer_tax",
     ),
     pat: [
-      /(consideration|in\s+consideration\s+of|\$)/i,
+      /(consideration|in\s+consideration\s+of|[$€£¥₹₩₽])/i,
       /(transfer[-\s]+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps)/i,
     ],
     why: "Recorders reject deeds without the consideration recital or the transfer-tax declaration, and intra-family quitclaims need the exemption stated to avoid the tax.",
@@ -526,7 +526,7 @@ const WARRANTY_DEED = pack("warranty-deed", C, [
       "https://www.law.cornell.edu/wex/transfer_tax",
     ),
     pat: [
-      /(consideration|[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*\d)/i,
+      /(consideration|[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*\d)/i,
       /(transfer[-\s]+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps|affidavit\s+of\s+consideration)/i,
     ],
     why: "Transfer-tax declarations are a recording prerequisite in most counties, and an understated consideration is a tax matter separate from the conveyance.",

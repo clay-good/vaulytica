@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.385.0] — 2026-09-02
+
+### Fixed
+- **Thirty-six recognizers could read only the dollar GLYPH.** Session 28 gave
+  the rule layer the extractor's own `CURRENCY_TOKEN` after finding forty
+  documents whose insurance minimum, written "USD 2,000,000", was not read as a
+  coverage limit at all. This is the other half: a liability cap of £5,000,000
+  is a liability cap and a settlement of €425,000 is a settlement.
+
+  FIN-005 is the one the corpus caught, on **seven documents and identically
+  for both glyphs**. Its clause windows list the characters a payment sentence
+  may contain on the way to its deadline — `[\s\w,()$."'“”’…]` — so
+  "shall pay £425,000 … within thirty (30) days" ended the window at the pound
+  sign and the rule reported that no payment term was stated.
+
+  A character CLASS is the one place a rule cannot use `CURRENCY_TOKEN`, which
+  is an alternation, so `src/extract/amounts.ts` now also exports
+  **`CURRENCY_GLYPHS`** — and builds the token from it, so there is still one
+  answer and not a fortieth. Seven of the thirty-six already carried a PARTIAL
+  set (`[$€£¥]`, missing the rupee, won and rouble); the guard requires the
+  canonical one.
+
+  Deliberately not widened: a LITERAL amount is a US statutory threshold and
+  stays a dollar figure wherever it is read — the $100,000 ISO limit of
+  IRC § 422(d), the $10,000 currency-transaction report, the $20 and $50
+  federal gift rules. Only a recognizer reading a digit CLASS reads whatever
+  figure the document carries. Same discipline as `clause-numbering`.
+
+### Added
+- **`tests/integration/currency-glyph.test.ts`** — the static ratchet plus the
+  corpus relation in both pound and euro, each confirmed to fail with the
+  defect put back.
+
+  The rewriting has to be TOTAL to be semantics-preserving. An earlier draft
+  left "DOLLARS" standing in an all-caps guaranty next to the pound signs it
+  had just written, and FIN-003 correctly reported a document in two
+  currencies — nine divergences that were not defects, exactly as the first
+  `clause-numbering` draft produced nine of its own.
+
 ## [9.384.0] — 2026-09-02
 
 ### Fixed

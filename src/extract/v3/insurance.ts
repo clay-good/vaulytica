@@ -64,7 +64,7 @@ const LINE_PATTERNS: { line: InsuranceLine; rx: RegExp }[] = [
 // each-accident are standard professional-liability and workers'-comp limit
 // qualifiers alongside per-occurrence and aggregate.
 const AMOUNT_RX =
-  /(\$|USD|US\$)?\s*(\d[\d,]*(?:\.\d+)?)\s*(million|mm|m\b|thousand|k\b)?\s*(USD|dollars)?\s*(per occurrence|each occurrence|per claim|each claim|per accident|each accident|aggregate|in the aggregate|annual aggregate)?/gi;
+  /([$€£¥₹₩₽]|USD|US[$€£¥₹₩₽])?\s*(\d[\d,]*(?:\.\d+)?)\s*(million|mm|m\b|thousand|k\b)?\s*(USD|dollars)?\s*(per occurrence|each occurrence|per claim|each claim|per accident|each accident|aggregate|in the aggregate|annual aggregate)?/gi;
 
 // Rating = a letter grade with an optional modifier (A++, A+, A, A-) and an
 // optional financial-size category in Roman numerals (I–XV), separated by a

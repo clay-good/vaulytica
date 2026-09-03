@@ -419,7 +419,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     ),
     pat: [
       /indemnif/i,
-      /(insur(e|ance)|product\s+liability|name\s+the\s+university\s+as\s+an\s+additional[-\s]+insured|\$\d)/i,
+      /(insur(e|ance)|product\s+liability|name\s+the\s+university\s+as\s+an\s+additional[-\s]+insured|[$€£¥₹₩₽]\d)/i,
     ],
     why: "The university transfers the product-liability risk entirely; the indemnity and the insurance requirement, with stated limits triggered at first commercial sale, are always in the template.",
     fix: "Provide a broad indemnity in favor of the university, its trustees, and its inventors, backed by product-liability insurance at stated limits naming them as additional insureds.",

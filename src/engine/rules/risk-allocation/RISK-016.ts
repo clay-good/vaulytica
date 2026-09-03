@@ -59,7 +59,7 @@ export const rule: Rule = {
     // can be expressed as `$1,000,000`, `$1M`, `one million dollars`,
     // `at least $X`, `not less than $X`, or `$X per occurrence`.
     const COVERAGE_MIN =
-      /(?:[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+(?:\.\d+)?\s*(?:k|m|mm|million|thousand)?|(?:at\s+least|not\s+less\s+than|minimum\s+of)\s+(?:[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)?\s*[\d,]+|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?|per\s+occurrence|aggregate\s+(?:of|limit)|combined\s+single\s+limit|(?:full\s+)?replacement\s+(?:cost|value)|actual\s+cash\s+value/i;
+      /(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+(?:\.\d+)?\s*(?:k|m|mm|million|thousand)?|(?:at\s+least|not\s+less\s+than|minimum\s+of)\s+(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)?\s*[\d,]+|(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?|per\s+occurrence|aggregate\s+(?:of|limit)|combined\s+single\s+limit|(?:full\s+)?replacement\s+(?:cost|value)|actual\s+cash\s+value/i;
     // Scope the GENERAL coverage-minimum check (which includes a bare dollar
     // figure) to the insurance clause's own sentence — otherwise an unrelated
     // dollar elsewhere in the paragraph (e.g. the contract fee) suppressed the
@@ -70,7 +70,7 @@ export const rule: Rule = {
     // single limit / "limits|coverage … $X" / "not less than $X" / "X million
     // dollars" — none of which a bare contract fee matches.
     const COVERAGE_MIN_ANYWHERE =
-      /\bper\s+occurrence\b|\bcombined\s+single\s+limit\b|\baggregate\s+(?:limit|of)\b|\bin\s+the\s+aggregate\b|\b(?:limits?|coverage)\b[^.]{0,40}?(?:[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+|\b(?:not\s+less\s+than|at\s+least|minimum\s+of)\s+(?:[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?\b/i;
+      /\bper\s+occurrence\b|\bcombined\s+single\s+limit\b|\baggregate\s+(?:limit|of)\b|\bin\s+the\s+aggregate\b|\b(?:limits?|coverage)\b[^.]{0,40}?(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+|\b(?:not\s+less\s+than|at\s+least|minimum\s+of)\s+(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+|\b(?:one|two|three|four|five|six|seven|eight|nine|ten)\s+million\s+dollars?\b/i;
     // The minimum can live in ANOTHER SECTION, and the clause point at it. A
     // venue rental requires the caterer to "carry THE INSURANCE DESCRIBED IN
     // SECTION 5", and Section 5 states $1,000,000 per occurrence and

@@ -272,7 +272,7 @@ const FLAT_FEE = pack("flat-fee-agreement", C, [
     name: "Services the flat fee covers",
     cite: modelRule("1.5(b)", "fees — communication of the basis or rate"),
     pat: [
-      /(flat\s+fee|fixed\s+fee|the\s+fee\s+(of|is)\s+\$)/i,
+      /(flat\s+fee|fixed\s+fee|the\s+fee\s+(of|is)\s+[$€£¥₹₩₽])/i,
       /(covers?|includes?|for\s+the\s+following|scope\s+of\s+(the\s+)?(work|services))/i,
     ],
     all: true,

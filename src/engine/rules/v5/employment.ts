@@ -294,7 +294,7 @@ const RELOCATION = pack("relocation-agreement", C, [
     cite: practice("relocation-benefits", "scope and caps in relocation benefit agreements"),
     pat: [
       /(relocation\s+(benefits|expenses|assistance)|moving\s+expenses)/i,
-      /(up\s+to\s+\$|not\s+to\s+exceed|maximum\s+of|lump\s+sum)/i,
+      /(up\s+to\s+[$€£¥₹₩₽]|not\s+to\s+exceed|maximum\s+of|lump\s+sum)/i,
     ],
     why: "Relocation packages are commonly described in an offer letter and never bounded. Without a cap and a category list, the reimbursement argument arrives with the invoices.",
     fix: "Enumerate the reimbursable categories, the dollar cap, and the documentation and deadline for submitting expenses.",

@@ -187,7 +187,7 @@ const ARCHITECT = pack("architect-agreement", C, [
     ),
     pat: [
       /insur(e|ance)/i,
-      /(professional\s+liability|errors\s+and\s+omissions|per\s+claim|aggregate|\$\d)/i,
+      /(professional\s+liability|errors\s+and\s+omissions|per\s+claim|aggregate|[$€£¥₹₩₽]\d)/i,
     ],
     why: "The architect's E&O policy is usually the owner's only real recovery source for a design defect, and it is claims-made — so the limits and the tail matter as much as the limit itself.",
     fix: "State the required professional liability limits per claim and in the aggregate, the deductible, and the period the coverage must be maintained after substantial completion.",
@@ -237,7 +237,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     ),
     pat: [
       /(labou?r|services|materials|equipment)\s+(furnished|provided|supplied)/i,
-      /(estimated\s+(total\s+)?(price|value|amount)|general\s+description|\$)/i,
+      /(estimated\s+(total\s+)?(price|value|amount)|general\s+description|[$€£¥₹₩₽])/i,
     ],
     why: "The estimated price puts the owner on notice of the exposure and, in some states, caps the eventual lien. A notice omitting it is defective on its face.",
     fix: "Describe the labor, services, equipment, or materials furnished, and state the estimated total price.",

@@ -68,7 +68,7 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
       "payment and acceleration terms in stipulated judgments",
     ),
     pat: [
-      /(judgment\s+(is\s+)?(hereby\s+)?entered|in\s+the\s+(amount|sum)\s+of|\$)/i,
+      /(judgment\s+(is\s+)?(hereby\s+)?entered|in\s+the\s+(amount|sum)\s+of|[$€£¥₹₩₽])/i,
       /(payment|instal?lment|default|acceler|interest)/i,
     ],
     why: "The value of a consent judgment is that it converts a payment promise into an executable judgment. Without an acceleration clause on default, the plaintiff must move for entry each time an installment is missed.",
@@ -395,7 +395,7 @@ const ARB_DEMAND = pack("arbitration-demand", C, [
     ),
     pat: [
       /(relief\s+sought|remedy|amount\s+(in\s+controversy|claimed))/i,
-      /(\$|damages|specific\s+performance|declaratory|interest|fees)/i,
+      /([$€£¥₹₩₽]|damages|specific\s+performance|declaratory|interest|fees)/i,
     ],
     why: "The claimed amount sets the administrative fee tier and, under expedited rules, whether the case is heard on documents or by a panel.",
     fix: "State the relief sought and the amount in controversy, or state that the amount is undetermined and why.",
@@ -480,7 +480,7 @@ const EXPERT = pack("expert-witness-retention", C, [
     name: "Rates, retainer, and deposition-fee responsibility",
     cite: frcp("26(b)(4)(E)", "payment of expert fees by the party seeking discovery"),
     pat: [
-      /(hourly\s+rate|fees?\s+(of|for)\s+\$|retainer)/i,
+      /(hourly\s+rate|fees?\s+(of|for)\s+[$€£¥₹₩₽]|retainer)/i,
       /(deposition|the\s+party\s+(seeking|taking)|reasonable\s+fee)/i,
     ],
     why: "Rule 26(b)(4)(E) requires the party taking the deposition to pay the expert a reasonable fee. Whether the retaining party fronts it, and at what rate, needs to be agreed before the notice arrives.",

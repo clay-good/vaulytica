@@ -246,7 +246,7 @@ const ENDORSEMENT_RULES: Rule[] = [
       /(absolute\s+exclusion|total\s+exclusion).{0,80}(pollution|cyber|communicable\s+disease|silica|asbestos|abuse|molest)/is,
       /\b(?:pollution|cyber|communicable\s+disease|silica|asbestos|abuse|molest\w*|lead|mold|fungi|terrorism|nuclear|assault\s+(?:and|or|&)\s+battery)\s+exclusion\b/i,
       /we\s+will\s+not\s+pay[^.]{0,90}\b(?:pollution|cyber|communicable\s+disease|silica|asbestos|abuse|molest\w*|lead|mold|fungi|terrorism|nuclear)\b/is,
-      /sublimit[^.]{0,80}\$\s*\d{1,3}(?:,\d{3})?(?:\s*(?:thousand|k\b))?(?!\s*,?\d)/is,
+      /sublimit[^.]{0,80}[$€£¥₹₩₽]\s*\d{1,3}(?:,\d{3})?(?:\s*(?:thousand|k\b))?(?!\s*,?\d)/is,
       /excludes?\s+all\s+coverage/i,
     ],
     exclude_if: [/(?:does|do|shall|will)\s+not\s+exclude/i, /\bno\s+(?:\w+\s+){0,2}exclusion\b/i],

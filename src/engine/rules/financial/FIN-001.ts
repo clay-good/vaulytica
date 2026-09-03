@@ -14,7 +14,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 
 const PAIR =
-  /\b((?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥]?\s*([\d,]+(?:\.\d+)?)\s*(k|m|mm|b|bn)?\s*\)/gi;
+  /\b((?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥₹₩₽]?\s*([\d,]+(?:\.\d+)?)\s*(k|m|mm|b|bn)?\s*\)/gi;
 
 const NUMBER_WORDS: Record<string, number> = {
   zero: 0,

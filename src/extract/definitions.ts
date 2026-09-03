@@ -69,7 +69,7 @@ const DEFINITION_INLINE_REFERS =
 // not `gi`: under the `i` flag `[A-Z]` matches lowercase too, so the leading
 // article is matched explicitly instead.
 const DEFINITION_INLINE_COPULA =
-  /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be)\s+(?=[^.]{0,60}?(?:[$€£¥₹]\s?\d|\b\d))/g;
+  /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be)\s+(?=[^.]{0,60}?(?:[$€£¥₹₩₽]\s?\d|\b\d))/g;
 // The same copula with the definiendum at the END of the clause — `The Escrow
 // Amount, together with all interest and earnings on it, is the "Escrow Fund"`,
 // `Sections 8, 9 and 13, collectively, are the "Surviving Provisions"`. The

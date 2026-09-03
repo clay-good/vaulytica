@@ -1114,7 +1114,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       "Add 'Escrow Fund' specifying the deposited amount / shares and the escrow account.",
     present_patterns: [
       /escrow\s+(fund|amount|account)/i,
-      /\$[\d,]+\s+(in\s+escrow|escrow\s+deposit)/is,
+      /[$€£¥₹₩₽][\d,]+\s+(in\s+escrow|escrow\s+deposit)/is,
     ],
   }),
   presence({

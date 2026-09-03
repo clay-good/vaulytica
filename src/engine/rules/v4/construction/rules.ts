@@ -360,7 +360,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
     present_patterns: [
       /(claimant|undersigned|subcontractor)/i,
       /(property|project|job)/i,
-      /(through\s+(the\s+)?date|payment\s+amount|amount\s+of\s+\$)/i,
+      /(through\s+(the\s+)?date|payment\s+amount|amount\s+of\s+[$€£¥₹₩₽])/i,
     ],
   }),
   presence({
@@ -377,7 +377,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
       "California statutory forms expressly limit the waiver to the dollar amount received and to work through a stated date — otherwise the waiver can be argued to extend beyond payments actually made.",
     recommendation:
       "Add 'Scope' limiting the waiver to the amount paid and through the through-date specified.",
-    present_patterns: [/(amount\s+of\s+\$|through\s+(the\s+)?date)/i, /(waives?|releases?)/i],
+    present_patterns: [/(amount\s+of\s+[$€£¥₹₩₽]|through\s+(the\s+)?date)/i, /(waives?|releases?)/i],
     require_all_present: true,
   }),
   presence({
@@ -522,7 +522,7 @@ const BOND_RULES: Rule[] = [
     explanation:
       "Surety liability is capped at the penal sum; the bond must state it. Miller Act and Little Miller Acts require it.",
     recommendation: "Add 'Penal Sum' specifying the maximum surety obligation in dollars.",
-    present_patterns: [/(penal\s+sum|sum\s+of\s+\$|in\s+the\s+penal\s+amount)/i, /\$\s*[\d,]+/],
+    present_patterns: [/(penal\s+sum|sum\s+of\s+[$€£¥₹₩₽]|in\s+the\s+penal\s+amount)/i, /[$€£¥₹₩₽]\s*[\d,]+/],
   }),
   presence({
     id: "CON-023",
@@ -611,7 +611,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
     present_patterns: [
       /(original\s+contract\s+sum)/i,
       /(revised\s+contract\s+sum|new\s+contract\s+sum)/i,
-      /\$\s*[\d,]+/,
+      /[$€£¥₹₩₽]\s*[\d,]+/,
     ],
   }),
   presence({

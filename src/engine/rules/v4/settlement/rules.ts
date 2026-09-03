@@ -238,7 +238,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /(settlement\s+payment|settlement\s+amount|settlement\s+sum)/i,
       /(consideration|in\s+consideration)/i,
-      /(?:[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+/,
+      /(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+/,
     ],
   }),
   language({
@@ -430,7 +430,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
     present_patterns: [
       /(respond|reply|cure).{0,40}within\s+\d{1,3}\s+(days?|business\s+days?)/i,
       /(\d{1,3})\s+(days?|business\s+days?).{0,40}(respond|cure|comply)/i,
-      /(?:[$€£¥]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+/,
+      /(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+/,
       // The deadline is as often a SPELLED number and phrased with "confirm /
       // provide assurance / comply / cease within ten days", not only "respond
       // within 30 days" — a digit-and-verb-only pattern read a plainly stated

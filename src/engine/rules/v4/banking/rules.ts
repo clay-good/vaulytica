@@ -62,7 +62,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     present_patterns: [
       /(maker|borrower)/i,
       /(payee|lender|holder)/i,
-      /(principal\s+(amount|sum)|\$)/i,
+      /(principal\s+(amount|sum)|[$€£¥₹₩₽])/i,
     ],
   }),
   presence({
@@ -676,7 +676,7 @@ const GUARANTY_RULES: Rule[] = [
     // ambiguous. Ambiguity is what the rule's own explanation says it is for.
     present_patterns: [
       /continuing\s+guarant/i,
-      /(maximum\s+(amount|liability)|\bcaps?\b|limit\s+of\s+\$|aggregate\s+liability)/i,
+      /(maximum\s+(amount|liability)|\bcaps?\b|limit\s+of\s+[$€£¥₹₩₽]|aggregate\s+liability)/i,
       /\bgood[-\s]guy\b/i,
       /\band\s+not\s+thereafter\b/i,
       /\b(?:liability|obligations?|guaranty)\b[^.]{0,80}?\b(?:ends?|terminates?|ceases?|expires?)\s+(?:on|upon|as\s+of)\b/i,

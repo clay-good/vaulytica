@@ -144,7 +144,7 @@ const FORM_D_RULES: Rule[] = [
     present_patterns: [
       /(offering\s+(size|amount|aggregate))/i,
       /(minimum\s+(investment|subscription))/i,
-      /\$\s*[\d,]+/,
+      /[$€£¥₹₩₽]\s*[\d,]+/,
     ],
   }),
   presence({

@@ -51,6 +51,17 @@ export const EXCLUDED_COVERING_SUITES: Record<string, string> = {
     "fast-check gate: ~10x per-mutant cost, three OOM child restarts, 66min without finishing",
   "tests/integration/property-based.test.ts":
     "fast-check gate: ~10x per-mutant cost, three OOM child restarts, 66min without finishing",
+  // A whole-CORPUS relation. It imports `CURRENCY_GLYPHS` from the mutated
+  // `src/extract/amounts.ts` — deliberately, so the guard and the extractor
+  // cannot drift to two spellings of the same set — and that import is what
+  // makes it a covering suite. But its two corpus sweeps analyze all 310
+  // specimens twice each: ~14s per run against the ~150ms of a typical
+  // extractor unit suite, which over 2,758 mutants is the difference between a
+  // seven-minute job and a ten-hour one. Its kills go uncounted, so the
+  // published baseline understates fault detection here too; read it as a
+  // floor. It runs on every push as part of the normal suite.
+  "tests/integration/currency-glyph.test.ts":
+    "whole-corpus relation: ~14s per run over 310 specimens x2, ~100x the per-mutant cost of a unit suite",
 };
 
 export default defineConfig({

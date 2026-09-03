@@ -1217,7 +1217,7 @@ const MEDIA_RELEASE = pack("media-release", C, [
     cite: practice("release-consideration", "consideration in likeness releases"),
     pat: [
       /(in\s+consideration\s+of|for\s+good\s+and\s+valuable\s+consideration)/i,
-      /(\$|payment|compensation|receipt\s+of\s+which\s+is\s+acknowledged)/i,
+      /([$€£¥₹₩₽]|payment|compensation|receipt\s+of\s+which\s+is\s+acknowledged)/i,
     ],
     why: "A gratuitous release is revocable in several jurisdictions. Reciting consideration — even nominal, and acknowledging receipt — is what makes the release a contract rather than a permission.",
     fix: "Recite the consideration paid and acknowledge its receipt, or state the non-monetary consideration exchanged.",

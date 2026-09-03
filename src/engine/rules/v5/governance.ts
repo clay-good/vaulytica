@@ -451,7 +451,7 @@ const GRANT = pack("grant-agreement", C, [
     name: "Grant amount, period, and payment schedule",
     cite: cfr("2", "200.211", "Uniform Guidance — information contained in a federal award"),
     pat: [
-      /(grant\s+(amount|award)|award\s+amount|\$)/i,
+      /(grant\s+(amount|award)|award\s+amount|[$€£¥₹₩₽])/i,
       /(grant\s+period|period\s+of\s+performance|payment\s+schedule|disburse)/i,
     ],
     why: "The period of performance bounds which costs are allowable. Costs incurred outside it are unallowable even when the work was necessary.",

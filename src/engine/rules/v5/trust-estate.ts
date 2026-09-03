@@ -305,7 +305,7 @@ const QDRO = pack("qdro", C, [
     name: "Amount or percentage and valuation date",
     cite: usc("29", "1056", "ERISA § 206(d)(3)(C)(ii) — amount or percentage of benefits"),
     pat: [
-      /(percentage|amount|\d+%|\$)/i,
+      /(percentage|amount|\d+%|[$€£¥₹₩₽])/i,
       /(valuation\s+date|as\s+of\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|account\s+balance\s+as\s+of|manner\s+in\s+which\s+the\s+amount)/i,
     ],
     // `all: true`. The valuation pillar is a bare date, which every executed
