@@ -263,7 +263,12 @@ const QUOTED_TERM = /["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
  * value runs to the next label. Two-to-five Title-Case words per label, so
  * a signature block's "By:"/"Date:" or a notice's "Attn:" never registers.
  */
-const FIELD_LABEL = /\b([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){1,4}):\s+/g;
+// The separator is a PIPE as often as a colon: a cover block laid out as a
+// TABLE flattens to "Plan Year | February 1, 2026 through January 31, 2027"
+// (`src/ingest/docx.ts` joins each row's cells with " | "), and a term the
+// cover block defines is defined either way. Without this, a plan's own Plan
+// Year — used throughout the body — was a term it forgot to define.
+const FIELD_LABEL = /\b([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){1,4})\s*(?::|\|)\s+/g;
 const FIELD_BLOCK_MAX_LENGTH = 240;
 
 /** What may precede a cover block's FIRST label: nothing, or a capitalized
@@ -1483,7 +1488,9 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // defines. Recognized only on a short paragraph that OPENS with the
       // label, which is what a cover block is; a sentence that happens to
       // carry a colon mid-flow is prose.
-      const fieldValue = /^\s*[A-Z][A-Za-z]*(?:\s+[A-Za-z]+){0,4}:\s*/.exec(ctx.text);
+      // The pipe again: the VALUE of a cover-block field is a fact the document
+      // states in either layout, and a table row states it with a cell boundary.
+      const fieldValue = /^\s*[A-Z][A-Za-z]*(?:\s+[A-Za-z]+){0,4}\s*(?::|\|)\s*/.exec(ctx.text);
       if (
         fieldValue &&
         ctx.text.trim().length <= FIELD_BLOCK_MAX_LENGTH &&

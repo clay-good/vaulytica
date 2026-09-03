@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.395.0] — 2026-09-03
+
+### Fixed
+- **A cover block defines its terms, and a table row is the same block laid out
+  as cells.** "Plan Year | February 1, 2026 through January 31, 2027" defines
+  the Plan Year exactly as "Plan Year: …" does — and without that, a sales
+  commission plan's own Plan Year, used throughout its body, was a term it
+  forgot to define. `FIELD_LABEL` and the cover-block value guard in
+  `src/extract/definitions.ts` both take the pipe now, which also settles the
+  person named in a policy summary's cover field.
+
+  That was the design question the last release left open, and the answer was
+  yes. The table sweep is at **three** diverging specimens, down from fifteen.
+
 ## [9.394.0] — 2026-09-03
 
 ### Docs

@@ -31,14 +31,17 @@
  *
  * ── what is NOT fixed, and is recorded rather than hidden ──
  *
- * The sweep is at five specimens, down from fifteen. What remains needs a
- * DESIGN answer rather than a wider pattern: should "Plan Year | January 1 –
- * December 31" DEFINE the term, the way "Plan Year: …" does? A definitions
- * table is ordinary drafting and the answer is probably yes, but it is a
- * change to what a definition IS, not a tolerance — so it is written down
- * here rather than guessed at. `insurance-policy-summary` (a Title-Case run
- * that crosses a cell boundary), `scc-module-3` (DPA-002) and `sow-numbered`
- * (TEMP-002) are the others.
+ * The design question the last pass left open has been answered, and the
+ * answer was yes: a COVER BLOCK defines its terms, and a table row is the same
+ * block laid out as cells. "Plan Year | February 1, 2026 through January 31,
+ * 2027" defines the Plan Year exactly as "Plan Year: …" does, and the plan's
+ * own Plan Year — used throughout its body — was a term it forgot to define.
+ * `FIELD_LABEL` and the cover-block value guard both take the pipe now.
+ *
+ * The sweep is at three specimens, down from fifteen. `dpia-art-35`
+ * (STRUCT-006 on a person named in a cover field), `scc-module-3` (DPA-002)
+ * and `sow-numbered` (TEMP-002) are what is left, and each still needs its own
+ * reading rather than a wider pattern.
  *
  * There is therefore no whole-corpus relation here yet: it would be red, and a
  * red guard teaches nothing. This file asserts what is settled.
