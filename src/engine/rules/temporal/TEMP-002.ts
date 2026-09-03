@@ -42,9 +42,14 @@ import { forEachParagraph } from "../../../extract/walk.js";
  * amendment. Each of these is named the same way — "to the Harrowgate Family
  * Revocable Living Trust dated March 14, 2011", "under a Deed of Trust dated
  * …" — and none of them is the date of the document naming it.
+ *
+ * The field opener is a PIPE as well as a colon: a header block laid out as a
+ * TABLE flattens to "MSA Reference | Master Services Agreement dated March 9,
+ * 2024" (`src/ingest/docx.ts`), and the MSA's date is no more this statement of
+ * work's date in that layout than in the other one.
  */
 const REFERENCED_INSTRUMENT_DATE =
-  /(?:\b(?:the|a|an|that|those|such)\s+|:\s*)[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|amendment|indenture|trust|will|deed|mortgage|guaranty)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
+  /(?:\b(?:the|a|an|that|those|such)\s+|[:|]\s*)[^.;]{0,70}?\b(?:agreement|msa|dpa|baa|contract|sow|order\s+form|lease|note|policy|addendum|amendment|indenture|trust|will|deed|mortgage|guaranty)\b[^.;]{0,40}?\bdated\s+(?:as\s+of\s+)?$/i;
 
 /**
  * A header-field label naming another instrument's date — "Original Contract

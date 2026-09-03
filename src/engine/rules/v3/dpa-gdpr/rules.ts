@@ -172,7 +172,10 @@ export const DPA_GDPR_RULES: Rule[] = [
       // "Retention period: 90 days from receipt" — which is how the
       // Decision's own template is filled in. Requiring the trailing "for the
       // personal data" read the template's prose and not the completed form.
-      /\bretention\s+period\s*[:\u2014-]\s*\S/i,
+      // …and the same completed annex laid out as a TABLE gives "Retention
+      // period | 90 days from receipt", because `src/ingest/docx.ts` joins a
+      // row's cells with " | ". The Decision's own template IS a table.
+      /\bretention\s+period\s*[:\u2014|-]\s*\S/i,
       // Article 28(3) asks for the duration, and a DPA answers it by TYING the
       // processing to the agreement's term: "the duration is the term of the
       // Agreement and the ninety (90) days after it". Nothing above reads a

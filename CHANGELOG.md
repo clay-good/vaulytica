@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.400.0] — 2026-09-03
+
+### Fixed
+- **DPA-002** read the completed Annex I.B only when its label ended in a colon.
+  "Retention period | 90 days from receipt" is the same field in the layout the
+  Decision's own template actually uses — that template **is** a table — and
+  without it an executed SCC set was reported as never stating the duration of
+  the processing.
+
+- **TEMP-002's `REFERENCED_INSTRUMENT_DATE`** took a colon as the field opener
+  but not a pipe. "MSA Reference | Master Services Agreement dated March 9,
+  2024" therefore dated a statement of work to its master agreement's date and
+  reported it **back-dated by two years**.
+
+  The table sweep is at **one** diverging specimen, down from fifteen.
+
+### Notes
+- The one that is left is `dpia-art-35`, and only for STRUCT-006 on a person
+  named twice in the same document. It does not reduce: the guard that
+  suppresses the second occurrence in the colon layout needs the whole document
+  to fire, and a three-line fixture of the same lines is suppressed in both
+  layouts. Named in the test file rather than closed with a guessed widening.
+
 ## [9.399.0] — 2026-09-03
 
 ### Fixed

@@ -38,10 +38,21 @@
  * own Plan Year — used throughout its body — was a term it forgot to define.
  * `FIELD_LABEL` and the cover-block value guard both take the pipe now.
  *
- * The sweep is at three specimens, down from fifteen. `dpia-art-35`
- * (STRUCT-006 on a person named in a cover field), `scc-module-3` (DPA-002)
- * and `sow-numbered` (TEMP-002) are what is left, and each still needs its own
- * reading rather than a wider pattern.
+ * Two more closed with the same one-character reading. DPA-002's completed
+ * Annex I.B — "Retention period | 90 days from receipt" — is the Decision's own
+ * template, and that template IS a table. And TEMP-002's
+ * `REFERENCED_INSTRUMENT_DATE` took a colon as the field opener but not a pipe,
+ * so "MSA Reference | Master Services Agreement dated March 9, 2024" dated the
+ * statement of work to its master agreement's date and reported it back-dated.
+ *
+ * ── the one that is left ──
+ *
+ * `dpia-art-35` alone, and only for STRUCT-006 on a person named twice in the
+ * same document ("Assessment owner | Ivo Brandsma", "DPO advice provided by |
+ * Ivo Brandsma"). It does not reduce: the guard that suppresses the second
+ * occurrence in the colon layout needs the whole document to fire, and a
+ * three-line fixture of the same lines is suppressed in BOTH layouts. Naming it
+ * here is worth more than a guessed widening — one specimen, from fifteen.
  *
  * There is therefore no whole-corpus relation here yet: it would be red, and a
  * red guard teaches nothing. This file asserts what is settled.
