@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.414.0] — 2026-09-03
+
+### Fixed
+- **A footnote marker is no longer part of the sentence.** A PDF puts one inline
+  — "…as set out below.¹" — where it sits between the period and the space after
+  it, so every sentence-boundary scan reads the two sentences as one. Placing a
+  marker after each sentence moved a finding on **177 of 311 specimens**.
+
+  Only a marker that follows sentence punctuation is removed, which is where a
+  footnote reference is placed and where the meaning is never in doubt. A
+  superscript attached to a WORD is deliberately left alone: `10²` is an
+  exponent and `500 m²` is an area, and telling those from `Agreement¹` requires
+  knowing whether the word is a unit — a judgment about meaning rather than a
+  fold of presentation. This closes the gap recorded when the other presentation
+  forms (ligatures, fullwidth ASCII, Roman-numeral codepoints) were folded.
+
 ## [9.413.0] — 2026-09-03
 
 ### Fixed

@@ -129,6 +129,19 @@ export function normalize(tree: DocumentTree): DocumentTree {
         .replace(/\u2212/g, "-")
         .replace(/\u2116/g, "No.")
         .replace(/[\u2160-\u216F]/g, (c) => ROMAN_NUMERAL_FORMS[c.charCodeAt(0) - 0x2160] ?? c)
+        // A FOOTNOTE MARKER. A PDF puts one inline — "…as set out below.¹" —
+        // where it reads as part of the sentence and matches nothing: 177 of
+        // 311 specimens moved a finding when one was placed after each
+        // sentence, because the marker sits between the period and the space
+        // and every sentence-boundary scan then reads two sentences as one.
+        //
+        // Only a marker that follows SENTENCE PUNCTUATION is removed, which is
+        // where a footnote reference is placed and where the meaning is never
+        // in doubt. A superscript attached to a WORD is left alone: "10²" is an
+        // exponent and "500 m²" is an area, and telling those from
+        // "Agreement¹" needs to know whether the word is a unit — a judgment
+        // about meaning, not a fold of presentation.
+        .replace(/([.;:,!?)\]"'\u201D\u2019])[\u00B2\u00B3\u00B9\u2070\u2074-\u2079]+/g, "$1")
         // eslint-disable-next-line no-control-regex
         .replace(/[\x00-\x08\x0E-\x1F\x7F]/g, "")
         .replace(/\s+/g, " ")

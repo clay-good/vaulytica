@@ -335,6 +335,23 @@ describe("format is not load-bearing", () => {
       250,
     ],
     [
+      // A FOOTNOTE MARKER, in the place a PDF puts one: between the period and
+      // the space after it. 177 of 311 specimens moved a finding, because a
+      // marker there makes every sentence-boundary scan read two sentences as
+      // one. Only a marker after sentence punctuation is folded away — a
+      // superscript attached to a word ("10²", "500 m²") is left alone.
+      "a footnote marker after every sentence",
+      (t: string): string => {
+        const SUP = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"];
+        let n = 0;
+        return t.replace(/([.;:])(\s)/g, (_m, punct: string, space: string) => {
+          n = (n % 9) + 1;
+          return `${punct}${SUP[n]!}${space}`;
+        });
+      },
+      250,
+    ],
+    [
       "Roman-numeral codepoints",
       (t: string): string =>
         t.replace(

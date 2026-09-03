@@ -167,3 +167,36 @@ describe("flattenText", () => {
     expect(flattenText(t)).toContain("c");
   });
 });
+
+describe("footnote markers", () => {
+  const text = (t: DocumentTree): string =>
+    t.sections
+      .flatMap((s) => s.paragraphs.map((p) => p.runs.map((r) => r.text).join("")))
+      .join("\n");
+  const doc = (s: string): DocumentTree => ({
+    type: "document",
+    sections: [
+      {
+        id: "",
+        heading: "",
+        level: 1,
+        paragraphs: [
+          { id: "", runs: [{ id: "", text: s, start: 0, end: s.length, formatting: {} }] },
+        ],
+        children: [],
+      },
+    ],
+  });
+
+  it("removes a marker that follows sentence punctuation", () => {
+    expect(text(normalize(doc("The fee is due.\u00B9 Payment follows.")))).toBe(
+      "The fee is due. Payment follows.",
+    );
+  });
+
+  it("keeps a superscript attached to a word — it is an exponent or a unit", () => {
+    expect(text(normalize(doc("The premises are 500 m\u00B2 and the load is 10\u00B2 kg.")))).toBe(
+      "The premises are 500 m\u00B2 and the load is 10\u00B2 kg.",
+    );
+  });
+});
