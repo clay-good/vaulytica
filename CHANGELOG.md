@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.412.0] — 2026-09-03
+
+### Fixed
+- **Pleading paper's line numbers are no longer read as text.** A court filing
+  is typed on paper with 28 numbered lines down the left edge, and a PDF text
+  layer emits each number as the first token of its line. The catalog covers
+  complaints, motions, briefs and judgments, so this is the shape a large part
+  of it arrives in — and prefixing the corpus with line numbers moved a finding
+  on **207 of 311 specimens**, the widest divergence any probe in this
+  repository has produced except the f-ligatures.
+
+  A margin number and a clause number look alike ("3 The Borrower shall…" is
+  both), so all three of the things that separate them are required: DENSITY (a
+  margin number is on every line, a clause number only on a clause's first
+  line — this is what does the real work), NO PUNCTUATION, and a CYCLE that
+  resets at one consistent page length. None of the 311 specimens is touched in
+  its normal form, and no golden fixture changed.
+
 ## [9.411.0] — 2026-09-03
 
 ### Fixed

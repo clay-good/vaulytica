@@ -2,6 +2,7 @@ import type { DocumentTree, IngestResult, Paragraph, Section } from "./types.js"
 import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertPasteChars } from "./limits.js";
+import { stripPleadingLineNumbers } from "./line-numbers.js";
 
 /**
  * Ingest a raw text string. Pasted text has lost its document structure, so
@@ -45,7 +46,7 @@ function buildTreeFromText(text: string): DocumentTree {
   // so a CRLF document read as having no blank lines at all and took the
   // single-block fallback meant for a PDF paste. A general warranty deed lost
   // its title to that and fell to `generic-fallback`.
-  const normalized = text.replace(/\r\n?/g, "\n");
+  const normalized = stripPleadingLineNumbers(text.replace(/\r\n?/g, "\n"));
   const lines = normalized.split("\n");
 
   // Root section accumulates paragraphs that appear before any heading.
