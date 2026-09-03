@@ -29,11 +29,81 @@ import type { Paragraph } from "./types.js";
 export const PAGE_FURNITURE =
   /^(?:[-–—\s|]*)?(?:page\s*)?\d{1,3}\s*(?:of|\/)\s*\d{1,3}[-–—\s|.]*$|^[-–—\s|]*page\s+\d{1,3}[-–—\s|.]*$/i;
 
-const textOf = (p: Paragraph): string =>
-  p.runs
-    .map((r) => r.text)
-    .join("")
-    .trim();
+/** How far into a document its own caption can still be its caption. */
+const CAPTION_PARAGRAPHS = 3;
+
+/**
+ * A BATES NUMBER — "ACME-000123" — stamped on every produced page. Unlike a
+ * legend it is DIFFERENT on every page, so no repetition test can find it; the
+ * shape is all there is. An all-caps prefix, a hyphen or underscore, and at
+ * least four digits, alone on its line, is a production stamp and nothing else.
+ *
+ * A SPACE was allowed as the separator in the first draft, and it made
+ * `normalize` NON-IDEMPOTENT: a run holding "F3\n8011" collapses to "F3 8011"
+ * on the first pass, which the pattern then read as a Bates number on the
+ * second, dropping a paragraph that had survived. Found by the
+ * `normalize(normalize(t))` property test, which no specimen would have caught.
+ * The separator is punctuation only now — and every shape test below reads
+ * WHITESPACE-COLLAPSED text, so that no pattern here can begin matching only
+ * after a pass has run.
+ */
+const BATES_STAMP = /^[A-Z][A-Z0-9]{1,15}[-_]\d{4,10}$/;
+
+/**
+ * The vocabulary of a page LEGEND. A legend is matched word by word rather than
+ * as a phrase, because it is assembled freely — "CONFIDENTIAL — ATTORNEY WORK
+ * PRODUCT", "HIGHLY CONFIDENTIAL — ATTORNEYS' EYES ONLY", "PRIVILEGED AND
+ * CONFIDENTIAL", "DRAFT — SUBJECT TO FRE 408". Every word must be in the list,
+ * so a heading that merely contains one of them is not a legend:
+ * "CONFIDENTIAL INFORMATION" fails on INFORMATION, and "CONFIDENTIALITY" is a
+ * different word.
+ */
+const LEGEND_WORDS = new Set([
+  "AND",
+  "ATTORNEY",
+  "ATTORNEYS",
+  "CONFIDENTIAL",
+  "COPY",
+  "DISCUSSION",
+  "DISTRIBUTION",
+  "DRAFT",
+  "EYES",
+  "EXECUTION",
+  "FOR",
+  "FRE",
+  "HIGHLY",
+  "INTERNAL",
+  "NOT",
+  "ONLY",
+  "ORDER",
+  "PREJUDICE",
+  "PRIVILEGED",
+  "PRODUCT",
+  "PROPRIETARY",
+  "PROTECTIVE",
+  "PURPOSES",
+  "REDACTED",
+  "RULE",
+  "SECRET",
+  "SUBJECT",
+  "TO",
+  "TRADE",
+  "USE",
+  "VERSION",
+  "WITHOUT",
+  "WORK",
+  "408",
+]);
+
+function isPageLegend(text: string): boolean {
+  if (text.length > 80 || text !== text.toUpperCase()) return false;
+  const words = text.split(/[^A-Z0-9']+/).filter(Boolean);
+  return words.length > 0 && words.length <= 10 && words.every((w) => LEGEND_WORDS.has(w));
+}
+
+/** Whitespace-collapsed, so a pattern cannot start matching after a pass. */
+const collapse = (t: string): string => t.replace(/\s+/g, " ").trim();
+const textOf = (p: Paragraph): string => collapse(p.runs.map((r) => r.text).join(""));
 /**
  * The break is between two LINES, so the shape tests read the two lines that
  * touch it — the last of the paragraph above and the first of the one below —
@@ -42,8 +112,8 @@ const textOf = (p: Paragraph): string =>
  * lower-case "ss." on its second line, and reading the block as one string
  * made it look like prose; the signature above it was merged into it.
  */
-const lastLine = (p: Paragraph): string => (p.runs[p.runs.length - 1]?.text ?? "").trim();
-const firstLine = (p: Paragraph): string => (p.runs[0]?.text ?? "").trim();
+const lastLine = (p: Paragraph): string => collapse(p.runs[p.runs.length - 1]?.text ?? "");
+const firstLine = (p: Paragraph): string => collapse(p.runs[0]?.text ?? "");
 
 /** Ends mid-sentence: no terminal punctuation and no closing delimiter. */
 const CONTINUES = /[^.;:!?)\]"'”’]$/;
@@ -107,9 +177,39 @@ const ATTACHMENT_TITLE = new RegExp(String.raw`^(?:${ATTACHMENT_KIND})\s`, "i");
  */
 export function runningHeaderCopies(paragraphs: Paragraph[]): Set<Paragraph> {
   const drop = new Set<Paragraph>();
-  const opening = paragraphs.find((p) => textOf(p).length > 0);
+  // The opening must be chosen from what SURVIVES this pass. Choosing it before
+  // the furniture is removed made `normalize` non-idempotent: a document whose
+  // first paragraph was itself a page number compared every later paragraph
+  // against "1 of 9", found no header, and then found one on a second pass —
+  // caught by the `normalize(normalize(t))` property test, not by any specimen.
+  const opening = paragraphs.find((p) => {
+    const text = textOf(p);
+    return text.length > 0 && !PAGE_FURNITURE.test(text) && !BATES_STAMP.test(text);
+  });
   if (!opening) return drop;
   const openingText = textOf(opening);
+
+  // A page LEGEND repeats verbatim on every page, and unlike the title it is
+  // not drawn from the document at all — but the FIRST one may be the
+  // document's own caption ("EXECUTION VERSION" over a signed agreement), and
+  // that is a fact about the document. So the first is kept and the stamps
+  // after it are dropped, exactly as for the header.
+  const legends = [...paragraphs.entries()].filter(([, p]) => isPageLegend(textOf(p)));
+  const legendCounts = new Map<string, number>();
+  for (const [, p] of legends) legendCounts.set(textOf(p), (legendCounts.get(textOf(p)) ?? 0) + 1);
+  const seenLegend = new Set<string>();
+  for (const [at, p] of legends) {
+    const text = textOf(p);
+    if ((legendCounts.get(text) ?? 0) < 2) continue;
+    // The caption is at the TOP. A legend first seen in the middle of the
+    // document is a page stamp wherever it falls, and keeping it there leaves
+    // the sentence it interrupted split in two — which was the whole point.
+    if (!seenLegend.has(text)) {
+      seenLegend.add(text);
+      if (at < CAPTION_PARAGRAPHS) continue;
+    }
+    drop.add(p);
+  }
 
   const byText = new Map<string, number[]>();
   for (const [i, p] of paragraphs.entries()) {
@@ -148,7 +248,7 @@ export function stripPageFurniture(
   let dropped = false;
   for (const p of paragraphs) {
     const text = textOf(p);
-    if (alsoDrop.has(p) || (text && PAGE_FURNITURE.test(text))) {
+    if (alsoDrop.has(p) || (text && (PAGE_FURNITURE.test(text) || BATES_STAMP.test(text)))) {
       dropped = true;
       continue;
     }

@@ -106,6 +106,68 @@ describe("stripPageFurniture", () => {
   });
 });
 
+describe("page stamps", () => {
+  it("sees the same text a second pass would — detection is whitespace-stable", () => {
+    // Every shape test reads whitespace-COLLAPSED text, so a paragraph cannot
+    // start matching only after normalize has folded its newlines to spaces.
+    const split = {
+      id: "",
+      runs: [{ id: "", text: "Page 3\n of  9", start: 0, end: 0, formatting: {} }],
+    };
+    expect(texts(stripPageFurniture([p("body."), split]))).toEqual(["body."]);
+  });
+
+  it("drops a Bates number, which is different on every page", () => {
+    const out = stripPageFurniture([
+      p("The Provider shall deliver the Services in accordance with"),
+      p("ACME-000123"),
+      p("the specifications set out in Exhibit A."),
+    ]);
+    expect(texts(out)).toEqual([
+      "The Provider shall deliver the Services in accordance with the specifications set out in Exhibit A.",
+    ]);
+  });
+
+  it("does not drop an ordinary identifier that is not Bates-shaped", () => {
+    // "F3 8011" is the one that mattered: a run holding "F3\n8011" collapses to
+    // it on the first normalize pass, so a space separator made the whole
+    // function non-idempotent. The separator is punctuation only.
+    for (const line of ["Contract 42", "ACME-12", "Order ACME-000123", "acme-000123", "F3 8011"])
+      expect(texts(stripPageFurniture([p("body."), p(line)])), line).toContain(line);
+  });
+
+  it("drops a repeated privilege legend but keeps the document's own caption", () => {
+    const caption = p("CONFIDENTIAL — ATTORNEY WORK PRODUCT");
+    const paras = [
+      caption,
+      p("body one."),
+      p("CONFIDENTIAL — ATTORNEY WORK PRODUCT"),
+      p("body two."),
+    ];
+    const drop = runningHeaderCopies(paras);
+    expect(drop.size).toBe(1);
+    expect(drop.has(caption)).toBe(false);
+  });
+
+  it("drops every copy when the first one is already mid-document", () => {
+    const paras = [
+      p("AGREEMENT"),
+      p("a."),
+      p("b."),
+      p("c."),
+      p("EXECUTION VERSION"),
+      p("d."),
+      p("EXECUTION VERSION"),
+    ];
+    expect(runningHeaderCopies(paras).size).toBe(2);
+  });
+
+  it("does not treat a heading that merely contains a legend word as a legend", () => {
+    const paras = [p("AGREEMENT"), p("CONFIDENTIAL INFORMATION"), p("CONFIDENTIAL INFORMATION")];
+    expect(runningHeaderCopies(paras).size).toBe(0);
+  });
+});
+
 describe("runningHeaderCopies", () => {
   it("claims the title repeated twice more, and never the opening itself", () => {
     const opening = p("FACILITY AGREEMENT");
@@ -123,6 +185,14 @@ describe("runningHeaderCopies", () => {
       p("more"),
       p("NORTHFIELD PATHOLOGY ASSOCIATES, P.C."),
     ];
+    expect(runningHeaderCopies(paras).size).toBe(2);
+  });
+
+  it("picks the opening from what SURVIVES the pass, so normalize stays idempotent", () => {
+    // A document whose first paragraph is itself a page number compared every
+    // later paragraph against "1 of 9", found no header, and then found one on
+    // a second pass. The property test caught it; no specimen would have.
+    const paras = [p("1 of 9"), p("AGREEMENT"), p("a."), p("AGREEMENT"), p("b."), p("AGREEMENT")];
     expect(runningHeaderCopies(paras).size).toBe(2);
   });
 

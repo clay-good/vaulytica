@@ -143,7 +143,49 @@ function doubleSpaced(text: string): string {
  */
 const DOUBLE_SPACED_UNSTABLE = new Set<string>([]);
 
+/** The same text with `stamp(page)` set off on its own line every 45 lines. */
+function stampEvery(text: string, stamp: (page: number) => string): string {
+  const lines = hardWrap(text).split("\n");
+  const out: string[] = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    out.push(lines[i]!);
+    if ((i + 1) % 45 === 0) out.push("", stamp(Math.ceil((i + 1) / 45)), "");
+  }
+  return out.join("\n");
+}
+
 describe("format is not load-bearing", () => {
+  it("a privilege legend on every page moves no finding", async () => {
+    // 36 specimens moved before page legends were recognized. One still does,
+    // and it is not a defect: a hold notice short enough to cross ONE page
+    // boundary carries ONE stamp, which is indistinguishable from a caption —
+    // and SET-030 asks a hold notice to carry exactly that caption
+    // ("Confidential — Attorney Work Product"), so the transform genuinely
+    // adds meaning there rather than preserving it. A legend is only treated
+    // as furniture once it REPEATS; the first one may be the document's own.
+    const SEMANTIC = new Set(["litigation-hold-notice.txt"]);
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      if (SEMANTIC.has(name)) continue;
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = stampEvery(text, () => "CONFIDENTIAL — ATTORNEY WORK PRODUCT");
+      if (mutated === text) continue;
+      probed++;
+      const normal = await analyzeText(text, name);
+      const after = await analyzeText(mutated, name);
+      const ids = (r: typeof normal): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(normal).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(normal).includes(id));
+      if (lost.length || gained.length) {
+        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      }
+    }
+    expect(probed).toBeGreaterThanOrEqual(250);
+    expect(broken).toEqual([]);
+  }, 300_000);
+
   it("the corpus is present", () => {
     expect(SPECIMENS.length).toBeGreaterThan(50);
   });
@@ -276,6 +318,20 @@ describe("format is not load-bearing", () => {
           })
           .join("\n");
       },
+      250,
+    ],
+    [
+      // A BATES NUMBER on every produced page. Unlike a legend it is DIFFERENT
+      // on every page, so no repetition test can find it — the shape is all
+      // there is. 29 specimens moved a finding.
+      "a Bates stamp on every page",
+      (t: string): string => stampEvery(t, (n) => `ACME-${String(n).padStart(6, "0")}`),
+      250,
+    ],
+    [
+      // The other page stamp a legal document carries. 29 specimens moved.
+      "an EXECUTION VERSION legend on every page",
+      (t: string): string => stampEvery(t, () => "EXECUTION VERSION"),
       250,
     ],
     [

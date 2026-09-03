@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.413.0] — 2026-09-03
+
+### Fixed
+- **Page stamps are no longer read as text.** The last of the things a PDF paste
+  carries besides the words: a Bates number on every produced page
+  (`ACME-000123`, 29 specimens moved a finding), a privilege legend
+  (`CONFIDENTIAL — ATTORNEY WORK PRODUCT`, 36), and an
+  `EXECUTION VERSION` caption (29).
+
+  A Bates number is DIFFERENT on every page, so no repetition test can find it —
+  the shape is all there is, and only that shape (an all-caps prefix, a
+  separator, at least four digits, alone on its line) is claimed. A legend is
+  matched word by word against a fixed vocabulary rather than as a phrase,
+  because it is assembled freely; every word must be in the list, so
+  `CONFIDENTIAL INFORMATION` is a heading and not a legend. And a legend is only
+  furniture once it REPEATS: the first one may be the document's own caption.
+
+  One specimen still moves and it is not a defect: a hold notice short enough to
+  cross ONE page boundary carries ONE stamp, and SET-030 asks a hold notice to
+  carry exactly that caption — so the transform genuinely adds meaning there.
+  Recorded as such in the corpus relation rather than papered over.
+
+  A first draft of the Bates pattern allowed a SPACE as its separator, which
+  made `normalize` non-idempotent: a run holding `"F3\n8011"` collapses to
+  `"F3 8011"` on the first pass, which the pattern then read as a Bates number
+  on the second. The `normalize(normalize(t))` property test caught it; no
+  specimen would have. The separator is punctuation only now, and every shape
+  test in the pass reads whitespace-collapsed text so that none of them can
+  begin matching only after a pass has run. The running-header pass had the
+  same class of defect — it chose the document's opening paragraph BEFORE the
+  furniture was removed, so a document whose first paragraph was itself a page
+  number found no header on pass one and a header on pass two.
+
 ## [9.412.0] — 2026-09-03
 
 ### Fixed
