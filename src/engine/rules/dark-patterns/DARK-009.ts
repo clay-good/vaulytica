@@ -42,7 +42,7 @@ export const rule: Rule = {
       // "making … available" tolerates words between the verb and "available"
       // ("making the revised version available on its portal"), which the rigid
       // "making\s+available" adjacency missed.
-      /\b(?:Vendor|Provider|Company|Licensor|Customer|Operator|we|we\s+reserve\s+the\s+right\s+to)\s*(?:may|reserves?\s+the\s+right\s+to|shall\s+have\s+the\s+right\s+to)?\s*(?:modify|amend|change|update|revise|alter)\b[\s\S]{0,160}\b(?:terms?|agreement|service|policy|policies|conditions)\b[\s\S]{0,160}\b(?:post(?:ing)?|publish(?:ing)?|mak(?:e|es|ing)\s+[^.]{0,40}?available|made\s+[^.]{0,40}?available|upload(?:ing)?|placing)\b[\s\S]{0,80}\b(?:website|site|portal|url|link|page|online|on\s+its\s+(?:website|site|portal)|at\s+(?:the\s+)?url)\b/i,
+      /\b(?:Vendor|Provider|Company|Licensor|Customer|Operator|we|we\s+reserve\s+the\s+right\s+to)\s*(?:may|reserves?\s+the\s+right\s+to|(?:shall|will)\s+have\s+the\s+right\s+to)?\s*(?:modify|amend|change|update|revise|alter)\b[\s\S]{0,160}\b(?:terms?|agreement|service|policy|policies|conditions)\b[\s\S]{0,160}\b(?:post(?:ing)?|publish(?:ing)?|mak(?:e|es|ing)\s+[^.]{0,40}?available|made\s+[^.]{0,40}?available|upload(?:ing)?|placing)\b[\s\S]{0,80}\b(?:website|site|portal|url|link|page|online|on\s+its\s+(?:website|site|portal)|at\s+(?:the\s+)?url)\b/i,
     );
     // The dark pattern is amendment by posting ALONE — "we change the terms by
     // putting a new version online; keep using = you agree." A clause that

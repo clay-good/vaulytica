@@ -15,7 +15,7 @@ import { borrowsParentVocabulary } from "../_helpers.js";
  * required, and the gap between them is bounded to a single sentence.
  */
 const INCORPORATES_DEFINITIONS =
-  /\b(?:capitali[sz]ed|defined)\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,120}?\b(?:have|has|shall\s+have|shall\s+bear|are\s+given)\s+the\s+(?:respective\s+)?meanings?\b/i;
+  /\b(?:capitali[sz]ed|defined)\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,120}?\b(?:have|has|(?:shall|will)\s+have|(?:shall|will)\s+bear|are\s+given)\s+the\s+(?:respective\s+)?meanings?\b/i;
 
 function documentText(ctx: RuleContext): string {
   const parts: string[] = [];

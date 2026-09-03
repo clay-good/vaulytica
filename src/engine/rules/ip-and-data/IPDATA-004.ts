@@ -42,7 +42,7 @@ export const rule: Rule = {
         // allocating sentence reported a cloud services agreement's own
         // ownership clause as unaddressed. Whichever party the sentence gives
         // the data to, it addressed the question, which is all this rule asks.
-        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:all\s+|the\s+|its\s+)*(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b|(?:owns?|retains?|shall\s+(?:own|retain))\s+(?:all\s+)?right,?\s+title,?\s+and\s+interest\s+(?:in|to)\b[^.]{0,40}?\bdata\b|(?:customer|usage|service)\s+data\b[^.]{0,40}?\b(?:belongs?\s+to|owned\s+by|(?:is|are|shall\s+be)\s+(?:the\s+)?(?:sole\s+|exclusive\s+)*property\s+of)\b/i,
+        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:all\s+|the\s+|its\s+)*(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b|(?:owns?|retains?|(?:shall|will)\s+(?:own|retain))\s+(?:all\s+)?right,?\s+title,?\s+and\s+interest\s+(?:in|to)\b[^.]{0,40}?\bdata\b|(?:customer|usage|service)\s+data\b[^.]{0,40}?\b(?:belongs?\s+to|owned\s+by|(?:is|are|(?:shall|will)\s+be)\s+(?:the\s+)?(?:sole\s+|exclusive\s+)*property\s+of)\b/i,
       )
     )
       return null;

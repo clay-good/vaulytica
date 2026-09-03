@@ -250,14 +250,14 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     citation: mclarenMacomb(),
     playbooks: [SETTLE_PLAYBOOK_SETTLEMENT],
     bad_patterns: [
-      /(employee|claimant|you)\s+shall\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
+      /(employee|claimant|you)\s+(?:shall|will)\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|existence\s+of\s+this\s+settlement|any\s+aspect)/is,
       /non.?disparag.{0,200}(any|all)\s+(person|individual|entity)/is,
       // The dominant NLRB-scrutinized forms — "shall not MAKE any disparaging
       // statement" and "keep the terms … of this Agreement confidential" —
       // that the disclose/disparage verb list and the exact phrasings above
       // miss (the same EMP-020 gap).
-      /(?:employee|claimant|you)\s+shall\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
+      /(?:employee|claimant|you)\s+(?:shall|will)\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
       /keep\s+(?:the\s+)?(?:terms|amount|existence|contents?)[^.]{0,60}\bof\s+this\s+(?:agreement|settlement)[^.]{0,40}\bconfidential/is,
     ],
     exclude_if: [
@@ -494,7 +494,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
     present_patterns: [
       /reservation\s+of\s+rights/i,
       /(without\s+prejudice|expressly\s+reserve)/i,
-      /(no\s+waiver|nothing\s+(herein|in\s+this\s+letter)\s+(shall|constitutes)\s+a\s+waiver)/i,
+      /(no\s+waiver|nothing\s+(herein|in\s+this\s+letter)\s+((?:shall|will)|constitutes)\s+a\s+waiver)/i,
     ],
     default_severity: "warning",
   }),

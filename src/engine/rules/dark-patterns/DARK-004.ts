@@ -32,7 +32,7 @@ export const rule: Rule = {
       // "resolved by BINDING INDIVIDUAL arbitration" — the qualifier every
       // consumer arbitration clause carries sits between the adjective and the
       // noun, and the 30-character verb window stopped just short of it.
-      /\b(?:mandatory|binding)\s+(?:\w+\s+){0,2}arbitration|(?:shall|must|agree\s+to)\s+(?:[^.]{0,60}?)?arbitrat|arbitration\s+(?:is|shall\s+be)\s+(?:mandatory|binding|required|the\s+(?:sole|exclusive))/i,
+      /\b(?:mandatory|binding)\s+(?:\w+\s+){0,2}arbitration|(?:(?:shall|will)|must|agree\s+to)\s+(?:[^.]{0,60}?)?arbitrat|arbitration\s+(?:is|(?:shall|will)\s+be)\s+(?:mandatory|binding|required|the\s+(?:sole|exclusive))/i,
     );
     const cw = firstParagraphMatch(
       ctx,

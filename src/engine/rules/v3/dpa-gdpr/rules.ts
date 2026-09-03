@@ -710,7 +710,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // look-behind keeps the WRONG DIRECTION out: "the Controller shall
       // inform the Processor of a personal data breach" is not the Article
       // 33(2) obligation and `dpa-gdpr-ruleset.test.ts` pins it as a finding.
-      /(?<!\bcontroller\s)(?<!\bcontroller\s+shall\s)(?:notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)[^.]{0,120}?\b(?:personal\s+data\s+breach|data\s+breach|security\s+breach)\b/i,
+      /(?<!\bcontroller\s)(?<!\bcontroller\s+(?:shall|will)\s)(?:notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)[^.]{0,120}?\b(?:personal\s+data\s+breach|data\s+breach|security\s+breach)\b/i,
     ],
     // Express-denial guard: a refusal names the same notification duty the
     // requirement does. Art. 33(2) has no exception, so a processor that
@@ -939,7 +939,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Reassign the choice to the controller: 'At the Controller's choice, Processor shall delete or return Personal Data.'",
     bad_patterns: [
-      /processor\s+(shall|may)\s+(choose|elect)\s+to\s+(delete|return)/i,
+      /processor\s+((?:shall|will)|may)\s+(choose|elect)\s+to\s+(delete|return)/i,
       /at\s+the\s+(option|choice)\s+of\s+(the\s+)?processor.*?(delete|return)/is,
       // The deletion/return choice belongs to the CONTROLLER under Art.
       // 28(3)(g). "at the Processor's sole discretion, either delete or
@@ -963,7 +963,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Permit SOC 2 / ISO substitution as a default, but preserve the controller's right to an on-site audit on reasonable cause.",
     bad_patterns: [
-      /(SOC\s*2|ISO\s*27001).{0,160}(in\s+lieu\s+of|shall\s+(satisfy|fulfill|fulfil)|the\s+sole\s+means)/is,
+      /(SOC\s*2|ISO\s*27001).{0,160}(in\s+lieu\s+of|(?:shall|will)\s+(satisfy|fulfill|fulfil)|the\s+sole\s+means)/is,
       /(no\s+(other|additional)\s+audit\s+rights|audit\s+rights?\s+are\s+limited\s+to)/i,
       // Art. 28(3)(h) requires the processor to "allow for and contribute to
       // audits". Substituting a report for the audit ENTIRELY ("in lieu of
@@ -971,7 +971,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // audit") eliminates the right; the SOC-2-specific branches above miss
       // a generic "certification report" substitution.
       /in\s+lieu\s+of\s+(?:any\s+)?(?:audit|inspection)/is,
-      /(?:shall\s+have\s+)?no\s+right\s+to\s+(?:conduct|mandate|require|perform)\s+(?:or\s+\w+\s+)?an?\s+audit/is,
+      /(?:(?:shall|will)\s+have\s+)?no\s+right\s+to\s+(?:conduct|mandate|require|perform)\s+(?:or\s+\w+\s+)?an?\s+audit/is,
     ],
     // The COMPLIANT form the rule wants — a SOC 2 / ISO report provided IN
     // ADDITION TO, and NOT IN LIEU OF, the audit right — states "in lieu of" /
@@ -1086,7 +1086,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Define 'Personal Data Breach,' 'Data Subject,' 'Controller,' and 'Processor' cross-referencing Article 4 GDPR.",
     present_patterns: [
-      /(personal\s+data\s+breach|data\s+subject\s+shall\s+have|controller.{0,40}(shall\s+have\s+the\s+meaning|means)|processor.{0,40}(shall\s+have\s+the\s+meaning|means))/is,
+      /(personal\s+data\s+breach|data\s+subject\s+(?:shall|will)\s+have|controller.{0,40}((?:shall|will)\s+have\s+the\s+meaning|means)|processor.{0,40}((?:shall|will)\s+have\s+the\s+meaning|means))/is,
     ],
     default_severity: "warning",
   }),
@@ -1180,7 +1180,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // jurisdictions extractor has read since v1 (CHOICE-001, NDA-D-017,
       // MNA-019). Written case-SENSITIVELY because the jurisdiction is a
       // proper noun; under `i` the leading [A-Z] would match any word.
-      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))/,
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will)\s+(?:govern|apply|control))/,
       /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
     default_severity: "warning",
@@ -1295,7 +1295,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Add a notice clause naming the methods (email, certified mail), addresses, and timing requirements.",
     present_patterns: [
-      /(notice\s+(shall|must)\s+be|notices\s+(under|hereunder|shall)|notice\s+address)/i,
+      /(notice\s+((?:shall|will)|must)\s+be|notices\s+(under|hereunder|(?:shall|will))|notice\s+address)/i,
     ],
     default_severity: "warning",
   }),

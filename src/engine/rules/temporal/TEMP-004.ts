@@ -36,7 +36,7 @@ export const rule: Rule = {
     // says "may be renewed", never "continues for successive renewal terms").
     const hit = firstUnnegatedParagraphMatch(
       ctx,
-      /(?:automatically|automatic)\s+(?:renew|renewal|extend)|(?<!\b(?:may|can|shall\s+have\s+the\s+right\s+to|elect\s+to|option\s+to|right\s+to)\s)renews?\s+(?:automatically\s+)?(?:for\s+|on\s+)?(?:an?\s+)?(?:successive|additional|further|one|two|three|annual|month-to-month|year-to-year|week-to-week|day-to-day)|shall\s+renew\s+(?:automatically|for)|auto-?renew|(?:renew|extend)\w*\s+automatically|rolls?\s+over\b[^.]{0,40}?(?:successive|additional|further|renew|term|period)|successive\s[^.]{0,30}?renewal\s+(?:terms?|periods?)|(?:is|remains?|be|on\s+an?)\s+evergreen\b|\bevergreen\s+(?:basis|term|renewal|contract|clause|provision)/i,
+      /(?:automatically|automatic)\s+(?:renew|renewal|extend)|(?<!\b(?:may|can|(?:shall|will)\s+have\s+the\s+right\s+to|elect\s+to|option\s+to|right\s+to)\s)renews?\s+(?:automatically\s+)?(?:for\s+|on\s+)?(?:an?\s+)?(?:successive|additional|further|one|two|three|annual|month-to-month|year-to-year|week-to-week|day-to-day)|(?:shall|will)\s+renew\s+(?:automatically|for)|auto-?renew|(?:renew|extend)\w*\s+automatically|rolls?\s+over\b[^.]{0,40}?(?:successive|additional|further|renew|term|period)|successive\s[^.]{0,30}?renewal\s+(?:terms?|periods?)|(?:is|remains?|be|on\s+an?)\s+evergreen\b|\bevergreen\s+(?:basis|term|renewal|contract|clause|provision)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

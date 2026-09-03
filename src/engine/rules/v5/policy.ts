@@ -154,7 +154,7 @@ const AUP = pack("acceptable-use-policy", C, [
     name: "Prohibited uses enumerated",
     cite: practice("aup-prohibited", "prohibited use enumeration in acceptable use policies"),
     pat: [
-      /(prohibit|may\s+not|shall\s+not|unacceptable\s+use)/i,
+      /(prohibit|may\s+not|(?:shall|will)\s+not|unacceptable\s+use)/i,
       /(harass|illegal|unauthorized\s+(access|software)|circumvent|malware|personal\s+(business|gain))/i,
     ],
     why: "Discipline for conduct the policy never named is where employment claims start. The enumeration is what makes enforcement defensible.",
@@ -170,7 +170,7 @@ const AUP = pack("acceptable-use-policy", C, [
     cite: usc("29", "157", "National Labor Relations Act § 7 — rights of employees"),
     pat: [
       /(section\s+7|nlra|national\s+labor\s+relations|protected[-\s]+(concerted\s+)?activity)/i,
-      /(nothing\s+in\s+this\s+policy|shall\s+not\s+be\s+(construed|interpreted)\s+to\s+(prohibit|restrict)|wages,?\s+hours,?\s+(and|or)\s+(other\s+)?(terms|working\s+conditions))/i,
+      /(nothing\s+in\s+this\s+policy|(?:shall|will)\s+not\s+be\s+(construed|interpreted)\s+to\s+(prohibit|restrict)|wages,?\s+hours,?\s+(and|or)\s+(other\s+)?(terms|working\s+conditions))/i,
     ],
     why: "The Board's Stericycle standard treats a work rule as presumptively unlawful if a reasonable employee could read it to chill § 7 activity. A savings clause does not cure every rule, but its absence is a standing exposure for confidentiality and communications rules.",
     fix: "Add a savings clause stating that nothing in the policy restricts employees' rights under Section 7 of the NLRA to discuss wages, hours, and working conditions.",

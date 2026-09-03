@@ -346,7 +346,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
       // shared frames cannot reach them.
       /\bauthorization\b[^.]{0,40}?\b(?:may|can|shall|will|is|are)\s+not\s+be\s+revoked/i,
       /\bauthorization\b[^.]{0,40}?\bcan\s?not\s+be\s+revoked/i,
-      /\bauthorization\s+(?:is|shall\s+be)\s+irrevocable/i,
+      /\bauthorization\s+(?:is|(?:shall|will)\s+be)\s+irrevocable/i,
     ],
     denied_title: "Right to revoke the authorization expressly denied",
     denied_description:

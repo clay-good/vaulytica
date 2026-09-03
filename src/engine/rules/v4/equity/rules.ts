@@ -277,7 +277,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
     recommendation:
       "Add 'Interest shall accrue on the unpaid principal at a rate of [X]% per annum, compounded annually, until paid in full or converted'.",
     present_patterns: [
-      /interest\s+(rate|shall|accrues?|of\s+\d)/i,
+      /interest\s+(rate|(?:shall|will)|accrues?|of\s+\d)/i,
       /\d+(\.\d+)?\s*%\s*per\s+annum/i,
     ],
   }),
@@ -298,7 +298,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
       /(2[5-9]|[3-9]\d|1\d{2,})\s*%\s*\)?\s*(?:per\s+(?:annum|year)|\/\s*(?:year|yr|annum))/i,
     ],
     exclude_if: [
-      /(?:not\s+to\s+exceed|shall\s+not\s+exceed|maximum\s+(?:rate\s+)?(?:permitted|allowed)|highest\s+lawful\s+rate|permitted\s+by\s+(?:applicable\s+)?law)/i,
+      /(?:not\s+to\s+exceed|(?:shall|will)\s+not\s+exceed|maximum\s+(?:rate\s+)?(?:permitted|allowed)|highest\s+lawful\s+rate|permitted\s+by\s+(?:applicable\s+)?law)/i,
     ],
     bad_title: "Interest rate may exceed state usury cap",
     bad_description:
@@ -892,7 +892,7 @@ const RSPA_RULES: Rule[] = [
       /lock[-\s]?up/i,
       /\(?\s*180\s*\)?\s*(?:calendar\s+)?days?/i,
       /one\s+hundred\s+(?:and\s+)?eighty\b/i,
-      /(?:shall\s+not|agrees?\s+not\s+to|may\s+not)\s+(?:sell|transfer|dispose|offer)[^.]{0,140}?(?:initial\s+public\s+offering|managing\s+underwriter|underwriters?\s+(?:so\s+)?request)/i,
+      /(?:(?:shall|will)\s+not|agrees?\s+not\s+to|may\s+not)\s+(?:sell|transfer|dispose|offer)[^.]{0,140}?(?:initial\s+public\s+offering|managing\s+underwriter|underwriters?\s+(?:so\s+)?request)/i,
     ],
     default_severity: "warning",
   }),

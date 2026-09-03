@@ -280,7 +280,7 @@ export const BAA_RULES: Rule[] = [
       // language uses the identical "not required to return" phrasing.
       /\b(?:need\s+not|shall\s+not|will\s+not|is\s+not\s+required\s+to|does\s+not\s+(?:have\s+to)?)\s+(?:return|destroy)\b(?![^.]{0,90}\b(?:applicable\s+law|by\s+law|required\s+by\s+law|legal\s+(?:hold|obligation|requirement)|retention\s+(?:schedule|requirement)|infeasible)\b)[^.]{0,60}?\bPHI/i,
       /\bno\s+obligation\s+to\s+(?:return|destroy)\b/i,
-      /\bPHI\b[^.]{0,40}?\b(?:need\s+not|shall\s+not)\s+be\s+(?:returned|destroyed)/i,
+      /\bPHI\b[^.]{0,40}?\b(?:need\s+not|(?:shall|will)\s+not)\s+be\s+(?:returned|destroyed)/i,
       /\bmay\s+retain\s+(?:all\s+|any\s+)?PHI\s+(?:indefinitely|permanently)/i,
     ],
     denied_title: "Return-or-destruction of PHI expressly excused",
@@ -537,7 +537,7 @@ export const BAA_RULES: Rule[] = [
       // attempts / routine pings / port scans, which narrows the § 164.304
       // definition the same way. exclude_if ("attempted or successful") still
       // clears a definition that keeps HIPAA's full wording.
-      /security\s+incident[^.]{0,120}(?:shall\s+not\s+include|does\s+not\s+include|excludes?|other\s+than)[^.]{0,120}(?:unsuccessful|pings?|port\s+scans?|broadcast\s+attacks?)/is,
+      /security\s+incident[^.]{0,120}(?:(?:shall|will)\s+not\s+include|does\s+not\s+include|excludes?|other\s+than)[^.]{0,120}(?:unsuccessful|pings?|port\s+scans?|broadcast\s+attacks?)/is,
     ],
     // "attempted or successful" IS HIPAA's full definition — the very wording
     // this rule's own recommendation asks for. Reading the "successful" half of
@@ -601,7 +601,7 @@ export const BAA_RULES: Rule[] = [
     // still anchored to a fee/amount-paid basis so a plain dollar cap or a
     // direct-damages limit (not a HIPAA-remedy impairment) is not flagged.
     bad_patterns: [
-      /(aggregate\s+liability|total\s+liability|liability[^.]{0,40}(?:shall\s+not\s+exceed|is\s+(?:capped|limited)\s+(?:at|to)|capped\s+at|limited\s+to)).{0,120}(fees|paid|amount)/is,
+      /(aggregate\s+liability|total\s+liability|liability[^.]{0,40}(?:(?:shall|will)\s+not\s+exceed|is\s+(?:capped|limited)\s+(?:at|to)|capped\s+at|limited\s+to)).{0,120}(fees|paid|amount)/is,
     ],
     default_severity: "warning",
   }),
@@ -680,7 +680,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add a definitions clause that incorporates 'Protected Health Information' and 'electronic PHI' as defined at 45 CFR § 160.103.",
     present_patterns: [
-      /(protected\s+health\s+information.{0,80}(means|shall\s+have)|160\.103|PHI.*shall\s+have\s+the\s+meaning)/is,
+      /(protected\s+health\s+information.{0,80}(means|(?:shall|will)\s+have)|160\.103|PHI.*(?:shall|will)\s+have\s+the\s+meaning)/is,
     ],
     default_severity: "warning",
   }),
@@ -927,7 +927,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add a notice clause naming the methods (email, certified mail), addresses, and timing requirements.",
     present_patterns: [
-      /(notice\s+(shall|must)\s+be|notices\s+(under|hereunder|shall)|notice\s+address)/i,
+      /(notice\s+((?:shall|will)|must)\s+be|notices\s+(under|hereunder|(?:shall|will))|notice\s+address)/i,
       // "A notice under this Agreement is given in writing to the address on
       // the signature page, and is effective on receipt" — the present tense
       // every modern drafter uses, where the patterns above want a modal.
@@ -968,10 +968,10 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Revise the governing-law clause to make clear that HIPAA controls in the event of conflict.",
     bad_patterns: [
-      /(notwithstanding\s+(any\s+)?(provision\s+of\s+)?HIPAA|state\s+law\s+(shall\s+)?controls?|state\s+law\s+governs)/is,
+      /(notwithstanding\s+(any\s+)?(provision\s+of\s+)?HIPAA|state\s+law\s+((?:shall|will)\s+)?controls?|state\s+law\s+governs)/is,
       // "the laws of Texas, which shall CONTROL OVER any conflicting FEDERAL
       // requirement" — a governing-law clause purporting to override HIPAA.
-      /\b(?:shall\s+)?(?:control|prevail|govern|take\s+precedence)\s+over\s+[^.]{0,60}\bfederal\b/is,
+      /\b(?:(?:shall|will)\s+)?(?:control|prevail|govern|take\s+precedence)\s+over\s+[^.]{0,60}\bfederal\b/is,
       /\bexclusively\s+by\s+the\s+laws\s+of[^.]{0,60}\bover\s+(?:any\s+)?(?:conflicting\s+)?federal\b/is,
     ],
     default_severity: "warning",
@@ -1007,7 +1007,7 @@ export const BAA_RULES: Rule[] = [
     // at termination scored clean.
     denied_if: [
       /\b(?:do|does|shall|will)\s+not\s+surviv\w+/i,
-      /\bno\s+(?:obligations?|provisions?)\s+(?:shall\s+)?surviv\w+/i,
+      /\bno\s+(?:obligations?|provisions?)\s+(?:(?:shall|will)\s+)?surviv\w+/i,
       /\bterminate\s+(?:in\s+full|entirely|completely)\s+upon\s+termination/i,
     ],
     denied_title: "Survival of HIPAA obligations expressly denied",
@@ -1029,7 +1029,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add definitions for 'Breach' and 'Unsecured PHI' that cross-reference 45 CFR § 164.402.",
     present_patterns: [
-      /(unsecured\s+PHI|unsecured\s+protected\s+health\s+information|164\.402|breach\s+(means|shall\s+have))/i,
+      /(unsecured\s+PHI|unsecured\s+protected\s+health\s+information|164\.402|breach\s+(means|(?:shall|will)\s+have))/i,
     ],
     default_severity: "warning",
   }),

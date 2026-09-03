@@ -285,9 +285,9 @@ const SPA_RULES: Rule[] = [
     present_patterns: [
       /purchase\s+and\s+sale/i,
       /sell.{0,40}shares?.{0,40}to\s+buyer/is,
-      /buyer\s+shall\s+purchase.{0,40}shares?/is,
+      /buyer\s+(?:shall|will)\s+purchase.{0,40}shares?/is,
       /\bsells?\s+(?:and\s+(?:transfers?|delivers?|assigns?)\s+)?to\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
-      /\b[A-Z]?[\w-]+\s+(?:shall\s+|agrees?\s+to\s+)?purchases?\s+from\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
+      /\b[A-Z]?[\w-]+\s+(?:(?:shall|will)\s+|agrees?\s+to\s+)?purchases?\s+from\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
     ],
   }),
   presence({
@@ -487,7 +487,7 @@ const SPA_RULES: Rule[] = [
       /governing\s+law/i,
       /governed\s+by\s+the\s+laws?\b/i,
       /(jurisdiction|forum).{0,40}(chancery|delaware)/is,
-      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))/,
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will)\s+(?:govern|apply|control))/,
       /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
   }),
@@ -997,8 +997,8 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       "Sellers commonly list items above an internal threshold for thoroughness without conceding materiality. The disclaimer protects against later 'admission of materiality' arguments.",
     recommendation: "Add a materiality disclaimer in the General Notes.",
     present_patterns: [
-      /materiality.{0,40}(disclaim|shall\s+not\s+(be|imply))/is,
-      /threshold.{0,40}(disclaim|shall\s+not\s+(be|imply))/is,
+      /materiality.{0,40}(disclaim|(?:shall|will)\s+not\s+(be|imply))/is,
+      /threshold.{0,40}(disclaim|(?:shall|will)\s+not\s+(be|imply))/is,
       // The standard formulation: "the inclusion of any item … is NOT AN
       // ADMISSION that such item is MATERIAL", "no disclosure shall be
       // deemed to ENLARGE or ESTABLISH any STANDARD OF MATERIALITY".
@@ -1304,7 +1304,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
     missing_description: "No notices / addresses clause was found.",
     explanation: "Operationally critical — agents will not act without an updated notices block.",
     recommendation: "Add 'Notices' with addresses, emails, and a manner-of-delivery clause.",
-    present_patterns: [/notices/i, /shall\s+be\s+delivered/i],
+    present_patterns: [/notices/i, /(?:shall|will)\s+be\s+delivered/i],
     default_severity: "info",
   }),
 ];
@@ -1597,7 +1597,7 @@ const EARNOUT_RULES: Rule[] = [
     // Widen the gap between the negated duty and the maximize/increase verb.
     bad_patterns: [
       /no\s+(?:duty|obligation)\s+to\b[^.]{0,60}(?:maximize|increase|accelerate|optimize)[^.]{0,40}earn[-\s]?out/is,
-      /buyer\s+(may|shall)\s+operate.{0,40}sole\s+discretion.{0,80}earn[-\s]?out/is,
+      /buyer\s+(may|(?:shall|will))\s+operate.{0,40}sole\s+discretion.{0,80}earn[-\s]?out/is,
     ],
     bad_title: "Disclaimer of earnout-maximization duty flagged",
     bad_description:
@@ -1765,14 +1765,14 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // The year count must be the covenant's DURATION, not merely a number
       // sharing a sentence with it — "the Company has 10 years of history
       // supporting the restricted period" is not a 10-year non-compete.
-      /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|shall\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?/is,
-      /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|shall\s+not\s+compete)/is,
+      /(?:non.?compete|non.?competition|restricted\s+period)[^.]{0,40}(?:of|(?:shall|will)\s+be|is|are|equal\s+to|not\s+exceed(?:ing)?)\s+(?:a\s+period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?/is,
+      /(?:for|of)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?[^.]{0,40}(?:non.?compete|non.?competition|restricted\s+period|(?:shall|will)\s+not\s+compete)/is,
       /\(?([6-9]|[1-9][0-9])\)?[\s-]*year\s+(?:non.?compete|non.?competition|restricted\s+period)/is,
       // The active covenant verb "shall not compete" followed by the duration —
       // "Seller shall not compete for a period of ten (10) years" — which the
       // keyword-first and duration-first patterns above (they key on the noun
       // forms) both missed.
-      /shall\s+not\s+compete\b[^.]{0,30}(?:for|of|during)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?/is,
+      /(?:shall|will)\s+not\s+compete\b[^.]{0,30}(?:for|of|during)\s+(?:a\s+)?(?:period\s+of\s+)?(?:[a-z]+[-\s]+){0,2}\(?([6-9]|[1-9][0-9])\)?\s+years?/is,
     ],
     bad_title: "Non-compete duration appears > 5 years",
     bad_description:

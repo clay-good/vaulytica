@@ -356,7 +356,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /member.managed/i,
       /manager.managed/i,
-      /the\s+manager(s)?\s+shall/i,
+      /the\s+manager(s)?\s+(?:shall|will)/i,
       /managed\s+by\s+(?:its|the|one\s+or\s+more|a)\s+(?:members?|managers?)/i,
     ],
   }),
@@ -394,7 +394,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
     // cash to the Members" — under a bare "Distributions." heading, which the
     // noun-only pattern missed (v1.1.0).
     present_patterns: [
-      /distribution(s)?\s+(of|to|made|shall)/i,
+      /distribution(s)?\s+(of|to|made|(?:shall|will))/i,
       /\bdistribute[sd]?\s+(?:available\s+|net\s+|distributable\s+)?(?:cash|funds|profits?|proceeds|amounts|income|assets)/i,
     ],
   }),
@@ -646,11 +646,11 @@ const CHARTER_RULES: Rule[] = [
       // A qualifier commonly sits between "director" and the verb —
       // "a director OF THE CORPORATION shall not be personally liable" — so an
       // adjacency-only pattern missed the standard charter phrasing.
-      /director(?:s)?[^.]{0,40}?\bshall\s+not\s+be\s+personally\s+liable/i,
+      /director(?:s)?[^.]{0,40}?\b(?:shall|will)\s+not\s+be\s+personally\s+liable/i,
       // The dominant modern formulation carries its negation in the SUBJECT —
       // "NO director or officer … shall be personally liable" — so the
       // verb-negated branch above never matched it.
-      /\bno\s+director[^.]{0,60}?shall\s+be\s+personally\s+liable/i,
+      /\bno\s+director[^.]{0,60}?(?:shall|will)\s+be\s+personally\s+liable/i,
     ],
     default_severity: "warning",
   }),
@@ -1326,9 +1326,9 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
     // rule: "members of the audit committee need not be independent" and "a
     // director who is not independent may serve on the audit committee".
     bad_patterns: [
-      /non.independent\s+(director|member).{0,40}(may|shall|can)\s+serve.{0,40}audit/is,
+      /non.independent\s+(director|member).{0,40}(may|(?:shall|will)|can)\s+serve.{0,40}audit/is,
       /audit\s+committee[^.]{0,80}(?:need\s+not\s+be|(?:is|are|be)\s+not\s+required\s+to\s+be|do(?:es)?\s+not\s+(?:need|have)\s+to\s+be)\s+independent/is,
-      /(?:director|member)\s+(?:who\s+is\s+)?not\s+independent[^.]{0,60}(?:may|shall|can)?\s*(?:serve|sit)[^.]{0,30}audit/is,
+      /(?:director|member)\s+(?:who\s+is\s+)?not\s+independent[^.]{0,60}(?:may|(?:shall|will)|can)?\s*(?:serve|sit)[^.]{0,30}audit/is,
     ],
     // The rule's own recommendation treats an override *limited to* the Rule
     // 10A-3 phase-in / controlled-company exceptions as the compliant fix, so
@@ -1414,7 +1414,7 @@ const PARTNERSHIP_RULES: Rule[] = [
       "Add 'Management' setting out general-partner / partner management authority and any required partner consents.",
     present_patterns: [
       /management.{0,40}(general\s+partner|partner)/is,
-      /general\s+partner\s+shall\s+manage/i,
+      /general\s+partner\s+(?:shall|will)\s+manage/i,
     ],
   }),
   presence({
@@ -1627,7 +1627,7 @@ const NONPROFIT_RULES: Rule[] = [
     present_patterns: [
       /political\s+campaign/i,
       /no\s+substantial\s+part.{0,40}lobby/is,
-      /shall\s+not\s+participate.{0,40}political/is,
+      /(?:shall|will)\s+not\s+participate.{0,40}political/is,
     ],
   }),
   presence({

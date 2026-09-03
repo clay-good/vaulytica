@@ -355,7 +355,7 @@ const DISTRIBUTION_RULES: Rule[] = [
     recommendation:
       "State that the distributor determines its own resale prices, or replace any minimum-resale-price term with a unilateral minimum-advertised-price (MAP) policy.",
     present_patterns: [
-      /(distributor|reseller)\s+(may|shall)\s+(determine|set|establish).{0,30}(resale\s+)?price/is,
+      /(distributor|reseller)\s+(may|(?:shall|will))\s+(determine|set|establish).{0,30}(resale\s+)?price/is,
       /free\s+to\s+(determine|set)\s+.{0,20}price/is,
       /minimum\s+advertised\s+price|\bmap\s+policy\b/i,
       /own\s+resale\s+prices/i,
@@ -456,7 +456,7 @@ const DISTRIBUTION_RULES: Rule[] = [
       "Add a 'Competing Products' clause stating whether and to what extent the Distributor may carry competing products, and for how long after termination.",
     present_patterns: [
       /competing\s+(product|line|brand|goods)/i,
-      /shall\s+not\s+(carry|sell|distribute|promote)[\s\S]{0,40}(competing|competitive)/is,
+      /(?:shall|will)\s+not\s+(carry|sell|distribute|promote)[\s\S]{0,40}(competing|competitive)/is,
       /non.?compet\w*/i,
       /exclusiv\w*[\s\S]{0,40}(carry|handle|line)/is,
     ],
@@ -540,7 +540,7 @@ const DISTRIBUTION_RULES: Rule[] = [
     // its own customers with no recourse upstream.
     denied_if: [
       /\b(?:does|do|shall|will)\s+not\s+(?:pass|flow|extend|assign)\b[^.]{0,60}?\bwarrant\w*/i,
-      /\bno\s+warrant\w*\s+(?:is|are|shall\s+be)\s+(?:passed|flowed|extended|assigned)/i,
+      /\bno\s+warrant\w*\s+(?:is|are|(?:shall|will)\s+be)\s+(?:passed|flowed|extended|assigned)/i,
       /\bwarrant\w*\b[^.]{0,40}?\b(?:is|are)\s+not\s+passed\s+through/i,
     ],
     denied_title: "Warranty pass-through expressly refused",
@@ -652,7 +652,7 @@ const REFERRAL_RULES: Rule[] = [
       /independent\s+contractor/i,
       /no\s+authority\s+to\s+bind/i,
       /(not|nor)\s+(an?\s+)?(agent|employee|partner|joint\s+venturer?)/i,
-      /shall\s+not\s+.{0,30}(bind|obligate|make\s+.{0,10}representations)/is,
+      /(?:shall|will)\s+not\s+.{0,30}(bind|obligate|make\s+.{0,10}representations)/is,
     ],
   }),
   presence({
@@ -723,7 +723,7 @@ const REFERRAL_RULES: Rule[] = [
       "Add a 'Non-Circumvention' clause barring each party, for a stated period, from bypassing the other to transact directly with a relationship introduced under the Agreement.",
     present_patterns: [
       /non.?circumvent\w*|circumvent\w*/i,
-      /shall\s+not\s+(bypass|circumvent|solicit\s+directly)/i,
+      /(?:shall|will)\s+not\s+(bypass|circumvent|solicit\s+directly)/i,
       /not\s+.{0,20}(deal|transact)\s+directly\s+with/is,
     ],
   }),
@@ -747,7 +747,7 @@ const REFERRAL_RULES: Rule[] = [
       "Add a clause stating whether referral fees are payable on referrals introduced before termination that convert afterward, and for how long the tail period runs.",
     present_patterns: [
       /(survive|surviving|continue|remain\s+payable)[\s\S]{0,60}(termination|expiration)/is,
-      /(termination|expiration)[\s\S]{0,80}(referral\s+fee|fee\s+shall\s+(still\s+)?be\s+(paid|payable)|earned\s+prior)/is,
+      /(termination|expiration)[\s\S]{0,80}(referral\s+fee|fee\s+(?:shall|will)\s+(still\s+)?be\s+(paid|payable)|earned\s+prior)/is,
       /\btail\b[\s\S]{0,30}(period|fee)|trailing\s+(fee|commission)/i,
       // The tail is most often written as what the Company WILL PAY, with the
       // referral dated by when it was accepted rather than by the word "tail":
@@ -783,7 +783,7 @@ const REFERRAL_RULES: Rule[] = [
       // "representation": "will not make any CLAIM about the Company's
       // products the Company has not approved in writing."
       /\b(?:no|without\s+any)\s+(?:actual\s+or\s+apparent\s+)?authority\s+to\b[^.]{0,80}?\b(?:represent\b|warrant\b|make\s+any\s+(?:representation|warranty|guarantee|claim))/is,
-      /shall\s+not\s+.{0,40}(misrepresent|make\s+false)/is,
+      /(?:shall|will)\s+not\s+.{0,40}(misrepresent|make\s+false)/is,
       /only\s+.{0,30}(materials|statements)\s+(provided|approved)\s+by/is,
     ],
   }),
@@ -933,7 +933,7 @@ const MARKETING_RULES: Rule[] = [
     present_patterns: [
       /works?\s+(made\s+)?for\s+hire/i,
       /(assign\w*|own\w*|vest\w*)\s+.{0,50}(deliverables?|work\s+product|all\s+(right|title)|materials)/is,
-      /(deliverables?|work\s+product)\s+.{0,50}(owned\s+by|shall\s+be\s+owned|belong|are\s+owned|vest)/is,
+      /(deliverables?|work\s+product)\s+.{0,50}(owned\s+by|(?:shall|will)\s+be\s+owned|belong|are\s+owned|vest)/is,
       /intellectual\s+property\s+.{0,30}(assign|owned|vest|belong)/is,
     ],
   }),
@@ -1042,7 +1042,7 @@ const MARKETING_RULES: Rule[] = [
     denied_if: [
       /\b(?:does|do|shall|will)\s+not\s+(?:obtain|secure|clear)\b[^.]{0,60}?\b(?:rights|licen[cs]es?|releases?|clearances?|permissions?)/i,
       /\b(?:makes?|gives?|provides?)\s+no\b[^.]{0,40}?\bnon.?infringement\b/i,
-      /\bno\s+(?:clearance|rights?.clearance)\s+(?:is|are|shall\s+be)\s+(?:obtained|provided|required)/i,
+      /\bno\s+(?:clearance|rights?.clearance)\s+(?:is|are|(?:shall|will)\s+be)\s+(?:obtained|provided|required)/i,
     ],
     denied_title: "Third-party rights clearance expressly disclaimed",
     denied_description:
@@ -1070,7 +1070,7 @@ const MARKETING_RULES: Rule[] = [
       /confidential\s+information/i,
       /(keep|hold|treat|maintain)[\s\S]{0,30}(in\s+)?confiden\w*/is,
       /non.?disclosure|\bnda\b/i,
-      /shall\s+not\s+(disclose|use)[\s\S]{0,40}confiden\w*/is,
+      /(?:shall|will)\s+not\s+(disclose|use)[\s\S]{0,40}confiden\w*/is,
     ],
     // Express-denial guard. Note this rule already carries a NEGATED present
     // pattern ("shall not disclose") because that is the compliant drafting —
@@ -1082,7 +1082,7 @@ const MARKETING_RULES: Rule[] = [
       /\bnot\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\s+(?:keep|hold|treat|maintain)\b[^.]{0,60}?\bconfiden\w*/i,
       /\bno\s+(?:duty|obligation)\s+of\s+confidentiality/i,
       /\bno\s+confidentiality\s+obligations?\b/i,
-      /\bconfidentiality\s+obligations?\b[^.]{0,40}?\b(?:do|does|shall)\s+not\s+apply\s+to\s+(?:this\s+)?(?:agreement|the\s+parties)/i,
+      /\bconfidentiality\s+obligations?\b[^.]{0,40}?\b(?:do|does|(?:shall|will))\s+not\s+apply\s+to\s+(?:this\s+)?(?:agreement|the\s+parties)/i,
     ],
     denied_title: "Confidentiality obligation expressly disclaimed",
     denied_description:
@@ -1112,7 +1112,7 @@ const MARKETING_RULES: Rule[] = [
       /(remain\w*|be)\s+(fully\s+)?responsible\s+for[\s\S]{0,40}(subcontractor|influencer|freelanc|third.?party)/is,
       /flow(ed|s)?[\s-]?down|pass(ed|es)?[\s-]?through/i,
       /(bind|require)[\s\S]{0,40}(subcontractor|influencer)[\s\S]{0,40}(same|equivalent|written)/is,
-      /(subcontractor|influencer)s?[\s\S]{0,40}(shall\s+)?(comply|be\s+bound|agree)/is,
+      /(subcontractor|influencer)s?[\s\S]{0,40}((?:shall|will)\s+)?(comply|be\s+bound|agree)/is,
     ],
   }),
 ];

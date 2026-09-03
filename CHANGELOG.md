@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.380.0] — 2026-09-02
+
+### Fixed
+- **A hundred and ninety-four recognizers read "shall" and not "will".** Plain-
+  language drafting has been moving off "shall" for thirty years — the federal
+  rules were restyled out of it, and a great many house styles now write
+  "Vendor will indemnify" and "the director will not be personally liable". The
+  obligation is the same one, and a recognizer that spells only "shall" reads
+  half its corpus.
+
+  The corpus relation found three: GOV-140 could not see expenses that "will be
+  advanced", GOV-028 could not see a director who "will not be personally
+  liable", MNA-106 could not see a seller who "will not compete". A static sweep
+  found the same shape in a hundred and ninety-four recognizers across
+  fifty-two files — most already covered by a sibling alternation, which is why
+  only three showed on the corpus, and every one of them a word away from being
+  blind. Zero golden churn.
+
+### Added
+- **`shall-will.test.ts`** — a static ratchet and the corpus relation, the
+  pairing `parenthetical-numeral` and `section-sign` established.
+
+  **The first draft of the ratchet had the defect it guards against.** It tested
+  the regex SOURCE with `/\bshall\b/`, and the two characters before the word in
+  that source are very often `\b` — so the word boundary fell between the "b" of
+  the escape and the "s" of "shall", where there is none. It read only the
+  literals that happened not to anchor the word, and passed while four blind
+  recognizers stood in front of it. Same defect as `section-sign`, one level up:
+  a guard is a program, and it is worth putting the defect back to see it fail.
+
 ## [9.379.0] — 2026-09-02
 
 ### Fixed

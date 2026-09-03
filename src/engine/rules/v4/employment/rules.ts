@@ -485,7 +485,7 @@ const SEPARATION_RULES: Rule[] = [
     citation: mclarenMacomb(),
     playbooks: [EMP_PLAYBOOK_SEPARATION],
     bad_patterns: [
-      /(employee|you)\s+shall\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
+      /(employee|you)\s+(?:shall|will)\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
       /(non.?disparag).{0,200}(broadly|any\s+(person|individual|entity))/is,
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|any\s+aspect)/is,
       // The dominant McLaren Macomb non-disparagement form is "shall not MAKE
@@ -493,7 +493,7 @@ const SEPARATION_RULES: Rule[] = [
       // "keep the terms … of this Agreement confidential" — neither the
       // "shall not disclose/disparage" verb list nor the exact "terms of this
       // agreement" phrase above reaches them.
-      /(?:employee|you)\s+shall\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
+      /(?:employee|you)\s+(?:shall|will)\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
       /keep\s+(?:the\s+)?(?:terms|amount|existence|contents?)[^.]{0,60}\bof\s+this\s+agreement[^.]{0,40}\bconfidential/is,
     ],
     exclude_if: [
@@ -690,7 +690,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
         String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,2}\)?\s*(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|agrees?|covenants?)\s+not\b`,
         "is",
       ),
-      /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:shall\s+not|restrict)/is,
+      /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:(?:shall|will)\s+not|restrict)/is,
       // The duration SPELLED OUT with no numeral at all — "for five years
       // after leaving the Company he will not work for any competitor". Every
       // branch above requires digits somewhere: the two bare-digit forms, the
@@ -1284,7 +1284,7 @@ const HANDBOOK_RULES: Rule[] = [
     // employee shall disclose their compensation" — and carried no exclude_if,
     // so add the § 7 carve-out guards while broadening the verb set.
     bad_patterns: [
-      /employees?\s+(shall|may)\s+not\s+(discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
+      /employees?\s+((?:shall|will)|may)\s+not\s+(discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /employees?\s+(?:are\s+)?(?:prohibited|barred|forbidden|not\s+permitted|not\s+allowed)\s+(?:from\s+)?(?:discuss|disclose|post|comment|shar)\w*.{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /no\s+employee\s+(?:shall|may|will|can)\s+(?:discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /(social\s+media|online).{0,80}(prohibit|may\s+not).{0,80}company/is,

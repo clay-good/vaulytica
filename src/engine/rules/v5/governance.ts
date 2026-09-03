@@ -424,7 +424,7 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
     ),
     pat: [
       /(charitable[-\s]+purpose|exempt\s+purpose|501\(c\)\(3\))/i,
-      /(may\s+not\s+be\s+used|shall\s+be\s+used\s+(only|exclusively)|prohibited\s+(use|activit))/i,
+      /(may\s+not\s+be\s+used|(?:shall|will)\s+be\s+used\s+(only|exclusively)|prohibited\s+(use|activit))/i,
     ],
     why: "Funds must be used exclusively for § 501(c)(3) purposes; private benefit, substantial lobbying, or political intervention through the project jeopardizes the sponsor's own exemption.",
     fix: "Limit use to the stated charitable purpose, prohibit political campaign intervention and substantial lobbying, and require pre-approval of any change in program.",
@@ -463,7 +463,7 @@ const GRANT = pack("grant-agreement", C, [
     name: "Restricted purpose and budget deviation limits",
     cite: cfr("2", "200.308", "Uniform Guidance — revision of budget and program plans"),
     pat: [
-      /(restricted\s+(purpose|use)|shall\s+be\s+used\s+(solely|only)\s+for|approved\s+budget)/i,
+      /(restricted\s+(purpose|use)|(?:shall|will)\s+be\s+used\s+(solely|only)\s+for|approved\s+budget)/i,
       /(budget\s+(revision|modification|deviation)|prior\s+(written\s+)?approval|reallocat)/i,
     ],
     why: "Restricted funds used outside the stated purpose are a breach and, for federal funds, a questioned cost. § 200.308 requires prior approval for specific budget changes.",
@@ -497,7 +497,7 @@ const GRANT = pack("grant-agreement", C, [
     cite: byrdAmendment(),
     pat: [
       /(lobby|lobbying)/i,
-      /(political\s+(campaign|activity|contribution)|shall\s+not\s+be\s+used\s+to\s+(influence|support))/i,
+      /(political\s+(campaign|activity|contribution)|(?:shall|will)\s+not\s+be\s+used\s+to\s+(influence|support))/i,
     ],
     why: "Federal funds may not be used for lobbying (the Byrd Amendment and § 501(c)(3) limits), and a charitable grantee's political intervention endangers exemption for both parties.",
     fix: "Prohibit use of grant funds for lobbying or political campaign intervention, and require the Byrd Amendment certification where federal funds are involved.",
@@ -552,7 +552,7 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
     cite: dgcl("145(c)"),
     pat: [
       /success(?:ful)?[^.;]{0,60}?(?:on\s+the\s+merits|or\s+otherwise)/i,
-      /(?:shall|must|is\s+entitled\s+to\s+be)\s+indemnif\w+/i,
+      /(?:(?:shall|will)|must|is\s+entitled\s+to\s+be)\s+indemnif\w+/i,
     ],
     all: true,
     why: "§ 145(c) makes indemnification MANDATORY, not permissive, where the director succeeds on the merits or otherwise in defense of a proceeding or of any claim in it. Restating it contractually removes the argument that a dismissal without prejudice or a favorable settlement was not a 'success'.",
@@ -563,7 +563,7 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
     name: "Advancement of expenses before final disposition",
     cite: dgcl("145(e)"),
     pat: [
-      /advance(?:ment|d|s)?\s+(?:of\s+)?(?:all\s+|the\s+)?expenses|expenses[^.;]{0,60}?shall\s+be\s+advanced/i,
+      /advance(?:ment|d|s)?\s+(?:of\s+)?(?:all\s+|the\s+)?expenses|expenses[^.;]{0,60}?(?:shall|will)\s+be\s+advanced/i,
       // The deadline is written with the numeral in a parenthetical —
       // "within twenty (20) days after receipt of a written request" — which
       // a `\w+ days` window does not span. The check reported the advancement
@@ -689,7 +689,7 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
     pat: [
       /(?:notif\w+|written\s+notice)[^.;]{0,140}?(?:proceeding|claim|action)/i,
       /assume\s+(?:the\s+)?defen[sc]e|separate\s+counsel|counsel\s+(?:reasonably\s+)?satisfactory/i,
-      /shall\s+not\s+settle|consent\s+to\s+(?:any\s+)?settlement|settle[^.;]{0,120}?prior\s+written\s+consent/i,
+      /(?:shall|will)\s+not\s+settle|consent\s+to\s+(?:any\s+)?settlement|settle[^.;]{0,120}?prior\s+written\s+consent/i,
     ],
     all: true,
     why: "Late notice is the corporation's standard defense to a claim for indemnity, and control of the defense decides whether the Indemnitee gets counsel of their own where interests diverge. A settlement that imposes liability or an admission on the Indemnitee without consent is the outcome the clause exists to prevent.",

@@ -964,7 +964,7 @@ const WFH_RULES: Rule[] = [
     // work-for-hire characterisation does not hold, the client owns nothing.
     denied_if: [
       /\b(?:shall|will|does|do)\s+not\s+assign\b/i,
-      /\bno\s+(?:backup\s+)?assignment\s+(?:is|shall\s+be)\s+(?:made|granted|implied)/i,
+      /\bno\s+(?:backup\s+)?assignment\s+(?:is|(?:shall|will)\s+be)\s+(?:made|granted|implied)/i,
       /\b(?:retains?|reserves?)\b[^.]{0,40}?\ball\s+right,?\s+title/i,
     ],
     denied_title: "Backup assignment expressly refused",

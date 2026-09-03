@@ -90,7 +90,7 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
       "https://www.law.cornell.edu/wex/non-compete_clause",
     ),
     pat: [
-      /(non-?compet|restrictive\s+covenant|shall\s+not\s+(practice|engage))/i,
+      /(non-?compet|restrictive\s+covenant|(?:shall|will)\s+not\s+(practice|engage))/i,
       /(radius|miles|geographic|period\s+of\s+\d+|buy-?out)/i,
     ],
     why: "A growing number of states ban or sharply limit physician non-competes outright, and others require a buy-out option. A national form is unenforceable in several of them and creates continuity-of-care exposure everywhere.",
@@ -236,7 +236,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     cite: cfr("21", "312.23", "FDA — IND content and format, protocols"),
     pat: [
       /protocol/i,
-      /(incorporated|attached|amendment|shall\s+conduct\s+the\s+study\s+in\s+accordance)/i,
+      /(incorporated|attached|amendment|(?:shall|will)\s+conduct\s+the\s+study\s+in\s+accordance)/i,
     ],
     why: "The protocol is the operative document; the CTA is the contract wrapper. Protocol amendments change the site's obligations and budget, so the amendment and re-budgeting process has to be in the agreement.",
     fix: "Incorporate the protocol by reference, and state the process and budget consequence for protocol amendments.",
@@ -298,7 +298,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     ),
     pat: [
       /publi(sh|cation)/i,
-      /(review|\d+\s*\)?\s*days\s+(prior|before)|delay|multicenter|primary\s+publication|shall\s+not\s+(prohibit|prevent))/i,
+      /(review|\d+\s*\)?\s*days\s+(prior|before)|delay|multicenter|primary\s+publication|(?:shall|will)\s+not\s+(prohibit|prevent))/i,
     ],
     why: "Academic sites will not sign an agreement that gives the sponsor a veto over publication, and ICMJE requires that investigators have access to the data and control over publication decisions.",
     fix: "Give the sponsor a stated review window with a short delay for patent filing and removal of confidential information, and confirm the sponsor has no right to suppress or alter the results.",
@@ -310,7 +310,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     name: "Data ownership, access, and records retention",
     cite: cfr("21", "312.62", "FDA — investigator recordkeeping and record retention"),
     pat: [
-      /(data\s+(ownership|shall\s+be\s+owned)|study\s+data)/i,
+      /(data\s+(ownership|(?:shall|will)\s+be\s+owned)|study\s+data)/i,
       /(access|retain|records\s+for\s+(a\s+period\s+of\s+)?\d+\s*\)?\s*years|source\s+documents)/i,
     ],
     why: "§ 312.62(c) requires the investigator to retain records for two years after marketing approval or after the IND is discontinued. Sponsors own the study data but the site needs continuing access for its own publication and defense.",
@@ -375,7 +375,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     ),
     pat: [
       /clean[-\s]+claim/i,
-      /(within\s+\d+\s*\)?\s*days|prompt[-\s]+pay|interest\s+(on|shall\s+accrue)|adjudicat)/i,
+      /(within\s+\d+\s*\)?\s*days|prompt[-\s]+pay|interest\s+(on|(?:shall|will)\s+accrue)|adjudicat)/i,
     ],
     why: "Every state has a prompt-pay statute with a clean-claim definition and an interest penalty. A contract that defines clean claim more narrowly than the statute is unenforceable to that extent, but providers rarely notice.",
     fix: "Define clean claim consistent with the governing state's statute, state the payment deadline and interest, and describe the process for pended and denied claims.",
@@ -394,7 +394,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     ),
     pat: [
       /hold[-\s]+harmless/i,
-      /(balance[-\s]+bill|shall\s+not\s+(bill|collect)\s+(the\s+)?(member|enrollee|patient)|except\s+for\s+(copayments|deductibles|coinsurance))/i,
+      /(balance[-\s]+bill|(?:shall|will)\s+not\s+(bill|collect)\s+(the\s+)?(member|enrollee|patient)|except\s+for\s+(copayments|deductibles|coinsurance))/i,
     ],
     why: "Hold-harmless clauses are required by state insurance law and by Medicare Advantage rules, and the No Surprises Act now bans balance billing in emergency and certain non-emergency settings regardless of the contract.",
     fix: "State the member hold-harmless covering insolvency and non-payment, permit collection only of cost-sharing amounts, and confirm the No Surprises Act obligations.",

@@ -19,7 +19,7 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
       "https://dbia.org/contract-documents/",
     ),
     pat: [
-      /(single\s+point\s+of\s+responsibility|design-?builder\s+(shall\s+be\s+)?(solely\s+)?responsible\s+for\s+both)/i,
+      /(single\s+point\s+of\s+responsibility|design-?builder\s+((?:shall|will)\s+be\s+)?(solely\s+)?responsible\s+for\s+both)/i,
       /(design\s+and\s+construction|both\s+the\s+design\s+and\s+the\s+work)/i,
     ],
     why: "The whole point of design-build is that the owner has one counterparty for design and construction, which eliminates the Spearin gap between defective plans and defective work. If the agreement does not say so, the design-builder will argue the owner's program was the design.",
@@ -73,7 +73,7 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
     cite: practice("design-review", "owner design review in design-build agreements"),
     pat: [
       /(design\s+review|submittal|review\s+of\s+the\s+(design|documents))/i,
-      /(approv|comment|shall\s+not\s+relieve|within\s+\d+\s*\)?\s*days)/i,
+      /(approv|comment|(?:shall|will)\s+not\s+relieve|within\s+\d+\s*\)?\s*days)/i,
     ],
     why: "Owner review has to be real enough to catch problems but must not shift design responsibility back to the owner. The no-relief clause is what preserves the single point of responsibility.",
     fix: "Set review periods with deemed-approval consequences, and state that the owner's review or approval does not relieve the design-builder of responsibility for the design.",
@@ -138,7 +138,7 @@ const ARCHITECT = pack("architect-agreement", C, [
     ),
     pat: [
       /instruments\s+of\s+service/i,
-      /(license|copyright|terminat|nonexclusive\s+license|shall\s+not\s+use)/i,
+      /(license|copyright|terminat|nonexclusive\s+license|(?:shall|will)\s+not\s+use)/i,
     ],
     why: "Under the AIA form the architect retains copyright and the owner gets a license conditioned on payment, which terminates if the architect's services are terminated for the owner's breach. An owner that plans to use the drawings elsewhere needs a different bargain.",
     fix: "State who owns the instruments of service, the scope of the owner's license, whether it survives termination, and the indemnity for use without the architect involved.",

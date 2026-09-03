@@ -48,7 +48,7 @@ const DO = pack("do-policy", C, [
     ),
     pat: [
       /insured\s+(v(ersus|\.)?|vs\.?)\s+insured/i,
-      /(carve-?back|shall\s+not\s+apply\s+to|derivative\s+(action|demand)|bankruptcy\s+trustee|whistleblower|former\s+(director|officer))/i,
+      /(carve-?back|(?:shall|will)\s+not\s+apply\s+to|derivative\s+(action|demand)|bankruptcy\s+trustee|whistleblower|former\s+(director|officer))/i,
     ],
     why: "Without carve-backs, the IvI exclusion defeats derivative suits, trustee claims in bankruptcy, and whistleblower retaliation claims — exactly the claims D&O is bought for.",
     fix: "Confirm carve-backs for derivative actions brought without insured assistance, claims by a bankruptcy trustee or examiner, whistleblower claims, and claims by former directors and officers.",
@@ -82,7 +82,7 @@ const DO = pack("do-policy", C, [
     ),
     pat: [
       /severab/i,
-      /(application|rescission|imput|knowledge\s+of\s+one\s+insured|shall\s+not\s+be\s+imputed)/i,
+      /(application|rescission|imput|knowledge\s+of\s+one\s+insured|(?:shall|will)\s+not\s+be\s+imputed)/i,
     ],
     why: "Without severability, one officer's misstatement in the application can void coverage for every innocent director. Full severability with a narrow imputation group is the market standard.",
     fix: "Confirm the application is severable, that no knowledge is imputed among insured persons, and identify the narrow group whose knowledge is imputed to the company.",

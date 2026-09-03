@@ -1027,7 +1027,7 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
     // so the compliant carve-out ("employees are not prohibited from discussing
     // wages") stays silent.
     bad_patterns: [
-      /employees?\s+(shall|may)\s+not\s+(discuss|post|comment).{0,80}(wages?|salary|compensation|working\s+conditions)/is,
+      /employees?\s+((?:shall|will)|may)\s+not\s+(discuss|post|comment).{0,80}(wages?|salary|compensation|working\s+conditions)/is,
       /employees?\s+(?:are\s+)?(?:prohibited|barred|forbidden|not\s+permitted|not\s+allowed)\s+(?:from\s+)?(?:discuss|post|comment|shar)\w*.{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /no\s+employee\s+(?:shall|may|will|can)\s+(?:discuss|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       // Unlike patterns 1-3 this one carries no wage / working-conditions term,

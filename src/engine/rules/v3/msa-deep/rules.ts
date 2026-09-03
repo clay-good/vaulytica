@@ -335,7 +335,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Carve fraud, wilful misconduct, IP indemnification, confidentiality breach, and data-protection breach out of the cap.",
     present_patterns: [
-      /(cap|limitation).{0,200}(?:shall\s+not\s+apply|excluded|carved\s+out).{0,200}(fraud|wil[l]?ful\s+misconduct|IP\s+indemn|confidentiality|data\s+protection)/is,
+      /(cap|limitation).{0,200}(?:(?:shall|will)\s+not\s+apply|excluded|carved\s+out).{0,200}(fraud|wil[l]?ful\s+misconduct|IP\s+indemn|confidentiality|data\s+protection)/is,
       // English drafting puts the carve-outs BEFORE the cap, as a
       // "nothing in this agreement" clause: "Nothing in this Agreement LIMITS
       // OR EXCLUDES either party's liability for death or personal injury
@@ -362,7 +362,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Phrase the waiver as 'neither party shall be liable to the other for any indirect, incidental, special, consequential, or punitive damages.'",
     present_patterns: [
-      /(?:neither\s+party|each\s+party|in\s+no\s+event\s+shall\s+either\s+party).{0,160}(?:consequential|indirect|special|punitive|lost\s+profits)/is,
+      /(?:neither\s+party|each\s+party|in\s+no\s+event\s+(?:shall|will)\s+either\s+party).{0,160}(?:consequential|indirect|special|punitive|lost\s+profits)/is,
     ],
     default_severity: "info",
   }),
@@ -846,7 +846,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Add: 'no amendment is effective unless in writing signed by both parties' and 'no failure to enforce shall be deemed a waiver.'",
     present_patterns: [
       /amend\w+.{0,40}(?:in\s+writing|written\s+(?:and\s+)?signed)/is,
-      /(?:no\s+(?:waiver|failure)|shall\s+not\s+be\s+deemed\s+a\s+waiver)/i,
+      /(?:no\s+(?:waiver|failure)|(?:shall|will)\s+not\s+be\s+deemed\s+a\s+waiver)/i,
     ],
     default_severity: "info",
   }),

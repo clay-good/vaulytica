@@ -47,7 +47,7 @@ export const rule: Rule = {
       }
       if (
         signals.indexOf("company-equipment") < 0 &&
-        /\bcompany-?supplied\s+(?:equipment|computer|laptop|hardware|tools)|use\s+(?:the\s+)?company['’s]+\s+(?:equipment|computer|laptop|systems)|company\s+shall\s+provide\s+(?:all\s+)?(?:equipment|hardware)/i.test(
+        /\bcompany-?supplied\s+(?:equipment|computer|laptop|hardware|tools)|use\s+(?:the\s+)?company['’s]+\s+(?:equipment|computer|laptop|systems)|company\s+(?:shall|will)\s+provide\s+(?:all\s+)?(?:equipment|hardware)/i.test(
           p.text,
         )
       ) {
@@ -70,7 +70,7 @@ export const rule: Rule = {
         // other party". Added the "provide/render services to any other client
         // /customer" verb+object synonyms and the affirmative "work / provide
         // services exclusively for the Company" form.
-        /\bshall\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:perform|provide|render)\s+services\s+(?:for|to)\s+(?:any\s+other|any\s+third|another)\s+(?:party|client|customer|compan(?:y|ies)|business)|\bshall\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:engage\s+with|work\s+for)\s+(?:any\s+other|any\s+third|another)\s+party|\b(?:work|provide\s+services|render\s+services)\s+exclusively\s+(?:for|to|with)\s+(?:the\s+)?(?:Company|Employer|Client)\b/i.test(
+        /\b(?:shall|will)\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:perform|provide|render)\s+services\s+(?:for|to)\s+(?:any\s+other|any\s+third|another)\s+(?:party|client|customer|compan(?:y|ies)|business)|\b(?:shall|will)\s+not\s+(?:directly\s+or\s+indirectly\s+)?(?:engage\s+with|work\s+for)\s+(?:any\s+other|any\s+third|another)\s+party|\b(?:work|provide\s+services|render\s+services)\s+exclusively\s+(?:for|to|with)\s+(?:the\s+)?(?:Company|Employer|Client)\b/i.test(
           p.text,
         )
       ) {

@@ -154,7 +154,7 @@ const NET_LEASE_RULES: Rule[] = [
       // carry insurance on Tenant's personal property" is ordinary drafting in
       // a compliant lease, and an unbound pattern accused it.
       /\btenant\b[^.]{0,40}?\bnot\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\s+(?:carry|maintain|obtain|provide)\b[^.]{0,40}?\binsurance/i,
-      /\bno\s+insurance\s+(?:is|shall\s+be)\s+required/i,
+      /\bno\s+insurance\s+(?:is|(?:shall|will)\s+be)\s+required/i,
       /\binsurance\b[^.]{0,40}?\b(?:is|are)\s+not\s+required\s+of\s+tenant/i,
     ],
     denied_title: "Tenant insurance requirement expressly waived",
@@ -932,7 +932,7 @@ const CCR_RULES: Rule[] = [
       // slipped — the exact covenants that must be flagged. The window is
       // widened and the protected-class vocabulary expanded to descent /
       // ancestry / blood / extraction / faith / religion forms.
-      /\b(no|not|shall\s+not|nor)\b[^.]{0,90}\b(?:african|asian|black|hispanic|jewish|negro|caucasian|latino|latina|oriental|mongolian|semitic|persons?\s+of\s+colou?r|of\s+(?:the\s+)?(?:caucasian|white|negro|african|asian|hebrew|jewish|mongolian|malay)\s+(?:race|blood|descent|ancestry|extraction)|(?:african|asian|hebrew|mexican|chinese|japanese|jewish)\s+(?:descent|ancestry|origin|blood|extraction|faith|religion))\b/is,
+      /\b(no|not|(?:shall|will)\s+not|nor)\b[^.]{0,90}\b(?:african|asian|black|hispanic|jewish|negro|caucasian|latino|latina|oriental|mongolian|semitic|persons?\s+of\s+colou?r|of\s+(?:the\s+)?(?:caucasian|white|negro|african|asian|hebrew|jewish|mongolian|malay)\s+(?:race|blood|descent|ancestry|extraction)|(?:african|asian|hebrew|mexican|chinese|japanese|jewish)\s+(?:descent|ancestry|origin|blood|extraction|faith|religion))\b/is,
       /restricted\s+to\s+(?:persons\s+of\s+the\s+)?(?:caucasian|white)/is,
       /(?:occupied|owned|used|conveyed|sold|leased)\b[^.]{0,80}\b(?:only\s+by|except\s+by)\b[^.]{0,40}(?:caucasian|white)/is,
     ],
@@ -950,7 +950,7 @@ const CCR_RULES: Rule[] = [
     // genuine covenant in another paragraph still fires.
     exclude_if: [
       /\bfair\s+housing\b/i,
-      /shall\s+not\s+be\s+denied/i,
+      /(?:shall|will)\s+not\s+be\s+denied/i,
       /purport(?:ing|s)?\s+to\s+(?:exclude|restrict|discriminate)/i,
       /\bvoid\b[^.]{0,60}(?:force|effect|unenforceable)/i,
       /\bdiscriminat/i,
@@ -1160,8 +1160,8 @@ const SNDA_RULES: Rule[] = [
       // other: every SNDA names the Mortgage on every page, so proximity
       // alone would have restored the vacuity the title created.
       /\bsubordinat\w+\s+(?:to|in\s+right\s+of)\b[^.]{0,80}?\b(?:mortgage|deed\s+of\s+trust|security\s+instrument|lien|ground\s+lease)\b/is,
-      /\b(?:mortgage|deed\s+of\s+trust|security\s+instrument)\b[^.]{0,60}?\bis\s+(?:and\s+shall\s+(?:at\s+all\s+times\s+)?(?:be|remain)\s+)?(?:senior|prior|superior)\s+to\b/is,
-      /lease[^.]{0,60}?\b(?:is|shall\s+be|are)\b[^.]{0,40}?\bsub(?:ject\s+and\s+sub)?ordinate/is,
+      /\b(?:mortgage|deed\s+of\s+trust|security\s+instrument)\b[^.]{0,60}?\bis\s+(?:and\s+(?:shall|will)\s+(?:at\s+all\s+times\s+)?(?:be|remain)\s+)?(?:senior|prior|superior)\s+to\b/is,
+      /lease[^.]{0,60}?\b(?:is|(?:shall|will)\s+be|are)\b[^.]{0,40}?\bsub(?:ject\s+and\s+sub)?ordinate/is,
     ],
   }),
   presence({
@@ -1184,9 +1184,9 @@ const SNDA_RULES: Rule[] = [
       // "Non-Disturbance" is in this family's own title. The covenant is the
       // promise: the tenant's possession survives a foreclosure.
       /(possession|quiet\s+enjoyment|tenancy|leasehold)[^.]{0,80}?\bnot\s+be\s+disturbed/is,
-      /\bshall\s+not\s+disturb\b[^.]{0,80}?\b(?:possession|tenant|tenancy|leasehold)\b/is,
+      /\b(?:shall|will)\s+not\s+disturb\b[^.]{0,80}?\b(?:possession|tenant|tenancy|leasehold)\b/is,
       /\bnot\s+(?:be\s+)?(?:terminated?|extinguished|disturbed|affected)\b[^.]{0,100}?\b(?:foreclosure|foreclos\w+|power\s+of\s+sale)\b/is,
-      /\bforeclos\w+[^.]{0,100}?\b(?:lease|tenancy|leasehold)\b[^.]{0,60}?\b(?:shall\s+)?(?:continue|remain|survive)\b/is,
+      /\bforeclos\w+[^.]{0,100}?\b(?:lease|tenancy|leasehold)\b[^.]{0,60}?\b(?:(?:shall|will)\s+)?(?:continue|remain|survive)\b/is,
       // The covenant is written ACTIVELY and as an enumerated list, which is
       // how every SNDA writes it: "Lender shall not (a) name Tenant as a
       // defendant …, (b) terminate or DISTURB Tenant's leasehold estate or
@@ -1195,12 +1195,12 @@ const SNDA_RULES: Rule[] = [
       // branch wants the two words adjacent, so the N of an SNDA reported the
       // non-disturbance covenant missing — at `critical`, on the section
       // headed "Non-Disturbance".
-      /\bshall\s+not\b[^.]{0,140}?\bdisturb\b[^.]{0,90}?\b(?:possession|tenant|tenancy|leasehold|quiet\s+enjoyment)\b/is,
+      /\b(?:shall|will)\s+not\b[^.]{0,140}?\bdisturb\b[^.]{0,90}?\b(?:possession|tenant|tenancy|leasehold|quiet\s+enjoyment)\b/is,
       // The survival sentence with its clauses in the other order: "Tenant's
       // rights under the Lease shall CONTINUE in full force … notwithstanding
       // any FORECLOSURE, deed in lieu of foreclosure, or exercise of the
       // power of sale."
-      /\b(?:lease|tenancy|leasehold|tenant['’]?s?\s+rights?)\b[^.]{0,100}?\b(?:shall\s+)?(?:continue|remain|survive)\b[^.]{0,140}?\b(?:foreclos\w+|power\s+of\s+sale|deed\s+in\s+lieu)\b/is,
+      /\b(?:lease|tenancy|leasehold|tenant['’]?s?\s+rights?)\b[^.]{0,100}?\b(?:(?:shall|will)\s+)?(?:continue|remain|survive)\b[^.]{0,140}?\b(?:foreclos\w+|power\s+of\s+sale|deed\s+in\s+lieu)\b/is,
     ],
   }),
   presence({
@@ -1444,7 +1444,7 @@ const LEASE_ASSIGNMENT_RULES: Rule[] = [
     // section that states the point twice was reported as missing.
     present_patterns: [
       /release\s+of\s+assignor|assignor\s+is\s+(?:hereby\s+)?(?:released|relieved)/i,
-      /assignor[^.]{0,120}?(?:remains?|shall\s+remain|continues?\s+to\s+be|shall\s+continue\s+to\s+be)\s+liable|continuing\s+liabilit(?:y|ies)|assignor\s+is\s+not\s+(?:released|relieved)|(?:does\s+not|shall\s+not)\s+(?:release|relieve)\s+(?:the\s+)?assignor/is,
+      /assignor[^.]{0,120}?(?:remains?|(?:shall|will)\s+remain|continues?\s+to\s+be|(?:shall|will)\s+continue\s+to\s+be)\s+liable|continuing\s+liabilit(?:y|ies)|assignor\s+is\s+not\s+(?:released|relieved)|(?:does\s+not|(?:shall|will)\s+not)\s+(?:release|relieve)\s+(?:the\s+)?assignor/is,
     ],
     default_severity: "warning",
   }),

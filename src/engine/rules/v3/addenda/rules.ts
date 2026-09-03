@@ -306,7 +306,7 @@ export const ADDENDA_RULES: Rule[] = [
       "Define: Generative AI, Foundation Model (or Large Language Model), Output, and Training Data.",
     present_patterns: [
       /(generative\s+AI|foundation\s+model|large\s+language\s+model|\bLLM\b)/i,
-      /(\b)(Output|Outputs)\b.{0,40}(?:means|shall\s+mean)/i,
+      /(\b)(Output|Outputs)\b.{0,40}(?:means|(?:shall|will)\s+mean)/i,
       /training\s+data/i,
     ],
     default_severity: "warning",
@@ -480,7 +480,7 @@ export const ADDENDA_RULES: Rule[] = [
       "State the grant ('non-exclusive, non-transferable, revocable license to use the Software'); enumerate prohibited uses (reverse engineer, sublicense, competitive benchmarking).",
     present_patterns: [
       /(non[- ]exclusive|non[- ]transferable|revocable)\s+license/i,
-      /(?:may\s+not|shall\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sublicense)/i,
+      /(?:may\s+not|(?:shall|will)\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sublicense)/i,
     ],
     default_severity: "warning",
   }),

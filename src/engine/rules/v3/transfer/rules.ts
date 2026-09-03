@@ -196,7 +196,7 @@ export const TRANSFER_RULES: Rule[] = [
     // the SCCs", "no amendment of the SCCs") silent too.
     exclude_if: [
       /without\s+(?:any\s+)?modification/i,
-      /SCCs?\s+shall\s+(?:govern|prevail|control|take\s+precedence)/i,
+      /SCCs?\s+(?:shall|will)\s+(?:govern|prevail|control|take\s+precedence)/i,
       /(?:shall|will|may|must|can)\s+(?:not|never)\s+(?:be\s+)?(?:amend|modif|vary|alter|change|deviat|supplement)/i,
       /under\s+no\s+circumstances[^.]{0,100}?(?:amend|modif|vary|alter|change|deviat|supplement)/i,
       /\bno\s+(?:amendment|modification|variation|alteration|change)\b/i,

@@ -18,7 +18,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     name: "Mutuality of the obligation to arbitrate",
     cite: practice("arbitration-mutuality", "mutuality as a substantive unconscionability factor"),
     pat: [
-      /(both\s+part(ies|y)\s+(agree|shall|must)|mutually\s+agree\s+to\s+arbitrat|the\s+(company|employer)\s+and\s+(the\s+)?employee\s+(each\s+)?agree)/i,
+      /(both\s+part(ies|y)\s+(agree|(?:shall|will)|must)|mutually\s+agree\s+to\s+arbitrat|the\s+(company|employer)\s+and\s+(the\s+)?employee\s+(each\s+)?agree)/i,
       /arbitrat/i,
     ],
     all: true,
@@ -36,7 +36,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     ),
     pat: [
       /(sexual\s+(harassment|assault))/i,
-      /(at\s+the\s+(employee['’]?s?|claimant['’]?s?)\s+(election|option)|shall\s+not\s+(be\s+subject\s+to|apply)|9\s+u\.?s\.?c\.?\s*§?\s*40[12]|ending\s+forced\s+arbitration)/i,
+      /(at\s+the\s+(employee['’]?s?|claimant['’]?s?)\s+(election|option)|(?:shall|will)\s+not\s+(be\s+subject\s+to|apply)|9\s+u\.?s\.?c\.?\s*§?\s*40[12]|ending\s+forced\s+arbitration)/i,
     ],
     why: "Since March 2022, 9 U.S.C. § 402 makes a pre-dispute arbitration agreement unenforceable at the claimant's election for sexual harassment and sexual assault disputes. An agreement that does not reflect it is drafting to a rule that no longer exists.",
     fix: "Add an express carve-out stating that claims of sexual harassment or sexual assault are arbitrable only at the employee's election, consistent with 9 U.S.C. §§ 401-402.",
@@ -110,7 +110,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
       "neutral arbitrator selection in employment arbitration",
     ),
     pat: [
-      /(arbitrator\s+(shall\s+be\s+)?(selected|chosen|appointed))/i,
+      /(arbitrator\s+((?:shall|will)\s+be\s+)?(selected|chosen|appointed))/i,
       /(neutral|aaa|jams|mutually\s+agree|strike)/i,
     ],
     why: "Employer control over the arbitrator or the panel list is procedural unconscionability. Adopting a neutral administrator's employment rules is the simplest cure.",
@@ -159,7 +159,7 @@ const COMMISSION = pack("commission-plan", C, [
     ),
     pat: [
       /(after\s+(the\s+)?termination|post-?termination|following\s+(your\s+)?separation)/i,
-      /(commission|trailing|shall\s+(not\s+)?be\s+(paid|entitled))/i,
+      /(commission|trailing|(?:shall|will)\s+(not\s+)?be\s+(paid|entitled))/i,
     ],
     all: true,
     why: "A clause requiring employment on the payment date to receive a commission already earned is unenforceable in California, Massachusetts, and several other states, and is the most litigated term in sales compensation.",
@@ -355,7 +355,7 @@ const RELOCATION = pack("relocation-agreement", C, [
     ),
     pat: [
       /(involuntar|terminated\s+(by\s+the\s+company\s+)?without\s+cause|reduction\s+in\s+force|layoff)/i,
-      /(no\s+repayment|shall\s+not\s+(be\s+)?(required|obligated)\s+to\s+repay|waive)/i,
+      /(no\s+repayment|(?:shall|will)\s+not\s+(be\s+)?(required|obligated)\s+to\s+repay|waive)/i,
     ],
     why: "Requiring repayment from an employee the company laid off is both unenforceable in several states and reputationally costly. The carve-out is standard and cheap.",
     fix: "Waive repayment where the company terminates without cause, and on death or disability.",
@@ -598,7 +598,7 @@ const CBA = pack("union-cba", C, [
       "National Labor Relations Act § 8(d) — obligation to bargain collectively",
     ),
     pat: [
-      /(term\s+of\s+this\s+agreement|effective\s+from|shall\s+remain\s+in\s+(full\s+force\s+and\s+)?effect)/i,
+      /(term\s+of\s+this\s+agreement|effective\s+from|(?:shall|will)\s+remain\s+in\s+(full\s+force\s+and\s+)?effect)/i,
       /(reopen|automatic(ally)?\s+renew|sixty\s+\(?60\)?\s+days|notice\s+of\s+(intent\s+to\s+)?(terminate|modify))/i,
     ],
     why: "§ 8(d) requires 60 days' notice to modify or terminate and 30 days' notice to the FMCS. An evergreen clause without those notice mechanics leaves both sides unsure whether the contract has rolled over.",

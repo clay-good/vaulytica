@@ -431,7 +431,7 @@ const JOINT_REP = pack("joint-representation-waiver", C, [
     ver: "1.0.1",
     pat: [
       /(informed\s+consent|consents?\s+(?:in\s+writing\s+)?to\b|each\s+client\s+(?:consents|agrees|acknowledges)|waives?\s+(?:any\s+)?conflict)/i,
-      /(sign(?:ed)?\s+below|by\s+signing\s+(?:this|below)|each\s+client\s+(?:shall\s+)?sign|signed\s+by\s+each\s+client)/i,
+      /(sign(?:ed)?\s+below|by\s+signing\s+(?:this|below)|each\s+client\s+(?:(?:shall|will)\s+)?sign|signed\s+by\s+each\s+client)/i,
     ],
     all: true,
     why: "Rule 1.7(b)(4) requires informed consent confirmed in writing. An unsigned waiver in the file is not the confirmation the rule contemplates.",
