@@ -558,7 +558,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // "Section 4999" is statutory and "Section 4999(a)" was not. One
       // stripped label serves the corroboration test, the flat-number test,
       // and the outline lookup below.
-      const bareLabel = (m[2] ?? "").replace(/\(.*\)$/, "");
+      const bareLabel = (m[2] ?? "").replace(/\([^)]{0,80}\)$/, "");
       if (
         EXTERNAL_TRAILER_RE.test(after) ||
         SPECIFICATION_SECTION_RE.test(after) ||

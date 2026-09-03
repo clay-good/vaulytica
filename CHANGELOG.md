@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.402.0] — 2026-09-03
+
+### Fixed
+- **A table of contents was a three-minute hang.** `TOC_ENTRY`'s dot-leader
+  pattern `\\.{4,}` is greedy, so on a paragraph that is one long run of periods
+  it consumes to the end from every start position and gives the dots back one
+  at a time. That helper sits on the path of **every presence rule in the
+  catalog**, so the cost showed up smeared across all 1,825 of them rather than
+  in any one: **twenty thousand periods took 21 seconds, and sixty thousand took
+  three minutes.**
+
+  A dot leader is what a table of contents is made of. This was not an
+  adversarial input — it is the front matter of a large agreement.
+
+  Bounded to a line's width: **60,000 periods, 179,634 ms → 1,661 ms**, a
+  hundred and eight times faster, and linear. No finding changed.
+
+- Two more of the same shape, found by the same sweep: `§+` in a construction
+  surety pattern, and a greedy `/\\(.*\\)$/` stripping a subsection from a
+  cross-reference label.
+
+### Added
+- **The linear-time assertion is an ABSOLUTE budget now, not a growth ratio.**
+  The ratio was the first instinct and it was wrong, and it went red on the
+  cross-OS matrix to prove it: these paths finish in single-digit milliseconds,
+  where scheduling noise on a CI runner swamps any ratio — the "[" case failed
+  on macOS at **thirty-one milliseconds**. A budget is safe precisely because
+  the gap it guards is ~100x, so it can sit two orders of magnitude above the
+  real cost and still catch the regression.
+
+  It now covers BOTH layers: `extractAll` for the parenthetical run, and
+  `isTableOfContents` for the dot leader. The period quadratic lives in a
+  rules-layer helper, so an extractor-only budget would never have seen it.
+
+### Notes
+- The sweep that found these times **every regex literal in `src/`** against a
+  repeated delimiter at two input sizes and reports anything growing faster than
+  its input. It now reports zero. Worth re-running after any widening pass — a
+  widening is exactly what made the first of these reachable.
+
 ## [9.401.0] — 2026-09-03
 
 ### Fixed

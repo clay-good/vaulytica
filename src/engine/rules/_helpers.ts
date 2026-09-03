@@ -36,7 +36,14 @@ export type ParagraphHit = {
  * are required, or one in a short paragraph, so that a paragraph carrying a
  * real clause alongside a stray leader is still read.
  */
-const TOC_ENTRY = /\.{4,}\s*\d+\s*(?=$|[^\w])/g;
+// The dot run is BOUNDED. `\.{4,}` is greedy, so on a paragraph that is one
+// long run of periods it consumes to the end from every start position and then
+// gives the dots back one at a time — quadratic, and this helper is on the path
+// of every presence rule in the catalog. Twenty thousand periods took twenty-one
+// SECONDS end to end and sixty thousand took three minutes, and a table of
+// contents with dot leaders is the most ordinary document there is. A leader is
+// at most a line wide.
+const TOC_ENTRY = /\.{4,200}\s*\d+\s*(?=$|[^\w])/g;
 const TOC_SHORT_PARAGRAPH = 160;
 
 /**
