@@ -64,7 +64,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     // not be required to bear arbitration costs beyond a court filing fee" —
     // which then reads as a denial of the very clause it satisfies.
     denied: expressDenial(
-      String.raw`(?:pay|pays|paying|payment\s+of)\s+(?:any\s+|all\s+)?(?:the\s+)?(?:arbitrator'?s?\s+|administrative\s+)?(?:arbitration\s+)?(?:fees|costs)`,
+      String.raw`(?:pay|pays|paying|payment\s+of)\s+(?:any\s+|all\s+)?(?:the\s+)?(?:arbitrator['’]?s?\s+|administrative\s+)?(?:arbitration\s+)?(?:fees|costs)`,
     ),
     sev: "critical",
   },

@@ -377,6 +377,18 @@ describe("interpretation-form governing law", () => {
     );
   });
 
+  it("reads the same clause written with 'will' instead of 'shall'", () => {
+    // Plain-language house styles write "will govern"; the recognizer spelled
+    // only "shall", so an entire governing-law clause was invisible. The
+    // catalog's `shall-will` guard now reads the extractors too.
+    const gov = (sentence: string): string[] =>
+      extractJurisdictions(buildTree(["Governing Law", sentence]))
+        .filter((r) => r.clause_kind === "governing-law")
+        .map((r) => r.raw_text);
+    expect(gov("The laws of the State of Texas will govern this Agreement.")).toContain("Texas");
+    expect(gov("Delaware law will apply to this Agreement.")).toContain("Delaware");
+  });
+
   it("does not read 'the laws of physics' as a governing-law jurisdiction", () => {
     const refs = extractJurisdictions(
       buildTree(["Preamble", "The laws of physics apply to this experiment."]),

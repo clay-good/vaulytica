@@ -1414,7 +1414,7 @@ const LEASE_ASSIGNMENT_RULES: Rule[] = [
       "Add 'Assumption' clause expressly assuming all tenant obligations from and after the effective date.",
     present_patterns: [/assumes?\s+all.{0,40}obligations/is, /assumption\s+of/i],
     denied_if: expressDenial(
-      String.raw`assum(?:e|es|ed|ption\s+of)\s+(?:all\s+|any\s+)?(?:the\s+)?(?:tenant(?:'s)?\s+)?obligations`,
+      String.raw`assum(?:e|es|ed|ption\s+of)\s+(?:all\s+|any\s+)?(?:the\s+)?(?:tenant(?:['’]s)?\s+)?obligations`,
     ),
     denied_title: "Assignee's assumption of the lease obligations expressly denied",
     denied_description:

@@ -77,6 +77,17 @@ describe("Financial — FIN-003 to FIN-008", () => {
     const ctx = buildContext(["Fees", "Customer shall pay the fee owed under this Agreement."]);
     expect(FIN_005.check(ctx)).not.toBeNull();
   });
+  it("FIN-005 reads a payment term stated with 'will' and one stated in instalments", () => {
+    // Two tolerances the rule was missing: the plain-language "will be paid",
+    // and the Commonwealth spelling of an amortisation schedule. Each is a
+    // plainly stated payment term the rule reported as absent.
+    const silent = (clause: string): void =>
+      expect(FIN_005.check(buildContext(["Fees", clause])), clause).toBeNull();
+    silent("Customer shall pay the fee. Invoices will be paid within 30 days of the invoice date.");
+    silent(
+      "Borrower shall pay the fee. The Loan is repayable in one hundred twenty (120) monthly instalments of principal and interest.",
+    );
+  });
   it("FIN-006 fires on liquidated damages", () => {
     const ctx = buildContext(["Damages", "Liquidated damages of $10,000 per day shall apply."]);
     expect(FIN_006.check(ctx)).not.toBeNull();

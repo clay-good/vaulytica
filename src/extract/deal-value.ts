@@ -118,7 +118,7 @@ function amountValue(digits: string | undefined, scaleTok: string | undefined): 
  * `$500 (not the total contract value)` do not match.
  */
 const PAREN_FORM = new RegExp(
-  `\\$\\s?([0-9]{1,3}(?:,[0-9]{3})*(?:\\.[0-9]+)?|[0-9]+(?:\\.[0-9]+)?)\\s*(thousand|million|billion|k|m|b)?\\s*\\(\\s*(?:the\\s+)?["']?(${DEAL_VALUE_LABELS.join("|")})["']?\\s*\\)`,
+  `\\$\\s?([0-9]{1,3}(?:,[0-9]{3})*(?:\\.[0-9]+)?|[0-9]+(?:\\.[0-9]+)?)\\s*(thousand|million|billion|k|m|b)?\\s*\\(\\s*(?:the\\s+)?["“”'’]?(${DEAL_VALUE_LABELS.join("|")})["“”'’]?\\s*\\)`,
   "gi",
 );
 

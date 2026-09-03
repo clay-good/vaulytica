@@ -109,7 +109,7 @@ const DEFINITION_ROLE_WHEN =
 // only runs inside a Definitions/Interpretation section (see Pass 1), so a
 // numbered-cross-reference line like "Section 4.2 means …" is not a realistic
 // false positive here.
-const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&.]{1,80}?)\s+(?:shall\s+)?means?\b/i;
+const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&.]{1,80}?)\s+(?:(?:shall|will)\s+)?means?\b/i;
 // A pure glossary entry inside a Definitions/Glossary section: a quoted term at
 // the START of the paragraph, then a colon or dash, then its definition — with
 // no "means"/"refers to" verb (`"Delivery Point": the loading dock`, `"Term" —
@@ -130,7 +130,7 @@ const DEFINITION_ALIASED =
   // is how every contributor license agreement defines its two pronouns — and
   // the unparenthesized form matched neither term, so the definition was lost
   // entirely and "Your Contributions" was reported as never defined.
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:\(\s*)?or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s*\)?\s*(?:shall\s+)?means?\b/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:\(\s*)?or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s*\)?\s*(?:(?:shall|will)\s+)?means?\b/gi;
 
 /**
  * The other inline convention, and the dominant one in commercial drafting:
@@ -1623,7 +1623,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // the same reason `DEFINITION_BARE` stays section-scoped.
       if (
         new RegExp(
-          `\\b(?:the\\s+)?${phrase.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\s+(?:shall\\s+)?(?:consists?\\s+of|comprises?|are\\s+comprised\\s+of|is\\s+comprised\\s+of)\\b`,
+          `\\b(?:the\\s+)?${phrase.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\s+(?:(?:shall|will)\\s+)?(?:consists?\\s+of|comprises?|are\\s+comprised\\s+of|is\\s+comprised\\s+of)\\b`,
           "i",
         ).test(ctx.text)
       )

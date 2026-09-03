@@ -677,7 +677,7 @@ export function terminationPosture(doc: ConsistencyDocument): {
   walkParagraphs(doc.tree, (p) => {
     if (
       !slot.causeOnly &&
-      (/\b(?:non-?terminable|may\s+not\s+be\s+terminated|not\s+terminable|shall\s+not\s+be\s+terminated)\b[^.]*?\b(?:except|other\s+than|save)\b[^.]*?\bcause\b/i.test(
+      (/\b(?:non-?terminable|may\s+not\s+be\s+terminated|not\s+terminable|(?:shall|will)\s+not\s+be\s+terminated)\b[^.]*?\b(?:except|other\s+than|save)\b[^.]*?\bcause\b/i.test(
         p.text,
       ) ||
         /\bterminat\w*\b[^.]*?\bonly\s+for\s+cause\b/i.test(p.text))
@@ -786,9 +786,9 @@ export function liabilityCarveouts(
 ): { set: string[]; raw_text: string; section_id?: string; start: number; end: number } | null {
   type Hit = { text: string; section_id?: string; start: number; end: number; set: string[] };
   const capContextRe =
-    /\b(?:liability|limitation\s+of\s+liability|shall\s+not\s+exceed|aggregate\s+liability)\b/i;
+    /\b(?:liability|limitation\s+of\s+liability|(?:shall|will)\s+not\s+exceed|aggregate\s+liability)\b/i;
   const exceptionRe =
-    /\b(?:shall\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i;
+    /\b(?:(?:shall|will)\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i;
   const slot: { value: Hit | null } = { value: null };
   walkParagraphs(doc.tree, (p) => {
     if (slot.value) return;

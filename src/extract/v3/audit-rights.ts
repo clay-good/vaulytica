@@ -43,7 +43,7 @@ const COST_RX: { rx: RegExp; cost: AuditCostAllocation }[] = [
   { rx: /\bat (?:vendor|processor|supplier)['’]?s? (?:own )?expense\b/i, cost: "auditee" },
   { rx: /\bat (?:customer|controller|covered entity)['’]?s? (?:own )?expense\b/i, cost: "auditor" },
   {
-    rx: /\bcost(?:s)? (?:shall be )?borne by the (?:audited|audit) party (?:if|when|where) (?:material )?(?:findings|non-compliance)/i,
+    rx: /\bcost(?:s)? (?:(?:shall|will) be )?borne by the (?:audited|audit) party (?:if|when|where) (?:material )?(?:findings|non-compliance)/i,
     cost: "cost-shift-on-findings",
   },
 ];

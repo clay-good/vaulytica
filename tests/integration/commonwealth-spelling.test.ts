@@ -36,7 +36,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import ts from "typescript";
+import { maskEscapes, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
@@ -69,61 +69,10 @@ const VARIANTS: [word: RegExp, tolerant: string][] = [
   [/(?<![a-zA-Z])program(?![a-zA-Z])/, "programme?"],
 ];
 
-/**
- * A regex escape is not a word.
- *
- * `\bauthorize` has the letter "b" immediately in front of "authorize", so a
- * lookbehind for a letter — written to keep "capsize" and "citizen" out —
- * silently skips every anchored recognizer in the catalog. That is the `\b§`
- * defect of session 28 in a new costume, and it is why the escapes are masked
- * out before the table above is applied.
- */
-const SENTINEL = "";
-const maskEscapes = (s: string): string =>
-  s.replace(/\\([a-zA-Z])/g, (_m, c: string) => SENTINEL + c);
-
-function sourceFiles(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
-    a.name.localeCompare(b.name, "en"),
-  )) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) sourceFiles(path, out);
-    else if (entry.name.endsWith(".ts") && !entry.name.includes(".test.")) out.push(path);
-  }
-  return out;
-}
-
-/**
- * A recognizer is as often assembled from STRINGS as written as a literal —
- * FIN-005's payment-term branches are a `new RegExp([...].join("|"))`, and the
- * one defect the corpus actually showed was in one of them. A scan that reads
- * only regex literals would have missed it. A string is regex source when it
- * carries a regex escape or a group opener; a rule's name or message has
- * neither.
- */
-function recognizerSources(file: string): string[] {
-  const sf = ts.createSourceFile(file, readFileSync(file, "utf8"), ts.ScriptTarget.ESNext, true);
-  const out: string[] = [];
-  const walk = (node: ts.Node): void => {
-    const text = node.getText(sf);
-    const isStringy =
-      ts.isStringLiteral(node) ||
-      ts.isNoSubstitutionTemplateLiteral(node) ||
-      ts.isTemplateHead(node) ||
-      ts.isTemplateMiddle(node) ||
-      ts.isTemplateTail(node);
-    if (
-      node.kind === ts.SyntaxKind.RegularExpressionLiteral ||
-      (isStringy && /\\\\[bsdwSDW]|\(\?:|\(\?=|\(\?!/.test(text))
-    ) {
-      out.push(text);
-    }
-    ts.forEachChild(node, walk);
-  };
-  walk(sf);
-  return out;
-}
-
+// `\bauthorize` has the letter "b" immediately in front of "authorize", so a
+// lookbehind for a letter — written to keep "capsize" and "citizen" out —
+// silently skips every anchored recognizer there is. That is the `\b§` defect
+// of the last session in a new costume, and it is why `maskEscapes` exists.
 describe("a word spelled the way the rest of the common law spells it", () => {
   it("no recognizer reads only the American spelling", () => {
     const files = [
@@ -134,11 +83,11 @@ describe("a word spelled the way the rest of the common law spells it", () => {
 
     const blind: string[] = [];
     for (const file of files) {
-      for (const source of recognizerSources(file)) {
-        const masked = maskEscapes(source);
+      for (const { line, text } of recognizerSources(file)) {
+        const masked = maskEscapes(text);
         for (const [word, tolerant] of VARIANTS) {
-          if (word.test(masked) && !source.includes(tolerant)) {
-            blind.push(`${file}: ${source.slice(0, 90)}`);
+          if (word.test(masked) && !text.includes(tolerant)) {
+            blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
           }
         }
       }

@@ -135,7 +135,7 @@ const GOV_LAW_ADJECTIVAL = new RegExp(
 // "California law shall apply". Gated to a recognized US state or country so
 // "applicable/federal/such law governs" does not register.
 const GOV_LAW_ADJ_SUBJECT = new RegExp(
-  String.raw`\b(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\s+law\s+(?:governs?|applies|controls?|shall\s+(?:govern|apply|control))\b`,
+  String.raw`\b(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\s+law\s+(?:governs?|applies|controls?|(?:shall|will)\s+(?:govern|apply|control))\b`,
   "gi",
 );
 
@@ -180,7 +180,7 @@ const GOV_LAW_FEDERAL_AND_STATE = new RegExp(
  * country so "the laws of physics/God/war" do not register as a jurisdiction.
  */
 const GOV_LAW_SUBJECT_FIRST = new RegExp(
-  String.raw`\bthe\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\b[^.;)]{0,20}?\s+(?:shall\s+)?(?:govern|appl(?:y|ies)|control)\b`,
+  String.raw`\bthe\s+(?:substantive\s+|internal\s+|domestic\s+|local\s+|applicable\s+)*laws?\s+of\s+(?:the\s+(?:State|Commonwealth)\s+of\s+)?(${US_STATE_PATTERN}|${COUNTRY_PATTERN})\b[^.;)]{0,20}?\s+(?:(?:shall|will)\s+)?(?:govern|appl(?:y|ies)|control)\b`,
   "gi",
 );
 
@@ -301,7 +301,7 @@ const VENUE = new RegExp(
  *     jurisdiction" / "courts of Appeals" (no State-of scaffold) are not swept in.
  */
 const VENUE_COURTS_FIRST = new RegExp(
-  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+the\s+(?:State|Commonwealth)\s+of\s+)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:shall\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:shall\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
+  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+the\s+(?:State|Commonwealth)\s+of\s+)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:(?:shall|will)\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:(?:shall|will)\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
   "gi",
 );
 // "shall lie" is as common as "shall be" for a venue clause — "venue for any

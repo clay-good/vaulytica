@@ -45,7 +45,7 @@ function escapeRx(s: string): string {
 }
 
 const QUOTED_DEFINITION_RX =
-  /["“”'’]([A-Z][A-Za-z][A-Za-z\s/-]{2,40})["“”'’]\s+(?:means|shall mean|is defined as|refers to)/g;
+  /["“”'’]([A-Z][A-Za-z][A-Za-z\s/-]{2,40})["“”'’]\s+(?:means|(?:shall|will) mean|is defined as|refers to)/g;
 
 const PARENS_ROLE_RX =
   /\b([A-Z][A-Za-z0-9&.,'’-]+(?:\s+[A-Z][A-Za-z0-9&.,'’-]+)*)\s*\(\s*(?:hereinafter\s+)?(?:the\s+)?["“”']?\s*([A-Za-z][A-Za-z\s-]{2,40}?)["“”']?\s*\)/g;

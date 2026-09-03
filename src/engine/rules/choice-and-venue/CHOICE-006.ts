@@ -30,7 +30,7 @@ const INSTITUTION_NAME_TAIL =
 // contain. Still confined to a definitional sentence, so a real arbitration
 // clause that speaks of "the arbitral proceeding" is untouched.
 const ENUMERATED_IN_DEFINITION = new RegExp(
-  String.raw`\b(?:means|shall\s+mean)\b[^.]{0,300}?(?:${DISPUTE_SIBLING}\s*,\s*(?:or\s+)?arbitration\b|\barbitration\s*,\s*(?:or\s+)?${DISPUTE_SIBLING}|\barbitral\s+${DISPUTE_SIBLING})`,
+  String.raw`\b(?:means|(?:shall|will)\s+mean)\b[^.]{0,300}?(?:${DISPUTE_SIBLING}\s*,\s*(?:or\s+)?arbitration\b|\barbitration\s*,\s*(?:or\s+)?${DISPUTE_SIBLING}|\barbitral\s+${DISPUTE_SIBLING})`,
   "i",
 );
 

@@ -586,7 +586,7 @@ const FOREIGN_ENTITY_ROLE_PARTY = new RegExp(
 );
 
 const NATURAL_PERSON_ROLE_PARTY = new RegExp(
-  String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s*,\s*(?:an?|the)\s+(?:${NATURAL_PERSON_NOUN})\b[^)(]{0,240}?\(\s*(?:the\s+)?["“”'](${NATURAL_PERSON_ROLE})["“”'][^)]{0,60}\)`,
+  String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s*,\s*(?:an?|the)\s+(?:${NATURAL_PERSON_NOUN})\b[^)(]{0,240}?\(\s*(?:the\s+)?["“”'’](${NATURAL_PERSON_ROLE})["“”'’][^)]{0,60}\)`,
   "gi",
 );
 

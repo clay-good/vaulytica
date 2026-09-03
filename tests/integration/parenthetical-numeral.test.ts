@@ -24,22 +24,11 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import ts from "typescript";
+import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
 const DOCUMENT_READING_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
-
-function sourceFiles(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
-    a.name.localeCompare(b.name, "en"),
-  )) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) sourceFiles(path, out);
-    else if (entry.name.endsWith(".ts") && !entry.name.includes(".test.")) out.push(path);
-  }
-  return out;
-}
 
 /** A digit run, a mandatory space, and a period noun — the blind spelling. */
 const BLIND =
@@ -95,19 +84,11 @@ describe("the parenthetical numeral", () => {
 
     const blind: string[] = [];
     for (const file of files) {
-      const text = readFileSync(file, "utf8");
-      const sf = ts.createSourceFile(file, text, ts.ScriptTarget.ESNext, true);
-      const walk = (node: ts.Node): void => {
-        if (node.kind === ts.SyntaxKind.RegularExpressionLiteral) {
-          const literal = node.getText(sf);
-          const line = sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;
-          if (BLIND.test(literal) && !DECLARED.has(`${file}:${line}`)) {
-            blind.push(`${file}:${line}  ${literal.slice(0, 90)}`);
-          }
+      for (const { line, text } of recognizerSources(file)) {
+        if (BLIND.test(text) && !DECLARED.has(`${file}:${line}`)) {
+          blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
         }
-        node.forEachChild(walk);
-      };
-      walk(sf);
+      }
     }
     expect(
       blind,

@@ -425,7 +425,7 @@ export const CROSS_PRECEDENCE_001: ConsistencyRule = {
       // precedence verb here — it is the merger-clause verb ("supersedes all
       // prior agreements") and would misfire on integration clauses.
       const m = text.match(
-        /\b(this\s+(?:agreement|msa|master\s+services?\s+agreement|sow|statement\s+of\s+work|order\s+form|annex|exhibit|schedule)|the\s+(?:msa|master\s+services?\s+agreement|sow|statement\s+of\s+work|order\s+form))\s+(?:shall\s+)?(?:controls?|govern[s]?|prevails?|takes?\s+precedence)\b/i,
+        /\b(this\s+(?:agreement|msa|master\s+services?\s+agreement|sow|statement\s+of\s+work|order\s+form|annex|exhibit|schedule)|the\s+(?:msa|master\s+services?\s+agreement|sow|statement\s+of\s+work|order\s+form))\s+(?:(?:shall|will)\s+)?(?:controls?|govern[s]?|prevails?|takes?\s+precedence)\b/i,
       );
       if (!m) continue;
       // Locate the paragraph for the excerpt.

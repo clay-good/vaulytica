@@ -21,10 +21,10 @@
  * user-visible recommendation.
  */
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import ts from "typescript";
+import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 import { matchesFeature } from "../../src/playbooks/matcher.js";
 import { parsePlaybooks } from "../../src/playbooks/loader.js";
 
@@ -39,27 +39,6 @@ import { parsePlaybooks } from "../../src/playbooks/loader.js";
 const DOCUMENT_READING_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
 const DOCUMENT_READING_FILES = ["src/report/critical-dates.ts"];
 
-/**
- * Walk for `.ts` sources. Deliberately not `git ls-files` with quoted globs:
- * cmd.exe does not strip single quotes, so git receives them literally and
- * returns nothing — the guard then passed vacuously on Windows while failing
- * its own "more than 50 files" floor, which is why that floor is here.
- *
- * The walk is also strictly more complete: `git ls-files` with a `**` pathspec
- * does not match a file sitting directly in that directory, so the original
- * sweep never looked at `rules/_helpers.ts` or `rules/index.ts` at all.
- */
-function sourceFiles(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
-    a.name.localeCompare(b.name, "en"),
-  )) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) sourceFiles(path, out);
-    else if (entry.name.endsWith(".ts") && !entry.name.includes(".test.")) out.push(path);
-  }
-  return out;
-}
-
 describe("apostrophe tolerance", () => {
   it("no document-reading regex admits only the straight apostrophe", () => {
     const files = [
@@ -70,19 +49,11 @@ describe("apostrophe tolerance", () => {
 
     const blind: string[] = [];
     for (const file of files) {
-      const text = readFileSync(file, "utf8");
-      const sf = ts.createSourceFile(file, text, ts.ScriptTarget.ESNext, true);
-      const walk = (node: ts.Node): void => {
-        if (node.kind === ts.SyntaxKind.RegularExpressionLiteral) {
-          const literal = node.getText(sf);
-          if (literal.includes("'") && !literal.includes("’")) {
-            const line = sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;
-            blind.push(`${file}:${line}  ${literal.slice(0, 80)}`);
-          }
+      for (const { line, text } of recognizerSources(file)) {
+        if (text.includes("'") && !text.includes("’")) {
+          blind.push(`${file}:${line}  ${text.slice(0, 80)}`);
         }
-        node.forEachChild(walk);
-      };
-      walk(sf);
+      }
     }
     expect(
       blind,

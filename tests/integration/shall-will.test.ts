@@ -23,53 +23,42 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import ts from "typescript";
+import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR).filter((f) => f.endsWith(".txt"));
 
-function sourceFiles(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
-    a.name.localeCompare(b.name, "en"),
-  )) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) sourceFiles(path, out);
-    else if (entry.name.endsWith(".ts") && !entry.name.includes(".test.")) out.push(path);
-  }
-  return out;
-}
-
 /** "shall" → "will", the whole corpus, both cases. */
 const asWill = (s: string): string => s.replace(/\bshall\b/g, "will").replace(/\bShall\b/g, "Will");
 
 describe("shall and will are the same obligation", () => {
   it("no recognizer reads 'shall' without also reading 'will'", () => {
-    const files = sourceFiles(join(process.cwd(), "src", "engine", "rules"));
+    // The EXTRACTORS read the document too, and were outside the first draft's
+    // reach: `src/extract/jurisdictions.ts` could read "Delaware law shall
+    // govern" and not "Delaware law will govern", which is the governing-law
+    // clause of any contract drafted in a plain-language house style.
+    const files = [
+      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
+      ...sourceFiles(join(process.cwd(), "src", "extract")),
+      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+    ];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
     for (const file of files) {
-      const text = readFileSync(file, "utf8");
-      const sf = ts.createSourceFile(file, text, ts.ScriptTarget.ESNext, true);
-      const walk = (node: ts.Node): void => {
-        if (node.kind === ts.SyntaxKind.RegularExpressionLiteral) {
-          const literal = node.getText(sf);
-          // NOT `\bshall\b`. The text being searched is regex SOURCE, so the
-          // two characters before the word are very often `\b` — and a word
-          // boundary between the "b" of that escape and the "s" of "shall"
-          // does not exist. The first draft of this guard read only the
-          // literals that happened not to anchor the word, which is the same
-          // defect `section-sign.test.ts` was written for, one level up.
-          if (/shall(?![a-z])/.test(literal) && !/will(?![a-z])/.test(literal)) {
-            const line = sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1;
-            blind.push(`${file}:${line}  ${literal.slice(0, 90)}`);
-          }
+      for (const { line, text } of recognizerSources(file)) {
+        // NOT `\bshall\b`. The text being searched is regex SOURCE, so the
+        // two characters before the word are very often `\b` — and a word
+        // boundary between the "b" of that escape and the "s" of "shall"
+        // does not exist. The first draft of this guard read only the
+        // literals that happened not to anchor the word, which is the same
+        // defect `section-sign.test.ts` was written for, one level up.
+        if (/shall(?![a-z])/.test(text) && !/will(?![a-z])/.test(text)) {
+          blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
         }
-        node.forEachChild(walk);
-      };
-      walk(sf);
+      }
     }
     expect(
       blind,

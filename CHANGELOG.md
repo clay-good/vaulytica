@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.383.0] — 2026-09-02
+
+### Fixed
+- **Every static ratchet in the repo was reading regex LITERALS only.**
+  `apostrophe-tolerance`, `shall-will` and `parenthetical-numeral` each sweep
+  the source for a recognizer written one way and not another, and all three
+  walked past the half of the catalog assembled from STRINGS — FIN-005's
+  payment-term branches, the governing-law patterns in
+  `src/extract/jurisdictions.ts`, and every other
+  `new RegExp([...].join("|"))` in the tree, fifty-two files of them.
+
+  `commonwealth-spelling` found this the way this repo finds most things: the
+  corpus relation reported a defect the static half it shipped with could not
+  see. The scanner now lives in `tests/integration/_recognizer-sources.ts` and
+  all four share it.
+
+- **Eight recognizers could not read a Word document's apostrophe** — a
+  seller's property disclosure, an arbitrator's fees, a tenant's assumed
+  obligations, an attorney's fees award, and the closing quote of a defined
+  term in OBLI-008, `parties.ts` and `deal-value.ts`. The eighty-two the last
+  sweep fixed were the ones that happened to be written as literals.
+
+- **Thirty-three recognizers read "shall" and not "will",** twenty of them in
+  the EXTRACTORS, which the guard's first draft did not reach at all.
+  `jurisdictions.ts` could read "Texas law shall govern" and not "Texas law
+  will govern" — an entire governing-law clause invisible to any contract
+  drafted in a plain-language house style. FIN-005 could not read "invoices
+  will be paid within 30 days"; CHOICE-006, DARK-015, OBLI-008 and RISK-017
+  were the others, along with `dates.ts`, `definitions.ts`,
+  `role-classifier.ts`, `audit-rights.ts` and eleven consistency rules.
+
+  All tolerances, so no rule version is stamped and no golden moved. Both
+  widenings are proven load-bearing by direct regression tests rather than by
+  the corpus relations, which compare FINDINGS and so cannot see an extractor
+  change.
+
 ## [9.382.0] — 2026-09-02
 
 ### Fixed

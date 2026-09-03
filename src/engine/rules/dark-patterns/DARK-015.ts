@@ -49,7 +49,7 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  * the redemption right still fires, on those.
  */
 const WAIVES_PROTECTION = new RegExp(
-  String.raw`\b(?:waives?|waiving|shall\s+have\s+no\s+right\s+to)\b(?:[^;.]|\.(?=\d)){0,80}?` +
+  String.raw`\b(?:waives?|waiving|(?:shall|will)\s+have\s+no\s+right\s+to)\b(?:[^;.]|\.(?=\d)){0,80}?` +
     String.raw`\b(?:notice\s+of\s+(?:sale|disposition|intended\s+disposition)|right\s+of\s+redemption` +
     String.raw`|redemption|redeem\b|hearing|commercially\s+reasonabl\w*|deficiency` +
     String.raw`|breach\s+of\s+the\s+peace)\b`,

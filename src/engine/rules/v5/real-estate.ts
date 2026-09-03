@@ -632,7 +632,7 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
     why: "Nearly every state mandates a seller disclosure form for residential sales, and an omitted or false disclosure survives closing as a fraud claim regardless of an as-is clause.",
     fix: "Attach the state-mandated disclosure statement, confirm its delivery date, and state the buyer's rights if it is delivered late.",
     denied: expressDenial(
-      String.raw`(?:property[- ]condition|seller'?s?\s+property)\s+disclosure(?:\s+statement)?`,
+      String.raw`(?:property[- ]condition|seller['’]?s?\s+property)\s+disclosure(?:\s+statement)?`,
     ),
     sev: "critical",
   },

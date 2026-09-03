@@ -54,7 +54,7 @@ export const rule: Rule = {
       "i",
     );
     const ASYM_SUBJECT = new RegExp(
-      `\\b(${DRAFTER_NAMES})\\b[\\s\\S]{0,80}\\b(?:shall\\s+be\\s+entitled\\s+to\\s+recover|may\\s+recover|is\\s+entitled\\s+to)\\b[\\s\\S]{0,80}\\b(?:reasonable\\s+)?(?:attorneys?'?\\s*(?:fees|costs)|legal\\s+(?:fees|costs)|counsel\\s+fees)\\b`,
+      `\\b(${DRAFTER_NAMES})\\b[\\s\\S]{0,80}\\b(?:(?:shall|will)\\s+be\\s+entitled\\s+to\\s+recover|may\\s+recover|is\\s+entitled\\s+to)\\b[\\s\\S]{0,80}\\b(?:reasonable\\s+)?(?:attorneys?['’]?\\s*(?:fees|costs)|legal\\s+(?:fees|costs)|counsel\\s+fees)\\b`,
       "i",
     );
     const asymHit = ASYM_TO.exec(para) ?? ASYM_SUBJECT.exec(para);
