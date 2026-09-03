@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.410.0] — 2026-09-03
+
+### Fixed
+- **A page number is no longer a paragraph boundary.** Text pasted out of a PDF
+  carries "Page 3 of 9" wherever the page happened to end — usually mid-sentence
+  — and nothing removed it before the rules ran. Two rules had learned to skip
+  page furniture individually (STRUCT-013 read it as the heading a clause sits
+  under, RISK-004 as a clause); the other 1,823 had not. Twenty-nine of 311
+  specimens moved a finding when a page number was inserted every 45 lines.
+
+  Deleting the line is only half the repair: the sentence it interrupted arrives
+  as two paragraphs either way, so the halves are rejoined — and only when they
+  are unambiguously halves. A page that breaks between sentences, after a
+  heading, after a signature line, or before an attachment title leaves two
+  paragraphs that each stand on their own. All twenty-nine now report
+  identically, and no golden fixture changed: this is invisible on a
+  well-formed document.
+
+  Held by a corpus relation in `format-invariance.test.ts` and unit tests in
+  `src/ingest/page-furniture.test.ts`.
+- `PAGE_FURNITURE` now recognizes a page number set off by dashes ("— Page 7 —"),
+  which it read as prose.
+
 ## [9.409.0] — 2026-09-03
 
 ### Added

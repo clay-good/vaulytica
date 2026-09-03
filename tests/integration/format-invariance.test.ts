@@ -214,6 +214,27 @@ describe("format is not load-bearing", () => {
     ],
     ["the numero sign", (t: string): string => t.replace(/\bNo\.\s*(?=\d)/g, "\u2116 "), 30],
     [
+      // The page number a PDF paste carries, in the place it actually falls:
+      // hard-wrapped text with "Page n of m" every 45 lines, wherever that
+      // lands — usually mid-sentence. Two rules had learned to skip page
+      // furniture individually and the other 1,823 had not, so 24 specimens
+      // moved a finding. Deleting the line is only half the repair: the
+      // sentence it interrupted arrives as two paragraphs either way, and
+      // every scan that reads "the enclosing sentence" still saw half of one.
+      "a page number every 45 lines of a PDF paste",
+      (t: string): string => {
+        const lines = hardWrap(t).split("\n");
+        const pages = Math.ceil(lines.length / 45);
+        const out: string[] = [];
+        for (let i = 0; i < lines.length; i += 1) {
+          out.push(lines[i]!);
+          if ((i + 1) % 45 === 0) out.push("", `Page ${Math.ceil((i + 1) / 45)} of ${pages}`, "");
+        }
+        return out.join("\n");
+      },
+      250,
+    ],
+    [
       "Roman-numeral codepoints",
       (t: string): string =>
         t.replace(

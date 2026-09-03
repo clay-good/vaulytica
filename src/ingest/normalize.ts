@@ -1,6 +1,7 @@
 import type { DocumentTree, Paragraph, Run, Section } from "./types.js";
 import { makeParagraphId, makeRunId, makeSectionId } from "./types.js";
 import { MAX_SECTION_DEPTH } from "./limits.js";
+import { stripPageFurniture } from "./page-furniture.js";
 
 /**
  * Iteratively collect every paragraph in a subtree in document order, without
@@ -227,7 +228,7 @@ export function normalize(tree: DocumentTree): DocumentTree {
 
     const paragraphs: Paragraph[] = [];
     let pIdx = 0;
-    for (const p of ownParagraphs) {
+    for (const p of stripPageFurniture(ownParagraphs)) {
       const np = normalizeParagraph(p, id, pIdx);
       if (np) {
         paragraphs.push(np);
