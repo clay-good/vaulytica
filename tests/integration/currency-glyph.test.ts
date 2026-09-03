@@ -69,18 +69,26 @@ describe("a figure stated in another currency", () => {
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
+    const used = new Set<string>();
     for (const file of files) {
-      if (DECLARED.has(file.slice(file.indexOf("src/")))) continue;
+      const relative = file.slice(file.indexOf("src/"));
+      if (DECLARED.has(relative)) {
+        used.add(relative);
+        continue;
+      }
       for (const { line, text } of recognizerSources(file)) {
         const isEscapeHelper = /\[\.\*\+\?\^\$\{\}/.test(text.replace(/\\/g, ""));
         const readsAnyAmount =
-          /\\+\$(?:\\+s\*)?(?:\\+d|\[[\\d0-9,]|[|)])/.test(text) ||
-          /\[[^\]]*\$[^\]]*\]/.test(text);
+          /\\+\$(?:\\+s\*)?(?:\\+d|\[[\\d0-9,]|[|)])/.test(text) || /\[[^\]]*\$[^\]]*\]/.test(text);
         if (readsAnyAmount && !isEscapeHelper && !text.includes(CANONICAL)) {
           blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
         }
       }
     }
+    expect(
+      [...DECLARED].filter((k) => !used.has(k)),
+      "declared exceptions that match no file",
+    ).toEqual([]);
     expect(
       blind,
       `these read only the dollar glyph — write ${CANONICAL}:\n  ${blind.join("\n  ")}`,
@@ -90,32 +98,36 @@ describe("a figure stated in another currency", () => {
   it.each([
     ["£", "pounds"],
     ["€", "euro"],
-  ])("restating the corpus in %s changes no finding", async (glyph, word) => {
-    const deps = await loadAccuracyDeps({});
-    const mutate = swap(glyph, word);
-    const broken: string[] = [];
-    let probed = 0;
-    for (const name of SPECIMENS) {
-      const text = readFileSync(join(DIR, name), "utf8");
-      const mutated = mutate(text);
-      if (mutated === text) continue;
-      probed++;
-      const before = await analyzeText(text, name, { deps });
-      const after = await analyzeText(mutated, name, { deps });
-      const ids = (r: typeof before): string[] =>
-        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
-      const lost = ids(before).filter((id) => !ids(after).includes(id));
-      const gained = ids(after).filter((id) => !ids(before).includes(id));
-      if (lost.length || gained.length) {
-        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+  ])(
+    "restating the corpus in %s changes no finding",
+    async (glyph, word) => {
+      const deps = await loadAccuracyDeps({});
+      const mutate = swap(glyph, word);
+      const broken: string[] = [];
+      let probed = 0;
+      for (const name of SPECIMENS) {
+        const text = readFileSync(join(DIR, name), "utf8");
+        const mutated = mutate(text);
+        if (mutated === text) continue;
+        probed++;
+        const before = await analyzeText(text, name, { deps });
+        const after = await analyzeText(mutated, name, { deps });
+        const ids = (r: typeof before): string[] =>
+          [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+        const lost = ids(before).filter((id) => !ids(after).includes(id));
+        const gained = ids(after).filter((id) => !ids(before).includes(id));
+        if (lost.length || gained.length) {
+          broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+        }
       }
-    }
-    // The rewriting must be TOTAL. An earlier draft left "DOLLARS" in an
-    // all-caps guaranty standing next to the pound signs it had just written,
-    // and FIN-003 correctly reported a document in two currencies — nine
-    // divergences that were not defects, for the same reason the first
-    // `clause-numbering` draft produced nine of its own.
-    expect(probed, "the corpus never states a figure").toBeGreaterThanOrEqual(150);
-    expect(broken).toEqual([]);
-  }, 300_000);
+      // The rewriting must be TOTAL. An earlier draft left "DOLLARS" in an
+      // all-caps guaranty standing next to the pound signs it had just written,
+      // and FIN-003 correctly reported a document in two currencies — nine
+      // divergences that were not defects, for the same reason the first
+      // `clause-numbering` draft produced nine of its own.
+      expect(probed, "the corpus never states a figure").toBeGreaterThanOrEqual(150);
+      expect(broken).toEqual([]);
+    },
+    300_000,
+  );
 });

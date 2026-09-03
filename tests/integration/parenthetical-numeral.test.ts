@@ -83,13 +83,25 @@ describe("the parenthetical numeral", () => {
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
+    const used = new Set<string>();
     for (const file of files) {
       for (const { line, text } of recognizerSources(file)) {
-        if (BLIND.test(text) && !DECLARED.has(`${file}:${line}`)) {
-          blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
-        }
+        if (!BLIND.test(text)) continue;
+        const key = `${file}:${line}`;
+        if (DECLARED.has(key)) used.add(key);
+        else blind.push(`${key}  ${text.slice(0, 90)}`);
       }
     }
+    // A declared exception that matches NOTHING is the failure mode this guard
+    // shipped with: the keys are written with forward slashes and the walk
+    // returned backslashes on Windows, so the exception silently stopped
+    // applying there and the guard failed on the cross-OS matrix alone. An
+    // unused key is now an error on every platform, which is where a stale one
+    // should be caught too.
+    expect(
+      [...DECLARED].filter((k) => !used.has(k)),
+      "declared exceptions that match no recognizer",
+    ).toEqual([]);
     expect(
       blind,
       `these cannot read "sixty (60) days" — write \\s*\\)?\\s* between the digits and the noun:\n  ${blind.join("\n  ")}`,

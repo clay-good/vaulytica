@@ -21,7 +21,6 @@
  * rewrites one of those corrupts a user-visible recommendation.
  */
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
 import ts from "typescript";
 
 export interface RecognizerSource {
@@ -48,7 +47,12 @@ export function sourceFiles(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
     a.name.localeCompare(b.name, "en"),
   )) {
-    const path = join(dir, entry.name);
+    // POSIX separators on every platform. `join` yields backslashes on
+    // Windows, and every caller's DECLARED-exception keys are written with
+    // forward slashes — so on Windows the key never matched, the exception was
+    // never applied, and `parenthetical-numeral` failed on the cross-OS matrix
+    // alone for a whole session while passing everywhere its author could see.
+    const path = `${dir}/${entry.name}`.replace(/\\/g, "/");
     if (entry.isDirectory()) sourceFiles(path, out);
     else if (entry.name.endsWith(".ts") && !entry.name.includes(".test.")) out.push(path);
   }

@@ -639,7 +639,10 @@ function extractNoticeBlock(
       doc,
       /\b(any\s+)?notices?\s+(?:required|permitted)\s+(?:under|by)\s+this\s+agreement\b/i,
     ) ??
-    findParagraph(doc, /\bnotices?\s+(?:(?:shall|will)\s+)?(?:be\s+)?(?:in\s+writing|sent|delivered)\b/i) ??
+    findParagraph(
+      doc,
+      /\bnotices?\s+(?:(?:shall|will)\s+)?(?:be\s+)?(?:in\s+writing|sent|delivered)\b/i,
+    ) ??
     findParagraph(
       doc,
       /\battention\s*[:.]?\s*(?:general\s+counsel|legal\s+department|chief\s+(?:executive|legal)\s+officer)\b/i,

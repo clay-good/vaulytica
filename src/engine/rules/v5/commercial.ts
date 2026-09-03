@@ -873,7 +873,9 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
     ],
     why: "DFARS 252.204-7012(m) requires the clause in all subcontracts where covered defense information will be handled, with a 72-hour incident report to DoD. The prime is liable for a subcontractor's failure.",
     fix: "Flow down 252.204-7012 (and 7019/7020 where applicable), require NIST SP 800-171 implementation and an SPRS score, and set the 72-hour incident-report duty.",
-    when: [/(defen[cs]e|dod|department\s+of\s+defen[cs]e|dfars|covered\s+defen[cs]e\s+information)/i],
+    when: [
+      /(defen[cs]e|dod|department\s+of\s+defen[cs]e|dfars|covered\s+defen[cs]e\s+information)/i,
+    ],
     sev: "critical",
   },
   {

@@ -432,7 +432,8 @@ const LEADING_ARTICLE_RE = /^\s*(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/;
 // re-read as a broken reference to itself, and the real "Section VI" reference
 // in the body failed too. Exactly the defect the ARTICLE comment above
 // describes, left unfixed for the sibling keyword.
-const LEADING_SECTION_ROMAN_RE = /^\s*(?:SECTION|Section|CLAUSE|Clause)\s+([IVXLCDM]+|\d+)\s*(?:[—–-]|$)/;
+const LEADING_SECTION_ROMAN_RE =
+  /^\s*(?:SECTION|Section|CLAUSE|Clause)\s+([IVXLCDM]+|\d+)\s*(?:[—–-]|$)/;
 
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];

@@ -453,7 +453,8 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // Section limits the publication rights in Section 11") became the whole
   // incorporated list, so the operative enumeration was never read and
   // TEMP-012 reported the indemnity as unnamed in a clause that names it.
-  const LIST = /\b(?:Sections?|Clauses?)\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
+  const LIST =
+    /\b(?:Sections?|Clauses?)\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
   // A RANGE is as common as an enumeration — "Sections 2 through 5 and Section
   // 7 survive", "Sections 9-12 survive" — and the enumeration pattern reads
   // only its first endpoint, so the sections in between were never

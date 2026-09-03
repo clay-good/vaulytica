@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.386.0] — 2026-09-02
+
+### Fixed
+- **A declared exception that matches nothing now fails on every platform.**
+  `parenthetical-numeral`'s one declared exception is keyed by path, written
+  with forward slashes; the source walk built its paths with `join`, which
+  yields BACKSLASHES on Windows. So the key never matched there, the exception
+  silently stopped applying, and the guard failed on the cross-OS matrix alone
+  — green on every machine its author could see — for a whole session.
+
+  Two fixes, and the second is the one that matters. The shared walk now
+  returns POSIX separators on every platform; and each guard asserts that every
+  declared exception was actually USED, so a key that matches nothing is an
+  error everywhere rather than a failure on one operating system. A stale
+  exception is caught by the same assertion.
+
+- **The repository was not formatted.** Four files rewritten by this session's
+  codemods exceeded Prettier's width, and `npm run format:check` — a CI gate
+  that is not part of `npm run lint` — had been failing on main since 9.382.0.
+
 ## [9.385.0] — 2026-09-02
 
 ### Fixed

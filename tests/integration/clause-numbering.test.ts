@@ -83,8 +83,13 @@ describe("a contract drafted in England numbers its clauses", () => {
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
+    const used = new Set<string>();
     for (const file of files) {
-      if (DECLARED.has(file.slice(file.indexOf("src/")))) continue;
+      const relative = file.slice(file.indexOf("src/"));
+      if (DECLARED.has(relative)) {
+        used.add(relative);
+        continue;
+      }
       for (const { line, text } of recognizerSources(file)) {
         // A digit CLASS, not a literal number: the mark of a pattern that
         // reads whatever number the document happens to carry.
@@ -98,6 +103,13 @@ describe("a contract drafted in England numbers its clauses", () => {
         }
       }
     }
+    // An exception that matches nothing is stale, and must say so rather than
+    // wait for a platform where the path separator differs. See the same
+    // assertion, and the defect that motivated it, in `parenthetical-numeral`.
+    expect(
+      [...DECLARED].filter((k) => !used.has(k)),
+      "declared exceptions that match no file",
+    ).toEqual([]);
     expect(
       blind,
       `these read only "Section" — write (?:Section|Clause):\n  ${blind.join("\n  ")}`,
