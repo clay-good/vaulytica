@@ -394,7 +394,7 @@ import { fullText } from "../../_helpers.js";
 export function hasIncorporationByReference(doc: ConsistencyDocument): boolean {
   const text = fullText(doc);
   return (
-    /capitalized\s+terms?\s+(?:not|used|that\s+are\s+not)\b[^.]{0,80}?(?:defined|meaning)/i.test(
+    /capitali[sz]ed\s+terms?\s+(?:not|used|that\s+are\s+not)\b[^.]{0,80}?(?:defined|meaning)/i.test(
       text,
     ) ||
     /(?:meanings?|definitions?)\s+(?:given|set\s+forth|assigned|ascribed)\b[^.]{0,60}?\b(?:in|under)\b/i.test(

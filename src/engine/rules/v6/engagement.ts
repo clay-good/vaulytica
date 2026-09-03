@@ -245,7 +245,7 @@ const CONTINGENCY = pack("contingency-fee-agreement", C, [
     ),
     pat: [
       /(at\s+the\s+(conclusion|end)|upon\s+(conclusion|recovery|settlement)|when\s+the\s+matter\s+(ends|concludes))/i,
-      /(written\s+statement|closing\s+statement|itemiz|accounting|remittance)/i,
+      /(written\s+statement|closing\s+statement|itemi[sz]|accounting|remittance)/i,
     ],
     all: true,
     why: "The rule requires a written statement at the conclusion showing the outcome, the remittance to the client, and the method of its determination. It is a rule obligation, and it is also the firm's own record if the fee is later challenged.",

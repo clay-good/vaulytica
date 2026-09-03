@@ -539,7 +539,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     recommendation:
       "Add 'Scope of Authority' enumerating treatment decisions, records access (HIPAA), placement decisions, end-of-life decisions.",
     present_patterns: [
-      /(authority|authorize|empower)/i,
+      /(authority|authori[sz]e|empower)/i,
       /(treatment|medical\s+decisions?|records?|placement)/i,
     ],
   }),
@@ -557,7 +557,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
       "Add 'HIPAA Authorization' authorizing agent as personal representative for HIPAA + state confidentiality purposes.",
     present_patterns: [
       /(hipaa|protected\s+health\s+information|phi)/i,
-      /(authoriz|personal\s+representative)/i,
+      /(authori[sz]|personal\s+representative)/i,
     ],
     default_severity: "warning",
   }),
@@ -706,7 +706,7 @@ const DURABLE_POA_RULES: Rule[] = [
       "Add 'Scope of Authority' enumerating each category and any hot-powers requiring specific authority.",
     present_patterns: [
       /(real\s+(property|estate)|banking|taxes?|business|gifts?)/i,
-      /(hot\s+powers?|specific(ally)?\s+authoriz)/i,
+      /(hot\s+powers?|specific(ally)?\s+authori[sz])/i,
     ],
   }),
   presence({
@@ -1037,7 +1037,7 @@ const POSTNUP_RULES: Rule[] = [
     recommendation:
       "Add 'Property Characterization and Transmutation' defining each party's separate / marital / community property, with explicit transmutation language where required.",
     present_patterns: [
-      /(transmut|recharacteriz|recharacterize)/i,
+      /(transmut|recharacteri[sz]|recharacteri[sz]e)/i,
       /(separate\s+property|marital\s+property|community\s+property)/i,
     ],
   }),

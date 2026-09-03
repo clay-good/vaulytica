@@ -69,7 +69,7 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
     ),
     pat: [
       /(judgment\s+(is\s+)?(hereby\s+)?entered|in\s+the\s+(amount|sum)\s+of|\$)/i,
-      /(payment|installment|default|acceler|interest)/i,
+      /(payment|instal?lment|default|acceler|interest)/i,
     ],
     why: "The value of a consent judgment is that it converts a payment promise into an executable judgment. Without an acceleration clause on default, the plaintiff must move for entry each time an installment is missed.",
     fix: "State the judgment amount, the payment schedule, the default grace period, and that the full unpaid balance accelerates and becomes immediately executable on default.",
@@ -85,7 +85,7 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
       // "Defendants may MOVE TO TERMINATE this Consent Judgment after they
       // have maintained compliance for twenty-four (24) consecutive months".
       /(satisfaction\s+of\s+judgment|satisfied|vacat|(?:move|motion)\s+to\s+terminate|terminat\w+[^.;]{0,80}?(?:consent\s+(?:judgment|decree)|this\s+Decree))/i,
-      /(upon\s+(full\s+)?payment|file\s+(a\s+)?(satisfaction|acknowledgment)|within\s+\d+\s*\)?\s*days)/i,
+      /(upon\s+(full\s+)?payment|file\s+(a\s+)?(satisfaction|acknowledge?ment)|within\s+\d+\s*\)?\s*days)/i,
     ],
     why: "An unsatisfied judgment of record damages credit and title for years. The obligation to file a satisfaction, with a deadline, is the defendant's principal protection.",
     fix: "Require the plaintiff to file a satisfaction of judgment (or a stipulation to vacate) within a stated number of days after final payment, with a remedy if it does not.",
@@ -113,7 +113,7 @@ const COVENANT = pack("covenant-not-to-sue", C, [
       // says "this is a general release, not a covenant not to sue". The
       // column is which instrument this is and which it is not, and it knew
       // only one direction.
-      /is\s+not\s+a\s+(?:release|license|covenant\s+not\s+to\s+sue)|rather\s+than\s+a\s+(?:release|license|covenant)|does\s+not\s+release|(?:shall|will)\s+not\s+be\s+construed\s+as\s+(?:a\s+(?:release|license|covenant)|one)|not\s+a\s+license\b/i,
+      /is\s+not\s+a\s+(?:release|licen[cs]e|covenant\s+not\s+to\s+sue)|rather\s+than\s+a\s+(?:release|licen[cs]e|covenant)|does\s+not\s+release|(?:shall|will)\s+not\s+be\s+construed\s+as\s+(?:a\s+(?:release|licen[cs]e|covenant)|one)|not\s+a\s+licen[cs]e\b/i,
     ],
     all: true,
     why: "A release extinguishes the claim; a covenant not to sue leaves it alive but promises not to assert it. In joint-tortfeasor states the difference decides whether other defendants get a credit.",

@@ -599,7 +599,7 @@ const CHARTER_RULES: Rule[] = [
     recommendation:
       "Add 'Capital Stock' identifying authorized common (and preferred, if any) shares, par value, and class designations.",
     present_patterns: [
-      /authorized\s+(capital|stock|shares?)/i,
+      /authori[sz]ed\s+(capital|stock|shares?)/i,
       /(common|preferred)\s+stock/i,
       /shares?\s+of\s+stock/i,
     ],
@@ -923,7 +923,7 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
       // HAS VOTING CONTROL so that the Board consists of seven directors" — and
       // the adjacent form matched none of them. A section headed VOTING
       // AGREEMENT was reported at `critical` as containing no voting agreement.
-      /vote\s+(?:[^.;]{0,60}?\s+)?(?:in\s+favor|to\s+approve)/i,
+      /vote\s+(?:[^.;]{0,60}?\s+)?(?:in\s+favou?r|to\s+approve)/i,
       /agree\s+to\s+vote/i,
       /\b(?:shall|will|agrees?\s+to)\s+vote\s+(?:all\s+|any\s+)?(?:of\s+)?(?:its|their|his|her|such)?\s*(?:shares|stock|securities)\b/i,
       /irrevocable\s+proxy/i,
@@ -1593,7 +1593,7 @@ const NONPROFIT_RULES: Rule[] = [
       /(?:within\s+the\s+meaning\s+of|described\s+in|under|pursuant\s+to)\s+(?:Section\s+)?501\s*\(?c\)?\s*\(?3\)?/i,
       /501\s*\(?c\)?\s*\(?3\)?\s*\)?\s+of\s+the\s+Internal\s+Revenue\s+Code/i,
       /(?:tax.exempt|exempt)\s+purposes?/i,
-      /organized\s+(?:and\s+operated\s+)?exclusively\s+for[^.]{0,80}?(?:charitable|religious|educational|scientific|literary)/i,
+      /organi[sz]ed\s+(?:and\s+operated\s+)?exclusively\s+for[^.]{0,80}?(?:charitable|religious|educational|scientific|literary)/i,
     ],
   }),
   presence({
@@ -1644,7 +1644,7 @@ const NONPROFIT_RULES: Rule[] = [
       "Treas. Reg. § 1.501(c)(3)-1(b)(4) requires the organizing documents to provide that upon dissolution residual assets be distributed for one or more exempt purposes (e.g., to another § 501(c)(3) organization) or to a federal / state / local government.",
     recommendation:
       "Add a 'Dissolution' clause directing residual assets 'to be distributed to one or more organizations qualifying as exempt under § 501(c)(3) of the Internal Revenue Code'.",
-    present_patterns: [/dissolution.{0,200}(501\s*\(?c\)?\s*\(?3\)?|exempt\s+organization)/is],
+    present_patterns: [/dissolution.{0,200}(501\s*\(?c\)?\s*\(?3\)?|exempt\s+organi[sz]ation)/is],
   }),
   presence({
     id: "GOV-075",

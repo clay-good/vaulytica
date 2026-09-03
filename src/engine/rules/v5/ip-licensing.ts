@@ -43,7 +43,7 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
     cite: cfr("37", "3.11", "Recording of assignments and other documents affecting title"),
     pat: [
       /(commissioner\s+for\s+patents|united\s+states\s+patent\s+and\s+trademark\s+office|uspto)/i,
-      /(record|authoriz|is\s+hereby\s+(requested|directed)\s+to)/i,
+      /(record|authori[sz]|is\s+hereby\s+(requested|directed)\s+to)/i,
     ],
     all: true,
     why: "Under 35 U.S.C. § 261 an unrecorded assignment is void against a subsequent bona fide purchaser without notice who records first. Recordation within three months protects priority.",
@@ -106,7 +106,7 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
     cite: usc("15", "1060", "Lanham Act § 10 — assignment with the goodwill of the business"),
     pat: [
       /goodwill/i,
-      /(together\s+with|of\s+the\s+business\s+(symbolized|connected)|and\s+the\s+goodwill)/i,
+      /(together\s+with|of\s+the\s+business\s+(symboli[sz]ed|connected)|and\s+the\s+goodwill)/i,
     ],
     why: "§ 1060(a)(1) permits assignment only with the goodwill of the business. An assignment in gross — without goodwill — is invalid and can destroy the mark.",
     fix: 'Assign the marks "together with the goodwill of the business symbolized by the marks," and identify the business or product line transferred with them.',
@@ -138,7 +138,7 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
     cite: cfr("37", "3.11", "Recording of assignments and other documents affecting title"),
     pat: [
       /(united\s+states\s+patent\s+and\s+trademark\s+office|uspto|commissioner\s+for\s+trademarks)/i,
-      /(record|authoriz|is\s+hereby\s+(requested|directed))/i,
+      /(record|authori[sz]|is\s+hereby\s+(requested|directed))/i,
     ],
     all: true,
     why: "An unrecorded trademark assignment is void against a subsequent purchaser for value without notice who records first, under the same three-month rule as patents.",
@@ -154,7 +154,7 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
     cite: usc("15", "1055", "Lanham Act § 5 — use by related companies"),
     pat: [
       /(quality[-\s]+control|standards\s+of\s+quality)/i,
-      /(transition|phase-?out|wind-?down|license\s+back|sell-?off\s+period)/i,
+      /(transition|phase-?out|wind-?down|licen[cs]e\s+back|sell-?off\s+period)/i,
     ],
     why: "The assignor usually keeps selling branded inventory after closing. Without a short license back with quality control, that use is infringing and can support a naked-licensing attack on the mark.",
     fix: "Grant a limited, quality-controlled phase-out license for existing inventory and materials, with a stated end date and no right to produce new goods.",
@@ -250,7 +250,7 @@ const JDA = pack("joint-development-agreement", C, [
     cite: practice("background-ip", "background IP identification in collaboration agreements"),
     pat: [
       /background\s+(ip|intellectual\s+property|technology)/i,
-      /(identified|listed|schedule|license\s+to\s+use)/i,
+      /(identified|listed|schedule|licen[cs]e\s+to\s+use)/i,
     ],
     // `all: true`. "Identified" alone matched "the parties identified on the
     // signature page", so an agreement that never mentions background IP
@@ -282,7 +282,7 @@ const JDA = pack("joint-development-agreement", C, [
     cite: usc("35", "262", "Joint owners of patents"),
     pat: [
       /(joint(ly)?[-\s]+own|co-?owner)/i,
-      /(262|without\s+the\s+consent\s+of|accounting\s+to\s+the\s+other|may\s+(not\s+)?license\s+independently)/i,
+      /(262|without\s+the\s+consent\s+of|accounting\s+to\s+the\s+other|may\s+(not\s+)?licen[cs]e\s+independently)/i,
     ],
     why: "Under 35 U.S.C. § 262 each joint owner may make, use, and license the patent without the other's consent and without accounting — which usually destroys the exclusivity both parties assumed.",
     fix: "Override the § 262 default expressly: state whether independent licensing is permitted, whether consent is required, and whether an accounting is owed.",
@@ -320,7 +320,7 @@ const JDA = pack("joint-development-agreement", C, [
     cite: practice("jda-exclusivity", "exclusivity and field limits in joint development"),
     pat: [
       /exclusiv/i,
-      /(field\s+of\s+use|(?:shall|will)\s+not\s+(develop|engage|work\s+with)|competing\s+(program|product)|during\s+the\s+term)/i,
+      /(field\s+of\s+use|(?:shall|will)\s+not\s+(develop|engage|work\s+with)|competing\s+(programme?|product)|during\s+the\s+term)/i,
     ],
     why: "Collaboration exclusivity is an antitrust-sensitive restraint between potential competitors and a serious commercial commitment. Both call for a bounded field and duration.",
     fix: "State the exclusive field and its duration, and confirm what each party remains free to do outside it.",
@@ -334,7 +334,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     cite: practice("license-scope", "field-of-use and territory scoping in university licenses"),
     pat: [
       /licensed\s+(patents?|technology|products?)/i,
-      /(field\s+of\s+use|territory|exclusive|non-?exclusive|sublicense)/i,
+      /(field\s+of\s+use|territory|exclusive|non-?exclusive|sublicen[cs]e)/i,
     ],
     why: "University licenses are almost always field-limited, and the field definition determines what the licensee can build and what the university can license to the next company.",
     fix: "Define the licensed patents, the licensed products, the field of use, the territory, and the exclusivity and sublicensing rights.",
@@ -346,7 +346,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     cite: usc("35", "202", "Bayh-Dole — disposition of rights in federally funded inventions"),
     pat: [
       /(government|federal(ly)?\s+(funded|sponsored))/i,
-      /(bayh-?dole|march-?in|non-?exclusive,?\s+non-?transferable,?\s+irrevocable,?\s+paid-?up\s+license|35\s+u\.?s\.?c\.?\s*§?\s*20\d)/i,
+      /(bayh-?dole|march-?in|non-?exclusive,?\s+non-?transferable,?\s+irrevocable,?\s+paid-?up\s+licen[cs]e|35\s+u\.?s\.?c\.?\s*§?\s*20\d)/i,
     ],
     why: "For federally funded inventions the government holds a paid-up worldwide license and march-in rights under §§ 202(c)(4) and 203. A license that does not disclose them promises exclusivity the university cannot give.",
     fix: "Recite the government's retained license and march-in rights and make the license subject to them.",
@@ -387,8 +387,8 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
       "royalty and sublicense income terms in university licenses",
     ),
     pat: [
-      /(royalt|license\s+fee|milestone\s+payment)/i,
-      /(sublicense\s+(income|revenue)|net\s+sales|report|minimum\s+annual)/i,
+      /(royalt|licen[cs]e\s+fee|milestone\s+payment)/i,
+      /(sublicen[cs]e\s+(income|revenue)|net\s+sales|report|minimum\s+annual)/i,
     ],
     why: "Net sales definitions and sublicense income sharing are where the economics actually live, and university templates often define net sales more broadly than a licensee expects.",
     fix: "Define net sales with its permitted deductions, state the royalty rate, sublicense income share, minimum annual royalties, and the reporting and payment schedule.",
@@ -494,7 +494,7 @@ const ESCROW = pack("source-code-escrow-agreement", C, [
     cite: practice("post-release-license", "license scope following an escrow release"),
     pat: [
       /(upon\s+release|after\s+(the\s+)?release|following\s+release)/i,
-      /(license\s+to\s+(use|modify|maintain)|internal\s+(use|purposes)|may\s+not\s+(distribute|sublicense))/i,
+      /(licen[cs]e\s+to\s+(use|modify|maintain)|internal\s+(use|purposes)|may\s+not\s+(distribute|sublicen[cs]e))/i,
     ],
     why: "A release without a license to modify and maintain gives the beneficiary code it cannot lawfully use. The scope also needs limits so the escrow does not become a backdoor source license.",
     fix: "Grant a post-release license to use, modify, and maintain the software for the beneficiary's internal purposes, with express limits on distribution and competitive use.",

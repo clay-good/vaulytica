@@ -405,7 +405,7 @@ const DISTRIBUTION_RULES: Rule[] = [
     recommendation:
       "Add a 'Trademark License' granting a limited, revocable license to use the marks in the territory, subject to the supplier's quality standards and right to inspect / approve use.",
     present_patterns: [
-      /trademark\s+license|licens\w+\s+to\s+use\s+the\s+(marks?|trademarks?)/i,
+      /trademark\s+licen[cs]e|licen[cs]\w+\s+to\s+use\s+the\s+(marks?|trademarks?)/i,
       /quality\s+(control|standards)/i,
       /right\s+to\s+(inspect|approve)/i,
       /brand\s+(guidelines|standards)/i,
@@ -532,8 +532,8 @@ const DISTRIBUTION_RULES: Rule[] = [
     present_patterns: [
       /(pass|flow)(ed|es|s)?[\s-]?(through|to)[\s\S]{0,30}(warrant|end\s+(customer|user))/is,
       /warrant\w*[\s\S]{0,40}(pass|extend|assign)\w*[\s\S]{0,30}(customer|end\s+user)/is,
-      /\brma\b|return\s+material\s+authoriz\w+/i,
-      /warranty\s+claim\w*[\s\S]{0,40}(administ|handl|process|honor)/is,
+      /\brma\b|return\s+material\s+authori[sz]\w+/i,
+      /warranty\s+claim\w*[\s\S]{0,40}(administ|handl|process|honou?r)/is,
     ],
     // Express-denial guard: a refusal names the same pass-through the
     // obligation does. Without it the distributor carries warranty exposure to
@@ -774,7 +774,7 @@ const REFERRAL_RULES: Rule[] = [
     recommendation:
       "Add a clause requiring the Partner to use only Company-approved marketing materials and to make no representations, warranties, or guarantees about the Company or its products beyond those materials.",
     present_patterns: [
-      /(approved|authorized)\s+(marketing\s+)?materials/i,
+      /(approved|authori[sz]ed)\s+(marketing\s+)?materials/i,
       /(no|not\s+make\s+any)\s+(representation|warrant|guarantee|claim)\w*[\s\S]{0,40}(product|service|company)/is,
       // The restriction is usually stated as an absence of AUTHORITY, which is
       // the same sentence that disclaims agency: "It has NO AUTHORITY to
@@ -1030,7 +1030,7 @@ const MARKETING_RULES: Rule[] = [
     recommendation:
       "Add a clause requiring the Agency to obtain all licenses, releases, and clearances for third-party materials (stock, music, fonts, talent / model releases) and to warrant that the deliverables do not infringe any third-party intellectual-property or publicity right.",
     present_patterns: [
-      /(clear\w*|obtain\w*|secur\w*)[\s\S]{0,40}(rights|licenses?|releases?|clearances?|permissions?)/is,
+      /(clear\w*|obtain\w*|secur\w*)[\s\S]{0,40}(rights|licen[cs]es?|releases?|clearances?|permissions?)/is,
       /(talent|model|appearance)\s+releases?/i,
       /(stock|licensed|third.?party)\s+(imagery|images|music|footage|content|material)/i,
       /(warrant|represent)\w*[\s\S]{0,60}(deliverables?|work\s+product|materials)[\s\S]{0,40}(not\s+infring|do\s+not\s+infring|non.?infring)/is,

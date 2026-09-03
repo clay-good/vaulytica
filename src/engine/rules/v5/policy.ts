@@ -155,7 +155,7 @@ const AUP = pack("acceptable-use-policy", C, [
     cite: practice("aup-prohibited", "prohibited use enumeration in acceptable use policies"),
     pat: [
       /(prohibit|may\s+not|(?:shall|will)\s+not|unacceptable\s+use)/i,
-      /(harass|illegal|unauthorized\s+(access|software)|circumvent|malware|personal\s+(business|gain))/i,
+      /(harass|illegal|unauthori[sz]ed\s+(access|software)|circumvent|malware|personal\s+(business|gain))/i,
     ],
     why: "Discipline for conduct the policy never named is where employment claims start. The enumeration is what makes enforcement defensible.",
     fix: "Enumerate the prohibited uses, including unauthorized access, circumventing controls, installing unapproved software, harassment, and use of unapproved AI or file-sharing services.",
@@ -169,7 +169,7 @@ const AUP = pack("acceptable-use-policy", C, [
     name: "NLRA § 7 protected-activity savings clause",
     cite: usc("29", "157", "National Labor Relations Act § 7 — rights of employees"),
     pat: [
-      /(section\s+7|nlra|national\s+labor\s+relations|protected[-\s]+(concerted\s+)?activity)/i,
+      /(section\s+7|nlra|national\s+labou?r\s+relations|protected[-\s]+(concerted\s+)?activity)/i,
       /(nothing\s+in\s+this\s+policy|(?:shall|will)\s+not\s+be\s+(construed|interpreted)\s+to\s+(prohibit|restrict)|wages,?\s+hours,?\s+(and|or)\s+(other\s+)?(terms|working\s+conditions))/i,
     ],
     why: "The Board's Stericycle standard treats a work rule as presumptively unlawful if a reasonable employee could read it to chill § 7 activity. A savings clause does not cure every rule, but its absence is a standing exposure for confidentiality and communications rules.",
@@ -243,7 +243,7 @@ const EXPORT = pack("export-control-policy", C, [
     id: "POL-116",
     name: "License determination and recordkeeping",
     cite: cfr("15", "762", "EAR — recordkeeping"),
-    pat: [/licen[cs]/i, /(exception|no\s+license\s+required|nlr|record|retain|five\s+years)/i],
+    pat: [/licen[cs]/i, /(exception|no\s+licen[cs]e\s+required|nlr|record|retain|five\s+years)/i],
     why: "Part 762 requires five-year retention of export records. The license determination record is what turns a decision into a defensible one during an audit or a voluntary disclosure.",
     fix: "State how license requirements are determined and documented, which license exceptions are used and their conditions, and the five-year retention requirement.",
   },

@@ -443,7 +443,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
       "Under *Crawford v. Weather Shield*, an indemnity agreement may impose an immediate duty to defend against any claim potentially within indemnity even before liability is established. Practice: state the duty separately or expressly disclaim it.",
     recommendation:
       "Add 'Duty to Defend' clause separately articulating the obligation (including counsel selection, control of defense, and reimbursement timing) — or expressly disclaim it.",
-    present_patterns: [/(duty\s+to\s+defend|defense\s+obligation)/i, /(defend|defense)/i],
+    present_patterns: [/(duty\s+to\s+defend|defen[cs]e\s+obligation)/i, /(defend|defen[cs]e)/i],
     default_severity: "warning",
   }),
   presence({

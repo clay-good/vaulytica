@@ -148,7 +148,7 @@ const RELEASE_RULES: Rule[] = [
     // between New York and Delaware parties is not missing a California
     // waiver (v1.1.0 — the rule fired its "(if applicable)" absence on
     // every settlement regardless of any California connection).
-    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labor|code)/i, /,\s*CA\s+\d{5}/],
+    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labou?r|code)/i, /,\s*CA\s+\d{5}/],
     default_severity: "warning",
   }),
   presence({
@@ -520,7 +520,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
     // broader than the present patterns, so a California wage letter that
     // never says "PAGA" or "LWDA" still reports.
     applicable_if: [
-      /\bcalifornia\s+labor\s+code\b/i,
+      /\bcalifornia\s+labou?r\s+code\b/i,
       /\bwage\s+and\s+hour\b/i,
       /\bmeal\s+(?:and|or)\s+rest\s+(?:period|break)s?\b/i,
       /\baggrieved\s+employees?\b/i,
@@ -529,8 +529,8 @@ const DEMAND_LETTER_RULES: Rule[] = [
     ],
     present_patterns: [
       /\bpaga\b/i,
-      /(private\s+attorneys?\s+general\s+act|labor\s+code\s+§\s*2699)/i,
-      /(lwda|labor\s+(and\s+)?workforce\s+development\s+agency)/i,
+      /(private\s+attorneys?\s+general\s+act|labou?r\s+code\s+§\s*2699)/i,
+      /(lwda|labou?r\s+(and\s+)?workforce\s+development\s+agency)/i,
     ],
     default_severity: "warning",
   }),

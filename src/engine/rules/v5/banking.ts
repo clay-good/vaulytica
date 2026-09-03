@@ -135,8 +135,8 @@ const SBA = pack("sba-loan-agreement", C, [
       "https://www.sba.gov/document/sop-50-10-lender-development-company-loan-programs",
     ),
     pat: [
-      /(sba\s+authorization|loan\s+authorization|small\s+business\s+administration)/i,
-      /(incorporated|attached|conditions\s+of\s+the\s+authorization|sba\s+form)/i,
+      /(sba\s+authori[sz]ation|loan\s+authori[sz]ation|small\s+business\s+administration)/i,
+      /(incorporated|attached|conditions\s+of\s+the\s+authori[sz]ation|sba\s+form)/i,
     ],
     why: "The SBA Authorization sets the conditions on which the guaranty rests. A lender that closes outside the Authorization risks repair or denial of the guaranty, and the borrower inherits the fallout.",
     fix: "Incorporate the SBA Authorization by reference, attach it, and state that its conditions control over inconsistent loan-document terms.",
@@ -423,7 +423,7 @@ const DACA = pack("deposit-account-control-agreement", C, [
     cite: practice("noce", "notice of exclusive control procedures in control agreements"),
     pat: [
       /notice\s+of\s+exclusive\s+control/i,
-      /(business\s+days|form\s+attached|exhibit|(?:shall|will)\s+(comply|honor)\s+within)/i,
+      /(business\s+days|form\s+attached|exhibit|(?:shall|will)\s+(comply|honou?r)\s+within)/i,
     ],
     why: "The value of a springing DACA depends entirely on how fast the bank acts on the notice. Two business days is standard; longer windows let a distressed borrower sweep the account first.",
     fix: "Attach the notice form, state the delivery method, and set the bank's compliance deadline in business days.",
@@ -577,7 +577,7 @@ const EFA = pack("equipment-finance-agreement", C, [
     cite: ucc("9-203", "Attachment and enforceability of security interest"),
     pat: [
       /grants?\s+(to\s+\w+\s+)?a\s+security\s+interest/i,
-      /(ucc-?1|financing\s+statement|authorizes?\s+(the\s+)?filing|perfect)/i,
+      /(ucc-?1|financing\s+statement|authori[sz]es?\s+(the\s+)?filing|perfect)/i,
     ],
     why: "§ 9-203 requires a security agreement authenticated by the debtor describing the collateral, and § 9-509 requires authorization for the financing statement. Both are usually in this one document.",
     fix: "Include an express grant of a security interest with a collateral description, and the debtor's authorization to file financing statements.",
@@ -589,7 +589,7 @@ const EFA = pack("equipment-finance-agreement", C, [
     name: "Payment schedule, rate, and prepayment terms",
     cite: practice("efa-payment", "payment, rate, and prepayment terms in equipment finance"),
     pat: [
-      /(payment\s+schedule|monthly\s+(payment|installment))/i,
+      /(payment\s+schedule|monthly\s+(payment|instal?lment))/i,
       /(interest\s+rate|prepay|early\s+(payoff|termination)|balloon)/i,
     ],
     why: "EFAs frequently quote a payment amount without a rate, and a prepayment payoff computed on undiscounted remaining payments can make early payoff cost more than holding the debt.",

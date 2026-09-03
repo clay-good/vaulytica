@@ -1035,7 +1035,7 @@ const ELECTION_83B_RULES: Rule[] = [
       // "IRS Service Center", but also the spelled-out "Internal Revenue
       // Service Center" (one "service") and "… Office"; the old pattern needed a
       // second literal "service" after the full name, so the spelled form missed.
-      /(?:internal\s+revenue\s+service|irs)\s+(?:service\s+)?(?:center|office)/i,
+      /(?:internal\s+revenue\s+service|irs)\s+(?:service\s+)?(?:cent(?:er|re)|office)/i,
       /(employer|company).{0,40}(copy|file)/is,
     ],
     min_match: 2,
@@ -1235,7 +1235,7 @@ const VOTING_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add 'Election of Directors' binding each stockholder to vote all of its shares to elect the designees per the charter.",
     present_patterns: [
-      /vote\s+(in\s+favor|to\s+elect)/i,
+      /vote\s+(in\s+favou?r|to\s+elect)/i,
       /(elect|appoint).{0,40}designees/i,
       // The canonical covenant: "vote all shares … so as to elect to the Board
       // … directors designated by [holders]". The verb and object sit apart,

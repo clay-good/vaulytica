@@ -312,7 +312,7 @@ const AML_RULES: Rule[] = [
     recommendation:
       "Add 'AML Program' establishing the five pillars: policies / procedures, AML officer, training, independent testing, CDD + beneficial ownership.",
     present_patterns: [
-      /(aml\s+program|anti.?money.?laundering)/i,
+      /(aml\s+programme?|anti.?money.?laundering)/i,
       // The third pillar's officer is the "BSA Officer" in every US bank's
       // program — that is the industry title, and the regulation itself asks
       // only for "a designated individual". A national trust company whose §3
@@ -395,7 +395,7 @@ const AML_RULES: Rule[] = [
     recommendation:
       "Add 'Customer Identification Program' + 'Beneficial Ownership' covering CIP elements (name / DOB / address / ID), 25% ownership threshold, and CTA reporting where applicable.",
     present_patterns: [
-      /(cip|customer\s+identification\s+program)/i,
+      /(cip|customer\s+identification\s+programme?)/i,
       /(beneficial\s+ownership|beneficial\s+owners?)/i,
       /(25%|twenty.five\s+percent|cta|corporate\s+transparency)/i,
     ],
@@ -789,7 +789,7 @@ const DOC_RETENTION_RULES: Rule[] = [
     recommendation:
       "Add 'Destruction' specifying secure destruction (paper: NAID-AAA shred; electronic: NIST 800-88 sanitization) + certificate of destruction.",
     present_patterns: [
-      /(secure\s+destruction|shred|naid|sanitization)/i,
+      /(secure\s+destruction|shred|naid|saniti[sz]ation)/i,
       /(certificate\s+of\s+destruction)/i,
     ],
     default_severity: "warning",
@@ -913,7 +913,7 @@ const AI_AUP_RULES: Rule[] = [
     recommendation:
       "Add 'Approved Tools' listing approved AI tools + 'Procurement Gate' for new tools (security + privacy + IP review).",
     present_patterns: [
-      /(approved\s+(ai\s+)?tools?|allowlist|authorized\s+tools?)/i,
+      /(approved\s+(ai\s+)?tools?|allowlist|authori[sz]ed\s+tools?)/i,
       /(procurement|approval|review|security\s+review)/i,
     ],
   }),

@@ -35,7 +35,7 @@ const GRANT_VERB = /\b(?:hereby\s+grants?|assigns?\s+and\s+grants?|grant(?:s|ed)
 
 /** The grant clause, read from the verb: a license or right, and its scope. */
 const GRANT_CLAUSE =
-  /\b(?:hereby\s+grants?|assigns?\s+and\s+grants?|grant(?:s|ed)?)\b[\s\S]{0,200}\b(?:license|right)\b[\s\S]{0,400}/i;
+  /\b(?:hereby\s+grants?|assigns?\s+and\s+grants?|grant(?:s|ed)?)\b[\s\S]{0,200}\b(?:licen[cs]e|right)\b[\s\S]{0,400}/i;
 
 export const rule: Rule = {
   id: "IPDATA-010",

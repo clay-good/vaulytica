@@ -75,7 +75,7 @@ export const CATEGORY_CATALOG: CategoryDef[] = [
     slug: "hipaa-license-numbers",
     label: "certificate / license numbers",
     group: "hipaa-identifier",
-    rx: /\b(?:certificate|license)\s+numbers?\b/i,
+    rx: /\b(?:certificate|licen[cs]e)\s+numbers?\b/i,
   },
   {
     slug: "hipaa-vehicle-identifiers",
@@ -178,7 +178,7 @@ export const CATEGORY_CATALOG: CategoryDef[] = [
     slug: "ccpa-driver-license",
     label: "driver's license / state-id / passport",
     group: "ccpa-sensitive",
-    rx: /\b(?:driver['’]?s? license|state identification|passport number)/i,
+    rx: /\b(?:driver['’]?s? licen[cs]e|state identification|passport number)/i,
   },
   {
     slug: "ccpa-financial-account",

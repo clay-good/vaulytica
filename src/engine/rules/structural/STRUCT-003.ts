@@ -283,7 +283,7 @@ const DELIVERY_RECITAL =
 // it approved the policy — on the same line, in the way every policy header
 // writes it — still drew the `critical` "no signature block".
 const ADOPTION_RECITAL = new RegExp(
-  String.raw`\b(?:adopted|approved|ratified|issued|authorized)\s+by\s*:?\s+(?:the\s+)?` +
+  String.raw`\b(?:adopted|approved|ratified|issued|authori[sz]ed)\s+by\s*:?\s+(?:the\s+)?` +
     String.raw`[^.\n]{0,60}?\b(?:board|committee|council|trustees|directors|shareholders` +
     String.raw`|stockholders|members|general\s+counsel|chief\s+\w+\s+officer)\b` +
     String.raw`[^.\n]{0,40}?\b(?:on|effective|as\s+of|dated)\s+` +

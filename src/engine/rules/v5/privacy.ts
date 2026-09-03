@@ -25,7 +25,7 @@ const BIOMETRIC = pack("biometric-consent", C, [
       // "I give my written consent … to that collection, storage, and use" is
       // the § 15(b)(3) release, written as the statute's own recital, and the
       // adjacent forms below could not see it.
-      /(written\s+release|written\s+consent|consent\s+in\s+writing|hereby\s+(consent|authorize)|i\s+consent\s+to|(?:give|giving|provide)\s+(?:my\s+)?(?:written\s+)?(?:consent|release|authorization)|informed\s+written\s+consent)/i,
+      /(written\s+release|written\s+consent|consent\s+in\s+writing|hereby\s+(consent|authori[sz]e)|i\s+consent\s+to|(?:give|giving|provide)\s+(?:my\s+)?(?:written\s+)?(?:consent|release|authori[sz]ation)|informed\s+written\s+consent)/i,
       // BIPA § 15(b)(1) asks the form to say WHAT is being collected, and a
       // form that recites "is collecting, storing, and using a biometric
       // identifier and biometric information about me" says it.

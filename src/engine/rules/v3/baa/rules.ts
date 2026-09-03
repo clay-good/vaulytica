@@ -45,7 +45,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add a section titled 'Permitted Uses and Disclosures' stating the business purposes for which the BA may use or disclose PHI.",
     present_patterns: [
-      /(permitted|authorized)\s+(uses|disclosures)\b/i,
+      /(permitted|authori[sz]ed)\s+(uses|disclosures)\b/i,
       /uses\s+and\s+disclosures\s+of\s+(PHI|protected health information)/i,
     ],
   }),
@@ -530,8 +530,8 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Use HIPAA's full definition: 'the attempted or successful unauthorized access, use, disclosure, modification, or destruction of information or interference with system operations in an information system.'",
     bad_patterns: [
-      /Security\s+Incident.{0,200}successful\s+(unauthorized|access)/is,
-      /only\s+successful\s+(unauthorized\s+access|incidents)/i,
+      /Security\s+Incident.{0,200}successful\s+(unauthori[sz]ed|access)/is,
+      /only\s+successful\s+(unauthori[sz]ed\s+access|incidents)/i,
       // v1.0.0 caught only the "limited to SUCCESSFUL access" framing and missed
       // the more common inverse — a definition that EXCLUDES unsuccessful
       // attempts / routine pings / port scans, which narrows the § 164.304
@@ -836,7 +836,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add signature blocks for both parties with name, title, and date of authorized representatives.",
     present_patterns: [
-      /By:\s*[_\-\s]+|signature\s+block|authorized\s+(signatory|representative)|sign(ed)?\s+by/i,
+      /By:\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by/i,
     ],
   }),
 

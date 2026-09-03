@@ -448,7 +448,7 @@ const STAFFING = pack("staffing-services-agreement", C, [
     ),
     pat: [
       /background\s+(check|screen)/i,
-      /(drug\s+(test|screen)|consent|authorization|fair\s+credit\s+reporting)/i,
+      /(drug\s+(test|screen)|consent|authori[sz]ation|fair\s+credit\s+reporting)/i,
     ],
     why: "When the agency runs consumer reports it is the FCRA user and owes the § 604(b) stand-alone disclosure and the adverse-action sequence. A client that specifies the screens without allocating those duties inherits the risk.",
     fix: "State the required screens, who conducts them, and that the conducting party will satisfy FCRA disclosure, authorization, and adverse-action obligations.",
@@ -756,7 +756,7 @@ const TEAMING = pack("teaming-agreement", C, [
     name: "Identified program or solicitation",
     cite: cfr("48", "9.601", "FAR — contractor team arrangements"),
     pat: [
-      /(solicitation\s+(no|number)|rfp\s+(no|number)|the\s+program)/i,
+      /(solicitation\s+(no|number)|rfp\s+(no|number)|the\s+programme?)/i,
       /(agency|contracting\s+activity|opportunity)/i,
     ],
     why: "FAR 9.6 recognizes team arrangements but says nothing about enforceability. A teaming agreement that does not identify the specific procurement is an agreement to agree about nothing in particular.",
@@ -869,11 +869,11 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
     ),
     pat: [
       /(252\.204-7012|252\.204-7020|nist\s+sp\s+800-171|cmmc)/i,
-      /(covered\s+defense\s+information|controlled\s+unclassified\s+information|cyber\s+incident\s+report)/i,
+      /(covered\s+defen[cs]e\s+information|controlled\s+unclassified\s+information|cyber\s+incident\s+report)/i,
     ],
     why: "DFARS 252.204-7012(m) requires the clause in all subcontracts where covered defense information will be handled, with a 72-hour incident report to DoD. The prime is liable for a subcontractor's failure.",
     fix: "Flow down 252.204-7012 (and 7019/7020 where applicable), require NIST SP 800-171 implementation and an SPRS score, and set the 72-hour incident-report duty.",
-    when: [/(defense|dod|department\s+of\s+defense|dfars|covered\s+defense\s+information)/i],
+    when: [/(defen[cs]e|dod|department\s+of\s+defen[cs]e|dfars|covered\s+defen[cs]e\s+information)/i],
     sev: "critical",
   },
   {
@@ -1064,7 +1064,7 @@ const SPONSORSHIP = pack("sponsorship-agreement", C, [
     cite: practice("sponsorship-fee", "fee and payment structuring in sponsorship agreements"),
     pat: [
       /(sponsorship\s+fee|rights\s+fee|the\s+fee)/i,
-      /(payment\s+schedule|installments?|value-?in-?kind)/i,
+      /(payment\s+schedule|instal?lments?|value-?in-?kind)/i,
     ],
     why: "Sponsorship fees are usually paid before the season or event delivers, so the payment schedule and any value-in-kind component decide who is exposed if the property under-delivers.",
     fix: "State the cash fee, the payment schedule tied to delivery milestones, and the agreed valuation of any value-in-kind component.",
@@ -1077,7 +1077,7 @@ const SPONSORSHIP = pack("sponsorship-agreement", C, [
     pat: [
       // Either ORDER: the section is headed "USE OF MARKS" as often as
       // "Trademark License".
-      /(trademark|logo|marks?)\s+(license|licence|use)|use\s+of\s+(?:the\s+)?(?:event\s+)?(?:marks?|logo|trademarks?)/i,
+      /(trademark|logo|marks?)\s+(licen[cs]e|licence|use)|use\s+of\s+(?:the\s+)?(?:event\s+)?(?:marks?|logo|trademarks?)/i,
       // The approval right is stated as an obligation to approve, not as the
       // noun phrase: "Each party shall APPROVE the other's USE of its marks in
       // advance."
@@ -1152,7 +1152,7 @@ const INFLUENCER = pack("influencer-agreement", C, [
     ),
     pat: [
       /(ownership\s+of\s+the\s+content|work\s+made\s+for\s+hire|creator\s+retains)/i,
-      /(license\s+to\s+(use|repost)|usage\s+rights|whitelist|paid\s+amplification)/i,
+      /(licen[cs]e\s+to\s+(use|repost)|usage\s+rights|whitelist|paid\s+amplification)/i,
     ],
     why: "Brands routinely amplify creator content as paid media without having bought the right to. Usage term, territory, media, and whether the creator's likeness travels with the content are all separate grants.",
     fix: "State who owns the content, grant the brand a license with defined media, territory, and duration, and price any extension for paid amplification or whitelisting.",
@@ -1185,7 +1185,7 @@ const INFLUENCER = pack("influencer-agreement", C, [
     name: "FTC compliance training and monitoring",
     cite: cfr("16", "255.5", "FTC Endorsement Guides — monitoring of endorsers"),
     pat: [
-      /(train(ing)?|guidelines\s+provided|compliance\s+program)/i,
+      /(train(ing)?|guidelines\s+provided|compliance\s+programme?)/i,
       /(monitor|periodic\s+review|audit\s+of\s+(posts|content))/i,
     ],
     why: "FTC consent orders in this area consistently require the advertiser to have a monitoring program. Contractual language creating one is the evidence that the program existed.",

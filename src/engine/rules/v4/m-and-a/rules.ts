@@ -744,7 +744,7 @@ const MERGER_RULES: Rule[] = [
       // stockholders" puts the object and the entity between the verb and the
       // noun, which the 30-char window fell one character short of reaching.
       /(?:approv\w+|adopt\w+|consent)\s+(?:of|by)\s+[^.]{0,50}?\bstockholders?\b/i,
-      /\bstockholders?\b[^.]{0,50}?(?:approv\w+|adopt\w+|vote\s+(?:to|in\s+favor)|consent)/i,
+      /\bstockholders?\b[^.]{0,50}?(?:approv\w+|adopt\w+|vote\s+(?:to|in\s+favou?r)|consent)/i,
       // The condition often routes the approval through the vote: "the
       // adoption of this Agreement by the requisite vote of the Company's
       // stockholders" separates "adoption" from "stockholders" by more than the
@@ -1596,7 +1596,7 @@ const EARNOUT_RULES: Rule[] = [
     // the Earnout" and "no duty to TAKE ANY ACTION to increase the earn-out".
     // Widen the gap between the negated duty and the maximize/increase verb.
     bad_patterns: [
-      /no\s+(?:duty|obligation)\s+to\b[^.]{0,60}(?:maximize|increase|accelerate|optimize)[^.]{0,40}earn[-\s]?out/is,
+      /no\s+(?:duty|obligation)\s+to\b[^.]{0,60}(?:maximi[sz]e|increase|accelerate|optimi[sz]e)[^.]{0,40}earn[-\s]?out/is,
       /buyer\s+(may|(?:shall|will))\s+operate.{0,40}sole\s+discretion.{0,80}earn[-\s]?out/is,
     ],
     bad_title: "Disclaimer of earnout-maximization duty flagged",

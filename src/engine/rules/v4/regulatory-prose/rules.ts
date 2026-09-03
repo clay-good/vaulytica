@@ -64,7 +64,7 @@ const FORM_D_RULES: Rule[] = [
       "Add 'Issuer' identifying name, jurisdiction of organization, and CIK / EDGAR file number.",
     present_patterns: [
       /(issuer|company|registrant)/i,
-      /(jurisdiction\s+of\s+(organization|incorporation)|state\s+of\s+(organization|formation))/i,
+      /(jurisdiction\s+of\s+(organi[sz]ation|incorporation)|state\s+of\s+(organi[sz]ation|formation))/i,
     ],
   }),
   presence({
@@ -405,7 +405,7 @@ const RISK_FACTORS_RULES: Rule[] = [
       // prose ("entry into new markets carries potential risk related to
       // currency fluctuation") was charged with the Pearson / First American
       // defect of disguising an incident that had already happened.
-      /(?:potential|hypothetical)[^.]{0,40}(?:risk|impact)[^.]{0,80}(?:cyber\w*|security|data\s+breach|ransomware|intrusion|unauthorized\s+access)/is,
+      /(?:potential|hypothetical)[^.]{0,40}(?:risk|impact)[^.]{0,80}(?:cyber\w*|security|data\s+breach|ransomware|intrusion|unauthori[sz]ed\s+access)/is,
       /(?:cyber\w*|security\s+breach|data\s+breach|ransomware)[^.]{0,60}(?:potential|hypothetical)[^.]{0,40}(?:risk|impact)/is,
     ],
     // The whole point of the Pearson / First American line is framing an
@@ -499,7 +499,7 @@ const RISK_FACTORS_RULES: Rule[] = [
       // Civ. Code § 1798.82 and the state breach-notification laws after it
       // put it, and a risk factor written in that register carried none of the
       // forward-order spellings.
-      /(cybersecurity|cyber\s+attack|data\s+breach|ransomware|item\s+106|item\s+1\.05|(?:security|information[- ]security|data[- ]security)\s+(?:incident|breach|event)|breach\s+of\s+(?:the\s+)?(?:security|data\s+security|confidentiality)|unauthorized\s+access)/i,
+      /(cybersecurity|cyber\s+attack|data\s+breach|ransomware|item\s+106|item\s+1\.05|(?:security|information[- ]security|data[- ]security)\s+(?:incident|breach|event)|breach\s+of\s+(?:the\s+)?(?:security|data\s+security|confidentiality)|unauthori[sz]ed\s+access)/i,
       /(risk|incident|exposure)/i,
     ],
     require_all_present: true,

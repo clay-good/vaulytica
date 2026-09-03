@@ -42,7 +42,7 @@ export const rule: Rule = {
     // coverage minimum — a minimum no such clause has ever stated. The same
     // sentence shape appears in every employment and physician agreement.
     if (
-      /\b(?:health|dental|vision|medical|hospitalization|disability|life)\s+(?:and\s+\w+\s+)?insurance\b/i.test(
+      /\b(?:health|dental|vision|medical|hospitali[sz]ation|disability|life)\s+(?:and\s+\w+\s+)?insurance\b/i.test(
         hit.match[0],
       ) &&
       !/\b(?:liability|professional|commercial|general|umbrella|excess|property|casualty|cyber|errors\s+and\s+omissions|workers['’]?\s+compensation)\s+insurance\b/i.test(

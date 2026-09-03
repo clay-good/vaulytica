@@ -73,7 +73,7 @@ const ARTICLES = pack("articles-of-organization", C, [
       // perjury notice names "the INDIVIDUAL CAUSING this document to be
       // delivered". A correctly prepared certificate carried neither of the
       // two spellings this pillar knew.
-      /(organizer|authorized\s+(person|representative|signator\w*)|person\s+forming\s+the\s+(limited\s+liability\s+)?company|individual\s+causing\s+(this\s+)?(document|record))/i,
+      /(organizer|authori[sz]ed\s+(person|representative|signator\w*)|person\s+forming\s+the\s+(limited\s+liability\s+)?company|individual\s+causing\s+(this\s+)?(document|record))/i,
       /(effective\s+(date|upon\s+filing)|effective\s+on\s+(the\s+date\s+of\s+)?filing)/i,
     ],
     all: true,
@@ -121,7 +121,7 @@ const BOARD_RESOLUTION = pack("board-resolution", C, [
     cite: practice("board-authorization", "specificity of board authorizations"),
     pat: [
       /resolved,?\s+that/i,
-      /(authorized\s+to|approved|hereby\s+(adopts|approves|authorizes))/i,
+      /(authori[sz]ed\s+to|approved|hereby\s+(adopts|approves|authori[sz]es))/i,
     ],
     why: "An authorization phrased at a level of generality no counterparty can rely on is worse than none: the bank asks for a new one and the closing slips.",
     fix: "State the specific action authorized — the counterparty, the amount, the instrument — precisely enough for a third party to rely on it.",
@@ -378,7 +378,7 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
     ),
     pat: [
       /(model\s+[ac]|comprehensive\s+fiscal\s+sponsorship|pre-?approved\s+grant\s+relationship)/i,
-      /(the\s+project\s+is\s+(a\s+)?(program|activity)\s+of\s+the\s+sponsor|regrant|grantee)/i,
+      /(the\s+project\s+is\s+(a\s+)?(programme?|activity)\s+of\s+the\s+sponsor|regrant|grantee)/i,
     ],
     why: "Model A makes the project a program of the sponsor with the sponsor as employer and owner; Model C makes it a grantee. The tax, employment, and liability consequences are entirely different.",
     fix: "State which model applies, and align the employment, ownership, and liability provisions with it.",
@@ -438,7 +438,7 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
     ),
     pat: [
       /(terminat|withdraw)/i,
-      /(successor\s+(sponsor|organization)|transfer\s+(the\s+)?(fund|balance)|remaining\s+funds)/i,
+      /(successor\s+(sponsor|organi[sz]ation)|transfer\s+(the\s+)?(fund|balance)|remaining\s+funds)/i,
     ],
     why: "Projects graduate to their own exempt status. Without a transfer mechanism the accumulated fund can be stranded, and the sponsor's variance power makes the transfer discretionary by design.",
     fix: "State the notice for termination, the conditions for transferring the balance to a successor § 501(c)(3), and what happens if no qualified successor exists.",
@@ -539,7 +539,7 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
     name: "Indemnification to the fullest extent permitted by law",
     cite: dgcl("145(a)"),
     pat: [
-      /fullest\s+extent\s+(?:permitted|authorized|allowed)/i,
+      /fullest\s+extent\s+(?:permitted|authori[sz]ed|allowed)/i,
       /good\s+faith|best\s+interests\s+of\s+the\s+(?:corporation|company)/i,
     ],
     all: true,

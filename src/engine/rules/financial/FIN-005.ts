@@ -36,8 +36,8 @@ const PAYMENT_TERMS = new RegExp(
     // installments of principal and interest beginning October 1, 2026". Every
     // note, credit agreement and equipment lease in the catalog says it this
     // way, and each was told it references fees and states no payment term.
-    `\\b(?:repayable|payable|amortiz(?:ed|able)|due)\\s+in\\s+[\\s\\w,()-]{0,40}?\\b(?:monthly|quarterly|annual|equal|consecutive|successive)\\s+installments?\\b`,
-    `\\b(?:monthly|quarterly|annual)\\s+installments?\\s+of\\s+(?:principal|interest|rent|\\$)`,
+    `\\b(?:repayable|payable|amorti[sz](?:ed|able)|due)\\s+in\\s+[\\s\\w,()-]{0,40}?\\b(?:monthly|quarterly|annual|equal|consecutive|successive)\\s+instal?lments?\\b`,
+    `\\b(?:monthly|quarterly|annual)\\s+instal?lments?\\s+of\\s+(?:principal|interest|rent|\\$)`,
     // A LEASE states its payment term as a RECURRING DUE DATE, and states it
     // in the ACTIVE voice: "Lessee shall pay rent of $4,180.00 per month in
     // advance on the first day of each month". The due-date branch below leads
@@ -164,13 +164,13 @@ const PAYMENT_TERMS = new RegExp(
     // The cadence-word branch below needs "monthly"/"quarterly"; the due-date
     // branches above need an ordinal day of a recurring period. Between them
     // an assessment schedule as plain as this read as no payment term at all.
-    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?installments\\s+(?:due|payable)\\s+on\\b`,
+    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?instal?lments\\s+(?:due|payable)\\s+on\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
     // The installment count is optional: a lease states "annual base rent …
     // payable in equal monthly installments" with no number, and that cadence
     // + "installments" is a payment term as much as "in twelve (12) … monthly
     // installments". A cadence word is still required, so this stays tight.
-    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+installments\\b`,
+    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+instal?lments\\b`,
     // An employment agreement states its payment term as the payroll cadence:
     // "payable in accordance with the Company's regular payroll practices". The
     // salary / bonus / severance is paid on the normal payroll cycle, which is

@@ -50,7 +50,7 @@ export const rule: Rule = {
     const DRAFTER_NAMES =
       "Vendor|Provider|Company|Licensor|Seller|Service\\s+Provider|Counterparty|Indemnitee|Disclosing\\s+Party|Receiving\\s+Party";
     const ASYM_TO = new RegExp(
-      `(?:to|in\\s+favor\\s+of|for)\\s+(${DRAFTER_NAMES}|the\\s+(?:Vendor|Provider|Company|Licensor|Seller|Indemnitee))\\b`,
+      `(?:to|in\\s+favou?r\\s+of|for)\\s+(${DRAFTER_NAMES}|the\\s+(?:Vendor|Provider|Company|Licensor|Seller|Indemnitee))\\b`,
       "i",
     );
     const ASYM_SUBJECT = new RegExp(
@@ -59,7 +59,7 @@ export const rule: Rule = {
     );
     const asymHit = ASYM_TO.exec(para) ?? ASYM_SUBJECT.exec(para);
     const COUNTERPARTY =
-      /(?:to|in\s+favor\s+of|for)\s+(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b/i;
+      /(?:to|in\s+favou?r\s+of|for)\s+(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b/i;
     // Also recognize the counterparty as the SUBJECT of its own fees-recovery
     // grant (a reciprocal second sentence: "Customer shall likewise be entitled
     // to recover its attorneys' fees from Vendor"). Without this, a fully mutual

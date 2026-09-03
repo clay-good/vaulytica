@@ -1228,7 +1228,7 @@ const SNDA_RULES: Rule[] = [
       // reached forward across the join to the first "to" in the body, so an
       // attorneys'-fees clause satisfied the check all over again.
       /\battorn(?:s|ed|ing|ment)?\b[^.]{0,80}?\bto\b[^.]{0,60}?\b(?:lender|mortgagee|beneficiary|purchaser|successor|transferee|landlord|lessor|owner)\b/is,
-      /\brecogniz\w+[^.]{0,80}?\bas\s+(?:the\s+)?(?:landlord|lessor|successor)\b/is,
+      /\brecogni[sz]\w+[^.]{0,80}?\bas\s+(?:the\s+)?(?:landlord|lessor|successor)\b/is,
     ],
     denied_if: expressDenial(String.raw`attorn(?:s|ment|ed|ing)?`),
     denied_title: "Tenant attornment expressly denied",

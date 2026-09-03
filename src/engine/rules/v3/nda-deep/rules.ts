@@ -318,7 +318,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       // grant — an equally unbounded permitted-use scope. Tie it to the
       // confidential-information object so the ubiquitous "including without
       // limitation" boilerplate is not swept in.
-      /(?:use|utiliz\w*|exploit)[^.]{0,50}confidential[^.]{0,50}without\s+(?:any\s+)?restriction/is,
+      /(?:use|utili[sz]\w*|exploit)[^.]{0,50}confidential[^.]{0,50}without\s+(?:any\s+)?restriction/is,
     ],
     // "for any purpose OTHER THAN the Purpose" is the narrow best-practice
     // framing NDA-D-012 checks for — the exact opposite of the unbounded grant

@@ -57,7 +57,7 @@ const PLAN = pack("equity-incentive-plan", C, [
     name: "Capitalization adjustment provisions",
     cite: practice("plan-adjustment", "anti-dilution adjustment on capitalization changes"),
     pat: [
-      /(stock\s+split|recapitalization|stock\s+dividend|reorganization)/i,
+      /(stock\s+split|recapitali[sz]ation|stock\s+dividend|reorgani[sz]ation)/i,
       /(adjust(ment)?|proportionate(ly)?|equitab(le|ly))/i,
     ],
     why: "Without an adjustment clause a stock split leaves outstanding options economically broken, and for ISOs an adjustment outside § 424(a) is a disqualifying modification.",
@@ -299,7 +299,7 @@ const WARRANT = pack("warrant-agreement", C, [
     name: "Anti-dilution and capitalization adjustments",
     cite: practice("warrant-antidilution", "adjustment provisions in warrants"),
     pat: [
-      /(stock\s+split|stock\s+dividend|recapitalization|combination)/i,
+      /(stock\s+split|stock\s+dividend|recapitali[sz]ation|combination)/i,
       /(adjust(ment|ed)?|proportionate)/i,
     ],
     why: "A warrant without adjustment provisions is destroyed by a reverse split or a recapitalization. Whether price-based anti-dilution applies at all is a separate negotiation from structural adjustment.",
@@ -451,7 +451,7 @@ const VENTURE_SPA = pack("venture-stock-purchase-agreement", C, [
       "the capitalization representation and its disclosure schedule in a venture financing",
     ),
     pat: [
-      /\bcapitali[sz]ation\b|authorized\s+capital|issued\s+and\s+outstanding/i,
+      /\bcapitali[sz]ation\b|authori[sz]ed\s+capital|issued\s+and\s+outstanding/i,
       /disclosure\s+schedule|except\s+as\s+set\s+(?:out|forth)\s+on/i,
     ],
     all: true,

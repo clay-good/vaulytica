@@ -325,7 +325,7 @@ const RELOCATION = pack("relocation-agreement", C, [
     ),
     pat: [
       /(deduct|withhold)/i,
-      /(final\s+(paycheck|pay|wages)|authoriz|to\s+the\s+extent\s+permitted\s+by\s+(applicable\s+)?law)/i,
+      /(final\s+(paycheck|pay|wages)|authori[sz]|to\s+the\s+extent\s+permitted\s+by\s+(applicable\s+)?law)/i,
     ],
     all: true,
     why: "Many states prohibit deducting a debt from final wages even with authorization, and California prohibits it outright. A clause that assumes the deduction is available creates a wage claim on the way out the door.",
@@ -533,7 +533,7 @@ const CBA = pack("union-cba", C, [
     cite: usc("29", "164", "National Labor Relations Act § 14(b) — right-to-work savings clause"),
     pat: [
       /(union\s+security|maintenance\s+of\s+membership|agency\s+fee)/i,
-      /(dues\s+(check-?off|deduction)|written\s+authorization|right-?to-?work)/i,
+      /(dues\s+(check-?off|deduction)|written\s+authori[sz]ation|right-?to-?work)/i,
     ],
     why: "Union security clauses are unlawful in right-to-work states under § 14(b), and dues checkoff requires individual written authorization under § 302(c)(4). A national form applied in a right-to-work state is unenforceable there.",
     fix: "State the union security obligation with a right-to-work savings clause, and require individual written checkoff authorizations that comply with § 302(c)(4).",
@@ -696,7 +696,7 @@ const WARN = pack("warn-notice", C, [
       "https://www.law.cornell.edu/wex/labor_law",
     ),
     pat: [
-      /(mini-?warn|state\s+(warn|plant[-\s]closing)|labor\s+code\s+§?\s*1400|worker\s+adjustment.{0,40}state|revised\s+statutes|compiled\s+statutes|statutes\s+annotated|code\s+annotated|general\s+business\s+law|labor\s+(?:code|law)\s+§|consolidated\s+laws)/i,
+      /(mini-?warn|state\s+(warn|plant[-\s]closing)|labou?r\s+code\s+§?\s*1400|worker\s+adjustment.{0,40}state|revised\s+statutes|compiled\s+statutes|statutes\s+annotated|code\s+annotated|general\s+business\s+law|labou?r\s+(?:code|law)\s+§|consolidated\s+laws)/i,
     ],
     when: [/\b(?:California|New\s+York|New\s+Jersey)\b/i],
     why: "California triggers at 50 employees regardless of percentage, New York requires 90 days, and New Jersey requires 90 days plus mandatory severance. A federal-only notice is non-compliant in those states.",
@@ -763,8 +763,8 @@ const FCRA = pack("background-check-disclosure", C, [
     name: "Clear written authorization",
     cite: usc("15", "1681b", "FCRA § 604(b)(2)(A)(ii) — written authorization"),
     pat: [
-      /authoriz/i,
-      /(i\s+(hereby\s+)?authorize|sign(ed|ature)?\s+(below|of\s+(the\s+)?(applicant|consumer|employee))|written\s+authorization)/i,
+      /authori[sz]/i,
+      /(i\s+(hereby\s+)?authori[sz]e|sign(ed|ature)?\s+(below|of\s+(the\s+)?(applicant|consumer|employee))|written\s+authori[sz]ation)/i,
     ],
     all: true,
     why: "The report may not be procured without the consumer's written authorization. A disclosure without a signature line is a compliance failure that also leaves the employer without evidence of consent.",

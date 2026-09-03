@@ -283,7 +283,7 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
     why: "Trust amendments do not require witnesses in most states, but notarization is nearly always used and is what a financial institution will demand before honoring the amended terms.",
     fix: "Add settlor and trustee signature blocks with the date and a notarial acknowledgment, matching the formality used on the original instrument.",
     denied: expressDenial(
-      String.raw`notariz(?:ation|ed)|acknowledg(?:e?ment)\s+before\s+a\s+notary`,
+      String.raw`notari[sz](?:ation|ed)|acknowledg(?:e?ment)\s+before\s+a\s+notary`,
     ),
     sev: "critical",
   },

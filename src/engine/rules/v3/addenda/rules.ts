@@ -339,7 +339,7 @@ export const ADDENDA_RULES: Rule[] = [
     exclude_if: [
       /\bopt[- ]?in\b/i,
       /\bnot\s+(?:be\s+)?(?:use|used|using|train|trained|training|process|processed)\b/i,
-      /\bwith\s+(?:the\s+)?(?:customer['’]?s?\s+)?(?:prior\s+|explicit\s+|affirmative\s+|written\s+)?(?:consent|authorization|permission)\b/i,
+      /\bwith\s+(?:the\s+)?(?:customer['’]?s?\s+)?(?:prior\s+|explicit\s+|affirmative\s+|written\s+)?(?:consent|authori[sz]ation|permission)\b/i,
     ],
     default_severity: "critical",
   }),
@@ -479,8 +479,8 @@ export const ADDENDA_RULES: Rule[] = [
     recommendation:
       "State the grant ('non-exclusive, non-transferable, revocable license to use the Software'); enumerate prohibited uses (reverse engineer, sublicense, competitive benchmarking).",
     present_patterns: [
-      /(non[- ]exclusive|non[- ]transferable|revocable)\s+license/i,
-      /(?:may\s+not|(?:shall|will)\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sublicense)/i,
+      /(non[- ]exclusive|non[- ]transferable|revocable)\s+licen[cs]e/i,
+      /(?:may\s+not|(?:shall|will)\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sublicen[cs]e)/i,
     ],
     default_severity: "warning",
   }),

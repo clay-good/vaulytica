@@ -34,7 +34,7 @@ export const rule: Rule = {
       // the dominant phrasings — the old `(?:the\s+full\s+)?` demanded "full"
       // after "the", and the reimburse branch had no slot for a "the" before
       // "Company", so both textbook TRAPs went undetected (audit).
-      /\b(?:repay(?:ment)?\s+(?:of\s+)?(?:the\s+(?:full\s+)?)?training\s+cost|reimburse\s+(?:the\s+)?(?:Company\s+|Employer\s+)?(?:for\s+)?(?:the\s+)?(?:cost\s+of\s+)?training|in\s+consideration\s+of\s+(?:the\s+)?(?:specialized\s+|specific\s+)?training\s+provided[^.]{0,200}repay|repay\b[^.;]{0,60}?\bsigning\s+bonus|claw[-\s]?back\s+(?:of\s+)?(?:the\s+)?(?:training|signing|sign[-\s]?on|relocation))/i,
+      /\b(?:repay(?:ment)?\s+(?:of\s+)?(?:the\s+(?:full\s+)?)?training\s+cost|reimburse\s+(?:the\s+)?(?:Company\s+|Employer\s+)?(?:for\s+)?(?:the\s+)?(?:cost\s+of\s+)?training|in\s+consideration\s+of\s+(?:the\s+)?(?:speciali[sz]ed\s+|specific\s+)?training\s+provided[^.]{0,200}repay|repay\b[^.;]{0,60}?\bsigning\s+bonus|claw[-\s]?back\s+(?:of\s+)?(?:the\s+)?(?:training|signing|sign[-\s]?on|relocation))/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;

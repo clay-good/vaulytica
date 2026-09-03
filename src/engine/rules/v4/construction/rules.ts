@@ -507,7 +507,7 @@ const BOND_RULES: Rule[] = [
     // neither has not stated its type, whatever its title says.
     present_patterns: [
       /(payment\s+bond|performance\s+bond|dual[-\s]obligee)/i,
-      /(aia\s+a312|miller\s+act|little\s+miller|dual[-\s]obligee|§+\s*\d+[-–.]\d+|\b\d+\s+U\.?\s?S\.?\s?C\.?\s*§*\s*\d|faithfully\s+perform|complete\s+the\s+contract|pay\s+all\s+(?:claimants|persons|bills)|furnished\s+labor)/i,
+      /(aia\s+a312|miller\s+act|little\s+miller|dual[-\s]obligee|§+\s*\d+[-–.]\d+|\b\d+\s+U\.?\s?S\.?\s?C\.?\s*§*\s*\d|faithfully\s+perform|complete\s+the\s+contract|pay\s+all\s+(?:claimants|persons|bills)|furnished\s+labou?r)/i,
     ],
     require_all_present: true,
   }),

@@ -83,7 +83,7 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
     name: "User-content license scope",
     cite: practice("ugc-license", "user-generated content licenses in online terms"),
     pat: [
-      /(you\s+grant\s+(us|the\s+company)|license\s+to\s+(use|reproduce|display))/i,
+      /(you\s+grant\s+(us|the\s+company)|licen[cs]e\s+to\s+(use|reproduce|display))/i,
       /(user[-\s]+content|your\s+content|submissions)/i,
     ],
     why: "Without a license, a platform has no right to display, cache, or transcode what users post. Overbroad grants — perpetual, sublicensable, for any purpose — are the recurring source of user backlash and state AG attention.",
@@ -119,8 +119,8 @@ const API_TERMS = pack("api-terms", C, [
     name: "License scope and permitted use",
     cite: practice("api-license", "license scoping in developer API terms"),
     pat: [
-      /(grants?\s+(you|developer)\s+a\s+.{0,60}license|license\s+to\s+(access|use)\s+the\s+api)/i,
-      /(permitted\s+use|solely\s+(to|for)|scope\s+of\s+(the\s+)?license)/i,
+      /(grants?\s+(you|developer)\s+a\s+.{0,60}licen[cs]e|licen[cs]e\s+to\s+(access|use)\s+the\s+api)/i,
+      /(permitted\s+use|solely\s+(to|for)|scope\s+of\s+(the\s+)?licen[cs]e)/i,
     ],
     why: "An API's terms are its only enforcement mechanism; the technical interface is not a contract. Without a defined license scope, a developer's competing use is a factual argument, not a breach.",
     fix: "Grant a limited, revocable, non-exclusive, non-transferable license, name the permitted uses, and prohibit reverse engineering, scraping, and building a competing service.",
@@ -218,7 +218,7 @@ const DATA_LICENSE = pack("data-license-agreement", C, [
     name: "Redistribution and sublicensing",
     cite: practice("data-redistribution", "redistribution controls in data licenses"),
     pat: [
-      /(redistribut|resell|sublicense)/i,
+      /(redistribut|resell|sublicen[cs]e)/i,
       /(may\s+not|(?:shall|will)\s+not|prohibited|only\s+with\s+(the\s+)?prior\s+written)/i,
     ],
     why: "A dataset's value collapses if a licensee can pass it on. Redistribution controls also carry the licensor's own upstream obligations to its sources.",
@@ -229,7 +229,7 @@ const DATA_LICENSE = pack("data-license-agreement", C, [
     name: "Source warranties and right to license",
     cite: practice("data-provenance", "provenance warranties in data licenses"),
     pat: [
-      /(right(s)?\s+to\s+(grant|license)|owns\s+or\s+has\s+the\s+right)/i,
+      /(right(s)?\s+to\s+(grant|licen[cs]e)|owns\s+or\s+has\s+the\s+right)/i,
       /(lawfully\s+(collected|obtained)|consent|provenance|source\s+of\s+the\s+data)/i,
     ],
     why: "A licensee inherits the licensor's collection defects — scraped content, unconsented personal data, third-party terms breached upstream. The rights warranty is the only backstop.",
@@ -252,7 +252,7 @@ const DATA_LICENSE = pack("data-license-agreement", C, [
     cite: practice("data-termination", "post-termination data rights"),
     pat: [
       /(upon\s+(termination|expiration)|after\s+termination)/i,
-      /(delete|destroy|return\s+the\s+data|perpetual\s+(license|right)|retain)/i,
+      /(delete|destroy|return\s+the\s+data|perpetual\s+(licen[cs]e|right)|retain)/i,
     ],
     why: "Data cannot be un-learned. Whether a licensee must delete, may keep derived outputs, or holds a perpetual right in what it already built has to be resolved before termination, not after.",
     fix: "State what must be deleted, what may be retained (backups, aggregated outputs, trained models), and certify deletion within a stated period.",
@@ -269,7 +269,7 @@ const LOYALTY = pack("loyalty-program-terms", C, [
       "expiration and forfeiture limits applied to loyalty points and stored value",
       "https://www.law.cornell.edu/wex/gift_card",
     ),
-    pat: [/(expir|forfeit)/i, /(points|rewards|miles|program\s+currency)/i],
+    pat: [/(expir|forfeit)/i, /(points|rewards|miles|programme?\s+currency)/i],
     all: true,
     why: "Several state gift-card and unclaimed-property statutes reach loyalty currency where it was purchased rather than earned. Undisclosed expiration is also the classic UDAP theory.",
     fix: "Disclose the expiration rule and the inactivity period that triggers it, state whether purchased points expire, and describe the notice given before forfeiture.",
@@ -279,7 +279,7 @@ const LOYALTY = pack("loyalty-program-terms", C, [
     name: "Unilateral devaluation and program termination",
     cite: practice("loyalty-devaluation", "unilateral modification of loyalty program value"),
     pat: [
-      /(modify|change|discontinue|terminate)\s+(the\s+)?program/i,
+      /(modify|change|discontinue|terminate)\s+(the\s+)?programme?/i,
       /(at\s+any\s+time|without\s+notice|in\s+our\s+(sole\s+)?discretion|with\s+notice)/i,
     ],
     why: "Devaluation is the most common consumer complaint in loyalty programs, and litigation turns on whether the terms reserved the right and gave notice. An unreserved devaluation is a breach.",
@@ -458,8 +458,8 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     name: "Affirmative consent to the recurring charge",
     cite: usc("15", "8403", "ROSCA — informed consent requirement"),
     pat: [
-      /(you\s+(authorize|consent|agree)\s+to\s+(the\s+)?(recurring|automatic)\s+charg|by\s+(checking|clicking))/i,
-      /(express(ly)?\s+(consent|authorize|agree)|affirmative\s+consent)/i,
+      /(you\s+(authori[sz]e|consent|agree)\s+to\s+(the\s+)?(recurring|automatic)\s+charg|by\s+(checking|clicking))/i,
+      /(express(ly)?\s+(consent|authori[sz]e|agree)|affirmative\s+consent)/i,
     ],
     why: "ROSCA requires the consumer's express informed consent to the negative option feature specifically — not general assent to a terms page containing it.",
     fix: "Capture a separate affirmative act consenting to the recurring charge, and retain the record of that consent.",
@@ -573,7 +573,7 @@ const OEM = pack("oem-agreement", C, [
     name: "End-user license pass-through",
     cite: practice("oem-eula", "end-user license flow-down in OEM agreements"),
     pat: [
-      /(end\s+user\s+license|eula|end\s+users?\s+((?:shall|will)|must)\s+(be\s+)?(bound|agree))/i,
+      /(end\s+user\s+licen[cs]e|eula|end\s+users?\s+((?:shall|will)|must)\s+(be\s+)?(bound|agree))/i,
       /(flow[- ]down|pass[- ]through|no\s+less\s+protective)/i,
     ],
     why: "The supplier has no contract with the OEM's customers. Its protections — use restrictions, disclaimers, export terms — reach them only if the OEM's EULA carries them.",

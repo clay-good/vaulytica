@@ -20,7 +20,7 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
     ),
     pat: [
       /(membership\s+interests?|units?)\s+(being\s+)?(sold|purchased|conveyed|transferred)/i,
-      /(capitalization|all\s+of\s+the\s+(issued\s+and\s+)?outstanding|percentage\s+interest)/i,
+      /(capitali[sz]ation|all\s+of\s+the\s+(issued\s+and\s+)?outstanding|percentage\s+interest)/i,
     ],
     why: "An LLC has no stock ledger a buyer can rely on. The capitalization representation — that the listed interests are all of them, fully paid, and free of options — is the buyer's only assurance it is buying the whole company.",
     fix: "Describe the interests conveyed and take a capitalization representation covering all outstanding interests, options, and rights to acquire them.",

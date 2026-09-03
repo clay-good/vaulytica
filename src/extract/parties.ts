@@ -308,7 +308,7 @@ const AMONG_SEP = /\s*,\s*(?:and\s+)?|\s+and\s+/i;
  * 114 chars of statutory citation between "entered into" and "between".
  */
 const INSTRUMENT =
-  "(?:agreement|contract|amendment|addendum|lease|deed|indenture|memorandum|mou|nda|msa|sow|dpa|baa|eula|guaranty|note|assignment|release|licence|license)";
+  "(?:agreement|contract|amendment|addendum|lease|deed|indenture|memorandum|mou|nda|msa|sow|dpa|baa|eula|guaranty|note|assignment|release|licence|licen[cs]e)";
 
 /**
  * The instrument's own title, where a cover block puts it in front of the

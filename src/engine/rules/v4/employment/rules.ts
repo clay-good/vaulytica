@@ -271,7 +271,7 @@ const OFFER_LETTER_RULES: Rule[] = [
     recommendation:
       "Add 'Conditions of Employment' including I-9, background check, and reference check completion.",
     present_patterns: [
-      /(i.9|work\s+authorization)/i,
+      /(i.9|work\s+authori[sz]ation)/i,
       /background\s+check/i,
       /references?\s+check/i,
     ],
@@ -467,7 +467,7 @@ const SEPARATION_RULES: Rule[] = [
     // decisional-unit disclosure of one accused every ordinary release of
     // omitting a disclosure the statute does not ask it for.
     applicable_if: [
-      /group\s+termination|reduction\s+in\s+force|exit\s+incentive|employment\s+termination\s+program|decisional\s+unit|\blayoff\b|\bRIF\b/i,
+      /group\s+termination|reduction\s+in\s+force|exit\s+incentive|employment\s+termination\s+programme?|decisional\s+unit|\blayoff\b|\bRIF\b/i,
     ],
     present_patterns: [
       /decisional\s+unit/i,
@@ -606,7 +606,7 @@ const SEPARATION_RULES: Rule[] = [
     present_patterns: [/section\s+1542/i, /(unknown\s+claims|do\s+not\s+know\s+or\s+suspect)/is],
     // § 1542 is a California statute; a separation under another state's law is
     // not missing it. Gate on a California connection, matching SET-003.
-    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labor|code)/i, /,\s*CA\s+\d{5}/],
+    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labou?r|code)/i, /,\s*CA\s+\d{5}/],
     default_severity: "warning",
   }),
 ];
@@ -962,12 +962,12 @@ const PIIA_RULES: Rule[] = [
       "If California law applies, add the § 2870 carve-out language verbatim or by reference.",
     present_patterns: [
       /section\s+2870/i,
-      /labor\s+code.{0,40}2870/is,
+      /labou?r\s+code.{0,40}2870/is,
       /own\s+time.{0,40}without.{0,40}employer.{0,40}(equipment|facilities)/is,
     ],
     // Cal. Lab. § 2870 governs California PIIAs; a PIIA under another state's
     // law is not missing its carve-out. Gate on a California connection.
-    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labor|code)/i, /,\s*CA\s+\d{5}/],
+    applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labou?r|code)/i, /,\s*CA\s+\d{5}/],
   }),
   presence({
     id: "EMP-036",
@@ -1241,7 +1241,7 @@ const HANDBOOK_RULES: Rule[] = [
     recommendation:
       "Add 'Wage and Hour' covering classification, overtime, meal / rest periods, and timekeeping.",
     present_patterns: [
-      /(flsa|fair\s+labor\s+standards\s+act)/i,
+      /(flsa|fair\s+labou?r\s+standards\s+act)/i,
       /(exempt|non.exempt)/i,
       /overtime/i,
       /meal\s+(period|break)/i,
@@ -1320,7 +1320,7 @@ const HANDBOOK_RULES: Rule[] = [
       "Acknowledgment evidences that the employee received and reviewed the handbook — essential for *Faragher / Ellerth* and disciplinary defense.",
     recommendation: "Add an 'Acknowledgment of Receipt' page with employee signature and date.",
     present_patterns: [
-      /acknowledgment\s+of\s+receipt/i,
+      /acknowledge?ment\s+of\s+receipt/i,
       /(employee|i).{0,40}acknowledg\w*.{0,40}received.{0,40}handbook/is,
       // The acknowledgment stated as a RECEIPT, which is what the signature
       // block above the line actually says: "ACKNOWLEDGMENT — I have received

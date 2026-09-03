@@ -488,7 +488,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       /(prior\s+(specific\s+or\s+general\s+)?written\s+authori[sz]ation|(specific\s+or\s+)?general\s+written\s+authori[sz]ation|authori[sz]ation\s+of\s+(the\s+)?controller).*?(processor|subprocessor)/is,
     ],
     denied_if: expressDenial(
-      String.raw`prior\s+written\s+authorisation|prior\s+written\s+authorization|prior\s+(?:written\s+)?consent`,
+      String.raw`prior\s+written\s+authorisation|prior\s+written\s+authori[sz]ation|prior\s+(?:written\s+)?consent`,
     ),
     denied_title: "Subprocessor prior-authorisation requirement expressly disclaimed",
     denied_description:
@@ -527,8 +527,8 @@ export const DPA_GDPR_RULES: Rule[] = [
       /(opportunity\s+to\s+object|right\s+to\s+object|may\s+(reasonably\s+)?object).*?(sub[- ]?processor|processor)/is,
       /(sub[- ]?processor|processor).*?(opportunity\s+to\s+object|right\s+to\s+object|may\s+(reasonably\s+)?object)/is,
       /\bprior\s+specific\s+(?:written\s+)?authoris?z?ation\b/i,
-      /\bspecific\s+(?:prior\s+)?(?:written\s+)?(?:authoris|authoriz)ation\b[^.]{0,80}?\bsub[- ]?processor\b/is,
-      /\bsub[- ]?processor\b[^.]{0,120}?\bspecific\s+(?:prior\s+)?(?:written\s+)?(?:authoris|authoriz)ation\b/is,
+      /\bspecific\s+(?:prior\s+)?(?:written\s+)?(?:authoris|authori[sz])ation\b[^.]{0,80}?\bsub[- ]?processor\b/is,
+      /\bsub[- ]?processor\b[^.]{0,120}?\bspecific\s+(?:prior\s+)?(?:written\s+)?(?:authoris|authori[sz])ation\b/is,
     ],
   }),
   presence({

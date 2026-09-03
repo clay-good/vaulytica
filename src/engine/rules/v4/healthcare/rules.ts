@@ -258,7 +258,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     recommendation:
       "Add a line identifying the discloser by name or class (e.g., 'Dr. Jane Smith', 'all treating providers at Acme Hospital').",
     present_patterns: [
-      /(authoriz(e|ed)|permission).{0,40}(use|disclos)/is,
+      /(authori[sz](e|ed)|permission).{0,40}(use|disclos)/is,
       /(provider|physician|hospital|covered\s+entity|name)/i,
     ],
   }),
@@ -339,14 +339,14 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     ],
     denied_if: [
       ...expressDenial(
-        String.raw`revoke\s+(?:this\s+)?authorization|revocation\s+of\s+(?:this\s+)?authorization|right\s+to\s+revoke`,
+        String.raw`revoke\s+(?:this\s+)?authori[sz]ation|revocation\s+of\s+(?:this\s+)?authori[sz]ation|right\s+to\s+revoke`,
       ),
       // "This authorization cannot be revoked" / "is irrevocable" — the
       // passive and adjectival forms reverse the topic's word order, so the
       // shared frames cannot reach them.
-      /\bauthorization\b[^.]{0,40}?\b(?:may|can|shall|will|is|are)\s+not\s+be\s+revoked/i,
-      /\bauthorization\b[^.]{0,40}?\bcan\s?not\s+be\s+revoked/i,
-      /\bauthorization\s+(?:is|(?:shall|will)\s+be)\s+irrevocable/i,
+      /\bauthori[sz]ation\b[^.]{0,40}?\b(?:may|can|shall|will|is|are)\s+not\s+be\s+revoked/i,
+      /\bauthori[sz]ation\b[^.]{0,40}?\bcan\s?not\s+be\s+revoked/i,
+      /\bauthori[sz]ation\s+(?:is|(?:shall|will)\s+be)\s+irrevocable/i,
     ],
     denied_title: "Right to revoke the authorization expressly denied",
     denied_description:
@@ -367,7 +367,7 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
     recommendation:
       "Add 'No Conditioning' stating that treatment, payment, enrollment, or eligibility for benefits is not conditioned on signing the authorization (or recite the limited exception).",
     present_patterns: [
-      /(treatment|payment|enrollment|eligibility|benefits)/i,
+      /(treatment|payment|enrol?lment|eligibility|benefits)/i,
       /(not\s+conditioned|cannot\s+(refuse|condition)|will\s+not\s+(affect|condition))/i,
     ],
   }),

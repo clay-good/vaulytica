@@ -196,7 +196,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     bad_patterns: [
       /confess(?:es|ed|ing|ion)?\s+(?:of\s+)?judgment/i,
       /\bcognovit\b/i,
-      /authorizes?\s+any\s+attorney[^.]{0,80}(?:appear|confess|judgment)/i,
+      /authori[sz]es?\s+any\s+attorney[^.]{0,80}(?:appear|confess|judgment)/i,
       /warrant\s+of\s+attorney[^.]{0,60}(?:confess|judgment)/i,
       // v1.0.0 matched only the "confess(ion of) judgment" order; the reversed
       // "(entry of) judgment by confession" is an equally common cognovit form.
@@ -212,7 +212,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       // clause was reported as containing one.
       /\b(?:not|no)\b[^.]{0,60}(?:\bcognovit\b|warrant\s+of\s+attorney)/i,
       /(?:\bcognovit\b|warrant\s+of\s+attorney)[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
-      /(?:shall|does|do|will|may|can)\s*not\s+(?:include|contain|constitute|authorize)\b[^.]{0,100}(?:confession\s+of\s+judgment|\bcognovit\b|warrant\s+of\s+attorney|judgment\s+by\s+confession)/i,
+      /(?:shall|does|do|will|may|can)\s*not\s+(?:include|contain|constitute|authori[sz]e)\b[^.]{0,100}(?:confession\s+of\s+judgment|\bcognovit\b|warrant\s+of\s+attorney|judgment\s+by\s+confession)/i,
     ],
     bad_title: "Confession-of-judgment (cognovit) clause present",
     bad_description:
@@ -510,7 +510,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "Add 'Authorization to File' authorizing secured party (and counsel) to file UCC-1 financing statements (and amendments) describing the Collateral.",
     present_patterns: [
-      /(authoriz(es?|ed|ation)).{0,40}(file|filing)/is,
+      /(authori[sz](es?|ed|ation)).{0,40}(file|filing)/is,
       /(financing\s+statements?|ucc.?1)/i,
     ],
   }),
@@ -1167,10 +1167,10 @@ const UCC1_RULES: Rule[] = [
     // name", so a correctly prepared form was told it states none.
     version: "1.1.0",
     present_patterns: [
-      /(exact\s+legal\s+name|registered\s+(name|organization))/i,
+      /(exact\s+legal\s+name|registered\s+(name|organi[sz]ation))/i,
       /(secretary\s+of\s+state|public\s+organic\s+record)/i,
       /do\s+not\s+omit,?\s+modify,?\s+or\s+abbreviate/i,
-      /organization['’]?s?\s+name\s*:/i,
+      /organi[sz]ation['’]?s?\s+name\s*:/i,
     ],
   }),
   presence({
@@ -1265,7 +1265,7 @@ const UCC1_RULES: Rule[] = [
     recommendation:
       "Reference the debtor's signed security agreement / authorization for the filing (e.g., 'authorized by Security Agreement of [date]').",
     present_patterns: [
-      /(authoriz(e|ed|ation)|debtor.{0,20}(authorizes?|authenticated))/i,
+      /(authori[sz](e|ed|ation)|debtor.{0,20}(authori[sz]es?|authenticated))/i,
       /(security\s+agreement|9.?509)/i,
     ],
   }),

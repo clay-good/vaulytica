@@ -559,7 +559,7 @@ export function expressDenial(topic: string): RegExp[] {
   // negation. The infinitive is what distinguishes them from a real denial
   // with a direct object ("does not require OFAC screening"), which still
   // reads as one.
-  const notCausative = String.raw`(?!(?:permit|permits|permitting|allow|allows|allowing|authoriz\w+|caus\w+|enabl\w+|requir\w+|oblig\w+|compel\w*)\s+(?:\w+[\s,'’-]+){1,6}?to\s+)`;
+  const notCausative = String.raw`(?!(?:permit|permits|permitting|allow|allows|allowing|authori[sz]\w+|caus\w+|enabl\w+|requir\w+|oblig\w+|compel\w*)\s+(?:\w+[\s,'’-]+){1,6}?to\s+)`;
   return [
     // "does not perform OFAC screening" / "is not required to conduct AML training"
     new RegExp(

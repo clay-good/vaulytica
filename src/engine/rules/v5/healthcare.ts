@@ -106,7 +106,7 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
     ),
     pat: [
       /terminat/i,
-      /(licens(e|ure)|dea|exclusion|medicare|for\s+cause|cure\s+period|without\s+cause\s+upon)/i,
+      /(licen[cs](e|ure)|dea|exclusion|medicare|for\s+cause|cure\s+period|without\s+cause\s+upon)/i,
     ],
     why: "Exclusion from federal health care programs, license action, or DEA loss make continued employment unlawful, so immediate-termination triggers are necessary — but they must be distinguished from ordinary cause with a cure period.",
     fix: "Separate immediate triggers (exclusion, license revocation, DEA loss, loss of insurability) from curable cause, and state the without-cause notice period for each party.",
@@ -416,7 +416,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     name: "Utilization review and appeal rights",
     cite: cfr("29", "2560.503-1", "ERISA — claims procedure regulation"),
     pat: [
-      /(utilization\s+(review|management)|prior\s+authorization|medical\s+necessity)/i,
+      /(utili[sz]ation\s+(review|management)|prior\s+authori[sz]ation|medical\s+necessity)/i,
       /(appeal|reconsideration|peer-?to-?peer|external\s+review|adverse\s+(benefit\s+)?determination)/i,
     ],
     why: "The ERISA claims regulation sets deadlines and content for adverse determinations and appeals. The provider's own appeal rights, distinct from the member's, must come from the contract.",
@@ -470,7 +470,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
     cite: practice("telehealth-withdrawal", "the right to withdraw consent to telehealth"),
     pat: [
       /(withdraw|revoke|discontinue)/i,
-      /(at\s+any\s+time|without\s+(affecting|jeopardizing)|in-?person\s+(care|visit|appointment)|right\s+to\s+refuse)/i,
+      /(at\s+any\s+time|without\s+(affecting|jeopardi[sz]ing)|in-?person\s+(care|visit|appointment)|right\s+to\s+refuse)/i,
     ],
     why: "Consent that cannot be withdrawn without losing care is not voluntary. Several state statutes require the disclosure explicitly.",
     fix: "State that consent may be withdrawn at any time without affecting the patient's right to future care, and that in-person care remains available.",
@@ -523,7 +523,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
       "https://www.cchpca.org/",
     ),
     pat: [
-      /(licens(e|ed|ure))/i,
+      /(licen[cs](e|ed|ure))/i,
       // A patient-facing consent addresses the patient as YOU and names the
       // state with the indefinite article: "your provider may treat you by
       // telehealth only when you are physically located in A state where the
@@ -531,7 +531,7 @@ const TELEHEALTH = pack("telehealth-consent", C, [
       // located". The pillar required "in THE state where THE PATIENT" and
       // read none of it, so a consent whose Section 5 is the recital was
       // reported at `critical` as having none.
-      /(in\s+(?:a|the)\s+state\s+(?:where|in\s+which)|(?:patient|you|your)['’]?s?[-\s]+(?:physical\s+)?location|where\s+(?:the\s+patient|you)\s+(?:is|are)\s+(?:physically\s+)?located|(?:physically\s+)?located\s+(?:in|at)\s+(?:a|the|any)\s+state|state\s+of\s+\w+|interstate\s+(medical\s+)?licens)/i,
+      /(in\s+(?:a|the)\s+state\s+(?:where|in\s+which)|(?:patient|you|your)['’]?s?[-\s]+(?:physical\s+)?location|where\s+(?:the\s+patient|you)\s+(?:is|are)\s+(?:physically\s+)?located|(?:physically\s+)?located\s+(?:in|at)\s+(?:a|the|any)\s+state|state\s+of\s+\w+|interstate\s+(medical\s+)?licen[cs])/i,
     ],
     all: true,
     why: "The practice of medicine occurs where the patient is, so the provider must be licensed in that state (or covered by a compact or an exception). A patient who travels can put an otherwise routine encounter outside the provider's licensure.",

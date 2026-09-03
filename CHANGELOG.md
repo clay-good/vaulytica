@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.382.0] — 2026-09-02
+
+### Fixed
+- **A hundred and seventy-two recognizers could only read an American
+  spelling.** A licence agreement drafted in London grants a *licence*, an
+  Australian loan is repaid in *instalments*, a Canadian compliance manual
+  names a *programme*, an indemnity outside the United States covers the cost
+  of the *defence*, and everywhere but here a party is *authorised* rather than
+  authorized. Each is the same clause the catalog already knows; only the
+  spelling moved.
+
+  The corpus relation reached 215 of 310 specimens and found two. FIN-005 read
+  a US Small Business Administration loan repayable in "one hundred twenty
+  (120) monthly instalments" as stating no payment term at all — its
+  amortisation-schedule branch is one of the `new RegExp([...].join("|"))`
+  strings, which is why a scan of regex *literals* alone would have walked past
+  it. EMP-150 lost the FCRA written-authorisation column on a background-check
+  disclosure, through a TRUNCATED stem (`/authoriz/i`) that the first,
+  endings-only sweep also missed.
+
+  The static sweep found the other 170, across 54 files: `-ize`/`-ise`,
+  licence, labour, defence, offence, favour, honour, centre, instalment,
+  enrolment, acknowledgement and programme. Every widening is a tolerance —
+  each pattern still matches everything it matched before — so **no rule
+  version is stamped and not one of 341 goldens moved** except for the version
+  string itself. Same discipline as `apostrophe-tolerance` and `shall-will`.
+
+  Deliberately excluded, and recorded rather than swept: **judgment** (English
+  courts spell a court's decision that way too), **practise / license as a
+  verb** (British English splits the noun from the verb, and "licensed",
+  "licensee" and "licensing" are spelled the same on both sides), and
+  **cheque** (a background check, a conflicts check and a check-in are what the
+  catalog actually reads).
+
+### Added
+- **`tests/integration/commonwealth-spelling.test.ts`** — both halves, as in
+  `section-sign` and `shall-will`: a static ratchet that no recognizer may read
+  only the American spelling, and the corpus relation that proves the widening
+  changed no finding. Confirmed to fail with either defect put back. The static
+  half now reads recognizers assembled from **strings**, not only regex
+  literals — the one defect the corpus showed lived in a string.
+
+  The scan's own first draft carried the `\b§` defect of the previous session
+  in a new costume: a lookbehind for a letter, written to keep "capsize" and
+  "citizen" out, sees the **"b" of `\b`** and so skips every anchored
+  recognizer in the catalog. The escapes are masked out before the table is
+  applied.
+
 ## [9.381.0] — 2026-09-02
 
 ### Fixed

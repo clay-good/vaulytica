@@ -87,7 +87,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       // cookies" — the same denial, and it was counting as a consent
       // mechanism, so the rule stayed silent on it.
       /(?<!\bwithout\s)(?<!\bwithout\s(?:your|our|the)\s)(?<!\bno\s)(?<!\bno\s(?:prior\s|further\s)?)consent(?!\s+(?:is|are|was|were|shall|will|may)\s+not\s+(?:be\s+)?(?:required|obtained|sought|necessary|needed))/i,
-      /(banner|preference\s+center|cookie\s+preference)/i,
+      /(banner|preference\s+cent(?:er|re)|cookie\s+preference)/i,
       /(accept|reject|manage)\s+(?:all\s+)?cookies/i,
     ],
   }),
@@ -128,7 +128,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       "Add 'How to Withdraw Consent' with link / button to the cookie-preference center; explain that withdrawal does not affect prior lawful processing.",
     present_patterns: [
       /(withdraw|change|update|revoke).{0,40}consent/i,
-      /(cookie\s+(preferences?|settings)|preference\s+center)/i,
+      /(cookie\s+(preferences?|settings)|preference\s+cent(?:er|re))/i,
     ],
     denied_if: [
       ...expressDenial(

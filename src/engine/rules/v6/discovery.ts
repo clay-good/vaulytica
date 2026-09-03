@@ -675,7 +675,7 @@ const DEPO = pack("deposition-notice", C, [
     all: true,
     why: "Rule 30(b)(6) requires topics described with reasonable particularity and, since 2020, a good-faith conferral about them. Overbroad topics are the leading cause of 30(b)(6) motion practice.",
     fix: "List the matters for examination with reasonable particularity, and recite the conferral the 2020 amendment requires.",
-    when: [/30\(b\)\(6\)|organization|corporate\s+representative|designate\s+one\s+or\s+more/i],
+    when: [/30\(b\)\(6\)|organi[sz]ation|corporate\s+representative|designate\s+one\s+or\s+more/i],
     sev: "critical",
   },
   {

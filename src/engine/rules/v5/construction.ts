@@ -35,7 +35,7 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
       "https://dbia.org/contract-documents/",
     ),
     pat: [
-      /(owner['’]?s?\s+program|owner['’]?s?\s+criteria|basis\s+of\s+design)/i,
+      /(owner['’]?s?\s+programme?|owner['’]?s?\s+criteria|basis\s+of\s+design)/i,
       /(attached|exhibit|incorporated|performance\s+(criteria|specification))/i,
     ],
     why: "Everything the owner did not put in the program is a change order. The line between prescriptive criteria (which the owner warrants under Spearin) and performance criteria (which the design-builder owns) is the contract's central risk allocation.",
@@ -138,7 +138,7 @@ const ARCHITECT = pack("architect-agreement", C, [
     ),
     pat: [
       /instruments\s+of\s+service/i,
-      /(license|copyright|terminat|nonexclusive\s+license|(?:shall|will)\s+not\s+use)/i,
+      /(licen[cs]e|copyright|terminat|nonexclusive\s+licen[cs]e|(?:shall|will)\s+not\s+use)/i,
     ],
     why: "Under the AIA form the architect retains copyright and the owner gets a license conditioned on payment, which terminates if the architect's services are terminated for the owner's breach. An owner that plans to use the drawings elsewhere needs a different bargain.",
     fix: "State who owns the instruments of service, the scope of the owner's license, whether it survives termination, and the indemnity for use without the architect involved.",
@@ -236,7 +236,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
       "https://www.law.cornell.edu/wex/mechanic_s_lien",
     ),
     pat: [
-      /(labor|services|materials|equipment)\s+(furnished|provided|supplied)/i,
+      /(labou?r|services|materials|equipment)\s+(furnished|provided|supplied)/i,
       /(estimated\s+(total\s+)?(price|value|amount)|general\s+description|\$)/i,
     ],
     why: "The estimated price puts the owner on notice of the exposure and, in some states, caps the eventual lien. A notice omitting it is defective on its face.",

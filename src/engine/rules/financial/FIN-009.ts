@@ -108,7 +108,7 @@ export const rule: Rule = {
       // stated period — a note asking the drafter to fix the one thing the
       // statute fixed for them.
       const flatFee =
-        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))(?:[^.]|\.(?=\d)){0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+installment|installment|balance|amount\s+due|rental\s+payment)\b/i.test(
+        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))(?:[^.]|\.(?=\d)){0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+instal?lment|instal?lment|balance|amount\s+due|rental\s+payment)\b/i.test(
           hit.text,
         );
 

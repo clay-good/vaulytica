@@ -495,7 +495,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     bad_patterns: [
       /feedback.{0,80}(?:perpetual|irrevocable|royalty[- ]free|worldwide).{0,80}(?:any\s+purpose|without\s+(?:any\s+)?restriction)/is,
       /(?:assign|transfer|grant).{0,40}all\s+right.{0,40}feedback/is,
-      /(?:use|exploit|utiliz\w*)[^.]{0,40}feedback[^.]{0,20}for\s+any\s+purpose/is,
+      /(?:use|exploit|utili[sz]\w*)[^.]{0,40}feedback[^.]{0,20}for\s+any\s+purpose/is,
     ],
     // The finding claims the grant carries no scope limits, but the second
     // pattern only proves that rights in Feedback were granted. A grant reading

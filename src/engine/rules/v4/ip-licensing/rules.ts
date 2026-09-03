@@ -163,7 +163,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
       "Add 'Power of Attorney' authorizing assignee (and its counsel) to execute and file documents necessary to record, maintain, prosecute, or enforce the assigned IP.",
     present_patterns: [
       /power\s+of\s+attorney/i,
-      /(authoriz(e|es|ed)|appoint(s|ed)?).{0,40}(assignee|attorney.in.fact)/i,
+      /(authori[sz](e|es|ed)|appoint(s|ed)?).{0,40}(assignee|attorney.in.fact)/i,
     ],
     // Third instance of the INS-012 / CON-030 trap: the appoint/authorize
     // pattern also matches inside a sentence that REFUSES the appointment, and
@@ -172,7 +172,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     // to record or prosecute the IP it just bought — scored clean, while one
     // merely silent on the point fired.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+(?:appoint|authoriz\w+|grant)\b[^.]{0,60}?\b(?:assignee|attorney.in.fact|power\s+of\s+attorney)/i,
+      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+(?:appoint|authori[sz]\w+|grant)\b[^.]{0,60}?\b(?:assignee|attorney.in.fact|power\s+of\s+attorney)/i,
       /\bno\s+power\s+of\s+attorney\s+(?:is|shall\s+be|will\s+be)\s+(?:granted|conferred|created|implied)/i,
       /\bpower\s+of\s+attorney\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be)\s+not\s+(?:granted|conferred|created)/i,
       /\bnothing\b[^.]{0,60}?\b(?:constitutes?|creates?|confers?)\b[^.]{0,20}?\bpower\s+of\s+attorney/i,
@@ -248,7 +248,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
     present_patterns: [
       /(exclusive|non.?exclusive|sole)/i,
       /(field\s+of\s+use|territor)/i,
-      /sub.?licens/i,
+      /sub.?licen[cs]/i,
     ],
   }),
   language({
@@ -285,7 +285,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
       // Brulotte violation) — the carve-out requires an explicit allocation.
       /\b(?:step[-\s]?down|steps?\s+down|reduced\s+(?:rate|royalt)|lower(?:ed)?\s+(?:rate|royalt)|declin(?:e|es|ing)\s+(?:rate|royalt))\w*/i,
       /\b(?:allocat|apportion|attributabl)\w*\b[^.]{0,40}\b(?:know[-\s]?how|trade[-\s]?secrets?|non[-\s]?patent)\b/i,
-      /\bamortiz\w*/i,
+      /\bamorti[sz]\w*/i,
     ],
     bad_title: "Royalty obligation potentially extends beyond patent expiration",
     bad_description:
@@ -367,7 +367,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
     // "license back" / "licensed back" is a recognized synonym for grant-back.
     present_patterns: [
       /(improvements?|enhancements?|derivative\s+works?)/i,
-      /grant.?back|licens\w+\s+back/i,
+      /grant.?back|licen[cs]\w+\s+back/i,
     ],
     // Express-denial guard: "No grant-back license is granted" contains the
     // grant-back phrasing the rule looks for. A licence that expressly refuses
@@ -375,7 +375,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
     // technology, which is the allocation this rule surfaces.
     denied_if: [
       /\bno\s+grant.?back\b/i,
-      /\b(?:shall|will|does|do)\s+not\s+(?:grant|licens\w+)\s+back\b/i,
+      /\b(?:shall|will|does|do)\s+not\s+(?:grant|licen[cs]\w+)\s+back\b/i,
       /\b(?:shall|will|does|do)\s+not\s+grant\b[^.]{0,60}?\bimprovements?/i,
       /\bgrant.?back\s+licen[cs]e\b[^.]{0,40}?\b(?:is|are)\s+not\s+(?:granted|required|conveyed)/i,
     ],
@@ -470,7 +470,7 @@ const TM_LICENSE_RULES: Rule[] = [
     present_patterns: [
       /(proper\s+use|use\s+guidelines)/i,
       /(®|™|\(R\)|\(TM\)|registered\s+trademark)/i,
-      /\badjective\b|\bgeneric\b|capitaliz\w*[^.]{0,40}\b(?:marks?|trademarks?)\b|\b(?:marks?|trademarks?)\b[^.]{0,40}capitaliz/i,
+      /\badjective\b|\bgeneric\b|capitali[sz]\w*[^.]{0,40}\b(?:marks?|trademarks?)\b|\b(?:marks?|trademarks?)\b[^.]{0,40}capitali[sz]/i,
     ],
     default_severity: "warning",
   }),
@@ -695,7 +695,7 @@ const CLA_RULES: Rule[] = [
     recommendation:
       "Add 'Copyright License Grant' (ASF ICLA § 2) — perpetual, worldwide, non-exclusive, royalty-free copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, and distribute.",
     present_patterns: [
-      /(copyright\s+license|grant.{0,40}copyright)/i,
+      /(copyright\s+licen[cs]e|grant.{0,40}copyright)/i,
       /(perpetual|worldwide|royalty.?free|irrevocable)/i,
     ],
     // Express-denial guard: "Contributor grants NO copyright license" contains
@@ -728,7 +728,7 @@ const CLA_RULES: Rule[] = [
     recommendation:
       "Add 'Patent License Grant' (ASF ICLA § 3) — perpetual, worldwide, non-exclusive, royalty-free patent license; include defensive termination terminating the patent grant upon patent-litigation initiation.",
     present_patterns: [
-      /patent\s+(license|grant)/i,
+      /patent\s+(licen[cs]e|grant)/i,
       /(defensive\s+termination|patent\s+litigation|countersuit)/i,
     ],
     // Same trap as IPL-026: "No patent license is granted" contains the phrase
@@ -832,7 +832,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
       "Compliance obligations differ per license family. Without per-component license identification, downstream notices and source-availability obligations cannot be determined.",
     recommendation:
       "Add a 'Licenses' column / sub-section using SPDX identifiers (e.g., MIT, Apache-2.0, GPL-3.0-only, AGPL-3.0-only, BSD-3-Clause).",
-    present_patterns: [/(mit|apache.?2|bsd|gpl|agpl|lgpl|mpl|isc|cc.?by)/i, /(license|spdx)/i],
+    present_patterns: [/(mit|apache.?2|bsd|gpl|agpl|lgpl|mpl|isc|cc.?by)/i, /(licen[cs]e|spdx)/i],
     require_all_present: true,
   }),
   presence({
@@ -888,8 +888,8 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
     recommendation:
       "Add 'Forbidden Licenses' listing licenses that may not be used (e.g., SSPL for hosted offering, Commons Clause, ELv2) and the approval path for exceptions.",
     present_patterns: [
-      /(forbidden|prohibited|approved|discouraged).{0,40}(license|licenses)/is,
-      /(sspl|busl|commons\s+clause|elastic\s+license|polyform)/i,
+      /(forbidden|prohibited|approved|discouraged).{0,40}(licen[cs]e|licen[cs]es)/is,
+      /(sspl|busl|commons\s+clause|elastic\s+licen[cs]e|polyform)/i,
     ],
     default_severity: "warning",
   }),
