@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.409.0] — 2026-09-03
+
+### Added
+- **`npm run verify` — the local gate IS the CI gate.** It chains exactly what
+  `.github/workflows/ci.yml` runs, in the same order, and
+  `verify-mirrors-ci.test.ts` pins the two together so they cannot drift — the
+  same discipline as `cli-surface-drift` and `readme-rule-count-drift`.
+
+  It exists because the gate drifted from CI **three times in one session**, and
+  each time took `main` red on a public repository: `format:check` is a CI step
+  and is not part of `lint`; `lint` prints its errors ABOVE the summary line, so
+  reading only the last line of its output showed a blank and hid four; and CI
+  runs the suite under `coverage`, not `test`. Every one of those is the same
+  mistake — approximating the gate instead of running it.
+
 ## [9.408.0] — 2026-09-03
 
 ### Added

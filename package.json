@@ -1,6 +1,6 @@
 {
   "name": "vaulytica",
-  "version": "9.408.0",
+  "version": "9.409.0",
   "private": true,
   "description": "The free, deterministic, runs-entirely-in-your-browser contract checker. A linter for legal documents.",
   "license": "MIT",
@@ -43,6 +43,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "verify": "npm run typecheck && npm run lint && npm run format:check && npm run coverage && npm run build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
