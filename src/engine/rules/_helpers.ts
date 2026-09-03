@@ -840,6 +840,19 @@ const SIGNED_RIDER_INTO_PARENT = new RegExp(
  *
  * The whole group is optional, so the adjacent form still matches.
  */
+/**
+ * PAGE FURNITURE is not a heading.
+ *
+ * A contract read out of a PDF carries a running footer and a page number
+ * between the heading and the clause beneath it — "Page 3 of 9", "13 of 40",
+ * "Confidential — Page 3". Each is a short unbroken line, so each was read as
+ * the heading a clause sits under, and the real heading was forgotten. Two sets
+ * of terms lost the indemnity carve-out from their liability cap that way, and
+ * one of them then drew RISK-015 for an uncapped indemnity it does cap.
+ */
+export const PAGE_FURNITURE =
+  /^(?:[-–—\s|]*)?(?:page\s*)?\d{1,3}\s*(?:of|\/)\s*\d{1,3}[-–—\s|.]*$|^\s*page\s+\d{1,3}\s*$/i;
+
 export const MODAL_QUALIFIER = String.raw`(?:,\s*[^.;]{0,60}?,|(?:\s+(?!not\b|never\b|no\b|nor\b)[a-z][\w'’-]*){1,3})?\s+`;
 
 export function isIncorporatedExhibit(ctx: RuleContext): boolean {

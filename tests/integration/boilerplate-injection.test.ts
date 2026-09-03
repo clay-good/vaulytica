@@ -168,6 +168,49 @@ const RECITALS = [
 const TAKES_RECITALS = /\b(agreement|contract|lease|addendum|amendment|sublease|note|guaranty)\b/i;
 
 describe("the boilerplate a real contract carries", () => {
+  it("page furniture moves no finding", async () => {
+    // What a PDF text layer interleaves: a running footer and a page number,
+    // every page, between whatever happened to be above and below the break.
+    // The corpus is plain text and carries none, and the engine turned out to
+    // be robust to it almost everywhere — four specimens of 310 moved, and all
+    // four for the same reason: a short line between a clause and its
+    // neighbour was read as that clause's HEADING, or joined to it in place of
+    // the line that really follows. RISK-004 lost the indemnity carve-out from
+    // two sets of terms, one of which then drew RISK-015 for an uncapped
+    // indemnity it does cap; STRUCT-013 called two ordinary signature grids
+    // unfilled template placeholders, at `critical`.
+    const paginate = (text: string): string => {
+      const lines = text.split("\n");
+      const out: string[] = [];
+      let page = 1;
+      for (let i = 0; i < lines.length; i++) {
+        out.push(lines[i]!);
+        if (i > 0 && i % 18 === 0) out.push("", `Page ${page++} of 9`, "");
+      }
+      return out.join("\n");
+    };
+    const deps = await loadAccuracyDeps({});
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = paginate(text);
+      if (mutated === text) continue;
+      probed++;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(before).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(before).includes(id));
+      if (lost.length || gained.length) {
+        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      }
+    }
+    expect(probed, "the corpus is too short to paginate").toBeGreaterThanOrEqual(250);
+    expect(broken).toEqual([]);
+  }, 300_000);
+
   it("a recital block moves no finding on any agreement", async () => {
     const deps = await loadAccuracyDeps({});
     const broken: string[] = [];

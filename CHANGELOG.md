@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.393.0] — 2026-09-03
+
+### Fixed
+- **Page furniture is not a heading.** A contract read out of a PDF carries a
+  running footer and a page number between whatever happened to be above and
+  below the break — and a short unbroken line is exactly how RISK-004 decides
+  what heading a clause sits under, in a plain-text document that styles none.
+  So "Page 3 of 9" became the heading, the real one was forgotten, and **two
+  sets of terms lost the indemnity carve-out from their liability cap; one of
+  them then drew RISK-015 for an uncapped indemnity it does cap.**
+
+  STRUCT-013 lost the same way from the other side: it reads a signature line
+  together with the paragraph that FOLLOWS it, and joining the footer instead
+  of the printed name made two ordinary "Name: ____ / Title: ____" grids into
+  unfilled template placeholders, at `critical`.
+
+  `PAGE_FURNITURE` in `rules/_helpers.ts` is the one answer, and both rules
+  SKIP it rather than merely refusing to read it as a heading — clearing the
+  heading a clause sits under is the same loss by another route.
+
+### Added
+- **The page-furniture relation** in `boilerplate-injection.test.ts`: a running
+  footer every eighteen lines, over all 310 specimens. Four moved before the
+  fix and none after. The engine turned out to be robust to interleaved page
+  furniture almost everywhere, which is worth knowing too — the four that were
+  not all failed for the same reason, and it is the reason that got fixed.
+
 ## [9.392.0] — 2026-09-02
 
 ### Fixed

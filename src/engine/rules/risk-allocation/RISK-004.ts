@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { PAGE_FURNITURE } from "../_helpers.js";
 import { emit } from "../_helpers.js";
 
 // `[^.;\n]` after the exception so the indemnity carve-out must be in the
@@ -30,6 +31,11 @@ export function capExceptsIndemnity(ctx: RuleContext): {
   const hits: Array<{ text: string; position: ReturnType<typeof positionOf> }> = [];
   let heading = "";
   forEachParagraph(ctx.tree, (p) => {
+    // Page furniture is SKIPPED, not merely refused as a heading: a running
+    // footer between a heading and the clause beneath it would otherwise clear
+    // the heading the clause is read under, which is the same loss by another
+    // route.
+    if (PAGE_FURNITURE.test(p.text.trim())) return;
     const lead = p.section.heading.trim() || heading;
     heading = isHeadingLine(p.text) ? p.text.trim() : "";
     if (hits.length > 0) return;
@@ -79,6 +85,7 @@ export const rule: Rule = {
 
 /** A short unbroken line is a heading, whether or not the file styles it as one. */
 function isHeadingLine(text: string): boolean {
+  if (PAGE_FURNITURE.test(text.trim())) return false;
   // The section number is part of the heading, and its own period is not a
   // sentence break: "13. Limitation of Liability." is one line, not two.
   const t = text.trim().replace(/^\d+(?:\.\d+)*\.?\s+/, "");

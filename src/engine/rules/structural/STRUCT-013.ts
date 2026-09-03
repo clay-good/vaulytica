@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { PAGE_FURNITURE } from "../_helpers.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
@@ -132,7 +133,16 @@ export const rule: Rule = {
     // majority alone would call it one.
     const everyBlankIsAField = runTotals.labeled >= 4 && runTotals.labeled * 2 > runTotals.total;
     paragraphs.forEach((p, i) => {
-      const withNext = `${p.text} ${paragraphs[i + 1]?.text ?? ""}`.trim();
+      // The NEXT paragraph, skipping page furniture. A contract read out of a
+      // PDF carries a running footer between the signature line and the
+      // printed name beneath it, and joining the footer instead of the name
+      // lost the signature context — so an ordinary "Name: ____" grid was
+      // reported at `critical` as an unfilled template placeholder.
+      let next = i + 1;
+      while (next < paragraphs.length && PAGE_FURNITURE.test(paragraphs[next]!.text.trim())) {
+        next++;
+      }
+      const withNext = `${p.text} ${paragraphs[next]?.text ?? ""}`.trim();
       for (const { re, label } of PATTERNS) {
         re.lastIndex = 0;
         let m: RegExpExecArray | null;
