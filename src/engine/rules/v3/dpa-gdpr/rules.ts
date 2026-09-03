@@ -11,6 +11,7 @@
  */
 
 import { expressDenial } from "../../_helpers.js";
+import { DATE_SHAPE } from "../../../../extract/dates.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildLanguageRule,
@@ -1141,8 +1142,8 @@ export const DPA_GDPR_RULES: Rule[] = [
     // own template gives it.
     present_patterns: [
       /effective\s+date/i,
-      /\bdated\s+(?:as\s+of\s+)?(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})/i,
-      /\bdate\s*:\s*(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})/i,
+      new RegExp(`\\bdated\\s+(?:as\\s+of\\s+)?${DATE_SHAPE}`, "i"),
+      new RegExp(`\\bdate\\s*:\\s*${DATE_SHAPE}`, "i"),
     ],
     default_severity: "warning",
   }),

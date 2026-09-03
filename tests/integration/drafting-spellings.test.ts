@@ -135,6 +135,26 @@ const MUTATIONS: Record<string, [(s: string) => string, number]> = {
     5,
   ],
   "an amount in an ISO currency code": [(s) => s.replace(/\$([\d,]+(?:\.\d{2})?)/g, "USD $1"), 20],
+  // Not one of the 310 specimens writes "01/15/2026", and a great many real
+  // documents do: a policy's publication stamp, a board's adoption recital, a
+  // discovery period's bounds, a note's maturity and a valuation date are all
+  // typed into a FORM FIELD rather than drafted, and a form field gets slashes.
+  // Twenty-seven policies drew a `critical` "no signature block detected" the
+  // moment their dates were written that way, and thirty-six specimens moved a
+  // finding in all. The idiom behind most of them — a spelled month either way
+  // round — had been hand-copied into thirteen recognizers across four files,
+  // and `DATE_SHAPE` in `src/extract/dates.ts` is now the one answer.
+  //
+  // No reverse: the corpus has no slash date to turn back into a spelled month.
+  "a date written in slashes": [
+    (s) =>
+      s.replace(
+        new RegExp(`\\b(${MONTHS.join("|")})\\s+(\\d{1,2}),\\s+(\\d{4})\\b`, "g"),
+        (_m, mo: string, d: string, y: string) =>
+          `${String(MONTHS.indexOf(mo as (typeof MONTHS)[number]) + 1).padStart(2, "0")}/${d.padStart(2, "0")}/${y}`,
+      ),
+    150,
+  ],
   "a rate written out": [
     (s) =>
       s.replace(/(?<![\d.(])(\d{1,2})%/g, (m, d: string) =>

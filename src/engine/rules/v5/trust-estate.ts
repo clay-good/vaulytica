@@ -5,6 +5,7 @@
  */
 
 import type { Rule } from "../../finding.js";
+import { DATE_SHAPE } from "../../../extract/dates.js";
 import { pack } from "./_pack.js";
 import { expressDenial, irs, practice, uniformAct, usc } from "./_helpers.js";
 
@@ -306,7 +307,10 @@ const QDRO = pack("qdro", C, [
     cite: usc("29", "1056", "ERISA § 206(d)(3)(C)(ii) — amount or percentage of benefits"),
     pat: [
       /(percentage|amount|\d+%|[$€£¥₹₩₽])/i,
-      /(valuation\s+date|as\s+of\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|account\s+balance\s+as\s+of|manner\s+in\s+which\s+the\s+amount)/i,
+      new RegExp(
+        `(valuation\\s+date|as\\s+of\\s+${DATE_SHAPE}|account\\s+balance\\s+as\\s+of|manner\\s+in\\s+which\\s+the\\s+amount)`,
+        "i",
+      ),
     ],
     // `all: true`. The valuation pillar is a bare date, which every executed
     // instrument carries, so the column was satisfied by the preamble.

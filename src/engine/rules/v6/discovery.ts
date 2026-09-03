@@ -14,6 +14,7 @@
  */
 
 import type { Rule } from "../../finding.js";
+import { DATE_SHAPE } from "../../../extract/dates.js";
 import { pack, frcp, fre, practice } from "./_helpers.js";
 
 const C = "discovery";
@@ -69,14 +70,20 @@ const RFP = pack("document-requests", C, [
     name: "Relevant time period",
     cite: frcp("26(b)(1)", "scope of discovery — proportionality"),
     pat: [
-      /(time\s+period|relevant\s+period|from\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|between\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|between\s+\w+\s+\d{4})/i,
+      new RegExp(
+        `(time\\s+period|relevant\\s+period|from\\s+${DATE_SHAPE}|between\\s+${DATE_SHAPE}|between\\s+\\w+\\s+\\d{4})`,
+        "i",
+      ),
       // The second pillar is that the period is BOUNDED, and a definitions
       // section is where a request set binds it: `"Relevant Period" means
       // January 1, 2023 THROUGH THE DATE of production.` The scoping phrases
       // below are one way to say it and not the only one — requiring them
       // reported a request set that defines and uses its own Relevant Period
       // as having stated no time period at all.
-      /(unless\s+otherwise\s+(stated|specified)|these\s+requests\s+(cover|seek)|applicable\s+to\s+the\s+period|\bthrough\s+(?:the\s+(?:date|present|filing)|(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4}))|\bto\s+the\s+present\b|\bto\s+and\s+including\b|(?:between|from)\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})\s+(?:and|to|through)\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4}))/i,
+      new RegExp(
+        `(unless\\s+otherwise\\s+(stated|specified)|these\\s+requests\\s+(cover|seek)|applicable\\s+to\\s+the\\s+period|\\bthrough\\s+(?:the\\s+(?:date|present|filing)|${DATE_SHAPE})|\\bto\\s+the\\s+present\\b|\\bto\\s+and\\s+including\\b|(?:between|from)\\s+${DATE_SHAPE}\\s+(?:and|to|through)\\s+${DATE_SHAPE})`,
+        "i",
+      ),
     ],
     all: true,
     why: "An unbounded time period is the first proportionality objection any responding party makes, and often a well-taken one. Stating the period up front removes it.",
@@ -194,7 +201,10 @@ const ROGS = pack("interrogatories", C, [
       // wanted "from <Month> <year>" with no day number — so a set that
       // opened with a definitions section and a two-year bound was told it
       // had neither.
-      /(time\s+period|relevant\s+period|(?:from|between)\s+(?:\w+\.?\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\.?\s+\d{4})|(?:from|between)\s+\w+\s+\d{4})/i,
+      new RegExp(
+        `(time\\s+period|relevant\\s+period|(?:from|between)\\s+${DATE_SHAPE}|(?:from|between)\\s+\\w+\\s+\\d{4})`,
+        "i",
+      ),
     ],
     all: true,
     why: "The same proportionality objection that meets an unbounded document request meets an unbounded interrogatory, and definitions carry more weight here because each interrogatory is scarce.",
@@ -389,7 +399,10 @@ const RESPONSES = pack("discovery-responses", C, [
     cite: frcp("34(b)(2)(B)", "responding to document requests — time for production"),
     pat: [
       /(produc(e|tion))/i,
-      /((?:by|on\s+or\s+before|no[t]?\s+later\s+than)\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|on\s+a\s+rolling\s+basis|complete[d]?\s+by|within\s+\d+\s*\)?\s*days\s+of)/i,
+      new RegExp(
+        `((?:by|on\\s+or\\s+before|no[t]?\\s+later\\s+than)\\s+${DATE_SHAPE}|on\\s+a\\s+rolling\\s+basis|complete[d]?\\s+by|within\\s+\\d+\\s*\\)?\\s*days\\s+of)`,
+        "i",
+      ),
     ],
     all: true,
     why: "Rule 34(b)(2)(B) permits production by a stated later date but requires that date to be stated. 'Will produce responsive documents' with no date is not a compliant response and gives the requesting party nothing to enforce.",
@@ -576,7 +589,10 @@ const RULE_26F = pack("rule-26f-report", C, [
     cite: frcp("26(a)(1)(C)", "required disclosures — time for initial disclosures"),
     pat: [
       /(initial\s+disclosures?|rule\s+26\(a\)\(1\))/i,
-      /(within\s+14\s*\)?\s*days|by\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|have\s+been\s+(made|exchanged)|will\s+be\s+(made|served))/i,
+      new RegExp(
+        `(within\\s+14\\s*\\)?\\s*days|by\\s+${DATE_SHAPE}|have\\s+been\\s+(made|exchanged)|will\\s+be\\s+(made|served))`,
+        "i",
+      ),
     ],
     all: true,
     why: "Initial disclosures are due within 14 days after the Rule 26(f) conference unless the parties or the court set another time. The report is where that other time gets set.",
@@ -631,7 +647,7 @@ const DEPO = pack("deposition-notice", C, [
       // could never fail and the conjunction rested entirely on the second.
       // The OPERATIVE sentence is what a notice carries and a title never does.
       /(please\s+take\s+notice|notice\s+is\s+hereby\s+given|will\s+take\s+the\s+deposition)/i,
-      /(on\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|at\s+\d{1,2}:\d{2}|commencing\s+at|located\s+at)/i,
+      new RegExp(`(on\\s+${DATE_SHAPE}|at\\s+\\d{1,2}:\\d{2}|commencing\\s+at|located\\s+at)`, "i"),
     ],
     all: true,
     why: "Rule 30(b)(1) requires reasonable written notice stating the time and place. Notice that omits either is a ground to quash and a wasted reporter fee.",

@@ -4,6 +4,7 @@
  */
 
 import type { Rule } from "../../finding.js";
+import { DATE_SHAPE } from "../../../extract/dates.js";
 import { pack } from "./_pack.js";
 import { cfr, expressDenial, practice, usc } from "./_helpers.js";
 
@@ -65,7 +66,10 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
       // the inventions to practice". Under the conjunction below, reading only
       // "retroactive" and a literal date would have reported that assignment —
       // whose effective date reaches back to conception — as having none.
-      /(as\s+of\s+(?:\w+\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\s+\d{4})|retroactive(?:ly)?|nunc\s+pro\s+tunc|confirms\s+the\s+(prior|earlier)|earlier\s+of|first\s+reduced\s+(?:the\s+\w+\s+)?to\s+practice|date\s+of\s+conception|prior\s+to\s+the\s+date\s+of\s+this)/i,
+      new RegExp(
+        `(as\\s+of\\s+${DATE_SHAPE}|retroactive(?:ly)?|nunc\\s+pro\\s+tunc|confirms\\s+the\\s+(prior|earlier)|earlier\\s+of|first\\s+reduced\\s+(?:the\\s+\\w+\\s+)?to\\s+practice|date\\s+of\\s+conception|prior\\s+to\\s+the\\s+date\\s+of\\s+this)`,
+        "i",
+      ),
     ],
     // `all: true`. The retroactivity pillar is a bare date — "as of January 5,
     // 2026" — which every executed instrument carries, so a nunc pro tunc

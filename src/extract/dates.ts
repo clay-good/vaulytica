@@ -151,6 +151,24 @@ const RELATIVE = new RegExp(
  * obligation/cross-document resolution sees one stable anchor per
  * concept. (v7 §5: broaden anchor-alias breadth.)
  */
+/**
+ * The shapes a date is written in, for the RULE layer.
+ *
+ * Thirteen recognizers across four files carried the same hand-written
+ * alternation — a spelled month either way round — and none of them admitted
+ * the SLASH form. Not one of the 310 specimens writes "01/15/2026", and a
+ * great many real documents do: a policy's publication stamp, a board's
+ * adoption recital, a discovery period's bounds and a valuation date are all
+ * typed into a form field rather than drafted, and a form field gets slashes.
+ *
+ * The abbreviated month ("Sept. 3, 2026") is admitted for the same reason: the
+ * `\.?` was present in some copies of the idiom and absent from others, which
+ * is what a hand-copied pattern always ends up looking like.
+ *
+ * Regex SOURCE, not a `RegExp`: callers embed it in larger patterns.
+ */
+export const DATE_SHAPE = String.raw`(?:\w+\.?\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\.?\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})`;
+
 const ANCHOR_ALIASES =
   "Effective|Closing|Commencement|Termination|Expiration|Renewal|Execution|Signing|Start|Term Start|Delivery|Acceptance|Go-Live|Hire|Grant|Vesting|Maturity|Funding|Disbursement|Completion|Onboarding|Anniversary|Separation|Settlement|Distribution|Conversion|Exercise|Issuance|Record|Payment|Purchase|Valuation|Reference|Filing|Redemption|Repayment|Award|Adjustment";
 

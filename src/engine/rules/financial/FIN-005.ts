@@ -120,6 +120,9 @@ const PAYMENT_TERMS = new RegExp(
     // optional: a recurring annual instalment is written
     // "payable $425,000 on JANUARY 31 and $425,000 on JUNE 30 of each year",
     // and requiring a four-digit year read that as no payment term at all.
+    // A note's maturity is as often written "due and payable on 09/15/2028" as
+    // with the month spelled: the date goes into a form field, and a form field
+    // gets slashes. Not one of the 310 specimens writes one.
     // "payable IN ADVANCE on each anniversary of the Effective Date" is how an
     // annual fee states its term. The interstitial "in advance" / "in arrears"
     // was admitted only by the ordinal-day-of-each-month branch above, so this
@@ -133,7 +136,7 @@ const PAYMENT_TERMS = new RegExp(
     // January 31 and $425,000.00 on June 30 of each year" is the same
     // sponsorship fee as "$425,000", and only one of the two was read as a
     // payment term (v1.5.1).
-    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?(?:(?:[^.;]|\\.(?=\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}(?:,?\\s+\\d{4})?|\\d{1,2}\\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?(?:(?:[^.;]|\\.(?=\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}(?:,?\\s+\\d{4})?|\\d{1,2}\\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{4}|\\d{1,2}[/.]\\d{1,2}[/.]\\d{2,4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
     // An M&A or real-estate purchase price states its term as the CLOSING
     // event, not an interval or a fixed date: "the Purchase Price … payable in
     // cash at the Closing", "the balance is due and payable at closing". The

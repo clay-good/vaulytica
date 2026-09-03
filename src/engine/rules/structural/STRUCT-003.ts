@@ -298,12 +298,18 @@ const ADOPTION_RECITAL = new RegExp(
     "(?=(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)" +
     String.raw`\s+\d{1,2},\s+\d{4}|\d{1,2}\s+` +
     "(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)" +
-    String.raw`\s+\d{4}|\d{4}-\d{2}-\d{2})`,
+    String.raw`\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})`,
   "i",
 );
 
+// The SLASH date belongs in every one of these shape lists. Not one of the 310
+// specimens writes "01/15/2026" and a great many real documents do — a policy's
+// publication stamp and a board's adoption recital most of all, because both
+// are usually typed into a form field rather than drafted. Twenty-seven
+// policies drew a `critical` "no signature block detected" the moment their
+// dates were written the way a form writes them.
 const PUBLICATION_STAMP =
-  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*[:|]?\s*(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2})/i;
+  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*[:|]?\s*(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})/i;
 
 // A formal valediction opening a line — "Very truly yours,", "Sincerely,",
 // "Respectfully submitted," — is the execution of CORRESPONDENCE (a demand

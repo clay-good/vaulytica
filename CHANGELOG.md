@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.397.0] — 2026-09-03
+
+### Fixed
+- **A date written in slashes.** Not one of the 310 specimens writes
+  "01/15/2026", and a great many real documents do — a policy's publication
+  stamp, a board's adoption recital, a discovery period's bounds, a note's
+  maturity and a QDRO's valuation date are all typed into a FORM FIELD rather
+  than drafted, and a form field gets slashes.
+
+  **Twenty-seven policies drew a `critical` "No signature block detected"** the
+  moment their dates were written that way, and thirty-six specimens moved a
+  finding in all.
+
+- **`DATE_SHAPE` in `src/extract/dates.ts` is now the one answer.** The idiom
+  behind most of those — a spelled month either way round — had been
+  hand-copied into **thirteen recognizers across four files**, some with the
+  abbreviated month's period and some without, which is what a hand-copied
+  pattern always ends up looking like. All thirteen now share the constant, and
+  it admits the ISO and slash forms as well.
+
+### Added
+- The slash-date relation in `drafting-spellings.test.ts`, confirmed to fail
+  with the fix put back. It has **no reverse**: the corpus has no slash date to
+  turn back into a spelled month, which is the same asymmetry every probe in
+  this repo has measured and the reason the gap existed.
+
 ## [9.396.0] — 2026-09-03
 
 ### Added
