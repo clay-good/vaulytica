@@ -300,8 +300,20 @@ const VENUE = new RegExp(
  *     Gated to "of the State/Commonwealth of <Name>", so "courts of competent
  *     jurisdiction" / "courts of Appeals" (no State-of scaffold) are not swept in.
  */
+/**
+ * "The courts of England and Wales have exclusive jurisdiction" — the standard
+ * jurisdiction clause of every English-law contract, and of Irish, Scottish,
+ * Australian, Singaporean and Indian ones with the country's name swapped in.
+ *
+ * The locality branch required "courts OF THE STATE OF" or "of the Commonwealth
+ * of", which is an American way to name a forum; a country names itself. So a
+ * facility agreement whose clause 19.2 confers exclusive jurisdiction on a
+ * named court system was reported as stating no venue at all. The bare "of"
+ * cannot swallow "courts of competent jurisdiction" — the capture needs a
+ * capital letter and "competent" has none.
+ */
 const VENUE_COURTS_FIRST = new RegExp(
-  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+the\s+(?:State|Commonwealth)\s+of\s+)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:(?:shall|will)\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:(?:shall|will)\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
+  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+(?:the\s+(?:State|Commonwealth|Province|Republic)\s+of\s+)?)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:(?:shall|will)\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:(?:shall|will)\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
   "gi",
 );
 // "shall lie" is as common as "shall be" for a venue clause — "venue for any

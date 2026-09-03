@@ -227,8 +227,25 @@ export function extractDates(tree: DocumentTree): DateReference[] {
     }
     US_NUMERIC.lastIndex = 0;
     while ((m = US_NUMERIC.exec(ctx.text)) !== null) {
-      const mm = parseInt(m[1]!, 10);
-      const dd = parseInt(m[2]!, 10);
+      // A slash date whose FIRST component is greater than twelve is
+      // unambiguously DAY-first: there is no thirteenth month, and every
+      // convention outside the United States writes 15/01/2026 for the
+      // fifteenth of January. Reading it month-first produced an `iso` of
+      // 2026-15-01, which `isValidIso` rejected — and TEMP-001 then reported
+      // a `critical` "calendar-impossible date" against an ordinary British,
+      // European or Australian contract. Not one of the 310 specimens carried
+      // a slash date, so nothing could ever have shown it.
+      //
+      // Where BOTH components are twelve or under the date is genuinely
+      // ambiguous (03/04/2026 is the third of April in London and the fourth
+      // of March in New York), and the US reading stays the default: this
+      // extractor's whole surrounding vocabulary is American, and a guess that
+      // flips with the reader is worse than a stated convention.
+      const first = parseInt(m[1]!, 10);
+      const second = parseInt(m[2]!, 10);
+      const dayFirst = first > 12 && second <= 12;
+      const mm = dayFirst ? second : first;
+      const dd = dayFirst ? first : second;
       let yyyy = parseInt(m[3]!, 10);
       if (m[3]!.length === 2) yyyy = yyyy < TWO_DIGIT_YEAR_PIVOT ? 2000 + yyyy : 1900 + yyyy;
       const iso = `${yyyy.toString().padStart(4, "0")}-${mm.toString().padStart(2, "0")}-${dd.toString().padStart(2, "0")}`;

@@ -34,10 +34,10 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export function isStatutoryDandOIndemnity(text: string): boolean {
   return (
-    /\bby\s+reason\s+of\s+the\s+fact\s+that\b[^.]{0,120}?\b(?:director|officer|trustee)\b/i.test(
+    /\bby\s+reason\s+of\s+the\s+fact\s+that\b(?:[^.]|\.(?=\d)){0,120}?\b(?:director|officer|trustee)\b/i.test(
       text,
     ) ||
-    /\bfullest\s+extent\s+permitted\s+by\s+the\b[^.]{0,60}?\bcorporation\s+(?:law|act)\b/i.test(
+    /\bfullest\s+extent\s+permitted\s+by\s+the\b(?:[^.]|\.(?=\d)){0,60}?\bcorporation\s+(?:law|act)\b/i.test(
       text,
     ) ||
     // The LLC / partnership analogue: an entity indemnifying its own Manager,
@@ -54,7 +54,7 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // indemnity that had forgotten its cap. The authority must still be named
     // between the two, which is what keeps this off "to the fullest extent
     // permitted" standing alone in a vendor contract.
-    /\bindemnif\w+[^.]{0,80}?\b(?:Managers?|Members?|Partners?|Directors?|Officers?|Trustees?)\b[^.]{0,80}?\bfullest\s+extent\b[^.]{0,120}?\b(?:permits?|permitted|allows?|allowed)\b/i.test(
+    /\bindemnif\w+(?:[^.]|\.(?=\d)){0,80}?\b(?:Managers?|Members?|Partners?|Directors?|Officers?|Trustees?)\b(?:[^.]|\.(?=\d)){0,80}?\bfullest\s+extent\b(?:[^.]|\.(?=\d)){0,120}?\b(?:permits?|permitted|allows?|allowed)\b/i.test(
       text,
     ) ||
     // The same statutory indemnity written WITHOUT the "fullest extent"
@@ -87,10 +87,10 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // The discriminator is the pair — a FIRST-PERSON or fiduciary-role
     // indemnitor and GOOD-FAITH RELIANCE on the instrument as the trigger. A
     // commercial indemnity has neither.
-    /\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+[^.]{0,160}?\b(?:good[-\s]faith|reliance|relies|relying|accepts?\s+this\s+(?:instrument|power))\b/i.test(
+    /\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+(?:[^.]|\.(?=\d)){0,160}?\b(?:good[-\s]faith|reliance|relies|relying|accepts?\s+this\s+(?:instrument|power))\b/i.test(
       text,
     ) ||
-    /\b(?:good[-\s]faith|accepts?\s+this\s+(?:instrument|power))\b[^.]{0,160}?\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+/i.test(
+    /\b(?:good[-\s]faith|accepts?\s+this\s+(?:instrument|power))\b(?:[^.]|\.(?=\d)){0,160}?\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+/i.test(
       text,
     )
   );
@@ -134,7 +134,7 @@ export const rule: Rule = {
     // aggregate cap to state. Requiring a claim / loss / liability / damage
     // after the preposition keeps the branch on the clause it is about.
     const INDEMNITY = new RegExp(
-      `\\b(?:shall|will|agrees?\\s+to)${MODAL_QUALIFIER}(?:defend,?\\s+(?:and\\s+)?)?indemnify|\\bhold\\s+(?:\\w+\\s+)?harmless\\b[^.]{0,80}?\\b(?:from|against)\\b[^.]{0,40}?\\b(?:claims?|loss|losses|liabilit(?:y|ies)|damages?|costs?|expenses?|suits?|actions?|proceedings?|judgments?|penalt(?:y|ies)|fines?)\\b|\\bdefend\\s+and\\s+indemnify\\b|\\bindemnification\\s+obligations?\\b`,
+      `\\b(?:shall|will|agrees?\\s+to)${MODAL_QUALIFIER}(?:defend,?\\s+(?:and\\s+)?)?indemnify|\\bhold\\s+(?:\\w+\\s+)?harmless\\b(?:[^.]|\.(?=\d)){0,80}?\\b(?:from|against)\\b(?:[^.]|\.(?=\d)){0,40}?\\b(?:claims?|loss|losses|liabilit(?:y|ies)|damages?|costs?|expenses?|suits?|actions?|proceedings?|judgments?|penalt(?:y|ies)|fines?)\\b|\\bdefend\\s+and\\s+indemnify\\b|\\bindemnification\\s+obligations?\\b`,
       "i",
     );
     // "Each party's total liability under this Agreement shall not exceed
@@ -177,7 +177,7 @@ export const rule: Rule = {
     // an indemnity that has none. Not one of 310 specimens writes "including
     // but not limited to", which is why the corpus never showed it.
     const CAP_PRESENT =
-      /\b(?:liabilit(?:y|ies)\b[^.]{0,80}?\b(?:shall|will|is|are|may)?\s*(?:be\s+)?(?<!\bnot\s)(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b[^.]{0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?[^.]{0,60}?\bliabilit(?:y|ies)\b[^.]{0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+[^.]{0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b|\bliabilit(?:y|ies)\b[^.]{0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
+      /\b(?:liabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\b(?:shall|will|is|are|may)?\s*(?:be\s+)?(?<!\bnot\s)(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b(?:[^.]|\.(?=\d)){0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?(?:[^.]|\.(?=\d)){0,60}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+(?:[^.]|\.(?=\d)){0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)(?:[^.]|\.(?=\d)){0,80}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,40}?\bexceed\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
     // The stem is `indemni(f|t)`: a carve-out names the "indemnity
     // obligations" as often as the verb, and `indemnif` matches none of them.
     const CARVE_OUT_INDEMNITY =
@@ -198,7 +198,7 @@ export const rule: Rule = {
     // cap that follows in the next sentence, and the indemnity there is
     // capped (`risk-allocation-guards.test.ts`).
     const CARVE_OUT_BACKREFERENCE =
-      /(?:^|[.;]\s+)(?:these|those|the\s+foregoing|the\s+preceding|this)\s+(?:limits?|limitations?|caps?|exclusions?|restrictions?)\b[^.]{0,60}?\b(?:do|does|shall|will)\s+not\s+apply\s+to\b[^.]{0,140}?\bindemni(?:f|t)/i;
+      /(?:^|[.;]\s+)(?:these|those|the\s+foregoing|the\s+preceding|this)\s+(?:limits?|limitations?|caps?|exclusions?|restrictions?)\b(?:[^.]|\.(?=\d)){0,60}?\b(?:do|does|shall|will)\s+not\s+apply\s+to\b[^.]{0,140}?\bindemni(?:f|t)/i;
 
     forEachParagraph(ctx.tree, (p) => {
       if (!indemnityHit) {

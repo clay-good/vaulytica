@@ -1,0 +1,165 @@
+FACILITY AGREEMENT
+
+Borrower | HALBROOK MANUFACTURING LIMITED, a company incorporated in England and Wales with company number 07421983, whose registered office is at 12 Cheapside, London EC2V 6AA
+
+Lender | RIDGELINE COMMERCIAL BANK PLC, a company incorporated in England and Wales with company number 02219087, whose registered office is at 88 Bishopsgate, London EC2N 4AJ
+
+Facility Amount | £5,000,000
+
+Signing Date | 15/01/2026
+
+Governing Law | England and Wales
+
+BACKGROUND
+
+(A) The Lender has agreed to make a term loan facility available to the Borrower on the terms of this Agreement.
+(B) The Borrower has agreed to apply the facility solely for the purposes set out in clause 3.
+
+IT IS AGREED as follows:
+
+1. DEFINITIONS AND INTERPRETATION
+
+1.1 In this Agreement: "Business Day" means a day (other than a Saturday or Sunday) on which banks are open for general business in London; "Facility" means the term loan facility made available under clause 2; "Finance Documents" means this Agreement, the Debenture and any document designated as such by the Lender and the Borrower; "Repayment Date" means each date on which an instalment falls due under clause 5; "Security" means the security created or expressed to be created by the Debenture; "Signing Date" means the date stated as such at the head of this Agreement.
+
+1.2 Clause and Schedule headings do not affect interpretation. A reference to a statute is to that statute as amended or re-enacted from time to time. A reference to a clause or a Schedule is to a clause of, or a Schedule to, this Agreement. "Including" is not a word of limitation.
+
+2. THE FACILITY
+
+2.1 Subject to the terms of this Agreement, the Lender makes available to the Borrower a term loan facility in an aggregate amount of £5,000,000.
+
+2.2 The Borrower shall, at its own cost and expense, deliver to the Lender each of the conditions precedent listed in Schedule 1 before the first drawdown.
+
+3. PURPOSE
+
+3.1 The Borrower shall apply all amounts borrowed under the Facility towards the acquisition and installation of manufacturing plant at its Sheffield site, including, but not limited to, the machinery listed in Schedule 2.
+
+3.2 The Lender is not obliged to monitor or verify the application of any amount borrowed under this Agreement.
+
+4. INTEREST
+
+4.1 The rate of interest on the Facility for each interest period is 6.5% per annum.
+
+4.2 The Borrower shall pay accrued interest on the last Business Day of each calendar quarter.
+
+4.3 If the Borrower fails to pay any amount payable by it under a Finance Document on its due date, interest accrues on the overdue amount at 2% per annum above the rate in clause 4.1. Default interest is immediately payable by the Borrower on demand by the Lender.
+
+5. REPAYMENT
+
+5.1 The Borrower shall repay the Facility in twenty (20) equal quarterly instalments of £250,000 each, the first instalment falling due on 31/03/2026 and the last on 31/12/2030.
+
+5.2 The Borrower may prepay the whole or any part of the Facility on five (5) Business Days' written notice (as described in clause 17), without premium or penalty.
+
+5.3 Any amount prepaid may not be redrawn.
+
+6. REPRESENTATIONS
+
+6.1 The Borrower represents that it is duly incorporated and validly existing under the laws of England and Wales, that its obligations under the Finance Documents are legal, valid, binding and enforceable, and that no Event of Default is continuing.
+
+6.2 The representations in clause 6.1 are deemed repeated on each drawdown date and on each Repayment Date.
+
+7. UNDERTAKINGS
+
+7.1 The Borrower shall, at all times, maintain insurance with a reputable insurer against the risks and for the amounts that a prudent company carrying on the same business would insure, including, but not limited to, employer's liability cover of not less than £5,000,000 and public liability cover of not less than £2,000,000 for each occurrence.
+
+7.2 The Borrower shall supply its audited financial statements to the Lender within one hundred and twenty (120) days after the end of each of its financial years.
+
+7.3 The Borrower shall not, without the Lender's prior written consent, create or permit to subsist any security over any of its assets, other than the Security and any lien arising by operation of law in the ordinary course of trading.
+
+8. EVENTS OF DEFAULT
+
+8.1 Each of the following is an Event of Default: the Borrower does not pay on the due date any amount payable under a Finance Document and the failure continues for three (3) Business Days; the Borrower does not comply with clause 7 and, if the failure is capable of remedy, it is not remedied within fourteen (14) days after the Lender gives notice; or an insolvency event occurs in relation to the Borrower.
+
+8.2 On and at any time after an Event of Default is continuing, the Lender may, by notice to the Borrower, cancel the Facility and declare all outstanding amounts immediately due and payable, whereupon they become immediately due and payable.
+
+9. INDEMNITY AND LIABILITY
+
+9.1 The Borrower shall, in accordance with applicable law, indemnify the Lender against any loss, liability or cost that the Lender incurs as a result of an Event of Default, including, but not limited to, the reasonable legal fees and expenses of enforcing the Finance Documents.
+
+9.2 The aggregate liability of the Borrower under clause 9.1 is limited to £5,000,000.
+
+9.3 Nothing in this Agreement limits or excludes either party's liability for death or personal injury caused by its negligence, or for fraud or fraudulent misrepresentation.
+
+10. FEES AND EXPENSES
+
+10.1 The Borrower shall pay an arrangement fee of £50,000 to the Lender on the Signing Date.
+
+10.2 The Borrower shall reimburse the Lender for the reasonable legal and valuation costs it incurs in connection with the negotiation of the Finance Documents, up to a maximum of £25,000, within thirty (30) days of the Lender's written demand.
+
+11. SET-OFF
+
+11.1 The Lender may set off any matured obligation owed to it by the Borrower against any matured obligation it owes to the Borrower, in either case whether or not the obligations arise under a Finance Document.
+
+12. ASSIGNMENT
+
+12.1 The Borrower may not assign or transfer any of its rights or obligations under the Finance Documents without the Lender's prior written consent.
+
+12.2 The Lender may assign or transfer any of its rights under the Finance Documents to another bank or financial institution, and shall notify the Borrower of any such assignment or transfer.
+
+13. CONFIDENTIALITY
+
+13.1 Each party shall keep confidential the terms of the Finance Documents and any information it receives from the other party in connection with them, and shall not disclose that information except to its officers, employees and professional advisers who need to know it, or as required by law or by a regulatory authority of competent jurisdiction.
+
+13.2 Clause 13.1 survives termination of this Agreement for a period of three (3) years.
+
+14. VARIATION AND WAIVER
+
+14.1 No variation of this Agreement is effective unless it is in writing and signed by or on behalf of each party.
+
+14.2 No failure or delay by the Lender in exercising any right or remedy operates as a waiver of it.
+
+15. SEVERANCE
+
+15.1 If any provision of this Agreement is or becomes invalid, illegal or unenforceable, it shall be deemed modified to the minimum extent necessary to make it valid, legal and enforceable, and the remaining provisions continue in full force and effect.
+
+16. ENTIRE AGREEMENT
+
+16.1 The Finance Documents constitute the entire agreement between the parties in relation to the Facility and supersede all prior discussions and arrangements between them on that subject matter.
+
+17. NOTICES
+
+17.1 A notice given under this Agreement must be in writing, in English, and delivered by hand or sent by pre-paid first-class post to the address of the recipient set out at the head of this Agreement, or to any other address notified in writing.
+
+17.2 A notice delivered by hand takes effect on delivery. A notice sent by pre-paid first-class post takes effect on the second Business Day after posting.
+
+18. THIRD-PARTY RIGHTS
+
+18.1 A person who is not a party to this Agreement has no right under the Contracts (Rights of Third Parties) Act 1999 to enforce any of its terms.
+
+19. GOVERNING LAW AND JURISDICTION
+
+19.1 This Agreement and any dispute or claim arising out of or in connection with it is governed by and construed in accordance with the law of England and Wales.
+
+19.2 The courts of England and Wales have exclusive jurisdiction to settle any dispute or claim arising out of or in connection with this Agreement.
+
+20. SURVIVAL
+
+20.1 Clauses 9, 13, 19 and this clause 20 survive termination of this Agreement, as do any accrued payment obligations.
+
+IN WITNESS WHEREOF the parties have executed this Agreement on the Signing Date.
+
+SIGNED for and on behalf of HALBROOK MANUFACTURING LIMITED
+
+Name | Rosalind Achebe-Karlsson
+
+Title | Finance Director
+
+Date | 15/01/2026
+
+SIGNED for and on behalf of RIDGELINE COMMERCIAL BANK PLC
+
+Name | Devon Marchetti
+
+Title | Head of Corporate Lending
+
+Date | 15/01/2026
+
+SCHEDULE 1 — CONDITIONS PRECEDENT
+
+1. A certified copy of the Borrower's constitutional documents.
+2. A certified copy of a board resolution of the Borrower approving the Finance Documents.
+3. The Debenture, duly executed by the Borrower.
+
+SCHEDULE 2 — MACHINERY
+
+1. One (1) Voight-Reinhardt CNC machining centre, model VR-880.
+2. Two (2) Kestrel automated coating lines, model KA-12.

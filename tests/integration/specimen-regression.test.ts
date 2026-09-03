@@ -3843,6 +3843,43 @@ export const EXPECTED: Record<string, Expectation> = {
   // all, so it reported a survival clause that names nothing sticky. It was
   // the only English-numbered document in the corpus and it carried the
   // defect in plain sight for as long as it has been here.
+  // `sub-processing-agreement` and `dpa-controller-processor` lost CHOICE-003
+  // with it: both say "the courts of Ireland have exclusive jurisdiction", and
+  // both had been reported as stating no venue. Three documents in the corpus
+  // carried a forum clause the extractor could not read, all of them for the
+  // same reason — the locality branch wanted an American "of the State of".
+
+  // An English-law FACILITY AGREEMENT, written to carry every input shape this
+  // session found the corpus could not contain: a cover block and a signature
+  // block laid out as a TABLE (which `src/ingest/docx.ts` flattens to
+  // "cell | cell"), DAY-FIRST SLASH DATES, clause numbering, Commonwealth
+  // spelling, pounds, Schedules rather than Exhibits, and "including, but not
+  // limited to". Four defects fell out of it the first time it was analyzed:
+  //
+  //  - **A `critical` "Calendar-impossible dates: 5".** `US_NUMERIC` read
+  //    15/01/2026 month-first, and there is no fifteenth month. Day-first is the
+  //    majority convention on earth, and a first component over twelve is
+  //    unambiguous — no specimen carried a slash date, so nothing could show it.
+  //  - **RISK-015 could not see the cap in clause 9.2**, because its window died
+  //    at the decimal point in "under clause 9.1". The same interior-period
+  //    defect session 28 fixed for "$425,000.00", in a cross-reference.
+  //  - **CHOICE-003 saw no venue**, because the locality branch wanted "courts
+  //    OF THE STATE OF" — an American way to name a forum. A country names
+  //    itself: "the courts of England and Wales have exclusive jurisdiction".
+  //  - **It routed to `unilateral-nda` at 0.7.** "Facility Agreement" is the
+  //    standard English (LMA) name for a loan agreement and the catalog did not
+  //    know it. It routes to `loan-agreement` at 1.0 now.
+  //
+  // What remains is fair. BNK-011 is right that the draft states no financial
+  // covenants. TERM-002 is recorded rather than argued: a facility agreement
+  // does not "terminate for cause", it ACCELERATES — clause 8.2 cancels the
+  // Facility and declares the loan due — and whether that satisfies a
+  // termination check is a question for the family, not a defect in the rule.
+  "uk-facility-agreement.txt": {
+    playbook: "loan-agreement",
+    findings: ["BNK-011", "TERM-002", "OBLI-005", "RISK-010", "RISK-011", "STRUCT-009", "TEMP-006"],
+  },
+
   "uk-master-services-agreement.txt": {
     playbook: "msa-vendor-deep",
     findings: [
@@ -4099,7 +4136,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-002",
       "TRANSFER-018",
       "TRANSFER-020",
-      "CHOICE-003",
       "OBLI-005",
     ],
   },
@@ -4754,7 +4790,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-002",
       "TRANSFER-018",
       "TRANSFER-020",
-      "CHOICE-003",
     ],
   },
   // A prime/subcontractor teaming agreement for a federal procurement. It

@@ -871,13 +871,26 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     })) {
       registerDefinition(definitions, d);
     }
-    if (ctx.text.trim().length <= FIELD_BLOCK_MAX_LENGTH) {
-      FIELD_LABEL.lastIndex = 0;
-      const labels: { term: string; start: number; valueStart: number }[] = [];
+    FIELD_LABEL.lastIndex = 0;
+    const labels: { term: string; start: number; valueStart: number }[] = [];
+    {
       let f: RegExpExecArray | null;
       while ((f = FIELD_LABEL.exec(ctx.text)) !== null) {
         labels.push({ term: f[1]!.trim(), start: f.index, valueStart: f.index + f[0].length });
       }
+    }
+    // Length is a proxy for "this is a field sheet, not prose", and it is a
+    // fact about the LAYOUT rather than about the document: the same cover
+    // block is five short paragraphs when a table renders it and one long one
+    // when the blank lines are stripped, and only the first was read. A RUN of
+    // three or more label/value pairs is unmistakable however long it runs — a
+    // sentence that happens to carry a colon has one. So the cap still decides
+    // the one- and two-label case, where length is the only signal there is.
+    const FIELD_BLOCK_MIN_LABELS = 3;
+    if (
+      ctx.text.trim().length <= FIELD_BLOCK_MAX_LENGTH ||
+      labels.length >= FIELD_BLOCK_MIN_LABELS
+    ) {
       // Only a paragraph that OPENS with a label is a cover block — a
       // sentence that happens to contain "Wire Instructions: …" mid-flow
       // is prose, not a field sheet.

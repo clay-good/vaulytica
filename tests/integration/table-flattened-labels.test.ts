@@ -82,11 +82,21 @@ const SIGNED_TYPED = [
 const SIGNED_TABLE = SIGNED_TYPED.map((l) => l.replace(/^(By|Name|Title|Date): /, "$1 | "));
 
 describe("a label flattened out of a table row", () => {
-  it("the corpus contains no pipe at all, which is why nothing could show this", () => {
+  it("the corpus carries a table-flattened document, and did not always", () => {
+    // This assertion used to read "the corpus contains NO pipe at all" — which
+    // was true, and was the whole reason none of the defects below could ever
+    // have surfaced from the corpus. `uk-facility-agreement.txt` closed that
+    // gap deliberately: a cover block and a signature block laid out as tables,
+    // which is how a large share of real .docx contracts are drafted.
+    //
+    // Asserted as a FLOOR rather than a count, so adding more is free and
+    // deleting the last one is not.
     const withPipe = readdirSync(DIR)
       .filter((f) => f.endsWith(".txt"))
       .filter((f) => readFileSync(join(DIR, f), "utf8").includes(" | "));
-    expect(withPipe).toEqual([]);
+    expect(withPipe.length, "no specimen carries a table-flattened layout").toBeGreaterThanOrEqual(
+      1,
+    );
   });
 
   it("STRUCT-003 reads a two-column signature table as a signature block", () => {

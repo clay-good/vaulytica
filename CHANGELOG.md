@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.408.0] — 2026-09-03
+
+### Added
+- **`uk-facility-agreement.txt`** — an English-law facility agreement written to
+  carry every input shape this session found the corpus could not contain: a
+  cover block and a signature block laid out as a TABLE, day-first slash dates,
+  clause numbering, Commonwealth spelling, pounds, Schedules rather than
+  Exhibits, and "including, but not limited to".
+
+  Rather than keep probing around the gap, this closes it. **Four defects fell
+  out of it the first time it was analyzed.**
+
+- **A cover block is a field sheet however long it runs.** Its detection was
+  capped at 240 characters, which is a fact about the LAYOUT rather than about
+  the document: the same block is five short paragraphs when a table renders it
+  and one long one when the blank lines are stripped. A run of three or more
+  label/value pairs is now unmistakable at any length; the cap still decides the
+  one- and two-label case, where length is the only signal there is.
+
+- **`table-flattened-labels` asserted "the corpus contains NO pipe at all"** —
+  true when written, and the whole reason those defects could never have
+  surfaced from the corpus. It is a FLOOR now: at least one specimen must carry
+  a table layout, so adding more is free and deleting the last one is not.
+
+### Fixed
+- **A `critical` "Calendar-impossible dates: 5" against an ordinary British
+  contract.** `US_NUMERIC` read 15/01/2026 month-first, and there is no
+  fifteenth month, so `isValidIso` rejected it and TEMP-001 called it
+  impossible. Day-first is the majority convention on earth; a first component
+  over twelve is unambiguous. Where both components are twelve or under the date
+  is genuinely ambiguous (03/04/2026) and the US reading stays the default — a
+  guess that flips with the reader is worse than a stated convention. Not one of
+  the 310 specimens carried a slash date.
+
+- **RISK-015 and RISK-005 could not see a cap stated with a cross-reference.**
+  "The aggregate liability of the Borrower **under clause 9.1** is limited to
+  £5,000,000" — the window died at the decimal point in the clause number. The
+  same interior-period defect session 28 fixed for "$425,000.00", in a place
+  nobody had looked.
+
+- **CHOICE-003 saw no venue in "the courts of England and Wales have exclusive
+  jurisdiction."** The locality branch wanted "courts OF THE STATE OF", which is
+  an American way to name a forum; a country names itself. **Three specimens
+  were affected** — the two Irish DPAs in the corpus had been reported as
+  stating no venue as well.
+
+- **"Facility Agreement" is the standard English (LMA) name for a loan
+  agreement**, and the catalog did not know it: the specimen routed to
+  `unilateral-nda` at 0.7, which then demanded an IP-ownership clause of a term
+  loan. It routes to `loan-agreement` at **1.0** now, and BNK-011 correctly
+  reports the draft states no financial covenants.
+
 ## [9.407.0] — 2026-09-03
 
 ### Fixed
