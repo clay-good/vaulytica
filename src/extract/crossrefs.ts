@@ -246,9 +246,22 @@ const TESTAMENTARY_PARENT_SENTENCE =
 
 /** The sentence around an index, for a corroboration that spans a clause. */
 function enclosingSentenceOf(text: string, index: number): string {
-  const start = Math.max(0, text.lastIndexOf(". ", index) + 1);
-  const dot = text.indexOf(". ", index);
-  return text.slice(start, dot === -1 ? text.length : dot + 1);
+  // BOUNDED both ways. A sentence is not half a megabyte long, and the
+  // unbounded `lastIndexOf`/`indexOf` pair this used to be scans to the start
+  // and then to the end of the paragraph whenever the text contains no ". " at
+  // all — then copies the whole thing. That is O(n) per cross-reference, so a
+  // contract pasted as ONE paragraph (no blank lines, which is what pasting a
+  // whole contract looks like) went quadratic: 563 KB took 42 seconds, and the
+  // paste cap is twenty million characters. The searches run inside a window,
+  // so the cost is constant per reference.
+  const WINDOW = 2000;
+  const lo = Math.max(0, index - WINDOW);
+  const hi = Math.min(text.length, index + WINDOW);
+  const back = text.slice(lo, index).lastIndexOf(". ");
+  const start = back === -1 ? lo : lo + back + 1;
+  const forward = text.slice(index, hi).indexOf(". ");
+  const end = forward === -1 ? hi : index + forward + 1;
+  return text.slice(start, end);
 }
 
 const EXTERNAL_INSTRUMENT_RE =
@@ -322,7 +335,7 @@ const STATUTE_LABEL_DECLARATION_LEADING =
 // cite reads as external. The defining phrase must end in a statute keyword
 // (Code / Act / Law / Regulation), and the acronym is a single all-caps token.
 const STATUTE_ACRONYM_DEFINITION =
-  /\b[A-Z][A-Za-z]+(?:\s+(?:[A-Z][A-Za-z]+|of|and|the))*\s+(?:Code|Acts?|Laws?|Regulations?)\b(?:\s+of\s+\d{4})?\s*\(\s*(?:the\s+)?["“]([A-Z][A-Za-z]{1,10})["”]\s*\)/g;
+  /\b[A-Z][A-Za-z]+(?:\s+(?:[A-Z][A-Za-z]+|of|and|the)){0,8}\s+(?:Code|Acts?|Laws?|Regulations?)\b(?:\s+of\s+\d{4})?\s*\(\s*(?:the\s+)?["“]([A-Z][A-Za-z]{1,10})["”]\s*\)/g;
 
 /**
  * An acronym the document defines for ANOTHER INSTRUMENT — 'the Amended and
@@ -337,12 +350,19 @@ const STATUTE_ACRONYM_DEFINITION =
  * 3.5 of the IRA" was reported as a broken reference to a section this
  * document never had.
  *
+ * The word run is BOUNDED at eight. An outer `*` over a group containing
+ * `[A-Za-z]*` is the classic nested quantifier, and on ordinary Title-Case
+ * prose that never reaches an instrument noun — a signature page, a party
+ * list, an index of defined terms — it backtracks quadratically: forty-eight
+ * thousand characters of "A B A B" took 2.2 seconds in this one pattern. No
+ * instrument is named in more than eight words.
+ *
  * Mirrors {@link STATUTE_ACRONYM_DEFINITION}, with the defining phrase ending
  * in an instrument word rather than a statute word. Both apostrophes are
  * admitted because Word inserts the curly one.
  */
 const INSTRUMENT_ACRONYM_DEFINITION =
-  /\b[A-Z][A-Za-z’']*(?:\s+(?:[A-Z][A-Za-z’']*|of|and|the))*\s+(?:Agreements?|Leases?|Notes?|Indentures?|Plans?|Polic(?:y|ies)|Contracts?|Charters?|By-?laws?|Declarations?|Orders?|Certificates?)\b(?:\s+of\s+even\s+date(?:\s+herewith)?)?\s*\(\s*(?:the\s+)?["“]([A-Za-z][A-Za-z\s'’-]{1,40})["”]\s*\)/g;
+  /\b[A-Z][A-Za-z’']*(?:\s+(?:[A-Z][A-Za-z’']*|of|and|the)){0,8}\s+(?:Agreements?|Leases?|Notes?|Indentures?|Plans?|Polic(?:y|ies)|Contracts?|Charters?|By-?laws?|Declarations?|Orders?|Certificates?)\b(?:\s+of\s+even\s+date(?:\s+herewith)?)?\s*\(\s*(?:the\s+)?["“]([A-Za-z][A-Za-z\s'’-]{1,40})["”]\s*\)/g;
 
 // A section reference trailed by "of (the) <ACRONYM>" — "Section 262 of the
 // DGCL". Checked against the collected / seeded statute-acronym set.
@@ -547,8 +567,18 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       if (articleThenSection && m.index < articleThenSection[0].length) continue;
       // Skip external statutory citations — a reference into another
       // authority's numbering, not this document's outline.
-      const after = ctx.text.slice(m.index + m[0].length);
-      const before = ctx.text.slice(0, m.index);
+      // BOUNDED slices. Every guard below is anchored — the `after` tests all
+      // start at `^` and the `before` tests all end at `$` — and the longest
+      // reach among them is a couple of hundred characters. Slicing the WHOLE
+      // remainder and the WHOLE preamble for every match made this loop
+      // quadratic in the paragraph: a 563 KB document pasted as one paragraph
+      // (no blank lines, which is what a paste of a whole contract looks like)
+      // spent 42 SECONDS here, copying some 27 GB of string, and the paste cap
+      // is twenty million characters. A window an order of magnitude past the
+      // longest guard costs nothing and makes the loop linear.
+      const GUARD_WINDOW = 2000;
+      const after = ctx.text.slice(m.index + m[0].length, m.index + m[0].length + GUARD_WINDOW);
+      const before = ctx.text.slice(Math.max(0, m.index - GUARD_WINDOW), m.index);
       const acronymTail = EXTERNAL_ACRONYM_TAIL.exec(after);
       // A statutory cite's SUBSECTION is part of its raw label but not part of
       // its number: the corroborating declaration "Section 1111(b)(2) of the

@@ -297,6 +297,19 @@ const DEFINITIONS_HEADING = /\b(definitions?|defined\s+terms|glossary|interpreta
 // performance improvement plan was reported as a term it forgot to define.
 // "Non-Disclosure Agreement" was read as "Disclosure Agreement" for the same
 // reason.
+/**
+ * How far a per-match guard may look.
+ *
+ * Every guard around the Title-Case scan is ANCHORED — the forward ones start
+ * at `^` and the backward ones end at `$` — and the longest reach among them is
+ * a few dozen characters. Slicing the whole remainder (or the whole preamble)
+ * for every match made the scan quadratic in the paragraph: eight hundred
+ * kilobytes of Title-Case prose pasted as ONE paragraph spent thirty-five
+ * seconds here. A window an order of magnitude past the longest guard costs
+ * nothing and makes the scan linear.
+ */
+const GUARD_WINDOW = 400;
+
 const TITLE_CASE_PHRASE =
   /\b((?:[A-Z][a-z]+(?:-[A-Z][a-z]+)*(?:\s+[A-Z][a-z]+(?:-[A-Z][a-z]+)*){1,4}))\b/g;
 
@@ -1213,7 +1226,10 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // "Title | Chief Executive Officer" (`src/ingest/docx.ts`). The pipe is
       // the cell boundary doing exactly the job the colon does here.
       if (ctx.text[m.index + m[0].length] === ":") continue;
-      if (/^\s*\|/.test(ctx.text.slice(m.index + m[0].length))) continue;
+      if (
+        /^\s*\|/.test(ctx.text.slice(m.index + m[0].length, m.index + m[0].length + GUARD_WINDOW))
+      )
+        continue;
       // "in this Annual Report on Form 10-K" — a "this"-prefixed phrase is
       // the document referring to ITSELF (or to a companion instrument it
       // just named), not an undefined term.
@@ -1314,7 +1330,11 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // because the Title-Case run stops at the lowercase "in". Every OWBPA
       // release names that Act, and every one reported the fragment as a term
       // it forgot to define.
-      if (/^[^.;]{0,40}?\b(?:Act|Code|Law)\b/.test(ctx.text.slice(m.index + phrase.length)))
+      if (
+        /^[^.;]{0,40}?\b(?:Act|Code|Law)\b/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
+        )
+      )
         continue;
       // The statute's name can also FOLLOW the noun: "Code of Civil
       // Procedure", "Rules of Civil Procedure", "Laws of New York". Every
@@ -1342,7 +1362,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // the `Act` / `Code` / `Law` lookahead above, for the instrument nouns.
       if (
         /^\s+(?:and|&|of|for|to)\s+(?:[A-Z][\w-]*\s+){0,3}(?:Agreement|Contract|Lease|Deed|Indenture|Note|Plan|Policy|Charter|Bylaws|Rules)\b/.test(
-          ctx.text.slice(m.index + phrase.length),
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
         )
       )
         continue;
@@ -1351,7 +1371,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // Foreground", because the Title-Case run needs a lowercase tail on
       // every word and "IP" has none. The document defines "Foreground IP",
       // not "Joint Foreground".
-      if (/^\s+[A-Z]{2,6}\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
+      if (
+        /^\s+[A-Z]{2,6}\b/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
+        )
+      )
+        continue;
       // The NAME OF ANOTHER INSTRUMENT the document references — "the
       // Investors' Rights Agreement", "the Voting Agreement", "the Restated
       // Certificate". A document that names another agreement is not defining
@@ -1434,7 +1459,10 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // was reported as a term the plan forgot to define. The single-word
       // cities never reach here (the phrase test needs two words); it is the
       // two-word ones that do, and the state after the comma is what says so.
-      const afterPhrase = ctx.text.slice(m.index + phrase.length);
+      const afterPhrase = ctx.text.slice(
+        m.index + phrase.length,
+        m.index + phrase.length + GUARD_WINDOW,
+      );
       const cityState = /^\s*,\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\b/.exec(afterPhrase);
       if (cityState && (US_STATE_NAMES.has(cityState[1]!) || PLACE_NAMES.has(cityState[1]!))) {
         // Recorded, not merely skipped. A plan names its alternate site once
@@ -1534,7 +1562,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // "Last Will" is the front half of the document's own title, split at
       // the lowercase "and" in "my Last Will and Testament". The title is not
       // a term the instrument defines — it is what the instrument IS.
-      if (/^\s*and\s+Testament\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
+      if (
+        /^\s*and\s+Testament\b/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
+        )
+      )
+        continue;
       // An ordinal instrument name ("First Amendment", "Second Addendum") is
       // the TITLE of a companion document, not a term this one defines.
       if (
@@ -1556,7 +1589,9 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // abbreviation ("No. The parties …", "No. Section 5 applies").
       if (
         /\sNo$/.test(phrase) &&
-        /^\.\s*(?:\d|[A-Za-z]{1,6}[-\u2011\u2013]?\d)/.test(ctx.text.slice(m.index + phrase.length))
+        /^\.\s*(?:\d|[A-Za-z]{1,6}[-\u2011\u2013]?\d)/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
+        )
       )
         continue;
       if (personNames.has(phraseLower)) continue;
@@ -1576,7 +1611,9 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // "Program Rule" or a "Special Procedure".
       if (
         /\s(?:Rules?|Procedures?|Regulations?|Ruling|Bulletin|Notice|Circular)$/.test(phrase) &&
-        /^\s*(?:of\s+[A-Z]|§|\d)/.test(ctx.text.slice(m.index + phrase.length))
+        /^\s*(?:of\s+[A-Z]|§|\d)/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
+        )
       )
         continue;
       // The MIRROR of the same citation shape: the authority's name continues
@@ -1602,7 +1639,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // undefined.
       if (
         /\b(?:Rules?|Regulations?|Canons?|Office|Bureau|Ministry|Secretariat|Chamber|Institute|Academy|Council|Commission|Board|Department|Agency|Division|Directorate)\s+of\s+$/.test(
-          ctx.text.slice(0, m.index),
+          ctx.text.slice(Math.max(0, m.index - GUARD_WINDOW), m.index),
         )
       )
         continue;
@@ -1627,7 +1664,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       //
       // Three digits or more, so an ordinal section reference is untouched and
       // a two-word phrase followed by a year is not swept in.
-      if (/^\s*(?:Nos?\.\s*)?\d{3,}\b/.test(ctx.text.slice(m.index + phrase.length))) continue;
+      if (
+        /^\s*(?:Nos?\.\s*)?\d{3,}\b/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
+        )
+      )
+        continue;
       // A term the document defines by its COMPOSITION, outside a Definitions
       // section: "The Contract Documents consist of the prime contract between
       // Contractor and Owner, the drawings and specifications listed in
@@ -1666,7 +1708,9 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       // forgot to define.
       if (
         /\b(?:District|Circuit|Division|Department)$/.test(phrase) &&
-        /^\s*of\s+[A-Z]/.test(ctx.text.slice(m.index + phrase.length))
+        /^\s*of\s+[A-Z]/.test(
+          ctx.text.slice(m.index + phrase.length, m.index + phrase.length + GUARD_WINDOW),
+        )
       )
         continue;
       if (entityPrefixes.has(phraseLower)) continue;
@@ -2280,8 +2324,17 @@ function insideOccurrenceOf(
   index: number,
   length: number,
 ): boolean {
-  let at = text.indexOf(container);
-  while (at !== -1) {
+  // Only an occurrence starting within `container.length` characters BEFORE the
+  // index can contain it, so the search starts there rather than at zero. The
+  // old scan walked every occurrence in the document for every match, which is
+  // quadratic in general and catastrophic when the container itself repeats —
+  // a caption that appears forty thousand times in a paste made this the single
+  // most expensive thing in the extractor: eight hundred kilobytes of
+  // Title-Case prose took thirty-five seconds. The loop now runs at most
+  // `container.length` times.
+  const lo = Math.max(0, index - container.length);
+  let at = text.indexOf(container, lo);
+  while (at !== -1 && at <= index) {
     if (index >= at && index + length <= at + container.length) return true;
     at = text.indexOf(container, at + 1);
   }
