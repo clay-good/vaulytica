@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.420.0] — 2026-09-03
+
+### Fixed
+- **The cross-OS determinism matrix had quietly stopped running.** It sat
+  `cancelled` on four consecutive commits while CI, Deploy and Lighthouse went
+  green each time — and a job that runs OUT OF TIME is reported as `cancelled`,
+  which at a glance is indistinguishable from one superseded by a later push.
+  The suite had simply outgrown the 15-minute budget (the last successful run
+  took 14m51s). The job that catches the Windows-only path-separator class was
+  not running, and "3 of 4 green" hid it.
+
+  Two changes, because raising the limit alone would paper over it and
+  optimizing alone would leave the job at the cliff edge:
+
+  - `format-invariance.test.ts` analyzes the clean corpus **once** instead of
+    once per transform. Every relation compares a transformed specimen against
+    its untouched self, and each re-analyzed the untouched side from scratch —
+    with ten relations over 311 specimens, nine wasted passes over the whole
+    corpus. **191s → 106s**, measured by reverting the change and watching the
+    cost return.
+  - The matrix job's `timeout-minutes` is 25, with headroom rather than at the
+    edge.
+
+### Notes
+- `ci.yml` has no job timeout at all and so inherits GitHub's 6-hour default,
+  which is why it kept passing while the matrix timed out. Left as found.
+
 ## [9.419.0] — 2026-09-03
 
 ### Added

@@ -19,7 +19,16 @@ jobs:
     # Windows. Spec §27 row (c): cross-machine determinism.
     name: ${{ matrix.os }} / Node ${{ matrix.node }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    # A job that runs OUT OF TIME is reported as `cancelled`, which at a glance
+    # is indistinguishable from one superseded by a later push — so this matrix
+    # sat "cancelled" on four consecutive commits while CI, Deploy and
+    # Lighthouse went green, and the cross-OS determinism check (the one that
+    # catches the Windows-only path-separator class) quietly stopped running.
+    # The suite had simply outgrown a 15-minute budget: the last successful run
+    # took 14m51s. Raised with headroom rather than to the edge, and paired with
+    # a 45% cut to the heaviest file (`format-invariance` now analyzes the clean
+    # corpus once instead of once per transform: 191s -> 106s).
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:

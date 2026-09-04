@@ -42,6 +42,26 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
  */
 const KNOWN_UNSTABLE = new Set<string>([]);
 
+/**
+ * The CLEAN analysis of each specimen, computed once for the whole file.
+ *
+ * Every relation below compares a transformed specimen against its untouched
+ * self, and each one used to re-analyze the untouched side from scratch — so
+ * the clean corpus was analyzed once PER TRANSFORM. With ten relations over 311
+ * specimens that is nine wasted passes over the entire corpus, and it pushed
+ * the cross-OS matrix past its 15-minute job timeout, where a job that runs out
+ * of time is reported as `cancelled` and reads, at a glance, like a run that was
+ * superseded rather than one that failed.
+ */
+const cleanCache = new Map<string, Awaited<ReturnType<typeof analyzeText>>>();
+async function clean(name: string, text: string): Promise<Awaited<ReturnType<typeof analyzeText>>> {
+  const hit = cleanCache.get(name);
+  if (hit) return hit;
+  const result = await analyzeText(text, name);
+  cleanCache.set(name, result);
+  return result;
+}
+
 const SPECIMENS = readdirSync(DIR)
   .filter((f) => f.endsWith(".txt"))
   .sort();
@@ -172,7 +192,7 @@ describe("format is not load-bearing", () => {
       const mutated = stampEvery(text, () => "CONFIDENTIAL — ATTORNEY WORK PRODUCT");
       if (mutated === text) continue;
       probed++;
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const after = await analyzeText(mutated, name);
       const ids = (r: typeof normal): string[] =>
         [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
@@ -194,7 +214,7 @@ describe("format is not load-bearing", () => {
     "%s routes the same with its blank lines stripped",
     async (name) => {
       const text = readFileSync(join(DIR, name), "utf8");
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const stripped = await analyzeText(stripBlankLines(text), name);
       // Routing is invariant for EVERY specimen, with no exceptions: a
       // document that loses its blank lines must not become a different kind
@@ -229,7 +249,7 @@ describe("format is not load-bearing", () => {
       const ligated = ligate(text);
       if (ligated === text) continue;
       probed++;
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const after = await analyzeText(ligated, name);
       const ids = (r: typeof normal): string[] =>
         [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
@@ -382,7 +402,7 @@ describe("format is not load-bearing", () => {
         const mutated = mutate(text);
         if (mutated === text) continue;
         probed++;
-        const normal = await analyzeText(text, name);
+        const normal = await clean(name, text);
         const after = await analyzeText(mutated, name);
         const ids = (r: typeof normal): string[] =>
           [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
@@ -420,7 +440,7 @@ describe("format is not load-bearing", () => {
       const split = perSentence(text);
       if (split === text) continue;
       probed++;
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const after = await analyzeText(split, name);
       const ids = (r: typeof normal): string[] =>
         [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
@@ -438,7 +458,7 @@ describe("format is not load-bearing", () => {
     "%s reports the same findings with its blank lines stripped",
     async (name) => {
       const text = readFileSync(join(DIR, name), "utf8");
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const stripped = await analyzeText(stripBlankLines(text), name);
       const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
       expect(ids(stripped)).toEqual(ids(normal));
@@ -454,7 +474,7 @@ describe("format is not load-bearing", () => {
     "%s",
     async (_label, name, transform) => {
       const text = readFileSync(join(DIR, name), "utf8");
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const transformed = await analyzeText(transform(text), name);
       const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
       expect(transformed.run.playbook_id).toBe(normal.run.playbook_id);
@@ -467,7 +487,7 @@ describe("format is not load-bearing", () => {
     "%s routes the same double-spaced",
     async (name) => {
       const text = readFileSync(join(DIR, name), "utf8");
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const spaced = await analyzeText(doubleSpaced(text), name);
       expect(spaced.run.playbook_id, `${name} re-routed`).toBe(normal.run.playbook_id);
     },
@@ -478,7 +498,7 @@ describe("format is not load-bearing", () => {
     "%s reports the same findings double-spaced",
     async (name) => {
       const text = readFileSync(join(DIR, name), "utf8");
-      const normal = await analyzeText(text, name);
+      const normal = await clean(name, text);
       const spaced = await analyzeText(doubleSpaced(text), name);
       const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
       expect(ids(spaced)).toEqual(ids(normal));
@@ -496,7 +516,7 @@ describe("format is not load-bearing", () => {
     ] as const) {
       for (const name of list) {
         const text = readFileSync(join(DIR, name), "utf8");
-        const normal = await analyzeText(text, name);
+        const normal = await clean(name, text);
         const other = await analyzeText(transform(text), name);
         const ids = (r: typeof normal) => [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
         if (JSON.stringify(ids(normal)) === JSON.stringify(ids(other))) stable.push(name);
