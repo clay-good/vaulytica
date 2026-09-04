@@ -11,8 +11,8 @@
  * and not on the screen reads, to anyone auditing the source, like a caveat the
  * user was given.
  *
- * These tests pin the two surfaces. The browser side is pinned separately, in
- * `src/ui/states.test.ts` ("input notice").
+ * These tests pin the CLI and the two report surfaces. The browser side is
+ * pinned separately, in `src/ui/states.test.ts` ("input notice").
  */
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -76,5 +76,30 @@ describe("the ingest's warnings reach the CLI", () => {
       process.stdout.write = realOut;
     }
     expect(() => JSON.parse(out.join(""))).not.toThrow();
+  }, 120_000);
+});
+
+describe("the ingest's warnings reach the archived report", () => {
+  const ingest = {
+    source: "docx" as const,
+    word_count: 10,
+    sha256: "0".repeat(64),
+    warnings: ["This document has tracked changes."],
+    tree: { type: "document" as const, sections: [] },
+  };
+
+  it("the JSON report carries them — it outlives the terminal", async () => {
+    const { buildJsonReport } = await import("../../src/report/json.js");
+    const { runEngine } = await import("../../src/engine/runner.js");
+    const { buildContext } = await import("../../src/engine/_test-fixtures.js");
+    const { LAUNCH_RULES } = await import("../../src/engine/rules/index.js");
+    const run = await runEngine({
+      rules: LAUNCH_RULES,
+      ctx: buildContext(["Agreement", "The fee is $5,000."]),
+      source_file: { name: "a.docx", sha256: "0".repeat(64), size_bytes: 10 },
+    });
+    const blob = buildJsonReport(run, ingest);
+    const parsed = JSON.parse(await blob.text()) as { ingest: { warnings: string[] } };
+    expect(parsed.ingest.warnings).toEqual(["This document has tracked changes."]);
   }, 120_000);
 });

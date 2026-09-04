@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.417.0] — 2026-09-03
+
+### Added
+- **The ingest's warnings now reach the two archived surfaces as well.** The
+  previous release wired the CLI and the browser; the JSON report and the
+  standalone HTML report still dropped them, and those are the surfaces that
+  outlive the terminal. A reader opening an archived report months later had no
+  way to learn which version of a redline had been analyzed.
+
+  The JSON report's `ingest` block carries `warnings`, and the HTML report shows
+  an "About this input" row on the cover beside the other proof fields, because
+  it qualifies everything under it.
+
+  Golden report fixtures change (a new field); no finding moved.
+
+### Notes
+- `IngestResult.language` is declared and emitted in the JSON report but is
+  never set by any ingest path, so it is always absent. Left as found — noting
+  it rather than removing it, since nothing in this change depends on it.
+
 ## [9.416.0] — 2026-09-03
 
 ### Fixed

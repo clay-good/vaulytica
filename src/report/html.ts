@@ -347,6 +347,16 @@ export function buildHtmlReport(
     `<dt>Document</dt><dd>${esc(ingest.source)} · ${ingest.word_count} words${ingest.page_count ? ` · ${ingest.page_count} pages` : ""}</dd>`,
   );
   body.push(`<dt>File fingerprint (SHA-256)</dt><dd>${esc(run.source_file.sha256)}</dd>`);
+  // What the ingest could and could not read. On the cover, beside the other
+  // proof fields, because it qualifies everything under it — an analysis of a
+  // redline is an analysis of ONE of its two versions.
+  if (ingest.warnings.length > 0) {
+    body.push(
+      `<dt>About this input</dt><dd><ul class="input-warnings">${ingest.warnings
+        .map((w) => `<li>${esc(w)}</li>`)
+        .join("")}</ul></dd>`,
+    );
+  }
   if (run.filing_profile) {
     body.push(
       `<dt>Court profile</dt><dd>${esc(run.filing_profile.id)} (${esc(run.filing_profile.brief_kind)} brief) — asserted by the user</dd>`,

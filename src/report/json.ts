@@ -44,7 +44,17 @@ export type ReportSecondaryFamily = {
 
 export type JsonReport = {
   run: EngineRun;
-  ingest: Pick<IngestResult, "source" | "word_count" | "page_count" | "language" | "sha256">;
+  /**
+   * `warnings` is what the ingest could and could not read — a redline read as
+   * all-changes-accepted, a PDF that fell back to OCR, text pasted without its
+   * structure. The archived report is the surface where it matters most: the
+   * JSON outlives the terminal the CLI printed to, and a reader coming back to
+   * it later has no other way to learn which version of a redline was analyzed.
+   */
+  ingest: Pick<
+    IngestResult,
+    "source" | "word_count" | "page_count" | "language" | "sha256" | "warnings"
+  >;
   /**
    * Report-level provenance (spec-v7 §17). Stamps the versions that
    * produced this report — DKB, engine, and the rule-taxonomy vocabulary
@@ -228,6 +238,7 @@ export function buildJsonReport(
       page_count: ingest.page_count,
       language: ingest.language,
       sha256: ingest.sha256,
+      warnings: ingest.warnings,
     },
     provenance: {
       dkb_version: run.dkb_version,
