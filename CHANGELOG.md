@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.418.0] — 2026-09-03
+
+### Added
+- **Hidden text is now declared.** The mirror image of the redline warning. A
+  `w:vanish` run is text Word does NOT display, and mammoth emits it like any
+  other run — so an "internal margin: 40 percent" left hidden in a draft is
+  analyzed, quoted in a finding's excerpt, and counted, while the reader cannot
+  find it anywhere in the document in front of them.
+
+  The two failures point in opposite directions: a redline hides from the engine
+  what the reader can see, and hidden text shows the engine what the reader
+  cannot. Both are now declared rather than silently resolved — hidden text is
+  often exactly what a reviewer most wants to see, so it is still analyzed.
+
+  `w:vanish w:val="0"` turns hiding OFF (it is how a run opts out of a hidden
+  style), so only the affirmative form counts; there is a test.
+
+### Changed
+- `ingest/tracked-changes.ts` is now `ingest/docx-notices.ts`: it answers the
+  general question "what does this DOCX carry that its converted text does not
+  tell you?", and tracked changes are one of two answers.
+
 ## [9.417.0] — 2026-09-03
 
 ### Added
