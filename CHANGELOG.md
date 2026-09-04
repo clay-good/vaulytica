@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.415.0] — 2026-09-03
+
+### Added
+- **A redline now says which version was read.** mammoth converts a DOCX with
+  tracked changes to the ALL-CHANGES-ACCEPTED text: a `w:ins` run arrives as
+  ordinary agreed language, and a `w:del` run — the term the counterparty is
+  asking you to give up — does not arrive at all. Neither default is
+  unreasonable and neither was discoverable: a reviewer opening a counterparty's
+  redline got an analysis of the version the counterparty wants, with no
+  indication that that had happened, and with the struck-out terms unexamined.
+
+  The DOCX ingest now counts the revision elements and warns, naming the counts,
+  saying the document was read as if every change were accepted, and saying
+  plainly that deleted text was not analyzed. What is analyzed is unchanged —
+  which version of a redline the engine should see is a design decision, not a
+  defect to patch quietly.
+
+### Changed
+- The bounded OOXML inflate (zip-bomb ratio and per-part ceilings) moved from
+  `delivery/container.ts` to `ingest/ooxml.ts` and is now shared by both
+  callers, rather than copied into the second one.
+
 ## [9.414.0] — 2026-09-03
 
 ### Fixed

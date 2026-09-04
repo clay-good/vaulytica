@@ -2,6 +2,7 @@ import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./type
 import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes } from "./limits.js";
+import { countRevisions, trackedChangesWarning } from "./tracked-changes.js";
 
 /**
  * Ingest a DOCX file using mammoth.js. DOCX preserves real heading styles
@@ -54,6 +55,9 @@ export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> 
   const input: { arrayBuffer: ArrayBuffer; buffer?: Uint8Array } = { arrayBuffer: buf };
   if (typeof Buffer !== "undefined") input.buffer = Buffer.from(buf);
   const result = await mammoth.convertToHtml(input);
+  // mammoth returns the ALL-CHANGES-ACCEPTED text of a redline, silently. Say so.
+  const tracked = trackedChangesWarning(countRevisions(buf));
+  if (tracked) warnings.push(tracked);
   for (const m of result.messages) {
     if (m.type === "warning" || m.type === "error") {
       warnings.push(`mammoth: ${m.message}`);
