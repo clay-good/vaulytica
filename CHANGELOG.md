@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.428.0] — 2026-09-04
+
+### Added
+- **A standing guard that "does not apply" is the same carve-out as "shall not
+  apply."** The sibling of `shall-will`, and the same two-halved shape: a static
+  ratchet over the recognizer sources plus a corpus relation that rewrites the
+  corpus and diffs the findings.
+
+  It exists because three instances of this blindness were found by hand in one
+  session — MSA-007 by the clean-document method, INS-103 by a static sweep, and
+  the pattern was already spelled correctly in RISK-004 and RISK-015, which is
+  what made the omissions legible as defects rather than style. A one-off fix
+  repeated three times is a rule waiting to be written down.
+
+  The ratchet runs in **both** directions, which matters: the corpus writes a
+  carve-out in the present indicative 39 times and in the modal 3, so a
+  recognizer blind to the modal would barely show, while one blind to the
+  present indicative would show everywhere.
+
+### Notes
+- The corpus relation found one real divergence, declared rather than absorbed:
+  rewriting "the Act does not apply" to "shall not apply" makes the obligations
+  extractor read a scope carve-out as an obligation, and OBLI-005 counts it
+  among the negative covenants. It is not one — a negative covenant has a PARTY
+  who must not act, and here the subject is a statute. The shape is ordinary
+  drafting ("Section 5 shall not apply to…"), so this is a real false positive;
+  the fix belongs in the obligations extractor, which feeds many rules and
+  deserves its own measured change rather than a correction made in passing.
+
 ## [9.427.0] — 2026-09-04
 
 ### Fixed
