@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.421.0] — 2026-09-03
+
+### Added
+- **A marked-up PDF now says so.** The same silence as the DOCX side, in the
+  other format: a PDF's reviewer markup lives in ANNOTATIONS, not in the text
+  layer, so `getTextContent` never sees it and a sticky note reading "we cannot
+  agree to this" was neither analyzed nor mentioned.
+
+  Counted through pdfjs — which the ingest already has loaded and which has
+  parsed the object streams — rather than by the delivery pack's byte-regex,
+  which is honest that it reads only uncompressed regions and so would miss the
+  annotations a modern PDF actually stores.
+
+  Only reviewer markup counts (`Text`, `FreeText`, `Highlight`, `Underline`,
+  `StrikeOut`, `Squiggly`, `Caret`, `Ink`). A `Link` is navigation and a
+  `Widget` is a form field; warning about those would train the reader to
+  ignore the notice. `Popup` is excluded because it is the window belonging to
+  another annotation and would report every sticky note twice.
+
+  The tests build a real PDF carrying real annotations and drive real pdfjs, so
+  they exercise the parser rather than a stub — and the first one fails when the
+  count is stubbed back to zero.
+
 ## [9.420.0] — 2026-09-03
 
 ### Fixed

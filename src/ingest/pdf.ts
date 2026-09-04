@@ -49,6 +49,11 @@ type PdfDocument = {
 type PdfPage = {
   pageNumber: number;
   getTextContent: () => Promise<{ items: PdfTextItem[] }>;
+  /**
+   * Optional because the OCR path bridges through a structurally-typed
+   * `PdfDocument` of its own and older stubs in the tests do not define it.
+   */
+  getAnnotations?: () => Promise<Array<{ subtype?: string }>>;
   getViewport: (params: { scale: number }) => { width: number; height: number };
   render?: (params: { canvasContext: unknown; viewport: unknown }) => { promise: Promise<void> };
 };
@@ -107,12 +112,23 @@ export async function ingestPdfBuffer(
   const pdfDoc = await pdfjs.getDocument({ data: buf, useSystemFonts: true }).promise;
 
   const pages: PageContent[] = [];
+  let markupAnnotations = 0;
   for (let n = 1; n <= pdfDoc.numPages; n += 1) {
     const page = await pdfDoc.getPage(n);
     const content = await page.getTextContent();
     pages.push(extractPageContent(content.items, n));
+    // A PDF's reviewer markup lives in ANNOTATIONS, not in the text layer, so
+    // `getTextContent` never sees it: a sticky note reading "we cannot agree to
+    // this" is neither analyzed nor mentioned. The DOCX side of this is
+    // `docx-notices.ts`; this is the same silence in the other format.
+    // Counted here rather than by the delivery pack's byte-regex, which is
+    // honest that it only reads UNCOMPRESSED regions — pdfjs has already
+    // parsed the object streams, so this sees the annotations a modern PDF
+    // actually stores.
+    markupAnnotations += await countMarkupAnnotations(page);
     options.onProgress?.(n / pdfDoc.numPages, "text");
   }
+  const annotationNotice = markupAnnotationNotice(markupAnnotations);
 
   const perPageAlpha = pages.map((p) =>
     p.items.reduce((acc, it) => acc + (it.str.match(/[A-Za-z]/g)?.length ?? 0), 0),
@@ -138,6 +154,7 @@ export async function ingestPdfBuffer(
           `Document has ${pdfDoc.numPages} pages; OCR was bounded to the first ${MAX_OCR_PAGES}. The remaining ${pdfDoc.numPages - MAX_OCR_PAGES} page(s) were not OCR'd.`,
         );
       }
+      if (annotationNotice) warnings.push(annotationNotice);
       const uncertain = (ocrText.match(/\[uncertain\]/g) ?? []).length;
       if (uncertain > 0) {
         warnings.push(
@@ -158,6 +175,8 @@ export async function ingestPdfBuffer(
     );
   }
 
+  if (annotationNotice) warnings.push(annotationNotice);
+
   const tree = buildTreeFromPages(pages);
   const normalized = normalize(tree);
 
@@ -169,6 +188,50 @@ export async function ingestPdfBuffer(
     sha256,
     warnings,
   };
+}
+
+/**
+ * Reviewer markup subtypes — the ones a person leaves for another person to
+ * read. Deliberately NOT every annotation: a `Link` is navigation and a
+ * `Widget` is a form field, and warning about those would train the reader to
+ * ignore the notice.
+ */
+const MARKUP_SUBTYPES = new Set([
+  "Text",
+  "FreeText",
+  "Highlight",
+  "Underline",
+  "StrikeOut",
+  "Squiggly",
+  "Caret",
+  "Ink",
+]);
+
+/** Markup annotations on one page, or 0 when the build cannot report them. */
+async function countMarkupAnnotations(page: PdfPage): Promise<number> {
+  if (!page.getAnnotations) return 0;
+  try {
+    const annots = await page.getAnnotations();
+    // `Popup` is deliberately absent from the set above: it is the open window
+    // BELONGING to another annotation, so counting it would report every
+    // sticky note twice.
+    return annots.filter((a) => MARKUP_SUBTYPES.has(a.subtype ?? "")).length;
+  } catch {
+    // Annotation parsing is not worth failing an ingest over.
+    return 0;
+  }
+}
+
+/** The notice a marked-up PDF earns, or null. */
+export function markupAnnotationNotice(count: number): string | null {
+  if (count <= 0) return null;
+  const one = count === 1;
+  return (
+    `This PDF has ${count} reviewer ${one ? "annotation" : "annotations"} (sticky notes, ` +
+    `highlights, or strike-throughs). ${one ? "It was" : "They were"} NOT analyzed — a note can ` +
+    `carry the position behind a clause, and none of that reached this report. ` +
+    `Open the PDF to read ${one ? "it" : "them"}.`
+  );
 }
 
 // ───────────────────────────────────────────────────────────────────────────

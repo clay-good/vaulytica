@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ingestPdfBuffer, assessTextLayer } from "./pdf.js";
+import { ingestPdfBuffer, assessTextLayer, markupAnnotationNotice } from "./pdf.js";
 
 // The first call lazily loads pdfjs (`legacy/build/pdf.mjs`) — a heavy module
 // whose cold init can exceed vitest's default 5s timeout on slower CI runners
@@ -28,13 +28,18 @@ vi.setConfig({ testTimeout: 30_000 });
  * correct `xref` byte offsets so pdfjs parses it via the normal path (no
  * error-recovery rebuild). Returns a detached-safe fresh ArrayBuffer.
  */
-function buildMinimalPdf(text: string): ArrayBuffer {
+function buildMinimalPdf(text: string, annots?: string[]): ArrayBuffer {
+  // Annotation objects are appended after the five fixed ones, so the page's
+  // /Annots array names 6 0 R, 7 0 R, … in order.
+  const annotObjs = annots ?? [];
+  const annotRefs = annotObjs.map((_a, i) => `${6 + i} 0 R`).join(" ");
   const objects = [
     "<</Type/Catalog/Pages 2 0 R>>",
     "<</Type/Pages/Kids[3 0 R]/Count 1>>",
-    "<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>",
+    `<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>${annotObjs.length ? `/Annots[${annotRefs}]` : ""}>>`,
     `<</Length ${20 + text.length}>>\nstream\nBT /F1 24 Tf 72 700 Td (${text}) Tj ET\nendstream`,
     "<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>",
+    ...annotObjs,
   ];
   let pdf = "%PDF-1.4\n";
   const offsets: number[] = [];
@@ -105,5 +110,45 @@ describe("assessTextLayer — OCR trigger heuristics", () => {
   it("does not trigger on a text PDF with one sparse divider/signature page", () => {
     const r = assessTextLayer([2000, 1800, 10, 1500]);
     expect(r.needsOcr).toBe(false);
+  });
+});
+
+describe("reviewer annotations a PDF carries but its text layer does not", () => {
+  /** A sticky note. pdfjs parses this; `getTextContent` never sees it. */
+  const stickyNote = (body: string) =>
+    `<</Type/Annot/Subtype/Text/Rect[100 700 120 720]/Contents(${body})>>`;
+  const highlight = `<</Type/Annot/Subtype/Highlight/Rect[72 690 300 710]/QuadPoints[72 710 300 710 72 690 300 690]>>`;
+  /** Navigation, not reviewer markup — must NOT be counted. */
+  const link = `<</Type/Annot/Subtype/Link/Rect[72 600 200 620]/A<</S/URI/URI(https://example.com)>>>>`;
+
+  it("says a marked-up PDF has notes, and that they were not analyzed", async () => {
+    const pdf = buildMinimalPdf("The fee is due in thirty days.", [
+      stickyNote("We cannot agree to this."),
+      highlight,
+    ]);
+    const result = await ingestPdfBuffer(pdf, { allowOcr: false });
+    const notice = result.warnings.find((w) => w.includes("reviewer annotation"));
+    expect(notice, `warnings were: ${JSON.stringify(result.warnings)}`).toBeDefined();
+    expect(notice).toContain("2 reviewer annotations");
+    expect(notice).toContain("NOT analyzed");
+  });
+
+  it("does not count a Link — that is navigation, not markup", async () => {
+    const result = await ingestPdfBuffer(buildMinimalPdf("Body text.", [link]), {
+      allowOcr: false,
+    });
+    expect(result.warnings.filter((w) => w.includes("reviewer annotation"))).toEqual([]);
+  });
+
+  it("says nothing about a clean PDF", async () => {
+    const result = await ingestPdfBuffer(buildMinimalPdf("Body text."), { allowOcr: false });
+    expect(result.warnings).toEqual([]);
+  });
+
+  it("agrees with itself about number", () => {
+    expect(markupAnnotationNotice(1)).toContain("1 reviewer annotation ");
+    expect(markupAnnotationNotice(1)).toContain("It was");
+    expect(markupAnnotationNotice(2)).toContain("They were");
+    expect(markupAnnotationNotice(0)).toBeNull();
   });
 });
