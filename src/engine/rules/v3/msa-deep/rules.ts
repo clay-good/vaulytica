@@ -335,7 +335,17 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Carve fraud, wilful misconduct, IP indemnification, confidentiality breach, and data-protection breach out of the cap.",
     present_patterns: [
-      /(cap|limitation).{0,200}(?:(?:shall|will)\s+not\s+apply|excluded|carved\s+out).{0,200}(fraud|wil[l]?ful\s+misconduct|IP\s+indemn|confidentiality|data\s+protection)/is,
+      /(cap|limitation).{0,200}(?:(?:do|does|shall|will)\s+not\s+apply|excluded|carved\s+out).{0,200}(fraud|wil[l]?ful\s+misconduct|IP\s+indemn|confidentiality|data\s+protection)/is,
+      // The carve-out names the capping clause by NUMBER rather than by the
+      // noun: "Clause 12.1 and clause 12.2 do not apply to a Party's
+      // indemnification obligations under clause 9, ... or to either Party's
+      // fraud or wilful misconduct." The branch above needs the word "cap" or
+      // "limitation" within 200 characters, and in that drafting the nearest
+      // one is the section HEADING, which is further away than the window —
+      // so a document that carves out fraud, wilful misconduct, the IP
+      // indemnity, confidentiality AND data protection read as carving out
+      // nothing. This is the same shape RISK-015 and RISK-004 already accept.
+      /\bclauses?\s+\d+(?:\.\d+)*\b[^.]{0,90}?\b(?:do|does|shall|will)\s+not\s+apply\s+to\b[^.]{0,240}?(fraud|wil[l]?ful\s+misconduct|indemnif|confidentiality|data\s+protection)/is,
       // English drafting puts the carve-outs BEFORE the cap, as a
       // "nothing in this agreement" clause: "Nothing in this Agreement LIMITS
       // OR EXCLUDES either party's liability for death or personal injury
@@ -751,6 +761,14 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Add: 'neither party shall be liable for delay or failure due to force majeure', with a payment-obligation carve-out.",
     present_patterns: [
       /(neither\s+party|either\s+party).{0,80}force\s+majeure/is,
+      // A force-majeure clause is as often drafted WITHOUT the Latin: "Neither
+      // Party is liable for a failure to perform caused by an event beyond its
+      // reasonable control" is the same clause, bilateral, and is the usual
+      // modern formulation. RISK-013 and COMM-111 both already read it that
+      // way — and RISK-013 reported this very clause PRESENT in the same run
+      // where MSA-022 reported it missing. Two rules disagreeing about whether
+      // a document has a force-majeure clause is the tell.
+      /(neither\s+party|either\s+party)[^.]{0,120}\bbeyond\s+(?:the\s+|its\s+|their\s+|a\s+party['’]?s?\s+|such\s+party['’]?s?\s+|either\s+party['’]?s?\s+)?(?:reasonable\s+)?control\b/is,
       /force\s+majeure.{0,160}(?:neither|both|each\s+party)/is,
     ],
     default_severity: "info",

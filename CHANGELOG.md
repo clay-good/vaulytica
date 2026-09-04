@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.426.0] — 2026-09-04
+
+### Fixed
+- **Two false positives on a customer-side MSA**, found by writing the first
+  specimen for the one playbook in the catalog that no specimen routed to
+  (`msa-customer-deep`). Both are the clean-document method working: author a
+  COMPLETE, compliant document, and every absence finding it draws is a
+  candidate bug.
+
+  - **MSA-007** reported "no carve-outs from the liability cap" against a
+    document whose clause 12.3 carves out the indemnities, confidentiality,
+    data protection, fraud and wilful misconduct. The carve-out names the
+    capping clause by NUMBER — "Clause 12.1 and clause 12.2 do not apply
+    to…" — and the recognizer wanted the noun "cap" or "limitation" within 200
+    characters, plus the modal "shall/will not apply" rather than the plain
+    "do not apply". RISK-004 and RISK-015 already accept `do|does|shall|will`;
+    this one had not learned it.
+  - **MSA-022** reported "no bilateral force-majeure language" against
+    "Neither Party is liable for a failure to perform caused by an event beyond
+    its reasonable control" — because it required the Latin. RISK-013 reported
+    that same clause PRESENT in the same run, which is the tell: two rules
+    disagreeing about whether a document has a force-majeure clause.
+
+  Both fixes are checked in both directions — silent on the compliant document,
+  still firing when the carve-out or the bilateral wording is genuinely absent.
+
+### Added
+- `msa-customer-side.txt`, the 312th specimen. Its routing tie with
+  `msa-vendor-deep` is declared, not papered over: the two packs read the same
+  master services agreement from opposite sides, so the catalog is right to
+  score them equally — which lens you want is `--role`, not the document's.
+  Four saas customer/vendor specimens already carry the same declaration.
+
 ## [9.425.0] — 2026-09-04
 
 ### Documentation

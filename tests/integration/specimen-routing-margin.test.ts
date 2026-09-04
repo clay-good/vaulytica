@@ -57,6 +57,10 @@ const DECLARED_TIES = new Map<string, string>([
     "the same two sides again, on a subscription agreement titled CLOUD SERVICES AGREEMENT — which lens you want is --role, not the document's",
   ],
   [
+    "msa-customer-side.txt:msa-vendor-deep",
+    "the MSA-deep packs read the same master services agreement from two sides; which lens you want is --role, not the document's",
+  ],
+  [
     "privacy-notice.txt:privacy-policy-lint",
     "the lint pack is a second lens on the same notice, not a rival family",
   ],

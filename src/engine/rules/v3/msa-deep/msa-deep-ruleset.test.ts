@@ -469,6 +469,50 @@ describe("MSA pack — English drafting conventions", () => {
     ).toBe(false);
   });
 
+  it("MSA-007 reads carve-outs that name the capping clause by NUMBER", async () => {
+    // The drafting that found this: the carve-out references "clause 12.1 and
+    // clause 12.2" rather than saying "cap" or "limitation" near the verb, and
+    // writes "do not apply" rather than "shall not apply". A document carving
+    // out fraud, wilful misconduct, the IP indemnity, confidentiality AND data
+    // protection read as carving out nothing.
+    expect(
+      await fires(
+        "MSA-007",
+        "Clause 12.1 and clause 12.2 do not apply to a Party's indemnification obligations under clause 9, to a breach of clause 7, or to either Party's fraud or wilful misconduct.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-007 still fires when nothing is carved out of the cap", async () => {
+    expect(
+      await fires(
+        "MSA-007",
+        "Each Party's total aggregate liability arising out of this Agreement is limited to the Fees paid in the twelve months before the claim.",
+      ),
+    ).toBe(true);
+  });
+
+  it("MSA-022 reads a bilateral force-majeure clause drafted without the Latin", async () => {
+    // RISK-013 and COMM-111 both already read "beyond its reasonable control"
+    // as a force-majeure clause. RISK-013 reported this very clause PRESENT in
+    // the same run where MSA-022 reported it missing.
+    expect(
+      await fires(
+        "MSA-022",
+        "Neither Party is liable for a failure to perform caused by an event beyond its reasonable control, provided it notifies the other Party promptly.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-022 still fires when only one party is excused", async () => {
+    expect(
+      await fires(
+        "MSA-022",
+        "Provider is not liable for a failure to perform caused by an event beyond its reasonable control.",
+      ),
+    ).toBe(true);
+  });
+
   it("MSA-016 reads service levels held in a schedule", async () => {
     expect(
       await fires(

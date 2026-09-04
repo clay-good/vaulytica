@@ -1,0 +1,182 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (this "Agreement") is entered into as of April 6, 2026 (the "Effective Date") by and between Calloway Grid Systems, Inc., a Delaware corporation with its principal place of business at 4400 Ashcroft Way, Suite 900, Austin, Texas 78735 ("Provider"), and Marchetti Northfield Industries, LLC, a Michigan limited liability company with its principal place of business at 218 Larkspur Avenue, Grand Rapids, Michigan 49503 ("Customer"). Provider and Customer are each a "Party" and together the "Parties".
+
+RECITALS
+
+A. Provider provides hosted logistics-planning software and related professional services.
+B. Customer wishes to purchase those services on the terms of this Agreement.
+
+The Parties agree as follows:
+
+1. DEFINITIONS
+
+1.1 "Affiliate" means any entity that controls, is controlled by, or is under common control with a Party, where control means ownership of more than fifty percent (50%) of the voting equity.
+
+1.2 "Confidential Information" means non-public information disclosed by one Party to the other that is marked confidential or that a reasonable person would understand to be confidential from its nature or the circumstances of disclosure.
+
+1.3 "Customer Data" means all data, records and content that Customer or its Users submit to, or that is generated for Customer by, the Services.
+
+1.4 "Fees" means the amounts payable by Customer as stated in an Order Form.
+
+1.5 "Order Form" means an ordering document executed by the Parties that references this Agreement and states the Services, the Fees, and the Subscription Term.
+
+1.6 "Services" means the hosted software and the professional services described in an Order Form.
+
+1.7 "Service Level Agreement" means the availability and support commitments set out in Schedule 1.
+
+1.8 "Subscription Term" means the period stated in an Order Form during which Customer is licensed to use the Services.
+
+1.9 "Users" means Customer's employees and contractors authorized by Customer to use the Services.
+
+2. ORDER OF PRECEDENCE
+
+2.1 This Agreement governs all Order Forms. If there is a conflict between documents, the order of precedence is: (a) this Agreement; (b) the Service Level Agreement in Schedule 1; (c) the applicable Order Form; and (d) any Provider documentation. Provider's standard terms of use, purchase-order terms, and click-through terms do not apply and are of no effect.
+
+3. SERVICES
+
+3.1 Provider shall provide the Services in accordance with this Agreement, the applicable Order Form, and the Service Level Agreement.
+
+3.2 Provider shall perform all professional services in a competent and workmanlike manner, using personnel with the skill and experience reasonably required.
+
+3.3 Provider shall not materially reduce the functionality of the Services during a Subscription Term.
+
+4. SERVICE LEVELS
+
+4.1 Provider shall make the Services available at least 99.9% of the time in each calendar month, measured as set out in Schedule 1, excluding scheduled maintenance for which Provider has given at least five (5) Business Days' notice.
+
+4.2 If Provider fails to meet the uptime commitment in clause 4.1, Customer is entitled to the service credits stated in Schedule 1. Service credits are not Customer's sole and exclusive remedy, and do not limit Customer's right to terminate under clause 10.3 or to recover damages under this Agreement.
+
+5. FEES
+
+5.1 Customer shall pay the Fees stated in each Order Form within thirty (30) days after receipt of a correct and undisputed invoice.
+
+5.2 Provider may increase the Fees on renewal by giving at least sixty (60) days' written notice before the end of the then-current Subscription Term, and any increase shall not exceed five percent (5%) of the Fees then in effect.
+
+5.3 Customer may withhold payment of any amount it disputes in good faith, provided it pays all undisputed amounts and notifies Provider of the basis for the dispute within twenty (20) days of the invoice date.
+
+6. CUSTOMER DATA AND DATA PROTECTION
+
+6.1 As between the Parties, Customer owns all right, title and interest in Customer Data. Provider acquires no rights in Customer Data other than the limited licence in clause 6.2.
+
+6.2 Customer grants Provider a non-exclusive licence to host, copy and process Customer Data solely to provide the Services to Customer. Provider shall not use Customer Data to train any model, to develop any product, or for any other purpose.
+
+6.3 Provider shall maintain an information security program that includes encryption of Customer Data in transit and at rest, role-based access control, annual penetration testing, and an annual SOC 2 Type II audit, and shall provide the audit report to Customer on request.
+
+6.4 Provider shall notify Customer without undue delay, and in any event within seventy-two (72) hours, after becoming aware of any unauthorized access to or disclosure of Customer Data, and shall provide the information Customer reasonably requires to meet its own notification obligations.
+
+7. CONFIDENTIALITY
+
+7.1 Each Party shall keep the other Party's Confidential Information confidential, shall use it only to perform this Agreement, and shall disclose it only to those of its employees, Affiliates and professional advisers who need it and who are bound by confidentiality obligations no less protective than these.
+
+7.2 Clause 7.1 does not apply to information that is or becomes public through no breach of this Agreement, that the receiving Party already held without a duty of confidence, or that it develops independently.
+
+7.3 If a Party is required by law or by a regulator to disclose Confidential Information, it shall, to the extent legally permitted, notify the other Party first so that the other Party may seek a protective order.
+
+7.4 Clause 7 survives termination of this Agreement for a period of five (5) years.
+
+8. INTELLECTUAL PROPERTY
+
+8.1 Provider retains all right, title and interest in the Services and in any software, documentation and know-how used to provide them.
+
+8.2 Provider grants Customer and its Affiliates a non-exclusive, worldwide right to use the Services during the Subscription Term for Customer's internal business purposes.
+
+9. INDEMNIFICATION
+
+9.1 Provider shall indemnify, defend and hold harmless Customer and its Affiliates against any third-party claim that the Services infringe that third party's intellectual property rights, and shall pay all damages finally awarded and reasonable legal fees incurred.
+
+9.2 Customer shall indemnify, defend and hold harmless Provider against any third-party claim arising from Customer Data that Customer was not entitled to submit to the Services.
+
+9.3 The indemnified Party shall notify the indemnifying Party promptly of any claim, allow the indemnifying Party to control the defence, and provide reasonable cooperation at the indemnifying Party's expense. The indemnifying Party shall not settle a claim in a way that imposes any obligation or admission on the indemnified Party without its prior written consent.
+
+10. TERM; TERMINATION
+
+10.1 This Agreement begins on the Effective Date and continues until the last Order Form expires or is terminated.
+
+10.2 Customer may terminate this Agreement or any Order Form for convenience on sixty (60) days' written notice to Provider, and Provider shall refund any prepaid Fees for the period after termination takes effect.
+
+10.3 Either Party may terminate this Agreement immediately on written notice if the other Party commits a material breach that it does not cure within thirty (30) days after written notice of the breach, or if the other Party becomes insolvent.
+
+10.4 Provider shall not suspend the Services for non-payment unless the amount is undisputed, is more than thirty (30) days overdue, and Provider has given Customer at least ten (10) days' written notice.
+
+11. DATA RETURN AND TRANSITION ASSISTANCE
+
+11.1 On expiry or termination of this Agreement, and at Customer's request made within ninety (90) days afterwards, Provider shall return Customer Data to Customer in a documented, machine-readable format at no charge.
+
+11.2 Provider shall provide transition assistance for up to one hundred and eighty (180) days after termination, at the professional-services rates in the applicable Order Form, so that Customer can migrate to a replacement service without interruption.
+
+11.3 After the return period in clause 11.1 and once transition assistance has ended, Provider shall delete Customer Data from its systems and confirm the deletion in writing.
+
+12. LIMITATION OF LIABILITY
+
+12.1 Neither Party is liable for indirect, incidental, special, consequential or punitive damages, or for lost profits, arising out of this Agreement.
+
+12.2 Each Party's total aggregate liability arising out of this Agreement is limited to the greater of (a) two hundred percent (200%) of the Fees paid or payable in the twelve (12) months before the event giving rise to liability, and (b) $500,000.
+
+12.3 Clause 12.1 and clause 12.2 do not apply to a Party's indemnification obligations under clause 9, to a breach of clause 7, to Provider's breach of clause 6.2 or clause 6.3, or to either Party's fraud or wilful misconduct, and Provider's indemnification obligations under clause 9.1 are not counted against the cap in clause 12.2.
+
+13. WARRANTIES
+
+13.1 Each Party warrants that it has the authority to enter into this Agreement.
+
+13.2 Provider warrants that the Services will perform materially in accordance with the applicable Order Form and the Service Level Agreement, and that the Services do not contain any malicious code.
+
+14. INSURANCE
+
+14.1 Provider shall maintain commercial general liability insurance of not less than $2,000,000 per occurrence, professional liability (errors and omissions) insurance of not less than $5,000,000, and cyber liability insurance of not less than $5,000,000, and shall provide certificates of insurance on Customer's request.
+
+15. ASSIGNMENT
+
+15.1 Neither Party may assign this Agreement without the other Party's prior written consent, except that either Party may assign it in its entirety to a successor in connection with a merger or a sale of all or substantially all of its assets, on written notice to the other Party.
+
+15.2 Provider shall not subcontract any part of the Services without Customer's prior written consent, and Provider remains responsible for the acts and omissions of any subcontractor as if they were its own.
+
+16. NOTICES
+
+16.1 A notice under this Agreement must be in writing and delivered by hand, by nationally recognized overnight courier, or by email with confirmation of receipt, to the address stated at the head of this Agreement or to any other address a Party notifies in writing.
+
+17. GOVERNING LAW AND VENUE
+
+17.1 This Agreement is governed by the laws of the State of Michigan, without regard to its conflict-of-laws rules.
+
+17.2 The state and federal courts located in Kent County, Michigan have exclusive jurisdiction over any dispute arising out of this Agreement, and each Party consents to that jurisdiction and venue.
+
+18. GENERAL
+
+18.1 This Agreement, together with the Schedules and every Order Form, is the entire agreement between the Parties in relation to its subject matter and supersedes all prior discussions.
+
+18.2 No amendment or waiver is effective unless it is in writing and signed by both Parties.
+
+18.3 If any provision of this Agreement is held invalid or unenforceable, it shall be modified to the minimum extent necessary to make it enforceable, and the remaining provisions continue in full force and effect.
+
+18.4 Neither Party is liable for a failure to perform caused by an event beyond its reasonable control, provided it notifies the other Party promptly and resumes performance as soon as reasonably practicable. This clause does not excuse any obligation to pay.
+
+18.5 Nothing in this Agreement creates a partnership, joint venture or agency between the Parties.
+
+18.6 Clauses 6, 7, 9, 11, 12 and 17, and any accrued payment obligations, survive termination of this Agreement.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+CALLOWAY GRID SYSTEMS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Revenue Officer
+Date: April 6, 2026
+
+MARCHETTI NORTHFIELD INDUSTRIES, LLC
+
+By: /s/ Desmond Okonjo-Baptiste
+Name: Desmond Okonjo-Baptiste
+Title: Chief Operating Officer
+Date: April 6, 2026
+
+SCHEDULE 1 — SERVICE LEVEL AGREEMENT
+
+1. Availability. Provider shall make the Services available at least 99.9% of the time in each calendar month, measured as total minutes in the month less excused downtime, divided by total minutes in the month.
+
+2. Service Credits. If monthly availability falls below 99.9%, Customer is entitled to a credit of 5% of the monthly Fees; below 99.0%, 15%; below 98.0%, 30%. Credits are applied against the next invoice. Credits are not Customer's sole and exclusive remedy.
+
+3. Support. Provider shall acknowledge a severity-one incident within thirty (30) minutes and provide continuous effort until it is resolved, and shall acknowledge all other incidents within four (4) Business Days.
+
+4. Business Days. "Business Days" means Monday to Friday, excluding public holidays in the State of Michigan.

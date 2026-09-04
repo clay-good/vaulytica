@@ -3880,6 +3880,36 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["BNK-011", "TERM-002", "OBLI-005", "RISK-010", "RISK-011", "STRUCT-009", "TEMP-006"],
   },
 
+  // The first specimen for `msa-customer-deep`, which was the ONE playbook in
+  // the catalog no specimen routed to. Written as a COMPLETE, customer-side
+  // MSA under the clean-document method: every absence finding it draws is a
+  // candidate bug. It drew two — MSA-007 could not read a cap carve-out that
+  // names the capping clause by number ("clause 12.1 and clause 12.2 do not
+  // apply to ... fraud or wilful misconduct"), and MSA-022 could not read a
+  // bilateral force-majeure clause drafted without the Latin, which RISK-013
+  // reported PRESENT in the same run. Both are fixed; what remains below is
+  // honest — this document really has no background/foreground IP allocation,
+  // no compliance-with-laws warranty, and no confidentiality-breach indemnity.
+  "msa-customer-side.txt": {
+    playbook: "msa-customer-deep",
+    findings: [
+      "MSA-003",
+      "MSA-011",
+      "MSA-014",
+      "MSA-028",
+      "MSA-030",
+      "OBLI-005",
+      "RISK-007",
+      "RISK-010",
+      "RISK-013",
+      "STRUCT-009",
+      "TEMP-006",
+      "TERM-001",
+      "TERM-003",
+      "TERM-006",
+    ],
+  },
+
   "uk-master-services-agreement.txt": {
     playbook: "msa-vendor-deep",
     findings: [
