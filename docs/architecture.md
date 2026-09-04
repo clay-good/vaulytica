@@ -42,7 +42,12 @@ The ingest layer turns a `File` (PDF or DOCX) or pasted text into a **normalized
 | Scanned PDF | [`ocr.ts`](../src/ingest/ocr.ts)   | Lazy-loaded `tesseract.js`. Fires only when the PDF text layer is empty and the caller opts in via `allowOcr: true`. |
 | Pasted text | [`paste.ts`](../src/ingest/paste.ts)| ATX + Setext heading detection.                                                        |
 
-Determinism contract: same bytes in → same tree out. The normalizer (`normalize.ts`) assigns stable IDs (`s1.p2.r0`) and contiguous offsets so every downstream extractor can refer to positions identically.
+Determinism contract: same bytes in → same tree out. The normalizer (`normalize.ts`) assigns stable IDs (`s1.p2.r0`) and contiguous offsets so every downstream extractor can refer to positions identically. Order-independence is part of the contract and is guarded separately: a document analyzes identically whatever ran before it in the same process (`determinism-guard.test.ts`), which is what catches a module-level `/g` regex whose `lastIndex` survives a call.
+
+Two further concerns live here rather than in the rule layer, because a rule that has to know about them is a rule that will be written 1,825 times:
+
+- **Page furniture is not content.** A page number, a running header, a Bates stamp, a privilege legend, pleading-paper line numbers and a footnote marker are all removed before any rule runs ([`page-furniture.ts`](../src/ingest/page-furniture.ts), [`line-numbers.ts`](../src/ingest/line-numbers.ts), `normalize.ts`). Deleting the interrupting line is only half of it: a page break falls mid-sentence, so the two halves are rejoined — but only when they are unambiguously halves, and never across a heading, an attachment title or a signature line.
+- **What the file carries that its text does not say.** A DOCX redline reaches the engine as the all-changes-accepted text; hidden `w:vanish` text reaches it although no reader sees it; DOCX comments and PDF annotations never reach it at all. None of that changes _what_ is analyzed — that is a decision for the reader — so the ingest declares it in `IngestResult.warnings` ([`docx-notices.ts`](../src/ingest/docx-notices.ts), `pdf.ts`), and every surface renders it.
 
 ## Stage 2 — Extract ([src/extract/](../src/extract/))
 

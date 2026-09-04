@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,752+ passing tests` · `v9.424.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,752+ passing tests` · `v9.425.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -52,6 +52,20 @@ Vaulytica takes the documents a real review actually arrives as — and handles 
 | **DOCX**                     | mammoth, structure-preserving (headings, lists, tables → `DocumentTree`)                                                    | richest structure signal                                                                     |
 | **Pasted text**              | normalized directly                                                                                                         | no file needed                                                                               |
 | **Folder or `.zip`**         | every file ingested, then the **cross-document consistency** pass runs                                                      | `.zip` unpacked client-side via fflate (MIT, same-origin)                                    |
+
+### What it tells you about the input itself
+
+A document does not always say what it looks like it says, and the analysis is only as honest as its account of what it read. Vaulytica reports these as an **"About this input"** notice — at the top of the result in the tab, on stderr from the CLI, in the `ingest.warnings` field of the JSON report, and on the cover of the HTML report.
+
+| What the file carries                      | Who sees it normally | What the engine reads                    | What you are told                                                                         |
+| ------------------------------------------ | -------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Tracked changes** (a redline)            | you, struck through  | the all-changes-**accepted** text        | the counts, that insertions are read as agreed language, and that deletions were not read |
+| **Hidden text** (`w:vanish`)               | nobody               | it **is** analyzed                       | that a finding may quote text you cannot see, and how to reveal it                        |
+| **Reviewer comments** (DOCX)               | you, in Word         | nothing — mammoth drops the store        | the count, and that the position behind a clause never reached the report                 |
+| **PDF annotations** (sticky notes, markup) | you, in a viewer     | nothing — they are not in the text layer | the count, and to open the PDF to read them                                               |
+| **A scanned PDF** with no text layer       | you                  | only what OCR recovers                   | that OCR ran, its page bound, and every low-confidence word                               |
+
+None of these changes _what_ is analyzed. Which version of a redline the engine should read is a decision for you, not a default worth burying — so the tool states plainly what it did.
 
 Two or more documents trigger **bundle mode**: per-document reports _plus_ a portfolio risk matrix and cross-document checks (conflicting governing law, indemnity-cap stacking, defined-term drift across the set). A **composite document** — an MSA with a data-processing exhibit, say — is scanned with **every** family it clearly contains, not just its primary match, so a present family is never silently skipped; this holds whether the document is dropped alone or inside a folder. Nothing is uploaded — the file, and any playbook you load, never leaves the browser tab.
 

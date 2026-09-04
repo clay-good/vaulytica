@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.425.0] — 2026-09-04
+
+### Documentation
+- **The docs caught up with the last six releases.** A run of user-visible
+  behavior shipped — redline, hidden-text, comment and annotation notices, and
+  the four surfaces that render them — described only in the CHANGELOG, which is
+  where changes go, not where a reader looks to find out what the tool does.
+
+  The README's ingest section gains "What it tells you about the input itself":
+  a table of what each file format carries, who normally sees it, what the
+  engine actually reads, and what you are told — with the point stated plainly,
+  that none of it changes *what* is analyzed, because which version of a redline
+  to read is the reader's decision and not a default worth burying.
+
+  `docs/architecture.md` gains the two ingest-stage concerns that deliberately
+  do not live in the rule layer — page furniture, and what a file carries that
+  its text does not say — because a rule that has to know about either is a rule
+  that would be written 1,825 times. It also records that order-independence is
+  part of the determinism contract, not just repeat-determinism.
+
 ## [9.424.0] — 2026-09-04
 
 ### Added
