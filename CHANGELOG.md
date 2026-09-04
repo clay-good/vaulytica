@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.422.0] — 2026-09-04
+
+### Added
+- **A guard that a finding's quote is really in the document.** Every finding
+  carries an `excerpt`, and the JSON, DOCX, HTML and SARIF outputs all show it
+  to the reader as the words the tool is objecting to. A quote that is not in
+  the document would be the worst failure this tool has — it looks exactly like
+  evidence, and a reviewer would go hunting in their own copy for a sentence
+  that was never there.
+
+  The invariant holds today at **858 of 858** span-bearing excerpts across the
+  corpus; it is pinned so an extraction or offset regression cannot quietly
+  break it. Verified to fail when the check is perturbed.
+
+### Notes
+- The probe behind this found **no defects**, and two things that look like
+  defects and are not, now written down in the test rather than rediscovered:
+  `excerpt.text` is readable CONTEXT and may be wider than the span it carries
+  (asserting equality fails on 594 of 858, every one of them the design working),
+  and the quote and the location may point at different occurrences of a phrase
+  when that is the finding's whole point — STRUCT-014 shows the defined form
+  "Protected Material" while its span points at the lowercase slip.
+
 ## [9.421.0] — 2026-09-03
 
 ### Added
