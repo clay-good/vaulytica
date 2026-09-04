@@ -27,6 +27,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
+import { flattenText } from "../../src/ingest/types.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -527,4 +528,69 @@ describe("format is not load-bearing", () => {
       `these specimens are stable now — take them off KNOWN_UNSTABLE:\n  ${stable.join("\n  ")}`,
     ).toEqual([]);
   }, 300_000);
+});
+
+/**
+ * A finding QUOTES the document, and the quote must be real.
+ *
+ * This lives HERE, beside the format relations, for one reason: it needs the
+ * clean analysis of every specimen, and this file already has exactly that,
+ * cached. As its own file it re-analyzed all 311 specimens from scratch; folded
+ * in here it costs about 18 seconds (155.7s -> 173.5s, measured back to back —
+ * absolute timings on a laptop drift by 50% between runs, so only the A/B is
+ * meaningful). The concern is different; the corpus pass is the same one, and
+ * the matrix budget this file dominates had just been rescued from a timeout.
+ *
+ * A quote that is not in the document would be the worst failure this tool
+ * has: it looks exactly like evidence, and a reviewer would go hunting through
+ * their own copy for a sentence that was never there.
+ *
+ * What is deliberately NOT asserted, because each is a real design rather than
+ * a defect — written down so the next probe does not rediscover them:
+ *
+ *   - `excerpt.text` is readable CONTEXT and may be wider than the span. The
+ *     offsets locate the matched phrase; the text gives the sentence around
+ *     it. Asserting `slice(start, end) === text` fails on 594 of 858, and
+ *     every one of those is the design working.
+ *   - The quote and the location may point at DIFFERENT OCCURRENCES when that
+ *     is the finding's point: STRUCT-014 ("defined terms used in lowercase")
+ *     shows the defined form "Protected Material" while its span points at the
+ *     lowercase slip.
+ *   - An ABSENCE finding has nothing to quote and carries a zero-width excerpt
+ *     holding a synthetic label ("(no payment-term clause)").
+ */
+describe("a finding's quote is really in the document", () => {
+  it("every excerpt that carries a span quotes text the document contains", async () => {
+    const broken: string[] = [];
+    let quoted = 0;
+    let labels = 0;
+
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const result = await clean(name, text);
+      const flat = flattenText(result.ingest.tree);
+      for (const f of result.run.findings) {
+        const ex = f.excerpt;
+        if (!ex) continue;
+        if (ex.end_offset <= ex.start_offset) {
+          labels += 1;
+          continue;
+        }
+        quoted += 1;
+        if (!flat.includes(ex.text)) {
+          broken.push(`${name} ${f.rule_id}: ${JSON.stringify(ex.text.slice(0, 80))}`);
+        }
+        if (ex.end_offset > flat.length) {
+          broken.push(
+            `${name} ${f.rule_id}: span ends at ${ex.end_offset}, past the document's ${flat.length}`,
+          );
+        }
+      }
+    }
+
+    // Floors, so this cannot pass by finding nothing to check.
+    expect(quoted, "no finding carried a span-bearing excerpt").toBeGreaterThanOrEqual(700);
+    expect(labels, "no absence finding carried a label excerpt").toBeGreaterThanOrEqual(200);
+    expect(broken).toEqual([]);
+  }, 600_000);
 });

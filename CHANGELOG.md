@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.423.0] — 2026-09-04
+
+### Changed
+- The excerpt-fidelity guard added in 9.422.0 moved out of its own file and in
+  beside the format relations, which already make one cached pass over the clean
+  corpus. As a separate file it re-analyzed all 311 specimens from scratch;
+  folded in it costs about 18 seconds (155.7s → 173.5s, measured back to back).
+
+  The reason is the matrix budget this file dominates: the Windows leg ran
+  1128s of a 1500s timeout on 9.422.0, against 732–904s on the four commits
+  before it. How much of that jump was the new file and how much was runner
+  variance is genuinely unclear — Windows legs vary widely — but the file was
+  paying for a second full corpus analysis for no reason, and that part is
+  certain.
+
 ## [9.422.0] — 2026-09-04
 
 ### Added
