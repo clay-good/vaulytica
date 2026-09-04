@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.427.0] — 2026-09-04
+
+### Fixed
+- **INS-103 never checked the thing it exists to check.** Its name is
+  "Insured-versus-insured exclusion and carve-backs" and its own explanation
+  says: "Without carve-backs, the IvI exclusion defeats derivative suits,
+  trustee claims in bankruptcy, and whistleblower retaliation claims — exactly
+  the claims D&O is bought for." It did not check for carve-backs.
+
+  `pack()` builds a presence rule whose patterns are satisfied by ANY match
+  unless the spec sets `all: true`. INS-103 did not set it, so merely naming
+  the exclusion satisfied the rule and its carve-back pattern could never change
+  the outcome — a `critical`-severity rule silent on its own subject. `all: true`
+  is used 83 times elsewhere in the v5 packs and was used nowhere in the
+  insurance pack.
+
+  Zero specimens change: the one D&O policy in the corpus carries real
+  carve-backs (a derivative action, a bankruptcy trustee, a whistleblower, a
+  former Insured Person) and stays correctly silent. That also means the fix has
+  no positive evidence from a real document in the corpus — only from the three
+  tests added here, each checked to fail with the fix reverted.
+
+- **GOV-116 had the same defect**, found by asking what else looks like this: a
+  name joining a topic to a REQUIREMENT ("Adjournment and secretary signature"),
+  an explanation reading "Unsigned, unapproved minutes are a draft", a fix
+  asking for the secretary's signature block — and recording the adjournment
+  alone satisfied it. Both pillars are now required. Zero specimens change; the
+  minutes in the corpus are signed.
+
+  The scan that found it is a heuristic, not a proof: a rule whose name joins
+  two concepts, with exactly two patterns and no `all: true`. Rules with 16 to
+  34 patterns matched the same shape and are simply synonym lists, where ANY
+  match is correct. The two fixed here were each confirmed by reading the
+  rule's own stated intent, not by the scan.
+
+- The same rule's carve-back pattern accepted only "shall/will not apply to",
+  where a real policy as often writes "**does** not apply to". Broadened to
+  `do|does|shall|will`, matching RISK-004, RISK-015 and MSA-007. On its own this
+  edit was inert — the branch was unreachable — which is how the design defect
+  above came to light.
+
 ## [9.426.0] — 2026-09-04
 
 ### Fixed

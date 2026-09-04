@@ -48,10 +48,15 @@ const DO = pack("do-policy", C, [
     ),
     pat: [
       /insured\s+(v(ersus|\.)?|vs\.?)\s+insured/i,
-      /(carve-?back|(?:shall|will)\s+not\s+apply\s+to|derivative\s+(action|demand)|bankruptcy\s+trustee|whistleblower|former\s+(director|officer))/i,
+      // "This exclusion DOES not apply to any derivative action…" is as
+      // standard in a real policy as "shall not apply to". RISK-004, RISK-015
+      // and MSA-007 all spell this alternation `do|does|shall|will`; this one
+      // read only the modal forms.
+      /(carve-?back|(?:do|does|shall|will)\s+not\s+apply\s+to|derivative\s+(action|demand)|bankruptcy\s+trustee|whistleblower|former\s+(director|officer))/i,
     ],
     why: "Without carve-backs, the IvI exclusion defeats derivative suits, trustee claims in bankruptcy, and whistleblower retaliation claims — exactly the claims D&O is bought for.",
     fix: "Confirm carve-backs for derivative actions brought without insured assistance, claims by a bankruptcy trustee or examiner, whistleblower claims, and claims by former directors and officers.",
+    all: true,
     sev: "critical",
   },
   {

@@ -223,6 +223,11 @@ const MINUTES = pack("meeting-minutes", C, [
       /(adjourn|there\s+being\s+no\s+further\s+business)/i,
       /(secretary|respectfully\s+submitted|approved\s+at\s+the\s+.{0,30}meeting)/i,
     ],
+    // Both pillars are REQUIRED, not alternatives: minutes that record the
+    // adjournment but carry no secretary signature are exactly what this rule
+    // says is wrong ("Unsigned, unapproved minutes are a draft"), and without
+    // `all` the adjournment alone satisfied it. Same defect as INS-103.
+    all: true,
     why: "Unsigned, unapproved minutes are a draft. The approval at the following meeting is what makes them the corporation's record.",
     fix: "Record the adjournment, add the secretary's signature block, and note approval at the subsequent meeting.",
   },
