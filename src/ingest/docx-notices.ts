@@ -25,9 +25,14 @@ import { inflateOoxmlParts } from "./ooxml.js";
  * reader cannot find it anywhere in the document in front of them. Again the
  * fix is to say so rather than to silently change what is analyzed: hidden
  * text is often exactly what a reviewer most wants to see.
+ *
+ * REVIEWER COMMENTS are the third: mammoth drops them entirely, so a comment
+ * carrying the position behind a clause — "we cannot agree to this" — is
+ * neither analyzed nor mentioned. In a document under negotiation that is
+ * often the most important content in the file.
  */
 
-const DOCUMENT_PART = new Set(["word/document.xml"]);
+const PARTS = new Set(["word/document.xml", "word/comments.xml"]);
 /** Counting stops here; the exact number past it is not what the warning says. */
 const MAX_COUNT = 5000;
 
@@ -37,6 +42,8 @@ export type RevisionCounts = {
   moves: number;
   /** Runs marked `w:vanish` — text Word does not display, but the engine reads. */
   hidden: number;
+  /** Reviewer comments. Never analyzed — mammoth drops them entirely. */
+  comments: number;
 };
 
 function count(xml: string, re: RegExp): number {
@@ -49,12 +56,15 @@ function count(xml: string, re: RegExp): number {
 /** Revision-element counts, or all zeros when the part cannot be read. */
 export function countRevisions(bytes: ArrayBuffer): RevisionCounts {
   let xml: string;
+  let commentsXml: string;
   try {
-    xml = inflateOoxmlParts(bytes, DOCUMENT_PART)["word/document.xml"] ?? "";
+    const parts = inflateOoxmlParts(bytes, PARTS);
+    xml = parts["word/document.xml"] ?? "";
+    commentsXml = parts["word/comments.xml"] ?? "";
   } catch {
     // A container mammoth already parsed should inflate, but a warning is not
     // worth failing an ingest over.
-    return { insertions: 0, deletions: 0, moves: 0, hidden: 0 };
+    return { insertions: 0, deletions: 0, moves: 0, hidden: 0, comments: 0 };
   }
   return {
     insertions: count(xml, /<w:ins\b/g),
@@ -63,6 +73,10 @@ export function countRevisions(bytes: ArrayBuffer): RevisionCounts {
     // `w:vanish` with an explicit false value TURNS HIDING OFF — it is how a
     // run opts out of a hidden style — so only the affirmative form counts.
     hidden: count(xml, /<w:vanish(?![^>]*w:val="(?:0|false)")\b[^>]*\/?>/g),
+    // `w:comment` in the comment STORE, not the `w:commentRangeStart` anchors
+    // in the body — a comment spanning several paragraphs has one entry here
+    // and several anchors there.
+    comments: count(commentsXml, /<w:comment\b(?![^>]*\bw:id="-1")/g),
   };
 }
 
@@ -98,6 +112,15 @@ export function docxNotices(counts: RevisionCounts): string[] {
       `This document has ${plural(hidden, "hidden text run")} that Word does not display. ` +
         `${one ? "It WAS" : "They WERE"} analyzed, so a finding may quote text you cannot see ` +
         `in the document. Turn on hidden text in Word to read ${one ? "it" : "them"}.`,
+    );
+  }
+
+  if (counts.comments > 0) {
+    notices.push(
+      `This document has ${plural(counts.comments, "reviewer comment")}. ` +
+        `${counts.comments === 1 ? "It was" : "They were"} NOT analyzed — a comment can carry ` +
+        `the position behind a clause ("we cannot agree to this"), and none of that reached ` +
+        `this report. Read the comments in Word.`,
     );
   }
 

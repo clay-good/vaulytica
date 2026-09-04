@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.419.0] — 2026-09-03
+
+### Added
+- **Reviewer comments are declared.** The third and last of the things a DOCX
+  carries that its converted text does not say. mammoth drops the comment store
+  entirely, so a comment holding the position behind a clause — "we cannot agree
+  to this" — is neither analyzed nor mentioned. In a document under negotiation
+  that is often the most important content in the file.
+
+  The three failures are now all declared, and they are genuinely different:
+  a redline hides from the engine what the reader can see; hidden text shows the
+  engine what the reader cannot; a comment is invisible to both.
+
+  Counted from the comment STORE (`word/comments.xml`), not the
+  `w:commentRangeStart` anchors in the body — a comment spanning several
+  paragraphs has one entry and several anchors.
+
 ## [9.418.0] — 2026-09-03
 
 ### Added

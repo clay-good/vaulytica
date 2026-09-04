@@ -14,6 +14,7 @@ describe("countRevisions", () => {
       deletions: 1,
       moves: 0,
       hidden: 0,
+      comments: 1,
     });
   });
 
@@ -21,7 +22,13 @@ describe("countRevisions", () => {
     const clean = buildDocx({
       document: documentXml(`<w:p><w:r><w:t>The fee is due in 30 days.</w:t></w:r></w:p>`),
     });
-    expect(countRevisions(clean)).toEqual({ insertions: 0, deletions: 0, moves: 0, hidden: 0 });
+    expect(countRevisions(clean)).toEqual({
+      insertions: 0,
+      deletions: 0,
+      moves: 0,
+      hidden: 0,
+      comments: 0,
+    });
   });
 
   it("does not throw on bytes that are not a container", () => {
@@ -30,6 +37,7 @@ describe("countRevisions", () => {
       deletions: 0,
       moves: 0,
       hidden: 0,
+      comments: 0,
     });
   });
 
@@ -58,7 +66,7 @@ describe("countRevisions", () => {
 });
 
 describe("docxNotices", () => {
-  const none = { insertions: 0, deletions: 0, moves: 0, hidden: 0 };
+  const none = { insertions: 0, deletions: 0, moves: 0, hidden: 0, comments: 0 };
 
   it("is silent on an ordinary document", () => {
     expect(docxNotices(none)).toEqual([]);
@@ -93,7 +101,14 @@ describe("docxNotices", () => {
     expect(docxNotices({ ...none, hidden: 1 })[0]).not.toContain("They WERE");
   });
 
-  it("gives a document with both its own notice for each", () => {
-    expect(docxNotices({ ...none, insertions: 1, hidden: 1 })).toHaveLength(2);
+  it("gives a document with all three its own notice for each", () => {
+    expect(docxNotices({ ...none, insertions: 1, hidden: 1, comments: 1 })).toHaveLength(3);
+  });
+
+  it("warns that reviewer comments were NOT analyzed", () => {
+    const [w] = docxNotices({ ...none, comments: 4 });
+    expect(w).toContain("4 reviewer comments");
+    expect(w).toContain("NOT analyzed");
+    expect(docxNotices({ ...none, comments: 1 })[0]).toContain("It was NOT analyzed");
   });
 });
