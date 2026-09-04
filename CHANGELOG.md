@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.424.0] — 2026-09-04
+
+### Added
+- **An order-independence guard.** The determinism guard repeats one fixture
+  five times, so a document's predecessor is always itself: it proves a document
+  is deterministic and cannot see state that leaks from one document into the
+  NEXT one. The classic source is a module-level `/g` regex used with `.test()`
+  or `.exec()`, whose `lastIndex` survives the call — `classifyClauses` had
+  exactly that bug once, and the catalog holds 1,825 rules that could each hold
+  another.
+
+  A forward pass then a reverse pass in ONE process gives every fixture a
+  completely different set of predecessors. Probed across all 311 specimens
+  first: **zero differences**, so this found no defect. Pinned on the DOCX
+  fixtures, which cost about 0.8s and exercise the same engine. Verified to fail
+  when perturbed.
+
 ## [9.423.0] — 2026-09-04
 
 ### Changed

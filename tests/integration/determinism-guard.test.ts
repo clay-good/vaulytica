@@ -72,6 +72,42 @@ function collectTsFiles(dir: string): string[] {
 
 const REPO_ROOT = join(__dirname, "..", "..");
 
+/**
+ * ORDER INDEPENDENCE — the same document must analyze the same way whatever
+ * was analyzed BEFORE it in the same process.
+ *
+ * The guard above repeats one fixture five times, so its predecessor is always
+ * itself: it proves a document is deterministic, and cannot see state that
+ * leaks from one document into the NEXT one. The classic source is a
+ * module-level `/g` regex used with `.test()` or `.exec()`, whose `lastIndex`
+ * survives the call — `classifyClauses` had exactly that bug, and the catalog
+ * holds 1,825 rules that could each hold another.
+ *
+ * A forward pass and then a reverse pass in ONE process gives every fixture a
+ * completely different set of predecessors. Probed across all 311 specimens
+ * before this was written: zero differences. This pins it on the DOCX fixtures,
+ * which is the cheaper corpus and exercises the same engine.
+ */
+describe("determinism guard — order independence", () => {
+  it("a fixture analyzes identically whatever ran before it", async () => {
+    const forward = new Map<string, string>();
+    for (const name of fixtures) {
+      const { run } = await runFixture(join(CONTRACTS, name));
+      forward.set(name, run.result_hash);
+    }
+    const diverged: string[] = [];
+    // Reverse order, same process: every fixture now has different predecessors.
+    for (const name of [...fixtures].reverse()) {
+      const { run } = await runFixture(join(CONTRACTS, name));
+      if (run.result_hash !== forward.get(name)) {
+        diverged.push(`${name}: ${forward.get(name)} then ${run.result_hash}`);
+      }
+    }
+    expect(forward.size, "no fixtures were analyzed").toBeGreaterThanOrEqual(10);
+    expect(diverged).toEqual([]);
+  }, 300_000);
+});
+
 describe("determinism guard — locale-pin source scan", () => {
   it("every localeCompare/toLocaleString in src/ and tools/cli/ pins an explicit locale", () => {
     const violations: string[] = [];
