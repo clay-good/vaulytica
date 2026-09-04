@@ -278,6 +278,7 @@ function renderCompleteState(
         ? { superseded_by: result.playbook.superseded_by }
         : undefined,
     match_reasoning: result.match_reasoning,
+    input_warnings: result.ingest.warnings,
     counts: countsBySeverity(result.run),
     docx_blob: result.docx_blob,
     json_blob: result.json_blob,

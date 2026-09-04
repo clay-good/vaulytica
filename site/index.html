@@ -1053,6 +1053,35 @@
         font-style: italic;
         overflow-wrap: anywhere;
       }
+      /* What the INGEST could and could not read — a redline read as
+         all-changes-accepted, a PDF that fell back to OCR, text pasted without
+         its structure. A caveat about the INPUT, so it sits above everything,
+         including the unmatched-document banner: it changes how the whole
+         report should be read. */
+      .input-notice {
+        margin: 4px 0 14px;
+        text-align: left;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+        border-left: 4px solid #a86700;
+        background: var(--surface);
+        overflow-wrap: anywhere;
+      }
+      .input-notice-head {
+        font-weight: 600;
+        color: var(--body);
+        margin-bottom: 4px;
+      }
+      .input-notice-list {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--body);
+        font-size: 14px;
+      }
+      .input-notice-list li + li {
+        margin-top: 4px;
+      }
       /* Unmatched-document banner + scope-of-review (add-document-vertical-framework).
          Both sit above the findings; presence-only, never a clean bill of health. */
       .classification-notice {

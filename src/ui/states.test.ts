@@ -1658,3 +1658,44 @@ describe("renderState", () => {
     expect(select(dz, "error-message")?.textContent).toBe("Open it in Word…");
   });
 });
+
+describe("input notice — the ingest's caveats about what it read", () => {
+  const complete = () =>
+    ({
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+    }) as const;
+
+  it("is hidden when the ingest had nothing to say", () => {
+    const dz = document.createElement("div");
+    renderState(dz, complete());
+    expect(select<HTMLElement>(dz, "input-notice")!.hidden).toBe(true);
+  });
+
+  it("shows every warning the ingest produced", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      ...complete(),
+      input_warnings: ["This document has tracked changes.", "OCR fallback was used."],
+    });
+    const el = select<HTMLElement>(dz, "input-notice")!;
+    expect(el.hidden).toBe(false);
+    expect(el.querySelectorAll("li")).toHaveLength(2);
+    expect(el.textContent).toContain("tracked changes");
+    expect(el.textContent).toContain("OCR fallback");
+  });
+
+  it("escapes the warning text", () => {
+    const dz = document.createElement("div");
+    renderState(dz, { ...complete(), input_warnings: ["<img src=x onerror=alert(1)>"] });
+    const el = select<HTMLElement>(dz, "input-notice")!;
+    expect(el.querySelector("img")).toBeNull();
+    expect(el.textContent).toContain("<img");
+  });
+});

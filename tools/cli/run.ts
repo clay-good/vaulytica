@@ -965,6 +965,15 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     for (const f of r.run.findings) counts[f.severity]++;
     human(`${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`);
 
+    // The ingest's OWN caveats about what it could and could not read: a
+    // redline read as all-changes-accepted, a PDF that fell back to OCR, text
+    // pasted without its structure. `IngestResult.warnings` had never been read
+    // by ANY consumer in ANY surface, so every one of these was composed and
+    // thrown away — the same trap the block below exists to close.
+    for (const w of r.ingest.warnings) {
+      process.stderr.write(`vaulytica: warning: ${file}: ${w}\n`);
+    }
+
     // Asserted opt-in packs are activation-gated on the matched playbook.
     // Silence here is a trap: the reviewer asserted --regime / --estate
     // and got a normal-looking report with zero pack checks in it (audit

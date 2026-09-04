@@ -21,6 +21,13 @@ export type DropzoneState =
        */
       playbook_deprecation?: { superseded_by?: string };
       match_reasoning?: string;
+      /**
+       * What the INGEST could and could not read — a redline read as
+       * all-changes-accepted, a PDF that fell back to OCR, text pasted without
+       * its structure. These are caveats about the INPUT, not findings about
+       * the document, so they sit above the counts rather than among them.
+       */
+      input_warnings?: ReadonlyArray<string>;
       counts: { critical: number; warning: number; info: number };
       docx_blob: Blob;
       json_blob: Blob;
@@ -591,6 +598,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   `,
   complete: `
     <div class="dropzone-title" data-role="complete-filename"></div>
+    <div class="input-notice" data-role="input-notice" hidden></div>
     <div class="classification-notice" data-role="classification-notice" hidden></div>
     <div class="scope-of-review" data-role="scope-of-review" hidden></div>
     <div class="scope-of-review regime-coverage" data-role="regime-coverage" hidden></div>
@@ -713,6 +721,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         : " Legacy playbook."
       : "";
     select(dz, "reasoning")!.textContent = `${baseReasoning}${legacySuffix}`;
+    renderInputNotice(dz, state.input_warnings);
     renderClassificationNotice(dz, state.classification_notice);
     renderScopeOfReview(dz, state.scope_of_review);
     renderRegimeCoverage(dz, state.regime_coverage);
@@ -1336,6 +1345,27 @@ function renderSecondaryFamilies(
  * the findings when classification fell to the generic fallback; hidden
  * otherwise. The text comes from the hashed run, not this renderer.
  */
+/**
+ * The ingest's caveats about the input. Rendered ABOVE everything else,
+ * because they change how the whole report should be read: an analysis of a
+ * redline is an analysis of one of its two versions, and the reader has to be
+ * told which one.
+ */
+function renderInputNotice(dz: HTMLElement, warnings: ReadonlyArray<string> | undefined): void {
+  const el = select<HTMLElement>(dz, "input-notice");
+  if (!el) return;
+  if (!warnings || warnings.length === 0) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = `
+    <div class="input-notice-head">About this input</div>
+    <ul class="input-notice-list">${warnings.map((w) => `<li>${escapeHtml(w)}</li>`).join("")}</ul>
+  `;
+}
+
 function renderClassificationNotice(
   dz: HTMLElement,
   notice: Extract<DropzoneState, { kind: "complete" }>["classification_notice"],

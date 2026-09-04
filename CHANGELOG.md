@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.416.0] — 2026-09-03
+
+### Fixed
+- **The ingest's warnings now reach someone.** `IngestResult.warnings` had been
+  composed since the beginning and read by NOBODY — not the browser UI, not the
+  CLI, not any report. Every ingest pushed honest caveats into it (pasted text
+  lost its structure; a PDF fell back to OCR; and, as of the previous release, a
+  DOCX redline was read as if every change were accepted) and every one of them
+  was discarded at the end of the function that made it.
+
+  That is worse than not having them: a caveat that lives in the source and not
+  on the screen reads, to anyone auditing the code, like a caveat the user was
+  given. The redline warning added in 9.415.0 was inert on arrival.
+
+  Both surfaces are now wired and pinned by tests: the CLI writes each warning
+  to stderr with the existing `vaulytica: warning:` prefix (stdout stays pure
+  JSON), and the browser renders an "About this input" notice above everything
+  else in the complete state — above even the unmatched-document banner, because
+  a caveat about the input changes how the whole report should be read.
+
 ## [9.415.0] — 2026-09-03
 
 ### Added
