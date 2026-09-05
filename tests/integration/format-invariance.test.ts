@@ -613,3 +613,108 @@ describe("a finding's quote is really in the document", () => {
     expect(broken).toEqual([]);
   }, 600_000);
 });
+
+/**
+ * What a justified column does to a long word, and what is still owed.
+ *
+ * A PDF, a mail client, or any hard-wrapping breaks a long word across the
+ * line and marks the break with a hyphen: "confiden-" then "tial". The same
+ * character in the same position is also the hyphen the drafter wrote —
+ * "month-to-" then "month" — and the two mean opposite things.
+ *
+ * Hard-wrapping ALONE moves nothing (see the transform above); every finding
+ * that moves here is the hyphen's. `hyphenation.ts` resolves each break on
+ * evidence from the document itself: the halves joined without the hyphen are
+ * de-hyphenated only when the document uses that word somewhere else, and the
+ * hyphen is kept otherwise. That is deliberately conservative — a contract
+ * says "Confidential" thirty times and never says "nondisclosure", so the
+ * common cases resolve and nothing joins on a guess about English.
+ *
+ * The list below is what that conservatism still costs: a term hyphenated at
+ * its only occurrence leaves no evidence, so its hyphen stays and the rule
+ * that reads it still misses. It may only SHRINK. Each entry is a real
+ * defect, not an accepted behaviour — the ones to look at first are
+ * `uk-contract-of-employment.txt`, which re-routes to `generic-fallback` and
+ * loses six findings with it, and the six specimens that GAIN a CHOICE-* rule,
+ * where a hyphenated jurisdiction name reads as no governing law at all.
+ */
+const HYPHEN_WRAP_DEBT: readonly string[] = [
+  "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
+  "construction-contract.txt: lost - gained CHOICE-003,CHOICE-006",
+  "cookie-notice-uk.txt: lost - gained IPDATA-008",
+  "hold-harmless.txt: lost RISK-010 gained -",
+  "indemnification-agreement.txt: lost - gained GOV-145",
+  "independent-contractor.txt: lost RISK-007 gained -",
+  "internship-agreement.txt: lost - gained CHOICE-004,CHOICE-009,CHOICE-012",
+  "joint-venture.txt: lost - gained CHOICE-003",
+  "lease-assignment-retail.txt: lost - gained CHOICE-004,CHOICE-009,CHOICE-012",
+  "ma-restrictive-covenant.txt: lost OBLI-002 gained -",
+  "msa-customer-side.txt: lost TERM-001,TERM-003 gained -",
+  "physician-employment.txt: lost - gained CHOICE-003",
+  "saas-tos.txt: lost - gained CHOICE-003",
+  "separation-agreement.txt: lost - gained RISK-001",
+  "staffing-services.txt: lost TERM-001 gained -",
+  "stock-purchase.txt: lost TEMP-012 gained -",
+  "subcontract.txt: lost FIN-006 gained -",
+  "subordination-agreement.txt: lost - gained CHOICE-003",
+  "uk-contract-of-employment.txt: lost IPDATA-001,OBLI-004,OBLI-005,PERS-002,RISK-001,TERM-005 gained - routed employment-at-will-us->generic-fallback",
+  "uk-mutual-nda.txt: lost - gained IPDATA-001",
+  "unilateral-nda.txt: lost - gained CHOICE-003",
+];
+
+/** Hard-wrap at 72 columns, hyphenating a long word the way a justified column does. */
+function hyphenWrap(text: string, width = 72): string {
+  const out: string[] = [];
+  for (const para of text.split("\n")) {
+    let line = "";
+    for (const w of para.split(" ")) {
+      if (line.length + w.length + 1 <= width) {
+        line = line ? `${line} ${w}` : w;
+        continue;
+      }
+      const room = width - line.length - 1;
+      if (w.length > 9 && room >= 5 && /^[A-Za-z]+$/.test(w)) {
+        out.push(`${line ? `${line} ` : ""}${w.slice(0, room - 1)}-`);
+        line = w.slice(room - 1);
+      } else {
+        out.push(line);
+        line = w;
+      }
+    }
+    out.push(line);
+  }
+  return out.join("\n");
+}
+
+describe("a word broken across a line", () => {
+  it("moves a finding on only the specimens still owed", async () => {
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = hyphenWrap(text);
+      if (mutated === text) continue;
+      probed++;
+      const normal = await clean(name, text);
+      const after = await analyzeText(mutated, name);
+      const ids = (r: typeof normal): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(normal).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(normal).includes(id));
+      const route =
+        normal.playbook_id !== after.playbook_id
+          ? ` routed ${normal.playbook_id}->${after.playbook_id}`
+          : "";
+      if (lost.length || gained.length || route) {
+        broken.push(
+          `${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}${route}`,
+        );
+      }
+    }
+    expect(probed, "the corpus has no word long enough to break").toBeGreaterThanOrEqual(250);
+    // Equality, not a subset: a new divergence fails, and so does a repair
+    // that is not recorded — which is what keeps the list shrinking on
+    // purpose rather than drifting.
+    expect(broken).toEqual([...HYPHEN_WRAP_DEBT]);
+  }, 300_000);
+});

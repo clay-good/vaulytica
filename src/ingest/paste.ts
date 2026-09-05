@@ -3,6 +3,7 @@ import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertPasteChars } from "./limits.js";
 import { stripPleadingLineNumbers } from "./line-numbers.js";
+import { documentVocabulary, joinWrappedLines } from "./hyphenation.js";
 import { languageFields } from "./language.js";
 
 /**
@@ -52,6 +53,7 @@ function buildTreeFromText(text: string): DocumentTree {
   // its title to that and fell to `generic-fallback`.
   const normalized = stripPleadingLineNumbers(text.replace(/\r\n?/g, "\n"));
   const lines = normalized.split("\n");
+  const vocabulary = documentVocabulary(normalized);
 
   // Root section accumulates paragraphs that appear before any heading.
   const root: Section = { id: "", heading: "", level: 1, paragraphs: [], children: [] };
@@ -106,17 +108,11 @@ function buildTreeFromText(text: string): DocumentTree {
   let currentParaLines: string[] = [];
   const flushParagraph = (): void => {
     if (currentParaLines.length === 0) return;
-    // A line that ends in a hyphen was BROKEN at that hyphen by whatever wrapped
-    // it — a mail client, a PDF exporter, a justified column. Joining with a
-    // space turns "month-to-\nmonth" into "month-to- month", which is not the
-    // compound the drafter wrote, and TEMP-004 stopped reading the holdover
-    // renewal of a hard-wrapped equipment lease because of it. Join those
-    // without the space and keep the hyphen: the compound is restored, and a
-    // soft hyphenation ("agree-" + "ment") at least stays one token, which the
-    // matcher's hyphen normalization then reads correctly.
-    const joined = currentParaLines
-      .reduce((acc, line, i) => (i === 0 ? line : acc + (/\w-$/.test(acc) ? "" : " ") + line), "")
-      .trim();
+    // A line that ends in a hyphen was BROKEN at that hyphen by whatever
+    // wrapped it — a mail client, a PDF exporter, a justified column — or the
+    // hyphen is the drafter's own. `joinWrappedLines` tells the two apart on
+    // evidence from this document, and keeps the hyphen when there is none.
+    const joined = joinWrappedLines(currentParaLines, vocabulary);
     currentParaLines = [];
     if (!joined) return;
     const target = stack[stack.length - 1]!;

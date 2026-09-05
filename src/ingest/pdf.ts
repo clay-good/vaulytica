@@ -3,6 +3,7 @@ import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes, MAX_OCR_PAGES } from "./limits.js";
 import { languageFields } from "./language.js";
+import { documentVocabulary, joinWrappedLines } from "./hyphenation.js";
 
 /**
  * Ingest a PDF using PDF.js. PDFs have no native heading metadata, so we
@@ -316,6 +317,11 @@ function median(nums: number[]): number {
 }
 
 function buildTreeFromPages(pages: PageContent[]): DocumentTree {
+  // Document-wide, so a word hyphenated on page 3 can be recognized from the
+  // way page 11 spells it.
+  const vocabulary = documentVocabulary(
+    pages.flatMap((p) => p.items.map((it) => it.str)).join(" "),
+  );
   const root: Section = { id: "", heading: "", level: 1, paragraphs: [], children: [] };
   const sections: Section[] = [root];
   const stack: Section[] = [root];
@@ -346,12 +352,20 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
     const lines = groupItemsIntoLines(page.items);
     const paragraphLines = groupLinesIntoParagraphs(lines);
     for (const paraLines of paragraphLines) {
-      const allText = paraLines
-        .flat()
-        .map((it) => it.str)
-        .join(" ")
-        .replace(/\s+/g, " ")
-        .trim();
+      // Each grouped LINE is joined into a word-sequence first, so an
+      // end-of-line hyphen is still visible when the lines are joined. The old
+      // flat `.join(" ")` put a space after it — "confiden- tial" — which is
+      // worse than the paste path's join and unreadable to every rule.
+      const allText = joinWrappedLines(
+        paraLines.map((line) =>
+          line
+            .map((it) => it.str)
+            .join(" ")
+            .replace(/\s+/g, " ")
+            .trim(),
+        ),
+        vocabulary,
+      ).replace(/\s+/g, " ");
       if (!allText) continue;
       const maxSize = Math.max(...paraLines.flat().map((it) => Math.round(it.transform[0] ?? 0)));
       const isLikelyHeading =

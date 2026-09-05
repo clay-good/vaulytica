@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.436.0] — 2026-09-05
+
+### Fixed
+- **The hyphen a wrapped line ends on.** A justified column — a PDF, a mail
+  client, any hard-wrapping — breaks a long word across the line and marks the
+  break with a hyphen: "confiden-" then "tial". The same character in the same
+  position is also the hyphen the drafter wrote, "month-to-" then "month", and
+  the two mean opposite things.
+
+  The paste path joined those lines without a space, which restores a real
+  compound — and its own comment named the residue it left: "agree-ment" is one
+  token the matcher's hyphen folding reads correctly and that **no rule regex
+  in the catalog matches**. The PDF path did not even do that: it joined with a
+  space, so the halves arrived as "confiden- tial".
+
+  Measured by hard-wrapping all 312 specimens at 72 columns with the hyphen a
+  justified column inserts. Hard-wrapping alone moves nothing — every finding
+  that moved was the hyphen's — and it moved findings on ~30 specimens and
+  re-routed one outright: a UK contract of employment fell to
+  `generic-fallback`, so not one employment rule ran on it.
+
+  `hyphenation.ts` resolves each break on **evidence from the document
+  itself**, never on a guess about English: the halves joined without the
+  hyphen are de-hyphenated only when the document uses that word somewhere
+  else, and the hyphen is KEPT otherwise — which is exactly what the paste path
+  did before, so nothing an existing document produced can change without
+  positive evidence that it was wrong. A contract says "Confidential" thirty
+  times and never says "nondisclosure", so the common cases resolve and no
+  compound is joined on a guess. Both the paste and PDF paths use it.
+
+  What that conservatism still costs is **committed, not hidden**: a term
+  hyphenated at its only occurrence leaves no evidence, and the 21 specimens
+  that still move are listed in `format-invariance.test.ts` as a list that may
+  only shrink, asserted by equality so a repair must be recorded and a new
+  divergence fails.
+
 ## [9.435.0] — 2026-09-05
 
 ### Fixed
