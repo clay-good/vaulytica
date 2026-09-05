@@ -100,8 +100,24 @@ function softBreak(head: string, tail: string, vocabulary: ReadonlySet<string>):
 
 /** A line ending in a letter then a hyphen, and the word that hyphen ends. */
 const ENDS_HYPHENATED = /(?:^|[\s([{"'])([A-Za-z]+)-$/;
-/** The first word of the following line, when it starts with a lowercase letter. */
+/**
+ * The first word of the following line.
+ *
+ * Its CASE has to agree with the head's, which is what keeps a Title-Case
+ * compound ("Third-" / "Party") from being read as a broken word: a wrapper
+ * breaking a word leaves both halves in the case the word was written in.
+ * Requiring a lowercase tail outright — the first version of this — meant an
+ * ALL-CAPS word was never rejoined at all, and a UK contract of employment
+ * whose party is "HALBROOK DIAGNOSTICS LIMITED" arrived as "HALBROOK
+ * DIAGN-OSTICS", re-routed to `generic-fallback`, and lost six findings.
+ */
 const STARTS_LOWER_WORD = /^([a-z]+)/;
+const STARTS_UPPER_WORD = /^([A-Z]+)(?![a-z])/;
+
+/** Whether `w` is written in all capitals. */
+function isUpper(w: string): boolean {
+  return w === w.toUpperCase();
+}
 
 /**
  * Join the lines of one paragraph, resolving each end-of-line hyphen.
@@ -121,7 +137,8 @@ export function joinWrappedLines(
       continue;
     }
     const head = ENDS_HYPHENATED.exec(out);
-    const tail = STARTS_LOWER_WORD.exec(line);
+    const tail =
+      head && isUpper(head[1]!) ? STARTS_UPPER_WORD.exec(line) : STARTS_LOWER_WORD.exec(line);
     if (head && tail && softBreak(head[1]!, tail[1]!, vocabulary)) {
       out = out.slice(0, -1) + line;
       continue;

@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.438.0] — 2026-09-05
+
+### Fixed
+- **An ALL-CAPS word broken across a line was never rejoined.** The
+  de-hyphenator required the second half to start with a LOWERCASE letter,
+  which is right for keeping a Title-Case compound ("Third-" / "Party") intact
+  and wrong for everything written in capitals — which in a contract is the
+  party names, the headings, and the defined terms. A UK contract of
+  employment whose party is "HALBROOK DIAGNOSTICS LIMITED" reached the engine
+  as "HALBROOK DIAGN-OSTICS".
+
+  The tail's case must AGREE with the head's, because a wrapper breaks a word
+  in the case the word was written in. An ALL-CAPS compound keeps its own
+  hyphen by the same evidence as any other: a document that writes
+  "non-disclosure" is telling you whose hyphen that is.
+
 ## [9.437.0] — 2026-09-05
 
 ### Changed

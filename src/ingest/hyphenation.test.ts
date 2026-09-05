@@ -51,6 +51,24 @@ describe("joinWrappedLines", () => {
     expect(joinWrappedLines(["the parties", "agree that"], vocab)).toBe("the parties agree that");
   });
 
+  it("rejoins an ALL-CAPS word, which is where the party names are", () => {
+    // A wrapper breaks a word in the case it was written in, so an ALL-CAPS
+    // word leaves an ALL-CAPS tail. Requiring a lowercase tail outright meant
+    // an ALL-CAPS word was never rejoined at all: a UK contract of employment
+    // whose party is "HALBROOK DIAGNOSTICS LIMITED" arrived as "HALBROOK
+    // DIAGN-OSTICS".
+    const v = documentVocabulary("Halbrook Diagnostics Limited, a company.");
+    expect(joinWrappedLines(["HALBROOK DIAGN-", "OSTICS LIMITED"], v)).toBe(
+      "HALBROOK DIAGNOSTICS LIMITED",
+    );
+  });
+
+  it("keeps an ALL-CAPS compound's own hyphen", () => {
+    // "NON-DISCLOSURE" in a heading is a compound, and the document says so.
+    const v = documentVocabulary("This non-disclosure agreement.");
+    expect(joinWrappedLines(["A NON-", "DISCLOSURE DUTY"], v)).toBe("A NON-DISCLOSURE DUTY");
+  });
+
   it("does not join across a line starting with a capital", () => {
     // A hyphen before a capitalized word is a compound ("Third-Party" split by
     // the wrapper keeps its shape), never a syllable break.
