@@ -35,7 +35,7 @@ export const rule: Rule = {
     let hasRetention = false;
 
     const DATA_HANDLING =
-      /\b(?:customer\s+data|personal\s+data|personally\s+identifiable\s+information|PII|data\s+processing|process(?:es|ing)?\s+personal\s+data|data\s+processing\s+addendum|DPA\b)/i;
+      /\b(?:(?:customer|client)\s+data|personal\s+data|personally\s+identifiable\s+information|PII|data\s+processing|process(?:es|ing)?\s+personal\s+data|data\s+processing\s+addendum|DPA\b)/i;
     // Because this is an ABSENCE detector, a retention phrasing it fails to
     // recognize is a FALSE POSITIVE ("retention unspecified" over a contract
     // that does specify it). The "kept / stored / held / maintained for <N>

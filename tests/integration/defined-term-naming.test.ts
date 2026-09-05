@@ -64,6 +64,26 @@ import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR).filter((f) => f.endsWith(".txt"));
 
+/**
+ * The party ROLE is the same swap one step further in. An agency, a law firm
+ * and a consultancy call their customer the Client, and the clause is
+ * identical — so a rule that reads only "Customer" reads only half the
+ * profession. Five did: TERM-009's counterparty-cure gate, IPDATA-004 and
+ * IPDATA-007 on "Customer Data", MSA-021's data-return clause, and MSA-017's
+ * carve-out for the customer-FAVOURABLE phrasing, which failed open and
+ * reported the very clause it exists to excuse.
+ *
+ * Deliberately not probed: Contractor → Consultant. Under the FAR,
+ * "Contractor" is the regulation's own word for the party, and a flowdown
+ * addendum that says "Consultant" is not the same instrument — the same
+ * term-of-art trap as "security agreement" and "Effective Date".
+ */
+const ROLE_RENAME: readonly [label: string, from: RegExp, to: string] = [
+  "Customer → Client",
+  /\bCustomer\b/g,
+  "Client",
+];
+
 /** Renames that carry a term across without changing what it is. */
 const RENAMES: ReadonlyArray<readonly [label: string, from: RegExp, to: string]> = [
   ["Effective Date → Commencement Date", /\bEffective Date\b/g, "Commencement Date"],
@@ -152,6 +172,30 @@ describe("a defined term is whatever the drafter called it", () => {
       silenced,
       `these rules stopped reading a clause when the instrument renamed itself:\n  ${silenced.join("\n  ")}`,
     ).toEqual([]);
+  }, 600_000);
+
+  it("renaming the Customer to the Client changes no finding", async () => {
+    const deps = await loadAccuracyDeps({});
+    const [, from, to] = ROLE_RENAME;
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = text.replace(from, to);
+      if (mutated === text) continue;
+      probed++;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(before).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(before).includes(id));
+      if (lost.length || gained.length) {
+        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      }
+    }
+    expect(probed, "no specimen names a Customer").toBeGreaterThan(10);
+    expect(broken).toEqual([]);
   }, 600_000);
 
   it("gains only where the rename broke a term of art", async () => {

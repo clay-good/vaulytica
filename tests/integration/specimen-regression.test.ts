@@ -392,7 +392,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // only because the natural person who SIGNS sat in the tally at zero.
   "staffing-services.txt": {
     playbook: "staffing-services-agreement",
+    // IPDATA-004 is correct and expected: the agreement handles "Client data"
+    // and never says who owns it. It arrived when the rule learned to read
+    // "Client data" alongside "Customer data" — an agency, a law firm and a
+    // consultancy all call their customer the Client.
     findings: [
+      "IPDATA-004",
       "RISK-015",
       "STRUCT-006",
       "OBLI-002",
@@ -2951,7 +2956,12 @@ export const EXPECTED: Record<string, Expectation> = {
 
   "sow-numbered.txt": {
     playbook: "sow",
-    findings: ["OBLI-005", "STRUCT-018"],
+    // IPDATA-004 and IPDATA-007 are correct and expected: the SOW restricts
+    // where Client Data may go and forbids training a model on it, and then
+    // states neither who owns it nor how long it is kept — the document has
+    // zero occurrences of "retain", "delete" or "destroy". Both arrived when
+    // the two rules learned to read "Client Data" alongside "Customer Data".
+    findings: ["IPDATA-004", "IPDATA-007", "OBLI-005", "STRUCT-018"],
   },
 
   "offer-letter-equity.txt": {

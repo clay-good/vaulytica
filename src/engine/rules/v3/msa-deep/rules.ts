@@ -648,7 +648,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     // the same negation; keying the guard on a literal "not" adjacent to the
     // phrase reported the customer-favorable clause as the overreach it denies.
     exclude_if: [
-      /\b(?:not|never)\s+(?:be\s+|the\s+|your\s+|its\s+|a\s+|customer['’]?s?\s+|deemed\s+)*sole\s+and\s+exclusive\s+remedy/i,
+      /\b(?:not|never)\s+(?:be\s+|the\s+|your\s+|its\s+|a\s+|(?:customer|client)['’]?s?\s+|deemed\s+)*sole\s+and\s+exclusive\s+remedy/i,
       /under\s+no\s+circumstances[^.]{0,80}?sole\s+and\s+exclusive\s+remedy/i,
     ],
     default_severity: "info",
@@ -739,7 +739,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       // delete / destroy forms and the "return THE data" article. The data
       // object is required (customer data / the data / all data / …) so an
       // unrelated "delete inactive log data" is not read as the return clause.
-      /(?:return|delet(?:e|es|ion)|destroy(?:ed|s)?|dispose\s+of)\b[^.]{0,40}?\b(?:customer\s+data|company\s+data|customer\s+information|the\s+data|all\s+data|your\s+data|its\s+data|the\s+customer['’]?s?\s+data)\b/i,
+      /(?:return|delet(?:e|es|ion)|destroy(?:ed|s)?|dispose\s+of)\b[^.]{0,40}?\b(?:(?:customer|client)\s+data|company\s+data|(?:customer|client)\s+information|the\s+data|all\s+data|your\s+data|its\s+data|the\s+(?:customer|client)['’]?s?\s+data)\b/i,
       /provid\w+\s+[^.]{0,30}?(?:copy|export)\s+of\s+[^.]{0,30}?\bdata\b/i,
       /(data\s+portability|export\s+(?:in\s+)?(?:a\s+)?machine[- ]readable)/i,
     ],

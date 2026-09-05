@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.449.0] — 2026-09-05
+
+### Fixed
+- **Five rules read only "Customer" where "Client" means the same thing.** An
+  agency, a law firm and a consultancy call their customer the Client, and the
+  clause is identical — so half the profession's paper was read with half the
+  catalog:
+  - **TERM-009**'s counterparty-cure gate, so a services agreement where the
+    Client may terminate only for material breach, while the Vendor may
+    terminate at will, was read as symmetric.
+  - **IPDATA-004** and **IPDATA-007**, both keyed on "Customer Data", so a SOW
+    that restricts where Client Data may go and forbids training a model on it
+    was read as handling no data at all.
+  - **MSA-021**'s data-return-on-termination clause.
+  - **MSA-017**'s carve-out for the customer-FAVOURABLE phrasing ("shall NOT
+    be Customer's sole and exclusive remedy"), which failed OPEN — the
+    exclusion missed, and the rule reported the very clause it exists to
+    excuse.
+
+- **IPDATA-004 could not read ownership stated as a possessive.** "Client data
+  the Agency processes is the Client's" is at least as common as "is the
+  property of", and the rule wanted the latter — so a marketing agreement that
+  assigns its data in the first line of the clause was reported as assigning
+  it nowhere. Found because widening the trigger surfaced it as a new false
+  positive on a specimen; fixing the detector was the repair, not re-baselining.
+
+### Added
+- **`COUNTERPARTY_ROLE`**: the party on the receiving side of a one-sided
+  term, in one place. Four rules carried four hand-written versions and no two
+  agreed — TERM-009, DARK-003, DARK-006 and CHOICE-010 — and **not one of the
+  four contained "Client"**. `you` is deliberately excluded: it is DARK-003's
+  consumer-terms voice, not a role noun.
+- `defined-term-naming` gains the role relation, asserted at zero movement.
+  Contractor → Consultant is deliberately NOT probed: under the FAR,
+  "Contractor" is the regulation's own word for the party.
+
+### Changed
+- Two specimens gained a finding, both verified true before baselining:
+  `sow-numbered.txt` handles Client Data and states neither who owns it nor
+  how long it is kept (zero occurrences of "retain", "delete" or "destroy"),
+  and `staffing-services.txt` handles Client data and never says who owns it.
+
 ## [9.448.0] — 2026-09-05
 
 ### Fixed

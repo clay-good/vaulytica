@@ -13,7 +13,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const dataMention = firstParagraphMatch(
       ctx,
-      /\b(?:customer\s+data|usage\s+data|service\s+data)\b/i,
+      /\b(?:(?:customer|client)\s+data|usage\s+data|service\s+data)\b/i,
     );
     if (!dataMention) return null;
     if (
@@ -42,7 +42,12 @@ export const rule: Rule = {
         // allocating sentence reported a cloud services agreement's own
         // ownership clause as unaddressed. Whichever party the sentence gives
         // the data to, it addressed the question, which is all this rule asks.
-        /\b(?:customer\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:all\s+|the\s+|its\s+)*(?:customer\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b|(?:owns?|retains?|(?:shall|will|must)\s+(?:own|retain))\s+(?:all\s+)?right,?\s+title,?\s+and\s+interest\s+(?:in|to)\b[^.]{0,40}?\bdata\b|(?:customer|usage|service)\s+data\b[^.]{0,40}?\b(?:belongs?\s+to|owned\s+by|(?:is|are|(?:shall|will|must)\s+be)\s+(?:the\s+)?(?:sole\s+|exclusive\s+)*property\s+of)\b/i,
+        // Ownership is stated as a POSSESSIVE at least as often as with the
+        // word "property": "Client data the Agency processes is the Client's".
+        // The branch above wants "property of" / "belongs to" / "owned by" and
+        // reads none of that, so a marketing agreement that assigns its data
+        // in the first line of the clause was reported as assigning it nowhere.
+        /\b(?:(?:customer|client)\s+data|usage\s+data|service\s+data)\s+ownership\b|owns?\s+(?:all\s+|the\s+|its\s+)*(?:customer\s+|client\s+|usage\s+|service\s+)?data\b|retains?\s+(?:all\s+)?(?:rights?|ownership|title)\s+(?:in|to|of)\s+[^.]{0,30}?\bdata\b|(?:owns?|retains?|(?:shall|will|must)\s+(?:own|retain))\s+(?:all\s+)?right,?\s+title,?\s+and\s+interest\s+(?:in|to)\b[^.]{0,40}?\bdata\b|(?:customer|client|usage|service)\s+data\b[^.]{0,40}?\b(?:belongs?\s+to|owned\s+by|(?:is|are|(?:shall|will|must)\s+be)\s+(?:the\s+)?(?:sole\s+|exclusive\s+)*property\s+of)\b|(?:customer|client|usage|service)\s+data\b[^.]{0,60}?\b(?:is|are|remains?|(?:shall|will)\s+remain)\s+(?:and\s+(?:shall|will)\s+remain\s+)?(?:the\s+)?\w+['’]s\b/i,
       )
     )
       return null;

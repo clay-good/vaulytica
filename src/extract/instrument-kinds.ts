@@ -41,3 +41,23 @@ export const INSTRUMENT_NOUN =
  * paid once and a reader sees exactly what is matched.
  */
 export const INSTRUMENT_NOUN_I = INSTRUMENT_NOUN.toLowerCase();
+
+/**
+ * The party on the RECEIVING side of a one-sided term.
+ *
+ * Four rules carried four different hand-written versions of this list and no
+ * two of them agreed — TERM-009, DARK-003, DARK-006 and CHOICE-010 — which is
+ * the "six lists with five different answers" shape that `ATTACHMENT_KIND` was
+ * written to end one level down. Not one of the four contained **Client**, so
+ * a professional-services agreement whose Client may terminate only for
+ * material breach, while the Vendor may terminate at will, was read as
+ * symmetric. "Client" is what an agency, a law firm and a consultancy call
+ * their customer, and the asymmetry is identical.
+ *
+ * The union of the four, plus Client. `you` is deliberately NOT here: it is
+ * DARK-003's consumer-terms voice and belongs to that rule's own framing, not
+ * to a shared vocabulary of role NOUNS.
+ */
+export const COUNTERPARTY_ROLE =
+  "Customer|Client|Licensee|Recipient|Receiving Party|Employee|Tenant|Lessee|Contractor|" +
+  "Consumer|User|Subscriber|Buyer|Purchaser|Borrower|Guarantor";

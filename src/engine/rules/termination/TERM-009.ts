@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
+import { COUNTERPARTY_ROLE, INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
@@ -88,9 +88,10 @@ export const rule: Rule = {
         // the other: without it the sentence states the customer's cause right
         // rather than confining it, and every mutual termination clause in the
         // catalog would fire.
-        /\b(Customer|Licensee|Recipient|Employee|Tenant|Receiving\s+Party|Contractor)\s+(?:(?:(?:shall|will)|must)\s+terminate|may\s+only\s+terminate|may\s+terminate\s+only)\b[^.]{0,160}\b(?:material\s+breach|cure\s+(?:period|window)|30\s*\)?\s*days?\s+to\s+cure)/i.test(
-          p.text,
-        )
+        new RegExp(
+          String.raw`\b(${COUNTERPARTY_ROLE.replace(/ /g, String.raw`\s+`)})\s+(?:(?:(?:shall|will)|must)\s+terminate|may\s+only\s+terminate|may\s+terminate\s+only)\b[^.]{0,160}\b(?:material\s+breach|cure\s+(?:period|window)|30\s*\)?\s*days?\s+to\s+cure)`,
+          "i",
+        ).test(p.text)
       ) {
         counterpartyCureFound = true;
       }
