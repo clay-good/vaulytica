@@ -103,7 +103,7 @@ function evaluate(ctx: RuleContext, hit: ParagraphHit): Finding | null {
     /(?<!non[- ])\birrevocable\b/i,
     /\broyalty[- ]free\b/i,
     /\bworldwide\b/i,
-    /(?<!non[- ])\bsublicens(?:e|able|ed)\b/i,
+    /(?<!non[- ])\bsublicen(?:[cs]e|sable|sed)\b/i,
     /(?<!non[- ])\btransferable\b/i,
     /\bfully\s+paid[- ]up\b/i,
     /(?<!non[- ])\bunrestricted\b/i,

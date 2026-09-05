@@ -34,7 +34,7 @@
  *     actually reads.
  */
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { maskEscapes, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
@@ -69,6 +69,18 @@ const VARIANTS: [word: RegExp, tolerant: string][] = [
   [/(?<![a-zA-Z])program(?![a-zA-Z])/, "programme?"],
 ];
 
+/**
+ * A hit that is NOT a spelling variant, keyed by `path:line`.
+ *
+ * The one kind there is: a US statute's PROPER NAME. California's Labor Code
+ * is spelled "Labor Code" in London too — it is the name of a thing, not a
+ * word the drafter chose a spelling for — so widening it to `labou?r` would
+ * make the recognizer match a statute that does not exist.
+ */
+const NOT_A_VARIANT: Readonly<Record<string, string>> = {
+  "src/engine/rules/v4/settlement/rules.ts:527": "California Labor Code — a statute's proper name",
+};
+
 // `\bauthorize` has the letter "b" immediately in front of "authorize", so a
 // lookbehind for a letter — written to keep "capsize" and "citizen" out —
 // silently skips every anchored recognizer there is. That is the `\b§` defect
@@ -82,17 +94,31 @@ describe("a word spelled the way the rest of the common law spells it", () => {
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
+    const usedExceptions = new Set<string>();
     for (const file of files) {
       for (const { line, text } of recognizerSources(file)) {
         const masked = maskEscapes(text);
         for (const [word, tolerant] of VARIANTS) {
-          if (word.test(masked) && !text.includes(tolerant)) {
-            blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
+          if (!word.test(masked) || text.includes(tolerant)) continue;
+          const key = `${relative(process.cwd(), file).replace(/\\/g, "/")}:${line}`;
+          if (key in NOT_A_VARIANT) {
+            usedExceptions.add(key);
+            continue;
           }
+          blind.push(`${key}  ${text.slice(0, 90)}`);
         }
       }
     }
     expect(blind).toEqual([]);
+
+    // An exception that no longer fires is indistinguishable from a wrong one,
+    // and a path-keyed set silently stops applying on Windows unless something
+    // asserts it was USED. (`sourceFiles` returns POSIX separators for exactly
+    // this reason; the relative path is normalized again here.)
+    expect(
+      Object.keys(NOT_A_VARIANT).filter((k) => !usedExceptions.has(k)),
+      "these NOT_A_VARIANT entries no longer fire — delete them",
+    ).toEqual([]);
   });
 
   it("rewriting the corpus into Commonwealth spelling changes no finding", async () => {

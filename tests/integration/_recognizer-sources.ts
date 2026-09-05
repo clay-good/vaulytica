@@ -101,7 +101,18 @@ export function recognizerSources(file: string): RecognizerSource[] {
  * the "b" of the escape and the "s", where there is none. That is the `\b§`
  * defect of session 28, and it has now shipped inside two guards written to
  * catch it. Mask the escapes out first and the lookarounds mean what they say.
+ *
+ * 🚨 The masking must replace the escape with a NON-word character. This
+ * function used to replace `\b` with the letter `b` — dropping the backslash
+ * and keeping the letter, which is precisely the thing it exists to remove.
+ * It made the problem WORSE than doing nothing: before masking, the character
+ * in front of "shall" was `\`, and a `(?<![a-zA-Z])` lookbehind passed;
+ * afterwards it was `b`, and the lookbehind failed. So every `\b`-anchored
+ * recognizer — 4,804 of the catalog's 5,677 — was invisible to all four
+ * ratchets that share this helper, including `IPDATA-003`'s `\blicense\b`,
+ * which sat green under a guard written to catch exactly that. A space is the
+ * mask: it is not a word character in any direction.
  */
 export function maskEscapes(source: string): string {
-  return source.replace(/\\([a-zA-Z])/g, (_m, c: string) => `${c}`);
+  return source.replace(/\\[a-zA-Z]/g, " ");
 }

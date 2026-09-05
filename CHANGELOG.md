@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.433.0] — 2026-09-05
+
+### Fixed
+- **The helper written to unblind four static ratchets did the opposite, and
+  blinded them to 85% of the catalog.** `maskEscapes` exists because `\bshall`
+  has the letter "b" immediately in front of "shall", so a sweep searching
+  regex SOURCE with a `(?<![a-zA-Z])` lookbehind finds nothing. It replaced
+  `\b` with the letter `b` — dropping the backslash and keeping the letter,
+  which is exactly the character it exists to remove.
+
+  That made the problem worse than doing nothing. Before masking, the character
+  in front of "shall" was `\`, and the lookbehind passed; afterwards it was
+  `b`, and it failed. So every `\b`-anchored recognizer — **4,804 of the
+  catalog's 5,677** — was invisible to all four ratchets that share the helper
+  (`apostrophe-tolerance`, `shall-will`, `clause-numbering`,
+  `commonwealth-spelling`). `IPDATA-003`'s `\blicense\b` sat green under a
+  guard written to catch precisely that; the corpus relation had to find it.
+
+  The mask is now a space, which is not a word character in any direction.
+
+  The wave behind it is two recognizers, both now resolved:
+  - **IPDATA-010** read `\bsublicens(?:e|able|ed)\b`. The NOUN is "sublicence"
+    outside the United States; the verb forms keep the `s` on both sides of the
+    Atlantic, so the widening is `sublicen(?:[cs]e|sable|sed)`, not a blanket
+    `[cs]`.
+  - A California **Labor Code** citation is not a spelling variant — it is a
+    statute's proper name, spelled "Labor Code" in London too, and widening it
+    to `labou?r` would make the recognizer match a statute that does not exist.
+    Declared in a `NOT_A_VARIANT` set keyed by `path:line`, with an assertion
+    that every declared entry is actually USED, so a stale exception fails here
+    rather than quietly widening the carve-out.
+
 ## [9.432.0] — 2026-09-05
 
 ### Fixed
