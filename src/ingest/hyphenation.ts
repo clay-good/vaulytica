@@ -31,6 +31,8 @@
  */
 
 const WORD = /[a-z]+/g;
+/** A compound written UNBROKEN — no whitespace around its hyphen. */
+const COMPOUND = /[a-z]+-[a-z]+/g;
 
 /**
  * Every whole word of `text`, lowercased.
@@ -41,10 +43,59 @@ const WORD = /[a-z]+/g;
  */
 export function documentVocabulary(text: string): ReadonlySet<string> {
   const out = new Set<string>();
-  const lower = text.toLowerCase();
+  // Neither half of a wrapped pair is a word this document uses: drop both.
+  // "responsibili-" and the "ty" under it are the wrapper's fragments, and a
+  // vocabulary that vouches for them makes every test below vacuous. The
+  // pattern needs WHITESPACE after the hyphen, which is what a line break
+  // leaves and what an ordinary compound ("third-party") never has.
+  const lower = text
+    .replace(/[A-Za-z]+-\s+[A-Za-z]+/g, " ")
+    .replace(/[A-Za-z]+-(?=\s|$)/g, " ")
+    .toLowerCase();
   WORD.lastIndex = 0;
   for (let m = WORD.exec(lower); m !== null; m = WORD.exec(lower)) out.add(m[0]);
+  // The compounds the document writes UNBROKEN, kept whole and alongside their
+  // halves: "non-renewal" is the document saying, in its own words, that this
+  // hyphen is the drafter's.
+  COMPOUND.lastIndex = 0;
+  for (let m = COMPOUND.exec(lower); m !== null; m = COMPOUND.exec(lower)) out.add(m[0]);
   return out;
+}
+
+/**
+ * Whether a hyphen at a line break was the WRAPPER's rather than the drafter's.
+ *
+ * Two independent pieces of evidence, both drawn from the document itself and
+ * neither of them a table of English:
+ *
+ *  1. **The document writes this compound unbroken somewhere.** Checked
+ *     first, and it settles the case outright: "non-renewal" in a
+ *     distribution agreement is the document telling you whose hyphen it is.
+ *
+ *  2. **The halves joined are a word the document uses elsewhere.** A
+ *     contract that hyphenates "Confiden-tial" says "Confidential" thirty
+ *     other times; one that writes "non-disclosure" never writes
+ *     "nondisclosure".
+ *
+ * What neither test can reach, measured and left alone rather than guessed at:
+ * a compound used EXACTLY ONCE, broken at its own hyphen, whose halves the
+ * document never uses separately. "non-renewal" in a distribution agreement
+ * that says "renewal" nowhere else is, on the evidence available, identical to
+ * "responsibili-ty". Two further rules were tried and both cost more than they
+ * paid: a TAIL test ("the tail of a syllable break is a suffix, not a word")
+ * fixed 20 of the 21 specimens still owed and joined an engagement letter's
+ * "electronic-discovery" into "electronicdiscovery", and a HEAD test needs a
+ * dictionary to know that "electronic" is a word when the document never uses
+ * it alone. The 21 are recorded in `format-invariance.test.ts` instead.
+ */
+function softBreak(head: string, tail: string, vocabulary: ReadonlySet<string>): boolean {
+  const h = head.toLowerCase();
+  const t = tail.toLowerCase();
+  // The document writes this compound unbroken somewhere: the hyphen is the
+  // drafter's, and it says so in its own words.
+  if (vocabulary.has(`${h}-${t}`)) return false;
+  // The document uses the joined word elsewhere: the hyphen was the wrapper's.
+  return vocabulary.has(h + t);
 }
 
 /** A line ending in a letter then a hyphen, and the word that hyphen ends. */
@@ -71,9 +122,7 @@ export function joinWrappedLines(
     }
     const head = ENDS_HYPHENATED.exec(out);
     const tail = STARTS_LOWER_WORD.exec(line);
-    if (head && tail && vocabulary.has((head[1]! + tail[1]!).toLowerCase())) {
-      // The document uses the joined word elsewhere: the hyphen was the
-      // wrapper's, and it goes along with the line break.
+    if (head && tail && softBreak(head[1]!, tail[1]!, vocabulary)) {
       out = out.slice(0, -1) + line;
       continue;
     }

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.437.0] — 2026-09-05
+
+### Changed
+- **A compound the document writes unbroken keeps its hyphen.** The
+  de-hyphenator resolved a line-break hyphen on one piece of evidence — the
+  joined halves being a word the document uses elsewhere. It now checks first
+  whether the document writes that COMPOUND unbroken somewhere, which settles
+  the case outright and in the document's own words. The vocabulary also stops
+  vouching for the wrapper's own fragments: neither half of a broken pair is a
+  word the document uses.
+
+- **What the de-hyphenator cannot reach is now measured and written down,
+  rather than left as a bare list.** A compound used exactly once and broken at
+  its own hyphen leaves no evidence at all: "non-renewal" in a distribution
+  agreement that says "renewal" nowhere else is, on the evidence available,
+  identical to "responsibili-ty". Two further rules were tried and both cost
+  more than they paid, and the measurement is recorded so the next attempt does
+  not repeat it:
+  - a **tail** test — a syllable break's tail is a suffix, a compound's is a
+    word — cleared 20 of the 21 specimens still owed, and joined an engagement
+    letter's "electronic-discovery" into "electronicdiscovery", turning a
+    previously green invariance guard red;
+  - a **head** test needs a dictionary to know "electronic" is a word when the
+    document never uses it alone, which is not evidence from the document.
+
 ## [9.436.0] — 2026-09-05
 
 ### Fixed

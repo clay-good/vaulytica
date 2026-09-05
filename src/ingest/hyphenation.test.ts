@@ -31,6 +31,14 @@ describe("joinWrappedLines", () => {
     expect(joinWrappedLines(["a month-to-", "month term"], vocab)).toBe("a month-to-month term");
   });
 
+  it("keeps the hyphen when the document writes that compound unbroken", () => {
+    // The document's own words settle it. Checked BEFORE the joined-form test,
+    // because a document that writes both "non-disclosure" and (say) a stray
+    // "nondisclosure" must still be read as the drafter wrote this one.
+    const v = documentVocabulary("A non-renewal notice. The nondisclosure of it.");
+    expect(joinWrappedLines(["a non-", "renewal notice"], v)).toBe("a non-renewal notice");
+  });
+
   it("keeps the hyphen when there is no evidence either way", () => {
     // The conservative default, and the behaviour that shipped before this
     // module existed: nothing joins on a guess about English.

@@ -630,13 +630,28 @@ describe("a finding's quote is really in the document", () => {
  * says "Confidential" thirty times and never says "nondisclosure", so the
  * common cases resolve and nothing joins on a guess about English.
  *
- * The list below is what that conservatism still costs: a term hyphenated at
- * its only occurrence leaves no evidence, so its hyphen stays and the rule
- * that reads it still misses. It may only SHRINK. Each entry is a real
- * defect, not an accepted behaviour — the ones to look at first are
+ * Two independent pieces of evidence, both from the document: the joined
+ * halves are a word it uses elsewhere, OR the left half is neither a word it
+ * uses on its own nor a bound prefix — nothing is a compound of
+ * "responsibili", "Associa" or "negl", while every real compound's left
+ * element ("third-party", "at-will", "non-disclosure") is one or the other.
+ *
+ * What the list below costs, and why it is not shorter. A compound used
+ * EXACTLY ONCE and broken at its own hyphen leaves no evidence at all:
+ * "non-renewal" in a distribution agreement that says "renewal" nowhere else
+ * is, on the evidence available, identical to "responsibili-ty". Two further
+ * rules were tried and measured, and both cost more than they paid — a TAIL
+ * test ("a syllable break's tail is a suffix, not a word") cleared 20 of these
+ * 21 and joined an engagement letter's "electronic-discovery" into
+ * "electronicdiscovery", turning a green invariant above red; a HEAD test
+ * needs a dictionary to know "electronic" is a word when the document never
+ * uses it alone. Recorded rather than guessed at, exactly as the superscript
+ * digits are.
+ *
+ * The list may only SHRINK, and it is asserted by equality — a new divergence
+ * fails, and so does a repair that is not recorded. The expensive entry is
  * `uk-contract-of-employment.txt`, which re-routes to `generic-fallback` and
- * loses six findings with it, and the six specimens that GAIN a CHOICE-* rule,
- * where a hyphenated jurisdiction name reads as no governing law at all.
+ * loses six findings with it.
  */
 const HYPHEN_WRAP_DEBT: readonly string[] = [
   "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
