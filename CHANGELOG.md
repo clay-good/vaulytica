@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.453.0] — 2026-09-05
+
+### Fixed
+- **Three rules could not read a defined term written in ALL CAPS.**
+  `"CUSTOMER PERSONAL DATA" means …` is ordinary older US drafting, and every
+  vendor DPA that shouts its terms writes them that way. DPA-004, USDPA-002
+  and USDPA-015 are DELIBERATELY case-sensitive — "the capital is what makes
+  it a defined term", as DPA-004's own comment puts it — but they spelled that
+  as `[A-Z][a-z]+`: a capital followed by a LOWERCASE letter, which an
+  all-caps term does not have. **The drafting that marks the term most
+  emphatically was the one they could not see.** All three now accept
+  `[A-Z]{2,}` as well, keeping the case-sensitivity that was the point.
+
+  A GDPR DPA was told it does not identify the types of personal data it
+  processes, and a CCPA service-provider addendum that it neither restricts
+  selling nor commits to deletion — each because of the shift key.
+
+### Added
+- `defined-term-naming` gains the ALL-CAPS relation: 67 specimens, nothing
+  lost. STRUCT-014 still fires on one and is CORRECT to — it reports
+  inconsistent defined-term casing, the anti-bribery policy defines
+  "Government official" and uses the lowercase form nine times, and
+  upper-casing only the defined form is exactly the inconsistency it exists to
+  catch. The probe made a real defect and the rule found it, which is the
+  answer a good relation should give.
+
 ## [9.452.0] — 2026-09-05
 
 ### Changed

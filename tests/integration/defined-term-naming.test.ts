@@ -211,6 +211,62 @@ describe("a defined term is whatever the drafter called it", () => {
     expect(broken).toEqual([]);
   }, 600_000);
 
+  /**
+   * A defined term is written ALL CAPS at least as often as Title Case —
+   * `"CUSTOMER PERSONAL DATA" means …` is ordinary older US drafting, and
+   * every vendor DPA that shouts its terms writes them that way.
+   *
+   * Three rules could not read it, and all three for the same reason: they
+   * are DELIBERATELY case-sensitive — "the capital is what makes it a defined
+   * term", as DPA-004's own comment puts it — but they spelled that as
+   * `[A-Z][a-z]+`, a capital followed by a LOWERCASE letter, which an
+   * all-caps term does not have. So the drafting that marks the term most
+   * emphatically was the one they could not see. DPA-004, USDPA-002 and
+   * USDPA-015 now accept `[A-Z]{2,}` as well, keeping the case-sensitivity
+   * that was the point.
+   *
+   * STRUCT-014 still fires on one specimen and is CORRECT to: it reports
+   * inconsistent defined-term casing, the anti-bribery policy defines
+   * "Government official" and uses the lowercase form nine times, and
+   * upper-casing only the defined form is exactly the inconsistency the rule
+   * exists to catch. The probe made a real defect, and the rule found it.
+   */
+  it("reads a defined term written in ALL CAPS", async () => {
+    const deps = await loadAccuracyDeps({});
+    const QUOTED_DEF =
+      /(["“])([A-Z][A-Za-z][\w\s\-&/'’.]{2,60}?)(["”])(\s+(?:means|shall\s+mean|has\s+the\s+meaning))/g;
+    const upperDefs = (t: string): string => {
+      const terms = new Set<string>();
+      for (const m of t.matchAll(QUOTED_DEF)) terms.add(m[2]!);
+      let out = t.replace(
+        QUOTED_DEF,
+        (_a, q1: string, term: string, q2: string, tail: string) =>
+          `${q1}${term.toUpperCase()}${q2}${tail}`,
+      );
+      for (const term of terms) out = out.split(term).join(term.toUpperCase());
+      return out;
+    };
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = upperDefs(text);
+      if (mutated === text) continue;
+      probed++;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(before).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(before).includes(id) && id !== "STRUCT-014");
+      if (lost.length || gained.length) {
+        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      }
+    }
+    expect(probed, "no specimen defines a quoted term").toBeGreaterThan(50);
+    expect(broken).toEqual([]);
+  }, 600_000);
+
   it("gains only where the rename broke a term of art", async () => {
     const deps = await loadAccuracyDeps({});
     const gained: string[] = [];

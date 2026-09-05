@@ -117,7 +117,12 @@ export const DPA_US_STATE_RULES: Rule[] = [
       // Data", and every pattern above wants the literal "personal
       // information". Case-SENSITIVE, because the defined term is the thing
       // that is capitalized — under `i` this would match any two words.
-      /(?:shall|will|may|must)\s+not\s+[Ss]ell(?:\s+or\s+[Ss]har\w+)?\s+(?:the\s+)?[A-Z][a-z]+\s+(?:Data|Information)\b/,
+      // A defined term is written ALL CAPS at least as often as Title Case in
+      // older US drafting — `"CUSTOMER PERSONAL DATA" means …`. Requiring
+      // `[A-Z][a-z]+` reads a capital followed by a LOWERCASE letter, which an
+      // all-caps term does not have, so the drafting that shouts the term
+      // loudest was the one these could not see. Same repair as DPA-004.
+      /(?:shall|will|may|must)\s+not\s+[Ss]ell(?:\s+or\s+[Ss]har\w+)?\s+(?:the\s+)?(?:[A-Z][a-z]+|[A-Z]{2,})\s+(?:Data|DATA|Information|INFORMATION)\b/,
     ],
   }),
   presence({
@@ -401,7 +406,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
       /(?:(?:delet\w*|destroy\w*|destruct\w*)\s+or\s+return\w*|return\w*\s+or\s+(?:delet\w*|destroy\w*|destruct\w*)).{0,80}(personal\s+(data|information)|end\s+of\s+(?:the\s+)?(?:provision\s+of\s+)?services)/is,
       // Same defined-term object as USDPA-002, and case-sensitive for the same
       // reason: "shall return or delete all Covered Data".
-      /(?:(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*)\s+or\s+[Rr]eturn\w*|[Rr]eturn\w*\s+or\s+(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*))[^.]{0,80}[A-Z][a-z]+\s+(?:Data|Information)\b/,
+      /(?:(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*)\s+or\s+[Rr]eturn\w*|[Rr]eturn\w*\s+or\s+(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*))[^.]{0,80}(?:[A-Z][a-z]+|[A-Z]{2,})\s+(?:Data|DATA|Information|INFORMATION)\b/,
     ],
     // Express-denial guard: the refusal names the same deletion-or-return duty
     // the requirement does. Every US state processor statute requires it at

@@ -237,7 +237,14 @@ export const DPA_GDPR_RULES: Rule[] = [
       // set out in Annex 1". Requiring the bare statutory noun as the object
       // reads none of them. Case-SENSITIVE: the capital is what makes it a
       // defined term.
-      /(?:[Tt]ypes?|[Cc]ategor(?:y|ies))\s+of\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Data|Information)\b/,
+      // …and ALL CAPS is a defined term too. Older US drafting writes
+      // `"CUSTOMER PERSONAL DATA" means …` and then "the types of CUSTOMER
+      // PERSONAL DATA are set out in Annex 1". Requiring Title Case
+      // (`[A-Z][a-z]+`) reads a capital followed by a LOWERCASE letter, which
+      // an all-caps term does not have — so the very drafting that shouts the
+      // term loudest was the one this could not see. The case-sensitivity is
+      // still the point: a capital is what marks the term.
+      /(?:[Tt]ypes?|[Cc]ategor(?:y|ies))\s+of\s+(?:[A-Z][a-z]+|[A-Z]{2,})(?:\s+(?:[A-Z][a-z]+|[A-Z]{2,}))*\s+(?:Data|DATA|Information|INFORMATION)\b/,
     ],
   }),
   presence({
