@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.431.0] — 2026-09-05
+
+### Added
+- **The CI surface is told what the ingest could not read.** `buildSarif` never
+  received the `IngestResult` at all, so a pipeline gating on SARIF — the one
+  consumer that acts on a result automatically, without a person reading it —
+  was the one told least: it never learned that the document it passed was a
+  redline read as all-changes-accepted, carried hidden text nobody can see, or
+  was not in English.
+
+  Each warning is now a note-level `VAULYTICA-INPUT-NOTICE` result, mirroring
+  how the unmatched-document banner is already carried. Results, not
+  `invocations[].toolExecutionNotifications`: CI and code scanning annotate on
+  results, and a notification a dashboard renders nowhere is the same silence
+  the notice exists to break. The synthetic rule is declared in the driver so
+  every `ruleIndex` resolves, and `sarifConformanceViolations` stays empty.
+
+  The parameter is optional and appended, so a run with nothing to declare —
+  or a caller that does not pass an ingest — produces byte-identical SARIF.
+  Both callers (the CLI's `--format sarif` and the tab's SARIF export) pass it.
+
 ## [9.430.0] — 2026-09-05
 
 ### Added

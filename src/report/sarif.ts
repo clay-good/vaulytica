@@ -34,6 +34,7 @@ import {
 } from "./citations.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { HandoffFinding } from "../delivery/types.js";
+import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
 
 /** Human label per derived-deadline family (Thrust C), for SARIF descriptors. */
@@ -51,6 +52,14 @@ const INFORMATION_URI = "https://github.com/clay-good/vaulytica";
 
 /** Synthetic rule id for the unmatched-document banner in SARIF output. */
 const CLASSIFICATION_NOTICE_RULE_ID = "VAULYTICA-CLASSIFICATION-NOTICE";
+
+/**
+ * Synthetic rule id for "About this input" — what the ingest could and could
+ * not read. A note-level result rather than an invocation notification: CI and
+ * code scanning annotate on RESULTS, and a notification a dashboard renders
+ * nowhere is the same silence this notice exists to break.
+ */
+const INPUT_NOTICE_RULE_ID = "VAULYTICA-INPUT-NOTICE";
 
 /** Severity → SARIF result level. */
 const LEVEL: Record<Severity, "error" | "warning" | "note"> = {
@@ -129,7 +138,12 @@ function primaryHelpUri(f: Finding): string | undefined {
 type SarifRule = SarifLog["runs"][0]["tool"]["driver"]["rules"][0];
 type SarifResult = SarifLog["runs"][0]["results"][0];
 
-export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationCurrency): SarifLog {
+export function buildSarif(
+  run: EngineRun,
+  v9?: V9Surfaces,
+  currency?: CitationCurrency,
+  ingest?: Pick<IngestResult, "warnings">,
+): SarifLog {
   // One reportingDescriptor per distinct rule that produced a finding, in
   // sorted rule-id order for determinism. The v9 surfaces extend this with the
   // HANDOFF-* (pre-disclosure) and DATE-* (derived-deadline) rule families, so
@@ -143,9 +157,20 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
   // add-document-vertical-framework — the unmatched-document banner as a
   // note-level result so a CI/code-scanning consumer sees the caveat too.
   const noticeRuleIds = run.classification_notice ? [CLASSIFICATION_NOTICE_RULE_ID] : [];
+  // What the ingest could and could not read. The CI surface carried none of
+  // it: a pipeline gating on SARIF never learned that the document it passed
+  // was a redline read as all-changes-accepted, or was not in English at all.
+  const inputWarnings = ingest?.warnings ?? [];
+  const inputRuleIds = inputWarnings.length > 0 ? [INPUT_NOTICE_RULE_ID] : [];
   // Engine / handoff / date / notice rule-id namespaces are disjoint, so the
   // combined index is collision-free and every result's ruleIndex resolves.
-  const allRuleIds = [...engineRuleIds, ...handoffRuleIds, ...dateRuleIds, ...noticeRuleIds];
+  const allRuleIds = [
+    ...engineRuleIds,
+    ...handoffRuleIds,
+    ...dateRuleIds,
+    ...noticeRuleIds,
+    ...inputRuleIds,
+  ];
   const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
 
   const engineRules: SarifRule[] = engineRuleIds.map((id) => {
@@ -178,7 +203,12 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
     name: id,
     shortDescription: { text: "Document type not recognized" },
   }));
-  const rules = [...engineRules, ...handoffRules, ...dateRules, ...noticeRules];
+  const inputRules: SarifRule[] = inputRuleIds.map((id) => ({
+    id,
+    name: id,
+    shortDescription: { text: "About this input — what the analysis could and could not read" },
+  }));
+  const rules = [...engineRules, ...handoffRules, ...dateRules, ...noticeRules, ...inputRules];
 
   const findingResults: SarifResult[] = run.findings.map((f) => {
     const idx = ruleIndex.get(f.rule_id)!;
@@ -263,7 +293,31 @@ export function buildSarif(run: EngineRun, v9?: V9Surfaces, currency?: CitationC
       ]
     : [];
 
-  const results = [...findingResults, ...handoffResults, ...dateResults, ...noticeResults];
+  const inputResults: SarifResult[] = inputWarnings.map((text, i) => ({
+    ruleId: INPUT_NOTICE_RULE_ID,
+    ruleIndex: ruleIndex.get(INPUT_NOTICE_RULE_ID)!,
+    level: "note" as const,
+    message: { text },
+    locations: [
+      {
+        physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+        logicalLocations: [{ name: "document", kind: "container" }],
+      },
+    ],
+    partialFingerprints: {
+      "vaulyticaInputNotice/v1": String(i),
+      "vaulyticaResultHash/v1": run.result_hash,
+    },
+    properties: { surface: "input-notice" },
+  }));
+
+  const results = [
+    ...findingResults,
+    ...handoffResults,
+    ...dateResults,
+    ...noticeResults,
+    ...inputResults,
+  ];
 
   // Tool-run provenance: which opt-in packs were asserted (each rides in the
   // hashed run). Emitted only when something was asserted, so a plain run's
@@ -375,12 +429,20 @@ export function buildSarifJson(
   run: EngineRun,
   v9?: V9Surfaces,
   currency?: CitationCurrency,
+  ingest?: Pick<IngestResult, "warnings">,
 ): string {
-  return JSON.stringify(buildSarif(run, v9, currency), null, 2);
+  return JSON.stringify(buildSarif(run, v9, currency, ingest), null, 2);
 }
 
-export function sarifBlob(run: EngineRun, v9?: V9Surfaces, currency?: CitationCurrency): Blob {
-  return new Blob([buildSarifJson(run, v9, currency)], { type: "application/sarif+json" });
+export function sarifBlob(
+  run: EngineRun,
+  v9?: V9Surfaces,
+  currency?: CitationCurrency,
+  ingest?: Pick<IngestResult, "warnings">,
+): Blob {
+  return new Blob([buildSarifJson(run, v9, currency, ingest)], {
+    type: "application/sarif+json",
+  });
 }
 
 // ---------------------------------------------------------------------------

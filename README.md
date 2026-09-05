@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,795+ passing tests` · `v9.430.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,800+ passing tests` · `v9.431.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -55,7 +55,7 @@ Vaulytica takes the documents a real review actually arrives as — and handles 
 
 ### What it tells you about the input itself
 
-A document does not always say what it looks like it says, and the analysis is only as honest as its account of what it read. Vaulytica reports these as an **"About this input"** notice — at the top of the result in the tab, on stderr from the CLI, in the `ingest.warnings` field of the JSON report, on the cover of the HTML report, and in its own section of the **DOCX report**, ahead of the findings. The DOCX matters most and carried it last: it is the copy that gets emailed, filed, and reopened months after the tab is closed.
+A document does not always say what it looks like it says, and the analysis is only as honest as its account of what it read. Vaulytica reports these as an **"About this input"** notice — at the top of the result in the tab, on stderr from the CLI, in the `ingest.warnings` field of the JSON report, on the cover of the HTML report, in its own section of the **DOCX report** ahead of the findings, and as note-level results in the **SARIF** export so a CI pipeline gating on it is told too. The DOCX matters most and carried it last: it is the copy that gets emailed, filed, and reopened months after the tab is closed.
 
 | What the file carries                      | Who sees it normally | What the engine reads                    | What you are told                                                                         |
 | ------------------------------------------ | -------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -1359,7 +1359,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 13,795+ tests, ~140s
+npm run test         # vitest — 13,800+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

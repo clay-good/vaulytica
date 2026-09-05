@@ -759,7 +759,12 @@ export async function runReport(
   const deadlines_ics_blob = deadlinesIcsBlob(prepared.extracted);
   // v8 Steps 141–142 — SARIF (machine-readable) + standalone HTML (print-clean),
   // now carrying the v9 surfaces (HANDOFF-*/DATE-* results · the three sections).
-  const sarif_blob = sarifBlob(run, v9surfaces, dkbCurrency(prepared.dkb.manifest));
+  const sarif_blob = sarifBlob(
+    run,
+    v9surfaces,
+    dkbCurrency(prepared.dkb.manifest),
+    prepared.ingest,
+  );
   const html_blob = htmlReportBlob(
     run,
     prepared.ingest,

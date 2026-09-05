@@ -702,7 +702,7 @@ async function renderFormat(
         definitions,
       ).text();
     case "sarif":
-      return buildSarifJson(r.run, v9surfaces, currency);
+      return buildSarifJson(r.run, v9surfaces, currency, r.ingest);
     case "html":
       return buildHtmlReport(r.run, r.ingest, dkb, undefined, v9surfaces);
     case "md": {

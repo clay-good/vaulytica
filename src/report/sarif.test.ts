@@ -282,3 +282,73 @@ describe("SARIF run provenance (asserted opt-in packs)", () => {
     expect(p.estate_checks).toBe(true);
   });
 });
+
+/**
+ * "About this input" on the CI surface. A pipeline gating on SARIF never
+ * learned that the document it passed was a redline read as
+ * all-changes-accepted, carried hidden text nobody can see, or was not in
+ * English at all — the one consumer that acts on the result automatically was
+ * the one told least.
+ *
+ * Carried as note-level RESULTS, not invocation notifications: CI and code
+ * scanning annotate on results, and a notification a dashboard renders nowhere
+ * is the same silence the notice exists to break.
+ */
+describe("SARIF input notices", () => {
+  function baseRun(): EngineRun {
+    return {
+      version: "0.1.0",
+      dkb_version: "v0.0.1-starter",
+      playbook_id: "mutual-nda",
+      source_file: { name: "nda.docx", sha256: "a".repeat(64), size_bytes: 10 },
+      executed_at: "",
+      findings: [],
+      execution_log: [],
+      result_hash: "b".repeat(64),
+    };
+  }
+
+  const WARNINGS = [
+    "This document does not read as English — it appears to be Spanish.",
+    "2 tracked changes were read as ACCEPTED.",
+  ];
+
+  it("emits one note-level result per warning, verbatim", () => {
+    const sarif = buildSarif(baseRun(), undefined, undefined, { warnings: WARNINGS });
+    const notices = sarif.runs[0]!.results.filter((r) => r.ruleId === "VAULYTICA-INPUT-NOTICE");
+    expect(notices).toHaveLength(2);
+    expect(notices.every((n) => n.level === "note")).toBe(true);
+    expect(notices.map((n) => n.message.text)).toEqual(WARNINGS);
+  });
+
+  it("declares the synthetic rule so every ruleIndex resolves", () => {
+    const sarif = buildSarif(baseRun(), undefined, undefined, { warnings: WARNINGS });
+    const rules = sarif.runs[0]!.tool.driver.rules;
+    const idx = rules.findIndex((r) => r.id === "VAULYTICA-INPUT-NOTICE");
+    expect(idx).toBeGreaterThan(-1);
+    for (const n of sarif.runs[0]!.results.filter((r) => r.ruleId === "VAULYTICA-INPUT-NOTICE")) {
+      expect(n.ruleIndex).toBe(idx);
+    }
+  });
+
+  it("still conforms structurally with the notices present", () => {
+    expect(
+      sarifConformanceViolations(
+        buildSarif(baseRun(), undefined, undefined, { warnings: WARNINGS }),
+      ),
+    ).toEqual([]);
+  });
+
+  it("changes nothing when the ingest read the document cleanly", () => {
+    // A run with nothing to declare produces the bytes it produced before the
+    // notices existed — including one where `ingest` is not passed at all.
+    const before = buildSarifJson(baseRun());
+    expect(buildSarifJson(baseRun(), undefined, undefined, { warnings: [] })).toBe(before);
+  });
+
+  it("is deterministic across builds", () => {
+    const a = buildSarifJson(baseRun(), undefined, undefined, { warnings: WARNINGS });
+    const b = buildSarifJson(baseRun(), undefined, undefined, { warnings: WARNINGS });
+    expect(a).toBe(b);
+  });
+});
