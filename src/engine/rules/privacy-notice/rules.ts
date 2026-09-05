@@ -167,7 +167,7 @@ const normalizeWs = (s: string): string => s.replace(/\s+/g, " ").trim();
 // a sale indication is a false accusation. True when the sentence negates the
 // sale/share verb.
 const SALE_DISCLAIMED =
-  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won['’]?t|shall\s+not|cannot|can['’]?t|never|not)\b(?:\.(?=\d)|[^.;\n]){0,80}\b(?:sell|sells|selling|sold|sale|share|shares|shared)\b|\bno\s+(?:sale|selling|sharing)\b/i;
+  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won['’]?t|shall\s+not|must\s+not|cannot|can['’]?t|never|not)\b(?:\.(?=\d)|[^.;\n]){0,80}\b(?:sell|sells|selling|sold|sale|share|shares|shared)\b|\bno\s+(?:sale|selling|sharing)\b/i;
 
 /**
  * True when position `i` in `text` ends a sentence. A "." is a boundary
@@ -348,7 +348,7 @@ const TARGETED_ADS = /\btargeted\s+advertising\b/i;
 
 /** The sentence negates the targeted-advertising processing ("we do not …"). */
 const ADS_DISCLAIMED =
-  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won['’]?t|shall\s+not|cannot|can['’]?t|never|not)\b(?:\.(?=\d)|[^.;\n]){0,80}\btargeted\s+advertising\b|\bno\s+targeted\s+advertising\b/i;
+  /\b(?:do(?:es)?\s+not|did\s+not|will\s+not|would\s+not|won['’]?t|shall\s+not|must\s+not|cannot|can['’]?t|never|not)\b(?:\.(?=\d)|[^.;\n]){0,80}\btargeted\s+advertising\b|\bno\s+targeted\s+advertising\b/i;
 
 const OPT_OUT_TOKEN = /\bopt[- ]?out\b/gi;
 /**
@@ -358,7 +358,7 @@ const OPT_OUT_TOKEN = /\bopt[- ]?out\b/gi;
  * silenced the rule).
  */
 const OPT_OUT_NEGATED =
-  /\b(?:cannot|can['’]?t|may\s+not|will\s+not|won['’]?t|shall\s+not|not\s+(?:able|permitted|allowed|entitled)\s+to|no\s+(?:right|ability|way|option)\s+to|unable\s+to|do(?:es)?\s+not\s+(?:allow|permit|offer|provide))\b(?:\.(?=\d)|[^.;\n]){0,40}$/i;
+  /\b(?:cannot|can['’]?t|may\s+not|will\s+not|won['’]?t|shall\s+not|must\s+not|not\s+(?:able|permitted|allowed|entitled)\s+to|no\s+(?:right|ability|way|option)\s+to|unable\s+to|do(?:es)?\s+not\s+(?:allow|permit|offer|provide))\b(?:\.(?=\d)|[^.;\n]){0,40}$/i;
 
 /** True when some opt-out mention is a genuine disclosure, not a denial. */
 function optOutDisclosed(text: string): boolean {

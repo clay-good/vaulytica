@@ -88,8 +88,17 @@ function pillars(block: string, key: string): RegExp[] | null {
     else if (block[i] === "]") depth -= 1;
   }
   const out: RegExp[] = [];
-  for (const line of block.slice(start, i - 1).split("\n")) {
-    const t = line.trim();
+  // A conjunction written on ONE line — `pat: [/a/i, /b/i]` — was invisible
+  // here, because this reads line by line and neither literal is alone on its
+  // line. **217 of the catalog's conjunctions are written that way**, so the
+  // guard was policing a minority of the population it exists to police, and
+  // PRV-105 only surfaced when an unrelated edit pushed its array past
+  // Prettier's column limit and split it. A single-line array is split on the
+  // comma that precedes a literal.
+  const body = block.slice(start, i - 1);
+  const lines = body.includes("\n") ? body.split("\n") : body.split(/,\s*(?=\/)/);
+  for (const line of lines) {
+    const t = `${line.trim().replace(/,$/, "")},`;
     if (t.startsWith("//") || t.startsWith("*")) continue;
     const rm = /^\/((?:\\.|\[(?:\\.|[^\]])*\]|[^/\\])+)\/([a-z]*)\s*,?$/.exec(t);
     if (rm) {

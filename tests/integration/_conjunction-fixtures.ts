@@ -6,6 +6,24 @@
  */
 export const COMPLIANT: Array<[string, string, string, string]> = [
   [
+    "ENG-009",
+    "Contingency Fee Agreement",
+    "Attorney's fee is contingent on recovery and is calculated as thirty-three and one-third percent (33 1/3%) of the gross recovery if the matter resolves before suit is filed, forty percent (40%) after suit is filed, and forty-five percent (45%) after a notice of appeal. Client has read this agreement and signs it below.",
+    'the family title carries "Contingency", so the check rested on the percentage pillar alone',
+  ],
+  [
+    "COMM-219",
+    "Loyalty / Rewards Program Terms",
+    "Points expire twenty-four (24) months after the month in which they are earned, and the whole balance is forfeited after twelve (12) consecutive months with no qualifying activity. Points bought with money do not expire. We email you sixty (60) days before any forfeiture.",
+    'the family title carries "Rewards", so the check rested on the expiry pillar alone',
+  ],
+  [
+    "SET-134",
+    "Stipulation of Dismissal",
+    "The parties stipulate that all claims and counterclaims asserted in this action are dismissed WITH PREJUDICE as to every party, each side to bear its own costs and attorneys' fees.",
+    'the family title carries "Dismissal", so the check rested on the prejudice pillar alone',
+  ],
+  [
     "ENG-002",
     "Engagement Letter",
     "Our client in this matter is Halstead Brothers Aggregates, LLC only. We do not represent its members, officers, affiliates, or subsidiaries, and our representation of the Company does not create an attorney-client relationship with any of them.",

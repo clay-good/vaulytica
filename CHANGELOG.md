@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.455.0] — 2026-09-05
+
+### Fixed
+- **PRV-105 checked whether the document contains "will not".** Its first
+  pillar was `(sell|lease|trade|profit)` with no word boundaries, so **`lease`
+  matched inside `release`** — and the biometric family's own title keywords
+  include "biometric release", while the body of any consent form says "I
+  hereby release". The pillar was therefore always satisfied, and a rule named
+  "No sale, lease, or trade of biometric data" reduced to "does this document
+  say 'will not' somewhere". BIPA § 15(c) is an outright prohibition, and this
+  was not checking it. Now word-bounded, with the inflections the statute's
+  verbs actually take.
+
+- **`pillar-vacuity` was policing a minority of the conjunctions it exists to
+  police.** Its parser reads a `pat:` array line by line, so a conjunction
+  written on ONE line — `pat: [/a/i, /b/i]` — was invisible: neither literal is
+  alone on its line. **217 of the catalog's conjunctions are written that
+  way.** PRV-105 surfaced only because an unrelated edit pushed its array past
+  Prettier's column limit and split it across lines, which is not a detection
+  strategy. The parser now splits a single-line array too.
+
+  The wave behind the fix was three, all now proved rather than declared:
+  **ENG-009** (the title carries "Contingency", so the check rested on the
+  percentage pillar), **COMM-219** ("Rewards", resting on expiry) and
+  **SET-134** ("Dismissal", resting on the with/without-prejudice election).
+  Each has a hand-written compliant clause in `_conjunction-fixtures.ts`
+  proving the rule stays silent on it, so `KNOWN_COLLAPSED` stays empty.
+
+## [9.454.0] — 2026-09-05
+
+### Fixed
+- **Fourteen more recognizers can read "must", one judgment at a time.** The
+  ratchet declared 39 sites needing per-site judgment rather than a sweep;
+  this pays down the ones where the judgment is clear. All of them are
+  PROHIBITIONS, where "must not" is standard plain-language drafting —
+  `must not solicit` (PERS-009, NDA-deep), `must not compete` (commercial),
+  `must not include` (banking), the privacy-notice negation lists, DARK-005's
+  waiver, DARK-014, the BAA's `need not / shall not`, and an employment
+  restrictive covenant — plus RISK-015's remaining indemnity forms.
+
+  The count ratchet drops **39 → 25**, lowered on purpose.
+
+- The 25 that remain are **not debt**. They are correct as written, and the
+  reason is nameable in each rather than a shrug: "no employee MUST discuss"
+  is not English; "employment MUST BE at-will" is not how anyone drafts it;
+  `"Term" MUST MEAN` is not a definition; "we MUST NOT represent" turns a
+  lawyer's statement of intent in an engagement letter into an obligation. A
+  word that does not belong is not a gap, and the guard now says so.
+
 ## [9.453.0] — 2026-09-05
 
 ### Fixed

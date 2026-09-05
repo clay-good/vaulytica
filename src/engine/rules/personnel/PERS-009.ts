@@ -34,7 +34,7 @@ import type { DocPosition } from "../../../extract/types.js";
 const NON_SOLICIT_KEYWORD = /\b(?:solicit|no[- ]hire|no[- ]poach)\b/i;
 const NON_SOLICIT_NEGATIVES = [
   /\bnon[- ]solicit(?:ation)?\b/i,
-  /\b(?:shall|may|will|agrees?)\s+not\s+solicit\b/i,
+  /\b(?:shall|must|may|will|agrees?)\s+not\s+solicit\b/i,
   /\bnot\s+to\s+solicit\b/i,
   /\bno[- ]hire\b/i,
   /\bno[- ]poach\b/i,

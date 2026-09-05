@@ -571,7 +571,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Carve out: 'Nothing in this clause shall restrict general solicitations of employment not specifically directed at employees of the other party.'",
     bad_patterns: [
-      /(non[- ]solicit|shall\s+not\s+solicit|will\s+not\s+solicit)/i,
+      /(non[- ]solicit|(?:shall|must)\s+not\s+solicit|will\s+not\s+solicit)/i,
       // v1.0.0 keyed only on "solicit" and missed the equivalent no-poach verbs.
       // Tie recruit/hire/poach/induce to a personnel object so an unrelated
       // "shall not hire outside counsel" is not swept in; also catch the

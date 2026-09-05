@@ -636,7 +636,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     // "Executive" (or address the reader as "you"). Add both to the subject
     // group.
     bad_patterns: [
-      /(?:employee|worker|executive|you)\b.{0,40}\b(?:shall\s+not|will\s+not|(?:agrees?|covenants?)\s+not\s+to)\b.{0,50}(?:compete\b|engage\s+in\s+any\s+(?:competing\s+|competitive\s+)?business)/is,
+      /(?:employee|worker|executive|you)\b.{0,40}\b(?:shall\s+not|must\s+not|will\s+not|(?:agrees?|covenants?)\s+not\s+to)\b.{0,50}(?:compete\b|engage\s+in\s+any\s+(?:competing\s+|competitive\s+)?business)/is,
       /non.?compete\s+(period|covenant).{0,200}(employee|worker|executive)/is,
     ],
     // "Employee shall not be subject to any covenant not to compete" satisfies

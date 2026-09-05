@@ -104,7 +104,16 @@ const BIOMETRIC = pack("biometric-consent", C, [
       "the statutory prohibition on selling, leasing, trading, or profiting from biometric data",
       "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004",
     ),
-    pat: [/(sell|lease|trade|profit)/i, /(will\s+not|shall\s+not|does\s+not|prohibited)/i],
+    pat: [
+      // `lease` matched inside `release`, and this family's own title
+      // keywords include "biometric release" — so the pillar was satisfied by
+      // the title, and by the body of any consent form that says "I hereby
+      // release". The check reduced to "does the document contain 'will
+      // not'", which is not what § 15(c) is about. Word boundaries, and the
+      // inflections the statute's own verbs actually take.
+      /\b(?:sells?|selling|sale|leases?|leasing|trades?|trading|profits?|profiting)\b/i,
+      /(will\s+not|shall\s+not|must\s+not|does\s+not|prohibited)/i,
+    ],
     all: true,
     why: "§ 15(c) prohibits selling, leasing, trading, or otherwise profiting from biometric data outright — there is no consent that cures it.",
     fix: "State that the entity does not and will not sell, lease, trade, or otherwise profit from the biometric data.",

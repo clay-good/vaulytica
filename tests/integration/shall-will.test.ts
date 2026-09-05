@@ -109,7 +109,20 @@ describe("shall and will are the same obligation", () => {
    * argument one word longer, in 11 more recognizers. Those went too, again
    * with every golden assertion unchanged.
    *
-   * The 39 left do need judgment. Their shapes are all different — a
+   * Fourteen of the 39 were then widened one at a time, each a judgment about
+   * the SITE rather than a rule about the word: the prohibitions, where "must
+   * not" is standard plain-language drafting (`must not solicit`, `must not
+   * compete`, `must not include`, the privacy-notice negation lists), plus
+   * RISK-015's indemnity forms.
+   *
+   * The 25 left are not debt — they are correct as written, and the reason is
+   * nameable in each case rather than a shrug: "no employee MUST discuss" is
+   * not English; "employment MUST BE at-will" is not how anyone drafts it;
+   * `"Term" MUST MEAN` is not a definition; and "we MUST NOT represent" turns
+   * a lawyer's statement of intent in an engagement letter into an obligation.
+   * A word that does not belong is not a gap.
+   *
+   * What remains of the original 39 that DOES need judgment. Their shapes are all different — a
    * `shall\s+not` inside a longer prohibition list, a negation alternation
    * with eight members, a `shall` sitting alone in a clause where "must" may
    * not be idiomatic at all — and where the word belongs in each is a decision
@@ -120,7 +133,7 @@ describe("shall and will are the same obligation", () => {
    * Equality, not `<=`, so that fixing one means lowering this number on
    * purpose — a ceiling nobody has to lower is a ceiling that drifts.
    */
-  const MUST_BLIND = 39;
+  const MUST_BLIND = 25;
 
   it("the recognizers that read 'shall' without 'must' can only get fewer", () => {
     const files = [

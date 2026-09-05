@@ -87,10 +87,10 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // The discriminator is the pair — a FIRST-PERSON or fiduciary-role
     // indemnitor and GOOD-FAITH RELIANCE on the instrument as the trigger. A
     // commercial indemnity has neither.
-    /\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+(?:[^.]|\.(?=\d)){0,160}?\b(?:good[-\s]faith|reliance|relies|relying|accepts?\s+this\s+(?:instrument|power))\b/i.test(
+    /\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|must\s+|will\s+)*indemnif\w+(?:[^.]|\.(?=\d)){0,160}?\b(?:good[-\s]faith|reliance|relies|relying|accepts?\s+this\s+(?:instrument|power))\b/i.test(
       text,
     ) ||
-    /\b(?:good[-\s]faith|accepts?\s+this\s+(?:instrument|power))\b(?:[^.]|\.(?=\d)){0,160}?\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|will\s+)*indemnif\w+/i.test(
+    /\b(?:good[-\s]faith|accepts?\s+this\s+(?:instrument|power))\b(?:[^.]|\.(?=\d)){0,160}?\b(?:I|the\s+(?:principal|grantor|settlor|declarant|trustor))\s+(?:hereby\s+|agrees?\s+to\s+|shall\s+|must\s+|will\s+)*indemnif\w+/i.test(
       text,
     )
   );

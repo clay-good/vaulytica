@@ -278,7 +278,7 @@ export const BAA_RULES: Rule[] = [
       // Same carve-out guard: § 164.504(e)(2)(ii)(J) itself contemplates
       // retention where return or destruction is INFEASIBLE, and legal-hold
       // language uses the identical "not required to return" phrasing.
-      /\b(?:need\s+not|shall\s+not|will\s+not|is\s+not\s+required\s+to|does\s+not\s+(?:have\s+to)?)\s+(?:return|destroy)\b(?![^.]{0,90}\b(?:applicable\s+law|by\s+law|required\s+by\s+law|legal\s+(?:hold|obligation|requirement)|retention\s+(?:schedule|requirement)|infeasible)\b)[^.]{0,60}?\bPHI/i,
+      /\b(?:need\s+not|shall\s+not|must\s+not|will\s+not|is\s+not\s+required\s+to|does\s+not\s+(?:have\s+to)?)\s+(?:return|destroy)\b(?![^.]{0,90}\b(?:applicable\s+law|by\s+law|required\s+by\s+law|legal\s+(?:hold|obligation|requirement)|retention\s+(?:schedule|requirement)|infeasible)\b)[^.]{0,60}?\bPHI/i,
       /\bno\s+obligation\s+to\s+(?:return|destroy)\b/i,
       /\bPHI\b[^.]{0,40}?\b(?:need\s+not|(?:shall|will|must)\s+not)\s+be\s+(?:returned|destroyed)/i,
       /\bmay\s+retain\s+(?:all\s+|any\s+)?PHI\s+(?:indefinitely|permanently)/i,

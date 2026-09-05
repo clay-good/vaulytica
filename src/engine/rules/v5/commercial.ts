@@ -640,7 +640,7 @@ const JOINT_VENTURE = pack("joint-venture-agreement", C, [
       // "Neither", not on the verb, and `shall not compete` missed it.
       // The restriction is as often "may not pursue" as "shall not compete",
       // and the boundary as often "outside the Venture" as "outside the scope".
-      /(exclusiv|(?:shall|may|will)\s+not\s+(?:compete|engage|pursue|carry\s+on|conduct)|neither\s+\w+(?:\s+\w+){0,3}\s+(?:shall|may|will)\s+(?:compete|engage|pursue|develop|manufacture|sell)|outside\s+the\s+(?:scope|venture|jv))/i,
+      /(exclusiv|(?:shall|must|may|will)\s+not\s+(?:compete|engage|pursue|carry\s+on|conduct)|neither\s+\w+(?:\s+\w+){0,3}\s+(?:shall|may|will)\s+(?:compete|engage|pursue|develop|manufacture|sell)|outside\s+the\s+(?:scope|venture|jv))/i,
     ],
     // The name and the rationale both assert a CONJUNCTION, and `pat` defaults
     // to an OR, so either half alone scored the document clean. See the

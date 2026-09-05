@@ -212,7 +212,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       // clause was reported as containing one.
       /\b(?:not|no)\b[^.]{0,60}(?:\bcognovit\b|warrant\s+of\s+attorney)/i,
       /(?:\bcognovit\b|warrant\s+of\s+attorney)[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
-      /(?:shall|does|do|will|may|can)\s*not\s+(?:include|contain|constitute|authori[sz]e)\b[^.]{0,100}(?:confession\s+of\s+judgment|\bcognovit\b|warrant\s+of\s+attorney|judgment\s+by\s+confession)/i,
+      /(?:shall|must|does|do|will|may|can)\s*not\s+(?:include|contain|constitute|authori[sz]e)\b[^.]{0,100}(?:confession\s+of\s+judgment|\bcognovit\b|warrant\s+of\s+attorney|judgment\s+by\s+confession)/i,
     ],
     bad_title: "Confession-of-judgment (cognovit) clause present",
     bad_description:

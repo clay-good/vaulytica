@@ -10,7 +10,7 @@ const NEG_QUAL =
   "negative|disparag\\w+|critical|defamatory|unfavorable|derogatory|adverse|poor|bad";
 const GAG_CLAUSE = new RegExp(
   "\\b(?:Customer|Consumer|User|Buyer|you|purchaser|Subscribers?|Members?|Account\\s+Holders?|End\\s+Users?|Client|Reviewer)\\b" +
-    "[^.]{0,80}\\b(?:shall\\s+not|may\\s+not|agrees?\\s+not\\s+to|prohibited\\s+from|will\\s+not|are\\s+not\\s+permitted\\s+to)\\b" +
+    "[^.]{0,80}\\b(?:shall\\s+not|must\\s+not|may\\s+not|agrees?\\s+not\\s+to|prohibited\\s+from|will\\s+not|are\\s+not\\s+permitted\\s+to)\\b" +
     "[^.]{0,100}\\b(?:post|publish|write|make|leave|submit)\\b[^.]{0,60}" +
     `\\b(?:(?:${NEG_QUAL})\\s+(?:online\\s+)?(?:review|rating|comment|feedback|testimonial)|` +
     `(?:review|rating|comment|feedback|testimonial)\\w*\\b[^.]{0,40}\\b(?:${NEG_QUAL}))|` +
