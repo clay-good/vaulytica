@@ -32,7 +32,22 @@ export const rule: Rule = {
       // v1.1.0 adds the two most common convenience synonyms the trigger missed:
       // the bare "for convenience" (v1.0.0 required "for any/its convenience")
       // and "without cause" — the classic termination-for-convenience phrasing.
-      /\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Supplier|Contractor|Consultant|Disclosing\s+Party)\s+may\s+terminate\s+(?:this\s+Agreement\s+)?(?:at\s+any\s+time|for\s+(?:(?:any|its)\s+)?convenience|for\s+(?:any|its)\s+reason|without\s+cause|in\s+its\s+(?:sole\s+)?discretion)/i,
+      // The object of "terminate" is whatever the instrument calls ITSELF. The
+      // pattern named only "this Agreement", and because that group is
+      // OPTIONAL the clause did not simply fall back to matching without it:
+      // the words "this Contract " sit between "terminate" and "at any time"
+      // and nothing consumes them. So a lease, a deed, an order form or a
+      // statement of work granting the same one-sided convenience right was
+      // read as granting none. `_helpers.ts` already spells this vocabulary
+      // as `(?:Agreement|Lease|Contract|…)`; this rule carried a narrower copy.
+      //
+      // The words before the noun are `[\w&.-]+` and NOT `[A-Z][\w&.-]*`,
+      // because this regex carries the `i` flag and a capital anchor under it
+      // is inert — it would read as "Title-Case" and match anything, which is
+      // the defect `inert-case-anchor.test.ts` exists to catch. It caught this
+      // one. Nothing is lost by saying so plainly: the instrument NOUN is what
+      // disambiguates, and it is bounded on the left by "this"/"the".
+      /\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Supplier|Contractor|Consultant|Disclosing\s+Party)\s+may\s+terminate\s+(?:th(?:is|e)\s+(?:[\w&.-]+\s+){0,4}(?:Agreement|Contract|Subcontract|Sub-Contract|Lease|Sublease|Deed|Order|Order\s+Form|Note|Plan|Policy|Statement\s+of\s+Work|SOW|Addendum|Amendment|Rider)\s+)?(?:at\s+any\s+time|for\s+(?:(?:any|its)\s+)?convenience|for\s+(?:any|its)\s+reason|without\s+cause|in\s+its\s+(?:sole\s+)?discretion)/i,
     );
     if (!convenienceHit) return null;
 

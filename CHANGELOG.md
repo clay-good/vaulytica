@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.446.0] — 2026-09-05
+
+### Fixed
+- **A one-sided termination right was invisible unless the instrument called
+  itself an Agreement.** TERM-009's convenience-termination trigger named only
+  `this\s+Agreement`, and because that group is OPTIONAL the clause did not
+  fall back to matching without it — the words "this Contract " sit between
+  "terminate" and "at any time" and nothing consumes them. A lease, a deed, an
+  order form or a statement of work granting the identical one-sided right was
+  read as granting none. `_helpers.ts` already spells this vocabulary as
+  `(?:Agreement|Lease|Contract|…)`; the rule carried a narrower copy.
+
+  The first draft of the repair wrote the words before the noun as
+  `[A-Z][\w&.-]*`, and `inert-case-anchor` caught it on the first run: this
+  regex carries the `i` flag, under which a capital anchor is inert — it reads
+  as "Title-Case" and matches anything, so the pattern was broader than both
+  the intent and the comment claimed. It now says what it does (`[\w&.-]+`),
+  which costs nothing: the instrument NOUN is what disambiguates, bounded on
+  the left by "this"/"the". A guard written because that defect had been found
+  by hand five times caught the sixth.
+
+### Added
+- **`defined-term-naming`**: a defined term is whatever the drafter called it.
+  Renamed consistently — the definition and every use — the document says what
+  it said, and the engine should too. Three assertions, each scoped to what is
+  actually true:
+  - **routing never moves**, for all four renames over 300 specimen-pairs. It
+    holds for a reason that does not depend on the terms: the matcher scores a
+    document on its title and clause vocabulary, and neither changes when a
+    defined term is renamed.
+  - **"Confidential Information" → "Proprietary Information" changes no
+    finding** — the rename with no confound, since the profession uses the two
+    interchangeably.
+  - **no rule may LOSE a finding** when the instrument renames itself from
+    Agreement to Contract. This is the one that caught TERM-009.
+
+  What the file deliberately does NOT assert, with the reasoning written down
+  so the next person does not repeat the mistake: renaming "Effective Date" to
+  "Commencement Date" moves findings on six specimens and **that is not a
+  defect**. It is the rewrite failing to preserve meaning. "Effective Date" is
+  in `definitions.ts`'s COMMON_WORDS because every contract uses it without
+  defining it — 20 of the 48 specimens that use it never define it — while a
+  "Commencement Date" in a lease is usually contingent, and leaving it
+  undefined is a real hole. The rename swaps boilerplate for a term of art
+  with different drafting expectations, so STRUCT-006 reporting the second is
+  arguably right.
+
 ## [9.445.0] — 2026-09-05
 
 ### Fixed
