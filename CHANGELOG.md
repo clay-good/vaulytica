@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.445.0] — 2026-09-05
+
+### Fixed
+- **Eleven more recognizers can read "must"**, in the second mechanical shape:
+  `shall\s+be|will\s+be`, the same argument one word longer. A definition
+  written "the Fee must be $50,000", a governing-law clause written "governing
+  law must be Delaware", a DPA whose duration "must be the term of the
+  Agreement" — each was already read in two spellings and is now read in
+  three. All 811 golden assertions unchanged, as with the 297 before them.
+
+  The count ratchet drops **50 → 39**, lowered on purpose, which is what
+  asserting it by equality is for.
+
+  The 39 that remain are judgment, and were checked rather than assumed: they
+  are long negation alternations (`do not|did not|will not|won't|shall not|
+  cannot|never`) where "must not" is a separate insertion decision, and cases
+  like `employment shall be at-will`, where "must be at-will" is not how
+  anyone drafts it. One near-miss worth a future pass: PERS-009's
+  `(?:shall|may|will|agrees?)\s+not\s+solicit` is mechanical in spirit but
+  has `may` sitting between the two words, so it fell outside the adjacency
+  rule — catching it needs a judgment that every member of the alternation is
+  a modal, which is exactly what the ratchet is there to hold.
+
 ## [9.444.0] — 2026-09-05
 
 ### Fixed

@@ -322,7 +322,7 @@ const ENDORSEMENT_RULES: Rule[] = [
     denied_if: [
       /\b(?:shall|will|must|does|do|may|can|is|are)\s+not\s+waiv\w+\b[^.]{0,40}?\b(?:subrogation|rights?\s+of\s+recovery)/i,
       /\bno\s+waiver\s+of\s+(?:subrogation|(?:any\s+|its\s+|all\s+)?rights?\s+of\s+recovery)/i,
-      /\b(?:waiver\s+of\s+subrogation|rights?\s+of\s+recovery)\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be)\s+not\s+(?:waived|granted|provided)/i,
+      /\b(?:waiver\s+of\s+subrogation|rights?\s+of\s+recovery)\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be|must\s+be)\s+not\s+(?:waived|granted|provided)/i,
       /\b(?:insurer|company|underwriter)\b[^.]{0,40}?\b(?:reserves?|retains?|preserves?)\b[^.]{0,20}?\b(?:rights?\s+of\s+)?subrogation/i,
       /\b(?:reserves?|retains?|preserves?)\s+(?:any\s+|its\s+|all\s+|their\s+)?rights?\s+of\s+(?:recovery|subrogation)/i,
     ],

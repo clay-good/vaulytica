@@ -113,7 +113,7 @@ const GOV_LAW = new RegExp(
  * began on the lowercase "that" and the clause read as absent.
  */
 const GOV_LAW_IS = new RegExp(
-  String.raw`\bgoverning\s+law\b(?:\s+of\s+[^.;)]{0,60}?)?\s+(?:is|shall\s+be|will\s+be)\s+(?:that\s+of\s+)?(?:the\s+laws?\s+of\s+)?(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+(?:and\s+)?[A-Z][A-Za-z&-]+){0,3})`,
+  String.raw`\bgoverning\s+law\b(?:\s+of\s+[^.;)]{0,60}?)?\s+(?:is|shall\s+be|will\s+be|must\s+be)\s+(?:that\s+of\s+)?(?:the\s+laws?\s+of\s+)?(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+(?:and\s+)?[A-Z][A-Za-z&-]+){0,3})`,
   "gi",
 );
 

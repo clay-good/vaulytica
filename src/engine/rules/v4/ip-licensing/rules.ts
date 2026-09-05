@@ -173,8 +173,8 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     // merely silent on the point fired.
     denied_if: [
       /\b(?:shall|will|must|does|do|may|can|is|are)\s+not\s+(?:appoint|authori[sz]\w+|grant)\b[^.]{0,60}?\b(?:assignee|attorney.in.fact|power\s+of\s+attorney)/i,
-      /\bno\s+power\s+of\s+attorney\s+(?:is|shall\s+be|will\s+be)\s+(?:granted|conferred|created|implied)/i,
-      /\bpower\s+of\s+attorney\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be)\s+not\s+(?:granted|conferred|created)/i,
+      /\bno\s+power\s+of\s+attorney\s+(?:is|shall\s+be|will\s+be|must\s+be)\s+(?:granted|conferred|created|implied)/i,
+      /\bpower\s+of\s+attorney\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be|must\s+be)\s+not\s+(?:granted|conferred|created)/i,
       /\bnothing\b[^.]{0,60}?\b(?:constitutes?|creates?|confers?)\b[^.]{0,20}?\bpower\s+of\s+attorney/i,
     ],
     denied_title: "Power of attorney expressly withheld",

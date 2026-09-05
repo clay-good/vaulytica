@@ -180,7 +180,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // processing to the agreement's term: "the duration is the term of the
       // Agreement and the ninety (90) days after it". Nothing above reads a
       // duration stated that way.
-      /\bduration\b[^.]{0,60}?\b(?:is|shall\s+be|will\s+be)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|dpa|addendum)/i,
+      /\bduration\b[^.]{0,60}?\b(?:is|shall\s+be|will\s+be|must\s+be)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|dpa|addendum)/i,
       /(?:for|during)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|dpa|addendum)[^.]{0,80}?\bprocess/i,
     ],
   }),

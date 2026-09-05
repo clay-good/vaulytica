@@ -69,7 +69,7 @@ const DEFINITION_INLINE_REFERS =
 // not `gi`: under the `i` flag `[A-Z]` matches lowercase too, so the leading
 // article is matched explicitly instead.
 const DEFINITION_INLINE_COPULA =
-  /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be)\s+(?=[^.]{0,60}?(?:[$€£¥₹₩₽]\s?\d|\b\d))/g;
+  /\b[Tt]he\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:is|are|shall\s+be|will\s+be|must\s+be)\s+(?=[^.]{0,60}?(?:[$€£¥₹₩₽]\s?\d|\b\d))/g;
 // The same copula with the definiendum at the END of the clause — `The Escrow
 // Amount, together with all interest and earnings on it, is the "Escrow Fund"`,
 // `Sections 8, 9 and 13, collectively, are the "Surviving Provisions"`. The
@@ -88,7 +88,7 @@ const DEFINITION_TRAILING_COPULA =
   // capture swallowed it and defined "Parties." instead of "Parties". The
   // optional period before the closing quote is what keeps the sentence's own
   // punctuation out of the term.
-  /\b(?:is|are|shall\s+be|will\s+be|constitutes?|constitute)\s+(?:collectively\s*,?\s*)?the\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)\.?["“”']\s*(?=[.;,)]|$)/g;
+  /\b(?:is|are|shall\s+be|will\s+be|must\s+be|constitutes?|constitute)\s+(?:collectively\s*,?\s*)?the\s+["“”']([A-Z][\w\s\-&/'’.]{1,80}?)\.?["“”']\s*(?=[.;,)]|$)/g;
 // A period / term defined by its BOUNDS rather than by "means" — `The "Tolling
 // Period" shall begin on the Effective Date and shall continue until …`, `the
 // "Restricted Period" shall commence on the Closing`. The quoted term is the

@@ -116,7 +116,7 @@ export const CC_002_DPA_PURPOSE: ConsistencyRule = {
     // Services") is Art. 28(3)-compliant, not open-ended, so it must not fire.
     const dpaBroad = findParagraph(
       dpa,
-      /\b(?:processing\s+(?:purposes?|shall\s+be|will\s+be)|purpose\s+of\s+the\s+processing)\b(?:(?!\bnot\b)[^.\n]){0,120}\b(any\s+purpose|any\s+lawful\s+purpose|as\s+(?:the\s+)?controller\s+(?:may\s+)?direct|any\s+purpose\s+authori[sz]ed)\b/i,
+      /\b(?:processing\s+(?:purposes?|shall\s+be|will\s+be|must\s+be)|purpose\s+of\s+the\s+processing)\b(?:(?!\bnot\b)[^.\n]){0,120}\b(any\s+purpose|any\s+lawful\s+purpose|as\s+(?:the\s+)?controller\s+(?:may\s+)?direct|any\s+purpose\s+authori[sz]ed)\b/i,
     );
     if (!dpaBroad) return [];
     // A processing purpose tethered to the Services / this Agreement satisfies

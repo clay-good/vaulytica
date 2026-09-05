@@ -608,7 +608,7 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
     cite: dgcl("145(e)"),
     pat: [
       /(?:undertaking|undertakes?|undertake|agrees?|covenants?|promises?)\s+(?:by\s+(?:or\s+on\s+behalf\s+of\s+)?[^.]{0,60}?\s+)?to\s+(?:repay|reimburse)/i,
-      /unsecured|without\s+(?:security|bond|interest|reference\s+to|regard\s+to)|no\s+(?:security|bond|collateral)[^.]{0,60}?\b(?:is|shall\s+be|will\s+be|are)?\s*(?:required|necessary)|need\s+not\s+be\s+secured/i,
+      /unsecured|without\s+(?:security|bond|interest|reference\s+to|regard\s+to)|no\s+(?:security|bond|collateral)[^.]{0,60}?\b(?:is|shall\s+be|will\s+be|must\s+be|are)?\s*(?:required|necessary)|need\s+not\s+be\s+secured/i,
     ],
     all: true,
     why: "§ 145(e) conditions advancement on an undertaking to repay if it is ultimately determined the person is not entitled to be indemnified. An undertaking that must be secured, or that is measured against the director's ability to repay, converts the right into one only a wealthy director can use.",

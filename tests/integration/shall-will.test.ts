@@ -105,17 +105,22 @@ describe("shall and will are the same obligation", () => {
    * 811 golden assertions still holds — a tolerance changes what a pattern can
    * read, never what it means.
    *
-   * The 50 left do need judgment. Their shapes are all different — `shall\s+be`
-   * beside `will\s+be`, a `shall\s+not` inside a longer prohibition list, a
-   * negation alternation with eight members — and where "must" belongs in each
-   * is a decision per site, not a rewrite rule.
+   * A second mechanical shape followed: `shall\s+be|will\s+be`, the same
+   * argument one word longer, in 11 more recognizers. Those went too, again
+   * with every golden assertion unchanged.
+   *
+   * The 39 left do need judgment. Their shapes are all different — a
+   * `shall\s+not` inside a longer prohibition list, a negation alternation
+   * with eight members, a `shall` sitting alone in a clause where "must" may
+   * not be idiomatic at all — and where the word belongs in each is a decision
+   * per site, not a rewrite rule.
    *
    * A count, not a list of `path:line`: line numbers move under every edit
    * above them, and a stale exception is indistinguishable from a wrong one.
    * Equality, not `<=`, so that fixing one means lowering this number on
    * purpose — a ceiling nobody has to lower is a ceiling that drifts.
    */
-  const MUST_BLIND = 50;
+  const MUST_BLIND = 39;
 
   it("the recognizers that read 'shall' without 'must' can only get fewer", () => {
     const files = [

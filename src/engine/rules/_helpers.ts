@@ -596,7 +596,7 @@ export function expressDenial(topic: string): RegExp[] {
     new RegExp(String.raw`\b${t}\b[^.]{0,80}?\bcan\s?not\s+(?:be\s+)?${done}`, "i"),
     // "no OFAC screening is performed" / "no financial disclosure was exchanged"
     new RegExp(
-      String.raw`\bno\s+${gap}${t}\b[^.]{0,80}?\b(?:is|are|was|were|shall\s+be|will\s+be|has\s+been|have\s+been)\s+${done}`,
+      String.raw`\bno\s+${gap}${t}\b[^.]{0,80}?\b(?:is|are|was|were|shall\s+be|will\s+be|must\s+be|has\s+been|have\s+been)\s+${done}`,
       "i",
     ),
   ];
