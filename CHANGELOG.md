@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.434.0] — 2026-09-05
+
+### Changed
+- **The Commonwealth-spelling guard stopped at its own headings.** Its corpus
+  rewrite spelled each pair as `(D|d)efense` — a rewriting that reaches the
+  body of a document and leaves its title in American spelling. That is the
+  same blindness the file exists to hunt, wearing the guard's own clothes: a
+  title is written "TRADEMARK LICENSE AGREEMENT", the title is where routing is
+  decided, and with ALL-CAPS left alone the relation could see only three of
+  the four playbook re-routes that were live when it was widened. It now sees
+  all four, `npp-acknowledgment` → `hipaa-npp` included.
+
+  Every pair carries case through ALL-CAPS and Capitalised alike, driven off
+  one table rather than eleven hand-spelled alternations. Case is CARRIED, not
+  flattened — a pass that wrote "2. licence Grant." for "2. License Grant."
+  stopped the heading looking like a heading and drew a finding against a
+  reference to it, a defect manufactured by the probe rather than found by it.
+
 ## [9.433.0] — 2026-09-05
 
 ### Fixed

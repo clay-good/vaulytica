@@ -131,38 +131,49 @@ describe("a word spelled the way the rest of the common law spells it", () => {
       }
       return out;
     };
-    const british = (s: string): string =>
-      s
-        .replace(
-          /\b(auth|recogn|organ|real|minim|maxim|util|analy|summar|penal|jeopard|character|special|prior|standard|harmon|amort|equal|final|formal|general|legal|local|normal|optim|public|stabil|subsid|capital|memor|author|itemi|notar|saniti|hospitali)iz(e|es|ed|ing|ation|ations|able)\b/gi,
-          (_m, stem: string, tail: string) => `${stem}is${tail}`,
-        )
-        .replace(/\b(D|d)efense\b/g, "$1efence")
-        .replace(/\b(O|o)ffense(s?)\b/g, "$1ffence$2")
-        .replace(/\b(L|l)abor\b/g, "$1abour")
-        .replace(/\b(F|f)avor(s|ed|ing|able|ably)?\b/g, (_m, c: string, t = "") => `${c}avour${t}`)
-        .replace(/\b(H|h)onor(s|ed|ing|able)?\b/g, (_m, c: string, t = "") => `${c}onour${t}`)
-        .replace(/\b(I|i)nstallment(s?)\b/g, "$1nstalment$2")
-        .replace(/\b(E|e)nrollment(s?)\b/g, "$1nrolment$2")
-        .replace(/\b(A|a)cknowledgment(s?)\b/g, "$1cknowledgement$2")
-        // The noun. British English splits it from the verb — a solicitor
-        // holds a licence and is licensed to practise — so only the noun
-        // forms move, exactly as the static table above reads them.
-        //
-        // ALL-CAPS included, unlike every rewriting above it. The title is
-        // where routing is decided and a title is written "TRADEMARK LICENSE
-        // AGREEMENT"; a rewriting that moves the body and leaves the heading
-        // is not the same document, and with the heading left alone this
-        // relation could not see a single one of the four playbook re-routes
-        // that were live when it was widened.
-        //
-        // The case must be CARRIED, not flattened. A first pass that wrote
-        // "2. licence Grant." for "2. License Grant." stopped the heading
-        // looking like a heading, unregistered the section, and reported
-        // STRUCT-007 against a reference to it — a defect manufactured by the
-        // probe, in the same family as the "capitalizeed" one above.
-        .replace(/\blicense(s?)\b/gi, (m: string, tail: string) => carryCase(m, `licence${tail}`))
-        .replace(/\bcenter(s?)\b/gi, (m: string, tail: string) => carryCase(m, `centre${tail}`));
+    // Every rewriting carries case, ALL-CAPS included.
+    //
+    // The table used to spell each pair as `(D|d)efense` — a rewriting that
+    // reaches the body of a document and stops at its headings. That is the
+    // same blindness this file exists to hunt, wearing the guard's own
+    // clothes: a title is written "TRADEMARK LICENSE AGREEMENT" and the title
+    // is where routing is decided, so with ALL-CAPS left alone the relation
+    // could not see a single one of the four playbook re-routes that were
+    // live at the time.
+    //
+    // Case must be CARRIED, not flattened. A pass that wrote "2. licence
+    // Grant." for "2. License Grant." stopped the heading looking like a
+    // heading, unregistered the section, and drew a STRUCT-007 against a
+    // reference to it — a defect manufactured by the probe, the same family
+    // as the "capitalizeed" one above.
+    const PAIRS: ReadonlyArray<readonly [RegExp, string]> = [
+      [/\bdefense(s?)\b/gi, "defence$1"],
+      [/\boffense(s?)\b/gi, "offence$1"],
+      [/\blabor\b/gi, "labour"],
+      [/\bfavor(s|ed|ing|able|ably)?\b/gi, "favour$1"],
+      [/\bhonor(s|ed|ing|able)?\b/gi, "honour$1"],
+      [/\binstallment(s?)\b/gi, "instalment$1"],
+      [/\benrollment(s?)\b/gi, "enrolment$1"],
+      [/\backnowledgment(s?)\b/gi, "acknowledgement$1"],
+      // The NOUN. British English splits it from the verb — a solicitor holds
+      // a licence and is licensed to practise — so only the noun forms move,
+      // exactly as the static table above reads them.
+      [/\blicense(s?)\b/gi, "licence$1"],
+      [/\bcenter(s?)\b/gi, "centre$1"],
+    ];
+    const british = (s: string): string => {
+      let out = s.replace(
+        /\b(auth|recogn|organ|real|minim|maxim|util|analy|summar|penal|jeopard|character|special|prior|standard|harmon|amort|equal|final|formal|general|legal|local|normal|optim|public|stabil|subsid|capital|memor|author|itemi|notar|saniti|hospitali)iz(e|es|ed|ing|ation|ations|able)\b/gi,
+        (m: string, stem: string, tail: string) =>
+          carryCase(m, `${stem.toLowerCase()}is${tail.toLowerCase()}`),
+      );
+      for (const [re, rep] of PAIRS) {
+        out = out.replace(re, (m: string, tail: string | undefined) =>
+          carryCase(m, rep.replace("$1", tail ?? "")),
+        );
+      }
+      return out;
+    };
 
     const broken: string[] = [];
     let probed = 0;
