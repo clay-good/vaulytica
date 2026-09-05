@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.430.0] — 2026-09-05
+
+### Added
+- **The archived report says what the ingest could not read.** The DOCX report
+  is the copy that gets emailed, filed, and reopened months after the tab that
+  produced it is closed — the surface where "About this input" matters most,
+  and the only one that carried none of it. `buildDocxReport` received the
+  whole `IngestResult` and rendered exactly one thing out of it: the filename.
+
+  So a redline read as all-changes-accepted, hidden `w:vanish` text analyzed
+  although no reader can see it, reviewer comments that never reached the
+  engine, OCR's low-confidence words, and a document not in English were all
+  stated in the tab, on the CLI's stderr, in the JSON report and on the HTML
+  report's cover — and silently absent from the document a lawyer keeps.
+
+  A new **"About This Input"** section renders every warning verbatim, placed
+  ahead of the findings and ahead of the other honesty caveats, because it
+  qualifies the text all of them were drawn from: a caveat about which checks
+  ran means less than a caveat about which text they ran on. It renders
+  nothing when the ingest read the document cleanly, so a report with nothing
+  to declare is byte-identical to the one produced before the section existed.
+
 ## [9.429.0] — 2026-09-05
 
 ### Added

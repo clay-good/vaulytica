@@ -112,6 +112,10 @@ export async function buildDocxReport(
   const bibliography = buildBibliography(run.findings, dkb);
   const children: (Paragraph | Table)[] = [
     ...renderCover(run, ingest, playbook),
+    // What the ingest could and could not read. First of the honesty caveats
+    // because it qualifies every other one: a caveat about which checks ran
+    // means less than a caveat about which text they ran ON.
+    ...renderInputNotices(ingest),
     // Unmatched-document banner + scope-of-review, both above the findings so
     // a reader sees the honesty caveat before any finding.
     ...renderClassificationNotice(run.classification_notice),
@@ -729,6 +733,35 @@ const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
  * classification notice (generic fallback), above every finding so the caveat
  * is unmissable. The text comes from the hashed run, not this renderer.
  */
+/**
+ * "About this input" — what the ingest could and could not read.
+ *
+ * The DOCX is the archived deliverable: the one a reader emails, files, and
+ * comes back to months later, long after the tab that produced it is closed.
+ * It is therefore the surface where these notices matter MOST and the one
+ * that carried them least — it received the whole `IngestResult` and rendered
+ * the filename out of it. A redline read as all-changes-accepted, hidden text
+ * analyzed although nobody can see it, reviewer comments that never reached
+ * the engine, OCR's low-confidence words, and a document not in English were
+ * all in the tab, the CLI's stderr, the JSON and the HTML report — and absent
+ * from the document a lawyer actually keeps.
+ *
+ * Returns `[]` when the ingest read the document cleanly, so a report that
+ * had nothing to declare is byte-identical to the one produced before this
+ * section existed.
+ */
+function renderInputNotices(ingest: IngestResult): (Paragraph | Table)[] {
+  if (ingest.warnings.length === 0) return [];
+  return [
+    h1("About This Input"),
+    para({
+      text: "What the analysis could and could not read. None of this changes what was analyzed — it states plainly what was, so that a finding, or the absence of one, is read against the right text.",
+      italics: true,
+    }),
+    ...ingest.warnings.map((w) => para({ text: `• ${w}` })),
+  ];
+}
+
 function renderClassificationNotice(
   notice: ClassificationNotice | undefined,
 ): (Paragraph | Table)[] {

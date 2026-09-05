@@ -104,6 +104,57 @@ describe("buildDocxReport", () => {
     expect(runText).toContain("findings cite an attorney-reviewed rule");
   });
 
+  /**
+   * The DOCX is the archived deliverable — the copy a reader emails, files,
+   * and opens again months after the tab that made it is gone. It received
+   * the whole `IngestResult` and rendered the filename out of it, so every
+   * "About this input" notice the tab, the CLI, the JSON and the HTML report
+   * carried was absent from the one document a lawyer actually keeps.
+   */
+  describe("About This Input", () => {
+    const docxText = async (result: IngestResult): Promise<string> => {
+      const blob = await buildDocxReport(makeRun(), result, loadStarterDkbSync(), loadMutualNda());
+      const { unzipSync, strFromU8 } = await import("fflate");
+      const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+      return (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+        .map((m) => m.replace(/<[^>]+>/g, ""))
+        .join("");
+    };
+
+    it("renders every ingest warning verbatim", async () => {
+      const text = await docxText({
+        ...ingest,
+        warnings: [
+          "This document does not read as English — it appears to be Spanish.",
+          "1 tracked change was read as ACCEPTED.",
+        ],
+      });
+      expect(text).toContain("About This Input");
+      expect(text).toContain("it appears to be Spanish");
+      expect(text).toContain("1 tracked change was read as ACCEPTED.");
+    });
+
+    it("says the notices do not change what was analyzed", async () => {
+      const text = await docxText({ ...ingest, warnings: ["Pasted text loses structure."] });
+      expect(text).toContain("None of this changes what was analyzed");
+    });
+
+    it("puts the section ahead of the findings, not after them", async () => {
+      // It qualifies the text every finding was drawn from, so a reader who
+      // reaches a finding must already have read it.
+      const text = await docxText({ ...ingest, warnings: ["Pasted text loses structure."] });
+      expect(text.indexOf("About This Input")).toBeGreaterThan(-1);
+      expect(text.indexOf("About This Input")).toBeLessThan(text.indexOf("Finding c1"));
+    });
+
+    it("adds nothing at all when the ingest read the document cleanly", async () => {
+      // A report with nothing to declare is byte-identical to the one this
+      // section did not exist in.
+      const clean = await docxText({ ...ingest, warnings: [] });
+      expect(clean).not.toContain("About This Input");
+    });
+  });
+
   it("renders the universal scope-of-review block in the disclaimer", async () => {
     const blob = await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda());
     const { unzipSync, strFromU8 } = await import("fflate");
