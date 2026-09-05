@@ -11,6 +11,7 @@
  */
 
 import { expressDenial } from "../../_helpers.js";
+import { INSTRUMENT_NOUN_I } from "../../../../extract/instrument-kinds.js";
 import { DATE_SHAPE } from "../../../../extract/dates.js";
 import type { Rule } from "../../../finding.js";
 import {
@@ -1160,7 +1161,24 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation:
       "DPAs should state how long the agreement is in effect and the conditions for termination.",
     recommendation: "Add 'Term' and 'Termination' clauses.",
-    present_patterns: [/(term\s+of\s+(this\s+)?agreement|initial\s+term|termination|terminate)/i],
+    // The instrument names ITSELF by whichever noun its file uses, and the
+    // corpus holds a sub-processing agreement with zero occurrences of
+    // "terminate" — its only match here was the literal "term of this
+    // Agreement". Renamed, it was told it states no term at all.
+    //
+    // "THIS", never "the". A DPA states its own term by referring to itself;
+    // "the term of the Agreement" points at the PARENT instrument, and it
+    // turns up inside retention clauses ("for the term of the Agreement and
+    // the ninety days thereafter") that say nothing about how long this
+    // addendum lasts. Admitting "the" here let one such passing mention
+    // satisfy the check, and `specimen-regression` caught it on
+    // `dpa-defined-term.txt`.
+    present_patterns: [
+      new RegExp(
+        `(term\\s+of\\s+(?:this\\s+)?(?:${INSTRUMENT_NOUN_I})|initial\\s+term|termination|terminate)`,
+        "i",
+      ),
+    ],
     default_severity: "warning",
   }),
   presence({

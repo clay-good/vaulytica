@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
@@ -47,7 +48,12 @@ export const rule: Rule = {
       // the defect `inert-case-anchor.test.ts` exists to catch. It caught this
       // one. Nothing is lost by saying so plainly: the instrument NOUN is what
       // disambiguates, and it is bounded on the left by "this"/"the".
-      /\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Supplier|Contractor|Consultant|Disclosing\s+Party)\s+may\s+terminate\s+(?:th(?:is|e)\s+(?:[\w&.-]+\s+){0,4}(?:Agreement|Contract|Subcontract|Sub-Contract|Lease|Sublease|Deed|Order|Order\s+Form|Note|Plan|Policy|Statement\s+of\s+Work|SOW|Addendum|Amendment|Rider)\s+)?(?:at\s+any\s+time|for\s+(?:(?:any|its)\s+)?convenience|for\s+(?:any|its)\s+reason|without\s+cause|in\s+its\s+(?:sole\s+)?discretion)/i,
+      new RegExp(
+        String.raw`\b(Vendor|Provider|Company|Licensor|Employer|Landlord|Supplier|Contractor|Consultant|Disclosing\s+Party)\s+may\s+terminate\s+` +
+          String.raw`(?:th(?:is|e)\s+(?:[\w&.-]+\s+){0,4}(?:${INSTRUMENT_NOUN})\s+)?` +
+          String.raw`(?:at\s+any\s+time|for\s+(?:(?:any|its)\s+)?convenience|for\s+(?:any|its)\s+reason|without\s+cause|in\s+its\s+(?:sole\s+)?discretion)`,
+        "i",
+      ),
     );
     if (!convenienceHit) return null;
 

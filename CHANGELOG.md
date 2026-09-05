@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.447.0] — 2026-09-05
+
+### Added
+- **`INSTRUMENT_NOUN`: what a contract calls ITSELF, in one place.** The
+  sibling of `ATTACHMENT_KIND`, and the same argument one level up — an
+  American vendor deal is an Agreement, the same instrument in a construction
+  file is a Contract, in a property file a Lease or a Deed, in procurement an
+  Order or a Statement of Work. Three separate hand-written subsets of this
+  vocabulary already existed in `_helpers.ts` alone, agreeing only loosely,
+  and TERM-009 had just been repaired with a fourth. Now there is one list,
+  and TERM-009 and DPA-045 both read from it.
+
+  Deliberately not in it: "Policy" and "Plan" on their own. Both are ordinary
+  nouns in a contract's own prose — an insurance policy, a benefit plan — and
+  admitting them would let "the Plan" in a document ABOUT a plan stand in for
+  the instrument itself.
+
+### Fixed
+- **DPA-045** accepted `term\s+of\s+(this\s+)?agreement` alongside
+  "termination"/"terminate", which looks like ample cover until you meet the
+  sub-processing agreement in the corpus that uses the word "terminate"
+  **zero** times — its only match was the literal "term of this Agreement".
+  Drafted as a Sub-Processing Contract or an Addendum, it was told it states
+  no term or termination clause at all.
+
+  The widening admits **"this"**, never **"the"**, and the difference is the
+  whole rule: a DPA states its own term by referring to itself, while "the
+  term of the Agreement" points at the PARENT instrument and turns up inside
+  retention clauses ("for the term of the Agreement and the ninety days
+  thereafter") that say nothing about how long the addendum lasts. The first
+  draft admitted both, one such passing mention then satisfied the check, and
+  `specimen-regression` caught it on `dpa-defined-term.txt` — a false negative
+  traded for a false positive, which is not a fix.
+
 ## [9.446.0] — 2026-09-05
 
 ### Fixed

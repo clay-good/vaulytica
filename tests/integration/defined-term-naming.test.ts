@@ -33,6 +33,26 @@
  * that does not depend on any of that: the matcher scores a document on its
  * TITLE and its clause vocabulary, and neither moves when a defined term is
  * renamed. Four renames over three hundred specimen-pairs, zero re-routes.
+ *
+ * ── Open, and deliberately not asserted ─────────────────────────────────
+ *
+ * Renaming Agreement → Contract still GAINS four absence findings, and they
+ * are not one thing, which is why there is no list here pretending they are:
+ *
+ *   - `dpa-defined-term.txt` DPA-002, `ucc-1.txt` BNK-050 and
+ *     `uk-master-services-agreement.txt` MSA-007 look like the same defect as
+ *     DPA-045 — a presence detector naming one instrument noun — but each
+ *     needs its own specimen read before its pattern is widened, because
+ *     DPA-045 only earned its fix once the corpus produced a sub-processing
+ *     agreement with ZERO occurrences of "terminate".
+ *   - `stock-purchase.txt` EQT-135 is probably NOT a defect: "Ancillary
+ *     Agreements" is a defined concept of a purchase agreement, and renaming
+ *     it to "Ancillary Contracts" is the same term-of-art swap as the
+ *     Effective Date case above rather than a carry-across.
+ *
+ * Asserting a gains list would freeze that ambiguity into a number. The LOSS
+ * direction is asserted instead, because a rule going silent when the
+ * instrument renames itself is unambiguously wrong however the gains read.
  */
 
 import { readFileSync, readdirSync } from "node:fs";
