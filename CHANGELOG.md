@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.442.0] — 2026-09-05
+
+### Fixed
+- **"must" is the third spelling of the same obligation, and RISK-015 could
+  not read it.** The repo has already been through this once for "will"; the
+  plain-language style guides that dropped "shall" mostly recommend "must",
+  and the restyled Federal Rules use it. Rewriting every "shall" in the corpus
+  as "must" found RISK-015 blind on **ten specimens**: an indemnity written
+  "Vendor must indemnify" was not an indemnity at all, so the rule that checks
+  whether it is capped never ran. Its own file already spelled a sibling
+  pattern `shall|will|must` — knowing is not the same as having a mechanism.
+
+### Changed
+- `shall-will` gains the **`shall` → `must` corpus relation**, with an
+  assertion shaped to the asymmetry: **nothing may be LOST** — a rule going
+  silent because the obligation is spelled "must" is a bug, not a debt — while
+  the four documents that GAIN an absence finding are a declared list that may
+  only shrink. Each of those four is the same defect the other way round: the
+  presence detector misses a clause written with "must", the suppression
+  lifts, and the document is told it lacks a clause it has.
+
+  The remaining exposure is measured rather than guessed: **354 recognizers
+  across 83 files** read "shall" and not "must". That is not a codemod — the
+  shapes are too varied for one, the commonest accounting for 10 of the 354,
+  and each site needs a judgment about where in its alternation the word
+  belongs. It is a dedicated pass, and the new relation is what will measure
+  it.
+
 ## [9.441.0] — 2026-09-05
 
 ### Added

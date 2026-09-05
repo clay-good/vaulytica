@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,816+ passing tests` · `v9.441.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,817+ passing tests` · `v9.442.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -1359,7 +1359,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 13,816+ tests, ~140s
+npm run test         # vitest — 13,817+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed
@@ -1392,6 +1392,7 @@ That relation has since grown into the repo's **primary defect-finding instrumen
 | the same document, rewritten                                                                     | what it found                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `$425,000` → `$425,000.00`, `Section 8` → `§ 8`, `60 days` → `sixty (60) days`, `shall` → `will` | clause windows dying at a decimal point; a `\b` that can never match before `§`; 65 recognizers blind to a parenthesized numeral; 227 that read only "shall"                                              |
+| `shall` → `must`, the spelling the plain-language style guides recommend        | RISK-015 blind on **10 specimens**: an indemnity written "Vendor must indemnify" was not an indemnity at all, so the rule checking whether it is capped never ran. 354 recognizers across 83 files still read "shall" and not "must"                                              |
 | `authorized` → `authorised`, `installments` → `instalments`, `license` → `licence`               | 172 recognizers that could read only American spelling — including a loan repayable in instalments reported as stating no payment term. Rewriting the TITLE too found four documents that changed playbook outright: a trade mark licence read as a copyright licence, a patent licence as a EULA                                                                    |
 | `Section 8.2` → `clause 8.2`                                                                     | **35 of 157 specimens.** A survival clause that names "Clauses 5, 6 and 9" named nothing the engine could see, so 25 documents were told their indemnity does not survive                                 |
 | `$5,000,000` → `£5,000,000` / `€5,000,000`                                                       | 36 recognizers that could read only the dollar glyph                                                                                                                                                      |
