@@ -85,6 +85,8 @@ dkb-classifier-patterns.json # regex overrides
 
 Given the extracted data + the document title, [`matchPlaybook`](../src/playbooks/matcher.ts) scores the document against every playbook's `match_features` (title keywords, required clauses, distinguishing phrases, negative features) and returns the highest-scoring playbook plus a human-readable `reasoning` string. The 12 launch playbooks live as JSON under [`playbooks/`](../playbooks/). If nothing scores above the threshold, `generic-fallback` runs only structural + basic-financial + temporal + dark-pattern rules.
 
+Matching is done over a **folded** corpus, on both sides: a feature written one way must find a document written another. The folds are the choices an English-speaking drafter makes without changing what the document is — the apostrophe, the optional hyphen (`non-disclosure` / `nondisclosure` / `non disclosure`), the six interchangeable attachment nouns (an American Exhibit is a London Annexure), and the **spelling** (a "Trade Mark Licence Agreement" is a "Trademark License Agreement"). Each fold was added because a real document routed to the wrong playbook without it, and a document routed to the wrong playbook is checked with the wrong rules — the report is not thin, it is about a different document. `-ise` is folded by an explicit stem list, never a blanket `ise` → `ize`, because English is full of `-ise` words that are variants of nothing: advise, premise, exercise, franchise, compromise, enterprise, and `license` itself.
+
 ## Stage 5 — Rule engine ([src/engine/](../src/engine/))
 
 The engine is a deterministic executor over a sorted list of `Rule`s. Each `Rule` is `(ctx: RuleContext) => Finding | null`, pure — no time, no randomness, no network, no environment. The runner:

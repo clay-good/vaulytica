@@ -97,6 +97,14 @@ describe("a word spelled the way the rest of the common law spells it", () => {
 
   it("rewriting the corpus into Commonwealth spelling changes no finding", async () => {
     const deps = await loadAccuracyDeps({});
+    // ALL-CAPS stays ALL-CAPS, Capitalised stays Capitalised.
+    const carryCase = (src: string, out: string): string => {
+      if (src === src.toUpperCase() && src !== src.toLowerCase()) return out.toUpperCase();
+      if (src[0] === src[0]!.toUpperCase() && src[0] !== src[0]!.toLowerCase()) {
+        return out[0]!.toUpperCase() + out.slice(1);
+      }
+      return out;
+    };
     const british = (s: string): string =>
       s
         .replace(
@@ -110,7 +118,25 @@ describe("a word spelled the way the rest of the common law spells it", () => {
         .replace(/\b(H|h)onor(s|ed|ing|able)?\b/g, (_m, c: string, t = "") => `${c}onour${t}`)
         .replace(/\b(I|i)nstallment(s?)\b/g, "$1nstalment$2")
         .replace(/\b(E|e)nrollment(s?)\b/g, "$1nrolment$2")
-        .replace(/\b(A|a)cknowledgment(s?)\b/g, "$1cknowledgement$2");
+        .replace(/\b(A|a)cknowledgment(s?)\b/g, "$1cknowledgement$2")
+        // The noun. British English splits it from the verb — a solicitor
+        // holds a licence and is licensed to practise — so only the noun
+        // forms move, exactly as the static table above reads them.
+        //
+        // ALL-CAPS included, unlike every rewriting above it. The title is
+        // where routing is decided and a title is written "TRADEMARK LICENSE
+        // AGREEMENT"; a rewriting that moves the body and leaves the heading
+        // is not the same document, and with the heading left alone this
+        // relation could not see a single one of the four playbook re-routes
+        // that were live when it was widened.
+        //
+        // The case must be CARRIED, not flattened. A first pass that wrote
+        // "2. licence Grant." for "2. License Grant." stopped the heading
+        // looking like a heading, unregistered the section, and reported
+        // STRUCT-007 against a reference to it — a defect manufactured by the
+        // probe, in the same family as the "capitalizeed" one above.
+        .replace(/\blicense(s?)\b/gi, (m: string, tail: string) => carryCase(m, `licence${tail}`))
+        .replace(/\bcenter(s?)\b/gi, (m: string, tail: string) => carryCase(m, `centre${tail}`));
 
     const broken: string[] = [];
     let probed = 0;
@@ -121,6 +147,19 @@ describe("a word spelled the way the rest of the common law spells it", () => {
       probed++;
       const before = await analyzeText(text, name, { deps });
       const after = await analyzeText(mutated, name, { deps });
+      // Which playbook the document ROUTED to, checked before the findings.
+      // A re-route is the worse failure and it hides behind the finding diff:
+      // the report is not thin, it is about a different document. Four of
+      // these were live — a trade mark licence read as a copyright licence, a
+      // patent licence as a EULA, a EULA as a copyright licence, an HIPAA
+      // notice acknowledgement as the notice itself — and every finding this
+      // relation would have reported traced back to one of them, not to a
+      // rule. They were invisible here because `british` did not turn a
+      // license into a licence. `matcher.ts` now folds the spellings the way
+      // it already folds apostrophes, hyphens and the attachment nouns.
+      if (before.playbook_id !== after.playbook_id) {
+        broken.push(`${name}: routed ${before.playbook_id} -> ${after.playbook_id}`);
+      }
       const ids = (r: typeof before): string[] =>
         [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
       const lost = ids(before).filter((id) => !ids(after).includes(id));

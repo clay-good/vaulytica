@@ -749,6 +749,89 @@ function foldAttachmentNouns(text: string): string {
 }
 
 /**
+ * The two spellings of a word an English-speaking drafter may use.
+ *
+ * The sibling of {@link foldAttachmentNouns}, and the same argument: a
+ * "Trade Mark Licence Agreement" drafted in London is the same instrument as
+ * the "Trademark License Agreement" drafted in New York, and the family's own
+ * title keyword stops matching on the strength of one letter. Measured over
+ * the specimen corpus by rewriting all 312 documents in Commonwealth spelling
+ * and diffing the routing: FOUR documents changed playbook outright —
+ * `trademark-license` → `copyright-license`, `patent-license` → `eula`,
+ * `eula` → `copyright-license`, `npp-acknowledgment` → `hipaa-npp` — and
+ * every finding that appeared or vanished in that rewrite traced back to one
+ * of those four re-routes. A document routed to the wrong playbook is checked
+ * with the wrong rules, which is a worse failure than any single rule missing.
+ *
+ * Folded on BOTH sides, exactly as the apostrophe, the hyphen and the
+ * attachment nouns are, so a feature written either way matches a document
+ * written either way. It never has to be decided which spelling is "right" —
+ * the fold only merges two spellings of the SAME word into one bucket.
+ *
+ * `-ise` is folded by an explicit stem list rather than by a blanket
+ * `ise` → `ize`. English is full of `-ise` words that are not Commonwealth
+ * variants of anything — advise, premise, exercise, franchise, merchandise,
+ * compromise, supervise, enterprise, otherwise, promise, and `license`
+ * itself — and a blanket rule would rewrite every one of them into a
+ * non-word.
+ */
+const IZE_STEMS =
+  "amortis|analys|authoris|capitalis|categoris|characteris|civilis|collateralis|customis|" +
+  "emphasis|equalis|finalis|formalis|generalis|harmonis|initialis|itemis|jeopardis|legalis|" +
+  "maximis|memorialis|minimis|modernis|nationalis|normalis|optimis|organis|paralys|penalis|" +
+  "prioritis|privatis|publicis|rationalis|realis|recognis|scrutinis|specialis|stabilis|" +
+  "standardis|subsidis|summaris|sympathis|utilis|visualis";
+
+const IZE_RE = new RegExp(
+  String.raw`\b(${IZE_STEMS})(e|es|ed|ing|ation|ations|able|er|ers)\b`,
+  "g",
+);
+
+/** Commonwealth spellings with no shared stem shape, folded one at a time. */
+const SPELLING_PAIRS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/\blicence(s)?\b/g, "license$1"],
+  [/\backnowledgement(s)?\b/g, "acknowledgment$1"],
+  [/\bdefence(s)?\b/g, "defense$1"],
+  [/\boffence(s)?\b/g, "offense$1"],
+  [/\bjudgement(s)?\b/g, "judgment$1"],
+  [/\bcentre(s)?\b/g, "center$1"],
+  [/\bprogramme(s)?\b/g, "program$1"],
+  [/\b(lab|hon|fav|behavi|endeav|neighb|col|harb|rig|vig|val)our(s|ed|ing|able|ed)?\b/g, "$1or$2"],
+  [/\bfulfil(ment|ments|led|ling)?\b/g, "fulfill$1"],
+  [/\benrolment(s)?\b/g, "enrollment$1"],
+  [/\binstalment(s)?\b/g, "installment$1"],
+];
+
+function foldSpelling(text: string): string {
+  let out = text.replace(
+    IZE_RE,
+    (_m, stem: string, suffix: string) => stem.slice(0, -1) + "z" + suffix,
+  );
+  for (const [re, rep] of SPELLING_PAIRS) out = out.replace(re, rep);
+  return out;
+}
+
+/**
+ * The folded form of a catalog feature, memoized.
+ *
+ * A document's corpus is folded ONCE, in {@link buildCorpus}. A feature is
+ * folded on every comparison — and the matcher compares every feature of every
+ * playbook against every document, so the fold sits in the hottest loop there
+ * is. Running the `-ise` alternation there un-memoized made the catalog's
+ * shadowing sweep 3.5x slower (4.6s to 16.1s) and timed it out on a loaded
+ * runner. The feature set is the catalog's own, so the cache is bounded by it.
+ */
+const FOLDED_FEATURE = new Map<string, string>();
+
+function foldFeature(raw: string): string {
+  const hit = FOLDED_FEATURE.get(raw);
+  if (hit !== undefined) return hit;
+  const folded = foldSpelling(foldAttachmentNouns(stripApostrophes(raw)));
+  FOLDED_FEATURE.set(raw, folded);
+  return folded;
+}
+
+/**
  * The three spellings of a compound a drafter may use, precomputed once for
  * the whole corpus.
  *
@@ -767,7 +850,7 @@ function foldAttachmentNouns(text: string): string {
 type Corpus = { plain: string; noHyphen: string; spaced: string };
 
 function buildCorpus(text: string): Corpus {
-  const plain = foldAttachmentNouns(stripApostrophes(text));
+  const plain = foldSpelling(foldAttachmentNouns(stripApostrophes(text)));
   return {
     plain,
     noHyphen: plain.replace(/-/g, ""),
@@ -776,7 +859,7 @@ function buildCorpus(text: string): Corpus {
 }
 
 function matchesIn(corpus: Corpus, feature: string): boolean {
-  const needle = foldAttachmentNouns(stripApostrophes(feature.toLowerCase()));
+  const needle = foldFeature(feature.toLowerCase());
   if (needle.length === 0) return false;
   const variants: Array<[string, string]> = [
     [corpus.plain, needle],
@@ -859,9 +942,7 @@ function openingKeywordLength(title: Corpus, keyword: string): number {
   // compares against `title.spaced`, which IS folded, so a needle that is not
   // stops matching and the family silently loses the opening-position credit —
   // which is worth double, and halved a correctly routed family's score.
-  const needle = foldAttachmentNouns(stripApostrophes(keyword.toLowerCase()))
-    .replace(/-/g, " ")
-    .trim();
+  const needle = foldFeature(keyword.toLowerCase()).replace(/-/g, " ").trim();
   // An ACRONYM in the opening position does not name the document. "DPA",
   // "BAA", "MSA", and "CO" open four, two, three, and two families' documents
   // respectively, and a probe titled "DPA — Multi-State US" was taken by

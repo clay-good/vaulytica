@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.432.0] — 2026-09-05
+
+### Fixed
+- **A licence agreement drafted in London is routed as the instrument it is.**
+  The playbook matcher already folds the drafting-convention variants an
+  English-speaking lawyer chooses between — the apostrophe, the optional
+  hyphen, the six attachment nouns — but not the SPELLING. So a "Trade Mark
+  Licence Agreement" and a "Trademark License Agreement" were different
+  documents to it, on the strength of one letter in the title.
+
+  Measured by rewriting all 312 specimens in Commonwealth spelling and diffing
+  the routing: FOUR documents changed playbook outright — `trademark-license`
+  → `copyright-license`, `patent-license` → `eula`, `eula` →
+  `copyright-license`, `npp-acknowledgment` → `hipaa-npp` — and every finding
+  that appeared or vanished in that rewrite traced back to one of those four,
+  not to a rule. A document routed to the wrong playbook is checked with the
+  wrong rules: the report is not thin, it is about a different document.
+
+  `foldSpelling` folds the two spellings on both sides, exactly as
+  `foldAttachmentNouns` already does. `-ise` is folded by an explicit stem list
+  rather than a blanket `ise` → `ize`: English is full of `-ise` words that are
+  variants of nothing — advise, premise, exercise, franchise, compromise,
+  enterprise, and `license` itself — and a blanket rule rewrites every one of
+  them into a non-word.
+
+- **IPDATA-003** read `\blicense\b` and so could not see the grant in a licence
+  agreement. Now `\blicen[cs]e\b`, the form 45 other patterns in the catalog
+  already use. A tolerance, not a change in meaning: it still matches
+  everything it matched before, so no rule version is stamped.
+
+### Changed
+- The standing `commonwealth-spelling` guard could not see any of this. Its
+  corpus rewrite never turned a `license` into a `licence` or a `center` into a
+  `centre`, and — more importantly — it compared only the FINDINGS, never the
+  playbook the document routed to. Both are fixed, and the new rewrites carry
+  case through ALL-CAPS, because the title is where routing is decided and a
+  title is written "TRADEMARK LICENSE AGREEMENT". With the heading left in
+  American spelling the relation could not see a single one of the four.
+
+- The fold sits in the hottest loop the matcher has — every feature of every
+  playbook against every document — so running the `-ise` alternation there
+  un-memoized made the catalog's shadowing sweep **3.5x slower (4.6s to 16.1s)**
+  and timed it out on a loaded runner. A document's corpus is folded once;
+  a feature's folded form is now memoized, and the sweep is back to 4.1s.
+
+
 ## [9.431.0] — 2026-09-05
 
 ### Added
