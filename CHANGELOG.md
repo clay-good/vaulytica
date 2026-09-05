@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.439.0] — 2026-09-05
+
+### Docs
+- The README's metamorphic-probe table catches up with the rewritings this
+  session shipped: the U+2010 hyphen, a word broken across a line, and the
+  four playbook re-routes that appeared once the Commonwealth rewriting reached
+  the TITLE. The curly-double-quote probe is listed with its result — nothing,
+  across 247 specimens — because a negative result is worth recording for
+  exactly the reason a positive one is: it is why nobody needs to run it again.
+- The hyphen-wrap debt list now records what its GAINS actually mean. The six
+  specimens that gain CHOICE-003 are not false positives: CHOICE-003 reports a
+  venue clause as PRESENT and stands down when an arbitration clause has
+  already named the forum, so a broken "Associa-tion" hiding "American
+  Arbitration Association" lifts the suppression. What moved is the engine's
+  reading of the arbitration clause, not its opinion about venue. And the
+  expensive entry's cause is named: "information", a word that contract uses
+  exactly once, which nothing in the document can vouch for.
+
 ## [9.438.0] — 2026-09-05
 
 ### Fixed

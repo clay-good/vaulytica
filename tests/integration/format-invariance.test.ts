@@ -651,7 +651,15 @@ describe("a finding's quote is really in the document", () => {
  * The list may only SHRINK, and it is asserted by equality — a new divergence
  * fails, and so does a repair that is not recorded. The expensive entry is
  * `uk-contract-of-employment.txt`, which re-routes to `generic-fallback` and
- * loses six findings with it.
+ * loses six findings with it; its cause is "information", a word the contract
+ * uses exactly once, so nothing in the document can vouch for it.
+ *
+ * Read the GAINS the right way round. The six specimens that gain CHOICE-003
+ * are not false positives: CHOICE-003 reports a venue clause as PRESENT and
+ * stands down when an arbitration clause has already named the forum. A broken
+ * "Associa-tion" hides "American Arbitration Association", the suppression
+ * lifts, and the info finding appears. What moved is the engine's reading of
+ * the arbitration clause, not its opinion about venue.
  */
 const HYPHEN_WRAP_DEBT: readonly string[] = [
   "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
