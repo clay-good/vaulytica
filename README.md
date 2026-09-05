@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,823+ passing tests` · `v9.450.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,825+ passing tests` · `v9.451.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -1359,7 +1359,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 13,823+ tests, ~140s
+npm run test         # vitest — 13,825+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed
@@ -1411,6 +1411,7 @@ And where the corpus lacks a shape entirely, the probe runs the other way and **
 | `Name: Jane Ellis` → `Name \| Jane Ellis` (how a .docx table flattens)          | a signature block, an effective date and a policy's publication stamp, none of them readable in the layout most contracts actually use                        |
 | a running `Page 3 of 9` footer every page                                       | a short line between a clause and its neighbour read as that clause's **heading** — two liability caps lost, two signature grids called unfilled placeholders |
 | a `WHEREAS` recital block                                                       | nothing: the engine is position-robust, and the relation is kept so it stays that way                                                                         |
+| `Seller shall indemnify Buyer` → `Buyer shall be indemnified by Seller`        | **RISK-002 scored a one-sided indemnity BACKWARDS.** It read direction off the party nearest the verb, which in the passive is the party being PROTECTED — so the report named the protected party as the one bearing the risk. Not one specimen uses the passive, so only injection could find it |
 
 Two disciplines make the difference between a probe and a noise generator, and both were learned by getting them wrong first. **The rewriting must preserve meaning exactly** — "Section 409A of the Internal Revenue Code" is not "Clause 409A", and a pound sign next to the word "DOLLARS" is a document in two currencies, not a defect. And **suppress on the numbering, not on a list of names**: a statute numbers its sections `1542` and `52.212-4`, a contract numbers its own `4.2`, and that distinction settles which references are the document's own without a list anyone has to maintain forever.
 

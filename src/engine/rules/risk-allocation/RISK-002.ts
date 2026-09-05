@@ -50,7 +50,26 @@ export const rule: Rule = {
       // still counts, because "this" is not admitted.)
       if (/indemnif[^.]{0,60}\bunder\s+the\s+(?:[a-z]+\s+){1,4}agreement\b/.test(sentence))
         continue;
-      const before = sentence.slice(0, idx);
+      // THE PASSIVE INVERTS THE PARTIES, and this rule reads direction.
+      //
+      // "Seller shall indemnify Buyer" and "Buyer shall be indemnified by
+      // Seller" are the same allocation, but the party standing before the
+      // verb is the indemnitOR in one and the indemnitEE in the other. Taking
+      // the nearest surface before the verb in the passive credits the wrong
+      // side — so a one-sided indemnity drafted that way was not merely
+      // missed, it was scored BACKWARDS, and the report named the protected
+      // party as the one bearing the risk.
+      //
+      // The passive is ordinary drafting, not an edge case: "each Indemnitee
+      // shall be indemnified and held harmless by the Company" is how a
+      // charter, an LLC agreement and a construction contract write it. Not
+      // one of the 312 specimens uses it, which is exactly why no rewriting
+      // of the corpus could find this — it had to be injected.
+      const passive = /\bbe\s+indemnified\b/.exec(sentence);
+      const byAt = passive ? sentence.indexOf(" by ", passive.index) : -1;
+      // In the passive the indemnitor follows "by"; everything before the verb
+      // is the party being protected.
+      const before = byAt >= 0 ? sentence.slice(byAt) : sentence.slice(0, idx);
       // Count the INDEMNITOR, not every party the sentence happens to name.
       // "Customer shall indemnify Vendor" names both, so tallying any mention
       // scored them equally and the asymmetry cancelled itself out. The
@@ -63,8 +82,11 @@ export const rule: Rule = {
       for (const p of parties) {
         const key = p.name.toLowerCase();
         for (const surface of [key, ...(p.role ? [p.role.toLowerCase()] : [])]) {
-          const at = before.lastIndexOf(surface);
-          if (at >= 0 && (!best || at > best.at)) best = { key, at };
+          // Active: the indemnitor is the surface CLOSEST to the verb, so the
+          // last one in the run-up. Passive: `before` is the tail beginning at
+          // "by", and the indemnitor is the FIRST surface in it.
+          const at = byAt >= 0 ? before.indexOf(surface) : before.lastIndexOf(surface);
+          if (at >= 0 && (!best || (byAt >= 0 ? at < best.at : at > best.at))) best = { key, at };
         }
       }
       if (!best) continue;

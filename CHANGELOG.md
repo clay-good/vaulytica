@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.451.0] — 2026-09-05
+
+### Fixed
+- **RISK-002 read a passive indemnity BACKWARDS.** "Seller shall indemnify
+  Buyer" and "Buyer shall be indemnified by Seller" allocate the same risk to
+  the same party. The rule compares each side's indemnity scope and reports
+  the asymmetry, and it took the indemnitor to be the party standing closest
+  BEFORE the verb — which in the passive is the party being protected. So a
+  one-sided indemnity drafted that way was not merely invisible: it was scored
+  the wrong way round, and the report named the protected party as the one
+  bearing the risk. The rule now reads the party after "by" when the sentence
+  is passive.
+
+  The passive is ordinary drafting, not an edge case — "each Indemnitee shall
+  be indemnified and held harmless by the Company" is how a charter, an LLC
+  agreement and a construction contract write it.
+
+### Added
+- **`passive-voice`**, and it had to be an INJECTION rather than a rewriting:
+  **not one of the 312 specimens uses the passive**, so no relation over the
+  corpus could have found this. A corpus cannot be rewritten out of what it
+  does not contain — the same reason the "including but not limited to" probe
+  exists.
+
+  The guard asserts the unambiguous direction: no rule may LOSE a finding when
+  an active indemnity is written passively. OBLI-002 still moves on one
+  specimen and is declared rather than fixed — it reads its obligors through
+  `src/extract/obligations.ts`, and widening that extractor has a measured
+  blast radius (an earlier repair to its obligor handling added a finding to
+  55% of the corpus and was declined as a product decision). Fixing a
+  directional rule is cheap; changing what counts as an obligor is not.
+
 ## [9.450.0] — 2026-09-05
 
 ### Fixed
