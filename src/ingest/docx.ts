@@ -3,6 +3,7 @@ import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes } from "./limits.js";
 import { countRevisions, docxNotices } from "./docx-notices.js";
+import { languageFields } from "./language.js";
 
 /**
  * Ingest a DOCX file using mammoth.js. DOCX preserves real heading styles
@@ -67,10 +68,13 @@ export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> 
   const tree = parseDocxHtml(result.value);
   const normalized = normalize(tree);
 
+  const language = languageFields(normalized, warnings);
+
   return {
     tree: normalized,
     source: "docx",
     word_count: countWords(normalized),
+    ...language,
     sha256: await sha256Hex(buf),
     warnings,
   };

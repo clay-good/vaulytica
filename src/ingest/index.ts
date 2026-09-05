@@ -20,6 +20,8 @@ export type { IngestPdfOptions } from "./pdf.js";
 export { ingestPaste } from "./paste.js";
 export { normalize, countWords } from "./normalize.js";
 export { sha256Hex } from "./hash.js";
+export { screenLanguage, languageFields } from "./language.js";
+export type { LanguageScreen } from "./language.js";
 // OCR is intentionally not re-exported by default — it is lazy-loaded by
 // `ingestPdf` when needed. Direct callers can `import("@/ingest/ocr")`.
 export type { OcrProgress } from "./ocr.js";

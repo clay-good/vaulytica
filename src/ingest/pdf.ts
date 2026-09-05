@@ -2,6 +2,7 @@ import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./type
 import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes, MAX_OCR_PAGES } from "./limits.js";
+import { languageFields } from "./language.js";
 
 /**
  * Ingest a PDF using PDF.js. PDFs have no native heading metadata, so we
@@ -166,6 +167,7 @@ export async function ingestPdfBuffer(
         source: "pdf",
         word_count: countWords(normalized),
         page_count: pdfDoc.numPages,
+        ...languageFields(normalized, warnings),
         sha256,
         warnings,
       };
@@ -185,6 +187,7 @@ export async function ingestPdfBuffer(
     source: "pdf",
     word_count: countWords(normalized),
     page_count: pdfDoc.numPages,
+    ...languageFields(normalized, warnings),
     sha256,
     warnings,
   };

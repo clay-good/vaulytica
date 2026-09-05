@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.429.0] — 2026-09-05
+
+### Added
+- **A document that is not in English says so.** Every rule, extractor and
+  playbook in this repo is written against English legal prose. Handed a
+  Spanish or German contract, the engine did not fail — it matched almost
+  nothing and returned a short, quiet findings list indistinguishable from a
+  clean document. The measurement: one mutual NDA drew **23 findings in
+  English and 3 in its own Spanish translation**, with byte-identical
+  warnings. Nothing anywhere told the reader the checks had not read the
+  document.
+
+  `src/ingest/language.ts` screens each ingested document by function-word
+  density — the highest-frequency, most style-independent tokens in any
+  language — over a bounded 2,000-word prefix, which makes the screen O(1) in
+  document size and independent of the document's subject matter. It sets
+  `IngestResult.language` (a field that had been declared, threaded all the
+  way into the JSON report, and **never once produced by any ingest path**)
+  and, when the document is not English, **unshifts** a notice to the head of
+  `IngestResult.warnings` so it leads every other thing the ingest has to say:
+  it reframes the entire findings list below it. Spanish, French, German,
+  Italian, Portuguese and Dutch are named; anything else — including a
+  non-Latin script that does not tokenize into the table at all — still gets
+  the warning, because naming is a courtesy and the warning is the point. All
+  three ingest paths (PDF, DOCX, paste) are wired, so the notice reaches every
+  surface that already renders `warnings`: the tab, the CLI's stderr, the JSON
+  report and the HTML report's cover.
+
+  The English floor is set from measurement, not taste: the weakest of the 312
+  English specimens scores between 0.20 and 0.24, and the floor is 0.12 —
+  roughly a 1.7× margin. `language.test.ts` pins **every** specimen as English
+  with no warning, so a future tightening of that constant cannot silently
+  start accusing real documents. A sample under 30 words is judged not at all;
+  a false accusation of foreignness on a one-line document is worse than a
+  missing one. An English document's warnings are byte-identical to what they
+  were before the screen existed, so no golden churned.
+
 ## [9.428.0] — 2026-09-04
 
 ### Added

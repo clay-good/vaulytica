@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,777+ passing tests` · `v9.428.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,791+ passing tests` · `v9.429.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -64,8 +64,9 @@ A document does not always say what it looks like it says, and the analysis is o
 | **Reviewer comments** (DOCX)               | you, in Word         | nothing — mammoth drops the store        | the count, and that the position behind a clause never reached the report                 |
 | **PDF annotations** (sticky notes, markup) | you, in a viewer     | nothing — they are not in the text layer | the count, and to open the PDF to read them                                               |
 | **A scanned PDF** with no text layer       | you                  | only what OCR recovers                   | that OCR ran, its page bound, and every low-confidence word                               |
+| **A document not in English**               | you                  | almost nothing — every rule is English   | that the checks did not read it, and that a short findings list is not a clean result     |
 
-None of these changes _what_ is analyzed. Which version of a redline the engine should read is a decision for you, not a default worth burying — so the tool states plainly what it did.
+None of these changes _what_ is analyzed. Which version of a redline the engine should read is a decision for you, not a default worth burying — so the tool states plainly what it did. The language screen is the one that changes how you read everything else: every rule here is written against English legal prose, so a translated contract does not fail loudly — it simply matches almost nothing. One mutual NDA drew 23 findings in English and 3 in its own Spanish translation. That warning leads the list, and the detected language is recorded in `ingest.language`.
 
 Two or more documents trigger **bundle mode**: per-document reports _plus_ a portfolio risk matrix and cross-document checks (conflicting governing law, indemnity-cap stacking, defined-term drift across the set). A **composite document** — an MSA with a data-processing exhibit, say — is scanned with **every** family it clearly contains, not just its primary match, so a present family is never silently skipped; this holds whether the document is dropped alone or inside a folder. Nothing is uploaded — the file, and any playbook you load, never leaves the browser tab.
 
@@ -1358,7 +1359,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 13,777+ tests, ~140s
+npm run test         # vitest — 13,791+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

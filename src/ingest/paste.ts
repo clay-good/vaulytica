@@ -3,6 +3,7 @@ import { countWords, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertPasteChars } from "./limits.js";
 import { stripPleadingLineNumbers } from "./line-numbers.js";
+import { languageFields } from "./language.js";
 
 /**
  * Ingest a raw text string. Pasted text has lost its document structure, so
@@ -29,10 +30,13 @@ export async function ingestPaste(text: string): Promise<IngestResult> {
   const tree = buildTreeFromText(text);
   const normalized = normalize(tree);
 
+  const language = languageFields(normalized, warnings);
+
   return {
     tree: normalized,
     source: "paste",
     word_count: countWords(normalized),
+    ...language,
     sha256: await sha256Hex(text),
     warnings,
   };
