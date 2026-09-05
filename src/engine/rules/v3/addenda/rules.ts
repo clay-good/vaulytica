@@ -429,7 +429,7 @@ export const ADDENDA_RULES: Rule[] = [
       // parties have elected not to include a schedule IDENTIFYING THE
       // THIRD-PARTY MODEL PROVIDERS" names them only to say it does not list
       // them, and a bare-noun pattern read that as the disclosure itself.
-      /\b(?:shall|will|agrees?\s+to)\b[^.]{0,80}?\b(?:identify|identifies|disclose|discloses|list|lists|name|names)\b[^.]{0,60}?\b(?:model|foundation[- ]model|LLM|AI)\s+providers?\b/i,
+      /\b(?:shall|will|must|agrees?\s+to)\b[^.]{0,80}?\b(?:identify|identifies|disclose|discloses|list|lists|name|names)\b[^.]{0,60}?\b(?:model|foundation[- ]model|LLM|AI)\s+providers?\b/i,
       /disclose\w*[^.]{0,60}?\b(?:third[- ]party\s+)?(?:AI\s+)?sub-?processors?\b/i,
     ],
     default_severity: "warning",

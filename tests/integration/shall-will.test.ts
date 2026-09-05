@@ -46,24 +46,21 @@ const asMust = (s: string): string => s.replace(/\bshall\b/g, "must").replace(/\
  * written "Vendor must indemnify" was not an indemnity at all, so the rule
  * that checks whether it is capped never ran.
  *
- * The four below are the same defect surfacing the other way round. Each is an
- * ABSENCE finding that appears because the clause it looks for is written with
- * "must": the presence detector misses it, the suppression lifts, and the
- * document is told it lacks a clause it has.
+ * The four this relation first found were the same defect surfacing the other
+ * way round: an ABSENCE finding appearing because the clause it looks for is
+ * written with "must" — the presence detector misses it, the suppression
+ * lifts, and the document is told it lacks a clause it has. All four were one
+ * word from being right (`(?:shall|will)` → `(?:shall|will|must)` in
+ * ADDENDA-015, GOV-028, MNA-038 and MNA-106) and the list below is now EMPTY.
  *
  * A static sweep puts the remaining exposure at **354 recognizers across 83
  * files** that read "shall" and not "must". That is not a codemod: the shapes
  * are too varied for one — the commonest accounts for 10 of the 354 — and each
  * site needs a judgment about where in its alternation the word belongs. It is
- * a dedicated pass, and this list is what will measure it. The list may only
- * SHRINK, and it is asserted by equality so a repair must be recorded.
+ * a dedicated pass, and this relation is what will measure it. The list stays
+ * because the assertion is what holds it empty.
  */
-const MUST_DEBT: readonly string[] = [
-  "ai-addendum.txt: lost - gained ADDENDA-015",
-  "charter-incorporation.txt: lost - gained GOV-028",
-  "merger-agreement.txt: lost - gained MNA-038",
-  "mipa.txt: lost - gained MNA-106",
-];
+const MUST_DEBT: readonly string[] = [];
 
 describe("shall and will are the same obligation", () => {
   it("no recognizer reads 'shall' without also reading 'will'", () => {

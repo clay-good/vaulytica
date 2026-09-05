@@ -646,11 +646,11 @@ const CHARTER_RULES: Rule[] = [
       // A qualifier commonly sits between "director" and the verb —
       // "a director OF THE CORPORATION shall not be personally liable" — so an
       // adjacency-only pattern missed the standard charter phrasing.
-      /director(?:s)?[^.]{0,40}?\b(?:shall|will)\s+not\s+be\s+personally\s+liable/i,
+      /director(?:s)?[^.]{0,40}?\b(?:shall|will|must)\s+not\s+be\s+personally\s+liable/i,
       // The dominant modern formulation carries its negation in the SUBJECT —
       // "NO director or officer … shall be personally liable" — so the
       // verb-negated branch above never matched it.
-      /\bno\s+director[^.]{0,60}?(?:shall|will)\s+be\s+personally\s+liable/i,
+      /\bno\s+director[^.]{0,60}?(?:shall|will|must)\s+be\s+personally\s+liable/i,
     ],
     default_severity: "warning",
   }),

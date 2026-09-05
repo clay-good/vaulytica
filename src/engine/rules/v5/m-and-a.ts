@@ -105,8 +105,8 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
     name: "Seller non-compete and non-solicit",
     cite: practice("seller-noncompete", "sale-of-business restrictive covenants"),
     pat: [
-      /(non-?compet|(?:shall|will)\s+not[^.]{0,90}?\b(compete|engage\s+in))/i,
-      /(non-?solicit|(?:shall|will)\s+not[^.]{0,120}?\b(solicit|hire)\b)/i,
+      /(non-?compet|(?:shall|will|must)\s+not[^.]{0,90}?\b(compete|engage\s+in))/i,
+      /(non-?solicit|(?:shall|will|must)\s+not[^.]{0,120}?\b(solicit|hire)\b)/i,
     ],
     why: "Sale-of-business covenants get materially more latitude than employment covenants in most states — including California, where § 16601 permits them only in connection with a sale of goodwill. Without one, the buyer has paid for goodwill the seller can rebuild.",
     fix: "Add non-compete and non-solicit covenants tied to the sale of goodwill, with a defined scope, geography, and duration, and allocate consideration to them.",

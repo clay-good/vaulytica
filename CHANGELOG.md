@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.443.0] — 2026-09-05
+
+### Fixed
+- **Four false "missing clause" findings on plain-language drafting.** The
+  debt the `shall` → `must` relation declared one release ago is paid: every
+  one of the four was a presence detector one word from being right, so a
+  document that writes its obligation as "must" was told it lacked a clause it
+  has.
+  - **ADDENDA-015** — an AI addendum that "must identify model providers" was
+    read as identifying none.
+  - **GOV-028** — a charter whose directors "must not be personally liable"
+    was read as having no exculpation clause at all.
+  - **MNA-038** — a merger agreement whose Merger Sub "must" do a thing.
+  - **MNA-106** — a seller who "must not compete" was read as not restricted.
+
+  `(?:shall|will)` → `(?:shall|will|must)` in each; a tolerance, not a change
+  in meaning, so no rule version is stamped and no golden moved. The relation's
+  debt list is now EMPTY and the assertion is what holds it there.
+
 ## [9.442.0] — 2026-09-05
 
 ### Fixed

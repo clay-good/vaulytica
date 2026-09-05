@@ -882,7 +882,7 @@ const MERGER_RULES: Rule[] = [
     present_patterns: [
       /reverse\s+(triangular\s+)?merger/i,
       /forward\s+merger/i,
-      /merger\s+sub\s+(shall|will)/i,
+      /merger\s+sub\s+(shall|will|must)/i,
     ],
   }),
 ];
