@@ -19,6 +19,24 @@
  *
  * The rule now reads the party after "by" when the sentence is passive.
  *
+ * ── Why only "indemnify" ────────────────────────────────────────────────
+ *
+ * Six further obligation verbs were probed the same way — provide, pay,
+ * maintain, deliver, reimburse, protect — and across thirteen specimens
+ * **nothing was lost**. That is a real reassurance about the engine and it is
+ * recorded here so nobody re-runs it.
+ *
+ * They are not asserted, because the DITRANSITIVE ones do not passivize with
+ * a party-to-party pattern. "Client shall pay Contractor $18,000" becomes
+ * "Contractor shall be paid $18,000 BY Client" in English; the naive rewrite
+ * produces "Contractor shall be paid by Client $18,000", which no drafter
+ * would write. FIN-005 duly reported that sentence as stating no payment
+ * term, and it was right to — the defect was in the probe. A relation whose
+ * rewriting is not something a lawyer would actually type measures itself.
+ *
+ * "Indemnify" is plainly transitive — "A indemnifies B" → "B is indemnified
+ * by A" — which is why it is the one asserted.
+ *
  * ── Declared, and not fixed here ────────────────────────────────────────
  *
  * OBLI-002 ("reciprocity asymmetry") still moves on one specimen. It reads

@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.452.0] — 2026-09-05
+
+### Changed
+- `passive-voice` records why it asserts only "indemnify". Six further
+  obligation verbs were probed the same way — provide, pay, maintain, deliver,
+  reimburse, protect — and across thirteen specimens **nothing was lost**,
+  which is a real reassurance about the engine and is written down so nobody
+  re-runs it.
+
+  They are not asserted because the DITRANSITIVE ones do not passivize with a
+  party-to-party pattern: "Client shall pay Contractor $18,000" becomes
+  "Contractor shall be paid $18,000 BY Client" in English, while the naive
+  rewrite produces "Contractor shall be paid by Client $18,000", which no
+  drafter would write. FIN-005 duly reported that sentence as stating no
+  payment term — and it was right to. The defect was in the probe.
+
+  The discipline this file now states outright: **a relation whose rewriting
+  is not something a lawyer would actually type measures itself, not the
+  engine.** Three candidate findings died on that test this session.
+
 ## [9.451.0] — 2026-09-05
 
 ### Fixed
