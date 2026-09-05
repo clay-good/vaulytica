@@ -46,7 +46,7 @@ const PLAN = pack("equity-incentive-plan", C, [
       "administrator authority and repricing restrictions in equity plans",
     ),
     pat: [
-      /(administrator|the\s+committee\s+((?:shall|will)|may)|compensation\s+committee)/i,
+      /(administrator|the\s+committee\s+((?:shall|will|must)|may)|compensation\s+committee)/i,
       /(reprice|repricing|reduce\s+the\s+exercise\s+price|exchange\s+(of\s+)?(underwater\s+)?options)/i,
     ],
     why: "Exchange listing standards and proxy advisors require shareholder approval for repricing. A plan silent on repricing invites a governance objection at the approval vote.",

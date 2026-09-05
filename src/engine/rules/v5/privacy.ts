@@ -313,7 +313,7 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
     cite: practice("dsa-purpose", "purpose limitation in data sharing agreements"),
     pat: [
       /(data\s+elements|categories\s+of\s+data|the\s+shared\s+data|data\s+set)/i,
-      /(solely\s+for|permitted\s+purpose|(?:shall|will)\s+(only\s+)?be\s+used\s+for|limited\s+to)/i,
+      /(solely\s+for|permitted\s+purpose|(?:shall|will|must)\s+(only\s+)?be\s+used\s+for|limited\s+to)/i,
     ],
     why: "A data sharing agreement whose scope is 'the data' and whose purpose is 'the project' cannot be audited or enforced, and fails the minimum-necessary standard every US privacy regime applies in some form.",
     fix: "Enumerate the data elements shared and state the permitted purposes exhaustively, prohibiting all other uses.",
@@ -341,7 +341,7 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
     cite: practice("reidentification", "re-identification prohibitions in data sharing agreements"),
     pat: [
       /re-?identif/i,
-      /((?:shall|will)\s+not|prohibit|attempt\s+to\s+(identify|re-?identify)|contact\s+(the\s+)?(individuals|subjects))/i,
+      /((?:shall|will|must)\s+not|prohibit|attempt\s+to\s+(identify|re-?identify)|contact\s+(the\s+)?(individuals|subjects))/i,
     ],
     why: "De-identified data stays outside the privacy regimes only while it stays de-identified. The contractual ban on re-identification and on attempting to contact individuals is what preserves the status.",
     fix: "Prohibit re-identification, linking with other datasets to identify individuals, and any attempt to contact the individuals in the data.",

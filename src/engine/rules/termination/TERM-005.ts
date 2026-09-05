@@ -158,7 +158,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // termination clause with no wind-down verb — "Termination shall not
     // relieve either party of obligations accrued …", "termination … without
     // prejudice to any other rights or remedies".
-    String.raw`|\btermination\b${SAME_SENTENCE}{0,60}?\b(?:shall|will|does)\s+not\s+(?:relieve|affect|release|discharge|waive)\b` +
+    String.raw`|\btermination\b${SAME_SENTENCE}{0,60}?\b(?:shall|will|must|does)\s+not\s+(?:relieve|affect|release|discharge|waive)\b` +
     String.raw`|\btermination\b${SAME_SENTENCE}{0,80}?\bwithout\s+prejudice\s+to\b` +
     // "Following termination, the parties shall have no further obligations" —
     // the no-further-obligations savings statement, and "Upon termination,

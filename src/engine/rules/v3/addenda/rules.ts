@@ -310,7 +310,7 @@ export const ADDENDA_RULES: Rule[] = [
       "Define: Generative AI, Foundation Model (or Large Language Model), Output, and Training Data.",
     present_patterns: [
       /(generative\s+AI|foundation\s+model|large\s+language\s+model|\bLLM\b)/i,
-      /(\b)(Output|Outputs)\b.{0,40}(?:means|(?:shall|will)\s+mean)/i,
+      /(\b)(Output|Outputs)\b.{0,40}(?:means|(?:shall|will|must)\s+mean)/i,
       /training\s+data/i,
     ],
     default_severity: "warning",
@@ -337,7 +337,7 @@ export const ADDENDA_RULES: Rule[] = [
     bad_patterns: [
       /(?:may\s+use|will\s+use|reserves?\s+the\s+right\s+to\s+use)\s+(?:Customer\s+Data|your\s+data|content).{0,160}(?:to\s+train|for\s+training|to\s+(?:fine[-\s]?tune|fine[-\s]?tuning)|for\s+fine[-\s]?tuning|to\s+improve\s+(?:our\s+)?(?:models?|AI))/is,
       /(?:opt[- ]out\s+(?:basis|default)|unless\s+(?:you\s+)?opt\s+out)[^.]{0,160}(?:train|training|AI\s+model)/is,
-      /(?:may|will|shall|can|reserves?\s+the\s+right\s+to)\b[^.]{0,30}\btrain\b[^.]{0,60}\b(?:on\s+)?(?:Customer\s+Data|your\s+data|your\s+content)/is,
+      /(?:may|will|shall|must|can|reserves?\s+the\s+right\s+to)\b[^.]{0,30}\btrain\b[^.]{0,60}\b(?:on\s+)?(?:Customer\s+Data|your\s+data|your\s+content)/is,
       /(?:Customer\s+Data|your\s+data|your\s+content)\b[^.]{0,40}\b(?:used?|processed)\b[^.]{0,50}(?:to\s+train|for\s+training|to\s+(?:fine[-\s]?tune|improve)\b[^.]{0,20}(?:models?|\bAI\b))/is,
     ],
     exclude_if: [
@@ -484,7 +484,7 @@ export const ADDENDA_RULES: Rule[] = [
       "State the grant ('non-exclusive, non-transferable, revocable license to use the Software'); enumerate prohibited uses (reverse engineer, sublicense, competitive benchmarking).",
     present_patterns: [
       /(non[- ]exclusive|non[- ]transferable|revocable)\s+licen[cs]e/i,
-      /(?:may\s+not|(?:shall|will)\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sublicen[cs]e)/i,
+      /(?:may\s+not|(?:shall|will|must)\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sublicen[cs]e)/i,
     ],
     default_severity: "warning",
   }),

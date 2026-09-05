@@ -297,7 +297,7 @@ const BYLAWS_RULES: Rule[] = [
       /(?=[\s\S]{0,400}?exclusive\s+forum)(?=[\s\S]{0,400}?(?:court\s+of\s+chancery|state\s+of\s+delaware|delaware\s+court))(?=[\s\S]{0,400}?(?:securities\s+exchange\s+act|exchange\s+act\s+of\s+1934|1934\s+act|\bexchange\s+act\b))/is,
     ],
     exclude_if: [
-      /(?:shall|will|does|do)\s+not\s+apply\s+to[^.]{0,100}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
+      /(?:shall|will|must|does|do)\s+not\s+apply\s+to[^.]{0,100}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
       /(?:exclud(?:e|es|ing)|except\s+for|other\s+than)[^.]{0,60}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
       /\bnothing\b[^.]{0,120}(?:exchange\s+act|federal\s+securities|1934\s+act)/i,
     ],
@@ -356,7 +356,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /member.managed/i,
       /manager.managed/i,
-      /the\s+manager(s)?\s+(?:shall|will)/i,
+      /the\s+manager(s)?\s+(?:shall|will|must)/i,
       /managed\s+by\s+(?:its|the|one\s+or\s+more|a)\s+(?:members?|managers?)/i,
     ],
   }),
@@ -394,7 +394,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
     // cash to the Members" — under a bare "Distributions." heading, which the
     // noun-only pattern missed (v1.1.0).
     present_patterns: [
-      /distribution(s)?\s+(of|to|made|(?:shall|will))/i,
+      /distribution(s)?\s+(of|to|made|(?:shall|will|must))/i,
       /\bdistribute[sd]?\s+(?:available\s+|net\s+|distributable\s+)?(?:cash|funds|profits?|proceeds|amounts|income|assets)/i,
     ],
   }),
@@ -509,7 +509,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
       /implied[^.]{0,30}covenant\s+of\s+good\s+faith[^.]{0,60}(?:is|are|be|hereby)\s+(?:hereby\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+(?:be\s+deemed\s+to\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
+      /(?:does|do|shall|will|must)\s+not\s+(?:be\s+deemed\s+to\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
       // v1.1.0 required the negation to sit directly on the bare verb, so the
       // compliant passive form this rule's own recommendation asks drafters to
       // use — "may not be eliminated or waived", "cannot be waived" — matched
@@ -925,7 +925,7 @@ const STOCKHOLDERS_AGREEMENT_RULES: Rule[] = [
       // AGREEMENT was reported at `critical` as containing no voting agreement.
       /vote\s+(?:[^.;]{0,60}?\s+)?(?:in\s+favou?r|to\s+approve)/i,
       /agree\s+to\s+vote/i,
-      /\b(?:shall|will|agrees?\s+to)\s+vote\s+(?:all\s+|any\s+)?(?:of\s+)?(?:its|their|his|her|such)?\s*(?:shares|stock|securities)\b/i,
+      /\b(?:shall|will|must|agrees?\s+to)\s+vote\s+(?:all\s+|any\s+)?(?:of\s+)?(?:its|their|his|her|such)?\s*(?:shares|stock|securities)\b/i,
       /irrevocable\s+proxy/i,
     ],
   }),
@@ -1326,9 +1326,9 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
     // rule: "members of the audit committee need not be independent" and "a
     // director who is not independent may serve on the audit committee".
     bad_patterns: [
-      /non.independent\s+(director|member).{0,40}(may|(?:shall|will)|can)\s+serve.{0,40}audit/is,
+      /non.independent\s+(director|member).{0,40}(may|(?:shall|will|must)|can)\s+serve.{0,40}audit/is,
       /audit\s+committee[^.]{0,80}(?:need\s+not\s+be|(?:is|are|be)\s+not\s+required\s+to\s+be|do(?:es)?\s+not\s+(?:need|have)\s+to\s+be)\s+independent/is,
-      /(?:director|member)\s+(?:who\s+is\s+)?not\s+independent[^.]{0,60}(?:may|(?:shall|will)|can)?\s*(?:serve|sit)[^.]{0,30}audit/is,
+      /(?:director|member)\s+(?:who\s+is\s+)?not\s+independent[^.]{0,60}(?:may|(?:shall|will|must)|can)?\s*(?:serve|sit)[^.]{0,30}audit/is,
     ],
     // The rule's own recommendation treats an override *limited to* the Rule
     // 10A-3 phase-in / controlled-company exceptions as the compliant fix, so
@@ -1414,7 +1414,7 @@ const PARTNERSHIP_RULES: Rule[] = [
       "Add 'Management' setting out general-partner / partner management authority and any required partner consents.",
     present_patterns: [
       /management.{0,40}(general\s+partner|partner)/is,
-      /general\s+partner\s+(?:shall|will)\s+manage/i,
+      /general\s+partner\s+(?:shall|will|must)\s+manage/i,
     ],
   }),
   presence({
@@ -1538,7 +1538,7 @@ const PARTNERSHIP_RULES: Rule[] = [
       /implied[^.]{0,30}covenant\s+of\s+good\s+faith[^.]{0,60}(?:is|are|be|hereby)\s+(?:hereby\s+)?(?:waiv\w*|eliminat\w*|disclaim\w*)/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+(?:waive|eliminate|disclaim)/i,
+      /(?:does|do|shall|will|must)\s+not\s+(?:waive|eliminate|disclaim)/i,
       // Same defect as GOV-022 v1.1.0: the compliant passive "may not be
       // eliminated or waived" tripped bad_pattern #2's bare `be`.
       /(?:may|can|shall|will|must|is|are)\s*(?:not|never)\s+(?:be\s+)?(?:deemed\s+to\s+(?:be\s+)?)?(?:waiv\w*|eliminat\w*|disclaim\w*)/i,
@@ -1627,7 +1627,7 @@ const NONPROFIT_RULES: Rule[] = [
     present_patterns: [
       /political\s+campaign/i,
       /no\s+substantial\s+part.{0,40}lobby/is,
-      /(?:shall|will)\s+not\s+participate.{0,40}political/is,
+      /(?:shall|will|must)\s+not\s+participate.{0,40}political/is,
     ],
   }),
   presence({

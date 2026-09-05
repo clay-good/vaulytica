@@ -105,7 +105,7 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
     cite: ucc("2-316", "Exclusion or modification of warranties"),
     pat: [
       /(as\s+is|disclaim(s|er)?\s+(all|any)\s+warrant|without\s+warrant(y|ies)\s+of\s+any\s+kind)/i,
-      /(limitation\s+of\s+liability|(?:shall|will)\s+not\s+be\s+liable|aggregate\s+liability)/i,
+      /(limitation\s+of\s+liability|(?:shall|will|must)\s+not\s+be\s+liable|aggregate\s+liability)/i,
     ],
     why: "A warranty disclaimer must be conspicuous to be effective, and consequential-damage exclusions are unenforceable where unconscionable. Both usually appear on a consumer page in the same undifferentiated block of body text.",
     fix: "Set the disclaimer and liability limit in conspicuous type in their own headed sections, and carve out the liabilities that cannot be limited under applicable law.",
@@ -190,7 +190,7 @@ const DATA_LICENSE = pack("data-license-agreement", C, [
     name: "Scope of permitted use and field of use",
     cite: practice("data-license-scope", "field-of-use scoping in data licenses"),
     pat: [
-      /(licensed\s+data|the\s+data\s+(may|(?:shall|will))\s+be\s+used)/i,
+      /(licensed\s+data|the\s+data\s+(may|(?:shall|will|must))\s+be\s+used)/i,
       /(permitted\s+(use|purpose)|field\s+of\s+use|internal\s+business\s+purposes)/i,
     ],
     why: "Data licenses are priced by use, so the boundary between internal analytics, customer-facing product, and resale is the whole commercial bargain.",
@@ -219,7 +219,7 @@ const DATA_LICENSE = pack("data-license-agreement", C, [
     cite: practice("data-redistribution", "redistribution controls in data licenses"),
     pat: [
       /(redistribut|resell|sublicen[cs]e)/i,
-      /(may\s+not|(?:shall|will)\s+not|prohibited|only\s+with\s+(the\s+)?prior\s+written)/i,
+      /(may\s+not|(?:shall|will|must)\s+not|prohibited|only\s+with\s+(the\s+)?prior\s+written)/i,
     ],
     why: "A dataset's value collapses if a licensee can pass it on. Redistribution controls also carry the licensor's own upstream obligations to its sources.",
     fix: "Prohibit redistribution and sublicensing except as expressly permitted, and state the form in which any permitted downstream delivery may occur (aggregated, de-identified, or capped).",
@@ -639,7 +639,7 @@ const VENUE = pack("venue-rental-agreement", C, [
       // to require exactly that, and reported it missing.
       /(cancel(l)?ation\s+(fee|schedule|charges)|liquidated\s+damages)/i,
       /cancel\w*[^.;]{0,140}?\b(?:more\s+than|within|between)\s+(?:[a-z-]+\s+)*\(?\d{1,3}\)?\s*days?\b/i,
-      /cancel\w*[^.;]{0,120}?\b(?:forfeits?|owes?|(?:shall|will)\s+pay)\b/i,
+      /cancel\w*[^.;]{0,120}?\b(?:forfeits?|owes?|(?:shall|will|must)\s+pay)\b/i,
       /(attrition|room\s+block|food\s+and\s+beverage\s+minimum|sliding\s+scale)/i,
     ],
     why: "Attrition and cancellation fees are liquidated damages and are unenforceable as penalties unless they approximate the venue's actual loss and account for resale of the space.",

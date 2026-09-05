@@ -3,7 +3,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 
 /** Every party named as protected by a consequential-damages waiver in `text`. */
 const WAIVER_BENEFICIARY =
-  /\b(Provider|Vendor|Company|Supplier|Contractor|Licensor|Customer|Client|Licensee|Subscriber|Buyer|Purchaser|Seller)\s+(?:will|shall)\s+not\s+be\s+liable[\s\S]{0,200}?\b(?:consequential|special|incidental|punitive)\s+damages?\b/gi;
+  /\b(Provider|Vendor|Company|Supplier|Contractor|Licensor|Customer|Client|Licensee|Subscriber|Buyer|Purchaser|Seller)\s+(?:will|shall|must)\s+not\s+be\s+liable[\s\S]{0,200}?\b(?:consequential|special|incidental|punitive)\s+damages?\b/gi;
 
 function countWaiverBeneficiaries(text: string): number {
   const seen = new Set<string>();
@@ -25,7 +25,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:neither\s+party|neither\s+\w+\s+nor\s+\w+)\s+(?:will|shall)\s+be\s+liable[\s\S]{0,200}\b(?:consequential|special|incidental|punitive)\s+damages?\b/i,
+      /\b(?:neither\s+party|neither\s+\w+\s+nor\s+\w+)\s+(?:will|shall|must)\s+be\s+liable[\s\S]{0,200}\b(?:consequential|special|incidental|punitive)\s+damages?\b/i,
     );
     if (hit) return null;
     // v1.0.0 detected the one-sided waiver only when Provider/Vendor/Company was
@@ -35,7 +35,7 @@ export const rule: Rule = {
     // genuinely mutual "X … and Y shall not be liable" clause.
     const oneSided = firstParagraphMatch(
       ctx,
-      /\b(?:Provider|Vendor|Company|Supplier|Contractor|Licensor|Customer|Client|Licensee|Subscriber|Buyer|Purchaser|Seller)\s+(?:will|shall)\s+not\s+be\s+liable[\s\S]{0,200}\b(?:consequential|special|incidental|punitive)\s+damages?\b/i,
+      /\b(?:Provider|Vendor|Company|Supplier|Contractor|Licensor|Customer|Client|Licensee|Subscriber|Buyer|Purchaser|Seller)\s+(?:will|shall|must)\s+not\s+be\s+liable[\s\S]{0,200}\b(?:consequential|special|incidental|punitive)\s+damages?\b/i,
     );
     if (!oneSided) return null;
     // A mutual waiver is just as often drafted as two symmetric grants

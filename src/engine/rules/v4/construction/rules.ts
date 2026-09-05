@@ -701,7 +701,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
     // frames, as do the reservation forms that deny the waiver without using
     // the word at all.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+(?:waiv\w+|releas\w+|forfeit\w*)\b[^.]{0,60}?\b(?:further\s+claims?|additional\s+(?:cost|time))/i,
+      /\b(?:shall|will|must|does|do|may|can|is|are)\s+not\s+(?:waiv\w+|releas\w+|forfeit\w*)\b[^.]{0,60}?\b(?:further\s+claims?|additional\s+(?:cost|time))/i,
       /\bno\s+waiver\s+of\s+(?:any\s+)?(?:further\s+claims?|additional\s+(?:cost|time))/i,
       /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:further\s+claims?|right\s+to\s+(?:additional|further)\s+(?:cost|time|claims?)|all\s+claims?)/i,
       /\b(?:further\s+claims?|additional\s+(?:cost|time))\b[^.]{0,40}?\b(?:are|is)\s+not\s+(?:waived|released|forfeited)/i,

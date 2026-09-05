@@ -345,7 +345,7 @@ export function firstLiabilityCap(doc: ConsistencyDocument): {
   // then surfaces its highest dollar amount as the cap value.
   const tree = doc.tree;
   const anchorRe =
-    /\b(aggregate\s+liability|liability\s+(?:shall|will)\s+not\s+exceed|limitation\s+of\s+liability)\b/i;
+    /\b(aggregate\s+liability|liability\s+(?:shall|will|must)\s+not\s+exceed|limitation\s+of\s+liability)\b/i;
   type Hit = {
     paragraph_text: string;
     anchor_indices: number[];
@@ -472,7 +472,7 @@ export function firstIndemnityCap(doc: ConsistencyDocument): {
   // (the same class BAA-025 broadened) so an indemnity cap written those ways is
   // not missed by the cross-document cap-stacking check.
   const limitRe =
-    /\b(not\s+to\s+exceed|(?:shall|will|may|can)\s+not\s+exceed|in\s+no\s+event\s+[^.]{0,60}\bexceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
+    /\b(not\s+to\s+exceed|(?:shall|will|must|may|can)\s+not\s+exceed|in\s+no\s+event\s+[^.]{0,60}\bexceed|capped\s+at|limited\s+to|up\s+to|maximum\s+(?:aggregate\s+)?(?:amount|liability))\b/i;
   type Hit = {
     text: string;
     anchor_indices: number[];
@@ -677,7 +677,7 @@ export function terminationPosture(doc: ConsistencyDocument): {
   walkParagraphs(doc.tree, (p) => {
     if (
       !slot.causeOnly &&
-      (/\b(?:non-?terminable|may\s+not\s+be\s+terminated|not\s+terminable|(?:shall|will)\s+not\s+be\s+terminated)\b[^.]*?\b(?:except|other\s+than|save)\b[^.]*?\bcause\b/i.test(
+      (/\b(?:non-?terminable|may\s+not\s+be\s+terminated|not\s+terminable|(?:shall|will|must)\s+not\s+be\s+terminated)\b[^.]*?\b(?:except|other\s+than|save)\b[^.]*?\bcause\b/i.test(
         p.text,
       ) ||
         /\bterminat\w*\b[^.]*?\bonly\s+for\s+cause\b/i.test(p.text))
@@ -786,9 +786,9 @@ export function liabilityCarveouts(
 ): { set: string[]; raw_text: string; section_id?: string; start: number; end: number } | null {
   type Hit = { text: string; section_id?: string; start: number; end: number; set: string[] };
   const capContextRe =
-    /\b(?:liability|limitation\s+of\s+liability|(?:shall|will)\s+not\s+exceed|aggregate\s+liability)\b/i;
+    /\b(?:liability|limitation\s+of\s+liability|(?:shall|will|must)\s+not\s+exceed|aggregate\s+liability)\b/i;
   const exceptionRe =
-    /\b(?:(?:shall|will)\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i;
+    /\b(?:(?:shall|will|must)\s+not\s+apply|do(?:es)?\s+not\s+apply|except(?:ions?)?|excluding|other\s+than)\b/i;
   const slot: { value: Hit | null } = { value: null };
   walkParagraphs(doc.tree, (p) => {
     if (slot.value) return;

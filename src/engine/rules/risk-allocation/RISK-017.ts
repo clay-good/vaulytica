@@ -34,7 +34,7 @@ export const rule: Rule = {
     // Match a paragraph that awards fees to a named party.
     const m = firstParagraphMatch(
       ctx,
-      /(?:reimburse|recover|entitled\s+to|(?:shall|will)\s+pay|pay\s+all\s+of|pay\s+(?:the\s+)?(?:other\s+)?(?:party['’]?s|prevailing\s+party['’]?s)?)[\s\S]{0,40}\b(?:reasonable\s+)?(?:attorneys?['’]?\s*(?:fees|costs)|legal\s+(?:fees|costs)|counsel\s+fees|attorney\s+fees)\b[\s\S]{0,200}/i,
+      /(?:reimburse|recover|entitled\s+to|(?:shall|will|must)\s+pay|pay\s+all\s+of|pay\s+(?:the\s+)?(?:other\s+)?(?:party['’]?s|prevailing\s+party['’]?s)?)[\s\S]{0,40}\b(?:reasonable\s+)?(?:attorneys?['’]?\s*(?:fees|costs)|legal\s+(?:fees|costs)|counsel\s+fees|attorney\s+fees)\b[\s\S]{0,200}/i,
     );
     if (!m) return null;
 
@@ -42,7 +42,8 @@ export const rule: Rule = {
     // "Prevailing party" is the canonical balanced framing — exclude
     // it entirely. Same for "each party shall pay its own" formulas.
     if (/\bprevailing\s+party\b/i.test(para)) return null;
-    if (/\beach\s+party\s+(?:shall|will)\s+(?:pay|bear)\s+its\s+own\b/i.test(para)) return null;
+    if (/\beach\s+party\s+(?:shall|will|must)\s+(?:pay|bear)\s+its\s+own\b/i.test(para))
+      return null;
 
     // Look for an obviously asymmetric award: fees run to a single
     // named drafter-party with no counterparty reciprocity in the
@@ -54,7 +55,7 @@ export const rule: Rule = {
       "i",
     );
     const ASYM_SUBJECT = new RegExp(
-      `\\b(${DRAFTER_NAMES})\\b[\\s\\S]{0,80}\\b(?:(?:shall|will)\\s+be\\s+entitled\\s+to\\s+recover|may\\s+recover|is\\s+entitled\\s+to)\\b[\\s\\S]{0,80}\\b(?:reasonable\\s+)?(?:attorneys?['’]?\\s*(?:fees|costs)|legal\\s+(?:fees|costs)|counsel\\s+fees)\\b`,
+      `\\b(${DRAFTER_NAMES})\\b[\\s\\S]{0,80}\\b(?:(?:shall|will|must)\\s+be\\s+entitled\\s+to\\s+recover|may\\s+recover|is\\s+entitled\\s+to)\\b[\\s\\S]{0,80}\\b(?:reasonable\\s+)?(?:attorneys?['’]?\\s*(?:fees|costs)|legal\\s+(?:fees|costs)|counsel\\s+fees)\\b`,
       "i",
     );
     const asymHit = ASYM_TO.exec(para) ?? ASYM_SUBJECT.exec(para);
@@ -65,7 +66,7 @@ export const rule: Rule = {
     // to recover its attorneys' fees from Vendor"). Without this, a fully mutual
     // two-sentence clause was misread as one-way.
     const COUNTER_SUBJECT =
-      /\b(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b[\s\S]{0,80}\b(?:(?:shall|will)\s+(?:likewise\s+)?be\s+entitled\s+to\s+recover|may\s+recover|is\s+entitled\s+to\s+recover)\b[\s\S]{0,80}\b(?:reasonable\s+)?(?:attorneys?['’]?\s*(?:fees|costs)|legal\s+(?:fees|costs)|counsel\s+fees)\b/i;
+      /\b(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b[\s\S]{0,80}\b(?:(?:shall|will|must)\s+(?:likewise\s+)?be\s+entitled\s+to\s+recover|may\s+recover|is\s+entitled\s+to\s+recover)\b[\s\S]{0,80}\b(?:reasonable\s+)?(?:attorneys?['’]?\s*(?:fees|costs)|legal\s+(?:fees|costs)|counsel\s+fees)\b/i;
     const counterHit = COUNTERPARTY.exec(para) ?? COUNTER_SUBJECT.exec(para);
 
     // Reciprocal? Same paragraph awards fees to a counterparty as
@@ -78,7 +79,7 @@ export const rule: Rule = {
       // attorneys' fees" — the obligor is the customer, payee is
       // the vendor.
       const ALT =
-        /\b(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b[\s\S]{0,80}(?:(?:shall|will)\s+(?:pay|reimburse|indemnify)|agrees\s+to\s+pay)[\s\S]{0,80}\b(Vendor|Provider|Company|Licensor|Seller|Indemnitee)(?:['’]?s)?[\s\S]{0,40}\b(?:reasonable\s+)?(?:attorneys?['’]?\s*(?:fees|costs)|legal\s+(?:fees|costs)|counsel\s+fees)\b/i;
+        /\b(Customer|Client|Buyer|Licensee|Tenant|Employee|Contractor|Subscriber|End\s+User)\b[\s\S]{0,80}(?:(?:shall|will|must)\s+(?:pay|reimburse|indemnify)|agrees\s+to\s+pay)[\s\S]{0,80}\b(Vendor|Provider|Company|Licensor|Seller|Indemnitee)(?:['’]?s)?[\s\S]{0,40}\b(?:reasonable\s+)?(?:attorneys?['’]?\s*(?:fees|costs)|legal\s+(?:fees|costs)|counsel\s+fees)\b/i;
       const altHit = ALT.exec(para);
       if (!altHit) return null;
       return emit(ctx, rule, {

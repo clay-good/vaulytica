@@ -48,7 +48,7 @@ export const rule: Rule = {
     // waiver / exclusion signal.
     const sentence = enclosingSentence(hit.text, hit.match.index);
     const hasWaiverSignal =
-      /\b(?:waiv|exclud|disclaim|no\s+liability|not\s+(?:be\s+)?liable|in\s+no\s+event|under\s+no\s+circumstances|(?:shall|will)\s+not\b|neither\b[^.]*?\bliable)/i.test(
+      /\b(?:waiv|exclud|disclaim|no\s+liability|not\s+(?:be\s+)?liable|in\s+no\s+event|under\s+no\s+circumstances|(?:shall|will|must)\s+not\b|neither\b[^.]*?\bliable)/i.test(
         sentence,
       );
     if (/\bindemnif/i.test(sentence) && !hasWaiverSignal) return null;

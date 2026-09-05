@@ -22,7 +22,7 @@ const NEGATED_ACTION = /^(?:not|never)\b/i;
  * warranty), because a list item is at most two words followed by a separator.
  */
 const NEGATED_LIST =
-  /\b(?:makes?\s+no|(?:shall|will)\s+not\s+make(?:\s+any)?|without|no)\s+(?:\w+(?:\s+\w+)?[,]\s*|\w+\s+(?:or|and)\s+)*$/i;
+  /\b(?:makes?\s+no|(?:shall|will|must)\s+not\s+make(?:\s+any)?|without|no)\s+(?:\w+(?:\s+\w+)?[,]\s*|\w+\s+(?:or|and)\s+)*$/i;
 
 /**
  * The obligations that are mutual by default, each with the name a reader

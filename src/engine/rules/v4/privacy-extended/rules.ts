@@ -86,7 +86,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       // copula form puts it after — "Consent is not required for these
       // cookies" — the same denial, and it was counting as a consent
       // mechanism, so the rule stayed silent on it.
-      /(?<!\bwithout\s)(?<!\bwithout\s(?:your|our|the)\s)(?<!\bno\s)(?<!\bno\s(?:prior\s|further\s)?)consent(?!\s+(?:is|are|was|were|shall|will|may)\s+not\s+(?:be\s+)?(?:required|obtained|sought|necessary|needed))/i,
+      /(?<!\bwithout\s)(?<!\bwithout\s(?:your|our|the)\s)(?<!\bno\s)(?<!\bno\s(?:prior\s|further\s)?)consent(?!\s+(?:is|are|was|were|shall|will|must|may)\s+not\s+(?:be\s+)?(?:required|obtained|sought|necessary|needed))/i,
       /(banner|preference\s+cent(?:er|re)|cookie\s+preference)/i,
       /(accept|reject|manage)\s+(?:all\s+)?cookies/i,
     ],
@@ -138,7 +138,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
       // shared frames cannot reach it. A bare `consent` topic would, but it
       // also swallows "strictly necessary cookies do NOT REQUIRE consent" —
       // which is the correct statement of the law, not a denial.
-      /\bconsent\b[^.]{0,60}?\b(?:may|can|shall|will|is|are)\s+not\s+be\s+withdraw(?:n|able)/i,
+      /\bconsent\b[^.]{0,60}?\b(?:may|can|shall|will|must|is|are)\s+not\s+be\s+withdraw(?:n|able)/i,
       /\bconsent\b[^.]{0,60}?\bcan\s?not\s+be\s+withdraw(?:n|able)/i,
     ],
     denied_title: "Right to withdraw cookie consent expressly denied",

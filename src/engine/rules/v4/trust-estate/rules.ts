@@ -121,7 +121,7 @@ const WILL_RULES: Rule[] = [
       "Add 'Fiduciary Bond' waiving bond and surety for executor / personal representative and any trustees.",
     present_patterns: [
       /(bond|surety)/i,
-      /(waive(s|d|r)?|without\s+bond|no\s+bond\s+((?:shall|will)\s+be\s+)?required)/i,
+      /(waive(s|d|r)?|without\s+bond|no\s+bond\s+((?:shall|will|must)\s+be\s+)?required)/i,
     ],
     // Express-denial guard. A will that AFFIRMATIVELY REQUIRES bond contains
     // both "bond" and (often) "waive", so it satisfied the presence check and
@@ -616,7 +616,7 @@ const HEALTHCARE_POA_RULES: Rule[] = [
     recommendation: "Add 'Limitations' enumerating any restrictions or expressly stating 'none'.",
     present_patterns: [
       /(limitation|restriction|except)/i,
-      /(may\s+not|(?:shall|will)\s+not|prohibit|forbid)/i,
+      /(may\s+not|(?:shall|will|must)\s+not|prohibit|forbid)/i,
     ],
     default_severity: "warning",
   }),
@@ -727,7 +727,7 @@ const DURABLE_POA_RULES: Rule[] = [
       /(springing|upon\s+incapacity)/i,
       // "This power of attorney IS EFFECTIVE IMMEDIATELY upon my execution"
       // — the adjective-first order both branches above rejected.
-      /(?:is|becomes?|(?:shall|will)\s+be)\s+effective\s+(?:immediately|upon|on)\b/i,
+      /(?:is|becomes?|(?:shall|will|must)\s+be)\s+effective\s+(?:immediately|upon|on)\b/i,
     ],
   }),
   presence({

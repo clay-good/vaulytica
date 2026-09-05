@@ -160,7 +160,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     // uses for its own term — "the processing lasts for the term of the
     // Principal Agreement" — which the shall/will-only pattern could not see.
     present_patterns: [
-      /duration\s+of\s+(the\s+)?processing|processing\s+(shall|will)\s+continue\s+for/i,
+      /duration\s+of\s+(the\s+)?processing|processing\s+(shall|will|must)\s+continue\s+for/i,
       /duration\b[^.\n]{0,60}?\bof\s+(?:the\s+)?processing\b/i,
       /processing\s+(?:shall\s+|will\s+)?(?:continue|last)s?\s+for/i,
       // Annex I.B states the duration as a RETENTION period, which is the
@@ -262,7 +262,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     // controller-to-processor DPA — which carries neither — still has to state
     // them itself.
     present_patterns: [
-      /(obligations\s+and\s+rights\s+of\s+the\s+controller|controller\s+(shall|will)\s+(comply|determine))/i,
+      /(obligations\s+and\s+rights\s+of\s+the\s+controller|controller\s+(shall|will|must)\s+(comply|determine))/i,
       /\barticle\s*28\s*\(\s*4\s*\)/i,
       /\bsame\s+(?:data[- ]protection\s+)?obligations\b[^.]{0,160}?\b(?:principal|main|upstream|head)\s+(?:dpa|data\s+processing\s+agreement|contract|agreement)/is,
     ],
@@ -714,7 +714,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // look-behind keeps the WRONG DIRECTION out: "the Controller shall
       // inform the Processor of a personal data breach" is not the Article
       // 33(2) obligation and `dpa-gdpr-ruleset.test.ts` pins it as a finding.
-      /(?<!\bcontroller\s)(?<!\bcontroller\s+(?:shall|will)\s)(?:notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)[^.]{0,120}?\b(?:personal\s+data\s+breach|data\s+breach|security\s+breach)\b/i,
+      /(?<!\bcontroller\s)(?<!\bcontroller\s+(?:shall|will|must)\s)(?:notif\w+|inform\w*|(?:give|provide)[sd]?\s+notice)[^.]{0,120}?\b(?:personal\s+data\s+breach|data\s+breach|security\s+breach)\b/i,
     ],
     // Express-denial guard: a refusal names the same notification duty the
     // requirement does. Art. 33(2) has no exception, so a processor that
@@ -722,7 +722,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     // deadline under Art. 33(1).
     denied_if: [
       /\b(?:is|are)\s+not\s+(?:required|obligated|obliged)\s+to\s+(?:notify|inform)\b/i,
-      /\b(?:shall|will|does|do)\s+not\s+(?:notify|inform)\b[^.]{0,60}?\b(?:controller|breach)/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+(?:notify|inform)\b[^.]{0,60}?\b(?:controller|breach)/i,
       /\bno\s+(?:obligation|duty)\s+to\s+(?:notify|inform)\b/i,
     ],
     denied_title: "Processor breach notification expressly excused",
@@ -943,7 +943,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Reassign the choice to the controller: 'At the Controller's choice, Processor shall delete or return Personal Data.'",
     bad_patterns: [
-      /processor\s+((?:shall|will)|may)\s+(choose|elect)\s+to\s+(delete|return)/i,
+      /processor\s+((?:shall|will|must)|may)\s+(choose|elect)\s+to\s+(delete|return)/i,
       /at\s+the\s+(option|choice)\s+of\s+(the\s+)?processor.*?(delete|return)/is,
       // The deletion/return choice belongs to the CONTROLLER under Art.
       // 28(3)(g). "at the Processor's sole discretion, either delete or
@@ -967,7 +967,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Permit SOC 2 / ISO substitution as a default, but preserve the controller's right to an on-site audit on reasonable cause.",
     bad_patterns: [
-      /(SOC\s*2|ISO\s*27001).{0,160}(in\s+lieu\s+of|(?:shall|will)\s+(satisfy|fulfill|fulfil)|the\s+sole\s+means)/is,
+      /(SOC\s*2|ISO\s*27001).{0,160}(in\s+lieu\s+of|(?:shall|will|must)\s+(satisfy|fulfill|fulfil)|the\s+sole\s+means)/is,
       /(no\s+(other|additional)\s+audit\s+rights|audit\s+rights?\s+are\s+limited\s+to)/i,
       // Art. 28(3)(h) requires the processor to "allow for and contribute to
       // audits". Substituting a report for the audit ENTIRELY ("in lieu of
@@ -975,7 +975,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // audit") eliminates the right; the SOC-2-specific branches above miss
       // a generic "certification report" substitution.
       /in\s+lieu\s+of\s+(?:any\s+)?(?:audit|inspection)/is,
-      /(?:(?:shall|will)\s+have\s+)?no\s+right\s+to\s+(?:conduct|mandate|require|perform)\s+(?:or\s+\w+\s+)?an?\s+audit/is,
+      /(?:(?:shall|will|must)\s+have\s+)?no\s+right\s+to\s+(?:conduct|mandate|require|perform)\s+(?:or\s+\w+\s+)?an?\s+audit/is,
     ],
     // The COMPLIANT form the rule wants — a SOC 2 / ISO report provided IN
     // ADDITION TO, and NOT IN LIEU OF, the audit right — states "in lieu of" /
@@ -1090,7 +1090,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Define 'Personal Data Breach,' 'Data Subject,' 'Controller,' and 'Processor' cross-referencing Article 4 GDPR.",
     present_patterns: [
-      /(personal\s+data\s+breach|data\s+subject\s+(?:shall|will)\s+have|controller.{0,40}((?:shall|will)\s+have\s+the\s+meaning|means)|processor.{0,40}((?:shall|will)\s+have\s+the\s+meaning|means))/is,
+      /(personal\s+data\s+breach|data\s+subject\s+(?:shall|will|must)\s+have|controller.{0,40}((?:shall|will|must)\s+have\s+the\s+meaning|means)|processor.{0,40}((?:shall|will|must)\s+have\s+the\s+meaning|means))/is,
     ],
     default_severity: "warning",
   }),
@@ -1184,7 +1184,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // jurisdictions extractor has read since v1 (CHOICE-001, NDA-D-017,
       // MNA-019). Written case-SENSITIVELY because the jurisdiction is a
       // proper noun; under `i` the leading [A-Z] would match any word.
-      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will)\s+(?:govern|apply|control))/,
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will|must)\s+(?:govern|apply|control))/,
       /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
     default_severity: "warning",
@@ -1231,7 +1231,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     exclude_if: [
       /\bnot\s+(?:be\s+)?(?:obligated|required|liable)\s+to\s+(?:defend|indemnif|hold)/i,
       /\bno\s+(?:obligation|duty|liability)\s+to\s+(?:defend|indemnif|hold)/i,
-      /(?:shall|will|does|do|agrees?)\s+not\s+(?:defend|indemnif|hold)/i,
+      /(?:shall|will|must|does|do|agrees?)\s+not\s+(?:defend|indemnif|hold)/i,
     ],
   }),
   language({
@@ -1256,7 +1256,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     // be responsible|liable for) and a passive pattern, both still requiring an
     // all-encompassing quantifier so a partial-cost split is not flagged.
     bad_patterns: [
-      /controller\s+(shall|will)\s+bear\s+(all|the\s+entire|the\s+full)\s+costs?\s+of\s+(any\s+)?audit/i,
+      /controller\s+(shall|will|must)\s+bear\s+(all|the\s+entire|the\s+full)\s+costs?\s+of\s+(any\s+)?audit/i,
       /audit.{0,80}(at\s+(the\s+)?controller['’]?s?\s+(sole\s+)?(cost|expense))/is,
       /(?:the\s+)?controller\s+(?:shall|will|must|agrees?\s+to)\s+(?:bear|pay|cover|be\s+(?:responsible|liable)\s+for)\s+(?:all|the\s+(?:entire|full)|any)\s+costs?(?:\s+and\s+expenses?)?[^.]{0,40}audit/is,
       /(?:all\s+)?costs?(?:\s+and\s+expenses?)?\s+of\s+(?:any\s+|the\s+)*audit[^.]{0,60}(?:borne|paid)\s+(?:solely\s+|exclusively\s+)?by\s+(?:the\s+)?controller/is,

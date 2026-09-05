@@ -177,7 +177,7 @@ export const rule: Rule = {
     // an indemnity that has none. Not one of 310 specimens writes "including
     // but not limited to", which is why the corpus never showed it.
     const CAP_PRESENT =
-      /\b(?:liabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\b(?:shall|will|is|are|may)?\s*(?:be\s+)?(?<!\bnot\s)(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b(?:[^.]|\.(?=\d)){0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?(?:[^.]|\.(?=\d)){0,60}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+(?:[^.]|\.(?=\d)){0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)(?:[^.]|\.(?=\d)){0,80}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,40}?\bexceed\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
+      /\b(?:liabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\b(?:shall|will|must|is|are|may)?\s*(?:be\s+)?(?<!\bnot\s)(?:limited|capped)|aggregate\s+liability.*?(?:not\s+exceed|cap(?:ped)?)|not\s+to\s+exceed|liability\b(?:[^.]|\.(?=\d)){0,80}?\bnot\s+exceed|neither\s+part(?:y|ies)(?:['’]s)?(?:[^.]|\.(?=\d)){0,60}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,60}?\bexceed|cap\s+on\s+(?:liability|indemnification)|limited\s+to\s+(?:twelve|six|three|\d+)\s+months|subject\s+to\s+(?:an?\s+)?(?:aggregate\s+|indemnification\s+|maximum\s+|per-claim\s+(?:and\s+aggregate\s+)?)?cap\b|cap(?:ped\s+at|\s+equal\s+to|\s+of)\b|indemnif\w+(?:[^.]|\.(?=\d)){0,80}?\b(?:shall\s+not\s+exceed|not\s+to\s+exceed)|(?:in\s+no\s+event|under\s+no\s+circumstances)(?:[^.]|\.(?=\d)){0,80}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,40}?\bexceed\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,60}?(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,30}?\bexceed\b)/i;
     // The stem is `indemni(f|t)`: a carve-out names the "indemnity
     // obligations" as often as the verb, and `indemnif` matches none of them.
     const CARVE_OUT_INDEMNITY =
@@ -198,7 +198,7 @@ export const rule: Rule = {
     // cap that follows in the next sentence, and the indemnity there is
     // capped (`risk-allocation-guards.test.ts`).
     const CARVE_OUT_BACKREFERENCE =
-      /(?:^|[.;]\s+)(?:these|those|the\s+foregoing|the\s+preceding|this)\s+(?:limits?|limitations?|caps?|exclusions?|restrictions?)\b(?:[^.]|\.(?=\d)){0,60}?\b(?:do|does|shall|will)\s+not\s+apply\s+to\b[^.]{0,140}?\bindemni(?:f|t)/i;
+      /(?:^|[.;]\s+)(?:these|those|the\s+foregoing|the\s+preceding|this)\s+(?:limits?|limitations?|caps?|exclusions?|restrictions?)\b(?:[^.]|\.(?=\d)){0,60}?\b(?:do|does|shall|will|must)\s+not\s+apply\s+to\b[^.]{0,140}?\bindemni(?:f|t)/i;
 
     forEachParagraph(ctx.tree, (p) => {
       if (!indemnityHit) {

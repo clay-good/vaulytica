@@ -31,7 +31,7 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
       "Kokkonen v. Guardian Life and the need for express retention of jurisdiction",
     ),
     pat: [
-      /(retain(s|ed)?\s+jurisdiction|the\s+court\s+(?:shall|will)\s+retain)/i,
+      /(retain(s|ed)?\s+jurisdiction|the\s+court\s+(?:shall|will|must)\s+retain)/i,
       /(enforce|compliance\s+with\s+(this\s+)?(judgment|order)|until\s+(fully\s+)?(satisfied|performed))/i,
     ],
     why: "Under Kokkonen a federal court has no ancillary jurisdiction to enforce a settlement unless it expressly retained jurisdiction or incorporated the terms into the order. Without it, enforcement means a new breach-of-contract suit.",
@@ -113,7 +113,7 @@ const COVENANT = pack("covenant-not-to-sue", C, [
       // says "this is a general release, not a covenant not to sue". The
       // column is which instrument this is and which it is not, and it knew
       // only one direction.
-      /is\s+not\s+a\s+(?:release|licen[cs]e|covenant\s+not\s+to\s+sue)|rather\s+than\s+a\s+(?:release|licen[cs]e|covenant)|does\s+not\s+release|(?:shall|will)\s+not\s+be\s+construed\s+as\s+(?:a\s+(?:release|licen[cs]e|covenant)|one)|not\s+a\s+licen[cs]e\b/i,
+      /is\s+not\s+a\s+(?:release|licen[cs]e|covenant\s+not\s+to\s+sue)|rather\s+than\s+a\s+(?:release|licen[cs]e|covenant)|does\s+not\s+release|(?:shall|will|must)\s+not\s+be\s+construed\s+as\s+(?:a\s+(?:release|licen[cs]e|covenant)|one)|not\s+a\s+licen[cs]e\b/i,
     ],
     all: true,
     why: "A release extinguishes the claim; a covenant not to sue leaves it alive but promises not to assert it. In joint-tortfeasor states the difference decides whether other defendants get a credit.",
@@ -284,7 +284,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
     cite: frcp("26(c)(1)", "protective orders — burden on the party seeking protection"),
     pat: [
       /(challeng|object\s+to\s+(the\s+|a\s+)?designation)/i,
-      /(burden\s+(of\s+(persuasion|proof|establishing))?\s*(remains|rests|(?:shall|will)\s+be)\s+(on|with)\s+the\s+designating|meet\s+and\s+confer)/i,
+      /(burden\s+(of\s+(persuasion|proof|establishing))?\s*(remains|rests|(?:shall|will|must)\s+be)\s+(on|with)\s+the\s+designating|meet\s+and\s+confer)/i,
     ],
     why: "Placing the burden on the challenger inverts Rule 26(c) and is a term many judges strike. Keeping the burden on the designating party is the correct and enforceable allocation.",
     fix: "Provide a meet-and-confer step, a motion deadline, and an express statement that the burden of establishing confidentiality remains on the designating party.",
@@ -315,7 +315,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
     ),
     pat: [
       /(under\s+seal|sealing)/i,
-      /(local\s+rule|motion\s+to\s+seal|public[-\s]+(access|right)|the\s+court\s+(will|shall)\s+determine)/i,
+      /(local\s+rule|motion\s+to\s+seal|public[-\s]+(access|right)|the\s+court\s+(will|shall|must)\s+determine)/i,
     ],
     why: "A stipulated order cannot itself authorize sealing; courts require a separate showing that overcomes the presumption of public access. Orders that assume automatic sealing get rejected.",
     fix: "State that designation does not entitle a party to file under seal, and describe the local-rule motion required for each sealing request.",
@@ -543,7 +543,7 @@ const STIP_DISMISSAL = pack("stipulation-of-dismissal", C, [
     cite: frcp("54(d)", "costs and attorney's fees"),
     pat: [
       /(costs|attorneys['’]?\s+fees)/i,
-      /(each\s+party\s+(to\s+)?bear|(?:shall|will)\s+bear\s+its\s+own|waive)/i,
+      /(each\s+party\s+(to\s+)?bear|(?:shall|will|must)\s+bear\s+its\s+own|waive)/i,
     ],
     why: "Rule 54(d) presumes costs to the prevailing party. Silence in a stipulated dismissal invites a bill of costs after the case is supposedly over.",
     fix: "Add that each party bears its own costs and attorneys' fees, or state the agreed allocation.",
@@ -556,7 +556,7 @@ const STIP_DISMISSAL = pack("stipulation-of-dismissal", C, [
       "Kokkonen v. Guardian Life and the need for express retention of jurisdiction",
     ),
     pat: [
-      /(retain(s|ed)?\s+jurisdiction|the\s+court\s+(shall|will)\s+retain)/i,
+      /(retain(s|ed)?\s+jurisdiction|the\s+court\s+(shall|will|must)\s+retain)/i,
       /(enforce|settlement\s+agreement|for\s+the\s+purpose\s+of)/i,
     ],
     why: "Under Kokkonen, dismissal without retained jurisdiction leaves the court powerless to enforce the settlement; the remedy becomes a new contract suit, often in another forum.",
@@ -574,7 +574,7 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
       "professional independence of a lawyer — direction by a third-party payer",
     ),
     pat: [
-      /(no\s+(right\s+to\s+)?control|(?:shall|will)\s+not\s+(control|direct|interfere))/i,
+      /(no\s+(right\s+to\s+)?control|(?:shall|will|must)\s+not\s+(control|direct|interfere))/i,
       /(litigation\s+(strategy|decisions)|settlement\s+(decisions|authority)|the\s+(claimant|client)\s+retains)/i,
     ],
     why: "Model Rule 5.4(c) forbids a third-party payer from directing the lawyer's professional judgment, and funder control is the leading ground for attacking a funding agreement as champertous or void.",
@@ -590,7 +590,7 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
       "proceeds distribution and return multiples in litigation finance",
     ),
     pat: [
-      /(waterfall|order\s+of\s+(distribution|priority)|proceeds\s+(?:shall|will)\s+be\s+(distributed|applied))/i,
+      /(waterfall|order\s+of\s+(distribution|priority)|proceeds\s+(?:shall|will|must)\s+be\s+(distributed|applied))/i,
       /\b(?:multiple|returns?|caps?|first\s+to|then\s+to)\b/i,
     ],
     // `all: true`. The waterfall and the return cap are different terms, and
@@ -611,7 +611,7 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
     cite: fre("502", "attorney-client privilege and work product — limitations on waiver"),
     pat: [
       /(privileg|work[-\s]+product)/i,
-      /(common\s+interest|(?:shall|will)\s+not\s+(waive|constitute\s+a\s+waiver)|confidential)/i,
+      /(common\s+interest|(?:shall|will|must)\s+not\s+(waive|constitute\s+a\s+waiver)|confidential)/i,
     ],
     why: "Diligence materials shared with a funder are the standard target of a discovery motion. Most courts protect them as work product where a confidentiality or common-interest agreement exists; without one, the argument is much weaker.",
     fix: "State that materials are shared in confidence under a common-interest or work-product theory, that no waiver is intended, and require the funder to protect them.",
@@ -638,7 +638,7 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
     cite: frcp("7.1", "disclosure statement"),
     pat: [
       /disclos/i,
-      /(local\s+rule|standing\s+order|court\s+order|third-?party\s+funding|(?:shall|will)\s+cooperate\s+in\s+(any\s+)?disclosure)/i,
+      /(local\s+rule|standing\s+order|court\s+order|third-?party\s+funding|(?:shall|will|must)\s+cooperate\s+in\s+(any\s+)?disclosure)/i,
     ],
     why: "The District of New Jersey and the District of Delaware require disclosure of litigation funding by standing rule, and other courts order it case by case. The agreement should not obstruct compliance.",
     fix: "Require the parties to cooperate with any court-ordered or rule-required disclosure, and state what may be disclosed without breaching confidentiality.",

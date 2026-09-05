@@ -249,7 +249,10 @@ const ENDORSEMENT_RULES: Rule[] = [
       /sublimit[^.]{0,80}[$€£¥₹₩₽]\s*\d{1,3}(?:,\d{3})?(?:\s*(?:thousand|k\b))?(?!\s*,?\d)/is,
       /excludes?\s+all\s+coverage/i,
     ],
-    exclude_if: [/(?:does|do|shall|will)\s+not\s+exclude/i, /\bno\s+(?:\w+\s+){0,2}exclusion\b/i],
+    exclude_if: [
+      /(?:does|do|shall|will|must)\s+not\s+exclude/i,
+      /\bno\s+(?:\w+\s+){0,2}exclusion\b/i,
+    ],
     bad_title: "Coverage-restricting endorsement flagged for review",
     bad_description:
       "The endorsement contains an absolute exclusion, severe sublimit, or all-coverage exclusion that warrants underwriter / broker review.",
@@ -317,7 +320,7 @@ const ENDORSEMENT_RULES: Rule[] = [
     // reservation forms matter just as much — reserving subrogation is how
     // an insurer denies the waiver without ever using the word "waive".
     denied_if: [
-      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+waiv\w+\b[^.]{0,40}?\b(?:subrogation|rights?\s+of\s+recovery)/i,
+      /\b(?:shall|will|must|does|do|may|can|is|are)\s+not\s+waiv\w+\b[^.]{0,40}?\b(?:subrogation|rights?\s+of\s+recovery)/i,
       /\bno\s+waiver\s+of\s+(?:subrogation|(?:any\s+|its\s+|all\s+)?rights?\s+of\s+recovery)/i,
       /\b(?:waiver\s+of\s+subrogation|rights?\s+of\s+recovery)\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be)\s+not\s+(?:waived|granted|provided)/i,
       /\b(?:insurer|company|underwriter)\b[^.]{0,40}?\b(?:reserves?|retains?|preserves?)\b[^.]{0,20}?\b(?:rights?\s+of\s+)?subrogation/i,
@@ -403,7 +406,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
       // for loss caused in whole or in part by Owner's own negligence" tripped
       // bad_pattern #2 and was reported as a broad-form grant — the clause says
       // the opposite.
-      /(?:shall|will|does|do|may)\s+not\s+(?:be\s+(?:obligated|required|liable)\s+to\s+)?indemnif/i,
+      /(?:shall|will|must|does|do|may)\s+not\s+(?:be\s+(?:obligated|required|liable)\s+to\s+)?indemnif/i,
       /\bnot\s+(?:be\s+)?(?:obligated|required)\s+to\s+indemnif/i,
       // A limited-form (Type II / III) indemnity carves the INDEMNITEE's own
       // negligence back OUT — "except to the extent … the Indemnitee's own
@@ -595,8 +598,8 @@ const HOLD_HARMLESS_RULES: Rule[] = [
       /(release|hold\s+harmless|waiv\w*).{0,200}(gross\s+negligence|willful\s+misconduct|intentional)/is,
     ],
     exclude_if: [
-      /(?:release|releases?|hold\s+harmless)\s+(?:does|do|shall|will)\s+not\s+(?:apply|extend|cover|include|reach)\b/i,
-      /(?:does|do|shall|will)\s+not\s+(?:apply|extend|release|cover|waive)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
+      /(?:release|releases?|hold\s+harmless)\s+(?:does|do|shall|will|must)\s+not\s+(?:apply|extend|cover|include|reach)\b/i,
+      /(?:does|do|shall|will|must)\s+not\s+(?:apply|extend|release|cover|waive)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
       /\bnothing\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
       /(?:except|other\s+than|excluding|but\s+not)\b[^.]{0,80}(?:gross\s+negligence|willful|intentional)/i,
       // Fronted negation. Every guard above expects `subject … does not verb`,

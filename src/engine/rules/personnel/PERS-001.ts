@@ -49,7 +49,7 @@ export const rule: Rule = {
       // carries ("shall NOT compete") sits INSIDE each match, so the
       // unnegated-window guard only suppresses a genuine disclaimer ("this is
       // NOT a non-compete") — not the covenant.
-      /\bnon[- ]?compet(?:e|ition)\b|\bcovenant\s+not\s+to\s+compete\b|\b(?:shall|will|agrees?)\s+not[,\s]+(?:to[,\s]+)?(?:directly\s+or\s+indirectly[,\s]+)?compete\b|\bshall\s+not[^.;]{0,80}?\b(?:own|manage|operate|control|engage\s+in|carry\s+on|be\s+employed\s+by|work\s+for|render\s+services?|participate\s+in)\b[^.;]{0,120}?\b(?:(?:competing|competitive)\s+(?:business|enterprise|activit\w*|venture|firm|company)|business\s+that\s+competes)\b/i,
+      /\bnon[- ]?compet(?:e|ition)\b|\bcovenant\s+not\s+to\s+compete\b|\b(?:shall|will|must|agrees?)\s+not[,\s]+(?:to[,\s]+)?(?:directly\s+or\s+indirectly[,\s]+)?compete\b|\bshall\s+not[^.;]{0,80}?\b(?:own|manage|operate|control|engage\s+in|carry\s+on|be\s+employed\s+by|work\s+for|render\s+services?|participate\s+in)\b[^.;]{0,120}?\b(?:(?:competing|competitive)\s+(?:business|enterprise|activit\w*|venture|firm|company)|business\s+that\s+competes)\b/i,
       50,
       // A covenant the document merely DESCRIBES — "the non-competition
       // covenants each of you will sign" in a conflict-waiver letter — is not

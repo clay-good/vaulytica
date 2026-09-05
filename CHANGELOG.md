@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.444.0] — 2026-09-05
+
+### Fixed
+- **297 recognizers can now read "must".** Of the 347 that read "shall" and
+  not "must", 297 carried an adjacent `shall|will` alternation — a list that
+  already spells both synonyms of the same obligation, where adding the third
+  is mechanical and needs no judgment about the site. Widened in one pass
+  across 73 files.
+
+  The proof that a tolerance is a tolerance: **all 811 golden assertions still
+  hold, and the whole suite is unchanged.** Adding an alternative can only make
+  a pattern match more, never differently, and the corpus never writes "must"
+  where one of these fires — so nothing moved, which is exactly what should
+  happen and exactly what would not have happened if the pass had been sloppy.
+
+### Changed
+- `shall-will` gains a **count ratchet** on the third spelling: the number of
+  recognizers reading "shall" without "must" is pinned at the 50 that remain,
+  by equality rather than `<=`, so fixing one means lowering the number on
+  purpose — a ceiling nobody has to lower is a ceiling that drifts. A second
+  assertion forbids the mechanical `shall|will` shape from reappearing at all,
+  since that one never needs a judgment.
+
+  A count rather than a list of `path:line`: line numbers move under every edit
+  above them, and a stale exception is indistinguishable from a wrong one.
+
+- `catalog-routing`'s two sweeps get a **180s budget in place of 60s**. Adding
+  a tolerance to 297 recognizers costs the 265-playbook sweep about 29% (9.8s
+  bare, 31.3s under coverage on a developer laptop), and 60s left it under a 2x
+  margin against slower runners — it flaked once on a loaded machine. The
+  budget is a FLAKE GUARD, not a performance gate: this repo has taken main red
+  three times over wall-clock assertions and does not write them, so the number
+  is set to catch a hang rather than to police a regression nobody asserted.
+
+  The 50 that remain genuinely do need judgment — `shall\s+be` beside
+  `will\s+be`, a `shall\s+not` inside a longer prohibition list, a negation
+  alternation with eight members — and where "must" belongs in each is a
+  decision per site.
+
 ## [9.443.0] — 2026-09-05
 
 ### Fixed

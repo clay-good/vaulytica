@@ -282,7 +282,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     // … indemn" and missed the equally common "cap DOES not apply to …" and
     // "cap shall not LIMIT … indemnity" — both carve indemnity out of the cap.
     bad_patterns: [
-      /(?:liability|cap)\s+(?:shall|will|does?)\s+not\s+(?:apply\s+to|limit)\b.{0,80}indemn/is,
+      /(?:liability|cap)\s+(?:shall|will|must|does?)\s+not\s+(?:apply\s+to|limit)\b.{0,80}indemn/is,
       /except(?:\s+for)?\s+indemnif\w+.{0,80}(?:cap|limitation\s+of\s+liability)/is,
       /indemnif\w+\s+(?:are|is)\s+excluded\s+from\s+(?:the\s+)?(?:cap|limitation)/is,
     ],
@@ -318,7 +318,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       // matches (the "not" sits at the head as "in no event", and the verb is a
       // bare "exceed"). Anchored to "in no event … exceed" so an UNCAPPED
       // "liability may exceed" is not read as a cap.
-      /in\s+no\s+event\s+(?:shall|will|may)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b/is,
+      /in\s+no\s+event\s+(?:shall|will|must|may)[^.]{0,80}?\bliabilit(?:y|ies)\b[^.]{0,40}?\bexceed\b/is,
     ],
   }),
   presence({
@@ -335,7 +335,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Carve fraud, wilful misconduct, IP indemnification, confidentiality breach, and data-protection breach out of the cap.",
     present_patterns: [
-      /(cap|limitation).{0,200}(?:(?:do|does|shall|will)\s+not\s+apply|excluded|carved\s+out).{0,200}(fraud|wil[l]?ful\s+misconduct|IP\s+indemn|confidentiality|data\s+protection)/is,
+      /(cap|limitation).{0,200}(?:(?:do|does|shall|will|must)\s+not\s+apply|excluded|carved\s+out).{0,200}(fraud|wil[l]?ful\s+misconduct|IP\s+indemn|confidentiality|data\s+protection)/is,
       // The carve-out names the capping clause by NUMBER rather than by the
       // noun: "Clause 12.1 and clause 12.2 do not apply to a Party's
       // indemnification obligations under clause 9, ... or to either Party's
@@ -345,7 +345,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       // so a document that carves out fraud, wilful misconduct, the IP
       // indemnity, confidentiality AND data protection read as carving out
       // nothing. This is the same shape RISK-015 and RISK-004 already accept.
-      /\bclauses?\s+\d+(?:\.\d+)*\b[^.]{0,90}?\b(?:do|does|shall|will)\s+not\s+apply\s+to\b[^.]{0,240}?(fraud|wil[l]?ful\s+misconduct|indemnif|confidentiality|data\s+protection)/is,
+      /\bclauses?\s+\d+(?:\.\d+)*\b[^.]{0,90}?\b(?:do|does|shall|will|must)\s+not\s+apply\s+to\b[^.]{0,240}?(fraud|wil[l]?ful\s+misconduct|indemnif|confidentiality|data\s+protection)/is,
       // English drafting puts the carve-outs BEFORE the cap, as a
       // "nothing in this agreement" clause: "Nothing in this Agreement LIMITS
       // OR EXCLUDES either party's liability for death or personal injury
@@ -372,7 +372,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Phrase the waiver as 'neither party shall be liable to the other for any indirect, incidental, special, consequential, or punitive damages.'",
     present_patterns: [
-      /(?:neither\s+party|each\s+party|in\s+no\s+event\s+(?:shall|will)\s+either\s+party).{0,160}(?:consequential|indirect|special|punitive|lost\s+profits)/is,
+      /(?:neither\s+party|each\s+party|in\s+no\s+event\s+(?:shall|will|must)\s+either\s+party).{0,160}(?:consequential|indirect|special|punitive|lost\s+profits)/is,
     ],
     default_severity: "info",
   }),
@@ -391,7 +391,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Carve fraud, wilful injury, and violations of law out of any liability cap; verify governing law.",
     bad_patterns: [
-      /(?:no\s+(?:liability|limitation|exclusion)\s+(?:shall|will)\s+apply\s+to|shall\s+not\s+be\s+liable\s+for).{0,160}(?:fraud|wil[l]?ful\s+(?:injury|misconduct)|violation\s+of\s+(?:any\s+)?law)/is,
+      /(?:no\s+(?:liability|limitation|exclusion)\s+(?:shall|will|must)\s+apply\s+to|shall\s+not\s+be\s+liable\s+for).{0,160}(?:fraud|wil[l]?ful\s+(?:injury|misconduct)|violation\s+of\s+(?:any\s+)?law)/is,
       /limitation\s+of\s+liability\s+(?:includes|applies\s+to|covers).{0,80}(fraud|wil[l]?ful\s+(?:injury|misconduct))/is,
       // Cal. Civ. \u00a7 1668 voids a clause EXEMPTING a party from liability for
       // its own fraud, willful injury, or violation of law. "Vendor exempts
@@ -473,7 +473,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       // IP to the other party" is exactly what a well-drafted MSA says — each
       // party keeps its own background IP. Only verbs that decline to RESOLVE
       // the question count as a denial.
-      /\b(?:does|do|shall|will)\s+not\s+(?:allocate|determine|address|resolve)\b[^.]{0,60}?\bownership/i,
+      /\b(?:does|do|shall|will|must)\s+not\s+(?:allocate|determine|address|resolve)\b[^.]{0,60}?\bownership/i,
       /\bownership\b[^.]{0,40}?\b(?:remains|is)\s+(?:unresolved|undetermined|unallocated)/i,
       /\bno\s+allocation\s+of\s+(?:ip|intellectual\s+property)\s+ownership/i,
     ],
@@ -864,7 +864,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Add: 'no amendment is effective unless in writing signed by both parties' and 'no failure to enforce shall be deemed a waiver.'",
     present_patterns: [
       /amend\w+.{0,40}(?:in\s+writing|written\s+(?:and\s+)?signed)/is,
-      /(?:no\s+(?:waiver|failure)|(?:shall|will)\s+not\s+be\s+deemed\s+a\s+waiver)/i,
+      /(?:no\s+(?:waiver|failure)|(?:shall|will|must)\s+not\s+be\s+deemed\s+a\s+waiver)/i,
     ],
     default_severity: "info",
   }),

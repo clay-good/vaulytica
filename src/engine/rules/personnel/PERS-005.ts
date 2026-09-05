@@ -34,7 +34,7 @@ import { allMatches, describesCovenantElsewhere, emit, excerptWindow } from "../
  * imposes.
  */
 export const NON_COMPETE_DISCLAIMED =
-  /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:is|are|am)\s+not\s+(?:asking|requiring|requesting)\b|\b(?:none|neither)\s+(?:is|are)\s+(?:a\s+)?(?:condition|required|requested)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b|\b(?:no|not)\s+[^.;]{0,50}?\brequired\s*(?:,[^.;]{0,60},)?\s*to\s+(?:accept|sign|execute|enter\s+into|agree\s+to|be\s+bound\s+by|become\s+subject\s+to|be\s+subject\s+to)\b/i;
+  /\bconstrued\s+(?:as|to)\b|\b(?:does|shall|will|must)\s+not\s+(?:contain|include|impose|create|constitute|be\s+deemed)\b|for\s+the\s+avoidance\s+of\s+doubt[\s\S]{0,80}\bnothing\b|\bnothing\b[\s\S]{0,80}\bconstrued\b|\bno\s+(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|restrictive\s+covenant)\b|\b(?:is|are|am)\s+not\s+(?:asking|requiring|requesting)\b|\b(?:none|neither)\s+(?:is|are)\s+(?:a\s+)?(?:condition|required|requested)\b|\b(?:are|is|am)\s+not\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\b|\bnot\s+(?:subject\s+to|bound\s+by|a\s+party\s+to)\s+any\b|\b(?:no|not)\s+[^.;]{0,50}?\brequired\s*(?:,[^.;]{0,60},)?\s*to\s+(?:accept|sign|execute|enter\s+into|agree\s+to|be\s+bound\s+by|become\s+subject\s+to|be\s+subject\s+to)\b/i;
 
 export const rule: Rule = {
   id: "PERS-005",
@@ -56,7 +56,7 @@ export const rule: Rule = {
       // old `non[-\s]?compete` matched "non-compete" but not "non-competition".
       // The bare covenant verb is also written "WILL not compete" / "AGREES NOT
       // TO compete", not only "shall not compete".
-      /\b(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|(?:shall|will)\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet|shall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business)/i,
+      /\b(?:non[-\s]?compet(?:e|ition)|covenant\s+not\s+to\s+compete|(?:shall|will|must)\s+not\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?compete|agrees?\s+not\s+to\s+(?:directly\s+or\s+indirectly\s+)?engage\s+in\s+(?:any\s+)?(?:business|activity)\s+(?:that\s+)?compet|shall\s+not[^.;]{0,60}?\b(?:own|manage|operate|control|be\s+employed\s+by|participate\s+in)\b[^.;]{0,120}?\bcompeting\s+business)/i,
     );
     // Suppress a DISCLAIMER of a non-compete ("nothing shall be construed as a
     // covenant not to compete", "does not contain a non-compete") — but NOT the

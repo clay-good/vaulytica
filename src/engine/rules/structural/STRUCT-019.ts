@@ -24,7 +24,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 // A recital that the instrument is to be NOTARIZED (an obligation, not a jurat).
 const NOTARY_RECITAL = [
   /\b(?:shall|must|will|is\s+to|are\s+to)\s+be\s+(?:duly\s+)?notari[sz]ed\b/i,
-  /\bnotari[sz](?:ed|ation)\s+(?:is|(?:shall|will)\s+be|are)\s+required\b/i,
+  /\bnotari[sz](?:ed|ation)\s+(?:is|(?:shall|will|must)\s+be|are)\s+required\b/i,
   /\b(?:executed|signed)\s+(?:and\s+)?(?:acknowledged\s+)?before\s+a\s+notary\b/i,
   /\backnowledged\s+before\s+a\s+notary\s+public\b/i,
 ];

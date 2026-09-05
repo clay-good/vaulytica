@@ -42,7 +42,7 @@ export const rule: Rule = {
       // v1.1.0 allows an adverb ("is EXPRESSLY / specifically disclaimed")
       // between the copula and the waiver verb — the bare "is disclaimed"
       // adjacency missed the far more common emphasized form.
-      /\b(?:waiv\w+|disclaim\w+|relinquish\w+|give[sn]?\s+up)\b[^.]{0,80}\b(?:implied\s+)?warrant(?:y|ies)\s+of\s+habitability|\bwarrant(?:y|ies)\s+of\s+habitability\b[^.]{0,60}\b(?:is|are|(?:shall|will)\s+be)\s+(?:(?:hereby|expressly|specifically|explicitly)\s+)*(?:waiv\w+|disclaim\w+|excluded|of\s+no\s+(?:force|effect))/i,
+      /\b(?:waiv\w+|disclaim\w+|relinquish\w+|give[sn]?\s+up)\b[^.]{0,80}\b(?:implied\s+)?warrant(?:y|ies)\s+of\s+habitability|\bwarrant(?:y|ies)\s+of\s+habitability\b[^.]{0,60}\b(?:is|are|(?:shall|will|must)\s+be)\s+(?:(?:hereby|expressly|specifically|explicitly)\s+)*(?:waiv\w+|disclaim\w+|excluded|of\s+no\s+(?:force|effect))/i,
     );
     if (waiver && !isPresenceDisclaimed(waiver.text, waiver.match.index)) {
       return emit(ctx, rule, {
@@ -62,7 +62,7 @@ export const rule: Rule = {
     // maintenance / habitability duty, not a mere cosmetic "as-is" acceptance.
     const noRepair = firstParagraphMatch(
       ctx,
-      /\b(?:Landlord|Lessor|Owner)\s+(?:(?:shall|will)\s+have\s+no|has\s+no|is\s+not\s+(?:obligated|required)|assumes?\s+no)\b[^.]{0,80}\b(?:duty|obligation|responsibility)\b[^.]{0,60}\b(?:repair|maintain|maintenance|habitable|fit\s+for\s+habitation)\b|\b(?:premises|unit|dwelling)\b[^.]{0,40}\baccepted\s+["“]?as[- ]is["”]?\b[^.]{0,120}\b(?:no\s+(?:duty|obligation)|Landlord\s+(?:(?:shall|will)\s+)?(?:not|have\s+no))\b[^.]{0,60}\b(?:repair|maintain)/i,
+      /\b(?:Landlord|Lessor|Owner)\s+(?:(?:shall|will|must)\s+have\s+no|has\s+no|is\s+not\s+(?:obligated|required)|assumes?\s+no)\b[^.]{0,80}\b(?:duty|obligation|responsibility)\b[^.]{0,60}\b(?:repair|maintain|maintenance|habitable|fit\s+for\s+habitation)\b|\b(?:premises|unit|dwelling)\b[^.]{0,40}\baccepted\s+["“]?as[- ]is["”]?\b[^.]{0,120}\b(?:no\s+(?:duty|obligation)|Landlord\s+(?:(?:shall|will|must)\s+)?(?:not|have\s+no))\b[^.]{0,60}\b(?:repair|maintain)/i,
     );
     if (noRepair && !isPresenceDisclaimed(noRepair.text, noRepair.match.index)) {
       // A clause that relieves the landlord "except as required by law" or

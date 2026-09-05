@@ -172,7 +172,7 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
     cite: usc("15", "1052", "Lanham Act § 2(d) — refusal on the ground of likelihood of confusion"),
     pat: [
       /(goods\s+and\s+services|class\s+\d|international\s+class)/i,
-      /((?:shall|will)\s+(only\s+)?use|limited\s+to|(?:shall|will)\s+not\s+use\s+the\s+mark\s+(on|for))/i,
+      /((?:shall|will|must)\s+(only\s+)?use|limited\s+to|(?:shall|will|must)\s+not\s+use\s+the\s+mark\s+(on|for))/i,
     ],
     why: "A coexistence agreement works only if each party's lane is drawn precisely. The TTAB and examining attorneys give weight to consent agreements that show the parties actually addressed confusion, not merely consented.",
     fix: "State each party's permitted goods and services by class and description, and the goods each may not use its mark on.",
@@ -224,7 +224,7 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
     ),
     pat: [
       /(confusion)/i,
-      /((?:shall|will)\s+(notify|cooperate|take\s+(reasonable\s+)?steps)|disclaimer|misdirected\s+(inquiries|orders)|distinguish)/i,
+      /((?:shall|will|must)\s+(notify|cooperate|take\s+(reasonable\s+)?steps)|disclaimer|misdirected\s+(inquiries|orders)|distinguish)/i,
     ],
     why: "The TTAB looks for evidence that the parties considered and provided for actual confusion. A procedure for handling misdirected inquiries is both practical and persuasive.",
     fix: "Require cooperation to minimize confusion — distinguishing trade dress, disclaimers where needed, and a procedure for forwarding misdirected inquiries and addressing reported confusion.",
@@ -237,7 +237,7 @@ const COEXISTENCE = pack("trademark-coexistence-agreement", C, [
     name: "Term, assignability, and successor binding",
     cite: practice("coexistence-term", "duration and successor binding in coexistence agreements"),
     pat: [
-      /(term|perpetual|(?:shall|will)\s+continue)/i,
+      /(term|perpetual|(?:shall|will|must)\s+continue)/i,
       /(successors?\s+and\s+assigns|binding\s+upon|assignment\s+of\s+the\s+marks)/i,
     ],
     all: true,
@@ -270,7 +270,7 @@ const JDA = pack("joint-development-agreement", C, [
     cite: practice("foreground-ip", "ownership allocation of jointly developed IP"),
     pat: [
       /(foreground|developed\s+(under|in\s+the\s+course\s+of)\s+(this\s+)?(agreement|project)|project\s+ip)/i,
-      /((?:shall|will)\s+(be\s+)?own(ed)?|title\s+to|jointly\s+owned|sole(ly)?\s+owned)/i,
+      /((?:shall|will|must)\s+(be\s+)?own(ed)?|title\s+to|jointly\s+owned|sole(ly)?\s+owned)/i,
     ],
     why: "Ownership by inventorship is the default and it produces unpredictable results — the allocation follows who happened to conceive what, not who paid or who needs it.",
     fix: "State the ownership rule for foreground IP (by field, by contribution, or joint), and align it with each party's commercialization needs.",
@@ -324,7 +324,7 @@ const JDA = pack("joint-development-agreement", C, [
     cite: practice("jda-exclusivity", "exclusivity and field limits in joint development"),
     pat: [
       /exclusiv/i,
-      /(field\s+of\s+use|(?:shall|will)\s+not\s+(develop|engage|work\s+with)|competing\s+(programme?|product)|during\s+the\s+term)/i,
+      /(field\s+of\s+use|(?:shall|will|must)\s+not\s+(develop|engage|work\s+with)|competing\s+(programme?|product)|during\s+the\s+term)/i,
     ],
     why: "Collaboration exclusivity is an antitrust-sensitive restraint between potential competitors and a serious commercial commitment. Both call for a bounded field and duration.",
     fix: "State the exclusive field and its duration, and confirm what each party remains free to do outside it.",
@@ -456,7 +456,7 @@ const ESCROW = pack("source-code-escrow-agreement", C, [
     cite: practice("escrow-verification", "verification services in technology escrow"),
     pat: [
       /verif/i,
-      /(integrity|compil|build\s+test|escrow\s+agent\s+((?:shall|will)|may)\s+(verify|test)|beneficiary\s+may\s+request)/i,
+      /(integrity|compil|build\s+test|escrow\s+agent\s+((?:shall|will|must)|may)\s+(verify|test)|beneficiary\s+may\s+request)/i,
     ],
     why: "Unverified deposits fail at release more often than they succeed. Verification is the only thing that turns an escrow from a comfort item into a working continuity plan.",
     fix: "Give the beneficiary the right to request verification at stated intervals, describe the verification level, and allocate the cost.",

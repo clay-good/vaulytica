@@ -67,7 +67,7 @@ const REVOLVER = pack("revolving-credit-agreement", C, [
     ),
     pat: [
       /conditions?\s+precedent/i,
-      /(each\s+(borrowing|credit\s+extension)|no\s+default\s+((?:shall|will)\s+have\s+occurred|exists)|representations?\s+(are|(?:shall|will)\s+be)\s+true)/i,
+      /(each\s+(borrowing|credit\s+extension)|no\s+default\s+((?:shall|will|must)\s+have\s+occurred|exists)|representations?\s+(are|(?:shall|will|must)\s+be)\s+true)/i,
     ],
     why: "Conditions to each borrowing are what let a lender stop funding when the credit deteriorates. Borrowers need to know that a technical default closes the facility, not merely creates a remedy.",
     fix: "Separate the initial closing conditions from the conditions to each subsequent borrowing, and state the bring-down standard for representations.",
@@ -152,7 +152,7 @@ const SBA = pack("sba-loan-agreement", C, [
     ),
     pat: [
       /use\s+of\s+proceeds/i,
-      /((?:shall|will)\s+(only\s+)?be\s+used|ineligible|working[-\s]+capital|may\s+not\s+be\s+used\s+(to|for))/i,
+      /((?:shall|will|must)\s+(only\s+)?be\s+used|ineligible|working[-\s]+capital|may\s+not\s+be\s+used\s+(to|for))/i,
     ],
     why: "SBA proceeds may not be used to repay owner debt, fund passive investment, or refinance ineligible obligations. Misuse is a guaranty-repair event and can be a false statement to the government.",
     fix: "State the permitted uses line by line consistent with the Authorization, and prohibit the ineligible uses expressly.",
@@ -254,7 +254,7 @@ const FORBEARANCE = pack("forbearance-agreement", C, [
     cite: practice("forbearance-period", "forbearance periods and termination events"),
     pat: [
       /forbearance\s+(period|termination)/i,
-      /(expires?|terminat|(?:shall|will)\s+(immediately\s+)?(end|cease)|upon\s+the\s+occurrence)/i,
+      /(expires?|terminat|(?:shall|will|must)\s+(immediately\s+)?(end|cease)|upon\s+the\s+occurrence)/i,
     ],
     why: "Forbearance is a standstill, not a waiver. When it ends — by date or by a new default — the lender's full remedy set springs back, so the trigger list is the borrower's operating constraint.",
     fix: "State the forbearance end date and enumerate the events that terminate it early, with any notice or grace applicable to each.",
@@ -266,7 +266,7 @@ const FORBEARANCE = pack("forbearance-agreement", C, [
     cite: practice("forbearance-no-waiver", "no-waiver clauses in forbearance agreements"),
     pat: [
       /(does\s+not\s+(waive|constitute\s+a\s+waiver)|no\s+waiver)/i,
-      /(reserves?\s+all\s+(rights|remedies)|(?:shall|will)\s+not\s+be\s+deemed|course\s+of\s+dealing)/i,
+      /(reserves?\s+all\s+(rights|remedies)|(?:shall|will|must)\s+not\s+be\s+deemed|course\s+of\s+dealing)/i,
     ],
     why: "Forbearance without an express no-waiver clause risks a course-of-dealing or waiver argument that the lender accepted the defaults. This is the clause that keeps the agreement a standstill.",
     fix: "State that the lender waives nothing, reserves all rights and remedies, and that the forbearance creates no course of dealing or obligation to forbear further.",
@@ -423,7 +423,7 @@ const DACA = pack("deposit-account-control-agreement", C, [
     cite: practice("noce", "notice of exclusive control procedures in control agreements"),
     pat: [
       /notice\s+of\s+exclusive\s+control/i,
-      /(business\s+days|form\s+attached|exhibit|(?:shall|will)\s+(comply|honou?r)\s+within)/i,
+      /(business\s+days|form\s+attached|exhibit|(?:shall|will|must)\s+(comply|honou?r)\s+within)/i,
     ],
     why: "The value of a springing DACA depends entirely on how fast the bank acts on the notice. Two business days is standard; longer windows let a distressed borrower sweep the account first.",
     fix: "Attach the notice form, state the delivery method, and set the bank's compliance deadline in business days.",

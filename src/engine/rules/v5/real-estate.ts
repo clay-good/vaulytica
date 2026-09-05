@@ -21,7 +21,7 @@ const SUBLEASE = pack("sublease-agreement", C, [
     cite: practice("sublease-incorporation", "incorporation of the prime lease into a sublease"),
     pat: [
       /(prime[-\s]+lease|master\s+lease|overlease)/i,
-      /(incorporated\s+by\s+reference|subject\s+(and\s+subordinate)?\s+to|terms\s+of\s+the\s+(prime|master)\s+lease\s+((?:shall|will)\s+)?(apply|govern))/i,
+      /(incorporated\s+by\s+reference|subject\s+(and\s+subordinate)?\s+to|terms\s+of\s+the\s+(prime|master)\s+lease\s+((?:shall|will|must)\s+)?(apply|govern))/i,
     ],
     why: "A subtenant is bound by prime-lease obligations it cannot read unless the sublease attaches and incorporates it. Incorporation without a copy attached is the most common sublease defect.",
     fix: "Attach the prime lease, incorporate its terms as between sublandlord and subtenant with stated exclusions, and state which document controls on conflict.",
@@ -39,7 +39,7 @@ const SUBLEASE = pack("sublease-agreement", C, [
       // adjacency-only pattern reported a sublease whose section is headed
       // "Consent of Master Landlord" as having no such clause at all.
       /landlord['’]?s?\s+(?:prior\s+)?(?:written\s+)?consent|consent\s+of\s+(?:the\s+)?(?:master\s+|prime\s+|over\s*)?landlord/i,
-      /(condition\s+precedent|(?:shall|will)\s+not\s+be\s+effective\s+until|if\s+consent\s+is\s+not\s+obtained)/i,
+      /(condition\s+precedent|(?:shall|will|must)\s+not\s+be\s+effective\s+until|if\s+consent\s+is\s+not\s+obtained)/i,
     ],
     why: "Nearly every commercial lease forbids subletting without consent, and a sublease made without it is a default that can terminate the prime lease — taking the sublease with it.",
     fix: "Condition effectiveness on the landlord's written consent, set an outside date, and give both parties a termination right if consent is not obtained by then.",
@@ -132,7 +132,7 @@ const LEASE_LOI = pack("letter-of-intent-lease", C, [
     cite: practice("loi-exclusivity", "exclusivity provisions in letters of intent"),
     pat: [
       /(exclusiv|no-?shop)/i,
-      /((?:shall|will)\s+not\s+(negotiate|market|offer)|until\s+the\s+(expiration|earlier))/i,
+      /((?:shall|will|must)\s+not\s+(negotiate|market|offer)|until\s+the\s+(expiration|earlier))/i,
     ],
     why: "Exclusivity is one of the few genuinely binding LOI terms and the reason a tenant is willing to spend on space planning and legal fees.",
     fix: "Add a binding exclusivity covenant with a stated period and a defined scope of what the landlord may not do during it.",
@@ -187,7 +187,7 @@ const PROPERTY_MGMT = pack("property-management-agreement", C, [
     ),
     pat: [
       /(trust[-\s]+account|separate\s+account|segregated)/i,
-      /(operating\s+account|security\s+deposits?|(?:shall|will)\s+not\s+(be\s+)?commingle)/i,
+      /(operating\s+account|security\s+deposits?|(?:shall|will|must)\s+not\s+(be\s+)?commingle)/i,
     ],
     why: "Commingling owner funds is a licensing violation in every state and a conversion claim. Security deposits are separately regulated and often must sit in their own account.",
     fix: "Require segregated operating and security-deposit accounts in the owner's name, prohibit commingling, and state the reserve balance and disbursement authority.",
@@ -368,7 +368,7 @@ const OPTION = pack("option-to-purchase-real-estate", C, [
     ),
     pat: [
       /(rule\s+against\s+perpetuit|perpetuit)/i,
-      /(twenty-?one\s+years|21\s*\)?\s*years|savings\s+clause|in\s+no\s+event\s+(?:shall|will))/i,
+      /(twenty-?one\s+years|21\s*\)?\s*years|savings\s+clause|in\s+no\s+event\s+(?:shall|will|must))/i,
     ],
     why: "Options in gross are subject to the rule against perpetuities in states that have not abolished it for commercial options; an option exercisable beyond the period is void.",
     fix: "Add a savings clause capping the option period within the applicable perpetuities period, or confirm the state has exempted commercial options.",
@@ -653,7 +653,7 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
     cite: practice("closing-prorations", "closing, possession, and proration terms"),
     pat: [
       /(closing\s+date|settlement\s+date)/i,
-      /(possession|prorat|taxes\s+((?:shall|will)\s+be\s+)?prorated|occupancy)/i,
+      /(possession|prorat|taxes\s+((?:shall|will|must)\s+be\s+)?prorated|occupancy)/i,
     ],
     why: "Possession delivered other than at closing needs its own agreement and insurance; prorations of taxes, HOA dues, and utilities decide who pays for the period straddling the closing.",
     fix: "State the closing date, when possession transfers, the proration method and date, and any post-closing occupancy agreement.",
@@ -704,7 +704,7 @@ const WORK_LETTER = pack("tenant-improvement-work-letter", C, [
     cite: practice("plan-approval", "plan submission and approval deadlines in work letters"),
     pat: [
       /(space\s+plan|construction\s+drawings|working\s+drawings|plans\s+and\s+specifications)/i,
-      /(approv|deemed\s+approved|business\s+days|(?:shall|will)\s+respond\s+within)/i,
+      /(approv|deemed\s+approved|business\s+days|(?:shall|will|must)\s+respond\s+within)/i,
     ],
     why: "Landlord review with no deadline is the most common cause of delivery delay, and delay without a deemed-approval backstop pushes rent commencement onto the tenant.",
     fix: "Set submission and response deadlines with a deemed-approval consequence, and limit the grounds on which the landlord may disapprove.",
@@ -731,7 +731,7 @@ const WORK_LETTER = pack("tenant-improvement-work-letter", C, [
     cite: practice("work-letter-change", "change order procedure and overrun responsibility"),
     pat: [
       /change\s+order/i,
-      /(cost\s+overrun|excess\s+cost|in\s+excess\s+of\s+the\s+allowance|tenant\s+(?:shall|will)\s+pay)/i,
+      /(cost\s+overrun|excess\s+cost|in\s+excess\s+of\s+the\s+allowance|tenant\s+(?:shall|will|must)\s+pay)/i,
     ],
     why: "Overruns are the tenant's, and the payment timing (before the landlord funds, or on completion) is a working-capital term the tenant needs to know before construction starts.",
     fix: "State the change-order procedure with pricing and approval deadlines, and when the tenant must deposit or pay costs exceeding the allowance.",

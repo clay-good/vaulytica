@@ -50,7 +50,7 @@ export const rule: Rule = {
     // Section 1.1" as undefined.
     let defined = false;
     const defPattern = new RegExp(
-      `["“”'’]?${phrase}["“”'’]?\\s+(?:means|(?:shall|will)\\s+mean|(?:(?:shall|will)\\s+have|has|have)\\s+the\\s+meaning|is\\s+defined\\s+as|refers?\\s+to)\\b`,
+      `["“”'’]?${phrase}["“”'’]?\\s+(?:means|(?:shall|will|must)\\s+mean|(?:(?:shall|will|must)\\s+have|has|have)\\s+the\\s+meaning|is\\s+defined\\s+as|refers?\\s+to)\\b`,
       "i",
     );
     forEachParagraph(ctx.tree, (p) => {

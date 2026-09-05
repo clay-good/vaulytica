@@ -373,7 +373,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
     explanation: "Every state's processor-contract statute requires the duration to be set out.",
     recommendation: "State that processing continues for the term of the agreement.",
     present_patterns: [
-      /duration\s+of\s+(?:the\s+)?processing|processing\s+(?:shall|will)\s+continue/i,
+      /duration\s+of\s+(?:the\s+)?processing|processing\s+(?:shall|will|must)\s+continue/i,
       // The duration is stated by TYING it to the agreement's term, which is
       // how an addendum states it: "shall process Covered Data only for the
       // term of the Agreement and the ninety (90) days after it ends".
@@ -412,7 +412,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
       // delete under applicable law" is standard, lawful drafting, and an
       // unguarded frame accused it.
       /\b(?:is|are)\s+not\s+(?:required|obligated|obliged)\s+to\s+(?:delete|destroy|return)\b(?![^.]{0,90}\b(?:applicable\s+law|by\s+law|required\s+by\s+law|legal\s+(?:hold|obligation|requirement)|retention\s+(?:schedule|requirement)|infeasible)\b)/i,
-      /\b(?:shall|will|does|do)\s+not\s+(?:delete|destroy|return)\b[^.]{0,60}?\bpersonal\s+data/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+(?:delete|destroy|return)\b[^.]{0,60}?\bpersonal\s+data/i,
       /\bno\s+(?:obligation|duty)\s+to\s+(?:delete|destroy|return)\b/i,
       /\bmay\s+retain\s+(?:all\s+)?personal\s+data\s+(?:indefinitely|permanently)/i,
     ],

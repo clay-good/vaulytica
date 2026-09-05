@@ -113,7 +113,7 @@ const RELEASE_RULES: Rule[] = [
     // release this rule looks for — scored clean, while one merely silent on
     // scope fired.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+releas\w+\b[^.]{0,60}?\b(?:any\s+and\s+all|each\s+and\s+every|known\s+or\s+unknown)?\s*claims?/i,
+      /\b(?:shall|will|must|does|do|may|can|is|are)\s+not\s+releas\w+\b[^.]{0,60}?\b(?:any\s+and\s+all|each\s+and\s+every|known\s+or\s+unknown)?\s*claims?/i,
       /\bno\s+claims?\b[^.]{0,40}?\b(?:are|is)\s+(?:hereby\s+)?released/i,
       // Deliberately NO blanket "reserves all claims" frame: carving claims
       // out of a release ("Releasor reserves all claims arising after the
@@ -195,7 +195,7 @@ const RELEASE_RULES: Rule[] = [
       /releases?[^.]{0,100}\bclaims?\b[^.]{0,80}(?:hereafter\s+arising|which\s+may\s+arise|that\s+may\s+arise|arising\s+(?:in\s+the\s+future|hereafter|after\s+the\s+date)|now\s+existing\s+or\s+hereafter)/is,
     ],
     exclude_if: [
-      /releases?\s+(?:does|do|shall|will)\s+not\s+(?:extend|apply|cover|include|reach)\b/i,
+      /releases?\s+(?:does|do|shall|will|must)\s+not\s+(?:extend|apply|cover|include|reach)\b/i,
       // The guard above wants the verb directly after "release", and knows only
       // four modals. The standard construal limit — "This release cannot be
       // construed to release any future claims arising after the Effective
@@ -250,18 +250,18 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     citation: mclarenMacomb(),
     playbooks: [SETTLE_PLAYBOOK_SETTLEMENT],
     bad_patterns: [
-      /(employee|claimant|you)\s+(?:shall|will)\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
+      /(employee|claimant|you)\s+(?:shall|will|must)\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|existence\s+of\s+this\s+settlement|any\s+aspect)/is,
       /non.?disparag.{0,200}(any|all)\s+(person|individual|entity)/is,
       // The dominant NLRB-scrutinized forms — "shall not MAKE any disparaging
       // statement" and "keep the terms … of this Agreement confidential" —
       // that the disclose/disparage verb list and the exact phrasings above
       // miss (the same EMP-020 gap).
-      /(?:employee|claimant|you)\s+(?:shall|will)\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
+      /(?:employee|claimant|you)\s+(?:shall|will|must)\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
       /keep\s+(?:the\s+)?(?:terms|amount|existence|contents?)[^.]{0,60}\bof\s+this\s+(?:agreement|settlement)[^.]{0,40}\bconfidential/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
+      /(?:does|do|shall|will|must)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
       /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar|interfere)/i,
     ],
     bad_title: "Overbroad confidentiality / non-disparagement flagged",
@@ -306,7 +306,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       // communicating with any government agency" — as with "nothing".
       // Requiring the word "nothing" missed the commoner drafting, and the
       // specimen carrying it passed only by the accident above.
-      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|(?:does|do|shall|will|may)\s+not\s+(?:prevent|prohibit|restrict|limit|preclude|bar)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to|free\s+to)[^.]{0,80}(?:government\s+agency|\b(?:sec|eeoc|nlrb|dol)\b)/is,
+      /(?:may|nothing[^.]{0,40}(?:prevent|prohibit|restrict|limit)|(?:does|do|shall|will|must|may)\s+not\s+(?:prevent|prohibit|restrict|limit|preclude|bar)|retains?\s+the\s+right|right\s+to\s+(?:file|report|communicate)|permitted\s+to|free\s+to)[^.]{0,80}(?:government\s+agency|\b(?:sec|eeoc|nlrb|dol)\b)/is,
       // The bare `/(sec|eeoc|nlrb|dol)/` and a second unguarded whistleblower
       // pattern were removed: an agency acronym or "whistleblower" in a
       // PROHIBITION ("shall not report to the SEC", "no whistleblower rights")
@@ -463,7 +463,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
       // you fail to pay"), so the guard has to tolerate the passive voice too —
       // otherwise "Criminal prosecution will not be pursued if you fail to pay"
       // is charged with the FDCPA threat it disclaims.
-      /(?:does|do|shall|will|can|may)\s*not\s+(?:be\s+)?(?:threaten(?:ed)?|seek|sought|pursue[d]?|constitute|contain\s+(?:any\s+)?threat|make\s+any\s+threat)/i,
+      /(?:does|do|shall|will|must|can|may)\s*not\s+(?:be\s+)?(?:threaten(?:ed)?|seek|sought|pursue[d]?|constitute|contain\s+(?:any\s+)?threat|make\s+any\s+threat)/i,
       /\bnothing\b[^.]{0,60}(?:threat|constitute|arrest|prosecut)/i,
     ],
     bad_title: "Potentially FDCPA-violative threatening language flagged",
@@ -494,7 +494,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
     present_patterns: [
       /reservation\s+of\s+rights/i,
       /(without\s+prejudice|expressly\s+reserve)/i,
-      /(no\s+waiver|nothing\s+(herein|in\s+this\s+letter)\s+((?:shall|will)|constitutes)\s+a\s+waiver)/i,
+      /(no\s+waiver|nothing\s+(herein|in\s+this\s+letter)\s+((?:shall|will|must)|constitutes)\s+a\s+waiver)/i,
     ],
     default_severity: "warning",
   }),
@@ -653,11 +653,11 @@ const CEASE_DESIST_RULES: Rule[] = [
       // "unless you pay … we will refer this to the police". Tied to
       // criminal-justice actors so a benign "report to the regulatory
       // authorities" is not swept in.
-      /(?:we\s+(?:will|shall|intend\s+to|may)|unless\s+you|if\s+you\s+(?:do\s+not|don.?t|fail|refuse))[^.]{0,70}(?:report|refer|turn\s+you\s+in)[^.]{0,50}(?:criminal\s+(?:authorities|charges|complaint|prosecut)|the\s+police|\bpolice\b|prosecutor|law\s+enforcement|district\s+attorney|sheriff)/is,
+      /(?:we\s+(?:will|shall|must|intend\s+to|may)|unless\s+you|if\s+you\s+(?:do\s+not|don.?t|fail|refuse))[^.]{0,70}(?:report|refer|turn\s+you\s+in)[^.]{0,50}(?:criminal\s+(?:authorities|charges|complaint|prosecut)|the\s+police|\bpolice\b|prosecutor|law\s+enforcement|district\s+attorney|sheriff)/is,
     ],
     exclude_if: [
       /\bnothing\b[^.]{0,60}(?:constitutes?|amounts?\s+to|is\s+(?:intended|a\s+threat))/i,
-      /(?:does|do|shall|will)\s+not\s+(?:constitute|amount\s+to|threaten|contain\s+(?:any\s+)?threat)/i,
+      /(?:does|do|shall|will|must)\s+not\s+(?:constitute|amount\s+to|threaten|contain\s+(?:any\s+)?threat)/i,
     ],
     bad_title: "Potentially overreaching threats flagged",
     bad_description:

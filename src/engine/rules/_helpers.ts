@@ -572,7 +572,7 @@ export function expressDenial(topic: string): RegExp[] {
   return [
     // "does not perform OFAC screening" / "is not required to conduct AML training"
     new RegExp(
-      String.raw`\b(?:do|does|did|shall|will|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${notCausative}${gap}${t}${tail}`,
+      String.raw`\b(?:do|does|did|shall|will|must|is|are|was|were|has|have|had|can|may|need)\s+not\s+(?:be\s+)?${notCausative}${gap}${t}${tail}`,
       "i",
     ),
     // "cannot revoke this authorization"
@@ -582,7 +582,7 @@ export function expressDenial(topic: string): RegExp[] {
     // "not required to" is itself a strong denial marker, so the topic only has
     // to appear later in the SAME sentence.
     new RegExp(
-      String.raw`\b(?:is|are|was|were|shall|will|does|do|has|have)\s+not\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\b[^.]{0,60}?${t}`,
+      String.raw`\b(?:is|are|was|were|shall|will|must|does|do|has|have)\s+not\s+(?:be\s+)?(?:required|obligated|obliged)\s+to\b[^.]{0,60}?${t}`,
       "i",
     ),
     // "performs no OFAC screening" / "maintains no SAR procedures"
@@ -643,7 +643,7 @@ const SUPPLEMENTS_PARENT =
   /\b(?:supplements?|supplemented|amends\s+and\s+supplements|is\s+(?:attached\s+to\s+and\s+)?(?:hereby\s+)?made\s+a\s+part\s+of)\s+(?:that\s+certain\s+)?the\s+(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|MSA)\b/;
 
 const RATIFIES_PARENT =
-  /(?:except\s+as\s+(?:expressly\s+|otherwise\s+){0,2}(?:modified|amended|changed|provided|set\s+forth)|all\s+other\s+(?:terms|provisions|covenants)\b)[^.]{0,160}?(?:remains?|(?:shall|will)\s+remain|continues?|(?:shall|will)\s+continue|are\s+unchanged|is\s+unchanged)\s+(?:unchanged\s+and\s+)?in\s+full\s+force|in\s+all\s+other\s+respects[^.]{0,100}?(?:ratified|confirmed|unchanged)/i;
+  /(?:except\s+as\s+(?:expressly\s+|otherwise\s+){0,2}(?:modified|amended|changed|provided|set\s+forth)|all\s+other\s+(?:terms|provisions|covenants)\b)[^.]{0,160}?(?:remains?|(?:shall|will|must)\s+remain|continues?|(?:shall|will|must)\s+continue|are\s+unchanged|is\s+unchanged)\s+(?:unchanged\s+and\s+)?in\s+full\s+force|in\s+all\s+other\s+respects[^.]{0,100}?(?:ratified|confirmed|unchanged)/i;
 
 /**
  * The other half of the same shape: a document ISSUED UNDER a named parent.
@@ -709,7 +709,7 @@ const PARENT_CONTROLS =
   // The order-of-precedence clause is written with the VERB as often as with
   // the noun — "If this SOW conflicts with the MSA, the MSA controls" — and a
   // noun-only opening reached none of them.
-  /\b(?:[Ii]n\s+the\s+event\s+of\s+(?:any\s+)?(?:a\s+)?conflict|[Tt]o\s+the\s+extent\s+of\s+(?:any\s+)?conflict|[Ii]f\s+there\s+is\s+(?:any\s+)?conflict|[Ii]f\s+(?:this|the)\s+[\w\s]{0,40}?conflicts?\s+with|[Ww]here\s+(?:this|the)\s+[\w\s]{0,40}?conflicts?\s+with)[^.]{0,140}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Agreement|Lease|Contract|MSA)\s*(?:controls|prevails|governs|(?:shall|will)\s+control|(?:shall|will)\s+prevail|(?:shall|will)\s+govern|takes\s+precedence)/;
+  /\b(?:[Ii]n\s+the\s+event\s+of\s+(?:any\s+)?(?:a\s+)?conflict|[Tt]o\s+the\s+extent\s+of\s+(?:any\s+)?conflict|[Ii]f\s+there\s+is\s+(?:any\s+)?conflict|[Ii]f\s+(?:this|the)\s+[\w\s]{0,40}?conflicts?\s+with|[Ww]here\s+(?:this|the)\s+[\w\s]{0,40}?conflicts?\s+with)[^.]{0,140}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Agreement|Lease|Contract|MSA)\s*(?:controls|prevails|governs|(?:shall|will|must)\s+control|(?:shall|will|must)\s+prevail|(?:shall|will|must)\s+govern|takes\s+precedence)/;
 
 /**
  * The SIXTH half: an order form that incorporates a NAMED STANDARD FORM.
@@ -895,7 +895,7 @@ const BORROWS_DEFINITIONS_FROM_PARENT =
   // The parent is named by its ACRONYM as often as by its full title — "the
   // meanings given in the MSA" — and the same acronym list `ISSUED_UNDER_PARENT`
   // carries belongs here for the same reason.
-  /\b[Cc]apitali[sz]ed\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,160}?\b(?:have|has|(?:shall|will)\s+have)\s+the\s+meanings?\b[^.]{0,80}?\bthe\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|Indenture|Plan|Note)|MSA|SOW|IRA|SPA|LPA|DPA)\b/;
+  /\b[Cc]apitali[sz]ed\s+terms?\b[^.]{0,120}?\bnot\s+(?:otherwise\s+)?defined\b[^.]{0,160}?\b(?:have|has|(?:shall|will|must)\s+have)\s+the\s+meanings?\b[^.]{0,80}?\bthe\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|Indenture|Plan|Note)|MSA|SOW|IRA|SPA|LPA|DPA)\b/;
 
 /**
  * Whether the document is subordinate to a named parent agreement — either
@@ -949,7 +949,7 @@ function caseBlind(re: RegExp): RegExp {
 export function describesCovenantElsewhere(paragraph: string, matchIndex: number): boolean {
   const sentence = enclosingSentence(paragraph, matchIndex);
   return (
-    /\b(?:will|shall|to)\s+(?:be\s+)?(?:sign|signs|signed|execute|executes|executed|enter\s+into|entered\s+into)\b|\b(?:contained|set\s+forth|included|provided)\s+in\s+the\s+[A-Z]/.test(
+    /\b(?:will|shall|must|to)\s+(?:be\s+)?(?:sign|signs|signed|execute|executes|executed|enter\s+into|entered\s+into)\b|\b(?:contained|set\s+forth|included|provided)\s+in\s+the\s+[A-Z]/.test(
       sentence,
     ) || NAMED_AS_A_PROVISION.test(sentence)
   );
@@ -1033,7 +1033,7 @@ export function borrowsParentVocabulary(ctx: RuleContext): boolean {
 export const GOVERNING_LAW_PRESENT: readonly RegExp[] = [
   /governing\s+law/i,
   /governed\s+by\s+the\s+laws/i,
-  /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will)\s+(?:govern|apply|control))/,
+  /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will|must)\s+(?:govern|apply|control))/,
   /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
 ];
 

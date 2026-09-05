@@ -172,7 +172,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     // to record or prosecute the IP it just bought — scored clean, while one
     // merely silent on the point fired.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+(?:appoint|authori[sz]\w+|grant)\b[^.]{0,60}?\b(?:assignee|attorney.in.fact|power\s+of\s+attorney)/i,
+      /\b(?:shall|will|must|does|do|may|can|is|are)\s+not\s+(?:appoint|authori[sz]\w+|grant)\b[^.]{0,60}?\b(?:assignee|attorney.in.fact|power\s+of\s+attorney)/i,
       /\bno\s+power\s+of\s+attorney\s+(?:is|shall\s+be|will\s+be)\s+(?:granted|conferred|created|implied)/i,
       /\bpower\s+of\s+attorney\b[^.]{0,40}?\b(?:is|are|shall\s+be|will\s+be)\s+not\s+(?:granted|conferred|created)/i,
       /\bnothing\b[^.]{0,60}?\b(?:constitutes?|creates?|confers?)\b[^.]{0,20}?\bpower\s+of\s+attorney/i,
@@ -375,8 +375,8 @@ const PATENT_LICENSE_RULES: Rule[] = [
     // technology, which is the allocation this rule surfaces.
     denied_if: [
       /\bno\s+grant.?back\b/i,
-      /\b(?:shall|will|does|do)\s+not\s+(?:grant|licen[cs]\w+)\s+back\b/i,
-      /\b(?:shall|will|does|do)\s+not\s+grant\b[^.]{0,60}?\bimprovements?/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+(?:grant|licen[cs]\w+)\s+back\b/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+grant\b[^.]{0,60}?\bimprovements?/i,
       /\bgrant.?back\s+licen[cs]e\b[^.]{0,40}?\b(?:is|are)\s+not\s+(?:granted|required|conveyed)/i,
     ],
     denied_title: "Grant-back expressly refused",
@@ -706,7 +706,7 @@ const CLA_RULES: Rule[] = [
     denied_if: [
       /\bno\s+copyright\s+licen[cs]e\b/i,
       /\b(?:grants?|conveys?|confers?)\s+no\b[^.]{0,40}?\bcopyright/i,
-      /\b(?:shall|will|does|do)\s+not\s+(?:grant|convey|confer)\b[^.]{0,60}?\bcopyright\s+licen[cs]e/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+(?:grant|convey|confer)\b[^.]{0,60}?\bcopyright\s+licen[cs]e/i,
       /\bcopyright\s+licen[cs]e\b[^.]{0,40}?\b(?:is|are)\s+not\s+(?:granted|conveyed|conferred)/i,
     ],
     denied_title: "Copyright license grant expressly withheld",
@@ -737,7 +737,7 @@ const CLA_RULES: Rule[] = [
     denied_if: [
       /\bno\s+patent\s+licen[cs]e\b/i,
       /\b(?:grants?|conveys?|confers?)\s+no\b[^.]{0,40}?\bpatent/i,
-      /\b(?:shall|will|does|do)\s+not\s+(?:grant|convey|confer)\b[^.]{0,60}?\bpatent\s+licen[cs]e/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+(?:grant|convey|confer)\b[^.]{0,60}?\bpatent\s+licen[cs]e/i,
       /\bpatent\s+licen[cs]e\b[^.]{0,40}?\b(?:is|are)\s+not\s+(?:granted|conveyed|conferred)/i,
     ],
     denied_title: "Patent license grant expressly withheld",
@@ -769,7 +769,7 @@ const CLA_RULES: Rule[] = [
     denied_if: [
       /\b(?:makes?|gives?|provides?)\s+no\s+(?:representation|warrant\w+)/i,
       /\bno\s+(?:representation|warrant\w+)\s+(?:is|are)\s+(?:made|given|provided)/i,
-      /\b(?:does|do|shall|will)\s+not\s+(?:represent|warrant)\b/i,
+      /\b(?:does|do|shall|will|must)\s+not\s+(?:represent|warrant)\b/i,
       /\bwithout\s+any\s+(?:representation|warrant\w+)\s+(?:as\s+to\s+)?(?:originality|ownership)/i,
     ],
     denied_title: "Original-work representation expressly disclaimed",
@@ -963,8 +963,8 @@ const WFH_RULES: Rule[] = [
     // assignment scored clean. That refusal is the whole failure mode — if the
     // work-for-hire characterisation does not hold, the client owns nothing.
     denied_if: [
-      /\b(?:shall|will|does|do)\s+not\s+assign\b/i,
-      /\bno\s+(?:backup\s+)?assignment\s+(?:is|(?:shall|will)\s+be)\s+(?:made|granted|implied)/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+assign\b/i,
+      /\bno\s+(?:backup\s+)?assignment\s+(?:is|(?:shall|will|must)\s+be)\s+(?:made|granted|implied)/i,
       /\b(?:retains?|reserves?)\b[^.]{0,40}?\ball\s+right,?\s+title/i,
     ],
     denied_title: "Backup assignment expressly refused",

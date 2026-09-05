@@ -61,7 +61,7 @@ const LABEL_LINE_MAX = 140;
  * trust …') and reconciled a party that had no signature line at all.
  */
 const FINITE_VERB =
-  /\b(?:means?|shall|will|is|are|was|were|has|have|had|agrees?|acknowledges?|executed|hereby|represents?|warrants?)\b/i;
+  /\b(?:means?|shall|will|must|is|are|was|were|has|have|had|agrees?|acknowledges?|executed|hereby|represents?|warrants?)\b/i;
 
 /** True when a paragraph reads as a signature-block LABEL rather than prose. */
 function labelLike(text: string): boolean {

@@ -218,7 +218,7 @@ export const CC_003_DPA_CATEGORIES: ConsistencyRule = {
         );
         const before = p.text.slice(sentenceStart + 1, m.index);
         if (
-          /\b(?:do(?:es)?\s+not\s+(?:process|include|collect|contain|cover|store|use|involve|handle)|(?:shall|will)\s+not\s+(?:process|include|collect|contain|cover|store|use)|excludes?|excluding|(?:contain|include|collect|process|store)s?\s+no)\b/i.test(
+          /\b(?:do(?:es)?\s+not\s+(?:process|include|collect|contain|cover|store|use|involve|handle)|(?:shall|will|must)\s+not\s+(?:process|include|collect|contain|cover|store|use)|excludes?|excluding|(?:contain|include|collect|process|store)s?\s+no)\b/i.test(
             before,
           )
         )
@@ -281,7 +281,7 @@ export const CC_004_BAA_TERM: ConsistencyRule = {
       return [];
     }
     if (
-      /\bterm[s]?\s+of\s+(?:this\s+)?baa\s+(?:(?:shall|will)\s+)?(?:run|continue|remain)\s+(?:co-?incident|in\s+effect)\s+with\s+(?:the\s+)?(?:msa|services\s+agreement)\b/i.test(
+      /\bterm[s]?\s+of\s+(?:this\s+)?baa\s+(?:(?:shall|will|must)\s+)?(?:run|continue|remain)\s+(?:co-?incident|in\s+effect)\s+with\s+(?:the\s+)?(?:msa|services\s+agreement)\b/i.test(
         baaText,
       )
     ) {
@@ -304,14 +304,14 @@ export const CC_004_BAA_TERM: ConsistencyRule = {
     const baaTermPara =
       findParagraph(
         baa,
-        /\bthis\s+(?:agreement|baa)\s+(?:shall|will)\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b[^.\n]{0,200}\b(?:until\s+terminated|in\s+perpetuity|for\s+a\s+term\s+of\s+\d|until\s+\w+\s+\d{4})\b/i,
+        /\bthis\s+(?:agreement|baa)\s+(?:shall|will|must)\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b[^.\n]{0,200}\b(?:until\s+terminated|in\s+perpetuity|for\s+a\s+term\s+of\s+\d|until\s+\w+\s+\d{4})\b/i,
       ) ?? findParagraph(baa, /\beffective\s+date\b[^.\n]{0,80}\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/i);
     if (!baaTermPara) return [];
 
     const msaTermPara =
       findParagraph(
         msa,
-        /\bthis\s+agreement\s+(?:shall|will)\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b/i,
+        /\bthis\s+agreement\s+(?:shall|will|must)\s+(?:commence|be\s+effective|remain\s+in\s+effect)\b/i,
       ) ?? findParagraph(msa, /\b(initial\s+term|term\s+of\s+this\s+agreement)\b/i);
     if (!msaTermPara) return [];
 
@@ -491,7 +491,7 @@ export const CC_007_ORDER_OF_PRECEDENCE: ConsistencyRule = {
     if (!anchor || anchor.index === undefined) return [];
     const window = msaText.slice(anchor.index, anchor.index + 400);
     const msaControls =
-      /\b(msa|master\s+services?\s+agreement|this\s+agreement)\s+(?:(?:shall|will)\s+)?(?:controls?|govern[s]?|prevails?|takes?\s+precedence)\b/i.test(
+      /\b(msa|master\s+services?\s+agreement|this\s+agreement)\s+(?:(?:shall|will|must)\s+)?(?:controls?|govern[s]?|prevails?|takes?\s+precedence)\b/i.test(
         window,
       );
     if (!msaControls) return [];
@@ -536,7 +536,7 @@ export const CC_007_ORDER_OF_PRECEDENCE: ConsistencyRule = {
         // language AFFIRMS the precedence order; flagging it inverts the
         // clause's actual meaning into a false conflict.
         if (
-          /\b(?:do(?:es)?\s+not\s+(?:modify|restate|create|impose|alter|contain|include|govern|apply|supersede)|governed\s+(?:solely\s+|exclusively\s+)?by\s+(?:the\s+)?(?:msa|master\s+services?\s+agreement)|no\s+\w+(?:\s+\w+)?\s+obligations?\s+arise|(?:shall|will)\s+not\s+(?:apply|create|impose|modify|supersede))\b/i.test(
+          /\b(?:do(?:es)?\s+not\s+(?:modify|restate|create|impose|alter|contain|include|govern|apply|supersede)|governed\s+(?:solely\s+|exclusively\s+)?by\s+(?:the\s+)?(?:msa|master\s+services?\s+agreement)|no\s+\w+(?:\s+\w+)?\s+obligations?\s+arise|(?:shall|will|must)\s+not\s+(?:apply|create|impose|modify|supersede))\b/i.test(
             hit.text,
           )
         )
@@ -641,7 +641,7 @@ function extractNoticeBlock(
     ) ??
     findParagraph(
       doc,
-      /\bnotices?\s+(?:(?:shall|will)\s+)?(?:be\s+)?(?:in\s+writing|sent|delivered)\b/i,
+      /\bnotices?\s+(?:(?:shall|will|must)\s+)?(?:be\s+)?(?:in\s+writing|sent|delivered)\b/i,
     ) ??
     findParagraph(
       doc,
@@ -656,7 +656,7 @@ function canonicalizeNotice(raw: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9@]+/g, " ")
     .replace(
-      /\b(notice|notices|(?:shall|will)|be|in|writing|sent|delivered|to|the|of|and|or|attention|attn|by)\b/g,
+      /\b(notice|notices|(?:shall|will|must)|be|in|writing|sent|delivered|to|the|of|and|or|attention|attn|by)\b/g,
       " ",
     )
     .replace(/\s+/g, " ")

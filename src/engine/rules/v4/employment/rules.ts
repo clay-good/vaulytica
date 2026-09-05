@@ -485,7 +485,7 @@ const SEPARATION_RULES: Rule[] = [
     citation: mclarenMacomb(),
     playbooks: [EMP_PLAYBOOK_SEPARATION],
     bad_patterns: [
-      /(employee|you)\s+(?:shall|will)\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
+      /(employee|you)\s+(?:shall|will|must)\s+not\s+(disclose|disparage).{0,80}(any|all)\s+(person|individual|terms)/is,
       /(non.?disparag).{0,200}(broadly|any\s+(person|individual|entity))/is,
       /confidentiality.{0,80}(terms\s+of\s+this\s+agreement|any\s+aspect)/is,
       // The dominant McLaren Macomb non-disparagement form is "shall not MAKE
@@ -493,11 +493,11 @@ const SEPARATION_RULES: Rule[] = [
       // "keep the terms … of this Agreement confidential" — neither the
       // "shall not disclose/disparage" verb list nor the exact "terms of this
       // agreement" phrase above reaches them.
-      /(?:employee|you)\s+(?:shall|will)\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
+      /(?:employee|you)\s+(?:shall|will|must)\s+not\s+make\s+any\s+(?:disparaging|negative|critical|derogatory)/is,
       /keep\s+(?:the\s+)?(?:terms|amount|existence|contents?)[^.]{0,60}\bof\s+this\s+agreement[^.]{0,40}\bconfidential/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
+      /(?:does|do|shall|will|must)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
       /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar|interfere)/i,
       // Both guards above expect the carve-out as its own sentence ("Nothing in
       // this Section restricts…"). The equally standard in-sentence form —
@@ -687,10 +687,10 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // else — so a three-year worldwide non-compete was reported at CRITICAL
       // as having no duration at all.
       new RegExp(
-        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,2}\)?\s*(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|agrees?|covenants?)\s+not\b`,
+        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,2}\)?\s*(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|must|agrees?|covenants?)\s+not\b`,
         "is",
       ),
-      /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:(?:shall|will)\s+not|restrict)/is,
+      /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:(?:shall|will|must)\s+not|restrict)/is,
       // The duration SPELLED OUT with no numeral at all — "for five years
       // after leaving the Company he will not work for any competitor". Every
       // branch above requires digits somewhere: the two bare-digit forms, the
@@ -701,7 +701,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // sentence that states it. Bounded to the same clause by `[^.]` so a
       // "three years" from an unrelated term clause cannot satisfy it.
       new RegExp(
-        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|eighteen|twenty-four|thirty-six)\s+(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|agrees?|covenants?)\s+not\b`,
+        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|eighteen|twenty-four|thirty-six)\s+(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|must|agrees?|covenants?)\s+not\b`,
         "is",
       ),
     ],
@@ -919,7 +919,7 @@ const PIIA_RULES: Rule[] = [
       // developed entirely on their own time without using company equipment"
       // — mandated language that this frame accused until the lookahead was
       // added. A carve-out marker anywhere in the clause disqualifies it.
-      /\b(?:shall|will|does|do|may|can)\s+not\s+assign\b(?![^.]{0,160}\b(?:own\s+time|2870|without\s+using|no\s+equipment|unrelated\s+to|does\s+not\s+relate)\b)[^.]{0,60}?\binventions?/i,
+      /\b(?:shall|will|must|does|do|may|can)\s+not\s+assign\b(?![^.]{0,160}\b(?:own\s+time|2870|without\s+using|no\s+equipment|unrelated\s+to|does\s+not\s+relate)\b)[^.]{0,60}?\binventions?/i,
       /\bno\s+(?:invention|patent|intellectual\s+property)\s+assignment\b/i,
       /\binventions?\b[^.]{0,40}?\b(?:are|is)\s+not\s+assigned/i,
       /\b(?:retains?|reserves?|keeps?)\b[^.]{0,40}?\bownership\s+of\s+(?:all\s+|any\s+)?inventions?/i,
@@ -1284,13 +1284,13 @@ const HANDBOOK_RULES: Rule[] = [
     // employee shall disclose their compensation" — and carried no exclude_if,
     // so add the § 7 carve-out guards while broadening the verb set.
     bad_patterns: [
-      /employees?\s+((?:shall|will)|may)\s+not\s+(discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
+      /employees?\s+((?:shall|will|must)|may)\s+not\s+(discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /employees?\s+(?:are\s+)?(?:prohibited|barred|forbidden|not\s+permitted|not\s+allowed)\s+(?:from\s+)?(?:discuss|disclose|post|comment|shar)\w*.{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /no\s+employee\s+(?:shall|may|will|can)\s+(?:discuss|disclose|post|comment|shar\w*).{0,80}(wages?|salary|salaries|compensation|pay|working\s+conditions)/is,
       /(social\s+media|online).{0,80}(prohibit|may\s+not).{0,80}company/is,
     ],
     exclude_if: [
-      /(?:does|do|shall|will|may)\s+not\s+(?:prohibit|restrict|prevent|preclude|bar|limit)/i,
+      /(?:does|do|shall|will|must|may)\s+not\s+(?:prohibit|restrict|prevent|preclude|bar|limit)/i,
       /\bnot\s+(?:prohibited|barred|forbidden|restricted|precluded|prevented)\b/i,
       /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar)/i,
     ],

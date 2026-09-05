@@ -416,6 +416,15 @@ describe("every playbook is reachable by its own name and vocabulary", () => {
   // A 265-playbook x every-title-keyword sweep: seconds, not milliseconds, and
   // slower again under coverage instrumentation. An explicit budget keeps it
   // from flaking against the 5s default on a loaded runner.
+  //
+  // The budget is a FLAKE GUARD, not a performance gate — this repo has taken
+  // main red three times over wall-clock assertions and does not write them.
+  // So it is set with room: the sweep's cost grows with the catalog and with
+  // every tolerance added to a recognizer, and measuring it here was 9.8s
+  // bare and 31.3s under coverage on a developer laptop, against runners that
+  // are slower. 60s left under a 2x margin and flaked once on a loaded
+  // machine; 180s is a budget that catches a hang without policing a
+  // regression nobody asserted.
   it("no family is shadowed by a sibling", () => {
     const shadowed: string[] = [];
     let checked = 0;
@@ -466,7 +475,7 @@ describe("every playbook is reachable by its own name and vocabulary", () => {
     expect(shadowed.sort(), `shadowed by a sibling:\n  ${shadowed.sort().join("\n  ")}`).toEqual(
       [],
     );
-  }, 60_000);
+  }, 180_000);
 
   /**
    * The mirror of the keyword sweep: a document titled with the family's own
@@ -508,7 +517,7 @@ describe("every playbook is reachable by its own name and vocabulary", () => {
       shadowed.sort(),
       `a family cannot be reached by its own name:\n  ${shadowed.sort().join("\n  ")}`,
     ).toEqual([]);
-  }, 60_000);
+  }, 180_000);
 });
 
 /**

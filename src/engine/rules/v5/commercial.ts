@@ -46,7 +46,7 @@ const PURCHASE_ORDER = pack("purchase-order-terms", C, [
     cite: ucc("2-509", "Risk of loss in the absence of breach"),
     pat: [
       /(f\.?o\.?b\.?|delivery\s+terms|incoterms)/i,
-      /(risk\s+of\s+loss|title\s+((?:shall|will)\s+)?pass)/i,
+      /(risk\s+of\s+loss|title\s+((?:shall|will|must)\s+)?pass)/i,
     ],
     why: "§ 2-509 allocates risk of loss by shipment terms, so an order that names no F.O.B. point leaves the loss on whichever party the default rule happens to reach — usually not the one the parties assumed.",
     fix: "State the F.O.B. or Incoterms point, the delivery date or window, and when title and risk of loss pass.",
@@ -124,7 +124,7 @@ const MASTER_PURCHASE = pack("master-purchase-agreement", C, [
     cite: ucc("2-509", "Risk of loss in the absence of breach"),
     pat: [
       /(f\.?o\.?b\.?|incoterms|delivery\s+point)/i,
-      /(risk\s+of\s+loss|title\s+((?:shall|will)\s+)?pass)/i,
+      /(risk\s+of\s+loss|title\s+((?:shall|will|must)\s+)?pass)/i,
     ],
     why: "The F.O.B. point drives risk of loss, insurable interest, freight responsibility, and often revenue recognition. § 2-509 fills the gap unpredictably when the agreement is silent.",
     fix: "State the F.O.B. or Incoterms 2020 point and when title and risk of loss pass to the buyer.",
@@ -190,7 +190,7 @@ const EQUIPMENT_LEASE = pack("equipment-lease", C, [
       // still fired on the designation, but the half a drafter is most likely
       // to write was dead. Found by
       // `recommendation-satisfies-check.test.ts`.
-      /(lessee['’]?s?\s+(?:\w+\s+){0,4}?obligations?\b[^.]{0,40}?\b(?:is|are|(?:shall|will)\s+be)\s+absolute\s+and\s+unconditional)/i,
+      /(lessee['’]?s?\s+(?:\w+\s+){0,4}?obligations?\b[^.]{0,40}?\b(?:is|are|(?:shall|will|must)\s+be)\s+absolute\s+and\s+unconditional)/i,
     ],
     why: "§ 2A-407 makes the lessee's promises irrevocable and independent only in a finance lease of goods that is not a consumer lease. Without the designation and the supporting language, the lessee keeps setoff and abatement rights the lessor's pricing assumed away.",
     fix: 'Designate the transaction a finance lease under § 2A-103(1)(g) and add: "Lessee\'s obligation to pay Rent is absolute and unconditional and is not subject to abatement, setoff, or counterclaim."',
@@ -278,7 +278,7 @@ const FREIGHT = pack("freight-transportation-agreement", C, [
     cite: usc("49", "80103", "Negotiable and nonnegotiable bills of lading"),
     pat: [
       /bill\s+of\s+lading/i,
-      /((?:shall|will)\s+(control|govern)|order\s+of\s+precedence|conflict\s+between)/i,
+      /((?:shall|will|must)\s+(control|govern)|order\s+of\s+precedence|conflict\s+between)/i,
     ],
     why: "Every shipment generates a bill of lading whose preprinted terms will otherwise compete with the master agreement. Which document governs must be stated or each claim starts with a document fight.",
     fix: "State that the master agreement controls over inconsistent bill of lading terms except as to the description of goods and delivery instructions.",
@@ -783,7 +783,7 @@ const TEAMING = pack("teaming-agreement", C, [
     ),
     pat: [
       /exclusiv/i,
-      /((?:shall|will)\s+not\s+(team|participate)\s+with|other\s+offerors?|competing\s+team)/i,
+      /((?:shall|will|must)\s+not\s+(team|participate)\s+with|other\s+offerors?|competing\s+team)/i,
     ],
     why: "Exclusivity is the consideration the team member gives up. Its scope — this solicitation only, and for how long — needs a boundary, or the member is locked out of a recompete it was never promised work on.",
     fix: "State the exclusivity scope, that it is limited to this procurement, and the date or event on which it ends.",
@@ -1036,7 +1036,7 @@ const INSERTION_ORDER = pack("advertising-insertion-order", C, [
     ),
     pat: [
       /sequential(ly)?\s+liab/i,
-      /(agency\s+is\s+not\s+liable|solely\s+as\s+agent|advertiser\s+(?:shall|will)\s+be\s+liable)/i,
+      /(agency\s+is\s+not\s+liable|solely\s+as\s+agent|advertiser\s+(?:shall|will|must)\s+be\s+liable)/i,
     ],
     why: "Sequential liability makes the agency liable only to the extent it has been paid by the advertiser. Whether the media company accepts it decides who bears the advertiser's insolvency.",
     fix: "State whether the agency is liable sequentially or jointly, and identify the party responsible for payment if the advertiser does not fund.",
@@ -1140,7 +1140,7 @@ const INFLUENCER = pack("influencer-agreement", C, [
     cite: cfr("16", "255.1", "FTC Endorsement Guides — general considerations"),
     pat: [
       /(substantiat|claims?\s+about\s+the\s+products?|approved\s+claims)/i,
-      /(may\s+not\s+(make|state)|(?:shall|will)\s+only\s+(make|use)|talking\s+points)/i,
+      /(may\s+not\s+(make|state)|(?:shall|will|must)\s+only\s+(make|use)|talking\s+points)/i,
     ],
     why: "An endorsement may not convey a claim the advertiser could not itself substantiate, and the endorser must be a bona fide user where the ad says so. Free-form creator copy is where unsubstantiated claims enter.",
     fix: "Provide an approved claims list, prohibit unapproved health, efficacy, or comparative claims, and require the creator to be an actual user where the content implies it.",
@@ -1163,7 +1163,10 @@ const INFLUENCER = pack("influencer-agreement", C, [
     id: "COMM-181",
     name: "Exclusivity and competing brands",
     cite: practice("influencer-exclusivity", "category exclusivity in creator agreements"),
-    pat: [/exclusiv/i, /(competing\s+(brand|product)|(?:shall|will)\s+not\s+promote|category)/i],
+    pat: [
+      /exclusiv/i,
+      /(competing\s+(brand|product)|(?:shall|will|must)\s+not\s+promote|category)/i,
+    ],
     why: "Exclusivity is the creator's largest cost and is frequently written open-ended. Category and duration have to be bounded or the creator has sold their whole calendar for one campaign fee.",
     fix: "Define the exclusive category narrowly, state the exclusivity period, and confirm whether it survives the content term.",
   },
@@ -1244,7 +1247,7 @@ const MEDIA_RELEASE = pack("media-release", C, [
       "irrevocability and approval waivers in likeness releases",
     ),
     pat: [
-      /(irrevocab|(?:shall|will)\s+not\s+revoke)/i,
+      /(irrevocab|(?:shall|will|must)\s+not\s+revoke)/i,
       /(waive[sd]?\s+(any\s+)?right\s+to\s+(inspect|approve)|no\s+right\s+of\s+approval)/i,
     ],
     why: "Without an express waiver of inspection and approval, a subject can claim a right to review the final use — which is unworkable for a production already in distribution.",

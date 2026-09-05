@@ -75,7 +75,7 @@ const ENGAGEMENT = pack("engagement-letter", C, [
       // form, "Our client is Chandrasekaran Robotics, LLC ONLY". Both pillars
       // were plainly satisfied by the letter's first section, headed THE
       // CLIENT, and it was told at `critical` that neither was.
-      /(only\s+(the\s+)?(company|entity|you)|our\s+client\b[^.]{0,60}\bonly\b|(?:do|will|shall)\s+not\s+represent\s+(?:you\s+individually|(?:its|your|any|the)\s+(?:other\s+|individual\s+)?(?:officers?|directors?|affiliates?|shareholders?|stockholders?|members?|employees?|investors?|owners?|principals?|parent|subsidiar\w*))|(?:are|is|am)\s+not\s+(?:undertaking\s+to\s+represent|representing)\s+(?:its|your|any)\s+(?:officers?|directors?|affiliates?|shareholders?|members?|parent|subsidiar\w*))/i,
+      /(only\s+(the\s+)?(company|entity|you)|our\s+client\b[^.]{0,60}\bonly\b|(?:do|will|shall|must)\s+not\s+represent\s+(?:you\s+individually|(?:its|your|any|the)\s+(?:other\s+|individual\s+)?(?:officers?|directors?|affiliates?|shareholders?|stockholders?|members?|employees?|investors?|owners?|principals?|parent|subsidiar\w*))|(?:are|is|am)\s+not\s+(?:undertaking\s+to\s+represent|representing)\s+(?:its|your|any)\s+(?:officers?|directors?|affiliates?|shareholders?|members?|parent|subsidiar\w*))/i,
     ],
     all: true,
     why: "Rule 1.13 makes the organization the client, not its constituents. When the letter does not say so, officers, affiliates, and investors reasonably believe they are clients too — which creates conflicts and privilege problems nobody intended.",
@@ -431,7 +431,7 @@ const JOINT_REP = pack("joint-representation-waiver", C, [
     ver: "1.0.1",
     pat: [
       /(informed\s+consent|consents?\s+(?:in\s+writing\s+)?to\b|each\s+client\s+(?:consents|agrees|acknowledges)|waives?\s+(?:any\s+)?conflict)/i,
-      /(sign(?:ed)?\s+below|by\s+signing\s+(?:this|below)|each\s+client\s+(?:(?:shall|will)\s+)?sign|signed\s+by\s+each\s+client)/i,
+      /(sign(?:ed)?\s+below|by\s+signing\s+(?:this|below)|each\s+client\s+(?:(?:shall|will|must)\s+)?sign|signed\s+by\s+each\s+client)/i,
     ],
     all: true,
     why: "Rule 1.7(b)(4) requires informed consent confirmed in writing. An unsigned waiver in the file is not the confirmation the rule contemplates.",
@@ -460,7 +460,7 @@ const LIMITED_SCOPE = pack("limited-scope-representation", C, [
       // the first person every engagement letter is written in — so the
       // defining clause of the document was invisible and the check fired at
       // `critical` on a letter that enumerates both halves.
-      /(will\s+(not\s+)?(perform|handle|include|do\b)|the\s+lawyer\s+(shall|will)\s+only|excluded\s+tasks|(?:lawyer|attorney|firm|client|we)\s+will\s+(?:not\s+)?[a-z]+)/i,
+      /(will\s+(not\s+)?(perform|handle|include|do\b)|the\s+lawyer\s+(shall|will|must)\s+only|excluded\s+tasks|(?:lawyer|attorney|firm|client|we)\s+will\s+(?:not\s+)?[a-z]+)/i,
     ],
     all: true,
     why: "Rule 1.2(c) permits a limited scope only if it is reasonable and the client consents after being informed. An itemized division of labor is what makes both findings possible.",

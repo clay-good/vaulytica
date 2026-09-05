@@ -152,9 +152,9 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add a 'Definitions' section defining 'Confidential Information' (or 'Proprietary Information') with the scope of marked, oral, and observable information.",
     present_patterns: [
-      /confidential\s+information["”’']?\s*(means|(?:shall|will)\s+(mean|have))/i,
+      /confidential\s+information["”’']?\s*(means|(?:shall|will|must)\s+(mean|have))/i,
       /["“]?confidential\s+information["”]?\s+is\s+defined/i,
-      /proprietary\s+information["”’']?\s*(means|(?:shall|will)\s+(mean|have))/i,
+      /proprietary\s+information["”’']?\s*(means|(?:shall|will|must)\s+(mean|have))/i,
     ],
   }),
 
@@ -502,7 +502,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       // all — "governed by the law of" is the whole signal, and NDA-D-018 is
       // the rule that asks WHICH law it is.
       /(governing\s+law|governed\s+by\s+the\s+laws?\s+of|laws?\s+of\s+(?:the\s+)?(?:State|Commonwealth|country|Republic)\s+of)/i,
-      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will)\s+(?:govern|apply|control))/,
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will|must)\s+(?:govern|apply|control))/,
       /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
     ],
   }),
@@ -576,8 +576,8 @@ export const NDA_DEEP_RULES: Rule[] = [
       // Tie recruit/hire/poach/induce to a personnel object so an unrelated
       // "shall not hire outside counsel" is not swept in; also catch the
       // fronted-negation "neither party shall …" form.
-      /(?:shall|will)\s+not\s+(?:recruit|hire|poach|induce)[^.]{0,60}(?:employee|personnel|staff|worker|contractor)/i,
-      /(?:neither|no)\s+party\s+(?:shall|will)\s+(?:solicit|recruit|hire|poach|induce)[^.]{0,60}(?:employee|personnel|staff|worker|contractor)/i,
+      /(?:shall|will|must)\s+not\s+(?:recruit|hire|poach|induce)[^.]{0,60}(?:employee|personnel|staff|worker|contractor)/i,
+      /(?:neither|no)\s+party\s+(?:shall|will|must)\s+(?:solicit|recruit|hire|poach|induce)[^.]{0,60}(?:employee|personnel|staff|worker|contractor)/i,
       /\bno[- ](?:hire|poach)\b/i,
     ],
     // Was a forward-only negative lookahead, so a carve-out drafted BEFORE the
@@ -608,7 +608,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     // reads "licence" beside "license" in its instrument vocabulary).
     present_patterns: [
       /no\s+licen[cs]e/i,
-      /(does\s+not\s+(grant|convey|transfer)|(?:shall|will)\s+not\s+be\s+construed.{0,40}licen[cs]e)/is,
+      /(does\s+not\s+(grant|convey|transfer)|(?:shall|will|must)\s+not\s+be\s+construed.{0,40}licen[cs]e)/is,
       /\bnothing\b[^.]{0,120}?\b(?:grants?|convey(?:s)?|transfers?|confers?)\b[^.]{0,80}?\blicen[cs]e\b/is,
     ],
   }),
@@ -646,7 +646,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Add: 'This Agreement shall bind and inure to the benefit of the parties and their successors and permitted assigns. Neither party may assign this Agreement without the prior written consent of the other party.'",
     present_patterns: [
       /successors\s+and\s+assigns/i,
-      /(may\s+not\s+assign|(?:shall|will)\s+not\s+assign|without.{0,40}consent)/i,
+      /(may\s+not\s+assign|(?:shall|will|must)\s+not\s+assign|without.{0,40}consent)/i,
     ],
     default_severity: "warning",
   }),

@@ -164,7 +164,7 @@ const ASSIGNMENT = pack("assignment-and-assumption-agreement", C, [
     cite: practice("anti-assignment", "anti-assignment clauses and non-assignable contracts"),
     pat: [
       /(consent\s+(of|from)\s+(the\s+)?(third\s+part|counterpart)|required\s+consent)/i,
-      /((?:shall|will)\s+not\s+(constitute|be\s+deemed)\s+an\s+assignment|not\s+(be\s+)?assigned\s+(until|unless)|nothing\s+herein)/i,
+      /((?:shall|will|must)\s+not\s+(constitute|be\s+deemed)\s+an\s+assignment|not\s+(be\s+)?assigned\s+(until|unless)|nothing\s+herein)/i,
     ],
     why: "Assigning a contract that forbids assignment is a breach that can terminate the very contract being bought. The carve-out keeps unconsented contracts out of the assignment until consent arrives.",
     fix: "Exclude contracts whose assignment requires consent until consent is obtained, and add a cooperation and alternative-arrangement clause for the interim.",
@@ -394,7 +394,7 @@ const SIDE_LETTER = pack("side-letter", C, [
     ver: "1.1.0",
     pat: [
       /(in\s+the\s+event\s+of\s+(any\s+)?conflict|to\s+the\s+extent\s+(of\s+any\s+)?inconsisten)/i,
-      /(this\s+letter\s+((?:shall|will)\s+)?(control|govern|prevail)|the\s+purchase\s+agreement\s+((?:shall|will)\s+)?(control|govern))/i,
+      /(this\s+letter\s+((?:shall|will|must)\s+)?(control|govern|prevail)|the\s+purchase\s+agreement\s+((?:shall|will|must)\s+)?(control|govern))/i,
       /notwithstanding\s+anything\s+(?:to\s+the\s+contrary\s+)?(?:contained\s+)?in\s+(?:the\s+)[^.]{0,80}?\b(?:Agreement|IRA|Purchase\s+Agreement|Charter|Certificate)\b/i,
       /except\s+as\s+(?:expressly\s+)?(?:provided|set\s+forth|modified)\s+(?:here|herein|in\s+this\s+letter)[^.]{0,120}?\bremains?\s+in\s+full\s+force\b/i,
     ],
@@ -419,7 +419,7 @@ const SIDE_LETTER = pack("side-letter", C, [
     name: "Termination on IPO, transfer, or threshold drop",
     cite: practice("side-letter-termination", "termination triggers for side-letter rights"),
     pat: [
-      /(terminat|(?:shall|will)\s+(cease|expire)|no\s+longer\s+(apply|be\s+in\s+effect))/i,
+      /(terminat|(?:shall|will|must)\s+(cease|expire)|no\s+longer\s+(apply|be\s+in\s+effect))/i,
       /(initial\s+public\s+offering|ipo|transfers?\s+(all|its)|falls?\s+below|ceases?\s+to\s+hold)/i,
     ],
     why: "Side-letter rights that survive an IPO or follow a transferee create Regulation FD and governance problems for a public company, and give a departed investor rights it no longer pays for.",

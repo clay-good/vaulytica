@@ -172,7 +172,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     // dishonor imposes real procedural conditions on enforcement — the opposite
     // of what this rule looks for — yet it scored clean.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can)\s+not\s+waiv\w+\b[^.]{0,60}?\b(?:presentment|demand|notice\s+of\s+dishonor|protest)/i,
+      /\b(?:shall|will|must|does|do|may|can)\s+not\s+waiv\w+\b[^.]{0,60}?\b(?:presentment|demand|notice\s+of\s+dishonor|protest)/i,
       /\bno\s+waiver\s+of\s+(?:presentment|demand|notice\s+of\s+dishonor|protest)/i,
       /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:presentment|notice\s+of\s+dishonor|protest)/i,
     ],
@@ -455,7 +455,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
       // The granting clause names the secured party between the verb and the
       // topic ("does not grant Secured Party any security interest"), which is
       // one word more than the shared frames' gap allows.
-      /\b(?:do|does|shall|will)\s+not\s+grant\b[^.]{0,40}?security\s+interest/i,
+      /\b(?:do|does|shall|will|must)\s+not\s+grant\b[^.]{0,40}?security\s+interest/i,
     ],
     denied_title: "Grant of a security interest expressly denied",
     denied_description:
@@ -638,7 +638,7 @@ const GUARANTY_RULES: Rule[] = [
     // makes the guaranty unenforceable on the lender's terms — scored clean,
     // while a guaranty merely silent on the point fired.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can|is|are)\s+not\s+waiv\w+\b[^.]{0,60}?\b(?:defenses?|suretyship)/i,
+      /\b(?:shall|will|must|does|do|may|can|is|are)\s+not\s+waiv\w+\b[^.]{0,60}?\b(?:defenses?|suretyship)/i,
       /\bno\s+waiver\s+of\s+(?:any\s+)?(?:suretyship\s+)?defenses?/i,
       /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:all\s+|any\s+|its\s+)?(?:suretyship\s+)?defenses?/i,
       /\b(?:defenses?|suretyship\s+defenses?)\b[^.]{0,40}?\b(?:are|is)\s+not\s+waived/i,
@@ -707,7 +707,7 @@ const GUARANTY_RULES: Rule[] = [
     // collateral — precisely the outcome the waiver-or-deferral exists to
     // prevent — and the refusal was being read as the waiver.
     denied_if: [
-      /\b(?:shall|will|does|do|may|can)\s+not\s+(?:waiv\w+|defer)\b[^.]{0,60}?\b(?:subrogation|contribution|reimbursement)/i,
+      /\b(?:shall|will|must|does|do|may|can)\s+not\s+(?:waiv\w+|defer)\b[^.]{0,60}?\b(?:subrogation|contribution|reimbursement)/i,
       /\bno\s+waiver\s+of\s+(?:any\s+)?(?:subrogation|contribution|reimbursement)/i,
       /\b(?:reserves?|retains?|preserves?)\b[^.]{0,40}?\b(?:subrogation|contribution|reimbursement)\s+rights?/i,
     ],

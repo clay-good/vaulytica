@@ -56,7 +56,7 @@ const DEFINITION_INLINE =
 // as`, and `is defined to include` — the modal/adverb variants of the plain
 // `is defined as` form.
 const DEFINITION_INLINE_REFERS =
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will)\s+)?(?:collectively\s+)?(?:refers?\s+to|denotes?|(?:(?:is|are)(?:\s+hereby)?|shall\s+be|will\s+be)\s+defined\s+(?:as|to\s+(?:mean|include)\b))/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s+(?:(?:shall|will|must)\s+)?(?:collectively\s+)?(?:refers?\s+to|denotes?|(?:(?:is|are)(?:\s+hereby)?|shall\s+be|will\s+be)\s+defined\s+(?:as|to\s+(?:mean|include)\b))/gi;
 // A term defined by a plain COPULA and a value — `The "Valuation Cap" is
 // $12,000,000`, `The "Discount Rate" is twenty percent (20%)`, `The "Cure
 // Period" shall be ten (10) business days`. This is ordinary drafting for a
@@ -95,7 +95,7 @@ const DEFINITION_TRAILING_COPULA =
 // definitional marker; the loop keeps only a term ending in Period/Term (a
 // bounded temporal defined term) so an ordinary quoted usage is not swept in.
 const DEFINITION_INLINE_PERIOD =
-  /["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall|will)\s+(?:begin|commence|start|run)\b/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s+(?:shall|will|must)\s+(?:begin|commence|start|run)\b/gi;
 // A role a party occupies CONDITIONALLY — "each party may act as a 'Disclosing
 // Party' when it discloses … and as a 'Receiving Party' when it receives". Both
 // parties share each role, so it is never introduced with a "(the 'X')"
@@ -109,7 +109,7 @@ const DEFINITION_ROLE_WHEN =
 // only runs inside a Definitions/Interpretation section (see Pass 1), so a
 // numbered-cross-reference line like "Section 4.2 means …" is not a realistic
 // false positive here.
-const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&.]{1,80}?)\s+(?:(?:shall|will)\s+)?means?\b/i;
+const DEFINITION_BARE = /^\s*([A-Z][\w\s\-&.]{1,80}?)\s+(?:(?:shall|will|must)\s+)?means?\b/i;
 // A pure glossary entry inside a Definitions/Glossary section: a quoted term at
 // the START of the paragraph, then a colon or dash, then its definition — with
 // no "means"/"refers to" verb (`"Delivery Point": the loading dock`, `"Term" —
@@ -130,7 +130,7 @@ const DEFINITION_ALIASED =
   // is how every contributor license agreement defines its two pronouns — and
   // the unparenthesized form matched neither term, so the definition was lost
   // entirely and "Your Contributions" was reported as never defined.
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:\(\s*)?or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s*\)?\s*(?:(?:shall|will)\s+)?means?\b/gi;
+  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:\(\s*)?or\s+["“”']([A-Z][\w\s\-&/'’.]{1,60}?)["“”']\s*\)?\s*(?:(?:shall|will|must)\s+)?means?\b/gi;
 
 /**
  * The other inline convention, and the dominant one in commercial drafting:
@@ -1234,7 +1234,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       const cached = compositionCache.get(phrase);
       if (cached !== undefined) return cached;
       const answer = new RegExp(
-        `\\b(?:the\\s+)?${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+(?:(?:shall|will)\\s+)?(?:consists?\\s+of|comprises?|are\\s+comprised\\s+of|is\\s+comprised\\s+of)\\b`,
+        `\\b(?:the\\s+)?${phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+(?:(?:shall|will|must)\\s+)?(?:consists?\\s+of|comprises?|are\\s+comprised\\s+of|is\\s+comprised\\s+of)\\b`,
         "i",
       ).test(ctx.text);
       compositionCache.set(phrase, answer);

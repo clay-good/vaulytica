@@ -344,9 +344,9 @@ const PHI_AUTHORIZATION_RULES: Rule[] = [
       // "This authorization cannot be revoked" / "is irrevocable" — the
       // passive and adjectival forms reverse the topic's word order, so the
       // shared frames cannot reach them.
-      /\bauthori[sz]ation\b[^.]{0,40}?\b(?:may|can|shall|will|is|are)\s+not\s+be\s+revoked/i,
+      /\bauthori[sz]ation\b[^.]{0,40}?\b(?:may|can|shall|will|must|is|are)\s+not\s+be\s+revoked/i,
       /\bauthori[sz]ation\b[^.]{0,40}?\bcan\s?not\s+be\s+revoked/i,
-      /\bauthori[sz]ation\s+(?:is|(?:shall|will)\s+be)\s+irrevocable/i,
+      /\bauthori[sz]ation\s+(?:is|(?:shall|will|must)\s+be)\s+irrevocable/i,
     ],
     denied_title: "Right to revoke the authorization expressly denied",
     denied_description:

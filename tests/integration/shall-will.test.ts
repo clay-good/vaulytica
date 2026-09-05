@@ -95,6 +95,59 @@ describe("shall and will are the same obligation", () => {
     ).toEqual([]);
   });
 
+  /**
+   * The same guard for the third spelling, held as a COUNT rather than a list.
+   *
+   * 297 of the 347 recognizers that read "shall" and not "must" carried an
+   * adjacent `shall|will` alternation, where adding the word is mechanical and
+   * needs no judgment: it only ADDS an alternative to a list that already
+   * spells both synonyms. Those were widened in one pass, and every one of the
+   * 811 golden assertions still holds — a tolerance changes what a pattern can
+   * read, never what it means.
+   *
+   * The 50 left do need judgment. Their shapes are all different — `shall\s+be`
+   * beside `will\s+be`, a `shall\s+not` inside a longer prohibition list, a
+   * negation alternation with eight members — and where "must" belongs in each
+   * is a decision per site, not a rewrite rule.
+   *
+   * A count, not a list of `path:line`: line numbers move under every edit
+   * above them, and a stale exception is indistinguishable from a wrong one.
+   * Equality, not `<=`, so that fixing one means lowering this number on
+   * purpose — a ceiling nobody has to lower is a ceiling that drifts.
+   */
+  const MUST_BLIND = 50;
+
+  it("the recognizers that read 'shall' without 'must' can only get fewer", () => {
+    const files = [
+      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
+      ...sourceFiles(join(process.cwd(), "src", "extract")),
+      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+    ];
+    expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
+
+    const blind: string[] = [];
+    for (const file of files) {
+      for (const { line, text } of recognizerSources(file)) {
+        if (/shall(?![a-z])/.test(text) && !/must(?![a-z])/.test(text)) {
+          blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
+        }
+      }
+    }
+    // A NEW recognizer written with only "shall" raises this and fails here.
+    expect(
+      blind.length,
+      blind.length > MUST_BLIND
+        ? `a recognizer reads "shall" without "must" — write (?:shall|will|must):\n  ${blind.join("\n  ")}`
+        : `${MUST_BLIND - blind.length} of these are fixed — lower MUST_BLIND to ${blind.length}`,
+    ).toBe(MUST_BLIND);
+    // And none of them may carry the mechanical shape, which was cleared
+    // wholesale: a fresh `(?:shall|will)` is exactly what this catches.
+    expect(
+      blind.filter((b) => /shall\|will|will\|shall/.test(b)),
+      'this reads "shall|will" — adding "must" to that alternation needs no judgment',
+    ).toEqual([]);
+  });
+
   it("writing every 'shall' as 'will' changes no finding", async () => {
     const deps = await loadAccuracyDeps({});
     const broken: string[] = [];

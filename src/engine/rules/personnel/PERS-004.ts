@@ -32,7 +32,7 @@ export const rule: Rule = {
       //       reciprocal "other party" object to fire. The same anchor keeps an
       //       internal hiring-governance clause ("neither party will hire
       //       employees without approval") from being misread as anti-poaching.
-      /\bno[-\s]?(?:hire|poach(?:ing)?)\b[^.;\n]{0,80}\b(?:other\s+part(?:y|ies)|employees?|personnel|staff)\b|\b(?:will|shall|agrees?\s+to)\s+not\s+(?:hire|employ)\b[^.;\n]{0,80}\b(?:other\s+part(?:y|ies)|employees?|personnel|staff)\b|\b(?:(?:neither|no)\s+part(?:y|ies)\s+(?:will|shall|may)|(?:will|shall|agrees?\s+to)\s+not)\s+(?:hire|employ|solicit)\b[^.;\n]{0,80}\bother\s+part(?:y|ies)\b/i,
+      /\bno[-\s]?(?:hire|poach(?:ing)?)\b[^.;\n]{0,80}\b(?:other\s+part(?:y|ies)|employees?|personnel|staff)\b|\b(?:will|shall|must|agrees?\s+to)\s+not\s+(?:hire|employ)\b[^.;\n]{0,80}\b(?:other\s+part(?:y|ies)|employees?|personnel|staff)\b|\b(?:(?:neither|no)\s+part(?:y|ies)\s+(?:will|shall|must|may)|(?:will|shall|must|agrees?\s+to)\s+not)\s+(?:hire|employ|solicit)\b[^.;\n]{0,80}\bother\s+part(?:y|ies)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;

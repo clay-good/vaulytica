@@ -193,8 +193,8 @@ const SAFE_RULES: Rule[] = [
     // not bear interest" / "no interest shall accrue" forms.
     bad_patterns: [
       /bears?\s+interest/i,
-      /(?:shall|will|to|may|would)\s+(?:bear|accrue)\s+interest/i,
-      /interest\s+(?:shall|will|does|is|to)\s+accru/i,
+      /(?:shall|will|must|to|may|would)\s+(?:bear|accrue)\s+interest/i,
+      /interest\s+(?:shall|will|must|does|is|to)\s+accru/i,
       /interest\s+(?:accrues|accruing)/i,
       /accru(?:e|es|ing|ed)\s+interest/i,
       /(?:simple|compound)\s+interest\s+(?:of|at)\s+\d/i,
@@ -204,7 +204,7 @@ const SAFE_RULES: Rule[] = [
       /\bno\s+interest\b/i,
       // "never" is the adverb form of the same disclaimer: "This SAFE shall
       // never bear interest" is the compliant instrument, not a disguised note.
-      /(?:shall|will|does|do|may|would)\s+(?:not|never)\s+(?:bear|accrue|be)\b/i,
+      /(?:shall|will|must|does|do|may|would)\s+(?:not|never)\s+(?:bear|accrue|be)\b/i,
       /(?:bears?|bearing)\s+no\s+interest/i,
       /\bwithout\s+interest\b/i,
       /\bnon-?interest(?:[-\s]?bearing)?\b/i,
@@ -277,7 +277,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
     recommendation:
       "Add 'Interest shall accrue on the unpaid principal at a rate of [X]% per annum, compounded annually, until paid in full or converted'.",
     present_patterns: [
-      /interest\s+(rate|(?:shall|will)|accrues?|of\s+\d)/i,
+      /interest\s+(rate|(?:shall|will|must)|accrues?|of\s+\d)/i,
       /\d+(\.\d+)?\s*%\s*per\s+annum/i,
     ],
   }),
@@ -298,7 +298,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
       /(2[5-9]|[3-9]\d|1\d{2,})\s*%\s*\)?\s*(?:per\s+(?:annum|year)|\/\s*(?:year|yr|annum))/i,
     ],
     exclude_if: [
-      /(?:not\s+to\s+exceed|(?:shall|will)\s+not\s+exceed|maximum\s+(?:rate\s+)?(?:permitted|allowed)|highest\s+lawful\s+rate|permitted\s+by\s+(?:applicable\s+)?law)/i,
+      /(?:not\s+to\s+exceed|(?:shall|will|must)\s+not\s+exceed|maximum\s+(?:rate\s+)?(?:permitted|allowed)|highest\s+lawful\s+rate|permitted\s+by\s+(?:applicable\s+)?law)/i,
     ],
     bad_title: "Interest rate may exceed state usury cap",
     bad_description:
@@ -634,14 +634,14 @@ const OPTION_GRANT_RULES: Rule[] = [
     // "shall/may not reprice" was already excluded; add the passive form and the
     // "no <award> … repriced" lead-in.
     exclude_if: [
-      /(?:shall|will|may)\s+not\s+reprice/i,
+      /(?:shall|will|must|may)\s+not\s+reprice/i,
       /\bno\s+repricing\b/i,
       /\bnot\s+(?:be\s+)?repric(?:e|ed|ing)\b/i,
       /\bno\s+(?:option|award|grant|stock\s+option|sar)s?\b[^.]{0,40}\brepric/i,
       // The negated-action good-governance form, now that "reduce/lower the
       // exercise price" is a matched action: "may not reduce the exercise
       // price without stockholder approval" is the covenant, not the violation.
-      /(?:shall|will|may)\s+not\s+(?:be\s+)?(?:reduc|lower|decreas|reset)/i,
+      /(?:shall|will|must|may)\s+not\s+(?:be\s+)?(?:reduc|lower|decreas|reset)/i,
       // Every guard above puts the negation directly on the verb, so the
       // emphatic form of the very covenant this rule wants — "Options shall,
       // under no circumstances, be repriced without stockholder approval" —
@@ -892,7 +892,7 @@ const RSPA_RULES: Rule[] = [
       /lock[-\s]?up/i,
       /\(?\s*180\s*\)?\s*(?:calendar\s+)?days?/i,
       /one\s+hundred\s+(?:and\s+)?eighty\b/i,
-      /(?:(?:shall|will)\s+not|agrees?\s+not\s+to|may\s+not)\s+(?:sell|transfer|dispose|offer)[^.]{0,140}?(?:initial\s+public\s+offering|managing\s+underwriter|underwriters?\s+(?:so\s+)?request)/i,
+      /(?:(?:shall|will|must)\s+not|agrees?\s+not\s+to|may\s+not)\s+(?:sell|transfer|dispose|offer)[^.]{0,140}?(?:initial\s+public\s+offering|managing\s+underwriter|underwriters?\s+(?:so\s+)?request)/i,
     ],
     default_severity: "warning",
   }),

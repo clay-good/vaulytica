@@ -74,7 +74,7 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
     name: "Trustee powers, succession, and removal",
     cite: uniformAct("Uniform Trust Code § 815", "general powers of trustee"),
     pat: [
-      /(trustee\s+((?:shall|will)\s+have\s+the\s+)?power|powers\s+of\s+the\s+trustee)/i,
+      /(trustee\s+((?:shall|will|must)\s+have\s+the\s+)?power|powers\s+of\s+the\s+trustee)/i,
       /(successor\s+trustee|resign|remov|appoint\s+a\s+successor)/i,
     ],
     why: "A trust with no succession mechanism requires a court to fill a vacancy. Beneficiary removal power must be drafted carefully — an unrestricted power to remove and appoint oneself can cause estate inclusion.",
@@ -210,7 +210,7 @@ const SNT = pack("special-needs-trust", C, [
     cite: agency_ssa(),
     pat: [
       /(cash|in-?kind\s+support\s+and\s+maintenance|ISM)/i,
-      /((?:shall|will)\s+not\s+(distribute|pay)\s+(cash\s+)?directly|food\s+(and|or)\s+shelter|reduce\s+(the\s+)?(ssi|benefit))/i,
+      /((?:shall|will|must)\s+not\s+(distribute|pay)\s+(cash\s+)?directly|food\s+(and|or)\s+shelter|reduce\s+(the\s+)?(ssi|benefit))/i,
     ],
     why: "Cash to the beneficiary reduces SSI dollar for dollar, and payments for food or shelter reduce it by the presumed maximum value. Trustees need the rule in the document, not only in a memo.",
     fix: "Direct the trustee not to distribute cash directly to the beneficiary and to consider the in-kind support and maintenance consequences of food and shelter payments.",
@@ -248,7 +248,7 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
     name: "Amended provisions restated in full",
     cite: practice("restatement", "restating amended provisions in full"),
     pat: [
-      /(is\s+(hereby\s+)?(amended|deleted|restated)|(?:shall|will)\s+read\s+as\s+follows)/i,
+      /(is\s+(hereby\s+)?(amended|deleted|restated)|(?:shall|will|must)\s+read\s+as\s+follows)/i,
       /(in\s+its\s+entirety|article\s+\w+|(?:section|clause)\s+\d)/i,
     ],
     // `all: true`. The locator pillar is `section \d`, which every instrument
@@ -324,7 +324,7 @@ const QDRO = pack("qdro", C, [
     name: "No increased-benefit requirement",
     cite: usc("29", "1056", "ERISA § 206(d)(3)(D) — limitations on qualified orders"),
     pat: [
-      /((?:shall|will)\s+not\s+require\s+the\s+plan\s+to\s+provide|does\s+not\s+require)/i,
+      /((?:shall|will|must)\s+not\s+require\s+the\s+plan\s+to\s+provide|does\s+not\s+require)/i,
       /(any\s+type\s+or\s+form\s+of\s+benefit.{0,60}not\s+otherwise\s+provided|increased\s+benefits|actuarial\s+value)/i,
     ],
     why: "§ 1056(d)(3)(D) disqualifies an order that requires a benefit form the plan does not offer, increased benefits, or benefits already assigned to another alternate payee. The negative recital is what plan administrators look for first.",
@@ -361,7 +361,7 @@ const QDRO = pack("qdro", C, [
     ),
     pat: [
       /(survivor[-\s]+(benefit|annuity)|qpsa|qjsa|pre-?retirement\s+survivor)/i,
-      /(alternate\s+payee\s+((?:shall|will)\s+be\s+)?(treated\s+as\s+)?(the\s+)?(surviving\s+)?spouse|former\s+spouse)/i,
+      /(alternate\s+payee\s+((?:shall|will|must)\s+be\s+)?(treated\s+as\s+)?(the\s+)?(surviving\s+)?spouse|former\s+spouse)/i,
     ],
     why: "The order may treat the alternate payee as the surviving spouse for QPSA and QJSA purposes. If it does not, the alternate payee's interest in a defined benefit plan can vanish if the participant dies before retirement.",
     fix: "State whether the alternate payee is treated as the surviving spouse for QPSA and QJSA purposes and to what extent.",
@@ -429,7 +429,7 @@ const COHABITATION = pack("cohabitation-agreement", C, [
     cite: practice("cohabitation-property", "property characterization in cohabitation agreements"),
     pat: [
       /separate\s+property/i,
-      /(joint(ly)?\s+(acquired|owned|held)|(?:shall|will)\s+remain\s+the\s+(sole\s+)?property|contribution)/i,
+      /(joint(ly)?\s+(acquired|owned|held)|(?:shall|will|must)\s+remain\s+the\s+(sole\s+)?property|contribution)/i,
     ],
     all: true,
     why: "Without an agreement, an unmarried partner's claim to property titled in the other's name rests on constructive trust or unjust enrichment — expensive, uncertain doctrines. The agreement replaces them.",
@@ -442,7 +442,7 @@ const COHABITATION = pack("cohabitation-agreement", C, [
     cite: practice("cohabitation-support", "support obligations between unmarried cohabitants"),
     pat: [
       /support/i,
-      /(no\s+(claim|right)\s+(to|for)\s+support|palimony|waive|(?:shall|will)\s+(pay|provide))/i,
+      /(no\s+(claim|right)\s+(to|for)\s+support|palimony|waive|(?:shall|will|must)\s+(pay|provide))/i,
     ],
     why: "Support claims between unmarried partners — the palimony theory — are the most common cohabitation dispute. Whether support is promised or waived should be an express term, not a later inference.",
     fix: "State whether either party will provide support during or after the relationship, or waive any support claim expressly.",
@@ -475,7 +475,7 @@ const COHABITATION = pack("cohabitation-agreement", C, [
     ),
     pat: [
       /(terminat|ends?\s+(upon|on)|separation\s+of\s+the\s+parties)/i,
-      /(marriage|marry|if\s+the\s+parties\s+(later\s+)?marry|(?:shall|will)\s+(become|be)\s+(void|of\s+no\s+effect))/i,
+      /(marriage|marry|if\s+the\s+parties\s+(later\s+)?marry|(?:shall|will|must)\s+(become|be)\s+(void|of\s+no\s+effect))/i,
     ],
     why: "If the parties later marry, a cohabitation agreement is not a premarital agreement and generally does not survive as one. Saying what happens avoids a couple believing they are protected when they are not.",
     fix: "State the events that terminate the agreement, and state expressly whether it survives marriage or must be replaced by a premarital or postnuptial agreement.",

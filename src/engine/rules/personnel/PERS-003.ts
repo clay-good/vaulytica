@@ -9,9 +9,9 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 // (not "direction") is used so an IC properly directed only as to results — "the
 // general direction of the Company as to deliverables" — is not flagged.
 const EMPLOYEE_INDICATORS = [
-  /(?:shall|will)\s+report\s+to/i,
-  /(?:shall|will)\s+work\s+(?:the\s+)?hours\s+of/i,
-  /company\s+(?:shall|will)\s+provide\s+(?:the\s+)?(?:tools|equipment|training|(?:a\s+)?(?:workspace|office|computer|laptop))/i,
+  /(?:shall|will|must)\s+report\s+to/i,
+  /(?:shall|will|must)\s+work\s+(?:the\s+)?hours\s+of/i,
+  /company\s+(?:shall|will|must)\s+provide\s+(?:the\s+)?(?:tools|equipment|training|(?:a\s+)?(?:workspace|office|computer|laptop))/i,
   /full[- ]time\s+basis/i,
   /subject\s+to\s+(?:the\s+)?(?:direct\s+)?supervision/i,
   /(?:eligible\s+for|entitled\s+to)\s+(?:the\s+)?(?:Company\s+)?(?:employee\s+)?benefits/i,
@@ -25,7 +25,7 @@ const EMPLOYEE_INDICATORS = [
   /\bat[- ]will\s+employ(?:ment|ee)\b|\bemployment\s+(?:is\s+|shall\s+be\s+)?at[- ]will\b/i,
   // The Company withholding payroll / income tax is employer behavior — an IC
   // pays its own taxes. Only the Company-withholds direction is the signal.
-  /\b(?:Company|Employer)\s+(?:shall|will|agrees\s+to)\s+withhold\b[^.]{0,40}\b(?:tax|taxes|income|payroll|FICA|withholding)/i,
+  /\b(?:Company|Employer)\s+(?:shall|will|must|agrees\s+to)\s+withhold\b[^.]{0,40}\b(?:tax|taxes|income|payroll|FICA|withholding)/i,
 ] as const;
 
 /** PERS-003 — Independent contractor classification language (warning). */

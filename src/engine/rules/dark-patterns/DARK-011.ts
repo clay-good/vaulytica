@@ -38,7 +38,7 @@ export const rule: Rule = {
       // utilities (alongside "shut off / terminate"), "padlock" (a lockout form),
       // and "seize / distrain" the tenant's belongings (distraint for rent — a
       // self-help remedy void in residential tenancies in nearly every state).
-      /\b(?:Landlord|Lessor|Owner)\b[^.]{0,80}\b(?:may|(?:shall|will)\s+have\s+the\s+right\s+to|is\s+entitled\s+to|reserves?\s+the\s+right\s+to)\b[^.]{0,120}\b(?:change\s+(?:the\s+)?locks?|lock\s+out|padlock|remove\s+(?:the\s+)?(?:tenant|tenant.?s\s+(?:belongings|personal\s+property|possessions|property))|(?:seize|distrain\w*)\s+[^.]{0,30}(?:belongings|possessions|property|goods)|(?:shut\s+off|cut\s+off|disconnect|terminate)\s+(?:the\s+)?utilit\w+|take\s+possession|re-?enter\s+and\s+(?:take|remove)|evict\s+(?:the\s+)?tenant)\b/i,
+      /\b(?:Landlord|Lessor|Owner)\b[^.]{0,80}\b(?:may|(?:shall|will|must)\s+have\s+the\s+right\s+to|is\s+entitled\s+to|reserves?\s+the\s+right\s+to)\b[^.]{0,120}\b(?:change\s+(?:the\s+)?locks?|lock\s+out|padlock|remove\s+(?:the\s+)?(?:tenant|tenant.?s\s+(?:belongings|personal\s+property|possessions|property))|(?:seize|distrain\w*)\s+[^.]{0,30}(?:belongings|possessions|property|goods)|(?:shut\s+off|cut\s+off|disconnect|terminate)\s+(?:the\s+)?utilit\w+|take\s+possession|re-?enter\s+and\s+(?:take|remove)|evict\s+(?:the\s+)?tenant)\b/i,
     );
     if (!hit || isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     // Retaking possession THROUGH the legal process is the compliant remedy,

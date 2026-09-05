@@ -103,7 +103,7 @@ const RFP = pack("document-requests", C, [
       // "Produce electronically stored information in single-page TIFF images
       // with a document-level load file" specifies the form completely and
       // carried none of these tokens.
-      /(form(at)?\s+of\s+production|production\s+format|\bproduc(?:e|ed|tion)\b[^.;]{0,80}?\bin\b|(?:shall|will)\s+be\s+produced\s+as)/i,
+      /(form(at)?\s+of\s+production|production\s+format|\bproduc(?:e|ed|tion)\b[^.;]{0,80}?\bin\b|(?:shall|will|must)\s+be\s+produced\s+as)/i,
     ],
     all: true,
     why: "Rule 34(b)(1)(C) lets the requesting party specify the form. A party that does not specify takes whatever form the producing party chooses, which is routinely a form that strips the metadata the case needs.",
