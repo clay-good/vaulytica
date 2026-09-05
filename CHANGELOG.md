@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.441.0] — 2026-09-05
+
+### Added
+- **A bundled document whose type was not recognized says so on its card.**
+  Dropped alone, such a document has always carried the unmatched-document
+  banner above its findings — the honest caveat that only the always-on
+  structural checks ran, so its counts mean less than the others'. Inside a
+  bundle it showed a card like any other, and one unrecognized file among ten
+  is exactly the one a reader skims past.
+
+  The banner sits ahead of the ingest notices and so ahead of the counts,
+  because it reframes every number under it, and it is rendered in the body
+  colour rather than the muted one: it is the card's most important line, not
+  an aside. `EngineRun.classification_notice` was already on every bundled
+  document with no consumer, the same shape as the ingest warnings in the
+  previous release.
+
 ## [9.440.0] — 2026-09-05
 
 ### Added

@@ -16,6 +16,7 @@ function cardDoc(overrides: {
     counts: { critical: number; warning: number; info: number };
   }>;
   input_warnings?: ReadonlyArray<string>;
+  classification_notice?: string;
   docx_blob?: Blob;
   json_blob?: Blob;
   docx_filename?: string;
@@ -32,6 +33,7 @@ function cardDoc(overrides: {
     counts: { critical: number; warning: number; info: number };
   }>;
   input_warnings?: ReadonlyArray<string>;
+  classification_notice?: string;
   docx_blob: Blob;
   json_blob: Blob;
   docx_filename: string;
@@ -39,6 +41,9 @@ function cardDoc(overrides: {
 } {
   return {
     ...(overrides.input_warnings ? { input_warnings: overrides.input_warnings } : {}),
+    ...(overrides.classification_notice
+      ? { classification_notice: overrides.classification_notice }
+      : {}),
     filename: overrides.filename,
     family_label: overrides.family_label,
     detection_confidence: overrides.detection_confidence,
@@ -1408,6 +1413,52 @@ describe("renderState", () => {
     );
     // A document the ingest read cleanly renders no line at all.
     expect(cards[1]!.querySelector('[data-role="multi-doc-card-notices"]')).toBeNull();
+  });
+
+  /**
+   * One unrecognized file among ten is exactly the one a reader skims past —
+   * and its counts are the ones that mean least, because only the generic
+   * rules ran on it. A single dropped file has always said so above its
+   * findings; a bundle showed it as a card like any other.
+   */
+  it("marks a bundled document whose type was not recognized", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 2 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        cardDoc({
+          filename: "unknown.pdf",
+          playbook_name: "Generic Fallback",
+          counts: { critical: 0, warning: 0, info: 1 },
+          classification_notice: "Only the always-on structural checks ran.",
+        }),
+        cardDoc({
+          filename: "msa.docx",
+          playbook_name: "MSA",
+          counts: { critical: 0, warning: 0, info: 1 },
+        }),
+      ],
+    });
+    const cards = select<HTMLUListElement>(dz, "multi-doc-cards")!.querySelectorAll<HTMLLIElement>(
+      '[data-role="multi-doc-card"]',
+    );
+    const banner = cards[0]!.querySelector('[data-role="multi-doc-card-unmatched"]');
+    expect(banner?.textContent).toMatch(/Document type not recognized/);
+    expect(banner?.textContent).toMatch(/always-on structural checks/);
+    // Ahead of the counts, which is what it reframes.
+    const html = cards[0]!.innerHTML;
+    expect(html.indexOf("multi-doc-card-unmatched")).toBeLessThan(
+      html.indexOf("multi-doc-card-counts"),
+    );
+    // A recognized document gets no banner.
+    expect(cards[1]!.querySelector('[data-role="multi-doc-card-unmatched"]')).toBeNull();
   });
 
   it("escapes a bundled document's ingest notice", () => {

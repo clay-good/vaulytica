@@ -586,6 +586,16 @@
         font-style: italic;
         overflow-wrap: anywhere;
       }
+      /* "We did not recognize this document." Ahead of the ingest notices and
+         so ahead of the counts, because it reframes every number under it —
+         only the always-on rules ran. Rendered in the body colour rather than
+         the muted one: it is the card's most important line, not an aside. */
+      .multi-doc-card-unmatched {
+        color: var(--body);
+        font-size: 12px;
+        margin-top: 4px;
+        overflow-wrap: anywhere;
+      }
       /* What the ingest could and could not read, per bundled document. Sits
          ABOVE the counts, because a count read without it is read wrong. Same
          muted-italic register as the "Also checked" line, so a card reads as

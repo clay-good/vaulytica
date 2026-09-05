@@ -736,6 +736,7 @@ async function renderBundleComplete(
             }))
           : undefined,
       input_warnings: d.ingest.warnings.length > 0 ? d.ingest.warnings : undefined,
+      classification_notice: d.run.classification_notice?.message,
       docx_blob: d.docx_blob,
       json_blob: d.json_blob,
       docx_filename: `${stem}-vaulytica.docx`,

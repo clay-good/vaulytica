@@ -436,6 +436,16 @@ export type DropzoneState =
          * is hiding. Optional / back-compat: omitting it renders no line.
          */
         input_warnings?: ReadonlyArray<string>;
+        /**
+         * The unmatched-document banner for THIS document.
+         *
+         * A single dropped file whose type is not recognized says so above its
+         * findings. In a bundle the same document showed a card like any
+         * other, and one unrecognized file among ten is exactly the one a
+         * reader skims past — while its counts are the ones that mean least,
+         * because only the generic rules ran on it. Optional / back-compat.
+         */
+        classification_notice?: string;
         docx_blob: Blob;
         json_blob: Blob;
         docx_filename: string;
@@ -1123,6 +1133,7 @@ function renderMultiDocCards(
           counts: { critical: number; warning: number; info: number };
         }>;
         input_warnings?: ReadonlyArray<string>;
+        classification_notice?: string;
         docx_blob: Blob;
         json_blob: Blob;
         docx_filename: string;
@@ -1168,9 +1179,17 @@ function renderMultiDocCards(
               .map((w) => `<li>${escapeHtml(w)}</li>`)
               .join("")}</ul>`
           : "";
+      // Ahead of the ingest notices, and so ahead of the counts: "we did not
+      // recognize this document" reframes every number under it.
+      const unmatched = d.classification_notice
+        ? `<div class="multi-doc-card-unmatched" data-role="multi-doc-card-unmatched"><strong>Document type not recognized.</strong> ${escapeHtml(
+            d.classification_notice,
+          )}</div>`
+        : "";
       return `<li class="multi-doc-card${lowConfClass}" data-role="multi-doc-card">
         <div class="multi-doc-card-filename">${escapeHtml(d.filename)}</div>
         <div class="multi-doc-card-meta">${family}${family ? " · " : ""}${playbook}</div>
+        ${unmatched}
         ${notices}
         <div class="multi-doc-card-counts">${countsLine}</div>
         ${secondary}
