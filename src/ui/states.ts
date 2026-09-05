@@ -424,6 +424,18 @@ export type DropzoneState =
           playbook_name: string;
           counts: { critical: number; warning: number; info: number };
         }>;
+        /**
+         * What the ingest could and could not read, for THIS document.
+         *
+         * A single dropped file has said this since the notices existed, at
+         * the top of the result. A bundle said nothing: drop a folder holding
+         * a redline, a scanned PDF, or a contract that is not in English, and
+         * the summary reported findings without ever mentioning that one of
+         * its documents had barely been read. A bundle is exactly where it
+         * matters most, because the per-document detail is what the summary
+         * is hiding. Optional / back-compat: omitting it renders no line.
+         */
+        input_warnings?: ReadonlyArray<string>;
         docx_blob: Blob;
         json_blob: Blob;
         docx_filename: string;
@@ -1110,6 +1122,7 @@ function renderMultiDocCards(
           playbook_name: string;
           counts: { critical: number; warning: number; info: number };
         }>;
+        input_warnings?: ReadonlyArray<string>;
         docx_blob: Blob;
         json_blob: Blob;
         docx_filename: string;
@@ -1147,9 +1160,18 @@ function renderMultiDocCards(
               )
               .join("; ")}</div>`
           : "";
+      // Above the counts, not below them: a count read without this line is
+      // read wrong, and a reader who scans one line of a card must see it.
+      const notices =
+        d.input_warnings && d.input_warnings.length > 0
+          ? `<ul class="multi-doc-card-notices" data-role="multi-doc-card-notices">${d.input_warnings
+              .map((w) => `<li>${escapeHtml(w)}</li>`)
+              .join("")}</ul>`
+          : "";
       return `<li class="multi-doc-card${lowConfClass}" data-role="multi-doc-card">
         <div class="multi-doc-card-filename">${escapeHtml(d.filename)}</div>
         <div class="multi-doc-card-meta">${family}${family ? " · " : ""}${playbook}</div>
+        ${notices}
         <div class="multi-doc-card-counts">${countsLine}</div>
         ${secondary}
         <div class="multi-doc-card-actions">

@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.440.0] — 2026-09-05
+
+### Added
+- **A bundle says what the ingest could not read, per document.** Drop one
+  file and the tab has always led with the "About this input" notices. Drop a
+  FOLDER — the mode built for a deal set — and it said nothing at all: a
+  redline read as all-changes-accepted, a scanned PDF, or a contract that is
+  not in English produced a summary of findings with no mention that one of
+  its documents had barely been read.
+
+  A bundle is where this matters most, because the per-document detail is
+  exactly what the summary is hiding, and `BundlePerDocument.ingest` has
+  carried the warnings the whole time with no consumer. Each card now renders
+  its own document's notices, above the counts, in the same muted register as
+  the "Also checked" line. A document the ingest read cleanly renders nothing,
+  so a bundle with nothing to declare looks as it always did.
+
 ## [9.439.0] — 2026-09-05
 
 ### Docs

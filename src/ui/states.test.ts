@@ -15,6 +15,7 @@ function cardDoc(overrides: {
     playbook_name: string;
     counts: { critical: number; warning: number; info: number };
   }>;
+  input_warnings?: ReadonlyArray<string>;
   docx_blob?: Blob;
   json_blob?: Blob;
   docx_filename?: string;
@@ -30,12 +31,14 @@ function cardDoc(overrides: {
     playbook_name: string;
     counts: { critical: number; warning: number; info: number };
   }>;
+  input_warnings?: ReadonlyArray<string>;
   docx_blob: Blob;
   json_blob: Blob;
   docx_filename: string;
   json_filename: string;
 } {
   return {
+    ...(overrides.input_warnings ? { input_warnings: overrides.input_warnings } : {}),
     filename: overrides.filename,
     family_label: overrides.family_label,
     detection_confidence: overrides.detection_confidence,
@@ -1359,6 +1362,79 @@ describe("renderState", () => {
     expect(jsonBtns.length).toBe(2);
     expect(wordBtns[0]!.getAttribute("aria-label")).toMatch(/Word.*msa\.docx/);
     expect(jsonBtns[1]!.getAttribute("aria-label")).toMatch(/JSON.*dpa\.docx/);
+  });
+
+  /**
+   * A bundle is where the ingest's caveats matter MOST and where they were
+   * carried least. A single dropped file has said this since the notices
+   * existed; drop a folder holding a redline, a scanned PDF, or a contract
+   * that is not in English, and the summary reported findings without ever
+   * mentioning that one of its documents had barely been read.
+   */
+  it("renders each bundled document's own ingest notices on its card", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 2 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        cardDoc({
+          filename: "contrato.pdf",
+          playbook_name: "Mutual NDA",
+          counts: { critical: 0, warning: 0, info: 1 },
+          input_warnings: ["This document does not read as English — it appears to be Spanish."],
+        }),
+        cardDoc({
+          filename: "clean.docx",
+          playbook_name: "MSA",
+          counts: { critical: 0, warning: 0, info: 1 },
+        }),
+      ],
+    });
+    const cards = select<HTMLUListElement>(dz, "multi-doc-cards")!.querySelectorAll<HTMLLIElement>(
+      '[data-role="multi-doc-card"]',
+    );
+    const notices = cards[0]!.querySelector('[data-role="multi-doc-card-notices"]');
+    expect(notices?.textContent).toMatch(/appears to be Spanish/);
+    // The notice sits ABOVE the counts: a count read without it is read wrong.
+    const html = cards[0]!.innerHTML;
+    expect(html.indexOf("multi-doc-card-notices")).toBeLessThan(
+      html.indexOf("multi-doc-card-counts"),
+    );
+    // A document the ingest read cleanly renders no line at all.
+    expect(cards[1]!.querySelector('[data-role="multi-doc-card-notices"]')).toBeNull();
+  });
+
+  it("escapes a bundled document's ingest notice", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 1,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "x.docx",
+      bundle_json_filename: "x.json",
+      documents: [
+        cardDoc({
+          filename: "a.docx",
+          playbook_name: "MSA",
+          counts: { critical: 0, warning: 0, info: 0 },
+          input_warnings: ["<img src=x onerror=alert(1)>"],
+        }),
+      ],
+    });
+    const notices = select<HTMLUListElement>(dz, "multi-doc-cards")!.querySelector(
+      '[data-role="multi-doc-card-notices"]',
+    )!;
+    expect(notices.querySelector("img")).toBeNull();
+    expect(notices.textContent).toContain("<img src=x onerror=alert(1)>");
   });
 
   it("renders an 'Also checked' line on a bundled composite document's card (spec-v6 multi-family)", () => {

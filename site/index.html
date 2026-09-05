@@ -586,6 +586,21 @@
         font-style: italic;
         overflow-wrap: anywhere;
       }
+      /* What the ingest could and could not read, per bundled document. Sits
+         ABOVE the counts, because a count read without it is read wrong. Same
+         muted-italic register as the "Also checked" line, so a card reads as
+         one thing; the list marker keeps multiple notices legible. */
+      .multi-doc-card-notices {
+        margin: 4px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        font-size: 12px;
+        font-style: italic;
+        overflow-wrap: anywhere;
+      }
+      .multi-doc-card-notices li + li {
+        margin-top: 2px;
+      }
       .multi-doc-card-actions {
         display: flex;
         gap: 12px;
