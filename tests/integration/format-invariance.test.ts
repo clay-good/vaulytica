@@ -275,6 +275,25 @@ describe("format is not load-bearing", () => {
       (t: string): string => t.replace(/(\d)\s*-\s*(\d)/g, "$1\u2212$2"),
       80,
     ],
+    // Unicode's own name for U+002D is HYPHEN-MINUS and for U+2010 is HYPHEN:
+    // the same character, and only one of them is on a keyboard. A PDF text
+    // layer emits U+2010 routinely; Word inserts U+2011 wherever a compound
+    // must not break across a line. So "non-disclosure", "third-party" and
+    // "co-employment" arrive spelled with a character no recognizer contains.
+    // The loudest effect was a false POSITIVE — FIN-001 fired on 75 of 285,
+    // because a hyphen it could not read broke the number it was reading —
+    // and one specimen re-routed outright. Folded in `normalize.ts` beside
+    // the minus sign that was already there.
+    [
+      "the HYPHEN a PDF emits between letters",
+      (t: string): string => t.replace(/(?<=[A-Za-z])-(?=[A-Za-z])/g, "\u2010"),
+      250,
+    ],
+    [
+      "the NON-BREAKING HYPHEN Word inserts in a compound",
+      (t: string): string => t.replace(/(?<=[A-Za-z])-(?=[A-Za-z])/g, "\u2011"),
+      250,
+    ],
     ["the numero sign", (t: string): string => t.replace(/\bNo\.\s*(?=\d)/g, "\u2116 "), 30],
     [
       // The page number a PDF paste carries, in the place it actually falls:

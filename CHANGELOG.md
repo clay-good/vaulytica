@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.435.0] — 2026-09-05
+
+### Fixed
+- **The hyphen a PDF actually emits.** Unicode's own name for U+002D is
+  HYPHEN-MINUS and for U+2010 is HYPHEN: they are the same character, and only
+  one of them is on a keyboard. A PDF text layer emits U+2010 routinely, and
+  Word inserts U+2011 NON-BREAKING HYPHEN wherever a compound must not break
+  across a line — so "non-disclosure", "third-party", "arm's-length" and
+  "co-employment" reach the engine spelled with a character no recognizer in
+  the catalog contains.
+
+  Rewriting the corpus with U+2010 between letters moved a finding on a third
+  of the 285 specimens and re-routed one outright. Its loudest effect was a
+  false POSITIVE: **FIN-001 fired on 75 of 285** — a hyphen it could not read
+  broke the number it was reading — and a dozen rules went silent, PERS-001,
+  PERS-002 and DARK-002 among them.
+
+  Both are folded to `-` in `normalize.ts`, on the same line as the MINUS SIGN
+  (U+2212) that was already folded there for exactly this reason. This is the
+  curly-apostrophe defect of an earlier session one character over, and the
+  same argument settles it: the distinction is presentational, the fold costs
+  nothing, and the fixtures are all hand-typed with the keyboard character so
+  no test could have seen it. `format-invariance` now carries both transforms,
+  and the whole divergence goes to zero under them.
+
 ## [9.434.0] — 2026-09-05
 
 ### Changed

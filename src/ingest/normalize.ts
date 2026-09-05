@@ -120,13 +120,27 @@ export function normalize(tree: DocumentTree): DocumentTree {
         //    "Ｓｅｃｔｉｏｎ". 182 of 290 specimens moved a finding when the
         //    corpus was rewritten with fullwidth parentheses alone — the
         //    widest of all of them. The offset is a fixed 0xFEE0.
+        //  - HYPHEN (U+2010) and NON-BREAKING HYPHEN (U+2011), alongside the
+        //    MINUS SIGN (U+2212) that was already folded here. Unicode's own
+        //    name for U+002D is HYPHEN-MINUS and for U+2010 is HYPHEN: they
+        //    are the same character, and only one of them is on a keyboard. A
+        //    PDF text layer emits U+2010 routinely and Word inserts U+2011
+        //    wherever a compound must not break across a line, so "non-
+        //    disclosure", "third-party", "arm's-length" and "co-employment"
+        //    arrive spelled with a character no recognizer in the catalog
+        //    contains. Rewriting the corpus with U+2010 between letters moved
+        //    a finding on a THIRD of the specimens and re-routed one outright,
+        //    and its loudest effect was a false positive: FIN-001 fired on 75
+        //    of 285, because a hyphen it could not read broke the number it
+        //    was reading. This is the apostrophe defect of the last session
+        //    one character over.
         //  - MINUS SIGN (U+2212), which a PDF emits for the hyphen in a range:
         //    "30−60 days", "Sections 5−9".
         //  - NUMERO (U+2116) for "No.", as in "Statement of Work № 4".
         //  - ROMAN NUMERAL FORMS (U+2160-216F) for "Article Ⅶ". A document
         //    that numbers its articles this way had no articles at all.
         .replace(/[\uFF01-\uFF5E]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
-        .replace(/\u2212/g, "-")
+        .replace(/[\u2010\u2011\u2212]/g, "-")
         .replace(/\u2116/g, "No.")
         .replace(/[\u2160-\u216F]/g, (c) => ROMAN_NUMERAL_FORMS[c.charCodeAt(0) - 0x2160] ?? c)
         // A FOOTNOTE MARKER. A PDF puts one inline — "…as set out below.¹" —
