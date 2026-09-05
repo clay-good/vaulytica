@@ -30,6 +30,7 @@
  */
 
 import { expressDenial } from "../../_helpers.js";
+import { INSTRUMENT_NOUN_I } from "../../../../extract/instrument-kinds.js";
 import type { Finding, Rule, RuleContext } from "../../../finding.js";
 import { makeFinding } from "../../../finding.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
@@ -354,7 +355,14 @@ export const MSA_DEEP_RULES: Rule[] = [
       // That is the same list, stated as an unlimitable floor rather than as
       // an exception to a ceiling, and the branch above wants the noun "cap"
       // or "limitation" where this uses the verb.
-      /nothing\s+in\s+this\s+agreement\s+(?:limits?|excludes?|restricts?)[^.]{0,220}?(fraud|death\s+or\s+personal\s+injury|cannot\s+lawfully\s+be|wil[l]?ful\s+misconduct)/is,
+      // "this agreement" is whatever the file calls itself — a Contract, an
+      // Order Form, a Statement of Work. The unlimitable-floor clause is a
+      // English-drafting convention, and English drafting is exactly where
+      // the instrument is least likely to be called an Agreement.
+      new RegExp(
+        String.raw`nothing\s+in\s+this\s+(?:${INSTRUMENT_NOUN_I})\s+(?:limits?|excludes?|restricts?)[^.]{0,220}?(fraud|death\s+or\s+personal\s+injury|cannot\s+lawfully\s+be|wil[l]?ful\s+misconduct)`,
+        "is",
+      ),
       /supercap\b/i,
     ],
     default_severity: "warning",

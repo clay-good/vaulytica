@@ -181,8 +181,19 @@ export const DPA_GDPR_RULES: Rule[] = [
       // processing to the agreement's term: "the duration is the term of the
       // Agreement and the ninety (90) days after it". Nothing above reads a
       // duration stated that way.
-      /\bduration\b[^.]{0,60}?\b(?:is|shall\s+be|will\s+be|must\s+be)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|dpa|addendum)/i,
-      /(?:for|during)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:agreement|dpa|addendum)[^.]{0,80}?\bprocess/i,
+      // The parent instrument is named by whatever noun its file uses, and
+      // pointing AT the parent is right here — a DPA's processing duration is
+      // tied to the term of the agreement it hangs off. (Contrast DPA-045,
+      // where only a SELF-reference will do.) `agreement|dpa|addendum` missed
+      // every deal papered as a Contract, a Lease or an Order Form.
+      new RegExp(
+        String.raw`\bduration\b[^.]{0,60}?\b(?:is|shall\s+be|will\s+be|must\s+be)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:${INSTRUMENT_NOUN_I}|dpa)`,
+        "i",
+      ),
+      new RegExp(
+        String.raw`(?:for|during)\s+the\s+term\s+of\s+(?:the\s+|this\s+)?(?:${INSTRUMENT_NOUN_I}|dpa)[^.]{0,80}?\bprocess`,
+        "i",
+      ),
     ],
   }),
   presence({

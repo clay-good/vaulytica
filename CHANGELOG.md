@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.448.0] — 2026-09-05
+
+### Fixed
+- **DPA-002 and MSA-007**, the same defect twice more. DPA-002 read
+  `(?:agreement|dpa|addendum)` where a DPA ties its processing duration to the
+  parent's term; MSA-007 read `nothing\s+in\s+this\s+agreement\s+
+  (?:limits?|excludes?)`, the English unlimitable-floor clause — and English
+  drafting is exactly where the instrument is least likely to be called an
+  Agreement. Both now read `INSTRUMENT_NOUN`.
+
+  Note the two rules want OPPOSITE things from the article before the noun,
+  which is why one shared list is not one shared pattern: DPA-045 needs a
+  SELF-reference ("this"), because a DPA states its own term; DPA-002 must
+  accept "the", because a DPA's duration legitimately points at the parent
+  instrument.
+
+### Changed
+- `defined-term-naming` now asserts its GAINS as well as its losses, because
+  the set is finally characterized: exactly two remain, and both are the
+  rewrite breaking a **term of art** rather than the engine misreading a
+  clause. `ucc-1.txt` BNK-050 keys on "security agreement" — the Uniform
+  Commercial Code's own words (§ 9-102(a)(74)) — and `stock-purchase.txt`
+  EQT-135 on "ancillary agreements", a defined concept of a purchase
+  agreement. Neither is what the instrument calls itself. Asserted by
+  equality, so a third gain fails and a repair must be recorded.
+
 ## [9.447.0] — 2026-09-05
 
 ### Added

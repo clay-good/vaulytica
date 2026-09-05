@@ -153,4 +153,27 @@ describe("a defined term is whatever the drafter called it", () => {
       `these rules stopped reading a clause when the instrument renamed itself:\n  ${silenced.join("\n  ")}`,
     ).toEqual([]);
   }, 600_000);
+
+  it("gains only where the rename broke a term of art", async () => {
+    const deps = await loadAccuracyDeps({});
+    const gained: string[] = [];
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = text.replace(/\bAgreement\b/g, "Contract");
+      if (mutated === text) continue;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const b = ids(before);
+      for (const id of ids(after).filter((x) => !b.includes(x))) {
+        // STRUCT-006 reports a Title-Case term the document never defines,
+        // so ANY rename manufactures one by construction — it measures the
+        // rewrite, not the engine.
+        if (id === "STRUCT-006") continue;
+        gained.push(`${name}: ${id}`);
+      }
+    }
+    expect(gained.sort()).toEqual(["stock-purchase.txt: EQT-135", "ucc-1.txt: BNK-050"]);
+  }, 600_000);
 });
