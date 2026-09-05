@@ -78,10 +78,21 @@ const SPECIMENS = readdirSync(DIR).filter((f) => f.endsWith(".txt"));
  * addendum that says "Consultant" is not the same instrument — the same
  * term-of-art trap as "security agreement" and "Effective Date".
  */
-const ROLE_RENAME: readonly [label: string, from: RegExp, to: string] = [
-  "Customer → Client",
-  /\bCustomer\b/g,
-  "Client",
+const ROLE_RENAMES: ReadonlyArray<readonly [label: string, from: RegExp, to: string]> = [
+  ["Customer → Client", /\bCustomer\b/g, "Client"],
+  // A net lease is drafted "Lessor"/"Lessee" at least as often as
+  // "Landlord"/"Tenant", and nine recognizers in the tree already spell both.
+  // The ones that did not: RE-102 read a sublease's "Lessor's prior written
+  // consent" as no consent condition at all, and RE-001 could not find the
+  // Lessee's share of taxes in a triple-net lease.
+  ["Landlord → Lessor", /\bLandlord\b/g, "Lessor"],
+  ["Tenant → Lessee", /\bTenant\b/g, "Lessee"],
+  // An executive employment agreement says "Executive" throughout. EMP-101
+  // wanted "the Company and the Employee ... agree" as its proof that the duty
+  // to arbitrate is MUTUAL, so an executive agreement that is mutual on its
+  // face drew the CRITICAL one-sided-arbitration finding — the single most
+  // common ground for refusing to enforce the clause.
+  ["Employee → Executive", /\bEmployee\b/g, "Executive"],
 ];
 
 /** Renames that carry a term across without changing what it is. */
@@ -174,27 +185,29 @@ describe("a defined term is whatever the drafter called it", () => {
     ).toEqual([]);
   }, 600_000);
 
-  it("renaming the Customer to the Client changes no finding", async () => {
+  it("renaming a party role changes no finding", async () => {
     const deps = await loadAccuracyDeps({});
-    const [, from, to] = ROLE_RENAME;
     const broken: string[] = [];
     let probed = 0;
-    for (const name of SPECIMENS) {
-      const text = readFileSync(join(DIR, name), "utf8");
-      const mutated = text.replace(from, to);
-      if (mutated === text) continue;
-      probed++;
-      const before = await analyzeText(text, name, { deps });
-      const after = await analyzeText(mutated, name, { deps });
-      const ids = (r: typeof before): string[] =>
-        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
-      const lost = ids(before).filter((id) => !ids(after).includes(id));
-      const gained = ids(after).filter((id) => !ids(before).includes(id));
-      if (lost.length || gained.length) {
-        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+    for (const [label, from, to] of ROLE_RENAMES)
+      for (const name of SPECIMENS) {
+        const text = readFileSync(join(DIR, name), "utf8");
+        const mutated = text.replace(from, to);
+        if (mutated === text) continue;
+        probed++;
+        const before = await analyzeText(text, name, { deps });
+        const after = await analyzeText(mutated, name, { deps });
+        const ids = (r: typeof before): string[] =>
+          [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+        const lost = ids(before).filter((id) => !ids(after).includes(id));
+        const gained = ids(after).filter((id) => !ids(before).includes(id));
+        if (lost.length || gained.length) {
+          broken.push(
+            `${label} — ${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`,
+          );
+        }
       }
-    }
-    expect(probed, "no specimen names a Customer").toBeGreaterThan(10);
+    expect(probed, "no specimen names a party by role").toBeGreaterThan(40);
     expect(broken).toEqual([]);
   }, 600_000);
 

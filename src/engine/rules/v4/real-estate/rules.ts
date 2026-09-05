@@ -77,12 +77,12 @@ const NET_LEASE_RULES: Rule[] = [
       // A net lease's additional-rent clause does not call itself "triple
       // net" — the LEASE might, in its title. What the clause carries is the
       // additional-rent label and the tenant's share.
-      /(triple.net|\bnnn\b|additional\s+rent|(?:proportionate|pro\s+rata|tenant['’]?s?)\s+share)/i,
+      /(triple.net|\bnnn\b|additional\s+rent|(?:proportionate|pro\s+rata|(?:tenant|lessee)['’]?s?)\s+share)/i,
       // Either order. "TENANT shall pay all real estate taxes" is at least as
       // common as "real estate taxes ... payable by Tenant", and the
       // one-directional form flagged the standard drafting once the pillars
       // were conjoined.
-      /(real\s+estate\s+taxes?.{0,80}tenant|tenant.{0,80}real\s+estate\s+taxes?)/is,
+      /(real\s+estate\s+taxes?.{0,80}(?:tenant|lessee)|(?:tenant|lessee).{0,80}real\s+estate\s+taxes?)/is,
       // The third pillar demanded CAM / operating expenses — the MULTITENANT
       // vocabulary — from a family named "Single-Tenant Net Lease". An
       // absolute net lease has no common area and no landlord-billed expense
@@ -1401,7 +1401,7 @@ const LEASE_ASSIGNMENT_RULES: Rule[] = [
     explanation:
       "Without consent the assignment may breach the lease and trigger landlord remedies.",
     recommendation: "Add 'Landlord Consent' clause or landlord joinder signature block.",
-    present_patterns: [/landlord(.s)?\s+consent/i, /consent\s+to\s+assignment/i],
+    present_patterns: [/(?:landlord|lessor)(.s)?\s+consent/i, /consent\s+to\s+assignment/i],
   }),
   presence({
     id: "RE-056",

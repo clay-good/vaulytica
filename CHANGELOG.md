@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.450.0] — 2026-09-05
+
+### Fixed
+- **Four more rules read one role name where two are interchangeable.** A net
+  lease is drafted "Lessor"/"Lessee" at least as often as "Landlord"/"Tenant",
+  and nine recognizers in the tree already spelled both:
+  - **RE-102** read a sublease's "Lessor's prior written consent" as no
+    landlord-consent condition at all — the condition precedent the rule
+    exists to find.
+  - **RE-055**, the same clause on an assignment.
+  - **RE-001** could not find the Lessee's share of taxes in a triple-net
+    lease, so the economic essence of the instrument read as absent.
+  - **EMP-101** wanted "the Company and the Employee … agree" as its proof
+    that the duty to arbitrate is MUTUAL. An executive employment agreement
+    says "Executive" throughout, so one that is mutual on its face drew the
+    **critical** one-sided-arbitration finding — the single most common ground
+    for refusing to enforce an arbitration clause. EMP-102's EFAA carve-out
+    ("at the Executive's election") went with it.
+
+  Measured exposure for the next pass, per-site judgment required rather than
+  a sweep: 8 recognizers name landlord and not lessor, 28 tenant and not
+  lessee, and 56 employee and not executive — the last needing care, since a
+  rule about an employee handbook should not blanket-match an executive.
+
 ## [9.449.0] — 2026-09-05
 
 ### Fixed
@@ -34,9 +58,9 @@ All notable changes to this project will be documented in this file. Format adap
   agreed — TERM-009, DARK-003, DARK-006 and CHOICE-010 — and **not one of the
   four contained "Client"**. `you` is deliberately excluded: it is DARK-003's
   consumer-terms voice, not a role noun.
-- `defined-term-naming` gains the role relation, asserted at zero movement.
-  Contractor → Consultant is deliberately NOT probed: under the FAR,
-  "Contractor" is the regulation's own word for the party.
+- `defined-term-naming` gains the role relation, asserted at zero movement
+  over four renames. Contractor → Consultant is deliberately NOT probed: under
+  the FAR, "Contractor" is the regulation's own word for the party.
 
 ### Changed
 - Two specimens gained a finding, both verified true before baselining:

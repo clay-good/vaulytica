@@ -38,7 +38,7 @@ const SUBLEASE = pack("sublease-agreement", C, [
       // "the written consent of Master Landlord" — the genitive reversed. The
       // adjacency-only pattern reported a sublease whose section is headed
       // "Consent of Master Landlord" as having no such clause at all.
-      /landlord['’]?s?\s+(?:prior\s+)?(?:written\s+)?consent|consent\s+of\s+(?:the\s+)?(?:master\s+|prime\s+|over\s*)?landlord/i,
+      /(?:landlord|lessor)['’]?s?\s+(?:prior\s+)?(?:written\s+)?consent|consent\s+of\s+(?:the\s+)?(?:master\s+|prime\s+|over\s*)?(?:landlord|lessor)/i,
       /(condition\s+precedent|(?:shall|will|must)\s+not\s+be\s+effective\s+until|if\s+consent\s+is\s+not\s+obtained)/i,
     ],
     why: "Nearly every commercial lease forbids subletting without consent, and a sublease made without it is a default that can terminate the prime lease — taking the sublease with it.",

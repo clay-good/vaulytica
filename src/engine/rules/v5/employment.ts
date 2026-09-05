@@ -18,7 +18,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     name: "Mutuality of the obligation to arbitrate",
     cite: practice("arbitration-mutuality", "mutuality as a substantive unconscionability factor"),
     pat: [
-      /(both\s+part(ies|y)\s+(agree|(?:shall|will)|must)|mutually\s+agree\s+to\s+arbitrat|the\s+(company|employer)\s+and\s+(the\s+)?employee\s+(each\s+)?agree)/i,
+      /(both\s+part(ies|y)\s+(agree|(?:shall|will)|must)|mutually\s+agree\s+to\s+arbitrat|the\s+(company|employer)\s+and\s+(the\s+)?(employee|executive)\s+(each\s+)?agree)/i,
       /arbitrat/i,
     ],
     all: true,
@@ -36,7 +36,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     ),
     pat: [
       /(sexual\s+(harassment|assault))/i,
-      /(at\s+the\s+(employee['’]?s?|claimant['’]?s?)\s+(election|option)|(?:shall|will|must)\s+not\s+(be\s+subject\s+to|apply)|9\s+u\.?s\.?c\.?\s*§?\s*40[12]|ending\s+forced\s+arbitration)/i,
+      /(at\s+the\s+(employee['’]?s?|executive['’]?s?|claimant['’]?s?)\s+(election|option)|(?:shall|will|must)\s+not\s+(be\s+subject\s+to|apply)|9\s+u\.?s\.?c\.?\s*§?\s*40[12]|ending\s+forced\s+arbitration)/i,
     ],
     why: "Since March 2022, 9 U.S.C. § 402 makes a pre-dispute arbitration agreement unenforceable at the claimant's election for sexual harassment and sexual assault disputes. An agreement that does not reflect it is drafting to a rule that no longer exists.",
     fix: "Add an express carve-out stating that claims of sexual harassment or sexual assault are arbitrable only at the employee's election, consistent with 9 U.S.C. §§ 401-402.",
