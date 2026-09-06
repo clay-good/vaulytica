@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.463.0] — 2026-09-05
+
+### Added
+- **The critical-dates register is now guarded against presentation.**
+  `format-invariance.test.ts` proves the FINDINGS survive every fold a PDF
+  paste, a Word export or a mail client applies, and said nothing about the
+  register — a second published surface with its own `critical_dates_hash`, and
+  the one most exposed to those folds, since it is where dates live. Two
+  extractor defects fixed this session were invisible to a findings-level diff
+  and obvious against the register.
+
+  Eight folds hold on every specimen: CRLF, fullwidth parentheses, the PDF
+  hyphen and minus sign, PDF ligatures, Word smart quotes, one sentence per
+  line, and the numero sign.
+
+### Not fixed, and measured
+- **Double-spacing moves two specimens' registers**, and the reason is
+  structural: a blank line between every line is a paragraph break, and
+  `classifyDeadline` reads the PARAGRAPH around a reference to choose the
+  deadline's family. Split the paragraph and the word that named the family is
+  no longer beside the date. The obvious repair — fall back to the SECTION when
+  the paragraph yields nothing — widens the window for every entry in the
+  corpus, so a cure clause five paragraphs away would name a family it has
+  nothing to do with. That is a change to what the register says about every
+  document, which is a product decision and not a fold of presentation.
+  Recorded by equality.
+
 ## [9.462.0] — 2026-09-05
 
 ### Fixed
