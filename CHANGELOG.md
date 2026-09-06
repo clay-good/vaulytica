@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.492.0] — 2026-09-06
+
+### Added
+- **`tests/integration/presence-rule-satisfiable.test.ts` — every presence rule
+  must be able to report the absence it exists to report.** 899 rules are built
+  through the `presence()` helper. The failure this guards is the quietest in
+  the tree: a pattern broad enough to match anything makes its rule satisfied by
+  every document, so the rule runs on every specimen, produces nothing, and is
+  indistinguishable from a rule whose clause is genuinely always present. It is
+  the unsatisfiable-`required_clauses` defect of session 22 seen from the other
+  side — there a rule could never PASS, here it can never FIRE.
+
+  The probe is the simplest possible: a document with no legal content at all.
+  Every presence rule must fire on it. Verified by widening one pattern to match
+  anything and watching the failure name the rule.
+
+  **The exceptions are not hand-written**, which is the point.
+  `buildV4PresenceRule` already records every rule that declares
+  `applicable_if` in `V4_GATED_PRESENCE_RULE_IDS` as it builds it, so the
+  exemption cannot drift from the rules it describes — and a second case
+  asserts that set is non-empty, since an empty one would exempt nothing today
+  and everything the moment a conditional rule was added. 26 rules are
+  conditional and correctly silent: Reg Z governs consumer credit only, the
+  OWBPA disclosure applies to group terminations, DGCL § 141(f) governs board
+  consents.
+
+### Changed
+- **Measured and deliberately not changed: `present_patterns` are satisfied by
+  ANY ONE match.** `require_all_present` defaults to false, so of 559
+  multi-pattern presence rules, **151 carry a name that is a conjunction** —
+  "Maker, payee, and principal amount", "Default + acceleration",
+  "Signature + date + statutory form recital" — and are satisfied by any single
+  element. Requiring all of them would be the obvious change and the wrong one:
+  a presence rule's false NEGATIVE is a missed absence, while its false
+  POSITIVE is a confident accusation that a clause the document plainly
+  contains is missing. The disjunctive default is the conservative direction
+  for an engine whose whole posture is never to be confidently wrong, and
+  flipping 151 rules would manufacture exactly the findings the false-positive
+  campaigns exist to remove.
+
+  Recorded because the mismatch between a conjunctive NAME and a disjunctive
+  test looks like a bug on every reading until someone measures the cost of
+  "fixing" it.
+
 ## [9.491.0] — 2026-09-06
 
 ### Added
