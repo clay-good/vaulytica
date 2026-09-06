@@ -2552,3 +2552,59 @@ describe("a definiendum that TRAILS its definition", () => {
     expect(d.entries.map((e) => e.term)).not.toContain("Fair Market Value");
   });
 });
+
+/**
+ * A term is the same term whichever apostrophe it carries.
+ *
+ * Word writes the curly apostrophe and a clause pasted from anywhere else
+ * carries the straight one, so a real document mixes them routinely — and the
+ * two spellings are one term. Matched literally, a definition written
+ * "Sellers' Representative" against a body that writes "Sellers’
+ * Representative" recorded `used_at: []`, and `report/definitions.ts` says of
+ * an empty `used_at`: **"defined but never used"** — about a term the document
+ * uses twice.
+ *
+ * Found by diffing the extracted defined-TERMS across the corpus under the
+ * five format transforms: the smart-quotes transform moved `earnout.txt` and
+ * `escrow-agreement-indemnity.txt` from "Sellers' Representative" to
+ * "Sellers’ Representative", which is the same defect seen from the outside.
+ */
+describe("extractDefinitions — either apostrophe is the same term", () => {
+  const CASES: Array<[label: string, def: string, use: string]> = [
+    ["both straight", "'", "'"],
+    ["both curly", "’", "’"],
+    ["definition straight, use curly", "'", "’"],
+    ["definition curly, use straight", "’", "'"],
+  ];
+
+  for (const [label, def, use] of CASES) {
+    it(`records the use when the ${label}`, () => {
+      const tree = buildTree([
+        "Definitions",
+        `"Sellers${def} Representative" means Rowan Delacroix, acting as agent for the Sellers.`,
+        "Escrow",
+        `The Escrow Agent shall act on instruction of the Sellers${use} Representative.`,
+      ]);
+      const defs = extractDefinitions(tree);
+      const entry = defs.entries.find((e) => /Representative/.test(e.term));
+      expect(entry, "the term was not extracted at all").toBeTruthy();
+      expect(
+        entry!.used_at.length,
+        "an empty used_at is reported to the user as 'defined but never used'",
+      ).toBeGreaterThan(0);
+    });
+  }
+
+  it("still does not match a different term that merely shares a prefix", () => {
+    // The apostrophe class must not widen the match to a neighbouring term.
+    const tree = buildTree([
+      "Definitions",
+      '"Sellers’ Representative" means Rowan Delacroix.',
+      "Other",
+      "The Sellers Committee shall meet quarterly.",
+    ]);
+    const defs = extractDefinitions(tree);
+    const entry = defs.entries.find((e) => /Representative/.test(e.term));
+    expect(entry!.used_at).toHaveLength(0);
+  });
+});

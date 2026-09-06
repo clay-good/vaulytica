@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.493.0] — 2026-09-06
+
+### Fixed
+- **"Defined but never used", about a term the document uses twice.** The
+  defined-term usage matcher built plural, singular and article-less variants
+  of each term and then matched the apostrophe **literally**. Word writes the
+  curly apostrophe and a clause pasted from anywhere else carries the straight
+  one, so a real document mixes them routinely — and a definition written
+  `"Sellers' Representative"` against a body that writes `Sellers’
+  Representative` recorded `used_at: []`. `report/definitions.ts` reads an
+  empty `used_at` as **"defined but never used"** and says so to the user.
+
+  Both spellings now match, wherever a term carries an apostrophe. Neither
+  character is a regex metacharacter, so the rewrite is safe after escaping,
+  and a case pins that the widened class does not reach a neighbouring term
+  that merely shares a prefix.
+
+  Found by diffing the extracted defined-TERMS across all 312 specimens under
+  five format transforms — a surface no relation had compared. The smart-quotes
+  transform moved `earnout.txt` and `escrow-agreement-indemnity.txt` from
+  "Sellers' Representative" to "Sellers’ Representative", which is this defect
+  seen from the outside.
+
+  Zero golden churn — no specimen mixes the two spellings today, which is
+  exactly why the fix carries its own four cases, two of which fail without it.
+
 ## [9.492.0] — 2026-09-06
 
 ### Added

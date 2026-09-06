@@ -947,7 +947,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       bare ? regularPlural(bare) : undefined,
       bare ? regularSingular(bare) : undefined,
     ].filter((v): v is string => !!v && v !== entry.term);
-    const alternatives = [entry.term, ...new Set(variants)].map(escapeRegExp).join("|");
+    // Either apostrophe, wherever a term carries one. Word writes the curly
+    // one and a pasted clause carries the straight one, so a document mixes
+    // them routinely — and the two spellings are the same term. Matched
+    // literally, a definition written "Sellers' Representative" against a body
+    // that writes "Sellers’ Representative" recorded `used_at: []`, and the
+    // definitions report says of that: "defined but never used", about a term
+    // the document uses twice. Neither apostrophe is a regex metacharacter, so
+    // this rewrite is safe after escaping.
+    const alternatives = [entry.term, ...new Set(variants)]
+      .map((v) => escapeRegExp(v).replace(/['’]/g, "['’]"))
+      .join("|");
     const needle = new RegExp(`\\b(?:${alternatives})\\b`, "g");
     forEachParagraph(tree, (ctx) => {
       // Skip the definition itself. For an express definition that is the
