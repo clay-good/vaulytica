@@ -666,14 +666,30 @@ describe("a finding's quote is really in the document", () => {
  * What the list below costs, and why it is not shorter. A compound used
  * EXACTLY ONCE and broken at its own hyphen leaves no evidence at all:
  * "non-renewal" in a distribution agreement that says "renewal" nowhere else
- * is, on the evidence available, identical to "responsibili-ty". Two further
- * rules were tried and measured, and both cost more than they paid — a TAIL
- * test ("a syllable break's tail is a suffix, not a word") cleared 20 of these
- * 21 and joined an engagement letter's "electronic-discovery" into
+ * is, on the evidence available, identical to "responsibili-ty". THREE further
+ * rules were tried and measured, and all three cost more than they paid — a
+ * TAIL test ("a syllable break's tail is a suffix, not a word") cleared 20 of
+ * these 21 and joined an engagement letter's "electronic-discovery" into
  * "electronicdiscovery", turning a green invariant above red; a HEAD test
  * needs a dictionary to know "electronic" is a word when the document never
- * uses it alone. Recorded rather than guessed at, exactly as the superscript
- * digits are.
+ * uses it alone.
+ *
+ * The third was the document's own WRAP GEOMETRY — count the end-of-line
+ * hyphens and the clustering of line lengths, conclude the document is
+ * machine-wrapped, and treat a break at the dominant width as the wrapper's.
+ * It is the right KIND of evidence (the document itself, never a table of
+ * English) and it still does not work, for a reason worth writing down:
+ * knowing a document is wrapped does not tell you which of ITS hyphens are the
+ * wrapper's. A real compound that lands on the boundary is indistinguishable,
+ * so the rule reproduces the TAIL test's exact failure on
+ * "electronic-discovery" while adding a document-level judgment that can
+ * itself be wrong. Measured besides: the margin is thin — the natural corpus
+ * clusters at most 0.167 of its lines near the modal width against 0.231 for
+ * the wrapped one — and NO specimen carries a single end-of-line hyphen
+ * naturally, so there is nothing here to calibrate a threshold against a
+ * document that is hand-authored and narrow.
+ *
+ * Recorded rather than guessed at, exactly as the superscript digits are.
  *
  * The list may only SHRINK, and it is asserted by equality — a new divergence
  * fails, and so does a repair that is not recorded. The expensive entry is

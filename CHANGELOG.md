@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.486.0] — 2026-09-06
+
+### Changed
+- **A third rule for the hyphenation resolver, tried and rejected: the
+  document's own WRAP GEOMETRY.** Count the end-of-line hyphens and the
+  clustering of line lengths, conclude the document is machine-wrapped, and
+  treat a break at the dominant width as the wrapper's. It is the right *kind*
+  of evidence — the document itself, never a table of English — and it still
+  does not work, for a reason worth writing down: **knowing a document is
+  wrapped does not tell you which of its hyphens are the wrapper's.** A real
+  compound that lands on the boundary is indistinguishable, so the rule
+  reproduces the TAIL test's exact failure on "electronic-discovery" while
+  adding a document-level judgment that can itself be wrong.
+
+  Measured besides, before writing any of it: the margin is thin — the natural
+  corpus clusters at most **0.167** of its lines near the modal width against
+  **0.231** for the wrapped one — and **no specimen carries a single
+  end-of-line hyphen naturally**, so there is nothing in the corpus to
+  calibrate a threshold against a document that is hand-authored and narrow.
+
+  Recorded beside the other two rejected rules so the next session does not
+  build it. Behaviour unchanged, zero golden churn.
+
 ## [9.485.0] — 2026-09-06
 
 ### Changed
