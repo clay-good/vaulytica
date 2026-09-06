@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.475.0] — 2026-09-06
+
+### Added
+- **The closing checklist reaches SARIF — as a roll-up, not a second copy.**
+  `V9Surfaces` is the one optional bundle the DOCX, HTML and SARIF builders
+  accept, and its own doc comment promises "the same three surfaces render
+  everywhere the report does". Two of the three did. Thrust B — the checklist
+  that says what is left to do before signing — was declared on the bundle,
+  rendered by DOCX and HTML, and read by SARIF nowhere.
+
+  The gap was invisible from both ends. The type compiles whether or not a
+  builder destructures the field, and the bundle spells it `closingChecklist`
+  where the JSON payload spells it `closing_checklist` — so a grep for either
+  spelling reports the other as present, which is how the absence survived a
+  surface-gap sweep that was looking for exactly this.
+
+  The fix is deliberately NOT the obvious one. Every checklist item
+  re-projects a rule the SARIF already emits — the `STRUCT-*` readiness
+  findings as engine results, `HANDOFF-001/002` as delivery results — so
+  emitting the body again would double-count in the one surface where a count
+  decides whether a build fails. The original omission was correct about that
+  and the docs said so. What was actually missing is the roll-up: a pipeline
+  could see the individual results but had no way to learn that N of them were
+  the execution-readiness set, or which category each fell in, without
+  hardcoding a rule list that lives in `closing-checklist.ts` and moves.
+
+  So the run now carries `properties.readiness` — `open_count` plus the
+  per-category breakdown — and each result that *is* a checklist item carries
+  a `readiness` category tag. Result and rule counts are unchanged, asserted
+  directly; a run without `--checklist` produces byte-identical SARIF, and the
+  golden regen after the version bump shows zero semantic lines.
+
+- **`tests/integration/v9-surface-reach.test.ts`** — the ratchet that would
+  have caught it. Every field of `V9Surfaces` must be read by all three
+  builders, or be DECLARED with a reason, and a declared exception matching
+  nothing fails too, so a stale entry cannot outlive its cause. The set is
+  empty: the one entry it was written to hold was fixed instead of declared.
+  A second case proves the guard fails on the real shape of the defect rather
+  than passing vacuously.
+
 ## [9.474.0] — 2026-09-06
 
 ### Fixed

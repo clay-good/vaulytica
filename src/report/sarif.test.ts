@@ -352,3 +352,86 @@ describe("SARIF input notices", () => {
     expect(a).toBe(b);
   });
 });
+
+/**
+ * Thrust B in SARIF: the roll-up, and no second copy of anything.
+ *
+ * The checklist is a re-projection of results the SARIF already carries, so
+ * duplicating it would double-count in the one surface where a count decides
+ * whether a build fails. These assert the shape that avoids that: run-level
+ * `properties.readiness`, a `readiness` tag on the results that ARE checklist
+ * items, and — the load-bearing one — an unchanged result COUNT.
+ */
+describe("buildSarif — v9 Thrust B (the closing checklist roll-up)", () => {
+  const checklist = {
+    items: [
+      {
+        category: "signature" as const,
+        rule_id: "STRUCT-003",
+        label: "No signature block",
+        section: "s9",
+      },
+      {
+        category: "blank" as const,
+        rule_id: "STRUCT-011",
+        label: "Unfilled placeholder",
+        section: "s2",
+      },
+      {
+        category: "handoff" as const,
+        rule_id: "HANDOFF-001",
+        label: "3 tracked changes still in the document",
+      },
+    ],
+    open_count: 3,
+  };
+  const r = run([
+    finding("f1", "STRUCT-003", "critical"),
+    finding("f2", "STRUCT-011", "warning"),
+    finding("f3", "GOV-001", "info"),
+  ]);
+
+  it("carries the open count and the per-category breakdown at run level", () => {
+    const log = buildSarif(r, { closingChecklist: checklist });
+    expect(log.runs[0]!.properties).toEqual({
+      playbook_id: "dpa",
+      readiness: {
+        open_count: 3,
+        by_category: { blank: 1, handoff: 1, signature: 1 },
+      },
+    });
+  });
+
+  it("tags the results that are checklist items, and only those", () => {
+    const log = buildSarif(r, { closingChecklist: checklist });
+    const tagged = Object.fromEntries(
+      log.runs[0]!.results.map((x) => [
+        x.ruleId,
+        (x.properties as Record<string, unknown>).readiness,
+      ]),
+    );
+    expect(tagged).toEqual({
+      "STRUCT-003": "signature",
+      "STRUCT-011": "blank",
+      "GOV-001": undefined,
+    });
+  });
+
+  it("adds no result — the checklist body is a projection, never a second copy", () => {
+    const without = buildSarif(r);
+    const with_ = buildSarif(r, { closingChecklist: checklist });
+    expect(with_.runs[0]!.results.length).toBe(without.runs[0]!.results.length);
+    expect(with_.runs[0]!.tool.driver.rules.length).toBe(without.runs[0]!.tool.driver.rules.length);
+  });
+
+  it("leaves a run with no checklist byte-identical", () => {
+    expect(buildSarifJson(r, {})).toBe(buildSarifJson(r));
+    expect(buildSarifJson(r, { closingChecklist: { items: [], open_count: 0 } })).toBe(
+      buildSarifJson(r),
+    );
+  });
+
+  it("stays SARIF 2.1.0 conformant with the roll-up present", () => {
+    expect(sarifConformanceViolations(buildSarif(r, { closingChecklist: checklist }))).toEqual([]);
+  });
+});

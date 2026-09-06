@@ -37,6 +37,33 @@ import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
 
+/**
+ * Thrust B (the closing checklist) in SARIF, WITHOUT duplicating a single
+ * result.
+ *
+ * Every checklist item is a re-projection of a rule the SARIF already emits —
+ * the `STRUCT-*` readiness findings as engine results, `HANDOFF-001/002` as
+ * delivery results — so emitting the checklist as its own results would
+ * double-count in exactly the surface where a count is load-bearing: a CI gate
+ * that fails on a threshold. That is why the checklist body is deliberately
+ * absent here and always will be.
+ *
+ * What was missing is the ROLL-UP. A pipeline reading the SARIF could see the
+ * individual results but had no way to learn that N of them are the
+ * execution-readiness set, or which category each belongs to, without
+ * hardcoding the rule list — a list that lives in `closing-checklist.ts` and
+ * moves. So the checklist arrives as run-level `properties.readiness` (the
+ * open count and the per-category counts) plus a `readiness` tag on the
+ * results that ARE checklist items. Same facts, no second copy.
+ *
+ * Gated on a non-empty checklist, so a run without `--checklist` produces the
+ * byte-identical SARIF it did before this existed.
+ */
+function readinessCategories(v9?: V9Surfaces): Map<string, string> {
+  const items = v9?.closingChecklist?.items ?? [];
+  return new Map(items.map((i) => [i.rule_id, i.category]));
+}
+
 /** Human label per derived-deadline family (Thrust C), for SARIF descriptors. */
 const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
   "auto-renewal-notice": "Auto-renewal notice deadline",
@@ -210,6 +237,10 @@ export function buildSarif(
   }));
   const rules = [...engineRules, ...handoffRules, ...dateRules, ...noticeRules, ...inputRules];
 
+  // Thrust B: which rule ids are execution-readiness items, so the results
+  // that already exist can be tagged instead of duplicated.
+  const readiness = readinessCategories(v9);
+
   const findingResults: SarifResult[] = run.findings.map((f) => {
     const idx = ruleIndex.get(f.rule_id)!;
     const helpUri = primaryHelpUri(f);
@@ -247,6 +278,7 @@ export function buildSarif(
         ...(helpUri ? { helpUri } : {}),
         ...(f.tier ? { tier: f.tier } : {}),
         ...(f.source ? { provenance: f.source } : {}),
+        ...(readiness.has(f.rule_id) ? { readiness: readiness.get(f.rule_id)! } : {}),
         citations,
       },
     };
@@ -256,7 +288,7 @@ export function buildSarif(
   // text offset — so no `region`, and the logicalLocation names the container.
   const deliveryHash = v9?.delivery?.delivery_hash ?? "";
   const handoffResults: SarifResult[] = handoff.map((f) =>
-    handoffResult(f, ruleIndex, run, deliveryHash),
+    handoffResult(f, ruleIndex, run, deliveryHash, readiness.get(f.rule_id)),
   );
 
   // DATE-* (Thrust C): computed deadlines, surfaced at "note" level (a date to
@@ -329,8 +361,23 @@ export function buildSarif(
     provenance.privacy_regimes = run.asserted_regimes;
   if (run.estate_checks_asserted) provenance.estate_checks = true;
   if (run.asserted_state) provenance.estate_state = run.asserted_state;
+  // Thrust B roll-up: the readiness count a CI gate would threshold on, and
+  // the per-category breakdown, without a second copy of any result. Sorted
+  // keys so the block is byte-deterministic.
+  const checklist = v9?.closingChecklist;
+  if (checklist && checklist.items.length > 0) {
+    const byCategory: Record<string, number> = {};
+    for (const item of [...checklist.items].sort((a, b) =>
+      a.category.localeCompare(b.category, "en"),
+    ))
+      byCategory[item.category] = (byCategory[item.category] ?? 0) + 1;
+    provenance.readiness = { open_count: checklist.open_count, by_category: byCategory };
+  }
   const hasProvenance =
-    run.filing_profile || run.asserted_regimes?.length || run.estate_checks_asserted;
+    run.filing_profile ||
+    run.asserted_regimes?.length ||
+    run.estate_checks_asserted ||
+    provenance.readiness !== undefined;
 
   return {
     $schema: SARIF_SCHEMA,
@@ -358,6 +405,7 @@ function handoffResult(
   ruleIndex: Map<string, number>,
   run: EngineRun,
   deliveryHash: string,
+  readiness?: string,
 ): SarifResult {
   return {
     ruleId: f.rule_id,
@@ -378,6 +426,7 @@ function handoffResult(
       severity: f.severity,
       count: f.count,
       evidence: f.evidence,
+      ...(readiness ? { readiness } : {}),
       surface: "delivery",
     },
   };

@@ -57,7 +57,11 @@ All three v9 surfaces now render in **every** report format, not just JSON:
 | Surface | JSON | DOCX | HTML | SARIF | Markdown | CSV | .ics | tab | CLI |
 |---|---|---|---|---|---|---|---|---|---|
 | Clean to Send (`HANDOFF-*`) | ✅ `delivery` | ✅ section | ✅ section | ✅ first-class results | — | — | — | ✅ | `--delivery` |
-| Ready to Sign (closing checklist) | ✅ `closing_checklist` | ✅ section | ✅ section | — (projection of existing results) | ✅ | ✅ | — | ✅ | `--checklist` |
+| Ready to Sign (closing checklist) | ✅ `closing_checklist` | ✅ section | ✅ section | ✅ roll-up + result tags | ✅ | ✅ | — | ✅ | `--checklist` |
 | Tracked to Its Dates (register) | ✅ `critical_dates` | ✅ section | ✅ section | ✅ `DATE-*` note results | ✅ | — | ✅ | ✅ | `--critical-dates` |
+
+**The checklist in SARIF is a roll-up, not a copy.** Every checklist item re-projects a rule the SARIF already emits — the `STRUCT-*` readiness findings as engine results, `HANDOFF-001/002` as delivery results — so emitting the body again would double-count in the one surface where a count decides whether a build fails. Instead the run carries `properties.readiness` (`open_count` plus the per-category breakdown) and each result that *is* a checklist item carries a `readiness` category tag. A CI pipeline can therefore threshold on readiness, and filter to the readiness set, without hardcoding a rule list that lives in `closing-checklist.ts` and moves. Result and rule counts are unchanged; a run without `--checklist` produces byte-identical SARIF.
+
+`tests/integration/v9-surface-reach.test.ts` asserts that every field of `V9Surfaces` is read by all three builders — the gap this closed was invisible from both ends, because the type compiles whether or not a builder reads the field and the bundle spells it `closingChecklist` where the JSON payload spells it `closing_checklist`.
 
 The DOCX, HTML, and SARIF builders take a single optional `V9Surfaces` bundle ([`src/report/v9-surfaces.ts`](../../src/report/v9-surfaces.ts)); each section renders only when its surface is non-empty, so a v8-era document with no handoff facts, no readiness gaps, and no derivable dates produces a byte-identical report. Everything is render-side — zero `result_hash` churn.
