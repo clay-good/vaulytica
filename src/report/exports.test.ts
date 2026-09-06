@@ -442,3 +442,43 @@ describe("citation completeness across action exports (spec-v8 §14, Step 140)",
     expect(csv).toContain(url);
   });
 });
+
+/**
+ * The fix list is what a reviewer pastes into a ticket, so it carries what the
+ * ingest could and could not READ.
+ *
+ * It already led with the classification notice. It took no `ingest` argument
+ * at all, so it was the last surface in the tree that could not carry the
+ * other honesty caveat — "this document was read as a redline with all changes
+ * accepted", "this PDF fell back to OCR". Either one changes what every line
+ * below it means.
+ */
+describe("buildFixListMarkdown — the ingest's own caveats", () => {
+  const run = makeRun([finding("MSA-006", "critical", 10)]);
+
+  it("leads with what the ingest could not read", () => {
+    const md = buildFixListMarkdown(run, undefined, undefined, {
+      warnings: ["Tracked changes were read as all-changes-accepted."],
+    });
+    expect(md).toContain(
+      "> **About this input.** Tracked changes were read as all-changes-accepted.",
+    );
+    // Above the findings it qualifies.
+    expect(md.indexOf("About this input")).toBeLessThan(md.indexOf("## Critical"));
+  });
+
+  it("renders one line per warning", () => {
+    const md = buildFixListMarkdown(run, undefined, undefined, {
+      warnings: ["First caveat.", "Second caveat."],
+    });
+    expect(md).toContain("First caveat.");
+    expect(md).toContain("Second caveat.");
+  });
+
+  it("is byte-identical when the ingest had nothing to say", () => {
+    // Gated on presence, like every other render-side addition in the tree.
+    const bare = buildFixListMarkdown(run);
+    expect(buildFixListMarkdown(run, undefined, undefined, { warnings: [] })).toBe(bare);
+    expect(bare).not.toContain("About this input");
+  });
+});

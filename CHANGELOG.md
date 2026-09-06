@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.490.0] — 2026-09-06
+
+### Fixed
+- **The fix list was the last surface that could not carry the ingest's
+  caveats.** `buildFixListMarkdown` already led with the classification notice,
+  but it took no `ingest` argument at all — so "tracked changes were read as
+  all-changes-accepted", "this PDF fell back to OCR", "pasted text loses
+  document structure" reached every report surface in the tree except the one a
+  reviewer actually pastes into a ticket. Either caveat changes what every line
+  below it means.
+
+  Threaded from all four callers (the UI pipeline, the bundle's per-document
+  archive, the CLI's `--format md`, and the blob helper), rendered above the
+  findings they qualify, and gated on presence — a run whose ingest had nothing
+  to say produces the byte-identical list it did before, asserted by equality.
+
+  With this, `IngestResult.warnings` and `classification_notice` reach every
+  surface that renders findings: JSON, DOCX, HTML, SARIF, the bundle DOCX, the
+  bundle JSON, the tab, the CLI terminal, and the Markdown fix list. That
+  sweep started from a field which, two sessions ago, had **no consumer
+  anywhere**.
+
 ## [9.489.0] — 2026-09-06
 
 ### Fixed

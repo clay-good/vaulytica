@@ -28,6 +28,7 @@ import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
+import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
 import type { ChecklistCategory, ClosingChecklist } from "./closing-checklist.js";
 import type {
@@ -109,6 +110,7 @@ export function buildFixListMarkdown(
   run: EngineRun,
   extracted?: ExtractedData,
   currency?: CitationCurrency,
+  ingest?: Pick<IngestResult, "warnings">,
 ): string {
   const lines: string[] = [];
   lines.push("# Vaulytica fix list");
@@ -138,6 +140,16 @@ export function buildFixListMarkdown(
     );
   }
   lines.push("");
+  // The ingest's own caveats about what it could and could not READ, above the
+  // fix list they qualify. A fix list is the artifact a reviewer pastes into a
+  // ticket, and "this document was read as a redline with all changes
+  // accepted" or "this PDF fell back to OCR" changes what every line below it
+  // means. Every report surface carries these; this one took no `ingest` at
+  // all, so it was the last one that could not.
+  if (ingest && ingest.warnings.length > 0) {
+    for (const w of ingest.warnings) lines.push(`> **About this input.** ${w}`);
+    lines.push("");
+  }
   if (run.classification_notice) {
     lines.push(`> **Document type not recognized.** ${run.classification_notice.message}`);
     lines.push("");
@@ -604,8 +616,11 @@ export function fixListMarkdownBlob(
   run: EngineRun,
   extracted?: ExtractedData,
   currency?: CitationCurrency,
+  ingest?: Pick<IngestResult, "warnings">,
 ): Blob {
-  return new Blob([buildFixListMarkdown(run, extracted, currency)], { type: "text/markdown" });
+  return new Blob([buildFixListMarkdown(run, extracted, currency, ingest)], {
+    type: "text/markdown",
+  });
 }
 
 export function fixListCsvBlob(run: EngineRun, currency?: CitationCurrency): Blob {

@@ -706,7 +706,7 @@ async function renderFormat(
     case "html":
       return buildHtmlReport(r.run, r.ingest, dkb, undefined, v9surfaces);
     case "md": {
-      const md = buildFixListMarkdown(r.run, undefined, currency);
+      const md = buildFixListMarkdown(r.run, undefined, currency, r.ingest);
       return definitions ? `${md}\n${buildDefinitionsMarkdown(definitions)}` : md;
     }
     case "csv":

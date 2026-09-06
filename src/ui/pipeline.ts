@@ -753,6 +753,7 @@ export async function runReport(
     run,
     prepared.extracted,
     dkbCurrency(prepared.dkb.manifest),
+    prepared.ingest,
   );
   const fixlist_csv_blob = fixListCsvBlob(run, dkbCurrency(prepared.dkb.manifest));
   const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);

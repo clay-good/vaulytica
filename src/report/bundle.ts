@@ -591,7 +591,7 @@ export async function buildBundleZip(input: BundleZipInput): Promise<Blob> {
     for (const doc of input.documents) {
       const stem = `per-document/${doc.doc_id}`;
       files[`${stem}.fixlist.md`] = enc.encode(
-        buildFixListMarkdown(doc.run, doc.extracted, dkbCurrency(input.dkb.manifest)),
+        buildFixListMarkdown(doc.run, doc.extracted, dkbCurrency(input.dkb.manifest), doc.ingest),
       );
       files[`${stem}.fixlist.csv`] = enc.encode(
         buildFixListCsv(doc.run, dkbCurrency(input.dkb.manifest)),
