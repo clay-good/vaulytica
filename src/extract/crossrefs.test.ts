@@ -619,17 +619,39 @@ describe("an arabic-numbered article reference", () => {
     expect(refs.find((r) => r.raw_text === "Article 9")?.unresolved).toBe(true);
   });
 
-  it("does not link an article reference to a section that shares its number", () => {
-    // Before the keyword reached the normalizer, "Article 9" resolved to
-    // `section:9` — a wrong-entity link, the same class the Exhibit/Schedule
-    // guard exists to prevent.
+  it("reaches a BARE-numbered heading, which declares no namespace", () => {
+    // This used to assert the opposite — that "Article 9" against a "9."
+    // heading is a wrong-entity link — and the corpus disagreed at scale:
+    // restating every Section reference as an Article put STRUCT-007 on 156
+    // of 188 specimens. A heading that reads "9." says only "9". It is the
+    // REFERENCE that carries the word, and a drafter who numbers the divisions
+    // bare and calls them Articles in the body has broken nothing.
     const t = buildTree([
       "Agreement",
       "9. Confidentiality",
       "The obligations in Article 9 survive termination.",
     ]);
     const refs = extractCrossRefs(t, extractSections(t));
-    expect(refs.find((r) => r.raw_text === "Article 9")?.unresolved).toBe(true);
+    expect(refs.find((r) => r.raw_text === "Article 9")?.unresolved).toBe(false);
+  });
+
+  it("keeps the namespaces apart where the document declares both", () => {
+    // The wrong-entity link the case above used to stand in for, written so it
+    // is actually possible: this document has an Article V AND a Section 5.2,
+    // so "Article 5" has a real entity of its own to reach and the bare-label
+    // alias must not steal it.
+    const t = buildTree([
+      "Agreement",
+      "ARTICLE V — INDEMNIFICATION",
+      "Section 5.2. Procedure. Notice must be prompt.",
+      "The indemnity in Article 5 survives termination.",
+    ]);
+    const refs = extractCrossRefs(t, extractSections(t));
+    const ref = refs.find((r) => r.raw_text === "Article 5");
+    expect(ref, "the reference was not extracted at all").toBeDefined();
+    expect(ref!.unresolved).toBe(false);
+    const section = refs.find((r) => r.raw_text === "Section 5.2");
+    expect(section?.unresolved ?? false).toBe(false);
   });
 });
 

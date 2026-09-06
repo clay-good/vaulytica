@@ -524,8 +524,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       LEADING_SECTION_RE.exec(ctx.text) ??
       LEADING_SECTION_NO_PERIOD_RE.exec(ctx.text) ??
       LEADING_SUBSECTION_RE.exec(ctx.text);
-    const norm = m ? normalizeLabel(m[1]!) : undefined;
-    if (norm && !labelIndex.has(norm)) labelIndex.set(norm, ctx.paragraph.id);
+    if (m) indexLabel(labelIndex, m[1]!, ctx.paragraph.id);
     const a = LEADING_ARTICLE_RE.exec(ctx.text);
     const aNorm = a ? normalizeLabel(`article ${a[1]!}`) : undefined;
     if (aNorm && !labelIndex.has(aNorm)) labelIndex.set(aNorm, ctx.paragraph.id);
@@ -534,16 +533,14 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
     if (srNorm && !labelIndex.has(srNorm)) labelIndex.set(srNorm, ctx.paragraph.id);
     // A first subsection sharing the article-heading paragraph.
     const ats = ARTICLE_THEN_SECTION_RE.exec(ctx.text);
-    const atsNorm = ats ? normalizeLabel(ats[1]!) : undefined;
-    if (atsNorm && !labelIndex.has(atsNorm)) labelIndex.set(atsNorm, ctx.paragraph.id);
+    if (ats) indexLabel(labelIndex, ats[1]!, ctx.paragraph.id);
     // Every run-in heading in the paragraph, for the flattened layouts where
     // an article's subsections all arrive in one.
     for (const re of [RUN_IN_SECTION_RE, RUN_IN_SECTION_NO_PERIOD_RE]) {
       re.lastIndex = 0;
       let ri: RegExpExecArray | null;
       while ((ri = re.exec(ctx.text)) !== null) {
-        const riNorm = normalizeLabel(ri[1]!);
-        if (riNorm && !labelIndex.has(riNorm)) labelIndex.set(riNorm, ctx.paragraph.id);
+        indexLabel(labelIndex, ri[1]!, ctx.paragraph.id);
       }
     }
   });
@@ -681,13 +678,39 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
   return refs;
 }
 
+/**
+ * Index one label, and — when the label is BARE — under both namespaces.
+ *
+ * See `buildLabelIndex`: a heading that reads "4." declares no namespace, and
+ * it is the reference that carries the word. Never overwrites: a document that
+ * declares both keeps the distinction it drew.
+ */
+function indexLabel(index: Map<string, string>, label: string, id: string): void {
+  const norm = normalizeLabel(label);
+  if (!norm) return;
+  if (!index.has(norm)) index.set(norm, id);
+  const bare = label.trim();
+  if (!/^\d+(?:\.\d+)*$/.test(bare)) return;
+  const alias = `article:${bare}`;
+  if (!index.has(alias)) index.set(alias, id);
+}
+
 function buildLabelIndex(outline: SectionOutline): Map<string, string> {
   const map = new Map<string, string>();
+  // A BARE-numbered heading declares no namespace, so it answers to both.
+  //
+  // "4. SAFEGUARDS" normalizes into the section namespace, and it has to
+  // normalize somewhere — but the heading itself says only "4". It is the
+  // REFERENCE that carries the word, and a drafter who numbers the divisions
+  // bare and calls them Articles in the body ("Articles 4, 6, 8 and 9 survive
+  // termination") is not making a broken reference. Restating the corpus that
+  // way put a `warning` on 156 of 188 specimens.
+  //
+  // The alias is added only where nothing already claims it, so a document
+  // that DOES declare both namespaces — "ARTICLE IV" headings above "Section
+  // 4.2" ones — keeps the distinction it drew on purpose.
   for (const node of Object.values(outline.by_id)) {
-    if (node.numbered_label) {
-      const norm = normalizeLabel(node.numbered_label);
-      if (norm) map.set(norm, node.id);
-    }
+    if (node.numbered_label) indexLabel(map, node.numbered_label, node.id);
   }
   return map;
 }
@@ -704,7 +727,11 @@ function normalizeLabel(label: string): string | undefined {
       const n = romanToInt(tail.toUpperCase());
       return n ? `article:${n}` : undefined;
     }
-    if (/^\d+$/.test(tail)) return `article:${tail}`;
+    // The DOTTED form too. The section branch below has always accepted
+    // "4.2"; the article branch took whole numbers only, so a reference to
+    // "Article 4.2" normalized to nothing and could not resolve against any
+    // outline, article-numbered or not.
+    if (/^\d+(?:\.\d+)*$/.test(tail)) return `article:${tail}`;
   }
   // The SECTION namespace, qualified the same way. A ROMAN-numbered section —
   // "SECTION VI — NOTICE", and the "Section VI" that refers to it — took the

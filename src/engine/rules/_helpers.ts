@@ -462,12 +462,18 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // incorporated list, so the operative enumeration was never read and
   // TEMP-012 reported the indemnity as unnamed in a clause that names it.
   const LIST =
-    /\b(?:Sections?|Clauses?)\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
+    /\b(?:Sections?|Clauses?|Articles?)\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
+  // "Articles" belongs beside them. A long-form agreement divides itself into
+  // Articles and its survival clause names them — "Articles 4, 6, 8 and 9
+  // survive termination" — and a list that reads only Sections and Clauses
+  // incorporated nothing there, so TEMP-006/007/012 judged the survival clause
+  // on its own sentence rather than on the obligations it names.
   // A RANGE is as common as an enumeration — "Sections 2 through 5 and Section
   // 7 survive", "Sections 9-12 survive" — and the enumeration pattern reads
   // only its first endpoint, so the sections in between were never
   // incorporated.
-  const RANGE = /\b(?:Sections?|Clauses?)\s+(\d+)\s*(?:through|thru|to|[-–—])\s*(\d+)\b/gi;
+  const RANGE =
+    /\b(?:Sections?|Clauses?|Articles?)\s+(\d+)\s*(?:through|thru|to|[-–—])\s*(\d+)\b/gi;
   const nums = new Set<string>();
   LIST.lastIndex = 0;
   let m: RegExpExecArray | null;

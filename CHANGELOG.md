@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.466.0] — 2026-09-05
+
+### Fixed
+- **A contract that calls its divisions Articles had 156 of 188 specimens
+  report references it had not broken.** The sibling of `INSTRUMENT_NOUN` one
+  level down: an American vendor deal has Sections, a merger agreement and a
+  set of bylaws have Articles, an English agreement has clauses, a filing cites
+  §§ — and the division is the same division. Restating the corpus in each
+  vocabulary and diffing found two causes, both one word short.
+
+  `buildLabelIndex` filed a BARE-numbered heading ("4. SAFEGUARDS") in the
+  SECTION namespace only, so "Articles 4, 6, 8 and 9 survive termination" could
+  never reach it. But a heading that reads "4." declares no namespace at all —
+  it is the REFERENCE that carries the word — so a bare label is now indexed
+  under both, and only where nothing already claims it, which leaves a document
+  that DOES declare both ("ARTICLE V" above "Section 5.2") with the
+  distinction it drew on purpose. The article namespace also took whole
+  numbers only, so a reference to "Article 4.2" normalized to nothing and could
+  not resolve against any outline at all.
+
+  `expandSurvivalSectionRefs` read `Sections?|Clauses?`, so a survival clause
+  naming Articles incorporated no text and TEMP-006/007/012 judged it on its
+  own sentence rather than on the obligations it names.
+
+  Six specimens still move, and every one already HAS Articles: renaming their
+  Sections collides two real namespaces, which is the transform inventing an
+  ambiguity rather than exposing one. Recorded by equality in
+  `division-vocabulary.test.ts` along with the three the Clause rename moves.
+
+  A unit test asserted the opposite rule — that "Article 9" against a "9."
+  heading is a wrong-entity link — and the corpus disagreed with it at scale.
+  It is rewritten, and the wrong-entity case it stood in for is now written so
+  it is actually possible: a document with an ARTICLE V *and* a Section 5.2,
+  where "Article 5" has a real entity of its own and the bare-label alias must
+  not steal it.
+
 ## [9.465.0] — 2026-09-05
 
 ### Fixed
