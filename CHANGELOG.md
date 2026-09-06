@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.495.0] — 2026-09-06
+
+### Added
+- **`tests/integration/defined-terms-format.test.ts` — the defined-term table
+  gets its first relation, and its debt is written down.** The term table is
+  its own surface: it reaches the DOCX appendix and `report/definitions.ts`,
+  which classifies each term as used, unused, used-before-defined or
+  duplicated. Nothing compared it, and the extractor is the most
+  layout-dependent thing in the tree — a "field block" is recognized partly by
+  how SHORT its paragraph is, and a paragraph's length is a fact about the
+  layout rather than about the document.
+
+  Five transforms over the corpus found **77** movers. Two were real defects
+  and are fixed (9.493.0's apostrophe, 9.494.0's signature block). The **58**
+  that remain are recorded, asserted by equality so the list can only shrink on
+  purpose, and they are two shapes:
+
+  - **junk gained** when a transform splits a signature or notice block into
+    its own paragraphs — "Chief Executive Officer Date", "Marisol Trent Name".
+    These are the `Date`/`Name`/`Title` labels deliberately left out of
+    9.494.0's suppression set, because "Effective Date" and "Trade Name" are
+    ordinary terms the corpus defines;
+  - **legitimate terms lost** when the blank lines go, which is exactly what a
+    PDF copy-paste produces: a Schumer box loses "Penalty APR" and "Minimum
+    Interest Charge" once its rows join into one paragraph, because a field
+    block is recognized partly by being short.
+
+  Neither is a finding — `format-invariance.test.ts` holds the finding set at
+  zero movers under these same transforms, with empty debt lists. This surface
+  is downstream of that one and is not yet at zero, and now says so. Runs in
+  ~7s; verified by reverting 9.494.0's fix and watching the count go 58 → 77.
+
 ## [9.494.0] — 2026-09-06
 
 ### Fixed
