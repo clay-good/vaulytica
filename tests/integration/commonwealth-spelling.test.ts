@@ -36,7 +36,12 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
-import { maskEscapes, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import {
+  declaredExceptions,
+  maskEscapes,
+  recognizerSources,
+  sourceFiles,
+} from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
@@ -70,16 +75,20 @@ const VARIANTS: [word: RegExp, tolerant: string][] = [
 ];
 
 /**
- * A hit that is NOT a spelling variant, keyed by `path:line`.
+ * A hit that is NOT a spelling variant.
  *
  * The one kind there is: a US statute's PROPER NAME. California's Labor Code
  * is spelled "Labor Code" in London too — it is the name of a thing, not a
  * word the drafter chose a spelling for — so widening it to `labou?r` would
  * make the recognizer match a statute that does not exist.
  */
-const NOT_A_VARIANT: Readonly<Record<string, string>> = {
-  "src/engine/rules/v4/settlement/rules.ts:534": "California Labor Code — a statute's proper name",
-};
+const NOT_A_VARIANT = declaredExceptions([
+  {
+    file: "src/engine/rules/v4/settlement/rules.ts",
+    pattern: String.raw`\blabor\s+code`,
+    why: "California Labor Code — a statute's proper name",
+  },
+]);
 
 // `\bauthorize` has the letter "b" immediately in front of "authorize", so a
 // lookbehind for a letter — written to keep "capsize" and "citizen" out —
@@ -94,17 +103,13 @@ describe("a word spelled the way the rest of the common law spells it", () => {
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
-    const usedExceptions = new Set<string>();
     for (const file of files) {
       for (const { line, text } of recognizerSources(file)) {
         const masked = maskEscapes(text);
         for (const [word, tolerant] of VARIANTS) {
           if (!word.test(masked) || text.includes(tolerant)) continue;
+          if (NOT_A_VARIANT.exempts(file, text)) continue;
           const key = `${relative(process.cwd(), file).replace(/\\/g, "/")}:${line}`;
-          if (key in NOT_A_VARIANT) {
-            usedExceptions.add(key);
-            continue;
-          }
           blind.push(`${key}  ${text.slice(0, 90)}`);
         }
       }
@@ -116,7 +121,7 @@ describe("a word spelled the way the rest of the common law spells it", () => {
     // asserts it was USED. (`sourceFiles` returns POSIX separators for exactly
     // this reason; the relative path is normalized again here.)
     expect(
-      Object.keys(NOT_A_VARIANT).filter((k) => !usedExceptions.has(k)),
+      NOT_A_VARIANT.unused(),
       "these NOT_A_VARIANT entries no longer fire — delete them",
     ).toEqual([]);
   });

@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.458.0] — 2026-09-05
+
+### Fixed
+- **A static ratchet's declared exceptions were keyed by line number.** A line
+  number is a property of the file, not of the recognizer. Adding one import to
+  a rules file moved the exempted pattern and broke `parenthetical-numeral` and
+  `commonwealth-spelling` — twice in one session, on edits that had nothing to
+  do with either guard, and each time the "fix" was to retype a number, which
+  is a payment rather than a repair.
+
+  The loud failure is the good case. The bad one was already written down in
+  `parenthetical-numeral`: a key that stops matching stops EXEMPTING, and on
+  Windows it did that silently for a whole session while passing everywhere its
+  author could see. Both failures come from keying on position.
+
+  `declaredExceptions` (in `_recognizer-sources.ts`) keys on a substring of the
+  recognizer's own source, which is stable under every edit that does not
+  change the recognizer — and reads better, since the key now says WHICH
+  pattern is exempt rather than where to go and look. All three ratchets that
+  carry exceptions are migrated, and a new guard fails any test file that
+  writes a `src/....ts:<line>` key again.
+
 ## [9.457.0] — 2026-09-05
 
 ### Fixed

@@ -43,7 +43,7 @@ import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 import { PERIOD_COUNT, countValue } from "../../src/extract/counts.js";
-import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import { declaredExceptions, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 
 const WORDS: Record<number, string> = {
   1: "one",
@@ -185,9 +185,17 @@ const READS_WORDS =
  * need this entry; the per-chunk one is what makes the rest of the sweep work
  * on assembled patterns at all.
  */
-const DECLARED_ANY_COUNT: ReadonlySet<string> = new Set([
-  "src/engine/rules/financial/FIN-004.ts:22",
-  "src/engine/rules/financial/FIN-005.ts:103",
+const DECLARED_ANY_COUNT = declaredExceptions([
+  {
+    file: "src/engine/rules/financial/FIN-004.ts",
+    pattern: String.raw`%\s*(?:per`,
+    why: "a late-fee interest RATE — the digits are a percentage, the period noun its denominator",
+  },
+  {
+    file: "src/engine/rules/financial/FIN-005.ts",
+    pattern: String.raw`(?:\\(\\d{1,3}\\)\\s*)?days?\\b`,
+    why: "already reads the words, via NUM_WORDS in the template chunk before this one",
+  },
 ]);
 
 describe("a recognizer that accepts any count", () => {
@@ -196,21 +204,16 @@ describe("a recognizer that accepts any count", () => {
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
-    const used = new Set<string>();
     for (const file of files) {
       for (const { line, text } of recognizerSources(file)) {
         if (!BLIND_ANY_COUNT.test(text) || READS_WORDS.test(text)) continue;
-        const key = `${file}:${line}`;
-        if (DECLARED_ANY_COUNT.has(key)) used.add(key);
-        else blind.push(`${key}  ${text.slice(0, 90)}`);
+        if (DECLARED_ANY_COUNT.exempts(file, text)) continue;
+        blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
       }
     }
     // A declared exception that matches nothing is a stale one, and the same
     // failure mode `parenthetical-numeral` shipped with.
-    expect(
-      [...DECLARED_ANY_COUNT].filter((k) => !used.has(k)),
-      "declared exceptions that match no recognizer",
-    ).toEqual([]);
+    expect(DECLARED_ANY_COUNT.unused(), "declared exceptions that match no recognizer").toEqual([]);
     expect(
       blind,
       `these accept any count but read only its digits — interpolate \${PERIOD_COUNT}:\n  ${blind.join("\n  ")}`,

@@ -24,7 +24,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import { declaredExceptions, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
@@ -41,7 +41,13 @@ const BLIND =
  * months" — never "two point five (2.5) months". A fractional period is not
  * the spelled-then-numeric convention.
  */
-const DECLARED: ReadonlySet<string> = new Set(["src/engine/rules/v4/equity/rules.ts:712"]);
+const DECLARED = declaredExceptions([
+  {
+    file: "src/engine/rules/v4/equity/rules.ts",
+    pattern: String.raw`2\.5\s+months?`,
+    why: "IRC § 409A's short-term deferral — a fractional period nobody parenthesizes",
+  },
+]);
 
 const WORDS: Record<number, string> = {
   1: "one",
@@ -83,13 +89,11 @@ describe("the parenthetical numeral", () => {
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
-    const used = new Set<string>();
     for (const file of files) {
       for (const { line, text } of recognizerSources(file)) {
         if (!BLIND.test(text)) continue;
-        const key = `${file}:${line}`;
-        if (DECLARED.has(key)) used.add(key);
-        else blind.push(`${key}  ${text.slice(0, 90)}`);
+        if (DECLARED.exempts(file, text)) continue;
+        blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
       }
     }
     // A declared exception that matches NOTHING is the failure mode this guard
@@ -98,10 +102,7 @@ describe("the parenthetical numeral", () => {
     // applying there and the guard failed on the cross-OS matrix alone. An
     // unused key is now an error on every platform, which is where a stale one
     // should be caught too.
-    expect(
-      [...DECLARED].filter((k) => !used.has(k)),
-      "declared exceptions that match no recognizer",
-    ).toEqual([]);
+    expect(DECLARED.unused(), "declared exceptions that match no recognizer").toEqual([]);
     expect(
       blind,
       `these cannot read "sixty (60) days" — write \\s*\\)?\\s* between the digits and the noun:\n  ${blind.join("\n  ")}`,

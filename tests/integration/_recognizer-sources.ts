@@ -116,3 +116,53 @@ export function recognizerSources(file: string): RecognizerSource[] {
 export function maskEscapes(source: string): string {
   return source.replace(/\\[a-zA-Z]/g, " ");
 }
+
+/**
+ * A declared exception to a static ratchet, keyed by what it EXEMPTS rather
+ * than by where that sits.
+ *
+ * Every ratchet in this directory used to key its exceptions by `path:line`,
+ * and a line number is a property of the file, not of the recognizer. Adding
+ * one import above a rule moves it, and the guard then fails on an exemption
+ * that is still perfectly correct — twice in one session, on edits that had
+ * nothing to do with either guard. The failure is loud, which is the good
+ * case; the bad case is the one `parenthetical-numeral` already documents,
+ * where a key that stopped matching silently stopped exempting.
+ *
+ * A distinctive substring of the recognizer's own source is stable under every
+ * edit that does not change the recognizer. It is also readable: the key says
+ * WHICH pattern is exempt, where a line number said only where to look.
+ */
+export interface DeclaredException {
+  /** Repo-relative, POSIX separators — the form `sourceFiles` returns. */
+  readonly file: string;
+  /** A distinctive substring of the recognizer's source text. */
+  readonly pattern: string;
+  /** Why this one is not the defect the ratchet hunts. */
+  readonly why: string;
+}
+
+export interface DeclaredExceptions {
+  /** Is this recognizer exempt? Records the entry as used. */
+  exempts(file: string, text: string): boolean;
+  /** Entries that matched nothing — a stale exemption is a wrong one. */
+  unused(): string[];
+}
+
+/** Normalize either an absolute or a repo-relative path to the latter. */
+const repoRelative = (file: string): string =>
+  file.replace(/\\/g, "/").replace(`${process.cwd().replace(/\\/g, "/")}/`, "");
+
+export function declaredExceptions(entries: readonly DeclaredException[]): DeclaredExceptions {
+  const used = new Set<DeclaredException>();
+  return {
+    exempts(file, text) {
+      const hit = entries.find((e) => repoRelative(file) === e.file && text.includes(e.pattern));
+      if (hit) used.add(hit);
+      return hit !== undefined;
+    },
+    unused() {
+      return entries.filter((e) => !used.has(e)).map((e) => `${e.file}  ${e.pattern}`);
+    },
+  };
+}
