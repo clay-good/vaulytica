@@ -131,6 +131,23 @@ const ENTITY_SUFFIX_BEFORE_COMMA = String.raw`\b(?:[Ii][Nn][Cc]|[Ll][Ll][Cc]|L\.
 const ENTITY_QUALIFIERS =
   "(?:non-?profit|not-for-profit|limited|liability|professional|public|benefit|close|mutual|general|private|registered|statutory|business|cooperative|stock|joint|domestic|foreign|municipal|charitable)";
 
+/**
+ * A paragraph that OPENS with an entity descriptor — "A Delaware
+ * corporation", "a Colorado nonprofit corporation".
+ *
+ * Anchored at the START, which is what makes it a cover-block line rather than
+ * a descriptor embedded in a sentence (those the name patterns already read).
+ * It is deliberately NOT anchored at the end: stripping a document's blank
+ * lines — what a PDF copy-paste produces — joins the descriptor to whatever
+ * follows it, so `articles-org.txt` presents "A Colorado Limited Liability
+ * Company Filed pursuant to Section 7-80-204 …" as one paragraph, and an
+ * end-anchored form recovered the state in every layout but that one.
+ */
+const STANDALONE_DESCRIPTOR = new RegExp(
+  String.raw`^[Aa]n?\s+(?:the\s+)?(${US_STATE})\s+(?:${ENTITY_QUALIFIERS}\s+){0,3}(${ENTITY_TYPES.join("|")})\.?(?![A-Za-z])`,
+  "i",
+);
+
 const PARTY_DECL = new RegExp(
   // Each name token is BOUNDED (`{0,80}`, not `*`): the name is followed by a
   // REQUIRED entity-type suffix, so an unbounded token matches a long letter
@@ -1043,6 +1060,43 @@ export function extractParties(tree: DocumentTree): Party[] {
     if (!owner) continue;
     owner.positions.push(...p.positions);
     partyMap.delete(key);
+  }
+
+  // A COVER BLOCK's entity descriptor, standing in its own paragraph.
+  //
+  // The mirror image of every other repair in this file. Elsewhere ingest
+  // JOINED two lines and a name run read past its end; here ingest did NOT
+  // join them and the extractor cannot reach across. A plan of dissolution
+  // opens with "Alderbrook Instruments, Inc." over "A Delaware corporation"
+  // over "Adopted by the Board of Directors on June 2, 2026". Written with
+  // blank lines between those, ingest joins the block into one paragraph and
+  // the name pattern reads the descriptor; written without them — which is
+  // what a PDF copy-paste produces — each line is its own paragraph and the
+  // descriptor is simply lost, taking `jurisdiction_of_formation` with it. The
+  // party is still found, so nothing looks wrong: a Delaware corporation is
+  // recorded as having no state of formation at all.
+  //
+  // A paragraph that is NOTHING BUT a descriptor is narrowly decidable — the
+  // article, the state, the qualifiers and the type are all closed
+  // vocabularies and the anchors require the whole paragraph to be consumed.
+  // The fill is additive: it only supplies fields the party does not already
+  // have, so a descriptor read from the joined form always wins and this
+  // cannot overwrite anything.
+  for (let i = 1; i < allText.length; i += 1) {
+    const dm = STANDALONE_DESCRIPTOR.exec(allText[i]!.text.trim());
+    if (!dm) continue;
+    const above = allText[i - 1]!.text;
+    // The party this describes is the one named in the line above it. Take the
+    // LONGEST matching name, so "Alderbrook Instruments, Inc" is preferred
+    // over a short-form alias that is a prefix of it.
+    let target: Party | undefined;
+    for (const party of partyMap.values()) {
+      if (!above.includes(party.name)) continue;
+      if (!target || party.name.length > target.name.length) target = party;
+    }
+    if (!target) continue;
+    target.jurisdiction_of_formation = target.jurisdiction_of_formation ?? dm[1];
+    target.entity_type = target.entity_type ?? dm[2];
   }
 
   // Resolve alias / role chains: a short form, an upper-cased variant,

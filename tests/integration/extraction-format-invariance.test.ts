@@ -79,6 +79,25 @@
  * block writes "By: /s/ Ruth Okonjo" over "Name: Ruth Okonjo, M.D.", and where
  * a layout kept those two lines apart the extractor registered the same person
  * TWICE under two spellings. Debt 44 → 37.
+ *
+ * And the MIRROR of all of them. Everywhere above, ingest JOINED two lines and
+ * a name run read past its end; a cover block is the case where it did NOT
+ * join them and the extractor could not reach across. "Alderbrook Instruments,
+ * Inc." over "A Delaware corporation" is one paragraph when the file has blank
+ * lines and two when it does not, and in the second the descriptor was simply
+ * lost — a Delaware corporation recorded with no state of formation, while the
+ * party itself still looked fine. A paragraph that OPENS with a descriptor is
+ * now read onto the party named in the line above it.
+ *
+ * 🚨 This is the one change in the run that ADDS a debt line, deliberately.
+ * `nonprofit-bylaws.txt [double-spaced]` now recovers "North Carolina" that
+ * its natural layout still misses, because there the title and the descriptor
+ * share one paragraph and the descriptor sits mid-paragraph. Reaching THAT one
+ * means attaching a descriptor to a name across arbitrary prose, and "shall
+ * not subcontract to a Delaware corporation" would then invent a jurisdiction
+ * — the same trap `state-overlays.ts` refuses for `fallback_jurisdiction`. A
+ * fact recovered in five specimens is worth one more line of divergence; a
+ * guessed jurisdiction is not. Debt 37 → 38.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -181,16 +200,16 @@ const PARTY_DEBT: readonly string[] = [
   "83b-election.txt [double-spaced] lost:- gained:Elena Marie Vasquez|||",
   "answer.txt [blank lines stripped] lost:- gained:WHEREFORE, Defendant Halloran Precision Castings||LLC|",
   "assignment-of-claim.txt [double-spaced] lost:Wexley DO GP II||| gained:Wexley DO GP II, LLC|||",
-  "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|",
+  "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|Delaware",
   "cba.txt [double-spaced] lost:RIDGELINE AEROSPACE COMPONENTS, INC|Employer|INC| gained:RIDGELINE AEROSPACE COMPONENTS||INC|",
   "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
   "conflict-of-interest-policy.txt [double-spaced] lost:Pemberton Ridge Land Conservancy||corporation|Colorado gained:-",
   "convertible-note.txt [blank lines stripped] lost:VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware gained:Delaware FOR VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware",
   "demand-letter.txt [blank lines stripped] lost:Larkspur Timber Supply LLC|Client|LLC| gained:Larkspur Timber Supply|Larkspur|LLC|",
-  "dissolution-plan.txt [double-spaced] lost:Alderbrook Instruments, Inc|Company|corporation|Delaware gained:Alderbrook Instruments|Company|Inc|",
+  "dissolution-plan.txt [double-spaced] lost:Alderbrook Instruments, Inc|Company|corporation|Delaware gained:Alderbrook Instruments|Company|Inc|Delaware",
   "expert-retention.txt [double-spaced] lost:Anneke Vosberg, Ph.D., P.E. Vosberg Forensic Engineering||LLC| gained:-",
-  "fdd.txt [blank lines stripped] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
-  "fdd.txt [double-spaced] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
+  "fdd.txt [blank lines stripped] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|Virginia",
+  "fdd.txt [double-spaced] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|Virginia",
   "flat-fee-agreement.txt [double-spaced] lost:Ravi Chandrasekaran-Boyd Chandrasekaran Robotics||LLC| gained:-",
   "healthcare-poa.txt [double-spaced] lost:- gained:Tobias Osgood-Reyes|||",
   "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Ridgeline Constructors LLC|Named Insured|LLC| gained:Ridgeline Constructors||LLC|",
@@ -199,9 +218,10 @@ const PARTY_DEBT: readonly string[] = [
   "lease-loi.txt [double-spaced] lost:Alina Fenwick Chief Operating Officer Northgate Diagnostics||Inc| gained:-",
   "minutes.txt [blank lines stripped] lost:Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
   "mutual-nda-letter.txt [double-spaced] lost:- gained:Desmond Achterberg|||,Ingeborg Fjeldstad|||",
+  "nonprofit-bylaws.txt [double-spaced] lost:HARBORLIGHT LITERACY ALLIANCE||INC| gained:HARBORLIGHT LITERACY ALLIANCE||INC|North Carolina",
   "notice-of-furnishing.txt [blank lines stripped] lost:- gained:This is a Notice of Furnishing under Ohio Revised Code § 1311.05. It is given to|Lender||",
-  "operating-agreement.txt [blank lines stripped] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
-  "operating-agreement.txt [double-spaced] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
+  "operating-agreement.txt [blank lines stripped] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|Delaware",
+  "operating-agreement.txt [double-spaced] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|Delaware",
   "prenup.txt [smart quotes] lost:Party's||individual| gained:Party’s||individual|",
   "protective-order.txt [double-spaced] lost:- gained:Priya Raghunathan|||,Tobias Denholm|||",
   "saas-order-form-fields.txt [blank lines stripped] lost:ORDER FORM Northbridge Cloud||Inc| gained:Northbridge Cloud||Inc|",

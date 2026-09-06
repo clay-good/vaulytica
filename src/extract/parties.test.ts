@@ -1134,3 +1134,50 @@ describe("what is not part of a name", () => {
     expect(p.map((x) => x.name)).toContain("Cascade Valley Medical Group, P.C");
   });
 });
+
+describe("a cover block's entity descriptor on its own line", () => {
+  it("reads the state of formation the line above did not carry", () => {
+    // Blank lines present, ingest joins the block and the name pattern reads
+    // the descriptor; blank lines absent — a PDF copy-paste — each line is its
+    // own paragraph and the descriptor was lost, so a Delaware corporation was
+    // recorded with no state of formation at all.
+    const p = extractParties(
+      buildTree([
+        "PLAN OF DISSOLUTION AND WINDING UP",
+        "Alderbrook Instruments, Inc.",
+        "A Delaware corporation",
+        "Adopted by the Board of Directors on June 2, 2026",
+      ]),
+    );
+    const alderbrook = p.find((x) => x.name.startsWith("Alderbrook"));
+    expect(alderbrook?.jurisdiction_of_formation).toBe("Delaware");
+  });
+
+  it("reads a descriptor that OPENS a paragraph but does not end it", () => {
+    // Stripping blank lines joins the descriptor to whatever follows, which is
+    // why the pattern is anchored only at the start.
+    const p = extractParties(
+      buildTree([
+        "ARTICLES OF ORGANIZATION",
+        "LAUREL RIDGE PROVISIONS, LLC",
+        "A Colorado Limited Liability Company Filed pursuant to Section 7-80-204 of the Colorado Limited Liability Company Act.",
+      ]),
+    );
+    const laurel = p.find((x) => x.name.startsWith("LAUREL"));
+    expect(laurel?.jurisdiction_of_formation).toBe("Colorado");
+  });
+
+  it("does not invent a jurisdiction from a descriptor inside prose", () => {
+    // The anchor is what keeps this off a hypothetical entity. Guessing a
+    // state of formation is the trap `state-overlays.ts` refuses for
+    // `fallback_jurisdiction`.
+    const p = extractParties(
+      buildTree([
+        "SUBCONTRACT",
+        "This Subcontract is made between Bramble Construction Group, Inc. and Copperline Mechanical Contractors, Inc.",
+        "The Subcontractor shall not subcontract any portion of the Work to a Delaware corporation without prior written consent.",
+      ]),
+    );
+    for (const party of p) expect(party.jurisdiction_of_formation).toBeUndefined();
+  });
+});

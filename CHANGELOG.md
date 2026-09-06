@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.503.0] — 2026-09-06
+
+### Fixed
+- **A cover block's entity descriptor was lost, taking the state of formation
+  with it.** The mirror image of the five repairs before it. Everywhere else in
+  this run ingest JOINED two lines and a name run read past its end; a cover
+  block is the case where it did NOT join them and the extractor could not
+  reach across.
+
+  A plan of dissolution opens with `Alderbrook Instruments, Inc.` over
+  `A Delaware corporation`. Written with blank lines between them, ingest joins
+  the block into one paragraph and the name pattern reads the descriptor;
+  written without them — which is what a PDF copy-paste produces — each line is
+  its own paragraph and the descriptor was simply dropped. Nothing looked
+  wrong, because the party was still found: a Delaware corporation was recorded
+  as having no state of formation at all.
+
+  A paragraph that OPENS with a descriptor is now read onto the party named in
+  the line above it. The article, the state, the qualifiers and the type are
+  all closed vocabularies, and the fill is additive — it supplies only fields
+  the party lacks, so a descriptor read from the joined form always wins.
+  Recovers the state of formation on `dissolution-plan`, `operating-agreement`,
+  `bylaws-corporation`, `fdd`, `articles-org` and `nonprofit-bylaws`, with
+  **zero change to any party name in the corpus**.
+
+  The pattern is anchored only at the START, not the end: stripping blank lines
+  joins the descriptor to what follows it, so `articles-org.txt` presents
+  `A Colorado Limited Liability Company Filed pursuant to Section 7-80-204 …`
+  as one paragraph.
+
+  Deliberately NOT generalized to a descriptor sitting mid-prose. That would
+  reach `nonprofit-bylaws.txt`'s natural layout, where the title and the
+  descriptor share a paragraph — and it would also read `shall not subcontract
+  to a Delaware corporation` as a party's state of formation, which is the trap
+  `state-overlays.ts` refuses for `fallback_jurisdiction`. This is the one
+  change in the run that ADDS a line to the parties debt (37 → 38) rather than
+  removing one, and it is the right trade: a fact recovered in five specimens
+  against one more layout pair that disagrees. A guessed jurisdiction in a
+  legal report is worse than a missing one.
+
 ## [9.502.0] — 2026-09-06
 
 ### Fixed
