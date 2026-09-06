@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.488.0] — 2026-09-06
+
+### Fixed
+- **The HTML report omitted the secondary-family findings entirely.**
+  `html.ts`'s own header called it "the universal, archivable, emailable
+  counterpart to the DOCX" with "**same content as `docx.ts`**". It did not
+  accept `secondaryFamilies` at all — no parameter, no renderer — while the
+  DOCX has carried that section since v6 and the UI pipeline computes the data
+  and hands it to the DOCX and JSON from the same scope. So a document that is
+  **both an NDA and a DPA** had its DPA findings in one human-readable surface
+  and none of them in the other. Findings are the one thing a report may not
+  silently omit.
+
+  Now mirrored: family name, id, per-severity counts, and a findings table,
+  with the same "no findings — this family's requirements appear to be met"
+  line the DOCX uses, all HTML-escaped (asserted against a family name and a
+  description carrying markup). Gated on presence, so a run without the field
+  produces the **byte-identical** report it did before — asserted by equality,
+  not by inspection.
+
+- **And the header now says what is actually true.** The DOCX still has, on
+  purpose, what a paginated report needs and a single scrolling page does not:
+  the cover and its proof fields, the executive summary, the findings *index*
+  (a triage table ahead of the same findings rendered below it), the
+  obligations ledger, the extracted-data appendix, the jurisdiction overlays,
+  and the audit trail. That list is now written down beside the shared content,
+  so the next divergence is a decision rather than a discovery.
+
+  Found by diffing the two renderers' section titles against each other — the
+  same method that found the SARIF gap in 9.475.0, pointed at the two surfaces
+  a human actually reads.
+
 ## [9.487.0] — 2026-09-06
 
 ### Fixed

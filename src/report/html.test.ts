@@ -358,3 +358,92 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
     expect(html).not.toContain("<script");
   });
 });
+
+/**
+ * The families this document ALSO contains reach the HTML report too.
+ *
+ * The DOCX has carried the secondary-family section since v6, and this file's
+ * own header promised "same content as `docx.ts`". It did not have it — so a
+ * document that is both an NDA and a DPA had its DPA findings in one
+ * human-readable surface and none of them in the other. Findings are the one
+ * thing a report may not silently omit; the reference apparatus the DOCX still
+ * keeps to itself (cover, findings index, obligations ledger, extracted-data
+ * appendix, audit trail) is now listed in that header rather than glossed.
+ */
+describe("HTML report — secondary families (spec-v6 multi-family activation)", () => {
+  const secondary = [
+    {
+      playbook_id: "dpa-controller-processor",
+      playbook_name: "DPA (controller → processor)",
+      counts: { critical: 1, warning: 0, info: 0 },
+      findings: [{ ...finding("s1", "critical"), rule_id: "GDPR-028" }],
+    },
+    {
+      playbook_id: "saas-tos",
+      playbook_name: "SaaS terms of service",
+      counts: { critical: 0, warning: 0, info: 0 },
+      findings: [],
+    },
+  ];
+
+  it("renders each detected family, its counts, and its findings", () => {
+    const html = buildHtmlReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      undefined,
+      undefined,
+      undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      secondary as any,
+    );
+    expect(html).toContain("Additional checks from other detected families");
+    expect(html).toContain("DPA (controller → processor)");
+    expect(html).toContain("GDPR-028");
+    expect(html).toContain("1 critical, 0 warnings, 0 informational");
+    // A family with nothing to report says so rather than rendering an empty
+    // table — the same wording the DOCX uses.
+    expect(html).toContain("this family's requirements appear to be met");
+  });
+
+  it("is omitted entirely when no other family was detected", () => {
+    // Render-side additions gated on field presence: a run without the field
+    // produces the byte-identical report it did before the field existed.
+    const without = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
+    const empty = buildHtmlReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      undefined,
+      undefined,
+      undefined,
+      [],
+    );
+    expect(empty).toBe(without);
+    expect(without).not.toContain("Additional checks from other detected families");
+  });
+
+  it("escapes a family name and a finding description", () => {
+    const html = buildHtmlReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      undefined,
+      undefined,
+      undefined,
+      [
+        {
+          playbook_id: "x<script>",
+          playbook_name: "Family <b>bold</b>",
+          counts: { critical: 0, warning: 1, info: 0 },
+          findings: [
+            { ...finding("s2", "warning"), rule_id: "X-001", description: "a <b>bold</b> claim" },
+          ],
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ] as any,
+    );
+    expect(html).not.toContain("<b>bold</b>");
+    expect(html).toContain("&lt;b&gt;bold&lt;/b&gt;");
+  });
+});

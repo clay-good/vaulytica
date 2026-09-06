@@ -10,8 +10,27 @@
  * Word.
  *
  * Determinism: fixed, font-agnostic CSS; no timestamps in the body beyond
- * the run's recorded `executed_at` (which the DOCX also shows); same
- * content as `docx.ts`, an HTML renderer instead of the OOXML writer.
+ * the run's recorded `executed_at` (which the DOCX also shows).
+ *
+ * It is NOT byte-for-byte the DOCX's content, and this comment used to say it
+ * was. What both carry: the findings, the honesty caveats (input notices,
+ * classification notice, scope of review), the three v9 surfaces, the
+ * negotiation posture, the privacy-regime and attorney-review coverage, the
+ * clause-evidence coverage, the citations and bibliography, and the disclaimer
+ * — plus, since the claim was checked, the secondary-family checks, which the
+ * DOCX had carried since v6 while this file omitted them entirely. A document
+ * that is both an NDA and a DPA had its DPA findings in one human-readable
+ * surface and not the other, and findings are the one thing a report may not
+ * silently omit.
+ *
+ * What the DOCX still has and this does not, deliberately: the cover page and
+ * its proof fields, the executive summary, the findings INDEX (a triage table
+ * ahead of the same findings rendered below it), the obligations ledger, the
+ * extracted-data appendix, the jurisdiction overlays and the audit trail. Those
+ * are the paginated report's navigation and reference apparatus; a single
+ * scrolling page that a reader can search does not need a triage table over
+ * content it already contains. If one of them is ever added, add it here and to
+ * this list together.
  * Citable: renders the full Thrust-B citation with wrapped URLs
  * (`overflow-wrap: anywhere`) and the §17 freshness signal. In-tab /
  * offline — it ships no network reference. Render-side — zero
@@ -39,6 +58,8 @@ import { buildClauseEvidence } from "./clause-evidence.js";
 import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./review-coverage.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
+import type { ReportSecondaryFamily } from "./json.js";
+import { truncate } from "./v3/_dx.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
@@ -194,6 +215,43 @@ function renderFinding(
 
 const SEV_CLASS: Record<string, string> = { critical: "crit", warning: "warn", info: "info" };
 
+/**
+ * The families this document ALSO contains, kept apart from the primary
+ * findings — the HTML mirror of the DOCX section of the same name.
+ */
+function renderSecondaryFamiliesSection(
+  secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
+): string[] {
+  if (!secondary || secondary.length === 0) return [];
+  const out: string[] = ["<h2>Additional checks from other detected families</h2>"];
+  out.push(
+    '<p class="v9-note">Beyond the primary playbook, this document also contains content from the families below. Each was scanned with its own rule set. These checks are kept separate from the primary findings above.</p>',
+  );
+  for (const fam of secondary) {
+    const c = fam.counts;
+    out.push(
+      `<p><strong>${esc(fam.playbook_name)} (${esc(fam.playbook_id)})</strong> — ` +
+        `${c.critical} critical, ${c.warning} warnings, ${c.info} informational</p>`,
+    );
+    if (fam.findings.length === 0) {
+      out.push("<p><em>No findings — this family's requirements appear to be met.</em></p>");
+      continue;
+    }
+    out.push(
+      "<table><thead><tr><th>Severity</th><th>Rule</th><th>Finding</th><th>Section</th></tr></thead><tbody>",
+    );
+    for (const f of fam.findings) {
+      out.push(
+        `<tr><td>${esc(f.severity.toUpperCase())}</td><td>${esc(f.rule_id)}</td>` +
+          `<td>${esc(truncate(f.description, 200))}</td>` +
+          `<td>${esc(f.excerpt.section_id ?? "doc")}</td></tr>`,
+      );
+    }
+    out.push("</tbody></table>");
+  }
+  return out;
+}
+
 /** "Clean to send" — the delivery / HANDOFF-* pre-disclosure section (Thrust A). */
 function renderDeliverySection(delivery: DeliveryReport): string[] {
   if (delivery.findings.length === 0) return [];
@@ -327,6 +385,7 @@ export function buildHtmlReport(
   playbook?: Playbook,
   v9?: V9Surfaces,
   negotiationPosture?: NegotiationPosture,
+  secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
 ): string {
   const bibliography = buildBibliography(run.findings, dkb);
   const currency = dkbCurrency(dkb.manifest);
@@ -449,6 +508,13 @@ export function buildHtmlReport(
   if (v9?.criticalDates) body.push(...renderCriticalDatesSection(v9.criticalDates));
   // spec-v10 Thrust A — tiered negotiation posture (custom playbook only).
   if (negotiationPosture) body.push(...renderNegotiationPostureSection(negotiationPosture));
+  // spec-v6 multi-family activation — the families this document ALSO contains,
+  // each scanned with its own rule set and quarantined here so the primary
+  // report stays clean. The DOCX has carried this since v6; this file's own
+  // header promises "same content as docx.ts", and a document that is both an
+  // NDA and a DPA had its DPA findings in one human-readable surface and not
+  // the other. Findings are the one thing a report may not silently omit.
+  body.push(...renderSecondaryFamiliesSection(secondaryFamilies));
 
   // Bibliography.
   body.push("<h2>Bibliography</h2>");
@@ -540,8 +606,10 @@ export function htmlReportBlob(
   playbook?: Playbook,
   v9?: V9Surfaces,
   negotiationPosture?: NegotiationPosture,
+  secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
 ): Blob {
-  return new Blob([buildHtmlReport(run, ingest, dkb, playbook, v9, negotiationPosture)], {
-    type: "text/html",
-  });
+  return new Blob(
+    [buildHtmlReport(run, ingest, dkb, playbook, v9, negotiationPosture, secondaryFamilies)],
+    { type: "text/html" },
+  );
 }
