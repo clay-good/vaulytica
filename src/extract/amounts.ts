@@ -260,6 +260,21 @@ const WORD_SCALES: Record<string, string> = {
 // `\s+`): the group's `[-\s]` and an unbounded trailing `\s+` both consume a
 // whitespace run, which is O(n^2) on a long NBSP run (NBSP survives normalize);
 // no real gap before "dollars" exceeds 8 chars, so the match is unchanged.
+/**
+ * A sum written in words, with no numeral anywhere — "Two Million Dollars".
+ *
+ * The sibling of `PERIOD_COUNT` in `counts.ts`, and the same argument: the
+ * drafted convention is "Two Million Dollars ($2,000,000)", so a recognizer
+ * that reads the currency glyph reads the dominant form and the bare-numeral
+ * form and misses the third. Exported without a capturing group of its own so
+ * a caller's group indices do not move.
+ *
+ * The extractor has always read this shape; the rule layer had not. RISK-010's
+ * insurance minimums were the corpus's evidence — 37 specimens lost the
+ * finding when their limits were respelled in words.
+ */
+export const AMOUNT_IN_WORDS = String.raw`\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s{1,8}(?:dollars?|euros?|pounds?\s+sterling|pounds?)\b`;
+
 const WORD_FORM = new RegExp(
   String.raw`\b((?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+))\s{1,8}(dollars?|euros?|pounds?\s+sterling|pounds?)\b`,
   "gi",

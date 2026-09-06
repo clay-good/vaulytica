@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.459.0] — 2026-09-05
+
+### Fixed
+- **"Two Million Dollars" is the third spelling of "$2,000,000".** The same
+  question 9.456.0 asked of a period, asked of the other two things a contract
+  states as a number. **37 of 312 specimens lost RISK-010** (insurance
+  requirement levels) when their limits were respelled in words — the rule was
+  anchored on the currency glyph, and a limit written "coverage of not less
+  than Two Million Dollars per occurrence" carries none.
+
+  `src/extract/amounts.ts` had read that form since it was written; the rule
+  layer had its own narrower spelling. RISK-010 now shares `AMOUNT_IN_WORDS`
+  with the extractor — the "a producer exists, follow it to every consumer"
+  shape this repo keeps meeting.
+
+### Not fixed, and measured
+- **A PERCENTAGE in words costs seven specimens FIN-009, and is deliberately
+  left.** FIN-009 is not a presence rule: it parses the rate, annualizes it,
+  and asserts a usury conclusion. A rate is routinely FRACTIONAL — "one and
+  one-half percent per month" is the commonest late-fee spelling there is — and
+  no integer word-parser represents it; and the cost of misreading is not a
+  missed info note but a confident false accusation about a legal limit, which
+  this rule has already been narrowed twice to avoid. Recorded in
+  `spelled-amount.test.ts` and asserted by equality, so neither a repair nor a
+  regression can land unnoticed.
+
 ## [9.458.0] — 2026-09-05
 
 ### Fixed

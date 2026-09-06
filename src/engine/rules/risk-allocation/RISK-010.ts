@@ -1,11 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
-import { CURRENCY_TOKEN } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_TOKEN } from "../../../extract/amounts.js";
 
 /** RISK-010 — Insurance requirement levels (info). */
 export const rule: Rule = {
   id: "RISK-010",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Insurance requirement levels",
   category: "risk-allocation",
   default_severity: "info",
@@ -30,10 +30,17 @@ export const rule: Rule = {
       // `src/extract/amounts.ts` has read the ISO codes and the other symbols
       // since it was written; the rule layer had its own narrower spelling
       // (v1.2.0).
+      // And the limit is as often written with no numeral at all — "coverage
+      // of not less than Two Million Dollars per occurrence". That is the
+      // third spelling of the same sum, the sibling of the words-only period
+      // in `counts.ts`, and 37 specimens lost this finding when the corpus was
+      // respelled that way (v1.3.0).
       new RegExp(
-        String.raw`\b(?:commercial\s+general\s+liability|(?:CGL|E&O|D&O|EPLI)(?![-\w])|professional\s+liability|errors\s+and\s+omissions|cyber\s+liability|umbrella\s+(?:liability|insurance|policy|coverage)|excess\s+liability|workers['’]?\s+comp(?:ensation)?|(?:commercial\s+)?auto(?:mobile)?\s+liability|employer['’]?s?\s+liability|products?\s+liability|directors['’]?\s+and\s+officers['’]?|employment\s+practices\s+liability|property\s+insurance)\b[^.;\n]{0,160}?(?:` +
+        String.raw`\b(?:commercial\s+general\s+liability|(?:CGL|E&O|D&O|EPLI)(?![-\w])|professional\s+liability|errors\s+and\s+omissions|cyber\s+liability|umbrella\s+(?:liability|insurance|policy|coverage)|excess\s+liability|workers['’]?\s+comp(?:ensation)?|(?:commercial\s+)?auto(?:mobile)?\s+liability|employer['’]?s?\s+liability|products?\s+liability|directors['’]?\s+and\s+officers['’]?|employment\s+practices\s+liability|property\s+insurance)\b[^.;\n]{0,160}?(?:(?:` +
           CURRENCY_TOKEN +
-          String.raw`)\s*([\d,]+)`,
+          String.raw`)\s*[\d,]+|` +
+          AMOUNT_IN_WORDS +
+          String.raw`)`,
         "i",
       ),
     );
