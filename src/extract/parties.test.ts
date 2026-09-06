@@ -1092,3 +1092,45 @@ describe("a person's name absorbed into the firm below it", () => {
     expect(names.some((n) => n.startsWith("DO GP"))).toBe(false);
   });
 });
+
+describe("what is not part of a name", () => {
+  it("drops the appositive a two-tier signature block writes", () => {
+    // "TALLGRASS INDUSTRIAL HOLDINGS LP" over "By: Tallgrass Industrial GP
+    // LLC, its general partner" — the relationship belongs to the block.
+    const p = extractParties(
+      buildTree([
+        "ESCROW AGREEMENT",
+        "This Escrow Agreement is made between Tallgrass Industrial Holdings LP and Ridgeline Bank, N.A.",
+        "TALLGRASS INDUSTRIAL HOLDINGS LP",
+        "By: Tallgrass Industrial GP LLC, its general partner",
+      ]),
+    );
+    expect(p.map((x) => x.name)).not.toContain("Tallgrass Industrial GP LLC, its general partner");
+  });
+
+  it("registers a signer once, not once per credential spelling", () => {
+    // The block writes the name twice, bare on the /s/ line and credentialed
+    // on the printed-name line. Both are the same person.
+    const p = extractParties(
+      buildTree([
+        "BUSINESS ASSOCIATE AGREEMENT",
+        "NORTHFIELD FAMILY HEALTH, P.C.",
+        "By: /s/ Ruth Okonjo",
+        "Name: Ruth Okonjo, M.D.",
+      ]),
+    );
+    const okonjo = p.map((x) => x.name).filter((n) => n.includes("Okonjo"));
+    expect(okonjo).toEqual(["Ruth Okonjo"]);
+  });
+
+  it("keeps a professional-ENTITY form, which is part of the name", () => {
+    // P.C. and P.A. are entity forms, not post-nominals.
+    const p = extractParties(
+      buildTree([
+        "Services Agreement",
+        "This Agreement is made between Cascade Valley Medical Group, P.C. and Alder Revenue Systems, Inc.",
+      ]),
+    );
+    expect(p.map((x) => x.name)).toContain("Cascade Valley Medical Group, P.C");
+  });
+});

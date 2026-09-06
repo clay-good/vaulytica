@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.502.0] — 2026-09-06
+
+### Fixed
+- **A two-tier signature block's appositive was part of the signer's name.** A
+  fund signs through its general partner — `TALLGRASS INDUSTRIAL HOLDINGS LP`
+  over `By: Tallgrass Industrial GP LLC, its general partner` — and the
+  relationship belongs to the block, not to the general partner. Four specimens
+  published a party literally named `Tallgrass Industrial GP LLC, its general
+  partner`. `cleanPartyName` already stripped the sibling form (`, a Delaware
+  corporation`); the possessive form is now stripped beside it.
+
+- **A signer with a professional credential was registered twice.** A signature
+  block writes the name bare on the `/s/` line and credentialed on the printed
+  name line — `By: /s/ Ruth Okonjo` over `Name: Ruth Okonjo, M.D.` — so where a
+  layout kept the two lines apart, the extractor recorded the same person under
+  two spellings. A person's post-nominal is not part of their name for the same
+  reason a corporate suffix is not part of an entity's, and the collapse that
+  already existed for `Inc`/`LLC` had no counterpart for `M.D`/`Ph.D`/`Esq`.
+
+  Stripped in a loop, because a signer routinely carries more than one
+  (`Anneke Vosberg, Ph.D., P.E.`). `P.A.` and `P.C.` are deliberately excluded:
+  both are professional-ENTITY forms and belong to the name.
+
+  Applied in `registerParty`, the one funnel every producer uses — in
+  `cleanPartyName` alone it reached only some, which left
+  `Naomi K. Osterhout, M.D` standing in `physician-employment.txt`.
+
+  The parties debt in `tests/integration/extraction-format-invariance.test.ts`
+  falls from 44 lines to **37**; across the six fixes in this run, from 124
+  to 37.
+
 ## [9.501.0] — 2026-09-06
 
 ### Fixed

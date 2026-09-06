@@ -70,6 +70,15 @@
  * it, so anything a document stacks ABOVE a party's name is read as part of
  * that name. In every one of the four, CASE — not a vocabulary — is what marks
  * where the join happened.
+ *
+ * Two more, both about what is NOT part of a name rather than where one
+ * begins. A two-tier signature block writes "By: Tallgrass Industrial GP LLC,
+ * its general partner" and the appositive belongs to the block, not to the
+ * general partner. And a person's PROFESSIONAL CREDENTIAL is not part of their
+ * name for the same reason a corporate suffix is not part of an entity's: a
+ * block writes "By: /s/ Ruth Okonjo" over "Name: Ruth Okonjo, M.D.", and where
+ * a layout kept those two lines apart the extractor registered the same person
+ * TWICE under two spellings. Debt 44 → 37.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -171,9 +180,7 @@ const SURFACES: Record<string, (d: ExtractedData) => string[]> = {
 const PARTY_DEBT: readonly string[] = [
   "83b-election.txt [double-spaced] lost:- gained:Elena Marie Vasquez|||",
   "answer.txt [blank lines stripped] lost:- gained:WHEREFORE, Defendant Halloran Precision Castings||LLC|",
-  "architect-agreement.txt [double-spaced] lost:- gained:Teodoro Vessel, AIA|||",
-  "assignment-of-claim.txt [double-spaced] lost:- gained:Wexley DO GP II, LLC, its general partner|||",
-  "baa.txt [double-spaced] lost:- gained:Ruth Okonjo, M.D|||",
+  "assignment-of-claim.txt [double-spaced] lost:Wexley DO GP II||| gained:Wexley DO GP II, LLC|||",
   "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|",
   "cba.txt [double-spaced] lost:RIDGELINE AEROSPACE COMPONENTS, INC|Employer|INC| gained:RIDGELINE AEROSPACE COMPONENTS||INC|",
   "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
@@ -181,8 +188,6 @@ const PARTY_DEBT: readonly string[] = [
   "convertible-note.txt [blank lines stripped] lost:VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware gained:Delaware FOR VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware",
   "demand-letter.txt [blank lines stripped] lost:Larkspur Timber Supply LLC|Client|LLC| gained:Larkspur Timber Supply|Larkspur|LLC|",
   "dissolution-plan.txt [double-spaced] lost:Alderbrook Instruments, Inc|Company|corporation|Delaware gained:Alderbrook Instruments|Company|Inc|",
-  "escrow-agreement.txt [blank lines stripped] lost:- gained:Tallgrass Industrial GP LLC, its general partner|||",
-  "escrow-agreement.txt [double-spaced] lost:- gained:Tallgrass Industrial GP LLC, its general partner|||",
   "expert-retention.txt [double-spaced] lost:Anneke Vosberg, Ph.D., P.E. Vosberg Forensic Engineering||LLC| gained:-",
   "fdd.txt [blank lines stripped] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
   "fdd.txt [double-spaced] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
@@ -191,26 +196,23 @@ const PARTY_DEBT: readonly string[] = [
   "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Ridgeline Constructors LLC|Named Insured|LLC| gained:Ridgeline Constructors||LLC|",
   "joint-development.txt [double-spaced] lost:- gained:Annika Sjöberg|||",
   "joint-representation-waiver-founders.txt [double-spaced] lost:Raghunathan Mr. Daniel Ostrowski Kestrel Grove Bakery||LLC| gained:-",
-  "lease-assignment-retail.txt [double-spaced] lost:- gained:Adaeze Nwachukwu, D.D.S|||",
   "lease-loi.txt [double-spaced] lost:Alina Fenwick Chief Operating Officer Northgate Diagnostics||Inc| gained:-",
   "minutes.txt [blank lines stripped] lost:Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
   "mutual-nda-letter.txt [double-spaced] lost:- gained:Desmond Achterberg|||,Ingeborg Fjeldstad|||",
   "notice-of-furnishing.txt [blank lines stripped] lost:- gained:This is a Notice of Furnishing under Ohio Revised Code § 1311.05. It is given to|Lender||",
   "operating-agreement.txt [blank lines stripped] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
   "operating-agreement.txt [double-spaced] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
-  "payer-provider.txt [double-spaced] lost:- gained:Aaron Whitcombe, M.D|||",
-  "physician-employment.txt [double-spaced] lost:- gained:Harold Lindstrom, M.D|||",
   "prenup.txt [smart quotes] lost:Party's||individual| gained:Party’s||individual|",
   "protective-order.txt [double-spaced] lost:- gained:Priya Raghunathan|||,Tobias Denholm|||",
   "saas-order-form-fields.txt [blank lines stripped] lost:ORDER FORM Northbridge Cloud||Inc| gained:Northbridge Cloud||Inc|",
   "saas-order-form-fields.txt [double-spaced] lost:ORDER FORM Northbridge Cloud||Inc| gained:Northbridge Cloud||Inc|",
   "secondary-stock-transfer.txt [double-spaced] lost:Marcus Ellery Doyle Priya Venkataraman||| gained:-",
-  "side-letter.txt [double-spaced] lost:- gained:Kestrel Deepwater GP III, LLC, its general partner|||,Océane Lefèvre|||",
+  "side-letter.txt [double-spaced] lost:Kestrel Deepwater GP III||LLC| gained:Kestrel Deepwater GP III, LLC||LLC|,Océane Lefèvre|||",
   "snda.txt [double-spaced] lost:- gained:Ignatius Mbeki-Sørheim|||",
   "sow-numbered.txt [double-spaced] lost:- gained:Ines Bhattacharya-Kovács|||",
   'sow.txt [smart quotes] lost:Halewood Data Systems LLC ("Supplier")|MSA|| gained:Halewood Data Systems LLC (“Supplier”)|MSA||',
   "sublease-office.txt [double-spaced] lost:- gained:Anneli Kiruna-Bergström|||",
-  "term-sheet.txt [double-spaced] lost:- gained:Kestrel Deepwater GP III, LLC, its general partner|||,Océane Lefèvre|||",
+  "term-sheet.txt [double-spaced] lost:Kestrel Deepwater GP III||| gained:Kestrel Deepwater GP III, LLC|||,Océane Lefèvre|||",
   "trial-motion.txt [double-spaced] lost:Dashiell Tsukamoto Dashiell Tsukamoto Halloran & Tsukamoto||PLLC| gained:Dashiell Tsukamoto|||,Halloran & Tsukamoto||PLLC|",
   "uk-idta-addendum.txt [blank lines stripped] lost:- gained:Sable Notification Services||GmbH|",
 ];

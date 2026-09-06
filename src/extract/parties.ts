@@ -1386,14 +1386,26 @@ const LITIGATION_ROLE_PREFIX =
  * `cleanPartyName` — the labeled-party and preamble readers — are covered too.
  */
 function stripHeadingPrefix(n: string): string {
-  return stripTitleCaseLeadIn(
-    stripAllCapsRoleLabel(
-      n
-        .replace(ALLCAPS_HEADING_PREFIX, "")
-        .replace(ALLCAPS_HEADING_COMMA, "")
-        .replace(LITIGATION_ROLE_PREFIX, ""),
+  return stripCredentials(
+    stripTitleCaseLeadIn(
+      stripAllCapsRoleLabel(
+        n
+          .replace(ALLCAPS_HEADING_PREFIX, "")
+          .replace(ALLCAPS_HEADING_COMMA, "")
+          .replace(LITIGATION_ROLE_PREFIX, ""),
+      ),
     ),
   );
+}
+
+/** {@link CREDENTIAL_SUFFIX}, applied until no credential is left. */
+function stripCredentials(n: string): string {
+  let out = n;
+  for (let prev = ""; prev !== out; ) {
+    prev = out;
+    out = out.replace(CREDENTIAL_SUFFIX, "");
+  }
+  return out;
 }
 
 /**
@@ -1469,6 +1481,25 @@ function cleanPartyName(raw: string): string {
   n = n.replace(LEADING_ROLE, "");
   // Strip trailing entity descriptor like ", a Delaware corporation".
   n = n.replace(/,\s*(?:a|an)\s+.+$/i, "");
+  // The same descriptor written as a RELATIONSHIP rather than a type. A
+  // two-tier signature block names the entity that signs FOR the party —
+  // "TALLGRASS INDUSTRIAL HOLDINGS LP" over "By: Tallgrass Industrial GP LLC,
+  // its general partner" — and the appositive belongs to the block, not to the
+  // general partner's name. Four specimens published a party called
+  // "Tallgrass Industrial GP LLC, its general partner". No legal name carries
+  // a possessive appositive, so the comma is where the name ended.
+  n = n.replace(/,\s*(?:its|their)\s+.+$/i, "");
+  // A person's PROFESSIONAL CREDENTIAL is not part of their name, for the same
+  // reason a corporate suffix is not part of an entity's. A signature block
+  // writes "By: /s/ Ruth Okonjo" over "Name: Ruth Okonjo, M.D.", and where a
+  // layout keeps those two lines apart the extractor registered the SAME
+  // PERSON TWICE, under two spellings. Stripped in a loop because a signer
+  // routinely carries more than one ("Anneke Vosberg, Ph.D., P.E.").
+  //
+  // `P.A.` and `P.C.` are deliberately absent: both are professional-entity
+  // forms (Professional Association, Professional Corporation) and belong to
+  // the name, not to the person.
+  n = stripCredentials(n);
   // A name never carries an UNMATCHED open parenthesis. The descriptor strip
   // above can cut inside a parenthetical it did not open.
   if ((n.match(/\(/g) ?? []).length > (n.match(/\)/g) ?? []).length) {
@@ -1487,6 +1518,13 @@ function cleanPartyName(raw: string): string {
  * and the name run then captures the article alone.
  */
 const DETERMINER_ONLY = /^(?:the|a|an|this|that|each|any|all|such|its|our|their|no)$/i;
+
+/**
+ * A post-nominal credential a signer writes after their name. See
+ * `cleanPartyName` for why `P.A.`/`P.C.` are not here.
+ */
+const CREDENTIAL_SUFFIX =
+  /,\s*(?:M\.?D|D\.?O|D\.?D\.?S|D\.?M\.?D|D\.?V\.?M|Ph\.?D|Psy\.?D|J\.?D|LL\.?M|Esq|P\.?E|R\.?N|N\.?P|C\.?P\.?A|C\.?F\.?A|AIA|MBA|PharmD)\.?\s*$/i;
 
 function isBoilerplateName(name: string): boolean {
   const lower = name.toLowerCase();
