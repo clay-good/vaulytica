@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
 
 /**
  * The trigger a wind-down clause opens with. Requiring the bare "upon
@@ -127,7 +128,14 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // return property", which is a firing clause, not a wind-down), and a
     // bare "terminate this Agreement for convenience" with no consequence
     // word still fails this branch and correctly reports none.
-    String.raw`|\bterminat(?:es?|ed|ing)\s+(?:this\s+|the\s+)(?:Agreement|Lease|Contract|SOW|Note|Order)\b${SAME_SENTENCE}{0,120}?\b(?:${CONSEQUENCE})\w*` +
+    //
+    // The object list was hand-written as six of the eighteen nouns in
+    // `INSTRUMENT_NOUN` — so "terminate this Sublease", "terminate this
+    // Addendum" and "terminate this Statement of Work" took the object slot
+    // and found nothing in it. It reads the shared vocabulary now; none of its
+    // members names a PERSON, so the "terminate any employee" hazard the
+    // paragraph above guards against is unaffected.
+    String.raw`|\bterminat(?:es?|ed|ing)\s+(?:this\s+|the\s+)(?:${INSTRUMENT_NOUN})\b${SAME_SENTENCE}{0,120}?\b(?:${CONSEQUENCE})\w*` +
     // An explicit consequence CONNECTOR, which names the effect without naming
     // the agreement. "Either party may terminate the Tolling Period on thirty
     // days' written notice, AFTER WHICH the limitations period resumes

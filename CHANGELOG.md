@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.483.0] — 2026-09-06
+
+### Fixed
+- **"Terminate this Sublease, whereupon the deposit is refunded" read as no
+  effect-of-termination clause at all.** TERM-005's termination-verb branch
+  hand-wrote its object as `Agreement|Lease|Contract|SOW|Note|Order` — six of
+  the eighteen nouns in `INSTRUMENT_NOUN` — so a Sublease, a Deed, an Addendum,
+  an Amendment, a Statement of Work or a Rider put a noun in the object slot
+  the rule did not recognize, and a document with a plainly stated wind-down
+  was told it had none. It reads the shared vocabulary now. None of that
+  vocabulary's members names a PERSON, so the "terminate any employee" hazard
+  the surrounding comment guards against is unaffected.
+
+  The corpus does not exercise this — regenerating every golden after the
+  change moved nothing — so the fix carries its own evidence: six cases that
+  fail without it, plus a negative case proving a bare termination right with
+  no consequence still warns.
+
+### Changed
+- **Measured, and deliberately NOT swept: instrument nouns are not the same
+  kind of vocabulary as attachment nouns.** After `ATTACHMENT_KIND`'s static
+  sweep found a real defect its corpus relation had missed, the obvious next
+  move was the same sweep for `INSTRUMENT_NOUN`. Measured first: 40 recognizers
+  enumerate two or more instrument nouns without all of them, and almost all
+  are purpose-built lists rather than partial copies — "trust agreement or
+  instrument", "data processing agreement or addendum", "blanket purchase
+  agreement". `ATTACHMENT_KIND`'s six nouns are interchangeable names for one
+  thing; `INSTRUMENT_NOUN`'s eighteen are not, and a rule about a trust
+  instrument should not match a trust lease. A sweep here would be noise, and
+  the one genuine partial copy it would have found is fixed above by hand.
+
 ## [9.482.0] — 2026-09-06
 
 ### Fixed
