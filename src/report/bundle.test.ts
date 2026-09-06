@@ -909,3 +909,70 @@ describe("bundle multi-family activation (spec-v6)", () => {
     expect(await a.text()).toBe(await b.text());
   });
 });
+
+/**
+ * The two honesty caveats, per document, in the bundle DOCX.
+ *
+ * A bundle is where they matter most and where they were missing. The
+ * per-document detail is exactly what a summary hides, and a reviewer reading
+ * about ten documents at once will not notice that one of them says "Detected
+ * family: generic-fallback" unless the report says what that means. The
+ * single-document DOCX has carried both since v8; this subsection carried the
+ * deprecation suffix and neither of these.
+ */
+describe("buildBundleDocxReport — per-document honesty caveats", () => {
+  async function docxText(input: BundleReportInput): Promise<string> {
+    const blob = await buildBundleDocxReport(input);
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    return strFromU8(entries["word/document.xml"]!);
+  }
+
+  function withCaveats(): BundleReportInput {
+    const input = makeInput();
+    const doc = input.documents[0]!;
+    return {
+      ...input,
+      documents: [
+        {
+          ...doc,
+          run: {
+            ...doc.run,
+            playbook_id: "generic-fallback",
+            classification_notice: {
+              reason: "generic-fallback",
+              message:
+                "No known document family matched this document. The findings may be irrelevant or misleading.",
+            },
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ingest: { warnings: ["Pasted text loses document structure."] } as any,
+        },
+        input.documents[1]!,
+      ],
+    };
+  }
+
+  it("states that an unrecognized document's findings may be misleading", async () => {
+    const xml = await docxText(withCaveats());
+    expect(xml).toContain("No known document family matched this document");
+    expect(xml).toContain("may be irrelevant or misleading");
+  });
+
+  it("carries what the ingest could and could not read", async () => {
+    const xml = await docxText(withCaveats());
+    expect(xml).toContain("About this input: Pasted text loses document structure.");
+  });
+
+  it("adds nothing for a bundle of recognized, cleanly-ingested documents", async () => {
+    // Gated on presence. Compared on the document XML rather than the zip
+    // bytes: the archive's own packaging is not byte-stable between two builds
+    // of the same input (measured — a one-byte difference), and it is not what
+    // this change touches.
+    const a = await docxText(makeInput());
+    const b = await docxText(makeInput());
+    expect(a).toBe(b);
+    const xml = a;
+    expect(xml).not.toContain("About this input:");
+    expect(xml).not.toContain("may be irrelevant or misleading");
+  });
+});

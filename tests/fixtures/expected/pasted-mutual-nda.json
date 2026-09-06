@@ -994,11 +994,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected mutual-nda (score 0.8). Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "8f5d2a8b03f0754afda19f21652d2f42dc141d3a4725b01a63278e70245292cf",
+  "result_hash": "aecee262fcc062717b6f48a0383482bef17e9b2e1a223041b026421d747c6577",
   "source_file": {
     "name": "pasted-mutual-nda.txt",
     "sha256": "908fab1cfc67064f69fefb5bd7aed92907945bf54c100eba2dcdb9d75c0e6d40",
     "size_bytes": 1565
   },
-  "version": "9.488.0"
+  "version": "9.489.0"
 }

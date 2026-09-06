@@ -819,6 +819,27 @@ function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)
           : " — legacy"
         : "";
     out.push(para({ text: `Playbook: ${doc.run.playbook_id}${deprecationSuffix}` }));
+    // The two honesty caveats, per document, above that document's findings.
+    //
+    // A bundle is where they matter MOST and where they were missing: the
+    // per-document detail is exactly what a summary hides, and a reviewer
+    // reading about ten documents at once will not notice that one of them
+    // says "Detected family: generic-fallback" unless the report says what
+    // that means. The single-document DOCX has carried both since v8; this
+    // subsection carried the deprecation suffix above and neither of these.
+    //
+    // `classification_notice` is the engine's own statement that it did not
+    // recognize the document and that the findings below "may be irrelevant or
+    // misleading"; the ingest's warnings are what it could and could not READ
+    // — a redline taken as all-changes-accepted, a PDF that fell back to OCR.
+    // Both are gated on presence, so a bundle of recognized documents produces
+    // the byte-identical report it did before.
+    if (doc.run.classification_notice) {
+      out.push(para({ text: doc.run.classification_notice.message, italics: true }));
+    }
+    for (const w of doc.ingest?.warnings ?? []) {
+      out.push(para({ text: `About this input: ${w}`, italics: true }));
+    }
     out.push(para({ text: `File SHA-256: ${doc.run.source_file.sha256}` }));
     out.push(para({ text: `Per-document result hash: ${doc.run.result_hash}` }));
     const totals = countFindings(doc.run.findings);

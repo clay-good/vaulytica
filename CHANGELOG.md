@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.489.0] — 2026-09-06
+
+### Fixed
+- **The bundle DOCX carried neither honesty caveat, per document.** Its
+  per-document subsection printed the detected family, the playbook (with a
+  "legacy" suffix when deprecated), the hashes and the top findings — and never
+  the classification notice or the ingest's warnings. Both have been on the
+  single-document DOCX since v8.
+
+  A bundle is where they matter **most** and where they were missing, for the
+  same reason session 30 found them missing from the bundle card: the
+  per-document detail is exactly what a summary hides. A reviewer reading about
+  ten documents at once will not notice that one of them says "Detected family:
+  generic-fallback" unless the report says what that means — and what it means
+  is the engine's own sentence, that it did not recognize the document and the
+  findings below "may be irrelevant or misleading". The ingest's warnings are
+  the other half: a redline taken as all-changes-accepted, a PDF that fell back
+  to OCR.
+
+  Both sit above that document's findings, both gated on presence, so a bundle
+  of recognized and cleanly-ingested documents produces the identical report it
+  did before — asserted on the document XML rather than the zip bytes, because
+  the archive's own packaging is not byte-stable between two builds of the same
+  input (measured: a one-byte difference) and that is not what this touches.
+
+  The bundle JSON already carried both, through its full `runs[]`. This was the
+  human-readable surface alone.
+
 ## [9.488.0] — 2026-09-06
 
 ### Fixed
