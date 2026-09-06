@@ -892,3 +892,95 @@ describe("a foreign entity suffix, declaring its role in the same breath", () =>
     expect(p.map((x) => x.name)).not.toContain("ALL OBLIGATIONS SUCH");
   });
 });
+
+describe("a document's own title is not one of its parties", () => {
+  // `ingestPaste` joins a cover block's lines into one paragraph with spaces,
+  // so a title sitting above the entity it is about arrives as a single run
+  // and the name pattern walks straight through it. Twelve such names stood
+  // across the corpus, and `report/docx.ts` prints the party table verbatim.
+  it("drops the heading a cover page puts above the entity", () => {
+    const p = extractParties(
+      buildTree([
+        "ARTICLES OF ORGANIZATION",
+        "ARTICLES OF ORGANIZATION OF LAUREL RIDGE PROVISIONS, LLC",
+      ]),
+    );
+    const names = p.map((x) => x.name);
+    expect(names).not.toContain("ARTICLES OF ORGANIZATION OF LAUREL RIDGE PROVISIONS");
+    expect(names).toContain("LAUREL RIDGE PROVISIONS");
+  });
+
+  it("takes the LAST connector, not the first", () => {
+    // Greedy, so "ARTICLES OF ORGANIZATION OF X" yields "X" and never
+    // "ORGANIZATION OF X".
+    const p = extractParties(
+      buildTree([
+        "ACTION BY UNANIMOUS WRITTEN CONSENT",
+        "OF THE BOARD OF DIRECTORS OF HALCYON INSTRUMENTS, INC.",
+      ]),
+    );
+    expect(p.map((x) => x.name)).toContain("HALCYON INSTRUMENTS");
+  });
+
+  it("cuts a caption that hands off with a comma or a change of case", () => {
+    const comma = extractParties(
+      buildTree(["NOTICE", "REQUEST FOR PRODUCTION OF DOCUMENTS, FALLBROOK FREIGHT SYSTEMS, LLC"]),
+    );
+    expect(comma.map((x) => x.name)).toContain("FALLBROOK FREIGHT SYSTEMS");
+    const cased = extractParties(
+      buildTree([
+        "NOTICE",
+        "REQUEST FOR PRODUCTION OF DOCUMENTS Plaintiff Larkspur Timber Supply, LLC",
+      ]),
+    );
+    expect(cased.map((x) => x.name)).toContain("Larkspur Timber Supply");
+  });
+
+  it("strips a litigation ROLE in either register", () => {
+    // A caption shouts it, a privilege log writes it plainly, and
+    // `LEADING_ROLE` reaches neither: it requires a comma after the role.
+    const p = extractParties(
+      buildTree([
+        "PRIVILEGE LOG",
+        "Defendant Halstead Laboratories, Inc. asserts the attorney-client privilege.",
+        "DEFENDANT HALSTEAD LABORATORIES, INC. WITHHELD THE DOCUMENTS.",
+      ]),
+    );
+    const names = p.map((x) => x.name);
+    expect(names).not.toContain("Defendant Halstead Laboratories");
+    expect(names).not.toContain("DEFENDANT HALSTEAD LABORATORIES");
+  });
+
+  it("leaves a legal name that merely CONTAINS the connector alone", () => {
+    // The dividing line is case. Every junk name in the corpus is ALL-CAPS;
+    // every legitimate one carrying the same "of" is written the way its
+    // charter writes it. A document set entirely in capitals is why the
+    // ALL-CAPS test is not enough on its own — "BANK OF AMERICA" has no
+    // heading noun in front of it and must survive.
+    const p = extractParties(
+      buildTree([
+        "License Agreement",
+        "This Agreement is made between The Board of Trustees of Calloway State University, a body corporate, and Larkfield Institute of Technology, Inc.",
+      ]),
+    );
+    expect(p.map((x) => x.name)).toContain("The Board of Trustees of Calloway State University");
+  });
+
+  it("leaves an ALL-CAPS document's own names alone", () => {
+    // The corpus has a guaranty set entirely in capitals, where a real name
+    // and a heading are written in the same register and case cannot separate
+    // them. The HEADING_NOUN requirement is what does: "IN FAVOR OF NORTHLAND
+    // MERCANTILE BANK" has no noun that names a paper or a corporate body in
+    // front of it, so the run is untouched — which is also why the name still
+    // carries the stray "FAVOR OF" that a lower-case document would never
+    // produce. That residue is a DIFFERENT shape (a preposition in prose, not
+    // a title above a name) and is deliberately left.
+    const p = extractParties(
+      buildTree([
+        "CONTINUING GUARANTY",
+        'THIS CONTINUING GUARANTY (THIS "GUARANTY") IS MADE AS OF SEPTEMBER 30, 2026 BY MARTIN R. ODEGAARD, AN INDIVIDUAL RESIDING IN HENNEPIN COUNTY, MINNESOTA (THE "GUARANTOR"), IN FAVOR OF NORTHLAND MERCANTILE BANK, N.A. (THE "LENDER").',
+      ]),
+    );
+    expect(p.map((x) => x.name)).toContain("FAVOR OF NORTHLAND MERCANTILE BANK, N.A");
+  });
+});

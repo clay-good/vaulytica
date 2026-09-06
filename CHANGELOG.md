@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.498.0] — 2026-09-06
+
+### Fixed
+- **A document's own title was being reported as one of its parties.** Twelve
+  such names stood across the 312-specimen corpus, and they were not cosmetic:
+  `report/docx.ts` prints the extracted-party table verbatim, so a lawyer's
+  report named a party `ARTICLES OF ORGANIZATION OF LAUREL RIDGE PROVISIONS`,
+  and the rules that compare a phrase against the party set (STRUCT-006) or
+  tally it (RISK-002) counted the heading as a real counterparty.
+
+  The cause is one line of ingest behaviour: `ingestPaste` joins a cover
+  block's lines into a single paragraph with spaces, so a title sitting above
+  the entity it is about — `ARTICLES OF ORGANIZATION` / `OF` / `LAUREL RIDGE
+  PROVISIONS, LLC` — arrives as one run. The entity-name pattern anchors on the
+  first capitalized token it sees, walks the entire heading, and registers what
+  it captured. The line structure is gone by then (paste ingest emits one run
+  per paragraph), so this had to be decided from the text.
+
+  The dividing line is CASE, and it is sharp: every one of the twelve junk
+  names is ALL-CAPS, and every legitimate corpus name carrying the same "of"
+  connector is mixed-case — `The Board of Trustees of Calloway State
+  University`, `Larkfield Institute of Technology`, `The Regents of Calloway
+  State University`. Case alone is not enough, because the corpus has a
+  guaranty set entirely in capitals where real names share that register, so
+  the heading must ALSO carry one of 25 nouns that name a paper or a corporate
+  body (`ARTICLES`, `BYLAWS`, `BOARD`, `DEPOSITION`, `INCORPORATION`, …) — a
+  word that is never part of a business name. Both signals together have no
+  false positive in 979 extracted party names.
+
+  Three hand-offs are recognized: a connector (`OF`/`TO`, matched greedily so
+  `ARTICLES OF ORGANIZATION OF X` yields `X` and not `ORGANIZATION OF X`), a
+  comma (`REQUEST FOR PRODUCTION OF DOCUMENTS, FALLBROOK FREIGHT SYSTEMS,
+  LLC` — anchored on the noun rather than greedy, or `NORTHLAND MERCANTILE
+  BANK, N.A.` would be cut to `N.A.`), and a change of case with no punctuation
+  at all (`… OF DOCUMENTS Plaintiff Larkspur Timber Supply, LLC`).
+
+- **A litigation caption's role word was part of the party's name.** `Defendant
+  Halstead Laboratories`, `Plaintiff Ridgeline Aerospace Components`,
+  `Respondent Kanaan Offshore Services` and thirteen more. `LEADING_ROLE` could
+  not reach any of them: it requires the comma a preamble writes after the role
+  (`Landlord, Cedar Point Holdings LLC`) and a caption writes none. Stripped in
+  both registers, since a privilege log writes the same word plainly that a
+  caption shouts.
+
+  Both strips now run in `registerParty`, the one funnel every producer path
+  uses, rather than in `cleanPartyName`, which three of the producers skip.
+
+  **34 junk party records left the corpus and no legitimate name did**, measured
+  name-by-name over all 979. `tests/integration/extraction-format-invariance.ts`'s
+  parties debt falls from 124 lines to 114; five unit tests in
+  `src/extract/parties.test.ts` pin the behaviour, including the two
+  counterexamples that keep the guard honest — a mixed-case `The Board of
+  Trustees of …` and the ALL-CAPS guaranty's own names.
+
+  Deliberately left: the same ALL-CAPS guaranty yields `FAVOR OF NORTHLAND
+  MERCANTILE BANK, N.A` — a preposition in prose rather than a title above a
+  name, a different shape that no heading noun identifies.
+
 ## [9.497.0] — 2026-09-06
 
 ### Fixed

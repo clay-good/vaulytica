@@ -25,12 +25,22 @@
  *    ZERO movers.**
  *
  * What is left is recorded below by EQUALITY, so the lists can only shrink on
- * purpose. The parties list is one shape almost throughout: a signature-block
+ * purpose.
+ *
+ * The SECOND of the two parties shapes is now fixed. A heading swallowed into
+ * the name it sits above — "BOARD OF DIRECTORS OF HALCYON INSTRUMENTS",
+ * "ARTICLES OF ORGANIZATION OF LAUREL RIDGE PROVISIONS" — turned out not to
+ * need the title `matcher.ts` computes, and this comment used to say it did.
+ * It needed only what the name itself shows: an ALL-CAPS run whose leading
+ * phrase carries a noun that names a paper or a corporate body is a heading,
+ * and the party is what follows its last connector. See `HEADING_NOUN` in
+ * `src/extract/parties.ts` for why both signals are required and neither
+ * alone. **34 junk party records left the corpus and no legitimate name did**;
+ * the debt below fell from 124 lines to 114.
+ *
+ * What remains is almost entirely the FIRST shape: a signature-block
  * individual found in the natural layout and lost when every line becomes its
- * own paragraph, or a heading swallowed into the name it sits above ("BOARD OF
- * DIRECTORS OF HALCYON INSTRUMENTS"). The second of those is the next repair;
- * it needs to know a document's own title from a party's name, which
- * `matcher.ts` knows and the extractor does not yet ask.
+ * own paragraph.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -135,8 +145,6 @@ const PARTY_DEBT: readonly string[] = [
   "appellate-brief.txt [blank lines stripped] lost:Devarshi Nandakumar HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "appellate-brief.txt [double-spaced] lost:Devarshi Nandakumar HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "architect-agreement.txt [double-spaced] lost:- gained:Teodoro Vessel, AIA|||",
-  "articles-org.txt [blank lines stripped] lost:ARTICLES OF ORGANIZATION OF LAUREL RIDGE PROVISIONS||LLC|,Laurel Ridge Provisions||LLC| gained:LAUREL RIDGE PROVISIONS||LLC|",
-  "articles-org.txt [double-spaced] lost:ARTICLES OF ORGANIZATION OF LAUREL RIDGE PROVISIONS||LLC|,Laurel Ridge Provisions||LLC| gained:LAUREL RIDGE PROVISIONS||LLC|",
   "assignment-and-assumption-agreement.txt [double-spaced] lost:Merrill Vance||| gained:-",
   "assignment-assumption.txt [double-spaced] lost:Teodora Nakamura||| gained:-",
   "assignment-of-claim.txt [double-spaced] lost:Katarina Lindqvist||| gained:Wexley DO GP II, LLC, its general partner|||",
@@ -146,8 +154,7 @@ const PARTY_DEBT: readonly string[] = [
   "ccpa-service-provider.txt [double-spaced] lost:Terrence Okonjo-Whitfield||| gained:-",
   "change-order.txt [blank lines stripped] lost:CONTRACTOR Bramble Construction Group||Inc|,Sowande Adeyemi||| gained:-",
   "change-order.txt [double-spaced] lost:CONTRACTOR Bramble Construction Group||Inc|,Nadia Oyelaran|||,Sowande Adeyemi||| gained:-",
-  "charter-incorporation.txt [blank lines stripped] lost:CERTIFICATE OF INCORPORATION OF CORVID OPTICAL SYSTEMS||INC|,Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
-  "charter-incorporation.txt [double-spaced] lost:CERTIFICATE OF INCORPORATION OF CORVID OPTICAL SYSTEMS||INC| gained:-",
+  "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
   "coi.txt [blank lines stripped] lost:INSURED Copperline Mechanical Contractors||Inc|,PRODUCER Ashgrove Insurance Brokers||LLC| gained:Ashgrove Insurance Brokers||LLC|,Copperline Mechanical Contractors||Inc|",
   "coi.txt [double-spaced] lost:INSURED Copperline Mechanical Contractors||Inc|,PRODUCER Ashgrove Insurance Brokers||LLC| gained:Ashgrove Insurance Brokers||LLC|,Copperline Mechanical Contractors||Inc|",
   "complaint.txt [blank lines stripped] lost:Yusuf Adeyemi Yusuf Adeyemi KEARNS & WHITLOCK||LLP| gained:KEARNS & WHITLOCK||LLP|",
@@ -161,8 +168,6 @@ const PARTY_DEBT: readonly string[] = [
   "daca.txt [blank lines stripped] lost:Oleander Vasquez-Kimura||| gained:-",
   "daca.txt [double-spaced] lost:Hyacinth Brennan-Oduya|||,Oleander Vasquez-Kimura||| gained:-",
   "deed-of-trust.txt [blank lines stripped] lost:- gained:Dermot Halloran|||",
-  "demand-for-inspection.txt [blank lines stripped] lost:PRODUCTION OF DOCUMENTS, FALLBROOK FREIGHT SYSTEMS||LLC| gained:FALLBROOK FREIGHT SYSTEMS||LLC|",
-  "demand-for-inspection.txt [double-spaced] lost:PRODUCTION OF DOCUMENTS, FALLBROOK FREIGHT SYSTEMS||LLC| gained:FALLBROOK FREIGHT SYSTEMS||LLC|",
   "demand-letter.txt [blank lines stripped] lost:Larkspur Timber Supply LLC|Client|LLC| gained:Larkspur Timber Supply|Larkspur|LLC|",
   "dissolution-plan.txt [double-spaced] lost:Alderbrook Instruments, Inc|Company|corporation|Delaware gained:Alderbrook Instruments|Company|Inc|",
   "dpa-defined-term.txt [double-spaced] lost:Aurelie Vandenbroucke||| gained:-",
@@ -192,8 +197,7 @@ const PARTY_DEBT: readonly string[] = [
   "lease-loi.txt [double-spaced] lost:Alina Fenwick Chief Operating Officer Northgate Diagnostics||Inc|,Gregory Amaral||| gained:-",
   "legend-nda.txt [double-spaced] lost:Priya Raghunathan||| gained:-",
   "ma-restrictive-covenant.txt [double-spaced] lost:Caryn Okonjo||| gained:-",
-  "minutes.txt [blank lines stripped] lost:BOARD OF DIRECTORS OF HARBORLIGHT ANALYTICS||INC|,Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
-  "minutes.txt [double-spaced] lost:BOARD OF DIRECTORS OF HARBORLIGHT ANALYTICS||INC| gained:-",
+  "minutes.txt [blank lines stripped] lost:Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
   "mipa.txt [double-spaced] lost:Beatriz Sandoval||| gained:-",
   "mutual-nda-letter.txt [double-spaced] lost:- gained:Ingeborg Fjeldstad|||",
   "notice-of-furnishing.txt [blank lines stripped] lost:- gained:This is a Notice of Furnishing under Ohio Revised Code § 1311.05. It is given to|Lender||",
@@ -235,8 +239,7 @@ const PARTY_DEBT: readonly string[] = [
   "sublease-office.txt [double-spaced] lost:Tobias Wrenfield||| gained:Anneli Kiruna-Bergström|||",
   "subordination-agreement.txt [double-spaced] lost:Helena Vandermolen||| gained:-",
   "teaming-agreement.txt [double-spaced] lost:Marisol Vega||| gained:-",
-  "term-sheet.txt [blank lines stripped] lost:PREFERRED STOCK FINANCING OF THALASSA MARINE ROBOTICS||INC| gained:-",
-  "term-sheet.txt [double-spaced] lost:PREFERRED STOCK FINANCING OF THALASSA MARINE ROBOTICS||INC| gained:Kestrel Deepwater GP III, LLC, its general partner|||",
+  "term-sheet.txt [double-spaced] lost:- gained:Kestrel Deepwater GP III, LLC, its general partner|||",
   "tolling-agreement-standstill.txt [blank lines stripped] lost:Amara Devine||| gained:-",
   "tolling-agreement-standstill.txt [double-spaced] lost:Amara Devine||| gained:-",
   "tolling-agreement.txt [double-spaced] lost:Aurelia Kowalski-Mbeki||| gained:-",
@@ -244,7 +247,6 @@ const PARTY_DEBT: readonly string[] = [
   "trademark-license-food.txt [double-spaced] lost:Odile Marchetti-Brun||| gained:-",
   "transition-services-agreement.txt [blank lines stripped] lost:Owen Brandt||| gained:-",
   "transition-services-agreement.txt [double-spaced] lost:Owen Brandt||| gained:-",
-  "trial-motion.txt [blank lines stripped] lost:Plaintiff Larkspur Timber Supply||LLC| gained:PRODUCTION OF DOCUMENTS Plaintiff Larkspur Timber Supply||LLC|",
   "trial-motion.txt [double-spaced] lost:Dashiell Tsukamoto Dashiell Tsukamoto Halloran & Tsukamoto||PLLC| gained:Halloran & Tsukamoto||PLLC|",
   "uk-idta-addendum.txt [blank lines stripped] lost:- gained:Sable Notification Services||GmbH|",
   "unilateral-nda.txt [double-spaced] lost:Marguerite Delacroix-Boone||| gained:-",
@@ -252,8 +254,6 @@ const PARTY_DEBT: readonly string[] = [
   "voting-agreement.txt [blank lines stripped] lost:- gained:Nadia Oyelaran|||",
   "work-for-hire.txt [double-spaced] lost:Bartholomew Nkemdirim||| gained:-",
   "work-letter.txt [double-spaced] lost:Simone Aubert||| gained:-",
-  "written-consent.txt [blank lines stripped] lost:BOARD OF DIRECTORS OF HALCYON INSTRUMENTS||INC| gained:-",
-  "written-consent.txt [double-spaced] lost:BOARD OF DIRECTORS OF HALCYON INSTRUMENTS||INC| gained:-",
 ];
 
 const JURISDICTION_DEBT: readonly string[] = [

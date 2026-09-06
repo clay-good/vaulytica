@@ -1138,7 +1138,7 @@ function registerParty(
     position?: DocPosition;
   },
 ): void {
-  const clean = repairFieldRun(name);
+  const clean = stripHeadingPrefix(repairFieldRun(name));
   const key = clean.toLowerCase();
   const existing = map.get(key);
   if (existing) {
@@ -1257,8 +1257,106 @@ function splitNameAndRole(raw: string): { name: string; role?: string } {
   return { name, ...(role ? { role } : {}) };
 }
 
+/**
+ * The nouns a document uses to name ITSELF or one of its organs, in the
+ * ALL-CAPS register of a cover page or a litigation caption.
+ *
+ * `ingestPaste` joins a cover block's lines into one paragraph with spaces, so
+ * a title sitting above the entity it is about arrives as a single run —
+ * "ARTICLES OF ORGANIZATION" / "OF" / "LAUREL RIDGE PROVISIONS, LLC" becomes
+ * "ARTICLES OF ORGANIZATION OF LAUREL RIDGE PROVISIONS, LLC". The entity-name
+ * pattern then anchors on the FIRST capitalized token it sees, walks the whole
+ * heading, and registers a party named after the document. Twelve such names
+ * stood across the corpus, and they are not harmless: `report/docx.ts` prints
+ * the party table verbatim, so a lawyer's report named a party "ARTICLES OF
+ * ORGANIZATION OF LAUREL RIDGE PROVISIONS", and the rules that compare a
+ * phrase against the party set (STRUCT-006) or tally it (RISK-002) counted it
+ * as real.
+ *
+ * The dividing line is CASE, and it is sharp: every one of the twelve junk
+ * names is ALL-CAPS, and every legitimate corpus name carrying the same "of"
+ * connector is mixed-case — "The Board of Trustees of Calloway State
+ * University", "Larkfield Institute of Technology", "The Regents of Calloway
+ * State University". An ALL-CAPS heading is where a document names itself; a
+ * legal name that happens to contain "of" is written the way its charter
+ * writes it.
+ *
+ * Case alone is not enough, because a document written ENTIRELY in capitals
+ * (the corpus has one) puts real names in the same register, and "BANK OF
+ * AMERICA" must survive. So the prefix must ALSO contain one of these nouns —
+ * a word that names a paper or a corporate body, never a business. The two
+ * signals together have no false positive in 979 extracted party names.
+ */
+const HEADING_NOUN =
+  "ARTICLES|CERTIFICATE|BYLAWS|CHARTER|BOARD|COMMITTEE|MINUTES|RESOLUTION|" +
+  "RESOLUTIONS|CONSENT|DEPOSITION|PRODUCTION|INSPECTION|DEFENSES|FINANCING|" +
+  "INTERROGATORIES|SUBPOENA|COMPLAINT|PETITION|MOTION|DOCUMENTS|ORGANIZATION|" +
+  "INCORPORATION|FORMATION|DISSOLUTION";
+
+/**
+ * The heading, up to and including the connector that hands off to the name.
+ *
+ * The look-ahead requires a {@link HEADING_NOUN} somewhere in the run before
+ * the connector; the run itself is greedy, so "ARTICLES OF ORGANIZATION OF X"
+ * backtracks to the LAST connector and yields "X" rather than "ORGANIZATION OF
+ * X".
+ */
+const ALLCAPS_HEADING_PREFIX = new RegExp(
+  String.raw`^(?=[A-Z\s&.,'’-]*?\b(?:${HEADING_NOUN})\b)` +
+    String.raw`[A-Z][A-Z&.'’-]*(?:\s+[A-Z][A-Z&.'’-]*)*\s+(?:OF|TO)\s+(?=[A-Z])`,
+);
+
+/**
+ * The same heading where the hand-off is a COMMA rather than a connector — a
+ * litigation caption's "REQUEST FOR PRODUCTION OF DOCUMENTS, FALLBROOK FREIGHT
+ * SYSTEMS, LLC". This one is anchored on the noun itself rather than run
+ * greedily, because a comma is also what a real name puts before its suffix:
+ * greedy, "NORTHLAND MERCANTILE BANK, N.A." would be cut down to "N.A.".
+ *
+ * The second hand-off is a CASE change with no punctuation at all — "REQUEST
+ * FOR PRODUCTION OF DOCUMENTS Plaintiff Larkspur Timber Supply, LLC", where
+ * the caption shouts and the name that follows does not. The same anchoring
+ * argument applies: the token immediately before the mixed-case word must be
+ * one of the nouns, so an ordinary "ACME Holdings" is untouched.
+ */
+const ALLCAPS_HEADING_COMMA = new RegExp(
+  String.raw`^(?:[A-Z][A-Z&.'’-]*\s+)*(?:${HEADING_NOUN})(?:\s*,\s+(?=[A-Z])|\s+(?=[A-Z][a-z]))`,
+);
+
+/**
+ * A litigation caption names the party by its ROLE first — "PRODUCTION OF
+ * DOCUMENTS TO DEFENDANT NORTHWIND COMPOSITES, INC.", "Defendant Halstead
+ * Laboratories". {@link LEADING_ROLE} cannot reach these: it requires the
+ * comma a preamble writes after the role ("Landlord, Cedar Point Holdings
+ * LLC") and a caption writes none.
+ *
+ * Unlike the two heading rules above this one is case-INSENSITIVE, because the
+ * same junk stands in both registers — a caption shouts it, a privilege log's
+ * body writes it plainly — and none of these eight words is ever part of a
+ * business name, so the ALL-CAPS safety argument that {@link HEADING_NOUN}
+ * needs does not apply here.
+ */
+const LITIGATION_ROLE_PREFIX =
+  /^(?:plaintiffs?|defendants?|petitioners?|respondents?|appellants?|appellees?|movants?|claimants?)\s+(?=[A-Z])/i;
+
+/**
+ * Cut a document's own title, or a caption's role word, off the front of a
+ * name. Idempotent, and applied at BOTH ends: `cleanPartyName` runs it so the
+ * d/b/a path's `partyMap` lookup is spelled the way the party was registered,
+ * and `registerParty` runs it so the producers that build a name without
+ * `cleanPartyName` — the labeled-party and preamble readers — are covered too.
+ */
+function stripHeadingPrefix(n: string): string {
+  return n
+    .replace(ALLCAPS_HEADING_PREFIX, "")
+    .replace(ALLCAPS_HEADING_COMMA, "")
+    .replace(LITIGATION_ROLE_PREFIX, "");
+}
+
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
+  // A document's own title is not one of its parties.
+  n = stripHeadingPrefix(n);
   // Strip a role label the preamble put in FRONT of the legal name.
   n = n.replace(LEADING_ROLE, "");
   // Strip trailing entity descriptor like ", a Delaware corporation".
