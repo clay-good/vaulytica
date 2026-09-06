@@ -128,7 +128,7 @@ function isBareOfDuration(raw: string, anchor: string): boolean {
 }
 
 const RANGE_RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
@@ -138,8 +138,17 @@ const RANGE_RELATIVE = new RegExp(
 // before the Expiration Date" — still resolves to its named anchor. A bare
 // notice period with no anchor ("90 days' prior written notice.") still yields
 // nothing, since the connector + capitalized anchor never follow.
+// The count slot is two words so "twenty-four" and "one hundred" fit, and its
+// second word must NOT be the unit's own qualifier. "within ten business days"
+// let the slot take "ten business" and left the unit as a bare "days" — a
+// BUSINESS-day deadline read as a calendar-day one, which the register then
+// resolved to a confident date instead of the "verify manually" a business-day
+// count is owed with no holiday calendar asserted. The same clause written
+// "within 10 business days" was read correctly, because the digits cannot be
+// the slot's first word and the qualifier cannot be its second alone — so the
+// bug appeared only in the spelling a plain-language drafter uses.
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s]\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
   "gi",
 );
 
@@ -377,12 +386,22 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const start = m.index;
       const end = m.index + m[0].length;
       if (rangeSpans.some(([s, e]) => start < e && end > s)) continue;
-      const wordCount = m[1] ? parseWordNumber(m[1]) : null;
-      const numericCount = m[2] ? parseInt(m[2], 10) : null;
+      // `countOf`, not `parseWordNumber` — the single-bound branch was the one
+      // call site that read the word slot with the WORD parser alone, so a
+      // count written as a bare numeral resolved to nothing. The word slot
+      // holds the numeral whenever there is no parenthetical: "90 days from
+      // receipt" put "90" in `m[1]` and left `m[2]` empty, `parseWordNumber`
+      // found no number word in it, and the most ordinary phrasing of a
+      // relative deadline there is produced NO offset — so the critical-dates
+      // register dropped it entirely, while the same clause written "ninety
+      // days" was computed. Found by respelling the corpus in words and
+      // diffing the REGISTER: the words-only mutant GAINED entries, which is
+      // the tell that the numeral, not the word, was the unread spelling.
+      // `countOf` is the shared resolver the range branch above already uses.
+      const count = countOf(m[1], m[2]);
       const unit = (m[3] ?? "").toLowerCase().replace(/\s+/g, " ").trim();
       const anchor = trimAnchorQualifier((m[4] ?? "").trim());
       if (isBareOfDuration(m[0], m[4] ?? "")) continue;
-      const count = numericCount ?? wordCount;
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
       // An hours window ("within 72 hours") is sub-day: it carries NO
       // day-collapsed offset_days, so the date-granular register surfaces it

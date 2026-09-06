@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.462.0] — 2026-09-05
+
+### Fixed
+- **"90 days from receipt" produced no deadline at all.** The most ordinary
+  phrasing of a relative deadline there is. The single-bound branch of the date
+  extractor was the one call site that read its count slot with
+  `parseWordNumber` alone rather than the shared `countOf`, and the word slot
+  holds the NUMERAL whenever there is no parenthetical — so "90" went to a
+  parser that only knows number words, found none, and the reference was built
+  with no offset. The critical-dates register drops any reference without one,
+  so the deadline vanished; the same clause written "ninety days from receipt"
+  was computed correctly.
+
+  Found by pointing the words-only relation at the REGISTER instead of the
+  findings: the mutant GAINED entries, which is the tell that the numeral — not
+  the word — was the unread spelling. That relation now diffs the register on
+  every specimen, which is what would have caught this the day it shipped.
+
+- **"within ten business days" was read as ten CALENDAR days.** The count slot
+  is two words wide so "twenty-four" and "one hundred" fit, and its second word
+  could be the unit's own qualifier: the slot took "ten business" and left the
+  unit as a bare "days". A business-day count with no holiday calendar asserted
+  is owed a "verify manually", and this one was resolved to a confident wrong
+  date instead. The same clause written "within 10 business days" was correct,
+  because a numeral cannot be the slot's first word — so the bug appeared only
+  in the spelling a plain-language drafter uses.
+
 ## [9.461.0] — 2026-09-05
 
 ### Fixed

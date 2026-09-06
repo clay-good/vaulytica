@@ -125,23 +125,46 @@ describe("a period spelled in words alone", () => {
     const deps = await loadAccuracyDeps({});
     const broken: string[] = [];
     let probed = 0;
+    let registered = 0;
     for (const name of readdirSync(dir).filter((f) => f.endsWith(".txt"))) {
       const text = readFileSync(join(dir, name), "utf8");
       const mutated = wordsOnly(text);
       if (mutated === text) continue;
       probed++;
-      const before = await analyzeText(text, name, { deps });
-      const after = await analyzeText(mutated, name, { deps });
+      const opts = { deps, criticalDates: true } as const;
+      const before = await analyzeText(text, name, opts);
+      const after = await analyzeText(mutated, name, opts);
+      registered += before.critical_dates?.register.length ?? 0;
       const ids = (r: typeof before): string[] =>
         [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
       const lost = ids(before).filter((id) => !ids(after).includes(id));
       const gained = ids(after).filter((id) => !ids(before).includes(id));
-      if (lost.length || gained.length) {
-        broken.push(`${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`);
+      // The register, not only the findings. A period the deadline extractor
+      // cannot read does not remove a finding; it drops or downgrades a
+      // computed date on a surface that ships its own hash — and comparing
+      // findings alone is blind to all of it. That is how the numeral, of all
+      // spellings, turned out to be the unread one in the single-bound branch:
+      // the words-only mutant GAINED register entries.
+      const register = (r: typeof before): string[] =>
+        (r.critical_dates?.register ?? [])
+          // Neither the trigger nor the anchor: both are clause text, and this
+          // transform rewrites both by construction — an unresolvable anchor
+          // is sometimes "hire or 1 year after separation", the count included.
+          // What must hold is the DEADLINE: its family and the date computed.
+          .map((e) => `${e.kind}|${e.computed_date ?? "unresolved"}`)
+          .sort();
+      const regLost = register(before).filter((x) => !register(after).includes(x));
+      const regGained = register(after).filter((x) => !register(before).includes(x));
+      if (lost.length || gained.length || regLost.length || regGained.length) {
+        broken.push(
+          `${name}: lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}` +
+            ` | register lost ${regLost.length} gained ${regGained.length}`,
+        );
       }
     }
     // A floor, so this cannot pass by finding no period to respell.
     expect(probed, "the corpus states no period in digits").toBeGreaterThanOrEqual(200);
+    expect(registered, "no specimen produced a critical date").toBeGreaterThanOrEqual(200);
     expect(broken).toEqual([]);
   }, 300_000);
 });
