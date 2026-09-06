@@ -154,6 +154,39 @@ describe("extractCrossRefs", () => {
     expect(refs).toHaveLength(0);
   });
 
+  it("treats 'Article 9 of the UCC' — and a later bare 'Article 9' — as external", () => {
+    // The statutory corroborator read Section and Clause and not ARTICLE, so
+    // the most-cited provision in all of secured lending was statutory when
+    // written "Section 9 of the UCC" and a broken internal cross-reference
+    // when written the way every security agreement actually writes it.
+    const t = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "Grant of Security Interest",
+          level: 1,
+          paragraphs: [
+            {
+              id: "",
+              runs: [
+                {
+                  id: "",
+                  text: "Debtor grants a security interest perfected under Article 9 of the UCC. Upon default, Secured Party may exercise all remedies available under Article 9.",
+                  start: 0,
+                  end: 0,
+                },
+              ],
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const refs = extractCrossRefs(t, extractSections(t));
+    expect(refs).toHaveLength(0);
+  });
+
   it("reports a genuinely unresolved letter-suffixed section with its honest raw text", () => {
     // A bare "Section 409A" with no external qualifier and no matching outline
     // node is genuinely unresolved — but it must be reported as "Section 409A",

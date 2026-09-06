@@ -372,8 +372,17 @@ const EXTERNAL_ACRONYM_TAIL = /^(?:\(\d+[a-z]?\))*\s+of\s+(?:the\s+)?([A-Za-z]{2
 // (group 2). Corroborates a later BARE "Section 262" as statutory — a merger
 // agreement cites "under Section 262 of the DGCL" once and then "the rights
 // provided under Section 262" without the qualifier.
+//
+// ARTICLE belongs in this list, and its absence was not a corner case:
+// "Article 9 of the UCC" is the most-cited provision in secured lending, and a
+// security agreement that cited it and then referred to "Article 9" bare had
+// that second reference reported by STRUCT-007 as a cross-reference the
+// document had broken. The general cross-reference matcher at the top of this
+// file has always read Articles; only this statutory corroborator did not, so
+// the same citation was statutory when written "Section" and a defect when
+// written "Article".
 const STATUTE_ACRONYM_CITE =
-  /(?<![A-Za-z0-9_])(?:Section|Sections|Clause|Clauses|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
+  /(?<![A-Za-z0-9_])(?:Sections?|Clauses?|Articles?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
 
 // Statute acronyms so ubiquitous they are cited bare, without a local
 // definition — Delaware corporate law and the UCC head every M&A and secured-

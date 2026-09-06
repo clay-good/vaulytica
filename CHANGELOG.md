@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.484.0] — 2026-09-06
+
+### Fixed
+- **"Article 9 of the UCC" was reported as a broken cross-reference.**
+  `crossrefs.ts`'s statutory corroborator — the pattern that ties "Section 262
+  of the DGCL" to an acronym so a later bare "Section 262" is understood as
+  statutory rather than internal — read `Section|Clause|§` and not **Article**.
+  So a security agreement citing Article 9 of the UCC and then referring to
+  "Article 9" bare had that second reference reported by STRUCT-007 as a
+  reference the document had broken. The same citation was statutory when
+  written "Section 9 of the UCC" and a defect when written the way every
+  security agreement actually writes it — and Article 9 is the most-cited
+  provision in secured lending.
+
+  The general cross-reference matcher at the top of the same file has always
+  read Articles; only this one pattern did not.
+
+  Zero golden churn — no specimen cites the UCC that way — so the fix carries
+  its own evidence, verified by reverting and watching it fail.
+
+  Found by measuring the division-noun vocabulary the way `ATTACHMENT_KIND` was
+  measured: 152 recognizers name some of Section / Article / Clause / Paragraph
+  but not all four. Most are correctly scoped (a UK IDTA exemption reads the
+  nouns that form actually uses, and widening an EXEMPTION suppresses findings
+  — the wrong direction to widen on a hunch). This one was not scoped, it was
+  short.
+
 ## [9.483.0] — 2026-09-06
 
 ### Fixed
