@@ -251,6 +251,22 @@ export type JurisdictionReference = {
    * if such courts lack jurisdiction, then New York"): the fallback
    * jurisdiction this clause yields to, captured on the primary record
    * (not a separate equal record) so precedence is explicit.
+   *
+   * 🚨 This holds a LAW fallback or a FORUM one, undistinguished.
+   * `detectFallback` matches "courts of X" alongside "laws of X" on purpose
+   * (pinned in `jurisdictions.test.ts`), so "governed by New York law;
+   * provided that if such courts decline, then the courts of Texas" records
+   * Texas here — and Texas governs nothing in that clause. **Never read this
+   * field to decide a question of substantive law**: state-law overlays,
+   * usury caps, non-compete enforceability. `state-overlays.ts` deliberately
+   * ignores it, and `tests/integration/overlay-fallback-jurisdiction.test.ts`
+   * holds that line with the counterexample. A consumer that needs the
+   * substantive fallback has to teach this field to tell the two apart first.
+   *
+   * Also note the second sentence above overstates the case: for the common
+   * carve-out shapes the extractor DOES emit a second governing-law record
+   * for the carved-out state, so precedence is not the only signal available.
+   * Populated zero times across the 312-specimen corpus.
    */
   fallback_jurisdiction?: string;
   position: DocPosition;

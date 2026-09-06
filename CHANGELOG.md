@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.477.0] — 2026-09-06
+
+### Changed
+- **Measured, and deliberately not built: the state-law overlays must not
+  widen to a clause's FALLBACK jurisdiction.**
+  `JurisdictionReference.fallback_jurisdiction` is filled by the extractor and
+  read by nothing, which makes it look like an obvious gap — an employment
+  agreement governed by Delaware "except that the restrictive covenants shall
+  be governed by the laws of California" ought to draw California's non-compete
+  overlay, the most consequential node in the catalog, and feeding the fallback
+  into `selectStateOverlays` is the one-line change that appears to fix it.
+
+  It is the wrong change. `detectFallback` matches a FORUM fallback alongside a
+  law one — `jurisdictions.test.ts` pins "courts of X" as a fallback connector
+  on purpose — so one field holds two different things. "Governed by the laws
+  of New York; provided that if such courts decline jurisdiction, then the
+  courts of Texas" records `fallback_jurisdiction: "Texas"`, and Texas governs
+  nothing there. `state-overlays.ts` states the rule the widening would break:
+  "venue / arbitration-seat do not determine which state's substantive law
+  governs the covenant." A Texas usury or non-compete overlay drawn off a
+  forum-selection clause is precisely the confidently-wrong answer the module's
+  honest-N/A posture exists to prevent.
+
+  And the motivating case mostly does not need it: for the common carve-out
+  shapes the extractor already emits a SECOND governing-law record for the
+  carved-out state, so California's overlay is selected on its own merits —
+  asserted, not assumed. Over the 312-specimen corpus the field is populated
+  **zero** times, so there is no corpus evidence to separate the two readings.
+
+  `tests/integration/overlay-fallback-jurisdiction.test.ts` holds the line and
+  carries the counterexample, so a future session that wires it up gets a
+  failure explaining why rather than a plausible-looking green. The type
+  comment now names the law/forum conflation instead of leaving the field
+  reading like a substantive-law signal — and corrects its own claim that the
+  fallback is captured "not a separate equal record", which the common shapes
+  disprove.
+
 ## [9.476.0] — 2026-09-06
 
 ### Fixed
