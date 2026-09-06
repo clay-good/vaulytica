@@ -19,12 +19,17 @@
  * cure-window becomes the default notice-period, and
  * `saas-order-form-fields.txt` resolves an anchor it could not reach before.
  *
- * Not repaired here, deliberately. The obvious fix — classify from the SECTION
- * when the paragraph yields nothing — widens the window for every entry in the
- * corpus, and a cure clause five paragraphs away would then name a family it
- * has nothing to do with. That is a change to what the register SAYS about
- * every document, which is a product decision and not a fold of presentation.
- * Recorded by equality so it cannot grow, and so a repair cannot land unnoticed.
+ * Not repaired, and no longer on the strength of an argument. The obvious fix
+ * — classify from the SECTION when the paragraph yields nothing — was built
+ * and measured: it reclassifies **308 of the corpus's 519 distinct register entries**.
+ * An 83(b) election's filing deadline becomes an "auto-renewal-notice"; an
+ * acceptable-use policy's becomes one too; an insertion order's three become
+ * "cure-window". A cure clause five paragraphs away names a family it has
+ * nothing to do with, exactly as predicted, and at that scale.
+ *
+ * So the paragraph stays authoritative, and the two entries below are the
+ * price. Recorded by equality so the debt cannot grow, and so a repair cannot
+ * land unnoticed.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";

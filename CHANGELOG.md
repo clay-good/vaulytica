@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.473.0] — 2026-09-06
+
+### Documentation
+- **A deferral upgraded from an argument to a measurement.** 9.463.0 recorded
+  that double-spacing moves two specimens' critical-dates registers, and
+  declined the obvious repair — classify from the SECTION when the paragraph
+  names no deadline family — on the reasoning that it "widens the window for
+  every entry in the corpus".
+
+  It was built and measured instead. It reclassifies **308 of the corpus's 519
+  distinct register entries**: an 83(b) election's filing deadline becomes an
+  "auto-renewal-notice", an acceptable-use policy's becomes one too, an
+  insertion order's three become "cure-window". The prediction was right, and
+  now it is a number rather than a prediction. The paragraph stays
+  authoritative and the two entries stay recorded.
+
 ## [9.472.0] — 2026-09-06
 
 ### Fixed
