@@ -31,6 +31,8 @@ import type { Finding, Severity } from "../engine/finding.js";
 import { SEVERITY_RANK } from "../engine/finding.js";
 import type { SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
+import { PERIOD_COUNT, countValue } from "../extract/counts.js";
+import { AMOUNT_IN_WORDS, wordAmountValue } from "../extract/amounts.js";
 import { stableStringify } from "../engine/runner.js";
 import type {
   CustomPlaybook,
@@ -699,6 +701,70 @@ function describeClauseTarget(pattern?: string, heading?: string): string {
 // be located returns [] → the rule is reported unevaluable, never guessed.
 // ---------------------------------------------------------------------------
 
+/**
+ * A metric's number, in any of its three spellings.
+ *
+ * Every count-valued metric below was written `(\d+)` — digits only. That is
+ * the same blindness `counts.ts` was written to end: "sixty (60) days" is the
+ * dominant form in a drafted instrument, but the plain-language style guides a
+ * growing share of commercial drafting follows drop the numeral entirely, and
+ * "thirty days' written notice" was invisible here. These recognizers live in
+ * the playbook interpreter rather than under `src/engine/rules`, which is why
+ * the sweep that fixed 68 rule recognizers never reached them.
+ *
+ * The cost was not a missing number. A metric that locates no value is
+ * reported **unevaluable**, so the dimension drops off the negotiation ladder
+ * silently: measured over the corpus, rewriting every "30 days" as "thirty
+ * days" turned an `ideal` verdict and three `below-acceptable` ones into
+ * `unevaluable` — a walk-away signal disappearing rather than a number
+ * changing.
+ *
+ * Digits come FIRST in the alternation on purpose. `PERIOD_COUNT`'s numeral
+ * branch is `\d{1,3}`, and `countValue` reads a span's first three digits, so
+ * routing "term of 1095 days" through it would yield 109. The leading `\d+`
+ * takes any-length numerals whole, and {@link metricNumber} only falls back to
+ * the word table when the span is not a numeral at all.
+ *
+ * Sums (`$`) and percentages are deliberately NOT folded here — a rate is
+ * routinely fractional ("one and one-half percent"), and no integer word
+ * table holds that.
+ */
+const METRIC_NUMBER = `(?:\\d+(?:\\.\\d+)?|${PERIOD_COUNT})`;
+
+/**
+ * A cap stated in WORDS — "liability … is limited to Three Million Dollars".
+ *
+ * The digit patterns above read `$` within 120 characters of "liab", which is
+ * loose enough that "limited liability company … in consideration of Four
+ * Hundred Eighty Thousand Dollars" would report a purchase price as a
+ * liability cap. That looseness is pre-existing and left alone; this pattern
+ * is new, so it is held to a stricter standard instead of inheriting the
+ * weakness: the sum must be introduced by actual CAP language.
+ *
+ * Measured over the corpus, the gate keeps all seven genuine word-sum caps
+ * ("LIMITED TO THREE MILLION DOLLARS", "shall not exceed Five Hundred Thousand
+ * Dollars", "WILL NOT EXCEED ONE HUNDRED DOLLARS") and drops the one match
+ * that is not a cap at all.
+ */
+function capInWords(subject: string): RegExp {
+  return new RegExp(
+    `${subject}[^.$]{0,120}?(?:limited\\s+to|(?:shall\\s+|will\\s+)?not\\s+exceed|capped\\s+at)[^.$]{0,60}?(${AMOUNT_IN_WORDS})`,
+    "g",
+  );
+}
+
+/** The value of a {@link METRIC_NUMBER} span, or null when it states none. */
+function metricNumber(raw: string | undefined): number | null {
+  if (raw === undefined) return null;
+  if (/^\d+(?:\.\d+)?$/.test(raw)) return Number(raw);
+  // `countValue` yields 0 for a span it cannot parse. A zero-length notice or
+  // cure period is not a value any of these metrics can mean, so treat it as
+  // "not located" — the metric stays honestly unevaluable rather than
+  // comparing against a number the document never stated.
+  const v = countValue(raw);
+  return v > 0 ? v : null;
+}
+
 function extractMetricValues(metric: string, facts: DocFacts): number[] {
   const text = facts.textLower;
   const out: number[] = [];
@@ -709,9 +775,10 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
       const v = map(m);
       if (v !== null && Number.isFinite(v)) out.push(v);
       // Defensive: a zero-width match would not advance lastIndex and would
-      // spin forever (same hazard as rules/_helpers.ts allMatches). Today's
-      // metric patterns all require `\d+`, but guard the reusable loop so a
-      // future nullable pattern can't hang the tab (spec-v8 §5).
+      // spin forever (same hazard as rules/_helpers.ts allMatches). Every
+      // metric pattern requires at least one digit or one number word — none
+      // can match empty — but guard the reusable loop so a future nullable
+      // pattern can't hang the tab (spec-v8 §5).
       if (m[0].length === 0) r.lastIndex += 1;
     }
   };
@@ -719,26 +786,45 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
   switch (metric) {
     case "notice_period_days":
       all(
-        /(\d+)\s+(?:calendar\s+|business\s+)?days(?:['’]s)?\s+(?:prior\s+|advance\s+)?(?:written\s+)?notice/g,
-        (m) => Number(m[1]),
+        new RegExp(
+          `(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days(?:['’]s)?\\s+(?:prior\\s+|advance\\s+)?(?:written\\s+)?notice`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
       all(
-        /notice\s+(?:period\s+)?of\s+(?:at\s+least\s+)?(\d+)\s+(?:calendar\s+|business\s+)?days/g,
-        (m) => Number(m[1]),
+        new RegExp(
+          `notice\\s+(?:period\\s+)?of\\s+(?:at\\s+least\\s+)?(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
       break;
     case "term_length_days":
-      all(/term\s+of\s+(\d+)\s+(year|month|day)s?/g, (m) => unitToDays(Number(m[1]), m[2]!));
-      all(/(\d+)[\s-](year|month|day)\s+term/g, (m) => unitToDays(Number(m[1]), m[2]!));
+      all(new RegExp(`term\\s+of\\s+(${METRIC_NUMBER})\\s+(year|month|day)s?`, "g"), (m) =>
+        withUnit(metricNumber(m[1]), m[2]!),
+      );
+      all(new RegExp(`(${METRIC_NUMBER})[\\s-](year|month|day)\\s+term`, "g"), (m) =>
+        withUnit(metricNumber(m[1]), m[2]!),
+      );
       break;
     case "payment_term_days":
-      all(/\bnet\s*(\d+)\b/g, (m) => Number(m[1]));
-      all(/within\s+(\d+)\s+days[^.]{0,40}?(?:invoice|payment|receipt)/g, (m) => Number(m[1]));
+      all(new RegExp(`\\bnet\\s*(${METRIC_NUMBER})\\b`, "g"), (m) => metricNumber(m[1]));
+      all(
+        new RegExp(
+          `within\\s+(${METRIC_NUMBER})\\s+days[^.]{0,40}?(?:invoice|payment|receipt)`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
+      );
       break;
     case "liability_cap_multiple":
       all(
-        /(\d+(?:\.\d+)?)\s*(?:x|times|×)\s+(?:the\s+)?(?:total\s+|aggregate\s+|annual\s+|trailing\s+)*(?:fees|amounts?\s+paid)/g,
-        (m) => Number(m[1]),
+        new RegExp(
+          `(${METRIC_NUMBER})\\s*(?:x|times|×)\\s+(?:the\\s+)?(?:total\\s+|aggregate\\s+|annual\\s+|trailing\\s+)*(?:fees|amounts?\\s+paid)`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
       break;
     case "liability_cap_amount":
@@ -746,29 +832,53 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
         Number(m[1]!.replace(/,/g, "")),
       );
       all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?liab[a-z]*/g, (m) => Number(m[1]!.replace(/,/g, "")));
+      all(capInWords("liab[a-z]*"), (m) => wordAmountValue(m[1]!));
       break;
     // spec-v10 Thrust C — temporal dimensions (Step 173).
     case "cure_period_days":
-      all(/cure[a-z]*[^.]{0,40}?within\s+(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) =>
-        Number(m[1]),
+      all(
+        new RegExp(
+          `cure[a-z]*[^.]{0,40}?within\\s+(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
-      all(/within\s+(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,40}?(?:to\s+)?cure\b/g, (m) =>
-        Number(m[1]),
+      all(
+        new RegExp(
+          `within\\s+(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days[^.]{0,40}?(?:to\\s+)?cure\\b`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
-      all(/cure\s+period\s+of\s+(\d+)\s+(?:calendar\s+|business\s+)?days/g, (m) => Number(m[1]));
+      all(
+        new RegExp(
+          `cure\\s+period\\s+of\\s+(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
+      );
       break;
     case "auto_renewal_notice_days":
       all(
-        /(?:auto(?:matic(?:ally)?)?[\s-]*renew\w*|renew\w*\s+automatically)[^.]{0,160}?(\d+)\s+(?:calendar\s+|business\s+)?days/g,
-        (m) => Number(m[1]),
+        new RegExp(
+          `(?:auto(?:matic(?:ally)?)?[\\s-]*renew\\w*|renew\\w*\\s+automatically)[^.]{0,160}?(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
       all(
-        /(?:non-?renewal|not\s+to\s+renew|intent\s+not\s+to\s+renew)[^.]{0,80}?(\d+)\s+(?:calendar\s+|business\s+)?days/g,
-        (m) => Number(m[1]),
+        new RegExp(
+          `(?:non-?renewal|not\\s+to\\s+renew|intent\\s+not\\s+to\\s+renew)[^.]{0,80}?(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
       all(
-        /(\d+)\s+(?:calendar\s+|business\s+)?days[^.]{0,60}?(?:before|prior\s+to)[^.]{0,40}?(?:renew|the\s+end\s+of\s+the[^.]{0,20}?term|expir)/g,
-        (m) => Number(m[1]),
+        new RegExp(
+          `(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days[^.]{0,60}?(?:before|prior\\s+to)[^.]{0,40}?(?:renew|the\\s+end\\s+of\\s+the[^.]{0,20}?term|expir)`,
+          "g",
+        ),
+        (m) => metricNumber(m[1]),
       );
       break;
     // spec-v10 Thrust C — financial dimensions (Step 174).
@@ -779,6 +889,7 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
       all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?indemnif[a-z]*/g, (m) =>
         Number(m[1]!.replace(/,/g, "")),
       );
+      all(capInWords("indemnif[a-z]*"), (m) => wordAmountValue(m[1]!));
       break;
     case "uptime_sla_percent":
       all(/(?:up\s?time|availability|service\s+level)[^.%]{0,80}?(\d{2,3}(?:\.\d+)?)\s*%/g, (m) =>
@@ -790,6 +901,11 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
       return [];
   }
   return out;
+}
+
+/** {@link unitToDays} over a possibly-absent {@link metricNumber} result. */
+function withUnit(n: number | null, unit: string): number | null {
+  return n === null ? null : unitToDays(n, unit);
 }
 
 function unitToDays(n: number, unit: string): number {

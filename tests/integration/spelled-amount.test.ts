@@ -168,7 +168,7 @@ describe("a percentage spelled in words alone", () => {
  * federal gift rules — and whether its words are worth reading is a judgment
  * about that rule, not a fold of presentation.
  */
-const MONEY_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
+const MONEY_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency", "src/playbooks"];
 
 /** A currency token, and an unbounded digit run somewhere in the same pattern. */
 const CURRENCY = /[\u20ac\u00a3\u00a5\u20b9\u20a9\u20bd]|\\\$(?![{/`])|CURRENCY_TOKEN|\bUSD/;
@@ -190,6 +190,24 @@ const DECLARED_MONEY = declaredExceptions([
     file: "src/engine/rules/financial/FIN-002.ts",
     pattern: "of|equal\\s+to",
     why: "compares two NUMERALS for a named amount; a words-only sum has no numeral to conflict with",
+  },
+  // The two cap-amount metrics read a word sum through `capInWords`, a
+  // SEPARATE and deliberately stricter pattern, rather than by widening these.
+  // These digit patterns take any `$` within 120 characters of the subject,
+  // which is loose enough that "limited liability company … in consideration
+  // of Four Hundred Eighty Thousand Dollars" would report a purchase price as
+  // a liability cap. Folding the words in here would inherit that; requiring
+  // real cap language ("limited to", "shall not exceed", "capped at") instead
+  // keeps all seven genuine word-sum caps in the corpus and drops that one.
+  {
+    file: "src/playbooks/custom-interpreter.ts",
+    pattern: "liab[a-z]*",
+    why: "word sums read by `capInWords`, which requires cap language the loose $-window does not",
+  },
+  {
+    file: "src/playbooks/custom-interpreter.ts",
+    pattern: "indemnif[a-z]*",
+    why: "word sums read by `capInWords`, which requires cap language the loose $-window does not",
   },
 ]);
 

@@ -28,7 +28,12 @@ import { declaredExceptions, recognizerSources, sourceFiles } from "./_recognize
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
-const DOCUMENT_READING_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
+const DOCUMENT_READING_ROOTS = [
+  "src/engine/rules",
+  "src/extract",
+  "src/engine/consistency",
+  "src/playbooks",
+];
 
 /** A digit run, a mandatory space, and a period noun — the blind spelling. */
 const BLIND =

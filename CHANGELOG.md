@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.478.0] — 2026-09-06
+
+### Fixed
+- **The negotiation ladder could not read "thirty (30) days" — the way a
+  lawyer writes "30 days".** Every count-valued metric in the playbook
+  interpreter was written `(\d+)`, and `(\d+)\s+days` cannot match the
+  parenthetical form: after the digits comes ")", not a space. Across the
+  corpus that is **69 spans** the interpreter could not see.
+
+  An unread number is not a missing number here. A metric that locates no
+  value is reported **unevaluable**, so the dimension drops off the ladder
+  silently — the negotiator is not told the term is bad, they are not told
+  anything. Measured over the 312-specimen corpus: **45 specimens gain a
+  cure-period verdict and 13 a termination-notice verdict**, and rewriting
+  every "30 days" into words no longer turns an `ideal` verdict and three
+  `below-acceptable` ones into `unevaluable`.
+
+  `notice_period_days`, `cure_period_days`, `auto_renewal_notice_days`,
+  `term_length_days`, `payment_term_days` and `liability_cap_multiple` now
+  read all three spellings via `PERIOD_COUNT` from `counts.ts`, the single
+  owner. **Digits come first in the alternation on purpose**: `PERIOD_COUNT`'s
+  numeral branch is `\d{1,3}` and `countValue` reads a span's first three
+  digits, so routing everything through it would turn a 1095-day term into
+  109. That case is pinned as a test.
+
+- **Root cause: four static sweeps all skipped `src/playbooks`.** The sweeps
+  that fixed exactly this blindness — 65 rule recognizers for the
+  parenthetical form, 68 for the words-only form — walked `src/engine/rules`,
+  `src/extract` and `src/engine/consistency`. The playbook interpreter reads
+  documents just as much and was in none of the four root lists, which is why
+  it kept the blindness both sweeps existed to end. All four now walk it, and
+  widening them immediately found more:
+
+  - **Three routing recognizers in `matcher.ts` a Word document can never
+    match**: `recorder'?s?\s+use`, `(?:auditor|clerk|recorder)'?s?\s+file`
+    and `assessor'?s?\s+parcel` read the straight apostrophe only, so a deed
+    whose recording header carries Word's curly `’` failed to route.
+  - **Two cap-amount metrics blind to a sum in words** — 8 real caps in the
+    corpus ("LIMITED TO THREE MILLION DOLLARS", "shall not exceed Five Hundred
+    Thousand Dollars"). Read now through `capInWords`, a **separate and
+    deliberately stricter** pattern: the existing digit patterns take any `$`
+    within 120 characters of "liab", loose enough that "limited liability
+    company … in consideration of Four Hundred Eighty Thousand Dollars" would
+    report a purchase price as a liability cap. Rather than inherit that, the
+    word form requires real cap language — which over the corpus keeps all
+    seven genuine caps and drops that one. The digit patterns are declared
+    exceptions in `spelled-amount.test.ts` with that reason.
+
+  `wordAmountValue` is exported from `amounts.ts` so the currency-noun list
+  stays with the fragment that matched it, next to `parseWordPhrase`.
+
+  Zero golden churn: the metrics are read only by an opt-in custom playbook.
+
 ## [9.477.0] — 2026-09-06
 
 ### Changed

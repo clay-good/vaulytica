@@ -182,7 +182,12 @@ describe("a period spelled in words alone", () => {
  * clause is a statutory figure, and whether the words for it are worth reading
  * is a judgment about that statute, not a fold of presentation.
  */
-const ANY_COUNT_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
+const ANY_COUNT_ROOTS = [
+  "src/engine/rules",
+  "src/extract",
+  "src/engine/consistency",
+  "src/playbooks",
+];
 
 /** A digit run of unbounded value, bound to a period noun. */
 const BLIND_ANY_COUNT = new RegExp(

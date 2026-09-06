@@ -36,7 +36,12 @@ import { parsePlaybooks } from "../../src/playbooks/loader.js";
  * `critical-dates.ts` is listed by name because it does read the document, to
  * find the defined dates a deadline hangs off.
  */
-const DOCUMENT_READING_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
+const DOCUMENT_READING_ROOTS = [
+  "src/engine/rules",
+  "src/extract",
+  "src/engine/consistency",
+  "src/playbooks",
+];
 const DOCUMENT_READING_FILES = ["src/report/critical-dates.ts"];
 
 describe("apostrophe tolerance", () => {

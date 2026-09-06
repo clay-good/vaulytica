@@ -349,3 +349,146 @@ describe("deal-size bands end-to-end (add-negotiation-ladder-playbooks)", () => 
     expect(withBand.posture_hash).toBe(plain.posture_hash);
   });
 });
+
+/**
+ * A metric that counts must read all three spellings of its number.
+ *
+ * Every count-valued metric was written `(\d+)` — digits only. The static
+ * sweeps that fixed exactly this blindness across 65 rule recognizers
+ * (`parenthetical-numeral.test.ts`) and 68 more for the words-only form
+ * (`spelled-period.test.ts`) walked `src/engine/rules`, `src/extract` and
+ * `src/engine/consistency` — never `src/playbooks`, so the interpreter that
+ * reads documents for the negotiation ladder kept the blindness both sweeps
+ * existed to end. All four sweeps now walk `src/playbooks` too.
+ *
+ * The dominant missing form was not the exotic one. "thirty (30) days" is how
+ * a lawyer writes "30 days", and `(\d+)\s+days` cannot match it: after the
+ * digits comes ")", not a space. Across the corpus that is 69 spans the
+ * interpreter could not see.
+ *
+ * And an unread number is not a missing number here — it is an **unevaluable**
+ * dimension, which drops off the ladder silently. Measured: 45 specimens gain
+ * a cure-period verdict, 13 a termination-notice verdict, and rewriting the
+ * corpus into words no longer turns an `ideal` and three `below-acceptable`
+ * verdicts into `unevaluable`.
+ */
+describe("a counted metric reads all three spellings", () => {
+  const cureLadder: NegotiationPosition = {
+    dimension: "Cure period",
+    ideal: { kind: "numeric_threshold", metric: "cure_period_days", comparator: "gte", value: 30 },
+    acceptable: {
+      kind: "numeric_threshold",
+      metric: "cure_period_days",
+      comparator: "gte",
+      value: 15,
+    },
+  };
+
+  const SPELLINGS: Array<[label: string, clause: string, tier: string]> = [
+    ["bare numeral", "The breach must be cured within 30 days of notice.", "ideal"],
+    // The dominant form in a drafted instrument, and the one `(\d+)\s+days`
+    // could never match.
+    ["parenthetical", "The breach must be cured within thirty (30) days of notice.", "ideal"],
+    // The plain-language form, with no numeral to fall back on.
+    ["words only", "The breach must be cured within thirty days of notice.", "ideal"],
+    [
+      "words below the floor",
+      "The breach must be cured within ten days of notice.",
+      "below-acceptable",
+    ],
+  ];
+
+  for (const [label, clause, tier] of SPELLINGS) {
+    it(`reads the ${label} spelling`, async () => {
+      const p = await posture([clause], [cureLadder]);
+      expect(p.positions[0]!.tier).toBe(tier);
+    });
+  }
+
+  it("does not misread a long numeral as its first three digits", async () => {
+    // `PERIOD_COUNT`'s numeral branch is `\d{1,3}` and `countValue` reads a
+    // span's first three digits, so routing every match through it would turn
+    // a 1095-day term into 109. The digits-first alternation is what prevents
+    // that, and this is the case that proves it.
+    const termLadder: NegotiationPosition = {
+      dimension: "Term",
+      ideal: {
+        kind: "numeric_threshold",
+        metric: "term_length_days",
+        comparator: "gte",
+        value: 1000,
+      },
+      acceptable: {
+        kind: "numeric_threshold",
+        metric: "term_length_days",
+        comparator: "gte",
+        value: 500,
+      },
+    };
+    const p = await posture(["This Agreement has a term of 1095 days."], [termLadder]);
+    expect(p.positions[0]!.tier).toBe("ideal");
+  });
+
+  it("reads a liability cap stated as a multiple in words", async () => {
+    const p = await posture(
+      ["The liability cap is fifteen times the total fees paid under this Agreement."],
+      [liabilityLadder],
+    );
+    expect(p.positions[0]!.tier).toBe("ideal");
+  });
+});
+
+/**
+ * A cap stated as a sum in words, and the looseness it must not inherit.
+ *
+ * The digit patterns for `liability_cap_amount` take any `$` within 120
+ * characters of "liab" — loose enough that "limited liability company … in
+ * consideration of Four Hundred Eighty Thousand Dollars" reports a purchase
+ * price as a liability cap. That is pre-existing and left alone. The word-form
+ * pattern is new, so it requires real cap language instead of inheriting the
+ * weakness; over the corpus that keeps all seven genuine word-sum caps and
+ * drops the one match that is not a cap.
+ */
+describe("a liability cap written as a sum in words", () => {
+  const capLadder: NegotiationPosition = {
+    dimension: "Liability cap amount",
+    ideal: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_amount",
+      comparator: "gte",
+      value: 1_000_000,
+    },
+    acceptable: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_amount",
+      comparator: "gte",
+      value: 100_000,
+    },
+  };
+
+  it("reads a cap introduced by cap language", async () => {
+    const p = await posture(
+      ["Liability under this Guaranty is limited to Three Million Dollars."],
+      [capLadder],
+    );
+    expect(p.positions[0]!.tier).toBe("ideal");
+  });
+
+  it("reads 'shall not exceed' too", async () => {
+    const p = await posture(
+      ["Each party's liability for breach shall not exceed Five Hundred Thousand Dollars."],
+      [capLadder],
+    );
+    expect(p.positions[0]!.tier).toBe("acceptable");
+  });
+
+  it("does not read a purchase price beside the word 'liability' as a cap", async () => {
+    const p = await posture(
+      [
+        "Ridgeline Holdings, a limited liability company, for and in consideration of Four Hundred Eighty Thousand Dollars, hereby sells the Equipment.",
+      ],
+      [capLadder],
+    );
+    expect(p.positions[0]!.tier).toBe("unevaluable");
+  });
+});

@@ -408,9 +408,9 @@ const TITLE_LINE_CHARS = 120;
 const RECORDING_HEADER =
   /^\s*(?:(?:when\s+)?recorded?\s*[,:]?\s*(?:please\s+)?return\s+to|recording\s+requested\s+by|after\s+recording\s*,?\s*(?:please\s+)?return\s+to|mail\s+(?:tax\s+statements?|recorded\s+\w+)\s+to|prepared\s+by\s+and\s+return\s+to)\b/i;
 const RECORDER_RESERVED_SPACE =
-  /space\s+(?:above|below)\s+this\s+line|for\s+recorder'?s?\s+use|reserved\s+for\s+(?:the\s+)?recorder/i;
+  /space\s+(?:above|below)\s+this\s+line|for\s+recorder['’]?s?\s+use|reserved\s+for\s+(?:the\s+)?recorder/i;
 const ADDRESS_SHAPED =
-  /\b\d{5}(?:-\d{4})?\b|\b(?:street|st\.|avenue|ave\.|road|rd\.|drive|dr\.|boulevard|blvd\.|suite|ste\.|floor|parkway|pkwy|lane|highway|hwy)\b|\bp\.?\s?o\.?\s+box\b|\battn\b|\bescrow\s+(?:no|number)\b|\bapn\b|\b(?:assessor'?s?\s+)?parcel\s+(?:no|number|id)\b/i;
+  /\b\d{5}(?:-\d{4})?\b|\b(?:street|st\.|avenue|ave\.|road|rd\.|drive|dr\.|boulevard|blvd\.|suite|ste\.|floor|parkway|pkwy|lane|highway|hwy)\b|\bp\.?\s?o\.?\s+box\b|\battn\b|\bescrow\s+(?:no|number)\b|\bapn\b|\b(?:assessor['’]?s?\s+)?parcel\s+(?:no|number|id)\b/i;
 
 /**
  * The recorder's INDEX fields, which sit in the same block as the return-to
@@ -421,7 +421,7 @@ const ADDRESS_SHAPED =
  * the walk on one of them and fell to `generic-fallback`.
  */
 const RECORDER_INDEX_FIELD =
-  /\b(?:reference|recording|document|instrument|(?:auditor|clerk|recorder)'?s?\s+file|tax\s+parcel|folio)\s+(?:no|nos|number|numbers|id)\b/i;
+  /\b(?:reference|recording|document|instrument|(?:auditor|clerk|recorder)['’]?s?\s+file|tax\s+parcel|folio)\s+(?:no|nos|number|numbers|id)\b/i;
 
 function recordedInstrumentTitle(paragraphs: readonly string[]): string {
   if (paragraphs.length === 0 || !RECORDING_HEADER.test(paragraphs[0]!)) return "";

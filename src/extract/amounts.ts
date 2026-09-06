@@ -241,6 +241,25 @@ const WORD_FORM = new RegExp(
   "gi",
 );
 
+/**
+ * The number an {@link AMOUNT_IN_WORDS} span states — "Three Million Dollars"
+ * → 3000000 — or null when the span is not one.
+ *
+ * A caller that matched `AMOUNT_IN_WORDS` holds the number words AND the
+ * currency noun after them, and {@link parseWordPhrase} rejects any token that
+ * is not a number word. So the noun has to come off first, and the list of
+ * nouns that can be there belongs here with the fragment that matched them
+ * rather than copied to each call site — the same reason `parseWordPhrase`
+ * itself is exported.
+ */
+const WORD_FORM_ANCHORED = new RegExp(`^(?:${WORD_FORM.source})$`, "i");
+export function wordAmountValue(span: string): number | null {
+  const m = WORD_FORM_ANCHORED.exec(span.trim());
+  if (!m || m[1] === undefined) return null;
+  const value = parseWordPhrase(m[1].toLowerCase());
+  return value ? value.toNumber() : null;
+}
+
 export function extractAmounts(tree: DocumentTree): MoneyReference[] {
   const out: MoneyReference[] = [];
   let counter = 0;
