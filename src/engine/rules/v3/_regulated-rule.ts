@@ -19,6 +19,7 @@ import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import type { DocPosition } from "../../../extract/types.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { findDenial } from "../_helpers.js";
+import { isLegendLine } from "../../../extract/legends.js";
 
 export type RegulatedRuleConfig = {
   category: string;
@@ -122,7 +123,9 @@ export function fullText(ctx: RuleContext): string {
   forEachSection(ctx.tree, (s) => {
     if (s.heading) parts.push(s.heading);
   });
-  forEachParagraph(ctx.tree, (p) => parts.push(p.text));
+  forEachParagraph(ctx.tree, (p) => {
+    if (!isLegendLine(p.text)) parts.push(p.text);
+  });
   return parts.join("\n");
 }
 

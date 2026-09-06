@@ -22,6 +22,7 @@ import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { findDenial, isNonOperative, isTableOfContents } from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
+import { isLegendLine } from "../../../extract/legends.js";
 
 /**
  * Concatenate every section heading + paragraph text, MINUS the non-operative
@@ -60,7 +61,7 @@ export function fullTextWithRecitals(ctx: RuleContext): string {
     if (s.heading) parts.push(s.heading);
   });
   forEachParagraph(ctx.tree, (p) => {
-    if (!isTableOfContents(p.text)) parts.push(p.text);
+    if (!isTableOfContents(p.text) && !isLegendLine(p.text)) parts.push(p.text);
   });
   return parts.join("\n");
 }
@@ -71,7 +72,7 @@ export function fullText(ctx: RuleContext): string {
     if (s.heading) parts.push(s.heading);
   });
   forEachParagraph(ctx.tree, (p) => {
-    if (!isNonOperative(p.text)) parts.push(p.text);
+    if (!isNonOperative(p.text) && !isLegendLine(p.text)) parts.push(p.text);
   });
   return parts.join("\n");
 }

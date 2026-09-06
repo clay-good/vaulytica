@@ -18,6 +18,13 @@
  *    undefined term. The matcher has answered this question correctly since
  *    `titleCorpus` was written; `dropLegends` is now shared rather than
  *    reimplemented.
+ *  - **The legend SATISFIED a pillar**, which is the more expensive direction,
+ *    since the finding it silences is an absence finding. PRV-003 asks a
+ *    cookie notice for a per-cookie disclosure — name, provider, purpose,
+ *    duration — and "FOR DISCUSSION PURPOSES ONLY" supplies the word
+ *    "purpose". `fullText` already skipped non-operative text and a table of
+ *    contents before handing the document to a presence rule; a legend belongs
+ *    in that list, and adding it moved no specimen in the corpus.
  *  - **The legend became an obligation.** TEMP-007 audits a survival list only
  *    for categories the document actually HAS — "an obligation the document
  *    does not have cannot be missing from its list" — and decided that by
@@ -55,19 +62,6 @@ const stamp =
   (t: string): string =>
     `${legend}\n\n${t}`;
 
-/**
- * The two documents where the stamp is genuinely content rather than
- * furniture, and both are the case the single-legend rule was written for.
- * SET-030 asks a litigation hold notice to carry exactly that caption, and
- * `disclosure-schedules.txt` is an attachment whose own header is its
- * identification. A stamp above either does not repeat the document's legend —
- * it displaces it.
- */
-const CONFIDENTIAL_DEBT: readonly string[] = [
-  "disclosure-schedules.txt: lost MNA-045 gained -",
-  "litigation-hold-notice.txt: lost SET-030 gained -",
-];
-
 async function moved(mutate: (t: string) => string): Promise<{ moved: string[]; probed: number }> {
   const deps = await loadAccuracyDeps({});
   const out: string[] = [];
@@ -100,6 +94,8 @@ describe("the furniture an executed document carries", () => {
     ["[SIGNATURE PAGE FOLLOWS] at the end", (t: string) => `${t}\n\n[SIGNATURE PAGE FOLLOWS]\n`],
     ["an EXECUTION VERSION stamp above the title", stamp("EXECUTION VERSION")],
     ["a page number above the title", stamp("Page 1 of 12")],
+    ["a DRAFT stamp above the title", stamp("DRAFT — FOR DISCUSSION PURPOSES ONLY")],
+    ["a CONFIDENTIAL stamp above the title", stamp("CONFIDENTIAL")],
   ])(
     "%s moves no finding",
     async (_label, mutate) => {
@@ -109,29 +105,4 @@ describe("the furniture an executed document carries", () => {
     },
     600_000,
   );
-
-  /**
-   * A DRAFT stamp SATISFIES a presence pillar, which is the more expensive
-   * direction: the finding it silences is an absence finding. PRV-003 asks a
-   * cookie notice for a per-cookie disclosure — name, provider, purpose,
-   * duration — and "FOR DISCUSSION PURPOSES ONLY" supplies the word "purpose".
-   *
-   * Not repaired here, and the reason is that the repair is not local. TEMP-007
-   * could skip legend paragraphs because it walks paragraphs itself; a
-   * `presence()` rule runs its patterns over the whole document through a
-   * shared helper, and teaching THAT to ignore furniture changes every presence
-   * rule in the catalog at once. That is a measured change with its own corpus
-   * pass, not a footnote to this one.
-   */
-  it("a DRAFT stamp moves only the pillar its own words satisfy", async () => {
-    const { moved: broken, probed } = await moved(stamp("DRAFT — FOR DISCUSSION PURPOSES ONLY"));
-    expect(probed).toBeGreaterThanOrEqual(200);
-    expect(broken).toEqual(["cookie-notice.txt: lost PRV-003 gained -"]);
-  }, 600_000);
-
-  it("a CONFIDENTIAL stamp moves only the two documents it is the caption of", async () => {
-    const { moved: broken, probed } = await moved(stamp("CONFIDENTIAL"));
-    expect(probed).toBeGreaterThanOrEqual(200);
-    expect(broken).toEqual([...CONFIDENTIAL_DEBT]);
-  }, 600_000);
 });

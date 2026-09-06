@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.472.0] — 2026-09-06
+
+### Fixed
+- **A legend SATISFIED a presence pillar**, and 9.471.0 recorded it as
+  measured debt on the grounds that the repair was not local. It is: `fullText`
+  — the document a presence rule is handed — already skipped non-operative
+  text and a table of contents, and a legend belongs in that list beside them.
+
+  This is the more expensive direction of the same defect, because the finding
+  a legend silences is an ABSENCE finding: PRV-003 asks a cookie notice for a
+  per-cookie disclosure (name, provider, purpose, duration) and "DRAFT — FOR
+  DISCUSSION PURPOSES ONLY" supplies the word "purpose". With the skip in
+  place, every furniture case in `document-furniture.test.ts` now moves
+  nothing at all — including the two documents whose own caption is a legend,
+  which were the reason the list was written — and not one specimen in the
+  corpus moves.
+
 ## [9.471.0] — 2026-09-06
 
 ### Fixed
