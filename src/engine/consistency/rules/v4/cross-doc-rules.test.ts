@@ -1304,3 +1304,37 @@ describe("firstLiabilityCap — every way of writing the same cap scales the sam
     expect(cap(say("$750k"))).toBe(750_000);
   });
 });
+
+/**
+ * The precedence claim names an ATTACHMENT, and there are six of those.
+ *
+ * The doctype list was hand-written as `annex|exhibit|schedule`, so "this
+ * Addendum shall control" and "this Appendix shall prevail" — as conventional
+ * a precedence clause as any of the three — were invisible to the rule whose
+ * entire subject is which document wins. It now reads `ATTACHMENT_KIND`, the
+ * single owner, which `attachment-kinds.test.ts` holds complete.
+ *
+ * Found by consolidating the ten static sweeps onto one root list: the
+ * attachment sweep had been walking `src/engine/rules` and `src/extract` and
+ * not `src/engine/consistency`, where this rule lives.
+ */
+describe("CROSS-PRECEDENCE-001 — every attachment noun can claim precedence", () => {
+  for (const noun of ["Addendum", "Appendix", "Annexure", "Attachment", "Exhibit", "Schedule"]) {
+    it(`fires when an MSA and a ${noun} each claim to control`, async () => {
+      const msa = makeDoc("msa", "msa-vendor-deep", [
+        "Order of Precedence",
+        "In the event of any conflict, this Agreement shall control.",
+      ]);
+      const other = makeDoc("other", "generic-fallback", [
+        "Order of Precedence",
+        `In the event of any conflict, this ${noun} shall prevail.`,
+      ]);
+      const run = await runConsistency({
+        rules: [CROSS_PRECEDENCE_001],
+        documents: [msa, other],
+        dkb: STARTER_DKB,
+      });
+      expect(run.findings.length).toBeGreaterThanOrEqual(1);
+    });
+  }
+});

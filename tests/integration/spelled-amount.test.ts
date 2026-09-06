@@ -34,7 +34,12 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
-import { declaredExceptions, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import {
+  declaredExceptions,
+  recognizerSources,
+  sourceFiles,
+  DOCUMENT_READING_ROOTS,
+} from "./_recognizer-sources.js";
 
 const ONES = [
   "zero",
@@ -168,7 +173,7 @@ describe("a percentage spelled in words alone", () => {
  * federal gift rules — and whether its words are worth reading is a judgment
  * about that rule, not a fold of presentation.
  */
-const MONEY_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency", "src/playbooks"];
+const MONEY_ROOTS = DOCUMENT_READING_ROOTS;
 
 /**
  * A currency token, and an unbounded digit run somewhere in the same pattern.

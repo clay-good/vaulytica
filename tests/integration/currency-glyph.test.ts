@@ -35,7 +35,7 @@ import { describe, expect, it } from "vitest";
 import { CURRENCY_GLYPHS } from "../../src/extract/amounts.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
-import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import { recognizerSources, sourceFiles, DOCUMENT_READING_ROOTS } from "./_recognizer-sources.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR).filter((f) => f.endsWith(".txt"));
@@ -61,12 +61,7 @@ const swap =
 
 describe("a figure stated in another currency", () => {
   it("no recognizer that reads an arbitrary amount admits only the dollar", () => {
-    const files = [
-      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
-      ...sourceFiles(join(process.cwd(), "src", "extract")),
-      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
-      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
-    ];
+    const files = [...DOCUMENT_READING_ROOTS.flatMap((r) => sourceFiles(join(process.cwd(), r)))];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];

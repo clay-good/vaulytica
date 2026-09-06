@@ -18,9 +18,10 @@
  * `[$€£¥₹₩₽]` inline is not carrying a copy of anything — that class IS the
  * canonical spelling, and `currency-glyph.test.ts` requires exactly it.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { sourceFiles } from "./_recognizer-sources.js";
+import { join } from "node:path";
+import { sourceFiles, DOCUMENT_READING_ROOTS } from "./_recognizer-sources.js";
 
 const ROOTS = ["src", "tools"];
 
@@ -85,5 +86,58 @@ describe("a shared vocabulary", () => {
     }
     expect(orphaned, "stale entries — an owner that defines nothing guards nothing").toEqual([]);
     expect(duplicated, `second definitions:\n  ${duplicated.join("\n  ")}`).toEqual([]);
+  });
+});
+
+/**
+ * The sweeps' root list has one owner too.
+ *
+ * Ten static sweeps each carried their own copy of "which directories read a
+ * document", and all ten said the same three and all ten omitted
+ * `src/playbooks`. That is the failure this whole file exists to prevent, in
+ * the test tree rather than in `src/`: a table written ten times will disagree
+ * with itself, and here it disagreed with reality — the playbook interpreter
+ * kept the exact blindness those sweeps exist to end, and the attachment sweep
+ * was not reading `src/engine/consistency` at all, where a precedence rule
+ * enumerated three of the six attachment nouns.
+ *
+ * `DOCUMENT_READING_ROOTS` in `_recognizer-sources.ts` is now the list. A sweep
+ * whose scope is genuinely narrower should derive it from that constant and say
+ * why, not write its own.
+ */
+describe("the document-reading root list", () => {
+  it("is declared in exactly one place", () => {
+    const strays: string[] = [];
+    // `sourceFiles` deliberately SKIPS `.test.ts`, which is every sweep — so
+    // this walks the directory itself. Written the other way first, the guard
+    // scanned nothing and passed on a planted copy.
+    const dir = join(process.cwd(), "tests", "integration");
+    const files = readdirSync(dir)
+      .filter((f) => f.endsWith(".ts"))
+      .map((f) => join(dir, f));
+    expect(files.length, "the walk found no sweeps").toBeGreaterThan(20);
+    for (const file of files) {
+      if (file.endsWith("_recognizer-sources.ts")) continue;
+      const src = readFileSync(file, "utf8");
+      // An array literal that opens with the rules root is a copy of the list.
+      if (/\[\s*"src\/engine\/rules"/.test(src) || /\[\s*\n\s*"src\/engine\/rules"/.test(src)) {
+        strays.push(
+          `${file.slice(file.indexOf("tests/"))} — import DOCUMENT_READING_ROOTS instead`,
+        );
+      }
+    }
+    expect(strays).toEqual([]);
+  });
+
+  it("names every directory whose source reads a document", () => {
+    // A directory added under `src/` that reads documents must join the list,
+    // or every sweep silently skips it. These five are the ones that do.
+    expect([...DOCUMENT_READING_ROOTS].sort()).toEqual([
+      "src/delivery",
+      "src/engine/consistency",
+      "src/engine/rules",
+      "src/extract",
+      "src/playbooks",
+    ]);
   });
 });

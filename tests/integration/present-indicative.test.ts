@@ -25,7 +25,12 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { maskEscapes, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import {
+  maskEscapes,
+  recognizerSources,
+  sourceFiles,
+  DOCUMENT_READING_ROOTS,
+} from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
@@ -47,12 +52,7 @@ const MODAL = /(?:shall|will)(?![a-z])/i;
 
 describe("the present indicative is the same carve-out", () => {
   it("no recognizer reads 'shall not apply' without also reading 'does not apply'", () => {
-    const files = [
-      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
-      ...sourceFiles(join(process.cwd(), "src", "extract")),
-      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
-      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
-    ];
+    const files = [...DOCUMENT_READING_ROOTS.flatMap((r) => sourceFiles(join(process.cwd(), r)))];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
@@ -78,12 +78,7 @@ describe("the present indicative is the same carve-out", () => {
     // exercise: 39 specimens write a carve-out in the present indicative and
     // only 3 in the modal, so a recognizer blind the OTHER way would show on
     // far more documents.
-    const files = [
-      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
-      ...sourceFiles(join(process.cwd(), "src", "extract")),
-      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
-      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
-    ];
+    const files = [...DOCUMENT_READING_ROOTS.flatMap((r) => sourceFiles(join(process.cwd(), r)))];
     const blind: string[] = [];
     for (const file of files) {
       for (const { line, text } of recognizerSources(file)) {

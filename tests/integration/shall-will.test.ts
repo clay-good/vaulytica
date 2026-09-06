@@ -23,7 +23,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import { recognizerSources, sourceFiles, DOCUMENT_READING_ROOTS } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 
@@ -68,12 +68,7 @@ describe("shall and will are the same obligation", () => {
     // reach: `src/extract/jurisdictions.ts` could read "Delaware law shall
     // govern" and not "Delaware law will govern", which is the governing-law
     // clause of any contract drafted in a plain-language house style.
-    const files = [
-      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
-      ...sourceFiles(join(process.cwd(), "src", "extract")),
-      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
-      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
-    ];
+    const files = [...DOCUMENT_READING_ROOTS.flatMap((r) => sourceFiles(join(process.cwd(), r)))];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];
@@ -137,12 +132,7 @@ describe("shall and will are the same obligation", () => {
   const MUST_BLIND = 25;
 
   it("the recognizers that read 'shall' without 'must' can only get fewer", () => {
-    const files = [
-      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
-      ...sourceFiles(join(process.cwd(), "src", "extract")),
-      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
-      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
-    ];
+    const files = [...DOCUMENT_READING_ROOTS.flatMap((r) => sourceFiles(join(process.cwd(), r)))];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];

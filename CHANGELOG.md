@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.482.0] — 2026-09-06
+
+### Fixed
+- **"This Addendum shall control" was invisible to the rule about which
+  document controls.** `CROSS-PRECEDENCE-001` hand-wrote its attachment nouns
+  as `annex|exhibit|schedule`, three of the six in `ATTACHMENT_KIND`. So a
+  precedence claim naming an **Addendum**, an **Appendix** or an **Annexure** —
+  as conventional a clause as any of the three — never registered, and the rule
+  whose entire subject is which document wins saw no conflict to report. It now
+  reads the shared vocabulary; all six are pinned as tests.
+
+### Changed
+- **The ten static sweeps share one root list.** Each carried its own copy of
+  "which directories read a document", and all ten said the same three and all
+  ten omitted `src/playbooks` (fixed piecemeal in 9.478.0 and 9.480.0). A table
+  written ten times will disagree with itself, and here it disagreed with
+  reality twice over: the second omission was `src/engine/consistency`, absent
+  from the *attachment* sweep, which is exactly where the precedence rule above
+  lives — so consolidating the list is what found it.
+
+  `DOCUMENT_READING_ROOTS` in `_recognizer-sources.ts` is now the single owner,
+  and it also adds **`src/delivery`**, whose `sensitive.ts` reads the document
+  for the patterns that must not be disclosed. `src/report` and `src/ui` are
+  deliberately out: they render what the engine already decided.
+
+  `shared-vocabulary.test.ts` fails on a stray copy — verified by planting one
+  and watching it fail. Its first draft used `sourceFiles`, which deliberately
+  skips `.test.ts` and therefore every sweep, so the guard scanned nothing and
+  passed on the planted copy; it now walks the directory itself and asserts it
+  found more than twenty files. A second case pins the list's contents, so a
+  new document-reading directory has to be added deliberately rather than
+  silently skipped by all ten.
+
 ## [9.481.0] — 2026-09-06
 
 ### Added

@@ -41,6 +41,7 @@ import {
   maskEscapes,
   recognizerSources,
   sourceFiles,
+  DOCUMENT_READING_ROOTS,
 } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
@@ -96,11 +97,7 @@ const NOT_A_VARIANT = declaredExceptions([
 // of the last session in a new costume, and it is why `maskEscapes` exists.
 describe("a word spelled the way the rest of the common law spells it", () => {
   it("no recognizer reads only the American spelling", () => {
-    const files = [
-      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
-      ...sourceFiles(join(process.cwd(), "src", "extract")),
-      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
-    ];
+    const files = [...DOCUMENT_READING_ROOTS.flatMap((r) => sourceFiles(join(process.cwd(), r)))];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];

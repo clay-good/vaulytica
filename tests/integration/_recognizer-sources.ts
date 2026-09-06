@@ -23,6 +23,37 @@
 import { readFileSync, readdirSync } from "node:fs";
 import ts from "typescript";
 
+/**
+ * Every directory whose source reads a DOCUMENT, and therefore every directory
+ * a recognizer sweep must walk.
+ *
+ * This list lived in ten copies — one per sweep, written inline — and all ten
+ * said the same three directories and all ten omitted `src/playbooks`. So the
+ * playbook interpreter, which reads documents as much as any rule does, kept
+ * the exact blindness those sweeps exist to end: `(\d+)\s+days` cannot match
+ * "thirty (30) days", the dominant way a contract states a period, and a
+ * negotiation dimension that finds no value goes *unevaluable* rather than
+ * wrong — dropping off the ladder silently. Widening the ten found that plus a
+ * dollar-only cap metric and three routing recognizers a Word document's curly
+ * apostrophe could never match.
+ *
+ * Ten copies of a table will disagree with each other; this is the single
+ * owner, and `shared-vocabulary.test.ts` fails on a stray copy. A sweep with a
+ * genuinely narrower scope should say so in a comment rather than quietly
+ * writing its own list.
+ *
+ * `src/delivery` is here because `sensitive.ts` reads the document for the
+ * patterns that must not be disclosed. `src/report` and `src/ui` are not: they
+ * render what the engine already decided.
+ */
+export const DOCUMENT_READING_ROOTS: readonly string[] = [
+  "src/engine/rules",
+  "src/engine/consistency",
+  "src/extract",
+  "src/playbooks",
+  "src/delivery",
+];
+
 export interface RecognizerSource {
   /** The file the pattern was written in. */
   readonly file: string;

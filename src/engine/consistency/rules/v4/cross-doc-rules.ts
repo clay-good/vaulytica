@@ -40,6 +40,7 @@ import {
   terminationPosture,
 } from "./_helpers.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
+import { ATTACHMENT_KIND } from "../../../../extract/attachment-kinds.js";
 
 const V4_VERSION = "1.4.0";
 
@@ -424,8 +425,16 @@ export const CROSS_PRECEDENCE_001: ConsistencyRule = {
       // the prior doctype list missed. "supersedes" is intentionally NOT a
       // precedence verb here — it is the merger-clause verb ("supersedes all
       // prior agreements") and would misfire on integration clauses.
+      // The attachment nouns come from {@link ATTACHMENT_KIND} rather than a
+      // hand-written three. The list here was `annex|exhibit|schedule`, so
+      // "this Addendum shall control" and "this Appendix shall prevail" — as
+      // conventional a precedence clause as any of the three — were invisible
+      // to the rule whose whole subject is which document wins.
       const m = text.match(
-        /\b(this\s+(?:agreement|msa|master\s+services?\s+agreement|sow|statement\s+of\s+work|order\s+form|annex|exhibit|schedule)|the\s+(?:msa|master\s+services?\s+agreement|sow|statement\s+of\s+work|order\s+form))\s+(?:(?:shall|will|must)\s+)?(?:controls?|govern[s]?|prevails?|takes?\s+precedence)\b/i,
+        new RegExp(
+          `\\b(this\\s+(?:agreement|msa|master\\s+services?\\s+agreement|sow|statement\\s+of\\s+work|order\\s+form|${ATTACHMENT_KIND})|the\\s+(?:msa|master\\s+services?\\s+agreement|sow|statement\\s+of\\s+work|order\\s+form))\\s+(?:(?:shall|will|must)\\s+)?(?:controls?|govern[s]?|prevails?|takes?\\s+precedence)\\b`,
+          "i",
+        ),
       );
       if (!m) continue;
       // Locate the paragraph for the excerpt.

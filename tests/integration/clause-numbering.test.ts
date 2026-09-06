@@ -39,7 +39,12 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
-import { maskEscapes, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import {
+  maskEscapes,
+  recognizerSources,
+  sourceFiles,
+  DOCUMENT_READING_ROOTS,
+} from "./_recognizer-sources.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR).filter((f) => f.endsWith(".txt"));
@@ -75,12 +80,7 @@ const asClause = (s: string): string =>
 
 describe("a contract drafted in England numbers its clauses", () => {
   it("every recognizer that reads the document's own numbering admits 'clause'", () => {
-    const files = [
-      ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
-      ...sourceFiles(join(process.cwd(), "src", "extract")),
-      ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
-      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
-    ];
+    const files = [...DOCUMENT_READING_ROOTS.flatMap((r) => sourceFiles(join(process.cwd(), r)))];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
     const blind: string[] = [];

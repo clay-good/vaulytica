@@ -43,7 +43,12 @@ import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 import { PERIOD_COUNT, countValue } from "../../src/extract/counts.js";
-import { declaredExceptions, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import {
+  declaredExceptions,
+  recognizerSources,
+  sourceFiles,
+  DOCUMENT_READING_ROOTS,
+} from "./_recognizer-sources.js";
 
 const WORDS: Record<number, string> = {
   1: "one",
@@ -182,12 +187,7 @@ describe("a period spelled in words alone", () => {
  * clause is a statutory figure, and whether the words for it are worth reading
  * is a judgment about that statute, not a fold of presentation.
  */
-const ANY_COUNT_ROOTS = [
-  "src/engine/rules",
-  "src/extract",
-  "src/engine/consistency",
-  "src/playbooks",
-];
+const ANY_COUNT_ROOTS = DOCUMENT_READING_ROOTS;
 
 /** A digit run of unbounded value, bound to a period noun. */
 const BLIND_ANY_COUNT = new RegExp(

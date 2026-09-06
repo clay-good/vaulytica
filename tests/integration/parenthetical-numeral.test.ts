@@ -24,16 +24,14 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { declaredExceptions, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
+import {
+  declaredExceptions,
+  recognizerSources,
+  sourceFiles,
+  DOCUMENT_READING_ROOTS,
+} from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
-
-const DOCUMENT_READING_ROOTS = [
-  "src/engine/rules",
-  "src/extract",
-  "src/engine/consistency",
-  "src/playbooks",
-];
 
 /** A digit run, a mandatory space, and a period noun — the blind spelling. */
 const BLIND =
