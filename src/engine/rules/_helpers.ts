@@ -1084,3 +1084,92 @@ export function excerptWindow(text: string, index: number, before: number, after
   }
   return text.slice(start, end).trim();
 }
+
+/**
+ * The first DENYING sentence in the document, with its position.
+ *
+ * Four byte-identical copies of this shipped — `_regulated-rule.ts`,
+ * `v4/_helpers.ts`, and the BAA and NDA-deep helper modules, the last two
+ * renamed `findBaaDenial` / `findNdaDenial` and otherwise character-for-
+ * character the same. A denial is the predicate that decides whether a clause
+ * the document APPEARS to carry has actually been disclaimed, so a repair to
+ * one copy and not the other three would change what three rule packs believe
+ * about the same sentence. One copy now.
+ *
+ * The pattern is recompiled with the `g` flag whether or not it carried one,
+ * because `exec` on a non-global regex ignores `lastIndex` — and the reset
+ * before it is what keeps a caller's own global pattern from resuming
+ * mid-paragraph on the next document.
+ */
+export function findDenial(
+  ctx: RuleContext,
+  patterns: readonly RegExp[],
+): { sentence: string; position: DocPosition } | null {
+  let found: { sentence: string; position: DocPosition } | null = null;
+  forEachParagraph(ctx.tree, (p) => {
+    if (found) return;
+    for (const re of patterns) {
+      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+      r.lastIndex = 0;
+      const m = r.exec(p.text);
+      if (m) {
+        found = {
+          sentence: enclosingSentence(p.text, m.index).trim(),
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start + m.index,
+            end: p.start + m.index + m[0].length,
+          },
+        };
+        return;
+      }
+    }
+  });
+  return found;
+}
+
+/**
+ * The first paragraph matching any BAD pattern, skipping a paragraph that also
+ * states the same thing in its compliant form.
+ *
+ * The BAA and NDA-deep language rules carried this scan character for
+ * character, and `findDenial`'s four copies sat beside them. It is the
+ * counterpart of that one: `findDenial` looks for a sentence that DISCLAIMS a
+ * clause, this looks for a paragraph that states a clause badly, and both
+ * decide what a rule pack believes about a sentence.
+ *
+ * `exclude_if` returns from the PARAGRAPH, not from the scan — a document that
+ * says the compliant thing once and the bad thing later still fires on the
+ * later one.
+ */
+export function firstBadPatternHit(
+  ctx: RuleContext,
+  badPatterns: readonly RegExp[],
+  excludeIf?: readonly RegExp[],
+): { text: string; position: DocPosition; match: string } | null {
+  let hit: { text: string; position: DocPosition; match: string } | null = null;
+  forEachParagraph(ctx.tree, (p) => {
+    if (hit) return;
+    for (const re of badPatterns) {
+      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
+      r.lastIndex = 0;
+      const m = r.exec(p.text);
+      if (m) {
+        if (excludeIf?.some((ex) => ex.test(p.text))) return;
+        hit = {
+          text: p.text,
+          match: m[0],
+          position: {
+            section_id: p.section.id,
+            paragraph_id: p.paragraph.id,
+            start: p.start + m.index,
+            end: p.start + m.index + m[0].length,
+          },
+        };
+        return;
+      }
+    }
+  });
+  return hit;
+}

@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.465.0] — 2026-09-05
+
+### Fixed
+- **`findDenial` was written four times.** The general form of the previous
+  release: `shared-vocabulary.test.ts` names each shared vocabulary and its
+  owner, which works because a vocabulary is a thing you can name. Duplicated
+  LOGIC is not — nobody sets out to write the same function four times, and the
+  copies never announce themselves. Hashing every function body in the tree
+  found them.
+
+  - **`findDenial`, four times** — `_regulated-rule.ts`, `v4/_helpers.ts`, and
+    the BAA and NDA-deep helpers as `findBaaDenial` / `findNdaDenial`, renamed
+    and otherwise character-for-character identical. A denial decides whether a
+    clause a document APPEARS to carry has been disclaimed, so a repair to one
+    copy would change what one rule pack believes about a sentence and leave
+    three believing the old thing.
+  - **The bad-pattern scan, twice** — its counterpart, sitting beside it.
+  - **The governing-law collector, four times inside one function** — the four
+    shapes differ only in the pattern that finds them, and the capitalized-name
+    check, the negation guard, the dedupe and the emitted clause were written
+    out four times each.
+
+- **A comment claimed a guard that is not there.** Consolidating the
+  governing-law collectors surfaced a fifth shape, `GOV_LAW_IS`, whose sibling
+  documents itself as carrying "the same guards" including the negation guard —
+  which `GOV_LAW_IS` does not have. It turns out not to need one (the guard
+  reads the text BEFORE the match, and this shape's match opens at "governing
+  law", so a negation would have to sit inside it; "is not the law of New York"
+  already fails the pattern). Left as it is, with the reason written down where
+  the misleading claim used to be.
+
+### Added
+- **`duplicate-logic.test.ts`** hashes every function body of 12+ lines in
+  `src/engine` and `src/extract` and fails on a collision. Scoped there because
+  that is where a duplicate changes what the engine BELIEVES; the report
+  layer's DOCX helpers are duplicated too and deliberately left, since a
+  divergence in formatting is visible and the shared-render abstraction that
+  would unify them is a bigger change than this guard is entitled to force.
+
 ## [9.464.0] — 2026-09-05
 
 ### Fixed

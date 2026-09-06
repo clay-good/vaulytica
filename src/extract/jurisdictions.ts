@@ -599,6 +599,14 @@ export function extractJurisdictions(
       // capitalization a jurisdiction name always carries — otherwise "The
       // governing law of this Addendum is determined by …" registers
       // "determined" as the law.
+      //
+      // This shape does NOT take `isNegatedGovLaw`, and that is not an
+      // omission: the guard reads the text BEFORE the match, and here the
+      // match opens at "governing law", so a negation would have to sit
+      // inside it. "is not the law of New York" already fails the pattern —
+      // "not" is lowercase where a jurisdiction name is required — so there
+      // is nothing left for the guard to catch. (An adjacent comment used to
+      // claim this shape carried it.)
       if (!/^[A-Z]/.test(raw)) return;
       if (seenGovLaw.has(raw.toLowerCase())) return;
       seenGovLaw.add(raw.toLowerCase());
@@ -609,22 +617,27 @@ export function extractJurisdictions(
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     });
-    runRegex(GOV_LAW_ADJECTIVAL, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      // Same guards as GOV_LAW_IS: the `i` flag makes `[A-Z]` match any
-      // letter, so require a real capitalized jurisdiction name, and drop a
-      // disclaimed selection ("not governed by California law").
-      if (!/^[A-Z]/.test(raw)) return;
-      if (isNegatedGovLaw(ctx.text, m.index)) return;
-      if (seenGovLaw.has(raw.toLowerCase())) return;
-      seenGovLaw.add(raw.toLowerCase());
-      out.push({
-        clause_kind: "governing-law",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
+    // The four governing-law shapes differ only in the pattern that finds
+    // them; what happens with a hit — the capitalized-name check, the negation
+    // guard, the case-insensitive dedupe, the emitted clause — was written out
+    // four times, character for character. A repair to one of those copies
+    // would have taught one shape something the other three did not know.
+    const collectGovLaw = (re: RegExp): void => {
+      runRegex(re, ctx.text, (m) => {
+        const raw = (m[1] ?? "").trim();
+        if (!/^[A-Z]/.test(raw)) return;
+        if (isNegatedGovLaw(ctx.text, m.index)) return;
+        if (seenGovLaw.has(raw.toLowerCase())) return;
+        seenGovLaw.add(raw.toLowerCase());
+        out.push({
+          clause_kind: "governing-law",
+          jurisdiction_id: lookup(raw),
+          raw_text: raw,
+          position: posInParagraph(ctx, m.index, m.index + m[0].length),
+        });
       });
-    });
+    };
+    collectGovLaw(GOV_LAW_ADJECTIVAL);
     runRegex(GOV_LAW_FEDERAL_STATUTE, ctx.text, (m) => {
       if (isNegatedGovLaw(ctx.text, m.index)) return;
       const raw = "United States";
@@ -637,58 +650,10 @@ export function extractJurisdictions(
         position: posInParagraph(ctx, m.index, m.index + m[0].length),
       });
     });
-    runRegex(GOV_LAW_FEDERAL_AND_STATE, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      if (!/^[A-Z]/.test(raw)) return;
-      if (isNegatedGovLaw(ctx.text, m.index)) return;
-      if (seenGovLaw.has(raw.toLowerCase())) return;
-      seenGovLaw.add(raw.toLowerCase());
-      out.push({
-        clause_kind: "governing-law",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
-      });
-    });
-    runRegex(GOV_LAW_SUBJECT_FIRST, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      if (!/^[A-Z]/.test(raw)) return;
-      if (isNegatedGovLaw(ctx.text, m.index)) return;
-      if (seenGovLaw.has(raw.toLowerCase())) return;
-      seenGovLaw.add(raw.toLowerCase());
-      out.push({
-        clause_kind: "governing-law",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
-      });
-    });
-    runRegex(GOV_LAW_LABELLED, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      if (!/^[A-Z]/.test(raw)) return;
-      if (isNegatedGovLaw(ctx.text, m.index)) return;
-      if (seenGovLaw.has(raw.toLowerCase())) return;
-      seenGovLaw.add(raw.toLowerCase());
-      out.push({
-        clause_kind: "governing-law",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
-      });
-    });
-    runRegex(GOV_LAW_ADJ_SUBJECT, ctx.text, (m) => {
-      const raw = (m[1] ?? "").trim();
-      if (!/^[A-Z]/.test(raw)) return;
-      if (isNegatedGovLaw(ctx.text, m.index)) return;
-      if (seenGovLaw.has(raw.toLowerCase())) return;
-      seenGovLaw.add(raw.toLowerCase());
-      out.push({
-        clause_kind: "governing-law",
-        jurisdiction_id: lookup(raw),
-        raw_text: raw,
-        position: posInParagraph(ctx, m.index, m.index + m[0].length),
-      });
-    });
+    collectGovLaw(GOV_LAW_FEDERAL_AND_STATE);
+    collectGovLaw(GOV_LAW_SUBJECT_FIRST);
+    collectGovLaw(GOV_LAW_LABELLED);
+    collectGovLaw(GOV_LAW_ADJ_SUBJECT);
     const seenVenue = new Set<string>();
     let venueRecorded = false;
     const recordVenue = (m: RegExpExecArray): void => {

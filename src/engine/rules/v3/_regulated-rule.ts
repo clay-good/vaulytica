@@ -18,7 +18,7 @@ import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import type { DocPosition } from "../../../extract/types.js";
 import type { SourceCitation } from "../../../dkb/types.js";
-import { enclosingSentence } from "../_helpers.js";
+import { findDenial } from "../_helpers.js";
 
 export type RegulatedRuleConfig = {
   category: string;
@@ -322,33 +322,4 @@ export function buildLanguageRule(spec: LanguageSpec, config: RegulatedRuleConfi
       });
     },
   };
-}
-
-/** First denying sentence in the document, with its position. */
-function findDenial(
-  ctx: RuleContext,
-  patterns: readonly RegExp[],
-): { sentence: string; position: DocPosition } | null {
-  let found: { sentence: string; position: DocPosition } | null = null;
-  forEachParagraph(ctx.tree, (p) => {
-    if (found) return;
-    for (const re of patterns) {
-      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
-      r.lastIndex = 0;
-      const m = r.exec(p.text);
-      if (m) {
-        found = {
-          sentence: enclosingSentence(p.text, m.index).trim(),
-          position: {
-            section_id: p.section.id,
-            paragraph_id: p.paragraph.id,
-            start: p.start + m.index,
-            end: p.start + m.index + m[0].length,
-          },
-        };
-        return;
-      }
-    }
-  });
-  return found;
 }

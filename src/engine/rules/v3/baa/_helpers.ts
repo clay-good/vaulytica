@@ -18,7 +18,7 @@ import type { SourceCitation } from "../../../../dkb/types.js";
 import { makeFinding } from "../../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../../extract/walk.js";
 import type { DocPosition } from "../../../../extract/types.js";
-import { enclosingSentence } from "../../_helpers.js";
+import { findDenial, firstBadPatternHit } from "../../_helpers.js";
 
 const BAA_PLAYBOOKS = ["baa", "baa-deep", "baa-subcontractor"] as const;
 
@@ -116,7 +116,7 @@ export function buildBaaPresenceRule(spec: BaaPresenceSpec): Rule {
       if (spec.denied_if) {
         // An express denial outranks the presence check: the topic words are
         // present precisely because the document is disclaiming the clause.
-        const denial = findBaaDenial(ctx, spec.denied_if);
+        const denial = findDenial(ctx, spec.denied_if);
         if (denial) {
           return makeFinding({
             rule: this as Rule,
@@ -184,35 +184,9 @@ export function buildBaaLanguageRule(spec: BaaLanguageSpec): Rule {
     dkb_citations: [`hipaa-${spec.citation.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`],
     applies_to_playbooks: Array.from(BAA_PLAYBOOKS),
     check(ctx: RuleContext): Finding | null {
-      type Hit = { text: string; position: DocPosition; match: string };
-      let hit: Hit | null = null;
-      forEachParagraph(ctx.tree, (p) => {
-        if (hit) return;
-        for (const re of spec.bad_patterns) {
-          const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
-          r.lastIndex = 0;
-          const m = r.exec(p.text);
-          if (m) {
-            // Skip a paragraph that states the flagged pattern in its COMPLIANT
-            // form. Skipping this paragraph still lets a genuine violation in a
-            // later paragraph fire.
-            if (spec.exclude_if?.some((ex) => ex.test(p.text))) return;
-            hit = {
-              text: p.text,
-              match: m[0],
-              position: {
-                section_id: p.section.id,
-                paragraph_id: p.paragraph.id,
-                start: p.start + m.index,
-                end: p.start + m.index + m[0].length,
-              },
-            };
-            return;
-          }
-        }
-      });
+      const hit = firstBadPatternHit(ctx, spec.bad_patterns, spec.exclude_if);
       if (!hit) return null;
-      const h: Hit = hit;
+      const h = hit;
       return makeFinding({
         rule: this as Rule,
         title: spec.bad_title,
@@ -228,32 +202,3 @@ export function buildBaaLanguageRule(spec: BaaLanguageSpec): Rule {
 }
 
 export const BAA_PLAYBOOK_IDS = BAA_PLAYBOOKS;
-
-/** First denying sentence in the document, with its position. */
-function findBaaDenial(
-  ctx: RuleContext,
-  patterns: readonly RegExp[],
-): { sentence: string; position: DocPosition } | null {
-  let found: { sentence: string; position: DocPosition } | null = null;
-  forEachParagraph(ctx.tree, (p) => {
-    if (found) return;
-    for (const re of patterns) {
-      const r = new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g");
-      r.lastIndex = 0;
-      const m = r.exec(p.text);
-      if (m) {
-        found = {
-          sentence: enclosingSentence(p.text, m.index).trim(),
-          position: {
-            section_id: p.section.id,
-            paragraph_id: p.paragraph.id,
-            start: p.start + m.index,
-            end: p.start + m.index + m[0].length,
-          },
-        };
-        return;
-      }
-    }
-  });
-  return found;
-}
