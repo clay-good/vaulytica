@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.491.0] — 2026-09-06
+
+### Added
+- **`tests/integration/honesty-caveat-reach.test.ts`** — the guard that keeps
+  9.490.0's sweep complete. Every module that turns a run into something a
+  person or a pipeline reads must itself read both caveats:
+  `run.classification_notice` (no family matched, so these findings may not
+  apply) and `IngestResult.warnings` (what the ingest could and could not
+  READ). Eight surfaces are listed; a new one has to join the list, which is
+  the point — the list is where the omission becomes visible.
+
+  It is a **reach** test, not a rendering test: what a surface does with the
+  fields is that surface's business and its own tests' subject. Verified by
+  removing the field from one surface and watching the failure name it.
+
+  These two are the easiest thing in the tree to leave out, because a surface
+  is built to show findings and a caveat is not one — which is why
+  `IngestResult.warnings` was composed from the beginning and read by no
+  consumer anywhere until session 29, why session 30 found both missing from
+  the bundle card, and why session 32 found them missing from three more.
+
 ## [9.490.0] — 2026-09-06
 
 ### Fixed
