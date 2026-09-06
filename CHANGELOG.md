@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.481.0] — 2026-09-06
+
+### Added
+- **The pre-disclosure scan gets a relation, and it pins why the caller passes
+  ingested text.** `HANDOFF-005` is the "do not send this out" check — an SSN,
+  a card or account number, a direct line left in a draft about to be
+  disclosed. Its failure direction is the worst available in the tree: a false
+  NEGATIVE that reports a document clean. 67 of the 312 specimens exercise it,
+  and nothing constrained it, because the delivery report lives outside
+  `run.findings` behind its own `delivery_hash`.
+
+  `tests/integration/delivery-format-invariance.test.ts` runs all four format
+  transforms over the corpus through the real path — `flattenText(ingest.tree)`,
+  which is what `tools/cli/api.ts` passes — and nothing moves. The same four
+  over the RAW text cost three specimens a match, two of them their only
+  finding. So the green means "stable *because* it reads ingested text", not
+  "stable".
+
+  The second test pins the half that is easiest to break and worst to lose. A
+  wrapped line can end ON the hyphen inside a number — `123-45-` over `6789` —
+  and `joinWrappedLines` restores it only because a line ending in `\w-` joins
+  with NO space. Verified by breaking that one branch and watching both tests
+  fail: change it and an SSN in a hard-wrapped draft becomes invisible to the
+  check whose whole job is to find it before the draft is sent. The test also
+  asserts §13's masking rule on the same evidence — the unmasked value appears
+  nowhere.
+
+  Three candidate defects were investigated and **all three were the probe
+  being wrong**, not the engine: scanning raw text instead of ingested text,
+  and a synthetic fixture with no blank lines (where every line is its own
+  paragraph, so nothing is a wrapped line to rejoin). Recorded because the
+  measurement is what makes the green meaningful — the corpus's own wrapped
+  numbers happen to break at spaces, so the hyphen case needed a written
+  fixture to exercise at all.
+
 ## [9.480.0] — 2026-09-06
 
 ### Fixed
