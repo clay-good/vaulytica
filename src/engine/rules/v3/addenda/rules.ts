@@ -24,6 +24,7 @@ import {
   type PresenceSpec,
   type RegulatedRuleConfig,
 } from "../_regulated-rule.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 
 const SECURITY_PLAYBOOKS = ["vendor-security-addendum"];
 const AI_PLAYBOOKS = ["ai-addendum"];
@@ -180,13 +181,19 @@ export const ADDENDA_RULES: Rule[] = [
       // The window is as often written "in no EVENT later than forty-eight
       // (48) hours" — with "event", a spelled count, and the digit in a
       // parenthetical — none of which the digit-only forms above reach.
-      /(?:within|no\s+(?:event\s+)?later\s+than)\s+[^.]{0,20}?\(?\d{1,3}\)?\s*(?:calendar\s+|business\s+)?(?:hours?|days?)\b[^.]{0,160}(?:incident|breach|notif)/i,
+      new RegExp(
+        String.raw`(?:within|no\s+(?:event\s+)?later\s+than)\s+[^.]{0,20}?${PERIOD_COUNT}\s*(?:calendar\s+|business\s+)?(?:hours?|days?)\b[^.]{0,160}(?:incident|breach|notif)`,
+        "i",
+      ),
       // The canonical clause puts the notification trigger BEFORE the window —
       // "notify Customer of any Security Incident within seventy-two (72) hours"
       // — where both patterns above (which require incident/breach/notif to
       // FOLLOW the window) miss even the plain digit form. Anchor on a
       // notification verb preceding the numeric window, within one sentence.
-      /notif\w*[^.]{0,160}(?:within|no\s+(?:event\s+)?later\s+than)\s+[^.]{0,25}?\(?\d{1,3}\)?\s*(?:calendar\s+|business\s+)?(?:hours?|days?)\b/i,
+      new RegExp(
+        String.raw`notif\w*[^.]{0,160}(?:within|no\s+(?:event\s+)?later\s+than)\s+[^.]{0,25}?${PERIOD_COUNT}\s*(?:calendar\s+|business\s+)?(?:hours?|days?)\b`,
+        "i",
+      ),
     ],
     default_severity: "warning",
   }),

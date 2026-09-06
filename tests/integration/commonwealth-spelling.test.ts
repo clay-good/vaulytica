@@ -78,7 +78,7 @@ const VARIANTS: [word: RegExp, tolerant: string][] = [
  * make the recognizer match a statute that does not exist.
  */
 const NOT_A_VARIANT: Readonly<Record<string, string>> = {
-  "src/engine/rules/v4/settlement/rules.ts:527": "California Labor Code — a statute's proper name",
+  "src/engine/rules/v4/settlement/rules.ts:528": "California Labor Code — a statute's proper name",
 };
 
 // `\bauthorize` has the letter "b" immediately in front of "authorize", so a

@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 /** RISK-014 — Confidentiality term length (info). */
 export const rule: Rule = {
@@ -22,7 +23,10 @@ export const rule: Rule = {
       // dominant "Confidential Information shall remain confidential for five
       // (5) years" phrasing, which the survive/continue/remain-in-effect-only
       // list missed.
-      /\bconfidential(?:ity)?[^.;\n]{0,200}?(?:survive|continue|remain\s+in\s+effect|remain\s+confidential|(?:be\s+)?(?:kept|held|maintained)\s+(?:strictly\s+)?(?:in\s+)?confiden\w*)[^.;\n]{0,40}?(?:for|until)\s+(?:a\s+period\s+of\s+)?(\w+\s+\(\d+\)|\d+)\s+(year|years|month|months)/i,
+      new RegExp(
+        String.raw`\bconfidential(?:ity)?[^.;\n]{0,200}?(?:survive|continue|remain\s+in\s+effect|remain\s+confidential|(?:be\s+)?(?:kept|held|maintained)\s+(?:strictly\s+)?(?:in\s+)?confiden\w*)[^.;\n]{0,40}?(?:for|until)\s+(?:a\s+period\s+of\s+)?(${PERIOD_COUNT})\s+(year|years|month|months)`,
+        "i",
+      ),
     );
     if (!hit) return null;
     return emit(ctx, rule, {

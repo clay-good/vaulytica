@@ -615,7 +615,7 @@ const FDD = pack("franchise-disclosure-document", C, [
     cite: cfr("16", "436.2", "FTC Franchise Rule — obligation to furnish documents"),
     pat: [
       /receipt/i,
-      /(14\s*\)?\s*calendar\s+days|fourteen\s+\(?14\)?\s+days|at\s+least\s+14\s*\)?\s*days)/i,
+      /(14\s*\)?\s*calendar\s+days|fourteen\s+(?:\(?14\)?\s+)?(?:calendar\s+)?days|at\s+least\s+(?:14|fourteen)\s*\)?\s*days)/i,
     ],
     all: true,
     why: "§ 436.2(a) requires delivery at least 14 calendar days before signing or payment. The dual receipt pages are the franchisor's only proof of timing, and their absence defeats the defense.",

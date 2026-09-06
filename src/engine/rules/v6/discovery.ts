@@ -16,6 +16,7 @@
 import type { Rule } from "../../finding.js";
 import { DATE_SHAPE } from "../../../extract/dates.js";
 import { pack, frcp, fre, practice } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "discovery";
 
@@ -33,7 +34,10 @@ const RFP = pack("document-requests", C, [
     cite: frcp("34(b)(2)(A)", "producing documents — time to respond"),
     pat: [
       /(respond|response|answer|produce|production)/i,
-      /(30\s*\)?\s*days|thirty\s+\(?30\)?\s+days|within\s+\d+\s*\)?\s*days|no\s+later\s+than)/i,
+      new RegExp(
+        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*days|no\s+later\s+than`,
+        "i",
+      ),
     ],
     all: true,
     why: "Rule 34(b)(2)(A) gives 30 days from service (or, for requests delivered before the Rule 26(f) conference, 30 days after that conference). Stating the date on the face of the requests avoids the most common calendaring dispute in discovery.",
@@ -170,7 +174,10 @@ const ROGS = pack("interrogatories", C, [
     cite: frcp("33(b)(2)", "interrogatories — time to respond"),
     pat: [
       /(respond|answer)/i,
-      /(30\s*\)?\s*days|thirty\s+\(?30\)?\s+days|within\s+\d+\s*\)?\s*days)/i,
+      new RegExp(
+        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*days`,
+        "i",
+      ),
     ],
     all: true,
     why: "Rule 33(b)(2) gives 30 days after service. Stating it on the face of the interrogatories fixes the date both sides calendar.",
@@ -248,7 +255,10 @@ const RFA = pack("requests-for-admission", C, [
     name: "Response deadline and the deemed-admitted consequence",
     cite: frcp("36(a)(3)", "requests for admission — time to respond and the effect of failing to"),
     pat: [
-      /(30\s*\)?\s*days|thirty\s+\(?30\)?\s+days|within\s+\d+\s*\)?\s*days)/i,
+      new RegExp(
+        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*days`,
+        "i",
+      ),
       /(deemed[-\s]+admitted|admitted\s+if\s+(you\s+)?(fail|do\s+not)|automatically\s+admitted|(?:matter|request)s?\s+(?:is|are)\s+admitted\s+unless)/i,
     ],
     all: true,
@@ -400,7 +410,7 @@ const RESPONSES = pack("discovery-responses", C, [
     pat: [
       /(produc(e|tion))/i,
       new RegExp(
-        `((?:by|on\\s+or\\s+before|no[t]?\\s+later\\s+than)\\s+${DATE_SHAPE}|on\\s+a\\s+rolling\\s+basis|complete[d]?\\s+by|within\\s+\\d+\\s*\\)?\\s*days\\s+of)`,
+        `((?:by|on\\s+or\\s+before|no[t]?\\s+later\\s+than)\\s+${DATE_SHAPE}|on\\s+a\\s+rolling\\s+basis|complete[d]?\\s+by|within\\s+${PERIOD_COUNT}\\s*days\\s+of)`,
         "i",
       ),
     ],

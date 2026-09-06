@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
 
 // "For convenience" is as often written as its unambiguous synonyms — "without
 // cause", "for any reason" / "for any or no reason", "with or without cause".
@@ -7,12 +8,12 @@ import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js"
 // at any time for cause".)
 const CONVENIENCE =
   "(?:for\\s+convenience|without\\s+cause|for\\s+any\\s+(?:or\\s+no\\s+)?reason|with\\s+or\\s+without\\s+cause)";
-// The count is parenthesized in the standard form ("thirty (30) days"), so the
-// ")" between the digit and "days" is tolerated, and it must be a termination
-// NOTICE period (followed by "notice") so an unrelated invoice deadline in the
-// same paragraph is not grabbed.
-const NOTICE =
-  "\\(?(\\d{1,3})\\)?\\s+days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice";
+// The count is parenthesized in the standard form ("thirty (30) days") and
+// spelled out with no numeral at all in plain-language drafting ("thirty
+// days' notice"); `PERIOD_COUNT` reads all three spellings. It must be a
+// termination NOTICE period (followed by "notice") so an unrelated invoice
+// deadline in the same paragraph is not grabbed.
+const NOTICE = `(${PERIOD_COUNT})\\s+days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice`;
 // The notice period is stated in EITHER order: trigger-first ("terminate for
 // convenience upon thirty (30) days' notice") and, just as often, count-first
 // ("Upon thirty (30) days' notice, either party may terminate for convenience").
@@ -38,7 +39,7 @@ export const rule: Rule = {
     const hit = firstParagraphMatch(ctx, CONVENIENCE_NOTICE);
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
-    const days = parseInt(hit.match[1] ?? hit.match[2] ?? "0", 10);
+    const days = countValue(hit.match[1] ?? hit.match[2] ?? "");
     return emit(ctx, rule, {
       title: `Termination for convenience: ${days} days' notice`,
       description: hit.match[0],

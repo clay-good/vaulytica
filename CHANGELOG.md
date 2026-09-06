@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.456.0] — 2026-09-05
+
+### Fixed
+- **A period written in words alone was invisible to sixteen rules.** "sixty
+  (60) days" is the drafted form, and `parenthetical-numeral.test.ts` already
+  made every period recognizer tolerate the `)` that convention puts between
+  the digits and the noun. But the numeral there is only a CHECK on the words,
+  and plain-language drafting — every consumer notice, and a growing share of
+  commercial work — drops it: "thirty days' written notice", "a thirty-day cure
+  period", "we will notify you within seventy-two hours". A pattern written
+  `(\d{1,3})\)?\s+days` reads none of that.
+
+  Found by a new corpus relation (`tests/integration/spelled-period.test.ts`):
+  rewrite every numeric period as the words-only spelling — the same period —
+  and diff the findings. **48 of 225 specimens moved.** TERM-001 lost the
+  convenience-termination notice period on 24 of them and the cure-period pair
+  TEMP-008/009 lost it on 14 more; because both rules PRINT the number they
+  read, a blind pattern is not a near miss, it is the whole finding gone. Where
+  a presence rule went blind, an absence finding took its place — an
+  incident-response template promising notification "within seventy-two hours"
+  was told at `critical` that it states no GDPR Art. 33 deadline (PRV-039), a
+  franchise disclosure document that it carries no 14-day delivery window
+  (COMM-145), and a medical-director agreement with a stated three-year term
+  that it fails the Anti-Kickback safe harbor's one-year minimum (HC-108).
+
+  `src/extract/counts.ts` now holds the count in one place — `PERIOD_COUNT`
+  reads all three spellings and `countValue` returns the number — for the same
+  reason as `INSTRUMENT_NOUN`: four hand-written word tables already existed in
+  the tree, agreeing with each other only loosely. Twelve rules that PARSE a
+  count are wired to it (TERM-001, TEMP-005, TEMP-008/009, DARK-002, RISK-014,
+  EQT-068, ADDENDA-004, DISC-001/008/012, SET-019); the four that test a
+  specific statutory number got that number's own spelling instead, since
+  "seventy-two hours" is the words for 72 and no other count satisfies Art. 33.
+  The relation is asserted against an EMPTY list — nothing here is undecidable,
+  so a divergence is a defect and not a cost.
+
+  One golden moved, and it is the point: a loan agreement that grants "a
+  thirty-day cure period" now reports `Cure period: 30 days`.
+
 ## [9.455.0] — 2026-09-05
 
 ### Fixed

@@ -142,7 +142,7 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
       "Anti-Kickback Statute safe harbor — personal services and management contracts",
     ),
     pat: [
-      /(term\s+of\s+(at\s+least\s+)?one\s+year|one\s+\(?1\)?\s+year|twelve\s+\(?12\)?\s+months|\bterm\b[^.]{0,60}?\(?(?:[2-9]|[1-9]\d+)\)?\s+years?\b|\bterm\b[^.]{0,60}?\(?(?:1[2-9]|[2-9]\d|\d{3,})\)?\s+months?\b)/i,
+      /(term\s+of\s+(at\s+least\s+)?one\s+year|one\s+\(?1\)?\s+year|twelve\s+(?:\(?12\)?\s+)?months|\bterm\b[^.]{0,60}?(?:\(?(?:[2-9]|[1-9]\d+)\)?|two|three|four|five|six|seven|eight|nine|ten)\s+years?\b|\bterm\b[^.]{0,60}?(?:\(?(?:1[2-9]|[2-9]\d|\d{3,})\)?|eighteen|twenty[-\s]four|thirty[-\s]six)\s+months?\b)/i,
       /(signed|in\s+writing|written\s+agreement|executed|in\s+witness\s+whereof|\/s\/)/i,
     ],
     all: true,

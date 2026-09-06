@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
 
 /** TEMP-005 — Auto-renewal notice window unusual (warning). */
 export const rule: Rule = {
@@ -20,7 +21,10 @@ export const rule: Rule = {
       // "auto-renews" / "auto-renewal" (the dominant consumer form) is matched
       // alongside "automatically renews" — sibling rules TEMP-004 / TEMP-011
       // already read the hyphen.
-      /(?:auto(?:matic)?(?:ally)?[\s-]+(?:renew|renewal|extend)|non[- ]renewal)[\s\S]{0,200}?\(?(\d{1,3})\)?\s+days/i,
+      new RegExp(
+        String.raw`(?:auto(?:matic)?(?:ally)?[\s-]+(?:renew|renewal|extend)|non[- ]renewal)[\s\S]{0,200}?(${PERIOD_COUNT})\s+days`,
+        "i",
+      ),
     );
     if (!hit) return null;
     // The matched span must not cross a termination-for-cause / convenience /
@@ -37,7 +41,7 @@ export const rule: Rule = {
       )
     )
       return null;
-    const days = parseInt(hit.match[1] ?? "0", 10);
+    const days = countValue(hit.match[1] ?? "");
     if (days >= 30 && days <= 90) return null;
     return emit(ctx, rule, {
       title: `Auto-renewal notice window of ${days} days is unusual`,

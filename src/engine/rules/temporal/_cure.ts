@@ -1,3 +1,5 @@
+import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
+
 /**
  * Shared cure-period matcher for the sibling rules TEMP-008 (presence) and
  * TEMP-009 (length). They must agree on what counts as a breach-cure period, so
@@ -12,8 +14,10 @@
  * The day count sits on EITHER side of the trigger:
  *   - trigger-first: "cure such breach within thirty (30) days"
  *   - count-first:   "thirty (30) days to cure the breach", "a 5-day cure period"
- * The count is parenthesized in the standard form ("thirty (30) days") and may
- * be hyphen-joined in the adjacent form ("5-day"), so both are tolerated.
+ * The count is parenthesized in the standard form ("thirty (30) days"), spelled
+ * out with no numeral in plain-language drafting ("a thirty-day cure period"),
+ * and hyphen-joined in the adjacent form ("5-day"); `PERIOD_COUNT` reads all
+ * three.
  */
 const CURE_TRIGGER =
   "(?:cure|remed(?:y|ies)|correct)\\s+(?:such\\s+|the\\s+|any\\s+|its\\s+)?(?:breach|default|failure|violation|non[-\\s]?performance)|opportunity\\s+to\\s+(?:cure|remedy|correct)|cure\\s+period";
@@ -21,7 +25,7 @@ const CURE_TRIGGER =
 // correct" with no explicit breach noun — "shall have 90 days to cure" — which
 // the count-first drafting frequently leaves implicit.
 const REVERSED_ANCHOR = `to\\s+(?:cure|remed(?:y|ies)|correct)\\b|${CURE_TRIGGER}`;
-const DAYS = "\\(?(\\d{1,3})\\)?[-\\s]days?";
+const DAYS = `(${PERIOD_COUNT})[-\\s]days?`;
 
 // In the count-first branch the count must sit CLOSE to the cure phrase
 // ("30-day cure period", "30 days to cure", "30 days from notice to cure") — a
@@ -35,7 +39,7 @@ export const CURE_PERIOD = new RegExp(
 
 /** The cure-period length in days from a `CURE_PERIOD` match (either branch). */
 export function curePeriodDays(m: RegExpMatchArray): number {
-  return parseInt(m[1] ?? m[2] ?? "0", 10);
+  return countValue(m[1] ?? m[2] ?? "");
 }
 
 /**

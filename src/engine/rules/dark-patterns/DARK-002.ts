@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
 
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
@@ -45,15 +46,20 @@ export const rule: Rule = {
       // The count is written "ninety (90) days" — the spelled-then-numeric
       // convention wraps the digits in a parenthetical, and requiring the
       // digits to touch "days" missed every notice window drafted that way.
+      // `PERIOD_COUNT` reads that form, the bare numeral, and the words alone
+      // ("ninety days' notice"), which plain-language drafting uses.
       // The window is as often stated as a CANCELLATION deadline relative to
       // renewal — "cancel at least 120 days before the renewal date", "notice
       // of cancellation … prior to the renewal" — so a cancel/opt-out branch is
       // included, but only when it links the day-count to renewal, so a general
       // cancellation-notice day-count elsewhere is not mistaken for it.
-      /\bnon[- ]renewal\b[^.;\n]{0,200}?\(?(\d{1,3})\)?\s+days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?\(?(\d{1,3})\)?\s+days|(?:cancel(?:lation)?|opt[- ]?out)\b[^.;\n]{0,80}?\(?(\d{1,3})\)?\s+days\b[^.;\n]{0,30}?(?:before|prior\s+to|in\s+advance\s+of)[^.;\n]{0,20}?(?:renewal|renew|the\s+next\s+term)/i,
+      new RegExp(
+        String.raw`\bnon[- ]renewal\b[^.;\n]{0,200}?(${PERIOD_COUNT})\s+days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?(${PERIOD_COUNT})\s+days|(?:cancel(?:lation)?|opt[- ]?out)\b[^.;\n]{0,80}?(${PERIOD_COUNT})\s+days\b[^.;\n]{0,30}?(?:before|prior\s+to|in\s+advance\s+of)[^.;\n]{0,20}?(?:renewal|renew|the\s+next\s+term)`,
+        "i",
+      ),
     );
     const days = notice
-      ? parseInt(notice.match[1] ?? notice.match[2] ?? notice.match[3] ?? "0", 10)
+      ? countValue(notice.match[1] ?? notice.match[2] ?? notice.match[3] ?? "")
       : 0;
     const buried =
       !!notice && (notice.position.section_id !== auto.position.section_id || days >= 90);

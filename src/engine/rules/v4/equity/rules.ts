@@ -41,6 +41,7 @@ import {
   usuryGeneric,
   eqtPractice,
 } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 
 const CATEGORY = "equity";
 
@@ -1463,7 +1464,7 @@ const ROFR_RULES: Rule[] = [
       "Mechanics typically: 15 days for company election, 10 days for investor election, with a 60-day sale window if neither exercises.",
     recommendation: "Add explicit notice / election windows for each tier.",
     present_patterns: [
-      /\(?(\d{1,3})\)?\s*(day|business\s+day)s?\s+(after|to\s+elect)/i,
+      new RegExp(String.raw`(${PERIOD_COUNT})\s*(day|business\s+day)s?\s+(after|to\s+elect)`, "i"),
       /notice\s+of\s+(intended\s+)?transfer/i,
     ],
     default_severity: "warning",

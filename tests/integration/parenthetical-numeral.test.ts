@@ -41,7 +41,7 @@ const BLIND =
  * months" — never "two point five (2.5) months". A fractional period is not
  * the spelled-then-numeric convention.
  */
-const DECLARED: ReadonlySet<string> = new Set(["src/engine/rules/v4/equity/rules.ts:711"]);
+const DECLARED: ReadonlySet<string> = new Set(["src/engine/rules/v4/equity/rules.ts:712"]);
 
 const WORDS: Record<number, string> = {
   1: "one",
