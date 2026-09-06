@@ -1069,6 +1069,65 @@ function bareEntityName(name: string): string {
     .trim();
 }
 
+/**
+ * A field label INSIDE a name: `Ridgeline Constructors LLC Issued by:`.
+ *
+ * A field block reaches the extractor as one paragraph — ingest joins a short
+ * label line to the line under it — so a name run that starts in one field can
+ * run straight through the next field's label and swallow its value. Five
+ * specimens carried a party named for two entities at once ("Ridgeline
+ * Constructors LLC Issued by: Cascadia Surety and Casualty Company") or for an
+ * entity and an unrelated fact ("Sentinel Ridge Insurance Company Effective
+ * date of endorsement: January 1"). No legal name carries an interior label,
+ * so the colon is where the name ended.
+ *
+ * The label is the SHORTEST run of words ending at that colon whose first word
+ * is capitalized, up to four: "Agency", not "Media Group LLC Agency", and
+ * "Issued by", because "by" alone is not where a label starts. Taking the
+ * longest run instead ate three words of Brightwater Media Group's name.
+ *
+ * The kept head must be at least TWO words. A LEADING label is a different
+ * shape and is already read as the party's role — "Named Insured: Ridgeline
+ * Constructors LLC" — and cutting there would leave a party named "Named".
+ */
+function stripInteriorFieldLabel(name: string): string {
+  const colon = name.search(/:\s/);
+  if (colon <= 0) return name;
+  const before = name.slice(0, colon).split(/\s+/);
+  for (let words = 1; words <= Math.min(4, before.length - 1); words++) {
+    const label = before.slice(before.length - words);
+    if (!/^[A-Z]/.test(label[0] ?? "")) continue;
+    const head = before.slice(0, before.length - words).join(" ");
+    return head.split(/\s+/).length >= 2 ? head : name;
+  }
+  return name;
+}
+
+/**
+ * The same name twice: `Anneke Vosberg Anneke Vosberg`.
+ *
+ * A conformed signature block writes the name on the `/s/` line and again on
+ * the printed-name line under it, and the join makes one run of it. Both
+ * halves must be at least two words — a two-word repeat could be a real name
+ * ("Baker Baker"), and no name in the corpus is one.
+ */
+function collapseDoubledName(name: string): string {
+  const words = name.split(/\s+/);
+  if (words.length < 4 || words.length % 2 !== 0) return name;
+  const half = words.length / 2;
+  const front = words.slice(0, half).join(" ");
+  return front === words.slice(half).join(" ") ? front : name;
+}
+
+/**
+ * Undo what a joined field block did to a name, at the one place every path
+ * registers one. Both repairs are about a name run that did not stop where the
+ * document's layout says it stopped.
+ */
+function repairFieldRun(name: string): string {
+  return collapseDoubledName(stripInteriorFieldLabel(name));
+}
+
 function registerParty(
   map: Map<string, Party>,
   name: string,
@@ -1079,7 +1138,8 @@ function registerParty(
     position?: DocPosition;
   },
 ): void {
-  const key = name.toLowerCase();
+  const clean = repairFieldRun(name);
+  const key = clean.toLowerCase();
   const existing = map.get(key);
   if (existing) {
     existing.role = existing.role ?? extras.role;
@@ -1091,7 +1151,7 @@ function registerParty(
   }
   map.set(key, {
     id: `party-${map.size + 1}`,
-    name,
+    name: clean,
     role: extras.role,
     entity_type: extras.entity_type,
     jurisdiction_of_formation: extras.jurisdiction_of_formation,

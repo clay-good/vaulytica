@@ -219,6 +219,43 @@ describe("party extraction hygiene", () => {
       ),
     ).not.toContain("EU SCC In");
   });
+  it("stops a name at a field label it ran into", () => {
+    // Ingest joins a short label line to the line under it, so a whole field
+    // block arrives as one paragraph and a name run can cross the next
+    // field's label. Five specimens carried a party named for two entities at
+    // once, and this endorsement's was one of them.
+    expect(
+      names(
+        "Additional Insured Endorsement",
+        "Named Insured: Ridgeline Constructors LLC Issued by: Cascadia Surety and Casualty Company",
+      ),
+    ).toEqual(["Ridgeline Constructors LLC"]);
+    expect(
+      names(
+        "Performance Improvement Plan",
+        "Employee: Dmitri Sokolov-Reyes Position: Senior Account Manager",
+      ),
+    ).toEqual(["Dmitri Sokolov-Reyes"]);
+  });
+
+  it("keeps a name whose only label is the LEADING one", () => {
+    // The head kept must be two words or more. A leading label is already read
+    // as the party's role, and cutting there would name the party "Named".
+    expect(names("Certificate", "Named Insured: Ridgeline Constructors LLC")).toEqual([
+      "Ridgeline Constructors LLC",
+    ]);
+  });
+
+  it("collapses a name a conformed signature block wrote twice", () => {
+    // "/s/ Ruth Ellingham" over the printed-name line "Ruth Ellingham", joined.
+    expect(
+      names(
+        "Expert Retention Agreement",
+        "This Agreement is entered into between Vosberg Forensic Engineering LLC, a Delaware limited liability company, and Ruth Ellingham Ruth Ellingham.",
+      ),
+    ).toEqual(["Vosberg Forensic Engineering LLC", "Ruth Ellingham"]);
+  });
+
   it("does not read a disclaimed relationship as a preamble", () => {
     // A certificate of insurance names two roles precisely to say they are NOT
     // contracting parties: "does not constitute a contract between X and Y".

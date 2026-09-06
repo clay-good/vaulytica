@@ -184,8 +184,132 @@ const RANGE_NUMERIC = new RegExp(
   "gi",
 );
 
-/** Trailing per-unit qualifier: "per user", "/ user, per month", "per incident". */
-const PER_UNIT = /^\s*(?:per|\/)\s+([a-z][\w]*(?:[\s,/-]+(?:per\s+)?[a-z][\w]*){0,3})/i;
+/** The "per" (or "/") that opens a per-unit qualifier. */
+const PER_UNIT_LEAD = /^\s*(?:per|\/)\s+/i;
+
+/** One more word of the qualifier: its separator, an optional "per", the word. */
+const PER_UNIT_TOKEN = /^([\s,/-]*)((?:per\s+)?)([A-Za-z][\w.-]*)/i;
+
+/**
+ * Words a unit noun phrase never continues with. The qualifier used to be
+ * "up to four words after `per`", which on the corpus read four words of
+ * ordinary prose: "$2,000,000 per occurrence and", "$4,500 per month, payable
+ * in advance", "$4.80 per share, for a maximum". The DOCX extracted-data
+ * appendix prints the field verbatim ("$2,000,000 per occurrence and"), so
+ * every one of those was a garbled line in a report a lawyer reads.
+ */
+const UNIT_STOPWORD = new Set([
+  "a",
+  "an",
+  "and",
+  "any",
+  "are",
+  "as",
+  "at",
+  "be",
+  "been",
+  "beginning",
+  "but",
+  "by",
+  "during",
+  "each",
+  "except",
+  "for",
+  "from",
+  "has",
+  "have",
+  "if",
+  "in",
+  "is",
+  "its",
+  "less",
+  "naming",
+  "no",
+  "not",
+  "of",
+  "on",
+  "or",
+  "over",
+  "payable",
+  "plus",
+  "prorated",
+  "provided",
+  "pursuant",
+  "shall",
+  "so",
+  "subject",
+  "such",
+  "than",
+  "that",
+  "the",
+  "their",
+  "these",
+  "this",
+  "to",
+  "toward",
+  "towards",
+  "unless",
+  "until",
+  "when",
+  "which",
+  "who",
+  "will",
+  "with",
+  "within",
+]);
+
+/** No unit phrase is longer than this; the cap the old regex had, kept. */
+const UNIT_WORD_CAP = 5;
+
+/**
+ * Read the per-unit qualifier that follows an amount: "per user", "/ user, per
+ * month", "per Authorized User per month", "per rentable square foot per year".
+ *
+ * A unit phrase is a short noun phrase, optionally repeated after another
+ * "per". Three things end it, each measured against the corpus:
+ *
+ *  - a **stopword**, which is where the sentence resumes ("per occurrence and
+ *    in the aggregate");
+ *  - a **comma not followed by "per"**, which is a list of other things and not
+ *    another unit ("per occurrence, bodily injury and property damage");
+ *  - a **capitalized word after a lowercase one**, which is the next FIELD's
+ *    label in a joined field block ("$4.80 per share" over "Maximum offering:"
+ *    read as a unit of "share Maximum offering"). "Authorized User" is
+ *    capitalized throughout and so is untouched by this.
+ */
+function readPerUnit(rest: string): string | undefined {
+  const lead = PER_UNIT_LEAD.exec(rest);
+  if (!lead) return undefined;
+  const from = lead[0].length;
+  let at = 0;
+  let end = 0;
+  let words = 0;
+  let lastLower = false;
+  for (;;) {
+    const m = PER_UNIT_TOKEN.exec(rest.slice(from + at));
+    if (!m) break;
+    const [whole, sep = "", per = "", word = ""] = m;
+    if (words >= UNIT_WORD_CAP) break;
+    if (words > 0 && !per) {
+      if (sep.includes(",")) break;
+      if (UNIT_STOPWORD.has(word.toLowerCase())) break;
+      if (lastLower && /^[A-Z]/.test(word)) break;
+    }
+    at += whole.length;
+    end = at;
+    words++;
+    lastLower = /^[a-z]/.test(word);
+  }
+  if (words === 0) return undefined;
+  // The sentence's own full stop is not part of the unit: "per accident." is
+  // an accident, and the appendix prints the field verbatim.
+  const unit = rest
+    .slice(from, from + end)
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/\.$/, "");
+  return unit || undefined;
+}
 
 /**
  * Deferred currency override controlling clause: "all amounts are in
@@ -337,7 +461,7 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
       if (rangeSpans.some(([s, e]) => start < e && end > s)) continue;
       const computed = computeAmount(m[1], m[2], m[3]);
       if (!computed) continue;
-      const perUnit = PER_UNIT.exec(ctx.text.slice(end));
+      const perUnit = readPerUnit(ctx.text.slice(end));
       const idx = out.length;
       out.push({
         id: nextId(),
@@ -345,7 +469,7 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
         amount: computed.amount,
         currency: computed.currency,
         word_form: false,
-        ...(perUnit ? { per_unit: perUnit[1]!.trim().replace(/\s+/g, " ") } : {}),
+        ...(perUnit ? { per_unit: perUnit } : {}),
         position: posInParagraph(ctx, start, end),
       });
       if (computed.fromDollar) dollarSourced.push(idx);

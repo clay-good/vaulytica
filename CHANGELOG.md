@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.497.0] — 2026-09-06
+
+### Fixed
+- **The extractor read past the end of a value wherever a field block was
+  joined into one paragraph.** Three defects, one cause, found by running the
+  five format transforms over the corpus against four extraction surfaces that
+  had never been diffed — parties, jurisdictions, amounts, dates.
+
+  A **party named for two entities at once**: ingest joins a short label line to
+  the line under it, so a name run can cross the next field's label and swallow
+  its value. Five specimens carried one — `Ridgeline Constructors LLC Issued
+  by: Cascadia Surety and Casualty Company`, `Sentinel Ridge Insurance Company
+  Effective date of endorsement: January 1`, `Dmitri Sokolov-Reyes Position:
+  Senior Account Manager`. The name now stops at the label, which is the
+  SHORTEST run of words ending at the colon whose first word is capitalized:
+  "Agency", not "Media Group LLC Agency". The kept head must be two words or
+  more, because a LEADING label is a different shape the extractor already
+  reads as the party's role — cutting `Named Insured: Ridgeline Constructors
+  LLC` would leave a party named "Named".
+
+  A **party named twice**, from a conformed signature block whose `/s/` line
+  and printed-name line joined: `Anneke Vosberg Anneke Vosberg`, five more
+  specimens. Collapsed when both halves are two words or longer.
+
+  A **per-unit qualifier that read four words of ordinary prose.** `PER_UNIT`
+  took up to four words after "per", and on the corpus that was
+  `occurrence and` (23 amounts), `month, payable in advance`, `share, for a
+  maximum`, `occurrence, naming Lender as`, `year of documented continuing`.
+  `report/docx.ts` prints the field verbatim in the extracted-data appendix, so
+  each one was a garbled line in a report a lawyer reads. A unit phrase is now
+  read as what it is — a short noun phrase, optionally repeated after another
+  "per" — ended by a stopword, by a comma not followed by "per", or by a
+  capitalized word after a lowercase one (which is the next field's label:
+  `$4.80 per share` above `Maximum offering:` read as a unit of "share Maximum
+  offering"). Every one of the 60 per-unit values in the corpus is now a real
+  unit; `Authorized User per month`, `user, per month` and `rentable square
+  foot per year` are untouched.
+
+### Added
+- **`tests/integration/extraction-format-invariance.test.ts`** — the relation
+  that found all three, standing as a ratchet. `extractAll` returns nine
+  surfaces and only the defined-term table had one over it; this covers the
+  four that carry the document's substance rather than its structure (WHO,
+  WHICH law, HOW MUCH, WHEN). `outline`, `crossrefs` and `obligations` are
+  deliberately absent — a section outline IS the layout. Asserted by equality
+  against a committed debt list, with an anti-vacuity floor on each surface's
+  baseline. **Amounts are held at ZERO movers.** The parties list is 124 lines
+  and almost one shape throughout: a signature-block individual found in the
+  natural layout and lost when every line becomes its own paragraph, or a
+  heading swallowed into the name below it (`BOARD OF DIRECTORS OF HALCYON
+  INSTRUMENTS`) — the next repair, which needs the extractor to ask
+  `matcher.ts` what the document's own title is.
+
 ## [9.496.0] — 2026-09-06
 
 ### Changed

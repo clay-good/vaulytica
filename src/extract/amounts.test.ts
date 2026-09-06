@@ -278,4 +278,52 @@ describe("extractAmounts — a range endpoint is not re-counted", () => {
     expect(numeric[0]!.range_max).toBe("100000");
     expect(numeric[0]!.currency).toBe("USD");
   });
+
+  it("ends the per-unit qualifier where the unit does, not four words later", () => {
+    // The qualifier used to be "up to four words after `per`", so it read four
+    // words of ordinary prose. The DOCX extracted-data appendix prints the
+    // field verbatim, which made "$2,000,000 per occurrence and" a line in a
+    // report. Each of these is a real corpus sentence.
+    const unit = (sentence: string): string | undefined =>
+      extractAmounts(buildTree(["Body", sentence])).find((a) => a.per_unit)?.per_unit;
+    expect(
+      unit("Commercial general liability of $2,000,000 per occurrence and in the aggregate."),
+    ).toBe("occurrence");
+    expect(unit("Rent is $4,500 per month, payable in advance on the first day.")).toBe("month");
+    expect(unit("Shares are offered at $4.80 per share, for a maximum of $20,000,000.")).toBe(
+      "share",
+    );
+    expect(
+      unit("Coverage of $1,000,000 per occurrence, naming Lender as additional insured."),
+    ).toBe("occurrence");
+    expect(
+      unit("Improvements are funded at $65.00 per rentable square foot of the Premises."),
+    ).toBe("rentable square foot");
+    expect(unit("The rate is $2.25 per person.")).toBe("person");
+  });
+
+  it("keeps a unit phrase that repeats after another per", () => {
+    const unit = (sentence: string): string | undefined =>
+      extractAmounts(buildTree(["Body", sentence])).find((a) => a.per_unit)?.per_unit;
+    expect(unit("The price is USD 50 per user, per month.")).toBe("user, per month");
+    expect(unit("Unit Price: $18.00 per Authorized User per month")).toBe(
+      "Authorized User per month",
+    );
+    expect(unit("The allowance is $12.00 per rentable square foot per year.")).toBe(
+      "rentable square foot per year",
+    );
+  });
+
+  it("does not read the next field's label as part of the unit", () => {
+    // A joined field block: "Price to public: $4.80 per share" sits directly
+    // above "Maximum offering: $20,000,000", and ingest makes one paragraph of
+    // the two, so the unit read as "share Maximum offering".
+    const out = extractAmounts(
+      buildTree([
+        "Offering Circular",
+        "Price to public: $4.80 per share Maximum offering: $20,000,000",
+      ]),
+    );
+    expect(out.find((a) => a.per_unit)?.per_unit).toBe("share");
+  });
 });
