@@ -20,9 +20,11 @@
  * so not one employment rule ran on it.
  *
  * The break is resolved on EVIDENCE FROM THE DOCUMENT ITSELF, never on a guess
- * about English. If the two halves joined without the hyphen form a word the
- * document uses somewhere else, the hyphen was the wrapper's and it goes; if
- * they do not, the hyphen was the drafter's and it stays. A contract that
+ * about English, and there are two tests. If the document writes the compound
+ * UNBROKEN somewhere, the hyphen is the drafter's and it stays — one plainly
+ * written "non-renewal" settles every broken one. Otherwise, if the two halves
+ * joined without the hyphen form a word the document uses somewhere else, the
+ * hyphen was the wrapper's and it goes; if they do not, it stays. A contract that
  * hyphenates "confiden-tial" says "Confidential" thirty other times, and one
  * that writes "non-disclosure" does not write "nondisclosure" anywhere. The
  * default — no evidence either way — is to KEEP the hyphen, which is exactly

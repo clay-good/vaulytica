@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.485.0] — 2026-09-06
+
+### Changed
+- **A comment claimed the hyphenation resolver had a rule it does not have.**
+  `format-invariance.test.ts` described the resolver as using two pieces of
+  evidence, the second being "the left half is neither a word it uses on its
+  own nor a bound prefix." `softBreak` implements no such test and never did —
+  that is the HEAD test named **two paragraphs further down** as tried,
+  measured, and rejected for needing a dictionary. The claim sat directly above
+  its own refutation, and it made the 21-specimen debt list read as
+  inexplicable rather than as the cost of a decision. Corrected to the two
+  tests the code actually runs: the document writes the compound unbroken
+  somewhere (keep the hyphen), or the joined halves are a word it uses
+  elsewhere (drop it). `hyphenation.ts`'s own header described only the second
+  of those; it now names both.
+
+- **The expensive debt entry's cause, measured rather than asserted.**
+  `uk-contract-of-employment.txt` re-routes to `generic-fallback` and loses six
+  findings. Diffing the ingested text against the ingested *wrapped* text
+  yields **exactly one difference in the whole document**: "information"
+  against "informati-on". The contract uses "information" precisely once, so
+  neither test has anything to check it against, and a document that matched
+  `employment-at-will-us` marginally drops under the threshold. Every other
+  break in the file is rejoined correctly — including the ALL-CAPS party name
+  "HALBROOK DIAGN-OSTICS", which an older comment still blames.
+
+  Behaviour is unchanged; this is the deferral written down accurately so the
+  next session does not re-derive it or "restore" a rule that was removed on
+  purpose.
+
 ## [9.484.0] — 2026-09-06
 
 ### Fixed

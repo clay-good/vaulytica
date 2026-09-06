@@ -647,11 +647,21 @@ describe("a finding's quote is really in the document", () => {
  * says "Confidential" thirty times and never says "nondisclosure", so the
  * common cases resolve and nothing joins on a guess about English.
  *
- * Two independent pieces of evidence, both from the document: the joined
- * halves are a word it uses elsewhere, OR the left half is neither a word it
- * uses on its own nor a bound prefix — nothing is a compound of
- * "responsibili", "Associa" or "negl", while every real compound's left
- * element ("third-party", "at-will", "non-disclosure") is one or the other.
+ * The resolver's two tests, and neither is a table of English. First: does
+ * the document write this compound UNBROKEN somewhere? Then the hyphen is the
+ * drafter's and it stays — "non-renewal" written plainly in one clause settles
+ * the broken one. Second: are the halves JOINED a word the document uses
+ * elsewhere? Then the hyphen was the wrapper's and it goes. No evidence either
+ * way means keep the hyphen, which is what the paste path did before the
+ * resolver existed, so nothing a document already produced changes without
+ * positive evidence that it was wrong.
+ *
+ * This paragraph used to describe a THIRD test — "the left half is neither a
+ * word the document uses on its own nor a bound prefix" — as though the
+ * resolver had it. It does not, and `softBreak` never did: that is the HEAD
+ * test named two paragraphs down as tried, measured, and rejected. The claim
+ * sat directly above its own refutation, and it made the list below read as
+ * inexplicable rather than as the cost of a decision.
  *
  * What the list below costs, and why it is not shorter. A compound used
  * EXACTLY ONCE and broken at its own hyphen leaves no evidence at all:
@@ -668,8 +678,13 @@ describe("a finding's quote is really in the document", () => {
  * The list may only SHRINK, and it is asserted by equality — a new divergence
  * fails, and so does a repair that is not recorded. The expensive entry is
  * `uk-contract-of-employment.txt`, which re-routes to `generic-fallback` and
- * loses six findings with it; its cause is "information", a word the contract
- * uses exactly once, so nothing in the document can vouch for it.
+ * loses six findings with it. Its cause is ONE WORD: diffing the ingested text
+ * against the ingested wrapped text yields exactly one difference in the whole
+ * document, "information" against "informati-on". The contract uses
+ * "information" precisely once, so neither test above has anything to check it
+ * against, and a document that matched `employment-at-will-us` marginally
+ * drops under the threshold. Every other break in the file — including the
+ * ALL-CAPS party name "HALBROOK DIAGN-OSTICS" — is rejoined correctly.
  *
  * Read the GAINS the right way round. The six specimens that gain CHOICE-003
  * are not false positives: CHOICE-003 reports a venue clause as PRESENT and
