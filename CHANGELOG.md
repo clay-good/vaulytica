@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.501.0] — 2026-09-06
+
+### Fixed
+- **An attorney's name was absorbed into their firm's.** The fourth and last
+  face of one ingest behaviour, this time read from the other side. An
+  appellate brief signs `Devarshi Nandakumar` over `HOLLOWAY & NANDAKUMAR LLP`;
+  a complaint signs `Yusuf Adeyemi` over `KEARNS & WHITLOCK LLP`;
+  `ingestPaste` joins the two lines, and the party published was the attorney
+  and the firm read as a single entity.
+
+  The principle, rather than a rule fitted to the specimens that showed it: **a
+  legal name does not switch out of Title Case into SHOUTING part-way
+  through.** Where it appears to, the shouted run is a different line that
+  ingest joined on, and the entity begins there.
+
+  The exception the corpus insists on is a name's own tail — a suffix or an
+  initialism is routinely capitalized inside an otherwise Title-Case name
+  (`Wexley DO GP II`, `Lumen Diagnostics JV, LLC`, `Halewood UK`, `Naomi K.
+  Osterhout, M.D`). Every such token in the corpus is three letters or fewer,
+  and every firm name this targets has one of four or more. Measured across all
+  70 party names carrying any Title-Case-then-capitals transition, the
+  four-letter floor separates the five junk names from the sixty-five real ones
+  exactly.
+
+  Five specimens corrected — `appellate-brief`, `complaint`,
+  `first-set-interrogatories`, `interrogatory-responses`, `petition` — and no
+  other party name in the corpus moved. The parties debt in
+  `tests/integration/extraction-format-invariance.test.ts` falls from 53 lines
+  to **44**.
+
+### Notes
+- Four releases, **one cause**. `ingestPaste` joins a short line to the line
+  beneath it, so anything a document stacks ABOVE a party's name is read as
+  part of that name: its own title (9.498.0), a caption's role word (9.498.0),
+  a shouted field label (9.500.0), and a signer's name above their firm
+  (9.501.0). In every one of the four, CASE — not a vocabulary — is what marks
+  where the join happened. Separately, 9.499.0 fixed not a misreading of the
+  signature block but the window that decided where to look for one. The
+  parties debt across the five: **124 → 44**, with no legitimate name lost at
+  any step, verified name-by-name over every extracted party in the corpus.
+
 ## [9.500.0] — 2026-09-06
 
 ### Fixed

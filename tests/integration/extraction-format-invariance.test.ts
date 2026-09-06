@@ -59,6 +59,17 @@
  * Construction Group, Inc." on a change order. `LEADING_ROLE` cannot reach
  * those either, for the same reason it could not reach a caption's role word:
  * it requires a comma that a field block does not write. Debt 57 → 53.
+ *
+ * And a fourth, the join read from the other side: a PERSON's name absorbed
+ * into the FIRM's on the line below it — "Devarshi Nandakumar HOLLOWAY &
+ * NANDAKUMAR", an attorney and their firm published as one entity. A legal
+ * name does not switch out of Title Case into SHOUTING part-way through;
+ * where it appears to, the shouted run is a different line. Debt 53 → 44.
+ *
+ * Four shapes, ONE cause: `ingestPaste` joins a short line to the line beneath
+ * it, so anything a document stacks ABOVE a party's name is read as part of
+ * that name. In every one of the four, CASE — not a vocabulary — is what marks
+ * where the join happened.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -160,16 +171,12 @@ const SURFACES: Record<string, (d: ExtractedData) => string[]> = {
 const PARTY_DEBT: readonly string[] = [
   "83b-election.txt [double-spaced] lost:- gained:Elena Marie Vasquez|||",
   "answer.txt [blank lines stripped] lost:- gained:WHEREFORE, Defendant Halloran Precision Castings||LLC|",
-  "appellate-brief.txt [blank lines stripped] lost:Devarshi Nandakumar HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
-  "appellate-brief.txt [double-spaced] lost:Devarshi Nandakumar HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "architect-agreement.txt [double-spaced] lost:- gained:Teodoro Vessel, AIA|||",
   "assignment-of-claim.txt [double-spaced] lost:- gained:Wexley DO GP II, LLC, its general partner|||",
   "baa.txt [double-spaced] lost:- gained:Ruth Okonjo, M.D|||",
   "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|",
   "cba.txt [double-spaced] lost:RIDGELINE AEROSPACE COMPONENTS, INC|Employer|INC| gained:RIDGELINE AEROSPACE COMPONENTS||INC|",
   "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
-  "complaint.txt [blank lines stripped] lost:Yusuf Adeyemi Yusuf Adeyemi KEARNS & WHITLOCK||LLP| gained:KEARNS & WHITLOCK||LLP|",
-  "complaint.txt [double-spaced] lost:Yusuf Adeyemi Yusuf Adeyemi KEARNS & WHITLOCK||LLP| gained:KEARNS & WHITLOCK||LLP|",
   "conflict-of-interest-policy.txt [double-spaced] lost:Pemberton Ridge Land Conservancy||corporation|Colorado gained:-",
   "convertible-note.txt [blank lines stripped] lost:VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware gained:Delaware FOR VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware",
   "demand-letter.txt [blank lines stripped] lost:Larkspur Timber Supply LLC|Client|LLC| gained:Larkspur Timber Supply|Larkspur|LLC|",
@@ -179,12 +186,9 @@ const PARTY_DEBT: readonly string[] = [
   "expert-retention.txt [double-spaced] lost:Anneke Vosberg, Ph.D., P.E. Vosberg Forensic Engineering||LLC| gained:-",
   "fdd.txt [blank lines stripped] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
   "fdd.txt [double-spaced] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
-  "first-set-interrogatories.txt [blank lines stripped] lost:Nnenna Adebayo-Lindgren Nnenna Adebayo-Lindgren GRAYSON & PELL||LLP| gained:GRAYSON & PELL||LLP|",
-  "first-set-interrogatories.txt [double-spaced] lost:Nnenna Adebayo-Lindgren Nnenna Adebayo-Lindgren GRAYSON & PELL||LLP| gained:GRAYSON & PELL||LLP|",
   "flat-fee-agreement.txt [double-spaced] lost:Ravi Chandrasekaran-Boyd Chandrasekaran Robotics||LLC| gained:-",
   "healthcare-poa.txt [double-spaced] lost:- gained:Tobias Osgood-Reyes|||",
   "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Ridgeline Constructors LLC|Named Insured|LLC| gained:Ridgeline Constructors||LLC|",
-  "interrogatory-responses.txt [double-spaced] lost:Hon. Marisol Aguirre-Vance HALLORAN PRECISION CASTINGS||LLC| gained:HALLORAN PRECISION CASTINGS||LLC|",
   "joint-development.txt [double-spaced] lost:- gained:Annika Sjöberg|||",
   "joint-representation-waiver-founders.txt [double-spaced] lost:Raghunathan Mr. Daniel Ostrowski Kestrel Grove Bakery||LLC| gained:-",
   "lease-assignment-retail.txt [double-spaced] lost:- gained:Adaeze Nwachukwu, D.D.S|||",
@@ -195,8 +199,6 @@ const PARTY_DEBT: readonly string[] = [
   "operating-agreement.txt [blank lines stripped] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
   "operating-agreement.txt [double-spaced] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
   "payer-provider.txt [double-spaced] lost:- gained:Aaron Whitcombe, M.D|||",
-  "petition.txt [blank lines stripped] lost:Record HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
-  "petition.txt [double-spaced] lost:Record HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "physician-employment.txt [double-spaced] lost:- gained:Harold Lindstrom, M.D|||",
   "prenup.txt [smart quotes] lost:Party's||individual| gained:Party’s||individual|",
   "protective-order.txt [double-spaced] lost:- gained:Priya Raghunathan|||,Tobias Denholm|||",

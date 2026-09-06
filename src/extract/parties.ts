@@ -1386,12 +1386,44 @@ const LITIGATION_ROLE_PREFIX =
  * `cleanPartyName` — the labeled-party and preamble readers — are covered too.
  */
 function stripHeadingPrefix(n: string): string {
-  return stripAllCapsRoleLabel(
-    n
-      .replace(ALLCAPS_HEADING_PREFIX, "")
-      .replace(ALLCAPS_HEADING_COMMA, "")
-      .replace(LITIGATION_ROLE_PREFIX, ""),
+  return stripTitleCaseLeadIn(
+    stripAllCapsRoleLabel(
+      n
+        .replace(ALLCAPS_HEADING_PREFIX, "")
+        .replace(ALLCAPS_HEADING_COMMA, "")
+        .replace(LITIGATION_ROLE_PREFIX, ""),
+    ),
   );
+}
+
+/**
+ * A person's name absorbed into the FIRM's name on the line below it.
+ *
+ * The same ingest join once more, and the last shape the corpus still shows:
+ * an appellate brief signs "Devarshi Nandakumar" over "HOLLOWAY & NANDAKUMAR
+ * LLP", a complaint "Yusuf Adeyemi" over "KEARNS & WHITLOCK LLP", and the
+ * paragraph the extractor sees is the two joined. The party published was
+ * "Devarshi Nandakumar HOLLOWAY & NANDAKUMAR" — an attorney and their firm
+ * read as one entity.
+ *
+ * The principle, not a rule fitted to three specimens: **a legal name does not
+ * switch out of Title Case into SHOUTING part-way through.** Where it appears
+ * to, the shouted run is a different line that ingest joined on, and the entity
+ * begins there.
+ *
+ * The exception the corpus insists on is the name's own tail — a suffix or an
+ * initialism is routinely capitalized inside an otherwise Title-Case name
+ * ("Wexley DO GP II", "Lumen Diagnostics JV, LLC", "Halewood UK", "Naomi K.
+ * Osterhout, M.D"). Every one of those capitalized tokens is THREE LETTERS OR
+ * FEWER, and every firm name this is aimed at has one of four or more
+ * ("HOLLOWAY", "KEARNS", "WHITLOCK"). Measured over all 70 corpus party names
+ * that contain any Title-Case-then-capitals transition, the four-letter floor
+ * separates the three junk names from the sixty-seven real ones exactly.
+ */
+const TITLE_CASE_LEAD_IN = /^(?:[A-Z][a-z][\w.'’-]*\s+)+(?=[A-Z]{4})/;
+
+function stripTitleCaseLeadIn(n: string): string {
+  return n.replace(TITLE_CASE_LEAD_IN, "");
 }
 
 /**

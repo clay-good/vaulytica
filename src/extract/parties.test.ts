@@ -1058,3 +1058,37 @@ describe("a field label shouted above the name it labels", () => {
     expect(mixed.map((x) => x.name)).toContain("Company Holdings LLC");
   });
 });
+
+describe("a person's name absorbed into the firm below it", () => {
+  it("reads the firm, not the attorney and the firm as one entity", () => {
+    const p = extractParties(
+      buildTree([
+        "BRIEF FOR APPELLANT",
+        "Respectfully submitted,",
+        "/s/ Devarshi Nandakumar Devarshi Nandakumar HOLLOWAY & NANDAKUMAR LLP",
+        "Counsel for Plaintiff-Appellant",
+      ]),
+    );
+    const names = p.map((x) => x.name);
+    expect(names).toContain("HOLLOWAY & NANDAKUMAR");
+    expect(names).not.toContain("Devarshi Nandakumar HOLLOWAY & NANDAKUMAR");
+  });
+
+  it("keeps a capitalized suffix or initialism inside a Title-Case name", () => {
+    // The exception the corpus insists on: a suffix or initialism is routinely
+    // capitalized inside an otherwise Title-Case name. Every such token in the
+    // corpus is three letters or fewer, and every firm name this targets has
+    // one of four or more.
+    const p = extractParties(
+      buildTree([
+        "Assignment of Claim",
+        'This Assignment is made between Wexley DO GP II, LLC ("Assignor") and Lumen Diagnostics JV, LLC ("Assignee").',
+      ]),
+    );
+    const names = p.map((x) => x.name);
+    expect(names).toContain("Wexley DO GP II, LLC");
+    expect(names).toContain("Lumen Diagnostics JV, LLC");
+    // The point is that neither is truncated at its capitalized initialism.
+    expect(names.some((n) => n.startsWith("DO GP"))).toBe(false);
+  });
+});
