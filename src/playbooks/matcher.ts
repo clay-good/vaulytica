@@ -19,6 +19,7 @@ import {
   type PlaybookMatchAlternative,
   type PlaybookMatchResult,
 } from "./types.js";
+import { dropLegends } from "../extract/legends.js";
 
 /**
  * The title-ish corpus the playbook matcher scores `title_keywords` against.
@@ -188,83 +189,6 @@ function subjectLine(
     if (m) return m[1]!.trim().slice(0, TITLE_PREAMBLE_CHARS);
   }
   return "";
-}
-
-/**
- * A negotiated agreement wears its legends above its title.
- *
- * "EXECUTION VERSION", "CONFIDENTIAL", "PRIVILEGED AND CONFIDENTIAL —
- * ATTORNEY WORK PRODUCT", "DRAFT — FOR DISCUSSION PURPOSES ONLY": these sit on
- * the first line of a very large share of real deal documents, and the
- * preamble the matcher read was therefore the legend. A **mutual** NDA
- * carrying "EXECUTION VERSION" over "MUTUAL NON-DISCLOSURE AGREEMENT" routed
- * to `unilateral-nda` — the mutual playbook's title keyword never hit, and the
- * unilateral one won on "the Disclosing Party" / "the Receiving Party", which
- * a mutual NDA uses too because each party is both.
- *
- * A legend is recognized as a WHOLE line built only of legend tokens and
- * separators, so a title that merely contains one of the words is untouched:
- * "CONFIDENTIALITY AGREEMENT" is a title, "CONFIDENTIAL" is a legend.
- *
- * A restrictive-securities legend hides it the same way, and is a different
- * shape: not a stamp but a whole uppercase SENTENCE. "THIS NOTE AND THE
- * SECURITIES ISSUABLE UPON CONVERSION HEREOF HAVE NOT BEEN REGISTERED UNDER
- * THE SECURITIES ACT OF 1933 …" opens essentially every note, warrant, SAFE,
- * and stock certificate. It cost a genuine convertible promissory note its
- * routing: `promissory-note` matched the title keyword "note" — from the word
- * "NOTE" inside the legend — while "CONVERTIBLE PROMISSORY NOTE", the line
- * below it, was never read, so every conversion check (valuation cap,
- * discount, qualified financing, change-of-control premium) was skipped. A
- * document title is short and carries no sentence-ending period; a legend
- * paragraph is long and does, so that is the test, and it is applied only to
- * uppercase text so an ordinary mixed-case preamble is untouched.
- *
- * A bare container marker — "EXHIBIT A", "SCHEDULE 1", "ANNEX B" — hides the
- * title the same way, and an agreement attached as an exhibit is one of the
- * commonest things a reviewer drops in. It is dropped only when the marker and
- * its designator are the WHOLE line: "EXHIBIT A — FORM OF MUTUAL NDA" carries
- * the title and is kept. No playbook's title keywords begin with one of these
- * words, so nothing loses a signal.
- */
-const LEGEND_TOKEN =
-  /execution\s+(?:version|copy)|conformed\s+copy|final\s+(?:version|form)|drafts?|confidential(?:ity)?|privileged|proprietary|trade\s+secrets?|attorney[-\s]work[-\s]product|attorney[-\s]client\s+privileged?|work\s+product|for\s+(?:discussion|settlement|negotiation)\s+purposes\s+only|subject\s+to\s+(?:protective\s+order|review|contract|revision)|confidential\s+treatment\s+requested|do\s+not\s+(?:copy|distribute|file)|not\s+for\s+distribution/;
-const LEGEND_LINE = new RegExp(
-  String.raw`^[\s\-–—*|/[\]()]*(?:(?:${LEGEND_TOKEN.source})[\s\-–—*|/,;:[\]()]*(?:and[\s\-–—*|/,;:]*)?)+$`,
-  "i",
-);
-
-/**
- * Longest an uppercase, sentence-punctuated line may be and still be read as a
- * title rather than a legend paragraph. Real titles run well under this even
- * when they are long ("AMENDED AND RESTATED LIMITED LIABILITY COMPANY
- * OPERATING AGREEMENT"), and they do not end in a period.
- */
-const LEGEND_SENTENCE_CHARS = 120;
-
-function isLegendSentence(line: string): boolean {
-  return (
-    line.length > LEGEND_SENTENCE_CHARS &&
-    /[.;]$/.test(line) &&
-    /[A-Z]/.test(line) &&
-    line === line.toUpperCase()
-  );
-}
-
-const CONTAINER_MARKER =
-  /^(?:exhibit|schedule|annex|appendix|attachment)\s+[A-Za-z0-9][A-Za-z0-9.-]*[\s.:—–-]*$/i;
-
-/** Drop the leading legend lines so the document's own title is first. */
-function dropLegends(lines: readonly string[]): string[] {
-  let i = 0;
-  while (
-    i < lines.length &&
-    (lines[i]!.length === 0 ||
-      LEGEND_LINE.test(lines[i]!) ||
-      CONTAINER_MARKER.test(lines[i]!) ||
-      isLegendSentence(lines[i]!))
-  )
-    i += 1;
-  return lines.slice(i);
 }
 
 /**

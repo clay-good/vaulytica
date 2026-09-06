@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.471.0] — 2026-09-06
+
+### Fixed
+- **A legend above the title became the title.** `format-invariance` folds the
+  furniture that REPEATS — a running header, a page number, a Bates stamp, a
+  privilege legend on every page — and a legend appearing ONCE is deliberately
+  not folded, because the first one may be the document's own. But "once, above
+  the title" is exactly where a legend sits on an executed agreement, and
+  nothing had asked what it costs.
+
+  STRUCT-006 excuses a term that appears in the document's TITLE — "this
+  Written Consent" is not a term an ACTION BY WRITTEN CONSENT forgot to define
+  — and it read the first line. Stamp "EXECUTION VERSION" above the name and
+  the document's own name became an undefined term. The matcher has answered
+  this question correctly since `titleCorpus` was written; `dropLegends` is now
+  shared rather than reimplemented.
+
+- **A legend became an obligation.** TEMP-007 audits a survival list only for
+  the categories the document actually HAS — "an obligation the document does
+  not have cannot be missing from its list" — and decided that by testing
+  `/confidential/i` against every paragraph. A one-word "CONFIDENTIAL" stamp is
+  not a confidentiality obligation, and on six specimens it turned a complete
+  survival list into an incomplete one.
+
+  The legend vocabulary moved to `src/extract/legends.ts`, and the bundle-size
+  guard is why. Importing it from `playbooks/matcher.ts` — where it was first
+  needed and had always lived — pulled the entire playbook matcher into the
+  rules bundle, and `rules-core` went from 572 KB to 641 KB, past its 600 KB
+  allow-list threshold. A vocabulary two layers share belongs to neither of
+  them.
+
+  The move surfaced a third defect on its own: the container-header pattern
+  beside the legends enumerated five of the six attachment kinds by hand and
+  had never read "annexure". `attachment-kinds.test.ts` exists to catch exactly
+  that, and could not see it — the guard scans `src/extract` and
+  `src/engine/rules`, and the pattern was in `src/playbooks`. It reads
+  `ATTACHMENT_KIND` now.
+
+  Routing never moved, on any stamp, on any specimen, and
+  `[REMAINDER OF PAGE INTENTIONALLY LEFT BLANK]` and `[SIGNATURE PAGE FOLLOWS]`
+  move nothing at all — all now pinned.
+
+### Not fixed, and measured
+- **A DRAFT stamp SATISFIES a presence pillar**, which is the more expensive
+  direction: the finding it silences is an absence finding. PRV-003 asks a
+  cookie notice for a per-cookie disclosure — name, provider, purpose,
+  duration — and "FOR DISCUSSION PURPOSES ONLY" supplies the word "purpose".
+  The repair is not local: TEMP-007 could skip legend paragraphs because it
+  walks paragraphs itself, while a `presence()` rule runs its patterns over the
+  whole document through a shared helper, and teaching that to ignore furniture
+  changes every presence rule in the catalog at once. Recorded in
+  `document-furniture.test.ts` by equality.
+
 ## [9.470.0] — 2026-09-05
 
 ### Fixed

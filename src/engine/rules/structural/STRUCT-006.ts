@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
+import { dropLegends } from "../../../extract/legends.js";
 import { borrowsParentVocabulary } from "../_helpers.js";
 
 /**
@@ -45,6 +46,9 @@ function documentText(ctx: RuleContext): string {
  * THISTLEDOWN ROBOTICS, INC.", short enough that a document with no heading
  * and a body paragraph first cannot suppress terms from its own prose.
  */
+/** How many opening paragraphs may hold the title once legends are dropped. */
+const TITLE_SCAN_PARAGRAPHS = 4;
+
 const TITLE_SCAN_CHARS = 140;
 
 /**
@@ -173,11 +177,21 @@ export const rule: Rule = {
     // suppressed nothing on exactly the documents that need it.
     const firstSection = ctx.tree.sections[0];
     const headingText = (firstSection?.heading ?? "").trim();
-    const openingLine = (firstSection?.paragraphs[0]?.runs ?? [])
-      .map((r) => r.text)
-      .join("")
-      .trim();
-    const title = (headingText.length > 0 ? headingText : openingLine)
+    const openingLines = (firstSection?.paragraphs ?? []).slice(0, TITLE_SCAN_PARAGRAPHS).map((p) =>
+      p.runs
+        .map((r) => r.text)
+        .join("")
+        .trim(),
+    );
+    // A LEGEND ABOVE THE TITLE IS NOT THE TITLE. "CONFIDENTIAL", "EXECUTION
+    // VERSION", "DRAFT — FOR DISCUSSION PURPOSES ONLY" sit above the name on
+    // a great many executed agreements, and reading the first line made the
+    // legend the title — so a document whose own name is the term in question
+    // ("this Written Consent" in an ACTION BY WRITTEN CONSENT) lost the
+    // exemption that name earns and was told it had left the term undefined.
+    // `dropLegends` is the matcher's answer to the same question, shared
+    // rather than reimplemented.
+    const title = (dropLegends([headingText, ...openingLines].filter((l) => l.length > 0))[0] ?? "")
       .slice(0, TITLE_SCAN_CHARS)
       .toLowerCase();
     const candidates = ctx.extracted.definitions.undefined_capitalized.filter((e) => {

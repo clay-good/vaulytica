@@ -2,6 +2,7 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { allMatches, emit, expandSurvivalSectionRefs } from "../_helpers.js";
 import type { ParagraphHit } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { isLegendLine } from "../../../extract/legends.js";
 
 const EXPECTED = [
   ["confidentiality", /confidential/i],
@@ -54,6 +55,13 @@ export function survivalListGaps(
   // not want. Only a category the document states somewhere is audited.
   const present = new Set<string>();
   forEachParagraph(ctx.tree, (p) => {
+    // A LEGEND IS NOT AN OBLIGATION. A "CONFIDENTIAL" stamp above the title is
+    // the same word this table looks for, and counting it made the document
+    // "have" a confidentiality obligation — so its absence from the survival
+    // list became a gap, and TEMP-006's plain "Survival clause present" was
+    // replaced by TEMP-007's "may be missing categories". Six specimens, on a
+    // stamp a great many executed agreements carry.
+    if (isLegendLine(p.text)) return;
     for (const [name, re] of EXPECTED) if (re.test(p.text)) present.add(name);
   });
   const missing = EXPECTED.filter(([name, re]) => present.has(name) && !re.test(combined)).map(
