@@ -77,10 +77,22 @@ describe("a figure stated in another currency", () => {
         continue;
       }
       for (const { line, text } of recognizerSources(file)) {
+        // `${NAME}` is an interpolation, not a dollar glyph. `recognizerSources`
+        // now yields a template WHOLE, so its `$`s reach this sweep — and
+        // `[\s\w,()${CURRENCY_GLYPHS}...]`, a class that reads every glyph
+        // there is, looked like a class containing only the dollar. Reduce each
+        // interpolation to the name it carries: the `$` goes, and the name
+        // stays visible to the canonical check below.
+        const source = text.replace(/\$\{([^}]*)\}/g, "$1");
+        // The escape helper is recognized in the RAW text: its own `${}` sits
+        // inside a nested regex, which the reduction above does not survive.
         const isEscapeHelper = /\[\.\*\+\?\^\$\{\}/.test(text.replace(/\\/g, ""));
         const readsAnyAmount =
-          /\\+\$(?:\\+s\*)?(?:\\+d|\[[\\d0-9,]|[|)])/.test(text) || /\[[^\]]*\$[^\]]*\]/.test(text);
-        if (readsAnyAmount && !isEscapeHelper && !text.includes(CANONICAL)) {
+          /\\+\$(?:\\+s\*)?(?:\\+d|\[[\\d0-9,]|[|)])/.test(source) ||
+          /\[[^\]]*\$[^\]]*\]/.test(source);
+        const readsEveryGlyph =
+          source.includes(CANONICAL) || /CURRENCY_(?:GLYPHS|TOKEN)/.test(source);
+        if (readsAnyAmount && !isEscapeHelper && !readsEveryGlyph) {
           blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
         }
       }

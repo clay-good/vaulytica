@@ -36,6 +36,7 @@ import {
   blueSky,
   regPractice,
 } from "./_helpers.js";
+import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
 
 const CATEGORY = "regulatory-prose";
 
@@ -144,7 +145,7 @@ const FORM_D_RULES: Rule[] = [
     present_patterns: [
       /(offering\s+(size|amount|aggregate))/i,
       /(minimum\s+(investment|subscription))/i,
-      /[$€£¥₹₩₽]\s*[\d,]+/,
+      new RegExp(String.raw`(?:[$€£¥₹₩₽]\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
     ],
   }),
   presence({

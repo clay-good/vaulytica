@@ -8,6 +8,7 @@ import type { Rule } from "../../finding.js";
 import { DATE_SHAPE } from "../../../extract/dates.js";
 import { pack } from "./_pack.js";
 import { expressDenial, irs, practice, uniformAct, usc } from "./_helpers.js";
+import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
 const C = "trust-estate";
 
@@ -306,7 +307,7 @@ const QDRO = pack("qdro", C, [
     name: "Amount or percentage and valuation date",
     cite: usc("29", "1056", "ERISA § 206(d)(3)(C)(ii) — amount or percentage of benefits"),
     pat: [
-      /(percentage|amount|\d+%|[$€£¥₹₩₽])/i,
+      new RegExp(String.raw`(percentage|amount|\d+%|(?:[$€£¥₹₩₽]|${AMOUNT_IN_WORDS}))`, "i"),
       new RegExp(
         `(valuation\\s+date|as\\s+of\\s+${DATE_SHAPE}|account\\s+balance\\s+as\\s+of|manner\\s+in\\s+which\\s+the\\s+amount)`,
         "i",

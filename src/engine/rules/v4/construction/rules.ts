@@ -25,6 +25,7 @@ import {
   caCiv2782,
   conPractice,
 } from "./_helpers.js";
+import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
 
 const CATEGORY = "construction";
 
@@ -527,7 +528,7 @@ const BOND_RULES: Rule[] = [
     recommendation: "Add 'Penal Sum' specifying the maximum surety obligation in dollars.",
     present_patterns: [
       /(penal\s+sum|sum\s+of\s+[$€£¥₹₩₽]|in\s+the\s+penal\s+amount)/i,
-      /[$€£¥₹₩₽]\s*[\d,]+/,
+      new RegExp(String.raw`(?:[$€£¥₹₩₽]\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
     ],
   }),
   presence({
@@ -617,7 +618,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
     present_patterns: [
       /(original\s+contract\s+sum)/i,
       /(revised\s+contract\s+sum|new\s+contract\s+sum)/i,
-      /[$€£¥₹₩₽]\s*[\d,]+/,
+      new RegExp(String.raw`(?:[$€£¥₹₩₽]\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
     ],
   }),
   presence({

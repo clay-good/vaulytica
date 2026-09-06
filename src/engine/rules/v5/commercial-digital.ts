@@ -13,6 +13,7 @@ import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { agency, expressDenial, practice, stateLaw, ucc, usc } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
 const C = "commercial";
 
@@ -677,7 +678,10 @@ const VENUE = pack("venue-rental-agreement", C, [
     cite: practice("venue-insurance", "insurance requirements in venue rental agreements"),
     pat: [
       /insur(e|ance)/i,
-      /(additional[-\s]+insured|certificate\s+of\s+insurance|general\s+liability|[$€£¥₹₩₽]\d)/i,
+      new RegExp(
+        String.raw`(additional[-\s]+insured|certificate\s+of\s+insurance|general\s+liability|(?:[$€£¥₹₩₽]\d|${AMOUNT_IN_WORDS}))`,
+        "i",
+      ),
     ],
     why: "Venues require event liability coverage naming them as additional insured; a licensee that does not carry it is personally exposed for every guest injury.",
     fix: "State the required coverages and limits, require additional-insured status and a certificate before load-in, and add waivers of subrogation.",

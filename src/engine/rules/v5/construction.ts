@@ -7,6 +7,7 @@ import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { expressDenial, practice, standardForm, stateLaw } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
 const C = "construction";
 
@@ -191,7 +192,10 @@ const ARCHITECT = pack("architect-agreement", C, [
     ),
     pat: [
       /insur(e|ance)/i,
-      /(professional\s+liability|errors\s+and\s+omissions|per\s+claim|aggregate|[$€£¥₹₩₽]\d)/i,
+      new RegExp(
+        String.raw`(professional\s+liability|errors\s+and\s+omissions|per\s+claim|aggregate|(?:[$€£¥₹₩₽]\d|${AMOUNT_IN_WORDS}))`,
+        "i",
+      ),
     ],
     why: "The architect's E&O policy is usually the owner's only real recovery source for a design defect, and it is claims-made — so the limits and the tail matter as much as the limit itself.",
     fix: "State the required professional liability limits per claim and in the aggregate, the deductible, and the period the coverage must be maintained after substantial completion.",

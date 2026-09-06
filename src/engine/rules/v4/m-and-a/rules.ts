@@ -43,6 +43,7 @@ import {
   maPractice,
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
+import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
 
 const CATEGORY = "m-and-a";
 
@@ -1118,7 +1119,10 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
       "Add 'Escrow Fund' specifying the deposited amount / shares and the escrow account.",
     present_patterns: [
       /escrow\s+(fund|amount|account)/i,
-      /[$€£¥₹₩₽][\d,]+\s+(in\s+escrow|escrow\s+deposit)/is,
+      new RegExp(
+        String.raw`(?:[$€£¥₹₩₽][\d,]+|${AMOUNT_IN_WORDS})\s+(in\s+escrow|escrow\s+deposit)`,
+        "is",
+      ),
     ],
   }),
   presence({

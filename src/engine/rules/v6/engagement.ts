@@ -13,6 +13,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack, modelRule, practice } from "./_helpers.js";
+import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
 const C = "law-practice";
 
@@ -88,7 +89,10 @@ const ENGAGEMENT = pack("engagement-letter", C, [
     cite: modelRule("1.5(b)", "fees — communication of the basis or rate"),
     pat: [
       /(hourly\s+rate|fixed\s+fee|flat\s+fee|contingen|our\s+fees?\s+(are|will\s+be))/i,
-      /(\$\s?\d|rate\s+of|per\s+hour|billed\s+at)/i,
+      new RegExp(
+        String.raw`((?:\$\s?\d|${AMOUNT_IN_WORDS})|rate\s+of|per\s+hour|billed\s+at)`,
+        "i",
+      ),
     ],
     all: true,
     why: "Rule 1.5(b) requires the basis or rate of the fee to be communicated, preferably in writing, before or within a reasonable time after commencing the representation. A letter without a rate is the most common fee-dispute fact pattern there is.",

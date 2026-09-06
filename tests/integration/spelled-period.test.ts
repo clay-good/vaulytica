@@ -171,30 +171,22 @@ const READS_WORDS =
   /PERIOD_COUNT|NUM_WORDS|thirty|sixty|ninety|twelve|fourteen|seventy|forty|fifteen|twenty|eighteen|five|six|seven|eight|nine|ten|eleven|one|two|three|four|\\w\+\(\?:/;
 
 /**
- * Two exceptions, of two different kinds.
+ * The one exception, and it is not a period at all: FIN-004 reads a late-fee
+ * INTEREST RATE — "1.5% per month" — where the digits are a percentage and the
+ * period noun is the rate's denominator. No drafter writes "one point five
+ * percent per month" as a count to parse.
  *
- * FIN-004 is not a period at all: it reads a late-fee INTEREST RATE — "1.5%
- * per month" — where the digits are a percentage and the period noun is the
- * rate's denominator. No drafter writes "one point five percent per month" as
- * a count to parse.
- *
- * FIN-005 already reads the words, but not in the chunk the scanner sees. The
- * scanner walks template PIECES, and that pattern's spelled alternation
- * (`NUM_WORDS`) is interpolated in the head while the digits sit in the tail —
- * so the tail, read alone, looks blind. A per-expression scanner would not
- * need this entry; the per-chunk one is what makes the rest of the sweep work
- * on assembled patterns at all.
+ * There used to be a second, and its removal is the point of the scanner
+ * change that came with it: FIN-005 reads the words via an interpolated
+ * `NUM_WORDS`, and the per-CHUNK scanner saw only the tail, which looks blind.
+ * `recognizerSources` now takes a template expression whole, so the
+ * interpolated name is itself the evidence and the exception is gone.
  */
 const DECLARED_ANY_COUNT = declaredExceptions([
   {
     file: "src/engine/rules/financial/FIN-004.ts",
     pattern: String.raw`%\s*(?:per`,
     why: "a late-fee interest RATE — the digits are a percentage, the period noun its denominator",
-  },
-  {
-    file: "src/engine/rules/financial/FIN-005.ts",
-    pattern: String.raw`(?:\\(\\d{1,3}\\)\\s*)?days?\\b`,
-    why: "already reads the words, via NUM_WORDS in the template chunk before this one",
   },
 ]);
 

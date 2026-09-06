@@ -7,6 +7,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { expressDenial, practice, stateLaw, usc } from "./_helpers.js";
+import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
 const C = "real-estate";
 
@@ -526,7 +527,10 @@ const WARRANTY_DEED = pack("warranty-deed", C, [
       "https://www.law.cornell.edu/wex/transfer_tax",
     ),
     pat: [
-      /(consideration|[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*\d)/i,
+      new RegExp(
+        String.raw`(consideration|[$€£¥₹₩₽]|(?:\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*\d|${AMOUNT_IN_WORDS}))`,
+        "i",
+      ),
       /(transfer[-\s]+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps|affidavit\s+of\s+consideration)/i,
     ],
     why: "Transfer-tax declarations are a recording prerequisite in most counties, and an understated consideration is a tax matter separate from the conveyance.",

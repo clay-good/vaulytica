@@ -34,6 +34,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
+import { declaredExceptions, recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 
 const ONES = [
   "zero",
@@ -154,4 +155,62 @@ describe("a percentage spelled in words alone", () => {
     expect(probed, "the corpus states no percentage in digits").toBeGreaterThanOrEqual(100);
     expect(moved).toEqual([...PERCENT_DEBT]);
   }, 300_000);
+});
+
+/**
+ * The static half, as always: the corpus proves what the corpus contains.
+ *
+ * The population is the same shape the period sweep uses. A recognizer that
+ * pairs a currency token with an UNBOUNDED digit run is looking for a sum of
+ * any size and makes no statement about which one, so a spelling of that sum
+ * it cannot read is a gap. A BOUNDED literal is naming a specific figure —
+ * `\$100,000` for the accredited-investor threshold, `\$20|\$50` for the
+ * federal gift rules — and whether its words are worth reading is a judgment
+ * about that rule, not a fold of presentation.
+ */
+const MONEY_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
+
+/** A currency token, and an unbounded digit run somewhere in the same pattern. */
+const CURRENCY = /[\u20ac\u00a3\u00a5\u20b9\u20a9\u20bd]|\\\$(?![{/`])|CURRENCY_TOKEN|\bUSD/;
+const UNBOUNDED_DIGITS = /\\d|\[\\d/;
+const READS_A_SUM_IN_WORDS = /AMOUNT_IN_WORDS|million|thousand|dollars/i;
+
+const DECLARED_MONEY = declaredExceptions([
+  {
+    file: "src/extract/amounts.ts",
+    pattern: "CAD|AUD|US|CA|AU|NZ|HK|MX",
+    why: "CURRENCY_TOKEN itself — AMOUNT_IN_WORDS is its sibling in this file",
+  },
+  {
+    file: "src/extract/definitions.ts",
+    pattern: "is|are|shall\\s+be|will\\s+be|must\\s+be",
+    why: "a lookahead for a value-ish definiens, not a sum to read",
+  },
+  {
+    file: "src/engine/rules/financial/FIN-002.ts",
+    pattern: "of|equal\\s+to",
+    why: "compares two NUMERALS for a named amount; a words-only sum has no numeral to conflict with",
+  },
+]);
+
+describe("a recognizer that reads a sum of any size", () => {
+  it("reads that sum in words too", () => {
+    const files = MONEY_ROOTS.flatMap((root) => sourceFiles(root));
+    expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
+
+    const blind: string[] = [];
+    for (const file of files) {
+      for (const { line, text } of recognizerSources(file)) {
+        if (!CURRENCY.test(text) || !UNBOUNDED_DIGITS.test(text)) continue;
+        if (READS_A_SUM_IN_WORDS.test(text)) continue;
+        if (DECLARED_MONEY.exempts(file, text)) continue;
+        blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
+      }
+    }
+    expect(DECLARED_MONEY.unused(), "declared exceptions that match no recognizer").toEqual([]);
+    expect(
+      blind,
+      `these read a sum of any size but only in digits — add \${AMOUNT_IN_WORDS}:\n  ${blind.join("\n  ")}`,
+    ).toEqual([]);
+  });
 });

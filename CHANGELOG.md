@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.460.0] — 2026-09-05
+
+### Fixed
+- **Twelve more recognizers read a sum of any size, but only in digits.** The
+  static half of 9.459.0's corpus relation. The population is defined the same
+  way the period sweep defines its own: a recognizer pairing a currency token
+  with an UNBOUNDED digit run makes no statement about which sum it wants, so a
+  spelling it cannot read is a gap; a BOUNDED literal (`$100,000` for the
+  accredited-investor threshold, `$20|$50` for the federal gift rules) is
+  naming a specific figure and is a different judgment. Three of the twelve are
+  insurance-limit pillars — the same defect as RISK-010, in three other rule
+  families.
+
+- **The recognizer scanner split an interpolated pattern down the middle of
+  what it means.** It walked template CHUNKS, so FIN-005 — which interpolates
+  its spelled-number alternation in the head and puts the digits in the tail —
+  had a tail that, read alone, looked blind to a spelling the whole pattern
+  reads perfectly. That cost a hand-written declared exception saying "it is
+  fine, look at the other half", and every interpolated repair in this session
+  was creating another one. `recognizerSources` now takes a template expression
+  whole, `${NAME}` included, so the interpolated name is itself the evidence.
+  The FIN-005 exception is deleted rather than restated.
+
+  Two guards needed to learn the same thing: `${` is an interpolation, not a
+  dollar glyph, and `[\s\w,()${CURRENCY_GLYPHS}…]` — a class that reads every
+  glyph there is — looked to `currency-glyph` like a class holding only the
+  dollar.
+
 ## [9.459.0] — 2026-09-05
 
 ### Fixed

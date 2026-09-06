@@ -16,6 +16,7 @@ import {
   usc,
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
 const C = "banking";
 
@@ -480,7 +481,10 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
     cite: cfr("12", "1026.52", "Regulation Z — limitations on fees"),
     pat: [
       /(annual\s+fee|late\s+fee|returned\s+payment|foreign\s+transaction|cash\s+advance\s+fee)/i,
-      /(penalty\s+apr|[$€£¥₹₩₽]\d|percent\s+of\s+the)/i,
+      new RegExp(
+        String.raw`(penalty\s+apr|(?:[$€£¥₹₩₽]\d|${AMOUNT_IN_WORDS})|percent\s+of\s+the)`,
+        "i",
+      ),
     ],
     why: "The CARD Act limits first-year fees to 25% of the credit limit and requires penalty fees to be reasonable and proportional. Penalty APR triggers must be disclosed and are subject to the six-month review rule.",
     fix: "State every fee and its amount, the penalty APR and the conduct that triggers it, and the review that can restore the prior rate.",

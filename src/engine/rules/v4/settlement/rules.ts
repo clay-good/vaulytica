@@ -41,6 +41,7 @@ import {
   settlePractice,
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
+import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
 
 const CATEGORY = "settlement";
 
@@ -239,7 +240,10 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /(settlement\s+payment|settlement\s+amount|settlement\s+sum)/i,
       /(consideration|in\s+consideration)/i,
-      /(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+/,
+      new RegExp(
+        String.raw`(?:(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+|${AMOUNT_IN_WORDS})`,
+        "",
+      ),
     ],
   }),
   language({
@@ -437,7 +441,10 @@ const DEMAND_LETTER_RULES: Rule[] = [
         String.raw`(${PERIOD_COUNT})\s+(days?|business\s+days?).{0,40}(respond|cure|comply)`,
         "i",
       ),
-      /(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+/,
+      new RegExp(
+        String.raw`(?:(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+|${AMOUNT_IN_WORDS})`,
+        "",
+      ),
       // The deadline is as often a SPELLED number and phrased with "confirm /
       // provide assurance / comply / cease within ten days", not only "respond
       // within 30 days" — a digit-and-verb-only pattern read a plainly stated

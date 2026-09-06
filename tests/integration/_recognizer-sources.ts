@@ -70,21 +70,36 @@ const LOOKS_LIKE_REGEX = /\\\\[bsdwSDW]|\(\?:|\(\?=|\(\?!/;
 export function recognizerSources(file: string): RecognizerSource[] {
   const sf = ts.createSourceFile(file, readFileSync(file, "utf8"), ts.ScriptTarget.ESNext, true);
   const out: RecognizerSource[] = [];
+  const push = (node: ts.Node, text: string): void => {
+    out.push({
+      file,
+      line: sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1,
+      text,
+    });
+  };
   const walk = (node: ts.Node): void => {
-    const isStringy =
-      ts.isStringLiteral(node) ||
-      ts.isNoSubstitutionTemplateLiteral(node) ||
-      ts.isTemplateHead(node) ||
-      ts.isTemplateMiddle(node) ||
-      ts.isTemplateTail(node);
+    // A template with interpolations is ONE recognizer, not one per chunk.
+    //
+    // Walking the chunks separately splits a pattern down the middle of what
+    // it means: FIN-005's payment window interpolates its spelled-number
+    // alternation in the head and puts the digits in the tail, so the tail read
+    // alone looks blind to a spelling the whole pattern reads perfectly. Every
+    // interpolated repair this repo makes creates another one of those, and
+    // each cost a hand-written declared exception saying "it is fine, look at
+    // the other half". Taking the expression whole — `${NAME}` included, which
+    // is what a reader sees — makes the interpolated name itself the evidence.
+    if (ts.isTemplateExpression(node)) {
+      const text = node.getText(sf);
+      if (LOOKS_LIKE_REGEX.test(text)) push(node, text);
+      // Do not descend: the chunks are parts of the recognizer above, and the
+      // interpolated expressions are not recognizers at all.
+      return;
+    }
+    const isStringy = ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node);
     if (node.kind === ts.SyntaxKind.RegularExpressionLiteral || isStringy) {
       const text = node.getText(sf);
       if (node.kind === ts.SyntaxKind.RegularExpressionLiteral || LOOKS_LIKE_REGEX.test(text)) {
-        out.push({
-          file,
-          line: sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1,
-          text,
-        });
+        push(node, text);
       }
     }
     node.forEachChild(walk);
