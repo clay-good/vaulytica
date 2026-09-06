@@ -136,11 +136,23 @@ export function normalize(tree: DocumentTree): DocumentTree {
         //    one character over.
         //  - MINUS SIGN (U+2212), which a PDF emits for the hyphen in a range:
         //    "30−60 days", "Sections 5−9".
+        //  - EN and EM DASH BETWEEN DIGITS (U+2013/U+2014). The en dash is the
+        //    typographic character for a range — it is what Unicode is for, and
+        //    what every typeset document and most PDFs actually carry in
+        //    "Sections 4–6" and "Section 17–303". Folded only BETWEEN DIGITS,
+        //    which is the whole difference from the three above: an em dash is
+        //    ordinary sentence punctuation ("the parties — each acting
+        //    reasonably — shall"), several recognizers match `[—–-]` as a dash
+        //    on purpose, and folding those would corrupt them. Between two
+        //    digits it can only be a hyphen. Four specimens read a Delaware LP
+        //    Act citation ("Section 17-303") as a broken internal reference to
+        //    a Section 17 when it arrived that way.
         //  - NUMERO (U+2116) for "No.", as in "Statement of Work № 4".
         //  - ROMAN NUMERAL FORMS (U+2160-216F) for "Article Ⅶ". A document
         //    that numbers its articles this way had no articles at all.
         .replace(/[\uFF01-\uFF5E]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
         .replace(/[\u2010\u2011\u2212]/g, "-")
+        .replace(/(?<=\d)[\u2013\u2014](?=\d)/g, "-")
         .replace(/\u2116/g, "No.")
         .replace(/[\u2160-\u216F]/g, (c) => ROMAN_NUMERAL_FORMS[c.charCodeAt(0) - 0x2160] ?? c)
         // A FOOTNOTE MARKER. A PDF puts one inline — "…as set out below.¹" —

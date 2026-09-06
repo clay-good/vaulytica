@@ -275,6 +275,23 @@ describe("format is not load-bearing", () => {
       (t: string): string => t.replace(/(\d)\s*-\s*(\d)/g, "$1\u2212$2"),
       80,
     ],
+    // The EN DASH is the typographic character for a range — it is what
+    // Unicode is for, and what a typeset document and most PDFs actually carry
+    // in "Sections 4–6" and "Section 17–303". Four specimens read a Delaware
+    // LP Act citation as a broken internal reference to a "Section 17" when it
+    // arrived that way. Folded between DIGITS only: an em dash is ordinary
+    // sentence punctuation, and several recognizers match `[—–-]` as a dash on
+    // purpose.
+    [
+      "the en dash a typeset range carries",
+      (t: string): string => t.replace(/(\d)-(\d)/g, "$1\u2013$2"),
+      80,
+    ],
+    [
+      "the em dash a typeset range carries",
+      (t: string): string => t.replace(/(\d)-(\d)/g, "$1\u2014$2"),
+      80,
+    ],
     // Unicode's own name for U+002D is HYPHEN-MINUS and for U+2010 is HYPHEN:
     // the same character, and only one of them is on a keyboard. A PDF text
     // layer emits U+2010 routinely; Word inserts U+2011 wherever a compound

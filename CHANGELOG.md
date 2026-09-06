@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.474.0] — 2026-09-06
+
+### Fixed
+- **The en dash between two digits.** `normalize.ts` folds the hyphen a PDF
+  actually emits (U+2010), the non-breaking one Word inserts (U+2011) and the
+  minus sign (U+2212) — and its own comment names the case the minus sign
+  covers: "the hyphen in a range, `30−60 days`, `Sections 5−9`". The EN DASH is
+  the character Unicode actually provides for that, and what a typeset document
+  and most PDFs carry. It was not folded.
+
+  Four specimens read a Delaware LP Act citation — "Section 17-303" — as a
+  broken internal reference to a "Section 17" when it arrived with an en dash,
+  because the hyphenated-statute handling in `crossrefs.ts` reads a hyphen and
+  nothing else.
+
+  Folded BETWEEN DIGITS only, which is the whole difference from the other
+  three: an em dash is ordinary sentence punctuation ("the parties — each
+  acting reasonably — shall"), and several recognizers match `[—–-]` as a dash
+  on purpose. Between two digits it can only be a hyphen. Both dashes are now
+  in `format-invariance.test.ts` beside the minus sign.
+
+### Probed and clean
+- Word's non-breaking space after a number and inside a party name, a tab after
+  the clause number, and a soft line break at every comma all move nothing
+  across the corpus.
+
 ## [9.473.0] — 2026-09-06
 
 ### Documentation
