@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.470.0] — 2026-09-05
+
+### Fixed
+- **RISK-002 went blind on the one clause every drafter shouts.** A warranty
+  disclaimer and a limitation of liability are set in capitals by convention
+  and, in a few states, by statute — UCC § 2-316(2) asks for a "conspicuous"
+  merchantability disclaimer and generations of drafters have answered it with
+  capitals. An indemnity travels with them. Not one of the 312 specimens does
+  it, so the shape had to be INJECTED: upper-case the paragraphs carrying those
+  clauses and leave the rest alone.
+
+  RISK-002 anchored on `[A-Z]` for the sentence start and spelled its operative
+  verb in lower case with no flag, so "SHALL INDEMNIFY AND HOLD HARMLESS"
+  matched nothing at all — the indemnity-asymmetry rule, blind on the most
+  conventionally capitalised clause in a contract, on **7 specimens**. The verb
+  now carries both spellings rather than the pattern carrying an `i` flag, and
+  the difference is not stylistic: under `i` the leading `[A-Z]` is inert, so
+  the match may START at a lowercase letter mid-sentence, and since matches do
+  not overlap that earlier match consumes the sentence and the real one is
+  never offered. Restoring the anchor with a `/^[A-Z]/` filter afterwards does
+  not help — by then the match that should have been found is gone. That
+  version cost three specimens their finding, and the corpus regression caught
+  it before it shipped.
+
+- **An ALL-CAPS heading registered no label.** "SECTION 5. INDEMNIFICATION" is
+  how a great many agreements write one, and four of the five leading-heading
+  patterns in `crossrefs.ts` spelled the keyword in Title Case with no flag —
+  so the heading indexed nothing and every reference into it read as broken.
+  `LEADING_SECTION_ROMAN_RE` already carried both spellings, which is the tell
+  that its siblings should have. The flag is not the fix here: the `[A-Z(]`
+  after the number is what separates a heading from a sentence opening on a
+  numeral, and under `i` it would mean nothing.
+
+### Not fixed, and measured
+- Upper-casing a paragraph is not a pure fold: it erases the capitalisation a
+  defined term, a party name and an attachment's title line all carry meaning
+  in. `shouted-clause.test.ts` records what still moves for that reason —
+  `warrant.txt` being the extreme case, where the document's own name is the
+  word the transform matches.
+
 ## [9.469.0] — 2026-09-05
 
 ### Fixed

@@ -13,7 +13,22 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const parties = ctx.extracted.parties;
     if (parties.length < 2) return null;
-    const lines = allMatches(ctx, /[A-Z][^.]*\bindemnif[^.]*\./);
+    // A LIMITATION OF LIABILITY AND AN INDEMNITY ARE THE TWO CLAUSES A
+    // DRAFTER SHOUTS. Setting the corpus's indemnity paragraphs in the caps
+    // they conventionally carry made this rule blind on seven specimens: it
+    // anchors on `[A-Z]` for the sentence start but spelled its verb in lower
+    // case with no `i` flag, so "SHALL INDEMNIFY AND HOLD HARMLESS" matched
+    // nothing at all.
+    //
+    // The verb carries BOTH spellings rather than the pattern carrying the
+    // flag, and the difference is not stylistic. Under `i` the leading `[A-Z]`
+    // is inert, so the match may START at a lowercase letter mid-sentence —
+    // and since matches do not overlap, that earlier match consumes the
+    // sentence and the real one is never offered. Restoring the anchor with a
+    // `/^[A-Z]/` filter afterwards does not help: by then the match that
+    // should have been found is gone. It cost three specimens their finding
+    // before the corpus regression caught it.
+    const lines = allMatches(ctx, /[A-Z][^.]*\b(?:indemnif|INDEMNIF)[^.]*\./);
     if (lines.length === 0) return null;
     // Only the parties that BEAR the agreement. The extractor also records
     // the natural persons who SIGN it — "Rosalind Achterberg", "Emeka

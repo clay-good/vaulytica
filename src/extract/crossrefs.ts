@@ -394,7 +394,16 @@ const SEED_STATUTE_ACRONYMS = ["DGCL", "UCC", "DRULPA", "DLLCA", "ERISA", "FLSA"
 // "Section" word, so the bare-number pattern never registered it and every one
 // of those headings was BOTH unregistered AND re-read as a broken reference to
 // itself (a clean set of bylaws drew a dozen unresolved-reference findings).
-const LEADING_SECTION_RE = /^\s*(?:(?:Section|Sec\.?|Clause|§)\s+)?(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
+// A HEADING IS AS OFTEN SET IN CAPS. "SECTION 5. INDEMNIFICATION" is how a
+// great many agreements write one, and these patterns spelled the keyword in
+// Title Case with no `i` flag — so an all-caps heading registered no label and
+// every reference into it read as broken. (`LEADING_SECTION_ROMAN_RE` below
+// already carried both spellings, which is the tell that the others should
+// have.) The flag is not the fix: the `[A-Z(]` that follows the number is what
+// separates a heading from a sentence opening on a numeral, and under `i` it
+// would mean nothing.
+const LEADING_SECTION_RE =
+  /^\s*(?:(?:Section|SECTION|Sec\.?|SEC\.?|Clause|CLAUSE|§)\s+)?(\d+(?:\.\d+)*)\.\s+[A-Z(]/;
 
 // The ingester keeps an article heading and its FIRST subsection in one
 // paragraph — "ARTICLE II — STOCKHOLDERS Section 2.1. Annual Meeting. …" — so
@@ -403,7 +412,7 @@ const LEADING_SECTION_RE = /^\s*(?:(?:Section|Sec\.?|Clause|§)\s+)?(\d+(?:\.\d+
 // subsection of every article reported as a broken reference to itself. This
 // captures that section number where it trails the article heading.
 const ARTICLE_THEN_SECTION_RE =
-  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?(?<![A-Za-z0-9_])(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
+  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?(?<![A-Za-z0-9_])(?:Section|SECTION|Sec\.?|SEC\.?|Clause|CLAUSE|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
 
 // Bylaws style writes the multi-level number with NO trailing period —
 // "7.1 Exclusive Forum. Unless …" — so LEADING_SECTION_RE never registered
@@ -420,7 +429,8 @@ const LEADING_SUBSECTION_RE = /^\s*(\d+(?:\.\d+)+)\.?\s+[A-Z(]/;
 // broken reference to itself: 28 unresolved cross-references on a document
 // with none. The "Section" keyword is REQUIRED here — without it, a paragraph
 // opening "5 Business Days after the Closing" would register as a section.
-const LEADING_SECTION_NO_PERIOD_RE = /^\s*(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\s+[A-Z(]/;
+const LEADING_SECTION_NO_PERIOD_RE =
+  /^\s*(?:Section|SECTION|Sec\.?|SEC\.?|Clause|CLAUSE|§)\s+(\d+(?:\.\d+)*)\s+[A-Z(]/;
 
 // A RUN-IN section heading anywhere in a paragraph — "… continues in effect.
 // Section 6.4. Definitions. \"Descendants\" means …". Stripping a document's
@@ -431,7 +441,8 @@ const LEADING_SECTION_NO_PERIOD_RE = /^\s*(?:Section|Sec\.?|Clause|§)\s+(\d+(?:
 //
 // The trailing period after the number is what separates a heading from a
 // reference: "Section 3.4. Vacancies." declares, "under Section 3.4" refers.
-const RUN_IN_SECTION_RE = /(?:^|[.!?]\s+)(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z(]/g;
+const RUN_IN_SECTION_RE =
+  /(?:^|[.!?]\s+)(?:Section|SECTION|Sec\.?|SEC\.?|Clause|CLAUSE|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z(]/g;
 
 // The same run-in heading in the NO-PERIOD numbering a Delaware corporation's
 // bylaws use — "… by the Board. Section 3.5 Committees. The Board of Directors
@@ -442,7 +453,7 @@ const RUN_IN_SECTION_RE = /(?:^|[.!?]\s+)(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\
 // not apply" continues in lowercase, and "See Section 2.3 for notice
 // requirements." never closes a Title-Case run — none of them register.
 const RUN_IN_SECTION_NO_PERIOD_RE =
-  /(?:^|[.!?]\s+)(?:Section|Sec\.?|Clause|§)\s+(\d+(?:\.\d+)*)\s+[A-Z][\w'’-]*[;,]?(?:\s+(?:[A-Z][\w'’-]*|of|and|the|to|by|for|in)[;,]?)*\.\s+[A-Z]/g;
+  /(?:^|[.!?]\s+)(?:Section|SECTION|Sec\.?|SEC\.?|Clause|CLAUSE|§)\s+(\d+(?:\.\d+)*)\s+[A-Z][\w'’-]*[;,]?(?:\s+(?:[A-Z][\w'’-]*|of|and|the|to|by|for|in)[;,]?)*\.\s+[A-Z]/g;
 
 // The flat-paste ARTICLE heading — "ARTICLE VII — FORUM SELECTION" — is a
 // DECLARATION of the article, not a reference to it. It both feeds the
