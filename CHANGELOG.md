@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.487.0] — 2026-09-06
+
+### Fixed
+- **The terminal was the only surface that never printed the classification
+  caveat.** When no family matches, the engine says so in
+  `run.classification_notice`: "the findings below may be irrelevant or
+  misleading for a document that is not a contract. Treat this report as a
+  best-effort scan of an unrecognized document, not an analysis of its actual
+  type." The DOCX, HTML, SARIF and JSON surfaces all carry it. The CLI did not
+  — so a **bread recipe** analyzed at a prompt printed
+  `[generic-fallback]  1C 2W 1I` and nothing else, and the reader had no way to
+  learn the engine did not recognize what it was reading. The terminal is the
+  surface most likely to be read from a script, where nobody opens the JSON.
+
+- **The CLI never said the playbook was deprecated.** The DOCX annotates it on
+  the cover AND in the audit trail, and the JSON carries
+  `playbook_deprecated` / `playbook_superseded_by`. The terminal printed the
+  playbook id bare — so the surface that shows the id most prominently was the
+  one that never said it was superseded. It now names the successor:
+  `playbook "mutual-nda" is deprecated; superseded by mutual-nda-deep`.
+
+  Both go to **stderr**, like every other caveat the CLI prints, so stdout
+  stays parseable — asserted directly. Found by diffing the JSON report's
+  payload keys against everything the CLI's own output mentions; seven fields
+  were absent, and these two are the honesty caveats among them. The rest
+  (`scope_of_review`, `regime_coverage`, `model_clause_references`,
+  `citation_currency_notes`, `secondary_families`) are reference blocks a
+  one-line summary is right to omit.
+
+  Zero golden churn — this is terminal output, outside every hashed surface.
+
 ## [9.486.0] — 2026-09-06
 
 ### Changed

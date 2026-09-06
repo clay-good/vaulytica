@@ -965,6 +965,34 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     for (const f of r.run.findings) counts[f.severity]++;
     human(`${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`);
 
+    // The classification caveat, which is the one caveat that qualifies every
+    // finding printed above it. When no family matched, the engine says so in
+    // `run.classification_notice` — "the findings below may be irrelevant or
+    // misleading for a document that is not a contract" — and the DOCX, HTML,
+    // SARIF and JSON surfaces all carry it. This one did not, so a bread
+    // recipe analyzed at a terminal printed "1C 2W 1I" and nothing else, and
+    // the reader had no way to learn that the engine did not recognize what it
+    // was reading. Same trap, and the same stderr treatment, as the asserted
+    // packs below.
+    if (r.run.classification_notice) {
+      process.stderr.write(`vaulytica: warning: ${file}: ${r.run.classification_notice.message}\n`);
+    }
+
+    // Analyzed against a LEGACY playbook. The DOCX annotates this on its cover
+    // AND in its audit trail, and the JSON report carries
+    // `playbook_deprecated` / `playbook_superseded_by`; the terminal printed
+    // the playbook id bare, so the one surface that shows the id most
+    // prominently was the one that never said it was superseded.
+    const matched = [...deps.launchPlaybooks, ...deps.extendedPlaybooks].find(
+      (p) => p.id === r.playbook_id,
+    );
+    if (matched?.deprecated === true) {
+      const successor = matched.superseded_by ? `; superseded by ${matched.superseded_by}` : "";
+      process.stderr.write(
+        `vaulytica: warning: ${file}: playbook "${r.playbook_id}" is deprecated${successor}\n`,
+      );
+    }
+
     // The ingest's OWN caveats about what it could and could not read: a
     // redline read as all-changes-accepted, a PDF that fell back to OCR, text
     // pasted without its structure. `IngestResult.warnings` had never been read
