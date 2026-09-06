@@ -167,7 +167,32 @@ const RELATIVE = new RegExp(
  *
  * Regex SOURCE, not a `RegExp`: callers embed it in larger patterns.
  */
-export const DATE_SHAPE = String.raw`(?:\w+\.?\s+\d{1,2},?\s+\d{4}|\d{1,2}\s+\w+\.?\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})`;
+export const DATE_SHAPE = String.raw`(?:\w+\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4}|(?:the\s+|this\s+)?\d{1,2}(?:st|nd|rd|th)?\s+(?:day\s+of\s+|of\s+)?\w+\.?,?\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})`;
+
+/**
+ * The same shape with the month anchored to a CAPITALIZED word.
+ *
+ * {@link DATE_SHAPE}'s `\w+` is right where the surrounding pattern already
+ * pins the date ("on or before <date>"); it is too loose where the date has to
+ * identify itself, as in a policy's publication stamp, and STRUCT-003 wrote its
+ * own narrower copy for exactly that reason. Two hand-copied shapes drift —
+ * that copy had neither the ordinal suffix nor the "Nth day of Month" form, so
+ * a policy stamped "Last updated: January 1st, 2026" was told it carries no
+ * signature block, on 54 specimens. Both shapes live here now, and gain a
+ * spelling together.
+ */
+export const DATE_SHAPE_TITLED = DATE_SHAPE.replace(/\\w\+/g, "[A-Z][a-z]+");
+
+/**
+ * The same shape again, with the month spelled out.
+ *
+ * STRUCT-003's adoption recital needs a date that cannot be any word at all —
+ * "approved by the Board effective immediately" must not read as a date — so
+ * it wrote the twelve month names into a lookahead, twice, in two orderings.
+ * That is a THIRD hand-copy of this shape in one file, and it drifted the same
+ * way the other two did.
+ */
+export const DATE_SHAPE_MONTHS = DATE_SHAPE.replace(/\\w\+/g, `(?:${MONTHS})`);
 
 const ANCHOR_ALIASES =
   "Effective|Closing|Commencement|Termination|Expiration|Renewal|Execution|Signing|Start|Term Start|Delivery|Acceptance|Go-Live|Hire|Grant|Vesting|Maturity|Funding|Disbursement|Completion|Onboarding|Anniversary|Separation|Settlement|Distribution|Conversion|Exercise|Issuance|Record|Payment|Purchase|Valuation|Reference|Filing|Redemption|Repayment|Award|Adjustment";

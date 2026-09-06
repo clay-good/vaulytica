@@ -164,6 +164,27 @@ async function ingestByExtension(
  * `playbookId` forces a specific playbook; otherwise the same auto-match
  * the browser performs selects one.
  */
+/**
+ * The packs a caller ASSERTS — each off unless asked for, each leaving the run
+ * and its `result_hash` untouched. Shared by {@link analyzeFile} and
+ * {@link analyzeText} so the two entry points cannot offer different ones.
+ */
+export interface AssertedPackOptions {
+  /**
+   * Deadline-computation resolution (`--deadline-profile` / `--service-method`).
+   * When set, the critical-dates register resolves business-day/court-day and
+   * roll-forward offsets under the profile; otherwise the register is unchanged.
+   */
+  deadline?: DeadlineResolution;
+  /** `--critical-dates`: the derived-deadline register. Implied by `deadline`. */
+  criticalDates?: boolean;
+  /** `--checklist`: the closing checklist derived from the run. */
+  checklist?: boolean;
+  /** A validated custom playbook; its `negotiation_positions` drive `--posture`. */
+  customPlaybook?: CustomPlaybook;
+  posture?: boolean;
+}
+
 export async function analyzeFile(
   path: string,
   opts: {
@@ -173,24 +194,14 @@ export async function analyzeFile(
     dkbDir?: string;
     /** `--as-text`: ingest as UTF-8 text regardless of extension (never .docx/.pdf). */
     asText?: boolean;
+    /** `--delivery`: a CONTAINER scan; file-only, since pasted text has none. */
     delivery?: boolean;
-    criticalDates?: boolean;
-    checklist?: boolean;
-    /** A validated custom playbook; its `negotiation_positions` drive `--posture`. */
-    customPlaybook?: CustomPlaybook;
-    posture?: boolean;
     /**
      * Filing-format-lint activation (`--court`). When set and the document
      * matches a filing playbook, the FILE pack runs against the profile's
      * limits; otherwise it is ignored and the run is unchanged.
      */
     filing?: { profile: CourtProfile; brief_kind: BriefKind };
-    /**
-     * Deadline-computation resolution (`--deadline-profile` / `--service-method`).
-     * When set, the critical-dates register resolves business-day/court-day and
-     * roll-forward offsets under the profile; otherwise the register is unchanged.
-     */
-    deadline?: DeadlineResolution;
     /**
      * Privacy-notice regimes (`--regime`). When set and the document matches a
      * privacy-notice playbook, the PNOT presence rules for those regimes run;
@@ -208,7 +219,7 @@ export async function analyzeFile(
      * overlay when the state is seeded; otherwise unchanged.
      */
     estateState?: string;
-  } = {},
+  } & AssertedPackOptions = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const bytes = await readFile(path);
@@ -232,6 +243,29 @@ export async function analyzeFile(
       text: flattenText(ingest.tree),
     });
   }
+  return applyAssertedPacks(out, ingest, opts);
+}
+
+/**
+ * The asserted packs, in ONE place.
+ *
+ * `analyzeText` documented itself as "identical to {@link analyzeFile} for a
+ * `.txt`" and its options as "the same asserted-pack options", and it was
+ * neither: `criticalDates`, `deadline`, `checklist` and `posture` existed only
+ * on the file path, so a caller who passed one to `analyzeText` got a silently
+ * unchanged result. The critical-dates register was therefore unreachable from
+ * the in-memory entry point every corpus relation in `tests/integration` is
+ * built on — which is why no relation covers a surface that ships its own
+ * hash. Two copies of a tail drift; one cannot.
+ *
+ * `delivery` stays on the file path alone, and that is not drift: it scans the
+ * CONTAINER — the .docx/.pdf bytes — and pasted text has none.
+ */
+async function applyAssertedPacks(
+  out: AnalyzeResult,
+  ingest: IngestResult,
+  opts: AssertedPackOptions,
+): Promise<AnalyzeResult> {
   if (opts.criticalDates || opts.deadline) {
     // The register reads only dates/definitions/obligations, so a classifier-
     // free re-extract suffices; outside `run.result_hash`. A `--deadline-profile`
@@ -294,7 +328,7 @@ export async function analyzeText(
     regimes?: readonly RegimeId[];
     estateChecks?: boolean;
     estateState?: string;
-  } = {},
+  } & AssertedPackOptions = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const ingest = await ingestPaste(text);
@@ -309,7 +343,7 @@ export async function analyzeText(
     opts.estateChecks,
     opts.estateState,
   );
-  return { ...result, ingest };
+  return applyAssertedPacks({ ...result, ingest }, ingest, opts);
 }
 
 export { loadAccuracyDeps };

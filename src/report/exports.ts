@@ -35,6 +35,7 @@ import type {
   NegotiationTier,
   NegotiationPositionResult,
 } from "../playbooks/custom-interpreter.js";
+import { firstAbsoluteIso } from "../extract/absolute-date.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -334,74 +335,8 @@ export type DeadlinesResult = {
   unresolved: UnresolvedDate[];
 };
 
-const ABS_ISO = /\b(\d{4})-(\d{2})-(\d{2})\b/;
-const ABS_US = /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/;
-const ABS_MONTHS =
-  "January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec";
-const ABS_PROSE = new RegExp(String.raw`\b(${ABS_MONTHS})\.?\s+(\d{1,2}),?\s+(\d{4})\b`, "i");
-
-const MONTH_NUM: Record<string, number> = {
-  january: 1,
-  jan: 1,
-  february: 2,
-  feb: 2,
-  march: 3,
-  mar: 3,
-  april: 4,
-  apr: 4,
-  may: 5,
-  june: 6,
-  jun: 6,
-  july: 7,
-  jul: 7,
-  august: 8,
-  aug: 8,
-  september: 9,
-  sep: 9,
-  sept: 9,
-  october: 10,
-  oct: 10,
-  november: 11,
-  nov: 11,
-  december: 12,
-  dec: 12,
-};
-
-function isValidIso(y: number, mo: number, d: number): boolean {
-  if (mo < 1 || mo > 12 || d < 1 || d > 31) return false;
-  const dt = new Date(Date.UTC(y, mo - 1, d));
-  return dt.getUTCFullYear() === y && dt.getUTCMonth() === mo - 1 && dt.getUTCDate() === d;
-}
-
 function pad(n: number, w: number): string {
   return n.toString().padStart(w, "0");
-}
-
-/** Parse the first concrete absolute date in `text` → ISO, or undefined. */
-function firstAbsoluteIso(text: string): string | undefined {
-  let m = ABS_ISO.exec(text);
-  if (m) {
-    const y = +m[1]!,
-      mo = +m[2]!,
-      d = +m[3]!;
-    if (isValidIso(y, mo, d)) return `${pad(y, 4)}-${pad(mo, 2)}-${pad(d, 2)}`;
-  }
-  m = ABS_PROSE.exec(text);
-  if (m) {
-    const mo = MONTH_NUM[m[1]!.toLowerCase().replace(/\./g, "")];
-    const d = +m[2]!,
-      y = +m[3]!;
-    if (mo !== undefined && isValidIso(y, mo, d)) return `${pad(y, 4)}-${pad(mo, 2)}-${pad(d, 2)}`;
-  }
-  m = ABS_US.exec(text);
-  if (m) {
-    const mo = +m[1]!,
-      d = +m[2]!;
-    let y = +m[3]!;
-    if (m[3]!.length === 2) y = y < 70 ? 2000 + y : 1900 + y;
-    if (isValidIso(y, mo, d)) return `${pad(y, 4)}-${pad(mo, 2)}-${pad(d, 2)}`;
-  }
-  return undefined;
 }
 
 /** Add `days` to an ISO date deterministically (UTC). */

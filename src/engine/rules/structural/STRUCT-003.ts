@@ -3,6 +3,7 @@ import { ATTACHMENT_KIND } from "../../../extract/attachment-kinds.js";
 import { findStatuteCitation, makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { isIncorporatedExhibit } from "../_helpers.js";
+import { DATE_SHAPE_MONTHS, DATE_SHAPE_TITLED } from "../../../extract/dates.js";
 
 // A signature block is as often laid out as a TABLE as typed as lines, and
 // `src/ingest/docx.ts` flattens a table row to "cell | cell" — so the label
@@ -252,7 +253,11 @@ const DATED_ADOPTION =
   // by the board — "Adopted by the Chief Technology Officer on March 9,
   // 2026" — and demanding a board resolution of one is the same critical
   // false positive the board form was added to answer.
-  /\b(?:adopted|approved|ratified)\s+by\s+the\s+(?:board(?:\s+of\s+directors)?|(?:audit|compensation|nominating|governance|risk|executive|finance)\s+committee|chief\s+\w+\s+officer|general\s+counsel|president|c[eftoi]o)\s+(?:on|as\s+of)\s+(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2})/i;
+  new RegExp(
+    String.raw`\b(?:adopted|approved|ratified)\s+by\s+the\s+(?:board(?:\s+of\s+directors)?|(?:audit|compensation|nominating|governance|risk|executive|finance)\s+committee|chief\s+\w+\s+officer|general\s+counsel|president|c[eftoi]o)\s+(?:on|as\s+of)\s+` +
+      DATE_SHAPE_MONTHS,
+    "i",
+  );
 
 // A delivery instrument — disclosure schedules, closing certificates,
 // officer's certificates — is DELIVERED pursuant to a parent agreement, not
@@ -293,12 +298,10 @@ const ADOPTION_RECITAL = new RegExp(
     String.raw`[^.\n]{0,60}?\b(?:board|committee|council|trustees|directors|shareholders` +
     String.raw`|stockholders|members|general\s+counsel|chief\s+\w+\s+officer)\b` +
     String.raw`[^.\n]{0,40}?\b(?:on|effective|as\s+of|dated)\s+` +
-    // The month name is the only part that must stay case-SENSITIVE, and it
-    // cannot be spelled inside an `i`-flagged pattern, where `[A-Z]` is inert.
-    "(?=(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)" +
-    String.raw`\s+\d{1,2},\s+\d{4}|\d{1,2}\s+` +
-    "(?:JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)" +
-    String.raw`\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})`,
+    // The date must be a DATE and not any word at all — "approved by the Board
+    // effective immediately" is not an adoption date — so the month is spelled
+    // out rather than left as `\w+`. That is what `DATE_SHAPE_MONTHS` is.
+    `(?=${DATE_SHAPE_MONTHS})`,
   "i",
 );
 
@@ -308,8 +311,10 @@ const ADOPTION_RECITAL = new RegExp(
 // are usually typed into a form field rather than drafted. Twenty-seven
 // policies drew a `critical` "no signature block detected" the moment their
 // dates were written the way a form writes them.
-const PUBLICATION_STAMP =
-  /\blast\s+(?:updated|revised|modified|amended|reviewed)\s*[:|]?\s*(?:[A-Z][a-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}\s+[A-Z][a-z]+\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}[/.]\d{1,2}[/.]\d{2,4})/i;
+const PUBLICATION_STAMP = new RegExp(
+  String.raw`\blast\s+(?:updated|revised|modified|amended|reviewed)\s*[:|]?\s*` + DATE_SHAPE_TITLED,
+  "i",
+);
 
 // A formal valediction opening a line — "Very truly yours,", "Sincerely,",
 // "Respectfully submitted," — is the execution of CORRESPONDENCE (a demand

@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.461.0] — 2026-09-05
+
+### Fixed
+- **"1 March 2029" is the same day as "March 1, 2029", and the register did not
+  think so.** The Commonwealth-spelling relation's sibling, asked of a date. A
+  deed, a will, and any English or Commonwealth agreement writes the day first,
+  and `src/extract/dates.ts` has read every one of those orderings since it was
+  written. The critical-dates register and the report exports each carried
+  their OWN copy of an anchor parser, each labelled "mirrors" the other, and
+  neither read a day-first date or even an ordinal suffix.
+
+  What that cost is invisible in the findings, which is why nothing had caught
+  it: restating the corpus day-first left every finding on every specimen
+  identical and moved SEVEN specimens' REGISTERS — a survival end date, four
+  notice periods and a cure window each lost the anchor they were computed from
+  and fell back to "verify manually". The register ships its own
+  `critical_dates_hash`, so that is a silent change to a published artifact.
+  One `firstAbsoluteIso` now, in `src/extract/absolute-date.ts`, reading every
+  ordering the extractor does.
+
+- **An ordinal suffix on the day cost 54 specimens a `critical`.** A policy
+  stamped "Last updated: January 1st, 2026" was told it carries no signature
+  block. STRUCT-003 carried THREE hand-written date shapes — a publication
+  stamp, a dated adoption, and an adoption recital whose lookahead spelled the
+  twelve months twice — all drifted from `DATE_SHAPE` and from each other. Two
+  of them wrote the constraint as `[A-Z][a-z]+` under an `i` flag, where it is
+  inert; `inert-case-anchor.test.ts` had a declared entry recording that it did
+  nothing. `DATE_SHAPE_MONTHS` is the constraint they meant, it holds under
+  `i`, and that declared entry is deleted.
+
+- **`analyzeText` was not what it said it was.** It documented itself as
+  "identical to `analyzeFile` for a `.txt`" and its options as "the same
+  asserted-pack options", while `criticalDates`, `deadline`, `checklist` and
+  `posture` existed on the file path alone — so a caller passing one got a
+  silently unchanged result, and the register was unreachable from the
+  in-memory entry point every corpus relation is built on. Both entry points
+  now share one `applyAssertedPacks` tail and one `AssertedPackOptions` type.
+  `delivery` stays file-only, and that is not drift: it scans the container,
+  and pasted text has none.
+
 ## [9.460.0] — 2026-09-05
 
 ### Fixed

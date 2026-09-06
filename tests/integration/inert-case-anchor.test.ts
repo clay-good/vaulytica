@@ -25,10 +25,6 @@ import { describe, expect, it } from "vitest";
 /** file → why a bare `[A-Z]` under `/i` is harmless there. */
 const DECLARED = new Map<string, string>([
   [
-    "src/engine/rules/structural/STRUCT-003.ts",
-    "the office-abbreviation run in a signature line; the block is matched as a whole and a lowercase run cannot form one",
-  ],
-  [
     "src/engine/rules/structural/STRUCT-016.ts",
     "the exhibit LETTER in 'Exhibit A'; a lowercase 'exhibit a' is the same reference and should match",
   ],
