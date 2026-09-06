@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.467.0] — 2026-09-05
+
+### Fixed
+- **A "Contract" routed to the wrong playbook 36 times.** The instrument noun
+  in a title is the highest-leverage synonym in the product — the playbook
+  decides the entire rule set — and the catalog's title keywords are written
+  with the American word. Restating every specimen's instrument as a Contract
+  re-routed **36 of 221**, and not to near neighbours: a processor DPA became a
+  set of document requests, a marketing services agreement became a DPA, an SBA
+  loan agreement became a revocable living trust, a UK facility agreement
+  became a unilateral NDA.
+
+  `foldInstrumentNouns` folds that one pair in the matcher, beside the
+  `foldAttachmentNouns` and `foldSpelling` that were already there — and only
+  that pair, since `INSTRUMENT_NOUN` also lists Lease, Deed, Note, Order Form
+  and SOW, each naming a distinct instrument with a playbook of its own.
+  "Subcontract" and "contractor" are untouched: the word boundary is inside
+  them. 36 routing failures became 1, and that one is a title where the noun
+  sits inside an idiom ("MUTUAL AGREEMENT TO ARBITRATE CLAIMS").
+
+- **A family could out-score another on its own name by spelling it twice.**
+  The fold surfaced it immediately: `employment-at-will-us` declares both
+  "employment agreement" and "employment contract" as its own names — which is
+  right, they are the same instrument — and once folded they were one string
+  counted twice. It therefore read two title keywords where
+  `executive-employment` read one, and the count is the primary sort key, so a
+  document titled "Executive Employment Agreement" reached the at-will family
+  instead of its own. Credit now goes to the NAME, not to the number of ways
+  the catalog spells it.
+
+### Added
+- **`instrument-vocabulary.test.ts`** pins all of it: Exhibit → Schedule and
+  Exhibit → Appendix move nothing (`foldAttachmentNouns`, now guarded), and the
+  Contract residue is asserted by equality.
+
 ## [9.466.0] — 2026-09-05
 
 ### Fixed

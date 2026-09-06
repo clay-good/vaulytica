@@ -725,6 +725,30 @@ function stripApostrophes(text: string): string {
 }
 
 /**
+ * What a contract calls ITSELF, folded the way {@link foldAttachmentNouns}
+ * folds what it calls its attachments.
+ *
+ * A consulting engagement is a "Consulting Agreement" in an American file and
+ * a "Consulting Contract" in an English one, and the catalog's title keywords
+ * are written with the American word. Restating every specimen's instrument
+ * noun as "Contract" RE-ROUTED 36 of 221 — and not to near neighbours: a
+ * processor DPA became a set of document requests, a marketing services
+ * agreement became a DPA, an SBA loan agreement became a revocable living
+ * trust, a UK facility agreement became a unilateral NDA. The playbook decides
+ * the entire rule set, so a title word is the highest-leverage synonym there
+ * is.
+ *
+ * Only this ONE pair folds. `INSTRUMENT_NOUN` also lists Lease, Deed, Note,
+ * Order Form and SOW, and those are not synonyms for an agreement in this
+ * catalog — each names a distinct instrument with a playbook of its own, and
+ * folding them would merge families that differ on purpose. "Subcontract" and
+ * "contractor" are untouched: the word boundary is inside them.
+ */
+function foldInstrumentNouns(text: string): string {
+  return text.replace(/\bcontracts\b/gi, "agreements").replace(/\bcontract\b/gi, "agreement");
+}
+
+/**
  * The six nouns a contract uses for the thing it staples to the back.
  *
  * An American vendor security addendum is an "Information Security EXHIBIT";
@@ -826,7 +850,7 @@ const FOLDED_FEATURE = new Map<string, string>();
 function foldFeature(raw: string): string {
   const hit = FOLDED_FEATURE.get(raw);
   if (hit !== undefined) return hit;
-  const folded = foldSpelling(foldAttachmentNouns(stripApostrophes(raw)));
+  const folded = foldSpelling(foldInstrumentNouns(foldAttachmentNouns(stripApostrophes(raw))));
   FOLDED_FEATURE.set(raw, folded);
   return folded;
 }
@@ -850,7 +874,7 @@ function foldFeature(raw: string): string {
 type Corpus = { plain: string; noHyphen: string; spaced: string };
 
 function buildCorpus(text: string): Corpus {
-  const plain = foldSpelling(foldAttachmentNouns(stripApostrophes(text)));
+  const plain = foldSpelling(foldInstrumentNouns(foldAttachmentNouns(stripApostrophes(text))));
   return {
     plain,
     noHyphen: plain.replace(/-/g, ""),
@@ -1060,9 +1084,26 @@ export function matchPlaybook(
   // Every family's matched title keywords, collapsed to the maximal ones, so
   // the credit below can ask whether some OTHER family read more of this
   // title. See {@link maximalKeywords}.
-  const matched_by_playbook = available.map((pb) =>
-    pb.match_features.title_keywords.filter((kw) => matchesIn(title, kw)),
-  );
+  // Two SPELLINGS of one name are one match.
+  //
+  // `employment-at-will-us` declares both "employment agreement" and
+  // "employment contract" as its own names, which is right — they are the same
+  // instrument — and once the instrument noun folds they became the same
+  // string. Counted twice, that family read two title keywords where
+  // `executive-employment` read one, and the count is the primary sort key, so
+  // a document titled "Executive Employment Agreement" reached the at-will
+  // family instead of its own. Dedupe on the folded form: the credit belongs to
+  // the NAME, not to the number of ways the catalog spells it.
+  const matched_by_playbook = available.map((pb) => {
+    const seen = new Set<string>();
+    return pb.match_features.title_keywords.filter((kw) => {
+      if (!matchesIn(title, kw)) return false;
+      const folded = foldFeature(kw.toLowerCase());
+      if (seen.has(folded)) return false;
+      seen.add(folded);
+      return true;
+    });
+  });
   const maximal_anywhere = new Set(matched_by_playbook.flatMap(maximalKeywords));
   const insideALongerName = (kw: string): boolean => {
     for (const other of maximal_anywhere) {
