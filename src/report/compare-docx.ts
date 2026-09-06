@@ -29,14 +29,11 @@ import {
   Packer,
   PageBreak,
   Paragraph,
-  ShadingType,
   Table,
   TableCell,
   TableRow,
   TextRun,
   WidthType,
-  type IParagraphOptions,
-  type IRunOptions,
 } from "docx";
 
 import type { Finding, Severity } from "../engine/finding.js";
@@ -44,6 +41,7 @@ import type { Comparison, SeverityCounts, UnchangedPair } from "./compare.js";
 import type { Clause, ClauseDiff, WordDiffSegment } from "./clause-diff.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { PostureMovement, PostureMovementKind } from "./posture-movement.js";
+import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
 
 /**
  * Cap on redline rows rendered per category. A pathological redline (a
@@ -52,10 +50,6 @@ import type { PostureMovement, PostureMovementKind } from "./posture-movement.js
  * silently. Real legal redlines are far under this.
  */
 const MAX_REDLINE_ROWS = 100;
-
-const MINT = "00A883";
-const DEFAULT_FONT = "Arial";
-const BODY_SIZE = 22; // half-points = 11pt
 
 const DETERMINISM_STATEMENT =
   "This comparison was produced by a deterministic process. It is the difference between two deterministic Vaulytica runs: given the same two input files, the same engine version, and the same Deterministic Knowledge Base version, this comparison reproduces byte-for-byte on any machine, at any time. The comparison hash above is the SHA-256 of the two run hashes and the canonical delta. No part of this analysis was performed by a language model or any other non-deterministic system.";
@@ -569,32 +563,6 @@ function renderDisclaimer(): Paragraph[] {
 // Primitives (mirror report/docx.ts)
 // ---------------------------------------------------------------------------
 
-type ParaOpts = {
-  text: string;
-  bold?: boolean;
-  italics?: boolean;
-  color?: string;
-  size?: number;
-  heading?: IParagraphOptions["heading"];
-  alignment?: IParagraphOptions["alignment"];
-};
-
-function para(opts: ParaOpts): Paragraph {
-  const runOpts: IRunOptions = {
-    text: opts.text,
-    bold: opts.bold,
-    italics: opts.italics,
-    color: opts.color,
-    font: DEFAULT_FONT,
-    size: opts.size ?? BODY_SIZE,
-  };
-  return new Paragraph({
-    heading: opts.heading,
-    alignment: opts.alignment,
-    children: [new TextRun(runOpts)],
-  });
-}
-
 function h1(text: string): Paragraph {
   return para({ text, heading: HeadingLevel.HEADING_1, color: MINT, bold: true, size: 32 });
 }
@@ -612,30 +580,6 @@ function pageBreak(): Paragraph {
   return new Paragraph({ children: [new PageBreak()] });
 }
 
-function headerRow(cells: string[]): TableRow {
-  return new TableRow({
-    children: cells.map(
-      (text) =>
-        new TableCell({
-          shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text,
-                  bold: true,
-                  color: "FFFFFF",
-                  font: DEFAULT_FONT,
-                  size: BODY_SIZE,
-                }),
-              ],
-            }),
-          ],
-        }),
-    ),
-  });
-}
-
 function bodyCell(text: string, color?: string, bold?: boolean): TableCell {
   return new TableCell({
     borders: {
@@ -650,10 +594,6 @@ function bodyCell(text: string, color?: string, bold?: boolean): TableCell {
       }),
     ],
   });
-}
-
-function bodyRow(cells: string[]): TableRow {
-  return new TableRow({ children: cells.map((text) => bodyCell(text)) });
 }
 
 function severityColor(severity: Severity): string {

@@ -21,40 +21,23 @@ import {
   TextRun,
   WidthType,
   type IParagraphOptions,
-  type IRunOptions,
 } from "docx";
 import { breakLongTokens } from "../citations.js";
 import { isHttpUrl } from "../../dkb/url-safety.js";
+import {
+  BODY_SIZE,
+  DEFAULT_FONT,
+  MINT,
+  bodyRow,
+  headerRow,
+  para,
+  type ParaOpts,
+} from "../_docx-primitives.js";
 
-export const MINT = "00A883";
-export const DEFAULT_FONT = "Arial";
-export const BODY_SIZE = 22; // half-points = 11pt
-
-export type ParaOpts = {
-  text: string;
-  bold?: boolean;
-  italics?: boolean;
-  color?: string;
-  size?: number;
-  heading?: IParagraphOptions["heading"];
-  alignment?: IParagraphOptions["alignment"];
-};
-
-export function para(opts: ParaOpts): Paragraph {
-  const runOpts: IRunOptions = {
-    text: opts.text,
-    bold: opts.bold,
-    italics: opts.italics,
-    color: opts.color,
-    font: DEFAULT_FONT,
-    size: opts.size ?? BODY_SIZE,
-  };
-  return new Paragraph({
-    heading: opts.heading,
-    alignment: opts.alignment,
-    children: [new TextRun(runOpts)],
-  });
-}
+// The v3 report modules have imported these from here since they were
+// written; the definitions moved out, the door stays where it was.
+export { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para };
+export type { ParaOpts };
 
 export function h1(text: string): Paragraph {
   return para({ text, heading: HeadingLevel.HEADING_1, color: MINT, bold: true, size: 32 });
@@ -74,31 +57,6 @@ export function spacer(): Paragraph {
 
 export function pageBreak(): Paragraph {
   return new Paragraph({ children: [new PageBreak()] });
-}
-
-export function headerRow(cells: string[]): TableRow {
-  return new TableRow({
-    tableHeader: true,
-    children: cells.map(
-      (text) =>
-        new TableCell({
-          shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text,
-                  bold: true,
-                  color: "FFFFFF",
-                  font: DEFAULT_FONT,
-                  size: BODY_SIZE,
-                }),
-              ],
-            }),
-          ],
-        }),
-    ),
-  });
 }
 
 export type CellOpts = {
@@ -131,12 +89,6 @@ export function styledCell(text: string, opts: CellOpts = {}): TableCell {
         ],
       }),
     ],
-  });
-}
-
-export function bodyRow(cells: string[]): TableRow {
-  return new TableRow({
-    children: cells.map((t) => styledCell(t)),
   });
 }
 

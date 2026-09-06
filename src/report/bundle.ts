@@ -39,7 +39,6 @@ import {
   TableRow,
   TextRun,
   WidthType,
-  type IParagraphOptions,
 } from "docx";
 import { zipSync, type Zippable } from "fflate";
 
@@ -77,10 +76,7 @@ import {
   type PortfolioExecutiveSummary,
   type PortfolioStatus,
 } from "./portfolio.js";
-
-const MINT = "00A883";
-const DEFAULT_FONT = "Arial";
-const BODY_SIZE = 22;
+import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
 
 /** Cap on per-document findings surfaced in the consolidated DOCX (spec §11). */
 export const BUNDLE_TOP_N = 10;
@@ -722,28 +718,7 @@ function renderPortfolioMatrix(matrix: PortfolioMatrix): (Paragraph | Table)[] {
   );
   out.push(spacer());
 
-  const header = new TableRow({
-    tableHeader: true,
-    children: ["Document", ...matrix.checks.map((c) => c.label)].map(
-      (text) =>
-        new TableCell({
-          shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text,
-                  bold: true,
-                  color: "FFFFFF",
-                  font: DEFAULT_FONT,
-                  size: BODY_SIZE,
-                }),
-              ],
-            }),
-          ],
-        }),
-    ),
-  });
+  const header = headerRow(["Document", ...matrix.checks.map((c) => c.label)], true);
   const dataRows = matrix.rows.map(
     (row) =>
       new TableRow({
@@ -1481,33 +1456,6 @@ function buildBundleBibliography(input: BundleReportInput): BundleBibliographyEn
 // DOCX primitives (kept local — the report layer intentionally avoids a
 // shared component module so each renderer is self-contained).
 
-type ParaOpts = {
-  text: string;
-  bold?: boolean;
-  italics?: boolean;
-  color?: string;
-  size?: number;
-  heading?: IParagraphOptions["heading"];
-  alignment?: IParagraphOptions["alignment"];
-};
-
-function para(opts: ParaOpts): Paragraph {
-  return new Paragraph({
-    heading: opts.heading,
-    alignment: opts.alignment,
-    children: [
-      new TextRun({
-        text: opts.text,
-        bold: opts.bold,
-        italics: opts.italics,
-        color: opts.color,
-        font: DEFAULT_FONT,
-        size: opts.size ?? BODY_SIZE,
-      }),
-    ],
-  });
-}
-
 function coverField(label: string, value: string): Paragraph {
   return new Paragraph({
     children: [
@@ -1535,51 +1483,6 @@ function spacer(_count = 1): Paragraph {
 
 function pageBreak(): Paragraph {
   return new Paragraph({ children: [new PageBreak()] });
-}
-
-function headerRow(cells: string[]): TableRow {
-  return new TableRow({
-    children: cells.map(
-      (text) =>
-        new TableCell({
-          shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text,
-                  bold: true,
-                  color: "FFFFFF",
-                  font: DEFAULT_FONT,
-                  size: BODY_SIZE,
-                }),
-              ],
-            }),
-          ],
-        }),
-    ),
-  });
-}
-
-function bodyRow(cells: string[]): TableRow {
-  return new TableRow({
-    children: cells.map(
-      (text) =>
-        new TableCell({
-          borders: {
-            top: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            left: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            right: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-          },
-          children: [
-            new Paragraph({
-              children: [new TextRun({ text, font: DEFAULT_FONT, size: BODY_SIZE })],
-            }),
-          ],
-        }),
-    ),
-  });
 }
 
 function severityColor(severity: Severity): string {

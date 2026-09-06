@@ -21,11 +21,15 @@
  *    clause were written out four times each. Consolidating them found a FIFTH
  *    shape whose sibling's comment claimed a guard it does not have.
  *
- * Scoped to `src/engine` and `src/extract` — where a duplicate changes what
- * the engine BELIEVES. The report layer's DOCX helpers (`headerRow`, `para`)
- * are duplicated too and left alone: those are formatting, a divergence there
- * is visible, and the shared-render abstraction that would unify them is a
- * bigger change than this guard is entitled to force.
+ * `src/report` is in scope too, and the first sweep of it found the same shape
+ * one layer up: `docx.ts`, `compare-docx.ts` and `bundle.ts` each declared
+ * their own `MINT = "00A883"`, their own font and body size, and a
+ * byte-identical `para`, `headerRow` and `bodyRow` — while `v3/_dx.ts` had
+ * been exporting all of them the whole time. Four copies of a brand colour is
+ * four chances for one report to be a different green from another, and a
+ * heading row styled one way in the bundle report and another way in the
+ * single-document report is the kind of difference nobody notices until a
+ * client does. They now live in `_docx-primitives.ts`.
  *
  * Twelve lines is the floor. Below it a collision is as often two honest
  * four-line guards that happen to agree as it is a copy.
@@ -34,9 +38,9 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
-import { sourceFiles } from "./_recognizer-sources.js";
+import { declaredExceptions, sourceFiles } from "./_recognizer-sources.js";
 
-const ROOTS = ["src/engine", "src/extract"];
+const ROOTS = ["src/engine", "src/extract", "src/report"];
 const MIN_LINES = 12;
 
 interface Body {
@@ -75,6 +79,45 @@ function bodies(file: string): Map<string, Body[]> {
   return out;
 }
 
+/**
+ * What is duplicated on purpose, or not worth the abstraction that would
+ * remove it.
+ *
+ * `renderDisclaimer` reads identically in `bundle.ts` and `compare-docx.ts`,
+ * but each calls its OWN `h1`, `h3` and `spacer`, and those three have already
+ * diverged between the two files — bundle's `h1` is not compare's `h1`. Moving
+ * the shared body would silently impose one file's heading sizes on the other
+ * report, which is a change to what a customer sees, not a refactor. The
+ * honest fix is to unify the headings first; that is a deliberate design pass,
+ * not something this guard should force.
+ *
+ * The two coherence pairs are the ascending and descending halves of one
+ * analysis inside a single file. They are parallel by construction and read
+ * better side by side than behind a `direction` parameter.
+ */
+const DECLARED = declaredExceptions([
+  {
+    file: "src/report/bundle.ts",
+    pattern: "renderDisclaimer",
+    why: "identical body, different h1/h3/spacer — unifying it changes the rendered report",
+  },
+  {
+    file: "src/report/compare-docx.ts",
+    pattern: "renderDisclaimer",
+    why: "the other half of the same pair",
+  },
+  {
+    file: "src/report/coherence-latency.ts",
+    pattern: "<anonymous>",
+    why: "the two halves of one analysis, parallel by construction",
+  },
+  {
+    file: "src/report/coherence-relapse.ts",
+    pattern: "<anonymous>",
+    why: "the two halves of one analysis, parallel by construction",
+  },
+]);
+
 describe("logic in the semantic layer", () => {
   it("is not written twice", () => {
     const files = ROOTS.flatMap((root) => sourceFiles(root));
@@ -93,9 +136,11 @@ describe("logic in the semantic layer", () => {
 
     const duplicated = [...all.values()]
       .filter((group) => group.length > 1)
+      .filter((group) => !group.every((g) => DECLARED.exempts(g.where.split(":")[0]!, g.where)))
       .sort((a, b) => (b[0]?.lines ?? 0) - (a[0]?.lines ?? 0))
       .map((group) => `${group[0]!.lines} lines:\n    ${group.map((g) => g.where).join("\n    ")}`);
 
+    expect(DECLARED.unused(), "declared exceptions that match no duplicate").toEqual([]);
     expect(
       duplicated,
       `these bodies are identical — give them one owner:\n  ${duplicated.join("\n  ")}`,

@@ -35,14 +35,9 @@ import {
   Packer,
   PageBreak,
   Paragraph,
-  ShadingType,
   Table,
-  TableCell,
-  TableRow,
   TextRun,
   WidthType,
-  type IParagraphOptions,
-  type IRunOptions,
 } from "docx";
 
 import type { ClassificationNotice, EngineRun, Finding } from "../engine/finding.js";
@@ -82,10 +77,15 @@ import {
   renderCitationIndex,
   buildV3Footer,
 } from "./v3/index.js";
-
-const MINT = "00A883";
-const DEFAULT_FONT = "Arial";
-const BODY_SIZE = 22; // half-points = 11pt
+import {
+  BODY_SIZE,
+  DEFAULT_FONT,
+  MINT,
+  bodyRow,
+  headerRow,
+  para,
+  type ParaOpts,
+} from "./_docx-primitives.js";
 
 const DETERMINISM_STATEMENT =
   "This report was produced by a deterministic process. Given the same input file, the same Vaulytica engine version, and the same Deterministic Knowledge Base version listed above, the rules in this report will produce an identical report on any machine, at any time. The fingerprint of the input file is recorded above for verification. No part of this analysis was performed by a language model or any other non-deterministic system. The complete list of rules executed, including those that produced no findings, is included in the Audit Trail section so that the scope of the analysis is fully transparent.";
@@ -1229,32 +1229,6 @@ function renderDisclaimer(): Paragraph[] {
 // ---------------------------------------------------------------------------
 // Primitives
 
-type ParaOpts = {
-  text: string;
-  bold?: boolean;
-  italics?: boolean;
-  color?: string;
-  size?: number;
-  heading?: IParagraphOptions["heading"];
-  alignment?: IParagraphOptions["alignment"];
-};
-
-function para(opts: ParaOpts): Paragraph {
-  const runOpts: IRunOptions = {
-    text: opts.text,
-    bold: opts.bold,
-    italics: opts.italics,
-    color: opts.color,
-    font: DEFAULT_FONT,
-    size: opts.size ?? BODY_SIZE,
-  };
-  return new Paragraph({
-    heading: opts.heading,
-    alignment: opts.alignment,
-    children: [new TextRun(runOpts)],
-  });
-}
-
 /**
  * A paragraph whose long unbroken tokens (citation URLs) are split into
  * adjacent runs so Word can wrap them at the page margin rather than let
@@ -1310,51 +1284,6 @@ function spacer(count = 1): Paragraph {
 
 function pageBreak(): Paragraph {
   return new Paragraph({ children: [new PageBreak()] });
-}
-
-function headerRow(cells: string[]): TableRow {
-  return new TableRow({
-    children: cells.map(
-      (text) =>
-        new TableCell({
-          shading: { type: ShadingType.CLEAR, fill: MINT, color: "auto" },
-          children: [
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text,
-                  bold: true,
-                  color: "FFFFFF",
-                  font: DEFAULT_FONT,
-                  size: BODY_SIZE,
-                }),
-              ],
-            }),
-          ],
-        }),
-    ),
-  });
-}
-
-function bodyRow(cells: string[]): TableRow {
-  return new TableRow({
-    children: cells.map(
-      (text) =>
-        new TableCell({
-          borders: {
-            top: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            bottom: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            left: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-            right: { style: BorderStyle.SINGLE, size: 4, color: "CCCCCC" },
-          },
-          children: [
-            new Paragraph({
-              children: [new TextRun({ text, font: DEFAULT_FONT, size: BODY_SIZE })],
-            }),
-          ],
-        }),
-    ),
-  });
 }
 
 function severityColor(severity: Finding["severity"]): string {

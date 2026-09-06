@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.469.0] — 2026-09-05
+
+### Fixed
+- **Four copies of the brand colour.** `duplicate-logic.test.ts` now covers
+  `src/report`, and its first sweep found the same shape one layer up from the
+  engine: `docx.ts`, `compare-docx.ts` and `bundle.ts` each declared their own
+  `MINT = "00A883"`, their own font and body size, their own `ParaOpts`, and a
+  byte-identical `para`, `headerRow` and `bodyRow` — while `v3/_dx.ts` had been
+  exporting all of them the whole time. Four copies of a brand colour is four
+  chances for one report to be a different green from another, and a heading
+  row styled one way in the bundle report and another way in the
+  single-document report is the kind of difference nobody notices until a
+  client does.
+
+  They live in `_docx-primitives.ts` now; `v3/_dx.ts` re-exports them, so the
+  v3 modules that have always imported from it are untouched. The bundle's
+  compliance matrix had open-coded a whole header row to get Word's
+  repeat-on-page-break flag, so `headerRow` takes it as an argument. Every DOCX
+  golden is byte-identical.
+
+- Two duplicates stay, with reasons. `renderDisclaimer` reads identically in
+  two files but each calls its OWN `h1`/`h3`/`spacer`, and those have already
+  diverged — moving the shared body would silently impose one report's heading
+  sizes on the other, which is a change to what a customer sees, not a
+  refactor. The two coherence pairs are the ascending and descending halves of
+  one analysis inside one file, and read better side by side than behind a
+  `direction` parameter.
+
 ## [9.468.0] — 2026-09-05
 
 ### Documentation
