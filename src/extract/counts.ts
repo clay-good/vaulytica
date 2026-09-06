@@ -54,7 +54,21 @@ const WORDS = `(?:${HUNDREDS}|${SMALL})`;
  */
 export const PERIOD_COUNT = `(?:\\b(?:${WORDS})\\s*\\(\\s*\\d{1,3}\\s*\\)|\\b(?:${WORDS})|\\(\\s*\\d{1,3}\\s*\\)|\\d{1,3})`;
 
-const NUMBER_WORDS: Record<string, number> = {
+/**
+ * The number words, in ONE place.
+ *
+ * Four identical copies of this table shipped in the tree — here, in
+ * `amounts.ts`, in `dates.ts` and in `FIN-001` — and two byte-identical
+ * parsers over it. A table that exists four times is a table that will
+ * eventually disagree with itself, which is the defect this whole family of
+ * repairs keeps finding at one remove.
+ *
+ * `zero` is in the table and NOT in {@link PERIOD_COUNT}: a zero-day period is
+ * not a thing a contract states, but "zero dollars" is, and the money parsers
+ * share this table.
+ */
+export const NUMBER_WORDS: Record<string, number> = {
+  zero: 0,
   one: 1,
   two: 2,
   three: 3,
@@ -82,6 +96,19 @@ const NUMBER_WORDS: Record<string, number> = {
   seventy: 70,
   eighty: 80,
   ninety: 90,
+};
+
+/**
+ * The multiplier words. `hundred` MULTIPLIES what precedes it; the rest set a
+ * new place value — which is why the two are separated rather than folded into
+ * one table, and why every parser over them treats `hundred` specially.
+ */
+export const WORD_SCALES: Record<string, string> = {
+  hundred: "100",
+  thousand: "1000",
+  million: "1000000",
+  billion: "1000000000",
+  trillion: "1000000000000",
 };
 
 /**

@@ -1,6 +1,8 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { DateReference } from "./types.js";
 import { forEachParagraph, posInParagraph } from "./walk.js";
+import { NUMBER_WORDS } from "./counts.js";
+import { monthNumber } from "./absolute-date.js";
 
 /**
  * Extract every date reference from the document. Categories:
@@ -56,38 +58,6 @@ const DAY_OF_MONTH = new RegExp(
   String.raw`\b(?:the|this)\s+(\d{1,2})(?:st|nd|rd|th)\s+day\s+of\s+(${MONTHS})\.?,?\s+(\d{4})\b`,
   "gi",
 );
-
-const NUMBER_WORDS: Record<string, number> = {
-  zero: 0,
-  one: 1,
-  two: 2,
-  three: 3,
-  four: 4,
-  five: 5,
-  six: 6,
-  seven: 7,
-  eight: 8,
-  nine: 9,
-  ten: 10,
-  eleven: 11,
-  twelve: 12,
-  thirteen: 13,
-  fourteen: 14,
-  fifteen: 15,
-  sixteen: 16,
-  seventeen: 17,
-  eighteen: 18,
-  nineteen: 19,
-  twenty: 20,
-  thirty: 30,
-  forty: 40,
-  fifty: 50,
-  sixty: 60,
-  seventy: 70,
-  eighty: 80,
-  ninety: 90,
-  hundred: 100,
-};
 
 /**
  * Disjunctive / range deadlines: "thirty to sixty days after the
@@ -293,7 +263,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
     }
     PROSE.lastIndex = 0;
     while ((m = PROSE.exec(ctx.text)) !== null) {
-      const month = monthNumber(m[1]!);
+      const month = monthNumber(m[1]!) ?? null;
       const day = parseInt(m[2]!, 10);
       const year = parseInt(m[3]!, 10);
       const iso =
@@ -345,7 +315,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
     DAY_OF_MONTH.lastIndex = 0;
     while ((m = DAY_OF_MONTH.exec(ctx.text)) !== null) {
       const day = parseInt(m[1]!, 10);
-      const month = monthNumber(m[2]!);
+      const month = monthNumber(m[2]!) ?? null;
       const year = parseInt(m[3]!, 10);
       const iso =
         month !== null
@@ -366,7 +336,7 @@ export function extractDates(tree: DocumentTree): DateReference[] {
     while ((m = DAY_MONTH_YEAR.exec(ctx.text)) !== null) {
       if (rangeSpans.some(([s, e]) => m!.index < e && m!.index + m![0].length > s)) continue;
       const day = parseInt(m[1]!, 10);
-      const month = monthNumber(m[2]!);
+      const month = monthNumber(m[2]!) ?? null;
       const year = parseInt(m[3]!, 10);
       const iso =
         month !== null
@@ -518,37 +488,6 @@ function titleCaseAnchor(raw: string): string {
     .join("");
 }
 
-function monthNumber(name: string): number | null {
-  const map: Record<string, number> = {
-    january: 1,
-    jan: 1,
-    february: 2,
-    feb: 2,
-    march: 3,
-    mar: 3,
-    april: 4,
-    apr: 4,
-    may: 5,
-    june: 6,
-    jun: 6,
-    july: 7,
-    jul: 7,
-    august: 8,
-    aug: 8,
-    september: 9,
-    sep: 9,
-    sept: 9,
-    october: 10,
-    oct: 10,
-    november: 11,
-    nov: 11,
-    december: 12,
-    dec: 12,
-  };
-  const v = map[name.toLowerCase().replace(/\./g, "")];
-  return v ?? null;
-}
-
 function isValidIso(iso: string): boolean {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
   if (!m) return false;
@@ -565,11 +504,20 @@ function parseWordNumber(raw: string): number | null {
   let total = 0;
   let recognized = false;
   for (const p of parts) {
+    // "hundred" is a MULTIPLIER, and it lives in the scale table rather than
+    // the number-word one — the shared table's split, which this parser has to
+    // respect now that it no longer owns a private copy carrying `hundred:
+    // 100` alongside the digits. Without this branch "one hundred twenty days"
+    // read as twenty.
+    if (p === "hundred") {
+      total = (total || 1) * 100;
+      recognized = true;
+      continue;
+    }
     const v = NUMBER_WORDS[p];
     if (v === undefined) continue;
     recognized = true;
-    if (v === 100) total = (total || 1) * 100;
-    else total += v;
+    total += v;
   }
   return recognized ? total : null;
 }

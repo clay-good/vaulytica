@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import type { DocumentTree } from "../ingest/types.js";
 import type { MoneyReference } from "./types.js";
 import { forEachParagraph, posInParagraph } from "./walk.js";
+import { NUMBER_WORDS, WORD_SCALES } from "./counts.js";
 
 /**
  * Extract every monetary reference. Normalization rules:
@@ -203,50 +204,10 @@ const SCALES: Record<string, string> = {
   mn: "1000000",
   b: "1000000000",
   bn: "1000000000",
-  hundred: "100",
-  thousand: "1000",
-  million: "1000000",
-  billion: "1000000000",
-  trillion: "1000000000000",
-};
-
-const NUMBER_WORDS: Record<string, number> = {
-  zero: 0,
-  one: 1,
-  two: 2,
-  three: 3,
-  four: 4,
-  five: 5,
-  six: 6,
-  seven: 7,
-  eight: 8,
-  nine: 9,
-  ten: 10,
-  eleven: 11,
-  twelve: 12,
-  thirteen: 13,
-  fourteen: 14,
-  fifteen: 15,
-  sixteen: 16,
-  seventeen: 17,
-  eighteen: 18,
-  nineteen: 19,
-  twenty: 20,
-  thirty: 30,
-  forty: 40,
-  fifty: 50,
-  sixty: 60,
-  seventy: 70,
-  eighty: 80,
-  ninety: 90,
-};
-
-const WORD_SCALES: Record<string, string> = {
-  hundred: "100",
-  thousand: "1000",
-  million: "1000000",
-  billion: "1000000000",
-  trillion: "1000000000000",
+  // The spelled scales are the SHARED table, not a second copy of it: this map
+  // is the abbreviations ("$2mm", "$5bn") PLUS the words, and only the
+  // abbreviation half is its own.
+  ...WORD_SCALES,
 };
 
 // The inner separator is a SINGLE `[-\s]` (not `[-\s]+`): a `(?:…|[-\s]+)+`
@@ -442,7 +403,14 @@ function resolveCurrency(symOrCode: string): string {
   return CURRENCY_SYMBOLS[symOrCode] ?? "USD";
 }
 
-function parseWordPhrase(phrase: string): Decimal | null {
+/**
+ * A sum written in words → a Decimal. Exported because FIN-001 carried a
+ * byte-identical copy (bar a `.toLowerCase()` its caller already did), over a
+ * byte-identical table, to answer the same question about the same phrases.
+ * Returns null unless EVERY token is a number word — a phrase with one
+ * unrecognized token is not a partly-read amount, it is not an amount.
+ */
+export function parseWordPhrase(phrase: string): Decimal | null {
   const tokens = phrase
     .replace(/-/g, " ")
     .split(/\s+/)

@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.464.0] — 2026-09-05
+
+### Fixed
+- **A table that exists four times is a table that will disagree with itself.**
+  The through-line of the day's repairs, made structural. Four files carried
+  the same number-word table and two of them carried byte-identical parsers
+  over it; `dates.ts` carried a second month-number table inside a function;
+  `amounts.ts` restated the scale words alongside its numeral abbreviations.
+  None was wrong when written — each was wrong later, because a repair reached
+  one copy and not the rest, and the copies are listed nowhere.
+
+  One owner each now: `counts.ts` for the number words and the scale words,
+  `absolute-date.ts` for the month numbers, `amounts.ts` for the words →
+  Decimal parser FIN-001 duplicated.
+
+### Added
+- **`shared-vocabulary.test.ts` is the list.** It names each vocabulary with a
+  single owner and fails when a second DEFINITION appears — definitions, not
+  uses, because a rule writing `[$€£¥₹₩₽]` inline is not carrying a copy of
+  anything, it is writing the spelling `currency-glyph.test.ts` requires. A
+  stale entry (an owner that no longer defines its vocabulary) fails too: the
+  guard that silently stops guarding is a failure this repo has now met three
+  times.
+
+  It found two more copies on its first run, and a unit test then caught the
+  consolidation's own regression: `hundred` is a MULTIPLIER and lives in the
+  scale table, so a parser that had carried its own `hundred: 100` beside the
+  digits read "one hundred twenty days" as twenty until it respected the split.
+
 ## [9.463.0] — 2026-09-05
 
 ### Added

@@ -46,7 +46,11 @@ const DAY_FIRST = new RegExp(
 );
 const US_NUMERIC = /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/;
 
-const MONTH_NUM: Record<string, number> = {
+/**
+ * Month name (full or abbreviated, with or without a trailing period) → its
+ * number. `dates.ts` carried a second copy inside a function; one owner now.
+ */
+export const MONTH_NUM: Record<string, number> = {
   january: 1,
   jan: 1,
   february: 2,
@@ -86,7 +90,8 @@ export function toIso(y: number, m: number, d: number): string {
   return `${String(y).padStart(4, "0")}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
-const monthNumber = (raw: string): number | undefined =>
+/** The number a month NAME states, or undefined if it is not a month. */
+export const monthNumber = (raw: string): number | undefined =>
   MONTH_NUM[raw.toLowerCase().replace(/\./g, "")];
 
 /**
