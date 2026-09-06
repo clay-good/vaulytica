@@ -1018,3 +1018,43 @@ describe("where a signature block is looked for", () => {
     expect(split.map((x) => x.name)).toContain("Dermot Halloran");
   });
 });
+
+describe("a field label shouted above the name it labels", () => {
+  it("reads the entity, not the label plus the entity", () => {
+    // An ACORD certificate writes "PRODUCER" on its own line over the broker's
+    // name; ingest joins the two. `LEADING_ROLE` cannot reach it — that one
+    // requires the comma a preamble writes after a role and a field block
+    // writes none.
+    const p = extractParties(
+      buildTree([
+        "CERTIFICATE OF LIABILITY INSURANCE",
+        "PRODUCER Ashgrove Insurance Brokers, LLC",
+        "INSURED Copperline Mechanical Contractors, Inc.",
+      ]),
+    );
+    const names = p.map((x) => x.name);
+    expect(names).toContain("Ashgrove Insurance Brokers");
+    expect(names).toContain("Copperline Mechanical Contractors");
+    expect(names).not.toContain("PRODUCER Ashgrove Insurance Brokers");
+  });
+
+  it("needs BOTH the shout and the change of case", () => {
+    // "Company", "Client" and "Provider" are ordinary first words of a
+    // business name, so neither signal is safe alone. A document set entirely
+    // in capitals must keep the subject of its own sentence.
+    const shouted = extractParties(
+      buildTree([
+        "SERVICES AGREEMENT",
+        "CONTRACTOR SHALL MAINTAIN COMMERCIAL GENERAL LIABILITY INSURANCE AT ALL TIMES.",
+      ]),
+    );
+    expect(shouted.map((x) => x.name)).not.toContain("SHALL MAINTAIN COMMERCIAL GENERAL");
+    const mixed = extractParties(
+      buildTree([
+        "Services Agreement",
+        "This Agreement is made between Company Holdings LLC and Riverbend Analytics, Inc.",
+      ]),
+    );
+    expect(mixed.map((x) => x.name)).toContain("Company Holdings LLC");
+  });
+});

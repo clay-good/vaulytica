@@ -52,6 +52,13 @@
  * signer in their NATURAL layout** — each one a name a transformed variant was
  * already finding, and each pushed out of the naive fraction by the notary
  * acknowledgement or exhibit that follows the block. Debt 114 → 57.
+ *
+ * A third strip, the same ingest join one step further down: a field label
+ * SHOUTED on its own line above the name it labels — "PRODUCER" over "Ashgrove
+ * Insurance Brokers, LLC" on an ACORD certificate, "CONTRACTOR" over "Bramble
+ * Construction Group, Inc." on a change order. `LEADING_ROLE` cannot reach
+ * those either, for the same reason it could not reach a caption's role word:
+ * it requires a comma that a field block does not write. Debt 57 → 53.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -160,11 +167,7 @@ const PARTY_DEBT: readonly string[] = [
   "baa.txt [double-spaced] lost:- gained:Ruth Okonjo, M.D|||",
   "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|",
   "cba.txt [double-spaced] lost:RIDGELINE AEROSPACE COMPONENTS, INC|Employer|INC| gained:RIDGELINE AEROSPACE COMPONENTS||INC|",
-  "change-order.txt [blank lines stripped] lost:CONTRACTOR Bramble Construction Group||Inc| gained:-",
-  "change-order.txt [double-spaced] lost:CONTRACTOR Bramble Construction Group||Inc| gained:-",
   "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
-  "coi.txt [blank lines stripped] lost:INSURED Copperline Mechanical Contractors||Inc|,PRODUCER Ashgrove Insurance Brokers||LLC| gained:Ashgrove Insurance Brokers||LLC|,Copperline Mechanical Contractors||Inc|",
-  "coi.txt [double-spaced] lost:INSURED Copperline Mechanical Contractors||Inc|,PRODUCER Ashgrove Insurance Brokers||LLC| gained:Ashgrove Insurance Brokers||LLC|,Copperline Mechanical Contractors||Inc|",
   "complaint.txt [blank lines stripped] lost:Yusuf Adeyemi Yusuf Adeyemi KEARNS & WHITLOCK||LLP| gained:KEARNS & WHITLOCK||LLP|",
   "complaint.txt [double-spaced] lost:Yusuf Adeyemi Yusuf Adeyemi KEARNS & WHITLOCK||LLP| gained:KEARNS & WHITLOCK||LLP|",
   "conflict-of-interest-policy.txt [double-spaced] lost:Pemberton Ridge Land Conservancy||corporation|Colorado gained:-",

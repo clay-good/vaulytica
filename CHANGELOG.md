@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.500.0] — 2026-09-06
+
+### Fixed
+- **A field label shouted above the name it labels was part of the party's
+  name.** The third and last instance of one ingest behaviour: an ACORD
+  certificate of insurance writes `PRODUCER` on its own line over `Ashgrove
+  Insurance Brokers, LLC`, a change order writes `CONTRACTOR` over `Bramble
+  Construction Group, Inc.`, and `ingestPaste` joins the two into one
+  paragraph. `LEADING_ROLE` could not reach any of them for the same reason it
+  could not reach a litigation caption's role word — it requires the comma a
+  preamble writes after a role, and a field block writes none.
+
+  Two guards keep this off real names and **both** are needed, because
+  "Company", "Client" and "Provider" are ordinary first words of a business
+  name: the label must be written in CAPITALS, and the word after it must be
+  mixed case. The second is also what keeps the strip off a document set
+  entirely in capitals, where `CONTRACTOR SHALL MAINTAIN INSURANCE` would
+  otherwise lose the subject of its own sentence.
+
+  `Producer` — the broker's role on an ACORD certificate — was missing from
+  `PARTY_ROLE_LABEL` and is now in it.
+
+  Three specimens affected, no other party name in the corpus moved. The
+  parties debt in `tests/integration/extraction-format-invariance.test.ts`
+  falls from 57 lines to **53**; across this release and the two before it,
+  from 124 to 53.
+
 ## [9.499.0] — 2026-09-06
 
 ### Fixed

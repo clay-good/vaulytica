@@ -485,7 +485,7 @@ function hasPreambleLead(lead: string): boolean {
  * Information") is not read as a party name.
  */
 /** The role labels a party line or a role-first preamble uses. */
-const PARTY_ROLE_LABEL = String.raw`Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Service\s+Provider|Subcontractor|Sublicensee|Sublessee|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Named\s+Insured|Insured|Insurer|Party\s+[AB]`;
+const PARTY_ROLE_LABEL = String.raw`Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Service\s+Provider|Subcontractor|Sublicensee|Sublessee|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Named\s+Insured|Insured|Insurer|Producer|Party\s+[AB]`;
 
 const LABELED_PARTY = new RegExp(
   // The name body absorbs an in-abbreviation period — one followed by a
@@ -1386,10 +1386,47 @@ const LITIGATION_ROLE_PREFIX =
  * `cleanPartyName` — the labeled-party and preamble readers — are covered too.
  */
 function stripHeadingPrefix(n: string): string {
-  return n
-    .replace(ALLCAPS_HEADING_PREFIX, "")
-    .replace(ALLCAPS_HEADING_COMMA, "")
-    .replace(LITIGATION_ROLE_PREFIX, "");
+  return stripAllCapsRoleLabel(
+    n
+      .replace(ALLCAPS_HEADING_PREFIX, "")
+      .replace(ALLCAPS_HEADING_COMMA, "")
+      .replace(LITIGATION_ROLE_PREFIX, ""),
+  );
+}
+
+/**
+ * A field label SHOUTED on its own line, above the name it labels.
+ *
+ * The same ingest join as {@link HEADING_NOUN}, one step down: an ACORD
+ * certificate writes "PRODUCER" on one line and "Ashgrove Insurance Brokers,
+ * LLC" on the next, a change order writes "CONTRACTOR" over "Bramble
+ * Construction Group, Inc.", and the paragraph the extractor sees is the two
+ * joined by a space. {@link LEADING_ROLE} cannot reach any of them: it
+ * requires the comma a preamble writes after the role ("Landlord, Cedar Point
+ * Holdings LLC") and a field block writes none.
+ *
+ * Two guards keep this off real names, and BOTH are needed, because "Company",
+ * "Client" and "Provider" are ordinary first words of a business name:
+ *
+ *  - the label must be written in CAPITALS, which is what makes it a field
+ *    label rather than the first word of the name under it; and
+ *  - the word after it must be MIXED case, so the boundary is visible. That
+ *    is also what keeps this off a document set entirely in capitals, where
+ *    "CONTRACTOR SHALL MAINTAIN INSURANCE" would otherwise lose its subject.
+ *
+ * The label is matched case-insensitively and then required to equal its own
+ * upper-casing. 🚨 Do NOT build the shouted form as
+ * `PARTY_ROLE_LABEL.toUpperCase()`: the pattern contains `\s+`, which
+ * upper-cases into `\S+` and silently turns a whitespace class into
+ * "any non-space".
+ */
+const ALLCAPS_ROLE_LABEL = new RegExp(String.raw`^(${PARTY_ROLE_LABEL})\s+(?=[A-Z][a-z])`, "i");
+
+function stripAllCapsRoleLabel(n: string): string {
+  const m = ALLCAPS_ROLE_LABEL.exec(n);
+  const label = m?.[1];
+  if (!m || !label || label !== label.toUpperCase()) return n;
+  return n.slice(m[0].length);
 }
 
 function cleanPartyName(raw: string): string {
