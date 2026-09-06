@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.479.0] — 2026-09-06
+
+### Added
+- **The negotiation ladder gets its first metamorphic relation.** The posture
+  is a second surface — computed from the document text by
+  `custom-interpreter.ts`, not projected from `run.findings`, carrying its own
+  `posture_hash` outside `result_hash` — so no relation over the finding set
+  constrained it, and until now it had none of its own. That is the same blind
+  spot that let the interpreter ship unable to read "thirty (30) days".
+
+  What makes the surface worth its own relation is the shape of its failure. A
+  metric that locates no value is reported **unevaluable**, and an unevaluable
+  dimension is not a wrong answer — it silently drops off the ladder the
+  negotiator reads. A relation over findings cannot see that, because the
+  posture is not a finding.
+
+  `tests/integration/posture-format-invariance.test.ts` runs the shipped
+  `saas-buyer` example playbook over all 312 specimens under five transforms.
+  Four are format-only (blank lines stripped, CRLF, double-spaced,
+  hard-wrapped) and were green throughout — they say the surface is stable. The
+  fifth respells every period in words, and that is the one with **proven
+  teeth**: reverting 9.478.0's fix makes it fail with exactly the four
+  divergences that motivated it (`ideal → unevaluable` on one specimen,
+  `below-acceptable → unevaluable` on three). Verified by actually reverting,
+  not by assertion.
+
+  The file carries a second test asserting the baseline is **varied** — real
+  verdicts across at least four dimensions and all three tiers, more than 200
+  in total. A relation whose baseline is one constant cannot fail, and a green
+  from one proves nothing; that is the `boilerplate-satisfaction` lesson, and
+  it is now checked rather than assumed. Runs in ~12s.
+
 ## [9.478.0] — 2026-09-06
 
 ### Fixed
