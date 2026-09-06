@@ -1,13 +1,16 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { describesCovenantElsewhere, emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 import { NON_COMPETE_DISCLAIMED } from "./PERS-005.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 /**
  * How long the covenant runs — "for a period of two (2) years", "for
  * twenty-four (24) months", "for 18 months after the Closing".
  */
-const DURATION =
-  /\bfor\s+(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,3}\)?\s*(?:year|month|week|day)s?\b|\b\(?\d{1,3}\)?\s*(?:year|month)s?\s+(?:after|from|following)\b/i;
+const DURATION = new RegExp(
+  String.raw`\bfor\s+(?:a\s+period\s+of\s+)?${PERIOD_COUNT}\s*(?:year|month|week|day)s?\b|\b${PERIOD_COUNT}\s*(?:year|month)s?\s+(?:after|from|following)\b`,
+  "i",
+);
 
 /**
  * Where it reaches — a radius, a named state or county, a defined Territory,

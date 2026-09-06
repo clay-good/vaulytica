@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
 
 /**
  * TEMP-003 — Deadline-to-term inconsistency (warning).
@@ -20,9 +21,14 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 // authoritative digit and the parentheses around it. Without this the rule saw
 // neither number in the standard drafting form and the inconsistency check
 // never ran.
-const TERM_RE =
-  /\bterm\s+of\s+(?:[a-z]+[-\s]+)?\(?(\d{1,4})\)?\s+(day|days|month|months|year|years)\b/i;
-const NOTICE_RE = /\b\(?(\d{1,3})\)?\s+days?\s+(?:prior\s+)?(?:written\s+)?notice\b/i;
+const TERM_RE = new RegExp(
+  String.raw`\bterm\s+of\s+(${PERIOD_COUNT})\s+(day|days|month|months|year|years)\b`,
+  "i",
+);
+const NOTICE_RE = new RegExp(
+  String.raw`\b(${PERIOD_COUNT})\s+days?\s+(?:prior\s+)?(?:written\s+)?notice\b`,
+  "i",
+);
 const AUTO_RENEW_RE =
   /\bauto(?:matic(?:ally)?)?[- ]?renew|\bsuccessive\s+(?:renewal\s+)?(?:terms?|periods?)\b|\brenews?\s+for\s+successive\b|\bmonth[- ]to[- ]month\b/i;
 
@@ -44,13 +50,13 @@ export const rule: Rule = {
     // ordinary drafting, not an inconsistency.
     if (AUTO_RENEW_RE.test(term.text)) return null;
 
-    const termDays = toDays(parseInt(term.match[1]!, 10), term.match[2]!);
+    const termDays = toDays(countValue(term.match[1]!), term.match[2]!);
 
     // Prefer a notice drawn from the SAME paragraph as the term — those
     // two numbers are actually talking about each other.
     const sameParaNotice = NOTICE_RE.exec(term.text);
     if (sameParaNotice) {
-      const noticeDays = parseInt(sameParaNotice[1]!, 10);
+      const noticeDays = countValue(sameParaNotice[1]!);
       if (noticeDays <= termDays) return null;
       return emit(ctx, rule, {
         title: "Notice period exceeds the contract term",
@@ -70,7 +76,7 @@ export const rule: Rule = {
     const notice = firstParagraphMatch(ctx, NOTICE_RE);
     if (!notice) return null;
     if (AUTO_RENEW_RE.test(notice.text)) return null;
-    const noticeDays = parseInt(notice.match[1]!, 10);
+    const noticeDays = countValue(notice.match[1]!);
     if (noticeDays <= termDays) return null;
     return emit(ctx, rule, {
       severity: "info",

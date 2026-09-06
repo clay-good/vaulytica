@@ -429,8 +429,14 @@ const DEMAND_LETTER_RULES: Rule[] = [
     recommendation:
       "State the specific relief sought (dollar amount, cure action) and a response deadline (typically 14–30 days).",
     present_patterns: [
-      /(respond|reply|cure).{0,40}within\s+\d{1,3}\s+(days?|business\s+days?)/i,
-      /(\d{1,3})\s+(days?|business\s+days?).{0,40}(respond|cure|comply)/i,
+      new RegExp(
+        String.raw`(respond|reply|cure).{0,40}within\s+${PERIOD_COUNT}\s+(days?|business\s+days?)`,
+        "i",
+      ),
+      new RegExp(
+        String.raw`(${PERIOD_COUNT})\s+(days?|business\s+days?).{0,40}(respond|cure|comply)`,
+        "i",
+      ),
       /(?:[$€£¥₹₩₽]|\b(?:USD|EUR|GBP|CHF|CAD|AUD|JPY)\s*)\s*[\d,]+/,
       // The deadline is as often a SPELLED number and phrased with "confirm /
       // provide assurance / comply / cease within ten days", not only "respond

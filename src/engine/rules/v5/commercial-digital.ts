@@ -12,6 +12,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { agency, expressDenial, practice, stateLaw, ucc, usc } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "commercial";
 
@@ -143,7 +144,10 @@ const API_TERMS = pack("api-terms", C, [
     cite: practice("api-deprecation", "deprecation policies in API terms"),
     pat: [
       /(deprecat|sunset|end\s+of\s+life)/i,
-      /(\d+\s+(days|months)['’]?\s+notice|advance\s+notice|notice\s+period)/i,
+      new RegExp(
+        String.raw`(${PERIOD_COUNT}\s+(days|months)['’]?\s+notice|advance\s+notice|notice\s+period)`,
+        "i",
+      ),
     ],
     why: "A developer's whole product can rest on an endpoint. Without a committed deprecation window, the provider can break every integration overnight and be within its rights.",
     fix: "Commit to a stated notice period before breaking changes or endpoint removal, define what counts as a breaking change, and describe the migration support offered.",
@@ -509,7 +513,10 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     ),
     pat: [
       /(reminder|notice\s+(before|prior\s+to)\s+(the\s+)?renewal|renewal\s+notice)/i,
-      /(price[-\s]+(increase|change)|amount\s+of\s+the\s+charge|\d+\s*\)?\s*days\s+before)/i,
+      new RegExp(
+        String.raw`(price[-\s]+(increase|change)|amount\s+of\s+the\s+charge|${PERIOD_COUNT}\s*days\s+before)`,
+        "i",
+      ),
     ],
     why: "California, New York, and others require a renewal reminder for longer terms and advance notice of any material price change. The notice windows differ by state and by term length.",
     fix: "Commit to a renewal reminder within the statutory window for terms that require it, and to advance notice of any price increase before it takes effect.",
@@ -638,7 +645,10 @@ const VENUE = pack("venue-rental-agreement", C, [
       // Renter OWES fifty percent (50%) of the rental fee." The rule exists
       // to require exactly that, and reported it missing.
       /(cancel(l)?ation\s+(fee|schedule|charges)|liquidated\s+damages)/i,
-      /cancel\w*[^.;]{0,140}?\b(?:more\s+than|within|between)\s+(?:[a-z-]+\s+)*\(?\d{1,3}\)?\s*days?\b/i,
+      new RegExp(
+        String.raw`cancel\w*[^.;]{0,140}?\b(?:more\s+than|within|between)\s+${PERIOD_COUNT}\s*days?\b`,
+        "i",
+      ),
       /cancel\w*[^.;]{0,120}?\b(?:forfeits?|owes?|(?:shall|will|must)\s+pay)\b/i,
       /(attrition|room\s+block|food\s+and\s+beverage\s+minimum|sliding\s+scale)/i,
     ],

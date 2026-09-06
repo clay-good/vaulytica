@@ -5,6 +5,7 @@
 import type { DocumentTree } from "../../ingest/types.js";
 import type { BreachAddressee, BreachChannel, BreachTiming, BreachTrigger } from "./types.js";
 import { forEachParagraph, posInParagraph } from "../walk.js";
+import { PERIOD_COUNT, countValue } from "../counts.js";
 
 /**
  * Sentence-scoped: any sentence (period-delimited) that pairs a breach noun with a
@@ -31,8 +32,10 @@ const BREACH_RX = new RegExp(
 // paren; it is bounded by the sentence (no `.`) and by parens (no `(`/`)`), so
 // it never reaches a later, unrelated parenthetical, and a plain "within 72
 // hours" still matches with the group empty.
-const NUMERIC_TIME_RX =
-  /\b(?:within|no later than|no longer than|not (?:to exceed|later than))\s+(?:[^.()\d]*?\()?(\d{1,4})\)?\s*(hour|hr|day|business day|calendar day)s?\b/i;
+const NUMERIC_TIME_RX = new RegExp(
+  String.raw`\b(?:within|no later than|no longer than|not (?:to exceed|later than))\s+(${PERIOD_COUNT})\s*(hour|hr|day|business day|calendar day)s?\b`,
+  "i",
+);
 
 const VAGUE_TIME_RX =
   /\b(without unreasonable delay|without undue delay|promptly|as soon as practicable|as soon as reasonably practicable|immediately)\b/i;
@@ -104,7 +107,7 @@ export function extractBreachTimings(tree: DocumentTree): BreachTiming[] {
       addressee,
       max_delay_hours:
         numeric && numeric[1] && numeric[2]
-          ? normalizeToHours(Number(numeric[1]), numeric[2])
+          ? normalizeToHours(countValue(numeric[1]), numeric[2])
           : null,
       max_delay_phrase: vague && vague[1] ? vague[1].toLowerCase() : null,
       channel,

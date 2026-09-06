@@ -11,6 +11,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { cfr, expressDenial, practice, standardForm, stateLaw, ucc, usc } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "commercial";
 
@@ -903,7 +904,10 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
     ),
     pat: [
       /(prompt[-\s]+payment|accelerated\s+payment)/i,
-      /(52\.232|payment\s+within\s+\d+\s*\)?\s*days|pay\s+when\s+paid|pay\s+if\s+paid)/i,
+      new RegExp(
+        String.raw`(52\.232|payment\s+within\s+${PERIOD_COUNT}\s*days|pay\s+when\s+paid|pay\s+if\s+paid)`,
+        "i",
+      ),
     ],
     why: "FAR 52.232-40 requires primes to accelerate payments to small-business subcontractors after receiving accelerated payment themselves. Pay-if-paid clauses are separately unenforceable in many states.",
     fix: "State the payment terms and days, flow down FAR 52.232-40 where the subcontractor is a small business, and confirm whether payment is conditioned on the prime's receipt.",

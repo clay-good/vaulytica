@@ -6,6 +6,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, practice, stateLaw, usc } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "privacy";
 
@@ -380,7 +381,10 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
     cite: practice("dsa-security", "security and incident notification in data sharing agreements"),
     pat: [
       /(safeguard|security\s+(measures|controls)|encrypt)/i,
-      /(breach|incident|notif(y|ication)|within\s+\d+\s+(hours|days))/i,
+      new RegExp(
+        String.raw`(breach|incident|notif(y|ication)|within\s+${PERIOD_COUNT}\s+(hours|days))`,
+        "i",
+      ),
     ],
     why: "The disclosing party remains accountable to the individuals in the data. A defined security floor and a short notification clock are the only practical controls it retains after transfer.",
     fix: "State the required safeguards (encryption in transit and at rest, access controls, logging) and a breach notification deadline with the required content.",
@@ -394,7 +398,10 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
     ),
     pat: [
       /(destroy|destruction|return\s+the\s+data)/i,
-      /(upon\s+(completion|termination|the\s+end)|certif|within\s+\d+\s*\)?\s*days|retain)/i,
+      new RegExp(
+        String.raw`(upon\s+(completion|termination|the\s+end)|certif|within\s+${PERIOD_COUNT}\s*days|retain)`,
+        "i",
+      ),
     ],
     why: "Research datasets accumulate in institutional storage for decades after the project ends. A destruction obligation with certification is what converts the purpose limitation into an actual endpoint.",
     fix: "Require return or certified destruction within a stated period after the purpose is complete, with any retention exception (archival, regulatory, IRB) stated expressly.",

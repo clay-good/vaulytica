@@ -384,6 +384,7 @@ import type { DocumentTree } from "../../../../ingest/types.js";
 import type { DocPosition } from "../../../../extract/types.js";
 import { forEachParagraph, SENTENCE_END } from "../../../../extract/walk.js";
 import { fullText } from "../../_helpers.js";
+import { PERIOD_COUNT, countValue } from "../../../../extract/counts.js";
 
 /**
  * Does the document carry an "incorporation by reference" clause — the
@@ -573,7 +574,7 @@ export function confidentialitySurvival(doc: ConsistencyDocument): {
   // neighbour still cannot contribute its figure.
   const ym = firstSurvivalDuration(found.text);
   if (ym) {
-    const n = Number(ym[1]);
+    const n = countValue(ym[1]!);
     if (Number.isFinite(n) && n > 0) {
       const isMonth = /^month/i.test(ym[2]!);
       return {
@@ -601,7 +602,7 @@ function firstSurvivalDuration(text: string): RegExpMatchArray | null {
     const rest = text.slice(m.index);
     const sentenceEnd = rest.search(new RegExp(SENTENCE_END));
     const sentence = sentenceEnd === -1 ? rest : rest.slice(0, sentenceEnd + 1);
-    const ym = sentence.match(/(\d+)\s*\)?\s*(years?|months?)\b/i);
+    const ym = sentence.match(new RegExp(String.raw`(${PERIOD_COUNT})\s*(years?|months?)\b`, "i"));
     if (ym) return ym;
   }
   return null;

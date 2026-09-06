@@ -22,6 +22,7 @@ import {
   type NdaLanguageSpec,
   type NdaPresenceSpec,
 } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 
 const presence = (s: NdaPresenceSpec): Rule => buildNdaPresenceRule(s);
 const language = (s: NdaLanguageSpec): Rule => buildNdaLanguageRule(s);
@@ -111,7 +112,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     present_patterns: [
       /\b(\d{1,2}|two|three|four|five|seven|ten)\s*\(?\d?\)?\s*years?\b.{0,80}(confidential|disclos)/is,
       /(confidential|disclos).{0,80}\b(\d{1,2}|two|three|four|five|seven|ten)\s*\(?\d?\)?\s*years?\b/is,
-      /period\s+of\s+\d+\s*\)?\s*years/i,
+      new RegExp(String.raw`period\s+of\s+${PERIOD_COUNT}\s*years`, "i"),
     ],
   }),
 

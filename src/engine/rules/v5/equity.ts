@@ -6,6 +6,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { irs, cfr, usc, practice } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "equity";
 
@@ -515,7 +516,10 @@ const VENTURE_SPA = pack("venture-stock-purchase-agreement", C, [
     ),
     pat: [
       /surviv\w+/i,
-      /(representations?\s+and\s+warrant|\bfor\s+(?:a\s+period\s+of\s+)?[a-z-]*\s*\(?\d{1,3}\)?\s*(?:month|year)s?\b|indefinitely)/i,
+      new RegExp(
+        String.raw`(representations?\s+and\s+warrant|\bfor\s+(?:a\s+period\s+of\s+)?${PERIOD_COUNT}\s*(?:month|year)s?\b|indefinitely)`,
+        "i",
+      ),
     ],
     all: true,
     why: "A venture financing has no indemnity and no escrow: survival of the representations is the investor's only post-closing recourse, and its period is the whole of the bargain.",

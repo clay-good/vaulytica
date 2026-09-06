@@ -43,6 +43,7 @@ import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
 import { PERIOD_COUNT, countValue } from "../../src/extract/counts.js";
+import { recognizerSources, sourceFiles } from "./_recognizer-sources.js";
 
 const WORDS: Record<number, string> = {
   1: "one",
@@ -143,4 +144,76 @@ describe("a period spelled in words alone", () => {
     expect(probed, "the corpus states no period in digits").toBeGreaterThanOrEqual(200);
     expect(broken).toEqual([]);
   }, 300_000);
+});
+
+/**
+ * The corpus proves what the corpus contains. Sixteen rules moved above; a
+ * static sweep of the same shape then found fifty-two more, none of them
+ * exercised by any of the 312 specimens — which is the whole reason a ratchet
+ * sits beside every relation in this repo.
+ *
+ * The population is narrow on purpose: a recognizer that accepts ANY count
+ * (`\d+`, `\d{1,3}`) is making no statement about the number, so a spelling
+ * of it that the pattern cannot read is unambiguously a gap. A recognizer that
+ * names a SPECIFIC number is excluded — "180 days" in a bankruptcy preference
+ * clause is a statutory figure, and whether the words for it are worth reading
+ * is a judgment about that statute, not a fold of presentation.
+ */
+const ANY_COUNT_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency"];
+
+/** A digit run of unbounded value, bound to a period noun. */
+const BLIND_ANY_COUNT = new RegExp(
+  String.raw`\\d(?:\{1,[0-9]\}|\+|\*)[^|]{0,26}?(?:days?|hours?|weeks?|months?|years?)`,
+);
+
+/** A pattern that already reads a count in words, by any means. */
+const READS_WORDS =
+  /PERIOD_COUNT|NUM_WORDS|thirty|sixty|ninety|twelve|fourteen|seventy|forty|fifteen|twenty|eighteen|five|six|seven|eight|nine|ten|eleven|one|two|three|four|\\w\+\(\?:/;
+
+/**
+ * Two exceptions, of two different kinds.
+ *
+ * FIN-004 is not a period at all: it reads a late-fee INTEREST RATE — "1.5%
+ * per month" — where the digits are a percentage and the period noun is the
+ * rate's denominator. No drafter writes "one point five percent per month" as
+ * a count to parse.
+ *
+ * FIN-005 already reads the words, but not in the chunk the scanner sees. The
+ * scanner walks template PIECES, and that pattern's spelled alternation
+ * (`NUM_WORDS`) is interpolated in the head while the digits sit in the tail —
+ * so the tail, read alone, looks blind. A per-expression scanner would not
+ * need this entry; the per-chunk one is what makes the rest of the sweep work
+ * on assembled patterns at all.
+ */
+const DECLARED_ANY_COUNT: ReadonlySet<string> = new Set([
+  "src/engine/rules/financial/FIN-004.ts:22",
+  "src/engine/rules/financial/FIN-005.ts:103",
+]);
+
+describe("a recognizer that accepts any count", () => {
+  it("reads that count in words too", () => {
+    const files = ANY_COUNT_ROOTS.flatMap((root) => sourceFiles(root));
+    expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
+
+    const blind: string[] = [];
+    const used = new Set<string>();
+    for (const file of files) {
+      for (const { line, text } of recognizerSources(file)) {
+        if (!BLIND_ANY_COUNT.test(text) || READS_WORDS.test(text)) continue;
+        const key = `${file}:${line}`;
+        if (DECLARED_ANY_COUNT.has(key)) used.add(key);
+        else blind.push(`${key}  ${text.slice(0, 90)}`);
+      }
+    }
+    // A declared exception that matches nothing is a stale one, and the same
+    // failure mode `parenthetical-numeral` shipped with.
+    expect(
+      [...DECLARED_ANY_COUNT].filter((k) => !used.has(k)),
+      "declared exceptions that match no recognizer",
+    ).toEqual([]);
+    expect(
+      blind,
+      `these accept any count but read only its digits — interpolate \${PERIOD_COUNT}:\n  ${blind.join("\n  ")}`,
+    ).toEqual([]);
+  });
 });

@@ -11,6 +11,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { stateLaw, practice } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "insurance";
 
@@ -33,7 +34,10 @@ const DO = pack("do-policy", C, [
     cite: practice("claims-made", "claims-made-and-reported triggers and notice conditions"),
     pat: [
       /claims?[- ]made/i,
-      /(reported\s+(to\s+the\s+insurer\s+)?during|notice\s+(of\s+(a\s+)?claim)|as\s+soon\s+as\s+practicable|within\s+\d+\s*\)?\s*days\s+of)/i,
+      new RegExp(
+        String.raw`(reported\s+(to\s+the\s+insurer\s+)?during|notice\s+(of\s+(a\s+)?claim)|as\s+soon\s+as\s+practicable|within\s+${PERIOD_COUNT}\s*days\s+of)`,
+        "i",
+      ),
     ],
     why: "A claims-made-and-reported policy covers only claims both made and reported during the period. Late notice is the most common ground for denial, and in most states no prejudice to the insurer need be shown.",
     fix: "State the trigger, the notice deadline and recipient, and the notice-of-circumstances provision that locks coverage into the current period.",
@@ -102,7 +106,10 @@ const DO = pack("do-policy", C, [
     cite: practice("defense-costs", "duty to defend versus duty to advance in D&O policies"),
     pat: [
       /defen(se|ce)[-\s]+costs?/i,
-      /(duty\s+to\s+defend|advance|within\s+\d+\s*\)?\s*days|allocation|reimburse)/i,
+      new RegExp(
+        String.raw`(duty\s+to\s+defend|advance|within\s+${PERIOD_COUNT}\s*days|allocation|reimburse)`,
+        "i",
+      ),
     ],
     why: "Most D&O is non-duty-to-defend with an advancement obligation. Whether costs are advanced as incurred or reimbursed later, and how mixed covered/uncovered matters are allocated, determines whether the policy funds the defense in real time.",
     fix: "State whether the insurer has a duty to defend or to advance, the advancement deadline, the consent-to-counsel process, and the allocation standard for mixed claims.",
@@ -149,7 +156,10 @@ const CYBER = pack("cyber-insurance-policy", C, [
     ),
     pat: [
       /(business[-\s]+interruption|income\s+loss|period\s+of\s+(restoration|indemnity))/i,
-      /(waiting\s+period|\d+\s*\)?\s*hours|hourly|actual\s+loss\s+sustained|contingent)/i,
+      new RegExp(
+        String.raw`(waiting\s+period|${PERIOD_COUNT}\s*hours|hourly|actual\s+loss\s+sustained|contingent)`,
+        "i",
+      ),
     ],
     why: "The waiting period — commonly 8 to 12 hours — is a deductible measured in time, and most outages resolve inside it. How the income loss is measured and whether dependent business interruption is included decide whether the grant pays anything.",
     fix: "State the waiting period, the period of restoration, the measurement basis for income loss, and whether contingent/dependent business interruption is covered.",

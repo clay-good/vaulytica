@@ -15,6 +15,7 @@ import {
   ucc,
   usc,
 } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "banking";
 
@@ -78,7 +79,10 @@ const REVOLVER = pack("revolving-credit-agreement", C, [
     cite: practice("events-of-default", "event of default architecture and equity cure rights"),
     pat: [
       /event\s+of\s+default/i,
-      /(cure\s+period|grace\s+period|\d+\s*\)?\s*days\s+after\s+(notice|the\s+earlier)|equity\s+cure|cross-?default)/i,
+      new RegExp(
+        String.raw`(cure\s+period|grace\s+period|${PERIOD_COUNT}\s*days\s+after\s+(notice|the\s+earlier)|equity\s+cure|cross-?default)`,
+        "i",
+      ),
     ],
     why: "The cross-default threshold and the cure periods determine how much runway a borrower has. An equity cure right, and its frequency limits, is often the difference between a workout and an acceleration.",
     fix: "Enumerate the events of default with notice and cure periods, state the cross-default threshold, and state any equity cure right with its usage and consecutive-quarter limits.",
@@ -548,7 +552,10 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
     cite: usc("9", "2", "Federal Arbitration Act — validity of arbitration agreements"),
     pat: [
       /arbitrat/i,
-      /(opt\s?-?out|reject\s+(this\s+)?(arbitration|provision)|within\s+\d+\s*\)?\s*days|class\s+action\s+waiver)/i,
+      new RegExp(
+        String.raw`(opt\s?-?out|reject\s+(this\s+)?(arbitration|provision)|within\s+${PERIOD_COUNT}\s*days|class\s+action\s+waiver)`,
+        "i",
+      ),
     ],
     why: "Card arbitration clauses are enforceable, but they must be conspicuous, and the opt-out window and method are what most courts point to when upholding them. Military Lending Act accounts cannot carry them at all.",
     fix: "Set the arbitration and class-waiver provision in a conspicuous, separately headed section with a stated opt-out window and method, and exclude covered borrowers under the Military Lending Act.",

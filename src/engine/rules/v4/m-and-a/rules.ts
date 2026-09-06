@@ -42,6 +42,7 @@ import {
   abaMapa,
   maPractice,
 } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 
 const CATEGORY = "m-and-a";
 
@@ -1375,7 +1376,11 @@ const TSA_RULES: Rule[] = [
     explanation:
       "Standard pattern: 6–12 month service period with limited extension at buyer's option.",
     recommendation: "Add 'Service Period' with default term + extension trigger + extension limit.",
-    present_patterns: [/service\s+period/i, /extension/i, /\d+\s*\)?\s*months?\s+from\s+closing/i],
+    present_patterns: [
+      /service\s+period/i,
+      /extension/i,
+      new RegExp(String.raw`${PERIOD_COUNT}\s*months?\s+from\s+closing`, "i"),
+    ],
   }),
   presence({
     id: "MNA-057",
@@ -1743,8 +1748,8 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // competition" spelling are accepted (MNA-074 already matches both; only
       // this presence rule was narrower, so a "non-competition … three (3)
       // years" covenant was falsely reported as missing its duration).
-      /non.?compet(?:e|ition).{0,80}\(?(\d{1,2})\)?\s+years?/is,
-      /\(?(\d{1,2})\)?\s+year.{0,40}non.?compet(?:e|ition)/is,
+      new RegExp(String.raw`non.?compet(?:e|ition).{0,80}(${PERIOD_COUNT})\s+years?`, "is"),
+      new RegExp(String.raw`(${PERIOD_COUNT})\s+year.{0,40}non.?compet(?:e|ition)`, "is"),
       /restricted\s+period/i,
     ],
   }),

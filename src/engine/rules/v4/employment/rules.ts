@@ -41,6 +41,7 @@ import {
   regSk402,
   empPractice,
 } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 
 const CATEGORY = "employment";
 
@@ -669,8 +670,8 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       "Unbounded non-competes are unenforceable in every state. State norm: 6–12 months for non-supervisory; up to 2 years for senior executives.",
     recommendation: "Add 'Duration' (typically 6–24 months) and consider state-specific maximums.",
     present_patterns: [
-      /non.?compete.{0,80}(\d{1,2})\s+(months?|years?)/is,
-      /(\d{1,2})\s+(months?|years?).{0,40}non.?compete/is,
+      new RegExp(String.raw`non.?compete.{0,80}(${PERIOD_COUNT})\s+(months?|years?)`, "is"),
+      new RegExp(String.raw`(${PERIOD_COUNT})\s+(months?|years?).{0,40}non.?compete`, "is"),
       /restricted\s+period/i,
       // "1. Non-Competition. During employment and for twelve (12) months
       // after termination …" — the spelled-then-numeric duration wraps its
@@ -678,7 +679,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // textbook clause. `non.?compet\w*` matches BOTH "non-compete … (12)
       // months" and "non-competition … (12) months" (the earlier form used
       // "competit\w*", which excluded the plain "non-compete" spelling).
-      /non.?compet\w*.{0,80}?\(?(\d{1,2})\)?\s*(months?|years?)/is,
+      new RegExp(String.raw`non.?compet\w*.{0,80}?(${PERIOD_COUNT})\s*(months?|years?)`, "is"),
       // The duration is stated in the RESTRICTION SENTENCE, which is where a
       // standalone covenant states it: "During the three (3) years following
       // the termination of Employee's employment …, Employee shall not …".
@@ -687,7 +688,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
       // else — so a three-year worldwide non-compete was reported at CRITICAL
       // as having no duration at all.
       new RegExp(
-        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:[a-z-]+\s+)?\(?\d{1,2}\)?\s*(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|must|agrees?|covenants?)\s+not\b`,
+        String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?${PERIOD_COUNT}\s*(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|must|agrees?|covenants?)\s+not\b`,
         "is",
       ),
       /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:(?:shall|will|must)\s+not|restrict)/is,

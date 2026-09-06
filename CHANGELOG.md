@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.457.0] — 2026-09-05
+
+### Fixed
+- **Fifty-two more recognizers accepted any count but read only its digits.**
+  The corpus relation added in 9.456.0 proves what the corpus contains; a
+  static sweep of the same shape then found fifty-two patterns none of the 312
+  specimens exercises. The population is narrow on purpose: a recognizer
+  written `\d+` or `\d{1,3}` is making **no statement about the number**, so a
+  spelling of that number it cannot read is unambiguously a gap. A recognizer
+  that names a SPECIFIC figure is left alone — "180 days" in a preference
+  clause is statutory, and whether its words are worth reading is a judgment
+  about that statute.
+
+  The repair moved the whole class to `PERIOD_COUNT`, and the goldens showed
+  immediately that it was not hypothetical: **NDA-D-003 was reporting
+  "Confidentiality term clause missing" on all 24 mutual-NDA fixtures**, every
+  one of which says "continue for a period of three (3) years". Its pattern was
+  `period\s+of\s+\d+\s*\)?\s*years` — the digits had to follow "of"
+  immediately, so the standard spelled-then-numeric form fell straight through
+  it. That is 24 false absence findings on the flagship NDA family, removed.
+
+  Also repaired where the count is PARSED, not just detected: `TEMP-003` (term
+  vs. notice-period inconsistency), the v4 survival-duration helper, and
+  `breach-timing.ts`, whose `max_delay_hours` is what the critical-dates
+  register computes from.
+
+- **A new static ratchet holds the class shut.** `spelled-period.test.ts` now
+  sweeps every recognizer source for an any-count pattern that reads no
+  spelling of the count, with two declared exceptions: FIN-004 (a late-fee
+  interest RATE — the digits are a percentage and the period noun is its
+  denominator) and FIN-005:103 (already reads the words, in the template chunk
+  before the one the per-chunk scanner sees).
+
 ## [9.456.0] — 2026-09-05
 
 ### Fixed

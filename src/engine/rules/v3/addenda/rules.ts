@@ -135,12 +135,18 @@ export const ADDENDA_RULES: Rule[] = [
     recommendation:
       "State the cadence: e.g., 'Vendor shall maintain a current SOC 2 Type II report renewed annually.'",
     present_patterns: [
-      /(annual\w*|annually|quarterly|every\s+\d+\s+(?:months?|years?))\b[^.]{0,80}(?:audit|review|assessment|certification|attestation|SOC\s*2|ISO\s*27001)/i,
+      new RegExp(
+        String.raw`(annual\w*|annually|quarterly|every\s+${PERIOD_COUNT}\s+(?:months?|years?))\b[^.]{0,80}(?:audit|review|assessment|certification|attestation|SOC\s*2|ISO\s*27001)`,
+        "i",
+      ),
       // The cadence as often TRAILS the review verb — "review access privileges
       // at least quarterly", "audit … no more than once per year", "penetration
       // testing … at least annually" — and "once per year" is not in the list
       // above.
-      /(?:audit|review|assessment|penetration\s+test|pen\s+test|scan)\w*[^.]{0,80}(?:annual\w*|annually|quarterly|monthly|semi-?annually|once\s+(?:per|a|each)\s+(?:year|quarter|month)|every\s+\d+\s+(?:months?|years?))/i,
+      new RegExp(
+        String.raw`(?:audit|review|assessment|penetration\s+test|pen\s+test|scan)\w*[^.]{0,80}(?:annual\w*|annually|quarterly|monthly|semi-?annually|once\s+(?:per|a|each)\s+(?:year|quarter|month)|every\s+${PERIOD_COUNT}\s+(?:months?|years?))`,
+        "i",
+      ),
     ],
     default_severity: "warning",
   }),
@@ -177,7 +183,10 @@ export const ADDENDA_RULES: Rule[] = [
     recommendation:
       "Specify a window: e.g., 'Vendor shall notify Customer within 48 hours of confirming a security incident affecting Customer Data.'",
     present_patterns: [
-      /(within\s+\d+\s+(?:hours?|days?)|no\s+later\s+than\s+\d+\s+(?:hours?|days?))\b[^.]{0,160}(?:incident|breach|notif)/i,
+      new RegExp(
+        String.raw`(within\s+${PERIOD_COUNT}\s+(?:hours?|days?)|no\s+later\s+than\s+${PERIOD_COUNT}\s+(?:hours?|days?))\b[^.]{0,160}(?:incident|breach|notif)`,
+        "i",
+      ),
       // The window is as often written "in no EVENT later than forty-eight
       // (48) hours" — with "event", a spelled count, and the digit in a
       // parenthetical — none of which the digit-only forms above reach.
@@ -293,7 +302,10 @@ export const ADDENDA_RULES: Rule[] = [
       // environment used to deliver the Services (as defined in Section 1) at
       // least annually" — and a defined term carrying its own back-reference,
       // which is ordinary drafting, ran the sentence past eighty characters.
-      /(penetration\s+test\w*|pen[- ]test\w*)[^.]{0,140}(?:annual\w*|annually|quarter\w*|every\s+\d+\s+(?:months?|years?))/i,
+      new RegExp(
+        String.raw`(penetration\s+test\w*|pen[- ]test\w*)[^.]{0,140}(?:annual\w*|annually|quarter\w*|every\s+${PERIOD_COUNT}\s+(?:months?|years?))`,
+        "i",
+      ),
       /(annual\w*|annually|quarter\w*)[^.]{0,40}(?:penetration\s+test|pen[- ]test)/i,
     ],
     default_severity: "info",
