@@ -362,7 +362,29 @@ const SAME_SENTENCE = String.raw`(?:[^.;\n]|\.(?!\s))`;
  */
 const PREAMBLE_CHAR_FLOOR = 2500;
 
+/**
+ * How much of a document's tail the signature window covers when the
+ * paragraph count is small. See the window itself for why a fraction of the
+ * paragraph count cannot do this job alone.
+ */
+const SIGNATURE_CHAR_FLOOR = 4000;
+
 /** The number of leading paragraphs whose text totals at least `chars`. */
+/** {@link paragraphsCovering} read from the END: how many trailing paragraphs
+ * it takes to cover `chars` characters. */
+function paragraphsCoveringFromEnd(
+  paragraphs: ReadonlyArray<{ text: string }>,
+  chars: number,
+): number {
+  let total = 0;
+  let n = 0;
+  while (n < paragraphs.length && total < chars) {
+    total += paragraphs[paragraphs.length - 1 - n]!.text.length;
+    n += 1;
+  }
+  return n;
+}
+
 function paragraphsCovering(paragraphs: ReadonlyArray<{ text: string }>, chars: number): number {
   let total = 0;
   let n = 0;
@@ -956,8 +978,25 @@ export function extractParties(tree: DocumentTree): Party[] {
     }
   }
 
-  // Signature blocks: last 15% of paragraphs.
-  const sigStart = Math.floor(allText.length * 0.85);
+  // Signature blocks: the last 15% of paragraphs, floored in CHARACTERS the
+  // same way the preamble window above is, and for the same reason read from
+  // the other end. A FRACTION OF THE PARAGRAPH COUNT is not a measure of how
+  // far into a document you are — it is a measure of how finely the document
+  // happens to be chunked, and that is precisely what a layout transform
+  // changes. `option-grant.txt` is twenty-one paragraphs as written and
+  // thirty-two when every line becomes its own paragraph; its "By: /s/
+  // Rosalind Achebe" sits at index 17 of 21 (inside the window) and at index
+  // 25 of 32 (outside it), so the signer vanished from a document whose text
+  // had not changed by one character. Sixteen specimens lost a signature-block
+  // individual this way.
+  //
+  // The floor is a page and a half, which covers a signature block plus the
+  // exhibit or notary tail that commonly follows it and pushes it back out of
+  // a naive fraction.
+  const sigStart = Math.min(
+    Math.floor(allText.length * 0.85),
+    allText.length - paragraphsCoveringFromEnd(allText, SIGNATURE_CHAR_FLOOR),
+  );
   for (let i = sigStart; i < allText.length; i += 1) {
     const { text, pos } = allText[i]!;
     if (SIGNATURE_NAME_LINE.test(text)) {

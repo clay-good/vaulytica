@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.499.0] — 2026-09-06
+
+### Fixed
+- **A signature block was looked for in the wrong place, and a fifth of the
+  corpus lost its signer.** The window was "the last 15% of PARAGRAPHS" — but a
+  fraction of the paragraph count does not measure how far into a document you
+  are, it measures how finely the document happens to be chunked. A notary
+  acknowledgement, an exhibit, or simply a PDF paste that breaks lines
+  differently pushes the block out of it. `option-grant.txt`'s `By: /s/
+  Rosalind Achebe` sits at index 17 of 21 paragraphs as written and at index 25
+  of 32 with every line its own paragraph, so the signer vanished from a
+  document whose text had not changed by one character.
+
+  The window is now floored in CHARACTERS (a page and a half of tail), exactly
+  the way the PREAMBLE window at the other end of the same function already
+  was — that side learned this lesson in an earlier release and the signature
+  side never got the symmetric treatment.
+
+  **Six specimens gained a real signer in their natural layout** — Dermot
+  Halloran on `deed-of-trust.txt`, Miriam Achterberg-Oyelaran on `easement.txt`,
+  Ilona Reyes on `vc-side-letter.txt`, and three more — each a name that a
+  reformatted copy of the same document was already finding, and each pushed
+  out of the old window by the notary block that follows the signature. The
+  parties debt in `tests/integration/extraction-format-invariance.test.ts`
+  falls from 114 lines to **57**, halving what that relation is owed.
+
 ## [9.498.0] — 2026-09-06
 
 ### Fixed

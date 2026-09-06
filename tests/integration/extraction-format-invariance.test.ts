@@ -36,11 +36,22 @@
  * and the party is what follows its last connector. See `HEADING_NOUN` in
  * `src/extract/parties.ts` for why both signals are required and neither
  * alone. **34 junk party records left the corpus and no legitimate name did**;
- * the debt below fell from 124 lines to 114.
+ * the debt below fell from 124 lines to 114, and the signature-window fix
+ * below took it to 57.
  *
- * What remains is almost entirely the FIRST shape: a signature-block
- * individual found in the natural layout and lost when every line becomes its
- * own paragraph.
+ * The FIRST shape is now fixed too, and its cause was not the extractor's
+ * reading of a signature block but WHERE it looked for one. The signature
+ * window was the last 15% of PARAGRAPHS — a fraction of the paragraph count,
+ * which measures how finely a document happens to be chunked and not how far
+ * into it you are, which is exactly what these transforms change.
+ * `option-grant.txt`'s "By: /s/ Rosalind Achebe" sits at index 17 of 21 as
+ * written and at index 25 of 32 with every line its own paragraph, so a signer
+ * vanished from a document whose text had not changed by one character. The
+ * window is now floored in CHARACTERS, the way the preamble window at the
+ * other end of the same function already was. **Six specimens gained a real
+ * signer in their NATURAL layout** — each one a name a transformed variant was
+ * already finding, and each pushed out of the naive fraction by the notary
+ * acknowledgement or exhibit that follows the block. Debt 114 → 57.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -140,120 +151,63 @@ const SURFACES: Record<string, (d: ExtractedData) => string[]> = {
 };
 
 const PARTY_DEBT: readonly string[] = [
-  "ai-addendum.txt [double-spaced] lost:Rosalind Achebe||| gained:-",
+  "83b-election.txt [double-spaced] lost:- gained:Elena Marie Vasquez|||",
   "answer.txt [blank lines stripped] lost:- gained:WHEREFORE, Defendant Halloran Precision Castings||LLC|",
   "appellate-brief.txt [blank lines stripped] lost:Devarshi Nandakumar HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "appellate-brief.txt [double-spaced] lost:Devarshi Nandakumar HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "architect-agreement.txt [double-spaced] lost:- gained:Teodoro Vessel, AIA|||",
-  "assignment-and-assumption-agreement.txt [double-spaced] lost:Merrill Vance||| gained:-",
-  "assignment-assumption.txt [double-spaced] lost:Teodora Nakamura||| gained:-",
-  "assignment-of-claim.txt [double-spaced] lost:Katarina Lindqvist||| gained:Wexley DO GP II, LLC, its general partner|||",
-  "baa.txt [double-spaced] lost:Ruth Okonjo||| gained:-",
+  "assignment-of-claim.txt [double-spaced] lost:- gained:Wexley DO GP II, LLC, its general partner|||",
+  "baa.txt [double-spaced] lost:- gained:Ruth Okonjo, M.D|||",
   "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|",
   "cba.txt [double-spaced] lost:RIDGELINE AEROSPACE COMPONENTS, INC|Employer|INC| gained:RIDGELINE AEROSPACE COMPONENTS||INC|",
-  "ccpa-service-provider.txt [double-spaced] lost:Terrence Okonjo-Whitfield||| gained:-",
-  "change-order.txt [blank lines stripped] lost:CONTRACTOR Bramble Construction Group||Inc|,Sowande Adeyemi||| gained:-",
-  "change-order.txt [double-spaced] lost:CONTRACTOR Bramble Construction Group||Inc|,Nadia Oyelaran|||,Sowande Adeyemi||| gained:-",
+  "change-order.txt [blank lines stripped] lost:CONTRACTOR Bramble Construction Group||Inc| gained:-",
+  "change-order.txt [double-spaced] lost:CONTRACTOR Bramble Construction Group||Inc| gained:-",
   "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
   "coi.txt [blank lines stripped] lost:INSURED Copperline Mechanical Contractors||Inc|,PRODUCER Ashgrove Insurance Brokers||LLC| gained:Ashgrove Insurance Brokers||LLC|,Copperline Mechanical Contractors||Inc|",
   "coi.txt [double-spaced] lost:INSURED Copperline Mechanical Contractors||Inc|,PRODUCER Ashgrove Insurance Brokers||LLC| gained:Ashgrove Insurance Brokers||LLC|,Copperline Mechanical Contractors||Inc|",
   "complaint.txt [blank lines stripped] lost:Yusuf Adeyemi Yusuf Adeyemi KEARNS & WHITLOCK||LLP| gained:KEARNS & WHITLOCK||LLP|",
   "complaint.txt [double-spaced] lost:Yusuf Adeyemi Yusuf Adeyemi KEARNS & WHITLOCK||LLP| gained:KEARNS & WHITLOCK||LLP|",
   "conflict-of-interest-policy.txt [double-spaced] lost:Pemberton Ridge Land Conservancy||corporation|Colorado gained:-",
-  "consulting-agreement.txt [double-spaced] lost:Terrence Okonjo-Whitfield||| gained:-",
-  "consulting-regulatory.txt [double-spaced] lost:Aurelio Santangelo-Beck||| gained:-",
   "convertible-note.txt [blank lines stripped] lost:VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware gained:Delaware FOR VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware",
-  "covenant-not-to-sue.txt [double-spaced] lost:Ingrid Oyelaran-Bassett||| gained:-",
-  "cta.txt [double-spaced] lost:Priya Raghunathan||| gained:-",
-  "daca.txt [blank lines stripped] lost:Oleander Vasquez-Kimura||| gained:-",
-  "daca.txt [double-spaced] lost:Hyacinth Brennan-Oduya|||,Oleander Vasquez-Kimura||| gained:-",
-  "deed-of-trust.txt [blank lines stripped] lost:- gained:Dermot Halloran|||",
   "demand-letter.txt [blank lines stripped] lost:Larkspur Timber Supply LLC|Client|LLC| gained:Larkspur Timber Supply|Larkspur|LLC|",
   "dissolution-plan.txt [double-spaced] lost:Alderbrook Instruments, Inc|Company|corporation|Delaware gained:Alderbrook Instruments|Company|Inc|",
-  "dpa-defined-term.txt [double-spaced] lost:Aurelie Vandenbroucke||| gained:-",
-  "easement.txt [double-spaced] lost:Cornelius Baptiste||| gained:-",
-  "employment-restrictive-covenant.txt [double-spaced] lost:Devendra Ramaswamy-Pike||| gained:-",
-  "escrow-agreement-indemnity.txt [double-spaced] lost:Ingrid Solheim||| gained:-",
   "escrow-agreement.txt [blank lines stripped] lost:- gained:Tallgrass Industrial GP LLC, its general partner|||",
-  "escrow-agreement.txt [double-spaced] lost:Barnabas Achebe-Lindqvist|||,Solveig Ramachandran|||,Tallgrass Industrial GP LLC||| gained:-",
-  "expert-retention.txt [double-spaced] lost:Anneke Vosberg, Ph.D., P.E. Vosberg Forensic Engineering||LLC|,Ruth Ellingham||| gained:-",
-  "far-flowdown-addendum.txt [double-spaced] lost:Rosalind Thorne-Achebe||| gained:-",
+  "escrow-agreement.txt [double-spaced] lost:- gained:Tallgrass Industrial GP LLC, its general partner|||",
+  "expert-retention.txt [double-spaced] lost:Anneke Vosberg, Ph.D., P.E. Vosberg Forensic Engineering||LLC| gained:-",
   "fdd.txt [blank lines stripped] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
   "fdd.txt [double-spaced] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|",
   "first-set-interrogatories.txt [blank lines stripped] lost:Nnenna Adebayo-Lindgren Nnenna Adebayo-Lindgren GRAYSON & PELL||LLP| gained:GRAYSON & PELL||LLP|",
   "first-set-interrogatories.txt [double-spaced] lost:Nnenna Adebayo-Lindgren Nnenna Adebayo-Lindgren GRAYSON & PELL||LLP| gained:GRAYSON & PELL||LLP|",
   "flat-fee-agreement.txt [double-spaced] lost:Ravi Chandrasekaran-Boyd Chandrasekaran Robotics||LLC| gained:-",
-  "forbearance.txt [double-spaced] lost:Iris Fontaine||| gained:-",
-  "hold-harmless.txt [double-spaced] lost:Ottilie Vandersteen-Achebe||| gained:-",
+  "healthcare-poa.txt [double-spaced] lost:- gained:Tobias Osgood-Reyes|||",
   "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Ridgeline Constructors LLC|Named Insured|LLC| gained:Ridgeline Constructors||LLC|",
   "interrogatory-responses.txt [double-spaced] lost:Hon. Marisol Aguirre-Vance HALLORAN PRECISION CASTINGS||LLC| gained:HALLORAN PRECISION CASTINGS||LLC|",
-  "ip-assignment.txt [double-spaced] lost:Dermot Halloran||| gained:-",
   "joint-development.txt [double-spaced] lost:- gained:Annika Sjöberg|||",
-  "joint-representation-waiver-founders.txt [blank lines stripped] lost:- gained:Marisol Vega|||",
   "joint-representation-waiver-founders.txt [double-spaced] lost:Raghunathan Mr. Daniel Ostrowski Kestrel Grove Bakery||LLC| gained:-",
-  "joint-venture.txt [double-spaced] lost:Dermot Halloran||| gained:-",
-  "lease-assignment-retail.txt [double-spaced] lost:Neel Varadarajan||| gained:Adaeze Nwachukwu, D.D.S|||",
-  "lease-assignment.txt [double-spaced] lost:Perpetua Achterberg-Ngozi||| gained:-",
-  "lease-loi.txt [double-spaced] lost:Alina Fenwick Chief Operating Officer Northgate Diagnostics||Inc|,Gregory Amaral||| gained:-",
-  "legend-nda.txt [double-spaced] lost:Priya Raghunathan||| gained:-",
-  "ma-restrictive-covenant.txt [double-spaced] lost:Caryn Okonjo||| gained:-",
+  "lease-assignment-retail.txt [double-spaced] lost:- gained:Adaeze Nwachukwu, D.D.S|||",
+  "lease-loi.txt [double-spaced] lost:Alina Fenwick Chief Operating Officer Northgate Diagnostics||Inc| gained:-",
   "minutes.txt [blank lines stripped] lost:Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
-  "mipa.txt [double-spaced] lost:Beatriz Sandoval||| gained:-",
-  "mutual-nda-letter.txt [double-spaced] lost:- gained:Ingeborg Fjeldstad|||",
+  "mutual-nda-letter.txt [double-spaced] lost:- gained:Desmond Achterberg|||,Ingeborg Fjeldstad|||",
   "notice-of-furnishing.txt [blank lines stripped] lost:- gained:This is a Notice of Furnishing under Ohio Revised Code § 1311.05. It is given to|Lender||",
   "operating-agreement.txt [blank lines stripped] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
   "operating-agreement.txt [double-spaced] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|",
-  "option-grant.txt [blank lines stripped] lost:Rosalind Achebe||| gained:-",
-  "option-grant.txt [double-spaced] lost:Rosalind Achebe||| gained:-",
-  "order-form.txt [double-spaced] lost:Soren Lindqvist||| gained:-",
-  "patent-assignment.txt [blank lines stripped] lost:Rosalind Nakamura-Ibarra||| gained:-",
-  "patent-assignment.txt [double-spaced] lost:Rosalind Nakamura-Ibarra||| gained:-",
   "payer-provider.txt [double-spaced] lost:- gained:Aaron Whitcombe, M.D|||",
-  "payment-performance-bond.txt [blank lines stripped] lost:Teodora Vasilenko||| gained:-",
-  "payment-performance-bond.txt [double-spaced] lost:Teodora Vasilenko||| gained:-",
-  "performance-bond.txt [blank lines stripped] lost:Aurelio Fitzgerald-Osei||| gained:-",
-  "performance-bond.txt [double-spaced] lost:Aurelio Fitzgerald-Osei||| gained:-",
   "petition.txt [blank lines stripped] lost:Record HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "petition.txt [double-spaced] lost:Record HOLLOWAY & NANDAKUMAR||LLP| gained:HOLLOWAY & NANDAKUMAR||LLP|",
   "physician-employment.txt [double-spaced] lost:- gained:Harold Lindstrom, M.D|||",
   "prenup.txt [smart quotes] lost:Party's||individual| gained:Party’s||individual|",
-  "protective-order.txt [double-spaced] lost:- gained:Tobias Denholm|||",
-  "restricted-stock-purchase.txt [double-spaced] lost:Ingrid Vasconcelos-Hart||| gained:-",
-  "rofr-co-sale.txt [double-spaced] lost:Priya Raghunathan||| gained:-",
+  "protective-order.txt [double-spaced] lost:- gained:Priya Raghunathan|||,Tobias Denholm|||",
   "saas-order-form-fields.txt [blank lines stripped] lost:ORDER FORM Northbridge Cloud||Inc| gained:Northbridge Cloud||Inc|",
   "saas-order-form-fields.txt [double-spaced] lost:ORDER FORM Northbridge Cloud||Inc| gained:Northbridge Cloud||Inc|",
-  "safe.txt [double-spaced] lost:Priya Raghunathan||| gained:-",
-  "sba-loan-agreement.txt [double-spaced] lost:Harold Vance||| gained:-",
-  "secondary-stock-transfer.txt [double-spaced] lost:Marcus Ellery Doyle Priya Venkataraman|||,Marcus Ellery Doyle||| gained:-",
-  "security-addendum.txt [double-spaced] lost:Imani Osei||| gained:-",
-  "security-agreement.txt [double-spaced] lost:Tobias Amankwah||| gained:-",
-  "settlement.txt [double-spaced] lost:Beatriz Sandoval||| gained:-",
-  "side-letter.txt [double-spaced] lost:Anand Bhattacharya||| gained:Océane Lefèvre|||",
-  "snda.txt [double-spaced] lost:Anneliese Thorvald||| gained:-",
-  "snt.txt [double-spaced] lost:Colin Nakashima||| gained:-",
+  "secondary-stock-transfer.txt [double-spaced] lost:Marcus Ellery Doyle Priya Venkataraman||| gained:-",
+  "side-letter.txt [double-spaced] lost:- gained:Kestrel Deepwater GP III, LLC, its general partner|||,Océane Lefèvre|||",
+  "snda.txt [double-spaced] lost:- gained:Ignatius Mbeki-Sørheim|||",
   "sow-numbered.txt [double-spaced] lost:- gained:Ines Bhattacharya-Kovács|||",
-  "sow.txt [double-spaced] lost:Soren Lindqvist||| gained:-",
   'sow.txt [smart quotes] lost:Halewood Data Systems LLC ("Supplier")|MSA|| gained:Halewood Data Systems LLC (“Supplier”)|MSA||',
-  "stock-purchase-agreement.txt [double-spaced] lost:Caryn Okonjo|||,Devin Marchetti||| gained:-",
-  "stockholders-agreement.txt [double-spaced] lost:Priya Raghunathan||| gained:-",
-  "sublease-office.txt [double-spaced] lost:Tobias Wrenfield||| gained:Anneli Kiruna-Bergström|||",
-  "subordination-agreement.txt [double-spaced] lost:Helena Vandermolen||| gained:-",
-  "teaming-agreement.txt [double-spaced] lost:Marisol Vega||| gained:-",
-  "term-sheet.txt [double-spaced] lost:- gained:Kestrel Deepwater GP III, LLC, its general partner|||",
-  "tolling-agreement-standstill.txt [blank lines stripped] lost:Amara Devine||| gained:-",
-  "tolling-agreement-standstill.txt [double-spaced] lost:Amara Devine||| gained:-",
-  "tolling-agreement.txt [double-spaced] lost:Aurelia Kowalski-Mbeki||| gained:-",
-  "trademark-assignment.txt [double-spaced] lost:Marisol Thibodeaux-Okereke||| gained:-",
-  "trademark-license-food.txt [double-spaced] lost:Odile Marchetti-Brun||| gained:-",
-  "transition-services-agreement.txt [blank lines stripped] lost:Owen Brandt||| gained:-",
-  "transition-services-agreement.txt [double-spaced] lost:Owen Brandt||| gained:-",
-  "trial-motion.txt [double-spaced] lost:Dashiell Tsukamoto Dashiell Tsukamoto Halloran & Tsukamoto||PLLC| gained:Halloran & Tsukamoto||PLLC|",
+  "sublease-office.txt [double-spaced] lost:- gained:Anneli Kiruna-Bergström|||",
+  "term-sheet.txt [double-spaced] lost:- gained:Kestrel Deepwater GP III, LLC, its general partner|||,Océane Lefèvre|||",
+  "trial-motion.txt [double-spaced] lost:Dashiell Tsukamoto Dashiell Tsukamoto Halloran & Tsukamoto||PLLC| gained:Dashiell Tsukamoto|||,Halloran & Tsukamoto||PLLC|",
   "uk-idta-addendum.txt [blank lines stripped] lost:- gained:Sable Notification Services||GmbH|",
-  "unilateral-nda.txt [double-spaced] lost:Marguerite Delacroix-Boone||| gained:-",
-  "vc-side-letter.txt [blank lines stripped] lost:- gained:Ilona Reyes|||",
-  "voting-agreement.txt [blank lines stripped] lost:- gained:Nadia Oyelaran|||",
-  "work-for-hire.txt [double-spaced] lost:Bartholomew Nkemdirim||| gained:-",
-  "work-letter.txt [double-spaced] lost:Simone Aubert||| gained:-",
 ];
 
 const JURISDICTION_DEBT: readonly string[] = [

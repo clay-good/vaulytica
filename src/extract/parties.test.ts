@@ -984,3 +984,37 @@ describe("a document's own title is not one of its parties", () => {
     expect(p.map((x) => x.name)).toContain("FAVOR OF NORTHLAND MERCANTILE BANK, N.A");
   });
 });
+
+describe("where a signature block is looked for", () => {
+  it("finds the signer however finely the document is chunked", () => {
+    // The window used to be a fraction of the PARAGRAPH COUNT, which measures
+    // how finely a document is chunked rather than how far into it you are.
+    // The same block, as one paragraph and as three, must yield the same
+    // signer — and the notary tail after it is what pushed it out of the old
+    // window.
+    const body: [string, ...string[]] = [
+      "DEED OF TRUST",
+      "This Deed of Trust is made as of October 9, 2026 by Halloran Instruments, LLC.",
+      ...Array.from({ length: 12 }, (_, i) => `${i + 1}. A covenant of the borrower.`),
+      "HALLORAN INSTRUMENTS, LLC",
+    ];
+    const tail = [
+      "STATE OF DELAWARE, COUNTY OF NEW CASTLE",
+      "I certify that Dermot Halloran personally appeared before me this day and acknowledged the due execution of the foregoing instrument.",
+    ];
+    const joined = extractParties(
+      buildTree([...body, "By: /s/ Dermot Halloran Name: Dermot Halloran Title: Manager", ...tail]),
+    );
+    const split = extractParties(
+      buildTree([
+        ...body,
+        "By: /s/ Dermot Halloran",
+        "Name: Dermot Halloran",
+        "Title: Manager",
+        ...tail,
+      ]),
+    );
+    expect(joined.map((x) => x.name)).toContain("Dermot Halloran");
+    expect(split.map((x) => x.name)).toContain("Dermot Halloran");
+  });
+});
