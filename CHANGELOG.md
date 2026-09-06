@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.494.0] — 2026-09-06
+
+### Fixed
+- **A signature block is not a glossary.** The field-label reader's own comment
+  says a signature block's `By:` never registers, because a label must be
+  two-to-five Title-Case words and `By` alone is one. That holds for the block
+  as it is WRITTEN and not for the block as it is READ — ingest joins adjacent
+  lines into one paragraph, so
+
+  ```
+  SABLEWOOD PROVISIONS COMPANY
+  By: /s/ Odile Marchetti-Brun
+  ```
+
+  arrives as one four-word label and registers after all. The corpus carried
+  **21** of these, across 16 specimens: "NORTHGATE RETAIL PARTNERS LLC By",
+  "RIDGELINE CONSTRUCTORS LLC By", "LLC Attn", "TALLGRASS INDUSTRIAL HOLDINGS
+  LP By". `report/definitions.ts` says of each one: defined, and never used.
+
+  A captured label whose last word is `By`, `Attn` or `Its` — and which has a
+  word before it — is now rejected. That is the whole fix, and it removes **23**
+  terms from the corpus: the 15 By/Attn shapes plus 8 more that fell out as a
+  cascade, because a block stops qualifying as a field sheet once its `By:` is
+  gone. Diffed term-by-term across all 312 specimens before and after: **every
+  one of the 23 is a signature-block artifact and no legitimate term was
+  lost.**
+
+  `Date` and `Name` are deliberately NOT in that set — "Effective Date",
+  "Maturity Date", "Closing Date" and "Trade Name" are ordinary defined terms
+  and the corpus defines them; a case pins that they survive. `Title` is
+  absent for the same reason a real-estate glossary may define "Marketable
+  Title", and it cost nothing: the cascade took all six anyway.
+
+  Zero golden churn — these terms reached the definitions report and the DOCX
+  appendix, not the findings.
+
 ## [9.493.0] — 2026-09-06
 
 ### Fixed

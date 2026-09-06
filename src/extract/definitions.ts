@@ -275,6 +275,31 @@ const QUOTED_TERM = /["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
 // (`src/ingest/docx.ts` joins each row's cells with " | "), and a term the
 // cover block defines is defined either way. Without this, a plan's own Plan
 // Year — used throughout the body — was a term it forgot to define.
+/**
+ * A signature-block form label, when it is the LAST word of a captured field
+ * label and something precedes it.
+ *
+ * The comment above claims a signature block's `By:` never registers, because
+ * a label must be two-to-five Title-Case words and `By` alone is one. That
+ * holds for the block as it is WRITTEN and not for the block as it is READ:
+ * ingest joins adjacent lines into one paragraph, so
+ *
+ *     SABLEWOOD PROVISIONS COMPANY
+ *     By: /s/ Odile Marchetti-Brun
+ *
+ * arrives as "SABLEWOOD PROVISIONS COMPANY By: …" — four words, and the label
+ * registers after all. The corpus carried 21 of these, and the definitions
+ * report says of each: defined, and never used. "NORTHGATE RETAIL PARTNERS
+ * LLC By" is not a term any document defines.
+ *
+ * Only the three words that no defined term ever ENDS in. `Date` and `Name`
+ * are deliberately absent: "Effective Date", "Maturity Date", "Closing Date"
+ * and "Trade Name" are ordinary terms and the corpus defines them. `Title` is
+ * absent for the same reason a real-estate glossary may define "Marketable
+ * Title" — it costs six of the twenty-one and is recorded rather than guessed.
+ */
+const SIGNATURE_FORM_LABEL = /\s(?:By|Attn|Its)$/;
+
 const FIELD_LABEL = /\b([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){1,4})\s*(?::|\|)\s+/g;
 const FIELD_BLOCK_MAX_LENGTH = 240;
 
@@ -876,7 +901,9 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     {
       let f: RegExpExecArray | null;
       while ((f = FIELD_LABEL.exec(ctx.text)) !== null) {
-        labels.push({ term: f[1]!.trim(), start: f.index, valueStart: f.index + f[0].length });
+        const term = f[1]!.trim();
+        if (SIGNATURE_FORM_LABEL.test(term)) continue;
+        labels.push({ term, start: f.index, valueStart: f.index + f[0].length });
       }
     }
     // Length is a proxy for "this is a field sheet, not prose", and it is a

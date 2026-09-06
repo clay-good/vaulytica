@@ -2608,3 +2608,62 @@ describe("extractDefinitions — either apostrophe is the same term", () => {
     expect(entry!.used_at).toHaveLength(0);
   });
 });
+
+/**
+ * A signature block is not a glossary.
+ *
+ * The field-label reader's own comment says a signature block's "By:" never
+ * registers, because a label must be two-to-five Title-Case words and "By"
+ * alone is one. That holds for the block as it is WRITTEN and not for the
+ * block as it is READ: ingest joins adjacent lines into one paragraph, so
+ *
+ *     SABLEWOOD PROVISIONS COMPANY
+ *     By: /s/ Odile Marchetti-Brun
+ *
+ * arrives as one four-word label and registers after all. The corpus carried
+ * 21 of these — "NORTHGATE RETAIL PARTNERS LLC By", "RIDGELINE CONSTRUCTORS
+ * LLC By", "LLC Attn" — and `report/definitions.ts` says of each: defined, and
+ * never used.
+ */
+describe("extractDefinitions — a signature block defines nothing", () => {
+  function signed(lines: string[]) {
+    return extractDefinitions(
+      buildTree([
+        "TRADEMARK LICENSE",
+        "1. Grant. Licensor grants Licensee a license to use the Licensed Marks.",
+        ...lines,
+      ]),
+    ).entries.map((e) => e.term);
+  }
+
+  it("does not read an execution block's entity + By: as a defined term", () => {
+    const terms = signed([
+      "SABLEWOOD PROVISIONS COMPANY By: /s/ Odile Marchetti-Brun Title: President",
+    ]);
+    expect(terms.filter((t) => /\bBy$/.test(t))).toEqual([]);
+    expect(terms.filter((t) => /Title$/.test(t))).toEqual([]);
+  });
+
+  it("does not read a notice block's Attn: as a defined term", () => {
+    const terms = signed(["Notices to: NORTHGATE RETAIL PARTNERS LLC Attn: General Counsel"]);
+    expect(terms.filter((t) => /\bAttn$/.test(t))).toEqual([]);
+  });
+
+  it("still reads a genuine cover block that ends in Date or Name", () => {
+    // The label set deliberately excludes Date and Name: these are ordinary
+    // terms, and suppressing them to catch a signature block would cost far
+    // more than it saved.
+    const terms = extractDefinitions(
+      buildTree([
+        "ORDER FORM",
+        // Each value runs to the next label, so a value has to be more than one
+        // Title-Case word or the reader takes it as part of that label — a
+        // pre-existing ambiguity, unrelated to the suppression under test.
+        "Halbrook Robotics, Inc. Effective Date: February 1, 2026 Trade Name: the mark used on the goods Plan Year: 2026 calendar year",
+        "1. Term. This Order Form begins on the Effective Date and runs for one Plan Year under the Trade Name.",
+      ]),
+    ).entries.map((e) => e.term);
+    expect(terms).toContain("Effective Date");
+    expect(terms).toContain("Trade Name");
+  });
+});
