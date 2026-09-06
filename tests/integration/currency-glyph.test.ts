@@ -65,6 +65,7 @@ describe("a figure stated in another currency", () => {
       ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
       ...sourceFiles(join(process.cwd(), "src", "extract")),
       ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
     ];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 

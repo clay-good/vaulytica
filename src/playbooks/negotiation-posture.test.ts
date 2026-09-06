@@ -492,3 +492,97 @@ describe("a liability cap written as a sum in words", () => {
     expect(p.positions[0]!.tier).toBe("unevaluable");
   });
 });
+
+/**
+ * "must not exceed" is the third spelling of "shall not exceed".
+ *
+ * `capInWords` shipped reading `shall` and `will` and not `must` — the same
+ * blindness the `shall-will` sweep exists to catch, in code written in the
+ * same change that widened that sweep to `src/playbooks`. It caught it
+ * immediately, which is the argument for the widening.
+ */
+describe("the cap-language gate reads all three modals", () => {
+  const capLadder: NegotiationPosition = {
+    dimension: "Liability cap amount",
+    ideal: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_amount",
+      comparator: "gte",
+      value: 100_000,
+    },
+    acceptable: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_amount",
+      comparator: "gte",
+      value: 10_000,
+    },
+  };
+
+  for (const modal of ["shall", "will", "must"]) {
+    it(`reads "${modal} not exceed"`, async () => {
+      const p = await posture(
+        [`Each party's liability for breach ${modal} not exceed Five Hundred Thousand Dollars.`],
+        [capLadder],
+      );
+      expect(p.positions[0]!.tier).toBe("ideal");
+    });
+  }
+
+  it("reads a bare 'not to exceed' with no modal at all", async () => {
+    const p = await posture(
+      ["Liability is capped at an amount not exceeding Five Hundred Thousand Dollars."],
+      [capLadder],
+    );
+    expect(p.positions[0]!.tier).toBe("ideal");
+  });
+});
+
+/**
+ * A cap denominated in something other than dollars.
+ *
+ * The cap-amount patterns read a digit CLASS, so by the rule
+ * `currency-glyph.test.ts` states they must admit every glyph — the literal-US-
+ * statutory-threshold exemption does not apply to a figure the document
+ * chooses. Reading only `$` did not produce a wrong number for a €500,000 cap,
+ * it produced NO number: unevaluable, and the dimension gone from the ladder.
+ */
+describe("a liability cap in another currency", () => {
+  const capLadder: NegotiationPosition = {
+    dimension: "Liability cap amount",
+    ideal: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_amount",
+      comparator: "gte",
+      value: 100_000,
+    },
+    acceptable: {
+      kind: "numeric_threshold",
+      metric: "liability_cap_amount",
+      comparator: "gte",
+      value: 10_000,
+    },
+  };
+
+  for (const [glyph, label] of [
+    ["$", "dollar"],
+    ["€", "euro"],
+    ["£", "pound"],
+    ["¥", "yen"],
+  ]) {
+    it(`reads a cap stated in ${label}s`, async () => {
+      const p = await posture(
+        [`Each party's total liability under this Agreement is limited to ${glyph}500,000.`],
+        [capLadder],
+      );
+      expect(p.positions[0]!.tier).toBe("ideal");
+    });
+  }
+
+  it("still reads the figure stated before the subject", async () => {
+    const p = await posture(
+      ["The parties agree to €500,000 as the aggregate limit of liability hereunder."],
+      [capLadder],
+    );
+    expect(p.positions[0]!.tier).toBe("ideal");
+  });
+});

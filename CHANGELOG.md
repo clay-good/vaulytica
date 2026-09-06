@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.480.0] — 2026-09-06
+
+### Fixed
+- **The rest of the static sweeps now walk `src/playbooks` too — and found
+  three more defects.** 9.478.0 widened four of them. There are fourteen, and
+  six more shared the same omission (`attachment-kinds`, `clause-numbering`,
+  `commonwealth-spelling`, `currency-glyph`, `present-indicative`,
+  `shall-will`); `section-sign` and `inert-case-anchor` already walked all of
+  `src`. Widening the six found:
+
+  - **`capInWords` read "shall/will not exceed" but not "must not exceed"** —
+    the third-spelling blindness, in code written in the change that widened
+    the sweep that caught it. Now reads all three modals and the bare
+    "not exceeding".
+  - **The cap-amount metrics were dollar-only.** They read a digit *class*
+    (`[\d,]+`, whatever figure the document carries), not a literal US
+    statutory threshold — which is exactly the line `currency-glyph.test.ts`
+    draws for when a recognizer must admit the other glyphs. A liability cap
+    of €500,000 or £250,000 was not a wrong number, it was **no** number: the
+    dimension went unevaluable and dropped off the ladder, the same silent
+    failure as an unread period. Both directions now read `[$€£¥₹₩₽]`, and the
+    window exclusion became `[^.${CURRENCY_GLYPHS}]` rather than `[^.$]` for
+    the same reason — a euro figure interrupts the window just as a dollar one
+    does.
+
+- **`spelled-amount`'s currency detector learned the glyph-set spelling**, but
+  precisely. Adding `CURRENCY_GLYPHS` to it wholesale flagged three FIN-005
+  recognizers that use the same interpolation inside a *window* class
+  (`[\s\w,()${CURRENCY_GLYPHS}."'…]{0,160}?`) between a payment verb and its
+  deadline — there the glyphs are characters the window may cross and the
+  digits are a period count, not a sum. The detector now matches only
+  `[${CURRENCY_GLYPHS}]` as a class of its own, which is the shape that reads a
+  figure. Measured before shipping: 6 candidates repo-wide, 3 of them false.
+
+  Zero golden churn: these metrics are read only by an opt-in custom playbook.
+
 ## [9.479.0] — 2026-09-06
 
 ### Added

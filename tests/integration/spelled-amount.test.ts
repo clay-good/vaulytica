@@ -170,8 +170,20 @@ describe("a percentage spelled in words alone", () => {
  */
 const MONEY_ROOTS = ["src/engine/rules", "src/extract", "src/engine/consistency", "src/playbooks"];
 
-/** A currency token, and an unbounded digit run somewhere in the same pattern. */
-const CURRENCY = /[\u20ac\u00a3\u00a5\u20b9\u20a9\u20bd]|\\\$(?![{/`])|CURRENCY_TOKEN|\bUSD/;
+/**
+ * A currency token, and an unbounded digit run somewhere in the same pattern.
+ *
+ * `[${CURRENCY_GLYPHS}]` counts, because a class holding the glyph set and
+ * nothing else is there to READ a figure. The same interpolation inside a
+ * wider window class — `[\s\w,()${CURRENCY_GLYPHS}."'…]{0,160}?`, as FIN-005
+ * uses between a payment verb and its deadline — does not: there the glyphs
+ * are characters the window may cross, and the digits it reads are a period
+ * count, not a sum. Matching the whole-class shape only is what keeps this
+ * sweep from flagging three deadline recognizers as blind to a sum they never
+ * read.
+ */
+const CURRENCY =
+  /[\u20ac\u00a3\u00a5\u20b9\u20a9\u20bd]|\\\$(?![{/`])|CURRENCY_TOKEN|\[\$\{CURRENCY_GLYPHS\}\]|\bUSD/;
 const UNBOUNDED_DIGITS = /\\d|\[\\d/;
 const READS_A_SUM_IN_WORDS = /AMOUNT_IN_WORDS|million|thousand|dollars/i;
 
@@ -193,21 +205,23 @@ const DECLARED_MONEY = declaredExceptions([
   },
   // The two cap-amount metrics read a word sum through `capInWords`, a
   // SEPARATE and deliberately stricter pattern, rather than by widening these.
-  // These digit patterns take any `$` within 120 characters of the subject,
-  // which is loose enough that "limited liability company … in consideration
-  // of Four Hundred Eighty Thousand Dollars" would report a purchase price as
-  // a liability cap. Folding the words in here would inherit that; requiring
-  // real cap language ("limited to", "shall not exceed", "capped at") instead
-  // keeps all seven genuine word-sum caps in the corpus and drops that one.
+  // These digit patterns take any currency figure within 120 characters of the
+  // subject, which is loose enough that "limited liability company … in
+  // consideration of Four Hundred Eighty Thousand Dollars" would report a
+  // purchase price as a liability cap. Folding the words in here would inherit
+  // that; requiring real cap language ("limited to", "shall/will/must not
+  // exceed", "capped at") instead keeps all seven genuine word-sum caps in the
+  // corpus and drops that one. Both builders are keyed by the shape unique to
+  // each, since the subject they read is an interpolated parameter.
   {
     file: "src/playbooks/custom-interpreter.ts",
-    pattern: "liab[a-z]*",
-    why: "word sums read by `capInWords`, which requires cap language the loose $-window does not",
+    pattern: "{0,120}?[${CURRENCY_GLYPHS}]",
+    why: "capInDigits — word sums read by `capInWords`, which requires cap language this window does not",
   },
   {
     file: "src/playbooks/custom-interpreter.ts",
-    pattern: "indemnif[a-z]*",
-    why: "word sums read by `capInWords`, which requires cap language the loose $-window does not",
+    pattern: "{0,60}?${subject}",
+    why: "digitsBeforeCap — same pair; the word form is read by `capInWords`",
   },
 ]);
 

@@ -72,6 +72,7 @@ describe("shall and will are the same obligation", () => {
       ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
       ...sourceFiles(join(process.cwd(), "src", "extract")),
       ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
     ];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
@@ -140,6 +141,7 @@ describe("shall and will are the same obligation", () => {
       ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
       ...sourceFiles(join(process.cwd(), "src", "extract")),
       ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
     ];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 

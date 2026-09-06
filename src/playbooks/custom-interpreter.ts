@@ -32,7 +32,7 @@ import { SEVERITY_RANK } from "../engine/finding.js";
 import type { SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { PERIOD_COUNT, countValue } from "../extract/counts.js";
-import { AMOUNT_IN_WORDS, wordAmountValue } from "../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_GLYPHS, wordAmountValue } from "../extract/amounts.js";
 import { stableStringify } from "../engine/runner.js";
 import type {
   CustomPlaybook,
@@ -732,6 +732,36 @@ function describeClauseTarget(pattern?: string, heading?: string): string {
 const METRIC_NUMBER = `(?:\\d+(?:\\.\\d+)?|${PERIOD_COUNT})`;
 
 /**
+ * A cap stated in DIGITS, in whatever currency the document uses.
+ *
+ * These read a digit CLASS — `[\d,]+`, whatever figure the document happens to
+ * carry — not a literal US statutory threshold, and `currency-glyph.test.ts`
+ * draws exactly that line: a recognizer that reads a class must admit the
+ * other glyphs. They read `\$` alone, so a liability cap of €500,000 or
+ * £250,000 was not a wrong number, it was **no** number — the dimension went
+ * unevaluable and dropped off the ladder, which is the same silent failure as
+ * an unread period.
+ *
+ * The window exclusion is `[^.${CURRENCY_GLYPHS}]` rather than `[^.$]` for the
+ * same reason: it exists to stop the window at an intervening money figure,
+ * and a euro figure interrupts just as a dollar one does.
+ */
+function capInDigits(subject: string): RegExp {
+  return new RegExp(
+    `${subject}[^.${CURRENCY_GLYPHS}]{0,120}?[${CURRENCY_GLYPHS}]\\s?([\\d,]+(?:\\.\\d+)?)`,
+    "g",
+  );
+}
+
+/** The mirror of {@link capInDigits}: the figure stated before the subject. */
+function digitsBeforeCap(subject: string): RegExp {
+  return new RegExp(
+    `[${CURRENCY_GLYPHS}]\\s?([\\d,]+(?:\\.\\d+)?)[^.${CURRENCY_GLYPHS}]{0,60}?${subject}`,
+    "g",
+  );
+}
+
+/**
  * A cap stated in WORDS — "liability … is limited to Three Million Dollars".
  *
  * The digit patterns above read `$` within 120 characters of "liab", which is
@@ -748,7 +778,7 @@ const METRIC_NUMBER = `(?:\\d+(?:\\.\\d+)?|${PERIOD_COUNT})`;
  */
 function capInWords(subject: string): RegExp {
   return new RegExp(
-    `${subject}[^.$]{0,120}?(?:limited\\s+to|(?:shall\\s+|will\\s+)?not\\s+exceed|capped\\s+at)[^.$]{0,60}?(${AMOUNT_IN_WORDS})`,
+    `${subject}[^.${CURRENCY_GLYPHS}]{0,120}?(?:limited\\s+to|(?:shall|will|must)?\\s*not\\s+exceed|capped\\s+at)[^.${CURRENCY_GLYPHS}]{0,60}?(${AMOUNT_IN_WORDS})`,
     "g",
   );
 }
@@ -828,10 +858,8 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
       );
       break;
     case "liability_cap_amount":
-      all(/liab[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) =>
-        Number(m[1]!.replace(/,/g, "")),
-      );
-      all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?liab[a-z]*/g, (m) => Number(m[1]!.replace(/,/g, "")));
+      all(capInDigits("liab[a-z]*"), (m) => Number(m[1]!.replace(/,/g, "")));
+      all(digitsBeforeCap("liab[a-z]*"), (m) => Number(m[1]!.replace(/,/g, "")));
       all(capInWords("liab[a-z]*"), (m) => wordAmountValue(m[1]!));
       break;
     // spec-v10 Thrust C — temporal dimensions (Step 173).
@@ -883,12 +911,8 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
       break;
     // spec-v10 Thrust C — financial dimensions (Step 174).
     case "indemnity_cap_amount":
-      all(/indemnif[a-z]*[^.$]{0,120}?\$\s?([\d,]+(?:\.\d+)?)/g, (m) =>
-        Number(m[1]!.replace(/,/g, "")),
-      );
-      all(/\$\s?([\d,]+(?:\.\d+)?)[^.$]{0,60}?indemnif[a-z]*/g, (m) =>
-        Number(m[1]!.replace(/,/g, "")),
-      );
+      all(capInDigits("indemnif[a-z]*"), (m) => Number(m[1]!.replace(/,/g, "")));
+      all(digitsBeforeCap("indemnif[a-z]*"), (m) => Number(m[1]!.replace(/,/g, "")));
       all(capInWords("indemnif[a-z]*"), (m) => wordAmountValue(m[1]!));
       break;
     case "uptime_sla_percent":

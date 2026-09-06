@@ -51,6 +51,7 @@ describe("the present indicative is the same carve-out", () => {
       ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
       ...sourceFiles(join(process.cwd(), "src", "extract")),
       ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
     ];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
@@ -81,6 +82,7 @@ describe("the present indicative is the same carve-out", () => {
       ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
       ...sourceFiles(join(process.cwd(), "src", "extract")),
       ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
     ];
     const blind: string[] = [];
     for (const file of files) {

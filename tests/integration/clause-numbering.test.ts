@@ -79,6 +79,7 @@ describe("a contract drafted in England numbers its clauses", () => {
       ...sourceFiles(join(process.cwd(), "src", "engine", "rules")),
       ...sourceFiles(join(process.cwd(), "src", "extract")),
       ...sourceFiles(join(process.cwd(), "src", "engine", "consistency")),
+      ...sourceFiles(join(process.cwd(), "src", "playbooks")),
     ];
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
 
