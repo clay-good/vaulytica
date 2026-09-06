@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.468.0] — 2026-09-05
+
+### Documentation
+- **The README's metamorphic table catches up.** Five rewritings shipped since
+  it was last written and none of them were in it: the words-only period (48 of
+  225 specimens, plus 52 recognizers a static sweep found), the words-only sum
+  (37), the day-first and ordinal-suffix date (7 registers and 54 `critical`s),
+  the division noun (156 of 188), and the TITLE's own instrument noun (36 of
+  221 re-routed).
+- **The two structural guards are described** beside the parity and
+  determinism guarantees they belong with: `shared-vocabulary.test.ts` and
+  `duplicate-logic.test.ts`, and the argument for them — every defect the
+  rewritings found traced back to a hand-copy that was right when it was
+  written and wrong later, because a repair reached one copy and not the rest.
+
 ## [9.467.0] — 2026-09-05
 
 ### Fixed
