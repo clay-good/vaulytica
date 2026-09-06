@@ -1095,3 +1095,71 @@ describe("truncate (surrogate-safe excerpt clamp)", () => {
     expect(offenders, `unguarded truncate copies: ${offenders.join(", ")}`).toEqual([]);
   });
 });
+
+/**
+ * The Amounts table shows the amount a reader would act on.
+ *
+ * `MoneyReference.range_max` and `.per_unit` were computed by the extractor,
+ * documented as the thing "a cap rule reads", and consumed by nothing — and
+ * this table is the ONLY human-facing surface for extracted amounts, since
+ * `amounts` reaches neither the JSON report nor the HTML one. So a range
+ * printed as its lower bound alone was not a cosmetic loss: it was the report
+ * showing $100,000 against a clause that permits $500,000.
+ */
+describe("DOCX Amounts table — the controlling bound", () => {
+  async function amountsXml(amounts: ReadonlyArray<Record<string, unknown>>): Promise<string> {
+    const blob = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      {
+        parties: [],
+        dates: [],
+        amounts,
+        definitions: { entries: [] },
+        outline: { sections: [] },
+        crossrefs: [],
+        obligations: [],
+        jurisdictions: [],
+        classified: [],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    return strFromU8(entries["word/document.xml"]!);
+  }
+
+  const base = {
+    id: "m1",
+    currency: "USD",
+    word_form: false,
+    position: { start_offset: 0, end_offset: 30 },
+  };
+
+  it("shows both bounds of a range, not the lower one alone", async () => {
+    const xml = await amountsXml([
+      { ...base, raw_text: "between $100,000 and $500,000", amount: "100000", range_max: "500000" },
+    ]);
+    expect(xml).toContain("100000 – 500000");
+  });
+
+  it("keeps the per-unit qualifier attached to the amount", async () => {
+    const xml = await amountsXml([
+      { ...base, raw_text: "$50 per user, per month", amount: "50", per_unit: "user, per month" },
+    ]);
+    expect(xml).toContain("50 per user, per month");
+  });
+
+  it("leaves a plain amount exactly as it was", async () => {
+    const xml = await amountsXml([{ ...base, raw_text: "$50,000", amount: "50000" }]);
+    // The cell holds the amount and nothing else. Matched as a whole cell
+    // rather than a substring, so a regression that APPENDS to it fails here
+    // — `toContain("50000")` would pass on "50000 – 500000".
+    expect(xml).toMatch(/<w:t[^>]*>50000<\/w:t>/);
+    expect(xml).not.toContain("50000 –");
+    expect(xml).not.toContain("50000 per");
+  });
+});

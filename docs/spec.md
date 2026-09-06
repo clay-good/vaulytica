@@ -861,7 +861,7 @@ Pages, in order:
 
 **Page N+ — Obligations Ledger.** A table: Obligor / Obligee / Action / Trigger / Source Section / Severity-if-Breached. Two columns: one for Party A obligations, one for Party B obligations. This is genuinely useful and no AI tool produces it reliably.
 
-**Page N+ — Extracted Data Appendix.** Compact tables of: Parties (name, role, entity, jurisdiction), Dates (raw text, resolved date, reference type), Amounts (raw text, normalized, currency), Definitions (term, definition), Sections (outline of section numbering).
+**Page N+ — Extracted Data Appendix.** Compact tables of: Parties (name, role, entity, jurisdiction), Dates (raw text, resolved date, reference type), Amounts (raw text, normalized, currency — a range shows both bounds and a per-unit amount keeps its qualifier, so the column is never the low end of a cap), Definitions (term, definition), Sections (outline of section numbering).
 
 **Page N+ — Audit Trail.** The full list of rules executed (one per line, with rule ID, name, version, "fired" or "silent"). Followed by the deduplicated bibliography.
 

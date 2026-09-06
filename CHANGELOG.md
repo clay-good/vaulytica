@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.476.0] — 2026-09-06
+
+### Fixed
+- **The Amounts table showed the low end of a cap.** `MoneyReference` carries
+  two enrichments the extractor computes, each with a stated purpose in its own
+  doc comment and no consumer anywhere in the tree:
+
+  `range_max` — "between $100,000 and $500,000" is extracted as a lower bound
+  in `amount` and an upper bound in `range_max`, and the type says why: "A cap
+  rule reads the upper bound rather than a random endpoint." No rule does. The
+  DOCX Amounts table — the **only** human-facing surface for extracted amounts,
+  since `amounts` reaches neither the JSON report nor the HTML one — printed
+  `amount` alone. A reader scanning the Amount column for a liability cap saw
+  $100,000 against a clause that permits $500,000, which is the unsafe
+  direction to be wrong in.
+
+  `per_unit` — "$50 per user, per month" is extracted with the qualifier held
+  apart, to "distinguish a per-incident cap from an absolute cap." Printed
+  bare, $50 reads as the whole exposure.
+
+  Both now render: `100000 – 500000`, `50 per user, per month`. The raw-text
+  column still carries the phrase verbatim, so nothing is replaced — only
+  completed. A plain amount renders exactly as it did, asserted as a whole
+  cell rather than a substring so a regression that APPENDS to it fails.
+
+  Deliberately NOT fixed by adding a cap rule that consumes the fields: what an
+  upper bound MEANS for a given cap is a judgment about that clause, while what
+  the table SHOWS is not. Found by sweeping every optional field on the report,
+  ingest, extract, delivery and playbook types for ones no other module reads —
+  201 fields, 29 unread. The remaining unread enrichments are recorded below
+  rather than guessed at: `Obligation.nested_triggers` and `.obligor_exclusion`,
+  `CrossRef.resolved_id` and `.sub_ref`, `DateReference.fiscal_period`, and
+  `JurisdictionReference.fallback_jurisdiction` — each produced by its
+  extractor, covered by its own unit tests, and read by no rule and no surface.
+
 ## [9.475.0] — 2026-09-06
 
 ### Added

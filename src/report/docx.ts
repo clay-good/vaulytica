@@ -650,6 +650,36 @@ function renderSecondaryFamiliesSection(
 // ---------------------------------------------------------------------------
 // spec-v9 "Last Look" surfaces (Thrusts A/B/C) — render-side, outside result_hash
 
+/**
+ * The Amount cell: the amount a reader would act on, not a random endpoint.
+ *
+ * `MoneyReference` carries two enrichments the extractor computes and this
+ * table dropped. Both had a stated purpose in their own doc comments and no
+ * consumer anywhere in the tree:
+ *
+ * `range_max` — "between $100,000 and $500,000" is extracted as a lower bound
+ * in `amount` and an upper bound in `range_max`, and the type says why: "A cap
+ * rule reads the upper bound rather than a random endpoint." No rule does, and
+ * this table — the ONLY human-facing surface for extracted amounts, since
+ * `amounts` reaches neither the JSON report nor the HTML one — printed the
+ * lower bound alone. A reader scanning the Amount column for a liability cap
+ * saw $100,000 against a clause that permits $500,000, which is the unsafe
+ * direction to be wrong in.
+ *
+ * `per_unit` — "$50 per user, per month" is extracted with the qualifier held
+ * apart, to "distinguish a per-incident cap from an absolute cap." Printed
+ * bare, $50 reads as the whole exposure.
+ *
+ * Both are rendered here rather than fixed by adding a cap rule that reads
+ * them: what the upper bound MEANS for a given cap is a judgment about that
+ * clause, while what the table SHOWS is not. The raw-text column still carries
+ * the phrase verbatim, so nothing is replaced — only completed.
+ */
+function amountCell(a: { amount: string; range_max?: string; per_unit?: string }): string {
+  const value = a.range_max ? `${a.amount} – ${a.range_max}` : a.amount;
+  return a.per_unit ? `${value} per ${a.per_unit}` : value;
+}
+
 /** "Clean to send" — the delivery / HANDOFF-* pre-disclosure section (Thrust A). */
 function renderDeliverySection(delivery: DeliveryReport | undefined): (Paragraph | Table)[] {
   if (!delivery || delivery.findings.length === 0) return [];
@@ -1054,7 +1084,12 @@ function renderExtractedAppendix(run: EngineRun, extracted?: ExtractedData): (Pa
         rows: [
           headerRow(["Raw text", "Currency", "Amount", "Word form"]),
           ...extracted.amounts.map((a) =>
-            bodyRow([truncate(a.raw_text, 80), a.currency, a.amount, a.word_form ? "yes" : "no"]),
+            bodyRow([
+              truncate(a.raw_text, 80),
+              a.currency,
+              amountCell(a),
+              a.word_form ? "yes" : "no",
+            ]),
           ),
         ],
       }),
