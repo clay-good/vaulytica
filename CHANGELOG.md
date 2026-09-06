@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.496.0] — 2026-09-06
+
+### Changed
+- **Measured and wrong: relaxing the field-block PREFIX test to recover a
+  Schumer box's terms.** 9.495.0 recorded that stripping the blank lines — the
+  PDF copy-paste path — costs `credit-card.txt` its "Penalty APR" and "Minimum
+  Interest Charge". Diagnosed, the cause is not the length cap: the joined box
+  carries five labels and already clears the three-label branch. It is the
+  prefix test. The box's first row, `Annual Percentage Rate (APR) for
+  Purchases:`, carries parentheses and a lowercase connector, so `FIELD_LABEL`
+  cannot capture it as a label, and everything up to the SECOND label then
+  reads as prose.
+
+  The fix suggests itself: accept a run of three or more labels whatever the
+  paragraph opens with, which is the same reasoning the length cap already
+  accepts. Measured across all 312 specimens before shipping it — **+112 terms,
+  −0** — and almost every one of the 112 is signature-block junk: "Chief
+  Executive Officer Date", "General Counsel Date", "Whitfield Name", "Achebe
+  Title". A signature block joined into one paragraph carries `By:`, `Name:`,
+  `Title:` and `Date:`, which is a run of four.
+
+  So the prefix test is load-bearing for exactly the case 9.494.0 was also
+  about, and two terms on one specimen is the price. Recorded in the debt
+  list's own comment, because the fix looks correct on every reading until
+  someone counts what it admits.
+
 ## [9.495.0] — 2026-09-06
 
 ### Added

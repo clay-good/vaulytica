@@ -30,8 +30,20 @@
  *    than it saved;
  *  - **legitimate terms LOST** when the blank lines go, which is what a PDF
  *    copy-paste produces — a Schumer box loses "Penalty APR" and "Minimum
- *    Interest Charge" once its rows join into one paragraph, because a field
- *    block is recognized partly by being short.
+ *    Interest Charge" once its rows join into one paragraph.
+ *
+ * The second one has an obvious fix, and it is measured and wrong. The cause
+ * is not the length cap (the joined box carries five labels and clears the
+ * three-label branch) but the PREFIX test: the box's first row, "Annual
+ * Percentage Rate (APR) for Purchases:", carries parentheses and a lowercase
+ * connector, so `FIELD_LABEL` cannot capture it and everything up to the
+ * SECOND label reads as prose. Accepting a run of three or more labels
+ * whatever the paragraph opens with — which is the same reasoning the length
+ * cap already accepts — recovers those two terms and **gains 112 others,
+ * almost all signature-block junk**: a signature block joined into one
+ * paragraph carries `By:`, `Name:`, `Title:` and `Date:`, which is a run of
+ * four. The prefix test is load-bearing for exactly that, and the Schumer box
+ * is the price.
  *
  * Neither is a finding: `format-invariance.test.ts` holds the finding set at
  * zero movers under these same transforms, and its debt lists are empty. This
