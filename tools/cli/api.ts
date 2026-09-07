@@ -52,11 +52,19 @@ import { extractDealValue } from "../../src/extract/deal-value.js";
 import type { CustomPlaybook } from "../../src/playbooks/custom-playbook.js";
 
 import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pipeline.js";
+import type { SecondaryFamilyRun } from "../../src/engine/secondary-families.js";
 
 export type AnalyzeResult = {
   run: EngineRun;
   playbook_id: string;
   auto_matched_playbook_id: string;
+  /**
+   * The OTHER families this document clearly contains, each scanned with the
+   * rules gated to it (fix-headless-secondary-families). Kept OUTSIDE `run`
+   * exactly as the browser keeps it, so `result_hash` and every `--fail-on`
+   * gate are unchanged. Empty for a document that contains only its match.
+   */
+  secondary_families: SecondaryFamilyRun[];
   /** The ingest result, so the report builders (JSON/HTML) can render. */
   ingest: IngestResult;
   /**

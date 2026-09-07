@@ -679,7 +679,13 @@ async function renderFormat(
         r.run,
         r.ingest,
         undefined,
-        undefined,
+        // The OTHER families the document clearly contains
+        // (fix-headless-secondary-families). Until 9.508.0 the headless path
+        // did not RUN these at all, so this argument had nothing to pass —
+        // 238 of 312 specimens produce secondary findings the browser showed
+        // and a CI pipeline never saw. Outside `run`, so `result_hash` and
+        // every `--fail-on` gate are unchanged.
+        r.secondary_families.length > 0 ? r.secondary_families : undefined,
         // The jurisdiction overlays (spec-v6 Part VI §21) are built from the
         // governing-law clauses in `extracted`, and this argument was
         // `undefined` — so `jurisdiction_overlays` could never appear in a CLI
@@ -704,7 +710,15 @@ async function renderFormat(
     case "sarif":
       return buildSarifJson(r.run, v9surfaces, currency, r.ingest);
     case "html":
-      return buildHtmlReport(r.run, r.ingest, dkb, undefined, v9surfaces);
+      return buildHtmlReport(
+        r.run,
+        r.ingest,
+        dkb,
+        undefined,
+        v9surfaces,
+        undefined,
+        r.secondary_families.length > 0 ? r.secondary_families : undefined,
+      );
     case "md": {
       const md = buildFixListMarkdown(r.run, undefined, currency, r.ingest);
       return definitions ? `${md}\n${buildDefinitionsMarkdown(definitions)}` : md;
@@ -964,6 +978,26 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
     human(`${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`);
+
+    // A COMPOSITE document — an MSA with a data-processing exhibit, a services
+    // agreement with a security addendum — matches one family and contains
+    // several. The bracketed id above names only the match, so a reader who
+    // sees `[msa-vendor-deep]` has no way to learn that the DPA pack also ran
+    // and contributed findings of its own. Those findings sit outside
+    // `run.findings` by design (they are not the matched family's verdict, and
+    // no `--fail-on` gate should silently re-scope), which is exactly why the
+    // one-line summary above cannot show them and this line must.
+    if (r.secondary_families.length > 0) {
+      const each = r.secondary_families
+        .map(
+          (sf) =>
+            `${sf.playbook_id} (${sf.counts.critical}C ${sf.counts.warning}W ${sf.counts.info}I)`,
+        )
+        .join(", ");
+      human(
+        `  also contains: ${each} — reported alongside the run, not counted in the totals above or in --fail-on\n`,
+      );
+    }
 
     // The classification caveat, which is the one caveat that qualifies every
     // finding printed above it. When no family matched, the engine says so in

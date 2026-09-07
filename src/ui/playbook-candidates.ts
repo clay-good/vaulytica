@@ -26,6 +26,7 @@
 
 import type { ClassifiedParagraph, ExtractedData } from "../extract/types.js";
 import type { Playbook } from "../playbooks/types.js";
+import { featureMatcher } from "../playbooks/matcher.js";
 
 /**
  * Minimum family-signal strength for a specialized playbook to be admitted
@@ -56,13 +57,41 @@ export type CandidateSignals = {
  * family. Mirrors the matcher's feature kinds but is used only to decide
  * candidacy, not to rank. Exported for tests.
  */
+/**
+ * One folded corpus per document, shared by every playbook tested against it.
+ *
+ * 🚨 Both selectors below used to test a keyword with `title.includes(kw)`.
+ * That is not the comparison the matcher makes, and the difference is not
+ * cosmetic: a raw substring finds `"co"` inside "company", `"cla"` inside
+ * "clause", `"sig"` inside "signature", `"spa"` inside "space" and `"apa"`
+ * inside "capacity" — and ONE title hit is enough to declare a family present
+ * and run its whole rule pack. Measured over the 312 specimens: **123 of them
+ * activated a family on a substring a word-boundary match rejects, producing
+ * 465 findings, 389 of them CRITICAL**, about documents of a kind they are
+ * not. A commercial Master Services Agreement drew four criticals from
+ * `family-msa` — the family-law Marital Settlement Agreement — and three from
+ * `change-order`, whose title keyword is `"co"`.
+ *
+ * `matcher.ts` had solved this long before, in `matchesIn`: an acronym of five
+ * characters or fewer is matched at a word boundary, and everything else keeps
+ * phrase semantics, on a corpus folded for hyphens, apostrophes and
+ * Commonwealth spelling. This file reimplemented the comparison and got it
+ * wrong, which is the "a table written twice will disagree with itself"
+ * failure in its keyword form. There is one owner now.
+ */
+function corpusMatchers(signals: CandidateSignals): {
+  inTitle: (feature: string) => boolean;
+  inBody: (feature: string) => boolean;
+} {
+  return { inTitle: featureMatcher(signals.title), inBody: featureMatcher(signals.body) };
+}
+
 export function familySignalStrength(playbook: Playbook, signals: CandidateSignals): number {
-  const title = signals.title.toLowerCase();
-  const body = signals.body.toLowerCase();
+  const { inTitle, inBody } = corpusMatchers(signals);
   const f = playbook.match_features;
 
-  const titleHits = f.title_keywords.filter((kw) => title.includes(kw.toLowerCase())).length;
-  const distHits = f.distinguishing_phrases.filter((p) => body.includes(p.toLowerCase())).length;
+  const titleHits = f.title_keywords.filter(inTitle).length;
+  const distHits = f.distinguishing_phrases.filter(inBody).length;
 
   const categories = new Set(signals.classified.map((c) => c.category));
   const definedTerms = new Set(
@@ -110,14 +139,13 @@ export const MAX_SECONDARY_FAMILIES = 4;
  * or three or more distinguishing/required-clause hits in the body.
  */
 export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): boolean {
-  const title = signals.title.toLowerCase();
-  const body = signals.body.toLowerCase();
+  const { inTitle, inBody } = corpusMatchers(signals);
   const f = playbook.match_features;
 
-  const titleHits = f.title_keywords.filter((kw) => title.includes(kw.toLowerCase())).length;
+  const titleHits = f.title_keywords.filter(inTitle).length;
   if (titleHits >= 1) return true;
 
-  const distHits = f.distinguishing_phrases.filter((p) => body.includes(p.toLowerCase())).length;
+  const distHits = f.distinguishing_phrases.filter(inBody).length;
   const categories = new Set(signals.classified.map((c) => c.category));
   const definedTerms = new Set(
     signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()),

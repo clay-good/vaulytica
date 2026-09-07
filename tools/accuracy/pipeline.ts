@@ -36,7 +36,14 @@ import {
   LAUNCH_PLAYBOOK_IDS,
   type Playbook,
 } from "../../src/playbooks/index.js";
-import { selectMatchCandidates } from "../../src/ui/playbook-candidates.js";
+import {
+  selectMatchCandidates,
+  selectSecondaryFamilies,
+} from "../../src/ui/playbook-candidates.js";
+import {
+  runSecondaryFamilies,
+  type SecondaryFamilyRun,
+} from "../../src/engine/secondary-families.js";
 import { activateFiling } from "../../src/filing/activate.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
@@ -100,6 +107,17 @@ export type DocumentRun = {
   playbook_id: string;
   /** The playbook `matchPlaybook` would auto-select (for classifier measurement). */
   auto_matched_playbook_id: string;
+  /**
+   * The OTHER families this document clearly contains, each scanned with the
+   * rules gated to it (fix-headless-secondary-families).
+   *
+   * 🚨 Until 9.508.0 the headless path did not run these AT ALL, while the
+   * browser did — 238 of 312 specimens produce secondary findings, 2,629 of
+   * them, 1,333 critical. Kept OUTSIDE `run` exactly as the browser keeps it,
+   * so `result_hash` and every `--fail-on` gate are unchanged. Empty for a
+   * document that contains only its matched family.
+   */
+  secondary_families: SecondaryFamilyRun[];
 };
 
 function bodyTextOf(tree: import("../../src/ingest/types.js").DocumentTree): string {
@@ -217,9 +235,30 @@ export async function runIngested(
     executed_at: "",
   });
 
+  // The other families the document clearly contains. Selected exactly as the
+  // browser selects them, and run against only the rules gated to each — the
+  // shared owner is `src/engine/secondary-families.ts`. A custom playbook
+  // redefines rule semantics, so the browser skips secondaries in that mode;
+  // the headless path reaches here only for a built-in match.
+  const secondary_families = await runSecondaryFamilies(
+    selectSecondaryFamilies(
+      deps.extendedPlaybooks,
+      { title: titleSource, body, classified: extracted.classified, extracted },
+      match.playbook_id,
+    ),
+    deps.rules,
+    {
+      tree: ingest.tree,
+      extracted,
+      dkb: deps.dkb,
+      source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
+    },
+  );
+
   return {
     run,
     playbook_id: playbook.id,
     auto_matched_playbook_id: match.playbook_id,
+    secondary_families,
   };
 }

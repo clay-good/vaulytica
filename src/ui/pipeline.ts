@@ -137,6 +137,7 @@ import {
 import { familyDisplayLabel } from "./v3-labels.js";
 import { filterRulesByFrames } from "./frame-filter.js";
 import { selectMatchCandidates, selectSecondaryFamilies } from "./playbook-candidates.js";
+import { runSecondaryFamilies as runSecondaryFamiliesShared } from "../engine/secondary-families.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { Finding } from "../engine/finding.js";
 import { scanDelivery, type DeliveryReport } from "../delivery/index.js";
@@ -556,6 +557,11 @@ export async function prepareDocument(
  * multi-document `prepareBundle` so a composite document is scanned the same
  * way whether it arrives alone or inside a bundle.
  */
+/**
+ * Frame-filtering wrapper over the shared runner. The engine-level owner is
+ * `src/engine/secondary-families.ts`; compliance FRAMES are a browser-side
+ * chip toggle with no headless equivalent, so that narrowing stays here.
+ */
 async function runSecondaryFamilies(
   secondaryPlaybooks: ReadonlyArray<Playbook>,
   ctx: {
@@ -566,34 +572,11 @@ async function runSecondaryFamilies(
   },
   activeFrames?: ReadonlyArray<ComplianceFrame>,
 ): Promise<SecondaryFamilyResult[]> {
-  const out: SecondaryFamilyResult[] = [];
-  const allRules = [
-    ...LAUNCH_RULES,
-    ...V3_RULES,
-    ...V4_RULES,
-    ...V5_RULES,
-    ...V6_RULES,
-  ] as readonly Rule[];
-  for (const sp of secondaryPlaybooks) {
-    const subset = filterRulesByFrames(
-      allRules.filter((r) => r.applies_to_playbooks?.includes(sp.id)),
-      activeFrames,
-    );
-    if (subset.length === 0) continue;
-    const sRun = await runEngine({
-      rules: subset as readonly Rule[],
-      ctx: { tree: ctx.tree, extracted: ctx.extracted, dkb: ctx.dkb, playbook: sp },
-      source_file: ctx.source_file,
-      executed_at: "",
-    });
-    out.push({
-      playbook_id: sp.id,
-      playbook_name: sp.name,
-      findings: sRun.findings,
-      counts: countsBySeverity(sRun),
-    });
-  }
-  return out;
+  const allRules = filterRulesByFrames(
+    [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES] as readonly Rule[],
+    activeFrames,
+  );
+  return runSecondaryFamiliesShared(secondaryPlaybooks, allRules, ctx);
 }
 
 /**

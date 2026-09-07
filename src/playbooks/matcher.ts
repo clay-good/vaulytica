@@ -858,6 +858,31 @@ export function matchesFeature(corpusRaw: string, feature: string): boolean {
 }
 
 /**
+ * The same comparison, bound to one corpus so a caller testing MANY features
+ * against ONE text folds the text once instead of once per feature.
+ *
+ * `selectSecondaryFamilies` tests every keyword of all 255 extended playbooks
+ * against the same title and body; `matchesFeature` would rebuild the folded
+ * corpus for each. It is also the reason this is exported at all — the
+ * candidate selector had written its own `title.includes(keyword)` instead,
+ * and a raw substring test is not this comparison. `"co"` is inside
+ * "company", `"cla"` inside "clause", `"sig"` inside "signature", and every
+ * one of those activated a whole family's rule pack.
+ */
+export function featureMatcher(corpusRaw: string): (feature: string) => boolean {
+  // 🚨 Lower-cased FIRST, exactly as `matchPlaybook` does at its own call. The
+  // acronym branch of `matchesIn` is a case-insensitive regex, but the phrase
+  // branch is a bare `hay.includes(pin)` against a lower-cased needle — so a
+  // corpus left in its original case silently matches no phrase at all.
+  // Omitting this dropped 65 of 312 specimens out of their own family's
+  // candidate set and into `generic-fallback`: "COMPLAINT" does not contain
+  // "complaint". A helper that folds one side and not the other is worse than
+  // no helper.
+  const corpus = buildCorpus(corpusRaw.toLowerCase());
+  return (feature) => matchesIn(corpus, feature);
+}
+
+/**
  * How many words a title keyword needs before it reads as a document's proper
  * NAME rather than a noun that appears in one. Hyphens split, so
  * "cease-and-desist" and "design-build agreement" are counted as written

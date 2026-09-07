@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.508.0] — 2026-09-06
+
+### Fixed
+- **A family was declared "clearly present" because its acronym sat inside an
+  ordinary word — and its whole rule pack ran.** `familyIsPresent` decides
+  whether to scan a document with a SECONDARY playbook, and one title-keyword
+  hit is enough. It tested that hit with `title.includes(keyword)`, a raw
+  substring, while `matcher.ts` had long since solved the same comparison in
+  `matchesIn`: an acronym of five characters or fewer matches only at a word
+  boundary.
+
+  The catalog has 48 title keywords of four characters or fewer, all acronyms,
+  and several live inside everyday contract vocabulary — `"co"` in *company*,
+  *contract*, *confidential*; `"cla"` in *clause*, *claim*; `"sig"` in
+  *signature*, *assign*; `"spa"` in *space*; `"apa"` in *capacity*.
+
+  Measured over the 312 specimens: **145 of them shed a spurious family — 176
+  activations, 695 findings, 515 of them CRITICAL** — accusations drawn from
+  playbooks for documents the specimen is not. `change-order`, whose keyword is
+  `"co"`, accounted for 114 of the 176. The case that exposed it: a commercial
+  **Master Services Agreement drew four criticals from `family-msa`**, the
+  family-law *Marital Settlement* Agreement, plus three from `change-order`.
+
+  `familySignalStrength` — which gates which playbooks the PRIMARY matcher even
+  considers — had the identical bug in a second copy, and is fixed with the
+  same shared helper. **Primary routing does not move: 0 of 312 specimens
+  change playbook**, and no golden moved beyond the version stamp.
+
+  ✅ It also retired a standing debt line. `instrument-vocabulary.test.ts`
+  recorded that renaming an instrument dropped `ca-employment-arbitration.txt`
+  from its family into `generic-fallback`, costing it CHOICE-003, CHOICE-006
+  and OBLI-005 — written off as a transform artifact. That reading was wrong;
+  the debt was this bug, and the specimen now routes stably. **A debt line
+  explained away as an artifact is worth re-reading when the machinery under it
+  changes.**
+
+- **The headless CLI never ran secondary families at all.** The browser scans a
+  composite document — an MSA with a data-processing exhibit — with every
+  family it clearly contains; `vaulytica analyze` scanned only the match. The
+  two surfaces disagreed about what had been checked, and
+  `cross-surface-parity.test.ts` could not see it, because it compares
+  `EngineRun` and these findings deliberately live OUTSIDE the hashed run.
+  **A parity test that compares only the hashed run is blind to every surface
+  beside it.**
+
+  The runner is now shared (`src/engine/secondary-families.ts`) instead of
+  private to `src/ui/pipeline.ts`, and the CLI carries the result into the JSON
+  report, the standalone HTML, and a terminal line:
+
+  ```
+  contract.docx  [msa-vendor-deep]  0C 15W 10I
+    also contains: msa-customer-deep (0C 10W 9I) — reported alongside the run,
+    not counted in the totals above or in --fail-on
+  ```
+
+  **`result_hash` and every `--fail-on` gate are unchanged**, deliberately.
+  Secondary findings are not the matched family's verdict; folding them into
+  `run.findings` would re-hash every composite document ever analyzed and
+  silently re-scope every CI gate using this tool. They ride alongside, exactly
+  as they already do in the browser.
+
+🚨 The shared `featureMatcher` shipped one measurement round with a real bug,
+caught by the corpus: `matchesIn`'s acronym branch is a case-insensitive regex
+but its phrase branch is a bare `includes` against a lower-cased needle, so a
+corpus left in its original case matched **no phrase at all** — dropping 65 of
+312 specimens out of their own family's candidate set into `generic-fallback`
+("COMPLAINT" does not contain "complaint"). `matchPlaybook` lower-cases before
+folding; the helper now does the same. **A helper that folds one side and not
+the other is worse than no helper** — and measuring routing before and after,
+rather than trusting a green suite, is what caught it.
+
 ## [9.507.0] — 2026-09-06
 
 ### Added

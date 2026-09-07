@@ -47,10 +47,17 @@ const rename =
 /**
  * What renaming the instrument still moves.
  *
- * `ca-employment-arbitration.txt` is titled "MUTUAL AGREEMENT TO ARBITRATE
- * CLAIMS", where the noun is inside an idiom rather than naming the instrument
- * — "Mutual Contract to Arbitrate" is not something anyone writes, so the
- * transform is producing a document that does not exist.
+ * ✅ `ca-employment-arbitration.txt` used to owe a line here — renaming its
+ * instrument dropped it from `arbitration-agreement-employment` to
+ * `generic-fallback` and cost it CHOICE-003, CHOICE-006 and OBLI-005. It was
+ * written off as a transform artifact ("MUTUAL AGREEMENT TO ARBITRATE CLAIMS"
+ * carries the noun inside an idiom, and nobody writes "Mutual Contract to
+ * Arbitrate"). That reading was wrong, and the debt was real: the candidate
+ * selector compared title keywords with a raw `includes` instead of the
+ * matcher's own comparison, so which families were even CONSIDERED shifted
+ * under a rename. Fixed in 9.508.0 — the specimen now routes stably and the
+ * line is gone. **A debt line explained away as an artifact is worth
+ * re-reading when the machinery underneath it changes.**
  *
  * The STRUCT-006 entries are a document telling itself that its own name is an
  * undefined term: the rule excuses a term that appears in the TITLE, and these
@@ -62,7 +69,6 @@ const rename =
  */
 const INSTRUMENT_DEBT: readonly string[] = [
   "arbitration-demand.txt: lost - gained SET-123",
-  "ca-employment-arbitration.txt: lost CHOICE-003,CHOICE-006,OBLI-005 gained - routed arbitration-agreement-employment->generic-fallback",
   "il-secured-promissory-note.txt: lost - gained STRUCT-006",
   "ma-restrictive-covenant.txt: lost - gained STRUCT-006",
   "ppm-narrative.txt: lost - gained STRUCT-006",
