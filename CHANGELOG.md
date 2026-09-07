@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.546.0] — 2026-09-07
+
+### Changed
+- **Two measured negative results, written down beside the code that would have
+  been changed.** Both are attractive-looking repairs that the corpus refuses,
+  and both would otherwise be re-attempted.
+
+  - **The coordinator-tailed obligor is not a chained-predicate seam.** 134 of
+    the corpus's 3,187 obligors end in *and* or *or* — *"SOLE SHAREHOLDER OF
+    THE BORROWER AND"*, *"violates its published advertising policies, and"*, a
+    bare *"AND"* — which looks exactly like the seam of *"Provider shall X, and
+    shall Y"*, where the right repair is for the second clause to inherit the
+    first's subject. It is not that: **124 of the 134 sit in a sentence with
+    only one modal**, so there is no earlier clause to inherit from.
+    Implemented and measured anyway, subject inheritance in
+    `splitModalClauses` repairs **2**. Reverted rather than shipped — two
+    repairs do not pay for a concept the data does not support. The remaining
+    124 are the general fragment problem, which is still the product decision
+    it has been.
+
+  - **`CROSS-DEFTERM-002` has no equivalent of the corporate-suffix split.**
+    9.537.0 fixed `CROSS-PARTY-001` by standing down on presence-versus-absence
+    of a corporate form, which separated the artifacts from the real finding
+    exactly. The analogue here — stand down when the term has no uses in its
+    own defining document — splits 4 of the 6 corpus findings, but one of those
+    4 is `defterm-usage-drift`'s *"Authorized Users"*, the flagship case of the
+    bundle **named for this rule**, where a definitions section legitimately
+    defines a term the rest of the deal uses. The split is not clean. Do not
+    ship it.
+
+  🥇 **A negative result is worth writing where the next person will look for
+  it** — in `resolveObligor`'s fallback and in the relation's own header, not
+  only in a changelog entry nobody greps.
+
 ## [9.545.0] — 2026-09-07
 
 ### Added

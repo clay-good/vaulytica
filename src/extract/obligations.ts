@@ -422,6 +422,26 @@ function resolveObligor(subject: string, partyNames: Set<string>, partyRoles: Se
     return "the parties";
   }
   // Last-resort: the last 2–6 words of the subject.
+  //
+  // 🚨 This is the branch that makes 8.8% of obligors sentence fragments, and
+  // the module header's promise (emit `obligor: ""` so the rule engine can flag
+  // it, which is what OBLI-001 exists for) is the opposite of what happens
+  // here. Honouring that promise makes OBLI-001 fire on 173 of 312 specimens —
+  // 55% — which is either a large true-positive discovery or a large noise
+  // addition, and deciding which is a judgment about the product.
+  //
+  // ⚠️ MEASURED 9.545.0, AND THE OBVIOUS SUB-FIX DOES NOT APPLY. 134 of the
+  // corpus's 3,187 obligors end in a COORDINATOR — "SOLE SHAREHOLDER OF THE
+  // BORROWER AND", "violates its published advertising policies, and", a bare
+  // "AND" — which looks exactly like the seam of a chained predicate
+  // ("Provider shall X, and shall Y"), where the right repair is to inherit the
+  // previous clause's subject. It is not that: **124 of the 134 sit in a
+  // sentence with only ONE modal**, so there is no earlier clause to inherit
+  // from. Implemented and measured anyway, subject inheritance in
+  // `splitModalClauses` repairs **2**. Reverted rather than shipped — two
+  // repairs do not pay for a concept the data does not support. The remaining
+  // 124 are subjects that begin mid-sentence, which is the general fragment
+  // problem above, not a sub-shape with its own answer.
   const words = trimmed.split(/\s+/).filter(Boolean);
   if (words.length === 0) return "";
   return words.slice(Math.max(0, words.length - 6)).join(" ");

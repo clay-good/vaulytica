@@ -159,7 +159,19 @@ describe("the cross-document run is not a function of the format", () => {
    * inconsistency. The line that separates the artifacts from the finding
    * EXACTLY is PRESENCE versus ABSENCE of a corporate form ("Acme Inc" /
    * "Acme"), and that is what `findPartyNameMismatches` now skips. What remains
-   * below is a different root cause, in the defined-term extractor.
+   * below is a different root cause, in the defined-term extractor: a CLAUSE
+   * HEADING ("Governing Law:", written at the start of a line in one document
+   * and mid-paragraph in the others) read as a definition, diagnosed in
+   * 9.538.0.
+   *
+   * 🚨 The analogue of the party repair does NOT work here, and it was measured
+   * before being declined. "Stand down when the term has no uses in its own
+   * defining document" splits 4 of the corpus's 6 `CROSS-DEFTERM-002` findings
+   * — but one of those 4 is `defterm-usage-drift`'s "Authorized Users", the
+   * flagship case of the bundle NAMED for this rule, where a definitions
+   * section legitimately defines a term the rest of the DEAL uses. Unlike the
+   * corporate-suffix split, this one does not separate the artifacts from the
+   * findings. Do not ship it.
    */
   it("holds the known movers by equality — every one an ingest-join artifact", async () => {
     const OWED: ReadonlyArray<string> = [
