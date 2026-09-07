@@ -117,6 +117,38 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
     expect(html).toMatch(/<nav\b/);
   });
 
+  /**
+   * 🚨 DORMANT GUARDS — these two assert nothing today, and that is worth
+   * saying out loud rather than leaving behind a green tick.
+   *
+   * Both iterate an element type and assert a property of each. The page
+   * currently contains **no `<img>` and no static form control** (the
+   * dropzone's file input is created by JS at runtime and never appears in
+   * this HTML), so both loop bodies never execute and both checks pass
+   * without testing anything.
+   *
+   * They are still worth keeping: they are FORWARD guards that begin working
+   * the moment someone adds the first image or the first static input, which
+   * is exactly when the mistake they catch becomes possible.
+   *
+   * What they must not be mistaken for is accessibility coverage of the
+   * shipped page. That comes from `tests/e2e/v3/a11y-axe.spec.ts`, which runs
+   * axe-core against the LIVE DOM in two states and covers image alt text and
+   * label association properly — including the runtime-created controls this
+   * file cannot see.
+   *
+   * The test below records the counts so the dormancy is visible, and so the
+   * day one of these guards wakes up, the change is deliberate.
+   */
+  it("records which element-level guards are currently dormant", () => {
+    const imgs = (html.match(/<img\b[^>]*>/g) ?? []).length;
+    const controls = (html.match(/<(?:input|select|textarea)\b[^>]*>/gi) ?? []).length;
+    expect(
+      { img: imgs, formControl: controls },
+      "a dormant guard just woke up — that is good news: the element now exists, so update this record and make sure the guard above really covers it",
+    ).toEqual({ img: 0, formControl: 0 });
+  });
+
   it("every <img> has an alt attribute", () => {
     const imgs = html.match(/<img\b[^>]*>/g) ?? [];
     for (const tag of imgs) {

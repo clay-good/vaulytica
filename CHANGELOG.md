@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.526.0] — 2026-09-07
+
+### Fixed
+- **Two accessibility guards that assert nothing, now visibly dormant instead
+  of quietly green.** `static-html.test.ts` checks that every `<img>` has an
+  `alt` and every form control has a label association. The page contains
+  **no `<img>` and no static form control** — the dropzone's file input is
+  created by JS at runtime and never appears in this HTML — so both loop
+  bodies never execute. Both have passed without testing anything for their
+  whole lives.
+
+  Found by sweeping for the pattern 9.525.0 turned up: a test occupying the
+  slot where a real check belongs. Same class, different shape — that one
+  skipped, these two iterate an empty list.
+
+  **They are worth keeping**: they are forward guards that start working the
+  moment someone adds the first image or static input, which is exactly when
+  the mistake they catch becomes possible. What they must not be mistaken for
+  is accessibility coverage of the shipped page — that comes from
+  `tests/e2e/v3/a11y-axe.spec.ts`, which runs axe-core against the **live DOM**
+  in two states and covers alt text and label association properly, including
+  the runtime-created controls this file cannot see.
+
+  A new test records the counts, so the dormancy is visible and waking up is
+  deliberate. Demonstrated by planting one `<img src="x.png">`: the record
+  fails with *"a dormant guard just woke up"* **and** the previously-dormant
+  alt-text guard fires for real. Both halves proven, then reverted.
+
 ## [9.525.0] — 2026-09-07
 
 ### Fixed
