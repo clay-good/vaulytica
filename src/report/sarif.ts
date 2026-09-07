@@ -373,11 +373,21 @@ export function buildSarif(
       byCategory[item.category] = (byCategory[item.category] ?? 0) + 1;
     provenance.readiness = { open_count: checklist.open_count, by_category: byCategory };
   }
+  // The matched family's normal pairings, as PROVENANCE rather than results —
+  // the same call `readiness` makes above, for the same reason. These are not
+  // findings: a single document cannot know whether a companion exists, so
+  // emitting one as a SARIF result would assert an absence the engine never
+  // checked. A code-scanning dashboard gets the ids, and nothing gates on them.
+  const related = v9?.relatedDocuments;
+  if (related && related.length > 0) {
+    provenance.related_documents = related.map((r) => r.playbook_id);
+  }
   const hasProvenance =
     run.filing_profile ||
     run.asserted_regimes?.length ||
     run.estate_checks_asserted ||
-    provenance.readiness !== undefined;
+    provenance.readiness !== undefined ||
+    provenance.related_documents !== undefined;
 
   return {
     $schema: SARIF_SCHEMA,

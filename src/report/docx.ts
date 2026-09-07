@@ -45,6 +45,7 @@ import type { DKB } from "../dkb/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
+import type { RelatedDocument } from "./companions.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
 import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
 import type { RegimeId } from "../privacy/regime-data.js";
@@ -121,6 +122,7 @@ export async function buildDocxReport(
     // a reader sees the honesty caveat before any finding.
     ...renderClassificationNotice(run.classification_notice),
     ...renderScopeOfReview(run.playbook_id),
+    ...renderRelatedDocuments(v9?.relatedDocuments),
     ...renderExecutiveSummary(run, playbook),
     // v3 §54 — compliance matrix sits between the executive summary and
     // the findings list. Conditional on `v3.matrix` being present.
@@ -798,6 +800,33 @@ function renderClassificationNotice(
 ): (Paragraph | Table)[] {
   if (!notice) return [];
   return [h1("Document Type Not Recognized"), para({ text: notice.message, italics: true })];
+}
+
+/**
+ * "Documents Normally Reviewed Alongside This One" — the families the matched
+ * playbook names as its pairings (`Playbook.companion_playbooks`).
+ *
+ * A reference list, never a gap. The bundle report can say a companion is
+ * *absent* because it knows what is in the package; a single document knows
+ * nothing about what else exists, so this asserts only what documents of this
+ * kind normally travel with. It is not a finding and enters no hash.
+ *
+ * Omitted for the 50 families that name no companion, so those reports are
+ * byte-unchanged.
+ */
+function renderRelatedDocuments(
+  related: ReadonlyArray<RelatedDocument> | undefined,
+): (Paragraph | Table)[] {
+  if (!related || related.length === 0) return [];
+  const out: (Paragraph | Table)[] = [h1("Documents Normally Reviewed Alongside This One")];
+  out.push(
+    para({
+      text: "A document of this kind is normally read together with the papers below. This is a reference list drawn from the matched playbook, not a finding: we have not seen these documents and make no claim about whether they exist, apply to you, or are missing.",
+      italics: true,
+    }),
+  );
+  for (const r of related) out.push(para({ text: `• ${r.name}` }));
+  return out;
 }
 
 /**

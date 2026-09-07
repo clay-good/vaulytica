@@ -465,6 +465,23 @@ export function buildHtmlReport(
     body.push("</ul></div>");
   }
 
+  // The families the matched playbook names as its normal pairings. A
+  // reference list, never a gap — a single document knows nothing about what
+  // else exists, so unlike the bundle's "Companion Documents Not in This
+  // Package" this asserts no absence. Omitted for the 50 families that name
+  // none, so those reports are byte-unchanged.
+  const related = v9?.relatedDocuments;
+  if (related && related.length > 0) {
+    body.push('<div class="related-documents">');
+    body.push("<h2>Documents Normally Reviewed Alongside This One</h2>");
+    body.push(
+      '<p class="v9-note">A document of this kind is normally read together with the papers below. This is a reference list drawn from the matched playbook, not a finding: we have not seen these documents and make no claim about whether they exist, apply to you, or are missing.</p>',
+    );
+    body.push("<ul>");
+    for (const r of related) body.push(`<li>${esc(r.name)}</li>`);
+    body.push("</ul></div>");
+  }
+
   // add-privacy-notice-pack — per-regime coverage table (found / not
   // detected), present only when the PNOT pack ran. Mirrors the Markdown and
   // DOCX exports: a projection of the fired PNOT findings, outside result_hash.

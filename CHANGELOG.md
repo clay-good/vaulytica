@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.507.0] — 2026-09-06
+
+### Added
+- **"Documents Normally Reviewed Alongside This One" on the single-document
+  report** — the same `companion_playbooks` data 9.506.0 gave the bundle, in
+  the form a single document can honestly carry.
+
+  A bundle can say a companion is **absent**, because it knows what is in the
+  package. One document knows nothing about what else exists, so this is a
+  **reference list, never a gap**: it names the papers a document of this kind
+  normally travels with and says, on every surface, "we have not seen these
+  documents and make no claim about whether they exist, apply to you, or are
+  missing." Keeping those two claims apart is the whole design, and the wording
+  is asserted in `related-documents-reach.test.ts` so a later edit cannot
+  quietly turn the list into an accusation.
+
+  Reaches the DOCX, the standalone HTML, the JSON (`related_documents`), and
+  the SARIF alike — the field-reaches-one-surface-and-not-another shape this repo keeps
+  finding. Carried on `V9Surfaces`, the bag every multi-format builder already
+  accepts; its doc comment now records that it has outgrown its name.
+
+  🚨 `v9-surface-reach.test.ts` caught it missing from SARIF and was right to.
+  Its own precedent settled the shape: SARIF carries the ids as run
+  **provenance**, never as results — the same call `readiness` makes, and for
+  the same reason. A single document cannot know whether a companion exists, so
+  emitting one as a SARIF result would assert an absence nothing checked, and a
+  CI gate would then threshold on it.
+
+  Omitted for the 50 families that name no companion — including all 12 launch
+  playbooks — so those reports are byte-unchanged. **No golden moved** beyond
+  the version stamp.
+
+### Changed
+- **The bundle's "Named by" column now names the FILE, not the playbook id.**
+  `expected_by` keeps playbook ids because the JSON is for machines; a reader
+  recognizes `master-services-agreement.docx`, not `msa-vendor-deep`, so the
+  DOCX maps each id back to the documents in the package that matched it. Falls
+  back to the id when the package somehow has no such document — a poor label,
+  but never a wrong one.
+
+🚨 The reach test's first fixture was `single/vendor-saas-agreement.docx`,
+which matches a LAUNCH playbook — and all 12 launch playbooks declare no
+companion at all. Every assertion failed, which is the anti-vacuity check doing
+its job; that file is now the back-compat fixture and an MSA is the positive
+one. **A fixture chosen for being handy is not a fixture chosen for exercising
+the feature.**
+
 ## [9.506.0] — 2026-09-06
 
 ### Added

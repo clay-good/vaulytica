@@ -1,5 +1,7 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { missingCompanions, type CompanionCatalogEntry } from "./companions.js";
+import { missingCompanions, relatedDocuments, type CompanionCatalogEntry } from "./companions.js";
 
 const CATALOG: CompanionCatalogEntry[] = [
   { id: "complaint", name: "Complaint", companion_playbooks: ["answer", "trial-motion"] },
@@ -97,5 +99,78 @@ describe("missingCompanions", () => {
 
   it("is empty for an empty package", () => {
     expect(missingCompanions([], CATALOG)).toEqual([]);
+  });
+});
+
+describe("relatedDocuments", () => {
+  it("lists the families the matched playbook is normally paired with", () => {
+    expect(relatedDocuments("complaint", CATALOG)).toEqual([
+      { playbook_id: "answer", name: "Answer" },
+      { playbook_id: "trial-motion", name: "Trial Motion" },
+    ]);
+  });
+
+  it("asserts nothing about absence — a companion is listed either way", () => {
+    // The single-document counterpart cannot know what else exists, so unlike
+    // missingCompanions it never filters on what is "present".
+    expect(relatedDocuments("answer", CATALOG)).toEqual([
+      { playbook_id: "complaint", name: "Complaint" },
+    ]);
+  });
+
+  it("is empty for a family that names no companion", () => {
+    expect(relatedDocuments("trial-motion", CATALOG)).toEqual([]);
+  });
+
+  it("is empty for a playbook the catalog does not have", () => {
+    expect(relatedDocuments("no-such-playbook", CATALOG)).toEqual([]);
+  });
+
+  it("never invents a name for an unresolvable companion", () => {
+    const dangling: CompanionCatalogEntry[] = [
+      { id: "questionnaire", name: "Questionnaire", companion_playbooks: ["no-such-playbook"] },
+    ];
+    expect(relatedDocuments("questionnaire", dangling)).toEqual([]);
+  });
+
+  it("never lists the generic fallback, or the document itself", () => {
+    const catalog: CompanionCatalogEntry[] = [
+      {
+        id: "complaint",
+        name: "Complaint",
+        companion_playbooks: ["generic-fallback", "complaint", "answer"],
+      },
+      { id: "generic-fallback", name: "Generic Fallback" },
+      { id: "answer", name: "Answer" },
+    ];
+    expect(relatedDocuments("complaint", catalog)).toEqual([
+      { playbook_id: "answer", name: "Answer" },
+    ]);
+  });
+
+  it("de-duplicates a companion named twice", () => {
+    const catalog: CompanionCatalogEntry[] = [
+      { id: "a", name: "A", companion_playbooks: ["b", "b"] },
+      { id: "b", name: "B" },
+    ];
+    expect(relatedDocuments("a", catalog)).toEqual([{ playbook_id: "b", name: "B" }]);
+  });
+
+  it("every shipped family's related list resolves and is stable", () => {
+    // A guard on the real data rather than a fixture: the same catalog the
+    // report renders against, so a name that stops resolving fails here.
+    const shipped: CompanionCatalogEntry[] = JSON.parse(
+      readFileSync(join(process.cwd(), "playbooks", "extended.json"), "utf8"),
+    );
+    const declaring = shipped.filter((p) => (p.companion_playbooks ?? []).length > 0);
+    expect(declaring.length, "anti-vacuity: the catalog declares companions").toBeGreaterThan(150);
+    for (const p of declaring) {
+      const related = relatedDocuments(p.id, shipped);
+      for (const r of related) {
+        expect(r.name.length).toBeGreaterThan(0);
+        expect(r.name).not.toBe(r.playbook_id);
+      }
+      expect(relatedDocuments(p.id, shipped)).toEqual(related);
+    }
   });
 });

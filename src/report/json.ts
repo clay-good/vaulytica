@@ -146,6 +146,15 @@ export type JsonReport = {
    */
   citation_currency_notes?: Array<{ rule_id: string; citation_id: string; label: string }>;
   /**
+   * The families the matched playbook names as its normal pairings
+   * (`Playbook.companion_playbooks`), resolved to display names. A reference
+   * list, never a gap — the single-document counterpart to the bundle JSON's
+   * `companion_gaps`, which can assert absence because it knows the package.
+   * Outside `run`, so `result_hash` is unchanged; omitted for the 50 families
+   * that name no companion.
+   */
+  related_documents?: Array<{ playbook_id: string; name: string }>;
+  /**
    * Definitions report (add-defined-terms-report), populated only when
    * `--definitions` is passed (or the tab export is used). Outside `run`,
    * so `result_hash` is unchanged; carries its own `definitions_hash`.
@@ -218,6 +227,7 @@ export function buildJsonReport(
   negotiationPosture?: NegotiationPosture,
   currency?: CitationCurrency,
   definitions?: import("./definitions.js").DefinitionsReport,
+  relatedDocuments?: ReadonlyArray<import("./companions.js").RelatedDocument>,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -283,6 +293,10 @@ export function buildJsonReport(
   }
   // add-defined-terms-report — the definitions block, outside `run`.
   if (definitions) payload.definitions = definitions;
+  // The matched playbook's normal pairings — a reference list, never a gap.
+  if (relatedDocuments && relatedDocuments.length > 0) {
+    payload.related_documents = relatedDocuments.map((r) => ({ ...r }));
+  }
   // add-document-vertical-framework — the active pack's scope-of-review.
   const scope = scopeForPlaybook(run.playbook_id);
   if (scope) payload.scope_of_review = scope;

@@ -530,7 +530,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderPostureCoherenceSection(input.posture_coherence),
     ...renderPostureMovementSection(input.posture_movement),
     ...renderProductionQaSection(input.production_qa),
-    ...renderCompanionGapsSection(input.companion_gaps),
+    ...renderCompanionGapsSection(input.companion_gaps, input.documents),
     ...renderBibliography(bibliography, dkbCurrency(input.dkb.manifest)),
     ...renderAuditTrail(input),
     ...renderDisclaimer(),
@@ -1100,8 +1100,20 @@ function renderPostureCoherenceSection(
  */
 function renderCompanionGapsSection(
   gaps: ReadonlyArray<CompanionGap> | undefined,
+  documents: ReadonlyArray<BundleDocument>,
 ): (Paragraph | Table)[] {
   if (!gaps || gaps.length === 0) return [];
+  // `expected_by` carries playbook ids because the JSON is for machines. A
+  // reader recognizes the FILE they dropped, not `msa-vendor-deep`, so the
+  // human surface maps each id back to the documents in this package that
+  // matched it. Falls back to the id if the package somehow has no such
+  // document — an id is a poor label but never a wrong one.
+  const filesFor = (playbookId: string): string => {
+    const names = documents
+      .filter((d) => d.run.playbook_id === playbookId)
+      .map((d) => d.source_file_name);
+    return names.length > 0 ? names.join(", ") : playbookId;
+  };
   const out: (Paragraph | Table)[] = [h1("Companion Documents Not in This Package")];
   out.push(
     para({
@@ -1115,7 +1127,7 @@ function renderCompanionGapsSection(
       new TableRow({
         children: [
           styledCell(`${g.missing_playbook_name} (${g.missing_playbook_id})`, { bold: true }),
-          styledCell(g.expected_by.join(", ")),
+          styledCell(g.expected_by.map(filesFor).join(", ")),
         ],
       }),
   );

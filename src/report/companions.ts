@@ -101,3 +101,40 @@ export function missingCompanions(
       .sort((a, b) => (a.missing_playbook_id < b.missing_playbook_id ? -1 : 1))
   );
 }
+
+/** A family the catalog pairs with this document's own. */
+export type RelatedDocument = {
+  playbook_id: string;
+  /** Display name, resolved from the catalog — never synthesized from the id. */
+  name: string;
+};
+
+/**
+ * The families this document's own family is normally paired with.
+ *
+ * The single-document counterpart to {@link missingCompanions}. A bundle can
+ * say a companion is *absent*, because it knows what is in the room; a single
+ * document cannot, so this is framed and rendered as a reference list — "these
+ * are the papers a document like this normally travels with" — and never as a
+ * gap. Everything else is the same contract: an id the catalog cannot resolve
+ * is dropped rather than named from its id, `generic-fallback` is excluded,
+ * and the order is deterministic.
+ */
+export function relatedDocuments(
+  playbookId: string,
+  catalog: ReadonlyArray<CompanionCatalogEntry>,
+): RelatedDocument[] {
+  const byId = new Map(catalog.map((p) => [p.id, p]));
+  const self = byId.get(playbookId);
+  if (!self) return [];
+  const seen = new Set<string>();
+  const out: RelatedDocument[] = [];
+  for (const id of self.companion_playbooks ?? []) {
+    if (id === playbookId || seen.has(id) || NOT_A_DOCUMENT.has(id)) continue;
+    const entry = byId.get(id);
+    if (!entry) continue;
+    seen.add(id);
+    out.push({ playbook_id: id, name: entry.name });
+  }
+  return out.sort((a, b) => (a.playbook_id < b.playbook_id ? -1 : 1));
+}

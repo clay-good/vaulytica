@@ -15,6 +15,7 @@
 import type { DeliveryReport } from "../delivery/types.js";
 import type { CriticalDatesRegister } from "./critical-dates.js";
 import type { ClosingChecklist } from "./closing-checklist.js";
+import type { RelatedDocument } from "./companions.js";
 
 export type V9Surfaces = {
   /** Pre-disclosure ("Clean to Send") scan over the original container bytes. */
@@ -23,4 +24,20 @@ export type V9Surfaces = {
   criticalDates?: CriticalDatesRegister;
   /** Consolidated execution-readiness checklist (Thrust B). */
   closingChecklist?: ClosingChecklist;
+  /**
+   * The families the matched playbook names as its normal pairings
+   * (`Playbook.companion_playbooks`), resolved to display names against the
+   * full catalog — which is why it is computed by the pipeline and passed in
+   * rather than derived here from `playbook`. A reference list, never a gap: a
+   * single document cannot know whether the companion exists, so unlike the
+   * bundle's "Companion Documents Not in This Package" it asserts nothing about
+   * absence. Omitted for the 50 families that name none, so those reports are
+   * byte-unchanged.
+   *
+   * Note this bag has outgrown its name: it is no longer only the three v9
+   * "Last Look" surfaces, but the one optional argument every multi-format
+   * builder accepts, which is what makes it the right place for an additive
+   * render-side surface that must reach DOCX, HTML and JSON alike.
+   */
+  relatedDocuments?: ReadonlyArray<RelatedDocument>;
 };

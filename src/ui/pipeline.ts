@@ -98,7 +98,12 @@ import {
   obligationsCsvBlob,
   deadlinesIcsBlob,
 } from "../report/exports.js";
-import { missingCompanions, type CompanionGap } from "../report/companions.js";
+import {
+  missingCompanions,
+  relatedDocuments,
+  type CompanionGap,
+  type RelatedDocument,
+} from "../report/companions.js";
 import {
   buildBundleDocxReport,
   buildBundleJsonBlob,
@@ -160,6 +165,14 @@ export type PreparedDocument = {
   body_text: string;
   dkb: DKB;
   playbook: Playbook;
+  /**
+   * The matched family's normal pairings (`Playbook.companion_playbooks`),
+   * resolved to display names against the full catalog — which is why it is
+   * computed here rather than derived from `playbook` at render time. Absent
+   * for the 50 families that name no companion, so those reports are
+   * byte-unchanged.
+   */
+  related_documents?: readonly RelatedDocument[];
   source_file: { name: string; sha256: string; size_bytes: number };
   /**
    * The uploaded container bytes, retained ONLY for DOCX uploads so the
@@ -487,6 +500,15 @@ export async function prepareDocument(
   });
   const playbook = candidates.find((p) => p.id === match.playbook_id) ?? launchPlaybooks[0]!;
 
+  // The matched family's normal pairings, resolved to display names. Computed
+  // here because `companion_playbooks` holds playbook IDS and only the full
+  // catalog can turn one into a name — `playbook` alone cannot. A reference
+  // list, never a gap: a single document knows nothing about what else exists.
+  const related_documents = relatedDocuments(playbook.id, [
+    ...launchPlaybooks,
+    ...extendedPlaybooks,
+  ]);
+
   // Multi-family activation: other families this document clearly contains,
   // run as secondary scans so a present family is never skipped (spec-v6).
   const secondary_playbooks = selectSecondaryFamilies(
@@ -511,6 +533,7 @@ export async function prepareDocument(
     body_text: bodyText,
     dkb,
     playbook,
+    ...(related_documents.length > 0 ? { related_documents } : {}),
     source_file: { name: file.name, sha256: ingest.sha256, size_bytes: buffer.byteLength },
     ...(kind === "docx" ? { original_docx_bytes: buffer } : {}),
     match: {
@@ -726,6 +749,7 @@ export async function runReport(
     delivery: prepared.delivery,
     criticalDates: hasCriticalDates ? critical_dates : undefined,
     closingChecklist: hasChecklist ? closing_checklist : undefined,
+    relatedDocuments: prepared.related_documents,
   };
   const docx_blob = await buildDocxReport(
     run,
@@ -749,6 +773,8 @@ export async function runReport(
     hasChecklist ? closing_checklist : undefined,
     negotiationPosture,
     dkbCurrency(prepared.dkb.manifest),
+    undefined,
+    prepared.related_documents,
   );
   const fixlist_md_blob = fixListMarkdownBlob(
     run,
