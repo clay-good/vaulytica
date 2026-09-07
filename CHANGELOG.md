@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.534.0] — 2026-09-07
+
+### Added
+- **A reach guard so the whole class cannot come back** —
+  `tests/integration/export-reach.test.ts`. Every `build*` artifact renderer in
+  `src/report/` that the browser can reach must be reachable from `tools/` as
+  well, with a declared-exception set whose every entry is asserted **used**, so
+  a stale exception fails here instead of outliving its reason. Nine builders
+  were browser-only until the two releases before this one; the guard is the
+  answer to "how would anyone have noticed".
+
+  🚨 **The first draft was VACUOUS, and the mutation caught it.** The browser
+  never names a builder — it downloads files, so it calls `obligationsCsvBlob`,
+  not `buildObligationsCsv`. So "does the UI mention this builder?" was false
+  for nearly every builder, the browser-called set was almost empty, and the
+  assertion passed no matter what. Proven by deleting the CLI's
+  `buildObligationsCsv` call and watching the test stay **green**. The guard
+  reads each `*Blob` wrapper's body to learn which builder it wraps, counts a
+  builder as browser-reachable through either name, and its anti-vacuity test
+  now pins both the mapping and the size of the reachable set. Re-run against
+  the same mutation, it fails with the builder named.
+
+  🥇 **A guard is not proven by passing. It is proven by failing on the defect
+  it exists to catch** — every reach test in this tree should be broken on
+  purpose once before it is trusted.
+
 ## [9.533.0] — 2026-09-07
 
 ### Added
