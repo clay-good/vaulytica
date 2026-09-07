@@ -37,7 +37,13 @@ const actionYml = read("action.yml");
 function validFormats(): string[] {
   const m = /const VALID_FORMATS = \[([^\]]*)\]/.exec(runSource);
   if (!m) throw new Error("VALID_FORMATS not found in tools/cli/run.ts");
-  return [...m[1]!.matchAll(/"([^"]+)"/g)].map((x) => x[1]!);
+  // Strip line comments first. The array carries explanatory comments, and a
+  // quoted phrase inside one used to be read as a format value — so adding a
+  // comment to the array made this guard demand that the docs advertise a
+  // sentence. The failure names a plausible-looking format and points at the
+  // docs, which is the wrong place to look.
+  const body = m[1]!.replace(/\/\/[^\n]*/g, "");
+  return [...body.matchAll(/"([^"]+)"/g)].map((x) => x[1]!);
 }
 
 /**

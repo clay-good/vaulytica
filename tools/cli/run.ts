@@ -243,7 +243,14 @@ import { extractAll } from "../../src/extract/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
 import { buildSarifJson } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
-import { buildFixListMarkdown, buildFixListCsv } from "../../src/report/exports.js";
+import {
+  buildFixListMarkdown,
+  buildFixListCsv,
+  buildClosingChecklistMarkdown,
+  buildClosingChecklistCsv,
+  buildCriticalDatesMarkdown,
+  buildCriticalDatesIcs,
+} from "../../src/report/exports.js";
 import { dkbCurrency } from "../../src/report/citations.js";
 import { buildReviewedDocx } from "../../src/report/docx-comments.js";
 import {
@@ -278,7 +285,17 @@ const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".p
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
 /** Accepted `--fail-on` values, in the order the usage error lists them. */
 const VALID_SEVERITIES = Object.keys(SEVERITY_RANK) as Severity[];
-type Format = "json" | "sarif" | "html" | "md" | "csv" | "docx-comments";
+type Format =
+  | "json"
+  | "sarif"
+  | "html"
+  | "md"
+  | "csv"
+  | "docx-comments"
+  | "checklist-md"
+  | "checklist-csv"
+  | "dates-md"
+  | "dates-ics";
 /**
  * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
  * contract (fix-cli-json-purity): when any of these is selected, stdout
@@ -286,7 +303,24 @@ type Format = "json" | "sarif" | "html" | "md" | "csv" | "docx-comments";
  * goes to stderr, so `analyze x.docx --format json | jq .` just works.
  */
 const MACHINE_FORMATS: ReadonlySet<Format> = new Set(["json", "sarif", "csv"]);
-const VALID_FORMATS = ["json", "sarif", "html", "md", "csv", "docx-comments"] as const;
+const VALID_FORMATS = [
+  "json",
+  "sarif",
+  "html",
+  "md",
+  "csv",
+  "docx-comments",
+  // The four artifacts the browser has always offered and the headless surface
+  // could not produce at all: the closing checklist (v9 Ready to Sign) and the
+  // critical-dates register (v9 Tracked to Its Dates), each in the two forms a
+  // person actually uses. Every builder is a pure function that already shipped
+  // and was already tested; only the caller was missing. `md`/`csv` are the FIX
+  // LIST, so these carry their surface name rather than overloading those.
+  "checklist-md",
+  "checklist-csv",
+  "dates-md",
+  "dates-ics",
+] as const;
 const FORMAT_EXT: Record<Format, string> = {
   json: ".json",
   sarif: ".sarif.json",
@@ -294,6 +328,27 @@ const FORMAT_EXT: Record<Format, string> = {
   md: ".fixlist.md",
   csv: ".fixlist.csv",
   "docx-comments": ".reviewed.docx",
+  "checklist-md": ".checklist.md",
+  "checklist-csv": ".checklist.csv",
+  "dates-md": ".dates.md",
+  "dates-ics": ".dates.ics",
+};
+
+/**
+ * Formats that render an ASSERTED surface: the flag that computes it must be
+ * passed, or the format has nothing to render. Failing loudly beats writing an
+ * empty file — a caller who asked for a checklist and got a valid, empty one
+ * would reasonably read it as "nothing to do".
+ */
+function flagAsserted(args: Args, flag: string): boolean {
+  return flag === "--checklist" ? Boolean(args.checklist) : Boolean(args.criticalDates);
+}
+
+const FORMAT_REQUIRES_FLAG: Partial<Record<Format, { flag: string; surface: string }>> = {
+  "checklist-md": { flag: "--checklist", surface: "closing checklist" },
+  "checklist-csv": { flag: "--checklist", surface: "closing checklist" },
+  "dates-md": { flag: "--critical-dates", surface: "critical-dates register" },
+  "dates-ics": { flag: "--critical-dates", surface: "critical-dates register" },
 };
 
 type Args = {
@@ -773,6 +828,17 @@ async function renderFormat(
     }
     case "csv":
       return buildFixListCsv(r.run, currency);
+    // The asserted surfaces. `renderFormat` is only reached for these once the
+    // flag has been validated AND the surface came back non-empty (the caller
+    // warns and skips otherwise), so the non-null assertions hold.
+    case "checklist-md":
+      return buildClosingChecklistMarkdown(r.closing_checklist!);
+    case "checklist-csv":
+      return buildClosingChecklistCsv(r.closing_checklist!);
+    case "dates-md":
+      return buildCriticalDatesMarkdown(r.critical_dates!);
+    case "dates-ics":
+      return buildCriticalDatesIcs(r.critical_dates!);
   }
 }
 
@@ -966,6 +1032,13 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     throw new Error(
       "--format docx-comments produces a binary .docx and requires --out <dir> (never stdout)",
     );
+  }
+  for (const [fmt, need] of Object.entries(FORMAT_REQUIRES_FLAG)) {
+    if (args.formats.includes(fmt as Format) && !flagAsserted(args, need.flag)) {
+      throw new Error(
+        `--format ${fmt} renders the ${need.surface}, which only exists when ${need.flag} is passed`,
+      );
+    }
   }
   if (args.formats.includes("docx-comments")) {
     const nonDocx = inputs.filter((f) => extname(f).toLowerCase() !== ".docx");
@@ -1195,6 +1268,22 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         human(
           `  Reviewed copy: ${reviewed.anchored} comment(s) anchored` +
             `${reviewed.unanchored > 0 ? `, ${reviewed.unanchored} collected at document start` : ""} → ${outName}\n`,
+        );
+        continue;
+      }
+      // The flag ran but the document had nothing to say on that surface — a
+      // contract with no derivable deadline, or nothing left to close. Writing
+      // a valid, EMPTY artifact is the trap: a reader takes it for "nothing to
+      // do" without ever learning the register came back empty.
+      if ((fmt === "checklist-md" || fmt === "checklist-csv") && !r.closing_checklist) {
+        process.stderr.write(
+          `vaulytica: warning: ${file}: no closing checklist to render — skipping --format ${fmt}\n`,
+        );
+        continue;
+      }
+      if ((fmt === "dates-md" || fmt === "dates-ics") && !r.critical_dates) {
+        process.stderr.write(
+          `vaulytica: warning: ${file}: no critical-dates register to render — skipping --format ${fmt}\n`,
         );
         continue;
       }
@@ -1571,7 +1660,9 @@ async function runVerify(argv: string[]): Promise<void> {
 const USAGE = `vaulytica — deterministic legal-document linter (headless)
 
 Commands:
-  analyze <path|glob|dir> [--playbook <id>] [--format json,sarif,html,md,csv,docx-comments]
+  analyze <path|glob|dir> [--playbook <id>]
+                          [--format json,sarif,html,md,csv,docx-comments,
+                                    checklist-md,checklist-csv,dates-md,dates-ics]
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture] [--role <name>] [--deal-value <n>]

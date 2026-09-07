@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.532.0] — 2026-09-07
+
+### Added
+- **Four report artifacts the browser has always offered and the headless
+  surface could not produce at all** — `--format checklist-md`,
+  `checklist-csv`, `dates-md`, `dates-ics`.
+
+  `buildClosingChecklistMarkdown`, `buildClosingChecklistCsv`,
+  `buildCriticalDatesMarkdown` and `buildCriticalDatesIcs` are pure functions
+  that shipped with v9 and have been tested since the day they landed.
+  **Nothing in `tools/` ever called one.** The README's own surface table says
+  the critical-dates register renders as Markdown and as an `.ics` calendar, and
+  the closing checklist as Markdown and CSV — all true of the product, and none
+  of it reachable from a script. Found by diffing what the browser pipeline
+  returns against what the CLI's `AnalyzeResult` carries: the same "who can
+  reach it?" question that produced the four releases before this one.
+
+  `md` and `csv` are the **fix list**, so the new values carry their own
+  surface's name rather than overloading those. Each needs the flag that
+  computes its surface (`--checklist` / `--critical-dates`); asking without it
+  is a **usage error**, and a document whose register or checklist comes back
+  empty is **warned about and skipped** rather than written as a valid empty
+  file — a checklist with no items reads as "nothing to do", which is a very
+  different statement from "the register came back empty".
+
+### Fixed
+- **`cli-surface-drift`'s format extraction read comments as formats.** It
+  scans the `VALID_FORMATS` array literal for quoted strings, so a quoted phrase
+  in a comment inside that array became a format value the guard then demanded
+  the docs advertise — failing with a plausible-looking name and pointing at the
+  documentation, which is the wrong place to look. Line comments are stripped
+  first now. Found by hitting it.
+
 ## [9.531.0] — 2026-09-07
 
 ### Fixed
@@ -31,11 +64,13 @@ All notable changes to this project will be documented in this file. Format adap
   as SARIF. Absent the flag the HTML is byte-identical to before, pinned by a
   test.
 
-  Not changed: the **browser's** per-document HTML download still omits it. The
-  browser runs consistency after each document's own report is built, so
-  threading it in is a pipeline restructure rather than an argument — and the
-  tab already surfaces cross-document findings in its bundle card and bundle
-  DOCX. Recorded rather than quietly skipped.
+  Not changed: the browser. *(Corrected in 9.532.0: this entry first said the
+  tab's per-document HTML download still omits the appendix. It does not —
+  `BundlePerDocument` carries only a DOCX and a JSON, so **there is no
+  per-document HTML or SARIF download in bundle mode at all**, and in
+  single-document mode there is no second document to be consistent with. The
+  tab surfaces cross-document findings in its bundle card, bundle DOCX and
+  bundle JSON. There was no browser gap to describe.)*
 
 ## [9.530.0] — 2026-09-07
 

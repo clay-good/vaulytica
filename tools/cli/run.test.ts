@@ -528,3 +528,94 @@ describe("analyze — cross-document consistency over a bundle", () => {
     );
   });
 });
+
+/**
+ * The four artifacts the browser has always offered and the headless surface
+ * could not produce at all.
+ *
+ * `buildClosingChecklistMarkdown`, `buildClosingChecklistCsv`,
+ * `buildCriticalDatesMarkdown` and `buildCriticalDatesIcs` are pure functions
+ * that shipped with v9 and were tested from the day they landed. Nothing in
+ * `tools/` ever called one. The README's own surface table says the register
+ * renders as Markdown and as an `.ics` calendar and the checklist as Markdown
+ * and CSV — true of the product, and unreachable from a script.
+ */
+describe("analyze — the closing checklist and critical-dates artifacts", () => {
+  // A loan agreement with no signature block: one readiness item, one deadline.
+  const WITH_CHECKLIST = join(
+    process.cwd(),
+    "tests",
+    "golden",
+    "v4",
+    "fixtures",
+    "banking-loan-agreement-minimal.txt",
+  );
+  const NDA = join(process.cwd(), "tests", "fixtures", "contracts", "pasted-mutual-nda.txt");
+  const dirs: string[] = [];
+  afterAll(async () => {
+    for (const d of dirs) await rm(d, { recursive: true, force: true });
+  });
+
+  async function out(): Promise<string> {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-artifacts-"));
+    dirs.push(dir);
+    return dir;
+  }
+
+  it("writes the closing checklist as Markdown and CSV", async () => {
+    const dir = await out();
+    await runAnalyze([
+      WITH_CHECKLIST,
+      "--checklist",
+      "--format",
+      "checklist-md,checklist-csv",
+      "--out",
+      dir,
+    ]);
+    const md = await readFile(join(dir, "banking-loan-agreement-minimal.checklist.md"), "utf8");
+    const csv = await readFile(join(dir, "banking-loan-agreement-minimal.checklist.csv"), "utf8");
+    expect(md).toContain("Vaulytica closing checklist");
+    // CRLF: the CSV exports use RFC-4180 line endings.
+    expect(csv.split("\r\n")[0]).toBe("category,rule_id,item,section");
+    expect(csv).toContain("STRUCT-003");
+  }, 120_000);
+
+  it("writes the critical-dates register as Markdown and a valid .ics", async () => {
+    const dir = await out();
+    await runAnalyze([NDA, "--critical-dates", "--format", "dates-md,dates-ics", "--out", dir]);
+    const md = await readFile(join(dir, "pasted-mutual-nda.dates.md"), "utf8");
+    const ics = await readFile(join(dir, "pasted-mutual-nda.dates.ics"), "utf8");
+    expect(md).toContain("Vaulytica critical dates");
+    expect(ics.startsWith("BEGIN:VCALENDAR")).toBe(true);
+    expect(ics).toContain("BEGIN:VEVENT");
+    expect(ics.trimEnd().endsWith("END:VCALENDAR")).toBe(true);
+  }, 120_000);
+
+  it("is a usage error to ask for a surface without the flag that computes it", async () => {
+    // Rendering an empty-but-valid checklist would read as "nothing to do".
+    await expect(
+      runAnalyze([NDA, "--format", "checklist-md", "--out", await out()]),
+    ).rejects.toThrow(/--checklist/);
+    await expect(runAnalyze([NDA, "--format", "dates-ics", "--out", await out()])).rejects.toThrow(
+      /--critical-dates/,
+    );
+  }, 120_000);
+
+  it("warns and skips when the flag ran but the document has no such surface", async () => {
+    // Same reason: an empty artifact is indistinguishable from a clean one.
+    const dir = await out();
+    const err: string[] = [];
+    const se = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation((c) => (err.push(String(c)), true));
+    const so = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    try {
+      await runAnalyze([NDA, "--checklist", "--format", "checklist-md", "--out", dir]);
+    } finally {
+      se.mockRestore();
+      so.mockRestore();
+    }
+    expect(err.join("")).toContain("no closing checklist to render");
+    await expect(readFile(join(dir, "pasted-mutual-nda.checklist.md"), "utf8")).rejects.toThrow();
+  }, 120_000);
+});
