@@ -325,6 +325,9 @@ describe("delivery report aggregate", () => {
       source: "paste",
       text: "hello",
     });
+    // The summary must SAY something before it can be checked for what it must
+    // not say: a blank summary matches no forbidden word and claims nothing.
+    expect(report.summary.trim().length).toBeGreaterThan(0);
     expect(report.summary).not.toMatch(/\bclean\b|\bsafe\b/i);
   });
 

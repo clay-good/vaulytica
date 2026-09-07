@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.545.0] — 2026-09-07
+
+### Added
+- **A guard so the pre-disclosure pack cannot grow another all-negative test.**
+  9.544.0 fixed the two that existed; this stops the third. In
+  `src/delivery/`, a test that asserts what the output must **not** contain must
+  also assert something it **must**.
+
+  Scoped to that pack on purpose. Suite-wide the shape appears in **155** tests
+  and most are legitimately *"omits section X when Y is absent"*, where absence
+  is the point — a rule there would be noise. Here the value under test is a
+  **scan result** that can vanish for reasons unrelated to what the test is
+  checking, and the cost of that is a leaked SSN in a document about to be sent.
+
+  It found a third instance while being written: *"never claims a clean bill of
+  health on an uninspectable input"* checks `report.summary` against a forbidden
+  word, and a **blank** summary matches no word and claims nothing. It asserts
+  the summary is non-empty first now.
+
+  Its own anti-vacuity test pins that the derivation finds real blocks and real
+  negative assertions — the failure this whole file is about — and it was proven
+  by deleting the positive assertion it just added, which fails naming the test.
+
 ## [9.544.0] — 2026-09-07
 
 ### Fixed
