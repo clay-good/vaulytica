@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it, vi } from "vitest";
 import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
@@ -328,6 +328,7 @@ describe("value-taking flags reject a missing or flag-shaped value", () => {
     "--deal-value",
     "--baseline",
     "--emit-coherence",
+    "--emit-consistency",
     "--baseline-coherence",
     "--dkb",
   ];
@@ -375,5 +376,123 @@ describe("analyze --fail-on validation", () => {
 
   it("rejects a case variant rather than accepting it loosely", async () => {
     await expect(runAnalyze([doc, "--fail-on", "CRITICAL"])).rejects.toThrow(/--fail-on must be/);
+  });
+});
+
+/**
+ * The cross-document engine on the headless surface.
+ *
+ * The browser has run the CC-* / CROSS-* rules on every multi-document drop
+ * since v3. The CLI — the surface a CI job actually calls — analyzed each file
+ * alone and said nothing about the pair, so a bundle whose DPA contradicts its
+ * own published privacy notice came back as two clean documents and exit 0.
+ *
+ * The gate is a SEPARATE flag from `--fail-on` on purpose: adding cross-document
+ * checks must not change the exit code of a job that was already passing.
+ */
+describe("analyze — cross-document consistency over a bundle", () => {
+  const BUNDLE = join(process.cwd(), "tests", "golden", "v4", "bundles", "privacy-notice-vs-dpa");
+  const CLEAN = join(process.cwd(), "tests", "golden", "v4", "bundles", "clean-msa-baa");
+  const dirs: string[] = [];
+
+  afterAll(async () => {
+    for (const d of dirs) await rm(d, { recursive: true, force: true });
+  });
+
+  async function analyze(argv: string[]): Promise<{ out: string; err: string; code: number }> {
+    const out: string[] = [];
+    const err: string[] = [];
+    const so = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation((c) => (out.push(String(c)), true));
+    const se = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation((c) => (err.push(String(c)), true));
+    const before = process.exitCode;
+    process.exitCode = 0;
+    try {
+      await runAnalyze(argv);
+      return { out: out.join(""), err: err.join(""), code: Number(process.exitCode ?? 0) };
+    } finally {
+      process.exitCode = before;
+      so.mockRestore();
+      se.mockRestore();
+    }
+  }
+
+  it("reports the conflict and gates on it", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cross-"));
+    dirs.push(dir);
+    const artifact = join(dir, "consistency.json");
+    const { out, err, code } = await analyze([
+      BUNDLE,
+      "--format",
+      "json",
+      "--out",
+      dir,
+      "--emit-consistency",
+      artifact,
+      "--fail-on-consistency",
+      "critical",
+    ]);
+    const text = out + err;
+    expect(text).toContain("Cross-document (2 documents)");
+    expect(text).toContain("CC-008");
+    expect(text).toContain("CC-009");
+    // The finding is meaningless without knowing WHICH documents disagree.
+    expect(text).toMatch(/privacy-notice\.txt ↔ dpa\.txt|dpa\.txt ↔ privacy-notice\.txt/);
+    expect(code).toBe(2);
+
+    const run = JSON.parse(await readFile(artifact, "utf8")) as {
+      findings: { rule_id: string }[];
+      result_hash: string;
+    };
+    expect(run.findings.map((f) => f.rule_id)).toEqual(
+      expect.arrayContaining(["CC-008", "CC-009"]),
+    );
+    expect(run.result_hash).toMatch(/^[0-9a-f]{64}$/);
+  }, 120_000);
+
+  it("prints the header even when the bundle is clean, and does not gate", async () => {
+    // Silence would be indistinguishable from the engine never having run —
+    // which is exactly the state this surface was in.
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cross-clean-"));
+    dirs.push(dir);
+    const { out, err, code } = await analyze([
+      CLEAN,
+      "--format",
+      "json",
+      "--out",
+      dir,
+      "--fail-on-consistency",
+      "critical",
+    ]);
+    expect(out + err).toContain("Cross-document (2 documents)");
+    expect(code).toBe(0);
+  }, 120_000);
+
+  it("stays silent — and byte-identical — without the assertion", async () => {
+    // A DIRECTORY IS NOT A BUNDLE. Pointed at unrelated documents the engine
+    // has hundreds of true-but-meaningless observations to make, so the pass is
+    // assertion-gated and an existing job's output is unchanged.
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cross-off-"));
+    dirs.push(dir);
+    const { out, err, code } = await analyze([BUNDLE, "--format", "json", "--out", dir]);
+    expect(out + err).not.toContain("Cross-document");
+    expect(code).toBe(0);
+  }, 120_000);
+
+  it("says so loudly when the assertion cannot be honored", async () => {
+    // The asserted-pack silence trap: asking for cross-document checks and
+    // getting a normal-looking report with none in it.
+    const doc = join(process.cwd(), "tests", "fixtures", "contracts", "pasted-mutual-nda.txt");
+    const { err } = await analyze([doc, "--format", "json", "--consistency"]);
+    expect(err).toContain("--consistency needs at least two inputs");
+  }, 120_000);
+
+  it("rejects a bad severity rather than silently never gating", async () => {
+    await expect(runAnalyze([BUNDLE, "--fail-on-consistency", "critcal"])).rejects.toThrow(
+      /--fail-on-consistency must be/,
+    );
   });
 });

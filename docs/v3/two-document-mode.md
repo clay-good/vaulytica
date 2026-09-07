@@ -111,6 +111,25 @@ heading + severity + description + explanation + recommendation +
 per-document excerpts, and closes with the `result_hash` of the
 consistency run.
 
+### Headless
+
+The same engine runs from the CLI, where a CI job can gate on it:
+
+```sh
+vaulytica analyze ./deal-room --consistency \
+  --emit-consistency consistency.json --fail-on-consistency critical
+```
+
+`--consistency` is an assertion that the inputs belong together, because a
+directory is not a bundle — "these two name different governing law" is a
+conflict only between documents from the same deal. The terminal prints the
+severity counts and the worst 20 findings, each naming the documents that
+disagree; `--emit-consistency` writes the whole `ConsistencyRun`, excerpts and
+`result_hash` included. `--fail-on-consistency <sev>` exits 2 and is deliberately
+separate from `--fail-on`, which scores each document alone — so switching
+cross-document checks on never changes the exit code of a job that was already
+passing.
+
 ## Determinism
 
 The consistency engine carries the same determinism contract as the v2

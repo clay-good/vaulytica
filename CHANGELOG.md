@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.528.0] — 2026-09-07
+
+### Added
+- **The cross-document consistency engine reaches the CLI — `--consistency`.**
+  The browser has run the CC-\* / CROSS-\* rules on every multi-document drop
+  since v3. The **headless** surface — the one a CI job actually calls — analyzed
+  each file alone and said nothing about the pair. Yesterday's bundle golden made
+  that concrete: `analyze` on a folder holding a privacy notice and a DPA that
+  contradict each other printed two clean-looking per-document summaries, no
+  cross-document line, exit 0. Every CC-\* and CROSS-\* rule in the tree was
+  unreachable from CI.
+
+  `analyze --consistency` now reads two or more inputs as a bundle, prints the
+  severity counts and one line per conflict naming the rule and **which documents
+  disagree**, and offers two companions: `--emit-consistency <path>` writes the
+  whole `ConsistencyRun` (every excerpt, the execution log, its `result_hash`),
+  and `--fail-on-consistency <sev>` exits 2.
+
+  **The gate is a separate flag from `--fail-on` on purpose.** `--fail-on` scores
+  each document alone and keeps doing exactly that, so switching cross-document
+  checks on cannot change the exit code of a job that was already passing — the
+  same call `--fail-on-divergence` made for posture coherence.
+
+  🚨 **A DIRECTORY IS NOT A BUNDLE, and measuring that changed the design.** The
+  first cut ran the pass unconditionally for ≥2 inputs. Pointed at 60 unrelated
+  corpus specimens it emitted **1,291 findings** — every one true and every one
+  meaningless, because "these two documents name different governing law" is a
+  conflict only between documents from the same deal. The browser gets that
+  assertion for free (the user dropped them together); the CLI has to ask. So the
+  pass is assertion-gated like `--regime` and `--estate-checks`, the two flags
+  that are useless without it imply it, and asserting it on a single input warns
+  on stderr rather than silently doing nothing — the asserted-pack silence trap.
+  The terminal detail is capped at the worst 20 findings plus a count of the
+  rest; the full run is what `--emit-consistency` writes.
+
+  Cost when the flag is absent: **zero**. The per-document `extractAll` the
+  bundle needs is skipped entirely, and a run without the flag is byte-identical
+  to one before it existed — pinned by a test.
+
 ## [9.527.0] — 2026-09-07
 
 ### Added

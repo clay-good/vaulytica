@@ -111,6 +111,40 @@ all — the four above plus `posture-review`, `compare-coherence`, and the 28
 current list; the [README's command table](../README.md#headless-api--cli)
 documents each one's flags and exit codes.
 
+### Cross-document checks on a folder
+
+`analyze --consistency` reads two or more inputs **as a bundle**. After the
+per-document pass it runs the cross-document consistency engine — the same
+CC-\* / CROSS-\* rules the browser has run on every multi-document drop since v3
+— and prints one line per conflict naming the rule and the documents that
+disagree:
+
+```bash
+npx vaulytica analyze ./deal-room --format json --out ./out \
+  --emit-consistency ./out/consistency.json \
+  --fail-on-consistency critical
+```
+
+```
+Cross-document (2 documents)  2C 0W 1I
+  CC-008  [critical]  Privacy notice promises no third-party disclosure; the DPA authorises sub-processors  (privacy-notice.txt ↔ dpa.txt)
+```
+
+It is **assertion-gated**, because a directory is not a bundle: "these two
+documents name different governing law" is a conflict only between documents
+from the same deal, and pointed at sixty unrelated specimens the engine has
+~1,300 such observations to make. Say `--consistency` when the inputs really do
+belong together. (`--emit-consistency` and `--fail-on-consistency` imply it.)
+The terminal prints the worst 20 findings and a count of the rest; the full run
+goes to `--emit-consistency`.
+
+The **gate is opt-in** as well. `--fail-on-consistency` is a
+separate flag from `--fail-on` precisely so that turning cross-document checks on
+cannot change the exit code of a job that was already passing —
+`--fail-on` scores each document alone and keeps doing exactly that.
+`--emit-consistency` writes the whole run, `result_hash` included, for archiving
+or diffing.
+
 Exit codes are CI-meaningful: `2` when `--fail-on` is breached (analyze) or the
 revision introduced a finding at/above the threshold (compare), `1` for a
 playbook diff change (`--exit-code`), `3` when a report fails to reproduce, and

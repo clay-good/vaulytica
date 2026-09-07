@@ -7,7 +7,19 @@
  *       [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]] \
  *       [--playbook-file <path> --posture [--fail-on-divergence]] \
  *       [--baseline <bundle> | --baseline-coherence <coherence.json>] \
- *       [--emit-coherence <path>] [--fail-on-coherence-regression]
+ *       [--emit-coherence <path>] [--fail-on-coherence-regression] \
+ *       [--consistency] [--emit-consistency <path>] [--fail-on-consistency <sev>]
+ *
+ * `--consistency` reads two or more inputs AS A BUNDLE through the
+ * cross-document consistency engine (spec-v3 §27 — the CC-* / CROSS-* rules the
+ * browser has run on every multi-document drop since v3): a BAA broader than
+ * its MSA, two documents naming different governing law, a privacy notice that
+ * denies the disclosure its own DPA authorises. Assertion-gated because a
+ * DIRECTORY IS NOT A BUNDLE — "these two name different governing law" is only
+ * a conflict between documents from the same deal. `--emit-consistency <path>`
+ * writes the whole `ConsistencyRun` (`result_hash` included) and
+ * `--fail-on-consistency <sev>` exits 2; both imply `--consistency`, and
+ * neither touches the existing `--fail-on` exit code.
  *
  * `--court` selects a court profile and runs the filing-format-lint pack
  * (FILE-001..008) against its limits, but only when the document matches a
@@ -178,6 +190,9 @@ import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join, basename, extname, resolve } from "node:path";
 
 import { analyzeFile, loadAccuracyDeps, runProductionQa, type AnalyzeResult } from "./api.js";
+import { runConsistency } from "../../src/engine/consistency/runner.js";
+import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
+import type { ConsistencyDocument, ConsistencyRun } from "../../src/engine/consistency/types.js";
 import { COURT_PROFILE_IDS, getCourtProfile } from "../../src/filing/court-profile.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
@@ -327,6 +342,12 @@ type Args = {
   deadlineProfile?: string;
   /** add-deadline-computation — the service method for the FRCP 6(d) / CCP 1013 add-on. */
   serviceMethod?: string;
+  /** Read the inputs as a BUNDLE and run the cross-document consistency engine. */
+  consistency?: boolean;
+  /** Write the cross-document consistency run to this path as JSON. */
+  emitConsistency?: string;
+  /** Exit non-zero when a cross-document finding reaches this severity. */
+  failOnConsistency?: Severity;
   /** add-production-qa-pack — run production QA over a directory/.zip production set. */
   productionQa?: boolean;
   /** add-production-qa-pack — exit non-zero when a Bates sequence gap is found. */
@@ -475,6 +496,24 @@ function parseArgs(argv: string[]): Args {
         args.emitCoherence = requireValue(flag, val);
         i++;
         break;
+      case "--consistency":
+        args.consistency = true;
+        break;
+      case "--emit-consistency":
+        args.emitConsistency = requireValue(flag, val);
+        i++;
+        break;
+      case "--fail-on-consistency": {
+        // Same validation as `--fail-on`: an unrecognized severity would leave
+        // the rank lookup undefined and the gate permanently false, which is
+        // worse than no gate at all.
+        if (!VALID_SEVERITIES.includes(val as Severity)) {
+          throw new Error(`--fail-on-consistency must be ${VALID_SEVERITIES.join("|")}`);
+        }
+        args.failOnConsistency = val as Severity;
+        i++;
+        break;
+      }
       case "--baseline-coherence":
         args.baselineCoherence = requireValue(flag, val);
         i++;
@@ -960,6 +999,21 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // bundle is analyzed, we can report how each negotiation front sits *across*
   // the documents (the cross-document axis of the v10 posture).
   const postures: CoherenceInput[] = [];
+  // The cross-document consistency engine's input. The browser has run these
+  // rules on every multi-document drop since v3; the CLI — the surface a CI job
+  // actually calls — analyzed each file in isolation and reported nothing about
+  // the pair, so a bundle whose DPA contradicts its own privacy notice came back
+  // as two clean documents.
+  const consistencyDocs: ConsistencyDocument[] = [];
+  // Assertion-gated, like every other opt-in pack. A DIRECTORY IS NOT A BUNDLE:
+  // pointed at 60 unrelated specimens the engine emits ~950 findings, because
+  // "these two documents name different governing law" is only a conflict
+  // between documents that belong to the same deal. The browser gets that
+  // assertion for free — the user dropped them together — and the CLI has to
+  // ask for it. Implied by the two flags that are useless without it.
+  const wantsConsistency = Boolean(
+    args.consistency || args.emitConsistency || args.failOnConsistency,
+  );
   const filing = filingOptionFrom(args);
   const deadline = deadlineOptionFrom(args);
   for (const file of inputs) {
@@ -981,6 +1035,20 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       // does. Off by default in the API for cost (see AssertedPackOptions).
       secondaryFamilies: true,
     });
+
+    // `doc_id` must be unique across the bundle (the runner rejects a
+    // duplicate) and is what the finding's excerpts name, so it uses the same
+    // disambiguated label the posture surface prints.
+    // Only when the caller asserted a bundle: a single input has nothing to be
+    // consistent WITH, and the extra `extractAll` is not free.
+    if (wantsConsistency && inputs.length >= 2)
+      consistencyDocs.push({
+        doc_id: documentLabel(file, inputs),
+        source_file_name: basename(file),
+        playbook_id: r.playbook_id,
+        tree: r.ingest.tree,
+        extracted: extractAll(r.ingest.tree),
+      });
 
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
@@ -1155,6 +1223,40 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     diverged = hasDivergence(coherence);
   }
 
+  // Cross-document consistency (spec-v3 §27 / v4 CROSS-*). The engine that
+  // reads the bundle as a bundle: a BAA whose permitted uses exceed the MSA's
+  // scope, two documents naming different governing law, a privacy notice that
+  // denies the disclosure its own DPA authorises. Unconditional for ≥2
+  // documents because it is REPORTING — the gate below is opt-in, matching
+  // --fail-on-divergence rather than folding a new exit code into --fail-on.
+  let consistency: ConsistencyRun | null = null;
+  if (wantsConsistency && inputs.length < 2) {
+    // The asserted-pack silence trap: the caller asked for cross-document
+    // checks and would otherwise get a normal-looking report with none in it.
+    process.stderr.write(
+      `vaulytica: warning: --consistency needs at least two inputs; ${inputs.length} given — the cross-document checks did NOT run\n`,
+    );
+  }
+  if (consistencyDocs.length >= 2) {
+    consistency = await runConsistency({
+      rules: ALL_CONSISTENCY_RULES,
+      documents: consistencyDocs,
+      dkb: deps.dkb,
+    });
+    human(renderConsistencySummary(consistency));
+  }
+
+  if (args.emitConsistency) {
+    if (!consistency) {
+      process.stderr.write(
+        `\n--emit-consistency: no cross-document run to write (need ≥2 documents).\n`,
+      );
+    } else {
+      await writeFile(args.emitConsistency, JSON.stringify(consistency, null, 2) + "\n");
+      human(`\nwrote consistency artifact → ${resolve(args.emitConsistency)}\n`);
+    }
+  }
+
   // spec-v14 Thrust B — emit this round's coherence as a portable, hash-verified
   // baseline artifact, so a later round can gate against it (--baseline-coherence)
   // without re-checking-out this round's documents. Off by default; additive.
@@ -1256,6 +1358,49 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     );
     process.exitCode = 2;
   }
+  if (args.failOnConsistency && consistency) {
+    const gate = SEVERITY_RANK[args.failOnConsistency];
+    const breachedCross = consistency.findings.some((f) => SEVERITY_RANK[f.severity] <= gate);
+    if (breachedCross) {
+      process.stderr.write(
+        `\n✗ cross-document findings breached --fail-on-consistency ${args.failOnConsistency}\n`,
+      );
+      process.exitCode = 2;
+    }
+  }
+}
+
+/**
+ * The terminal rendering of a cross-document run. One header line with the
+ * severity counts, then one line per finding naming the rule, its title, and
+ * every document it cites — because a cross-document finding is meaningless
+ * without knowing WHICH documents disagree.
+ *
+ * A run that found nothing still prints its header: silence would be
+ * indistinguishable from the engine not having run at all, which is exactly
+ * the state this whole surface existed in until now.
+ */
+export const CONSISTENCY_DETAIL_LIMIT = 20;
+
+function renderConsistencySummary(run: ConsistencyRun): string {
+  const counts = { critical: 0, warning: 0, info: 0 };
+  for (const f of run.findings) counts[f.severity]++;
+  const lines = [
+    `\nCross-document (${run.documents.length} documents)  ` +
+      `${counts.critical}C ${counts.warning}W ${counts.info}I\n`,
+  ];
+  // Findings arrive severity-sorted, so the truncation always keeps the worst.
+  for (const f of run.findings.slice(0, CONSISTENCY_DETAIL_LIMIT)) {
+    const docs = [...new Set(f.excerpts.map((e) => e.doc_id))].join(" ↔ ");
+    lines.push(`  ${f.rule_id}  [${f.severity}]  ${f.title}  (${docs})\n`);
+  }
+  const rest = run.findings.length - CONSISTENCY_DETAIL_LIMIT;
+  if (rest > 0) {
+    lines.push(
+      `  … and ${rest} more — the full run, including every excerpt, is what --emit-consistency writes\n`,
+    );
+  }
+  return lines.join("");
 }
 
 /**
@@ -1403,6 +1548,8 @@ Commands:
                           [--state <xx>]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
+                          [--consistency] [--emit-consistency <path>]
+                          [--fail-on-consistency critical|warning|info]
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]
                           Bates + privilege-log reconciliation over a production set.
   diff    <playbook-a.json> <playbook-b.json> [--format markdown|json] [--exit-code]
