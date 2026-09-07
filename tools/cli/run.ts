@@ -672,6 +672,9 @@ async function renderFormat(
     delivery: r.delivery,
     criticalDates: r.critical_dates,
     closingChecklist: r.closing_checklist,
+    // The matched family's normal pairings. Absent here until 9.515.0, so the
+    // headless DOCX/HTML/SARIF carried a section the browser's did.
+    relatedDocuments: r.related_documents.length > 0 ? r.related_documents : undefined,
   };
   switch (fmt) {
     case "json":
@@ -706,6 +709,7 @@ async function renderFormat(
         r.negotiation_posture,
         currency,
         definitions,
+        r.related_documents.length > 0 ? r.related_documents : undefined,
       ).text();
     case "sarif":
       return buildSarifJson(r.run, v9surfaces, currency, r.ingest);

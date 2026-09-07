@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.515.0] — 2026-09-07
+
+### Fixed
+- **"Documents Normally Reviewed Alongside This One" never reached the headless
+  report.** 9.507.0 added it to the DOCX, HTML, JSON and SARIF *builders* and
+  wired the browser pipeline. `tools/` never computed it — zero references —
+  so `vaulytica analyze` produced reports without the section for eight
+  releases while the tab's carried it.
+
+  🚨 **Its own reach test walked one caller.**
+  `related-documents-reach.test.ts` drove `prepareDocument`/`runReport`, the
+  BROWSER pipeline, and passed the whole time. **A reach test is only as wide
+  as its caller list** — the same shape as the secondary-families gap 9.508.0
+  fixed, where a parity test compared only the hashed run. The test now asserts
+  the CLI path too, and reverting the fix takes it red naming the fixture's
+  playbook.
+
+  Computed in `runIngested` beside the secondary families, from the catalog it
+  already holds. Unconditional, because unlike a secondary family this is a
+  catalog lookup and not an engine pass — no repeat of the 9.508.0 cost.
+
+  Verified end to end: `vaulytica analyze` on an MSA now renders the section in
+  the standalone HTML and `related_documents` in the JSON — *AI Usage
+  Addendum, Business Associate Agreement (HIPAA), DPA — Controller to Processor
+  (EU/UK), Vendor Security Addendum*.
+
 ## [9.514.0] — 2026-09-06
 
 ### Fixed

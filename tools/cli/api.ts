@@ -53,6 +53,7 @@ import type { CustomPlaybook } from "../../src/playbooks/custom-playbook.js";
 
 import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pipeline.js";
 import type { SecondaryFamilyRun } from "../../src/engine/secondary-families.js";
+import type { RelatedDocument } from "../../src/report/companions.js";
 
 export type AnalyzeResult = {
   run: EngineRun;
@@ -65,6 +66,8 @@ export type AnalyzeResult = {
    * gate are unchanged. Empty for a document that contains only its match.
    */
   secondary_families: SecondaryFamilyRun[];
+  /** The matched family's normal pairings, resolved to display names. */
+  related_documents: RelatedDocument[];
   /** The ingest result, so the report builders (JSON/HTML) can render. */
   ingest: IngestResult;
   /**

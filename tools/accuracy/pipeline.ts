@@ -44,6 +44,7 @@ import {
   runSecondaryFamilies,
   type SecondaryFamilyRun,
 } from "../../src/engine/secondary-families.js";
+import { relatedDocuments, type RelatedDocument } from "../../src/report/companions.js";
 import { activateFiling } from "../../src/filing/activate.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
@@ -118,6 +119,17 @@ export type DocumentRun = {
    * document that contains only its matched family.
    */
   secondary_families: SecondaryFamilyRun[];
+  /**
+   * The matched family's normal pairings (`Playbook.companion_playbooks`),
+   * resolved to display names against the full catalog.
+   *
+   * 🚨 Shipped in 9.507.0 reaching the BROWSER's DOCX/HTML/JSON/SARIF and not
+   * the headless ones, because `tools/` never computed it — and
+   * `related-documents-reach.test.ts` drove `prepareDocument`/`runReport`, so
+   * it walked the one caller that had it. A reach test is only as wide as its
+   * caller list. Cheap (a catalog lookup, no engine pass), so unconditional.
+   */
+  related_documents: RelatedDocument[];
 };
 
 function bodyTextOf(tree: import("../../src/ingest/types.js").DocumentTree): string {
@@ -280,5 +292,6 @@ export async function runIngested(
     playbook_id: playbook.id,
     auto_matched_playbook_id: match.playbook_id,
     secondary_families,
+    related_documents: relatedDocuments(playbook.id, allPlaybooks),
   };
 }

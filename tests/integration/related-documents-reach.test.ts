@@ -10,6 +10,12 @@
  * asserted here so a later edit cannot quietly turn the reference list into an
  * accusation.
  *
+ * 🚨 THIS TEST WALKED ONE CALLER AND THAT WAS NOT ENOUGH. It drove
+ * `prepareDocument`/`runReport` — the BROWSER pipeline — and passed for eight
+ * releases while `tools/` never computed `relatedDocuments` at all, so the
+ * headless DOCX, HTML, JSON and SARIF carried no such section. A reach test is
+ * only as wide as its caller list; the CLI path is asserted below too now.
+ *
  * A surface that renders a report and not this list is not a bug in the same
  * way a missing honesty caveat is — this is a reference block, and
  * `honesty-caveat-reach.test.ts` covers the class that must never be dropped.
@@ -161,4 +167,43 @@ describe("documents normally reviewed alongside this one", () => {
     expect(a.related).toEqual(b.related);
     expect(a.json).toHaveProperty("related_documents");
   }, 60_000);
+});
+
+describe("the headless path carries it too", () => {
+  it("the CLI's JSON and HTML name the same related documents as the browser", async () => {
+    const { analyzeFile } = await import("../../tools/cli/api.js");
+    const { buildJsonReport } = await import("../../src/report/json.js");
+    const { buildHtmlReport } = await import("../../src/report/html.js");
+    const { loadAccuracyDeps } = await import("../../tools/accuracy/pipeline.js");
+
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeFile(FIXTURE, { deps });
+
+    // Anti-vacuity: the fixture's family must declare companions.
+    expect(r.related_documents.length, `${r.playbook_id} declares companions`).toBeGreaterThan(0);
+
+    const json = JSON.parse(
+      await buildJsonReport(
+        r.run,
+        r.ingest,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        r.related_documents,
+      ).text(),
+    ) as { related_documents?: RelatedDocument[] };
+    expect(json.related_documents).toEqual(r.related_documents.map((x) => ({ ...x })));
+
+    const html = buildHtmlReport(r.run, r.ingest, deps.dkb, undefined, {
+      relatedDocuments: r.related_documents,
+    });
+    expect(html).toContain(HEADING);
+    for (const item of r.related_documents) expect(html).toContain(item.name);
+  }, 120_000);
 });
