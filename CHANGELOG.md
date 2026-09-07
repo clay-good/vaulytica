@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.522.0] — 2026-09-07
+
+### Fixed
+- **Re-verified two more `BUILD_PROGRESS.md` partials; one turned out to be
+  blocked on a human, not on engineering.** Continuing 9.520.0's work on step
+  33, this checks steps 36 (performance/offline) and 37 (accessibility)
+  against the code.
+
+  **Step 36** — the binary v3 BAA fixture is **done**:
+  `tests/e2e/v3/baa-minimal-pass.docx` (10,329 bytes) landed, and
+  `no-network.spec.ts` prefers it over the `.txt`, so the v3 path no longer
+  `test.skip`s. The Lighthouse criterion is satisfied in substance with one
+  wording caveat: `lhci autorun` runs on every commit at `formFactor: "mobile"`
+  with simulated 4G (1638.4 Kbps, 150 ms RTT, 4× CPU slowdown) against the
+  repo's budgets, and has been green throughout — but it collects from
+  `staticDistDir`, the built artifact served locally, **not from the deployed
+  URL**. Same bytes, same budgets, enforced continuously; whether "live run
+  against the deployed site" requires hitting the deploy is the criterion
+  author's call, so the row stays 🟡 rather than being rounded up.
+
+  **Step 37** — the axe sweep is **done**: `@axe-core/playwright@^4.11.3` is a
+  dev dependency and `a11y-axe.spec.ts` runs `AxeBuilder` against two real page
+  states, empty and post-analysis, at WCAG 2.2 AA. The Step 33 hookup it
+  depended on has landed. The `test.skip`s left in `a11y-keyboard.spec.ts` are
+  no longer the partial-hookup guards the note described — they are ordinary
+  data-dependent guards.
+
+  ⚠️ **Step 37's only remaining item is manual Narrator + VoiceOver
+  verification of the compliance-matrix table in the produced DOCX — blocked on
+  a human, not on engineering.** No automated check substitutes for a person
+  listening to a screen reader. That is a different category from "someone
+  still has to build this", and the row now says so: the same class as the
+  attorney sign-offs, not a to-do anyone can pick up at a keyboard.
+
+  Three of the six partials are now re-verified (33, 36, 37) and the header
+  records which. Steps 27, 28 and 29 have not been re-checked, and the file
+  does not imply otherwise.
+
 ## [9.521.0] — 2026-09-07
 
 ### Changed
