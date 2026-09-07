@@ -26,7 +26,7 @@
 
 import type { ClassifiedParagraph, ExtractedData } from "../extract/types.js";
 import type { Playbook } from "../playbooks/types.js";
-import { featureMatcher } from "../playbooks/matcher.js";
+import { featureMatcher, isAcronymFeature } from "../playbooks/matcher.js";
 
 /**
  * Minimum family-signal strength for a specialized playbook to be admitted
@@ -174,14 +174,36 @@ export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): 
   const { inTitle, inBody, categories, definedTerms } = corpusMatchers(signals);
   const f = playbook.match_features;
 
-  const titleHits = f.title_keywords.filter(inTitle).length;
-  if (titleHits >= 1) return true;
+  // A document's own NAME is strong evidence it is of that family — but an
+  // ACRONYM is not a name, it is a collision waiting to happen. "MSA" is a
+  // Master Services Agreement and a Marital Settlement Agreement; "SPA" a
+  // stock and a share purchase; "PSA" a purchase-and-sale; "DPA" a data
+  // processing agreement and a deferred prosecution agreement. And "co", the
+  // catalog's shortest, matches the "Co." in any company's name.
+  //
+  // Measured: a real commercial Master Services Agreement that calls itself
+  // `(this "MSA")` drew FOUR CRITICAL findings from the family-law playbook,
+  // and two specimens activated `change-order` on the "Co." in a party's name
+  // — 7 findings, 6 of them critical. 9.508.0 made this a word-boundary match
+  // instead of a substring, which was necessary and not sufficient: the
+  // boundary match here is CORRECT, and the inference from it was wrong.
+  //
+  // So a full-name title keyword still activates alone; when every title hit
+  // is a bare acronym, the family has to earn it the same way a phrase-only
+  // candidate does.
+  const titleHits = f.title_keywords.filter(inTitle);
+  // The document's own NAME, spelled out, is enough on its own.
+  if (titleHits.some((k) => !isAcronymFeature(k))) return true;
 
   const distHits = f.distinguishing_phrases.filter(inBody);
   const reqHits = f.required_clauses.filter(
     (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
   );
-  if (distHits.length + reqHits.length < 3) return false;
+  // An acronym is not discarded — it is counted as ONE weak signal alongside
+  // the phrases. Discarding it throws away real evidence ("MSA" in a document
+  // that also says "petitioner" and "spousal support" IS a marital settlement);
+  // treating it as a name lets "Co." in a party's name run a whole rule pack.
+  if (titleHits.length + distHits.length + reqHits.length < 3) return false;
 
   // Three BARE COMMON WORDS are not evidence that a document IS this family.
   //

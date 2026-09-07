@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.516.0] — 2026-09-07
+
+### Fixed
+- **A bare ACRONYM in the title ran a family's whole rule pack — the case that
+  opened this campaign, still alive after 9.508.0.** That release made a short
+  title keyword match at a WORD BOUNDARY instead of as a substring, and I
+  recorded the commercial-MSA defect as fixed. It was not. A real Master
+  Services Agreement calls itself `(this "MSA")`, so `family-msa`'s `"msa"`
+  keyword hits *correctly* — and one title hit was enough. The sample MSA was
+  still drawing **four CRITICAL findings from the family-law Marital
+  Settlement playbook**.
+
+  **The boundary match was right; the inference drawn from it was wrong.** A
+  document's own NAME is strong evidence it is of that family. An acronym is
+  not a name — it is a collision waiting to happen: *MSA* is a Master Services
+  and a Marital Settlement Agreement, *SPA* a stock and a share purchase, *PSA*
+  a purchase-and-sale, *DPA* a data processing and a deferred prosecution
+  agreement. And `"co"`, the catalog's shortest, matches the **"Co." in any
+  company's name** — which activated `change-order` on two specimens, 7
+  findings, 6 of them critical.
+
+  A spelled-out title keyword still activates alone. A bare acronym now counts
+  as **one weak signal** among the three `familyIsPresent` needs.
+
+  🥇 **The first version of this fix was wrong, and a pre-existing test caught
+  it.** Discarding acronym hits outright broke an assertion that `AIA Document
+  G701 — CO 12` reaches `change-order` — and that test was right, because G701
+  *is* the AIA change-order form number. Throwing the acronym away is as wrong
+  as treating it as a name. Counting it as one signal satisfies both: the
+  commercial MSA does not reach the family-law playbook, `"Co."` does not reach
+  `change-order`, and a document that says "MSA" alongside *petitioner*,
+  *spousal support* and *parenting plan* still does. **Third time this session
+  that measuring what a stricter rule would COST turned a blunt rule into a
+  correct one** (the others: the hyphenated-collocation clause, and the
+  word-count bar it replaced).
+
+  `familySignalStrength` is untouched, so primary routing cannot move — and
+  across every change this session it has not: **0 of 312 specimens re-route.**
+  One secondary activation was *added* (`subordination-agreement` →
+  `promissory-note`), which is the `MAX_SECONDARY_FAMILIES` cap doing its job:
+  dropping `loan-agreement` freed a slot for a family that already qualified
+  below it, and a subordination agreement does subordinate a note.
+
 ## [9.515.0] — 2026-09-07
 
 ### Fixed

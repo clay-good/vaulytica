@@ -87,8 +87,17 @@ describe("an acronym inside a word does not activate a family", () => {
   it("still activates on a document that really is one", () => {
     const changeOrder = byId("change-order");
     expect(familyIsPresent(changeOrder, signals("CHANGE ORDER NO. 4", "change order"))).toBe(true);
-    // The bare acronym, standing as its own word, is a real signal.
-    expect(familyIsPresent(changeOrder, signals("AIA Document G701 — CO 12", "co 12"))).toBe(true);
+    // The bare acronyms alone no longer suffice — see the acronym describe()
+    // below — but a real G701 corroborates them in its own body.
+    expect(
+      familyIsPresent(
+        changeOrder,
+        signals(
+          "AIA Document G701 — CO 12",
+          "The original contract sum was $1,200,000. The revised contract sum will be $1,310,000. Description of change: added mechanical scope. The completion date is extended by 14 days.",
+        ),
+      ),
+    ).toBe(true);
   });
 
   it('"msa" does not route a commercial MSA into the family-law playbook', () => {
@@ -175,5 +184,49 @@ describe("three bare common words do not make a family present", () => {
     const body =
       "Tenant shall subordinate this Lease to the lien of any mortgage, and Mortgagee shall grant non-disturbance so long as Tenant is not in default. Tenant shall attorn to Lender.";
     expect(familyIsPresent(snda, signals("SUBORDINATION AGREEMENT", body))).toBe(true);
+  });
+});
+
+describe("a bare ACRONYM in the title is not the document's name", () => {
+  /**
+   * 9.508.0 made a short title keyword match at a WORD BOUNDARY instead of as
+   * a substring. Necessary, and not sufficient — the boundary match is
+   * correct and the inference drawn from it was wrong. Acronyms collide:
+   * "MSA" is a Master Services Agreement and a Marital Settlement Agreement,
+   * "SPA" a stock and a share purchase, "DPA" a data processing and a deferred
+   * prosecution agreement. "co" matches the "Co." in any company's name.
+   *
+   * Measured: a real commercial MSA that calls itself `(this "MSA")` drew four
+   * CRITICAL findings from the family-law playbook, and two specimens
+   * activated `change-order` on a party's "Co." — 7 findings, 6 critical.
+   */
+  it('a commercial MSA calling itself (this "MSA") is not a marital settlement', () => {
+    const familyMsa = byId("family-msa");
+    const title =
+      'Master Services Agreement This Master Services Agreement (this "MSA") is entered into between Summit Integrations, Inc. and Riverstone Holdings, Inc.';
+    expect(familyIsPresent(familyMsa, signals(title, title))).toBe(false);
+  });
+
+  it('"Co." in a party name is not a Change Order', () => {
+    const changeOrder = byId("change-order");
+    const title = "SERVICES AGREEMENT between Riverstone Holdings Co. and Summit Integrations Co.";
+    expect(familyIsPresent(changeOrder, signals(title, title))).toBe(false);
+  });
+
+  it("but the family's FULL NAME in the title still activates it alone", () => {
+    // A real marital settlement agreement names itself, and needs no
+    // corroborating phrase to be recognized.
+    const familyMsa = byId("family-msa");
+    expect(familyIsPresent(familyMsa, signals("MARITAL SETTLEMENT AGREEMENT", ""))).toBe(true);
+    const changeOrder = byId("change-order");
+    expect(familyIsPresent(changeOrder, signals("CHANGE ORDER NO. 4", ""))).toBe(true);
+  });
+
+  it("and an acronym still counts once the document corroborates it", () => {
+    // "MSA" plus the family's own vocabulary is a marital settlement.
+    const familyMsa = byId("family-msa");
+    const body =
+      "Petitioner and Respondent agree as follows. Spousal support shall be paid monthly. A parenting plan is attached, and custody is shared.";
+    expect(familyIsPresent(familyMsa, signals('SETTLEMENT ("MSA")', body))).toBe(true);
   });
 });

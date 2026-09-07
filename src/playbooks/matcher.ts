@@ -610,7 +610,19 @@ const INFLECTABLE_TOKEN_MIN_LENGTH = 5;
  * longer string is a phrase, and a phrase's substring match is what lets
  * "conflicts of interest" find "Conflicts of Interest Policy".
  */
-const ACRONYM_MAX_LENGTH = 5;
+/**
+ * Longest feature still treated as an ACRONYM — matched at a word boundary
+ * rather than as a phrase, and (in `familyIsPresent`) too ambiguous to declare
+ * a family present on its own. Exported so the candidate selector applies the
+ * same definition rather than inventing a second one.
+ */
+export const ACRONYM_MAX_LENGTH = 5;
+
+/** Whether a match feature is a bare acronym by that definition. */
+export function isAcronymFeature(feature: string): boolean {
+  const f = feature.trim().toLowerCase();
+  return f.length > 0 && f.length <= ACRONYM_MAX_LENGTH && /^[a-z0-9][a-z0-9.-]*$/.test(f);
+}
 
 /**
  * Match a feature string against a corpus.
