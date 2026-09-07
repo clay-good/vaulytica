@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.512.0] — 2026-09-06
+
+### Fixed
+- **Three bare common words made a family "clearly present", and its whole rule
+  pack ran.** This is the case 9.510.0 measured, wrote into the code as
+  unsolved, and deliberately left for its own change. It turned out tractable —
+  the instrument was wrong, not the problem.
+
+  An ALL-CAPS **guaranty** matched `loan-agreement` on "borrower", "lender" and
+  "commitment", and was then told at **CRITICAL** that it was missing an
+  interest-rate clause and negative covenants. A guaranty has neither; the loan
+  it guarantees does. The same shape put an LLC **operating agreement** into
+  `healthcare-poa` on "principal/agent/incapacity", an SBA **loan agreement**
+  into `revocable-living-trust` on "trustor/trustee/revocable", and an
+  **irrevocable trust** into `deed-of-trust` — a mortgage instrument.
+
+  **Corpus frequency cannot see this**, which is why 9.510.0's base-rate work
+  did not catch it: each of those words sits comfortably under the 0.15
+  ceiling. They are common within a **domain** — every document in a lending
+  package names the borrower and the lender, because that is what they are
+  about — and no threshold over the whole corpus sees a domain.
+
+  What does see it is the docs' own test, applied to the **activation** rather
+  than to each phrase: "would I be surprised to find this in a document that is
+  NOT this family". One bare noun, no. One **collocation** — multi-word, or a
+  hyphenated compound — yes. So `familyIsPresent` still needs three signals,
+  and now at least one of them must be a collocation or a structural
+  `required_clauses` hit.
+
+  Measured: **14 activations dropped over the 312 specimens, 27 findings and 17
+  CRITICAL among them.** Twelve of the fourteen are unambiguous; the two
+  arguable ones (`oem-agreement` → `distribution-agreement`, `sow-under-msa` →
+  `marketing-services-agreement`) are distinct families either way.
+
+  🥇 **The hyphen clause is load-bearing and was found by measuring what a
+  stricter rule would cost.** A word-count-only bar also discarded
+  `net-lease` → `snda`, where "non-disturbance" and "attornment" are terms of
+  art that happen to be spelled as one hyphenated token. A hyphenated compound
+  IS a collocation, spelled closed. Pinned in a test.
+
+  `familySignalStrength` is untouched, so this cannot move primary routing by
+  construction — and the full suite confirms it: 535 files, 14,027 tests.
+
 ## [9.511.0] — 2026-09-06
 
 ### Changed

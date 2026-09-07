@@ -140,3 +140,40 @@ describe("featureMatcher", () => {
     expect(m("conflicts of interest")).toBe(true);
   });
 });
+
+describe("three bare common words do not make a family present", () => {
+  /**
+   * The guaranty case, pinned. `familyIsPresent` activates a family's WHOLE
+   * rule pack on `distHits + reqHits >= 3`, and three words a whole DOMAIN
+   * shares cleared that bar: every document in a lending package names the
+   * borrower and the lender. Corpus frequency cannot see it — each word is
+   * under `distinguishing-base-rate.test.ts`'s ceiling — so the bar now asks
+   * for one COLLOCATION (multi-word, or a hyphenated compound) or a structural
+   * `required_clauses` hit.
+   */
+  const loan = byId("loan-agreement");
+
+  it("a guaranty is not a loan agreement", () => {
+    // What a real guaranty says: it names the loan's parties, and nothing else
+    // about it is a loan agreement.
+    const body =
+      "GUARANTY. The undersigned Guarantor absolutely and unconditionally guarantees to Lender the prompt payment of all obligations of Borrower under the commitment described above.";
+    expect(familyIsPresent(loan, signals("CONTINUING GUARANTY", body))).toBe(false);
+  });
+
+  it("but a document carrying a real loan collocation still is", () => {
+    const body =
+      "The Borrower shall pay interest to the Lender. Events of default include any failure to pay when due. The commitment shall terminate on the maturity date.";
+    expect(familyIsPresent(loan, signals("CREDIT AGREEMENT", body))).toBe(true);
+  });
+
+  it("a hyphenated compound counts as a collocation", () => {
+    // The clause that keeps `net-lease` reaching SNDA terms: "non-disturbance"
+    // and "attornment" are terms of art spelled as one hyphenated token, and a
+    // word-count-only rule discarded them.
+    const snda = byId("snda");
+    const body =
+      "Tenant shall subordinate this Lease to the lien of any mortgage, and Mortgagee shall grant non-disturbance so long as Tenant is not in default. Tenant shall attorn to Lender.";
+    expect(familyIsPresent(snda, signals("SUBORDINATION AGREEMENT", body))).toBe(true);
+  });
+});

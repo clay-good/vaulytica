@@ -177,11 +177,49 @@ export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): 
   const titleHits = f.title_keywords.filter(inTitle).length;
   if (titleHits >= 1) return true;
 
-  const distHits = f.distinguishing_phrases.filter(inBody).length;
+  const distHits = f.distinguishing_phrases.filter(inBody);
   const reqHits = f.required_clauses.filter(
     (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
-  ).length;
-  return distHits + reqHits >= 3;
+  );
+  if (distHits.length + reqHits.length < 3) return false;
+
+  // Three BARE COMMON WORDS are not evidence that a document IS this family.
+  //
+  // An ALL-CAPS guaranty matched `loan-agreement` on "borrower", "lender" and
+  // "commitment" — and was then told, at CRITICAL, that it was missing an
+  // interest-rate clause and negative covenants. A guaranty has neither; the
+  // loan it guarantees does. The same shape put an LLC **operating agreement**
+  // into `healthcare-poa` on "principal/agent/incapacity", an SBA **loan
+  // agreement** into `revocable-living-trust` on "trustor/trustee/revocable",
+  // and an **irrevocable trust** into `deed-of-trust` — a mortgage instrument.
+  //
+  // Corpus frequency cannot separate these: each of those words sits under
+  // `distinguishing-base-rate.test.ts`'s ceiling. They are common within a
+  // DOMAIN — every document in a lending package names the borrower and the
+  // lender, because that is what they are about — and no threshold over the
+  // whole corpus sees that.
+  //
+  // What does see it is the docs' own test, applied to the ACTIVATION rather
+  // than to each phrase: "would I be surprised to find this in a document that
+  // is NOT this family". One bare noun, no. One COLLOCATION — a multi-word
+  // phrase, or a hyphenated compound like "non-disturbance", "sub-processor",
+  // "auto-renew" — yes. So activation on phrases alone requires at least one,
+  // or a structural `required_clauses` hit, which is evidence of a different
+  // kind.
+  //
+  // Measured: 14 activations dropped over the 312 specimens, 27 findings and
+  // 17 CRITICAL among them, and the hyphen clause is what keeps the genuine
+  // ones — `net-lease` really does carry SNDA terms ("non-disturbance",
+  // "attornment"), and a word-count-only rule threw those away too.
+  return reqHits.length > 0 || distHits.some(isCollocation);
+}
+
+/**
+ * A phrase specific enough to activate a family on its own evidence: more than
+ * one word, or a hyphenated compound (which is a collocation spelled closed).
+ */
+function isCollocation(phrase: string): boolean {
+  return /[\s-]/.test(phrase.trim());
 }
 
 /**
