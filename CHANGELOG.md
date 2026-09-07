@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.549.0] — 2026-09-07
+
+### Fixed
+- **The CI guide's exit-code guidance described one gate, when `analyze` has
+  seven.** `--fail-on-production-gap` was named **nowhere** in
+  `docs/ci-integration.md` at all, and the four gates added since — including
+  the two shipped hours earlier — were absent from the paragraph a reader
+  branching on exit codes is pointed at. The paragraph is now a table of all
+  seven with what each one reads, plus the reason each is a separate flag:
+  adding a check to the tool must never change the exit code of a job that was
+  already passing.
+
+  A guard derives the gate list from `parseArgs` and pins it against **the
+  paragraph**, and against the README's flag table.
+
+  🥇 **Two lessons, both from getting it wrong first.**
+
+  1. **A guard whose name promises more than it checks.** The first version
+     searched the whole document, and passed when the `--fail-on-posture` row
+     was deleted — the flag is also mentioned in a recipe further up. Scoped to
+     the paragraph, verified by deleting that row.
+  2. **Reading source for a runtime property is how a guard invents a defect.**
+     The first version also tried to prove every gate exits `2` by matching
+     `process.exitCode` near a message in `run.ts`. It twice accused the tool of
+     breaching with code `1` — what it had matched was the *usage* error for
+     `--fail-on-production-gap`, which correctly exits 1. Dropped: that property
+     is asserted where it can be asserted honestly, by running it, one test per
+     flag in `tools/cli/run.test.ts`.
+
 ## [9.548.0] — 2026-09-07
 
 ### Added

@@ -204,11 +204,31 @@ a check on must not change the exit code of a job that was already passing — s
 `--fail-on` alone still does not gate. What it no longer does is stay quiet
 about it: that combination now warns on stderr and names the flag.
 
-Exit codes are CI-meaningful: `2` when `--fail-on` is breached (analyze) or the
-revision introduced a finding at/above the threshold (compare), `1` for a
-playbook diff change (`--exit-code`), `3` when a report fails to reproduce, and
-`4` when the saved report body was tampered with — its findings no longer hash
-to its own recorded `result_hash` (checked before the document is re-analyzed).
+Exit codes are CI-meaningful. **`2` means a gate you asked for was breached**,
+and `analyze` has seven of them, each scoped to what it reads:
+
+| Gate | Breaches on |
+|---|---|
+| `--fail-on <sev>` | a finding in the run, for a single document |
+| `--fail-on-delivery <sev>` | a pre-disclosure (`HANDOFF-*`) finding — these sit outside the run, so `--fail-on` never sees them |
+| `--fail-on-posture <rung>` | a dimension of **this** document at or below the rung (a not-stated dimension never counts) |
+| `--fail-on-consistency <sev>` | a cross-document conflict in the bundle |
+| `--fail-on-divergence` | a posture front the documents disagree on |
+| `--fail-on-coherence-regression` | a binding floor that moved to a worse stated rung vs. a baseline |
+| `--fail-on-production-gap` | a Bates gap in a production set (`--production-qa`) |
+
+`compare` uses `2` the same way, when the revision introduced a finding at or
+above the threshold. The rest: `1` for a playbook diff change (`--exit-code`)
+and for a usage error, `3` when a report fails to reproduce, and `4` when the
+saved report body was tampered with — its findings no longer hash to its own
+recorded `result_hash` (checked before the document is re-analyzed).
+
+Each gate is a **separate flag on purpose**: adding a check to the tool must
+never change the exit code of a job that was already passing. The cost of that
+choice is that a gate you did not ask for stays silent, so where silence would
+be dangerous the tool says something instead — `--delivery --fail-on critical`
+warns on stderr that the pre-disclosure findings it just reported are not what
+`--fail-on` reads.
 
 **Stream contract.** With a machine-readable format active (`json`, `sarif`,
 `csv`), stdout carries exactly one serialized artifact — every human summary,
