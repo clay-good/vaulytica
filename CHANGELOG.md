@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.535.0] — 2026-09-07
+
+### Fixed
+- **Three more dormant accessibility guards, in the file whose dormancy was
+  "fixed" one release earlier.** 9.526.0 recorded that `static-html.test.ts`'s
+  `<img>` and form-control checks assert nothing, because the page contains
+  neither. It did not count the guards a few lines below them. The page also has
+  **no `role="button"` element**, so both button checks iterate an empty list,
+  and exactly **one `<nav>`**, while the nav check only has a body when there is
+  more than one. Five dormant guards; two were recorded.
+
+  🥇 **Half a fix looks exactly like a whole one.** When you find one dormant
+  guard, count the others in the same file before writing the record.
+
+  ⚠️ The record counts what is actually **asserted on**, not what matched: both
+  button checks `continue` past a native `<button>`/`<a>`, which satisfies WCAG
+  on its own. A page full of native buttons would make the raw match count
+  non-zero while the guards still tested nothing — so the recorded number is the
+  non-native one, the only one that means anything.
+
+  Verified by planting a `<div role="button" tabindex="0">`: the record fails
+  with *"a dormant guard just woke up"* and the aria-label guard fires on the
+  planted element, proving both halves work.
+
+  **How they were found — a probe worth keeping in mind.** After
+  `export-reach.test.ts`'s first draft turned out to be vacuous, the same
+  question was asked of the whole suite: which tests put *every* assertion
+  inside a loop over a collection that could be empty, with nothing anywhere
+  asserting the loop runs? Raw, that is 241 tests — useless. Restricted to
+  collections that are **derived** (filtered, matched, globbed, queried) rather
+  than written as a literal in the test, it is **16**, and reading those 16 took
+  minutes. Three were real; the rest iterate registries that are provably
+  non-empty. **The narrowing is the whole technique**: a probe that reports
+  everything reports nothing.
+
 ## [9.534.0] — 2026-09-07
 
 ### Added

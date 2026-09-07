@@ -118,18 +118,31 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
   });
 
   /**
-   * 🚨 DORMANT GUARDS — these two assert nothing today, and that is worth
-   * saying out loud rather than leaving behind a green tick.
+   * 🚨 DORMANT GUARDS — five checks in this file assert nothing today, and
+   * that is worth saying out loud rather than leaving behind a green tick.
    *
-   * Both iterate an element type and assert a property of each. The page
-   * currently contains **no `<img>` and no static form control** (the
-   * dropzone's file input is created by JS at runtime and never appears in
-   * this HTML), so both loop bodies never execute and both checks pass
-   * without testing anything.
+   * Each iterates an element type and asserts a property of each one. The page
+   * currently contains no `<img>`, no static form control (the dropzone's file
+   * input is created by JS at runtime and never appears in this HTML), no
+   * `role="button"` element, and exactly one `<nav>` — and the nav check only
+   * has a body when there is more than one. So every one of those loops is
+   * empty and every check passes without testing anything.
    *
-   * They are still worth keeping: they are FORWARD guards that begin working
-   * the moment someone adds the first image or the first static input, which
-   * is exactly when the mistake they catch becomes possible.
+   * 🥇 The `img` and `formControl` halves of this record landed first, and the
+   * `role="button"` and `<nav>` guards sitting a few lines below them did not
+   * — half a fix looks exactly like a whole one. When you find one dormant
+   * guard, count the others in the same file before writing the record.
+   *
+   * ⚠️ `roleButton` counts the elements actually ASSERTED ON, not the elements
+   * matched: both button checks `continue` past a native `<button>`/`<a>`,
+   * which satisfies WCAG on its own. A page full of native buttons would make
+   * the raw match count non-zero while the guards still tested nothing, so the
+   * number recorded here is the one that means something.
+   *
+   * They are all still worth keeping: they are FORWARD guards that begin
+   * working the moment someone adds the first image, static input, custom
+   * button, or second nav — exactly when the mistake they catch becomes
+   * possible.
    *
    * What they must not be mistaken for is accessibility coverage of the
    * shipped page. That comes from `tests/e2e/v3/a11y-axe.spec.ts`, which runs
@@ -143,10 +156,16 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
   it("records which element-level guards are currently dormant", () => {
     const imgs = (html.match(/<img\b[^>]*>/g) ?? []).length;
     const controls = (html.match(/<(?:input|select|textarea)\b[^>]*>/gi) ?? []).length;
+    // Non-native only: the two role="button" guards skip a native <button>/<a>.
+    const roleButton = (html.match(/<[^>]+role=["']button["'][^>]*>/g) ?? []).filter(
+      (tag) => !/<(?:button|a)\b/i.test(tag),
+    ).length;
+    // The nav guard has a body only when there is more than one <nav>.
+    const navs = (html.match(/<nav\b[^>]*>/g) ?? []).length;
     expect(
-      { img: imgs, formControl: controls },
+      { img: imgs, formControl: controls, roleButton, navs },
       "a dormant guard just woke up — that is good news: the element now exists, so update this record and make sure the guard above really covers it",
-    ).toEqual({ img: 0, formControl: 0 });
+    ).toEqual({ img: 0, formControl: 0, roleButton: 0, navs: 1 });
   });
 
   it("every <img> has an alt attribute", () => {
