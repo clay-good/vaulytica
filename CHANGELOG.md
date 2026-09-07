@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.536.0] — 2026-09-07
+
+### Added
+- **A metamorphic relation for the cross-document run — the last second surface
+  without one.** The findings, the extracted data, the critical-dates register,
+  the negotiation posture and the delivery scan all have one. The
+  `ConsistencyRun` did not, and it is the surface with the most to lose from a
+  format change: a cross-document rule reads **two** documents and compares what
+  it found in each, so a transform that moves one side and not the other
+  **manufactures a disagreement out of nothing**. It went un-relationed for a
+  plain reason — until 9.528.0 the engine ran only in the browser, so there was
+  no headless caller to point a relation at.
+
+  It found three movers on its first run, all under one transform (blank lines
+  stripped) and all one root cause — `ingestPaste` joins a short line to the one
+  beneath it, so removing blank lines changes what the party and defined-term
+  extractors read:
+
+  - `governing-law-mismatch` **loses** two `CROSS-DEFTERM-002` conflicts;
+  - `privacy-notice-vs-dpa` **loses** a `CROSS-PARTY-001`;
+  - `termination-mismatch` **gains** two — *"Acme Inc / Acme appears to be the
+    same entity under different legal names"* — where **nothing in either
+    document is inconsistent**.
+
+  🥇 **The debt was known; the COST was not.** At the extraction layer a mover
+  is a divergent record in a table, ratcheted at its source since 9.497.0. At
+  this layer the same movement is a **confident accusation about a pair of
+  contracts**, and it runs in both directions. A finding that appears and
+  disappears with blank lines is worse than a finding that is merely absent.
+
+  🚨 **Measured, and the obvious fix is wrong.** All five `CROSS-PARTY-001`
+  findings the bundle corpus produces differ **only by a corporate suffix**, so
+  "stand down on a suffix-only difference" looks like the repair. It is not:
+  `party-name-conflict` — the bundle named for this rule — is *"Acme Corp" /
+  "Acme Corporation"*, a real drafting inconsistency the rule exists to report.
+  The narrower candidate is **presence versus absence** (one name is the other
+  plus a suffix, so one side names no suffix at all), which separates the three
+  artifacts from the one legitimate finding **exactly**. Not shipped: which
+  spelling of an entity's name is canonical is a normalization decision touching
+  every report and every golden. The ratchet is the evidence for whoever makes
+  it.
+
+  Held by **equality**, so a new mover fails and so does a repair whose line was
+  not removed. Two anti-vacuity tests come with it: the baseline must be real
+  (≥10 bundles, ≥10 producing a conflict, >15 conflicts total), and three of the
+  four transforms must be **inert** — so a green is about the engine, not about
+  transforms too weak to disturb it.
+
+  ⚠️ The diff is a **multiset**: two of the manufactured findings share a rule id
+  and a document pair and differ only in the party they name, so a `Set`
+  collapses them and the damage under-reports by one. Caught by the ratchet
+  disagreeing with the list.
+
 ## [9.535.0] — 2026-09-07
 
 ### Fixed
