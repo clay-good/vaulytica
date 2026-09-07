@@ -460,3 +460,52 @@ describe("a fronted adverbial does not become the obligor", () => {
     expect(got.map((o) => o.obligor)).toContain("Architect");
   });
 });
+
+/**
+ * "will" is also a noun, and legal documents are where it is one.
+ *
+ * "employment with the Company is at will", "any trust created under this
+ * Will", "by beneficiary designation, or by will" — each matched the modal
+ * list, produced an obligor that was a sentence fragment ("employment with the
+ * Company is at"), and an ACTION THAT WAS EMPTY. The obligations ledger's whole
+ * proposition is "who must do what"; a row with the what missing was printed
+ * into the CSV a lawyer reads. Seven across the corpus.
+ */
+describe("extractObligations — a modal with no verb phrase after it", () => {
+  const obl = (tree: ReturnType<typeof buildTree>) => extractObligations(tree, []);
+  const actions = (text: string): string[] =>
+    obl(buildTree(["Agreement", text])).map((o) => o.action);
+
+  it("does not read at-will employment as an obligation", () => {
+    expect(
+      actions("Employment with the Company is at will and may be terminated at any time."),
+    ).not.toContain("");
+    expect(obl(buildTree(["Agreement", "Employment with the Company is at will."]))).toEqual([]);
+  });
+
+  it("does not read the testamentary instrument as an obligation", () => {
+    expect(
+      obl(buildTree(["Last Will", "The residue passes to any trust created under this Will."])),
+    ).toEqual([]);
+  });
+
+  it("still reads 'will' as a modal when a verb phrase follows it", () => {
+    // The whole point of keeping "will" in the modal list.
+    const out = actions("Provider will deliver the Deliverables to Customer.");
+    expect(out.some((a) => /deliver the Deliverables/.test(a))).toBe(true);
+  });
+
+  it("keeps a duty whose action was swallowed by its own trigger", () => {
+    // The narrow test is `no action AND no trigger AND no qualifier`. Here the
+    // trigger pattern's tail runs to the end of the sentence and takes the verb
+    // phrase with it — a real duty, and it must survive.
+    const out = obl(
+      buildTree([
+        "Notice",
+        "If you record a notice of completion, you must within 10 days after recording send a copy of the notice to your contractor.",
+      ]),
+    );
+    expect(out.length).toBeGreaterThan(0);
+    expect(out[0]!.trigger).toMatch(/within 10 days/);
+  });
+});

@@ -128,6 +128,23 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // Deliverables, , no later than …". Collapse the doubled separator.
         action = action.replace(/,\s*,/g, ",");
 
+        // A MODAL WITH NO VERB PHRASE AFTER IT IS NOT AN OBLIGATION. "will" is
+        // also a noun, and legal documents are where it is one: "employment
+        // with the Company is at will", "any trust created under this Will",
+        // "by beneficiary designation, or by will". Each produced a row whose
+        // obligor was a sentence fragment ("employment with the Company is at")
+        // and whose ACTION WAS EMPTY — "who must do what", with the what
+        // missing, printed straight into the obligations ledger a lawyer reads.
+        //
+        // The trigger/qualifier test is what keeps this narrow. An action can
+        // also come back empty because the TRIGGER swallowed the verb phrase
+        // ("you must within 10 days after recording send a copy…", where the
+        // trigger pattern's tail runs to the sentence end) — that row names a
+        // real duty and is kept. Only a modal with nothing after it at all is
+        // dropped. 7 of the corpus's 8 empty actions are the noun; the eighth
+        // is that swallowed trigger, and it survives.
+        if (!action && !trigger && !qualifier) continue;
+
         out.push({
           id: nextId(),
           obligor,

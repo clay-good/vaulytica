@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.540.0] — 2026-09-07
+
+### Fixed
+- **"will" is also a noun, and legal documents are where it is one.** The
+  obligations extractor lists `will` as a modal, so *"employment with the
+  Company is at **will**"*, *"any trust created under this **Will**"* and *"by
+  beneficiary designation, or by **will**"* each produced an obligation whose
+  obligor was a sentence fragment — *"employment with the Company is at"* — and
+  whose **action was empty**. The obligations ledger's whole proposition is
+  *who must do what*; a row with the *what* missing went straight into the CSV a
+  lawyer reads. Seven across the corpus, in a handbook, two offer letters, a
+  non-compete, a revocable trust and a will.
+
+  A modal with no verb phrase after it, and no trigger or qualifier either, is
+  not an obligation. Corpus obligations 3,194 → 3,187 — exactly the seven — and
+  empty actions 8 → 1.
+
+  🥇 **The trigger/qualifier test is what keeps it narrow, and the eighth row is
+  why it is there.** An action can also come back empty because the TRIGGER
+  swallowed the verb phrase: in the mechanics'-lien notice, *"you must within 10
+  days after recording send a copy of the notice…"* has a trigger pattern whose
+  tail runs to the end of the sentence and takes the verb with it. That row
+  names a real duty and survives. (The greedy trigger tail is a separate,
+  pre-existing defect, recorded rather than fixed here — repairing it means
+  changing where a trigger stops, which moves every trigger in the corpus.)
+
+  **How it was found:** by *looking at* an artifact this session had just made
+  reachable. `--format obligations-csv` shipped in 9.533.0, and the first thing
+  it printed for a mechanics'-lien notice was a row with an empty action column.
+  🥇 **Giving a dormant artifact its first caller is a probe; actually READING
+  its output is the rest of the probe.**
+
 ## [9.539.0] — 2026-09-07
 
 ### Added
