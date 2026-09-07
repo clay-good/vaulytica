@@ -64,6 +64,7 @@ import {
   breakLongTokens,
   dkbCurrency,
 } from "./citations.js";
+import { describeExecutionLogEntry, erroredRuleNotice } from "./execution-log.js";
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { V3ReportInputs } from "./v3/types.js";
@@ -1177,9 +1178,14 @@ function renderAuditTrail(
     }),
     spacer(),
     h2("Rules executed"),
+    // Gated on presence: a run in which no rule threw renders exactly as it
+    // did before this notice existed.
+    ...(erroredRuleNotice(run.execution_log)
+      ? [para({ text: erroredRuleNotice(run.execution_log)! })]
+      : []),
     ...run.execution_log.map((e) =>
       para({
-        text: `${e.rule_id} v${e.rule_version} — ${!e.ran ? "skipped" : e.fired ? "fired" : "silent"}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
+        text: `${e.rule_id} v${e.rule_version} — ${describeExecutionLogEntry(e)}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
       }),
     ),
     spacer(),

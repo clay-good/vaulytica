@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.504.0] — 2026-09-06
+
+### Fixed
+- **A rule that CRASHED was reported as "screened, and clean".** The audit
+  trail rendered `!ran ? "skipped" : fired ? "fired" : "silent"`, which has no
+  branch for a rule that threw — so a crashing rule printed **`silent`**, and
+  `silent` is exactly what the report means by "we checked this and found
+  nothing".
+
+  The engine already knew better. `ExecutionLogEntry.errored` was added
+  specifically to break that conflation, and its own doc comment says why:
+  "a crashing rule reports 'screened, and clean' with nothing to contradict
+  it." It was produced by both runners and **read by no surface anywhere**, so
+  the conflation it was written to end outlived it. Found by re-running the
+  dead-optional-field probe over `src/engine` — a root the original sweep did
+  not walk.
+
+  A rule that throws is still treated as silent by the ENGINE: the rule
+  contract is pure and one bad rule must not take down a run. That is correct
+  and unchanged. What changed is that the report now says so, because "this
+  check crashed" and "this check passed" are not the same sentence to a lawyer
+  relying on the review.
+
+  Three renderers had the defect, two of them from the identical expression
+  written out twice — `docx.ts` and `bundle.ts` could have disagreed about what
+  an audit line means. `src/report/execution-log.ts` is the single owner now.
+  The cross-document pass had its own third copy (`ran ? "ran, N findings" :
+  "skipped"`), and `ConsistencyExecutionLogEntry.errored` was likewise unread.
+
+  Both audit trails also gained a **roll-up** above the list, naming the rules
+  and saying plainly that the document was not checked against them. A
+  per-line label is only found by someone who reads all several hundred lines.
+
+  Every addition is gated on presence, so a run in which no rule threw renders
+  byte-identically and **no golden moved** — which the regenerated goldens
+  confirm.
+
 ## [9.503.0] — 2026-09-06
 
 ### Fixed

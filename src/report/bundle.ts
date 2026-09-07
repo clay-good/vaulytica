@@ -52,6 +52,11 @@ import type { DKB, SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { formatBibliographyEntry, dkbCurrency } from "./citations.js";
+import {
+  describeConsistencyLogEntry,
+  describeExecutionLogEntry,
+  erroredRuleNotice,
+} from "./execution-log.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import { buildJsonReport } from "./json.js";
 import { buildFixListMarkdown, buildFixListCsv, buildDeadlinesIcs } from "./exports.js";
@@ -1381,12 +1386,20 @@ function renderAuditTrail(input: BundleReportInput): Paragraph[] {
   }
   out.push(spacer());
   out.push(h2("Per-document rule execution"));
+  // Gated on presence, so a bundle in which no rule threw is byte-identical.
+  {
+    const notice = erroredRuleNotice([
+      ...input.documents.flatMap((d) => d.run.execution_log),
+      ...input.consistency.execution_log,
+    ]);
+    if (notice) out.push(para({ text: notice }));
+  }
   for (const d of input.documents) {
     out.push(para({ text: `— ${d.source_file_name}`, bold: true }));
     for (const e of d.run.execution_log) {
       out.push(
         para({
-          text: `${e.rule_id} v${e.rule_version} — ${!e.ran ? "skipped" : e.fired ? "fired" : "silent"}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
+          text: `${e.rule_id} v${e.rule_version} — ${describeExecutionLogEntry(e)}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
         }),
       );
     }
@@ -1396,7 +1409,7 @@ function renderAuditTrail(input: BundleReportInput): Paragraph[] {
   for (const e of input.consistency.execution_log) {
     out.push(
       para({
-        text: `${e.rule_id} v${e.rule_version} — ${e.ran ? `ran, ${plural(e.findings_count, "finding")}` : "skipped (requires not satisfied)"} (${formatElapsed(e.elapsed_ms)} ms)`,
+        text: `${e.rule_id} v${e.rule_version} — ${describeConsistencyLogEntry(e, plural(e.findings_count, "finding"))} (${formatElapsed(e.elapsed_ms)} ms)`,
       }),
     );
   }
