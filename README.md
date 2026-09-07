@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `13,986+ passing tests` · `v9.505.0` · `MIT`
+`1,825 deterministic rules` · `20 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `10 export formats` · `0 servers` · `0 AI` · `14,001+ passing tests` · `v9.506.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -98,6 +98,8 @@ Those 1,825 are all **single-document** rules. Dropping a folder or `.zip` addit
 | `CROSS-DEFTERM` · `CROSS-PARTY`                 | a term defined one way in the MSA and another in the SOW; party-name drift             |
 | `CROSS-AMOUNT` · `CROSS-DATE` · `CROSS-MISSING` | fee/date conflicts between documents; a referenced companion doc that isn't in the set |
 | `CC-001`…`CC-007`                               | BAA ↔ MSA ↔ DPA scope consistency (e.g. a BAA purpose broader than the MSA permits)    |
+
+A bundle also answers the question that comes before any of those: **is this all of it?** Every playbook records the families it is normally paired with, so the consolidated report ends with **"Companion Documents Not in This Package"** — an MSA and its SOW are told there is no data-processing addendum, no vendor security addendum and no AI-usage addendum in the set, and which document asked for each. This is deliberately *not* a finding and enters no hash: a companion is usually absent for a good reason, and the reasons are yours to weigh. It complements `CROSS-MISSING-001` rather than repeating it — that rule fires when a document's own **text** names a companion that isn't there (a broken reference, and a real defect); this says which papers documents **of this kind** normally travel with, whether or not anything mentions them. The section is omitted entirely when nothing is missing, so a complete package reads exactly as it did before.
 
 ## Clean to send — the pre-disclosure scan (v9 Thrust A)
 
@@ -1359,7 +1361,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 13,986+ tests, ~140s
+npm run test         # vitest — 14,001+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

@@ -75,6 +75,7 @@ The schema is enforced by [`PlaybookSchema`](../src/playbooks/types.ts). Require
 - Categories in `required_clauses` / `expected_clauses` should match the canonical taxonomy in [`dkb/build/classifier_taxonomy.json`](../dkb/build/classifier_taxonomy.json). Anything outside the taxonomy is silently ignored by the matcher until a corresponding alias lands.
 - Severities are `critical | warning | info`.
 - Every `companion_playbooks` id must name a playbook the runtime can actually route to — the 12 launch playbooks under [`playbooks/`](../playbooks/) plus the v3–v6 waves bundled into `playbooks/extended.json`. The integration test `playbook-cross-references.test.ts` enforces this, and also rejects a playbook that lists itself, a companion listed twice, and a blank `regulator_frame`. Note that the base families most often named as companions (`saas-customer`, `employment-at-will-us`, `lease-commercial-multitenant`, …) live **only** under `playbooks/` and not under `src/playbooks/`, so resolve against the union, never one root.
+  The field is read by [`missingCompanions`](../src/report/companions.ts), which drives the bundle report's "Companion Documents Not in This Package" section — so a pairing you add here becomes something a reader sees. Name the document a reviewer would actually ask for next, not every family that is loosely related.
 
 ### Does each distinguishing phrase actually distinguish?
 

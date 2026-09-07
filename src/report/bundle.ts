@@ -52,6 +52,7 @@ import type { DKB, SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { formatBibliographyEntry, dkbCurrency } from "./citations.js";
+import type { CompanionGap } from "./companions.js";
 import {
   describeConsistencyLogEntry,
   describeExecutionLogEntry,
@@ -237,6 +238,21 @@ export type BundleReportInput = {
    * Bates stamps, redaction integrity, and the validity of any privilege claim
    * were not checked.
    */
+  /**
+   * Companion documents the families in this package name but the package does
+   * not contain (`Playbook.companion_playbooks`) — a Complaint without its
+   * Answer, a Document Request without the Discovery Responses that reply to
+   * it. Computed by {@link missingCompanions} at the one place that knows both
+   * the package and the full catalog, and passed in the way `posture_coherence`
+   * and `production_qa` are.
+   *
+   * Deliberately **not** a finding and outside `bundle_fingerprint`: a finding
+   * asserts something about the text of a document the user supplied, and this
+   * is an observation about the package. Omitted (back-compat) when the package
+   * names no absent companion — and by every caller that does not supply a
+   * catalog — so existing bundles render byte-identically.
+   */
+  companion_gaps?: ReadonlyArray<CompanionGap>;
   production_qa?: ProductionQaReport;
 };
 
@@ -377,6 +393,13 @@ export type BundleJson = {
    * (back-compat) for every csv-free bundle, so existing bundle JSON is
    * byte-unchanged.
    */
+  /**
+   * Companion documents the package names but does not contain. Mirrors the
+   * DOCX "Companion Documents Not in This Package" section. Outside
+   * `bundle_fingerprint`; omitted when there are none, so existing bundle JSON
+   * is byte-unchanged.
+   */
+  companion_gaps?: CompanionGap[];
   production_qa?: ProductionQaReport;
 };
 
@@ -431,6 +454,12 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
   }
   if (input.production_qa) {
     out.production_qa = input.production_qa;
+  }
+  if (input.companion_gaps && input.companion_gaps.length > 0) {
+    out.companion_gaps = input.companion_gaps.map((g) => ({
+      ...g,
+      expected_by: [...g.expected_by],
+    }));
   }
   const anyFamily = input.documents.some(
     (d) => typeof d.detected_family === "string" && d.detected_family.length > 0,
@@ -501,6 +530,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderPostureCoherenceSection(input.posture_coherence),
     ...renderPostureMovementSection(input.posture_movement),
     ...renderProductionQaSection(input.production_qa),
+    ...renderCompanionGapsSection(input.companion_gaps),
     ...renderBibliography(bibliography, dkbCurrency(input.dkb.manifest)),
     ...renderAuditTrail(input),
     ...renderDisclaimer(),
@@ -1055,6 +1085,47 @@ function renderPostureCoherenceSection(
  * log; in-page Bates stamps, redaction integrity, and the validity of any
  * privilege claim were not checked.
  */
+/**
+ * "Companion Documents Not in This Package" — the families the package's own
+ * documents name as pairings, that the package does not contain.
+ *
+ * Framed as a question rather than a defect, because the reasons a companion
+ * is absent are usually good ones: it does not exist yet, it is out of scope,
+ * it is privileged, or the reviewer already has it. The section says who asked
+ * for each one so the reader can judge, and says plainly that an absence here
+ * is not a finding.
+ *
+ * Omitted entirely for a package with no gaps and for every caller that
+ * supplies no catalog, so existing bundle goldens are byte-unchanged.
+ */
+function renderCompanionGapsSection(
+  gaps: ReadonlyArray<CompanionGap> | undefined,
+): (Paragraph | Table)[] {
+  if (!gaps || gaps.length === 0) return [];
+  const out: (Paragraph | Table)[] = [h1("Companion Documents Not in This Package")];
+  out.push(
+    para({
+      text: "Each document in this package names the documents it is normally paired with. The families below were named and are not present. This is an observation about the package, not a finding about any document in it — a companion is often absent for a good reason (it does not exist yet, it is outside the scope of this review, or you already hold it). Nothing here affects any result hash.",
+    }),
+  );
+  out.push(spacer());
+  const header = headerRow(["Not in this package", "Named by"]);
+  const rows = gaps.map(
+    (g) =>
+      new TableRow({
+        children: [
+          styledCell(`${g.missing_playbook_name} (${g.missing_playbook_id})`, { bold: true }),
+          styledCell(g.expected_by.join(", ")),
+        ],
+      }),
+  );
+  out.push(
+    new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [header, ...rows] }),
+  );
+  out.push(spacer());
+  return out;
+}
+
 function renderProductionQaSection(
   production_qa: ProductionQaReport | undefined,
 ): (Paragraph | Table)[] {

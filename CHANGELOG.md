@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.506.0] — 2026-09-06
+
+### Added
+- **"Companion Documents Not in This Package" — the bundle report now answers
+  the question that comes before every finding: is this all of it?**
+
+  `Playbook.companion_playbooks` ("suggested two-document pairings") is
+  declared on 205 of the 267 shipped playbooks, 335 references in all, schema-
+  validated since v3 — and until 9.505.0 nothing read it, which is how a
+  dangling pointer survived in it unnoticed. A bundle is the one surface where
+  the pointer can do work, because it is the only one that knows whether the
+  companion is **in the room**.
+
+  Dropping a Master Services Agreement and its Statement of Work now ends the
+  consolidated report with the vendor paper that is not there — no data-
+  processing addendum, no vendor security addendum, no AI-usage addendum, no
+  BAA — and names which document asked for each. Add the DPA to the package and
+  that row retires itself.
+
+  **Deliberately not a finding, and in no hash.** A finding asserts something
+  about the text of a document you supplied; "you did not give us the DPA" is
+  an observation about the package, and a companion is usually absent for a
+  good reason (it does not exist yet, it is out of scope, you already hold it).
+  The section says so in as many words.
+
+  It complements `CROSS-MISSING-001` rather than repeating it. That rule is a
+  finding, it covers three families, and it fires when a document's own **text**
+  names a companion that is not in the bundle — a broken reference. This says
+  which papers documents **of this kind** normally travel with, across all 267
+  families, whether or not anything mentions them.
+
+  Shape: `src/report/companions.ts` is a pure function over (package, catalog),
+  computed in `prepareBundle` — the one place holding both the package and the
+  full catalog the ids must resolve against — and rendered by the bundle DOCX
+  and bundle JSON. Two honesty rules are load-bearing and tested: a companion
+  id the catalog cannot resolve is **dropped**, never rendered under a name
+  derived from its id; and a family present in the package is never reported
+  missing from it. Deterministic ordering, so two runs of one package render
+  byte-identically.
+
+  Gated on presence throughout, so a package with no gap — and every caller
+  that supplies no catalog — renders exactly as it did before the field
+  existed. **No bundle golden moved.**
+
+  🚨 The integration test's header records the trap: **a `.docx` is a zip**, so
+  asserting the back-compat case with `not.toContain` over `blob.text()` passes
+  against any string whatsoever. The negative case unzips `word/document.xml`
+  like every other DOCX assertion in the suite.
+
 ## [9.505.0] — 2026-09-06
 
 ### Fixed

@@ -98,6 +98,7 @@ import {
   obligationsCsvBlob,
   deadlinesIcsBlob,
 } from "../report/exports.js";
+import { missingCompanions, type CompanionGap } from "../report/companions.js";
 import {
   buildBundleDocxReport,
   buildBundleJsonBlob,
@@ -1077,6 +1078,14 @@ export type PreparedBundle = {
    */
   privilege_log?: PrivilegeLogMember;
   /**
+   * Companion documents the package's own families name but the package does
+   * not contain. Computed here because this is the one place that holds both
+   * the package and the full catalog the ids must resolve against; rendered by
+   * `runBundleReport`. Absent when nothing is missing, so an ordinary bundle
+   * is byte-unchanged.
+   */
+  companion_gaps?: CompanionGap[];
+  /**
    * Per-document pre-production HANDOFF scans (add-production-qa-pack),
    * populated only when a privilege log rode in with the bundle. Fed into the
    * production-QA report's delivery roll-up in `runBundleReport`. Absent for an
@@ -1369,6 +1378,13 @@ export async function prepareBundle(
     });
   }
 
+  // The companion field is a pointer between playbooks, so it can only be
+  // resolved where the whole catalog is in hand — here, not in the renderer.
+  const companion_gaps = missingCompanions(
+    perDoc.map((d) => ({ playbook_id: d.playbook.id })),
+    [...launchPlaybooks, ...extendedPlaybooks],
+  );
+
   return {
     documents: perDoc,
     rejected,
@@ -1376,6 +1392,7 @@ export async function prepareBundle(
     dkb,
     ...(privilege_log ? { privilege_log } : {}),
     ...(productionDeliveries.length > 0 ? { production_deliveries: productionDeliveries } : {}),
+    ...(companion_gaps.length > 0 ? { companion_gaps } : {}),
   };
 }
 
@@ -1459,6 +1476,7 @@ export async function runBundleReport(
     posture_coherence?: PostureCoherence;
     posture_movement?: CoherenceMovement;
     production_qa?: ProductionQaReport;
+    companion_gaps?: ReadonlyArray<CompanionGap>;
   } = {
     documents: prepared.documents.map((d) => ({
       doc_id: docIdFor(d.filename),
@@ -1489,6 +1507,10 @@ export async function runBundleReport(
     // Absent on a plain bundle run, so every bundle golden is byte-unchanged.
     posture_movement: options.posture_movement,
     production_qa,
+    // add-companion-documents — the families this package names but does not
+    // contain. Absent on a package with no gaps, so every bundle golden that
+    // had none is byte-unchanged.
+    companion_gaps: prepared.companion_gaps,
   };
   const bundle_docx_blob = await buildBundleDocxReport(bundleInput);
   const bundle_json_blob = await buildBundleJsonBlob(bundleInput);
