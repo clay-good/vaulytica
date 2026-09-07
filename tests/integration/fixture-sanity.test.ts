@@ -26,8 +26,20 @@ const CONTRACTS = join(__dirname, "..", "fixtures", "contracts");
  * is a deliberate scope change — say why in the PR.
  */
 const EXPECTED_RULE_IDS: Record<string, string[]> = {
-  // Clean NDA — the structural rules silently pass; we don't assert
-  // any specific finding for this one.
+  // A genuinely clean fixture UNDER THIS HARNESS'S SCOPE, which is the
+  // detail that matters: `runFixture` runs `LAUNCH_RULES` only — the 80 v1
+  // rules — not the v3–v6 catalog. The structural rules pass silently, so
+  // there is no specific finding to require.
+  //
+  // 🚨 Do not "correct" this from what the CLI reports. `vaulytica analyze`
+  // runs the FULL catalog and routes this fixture to `mutual-nda-deep` (v2's
+  // `mutual-nda` is deprecated with `superseded_by`, and the matcher tiebreaks
+  // toward the live successor), where 25 deep-NDA rules apply and nine fire at
+  // critical. Both are right; they are different rule sets. Comparing the two
+  // and "fixing" the mismatch was attempted and reverted.
+  //
+  // The empty list no longer means "assert nothing" — see the clean-fixture
+  // branch below.
   "mutual-nda.docx": [],
 
   // bad-nda.docx carries 5 intentional violations. The engine now
@@ -279,7 +291,20 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
 describe("fixture sanity guards", () => {
   for (const [name, required] of Object.entries(EXPECTED_RULE_IDS)) {
     if (required.length === 0) {
-      it.skip(`${name}: no sanity guard (baseline clean fixture)`, () => {});
+      // A fixture with nothing required is a BASELINE CLEAN one, and the
+      // assertion that belongs to it is that it stays clean. This used to
+      // `it.skip` and assert nothing at all — which is how `mutual-nda.docx`
+      // came to sit here labelled "clean" while producing nine criticals.
+      // A guard that guards nothing is worse than no guard: it occupies the
+      // slot where the real check would go.
+      it(`${name}: stays clean — no critical findings`, async () => {
+        const { run } = await runFixture(join(CONTRACTS, name));
+        const criticals = run.findings.filter((f) => f.severity === "critical");
+        expect(
+          criticals.map((f) => `${f.rule_id}: ${f.title}`),
+          "a baseline clean fixture must not draw critical findings; if this is now a legitimate finding, move the fixture off the clean list and give it required rule ids",
+        ).toEqual([]);
+      });
       continue;
     }
     it(`${name}: every required rule fires`, async () => {

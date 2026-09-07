@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.525.0] — 2026-09-07
+
+### Fixed
+- **A test that asserted nothing, in the slot where the real check belonged.**
+  `fixture-sanity.test.ts` guards that each fixture still fires the rules it is
+  supposed to. For a fixture with an empty required-list — a *baseline clean*
+  one — it called `it.skip` and asserted nothing at all.
+
+  But a clean fixture has the most valuable assertion of all available to it:
+  **that it stays clean.** That is precisely the false-positive regression this
+  whole session has been chasing. The branch now runs and requires zero
+  critical findings, with a message telling a future reader what to do if the
+  finding is legitimate (move the fixture off the clean list and give it rule
+  ids). Two fixtures qualify — `mutual-nda.docx` and `pasted-mutual-nda.txt` —
+  so **the suite's last two skips became two live assertions**: it now reports
+  14,042 passed and **zero skipped**. Flipping the severity filter proves they
+  read real findings rather than passing vacuously.
+
+  **A guard that guards nothing is worse than no guard — it occupies the slot
+  where the real check would go.**
+
+### Changed
+- 🚨 **A "correction" I attempted here was wrong, and the test caught it.**
+  Running the fixture through the CLI showed **9 critical findings**, against a
+  comment reading "Clean NDA — the structural rules silently pass". That looked
+  like a stale comment hiding a routing change, and I rewrote it to say so.
+
+  It was my own scope confusion. `runFixture` runs **`LAUNCH_RULES` only** — the
+  80 v1 rules — while `vaulytica analyze` runs the full v3–v6 catalog and routes
+  the fixture to `mutual-nda-deep` (v2's `mutual-nda` is deprecated with
+  `superseded_by`, and the matcher tiebreaks toward the live successor), where
+  25 deep-NDA rules apply. **Both are right; they are different rule sets.** The
+  original comment was accurate and is restored, now saying which scope it
+  means and warning the next reader not to "fix" it from CLI output.
+
+  Seventh time this session that a mismatch turned out to be the probe rather
+  than the engine — and the first where the repo's own test refused the bad
+  change before it could ship.
+
 ## [9.524.0] — 2026-09-07
 
 ### Added
