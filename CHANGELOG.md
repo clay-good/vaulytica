@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.511.0] — 2026-09-06
+
+### Changed
+- **Raised two CI budgets to match what the suite now costs.** 9.510.0 restored
+  both timed-out workflows, and the durations it settled at deserve a second
+  look rather than a green tick: **Deploy 17m29s against a 20-minute budget
+  (87% of it) and the cross-OS matrix 21m04s against 25 (84%).** Both were
+  10–15 minutes before. A job sitting that close to its ceiling flakes on a
+  slow runner, and the failure mode is the one that already cost two releases —
+  GitHub reports over-budget as `cancelled`, not `failed`, which reads as a
+  supersede.
+
+  `deploy.yml` 20 → **28**, `test-matrix.yml` 25 → **34**, each restoring ~40%
+  headroom. Both now carry a comment saying what the measured duration was, why
+  the suite is structurally slower (the 9.508.0 matcher fix folds the document
+  properly instead of running a substring test — the change that removed 515
+  spurious critical findings), and 🚨 **that an over-budget job must be
+  diagnosed by DURATION, never by status.**
+
+  This is a budget change, not a performance excuse: the cost is real, it was
+  measured (test time 20.5s → 26.4s on two corpus relations, 1.29× of the
+  pre-9.508.0 baseline), and it buys correctness the tool's findings depend on.
+
 ## [9.510.0] — 2026-09-06
 
 ### Fixed

@@ -16,7 +16,18 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 20 until 9.511.0. The suite got structurally slower in 9.508.0 — the
+    # family matcher folds the document properly now instead of running a
+    # substring test, which is what removed 515 spurious critical findings —
+    # and this job settled at 17m29s against the 20-minute budget: green, but
+    # 87% of it, which flakes on a slow runner. Raised to keep ~40% headroom.
+    #
+    # 🚨 A job over budget is reported by GitHub as `cancelled`, not `failed`,
+    # and that is indistinguishable at a glance from one superseded by a later
+    # push. Diagnose by DURATION (createdAt -> updatedAt vs this number), never
+    # by status. Two releases shipped with this job red because it looked like
+    # a supersede.
+    timeout-minutes: 28
     # Exposing the secret as a job-level env var lets `if:` skip the
     # deploy + e2e steps gracefully on forks / environments where the
     # Cloudflare credentials have not been configured. The build/test

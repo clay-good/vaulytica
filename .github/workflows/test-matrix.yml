@@ -28,7 +28,13 @@ jobs:
     # took 14m51s. Raised with headroom rather than to the edge, and paired with
     # a 45% cut to the heaviest file (`format-invariance` now analyzes the clean
     # corpus once instead of once per transform: 191s -> 106s).
-    timeout-minutes: 25
+    # 15 -> 25 earlier, 25 -> 34 in 9.511.0. Same cause as deploy.yml: the
+    # 9.508.0 matcher correctness fix made the suite structurally slower, and
+    # this job settled at 21m04s against 25 — 84% of budget. Three OSes run in
+    # parallel, so the slowest runner sets the time.
+    #
+    # 🚨 Over-budget reports as `cancelled`, not `failed`. Diagnose by DURATION.
+    timeout-minutes: 34
     strategy:
       fail-fast: false
       matrix:
