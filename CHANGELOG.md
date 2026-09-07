@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.524.0] — 2026-09-07
+
+### Added
+- **The two end-to-end scenarios spec-v3 Step 33 names by hand — written, run,
+  and passing.** After the 9.520.0 re-verification these were the only reason
+  step 33 was still 🟡. Adjacent coverage existed (chip-row keyboard
+  operability, the BAA offline flow, multi-doc card downloads) but neither
+  named path was asserted.
+
+  `tests/e2e/v3/spec-scenarios.spec.ts` drives the real page through a real
+  analysis for both:
+
+  - **Drop a BAA → HIPAA frame on by default.** Reads the chip off
+    `data-frame="HIPAA"` and asserts `aria-checked="true"` — the DEFAULT, not
+    merely that a chip exists. A frame row that renders but defaults wrong is
+    worse than no row.
+  - **Drop a DPA and an MSA → the cross-document consistency toggle is visible
+    and checked**, the cross-document summary is non-empty, and both
+    per-document cards rendered. That toggle is the user's control over the
+    only analysis that reads two documents against each other.
+
+  Verified by running them, not by writing them: **2 passed**. The first
+  attempt failed on a wrong wait selector (`bundle-docx-download`; the real one
+  is `bundle-download`), which is exactly why they were run rather than
+  reasoned about.
+
+  **Step 33 → ✅.** Every item that row ever listed is now done. Tally across
+  the audit: **61 → 64 complete, 6 → 3 partial.**
+
+  The three that remain are all honest and none is ordinary pending work: two
+  missing implementations (29 — the ACORD-25 spatial extractor and the
+  privacy-policy ↔ DPA paired check), a deployed-URL-vs-built-artifact wording
+  question (36), and a manual screen-reader pass blocked on a human (37).
+
 ## [9.523.0] — 2026-09-07
 
 ### Fixed
