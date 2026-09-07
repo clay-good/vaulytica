@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.542.0] — 2026-09-07
+
+### Added
+- **A guard for what the GitHub Action actually runs.**
+  `action-input-reach.test.ts` (9.529.0) asserts the two halves of `action.yml`
+  are **wired** — every declared input exported, every exported name read. It
+  passes just as happily for a script that reads `$CONSISTENCY` and appends the
+  wrong flag, appends it to `compare` (which has no bundle and would reject it),
+  or drops it when a sibling input is also set. Those are the mistakes a shell
+  script written inside YAML actually makes, and none of them is visible to a
+  reader.
+
+  `action-argv.test.ts` extracts the composite step's shell body **from
+  `action.yml` itself**, replaces the binary call with an `echo`, and asserts
+  the composed argv for eight input combinations: the analyze defaults;
+  `consistency: true` reporting without gating; `fail-on-consistency` passed
+  **alone**, because the flag implies the pass and a duplicate is noise in the
+  command the Action echoes; anything but the literal `"true"` meaning off (a
+  YAML input is a string, and a workflow writing `consistency: false` must not
+  get the opposite); the bundle flags **never** reaching `compare`; `compare`
+  keeping its own format default; and both missing-input errors.
+
+  It tests the shipped text rather than a copy of it, and it was **proven by
+  breaking the routing** — dropping the `analyze`-only condition makes the
+  compare case fail. This turns a manual check made while writing 9.529.0 into
+  something that stays true.
+
 ## [9.541.0] — 2026-09-07
 
 ### Changed
