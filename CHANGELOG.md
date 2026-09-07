@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.518.0] — 2026-09-07
+
+### Changed
+- **The two family selectors did the same work twice; the second pass is now a
+  lookup.** `selectMatchCandidates` scores all 255 extended playbooks against a
+  document, and then `selectSecondaryFamilies` tests the same 255 against the
+  same document — re-evaluating every title keyword and distinguishing phrase
+  it had just evaluated. Each playbook's matched features are cached inside the
+  per-document `WeakMap` that already held the folded corpora.
+
+  Profiled over the 312 specimens, in one process:
+
+  | phase | before | after |
+  |---|---|---|
+  | `selectMatchCandidates` | 4,223 ms | 4,203 ms |
+  | `selectSecondaryFamilies` | 4,101 ms | **8 ms** |
+  | **both** | **8,324 ms** | **4,210 ms** |
+
+  The two were **81% of the per-document pipeline** (10.3 s total, against
+  ingest 300 ms, extract 1,121 ms, `matchPlaybook` 555 ms), and half of that was
+  the repeat.
+
+  **Pure memoization of a pure function: routing and the secondary-family set
+  are byte-identical across all 312 specimens.**
+
+  Full-suite wall time went 417 s → 256 s on the same machine. Treat that as
+  corroborating rather than rigorous — wall clock across runs carries load
+  noise, which is why this repo does not gate on it; the same-process phase
+  table above is the measurement.
+
+  This pays back the cost 9.508.0 introduced. The correctness fix there — a
+  matcher that folds the document instead of running a substring test —
+  doubled the suite, and 9.510.0 recovered part of it while stating plainly
+  that it stopped at 1.29× baseline. **This is the part I should have found
+  then, and would have, had I profiled instead of reasoning about which code
+  looked expensive.** The CI budgets raised in 9.511.0 stay where they are:
+  runner variance on the same job was ~6 minutes, so the headroom is the point.
+
 ## [9.517.0] — 2026-09-07
 
 ### Fixed

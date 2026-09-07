@@ -85,6 +85,15 @@ type Matchers = {
   /** Classifier categories present, and defined terms, folded once per document. */
   categories: ReadonlySet<string>;
   definedTerms: ReadonlySet<string>;
+  /** Which of a playbook's features this document matched, by playbook id. */
+  hits: Map<string, FeatureHits>;
+};
+
+/** The three feature kinds both selectors read, evaluated once per document. */
+type FeatureHits = {
+  title: readonly string[];
+  dist: readonly string[];
+  req: readonly string[];
 };
 
 /**
@@ -117,21 +126,45 @@ function corpusMatchers(signals: CandidateSignals): Matchers {
     inBody: featureMatcher(signals.body),
     categories: new Set(signals.classified.map((c) => c.category)),
     definedTerms: new Set(signals.extracted.definitions.entries.map((e) => e.term.toLowerCase())),
+    hits: new Map(),
   };
   MATCHER_CACHE.set(signals, built);
   return built;
 }
 
-export function familySignalStrength(playbook: Playbook, signals: CandidateSignals): number {
-  const { inTitle, inBody, categories, definedTerms } = corpusMatchers(signals);
+/**
+ * A playbook's matched features against one document, computed once.
+ *
+ * 🥇 `selectMatchCandidates` scores all 255 extended playbooks, then
+ * `selectSecondaryFamilies` tests the same 255 against the same document —
+ * evaluating every title keyword and distinguishing phrase a second time.
+ * Profiled over the 312 specimens the two selectors were **8.3 of 10.3 seconds**,
+ * 81% of the per-document pipeline, and half of that was the repeat.
+ *
+ * Keyed by playbook id inside the per-document cache, so it lives exactly as
+ * long as the `signals` object the caller built.
+ */
+function featureHits(playbook: Playbook, signals: CandidateSignals): FeatureHits {
+  const m = corpusMatchers(signals);
+  const cached = m.hits.get(playbook.id);
+  if (cached) return cached;
   const f = playbook.match_features;
+  const built: FeatureHits = {
+    title: f.title_keywords.filter(m.inTitle),
+    dist: f.distinguishing_phrases.filter(m.inBody),
+    req: f.required_clauses.filter(
+      (cat) => m.categories.has(cat) || m.definedTerms.has(cat.toLowerCase()),
+    ),
+  };
+  m.hits.set(playbook.id, built);
+  return built;
+}
 
-  const titleHits = f.title_keywords.filter(inTitle).length;
-  const distHits = f.distinguishing_phrases.filter(inBody).length;
-
-  const reqHits = f.required_clauses.filter(
-    (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
-  ).length;
+export function familySignalStrength(playbook: Playbook, signals: CandidateSignals): number {
+  const hits = featureHits(playbook, signals);
+  const titleHits = hits.title.length;
+  const distHits = hits.dist.length;
+  const reqHits = hits.req.length;
 
   return (
     titleHits * TITLE_KEYWORD_POINTS +
@@ -171,8 +204,7 @@ export const MAX_SECONDARY_FAMILIES = 4;
  * or three or more distinguishing/required-clause hits in the body.
  */
 export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): boolean {
-  const { inTitle, inBody, categories, definedTerms } = corpusMatchers(signals);
-  const f = playbook.match_features;
+  const hits = featureHits(playbook, signals);
 
   // A document's own NAME is strong evidence it is of that family — but an
   // ACRONYM is not a name, it is a collision waiting to happen. "MSA" is a
@@ -191,14 +223,12 @@ export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): 
   // So a full-name title keyword still activates alone; when every title hit
   // is a bare acronym, the family has to earn it the same way a phrase-only
   // candidate does.
-  const titleHits = f.title_keywords.filter(inTitle);
+  const titleHits = hits.title;
   // The document's own NAME, spelled out, is enough on its own.
   if (titleHits.some((k) => !isAcronymFeature(k))) return true;
 
-  const distHits = f.distinguishing_phrases.filter(inBody);
-  const reqHits = f.required_clauses.filter(
-    (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
-  );
+  const distHits = hits.dist;
+  const reqHits = hits.req;
   // An acronym is not discarded — it is counted as ONE weak signal alongside
   // the phrases. Discarding it throws away real evidence ("MSA" in a document
   // that also says "petitioner" and "spousal support" IS a marital settlement);
