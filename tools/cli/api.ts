@@ -191,6 +191,20 @@ export interface AssertedPackOptions {
   /** A validated custom playbook; its `negotiation_positions` drive `--posture`. */
   customPlaybook?: CustomPlaybook;
   posture?: boolean;
+  /**
+   * Scan the OTHER families the document clearly contains — a composite MSA
+   * with a data-processing exhibit gets the DPA checks too, exactly as the
+   * browser does (fix-headless-secondary-families).
+   *
+   * **Off by default, and that default is a performance decision.** Each
+   * secondary family costs an extra engine pass, and this entry point is what
+   * every corpus relation in `tests/integration` calls — 312 specimens times
+   * five transforms times a dozen relations, all of which read `run.findings`
+   * alone. Defaulting it on took the Deploy workflow's test step past its
+   * 20-minute budget. `vaulytica analyze` passes `true`, so the product
+   * surface is unaffected.
+   */
+  secondaryFamilies?: boolean;
 }
 
 export async function analyzeFile(
@@ -242,6 +256,7 @@ export async function analyzeFile(
     opts.regimes,
     opts.estateChecks,
     opts.estateState,
+    opts.secondaryFamilies ?? false,
   );
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {
@@ -350,6 +365,7 @@ export async function analyzeText(
     opts.regimes,
     opts.estateChecks,
     opts.estateState,
+    opts.secondaryFamilies ?? false,
   );
   return applyAssertedPacks({ ...result, ingest }, ingest, opts);
 }

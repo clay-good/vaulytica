@@ -14,7 +14,6 @@
       "interrogatory no",
       "answer under oath",
       "discrete subparts",
-      "definitions",
       "state the following",
       "answer the following under oath",
       "identify every person",
@@ -31,7 +30,10 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Interrogatory", "Answering Party"],
+  "expected_defined_terms": [
+    "Interrogatory",
+    "Answering Party"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -196,8 +198,12 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FRCP-33",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["discovery-responses"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "discovery-responses"
+  ],
   "compliance_matrix_columns": [
     "Numerical limit respected or leave obtained",
     "Response deadline stated",

@@ -184,6 +184,24 @@ export async function runIngested(
   estateChecks?: boolean,
   /** Normalized `us-xx` state (`--state`) — selects the formalities overlay and implies the pack. */
   estateState?: string,
+  /**
+   * Scan the OTHER families the document clearly contains
+   * (fix-headless-secondary-families). **Off by default, and the default is a
+   * performance decision, not a semantic one.**
+   *
+   * Each secondary family is an extra `runEngine` pass. This function is the
+   * engine entry point every corpus relation in `tests/integration` calls —
+   * 312 specimens times five format transforms times a dozen relations — and
+   * every one of them reads `run.findings` alone. Turning it on unconditionally
+   * took the Deploy workflow's "Unit + integration tests" step from ~11 minutes
+   * to over its 20-minute budget, which GitHub reports as `cancelled`; two
+   * deploys failed that way before it was diagnosed.
+   *
+   * `vaulytica analyze` passes `true`, so the PRODUCT surface is unchanged and
+   * still matches the browser. A caller that wants the composite-document scan
+   * asks for it.
+   */
+  secondaryFamilies = false,
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
@@ -240,20 +258,22 @@ export async function runIngested(
   // shared owner is `src/engine/secondary-families.ts`. A custom playbook
   // redefines rule semantics, so the browser skips secondaries in that mode;
   // the headless path reaches here only for a built-in match.
-  const secondary_families = await runSecondaryFamilies(
-    selectSecondaryFamilies(
-      deps.extendedPlaybooks,
-      { title: titleSource, body, classified: extracted.classified, extracted },
-      match.playbook_id,
-    ),
-    deps.rules,
-    {
-      tree: ingest.tree,
-      extracted,
-      dkb: deps.dkb,
-      source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
-    },
-  );
+  const secondary_families = secondaryFamilies
+    ? await runSecondaryFamilies(
+        selectSecondaryFamilies(
+          deps.extendedPlaybooks,
+          { title: titleSource, body, classified: extracted.classified, extracted },
+          match.playbook_id,
+        ),
+        deps.rules,
+        {
+          tree: ingest.tree,
+          extracted,
+          dkb: deps.dkb,
+          source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
+        },
+      )
+    : [];
 
   return {
     run,

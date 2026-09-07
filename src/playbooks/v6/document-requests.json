@@ -15,7 +15,6 @@
       "all documents",
       "produce",
       "electronically stored information",
-      "definitions",
       "instructions",
       "reasonable particularity"
     ],
@@ -30,7 +29,11 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Documents", "Requesting Party", "Responding Party"],
+  "expected_defined_terms": [
+    "Documents",
+    "Requesting Party",
+    "Responding Party"
+  ],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -195,8 +198,13 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FRCP-34",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["discovery-responses", "privilege-log"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "discovery-responses",
+    "privilege-log"
+  ],
   "compliance_matrix_columns": [
     "Response deadline stated",
     "Definitions and instructions",

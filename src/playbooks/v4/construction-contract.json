@@ -12,26 +12,43 @@
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "owner",
-      "contractor",
       "architect",
       "contract sum",
       "substantial completion",
       "general conditions"
     ],
-    "negative_features": ["this subcontract", "subcontractor agreement", "employment agreement", "scope of work is attached"]
+    "negative_features": [
+      "this subcontract",
+      "subcontractor agreement",
+      "employment agreement",
+      "scope of work is attached"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Owner", "Contractor", "Architect", "Contract Sum"],
+  "expected_defined_terms": [
+    "Owner",
+    "Contractor",
+    "Architect",
+    "Contract Sum"
+  ],
   "rule_overrides": {
-    "IPDATA-001": { "skip": true },
-    "RISK-005": { "skip": true }
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "AIA-A101-A201",
-  "applicable_jurisdictions": ["US"],
-  "companion_playbooks": ["subcontractor-agreement", "change-order"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "subcontractor-agreement",
+    "change-order"
+  ],
   "compliance_matrix_columns": [
     "AIA A101 § 4 contract sum",
     "AIA A201 § 1.1.1 contract documents",

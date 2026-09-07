@@ -21,24 +21,39 @@
       "indemnitor",
       "indemnitee",
       "voluntary",
-      "release",
       "accept the risk",
       "arising from my use"
     ],
-    "negative_features": ["indemnification agreement", "declarations page"]
+    "negative_features": [
+      "indemnification agreement",
+      "declarations page"
+    ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Activity", "Participant"],
+  "expected_defined_terms": [
+    "Activity",
+    "Participant"
+  ],
   "rule_overrides": {
-    "IPDATA-001": { "skip": true },
-    "RISK-005": { "skip": true },
-    "RISK-015": { "skip": true },
-    "TERM-002": { "skip": true }
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "RISK-015": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    }
   },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-HOLD-HARMLESS-LAW",
-  "applicable_jurisdictions": ["US"],
+  "applicable_jurisdictions": [
+    "US"
+  ],
   "companion_playbooks": [],
   "compliance_matrix_columns": [
     "Parties identification",

@@ -36,8 +36,22 @@ const CORPUS = readdirSync(DIR)
   .filter((n) => n.endsWith(".txt"))
   .map((n) => readFileSync(join(DIR, n), "utf8").toLowerCase());
 
-/** More than a quarter of unrelated documents. */
-const MAX_SHARE = 0.28;
+/**
+ * More than a seventh of unrelated documents.
+ *
+ * Was 0.28 — "more than a quarter" — until 9.510.0. The quarter was a
+ * defensible line and it left a whole tier underneath it: twelve phrases
+ * between a seventh and a quarter of the corpus, every one a bare common word
+ * ("warranty", "indemnification", "manager", "owner", "contractor", "grant",
+ * "definitions", "commission", "release", "disclosure"). They were invisible
+ * to this guard and expensive downstream, because a distinguishing phrase does
+ * not only feed the 0.5 routing threshold — it also counts toward
+ * `familyIsPresent`'s three-signal bar, which runs a family's WHOLE RULE PACK
+ * as a secondary scan. Dropping the twelve removed **100 findings, 49 of them
+ * CRITICAL**, from 19 specimens, and moved **zero** routing decisions on the
+ * specimen corpus or the golden fixtures.
+ */
+const MAX_SHARE = 0.15;
 
 /**
  * Broad phrases already in the catalog, each with the reason it stays. These
@@ -62,6 +76,24 @@ const KNOWN_BROAD = new Map<string, string>([
   ["confidential", "the subject of a stipulated protective order"],
   ["assignment", "the operative act of a PIIA"],
   ["schedule", "a disclosure schedule is named for it"],
+  // Surfaced by the 0.28 → 0.15 tightening. Unlike the twelve dropped in the
+  // same change, each of these IS the family's term of art rather than a
+  // common word that happens to appear in it — the test the docs state, and
+  // the one frequency alone cannot make.
+  [
+    "hold harmless",
+    "the family's own name; high because many contracts carry the clause it detects",
+  ],
+  ["agent", "the appointed decision-maker under a healthcare power of attorney IS the Agent"],
+  // 🚨 Broad, and MEASURED AS LOAD-BEARING. Dropping it re-routes
+  // `settlement-confidential-minimal` and
+  // `settlement-confidential-missing-consideration-fail` to `mutual-release`
+  // at 0.70 — a golden fixture landing in the wrong family. Narrowing it to a
+  // phrase in the document's own register is the real fix; deleting it is not.
+  [
+    "confidentiality",
+    "load-bearing: without it two confidential-settlement golden fixtures route to mutual-release",
+  ],
 ]);
 
 function contains(corpus: string, feature: string): boolean {

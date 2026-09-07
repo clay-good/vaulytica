@@ -2575,8 +2575,7 @@
         "stockholders",
         "annual meeting",
         "quorum",
-        "registered office",
-        "indemnification"
+        "registered office"
       ],
       "negative_features": [
         "nonprofit",
@@ -3499,7 +3498,6 @@
         "conflict of interest",
         "related party",
         "recusal",
-        "disclosure",
         "annual certification"
       ],
       "negative_features": [
@@ -4240,8 +4238,6 @@
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
-        "owner",
-        "contractor",
         "architect",
         "contract sum",
         "substantial completion",
@@ -6157,7 +6153,6 @@
         "all documents",
         "produce",
         "electronically stored information",
-        "definitions",
         "instructions",
         "reasonable particularity"
       ],
@@ -9256,7 +9251,6 @@
         "indemnitor",
         "indemnitee",
         "voluntary",
-        "release",
         "accept the risk",
         "arising from my use"
       ],
@@ -10083,7 +10077,6 @@
         "interrogatory no",
         "answer under oath",
         "discrete subparts",
-        "definitions",
         "state the following",
         "answer the following under oath",
         "identify every person",
@@ -10990,7 +10983,6 @@
       "required_clauses": [],
       "distinguishing_phrases": [
         "exclusive right to sell",
-        "commission",
         "protection period",
         "multiple listing service",
         "dual agency",
@@ -12187,7 +12179,6 @@
       "required_clauses": [],
       "distinguishing_phrases": [
         "intellectual property",
-        "warranty",
         "term and termination",
         "force majeure",
         "service level",
@@ -12847,7 +12838,6 @@
       "required_clauses": [],
       "distinguishing_phrases": [
         "members",
-        "manager",
         "capital contribution",
         "membership interest",
         "operating agreement"
@@ -17822,7 +17812,6 @@
         "secured party",
         "collateral",
         "security interest",
-        "grant",
         "after-acquired"
       ],
       "negative_features": [
@@ -18834,7 +18823,6 @@
         "purchase and sale",
         "working capital",
         "material adverse effect",
-        "indemnification",
         "survival",
         "outstanding shares",
         "shares of capital stock",

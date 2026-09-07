@@ -16,7 +16,6 @@
     "required_clauses": [],
     "distinguishing_phrases": [
       "intellectual property",
-      "warranty",
       "term and termination",
       "force majeure",
       "service level",
@@ -80,7 +79,11 @@
     }
   ],
   "regulator_frame": "commercial",
-  "applicable_jurisdictions": ["US", "EU", "UK"],
+  "applicable_jurisdictions": [
+    "US",
+    "EU",
+    "UK"
+  ],
   "companion_playbooks": [
     "dpa-controller-processor",
     "baa",

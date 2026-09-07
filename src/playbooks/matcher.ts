@@ -806,6 +806,27 @@ function buildCorpus(text: string): Corpus {
   };
 }
 
+/**
+ * Compiled-pattern cache for {@link matchesIn}.
+ *
+ * The catalog holds ~1,800 features and every one is tested against every
+ * document, so an uncached `new RegExp` here compiles the same few thousand
+ * patterns for each document analyzed. The patterns are a pure function of the
+ * feature text, carry only the `i` flag (no `g`, so no `lastIndex` state to
+ * leak between calls), and the key space is bounded by the catalog — a plain
+ * `Map` is safe and the win is large.
+ */
+const PATTERN_CACHE = new Map<string, RegExp>();
+
+function cachedPattern(source: string): RegExp {
+  let re = PATTERN_CACHE.get(source);
+  if (!re) {
+    re = new RegExp(source, "i");
+    PATTERN_CACHE.set(source, re);
+  }
+  return re;
+}
+
 function matchesIn(corpus: Corpus, feature: string): boolean {
   const needle = foldFeature(feature.toLowerCase());
   if (needle.length === 0) return false;
@@ -839,10 +860,10 @@ function matchesIn(corpus: Corpus, feature: string): boolean {
         if (hay.includes(pin)) return true;
         continue;
       }
-      if (new RegExp(`${escaped}(?:es|s)?(?![a-z0-9])`, "i").test(hay)) return true;
+      if (cachedPattern(`${escaped}(?:es|s)?(?![a-z0-9])`).test(hay)) return true;
       continue;
     }
-    if (new RegExp(`(?:^|[^a-z0-9])${escaped}(?![a-z0-9])`, "i").test(hay)) return true;
+    if (cachedPattern(`(?:^|[^a-z0-9])${escaped}(?![a-z0-9])`).test(hay)) return true;
   }
   return false;
 }

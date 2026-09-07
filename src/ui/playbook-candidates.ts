@@ -79,24 +79,56 @@ export type CandidateSignals = {
  * wrong, which is the "a table written twice will disagree with itself"
  * failure in its keyword form. There is one owner now.
  */
-function corpusMatchers(signals: CandidateSignals): {
+type Matchers = {
   inTitle: (feature: string) => boolean;
   inBody: (feature: string) => boolean;
-} {
-  return { inTitle: featureMatcher(signals.title), inBody: featureMatcher(signals.body) };
+  /** Classifier categories present, and defined terms, folded once per document. */
+  categories: ReadonlySet<string>;
+  definedTerms: ReadonlySet<string>;
+};
+
+/**
+ * 🚨 Memoized per `signals` object, and the memo is load-bearing, not a
+ * micro-optimization.
+ *
+ * `familySignalStrength` runs once per playbook in `selectMatchCandidates`
+ * (255 of them) and twice per comparison inside `selectSecondaryFamilies`'s
+ * sort; `familyIsPresent` runs 255 more times. `featureMatcher` folds the
+ * WHOLE document — apostrophes, attachment nouns, instrument nouns,
+ * Commonwealth spelling, then two hyphen variants, roughly seven passes over
+ * the full body — so building it per call is thousands of full-document regex
+ * passes per document where the old `body.toLowerCase()` was one cheap pass.
+ *
+ * Unmemoized, it roughly doubled the integration suite and pushed the Deploy
+ * job (20-minute budget) and the cross-OS matrix (25-minute budget) past their
+ * timeouts, which GitHub reports as `cancelled`.
+ *
+ * A `WeakMap` on the caller's own `signals` object is the right key: both
+ * selectors receive one object per document and hand it to every playbook, and
+ * nothing outlives the analysis.
+ */
+const MATCHER_CACHE = new WeakMap<CandidateSignals, Matchers>();
+
+function corpusMatchers(signals: CandidateSignals): Matchers {
+  const hit = MATCHER_CACHE.get(signals);
+  if (hit) return hit;
+  const built: Matchers = {
+    inTitle: featureMatcher(signals.title),
+    inBody: featureMatcher(signals.body),
+    categories: new Set(signals.classified.map((c) => c.category)),
+    definedTerms: new Set(signals.extracted.definitions.entries.map((e) => e.term.toLowerCase())),
+  };
+  MATCHER_CACHE.set(signals, built);
+  return built;
 }
 
 export function familySignalStrength(playbook: Playbook, signals: CandidateSignals): number {
-  const { inTitle, inBody } = corpusMatchers(signals);
+  const { inTitle, inBody, categories, definedTerms } = corpusMatchers(signals);
   const f = playbook.match_features;
 
   const titleHits = f.title_keywords.filter(inTitle).length;
   const distHits = f.distinguishing_phrases.filter(inBody).length;
 
-  const categories = new Set(signals.classified.map((c) => c.category));
-  const definedTerms = new Set(
-    signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()),
-  );
   const reqHits = f.required_clauses.filter(
     (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
   ).length;
@@ -139,17 +171,13 @@ export const MAX_SECONDARY_FAMILIES = 4;
  * or three or more distinguishing/required-clause hits in the body.
  */
 export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): boolean {
-  const { inTitle, inBody } = corpusMatchers(signals);
+  const { inTitle, inBody, categories, definedTerms } = corpusMatchers(signals);
   const f = playbook.match_features;
 
   const titleHits = f.title_keywords.filter(inTitle).length;
   if (titleHits >= 1) return true;
 
   const distHits = f.distinguishing_phrases.filter(inBody).length;
-  const categories = new Set(signals.classified.map((c) => c.category));
-  const definedTerms = new Set(
-    signals.extracted.definitions.entries.map((e) => e.term.toLowerCase()),
-  );
   const reqHits = f.required_clauses.filter(
     (cat) => categories.has(cat) || definedTerms.has(cat.toLowerCase()),
   ).length;
@@ -171,13 +199,15 @@ export function selectSecondaryFamilies(
   signals: CandidateSignals,
   primaryPlaybookId: string,
 ): Playbook[] {
-  return extended
-    .filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals))
-    .sort((a, b) => {
-      const sa = familySignalStrength(a, signals);
-      const sb = familySignalStrength(b, signals);
-      if (sa !== sb) return sb - sa;
-      return a.id.localeCompare(b.id, "en");
-    })
-    .slice(0, MAX_SECONDARY_FAMILIES);
+  return (
+    extended
+      .filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals))
+      // Score each survivor ONCE. A comparator that recomputes the score does it
+      // O(n log n) times, which was free when the score was a substring count
+      // and is not now that it folds the document.
+      .map((p) => [p, familySignalStrength(p, signals)] as const)
+      .sort((a, b) => (a[1] !== b[1] ? b[1] - a[1] : a[0].id.localeCompare(b[0].id, "en")))
+      .map(([p]) => p)
+      .slice(0, MAX_SECONDARY_FAMILIES)
+  );
 }

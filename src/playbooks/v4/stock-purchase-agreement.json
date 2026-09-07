@@ -4,13 +4,16 @@
   "name": "Stock Purchase Agreement (SPA)",
   "description": "Private-target stock purchase agreement. Selects the §6.D M&A ruleset (MNA-010..MNA-019). ABA Private Target Deal Points anchors.",
   "match_features": {
-    "title_keywords": ["stock purchase agreement", "spa", "share purchase agreement"],
+    "title_keywords": [
+      "stock purchase agreement",
+      "spa",
+      "share purchase agreement"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "purchase and sale",
       "working capital",
       "material adverse effect",
-      "indemnification",
       "survival",
       "outstanding shares",
       "shares of capital stock",
@@ -23,7 +26,10 @@
       "right of co-sale",
       "accredited investor",
       "restated certificate",
-      "investors' rights agreement","asset purchase", "merger agreement"]
+      "investors' rights agreement",
+      "asset purchase",
+      "merger agreement"
+    ]
   },
   "expected_clauses": [],
   "expected_defined_terms": [
@@ -36,7 +42,17 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "DGCL",
-  "applicable_jurisdictions": ["US-DE", "US"],
-  "companion_playbooks": ["disclosure-schedules", "escrow-agreement", "ma-restrictive-covenant"],
-  "compliance_matrix_columns": ["DGCL § 115", "ABA Private Target Deal Points Study"]
+  "applicable_jurisdictions": [
+    "US-DE",
+    "US"
+  ],
+  "companion_playbooks": [
+    "disclosure-schedules",
+    "escrow-agreement",
+    "ma-restrictive-covenant"
+  ],
+  "compliance_matrix_columns": [
+    "DGCL § 115",
+    "ABA Private Target Deal Points Study"
+  ]
 }

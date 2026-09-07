@@ -973,6 +973,9 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       regimes: args.regimes as RegimeId[] | undefined,
       estateChecks: args.estateChecks,
       estateState: args.estateState,
+      // The product surface scans composite documents the way the browser
+      // does. Off by default in the API for cost (see AssertedPackOptions).
+      secondaryFamilies: true,
     });
 
     const counts = { critical: 0, warning: 0, info: 0 };

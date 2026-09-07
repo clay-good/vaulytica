@@ -2,6 +2,97 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.510.0] — 2026-09-06
+
+### Fixed
+- **🚨 REGRESSION FIX: 9.508.0 took two CI workflows red, and they reported it
+  as `cancelled`.** Running secondary families unconditionally in `runIngested`
+  put an extra engine pass into the entry point every corpus relation calls —
+  312 specimens × five format transforms × a dozen relations, every one of
+  which reads `run.findings` alone. The work was pure waste for all of them.
+
+  Measured from the workflow timestamps, which is the only way this is
+  diagnosable: **Deploy** went 10m44s / 13m56s when green to **20m20s and
+  23m41s** against its `timeout-minutes: 20`; the **cross-OS matrix** went
+  15m00s / 14m42s to **25m27s and 25m31s** against its `timeout-minutes: 25`.
+  GitHub reports a job that exceeds its budget as `cancelled`, which is
+  indistinguishable at a glance from one superseded by a later push — and that
+  is exactly the wrong story I told myself for a release. `ci.yml` has no job
+  timeout, so it stayed green the whole time and three-of-four-green hid it.
+
+  `secondaryFamilies` is an explicit option now, **off by default in the Node
+  API and `true` from `vaulytica analyze`** — so the product surface still
+  scans a composite document the way the browser does, and the relations pay
+  nothing. The default is a performance decision and both the option and the
+  runner say so.
+
+  **That was only a third of it.** Measuring instead of assuming found the
+  larger half in 9.508.0's own matcher fix: `featureMatcher` folds the WHOLE
+  document (apostrophes, attachment nouns, instrument nouns, Commonwealth
+  spelling, plus two hyphen variants — about seven passes), and
+  `familySignalStrength` / `familyIsPresent` run **once per playbook**, 255
+  each, plus twice per comparison inside a sort. Thousands of full-document
+  regex passes per document, where the code it replaced did one
+  `body.toLowerCase()`. Three fixes:
+
+  - the folded corpora, and the classifier-category / defined-term sets, are
+    memoized per document in a `WeakMap` keyed on the caller's own `signals`;
+  - `matchesIn` caches its compiled patterns (the catalog's ~1,800 features
+    were recompiled for every document; the patterns are pure, `i`-flag only,
+    and the key space is bounded by the catalog);
+  - `selectSecondaryFamilies` scores each survivor once instead of inside the
+    sort comparator.
+
+  Measured on two corpus relations, test time: **20.5s at 9.507.0 → 43.1s on
+  main today (2.1×) → 26.4s now (1.29×)**. The residual 29% is the honest cost
+  of a correct comparison: three folded corpus variants and word-boundary
+  regexes where the old code did one substring test. That correctness is what
+  removed 515 spurious criticals in 9.508.0, so it is worth paying — but it
+  should have been measured then, not after two workflows went red.
+
+- **A whole tier of non-distinguishing phrases sat just under the guard's
+  threshold.** `distinguishing-base-rate.test.ts` has held the catalog to "no
+  phrase in more than a quarter of unrelated documents" for many releases. The
+  quarter was a defensible line, and underneath it sat twelve phrases between a
+  seventh and a quarter of the corpus — every one a bare common word:
+  `"warranty"`, `"indemnification"` (twice), `"manager"`, `"owner"`,
+  `"contractor"`, `"grant"`, `"definitions"` (twice), `"commission"`,
+  `"release"`, `"disclosure"`.
+
+  They were invisible to that guard and expensive downstream, because a
+  distinguishing phrase does not only feed the 0.5 routing threshold — it also
+  counts toward `familyIsPresent`'s three-signal bar, which runs a family's
+  **whole rule pack** as a secondary scan. Dropping the twelve removed **100
+  findings, 49 of them CRITICAL**, from 19 specimens, and moved **zero** routing
+  decisions on the specimen corpus *or* the golden fixtures.
+
+  `MAX_SHARE` is 0.15 now. Two genuine terms of art the tighter bar surfaced
+  join the allowlist with their reasons — `"hold harmless"` (the family's own
+  name) and `"agent"` (the appointed decision-maker under a healthcare POA IS
+  the Agent).
+
+🚨 Three corrections to how this change was first attempted, all of them mine
+and all worth recording:
+
+- **The guard already existed.** The first pass wrote a *second* base-rate test
+  with a different threshold and a different allowlist — the "a table written
+  twice will disagree with itself" failure, committed by the person who had
+  just fixed an instance of it. The existing test is tightened instead; no new
+  file.
+- **Nine of the phrases were deliberate, documented debt.** `KNOWN_BROAD`
+  already listed `"consent"`, `"purpose"`, `"exclusive"`, `"indemnify"`,
+  `"authorize"`, `"received"`, `"confidential"`, `"assignment"` and
+  `"schedule"`, each with a stated reason: they are the *operative word* of
+  their family. Deleting them was not this change's call, and they are
+  untouched. **Read the guard before overruling it.**
+- **The routing measurement covered the wrong corpus.** "Zero routing moved"
+  was measured over `tests/fixtures/specimens` only, and the golden fixtures
+  are a *different* corpus: dropping `"confidentiality"` re-routed
+  `settlement-confidential-minimal` and its fail-fixture to `mutual-release` at
+  0.70. That phrase is allowlisted now with the measurement as its reason —
+  broad, but load-bearing. **Two corpora, and a sweep that walks one is the
+  same root-list mistake in a new place.**
+
 ## [9.509.0] — 2026-09-06
 
 ### Fixed
