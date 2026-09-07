@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.539.0] — 2026-09-07
+
+### Added
+- **`cli-surface-drift` now guards the OTHER direction — the one that hurts a
+  reader.** Its existing check asks *"is every flag the CLI parses
+  documented?"*, which is a documentation gap. Nothing asked *"is every flag the
+  documentation shows actually parsed?"* — a reader copying a command out of the
+  README and getting `unknown flag`. A rename that updated the parser and not
+  the prose would have looked green from both sides.
+
+  Swept before shipping: **no phantom flags today**, and the guard was **proven
+  by planting one** (`--deep-scan` in a `ci-integration.md` example), which
+  fails with the flag named.
+
+  ⚠️ **The parsers are written two ways and both must be read.** `analyze` and
+  `compare` use `switch (flag) { case "--x": }`; the 28 `coherence-*` commands
+  use `else if (flag === "--x")`. Reading only the first — which the first
+  version of the sweep did — misses every coherence gate flag and reports two
+  dozen phantom failures that are not phantom at all.
+
+  Scope is deliberate: flags in a fenced example that actually invokes
+  `vaulytica`, plus the README's own CLI flag table. Prose elsewhere is not a
+  promise about this CLI — the docs also name CSS custom properties (`--link`,
+  `--muted`) and another script's flag (`npm run citation:check --reachability`),
+  and a sweep that counted those would report three failures on a correct tree.
+
 ## [9.538.0] — 2026-09-07
 
 ### Fixed

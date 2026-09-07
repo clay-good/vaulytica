@@ -20,7 +20,7 @@
  * the next flag or command fails here until the prose catches up.
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -105,6 +105,57 @@ describe("CLI surface drift", () => {
     for (const flag of flags) {
       expect(docs, `${flag} is parsed by analyze but documented nowhere`).toContain(flag);
     }
+  });
+
+  /**
+   * The other direction, which is the one that hurts a reader.
+   *
+   * The check above asks "is every flag the CLI parses documented?" — a
+   * documentation gap. This one asks "is every flag the documentation shows
+   * actually parsed?" — a reader copying a command out of the README and
+   * getting `unknown flag`. Nothing covered it, and a rename that updated the
+   * parser and not the prose would have looked green from both sides.
+   *
+   * ⚠️ The parsers are written two ways and both must be read: `analyze` and
+   * `compare` use `switch (flag) { case "--x": }`, and the 28 `coherence-*`
+   * commands use `else if (flag === "--x")`. Reading only the first misses
+   * every coherence gate flag and reports two dozen phantom failures.
+   */
+  it("parses every flag the documentation shows", () => {
+    const cliSources = readdirSync(join(root, "tools", "cli"))
+      .filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"))
+      .map((f) => read("tools", "cli", f))
+      .join("\n");
+    const parsed = new Set([
+      ...[...cliSources.matchAll(/case "(--[a-z0-9-]+)":/g)].map((m) => m[1]!),
+      ...[...cliSources.matchAll(/flag === "(--[a-z0-9-]+)"/g)].map((m) => m[1]!),
+    ]);
+
+    // Flags shown in a fenced example that actually invokes the tool, plus the
+    // README's own CLI flag table. Prose elsewhere is not a promise: the docs
+    // also name CSS custom properties (`--link`, `--muted`) and another
+    // script's flags, and neither is a claim about this CLI.
+    const documented = new Set<string>();
+    for (const doc of [readme, ciDoc]) {
+      for (const block of doc.matchAll(/```[a-z]*\n([\s\S]*?)```/g)) {
+        const body = block[1]!;
+        if (!/\bvaulytica\b/.test(body)) continue;
+        for (const t of body.matchAll(/(?:^|\s)(--[a-z][a-z0-9-]{2,})/g)) documented.add(t[1]!);
+      }
+      for (const row of doc.matchAll(/^\|\s*`(--[a-z][a-z0-9-]{2,})[^`]*`/gm))
+        documented.add(row[1]!);
+    }
+
+    // The derivation must not be empty, or the assertion below is free.
+    expect(documented.size, "no CLI flags found in any example or table").toBeGreaterThan(15);
+    expect(parsed.size, "no flags parsed out of tools/cli").toBeGreaterThan(40);
+    expect(documented.has("--fail-on"), "the sanity anchor is missing").toBe(true);
+
+    const phantom = [...documented].filter((f) => !parsed.has(f)).sort();
+    expect(
+      phantom,
+      `these appear in a documented vaulytica command and no parser accepts them:\n  ${phantom.join("\n  ")}`,
+    ).toEqual([]);
   });
 
   it("documents every flag the compare command parses", () => {
