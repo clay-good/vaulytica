@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.521.0] — 2026-09-07
+
+### Changed
+- **Measured the residual false-positive load, and wrote down the candidate fix
+  rather than shipping it.**
+
+  After the acronym, corpus-frequency and collocation fixes, the corpus still
+  carries **943 secondary-family CRITICAL findings across 130 of 312
+  documents**. They are not evenly spread — the top of the list is one domain:
+  `gdpr-notice` 35, `privacy-notice-multistate` 32, `privacy-notice` 31,
+  `ropa-art-30` 30, `scc-module-3` 25, `uk-idta-addendum` 22.
+
+  Those families are **mutually exclusive document types that share almost all
+  their vocabulary** — controller, processor, personal data, data subject,
+  purposes, retention. A privacy notice (given to data subjects) is not a DPA
+  (a controller↔processor contract) is not an Art. 30 register is not an SCC
+  transfer instrument, but each says what the others say. So a GDPR privacy
+  notice is told at CRITICAL, seventeen times over and twice, that it lacks
+  Art. 28(3) processor terms.
+
+  **The candidate fix, measured:** a family a document genuinely *contains*
+  names itself somewhere — an MSA with a DPA exhibit carries the heading "Data
+  Processing Addendum" in its body — while a family it merely *discusses* does
+  not. Requiring a spelled-out title keyword in the BODY for phrase-only
+  activation drops **194 of 322 activations (60%)**, removing **1,736 findings,
+  777 of them critical**, keeping 128.
+
+  **Not applied.** Sixty percent of a shipped feature's output is not a call to
+  make on a heuristic's say-so. Many drops are plainly right (`83b-election` →
+  `secondary-stock-transfer`, `asset-purchase-agreement` →
+  `stock-purchase-agreement`, `baa` → `hipaa-npp`); some are not
+  (`board-written-consent` → `board-resolution`). Confirming that all 194 are
+  wrong activations, and that the 128 survivors are right, is a
+  document-by-document legal judgment rather than a measurement — and this
+  session has already twice shown what shipping confident-but-unverified
+  judgment costs.
+
+  The numbers now live beside `familyIsPresent`, so whoever owns that judgment
+  has them in hand instead of rediscovering the residual from scratch. What
+  ships in the meantime is 9.514.0's caveat: every surface says these families
+  were detected from vocabulary and not confirmed.
+
 ## [9.520.0] — 2026-09-07
 
 ### Fixed

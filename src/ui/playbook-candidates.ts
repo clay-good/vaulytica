@@ -133,6 +133,54 @@ function corpusMatchers(signals: CandidateSignals): Matchers {
 }
 
 /**
+ * 🚨 THE RESIDUAL, MEASURED AND DELIBERATELY NOT ACTED ON (2026-09-07).
+ *
+ * After the acronym, corpus-frequency and collocation fixes, the corpus still
+ * carries **943 secondary-family CRITICAL findings across 130 of 312
+ * documents**. They are not evenly spread — the top of the list is one domain:
+ *
+ *     gdpr-notice 35 · privacy-notice-multistate 32 · privacy-notice 31
+ *     ropa-art-30 30 · scc-module-3 25 · uk-idta-addendum 22
+ *
+ * Those families are MUTUALLY EXCLUSIVE DOCUMENT TYPES that share almost all
+ * their vocabulary — controller, processor, personal data, data subject,
+ * purposes, retention. A privacy notice (given to data subjects) is not a DPA
+ * (a controller↔processor contract) is not an Art. 30 register is not an SCC
+ * transfer instrument, but each says what the others say. So a GDPR privacy
+ * notice is told at CRITICAL, seventeen times over and twice, that it lacks
+ * Art. 28(3) processor terms.
+ *
+ * ## The candidate fix, and why it is not applied here
+ *
+ * Hypothesis: a family a document genuinely CONTAINS names itself somewhere —
+ * an MSA with a DPA exhibit carries the heading "Data Processing Addendum" in
+ * its body — while a family it merely DISCUSSES does not. So for phrase-only
+ * activation, require a spelled-out title keyword to appear in the BODY, not
+ * just in the title corpus.
+ *
+ * Measured over the 312 specimens: it drops **194 of 322 activations (60%)**,
+ * removing **1,736 findings, 777 of them critical**, and keeps 128. Many drops
+ * are plainly right (`83b-election` → `secondary-stock-transfer`,
+ * `asset-purchase-agreement` → `stock-purchase-agreement`, `baa` →
+ * `hipaa-npp`). Some are not obviously right (`board-written-consent` →
+ * `board-resolution`).
+ *
+ * **It is not applied because 60% of a shipped feature's output is not a call
+ * to make on a heuristic's say-so.** Confirming that all 194 drops are wrong
+ * activations — and that the 128 survivors are the right ones — is a
+ * document-by-document legal judgment, not a measurement. The numbers are
+ * recorded so that whoever owns that judgment can make it with them in hand,
+ * rather than rediscovering the residual from scratch.
+ *
+ * What ships instead is the caveat (9.514.0): every surface says these families
+ * were detected from vocabulary and not confirmed, and that an absence in one
+ * may be a clause the document never needed. That is honest about a
+ * distinction the engine cannot currently draw. See
+ * `tests/integration/family-activation-evidence.test.ts` for why
+ * `required_clauses` is not the signal either.
+ */
+
+/**
  * A playbook's matched features against one document, computed once.
  *
  * 🥇 `selectMatchCandidates` scores all 255 extended playbooks, then
