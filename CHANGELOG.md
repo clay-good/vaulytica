@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.513.0] — 2026-09-06
+
+### Fixed
+- **🚨 CORRECTION: 9.512.0's reported impact was understated, because the
+  probe that measured it under-fed the classifier.** The change itself is
+  unaffected — the code shipped is right, and the full suite passed then and
+  passes now — but the numbers in its changelog entry and commit message are
+  wrong.
+
+  | | reported | actual |
+  |---|---|---|
+  | activations dropped | 14 | **23** |
+  | findings | 27 | **40** |
+  | critical | 17 | **20** |
+
+  Cause: the measurement called `extractAll(tree)` bare. Both real callers —
+  `src/ui/pipeline.ts` and `tools/accuracy/pipeline.ts` — call
+  `extractAll(tree, { classifier: { vocab: { vocab: {} }, patterns:
+  dkb.classifier.patterns } })`. Without the patterns every paragraph
+  classifies as `unclassified`, so every `required_clauses` signal reads as
+  absent and the counterfactual "old bar" the probe reconstructed admitted
+  fewer families than the real one did.
+
+### Added
+- **`tests/integration/family-activation-evidence.test.ts`** — pins what
+  actually decides a secondary activation, because reading the code suggests
+  three sources of evidence and the corpus has two:
+
+      title keyword        77
+      required_clauses      0   ← never decides one
+      phrases only        247
+
+  `required_clauses` is **not** dead code: fed correctly the classifier emits
+  9,941 classified paragraphs across 15 categories over the specimen corpus,
+  and 5 of the 8 declared `required_clauses` are among them. They are simply
+  too sparse to be the deciding signal when three are needed —
+  `governing-law` leads at 149 paragraphs, `confidentiality-obligation` 98,
+  `indemnification` 58.
+
+  The test exists to close a dead end rather than to hold a behaviour: "let a
+  secondary family report ABSENCE findings only when it has structural
+  `required_clauses` evidence, and red flags otherwise" reads well, and with
+  `reqBacked = 0` it silences absence findings for *every* secondary family —
+  including the composite MSA-with-a-DPA-exhibit case the feature exists for.
+  The guard asserts the classifier is genuinely working before asserting the
+  zero, so a broken feed cannot make the zero look like a fact.
+
+  Still open, and still not guessed at: an 83(b) election — a one-page IRS
+  letter — activates `rspa` and `secondary-stock-transfer` on real
+  collocations ("83(b)", "restricted stock", "right of first refusal") and is
+  told at CRITICAL that it lacks a vesting schedule and a securities legend.
+  A document may *discuss* another family's subject without *being* one, and
+  no signal now available separates the two.
+
 ## [9.512.0] — 2026-09-06
 
 ### Fixed
