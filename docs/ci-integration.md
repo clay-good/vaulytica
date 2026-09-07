@@ -173,6 +173,23 @@ cannot change the exit code of a job that was already passing —
 `--emit-consistency` writes the whole run, `result_hash` included, for archiving
 or diffing.
 
+### Gating the pre-disclosure scan
+
+`--delivery` finds what a draft should not carry out of the building — an SSN, a
+card number, a direct line. Its findings live **outside** `run.findings`, behind
+their own `delivery_hash`, so `--fail-on` — which reads the run — never saw them:
+`--delivery --fail-on critical` passed a document carrying an unmasked SSN.
+`--fail-on-delivery <sev>` gates on them.
+
+```bash
+npx vaulytica analyze outgoing.docx --delivery --fail-on-delivery critical
+```
+
+It is a separate flag for the same reason `--fail-on-consistency` is — switching
+a check on must not change the exit code of a job that was already passing — so
+`--fail-on` alone still does not gate. What it no longer does is stay quiet
+about it: that combination now warns on stderr and names the flag.
+
 Exit codes are CI-meaningful: `2` when `--fail-on` is breached (analyze) or the
 revision introduced a finding at/above the threshold (compare), `1` for a
 playbook diff change (`--exit-code`), `3` when a report fails to reproduce, and

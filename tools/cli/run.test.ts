@@ -728,3 +728,144 @@ describe("analyze — obligations, deadlines, and the negotiation posture", () =
     ).rejects.toThrow(/--posture/);
   }, 120_000);
 });
+
+/**
+ * The pre-disclosure gate.
+ *
+ * `HANDOFF-005` is the "do not send this out" check — an SSN, a card number, a
+ * direct line left in a draft about to be disclosed — and its findings live
+ * OUTSIDE `run.findings`, behind their own `delivery_hash`. `--fail-on` reads
+ * the run. So a document carrying an unmasked SSN produced
+ * `HANDOFF-005: critical` and exited **0** under `--delivery --fail-on
+ * critical`: the one combination whose entire purpose is to fail on exactly
+ * that.
+ *
+ * The repair is a separate flag rather than a widening of `--fail-on` — the
+ * same call `--fail-on-consistency` made, so switching a check on cannot change
+ * the exit code of a job that was already passing — plus a loud warning on the
+ * combination that used to be a silent no-op.
+ */
+describe("analyze — the pre-disclosure gate", () => {
+  const dirs: string[] = [];
+  afterAll(async () => {
+    for (const d of dirs) await rm(d, { recursive: true, force: true });
+  });
+
+  /**
+   * A memo with an SSN and nothing else wrong: no critical RUN finding, so the
+   * exit code can only come from the delivery scan. The signature block is
+   * load-bearing — without it `STRUCT-003` fires critical and the test would
+   * pass for the wrong reason.
+   */
+  const MEMO = [
+    "INTERNAL MEMO",
+    "",
+    "Please update the payroll record for the new hire. Their taxpayer identification number is 123-45-6789. File it with HR by Friday.",
+    "",
+    "Signed:",
+    "",
+    "By: /s/ Renata Oyelaran",
+    "Name: Renata Oyelaran",
+    "Title: Director of Finance",
+    "Date: March 1, 2026",
+  ].join("\n");
+
+  async function memoDir(): Promise<{ dir: string; file: string }> {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-handoff-"));
+    dirs.push(dir);
+    const file = join(dir, "memo.txt");
+    await writeFile(file, MEMO);
+    return { dir, file };
+  }
+
+  async function run(argv: string[]): Promise<{ err: string; code: number }> {
+    const err: string[] = [];
+    const se = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation((c) => (err.push(String(c)), true));
+    const so = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    const before = process.exitCode;
+    process.exitCode = 0;
+    try {
+      await runAnalyze(argv);
+      return { err: err.join(""), code: Number(process.exitCode ?? 0) };
+    } finally {
+      process.exitCode = before;
+      se.mockRestore();
+      so.mockRestore();
+    }
+  }
+
+  it("the fixture isolates the delivery scan (no critical run finding)", async () => {
+    // Without this the exit codes below prove nothing about the gate.
+    const { dir, file } = await memoDir();
+    await run([file, "--delivery", "--format", "json", "--out", dir]);
+    const report = JSON.parse(await readFile(join(dir, "memo.json"), "utf8")) as {
+      run: { findings: { severity: string }[] };
+      delivery?: { findings: { rule_id: string; severity: string }[] };
+    };
+    expect(report.run.findings.filter((f) => f.severity === "critical")).toEqual([]);
+    expect(report.delivery?.findings.map((f) => `${f.rule_id}:${f.severity}`)).toContain(
+      "HANDOFF-005:critical",
+    );
+  }, 120_000);
+
+  it("--fail-on-delivery exits 2 on the SSN", async () => {
+    const { dir, file } = await memoDir();
+    const { code } = await run([
+      file,
+      "--delivery",
+      "--format",
+      "json",
+      "--out",
+      dir,
+      "--fail-on-delivery",
+      "critical",
+    ]);
+    expect(code).toBe(2);
+  }, 120_000);
+
+  it("--fail-on alone still does not gate, but no longer does so silently", async () => {
+    // The exit code is deliberately unchanged — a job passing today keeps
+    // passing — and the silence is what made it dangerous.
+    const { dir, file } = await memoDir();
+    const { err, code } = await run([
+      file,
+      "--delivery",
+      "--format",
+      "json",
+      "--out",
+      dir,
+      "--fail-on",
+      "critical",
+    ]);
+    expect(code).toBe(0);
+    expect(err).toContain("does NOT gate on it");
+    expect(err).toContain("--fail-on-delivery critical");
+  }, 120_000);
+
+  it("says nothing when the scan found nothing to warn about", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-handoff-clean-"));
+    dirs.push(dir);
+    const file = join(dir, "clean.txt");
+    await writeFile(file, MEMO.replace("123-45-6789", "on file with HR"));
+    const { err } = await run([
+      file,
+      "--delivery",
+      "--format",
+      "json",
+      "--out",
+      dir,
+      "--fail-on",
+      "critical",
+    ]);
+    expect(err).not.toContain("does NOT gate on it");
+  }, 120_000);
+
+  it("rejects a bad severity rather than silently never gating", async () => {
+    const { file } = await memoDir();
+    await expect(runAnalyze([file, "--fail-on-delivery", "critcal"])).rejects.toThrow(
+      /--fail-on-delivery must be/,
+    );
+  });
+});

@@ -24,6 +24,12 @@
  * reports the BUNDLE and nothing else — no per-document artifact, and therefore
  * no `--out` — for the pure use case: does this deal folder contradict itself?
  *
+ * `--fail-on-delivery <sev>` gates on the PRE-DISCLOSURE scan. Its findings sit
+ * outside `run.findings` behind their own `delivery_hash`, so `--fail-on` never
+ * saw them: `--delivery --fail-on critical` passed a document carrying an
+ * unmasked SSN. A separate flag, so no existing exit code changes; the
+ * ungated combination now warns rather than passing in silence.
+ *
  * `--court` selects a court profile and runs the filing-format-lint pack
  * (FILE-001..008) against its limits, but only when the document matches a
  * filing playbook (appellate-brief / trial-motion / petition); without it the
@@ -451,6 +457,8 @@ type Args = {
   emitConsistency?: string;
   /** Exit non-zero when a cross-document finding reaches this severity. */
   failOnConsistency?: Severity;
+  /** Exit non-zero when a PRE-DISCLOSURE finding reaches this severity. */
+  failOnDelivery?: Severity;
   /** add-production-qa-pack — run production QA over a directory/.zip production set. */
   productionQa?: boolean;
   /** add-production-qa-pack — exit non-zero when a Bates sequence gap is found. */
@@ -614,6 +622,14 @@ function parseArgs(argv: string[]): Args {
         args.emitConsistency = requireValue(flag, val);
         i++;
         break;
+      case "--fail-on-delivery": {
+        if (!VALID_SEVERITIES.includes(val as Severity)) {
+          throw new Error(`--fail-on-delivery must be ${VALID_SEVERITIES.join("|")}`);
+        }
+        args.failOnDelivery = val as Severity;
+        i++;
+        break;
+      }
       case "--fail-on-consistency": {
         // Same validation as `--fail-on`: an unrecognized severity would leave
         // the rank lookup undefined and the gate permanently false, which is
@@ -1161,6 +1177,10 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   }
 
   let breached = false;
+
+  /** Worst pre-disclosure severity seen across the inputs, or null. */
+
+  let worstDelivery: Severity | null = null;
   // spec-v12 Thrust A — collect each document's posture so that, after the
   // bundle is analyzed, we can report how each negotiation front sits *across*
   // the documents (the cross-document axis of the v10 posture).
@@ -1417,6 +1437,14 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       human(`  Verification certificate → ${stem}.certificate.{docx,json}\n`);
     }
 
+    // The pre-disclosure scan lives OUTSIDE `run.findings` behind its own
+    // `delivery_hash`, so `worstSeverity` — which reads the run — never saw it.
+    for (const f of r.delivery?.findings ?? []) {
+      if (worstDelivery === null || SEVERITY_RANK[f.severity] < SEVERITY_RANK[worstDelivery]) {
+        worstDelivery = f.severity;
+      }
+    }
+
     if (args.failOn) {
       const worst = worstSeverity(r);
       if (worst !== null && SEVERITY_RANK[worst] <= SEVERITY_RANK[args.failOn]) breached = true;
@@ -1584,6 +1612,35 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       "\n✗ the bundle's binding floor regressed vs. the baseline (--fail-on-coherence-regression)\n",
     );
     process.exitCode = 2;
+  }
+  // The pre-disclosure gate. `--delivery` is ASSERTED by the caller, so someone
+  // who passes it alongside `--fail-on` is asking to be failed when the scan
+  // finds something — and until 9.547.0 they were not: `--fail-on` reads
+  // `run.findings`, and HANDOFF-* lives outside the run behind its own
+  // `delivery_hash`. A document carrying an unmasked SSN produced
+  // `HANDOFF-005: critical` and exited 0.
+  //
+  // The gate is a separate flag rather than a widening of `--fail-on`, for the
+  // same reason `--fail-on-consistency` is: switching a check on must not
+  // change the exit code of a job that was already passing. But a silent
+  // no-op is exactly the trap this pack cannot afford, so when the caller
+  // asserted `--delivery`, set `--fail-on`, and the scan found something that
+  // WOULD have breached it, say so on stderr and name the flag that gates it.
+  if (args.failOnDelivery && worstDelivery !== null) {
+    if (SEVERITY_RANK[worstDelivery] <= SEVERITY_RANK[args.failOnDelivery]) {
+      process.stderr.write(
+        `\n✗ pre-disclosure findings breached --fail-on-delivery ${args.failOnDelivery}\n`,
+      );
+      process.exitCode = 2;
+    }
+  } else if (args.failOn && args.delivery && worstDelivery !== null) {
+    if (SEVERITY_RANK[worstDelivery] <= SEVERITY_RANK[args.failOn]) {
+      process.stderr.write(
+        `vaulytica: warning: the pre-disclosure scan found a ${worstDelivery} finding, and ` +
+          `--fail-on ${args.failOn} does NOT gate on it — those findings sit outside the run, ` +
+          `behind their own delivery_hash. Use --fail-on-delivery ${args.failOn} to gate on them.\n`,
+      );
+    }
   }
   if (args.failOnConsistency && consistency) {
     const gate = SEVERITY_RANK[args.failOnConsistency];
@@ -1783,6 +1840,7 @@ Commands:
                           [--consistency | --consistency-only]
                           [--emit-consistency <path>]
                           [--fail-on-consistency critical|warning|info]
+                          [--fail-on-delivery critical|warning|info]
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]
                           Bates + privilege-log reconciliation over a production set.
   diff    <playbook-a.json> <playbook-b.json> [--format markdown|json] [--exit-code]

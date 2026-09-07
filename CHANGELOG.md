@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.547.0] — 2026-09-07
+
+### Fixed
+- 🚨 **The pre-disclosure gate did not gate.** `HANDOFF-005` is the *do not send
+  this out* check — an SSN, a card number, a direct line left in a draft — and
+  its findings live **outside** `run.findings`, behind their own
+  `delivery_hash`. `--fail-on` reads the run. So the one combination whose
+  entire purpose is to fail on that,
+
+  ```bash
+  vaulytica analyze outgoing.docx --delivery --fail-on critical
+  ```
+
+  reported `HANDOFF-005: critical` and **exited 0**. A CI job running a
+  pre-disclosure sweep passed the document through.
+
+  `--fail-on-delivery <sev>` gates on it. A **separate flag**, for the same
+  reason `--fail-on-consistency` is one: switching a check on must not change
+  the exit code of a job that was already passing. But a silent no-op is exactly
+  what this pack cannot afford, so the ungated combination — `--delivery` and
+  `--fail-on` together, with the scan finding something that *would* have
+  breached the threshold — now **warns on stderr and names the flag**, instead
+  of passing in silence.
+
+  🥇 **Found by asking what `worstSeverity` actually reads.** It iterates
+  `r.run.findings` and nothing else; every surface the CLI grew that lives
+  outside the run — delivery, and until 9.528.0 the cross-document engine — is
+  invisible to the gate by construction. The fixture that proves it carries a
+  signature block on purpose: without one `STRUCT-003` fires critical and the
+  test would pass for the wrong reason, which is how this would have been
+  "verified" and left in place.
+
+  Same pack, same day, same root shape as 9.544.0's leak invariant that passed
+  with the scanner switched off: **the pre-disclosure code is written correctly
+  and the things that check it were not.**
+
 ## [9.546.0] — 2026-09-07
 
 ### Changed
