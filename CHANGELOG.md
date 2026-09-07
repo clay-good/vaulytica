@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.517.0] — 2026-09-07
+
+### Fixed
+- **`diff` answered the most likely mistake with a schema dump.** It compares
+  two CUSTOM PLAYBOOKS, and every other `.json` this tool writes is an analysis
+  report — so `analyze --format json` and then `diff` on the results is the
+  natural wrong guess. It printed fourteen lines of true, unhelpful schema
+  errors:
+
+  ```
+  ✗ invalid playbook:
+    a: (root): Unrecognized keys: "run", "ingest", "provenance", …
+    a: catalog_version: Invalid input: expected string, received undefined
+    …
+  ```
+
+  Not one of them says *you passed a report*. And the CLI's own usage line read
+  `diff <a.json> <b.json>`, which does not distinguish the two kinds of JSON it
+  emits; the README did, but nobody reading `--help` saw that.
+
+  Both ends fixed. When either input has a `run` key at the root — the shape
+  `analyze` writes — it now says so and names the command that does do the job:
+
+  ```
+  ✗ that looks like an analysis report, not a custom playbook.
+    `diff` compares two custom playbook files (the JSON you pass to --playbook-file).
+    To compare two ANALYSES of a document, use: vaulytica compare <base> <revised>
+  ```
+
+  The usage line reads `diff <playbook-a.json> <playbook-b.json>` with a
+  description. A genuine playbook schema error still gets the full detail —
+  that output is useful when the input really was meant to be a playbook, and a
+  test pins both directions.
+
+  Found by using the CLI wrong while exploring it, which is how a user finds it.
+
 ## [9.516.0] — 2026-09-07
 
 ### Fixed

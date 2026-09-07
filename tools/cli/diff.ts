@@ -91,6 +91,29 @@ export async function runDiff(argv: string[]): Promise<void> {
   const [aText, bText] = await Promise.all([readFile(args.a, "utf8"), readFile(args.b, "utf8")]);
   const outcome = formatPlaybookDiff(aText, bText, args.format);
   if (!outcome.ok) {
+    // `diff` compares two CUSTOM PLAYBOOKS, and every other `.json` this tool
+    // writes is an analysis report — so `analyze --format json` then `diff` on
+    // the results is the natural wrong guess, and the schema errors it prints
+    // ("Unrecognized keys: run, ingest, provenance…") describe the shape
+    // mismatch without naming the mistake. Say it plainly when the input is
+    // recognizably a report.
+    const looksLikeReport = [aText, bText].some((t) => {
+      try {
+        const v: unknown = JSON.parse(t);
+        return typeof v === "object" && v !== null && "run" in v;
+      } catch {
+        return false;
+      }
+    });
+    if (looksLikeReport) {
+      process.stderr.write(
+        "✗ that looks like an analysis report, not a custom playbook.\n" +
+          "  `diff` compares two custom playbook files (the JSON you pass to --playbook-file).\n" +
+          "  To compare two ANALYSES of a document, use: vaulytica compare <base> <revised>\n",
+      );
+      process.exitCode = 2;
+      return;
+    }
     process.stderr.write(
       `✗ invalid playbook:\n${outcome.errors.map((e) => `  ${e}`).join("\n")}\n`,
     );

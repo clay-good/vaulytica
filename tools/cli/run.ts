@@ -50,7 +50,7 @@
  * spec-v15: an emitted coherence artifact is pinned to the playbook ladder its
  * rungs were computed against; `--baseline-coherence` refuses to diff it against
  * a round computed on a different ladder (a cross-ladder compare is meaningless).
- *   tsx tools/cli/run.ts diff <a.json> <b.json> [--format markdown|json] [--exit-code]
+ *   tsx tools/cli/run.ts diff <playbook-a.json> <playbook-b.json> [--format markdown|json] [--exit-code]
  *   tsx tools/cli/run.ts compare <base> <revised> [--fail-on <sev>] [--fail-on-regression] [--format json|markdown]
  *   tsx tools/cli/run.ts compare-coherence <base.coherence.json> <revised.coherence.json> [--format markdown|json] [--fail-on-coherence-regression]
  *   tsx tools/cli/run.ts coherence-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-coherence-regression]
@@ -1405,7 +1405,10 @@ Commands:
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]
                           Bates + privilege-log reconciliation over a production set.
-  diff    <a.json> <b.json> [--format markdown|json] [--exit-code]
+  diff    <playbook-a.json> <playbook-b.json> [--format markdown|json] [--exit-code]
+                          Structural diff of two CUSTOM PLAYBOOKS (the files
+                          --playbook-file takes). To compare two analyses of a
+                          document, use the compare command instead.
   compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture]
                           [--format json|markdown]
                           [--fail-on critical|warning|info] [--fail-on-regression]
