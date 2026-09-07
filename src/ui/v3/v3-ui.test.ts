@@ -43,6 +43,44 @@ function emptyExtracted(definitions: Record<string, string> = {}): ExtractedData
 
 /* ---------------- detectV3Family ---------------- */
 
+describe("detectV3Family reads every attachment noun, not three of seven", () => {
+  // The v3 auto-detect was missing from every static recognizer sweep — its
+  // directory was not in `DOCUMENT_READING_ROOTS` — and it enumerated
+  // `addendum|exhibit|schedule` where the catalog has seven nouns. So the two
+  // words an EU or UK contract actually uses for the thing it staples to the
+  // back went unread: the Standard Contractual Clauses are literally "Annex I,
+  // II, III", and an AI rider is as often an "Appendix" as an "Addendum".
+  const headerOnly = (label: string) => detectV3Family(emptyExtracted(), label);
+
+  it("detects an AI rider whatever the document staples it as", () => {
+    for (const noun of ["Addendum", "Exhibit", "Schedule", "Annex", "Annexure", "Appendix"]) {
+      const d = headerOnly(`Artificial Intelligence ${noun} to the Master Services Agreement`);
+      expect(
+        d.signals.some((s) => s.evidence === "AI Addendum"),
+        `AI ${noun}`,
+      ).toBe(true);
+    }
+  });
+
+  it("detects a vendor security rider whatever the document staples it as", () => {
+    for (const noun of ["Addendum", "Exhibit", "Schedule", "Annex", "Annexure", "Appendix"]) {
+      const d = headerOnly(`Vendor Security ${noun} to the Master Services Agreement`);
+      expect(
+        d.signals.some((s) => s.evidence === "Vendor Security Addendum"),
+        `Vendor Security ${noun}`,
+      ).toBe(true);
+    }
+  });
+
+  it("still requires the noun — the bare subject is not a rider", () => {
+    expect(
+      headerOnly("Artificial Intelligence Policy").signals.some(
+        (s) => s.evidence === "AI Addendum",
+      ),
+    ).toBe(false);
+  });
+});
+
 describe("detectV3Family", () => {
   it("flags a BAA on definitional + statutory + phrase signals", () => {
     const ext = emptyExtracted({

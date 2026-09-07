@@ -52,6 +52,13 @@ export const DOCUMENT_READING_ROOTS: readonly string[] = [
   "src/extract",
   "src/playbooks",
   "src/delivery",
+  // Only the v3 auto-detect half of `src/ui`. The rest of that directory
+  // RENDERS what the engine decided, and sweeping it flags HTML escaping
+  // (`.replace(/'/g, "&#39;")`) as a document recognizer blind to a curly
+  // apostrophe. `auto-detect.ts` genuinely reads the document to classify it,
+  // and was missing from every sweep: it enumerated three attachment nouns of
+  // seven, so an AI Annex or a security Appendix went undetected.
+  "src/ui/v3",
 ];
 
 export interface RecognizerSource {

@@ -40,7 +40,7 @@ import ts from "typescript";
 import { describe, expect, it } from "vitest";
 import { declaredExceptions, sourceFiles } from "./_recognizer-sources.js";
 
-const ROOTS = ["src/engine", "src/extract", "src/report"];
+const ROOTS = ["src/engine", "src/extract", "src/report", "src/playbooks", "src/ui"];
 const MIN_LINES = 12;
 
 interface Body {

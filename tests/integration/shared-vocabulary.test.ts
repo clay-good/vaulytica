@@ -138,6 +138,7 @@ describe("the document-reading root list", () => {
       "src/engine/rules",
       "src/extract",
       "src/playbooks",
+      "src/ui/v3",
     ]);
   });
 });

@@ -14,6 +14,7 @@
  */
 
 import type { ExtractedData } from "../../extract/types.js";
+import { ATTACHMENT_KIND } from "../../extract/attachment-kinds.js";
 
 export type V3Family =
   | "baa"
@@ -384,7 +385,7 @@ function detectCoi(extracted: ExtractedData, text: string): DetectionSignal[] {
 
 function detectVendorSecurity(extracted: ExtractedData, text: string): DetectionSignal[] {
   const out: DetectionSignal[] = [];
-  if (/\bvendor\s+security\s+(?:addendum|exhibit|schedule)\b/i.test(text)) {
+  if (new RegExp(`\\bvendor\\s+security\\s+(?:${ATTACHMENT_KIND})\\b`, "i").test(text)) {
     out.push({ source: "header", evidence: "Vendor Security Addendum", weight: 3 });
   }
   if (/\bSOC\s*2(?:\s+Type\s*II)?\b|\bISO\s*27001\b/i.test(text)) {
@@ -410,7 +411,9 @@ function detectVendorSecurity(extracted: ExtractedData, text: string): Detection
 
 function detectAiAddendum(extracted: ExtractedData, text: string): DetectionSignal[] {
   const out: DetectionSignal[] = [];
-  if (/\b(?:AI|artificial\s+intelligence)\s+(?:addendum|exhibit|schedule)\b/i.test(text)) {
+  if (
+    new RegExp(`\\b(?:AI|artificial\\s+intelligence)\\s+(?:${ATTACHMENT_KIND})\\b`, "i").test(text)
+  ) {
     out.push({ source: "header", evidence: "AI Addendum", weight: 3 });
   }
   if (/\blarge\s+language\s+model\b|\bgenerative\s+AI\b/i.test(text)) {

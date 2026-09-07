@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.509.0] — 2026-09-06
+
+### Fixed
+- **The guards' own root lists had the blind spot the guards exist to catch.**
+  9.508.0's defect — a comparison reimplemented wrongly — lived in
+  `src/ui/playbook-candidates.ts`, and `duplicate-logic.test.ts` walks
+  `src/engine`, `src/extract` and `src/report` only. `DOCUMENT_READING_ROOTS`
+  named five directories and none of them was in `src/ui` either.
+
+  Both are widened. `duplicate-logic` now also walks `src/playbooks` and
+  `src/ui` and is **clean** — a negative result worth as much as a find,
+  because it is now held there.
+
+  `DOCUMENT_READING_ROOTS` gains **`src/ui/v3`** — and only that, deliberately.
+  The rest of `src/ui` renders what the engine already decided, and sweeping it
+  flags HTML escaping (`.replace(/'/g, "&#39;")`) as a document recognizer
+  blind to a curly apostrophe. `auto-detect.ts` genuinely reads the document to
+  classify it, and had been invisible to every static sweep since it was
+  written.
+
+- **The v3 auto-detect read three attachment nouns of seven**, so the two words
+  an EU or UK contract actually uses went unread. It matched
+  `addendum|exhibit|schedule`; the Standard Contractual Clauses are literally
+  "Annex I, II, III", and an AI rider is as often an "Appendix". A document
+  headed "Artificial Intelligence **Annex** to the Master Services Agreement"
+  or "Vendor Security **Appendix**" produced no detection signal at all. Both
+  sites read `ATTACHMENT_KIND`, the single owner, now.
+
+  **Honest scope: no specimen in the 312-document corpus exercises this** — the
+  gain is measured at zero movers. It is a latent gap found by a static sweep
+  and proven by unit test (red without the fix, naming "AI Annex" exactly;
+  green with it), not a corpus-proven defect. Same shape the frontier already
+  records: a sweep finds what no specimen happens to write.
+
 ## [9.508.0] — 2026-09-06
 
 ### Fixed
