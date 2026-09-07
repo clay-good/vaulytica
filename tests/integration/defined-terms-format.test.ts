@@ -19,8 +19,10 @@
  *  - a signature block read as a glossary, 21 terms across 16 specimens —
  *    "NORTHGATE RETAIL PARTNERS LLC By" is not a term any document defines
  *    (9.494.0).
+ *  - a form's ROUTING INSTRUCTION read as a glossary entry, 7 terms — "TO THE
+ *    OWNER", "AFTER RECORDING RETURN TO", "SEND ACKNOWLEDGMENT TO" (9.538.0).
  *
- * The 58 below are what is left, and they are two shapes:
+ * The 56 below are what is left, and they are two shapes:
  *
  *  - **junk GAINED** when a transform splits a signature or notice block into
  *    its own paragraphs — "Chief Executive Officer Date", "Marisol Trent
@@ -153,7 +155,6 @@ const TERM_FORMAT_DEBT: readonly string[] = [
   "information-security-policy.txt [double-spaced] lost:Chief Information Security Officer Version gained:Policy Owner",
   "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Authorized Representative gained:-",
   "insurance-endorsement-additional-insured.txt [double-spaced] lost:- gained:Named Insured",
-  "lien-notice.txt [blank lines stripped] lost:FROM THE CLAIMANT,TO THE CONSTRUCTION LENDER,TO THE DIRECT CONTRACTOR gained:-",
   "litigation-funding.txt [smart quotes] lost:Claimant's Counsel gained:Claimant’s Counsel",
   "marketing-services-agreement.txt [double-spaced] lost:- gained:Chief Marketing Officer Title,Marisol Trent Name",
   "option-grant.txt [blank lines stripped] lost:Expiration Date,Grant Date,Stock Exercise Price Per Share gained:-",
@@ -179,7 +180,6 @@ const TERM_FORMAT_DEBT: readonly string[] = [
   "sub-processing-agreement.txt [double-spaced] lost:- gained:Director Title,Rosalind Achebe Kwan Name",
   "subscription-agreement.txt [double-spaced] lost:- gained:Aggregate Purchase Price",
   "term-sheet.txt [blank lines stripped] lost:Governing Law,Lead Investor,Other Investors gained:Founder Vesting",
-  "tx-general-warranty-deed.txt [blank lines stripped] lost:AFTER RECORDING RETURN TO gained:-",
   "ucc-1.txt [blank lines stripped] lost:IL POSTAL CODE gained:-",
   "uk-facility-agreement.txt [blank lines stripped] lost:Facility Amount,Governing Law gained:-",
   "us-state-privacy-addendum.txt [double-spaced] lost:- gained:General Counsel Title,Marisol Trent Name",

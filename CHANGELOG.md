@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.538.0] — 2026-09-07
+
+### Fixed
+- **A form's routing instruction read as a defined term.** Real legal forms open
+  with one: a mechanics' lien notice writes *"TO THE OWNER:"* over the owner's
+  address, a Texas warranty deed *"AFTER RECORDING RETURN TO:"*, a UCC-1 *"SEND
+  ACKNOWLEDGMENT TO:"*, a QDRO *"IN RE THE MARRIAGE OF:"*. The field-label
+  reader registered every one, so the definitions report told a lawyer that
+  **"TO THE DIRECT CONTRACTOR" was defined and never used**. Seven across the
+  corpus, every one with zero uses.
+
+  🥇 Same mistake as the signature block fixed in 9.494.0 — *a block of form
+  furniture read as a glossary* — in the **header** instead of the footer. When
+  you fix one end of a document, look at the other.
+
+  Two signals, both required. The label must be **shouted**, because form
+  furniture is written in capitals; and it must **open with a preposition or an
+  imperative**, because that is what makes it an instruction rather than a name.
+  Measured over all **58** ALL-CAPS terms the corpus produces: the pair drops
+  exactly those seven and keeps every real one — `GUARANTOR`, `PHI`, `GDPR`,
+  `FAR`, `DFARS`, `GUARANTEED OBLIGATIONS`. Corpus terms 1,279 → 1,272;
+  never-used 96 → 89; both deltas exactly 7, so nothing else moved.
+
+  ⚠️ `NOTICE` is deliberately **absent** from the opener list. *"NOTICE TO THE
+  PRINCIPAL"* in the durable power of attorney is the same kind of heading and
+  would be a legitimate eighth, but a label merely beginning with "Notice" is
+  not an instruction (*"Notice Address"*, *"Notice Period"*) — and widening on
+  one specimen is how a suppression starts eating real terms. Recorded, not
+  guessed at.
+
+  `defined-terms-format.test.ts`'s debt drops **58 → 56**: two of its lines were
+  these labels appearing and disappearing with the layout.
+
+  **How it was found:** it is the root cause left standing by 9.537.0's
+  cross-document relation. The last mover was *"Governing Law" is defined in
+  sow.txt but used undefined in msa.txt* — a **clause heading** read as a
+  definition, then built into a confident cross-document accusation. Chasing
+  that back to the field-label reader turned up the instruction class beside it.
+  ⚠️ The heading case itself is **not** fixed: "Governing Law" appears exactly
+  once in 312 specimens as a never-used term, so a clause-heading blocklist is
+  not proportionate on this evidence — and "Term" and "Assignment" are both
+  clause headings **and** ordinary defined terms, which is where such a list
+  would start doing damage.
+
 ## [9.537.0] — 2026-09-07
 
 ### Fixed

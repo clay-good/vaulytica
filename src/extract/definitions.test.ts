@@ -2667,3 +2667,60 @@ describe("extractDefinitions — a signature block defines nothing", () => {
     expect(terms).toContain("Trade Name");
   });
 });
+
+/**
+ * A form's routing instruction is not a glossary entry either — the same
+ * mistake as the signature block above, in the header rather than the footer.
+ *
+ * Real legal forms open with one. A mechanics' lien notice writes "TO THE
+ * OWNER:" over the owner's address, a Texas warranty deed "AFTER RECORDING
+ * RETURN TO:", a UCC-1 "SEND ACKNOWLEDGMENT TO:", a QDRO "IN RE THE MARRIAGE
+ * OF:". Every one registered, and the definitions report told a lawyer that
+ * "TO THE DIRECT CONTRACTOR" was defined and never used.
+ *
+ * Two signals, both required: SHOUTED (form furniture is written in capitals)
+ * and OPENING with a preposition or an imperative (that is what makes it an
+ * instruction rather than a name). Measured over all 58 ALL-CAPS terms the
+ * corpus produces, the pair drops exactly the seven instructions and keeps
+ * every real one.
+ */
+describe("extractDefinitions — a form's routing instruction defines nothing", () => {
+  function header(lines: [string, ...string[]]): string[] {
+    return extractDefinitions(buildTree(lines)).entries.map((e) => e.term);
+  }
+
+  it("does not read a recording or notice instruction as a defined term", () => {
+    const terms = header([
+      "NOTICE OF MECHANICS LIEN",
+      "TO THE OWNER: Calloway Ridge Holdings LLC",
+      "TO THE DIRECT CONTRACTOR: Harker Building Group",
+      "FROM THE CLAIMANT: Vasquez Electrical Services",
+    ]);
+    expect(terms.filter((t) => /^(?:TO|FROM)\b/.test(t))).toEqual([]);
+  });
+
+  it("keeps an ALL-CAPS term that is a NAME rather than an instruction", () => {
+    // The signal is the opening word, not the capitals — a guaranty set
+    // entirely in capitals defines GUARANTOR and GUARANTEED OBLIGATIONS, and
+    // an all-caps suppression would take both.
+    const terms = header([
+      "CONTINUING GUARANTY",
+      "GUARANTEED OBLIGATIONS: all present and future obligations of the Borrower to the Lender.",
+      "GUARANTOR NAME: Halbrook Diagnostics Incorporated",
+      "The GUARANTEED OBLIGATIONS are absolute, and the GUARANTOR NAME appears above.",
+    ]);
+    expect(terms).toContain("GUARANTEED OBLIGATIONS");
+  });
+
+  it("keeps a Title-Case label that merely starts with a preposition word", () => {
+    // The shout is load-bearing: "To Be Determined" or a mixed-case label is
+    // not form furniture, and only the ALL-CAPS form is suppressed.
+    const terms = header([
+      "ORDER FORM",
+      "To Be Confirmed: the delivery window for the first tranche of units",
+      "Billing Contact: Renata Oyelaran, Director of Finance",
+      "Payment Terms: net thirty days from the date of the invoice",
+    ]);
+    expect(terms).toContain("To Be Confirmed");
+  });
+});

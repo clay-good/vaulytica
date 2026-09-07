@@ -300,6 +300,36 @@ const QUOTED_TERM = /["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
  */
 const SIGNATURE_FORM_LABEL = /\s(?:By|Attn|Its)$/;
 
+/**
+ * A ROUTING INSTRUCTION shouted in a form's header, not a term the document
+ * defines. Real legal forms open with one — a mechanics' lien notice writes
+ * "TO THE OWNER:" over the owner's address, a warranty deed "AFTER RECORDING
+ * RETURN TO:", a UCC-1 "SEND ACKNOWLEDGMENT TO:", a QDRO "IN RE THE MARRIAGE
+ * OF:" — and every one registered as a defined term, so the definitions report
+ * told a lawyer that "TO THE DIRECT CONTRACTOR" was defined and never used.
+ * Seven such lines across the corpus, every one with zero uses.
+ *
+ * Two signals, both required. The label must be SHOUTED, because the
+ * instruction is form furniture and a document writes furniture in capitals;
+ * and it must OPEN with a preposition or an imperative, because that is what
+ * makes it an instruction rather than a name. Measured over all 58 ALL-CAPS
+ * extracted terms, the pair drops exactly those seven and keeps every real one
+ * — GUARANTOR, PHI, GDPR, FAR, DFARS, GUARANTEED OBLIGATIONS.
+ *
+ * ⚠️ `NOTICE` is deliberately absent. "NOTICE TO THE PRINCIPAL" in the durable
+ * power-of-attorney is the same kind of heading and would be a legitimate
+ * eighth, but a label merely BEGINNING with "Notice" is not an instruction
+ * ("Notice Address", "Notice Period"), and widening on one specimen is how a
+ * suppression starts eating real terms. Recorded, not guessed at.
+ */
+const FORM_INSTRUCTION_LABEL =
+  /^(?:TO|FROM|AFTER|BEFORE|SEND|RETURN|MAIL|DELIVER|IN RE|ATTENTION|ATTN)\b/;
+
+/** Shouted: the label is its own upper-casing and carries real letters. */
+function isShoutedLabel(term: string): boolean {
+  return term === term.toUpperCase() && /[A-Z]{2}/.test(term);
+}
+
 const FIELD_LABEL = /\b([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){1,4})\s*(?::|\|)\s+/g;
 const FIELD_BLOCK_MAX_LENGTH = 240;
 
@@ -903,6 +933,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       while ((f = FIELD_LABEL.exec(ctx.text)) !== null) {
         const term = f[1]!.trim();
         if (SIGNATURE_FORM_LABEL.test(term)) continue;
+        if (isShoutedLabel(term) && FORM_INSTRUCTION_LABEL.test(term)) continue;
         labels.push({ term, start: f.index, valueStart: f.index + f[0].length });
       }
     }
