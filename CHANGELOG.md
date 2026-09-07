@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.523.0] — 2026-09-07
+
+### Fixed
+- **Finished the audit: all six `BUILD_PROGRESS.md` partials are now verified
+  against the code.** Two were complete and had been sitting unmarked;
+  one had half its remaining work done; three keep precise notes.
+
+  **Step 27 (NDA deep) → ✅.** Every listed item had landed. The playbooks are
+  no longer placeholders — `mutual-nda-deep` is **v1.3.0**, `unilateral-nda-deep`
+  **v1.2.0**, each with 12 distinguishing phrases, 15 compliance-matrix columns
+  and 8 expected defined terms. v2's `mutual-nda` / `unilateral-nda` carry
+  `deprecated: true` + `superseded_by`, and auto-detect honours it
+  (`matcher.ts:1206` tiebreaks non-deprecated over deprecated). **56 NDA
+  fixtures** with baselines.
+
+  **Step 28 (MSA deep) → ✅.** **64 MSA fixtures** with baselines; the only
+  other open item — deprecating the v2 MSA/SaaS playbooks — was deliberately
+  not pursued, and that decision is recorded in the `msa-deep/rules.ts` header.
+  A closed decision, not outstanding work.
+
+  **Step 29 stays 🟡, now for the right two reasons.** Done: the privacy-policy
+  fixtures (8) and the SaaS AI-addendum end-to-end fixtures (18). Genuinely
+  absent: the ACORD-25 spatial-layout extractor — no `src/extract/v3/acord-25.ts`,
+  and the tree's only mention of ACORD is an error string in `ui/v3/copy.ts` —
+  and the paired privacy-policy ↔ DPA consistency check, which nothing in
+  `src/engine/consistency` implements.
+
+  Tally: **61 → 63 complete, 6 → 4 partial.** The four that remain are honest:
+  two missing implementations (29), two unnamed e2e scenarios (33), a
+  deployed-URL-vs-built-artifact wording question (36), and a manual
+  screen-reader pass that is blocked on a human (37).
+
+  🚨 Verifying step 27 also corrected a probe from earlier in this same
+  session, which reported **zero** deprecated playbooks. It walked
+  `src/playbooks` only; `mutual-nda` and `unilateral-nda` are launch playbooks
+  under `playbooks/`. **The two-roots trap, hit again by the person who wrote
+  the guard against it** — this time caught because the check was run across
+  both roots deliberately.
+
 ## [9.522.0] — 2026-09-07
 
 ### Fixed
