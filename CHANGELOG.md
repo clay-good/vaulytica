@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.544.0] — 2026-09-07
+
+### Fixed
+- 🚨 **The tree's most safety-critical test passed with the scanner switched
+  off.** `delivery.test.ts`'s *"never echoes an unmasked value (the §Part XIV
+  invariant)"* — the check standing between a draft's SSN and the report that
+  gets emailed — was built **entirely from negative assertions**:
+
+  ```ts
+  expect(joined).not.toContain("123-45-6789");
+  expect(joined).not.toContain("4242424242424242");
+  expect(joined).not.toContain("jane@example.com");
+  ```
+
+  A run that produced **no findings at all** satisfies all three: `joined` is
+  `"[]"`, which contains none of them. Proven by making `scanSensitive` return
+  an empty array — **seventeen** tests in that file went red and **this one
+  stayed green**, while the invariant it exists to defend was no longer being
+  tested at all.
+
+  🥇 **A test built only from negative assertions passes hardest when nothing
+  happened.** Say what must have been found before saying what must not have
+  been echoed. It asserts the `HANDOFF-005` finding exists and the masked tails
+  (`6789`, `4242`) are present, then that no raw value is. Re-run against the
+  same empty scanner it now fails: 17 → 18.
+
+- **The same shape in the no-wall-clock gate**, and there it hid in *both*
+  tests. `critical-dates-no-wallclock.test.ts` asserts the register, its hash
+  and every export are byte-identical under two wildly different "today" values,
+  and that no export carries a relative-to-today phrase. **Two empty registers
+  are byte-identical**, and an empty export matches no phrase — so a change that
+  stopped the derivation finding anything would have satisfied the whole file.
+  The memory of this repo records that this invariant cost three red workflows
+  to establish; it was resting on a fixture nobody checked still produced dates.
+  Both tests now assert `resolved_count > 0` and a real `VEVENT` first, and both
+  fail against a stubbed-empty derivation.
+
+  The sibling one-liner in `scanSensitive`'s own masking test got the same
+  treatment, for the same reason.
+
+  **How they were found:** by extending the vacuity probe from 9.535.0 to a
+  second shape — tests whose every assertion is `not.toContain` / `not.toMatch`
+  with no positive assertion anywhere. That is **155** tests, and most are
+  legitimately *"omits section X when Y is absent"*, where absence is the point.
+  The dangerous subclass is where the value under test could vanish for an
+  unrelated reason **and** the invariant is safety-critical. Not ratcheted: the
+  distinction is a judgment per test, and a probe that reports everything
+  reports nothing.
+
 ## [9.543.0] — 2026-09-07
 
 ### Added

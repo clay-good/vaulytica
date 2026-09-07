@@ -127,6 +127,20 @@ describe("sensitive-data scan (HANDOFF-005)", () => {
     );
     const findings = deriveHandoffFindings(facts);
     const joined = JSON.stringify(findings);
+    // 🚨 THE POSITIVE ASSERTION IS LOAD-BEARING, and this test did not have it.
+    // Every check below is a `not.toContain`, and a run that produced NO
+    // FINDINGS satisfies all three — `joined` is "[]", which contains none of
+    // them. Proven by making `scanSensitive` return an empty array: seventeen
+    // tests in this file went red and THIS ONE stayed green, while the
+    // invariant it exists to defend — a draft's SSN never reaching the report —
+    // was no longer being tested at all.
+    //
+    // A test built only from negative assertions passes hardest when nothing
+    // happened. Say what must have been found before saying what must not have
+    // been echoed.
+    expect(findings.some((f) => f.rule_id === "HANDOFF-005")).toBe(true);
+    expect(joined).toContain("6789");
+    expect(joined).toContain("4242");
     expect(joined).not.toContain("123-45-6789");
     expect(joined).not.toContain("4242424242424242");
     expect(joined).not.toContain("jane@example.com");
@@ -405,6 +419,11 @@ describe("sensitive: distinct values sharing a mask are counted separately", () 
 
   it("never puts an unmasked value in the output", () => {
     const facts = scanSensitive("SSN 123-45-6789 and email alice@example.com.");
+    // The count first, and not as decoration. Every assertion in this test is
+    // inside the loop, so a scanner that found NOTHING would satisfy it — and
+    // this is the check standing between a draft and a leaked SSN. "Nothing
+    // was unmasked" and "nothing was found" must not look the same here.
+    expect(facts.map((f) => f.type).sort()).toEqual(["email", "ssn"]);
     for (const f of facts) expect(f.masked).toContain("*");
   });
 });

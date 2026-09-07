@@ -46,6 +46,7 @@ async function snapshotUnderClock(iso: string): Promise<{
   ics: string;
   md: string;
   json: string;
+  resolved: number;
 }> {
   vi.useFakeTimers();
   vi.setSystemTime(new Date(iso));
@@ -56,6 +57,7 @@ async function snapshotUnderClock(iso: string): Promise<{
     ics: buildCriticalDatesIcs(register),
     md: buildCriticalDatesMarkdown(register),
     json: JSON.stringify(register),
+    resolved: register.resolved_count,
   };
 }
 
@@ -63,6 +65,15 @@ describe("critical dates — no wall-clock in the hash (spec-v9 Step 164)", () =
   it("the register, its hash, and every export are byte-identical under two different 'today' values", async () => {
     const early = await snapshotUnderClock("2020-06-15T08:00:00Z");
     const late = await snapshotUnderClock("2099-12-31T23:59:59Z");
+    // 🚨 THE FIXTURE MUST ACTUALLY PRODUCE DATES, and neither test in this file
+    // used to say so. Two EMPTY registers are byte-identical, and an empty
+    // export contains no "days remaining" phrase — so a change that stopped the
+    // derivation finding anything at all would satisfy both assertions below
+    // while the invariant they exist to defend went untested. The clock-
+    // independence claim is only worth making about a register with something
+    // in it.
+    expect(early.resolved).toBeGreaterThan(0);
+    expect(early.ics).toContain("BEGIN:VEVENT");
     expect(late.hash).toBe(early.hash);
     expect(late.json).toBe(early.json);
     expect(late.ics).toBe(early.ics);
@@ -71,6 +82,8 @@ describe("critical dates — no wall-clock in the hash (spec-v9 Step 164)", () =
 
   it("no export contains a relative-to-today phrase", async () => {
     const snap = await snapshotUnderClock("2026-06-12T00:00:00Z");
+    // Same reason: an empty export matches no relative-to-today phrase.
+    expect(snap.resolved).toBeGreaterThan(0);
     for (const text of [snap.ics, snap.md, snap.json]) {
       expect(text).not.toMatch(/days? remaining|overdue|due in \d|next deadline/i);
     }
