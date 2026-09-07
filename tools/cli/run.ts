@@ -765,6 +765,7 @@ async function renderFormat(
         v9surfaces,
         undefined,
         r.secondary_families.length > 0 ? r.secondary_families : undefined,
+        consistency,
       );
     case "md": {
       const md = buildFixListMarkdown(r.run, undefined, currency, r.ingest);
@@ -1009,7 +1010,8 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // the pair, so a bundle whose DPA contradicts its own privacy notice came back
   // as two clean documents.
   const consistencyDocs: ConsistencyDocument[] = [];
-  const deferredSarif: {
+  const deferredCrossDoc: {
+    fmt: "sarif" | "html";
     file: string;
     result: AnalyzeResult;
     definitions?: import("../../src/report/definitions.js").DefinitionsReport;
@@ -1166,13 +1168,13 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       : undefined;
 
     for (const fmt of args.formats) {
-      // SARIF is the one format that carries the CROSS-document results, and
-      // those are not known until every document has been read — so when a
-      // bundle was asserted, its render is deferred to after the loop. Every
+      // SARIF and HTML are the formats that carry the CROSS-document results,
+      // and those are not known until every document has been read — so when a
+      // bundle was asserted, their render is deferred to after the loop. Every
       // other format, and the whole progress stream above, is unchanged.
       // `--out` is guaranteed here: ≥2 inputs already require it.
-      if (fmt === "sarif" && wantsConsistency && inputs.length >= 2) {
-        deferredSarif.push({ file, result: r, definitions });
+      if ((fmt === "sarif" || fmt === "html") && wantsConsistency && inputs.length >= 2) {
+        deferredCrossDoc.push({ fmt, file, result: r, definitions });
         continue;
       }
       if (fmt === "docx-comments") {
@@ -1264,16 +1266,19 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     human(renderConsistencySummary(consistency));
   }
 
-  for (const d of deferredSarif) {
+  for (const d of deferredCrossDoc) {
     const content = await renderFormat(
-      "sarif",
+      d.fmt,
       d.result,
       deps.dkb,
       d.definitions,
       consistency ?? undefined,
     );
     await mkdir(args.out!, { recursive: true });
-    await writeFile(join(args.out!, basename(d.file, extname(d.file)) + FORMAT_EXT.sarif), content);
+    await writeFile(
+      join(args.out!, basename(d.file, extname(d.file)) + FORMAT_EXT[d.fmt]),
+      content,
+    );
   }
 
   if (args.emitConsistency) {

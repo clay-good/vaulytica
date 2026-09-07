@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { ConsistencyRun } from "../engine/consistency/types.js";
 import { buildHtmlReport } from "./html.js";
 import { loadStarterDkbSync } from "../engine/_test-fixtures.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
@@ -445,5 +446,97 @@ describe("HTML report — secondary families (spec-v6 multi-family activation)",
     );
     expect(html).not.toContain("<b>bold</b>");
     expect(html).toContain("&lt;b&gt;bold&lt;/b&gt;");
+  });
+});
+
+/**
+ * The cross-document consistency appendix.
+ *
+ * The DOCX has rendered it since v3. This file did not — and unlike the cover
+ * page or the findings index, the omission was NOT on the deliberate list in
+ * html.ts's own header, so a bundle's conflicts reached one human-readable
+ * surface and not the other. Exactly the defect the secondary-families section
+ * above was added to fix, in the same file, found by asking the same question.
+ */
+describe("HTML report — cross-document consistency (spec-v3 §59)", () => {
+  function crossRun(findings: ConsistencyRun["findings"]): ConsistencyRun {
+    return {
+      version: "0.1.0",
+      dkb_version: "v0.0.1-starter",
+      documents: [
+        { doc_id: "dpa", source_file_name: "dpa.docx", playbook_id: "dpa", kind: "dpa" },
+        { doc_id: "msa", source_file_name: "msa.docx", playbook_id: "msa-general", kind: "msa" },
+      ],
+      executed_at: "",
+      findings,
+      execution_log: [],
+      result_hash: "e".repeat(64),
+    };
+  }
+  const conflict: ConsistencyRun["findings"][number] = {
+    id: "CC-002-dpa-10",
+    rule_id: "CC-002",
+    rule_version: "1.0.0",
+    severity: "warning",
+    title: "DPA purpose is open-ended relative to the MSA services",
+    description: "The DPA permits processing for any purpose the controller directs.",
+    explanation: "GDPR Art. 28(3) requires a stated purpose.",
+    recommendation: "Tether the purpose to the MSA's services.",
+    source_citations: [],
+    excerpts: [
+      {
+        doc_id: "dpa",
+        source_file_name: "dpa.docx",
+        text: "any purpose the Controller directs",
+        start_offset: 10,
+        end_offset: 44,
+      },
+      {
+        doc_id: "msa",
+        source_file_name: "msa.docx",
+        text: "Scope of Services: payroll processing",
+        start_offset: 0,
+        end_offset: 37,
+      },
+    ],
+  };
+
+  function render(consistency?: ConsistencyRun): string {
+    return buildHtmlReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      consistency,
+    );
+  }
+
+  it("names the conflict and quotes BOTH documents", () => {
+    // A conflict is a fact about a pair; quoting one side never says what the
+    // document was compared against.
+    const html = render(crossRun([conflict]));
+    expect(html).toContain("Cross-document consistency");
+    expect(html).toContain("CC-002");
+    expect(html).toContain("any purpose the Controller directs");
+    expect(html).toContain("Scope of Services: payroll processing");
+    expect(html).toContain("Tether the purpose");
+    expect(html).toContain("e".repeat(64));
+  });
+
+  it("says it checked and found nothing, rather than going silent", () => {
+    // "We checked and found nothing" and "we never checked" are different
+    // statements, and only one of them belongs in a bundle report.
+    const html = render(crossRun([]));
+    expect(html).toContain("Cross-document consistency");
+    expect(html).toContain("No cross-document conflicts were detected");
+  });
+
+  it("is omitted entirely for a single-document run", () => {
+    // Render-side addition gated on field presence: byte-identical to the
+    // report produced before the field existed.
+    expect(render(undefined)).toBe(buildHtmlReport(makeRun(), ingest, loadStarterDkbSync()));
   });
 });

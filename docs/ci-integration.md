@@ -140,7 +140,10 @@ belong together. (`--emit-consistency` and `--fail-on-consistency` imply it.)
 The terminal prints the worst 20 findings and a count of the rest; the full run
 goes to `--emit-consistency`.
 
-With `--format sarif` the conflicts reach **code scanning** too: each one is a
+With `--format html` the conflicts also reach the standalone report, as a
+"Cross-document consistency" appendix mirroring the DOCX's — including the
+"checked, found nothing" case, because that is a different statement from "never
+checked". With `--format sarif` they reach **code scanning** too: each one is a
 result on the document its first excerpt names — once per bundle, not once per
 document — carrying a location for **every** contributing document, so the alert
 says what the document was compared against. A SARIF rendered without

@@ -492,6 +492,17 @@ describe("analyze — cross-document consistency over a bundle", () => {
     expect(seen["dpa"]).not.toContain("CC-008");
   }, 120_000);
 
+  it("puts the appendix in the HTML report too", async () => {
+    // The DOCX has rendered the consistency appendix since v3; the standalone
+    // HTML did not, and that omission was not one of html.ts's deliberate ones.
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cross-html-"));
+    dirs.push(dir);
+    await analyze([BUNDLE, "--format", "html", "--out", dir, "--consistency"]);
+    const html = await readFile(join(dir, "privacy-notice.html"), "utf8");
+    expect(html).toContain("Cross-document consistency");
+    expect(html).toContain("CC-008");
+  }, 120_000);
+
   it("stays silent — and byte-identical — without the assertion", async () => {
     // A DIRECTORY IS NOT A BUNDLE. Pointed at unrelated documents the engine
     // has hundreds of true-but-meaningless observations to make, so the pass is

@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.531.0] — 2026-09-07
+
+### Fixed
+- **The standalone HTML report was missing the cross-document consistency
+  appendix the DOCX has rendered since v3.** `html.ts`'s own header keeps a
+  deliberate list of what the DOCX has and it does not — the cover page, the
+  executive summary, the findings index, the obligations ledger, the
+  extracted-data appendix, the jurisdiction overlays, the audit trail — all of
+  them navigation and reference apparatus a searchable scrolling page does not
+  need. **The consistency appendix was not on that list.** It was simply absent,
+  so a bundle's conflicts reached one human-readable surface and not the other.
+
+  🥇 **Same defect, same file, same question as the secondary-family section
+  directly above it** — which was added for exactly this reason, and whose
+  comment states the rule this one broke: *findings are the one thing a report
+  may not silently omit.* When a file keeps a list of its deliberate omissions,
+  the interesting entries are the ones that are not on it.
+
+  The section mirrors the DOCX: the bundle's documents, a per-finding table,
+  then each conflict with its explanation, recommendation, and the conflicting
+  text quoted **from every document it cites** — one side alone never says what
+  the document was compared against — closing with the consistency
+  `result_hash`. A run with **no** conflicts still prints the section: "we
+  checked and found nothing" and "we never checked" are different statements.
+
+  `analyze --consistency --format html` carries it, on the same deferred render
+  as SARIF. Absent the flag the HTML is byte-identical to before, pinned by a
+  test.
+
+  Not changed: the **browser's** per-document HTML download still omits it. The
+  browser runs consistency after each document's own report is built, so
+  threading it in is a pipeline restructure rather than an argument — and the
+  tab already surfaces cross-document findings in its bundle card and bundle
+  DOCX. Recorded rather than quietly skipped.
+
 ## [9.530.0] — 2026-09-07
 
 ### Added

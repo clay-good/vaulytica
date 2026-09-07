@@ -21,7 +21,8 @@
  * DOCX had carried since v6 while this file omitted them entirely. A document
  * that is both an NDA and a DPA had its DPA findings in one human-readable
  * surface and not the other, and findings are the one thing a report may not
- * silently omit.
+ * silently omit. The cross-document consistency appendix (spec-v3 §59) was the
+ * same omission, found by the same question, and is here now too.
  *
  * What the DOCX still has and this does not, deliberately: the cover page and
  * its proof fields, the executive summary, the findings INDEX (a triage table
@@ -38,6 +39,7 @@
  */
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
+import type { ConsistencyRun } from "../engine/consistency/types.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
 import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
@@ -219,6 +221,62 @@ const SEV_CLASS: Record<string, string> = { critical: "crit", warning: "warn", i
  * The families this document ALSO contains, kept apart from the primary
  * findings — the HTML mirror of the DOCX section of the same name.
  */
+/**
+ * The cross-document consistency appendix — the HTML counterpart of the DOCX's
+ * `renderConsistencyAppendix`. A conflict is a fact about a PAIR of documents,
+ * so every finding names the documents it cites and quotes the conflicting text
+ * from each; the run's own hash closes the section, as it does in the DOCX.
+ *
+ * A run with no conflicts still prints the section: "we checked and found
+ * nothing" and "we never checked" are different statements, and only one of
+ * them is what a bundle report should leave a reader with.
+ */
+function renderConsistencySection(consistency: ConsistencyRun | undefined): string[] {
+  if (!consistency) return [];
+  const out: string[] = ["<h2>Cross-document consistency</h2>"];
+  out.push(
+    `<p>Documents in this bundle: ${esc(
+      consistency.documents.map((d) => `${d.doc_id} (${d.kind})`).join(", "),
+    )}.</p>`,
+  );
+  if (consistency.findings.length === 0) {
+    out.push("<p><em>No cross-document conflicts were detected by the consistency rules.</em></p>");
+  } else {
+    out.push(
+      `<p>${consistency.findings.length} cross-document finding${
+        consistency.findings.length === 1 ? "" : "s"
+      }. Each lists the affected documents and the conflicting text from each.</p>`,
+    );
+    out.push(
+      "<table><thead><tr><th>#</th><th>Rule</th><th>Severity</th><th>Title</th></tr></thead><tbody>",
+    );
+    consistency.findings.forEach((f, i) => {
+      out.push(
+        `<tr><td>${i + 1}</td><td>${esc(f.rule_id)}</td>` +
+          `<td>${esc(f.severity.toUpperCase())}</td><td>${esc(truncate(f.title, 120))}</td></tr>`,
+      );
+    });
+    out.push("</tbody></table>");
+    for (const f of consistency.findings) {
+      out.push(`<h3>${esc(f.rule_id)} — ${esc(f.title)}</h3>`);
+      out.push(`<p><strong>[${esc(f.severity.toUpperCase())}]</strong> ${esc(f.description)}</p>`);
+      out.push(`<p>${esc(f.explanation)}</p>`);
+      if (f.recommendation) {
+        out.push(`<p><strong>Recommendation:</strong> ${esc(f.recommendation)}</p>`);
+      }
+      out.push("<h4>Conflicting excerpts</h4>");
+      for (const e of f.excerpts) {
+        out.push(
+          `<blockquote>${esc(e.doc_id)} (${esc(e.source_file_name)}): ` +
+            `&ldquo;${esc(truncate(e.text, 480))}&rdquo;</blockquote>`,
+        );
+      }
+    }
+  }
+  out.push(`<p class="v9-note">Consistency result hash: ${esc(consistency.result_hash)}</p>`);
+  return out;
+}
+
 function renderSecondaryFamiliesSection(
   secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
 ): string[] {
@@ -386,6 +444,7 @@ export function buildHtmlReport(
   v9?: V9Surfaces,
   negotiationPosture?: NegotiationPosture,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
+  consistency?: ConsistencyRun,
 ): string {
   const bibliography = buildBibliography(run.findings, dkb);
   const currency = dkbCurrency(dkb.manifest);
@@ -532,6 +591,12 @@ export function buildHtmlReport(
   // NDA and a DPA had its DPA findings in one human-readable surface and not
   // the other. Findings are the one thing a report may not silently omit.
   body.push(...renderSecondaryFamiliesSection(secondaryFamilies));
+  // spec-v3 §59 — the cross-document consistency appendix. The DOCX has
+  // rendered it since v3 (`renderConsistencyAppendix`); this file did not, and
+  // the omission was not on the deliberate list in the header above — so a
+  // bundle's conflicts reached one human-readable surface and not the other.
+  // Same defect, same file, as the secondary families directly above.
+  body.push(...renderConsistencySection(consistency));
 
   // Bibliography.
   body.push("<h2>Bibliography</h2>");
@@ -624,9 +689,21 @@ export function htmlReportBlob(
   v9?: V9Surfaces,
   negotiationPosture?: NegotiationPosture,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
+  consistency?: ConsistencyRun,
 ): Blob {
   return new Blob(
-    [buildHtmlReport(run, ingest, dkb, playbook, v9, negotiationPosture, secondaryFamilies)],
+    [
+      buildHtmlReport(
+        run,
+        ingest,
+        dkb,
+        playbook,
+        v9,
+        negotiationPosture,
+        secondaryFamilies,
+        consistency,
+      ),
+    ],
     { type: "text/html" },
   );
 }
