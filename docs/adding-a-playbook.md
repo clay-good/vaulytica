@@ -74,6 +74,7 @@ The schema is enforced by [`PlaybookSchema`](../src/playbooks/types.ts). Require
 - Every `balanced_defaults` entry's `source_dkb_id` must exist in the DKB manifest `sources` array — see [`dkb-manifest.json`](../dkb/dist/v0.0.1-starter/dkb-manifest.json). The integration test `playbook-matching.test.ts` enforces this.
 - Categories in `required_clauses` / `expected_clauses` should match the canonical taxonomy in [`dkb/build/classifier_taxonomy.json`](../dkb/build/classifier_taxonomy.json). Anything outside the taxonomy is silently ignored by the matcher until a corresponding alias lands.
 - Severities are `critical | warning | info`.
+- Every `companion_playbooks` id must name a playbook the runtime can actually route to — the 12 launch playbooks under [`playbooks/`](../playbooks/) plus the v3–v6 waves bundled into `playbooks/extended.json`. The integration test `playbook-cross-references.test.ts` enforces this, and also rejects a playbook that lists itself, a companion listed twice, and a blank `regulator_frame`. Note that the base families most often named as companions (`saas-customer`, `employment-at-will-us`, `lease-commercial-multitenant`, …) live **only** under `playbooks/` and not under `src/playbooks/`, so resolve against the union, never one root.
 
 ### Does each distinguishing phrase actually distinguish?
 
@@ -166,6 +167,7 @@ The schema validation test (`every file validates against the schema`) and the D
 - [ ] At least one positive matcher test in `tests/integration/playbook-matching.test.ts`
 - [ ] `expected_clauses` and `required_clauses` use canonical taxonomy categories
 - [ ] Every `balanced_defaults` entry cites a DKB source id present in the starter manifest
+- [ ] Every `companion_playbooks` id resolves to a real playbook in the shipped catalog
 - [ ] PR description explains the contract type and the source(s) you drew defaults from (Common Paper / ABA / a published template)
 
 ## What `title_keywords` are matched against

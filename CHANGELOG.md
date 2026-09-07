@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.505.0] — 2026-09-06
+
+### Fixed
+- **A playbook suggested a companion document that does not exist.**
+  `Playbook.companion_playbooks` — "suggested two-document pairings (playbook
+  ids)", per its own doc comment — is the catalog's only cross-reference field.
+  255 of the 267 shipped playbooks declare one, 335 references in all, and **no
+  consumer anywhere reads the field**. An unread field is an unchecked one:
+  `vendor-security-questionnaire` pointed at `vendor-security-bundle`, which
+  exists nowhere in the tree, and because that was its *only* companion the
+  field was wholly empty for that family with nothing to say so. It now points
+  at `vendor-security-addendum` — the paper a completed SIG/CAIQ questionnaire
+  actually leads to, and which already names the questionnaire's own MSA
+  companions on the other side.
+
+### Added
+- **`tests/integration/playbook-cross-references.test.ts`** — referential
+  integrity for the catalog, resolved against the union the runtime actually
+  ships (the 12 launch playbooks under `playbooks/` plus the v3–v6 waves
+  bundled into `playbooks/extended.json`). Every companion id must name a real
+  playbook; none may name itself or repeat; a declared `regulator_frame` may
+  not be blank. Proven against the defect: reverting the one-word fix takes the
+  test red with exactly that pair named, and green with it.
+
+  The test also carries an anti-vacuity assertion — 250+ ids, 200+ playbooks
+  declaring a companion, 300+ references — because a referential-integrity
+  check over an empty relation is green for the wrong reason.
+
+  🚨 The header records the trap the guard was written after walking into:
+  **resolving against `src/playbooks/**` alone reports 11 dangling references,
+  10 of them imaginary.** The 12 base families (`saas-customer`,
+  `employment-at-will-us`, `lease-commercial-multitenant`, …) live ONLY under
+  `playbooks/`, and they are the most-referenced companions in the catalog. The
+  catalog has two roots; a guard that walks one is worse than no guard, because
+  it invents work. Same lesson as `DOCUMENT_READING_ROOTS`.
+
+Zero engine effect: no rule reads `companion_playbooks`, so no golden moved
+except the version stamp.
+
 ## [9.504.0] — 2026-09-06
 
 ### Fixed
