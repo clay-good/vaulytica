@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.530.0] — 2026-09-07
+
+### Added
+- **Cross-document findings reach SARIF — the surface CI actually reads.**
+  A bundle's conflicts had a home in the DOCX appendix and the bundle JSON and
+  **no CI surface at all**. SARIF is what the GitHub Action uploads by default,
+  so the gate shipped in 9.528.0 could turn a check red with **nothing
+  annotated**: the job failed and code scanning showed no reason why.
+
+  `buildSarif` takes an optional `ConsistencyRun` now. Each conflict becomes a
+  result on the document its **first excerpt names** — once per bundle, not once
+  per document, because a conflict cited twice reads as two problems — and
+  carries a SARIF location for **every** contributing document. Without that,
+  "your DPA is broader than your MSA" would annotate the DPA and never say what
+  it was compared against. `partialFingerprints` pin the finding id and the
+  consistency `result_hash`, so a consumer dedupes across runs the same way it
+  does for engine findings.
+
+  🥇 **The CLI had to change shape to carry it, and the change is confined.**
+  SARIF is the one format whose content is not knowable until every document has
+  been read, so when a bundle is asserted its render is **deferred** to after
+  the loop; every other format, and the whole per-file progress stream, is
+  untouched. Verified rather than assumed: a SARIF rendered without
+  `--consistency` is **byte-identical** to one produced before the flag existed.
+
 ## [9.529.0] — 2026-09-07
 
 ### Added

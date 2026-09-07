@@ -36,6 +36,7 @@ import type { V9Surfaces } from "./v9-surfaces.js";
 import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
+import type { ConsistencyFinding, ConsistencyRun } from "../engine/consistency/types.js";
 
 /**
  * Thrust B (the closing checklist) in SARIF, WITHOUT duplicating a single
@@ -170,6 +171,7 @@ export function buildSarif(
   v9?: V9Surfaces,
   currency?: CitationCurrency,
   ingest?: Pick<IngestResult, "warnings">,
+  consistency?: ConsistencyRun,
 ): SarifLog {
   // One reportingDescriptor per distinct rule that produced a finding, in
   // sorted rule-id order for determinism. The v9 surfaces extend this with the
@@ -189,6 +191,16 @@ export function buildSarif(
   // was a redline read as all-changes-accepted, or was not in English at all.
   const inputWarnings = ingest?.warnings ?? [];
   const inputRuleIds = inputWarnings.length > 0 ? [INPUT_NOTICE_RULE_ID] : [];
+  // Cross-document (CC-* / CROSS-*). A bundle's conflicts had reached the DOCX
+  // appendix and the bundle JSON and no CI surface at all — so a job that
+  // gated on them annotated nothing, and SARIF is the artifact the Action
+  // uploads by default. Each finding is attached to the document its FIRST
+  // excerpt names, with the counterpart documents as further locations, so a
+  // conflict appears exactly once across the bundle's SARIF files.
+  const crossFindings = (consistency?.findings ?? []).filter(
+    (f) => f.excerpts[0]?.source_file_name === run.source_file.name,
+  );
+  const crossRuleIds = [...new Set(crossFindings.map((f) => f.rule_id))].sort();
   // Engine / handoff / date / notice rule-id namespaces are disjoint, so the
   // combined index is collision-free and every result's ruleIndex resolves.
   const allRuleIds = [
@@ -197,6 +209,7 @@ export function buildSarif(
     ...dateRuleIds,
     ...noticeRuleIds,
     ...inputRuleIds,
+    ...crossRuleIds,
   ];
   const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
 
@@ -235,7 +248,24 @@ export function buildSarif(
     name: id,
     shortDescription: { text: "About this input — what the analysis could and could not read" },
   }));
-  const rules = [...engineRules, ...handoffRules, ...dateRules, ...noticeRules, ...inputRules];
+  const crossRules: SarifRule[] = crossRuleIds.map((id) => {
+    const f = crossFindings.find((x) => x.rule_id === id)!;
+    const descriptor: SarifRule = { id, name: id, shortDescription: { text: f.title } };
+    if (f.source_citations.length > 0) {
+      descriptor.properties = {
+        citations: f.source_citations.map((c) => citationProperty(c, currency)),
+      };
+    }
+    return descriptor;
+  });
+  const rules = [
+    ...engineRules,
+    ...handoffRules,
+    ...dateRules,
+    ...noticeRules,
+    ...inputRules,
+    ...crossRules,
+  ];
 
   // Thrust B: which rule ids are execution-readiness items, so the results
   // that already exist can be tagged instead of duplicated.
@@ -343,12 +373,18 @@ export function buildSarif(
     properties: { surface: "input-notice" },
   }));
 
+  const consistencyHash = consistency?.result_hash ?? "";
+  const crossResults: SarifResult[] = crossFindings.map((f) =>
+    crossDocumentResult(f, ruleIndex, consistencyHash, currency),
+  );
+
   const results = [
     ...findingResults,
     ...handoffResults,
     ...dateResults,
     ...noticeResults,
     ...inputResults,
+    ...crossResults,
   ];
 
   // Tool-run provenance: which opt-in packs were asserted (each rides in the
@@ -442,6 +478,52 @@ function handoffResult(
   };
 }
 
+/**
+ * Map a cross-document finding to a SARIF result.
+ *
+ * A conflict is not a fact about one file, so the result carries one location
+ * per contributing document — the first excerpt's document leads (it is the one
+ * whose SARIF file this result lands in) and the counterparts follow. A code-
+ * scanning consumer shows the alert on the leading document and can follow the
+ * others; without the extra locations, "your BAA is broader than your MSA" would
+ * annotate the BAA and never say what it was compared against.
+ */
+function crossDocumentResult(
+  f: ConsistencyFinding,
+  ruleIndex: Map<string, number>,
+  consistencyHash: string,
+  currency?: CitationCurrency,
+): SarifResult {
+  return {
+    ruleId: f.rule_id,
+    ruleIndex: ruleIndex.get(f.rule_id)!,
+    level: LEVEL[f.severity],
+    message: { text: f.description },
+    locations: f.excerpts.map((e) => ({
+      physicalLocation: {
+        artifactLocation: { uri: e.source_file_name },
+        region: {
+          charOffset: e.start_offset,
+          charLength: Math.max(0, e.end_offset - e.start_offset),
+        },
+      },
+      logicalLocations: [{ name: e.section_id ?? "document", kind: "section" }],
+    })),
+    partialFingerprints: {
+      "vaulyticaConsistencyFindingId/v1": f.id,
+      "vaulyticaConsistencyHash/v1": consistencyHash,
+    },
+    properties: {
+      severity: f.severity,
+      explanation: f.explanation,
+      ...(f.recommendation ? { recommendation: f.recommendation } : {}),
+      documents: f.excerpts.map((e) => e.source_file_name),
+      surface: "cross-document",
+      citations: f.source_citations.map((c) => citationProperty(c, currency)),
+    },
+  };
+}
+
 /** Map a derived critical date to a SARIF result (section-located, note level). */
 function dateResult(
   r: CriticalDate,
@@ -489,8 +571,9 @@ export function buildSarifJson(
   v9?: V9Surfaces,
   currency?: CitationCurrency,
   ingest?: Pick<IngestResult, "warnings">,
+  consistency?: ConsistencyRun,
 ): string {
-  return JSON.stringify(buildSarif(run, v9, currency, ingest), null, 2);
+  return JSON.stringify(buildSarif(run, v9, currency, ingest, consistency), null, 2);
 }
 
 export function sarifBlob(

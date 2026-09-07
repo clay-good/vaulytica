@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildSarif, buildSarifJson, sarifConformanceViolations } from "./sarif.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
+import type { ConsistencyRun } from "../engine/consistency/types.js";
 
 function finding(id: string, rule: string, sev: Finding["severity"], withUrl = true): Finding {
   return {
@@ -433,5 +434,109 @@ describe("buildSarif — v9 Thrust B (the closing checklist roll-up)", () => {
 
   it("stays SARIF 2.1.0 conformant with the roll-up present", () => {
     expect(sarifConformanceViolations(buildSarif(r, { closingChecklist: checklist }))).toEqual([]);
+  });
+});
+
+/**
+ * Cross-document findings on the CI surface.
+ *
+ * A bundle's conflicts reached the DOCX appendix and the bundle JSON and no CI
+ * surface at all. SARIF is the artifact the GitHub Action uploads by default,
+ * so a job gating on `--fail-on-consistency` annotated nothing: the check went
+ * red and code scanning showed no reason why.
+ */
+describe("buildSarif — cross-document findings (CC-* / CROSS-*)", () => {
+  function crossRun(): ConsistencyRun {
+    return {
+      version: "0.1.0",
+      dkb_version: "v0.0.1-starter",
+      documents: [
+        { doc_id: "dpa", source_file_name: "dpa.docx", playbook_id: "dpa", kind: "dpa" },
+        { doc_id: "msa", source_file_name: "msa.docx", playbook_id: "msa-general", kind: "msa" },
+      ],
+      executed_at: "",
+      findings: [
+        {
+          id: "CC-002-dpa-10",
+          rule_id: "CC-002",
+          rule_version: "1.0.0",
+          severity: "warning",
+          title: "DPA purpose is open-ended relative to the MSA services",
+          description: "The DPA permits processing for any purpose the controller directs.",
+          explanation: "GDPR Art. 28(3) requires a stated purpose.",
+          recommendation: "Tether the purpose to the MSA's services.",
+          source_citations: [],
+          excerpts: [
+            {
+              doc_id: "dpa",
+              source_file_name: "dpa.docx",
+              text: "any purpose the Controller directs",
+              section_id: "s3",
+              start_offset: 10,
+              end_offset: 44,
+            },
+            {
+              doc_id: "msa",
+              source_file_name: "msa.docx",
+              text: "Scope of Services: payroll processing",
+              section_id: "s1",
+              start_offset: 0,
+              end_offset: 37,
+            },
+          ],
+        },
+      ],
+      execution_log: [],
+      result_hash: "d".repeat(64),
+    };
+  }
+
+  it("emits the finding on the document its FIRST excerpt names", () => {
+    const log = buildSarif(run([]), undefined, undefined, undefined, crossRun());
+    const cross = log.runs[0]!.results.filter((r) => r.properties?.surface === "cross-document");
+    expect(cross).toHaveLength(1);
+    expect(cross[0]!.ruleId).toBe("CC-002");
+    expect(cross[0]!.level).toBe("warning");
+    // The rule descriptor must resolve, or a consumer renders an unnamed alert.
+    const rules = log.runs[0]!.tool.driver.rules!;
+    expect(rules[cross[0]!.ruleIndex!]!.id).toBe("CC-002");
+  });
+
+  it("does NOT repeat the finding in the counterpart document's SARIF", () => {
+    // Once per bundle, not once per document — a conflict cited twice reads as
+    // two problems.
+    const msaRun: EngineRun = {
+      ...run([]),
+      source_file: { ...run([]).source_file, name: "msa.docx" },
+    };
+    const log = buildSarif(msaRun, undefined, undefined, undefined, crossRun());
+    expect(log.runs[0]!.results.filter((r) => r.properties?.surface === "cross-document")).toEqual(
+      [],
+    );
+  });
+
+  it("carries every contributing document as a location", () => {
+    // "Your DPA is broader than your MSA" annotating only the DPA never says
+    // what it was compared against.
+    const log = buildSarif(run([]), undefined, undefined, undefined, crossRun());
+    const cross = log.runs[0]!.results.find((r) => r.properties?.surface === "cross-document")!;
+    expect(cross.locations!.map((l) => l.physicalLocation!.artifactLocation.uri)).toEqual([
+      "dpa.docx",
+      "msa.docx",
+    ]);
+    expect(cross.properties!.documents).toEqual(["dpa.docx", "msa.docx"]);
+    expect(cross.partialFingerprints!["vaulyticaConsistencyHash/v1"]).toBe("d".repeat(64));
+  });
+
+  it("is byte-identical to a run without it when no consistency is passed", () => {
+    expect(buildSarifJson(run([finding("f1", "DPA-001", "critical")]))).toBe(
+      buildSarifJson(run([finding("f1", "DPA-001", "critical")]), undefined, undefined, undefined),
+    );
+  });
+
+  it("stays SARIF 2.1.0 conformant with cross-document results present", () => {
+    expect(
+      sarifConformanceViolations(buildSarif(run([]), undefined, undefined, undefined, crossRun())),
+    ).toEqual([]);
   });
 });

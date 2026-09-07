@@ -130,6 +130,11 @@ separate from `--fail-on`, which scores each document alone — so switching
 cross-document checks on never changes the exit code of a job that was already
 passing.
 
+With `--format sarif` the conflicts also reach **code scanning**: each finding
+is a result on the document its first excerpt names — once per bundle, not once
+per document — with a SARIF location for every contributing document, so the
+alert says what the document was compared against.
+
 ## Determinism
 
 The consistency engine carries the same determinism contract as the v2

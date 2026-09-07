@@ -140,6 +140,12 @@ belong together. (`--emit-consistency` and `--fail-on-consistency` imply it.)
 The terminal prints the worst 20 findings and a count of the rest; the full run
 goes to `--emit-consistency`.
 
+With `--format sarif` the conflicts reach **code scanning** too: each one is a
+result on the document its first excerpt names — once per bundle, not once per
+document — carrying a location for **every** contributing document, so the alert
+says what the document was compared against. A SARIF rendered without
+`--consistency` is byte-identical to one from before the flag existed.
+
 The **gate is opt-in** as well. `--fail-on-consistency` is a
 separate flag from `--fail-on` precisely so that turning cross-document checks on
 cannot change the exit code of a job that was already passing —

@@ -702,6 +702,7 @@ async function renderFormat(
   r: AnalyzeResult,
   dkb: Dkb,
   definitions?: import("../../src/report/definitions.js").DefinitionsReport,
+  consistency?: ConsistencyRun,
 ): Promise<string> {
   // Deterministic citation-currency reference — the DKB's own build date.
   const currency = dkbCurrency(dkb.manifest);
@@ -751,7 +752,10 @@ async function renderFormat(
         r.related_documents.length > 0 ? r.related_documents : undefined,
       ).text();
     case "sarif":
-      return buildSarifJson(r.run, v9surfaces, currency, r.ingest);
+      // The cross-document run rides in only when the caller asserted a bundle
+      // (--consistency); each conflict lands in the SARIF of the document its
+      // first excerpt names, so it appears exactly once across the set.
+      return buildSarifJson(r.run, v9surfaces, currency, r.ingest, consistency);
     case "html":
       return buildHtmlReport(
         r.run,
@@ -1005,6 +1009,11 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // the pair, so a bundle whose DPA contradicts its own privacy notice came back
   // as two clean documents.
   const consistencyDocs: ConsistencyDocument[] = [];
+  const deferredSarif: {
+    file: string;
+    result: AnalyzeResult;
+    definitions?: import("../../src/report/definitions.js").DefinitionsReport;
+  }[] = [];
   // Assertion-gated, like every other opt-in pack. A DIRECTORY IS NOT A BUNDLE:
   // pointed at 60 unrelated specimens the engine emits ~950 findings, because
   // "these two documents name different governing law" is only a conflict
@@ -1157,6 +1166,15 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       : undefined;
 
     for (const fmt of args.formats) {
+      // SARIF is the one format that carries the CROSS-document results, and
+      // those are not known until every document has been read — so when a
+      // bundle was asserted, its render is deferred to after the loop. Every
+      // other format, and the whole progress stream above, is unchanged.
+      // `--out` is guaranteed here: ≥2 inputs already require it.
+      if (fmt === "sarif" && wantsConsistency && inputs.length >= 2) {
+        deferredSarif.push({ file, result: r, definitions });
+        continue;
+      }
       if (fmt === "docx-comments") {
         // Binary reviewed copy: the uploaded container plus anchored Word
         // comments (add-word-comment-export). Validated above: .docx input
@@ -1244,6 +1262,18 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       dkb: deps.dkb,
     });
     human(renderConsistencySummary(consistency));
+  }
+
+  for (const d of deferredSarif) {
+    const content = await renderFormat(
+      "sarif",
+      d.result,
+      deps.dkb,
+      d.definitions,
+      consistency ?? undefined,
+    );
+    await mkdir(args.out!, { recursive: true });
+    await writeFile(join(args.out!, basename(d.file, extname(d.file)) + FORMAT_EXT.sarif), content);
   }
 
   if (args.emitConsistency) {

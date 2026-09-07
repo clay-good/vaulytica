@@ -471,6 +471,27 @@ describe("analyze — cross-document consistency over a bundle", () => {
     expect(code).toBe(0);
   }, 120_000);
 
+  it("puts each conflict in the SARIF of exactly one document", async () => {
+    // SARIF is what the GitHub Action uploads by default, so a job gating on
+    // --fail-on-consistency used to go red with nothing annotated. Each
+    // conflict lands on the document its first excerpt names — once per
+    // bundle, not once per document, or a conflict reads as two problems.
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cross-sarif-"));
+    dirs.push(dir);
+    await analyze([BUNDLE, "--format", "sarif", "--out", dir, "--consistency"]);
+    const seen: Record<string, string[]> = {};
+    for (const name of ["dpa", "privacy-notice"]) {
+      const log = JSON.parse(await readFile(join(dir, `${name}.sarif.json`), "utf8")) as {
+        runs: { results: { ruleId: string; properties?: { surface?: string } }[] }[];
+      };
+      seen[name] = log.runs[0]!.results.filter(
+        (r) => r.properties?.surface === "cross-document",
+      ).map((r) => r.ruleId);
+    }
+    expect(seen["privacy-notice"]).toEqual(expect.arrayContaining(["CC-008", "CC-009"]));
+    expect(seen["dpa"]).not.toContain("CC-008");
+  }, 120_000);
+
   it("stays silent — and byte-identical — without the assertion", async () => {
     // A DIRECTORY IS NOT A BUNDLE. Pointed at unrelated documents the engine
     // has hundreds of true-but-meaningless observations to make, so the pass is
