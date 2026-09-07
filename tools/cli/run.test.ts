@@ -869,3 +869,123 @@ describe("analyze — the pre-disclosure gate", () => {
     );
   });
 });
+
+/**
+ * The single-document posture gate.
+ *
+ * `--fail-on-divergence` asks whether the documents disagree with each OTHER;
+ * `--fail-on-coherence-regression` whether the package moved against a
+ * BASELINE. Neither answers the question a team actually gates a pull request
+ * on — *does this draft sit below our floor?* — so the v10 ladder's most direct
+ * CI use had no flag at all.
+ *
+ * The load-bearing detail is what CANNOT trip it. `unevaluable` ("not stated")
+ * is unranked in `TIER_RANK` because it is not a point on the ideal→floor axis,
+ * and a gate that fired on it would fail a document for saying nothing about a
+ * dimension — the same rule `--fail-on-divergence` follows, where silence is
+ * never a disagreement.
+ */
+describe("analyze — the single-document posture gate", () => {
+  const LADDER = join(process.cwd(), "docs", "v6", "examples", "saas-buyer.playbook.json");
+  const SPECIMENS = join(process.cwd(), "tests", "fixtures", "specimens");
+  // 1 ideal, 1 acceptable, 1 below floor, 3 not stated — every rung represented.
+  const BELOW_FLOOR = join(SPECIMENS, "api-terms.txt");
+  // All six dimensions unevaluable: the fixture that proves silence is not a breach.
+  const ALL_UNSTATED = join(
+    process.cwd(),
+    "tests",
+    "golden",
+    "v4",
+    "fixtures",
+    "banking-loan-agreement-minimal.txt",
+  );
+  const dirs: string[] = [];
+  afterAll(async () => {
+    for (const d of dirs) await rm(d, { recursive: true, force: true });
+  });
+  async function out(): Promise<string> {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-posture-gate-"));
+    dirs.push(dir);
+    return dir;
+  }
+  async function run(file: string, extra: string[]): Promise<{ err: string; code: number }> {
+    const err: string[] = [];
+    const se = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation((c) => (err.push(String(c)), true));
+    const so = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    const before = process.exitCode;
+    process.exitCode = 0;
+    try {
+      await runAnalyze([
+        file,
+        "--playbook-file",
+        LADDER,
+        "--posture",
+        "--format",
+        "json",
+        "--out",
+        await out(),
+        ...extra,
+      ]);
+      return { err: err.join(""), code: Number(process.exitCode ?? 0) };
+    } finally {
+      process.exitCode = before;
+      se.mockRestore();
+      so.mockRestore();
+    }
+  }
+
+  it("exits 2 and names the dimension that sits below the floor", async () => {
+    const { err, code } = await run(BELOW_FLOOR, ["--fail-on-posture", "below-acceptable"]);
+    expect(code).toBe(2);
+    expect(err).toContain("--fail-on-posture below-acceptable");
+    expect(err).toMatch(/api-terms\.txt: .+ \(below-acceptable\)/);
+  }, 120_000);
+
+  it("a stricter threshold catches the acceptable rung too", async () => {
+    const { code } = await run(BELOW_FLOOR, ["--fail-on-posture", "acceptable"]);
+    expect(code).toBe(2);
+  }, 120_000);
+
+  it("NEVER fires on a dimension the document says nothing about", async () => {
+    // Six unevaluable dimensions and no stated rung: silence is not a breach,
+    // and a gate that treated it as one would fail every quiet draft.
+    const { err, code } = await run(ALL_UNSTATED, ["--fail-on-posture", "below-acceptable"]);
+    expect(code).toBe(0);
+    expect(err).not.toContain("--fail-on-posture");
+  }, 120_000);
+
+  it("refuses 'unevaluable' as a threshold", async () => {
+    await expect(runAnalyze([BELOW_FLOOR, "--fail-on-posture", "unevaluable"])).rejects.toThrow(
+      /--fail-on-posture must be/,
+    );
+  });
+
+  it("requires --posture, rather than gating on a posture nobody computed", async () => {
+    const err: string[] = [];
+    const se = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation((c) => (err.push(String(c)), true));
+    const so = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    const before = process.exitCode;
+    process.exitCode = 0;
+    try {
+      await runAnalyze([
+        BELOW_FLOOR,
+        "--format",
+        "json",
+        "--out",
+        await out(),
+        "--fail-on-posture",
+        "below-acceptable",
+      ]);
+      expect(Number(process.exitCode ?? 0)).toBe(1);
+      expect(err.join("")).toContain("--fail-on-posture requires --posture");
+    } finally {
+      process.exitCode = before;
+      se.mockRestore();
+      so.mockRestore();
+    }
+  }, 120_000);
+});

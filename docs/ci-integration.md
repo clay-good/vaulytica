@@ -173,6 +173,20 @@ cannot change the exit code of a job that was already passing —
 `--emit-consistency` writes the whole run, `result_hash` included, for archiving
 or diffing.
 
+### Gating your own ladder
+
+```bash
+npx vaulytica analyze redline.docx --playbook-file team.json --posture \\
+  --fail-on-posture below-acceptable
+```
+
+Exit 2 when any dimension of **this** document sits at or below the rung named,
+with each breach printed by dimension. It is the direct answer to *does this
+draft sit below our floor?* — `--fail-on-divergence` compares the documents to
+each other, and `--fail-on-coherence-regression` compares the package to a
+baseline. A dimension the draft says nothing about is **not stated**, not a
+shortfall, and never trips the gate.
+
 ### Gating the pre-disclosure scan
 
 `--delivery` finds what a draft should not carry out of the building — an SSN, a

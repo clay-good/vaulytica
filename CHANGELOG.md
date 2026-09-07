@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.548.0] — 2026-09-07
+
+### Added
+- **`--fail-on-posture <rung>` — the gate the v10 ladder was missing.** The
+  posture had two CI gates and neither answered the question a team actually
+  gates a pull request on. `--fail-on-divergence` asks whether the documents
+  disagree **with each other**; `--fail-on-coherence-regression` asks whether
+  the package moved against a **baseline**. Nothing asked *does **this** draft
+  sit below our floor?* — which is the ladder's most direct use, and the reason
+  a team writes one.
+
+  Exit 2 when any dimension of this document sits at or below the rung named,
+  with each breach printed by document and dimension:
+
+  ```
+  ✗ 1 posture dimension(s) at or below --fail-on-posture below-acceptable:
+    api-terms.txt: Cure period (below-acceptable)
+  ```
+
+  🥇 **What cannot trip it is the load-bearing part.** `unevaluable` — *not
+  stated* — is unranked in `TIER_RANK` because it is not a point on the
+  ideal→floor axis, so a dimension the draft says nothing about never fires the
+  gate, and `unevaluable` is not even accepted as a threshold. That is the same
+  rule `--fail-on-divergence` follows, where silence is never a disagreement,
+  and it is what keeps the gate from failing every quiet draft. The threshold
+  reads `TIER_RANK` itself rather than a second copy of the rung order — the
+  file's own comment calls it "the single place to extend the order".
+
+  Requires `--posture`, and says so rather than gating on a posture nobody
+  computed. Both fixtures in the test are chosen for what they prove: one has
+  every rung represented, the other has all six dimensions unstated.
+
 ## [9.547.0] — 2026-09-07
 
 ### Fixed

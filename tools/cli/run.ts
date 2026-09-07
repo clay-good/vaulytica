@@ -30,6 +30,12 @@
  * unmasked SSN. A separate flag, so no existing exit code changes; the
  * ungated combination now warns rather than passing in silence.
  *
+ * `--fail-on-posture <rung>` gates on THIS document's posture: exit 2 when any
+ * dimension sits at or below the given rung. `--fail-on-divergence` compares the
+ * documents to each other and `--fail-on-coherence-regression` to a baseline;
+ * neither answers "does this draft sit below our floor?". A `unevaluable`
+ * dimension never trips it — silence is not a shortfall.
+ *
  * `--court` selects a court profile and runs the filing-format-lint pack
  * (FILE-001..008) against its limits, but only when the document matches a
  * filing playbook (appellate-brief / trial-motion / petition); without it the
@@ -214,6 +220,7 @@ import { normalizeUsStateId } from "../../src/dkb/estate-formalities.js";
 
 /** Values the `--regime` flag accepts (`gdpr` expands to both articles). */
 const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
+import { TIER_RANK } from "../../src/report/posture-movement.js";
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
@@ -301,6 +308,15 @@ import {
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
+
+/**
+ * The rungs a caller may gate on. `unevaluable` is excluded by construction —
+ * `TIER_RANK` leaves it unranked because "not stated" is not a point on the
+ * ideal→floor axis, and a gate that fired on it would fail a document for
+ * saying nothing about a dimension. Same rule `--fail-on-divergence` follows.
+ */
+const RANKED_TIERS = ["ideal", "acceptable", "below-acceptable"] as const;
+type RankedTier = (typeof RANKED_TIERS)[number];
 /** Accepted `--fail-on` values, in the order the usage error lists them. */
 const VALID_SEVERITIES = Object.keys(SEVERITY_RANK) as Severity[];
 type Format =
@@ -459,6 +475,8 @@ type Args = {
   failOnConsistency?: Severity;
   /** Exit non-zero when a PRE-DISCLOSURE finding reaches this severity. */
   failOnDelivery?: Severity;
+  /** Exit non-zero when any posture dimension sits at or below this rung. */
+  failOnPosture?: RankedTier;
   /** add-production-qa-pack — run production QA over a directory/.zip production set. */
   productionQa?: boolean;
   /** add-production-qa-pack — exit non-zero when a Bates sequence gap is found. */
@@ -622,6 +640,17 @@ function parseArgs(argv: string[]): Args {
         args.emitConsistency = requireValue(flag, val);
         i++;
         break;
+      case "--fail-on-posture": {
+        // `unevaluable` is NOT a value here, and that is the point: "not
+        // stated" is not a rung on the ideal→floor axis, so it can never be
+        // the threshold and can never trip the gate. Silence is not a breach.
+        if (!RANKED_TIERS.includes(val as RankedTier)) {
+          throw new Error(`--fail-on-posture must be ${RANKED_TIERS.join("|")}`);
+        }
+        args.failOnPosture = val as RankedTier;
+        i++;
+        break;
+      }
       case "--fail-on-delivery": {
         if (!VALID_SEVERITIES.includes(val as Severity)) {
           throw new Error(`--fail-on-delivery must be ${VALID_SEVERITIES.join("|")}`);
@@ -1062,6 +1091,11 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     process.exitCode = 1;
     return;
   }
+  if (args.failOnPosture && !args.posture) {
+    process.stderr.write("--fail-on-posture requires --posture\n");
+    process.exitCode = 1;
+    return;
+  }
   if (args.failOnDivergence && !args.posture) {
     process.stderr.write("--fail-on-divergence requires --posture\n");
     process.exitCode = 1;
@@ -1181,6 +1215,8 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   /** Worst pre-disclosure severity seen across the inputs, or null. */
 
   let worstDelivery: Severity | null = null;
+  /** Posture dimensions at or below `--fail-on-posture`, as "doc: dimension". */
+  const postureBreaches: string[] = [];
   // spec-v12 Thrust A — collect each document's posture so that, after the
   // bundle is analyzed, we can report how each negotiation front sits *across*
   // the documents (the cross-document axis of the v10 posture).
@@ -1340,6 +1376,17 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         `  Negotiation posture: ${c.ideal} ideal, ${c.acceptable} acceptable, ${c.below_acceptable} below floor, ${c.unevaluable} not stated.\n`,
       );
       postures.push({ document: documentLabel(file, inputs), posture: r.negotiation_posture });
+      if (args.failOnPosture) {
+        const floor = TIER_RANK[args.failOnPosture] as number;
+        for (const pos of r.negotiation_posture.positions) {
+          const rank = TIER_RANK[pos.tier];
+          // `unevaluable` ranks null and is skipped: a dimension the draft says
+          // nothing about is not a dimension it falls short on.
+          if (rank !== null && rank <= floor) {
+            postureBreaches.push(`${documentLabel(file, inputs)}: ${pos.dimension} (${pos.tier})`);
+          }
+        }
+      }
     }
 
     // add-defined-terms-report — projection over a classifier-free
@@ -1626,6 +1673,18 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // no-op is exactly the trap this pack cannot afford, so when the caller
   // asserted `--delivery`, set `--fail-on`, and the scan found something that
   // WOULD have breached it, say so on stderr and name the flag that gates it.
+  // The single-document posture gate. `--fail-on-divergence` asks whether the
+  // documents disagree with each OTHER and `--fail-on-coherence-regression`
+  // whether the package moved against a BASELINE; neither answers the question
+  // a team actually gates a pull request on — does THIS draft sit below our
+  // floor? Nothing did, so the v10 ladder's most direct CI use had no flag.
+  if (args.failOnPosture && postureBreaches.length > 0) {
+    process.stderr.write(
+      `\n✗ ${postureBreaches.length} posture dimension(s) at or below ` +
+        `--fail-on-posture ${args.failOnPosture}:\n  ${postureBreaches.join("\n  ")}\n`,
+    );
+    process.exitCode = 2;
+  }
   if (args.failOnDelivery && worstDelivery !== null) {
     if (SEVERITY_RANK[worstDelivery] <= SEVERITY_RANK[args.failOnDelivery]) {
       process.stderr.write(
@@ -1841,6 +1900,7 @@ Commands:
                           [--emit-consistency <path>]
                           [--fail-on-consistency critical|warning|info]
                           [--fail-on-delivery critical|warning|info]
+                          [--fail-on-posture ideal|acceptable|below-acceptable]
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]
                           Bates + privilege-log reconciliation over a production set.
   diff    <playbook-a.json> <playbook-b.json> [--format markdown|json] [--exit-code]
