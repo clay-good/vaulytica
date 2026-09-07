@@ -151,29 +151,21 @@ describe("the cross-document run is not a function of the format", () => {
    * the same kind of finding for the same reason. A finding that appears and
    * disappears with blank lines is worse than a finding that is merely absent.
    *
-   * 🚨 MEASURED, AND THE OBVIOUS FIX IS WRONG. All five `CROSS-PARTY-001`
-   * findings the bundle corpus produces (natural and stripped layouts together)
-   * differ ONLY by a corporate suffix — so "stand down on a suffix-only
-   * difference" looks like the fix. It is not: `party-name-conflict`, the
-   * bundle named for this rule, is "Acme Corp" / "Acme Corporation", and that
-   * one is a real drafting inconsistency the rule exists to report. The narrower
-   * candidate is PRESENCE-versus-ABSENCE — one name is the other plus a suffix,
-   * so one side names no suffix at all ("Acme Inc" / "Acme") — which separates
-   * the three artifacts from the one legitimate finding exactly. Not shipped
-   * here: which spelling of an entity's name is canonical is a normalization
-   * decision that touches every report and every golden, and this list is the
-   * evidence for whoever makes it.
+   * 🥇 THE THREE `CROSS-PARTY-001` MOVERS ARE GONE, and the measurement is why.
+   * All five such findings the bundle corpus produced differed only by a
+   * corporate suffix, which made "stand down on any suffix-only difference"
+   * look like the fix — and it was wrong: `party-name-conflict`, the bundle
+   * named for this rule, is "Acme Corp" / "Acme Corporation", a real drafting
+   * inconsistency. The line that separates the artifacts from the finding
+   * EXACTLY is PRESENCE versus ABSENCE of a corporate form ("Acme Inc" /
+   * "Acme"), and that is what `findPartyNameMismatches` now skips. What remains
+   * below is a different root cause, in the defined-term extractor.
    */
   it("holds the known movers by equality — every one an ingest-join artifact", async () => {
     const OWED: ReadonlyArray<string> = [
       // Two defined-term conflicts lost: joining lines changes which document
       // the extractor believes defines "Governing Law".
       "governing-law-mismatch [blank lines stripped]: -CROSS-DEFTERM-002[dpa.txt+sow.txt] -CROSS-DEFTERM-002[msa.txt+sow.txt]",
-      // A party-name finding lost — "Lumenwood Analytics Ltd" / "Lumenwood
-      // Analytics" stops being two records once the lines join.
-      "privacy-notice-vs-dpa [blank lines stripped]: -CROSS-PARTY-001[dpa.txt+privacy-notice.txt]",
-      // Two party-name findings GAINED, out of nothing the documents say.
-      "termination-mismatch [blank lines stripped]: +CROSS-PARTY-001[msa.txt+sow.txt] +CROSS-PARTY-001[msa.txt+sow.txt]",
     ];
 
     const owed: string[] = [];

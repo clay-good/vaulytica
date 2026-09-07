@@ -19,13 +19,25 @@ import type { Party } from "../../../../extract/types.js";
  * but the *original* difference is interesting because lenders, IP
  * licensors, and tax authorities sometimes care.
  */
+/**
+ * The corporate-suffix vocabulary, with ONE owner. `normalizePartyName` strips
+ * these to find the canonical name; `carriesEntitySuffix` asks whether a name
+ * states one at all. Two copies would drift, and the two questions must be
+ * answered from the same list or a name can normalize one way and be judged
+ * suffix-less the other.
+ */
+const ENTITY_SUFFIX_SOURCE =
+  "\\b(inc\\.?|incorporated|corp\\.?|corporation|llc|l\\.l\\.c\\.|lllp|lp|l\\.p\\.|llp|l\\.l\\.p\\.|ltd\\.?|limited|company|co\\.?|plc|gmbh|s\\.?a\\.?|s\\.?a\\.?r\\.?l\\.?|n\\.?v\\.?|ag|pte\\.?|sdn\\.?\\s*bhd\\.?)\\b";
+
+/** Does this name STATE a corporate form, rather than being the bare name? */
+export function carriesEntitySuffix(name: string): boolean {
+  return new RegExp(ENTITY_SUFFIX_SOURCE).test(name.toLowerCase());
+}
+
 export function normalizePartyName(name: string): string {
   return name
     .toLowerCase()
-    .replace(
-      /\b(inc\.?|incorporated|corp\.?|corporation|llc|l\.l\.c\.|lllp|lp|l\.p\.|llp|l\.l\.p\.|ltd\.?|limited|company|co\.?|plc|gmbh|s\.?a\.?|s\.?a\.?r\.?l\.?|n\.?v\.?|ag|pte\.?|sdn\.?\s*bhd\.?)\b/g,
-      "",
-    )
+    .replace(new RegExp(ENTITY_SUFFIX_SOURCE, "g"), "")
     .replace(/[,.()]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -56,6 +68,23 @@ export function findPartyNameMismatches(
     // noise). Real mismatches differ in suffix tokens, e.g., "Inc."
     // vs "Corp." or in non-suffix tokens.
     if (stripTrailingPunctuation(a.name) === stripTrailingPunctuation(b.name)) continue;
+    // PRESENCE versus ABSENCE of the corporate form is not a name conflict.
+    // "Acme Inc" in one document and "Acme" in the other is a legal name and
+    // the short form of it — ordinary drafting, and not what this rule's own
+    // description says it reports ("slightly different LEGAL NAMES, e.g. 'Acme
+    // Corp.' vs 'Acme, Inc.'"), where BOTH sides state a form and they differ.
+    //
+    // It is also the shape that made the finding a function of the LAYOUT:
+    // `consistency-format-invariance` measured a bundle GAINING "Acme Inc /
+    // Acme appears to be the same entity under different legal names" purely
+    // because blank lines were stripped, since which producer wins — and so
+    // whether the suffix survives — differs by layout. A finding that appears
+    // and disappears with blank lines is worse than one that is absent.
+    //
+    // Two different SPELLINGS of a form ("Acme Corp" / "Acme Corporation") are
+    // untouched: both sides state one, and that is a real drafting
+    // inconsistency a lender or a tax authority can care about.
+    if (carriesEntitySuffix(a.name) !== carriesEntitySuffix(b.name)) continue;
     out.push({ a, b, canonical: canon });
   }
   return out;

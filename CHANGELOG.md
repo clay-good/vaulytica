@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.537.0] — 2026-09-07
+
+### Fixed
+- **`CROSS-PARTY-001` reported a short name as a different legal name — and the
+  finding was a function of the page layout.** *"Acme Inc"* in one document and
+  *"Acme"* in the other is a legal name and the short form of it: ordinary
+  drafting, and not what the rule's own description reports (*"slightly
+  different **legal names**, e.g. 'Acme Corp.' vs 'Acme, Inc.'"*), where **both**
+  sides state a corporate form and the forms differ.
+
+  9.536.0's new relation is what made the case: `termination-mismatch` **gained**
+  *"Acme Inc / Acme appears to be the same entity under different legal names"*
+  purely because blank lines were stripped — which producer wins, and so whether
+  the suffix survives, differs by layout. A finding that appears and disappears
+  with blank lines is worse than a finding that is merely absent.
+
+  `findPartyNameMismatches` now skips a pair where exactly one side states a
+  corporate form. Two different **spellings** of one are untouched: *"Acme
+  Corp"* / *"Acme Corporation"* is a real drafting inconsistency a lender or a
+  tax authority can care about, and it is `tests/golden/v4/bundles/party-name-conflict`,
+  the bundle named for this rule — verified still firing.
+
+  🥇 **A correction to 9.536.0, which said this was not shipped because
+  canonical entity spelling is a normalization decision touching every report
+  and golden.** That reason is real and it applies to changing the **extractor**.
+  It does not apply to the rule's firing condition, which touches bundle goldens
+  and nothing else. The measurement was already in hand; on re-reading, the
+  deferral was aimed at the wrong change.
+
+  The suffix vocabulary now has **one owner**: `normalizePartyName` strips it and
+  `carriesEntitySuffix` asks whether a name states one, from the same source
+  string — two copies would drift, and a name could normalize one way and be
+  judged suffix-less the other.
+
+  Measured: **three of the four movers** `consistency-format-invariance` was
+  holding are gone, and the ratchet is down to one line, a different root cause
+  in the defined-term extractor.
+
 ## [9.536.0] — 2026-09-07
 
 ### Added

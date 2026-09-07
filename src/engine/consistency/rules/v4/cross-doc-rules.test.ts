@@ -88,6 +88,53 @@ describe("CROSS-PARTY-001", () => {
     expect(f.excerpts).toHaveLength(2);
   });
 
+  it("does NOT fire when one document writes the legal name and the other the short form", async () => {
+    // "Acme Inc" in one and "Acme" in the other is a legal name and the short
+    // form of it — ordinary drafting, not two different legal names, and not
+    // what this rule's own description reports.
+    //
+    // It is also the shape that made the finding a function of the LAYOUT:
+    // `consistency-format-invariance` measured a bundle GAINING exactly this
+    // finding because blank lines were stripped, since which producer wins —
+    // and so whether the suffix survives — differs by layout.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Agreement",
+      'This Master Services Agreement is between Acme Inc., a Delaware corporation ("Provider"), and Globex Industries, Inc., a New York corporation ("Customer").',
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Statement of Work",
+      'This Statement of Work is between Acme, a Delaware corporation ("Provider"), and Globex Industries, Inc., a New York corporation ("Customer").',
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_PARTY_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings.map((f) => f.title)).toEqual([]);
+  });
+
+  it("STILL fires when both documents state a corporate form and the forms differ", async () => {
+    // The other side of the same line, and the case the suppression above must
+    // not reach: "Acme Corp" / "Acme Corporation" are two spellings of a form,
+    // which is a real drafting inconsistency a lender or tax authority cares
+    // about. This is `tests/golden/v4/bundles/party-name-conflict` in miniature.
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Agreement",
+      'This Master Services Agreement is between Acme Corp, a Delaware corporation ("Provider"), and Globex Industries, Inc., a New York corporation ("Customer").',
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Agreement",
+      'This Business Associate Agreement is between Acme Corporation, a Delaware corporation ("Business Associate"), and Globex Industries, Inc., a New York corporation ("Covered Entity").',
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_PARTY_001],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings.length).toBeGreaterThanOrEqual(1);
+    expect(run.findings.some((f) => /acme/i.test(f.title))).toBe(true);
+  });
+
   it("does not fire when both documents use the same party name", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Agreement",
