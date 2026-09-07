@@ -38,6 +38,14 @@ inputs:
     description: "analyze only: directory to write one file per document per format (e.g. for SARIF upload)."
     required: false
     default: ""
+  consistency:
+    description: "analyze only: set to true to read two or more inputs AS A BUNDLE and run the cross-document consistency checks. A directory is not a bundle — assert this only when the documents belong to the same deal."
+    required: false
+    default: ""
+  fail-on-consistency:
+    description: "analyze only: exit non-zero when a CROSS-DOCUMENT finding is at or above this severity: critical|warning|info. Implies consistency. Separate from fail-on, which scores each document alone. Empty = never fail."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -69,6 +77,8 @@ runs:
         FAIL_ON: ${{ inputs.fail-on }}
         PLAYBOOK: ${{ inputs.playbook }}
         OUT: ${{ inputs.out }}
+        CONSISTENCY: ${{ inputs.consistency }}
+        FAIL_ON_CONSISTENCY: ${{ inputs.fail-on-consistency }}
       run: |
         set -euo pipefail
         args=("$CMD")
@@ -98,6 +108,16 @@ runs:
         [ -n "$FAIL_ON" ] && args+=(--fail-on "$FAIL_ON")
         if [ "$CMD" = "analyze" ] && [ -n "$OUT" ]; then
           args+=(--out "$OUT")
+        fi
+        # Cross-document checks read the inputs as one bundle. analyze-only, and
+        # asserted rather than inferred: a directory of unrelated documents
+        # produces hundreds of true-but-meaningless conflicts.
+        if [ "$CMD" = "analyze" ]; then
+          if [ -n "$FAIL_ON_CONSISTENCY" ]; then
+            args+=(--fail-on-consistency "$FAIL_ON_CONSISTENCY")
+          elif [ "$CONSISTENCY" = "true" ]; then
+            args+=(--consistency)
+          fi
         fi
         echo "vaulytica ${args[*]}"
         node "$VAULYTICA_BIN" "${args[@]}"

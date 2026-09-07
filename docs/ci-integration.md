@@ -75,6 +75,8 @@ exposure — "this redline added a critical finding."
 | `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate |
 | `playbook` | both | force a specific playbook id instead of auto-matching |
 | `out` | analyze | directory for one output file per document per format |
+| `consistency` | analyze | `true` to read the inputs **as a bundle** and run the cross-document checks. A directory is not a bundle — assert it only when the documents belong to the same deal |
+| `fail-on-consistency` | analyze | `critical\|warning\|info` — non-zero exit when a **cross-document** finding is at or above it. Implies `consistency`. Separate from `fail-on`, which scores each document alone |
 
 The Action is a **composite** action: it installs only the engine's runtime
 dependencies in its own checkout (`npm ci --omit=dev` — `tsx` is a runtime dep,

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.529.0] — 2026-09-07
+
+### Added
+- **The GitHub Action can reach the cross-document gate — `consistency` and
+  `fail-on-consistency` inputs.** 9.528.0 put the bundle checks on the CLI; the
+  Action is how most CI consumers actually call it, and it exposes a deliberately
+  small input surface that did not include them. A deal folder in a repo is the
+  most CI-shaped use the engine has, so the two flags are now inputs:
+  `fail-on-consistency` implies the pass and gates the check, `consistency: true`
+  reports without gating, and both are ignored for `compare`, which has no bundle.
+
+### Fixed
+- **`action.yml` had no guard that a declared input reaches the CLI.** The file
+  is two halves that agree only by hand: an `inputs:` block a consumer copies
+  from, and a shell script that turns those inputs into arguments. Nothing
+  connected them, so an input declared, documented in the README table, and never
+  appended to `args` would be invisible — the workflow accepts it, the run
+  succeeds, and the setting the caller asked for is silently dropped. Same shape
+  as the `--fail-on critcal` typo that used to disable a gate without a word.
+
+  `tests/integration/action-input-reach.test.ts` pins the two halves: every
+  declared input is exported into the step environment, and every exported name
+  is read by the script that builds the argument list. All ten existing inputs
+  were already wired — this is a forward guard, and it was **verified to fail**
+  by deleting one `env:` line before it shipped.
+
 ## [9.528.0] — 2026-09-07
 
 ### Added
