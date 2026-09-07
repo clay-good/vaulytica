@@ -19,6 +19,12 @@ export function kindOf(doc: ConsistencyDocument): DocKind {
   if (p.startsWith("dpa-") || p === "dpa" || p.startsWith("scc-")) {
     return "dpa";
   }
+  // The outward-facing notice family. Matched by exact id (or the
+  // "privacy-notice" stem) rather than a "priv" prefix, because
+  // `privilege-log` is an unrelated litigation playbook that shares it.
+  if (p.includes("privacy-notice") || p === "privacy-policy-lint" || p === "cookie-notice") {
+    return "privacy_policy";
+  }
   if (p.includes("nda")) return "nda";
   return "other";
 }

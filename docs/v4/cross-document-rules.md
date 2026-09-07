@@ -76,7 +76,7 @@ accepts an array of parsed documents. It:
    findings.
 
 The CROSS-* v4 families are registered in `CONSISTENCY_RULES` alongside
-the v3 CC-001..CC-007 cross-document rules. See
+the v3 CC-001..CC-009 cross-document rules. See
 [`docs/v3/two-document-mode.md`](../v3/two-document-mode.md) for the v3
 rule table (MSA ↔ BAA / DPA / SOW pairings) and the
 `requires: DocKind[]` matrix that gates which rules run on which

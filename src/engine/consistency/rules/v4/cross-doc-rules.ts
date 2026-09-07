@@ -836,6 +836,8 @@ function kindLabel(kind: DocKind): string | null {
       return "Statement of Work";
     case "nda":
       return "Non-Disclosure Agreement";
+    case "privacy_policy":
+      return "Privacy Notice";
     case "other":
       return null;
   }

@@ -15,7 +15,15 @@ import type { DKB, SourceCitation } from "../../dkb/types.js";
 import type { Severity } from "../finding.js";
 
 /** Coarse document family used to scope which consistency rules fire. */
-export type DocKind = "msa" | "baa" | "dpa" | "nda" | "sow" | "other";
+export type DocKind =
+  | "msa"
+  | "baa"
+  | "dpa"
+  | "nda"
+  | "sow"
+  /** A published privacy notice / policy — the outward-facing promise. */
+  | "privacy_policy"
+  | "other";
 
 /** One parsed document in a multi-document bundle. */
 export type ConsistencyDocument = {

@@ -1,0 +1,21 @@
+Data Processing Agreement
+
+This Data Processing Agreement forms part of the Master Services Agreement between Lumenwood Analytics Ltd (the "Controller") and Northvale Cloud Systems Inc. (the "Processor"), effective 2026-01-01.
+
+Subject Matter and Duration. The Processor processes personal data on behalf of the Controller for the duration of the Master Services Agreement, solely to provide the hosting and analytics services described in it.
+
+Nature and Purpose of Processing. The processing consists of storage, retrieval, and statistical analysis of customer records for the purpose of delivering the services.
+
+Categories of Data Subjects. The Controller's customers and the employees of those customers.
+
+Sub-processors. The Controller grants the Processor general written authorisation to engage sub-processors listed in Annex III, subject to thirty (30) days' prior written notice of any intended addition or replacement, during which the Controller may object.
+
+International Transfers. Transfers of personal data to the Processor in the United States are made under the Standard Contractual Clauses set out in Annex II, Module Two (controller to processor).
+
+Security. The Processor shall implement encryption in transit and at rest, role-based access controls, and annual penetration testing.
+
+Audit. The Controller may audit the Processor's compliance with this Agreement once per year on thirty (30) days' notice.
+
+Return and Deletion. On termination the Processor shall, at the Controller's election, return or delete all personal data within ninety (90) days.
+
+Governing Law. This Agreement is governed by the laws of England and Wales.

@@ -1,0 +1,17 @@
+Privacy Notice
+
+Lumenwood Analytics Ltd ("we", "us") is the controller of the personal data described in this notice. This notice explains what we collect, why we collect it, and the rights you have under the UK GDPR and the EU General Data Protection Regulation.
+
+What We Collect. We collect your name, email address, billing address, and the usage data generated when you use our service.
+
+Why We Collect It. We process your personal data to provide the service you have asked for, to bill you, and to meet our legal obligations. Our lawful basis is the performance of a contract with you and, for our own analytics, our legitimate interests.
+
+Who We Share Your Data With. We do not share your personal information with third parties.
+
+International Transfers. We do not transfer your personal data outside the European Economic Area.
+
+How Long We Keep It. We keep your personal data for the life of your account and for six years afterwards to meet our tax and accounting obligations.
+
+Your Rights. You have the right to access, rectify, erase, restrict, and port your personal data, and to object to processing. You may lodge a complaint with the Information Commissioner's Office or your local supervisory authority.
+
+Contact. Write to our Data Protection Officer at privacy@lumenwood.example.

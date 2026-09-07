@@ -9,9 +9,9 @@ conflicting text from each.
 This page covers when to use it, what the rules check, and how the
 findings are surfaced.
 
-> **v4 readers:** v4 lifts the 4-document cap and adds the CROSS-*
+> **v4 readers:** v4 lifts the 4-document cap and adds the CROSS-\*
 > families (party / jurisdiction / defined-term / date / amount /
-> missing / precedence). The v3 CC-001..CC-007 rules below ship in
+> missing / precedence). The v3 CC-001..CC-009 rules below ship in
 > the same registry (`ALL_CONSISTENCY_RULES`) and run on every v4
 > bundle that satisfies their `requires: DocKind[]`. See
 > [`docs/v4/cross-document-rules.md`](../v4/cross-document-rules.md)
@@ -21,13 +21,14 @@ findings are surfaced.
 
 The canonical pairings are:
 
-| Bundle | What consistency catches |
-|---|---|
-| MSA + BAA | BAA permitted uses broader than MSA service scope; BAA term silently diverges from MSA |
-| MSA + DPA | DPA processing purpose open-ended relative to MSA services; DPA data categories not anchored to MSA services |
-| MSA + SOW | order-of-precedence inversion (MSA controls but operative terms live only in the SOW) |
-| Any pair | governing-law mismatch; notice-clause mismatch |
-| BAA + Subcontractor BAA | flow-down completeness; permitted-uses parity |
+| Bundle                  | What consistency catches                                                                                                                                                                     |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MSA + BAA               | BAA permitted uses broader than MSA service scope; BAA term silently diverges from MSA                                                                                                       |
+| MSA + DPA               | DPA processing purpose open-ended relative to MSA services; DPA data categories not anchored to MSA services                                                                                 |
+| MSA + SOW               | order-of-precedence inversion (MSA controls but operative terms live only in the SOW)                                                                                                        |
+| Privacy notice + DPA    | the outward-facing promise contradicts the contract: "we never share your data" against a sub-processor authorisation; "your data never leaves the EEA" against Standard Contractual Clauses |
+| Any pair                | governing-law mismatch; notice-clause mismatch                                                                                                                                               |
+| BAA + Subcontractor BAA | flow-down completeness; permitted-uses parity                                                                                                                                                |
 
 The user drops the documents at the same time. Up to four is the
 hard limit per [`MAX_DOCUMENTS`](../../src/ui/v3/multi-doc.ts).
@@ -37,15 +38,28 @@ hard limit per [`MAX_DOCUMENTS`](../../src/ui/v3/multi-doc.ts).
 The shipped consistency rules are
 (see [`src/engine/consistency/rules/rules.ts`](../../src/engine/consistency/rules/rules.ts)):
 
-| Id | Title | Severity | Requires |
-|---|---|---|---|
-| CC-001 | BAA permitted uses no broader than MSA service scope | critical | msa + baa |
-| CC-002 | DPA processing purpose matches MSA services | warning | msa + dpa |
-| CC-003 | DPA data categories not broader than MSA's services | warning | msa + dpa |
-| CC-004 | BAA term aligns with MSA (or extension is explicit) | warning | msa + baa |
-| CC-005 | Governing-law alignment across the bundle | warning | any |
-| CC-006 | Notice-clause alignment | info | any |
-| CC-007 | Order-of-precedence consistent with where operative terms live | warning | msa |
+| Id     | Title                                                                | Severity | Requires             |
+| ------ | -------------------------------------------------------------------- | -------- | -------------------- |
+| CC-001 | BAA permitted uses no broader than MSA service scope                 | critical | msa + baa            |
+| CC-002 | DPA processing purpose matches MSA services                          | warning  | msa + dpa            |
+| CC-003 | DPA data categories not broader than MSA's services                  | warning  | msa + dpa            |
+| CC-004 | BAA term aligns with MSA (or extension is explicit)                  | warning  | msa + baa            |
+| CC-005 | Governing-law alignment across the bundle                            | warning  | any                  |
+| CC-006 | Notice-clause alignment                                              | info     | any                  |
+| CC-007 | Order-of-precedence consistent with where operative terms live       | warning  | msa                  |
+| CC-008 | Privacy notice denies the third-party disclosure the DPA authorises  | critical | privacy_policy + dpa |
+| CC-009 | Privacy notice denies the cross-border transfer the DPA provides for | critical | privacy_policy + dpa |
+
+CC-008 and CC-009 read the notice a company publishes against the DPA
+it signed. Both are deliberately hard to trip: CC-008 stands down the
+moment the notice carves anything out ("…except our service
+providers"), which is how nearly every real notice is written, and
+CC-009 ignores a transfer mechanism named only in a recital. The
+sweep at
+[`tests/integration/privacy-notice-dpa-consistency.test.ts`](../../tests/integration/privacy-notice-dpa-consistency.test.ts)
+crosses every notice specimen with every DPA specimen and holds the
+false-positive count at zero, with a planted positive control so a
+pattern that stopped matching could not pass as a clean corpus.
 
 Each rule declares which document kinds it requires; if any required
 kind is missing, the runner records a `ran: false` log entry and the
@@ -82,17 +96,14 @@ report includes the appendix only when a `ConsistencyRun` is passed to
 
 ```ts
 const result = await runEngineMulti({ documents, dkb });
-const docx = await buildDocxReport(
-  result.per_document[0].run,
-  ingest,
-  dkb,
-  playbook,
-  {
-    consistency: result.consistency,
-    matrix, transfers, subprocessor, insurance,
-    dkb_build_date: "2026-05-16T00:00:00Z",
-  },
-);
+const docx = await buildDocxReport(result.per_document[0].run, ingest, dkb, playbook, {
+  consistency: result.consistency,
+  matrix,
+  transfers,
+  subprocessor,
+  insurance,
+  dkb_build_date: "2026-05-16T00:00:00Z",
+});
 ```
 
 The appendix renders a finding-count table followed by per-finding
@@ -127,8 +138,8 @@ import type { ConsistencyRule } from "../types.js";
 import { findByKind, findParagraph } from "../_helpers.js";
 import { paragraphExcerpt, makeConsistencyFinding } from "./_finding.js";
 
-export const CC_008_MY_RULE: ConsistencyRule = {
-  id: "CC-008",
+export const CC_010_MY_RULE: ConsistencyRule = {
+  id: "CC-010",
   version: "1.0.0",
   name: "My new cross-document check",
   category: "consistency",

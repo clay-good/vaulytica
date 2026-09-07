@@ -10,6 +10,8 @@
  *   CC-005  Governing-law-alignment
  *   CC-006  Notice-alignment
  *   CC-007  Order-of-precedence-consistency
+ *   CC-008  Privacy-notice-disclosure-matches-DPA-subprocessors
+ *   CC-009  Privacy-notice-transfers-match-DPA-transfer-mechanism
  *
  * Each rule is pure — no IO, no time, no randomness. Each finding cites both
  * (or all) contributing documents and quotes the conflicting text.
@@ -24,6 +26,8 @@
 import type { ConsistencyRule, ConsistencyFinding, ConsistencyDocument } from "../types.js";
 import { findByKind, findParagraph, fullText } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { extractSubprocessorInventory } from "../../../extract/v3/subprocessor.js";
+import { extractTransferMechanisms } from "../../../extract/v3/transfer-mechanism.js";
 import { paragraphExcerpt, textExcerpt, makeConsistencyFinding } from "./_finding.js";
 
 const RULE_VERSION = "1.0.0";
@@ -570,6 +574,134 @@ export const CC_007_ORDER_OF_PRECEDENCE: ConsistencyRule = {
   },
 };
 
+/* -------------------- CC-008 privacy-notice vs DPA subprocessors -- */
+
+/**
+ * A denial of third-party disclosure in a published privacy notice. The
+ * three shapes a notice actually uses: "we do not share", "we never sell or
+ * share", "your data is not disclosed to third parties".
+ */
+const NOTICE_DENIES_DISCLOSURE =
+  /\b(?:we\s+(?:do\s+not|don['’]t|will\s+not|never)\s+(?:sell|share|disclose|provide|transfer|rent)|(?:is|are)\s+(?:never\s+)?not\s+(?:sold|shared|disclosed|provided|transferred|rented))\b[^.\n]{0,80}\b(?:third[- ]part(?:y|ies)|anyone\s+else|any\s+other\s+(?:compan(?:y|ies)|organi[sz]ations?|part(?:y|ies)))\b/i;
+
+/**
+ * The carve-out that makes the denial compatible with a DPA. Nearly every
+ * real notice writes "we do not share your personal information with third
+ * parties EXCEPT our service providers"; that is a scoped denial, not a
+ * contradiction, and firing on it would be the loudest false positive in the
+ * cross-document set. Only an UNQUALIFIED denial reaches the finding.
+ */
+const DISCLOSURE_CARVE_OUT =
+  /\b(?:except|other\s+than|unless|save\s+(?:as|for)|apart\s+from|aside\s+from|with\s+the\s+exception\s+of|besides|subject\s+to|as\s+(?:described|set\s+out|set\s+forth|explained|otherwise\s+provided))\b/i;
+
+export const CC_008_PRIVACY_NOTICE_DISCLOSURE: ConsistencyRule = {
+  id: "CC-008",
+  version: RULE_VERSION,
+  name: "Privacy notice denies third-party disclosure the DPA authorises",
+  category: "consistency",
+  default_severity: "critical",
+  description:
+    "GDPR Art. 13(1)(e) requires the notice to name the recipients of personal data, and Art. 28(2) lets the DPA authorise sub-processors. A notice that tells data subjects their data is never shared with third parties, while the companion DPA permits sub-processing, states something the contract contradicts.",
+  requires: ["privacy_policy", "dpa"],
+  check(ctx): ConsistencyFinding[] {
+    const notice = findByKind(ctx.documents, "privacy_policy");
+    const dpa = findByKind(ctx.documents, "dpa");
+    if (!notice || !dpa) return [];
+
+    const denial = findParagraph(notice, NOTICE_DENIES_DISCLOSURE);
+    if (!denial) return [];
+    if (DISCLOSURE_CARVE_OUT.test(denial.text)) return [];
+
+    // The DPA side reuses the v3 subprocessor extractor rather than a second
+    // copy of its vocabulary; `permitted` is false for a flat ban, which is
+    // consistent with the notice and must not fire.
+    const sub = extractSubprocessorInventory(dpa.tree);
+    if (!sub || !sub.permitted) return [];
+
+    return [
+      makeConsistencyFinding({
+        rule: CC_008_PRIVACY_NOTICE_DISCLOSURE,
+        title:
+          "Privacy notice promises no third-party disclosure; the DPA authorises sub-processors",
+        description:
+          "The published privacy notice states without qualification that personal data is not shared with third parties, while the companion DPA permits the processor to engage sub-processors.",
+        explanation:
+          "Under GDPR Art. 13(1)(e) the notice must identify the recipients or categories of recipient of the personal data. A DPA that authorises sub-processing under Art. 28(2) creates exactly such recipients, so an unqualified 'we never share your data' statement is inaccurate as against the contract the same controller signed.",
+        recommendation:
+          "Qualify the notice's disclosure statement to name service providers / sub-processors as a category of recipient, or remove the sub-processor authorisation from the DPA.",
+        excerpts: [
+          paragraphExcerpt(notice, denial),
+          textExcerpt(dpa, sub.raw_text, sub.position.start, sub.position.end),
+        ],
+        source_citations: [gdpr13(), gdpr28()],
+      }),
+    ];
+  },
+};
+
+/* -------------------- CC-009 privacy-notice vs DPA transfers ------ */
+
+/**
+ * A notice's promise that personal data stays inside one region. Bare "US"
+ * is deliberately absent from the region list: case-insensitive `\bUS\b`
+ * matches the pronoun "us" ("data provided to us"), which is not a place.
+ */
+const REGION = String.raw`(?:EEA|European\s+Economic\s+Area|European\s+Union|United\s+Kingdom|United\s+States|Switzerland|Canada|Australia|EU|UK|U\.S\.(?:A\.)?)`;
+
+const NOTICE_CONFINES_DATA_TO_REGION = new RegExp(
+  String.raw`\b(?:(?:do(?:es)?\s+not|don['’]t|(?:will|shall|must)\s+not|never)\s+(?:transfer|transmit|export|send|store|process|host)\b[^.\n]{0,80}\boutside\s+(?:of\s+)?(?:the\s+)?${REGION}\b` +
+    String.raw`|\b(?:stored|processed|hosted|retained|kept)\b[^.\n]{0,60}\b(?:only|exclusively|solely)\b[^.\n]{0,40}\b(?:in|within)\s+(?:the\s+)?${REGION}\b` +
+    String.raw`|\b(?:only|exclusively|solely)\s+(?:be\s+)?(?:stored|processed|hosted|retained|kept)\b[^.\n]{0,40}\b(?:in|within)\s+(?:the\s+)?${REGION}\b)`,
+  "i",
+);
+
+export const CC_009_PRIVACY_NOTICE_TRANSFERS: ConsistencyRule = {
+  id: "CC-009",
+  version: RULE_VERSION,
+  name: "Privacy notice denies the cross-border transfer the DPA provides for",
+  category: "consistency",
+  default_severity: "critical",
+  description:
+    "GDPR Art. 13(1)(f) requires the notice to disclose transfers to a third country and the safeguard relied on. A notice that promises data never leaves a region, while the companion DPA carries an Art. 46 transfer mechanism (SCCs, the UK IDTA, BCRs, an adequacy decision), misstates the transfer position.",
+  requires: ["privacy_policy", "dpa"],
+  check(ctx): ConsistencyFinding[] {
+    const notice = findByKind(ctx.documents, "privacy_policy");
+    const dpa = findByKind(ctx.documents, "dpa");
+    if (!notice || !dpa) return [];
+
+    const confinement = findParagraph(notice, NOTICE_CONFINES_DATA_TO_REGION);
+    if (!confinement) return [];
+
+    // Reuses the v3 transfer-mechanism detector, so the mechanism vocabulary
+    // has one owner. A mechanism named only in a RECITAL is background, not an
+    // operative transfer basis, and does not contradict the notice.
+    const mechanisms = extractTransferMechanisms(dpa.tree).filter(
+      (m) => m.location !== "recital-only",
+    );
+    const mechanism = mechanisms[0];
+    if (!mechanism) return [];
+
+    return [
+      makeConsistencyFinding({
+        rule: CC_009_PRIVACY_NOTICE_TRANSFERS,
+        title:
+          "Privacy notice promises data stays in-region; the DPA provides for transfers out of it",
+        description:
+          "The published privacy notice tells data subjects their personal data is not transferred outside a named region, while the companion DPA relies on a cross-border transfer mechanism — which exists only to legitimise the transfer the notice denies.",
+        explanation:
+          "GDPR Art. 13(1)(f) requires the controller to tell the data subject that it intends to transfer personal data to a third country and to identify the Art. 45/46 basis. A DPA carrying Standard Contractual Clauses, the UK IDTA, Binding Corporate Rules or an adequacy decision is evidence of that intent, so the notice's confinement statement cannot both be true and the mechanism be necessary.",
+        recommendation:
+          "Either correct the notice to disclose the transfer and name the safeguard the DPA relies on, or remove the transfer mechanism if processing genuinely stays in-region.",
+        excerpts: [
+          paragraphExcerpt(notice, confinement),
+          textExcerpt(dpa, mechanism.raw_text, mechanism.position.start, mechanism.position.end),
+        ],
+        source_citations: [gdpr13(), gdpr46()],
+      }),
+    ];
+  },
+};
+
 /* -------------------- Citation builders --------------------------- */
 
 function hipaa504e() {
@@ -581,6 +713,30 @@ function hipaa504e() {
     source_published_at: "",
     license: "Public domain (US government work)",
     license_url: "https://www.usa.gov/government-works",
+  };
+}
+
+function gdpr13() {
+  return {
+    id: "gdpr-art-13",
+    source: "Regulation (EU) 2016/679 (GDPR), Article 13",
+    source_url: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32016R0679",
+    retrieved_at: "",
+    source_published_at: "",
+    license: "EUR-Lex reuse: © European Union 1998-present; reuse permitted",
+    license_url: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+  };
+}
+
+function gdpr46() {
+  return {
+    id: "gdpr-art-46",
+    source: "Regulation (EU) 2016/679 (GDPR), Article 46",
+    source_url: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32016R0679",
+    retrieved_at: "",
+    source_published_at: "",
+    license: "EUR-Lex reuse: © European Union 1998-present; reuse permitted",
+    license_url: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
   };
 }
 
@@ -673,4 +829,6 @@ export const CONSISTENCY_RULES: ConsistencyRule[] = [
   CC_005_GOVERNING_LAW,
   CC_006_NOTICE,
   CC_007_ORDER_OF_PRECEDENCE,
+  CC_008_PRIVACY_NOTICE_DISCLOSURE,
+  CC_009_PRIVACY_NOTICE_TRANSFERS,
 ];

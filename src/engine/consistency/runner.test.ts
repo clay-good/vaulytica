@@ -9,6 +9,8 @@ import {
   CC_005_GOVERNING_LAW,
   CC_006_NOTICE,
   CC_007_ORDER_OF_PRECEDENCE,
+  CC_008_PRIVACY_NOTICE_DISCLOSURE,
+  CC_009_PRIVACY_NOTICE_TRANSFERS,
 } from "./rules/index.js";
 import { kindOf } from "./_helpers.js";
 import type { ConsistencyDocument, ConsistencyFinding, ConsistencyRule } from "./types.js";
@@ -34,10 +36,10 @@ const STARTER_DKB = (() => buildContext(["Doc", "hello"]).dkb)();
 /* ---------------- registry contract ----------------- */
 
 describe("CONSISTENCY_RULES registry", () => {
-  it("ships seven rules with unique CC-NNN ids", () => {
-    expect(CONSISTENCY_RULES).toHaveLength(7);
+  it("ships nine rules with unique CC-NNN ids", () => {
+    expect(CONSISTENCY_RULES).toHaveLength(9);
     const ids = CONSISTENCY_RULES.map((r) => r.id);
-    expect(new Set(ids).size).toBe(7);
+    expect(new Set(ids).size).toBe(9);
     for (const id of ids) {
       expect(id).toMatch(/^CC-\d{3}$/);
     }
@@ -75,6 +77,14 @@ describe("kindOf", () => {
     expect(kindOf(makeDoc("a", "mutual-nda", ["A", "x"]))).toBe("nda");
     expect(kindOf(makeDoc("a", "unilateral-nda", ["A", "x"]))).toBe("nda");
     expect(kindOf(makeDoc("a", "sow", ["A", "x"]))).toBe("sow");
+    expect(kindOf(makeDoc("a", "privacy-policy-lint", ["A", "x"]))).toBe("privacy_policy");
+    expect(kindOf(makeDoc("a", "privacy-notice-gdpr", ["A", "x"]))).toBe("privacy_policy");
+    expect(kindOf(makeDoc("a", "privacy-notice-us", ["A", "x"]))).toBe("privacy_policy");
+    expect(kindOf(makeDoc("a", "childrens-privacy-notice", ["A", "x"]))).toBe("privacy_policy");
+    expect(kindOf(makeDoc("a", "cookie-notice", ["A", "x"]))).toBe("privacy_policy");
+    // `privilege-log` shares the "priv" prefix with the notice family and is
+    // an unrelated litigation playbook; a prefix match would misroute it.
+    expect(kindOf(makeDoc("a", "privilege-log", ["A", "x"]))).toBe("other");
     expect(kindOf(makeDoc("a", "generic-fallback", ["A", "x"]))).toBe("other");
   });
 });
@@ -641,5 +651,177 @@ describe("runConsistency — a rule that throws is distinguishable from one that
     // Omitted, not false — so every run in which nothing threw hashes as before.
     expect(silent.errored).toBeUndefined();
     expect("errored" in silent).toBe(false);
+  });
+});
+
+/* ---------------- CC-008 / CC-009: the outward-facing notice vs the DPA --- */
+
+const NOTICE_PLAYBOOK = "privacy-notice-gdpr";
+const DPA_PLAYBOOK = "dpa-controller-processor";
+
+describe("CC-008 privacy notice denies the disclosure the DPA authorises", () => {
+  it("fires on an unqualified 'we do not share' against a sub-processor authorisation", async () => {
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "Who We Share Your Data With",
+      "We do not share your personal information with third parties.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "Sub-processors",
+      "The Controller grants the Processor general written authorisation to engage sub-processors listed in Annex III, subject to thirty (30) days' prior written notice.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_008_PRIVACY_NOTICE_DISCLOSURE],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.rule_id).toBe("CC-008");
+    expect(run.findings[0]!.severity).toBe("critical");
+    expect(run.findings[0]!.excerpts.map((e) => e.doc_id).sort()).toEqual(["dpa", "notice"]);
+  });
+
+  it("does NOT fire when the notice carves out service providers", async () => {
+    // The shape nearly every real notice uses. A scoped denial is consistent
+    // with a DPA, and firing here would be the loudest false positive in the
+    // cross-document set.
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "Who We Share Your Data With",
+      "We do not share your personal information with third parties except our service providers, who process it on our instructions.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "Sub-processors",
+      "The Controller grants the Processor general written authorisation to engage sub-processors listed in Annex III.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_008_PRIVACY_NOTICE_DISCLOSURE],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does NOT fire when the DPA bans sub-processing outright", async () => {
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "Who We Share Your Data With",
+      "We do not share your personal information with third parties.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "Sub-processors",
+      "No sub-processor is permitted under this Agreement.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_008_PRIVACY_NOTICE_DISCLOSURE],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("is skipped (ran=false) when the bundle has no privacy notice", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", ["A", "x"]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "Sub-processors",
+      "The Processor may engage sub-processors.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_008_PRIVACY_NOTICE_DISCLOSURE],
+      documents: [msa, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+    expect(run.execution_log[0]!.ran).toBe(false);
+  });
+});
+
+describe("CC-009 privacy notice denies the transfer the DPA provides for", () => {
+  it("fires when the notice confines data to the EEA and the DPA carries SCCs", async () => {
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "International Transfers",
+      "We do not transfer your personal data outside the European Economic Area.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "International Transfers",
+      "Transfers to the Processor in the United States are made under the Standard Contractual Clauses set out in Annex II.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_009_PRIVACY_NOTICE_TRANSFERS],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.rule_id).toBe("CC-009");
+    expect(run.findings[0]!.excerpts[1]!.text).toMatch(/Standard Contractual Clauses/i);
+  });
+
+  it("fires on the 'stored only in' shape as well as the 'do not transfer' shape", async () => {
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "Where We Store Your Data",
+      "Your personal data is stored and processed only in the United Kingdom.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "Restricted Transfers",
+      "The parties adopt the International Data Transfer Addendum for any restricted transfer.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_009_PRIVACY_NOTICE_TRANSFERS],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(1);
+  });
+
+  it("does NOT fire when the notice discloses the transfer and names the safeguard", async () => {
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "International Transfers",
+      "We transfer your personal data outside the European Economic Area to our processors in the United States, relying on the Standard Contractual Clauses.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "International Transfers",
+      "Transfers are made under the Standard Contractual Clauses set out in Annex II.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_009_PRIVACY_NOTICE_TRANSFERS],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does NOT fire when the DPA names a mechanism only in a recital", async () => {
+    // A mechanism mentioned as background is not an operative transfer basis,
+    // so it does not contradict the notice.
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "International Transfers",
+      "We do not transfer your personal data outside the European Economic Area.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "Recitals",
+      "WHEREAS the parties acknowledge that the Standard Contractual Clauses exist and may be adopted in a future addendum;",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_009_PRIVACY_NOTICE_TRANSFERS],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
+  it("does NOT read the pronoun 'us' as the United States", async () => {
+    // `\bUS\b` is case-insensitively the word "us"; the region list omits it
+    // for exactly this sentence.
+    const notice = makeDoc("notice", NOTICE_PLAYBOOK, [
+      "Your Choices",
+      "We will not transfer your personal data outside the categories of recipient you have disclosed to us.",
+    ]);
+    const dpa = makeDoc("dpa", DPA_PLAYBOOK, [
+      "International Transfers",
+      "Transfers are made under the Standard Contractual Clauses set out in Annex II.",
+    ]);
+    const run = await runConsistency({
+      rules: [CC_009_PRIVACY_NOTICE_TRANSFERS],
+      documents: [notice, dpa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
   });
 });

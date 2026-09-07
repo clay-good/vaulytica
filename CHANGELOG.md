@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.527.0] — 2026-09-07
+
+### Added
+- **The privacy-notice ↔ DPA paired consistency check — CC-008 and CC-009.**
+  BUILD_PROGRESS step 29 has carried this as outstanding since the addenda
+  rulesets landed: *"nothing in `src/engine/consistency` reads a privacy
+  policy."* Now two rules do, and they read it against the contract the same
+  controller signed.
+
+  A privacy notice is a **promise to the public**; a DPA is a **promise to a
+  counterparty**. Nothing in the engine had ever compared the two, so a company
+  could publish "we never share your personal information with third parties"
+  and sign a DPA granting general written authorisation to engage
+  sub-processors, and both documents would come back clean — each is internally
+  consistent, and each was only ever analysed alone.
+
+  - **CC-008** (critical) — an unqualified denial of third-party disclosure in
+    the notice against a sub-processor authorisation in the DPA. GDPR
+    Art. 13(1)(e) + Art. 28(2).
+  - **CC-009** (critical) — the notice promising data stays inside a named
+    region against an Art. 46 transfer mechanism in the DPA (SCCs, the UK IDTA,
+    BCRs, an adequacy decision). GDPR Art. 13(1)(f) + Art. 46.
+
+  Both **reuse the v3 extractors on the DPA side** — `extractSubprocessorInventory`
+  and `extractTransferMechanisms` — so the sub-processor and transfer-mechanism
+  vocabularies keep the single owner `duplicate-logic.test.ts` and
+  `shared-vocabulary.test.ts` hold them to. Only the notice-side denial patterns
+  are new.
+
+  **The false-positive surface is where the work went.** Nearly every real
+  privacy notice writes the denial with a carve-out — "we do not share your
+  personal information with third parties **except** our service providers" —
+  which is a scoped statement, not a contradiction, and firing on it would be
+  the loudest wrong finding the cross-document engine can produce. CC-008 stands
+  down on any of eight carve-out connectors; CC-009 ignores a mechanism named
+  only in a recital, and its region list deliberately **omits bare "US"**,
+  because case-insensitive `\bUS\b` matches the pronoun *us* ("data you
+  disclose to us") and a pronoun is not a place.
+
+  Measured, not asserted: the sweep at
+  `tests/integration/privacy-notice-dpa-consistency.test.ts` crosses **every**
+  notice specimen with **every** DPA specimen in the golden corpora — 700 pairs
+  — and both rules fire on **zero**. The closest near-miss in the corpus is
+  `privacy-policy-lint-minimal-pass.txt`'s "We do not share your personal
+  information for cross-context behavioral advertising", a CCPA ad-sharing
+  denial whose own paragraph then names the service providers it shares with;
+  CC-008 requires a third-party recipient as the object of the denial, so it
+  correctly stays silent. Per the standing rule that **every relation needs an
+  anti-vacuity test**, the sweep asserts the cross-product is real (≥5 notices,
+  ≥50 DPAs) and carries a **planted positive control** — the same sweep with one
+  notice rewritten to make the unqualified promise must fire both rules — so a
+  pattern that had quietly stopped matching anything could not pass as a clean
+  corpus.
+
+  Reachability is proven end-to-end, not just in unit tests: the new bundle
+  golden `tests/golden/v4/bundles/privacy-notice-vs-dpa/` routes a real notice
+  and a real DPA through the full v4 pipeline and records both findings.
+
+  `DocKind` gains `privacy_policy`, matched by exact playbook id (or the
+  `privacy-notice` stem) rather than a `priv` prefix — `privilege-log` is an
+  unrelated litigation playbook that shares it. Every existing bundle golden's
+  `execution_log_count` moves 20 → 22; no finding on any of them changed.
+
 ## [9.526.0] — 2026-09-07
 
 ### Fixed
