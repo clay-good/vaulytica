@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.543.0] — 2026-09-07
+
+### Added
+- **`analyze --consistency-only` — the bundle's verdict and nothing else.** The
+  pure question the cross-document engine exists to answer is *does this deal
+  folder contradict itself?*, and asking it was blocked by a validation about a
+  different thing: with two or more inputs the default `json` format needs
+  `--out`, so a caller who wanted only the conflicts had to write N
+  per-document reports into a directory nobody wanted.
+
+  `--consistency-only` renders no per-document artifact, which is what makes
+  `--out` unnecessary — with nothing rendered, nothing is dropped. The delivery
+  check that has guarded that since `fix-cli-output-completeness` is unchanged
+  for every other path; it simply no longer fires on the zero-format case, which
+  only this flag can produce.
+
+  It **refuses contradictions rather than guessing**: alongside an explicit
+  `--format` (which asks for the per-document report it says there is none of)
+  and on a single input (no bundle to compare), both are usage errors naming the
+  fix. The Action exposes it as `consistency: only`.
+
+  ```bash
+  npx vaulytica analyze ./deal-room --consistency-only \
+    --emit-consistency ./consistency.json --fail-on-consistency critical
+  ```
+
+### Verified, not changed
+- **The bundle path over real `.docx` inputs**, which every bundle fixture in the
+  tree exercises as `.txt`. A folder of two Word documents classifies both
+  (`msa`, `sow`), runs **16** of the 22 cross-document rules, and correctly
+  skips the other **6** for unmet `requires` — no BAA, no DPA, no privacy notice
+  in the bundle. Zero findings there is a real "these two agree", not an empty
+  extraction. (The first probe of this failed on `parseHtmlDocument` needing a
+  DOM outside vitest — my probe, not the engine, which is why the check that
+  settled it runs through the shipped CLI and reads its own emitted artifact.)
+
 ## [9.542.0] — 2026-09-07
 
 ### Added

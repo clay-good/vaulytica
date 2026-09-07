@@ -39,7 +39,7 @@ inputs:
     required: false
     default: ""
   consistency:
-    description: "analyze only: set to true to read two or more inputs AS A BUNDLE and run the cross-document consistency checks. A directory is not a bundle — assert this only when the documents belong to the same deal."
+    description: "analyze only: set to true to read two or more inputs AS A BUNDLE and run the cross-document consistency checks. A directory is not a bundle — assert this only when the documents belong to the same deal. Set to 'only' to report the bundle and nothing else (no per-document report, and no 'out' needed)."
     required: false
     default: ""
   fail-on-consistency:
@@ -115,6 +115,8 @@ runs:
         if [ "$CMD" = "analyze" ]; then
           if [ -n "$FAIL_ON_CONSISTENCY" ]; then
             args+=(--fail-on-consistency "$FAIL_ON_CONSISTENCY")
+          elif [ "$CONSISTENCY" = "only" ]; then
+            args+=(--consistency-only)
           elif [ "$CONSISTENCY" = "true" ]; then
             args+=(--consistency)
           fi

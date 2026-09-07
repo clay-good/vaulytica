@@ -1,5 +1,5 @@
 import { afterAll, describe, expect, it, vi } from "vitest";
-import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, basename } from "node:path";
 import {
@@ -501,6 +501,43 @@ describe("analyze — cross-document consistency over a bundle", () => {
     const html = await readFile(join(dir, "privacy-notice.html"), "utf8");
     expect(html).toContain("Cross-document consistency");
     expect(html).toContain("CC-008");
+  }, 120_000);
+
+  it("--consistency-only reports the bundle and writes no per-document file", async () => {
+    // The pure use case: does this deal folder contradict itself? It used to be
+    // blocked by a delivery check about a different thing — with two inputs the
+    // default json format needs --out, so asking only for the cross-document
+    // verdict meant writing N per-document reports into a directory nobody
+    // wanted.
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cross-only-"));
+    dirs.push(dir);
+    const artifact = join(dir, "consistency.json");
+    const { out, err, code } = await analyze([
+      BUNDLE,
+      "--consistency-only",
+      "--emit-consistency",
+      artifact,
+      "--fail-on-consistency",
+      "critical",
+    ]);
+    expect(out + err).toContain("Cross-document (2 documents)");
+    expect(code).toBe(2);
+    const run = JSON.parse(await readFile(artifact, "utf8")) as { findings: unknown[] };
+    expect(run.findings.length).toBeGreaterThan(0);
+    // And nothing else: no --out was given, and none was needed.
+    expect(await readdir(dir)).toEqual(["consistency.json"]);
+  }, 120_000);
+
+  it("--consistency-only refuses the contradictions rather than guessing", async () => {
+    // An explicit --format asks for a per-document report; --consistency-only
+    // says there is none. One input has no bundle to compare.
+    await expect(runAnalyze([BUNDLE, "--consistency-only", "--format", "json"])).rejects.toThrow(
+      /--consistency-only writes no per-document report/,
+    );
+    const doc = join(process.cwd(), "tests", "fixtures", "contracts", "pasted-mutual-nda.txt");
+    await expect(runAnalyze([doc, "--consistency-only"])).rejects.toThrow(
+      /needs at least two inputs/,
+    );
   }, 120_000);
 
   it("stays silent — and byte-identical — without the assertion", async () => {

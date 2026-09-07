@@ -89,6 +89,12 @@ describe("the Action composes the argv it advertises", () => {
     expect(both).not.toMatch(/--consistency(?!\S)/);
   });
 
+  it("maps consistency: only to the bundle-only flag", () => {
+    const line = argv({ FILES: "deal/", CONSISTENCY: "only" });
+    expect(line).toContain("--consistency-only");
+    expect(line).not.toMatch(/--consistency(?!-only)/);
+  });
+
   it("treats anything but the literal 'true' as not asserted", () => {
     // A YAML input is a string. "false", "no", "" must all mean off, or a
     // workflow that writes `consistency: false` gets the opposite.

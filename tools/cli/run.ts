@@ -8,7 +8,8 @@
  *       [--playbook-file <path> --posture [--fail-on-divergence]] \
  *       [--baseline <bundle> | --baseline-coherence <coherence.json>] \
  *       [--emit-coherence <path>] [--fail-on-coherence-regression] \
- *       [--consistency] [--emit-consistency <path>] [--fail-on-consistency <sev>]
+ *       [--consistency | --consistency-only] [--emit-consistency <path>]
+ *       [--fail-on-consistency <sev>]
  *
  * `--consistency` reads two or more inputs AS A BUNDLE through the
  * cross-document consistency engine (spec-v3 §27 — the CC-* / CROSS-* rules the
@@ -19,7 +20,9 @@
  * a conflict between documents from the same deal. `--emit-consistency <path>`
  * writes the whole `ConsistencyRun` (`result_hash` included) and
  * `--fail-on-consistency <sev>` exits 2; both imply `--consistency`, and
- * neither touches the existing `--fail-on` exit code.
+ * neither touches the existing `--fail-on` exit code. `--consistency-only`
+ * reports the BUNDLE and nothing else — no per-document artifact, and therefore
+ * no `--out` — for the pure use case: does this deal folder contradict itself?
  *
  * `--court` selects a court profile and runs the filing-format-lint pack
  * (FILE-001..008) against its limits, but only when the document matches a
@@ -440,6 +443,10 @@ type Args = {
   serviceMethod?: string;
   /** Read the inputs as a BUNDLE and run the cross-document consistency engine. */
   consistency?: boolean;
+  /** Report the bundle ONLY: no per-document artifact, so no --out is needed. */
+  consistencyOnly?: boolean;
+  /** True when --format was actually typed, as opposed to defaulted to json. */
+  formatExplicit?: boolean;
   /** Write the cross-document consistency run to this path as JSON. */
   emitConsistency?: string;
   /** Exit non-zero when a cross-document finding reaches this severity. */
@@ -533,6 +540,7 @@ function parseArgs(argv: string[]): Args {
           throw new Error(`duplicate --format value in "${val}"`);
         }
         args.formats = values as Format[];
+        args.formatExplicit = true;
         i++;
         break;
       }
@@ -594,6 +602,13 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--consistency":
         args.consistency = true;
+        break;
+      case "--consistency-only":
+        args.consistencyOnly = true;
+        // A user asking only for the bundle's verdict has, by saying so, chosen
+        // the default format for nothing. Remembering that the default was
+        // never asked for is what lets the contradiction check below tell an
+        // explicit `--format` from the one nobody typed.
         break;
       case "--emit-consistency":
         args.emitConsistency = requireValue(flag, val);
@@ -1072,7 +1087,27 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // artifact must have a destination. Multi-format or multi-input runs
   // used to render everything and silently drop it (summary line, exit 0)
   // whenever --out was absent.
-  if (!args.out && (args.formats.length > 1 || inputs.length > 1)) {
+  // `--consistency-only` asks for the bundle's verdict and nothing else. It
+  // IMPLIES --consistency (the flag is meaningless without it) and drops the
+  // per-document formats, which is what makes the delivery check below moot:
+  // with nothing rendered, nothing needs a destination. Without it, the pure
+  // cross-document use case — "does this deal folder contradict itself?" — was
+  // forced to write N per-document reports into a directory nobody wanted, by
+  // a validation about a different thing.
+  if (args.consistencyOnly) {
+    if (args.formatExplicit) {
+      throw new Error("--consistency-only writes no per-document report; drop it or drop --format");
+    }
+    if (inputs.length < 2) {
+      throw new Error("--consistency-only needs at least two inputs — a bundle to compare");
+    }
+    args.consistency = true;
+    args.formats = [];
+  }
+  // The zero-format case is `--consistency-only`, and it is not a delivery
+  // failure: nothing was rendered, so nothing was dropped. Every other path
+  // defaults to one format, so this cannot silence a real drop.
+  if (!args.out && args.formats.length > 0 && (args.formats.length > 1 || inputs.length > 1)) {
     throw new Error(
       `multiple formats/inputs require --out <dir> — ` +
         `${inputs.length} input(s) × ${args.formats.length} format(s) would render with nowhere to go`,
@@ -1745,7 +1780,8 @@ Commands:
                           [--state <xx>]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
-                          [--consistency] [--emit-consistency <path>]
+                          [--consistency | --consistency-only]
+                          [--emit-consistency <path>]
                           [--fail-on-consistency critical|warning|info]
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]
                           Bates + privilege-log reconciliation over a production set.

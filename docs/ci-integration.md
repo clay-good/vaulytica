@@ -75,7 +75,7 @@ exposure — "this redline added a critical finding."
 | `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate |
 | `playbook` | both | force a specific playbook id instead of auto-matching |
 | `out` | analyze | directory for one output file per document per format |
-| `consistency` | analyze | `true` to read the inputs **as a bundle** and run the cross-document checks. A directory is not a bundle — assert it only when the documents belong to the same deal |
+| `consistency` | analyze | `true` to read the inputs **as a bundle** and run the cross-document checks; `only` to report the bundle and nothing else (no per-document report, no `out` needed). A directory is not a bundle — assert it only when the documents belong to the same deal |
 | `fail-on-consistency` | analyze | `critical\|warning\|info` — non-zero exit when a **cross-document** finding is at or above it. Implies `consistency`. Separate from `fail-on`, which scores each document alone |
 
 The Action is a **composite** action: it installs only the engine's runtime
@@ -138,6 +138,15 @@ npx vaulytica analyze ./deal-room --format json --out ./out \
 ```
 Cross-document (2 documents)  2C 0W 1I
   CC-008  [critical]  Privacy notice promises no third-party disclosure; the DPA authorises sub-processors  (privacy-notice.txt ↔ dpa.txt)
+```
+
+For the pure question — *does this deal folder contradict itself?* —
+`--consistency-only` reports the bundle and nothing else: no per-document
+report, and therefore no `--out`.
+
+```bash
+npx vaulytica analyze ./deal-room --consistency-only \\
+  --emit-consistency ./consistency.json --fail-on-consistency critical
 ```
 
 It is **assertion-gated**, because a directory is not a bundle: "these two
