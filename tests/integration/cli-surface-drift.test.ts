@@ -79,6 +79,22 @@ describe("CLI surface drift", () => {
     }
   });
 
+  /**
+   * The badge's export-format count, derived rather than remembered.
+   *
+   * It read "10 export formats" for a long time and nothing checked it. The
+   * number is now the CLI's own `VALID_FORMATS.length`, which is a defensible
+   * definition of "what this tool can emit" precisely because
+   * `export-reach.test.ts` holds every report builder the browser can reach to
+   * being reachable here too.
+   */
+  it("quotes the live export-format count in the badge line", () => {
+    const n = validFormats().length;
+    expect(readme, `the badge's export-format count is not ${n}`).toContain(
+      `\`${n} export formats\``,
+    );
+  });
+
   it("quotes the live command count", () => {
     const count = dispatcherCommands().length;
     // The README spells it, the CI doc uses digits; both must track the source.

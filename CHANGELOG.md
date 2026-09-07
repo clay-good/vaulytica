@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.541.0] — 2026-09-07
+
+### Changed
+- **Docs caught up with the twelve releases before them, and one hand-maintained
+  number stopped being hand-maintained.**
+
+  - `docs/architecture.md`'s headless-surface section described four commands
+    and `--fail-on`, and nothing else. It now records the two things that
+    changed underneath it: `analyze --consistency` reading two or more inputs as
+    a **bundle** (with `--emit-consistency` / `--fail-on-consistency`, and why
+    the gate is a flag of its own), and the fact that **every** report artifact
+    the tab can download the CLI can now write — with `export-reach.test.ts`
+    holding that correspondence.
+  - The README's bundle-mode paragraph read as though cross-document checks were
+    a browser feature. They run headless now, and it says so.
+  - 🥇 The badge said **"10 export formats"** and **nothing checked it** — the
+    exact class `readme-rule-count-drift` exists for, hiding in the same line as
+    six numbers that *are* checked. It is **16** now, derived from the CLI's own
+    `VALID_FORMATS.length` and pinned by a guard, which is a defensible
+    definition of "what this tool can emit" precisely because
+    `export-reach.test.ts` holds every browser-reachable builder to being
+    reachable headless too.
+
+  🥇 **A drift guard covering six numbers in a line does not cover the seventh.**
+  When you add a derived count to a badge, look at what is standing next to it.
+
 ## [9.540.0] — 2026-09-07
 
 ### Fixed
