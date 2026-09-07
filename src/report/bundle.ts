@@ -944,6 +944,12 @@ function renderPerDocumentSecondaryFamilies(
   if (!secondary || secondary.length === 0) return [];
   const out: Paragraph[] = [
     para({ text: "Also checked (other detected families):", bold: true, italics: true }),
+    // Detected from vocabulary, not confirmed — the same caveat the
+    // single-document report carries, in the one line a bundle has room for.
+    para({
+      text: "Detected from this document's vocabulary, not confirmed. Where the document is not of that family, an absence below is a clause it was never supposed to carry.",
+      italics: true,
+    }),
   ];
   for (const fam of secondary) {
     const c = fam.counts;
@@ -954,9 +960,7 @@ function renderPerDocumentSecondaryFamilies(
       }),
     );
     if (fam.findings.length === 0) {
-      out.push(
-        para({ text: "No findings — this family's requirements appear to be met.", italics: true }),
-      );
+      out.push(para({ text: "No findings from this family's checks.", italics: true }));
       continue;
     }
     for (const f of pickTop(fam.findings, BUNDLE_TOP_N)) {

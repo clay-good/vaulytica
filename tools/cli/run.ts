@@ -998,7 +998,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         )
         .join(", ");
       human(
-        `  also contains: ${each} — reported alongside the run, not counted in the totals above or in --fail-on\n`,
+        `  vocabulary also matches: ${each} — detected, not confirmed; checks assume the document IS one, so an absence there may be a clause it never needed. Not counted above or in --fail-on\n`,
       );
     }
 

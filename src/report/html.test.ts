@@ -403,7 +403,7 @@ describe("HTML report — secondary families (spec-v6 multi-family activation)",
     expect(html).toContain("1 critical, 0 warnings, 0 informational");
     // A family with nothing to report says so rather than rendering an empty
     // table — the same wording the DOCX uses.
-    expect(html).toContain("this family's requirements appear to be met");
+    expect(html).toContain("No findings from this family's checks");
   });
 
   it("is omitted entirely when no other family was detected", () => {

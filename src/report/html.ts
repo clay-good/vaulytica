@@ -225,7 +225,7 @@ function renderSecondaryFamiliesSection(
   if (!secondary || secondary.length === 0) return [];
   const out: string[] = ["<h2>Additional checks from other detected families</h2>"];
   out.push(
-    '<p class="v9-note">Beyond the primary playbook, this document also contains content from the families below. Each was scanned with its own rule set. These checks are kept separate from the primary findings above.</p>',
+    '<p class="v9-note">The families below were detected from this document&#39;s own VOCABULARY, not confirmed. A document can discuss another instrument&#39;s subject matter without being one — an 83(b) election letter names restricted stock and a right of first refusal, and is not a stock purchase agreement. Each family was scanned with its own rule set, and those checks assume the document IS one; where it is not, an absence reported below is a clause the document was never supposed to carry. Read this section as a prompt to confirm the family, not as a verdict. Kept separate from the primary findings above, and outside every result hash.</p>',
   );
   for (const fam of secondary) {
     const c = fam.counts;
@@ -234,7 +234,7 @@ function renderSecondaryFamiliesSection(
         `${c.critical} critical, ${c.warning} warnings, ${c.info} informational</p>`,
     );
     if (fam.findings.length === 0) {
-      out.push("<p><em>No findings — this family's requirements appear to be met.</em></p>");
+      out.push("<p><em>No findings from this family's checks.</em></p>");
       continue;
     }
     out.push(

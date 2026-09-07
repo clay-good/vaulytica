@@ -611,7 +611,7 @@ function renderSecondaryFamiliesSection(
   const out: (Paragraph | Table)[] = [
     h1("Additional Checks From Other Detected Families"),
     para({
-      text: "Beyond the primary playbook, this document also contains content from the families below. Each was scanned with its own rule set. These checks are kept separate from the primary findings above.",
+      text: "The families below were detected from this document's own VOCABULARY, not confirmed. A document can discuss another instrument's subject matter without being one — an 83(b) election letter names restricted stock and a right of first refusal, and is not a stock purchase agreement. Each family was scanned with its own rule set, and those checks assume the document IS one; where it is not, an absence reported below is a clause the document was never supposed to carry. Read this section as a prompt to confirm the family, not as a verdict. Kept separate from the primary findings above, and outside every result hash.",
       italics: true,
     }),
   ];
@@ -624,9 +624,7 @@ function renderSecondaryFamiliesSection(
       }),
     );
     if (fam.findings.length === 0) {
-      out.push(
-        para({ text: "No findings — this family's requirements appear to be met.", italics: true }),
-      );
+      out.push(para({ text: "No findings from this family's checks.", italics: true }));
       continue;
     }
     out.push(

@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.514.0] — 2026-09-06
+
+### Fixed
+- **A detected family was reported as a confirmed one, and an empty one as
+  compliance.** `familyIsPresent` admits a family on its VOCABULARY — a title
+  keyword, or three phrase signals. The rules that then run are largely
+  ABSENCE rules, which assume the document IS one. The report said so as fact:
+  "this document **also contains content from** the families below".
+
+  The measured case: an **83(b) election** — a one-page letter to the IRS —
+  activates `rspa` and `secondary-stock-transfer` on genuine collocations
+  ("83(b)", "restricted stock", "right of first refusal") and was told at
+  CRITICAL that it lacked a vesting schedule and a restricted-securities
+  legend. It has neither, because it is not a stock purchase agreement; the
+  agreement it elects against is.
+
+  The empty case was worse. A wrongly activated family that found nothing
+  printed **"No findings — this family's requirements appear to be met."**
+  That tells a reader the document *satisfies* a family it is not — silent
+  false reassurance, and harder to catch than a false critical, because
+  nothing looks wrong. It now reads "No findings from this family's checks."
+
+  All four surfaces say what the detection actually is: the family was found
+  in the document's vocabulary, not confirmed; the checks assume it IS one; and
+  where it is not, an absence is a clause the document never needed. The CLI's
+  line changed from `also contains:` to `vocabulary also matches: … detected,
+  not confirmed`.
+
+  **Deliberately not suppression.** No finding is hidden and no threshold
+  moved. Suppressing these needs a signal that separates *contains* from
+  *discusses*, and `family-activation-evidence.test.ts` records that no such
+  signal is available today — `required_clauses`, the obvious candidate, backs
+  zero of the 324 activations in the corpus.
+
+### Added
+- **`tests/integration/secondary-family-caveat.test.ts`** — holds the caveat on
+  all four surfaces (DOCX, HTML, bundle, CLI), and separately forbids the two
+  claims the detection does not support: that the document *contains* the
+  family, and that an empty family's *requirements are met*.
+
 ## [9.513.0] — 2026-09-06
 
 ### Fixed
