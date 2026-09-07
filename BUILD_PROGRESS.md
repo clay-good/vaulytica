@@ -1,5 +1,26 @@
 # Build progress
 
+> ## ⚠️ Historical record — last maintained at **9.381.0**
+>
+> The shipped version is far beyond that (see [`package.json`](package.json)).
+> This file is the append-log of the numbered **build plans** (v1 through the
+> later spec waves), and the plans it tracks are done; it stopped being updated
+> once work moved from "execute the next numbered step" to ordinary
+> release-by-release development.
+>
+> **For current state, read [`CHANGELOG.md`](CHANGELOG.md)** — every release
+> since is there, in more detail than these notes ever carried — and the
+> [`README`](README.md) for what the tool does today.
+>
+> Several spec documents link here saying "progress tracked in
+> BUILD_PROGRESS.md". That was true when they were written. Treat what follows
+> as a record of how the build plans were executed, not as a status board.
+>
+> In particular, the six steps still marked **🟡 partial** record their status
+> *as of 9.381.0*. Some may have been completed since — that is not asserted
+> either way here, because confirming a step against its spec's acceptance
+> criteria is a real verification and none was performed for this note.
+
 Tracks completion of the seventeen-step build plan in [`spec.md`](docs/spec.md) §26. Each step is one prompt-sized unit of work. Mark a step **complete** only when its verification gate (typecheck / lint / test / Lighthouse / etc.) passes.
 
 | #  | Step                                              | Status      | Notes |

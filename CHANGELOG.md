@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.519.0] — 2026-09-07
+
+### Fixed
+- **`BUILD_PROGRESS.md` presented a 137-release-stale status board as current.**
+  Its newest entry is **9.381.0**; the repo has shipped well past that. Six of
+  its steps still read **🟡 partial**. That would be harmless history except
+  that a dozen spec documents link to it in the present tense — "Progress
+  tracked in `BUILD_PROGRESS.md`" — so a reader following one of those links
+  landed on a stale board with no way to tell.
+
+  It now opens by saying what it is and as of when, and points at
+  `CHANGELOG.md` for current state. The file is otherwise untouched: it is a
+  record of how the numbered build plans were executed, and that record is
+  fine — only its framing was wrong.
+
+  🚨 **Deliberately not asserted: that the six partial steps are still
+  partial.** Some may well have shipped since. Confirming a step against its
+  spec's acceptance criteria is real verification, and none was performed for
+  this note — so the header says exactly that rather than implying a status it
+  never checked. Twice this session I called something fixed without verifying
+  it; this is the same mistake declined.
+
+### Added
+- **`tests/integration/build-progress-staleness.test.ts`** — keeps the header's
+  as-of version equal to the newest version the log actually names, so the
+  staleness note cannot itself go stale. Whoever resumes maintaining the file
+  updates both, and every reader in between gets a header that is true.
+
+  🚨 Its first version was wrong in a way worth recording: `\d+\.\d+\.\d+`
+  reported the newest release as **1798.199.55** — Cal. Civ. Code § 1798.199.55,
+  the CCPA. **In a legal codebase a bare three-number pattern is as likely to be
+  a statute as a version.** It anchors on the product major from
+  `package.json` now.
+
 ## [9.518.0] — 2026-09-07
 
 ### Changed
