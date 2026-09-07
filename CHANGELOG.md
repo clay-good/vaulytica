@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.520.0] — 2026-09-07
+
+### Fixed
+- **Re-verified one of `BUILD_PROGRESS.md`'s six "🟡 partial" steps against the
+  code, and its notes were wrong in both directions.** 9.519.0 declined to
+  touch those statuses because confirming one is real verification and none had
+  been done. This does that work for step 33 (*UI: document-type auto-detect,
+  compliance frame toggle, multi-doc drop*).
+
+  The paragraph describing what remained said the DOM hookup and the Playwright
+  suite were deferred. Both shipped long ago:
+
+  | claimed outstanding | actual |
+  |---|---|
+  | DOM hookup calling `detectV3Family` | `src/ui/pipeline.ts:789` |
+  | chip row from `defaultFramesForPlaybook` | `src/ui/pipeline.ts:790` → `main.ts`, e2e-covered |
+  | `runConsistency` threaded | `src/ui/pipeline.ts:1426` |
+  | `tests/e2e/v3/` suite | exists — `a11y-axe`, `a11y-keyboard`, `no-network` |
+
+  ⚠️ **One planned mechanism was superseded rather than built.** The dropzone
+  was never swapped to the `MultiDocState` reducer; multi-document handling
+  goes through `prepareBundle` + `dropzone.ts`, with per-document cards
+  rendered by `states.ts`. Same user-facing outcome, different design — and as
+  a result `src/ui/v3/multi-doc.ts` (171 lines) is imported only by the v3
+  barrel and its own test, with **no production consumer**. Left in place and
+  written down rather than deleted: retiring it is a decision for whoever owns
+  that module.
+
+  **It stays 🟡, and only for the honest reason**: the two specifically named
+  end-to-end scenarios — drop-a-BAA-see-HIPAA-frame-default-on, and
+  drop-a-DPA-and-an-MSA-see-consistency-checkbox — are not asserted by name.
+  Adjacent coverage exists. Rounding that up to ✅ would be the same overclaim
+  this session made twice already.
+
+  The header now records that step 33 was re-checked and the other five were
+  not, so the file never implies more verification than was performed.
+
 ## [9.519.0] — 2026-09-07
 
 ### Fixed
