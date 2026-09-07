@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.533.0] — 2026-09-07
+
+### Added
+- **The rest of the artifacts the headless surface could not produce** —
+  `--format obligations-csv`, `deadlines-ics`, `posture-md`, `posture-csv`,
+  `posture-sheet`. Same finding as 9.532.0, run to the end of the list: a sweep
+  of every `build*` export in `src/report/` for one with a **browser caller and
+  no `tools/` caller** left exactly these five.
+
+  - `obligations-csv` — the obligations ledger the README has advertised as an
+    export since v6. No flag: it is a projection of the extracted data.
+  - `deadlines-ics` — the v6 calendar of the document's **own** obligation
+    deadlines. ⚠️ Not the same artifact as 9.532.0's `dates-ics`, which is the
+    v9 **derived** register (anchor ± N). Both are real; the README and the
+    format list now say which is which, because two calendars with no
+    explanation is worse than one.
+  - `posture-md` / `posture-csv` / `posture-sheet` — the v10 negotiation
+    posture, including the standalone HTML negotiation sheet. All three require
+    `--posture` (which requires a playbook carrying `negotiation_positions`),
+    and a document with no posture is warned about and skipped rather than
+    written empty.
+
+  Plus `definitions-csv`, caught by re-running the sweep to **check the claim
+  below before making it**: the defined-terms report already reached JSON and
+  the `md` summary through `--definitions`, and its CSV had no caller.
+
+### Fixed
+- 🥇 **`buildDefinitionsCsv` ended its rows with bare LF — the only CSV export
+  in the tree that did**, against RFC 4180 and against every sibling in
+  `exports.ts`. It went unnoticed for as long as the browser was its only
+  consumer: a `Blob` handed to a download is never split on a line ending, and a
+  spreadsheet accepts either. **Giving a dormant artifact its first real caller
+  is what surfaced it** — the new `--format definitions-csv` test read the file
+  back as text and split on CRLF, and the header came back with the whole file
+  attached to it.
+
+  With this the sweep is **complete**: every report builder in the tree now has
+  a headless caller. What remains browser-only is `buildComparisonJson` and
+  `comparisonDocxBlob` — which belong to the `compare` command and are reached
+  through it — and the thin `*Blob` wrappers, which are `new Blob([builder()])`
+  around builders the CLI calls directly, because the CLI writes strings to
+  files rather than handing a browser a download.
+
 ## [9.532.0] — 2026-09-07
 
 ### Added

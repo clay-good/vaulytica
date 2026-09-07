@@ -23,7 +23,7 @@ inputs:
     required: false
     default: ""
   format:
-    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv,docx-comments,checklist-md,checklist-csv,dates-md,dates-ics (default sarif) — the checklist-* formats need the closing checklist and the dates-* formats need the critical-dates register, both of which the CLI computes only when asserted. compare: json|markdown (default markdown). Leave empty to take each command's default."
+    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv,docx-comments,checklist-md,checklist-csv,dates-md,dates-ics,obligations-csv,deadlines-ics,posture-md,posture-csv,posture-sheet,definitions-csv (default sarif) — the checklist-* formats need the closing checklist and the dates-* formats need the critical-dates register, both of which the CLI computes only when asserted. compare: json|markdown (default markdown). Leave empty to take each command's default."
     required: false
     default: ""
   fail-on:

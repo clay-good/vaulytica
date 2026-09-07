@@ -250,7 +250,12 @@ import {
   buildClosingChecklistCsv,
   buildCriticalDatesMarkdown,
   buildCriticalDatesIcs,
+  buildObligationsCsv,
+  buildDeadlinesIcs,
+  buildNegotiationPostureMarkdown,
+  buildNegotiationPostureCsv,
 } from "../../src/report/exports.js";
+import { buildNegotiationSheet } from "../../src/report/negotiation-sheet.js";
 import { dkbCurrency } from "../../src/report/citations.js";
 import { buildReviewedDocx } from "../../src/report/docx-comments.js";
 import {
@@ -260,7 +265,11 @@ import {
   CERTIFICATE_SCHEMA,
   type VerificationCertificate,
 } from "../../src/report/certificate.js";
-import { buildDefinitionsReport, buildDefinitionsMarkdown } from "../../src/report/definitions.js";
+import {
+  buildDefinitionsReport,
+  buildDefinitionsMarkdown,
+  buildDefinitionsCsv,
+} from "../../src/report/definitions.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import {
   ladderHash,
@@ -295,7 +304,13 @@ type Format =
   | "checklist-md"
   | "checklist-csv"
   | "dates-md"
-  | "dates-ics";
+  | "dates-ics"
+  | "obligations-csv"
+  | "deadlines-ics"
+  | "posture-md"
+  | "posture-csv"
+  | "posture-sheet"
+  | "definitions-csv";
 /**
  * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
  * contract (fix-cli-json-purity): when any of these is selected, stdout
@@ -320,6 +335,19 @@ const VALID_FORMATS = [
   "checklist-csv",
   "dates-md",
   "dates-ics",
+  // The v6 findings-to-action exports and the v10 negotiation deliverables. Same
+  // story as the four above: pure builders, shipped and tested, never called by
+  // anything in tools/. `deadlines-ics` is the v6 calendar built from the
+  // document's own obligation deadlines; `dates-ics` is the v9 DERIVED register
+  // (anchor plus-or-minus N). Both are real and they are not the same artifact.
+  "obligations-csv",
+  "deadlines-ics",
+  "posture-md",
+  "posture-csv",
+  "posture-sheet",
+  // The definitions report already reaches JSON and the `md` summary through
+  // `--definitions`; its CSV had no caller.
+  "definitions-csv",
 ] as const;
 const FORMAT_EXT: Record<Format, string> = {
   json: ".json",
@@ -332,6 +360,12 @@ const FORMAT_EXT: Record<Format, string> = {
   "checklist-csv": ".checklist.csv",
   "dates-md": ".dates.md",
   "dates-ics": ".dates.ics",
+  "obligations-csv": ".obligations.csv",
+  "deadlines-ics": ".deadlines.ics",
+  "posture-md": ".posture.md",
+  "posture-csv": ".posture.csv",
+  "posture-sheet": ".negotiation-sheet.html",
+  "definitions-csv": ".definitions.csv",
 };
 
 /**
@@ -341,7 +375,10 @@ const FORMAT_EXT: Record<Format, string> = {
  * would reasonably read it as "nothing to do".
  */
 function flagAsserted(args: Args, flag: string): boolean {
-  return flag === "--checklist" ? Boolean(args.checklist) : Boolean(args.criticalDates);
+  if (flag === "--checklist") return Boolean(args.checklist);
+  if (flag === "--posture") return Boolean(args.posture);
+  if (flag === "--definitions") return Boolean(args.definitions);
+  return Boolean(args.criticalDates);
 }
 
 const FORMAT_REQUIRES_FLAG: Partial<Record<Format, { flag: string; surface: string }>> = {
@@ -349,6 +386,10 @@ const FORMAT_REQUIRES_FLAG: Partial<Record<Format, { flag: string; surface: stri
   "checklist-csv": { flag: "--checklist", surface: "closing checklist" },
   "dates-md": { flag: "--critical-dates", surface: "critical-dates register" },
   "dates-ics": { flag: "--critical-dates", surface: "critical-dates register" },
+  "posture-md": { flag: "--posture", surface: "negotiation posture" },
+  "posture-csv": { flag: "--posture", surface: "negotiation posture" },
+  "posture-sheet": { flag: "--posture", surface: "negotiation posture" },
+  "definitions-csv": { flag: "--definitions", surface: "defined-terms report" },
 };
 
 type Args = {
@@ -839,6 +880,18 @@ async function renderFormat(
       return buildCriticalDatesMarkdown(r.critical_dates!);
     case "dates-ics":
       return buildCriticalDatesIcs(r.critical_dates!);
+    case "obligations-csv":
+      return buildObligationsCsv(extractAll(r.ingest.tree));
+    case "deadlines-ics":
+      return buildDeadlinesIcs(extractAll(r.ingest.tree));
+    case "posture-md":
+      return buildNegotiationPostureMarkdown(r.negotiation_posture!);
+    case "posture-csv":
+      return buildNegotiationPostureCsv(r.negotiation_posture!);
+    case "posture-sheet":
+      return buildNegotiationSheet(r.negotiation_posture!, r.playbook_id);
+    case "definitions-csv":
+      return buildDefinitionsCsv(definitions!);
   }
 }
 
@@ -1281,6 +1334,21 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         );
         continue;
       }
+      if (fmt === "definitions-csv" && !definitions) {
+        process.stderr.write(
+          `vaulytica: warning: ${file}: no defined-terms report to render — skipping --format ${fmt}\n`,
+        );
+        continue;
+      }
+      if (
+        (fmt === "posture-md" || fmt === "posture-csv" || fmt === "posture-sheet") &&
+        !r.negotiation_posture
+      ) {
+        process.stderr.write(
+          `vaulytica: warning: ${file}: no negotiation posture to render — skipping --format ${fmt}\n`,
+        );
+        continue;
+      }
       if ((fmt === "dates-md" || fmt === "dates-ics") && !r.critical_dates) {
         process.stderr.write(
           `vaulytica: warning: ${file}: no critical-dates register to render — skipping --format ${fmt}\n`,
@@ -1662,7 +1730,10 @@ const USAGE = `vaulytica — deterministic legal-document linter (headless)
 Commands:
   analyze <path|glob|dir> [--playbook <id>]
                           [--format json,sarif,html,md,csv,docx-comments,
-                                    checklist-md,checklist-csv,dates-md,dates-ics]
+                                    checklist-md,checklist-csv,dates-md,dates-ics,
+                                    obligations-csv,deadlines-ics,
+                                    posture-md,posture-csv,posture-sheet,
+                                    definitions-csv]
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture] [--role <name>] [--deal-value <n>]

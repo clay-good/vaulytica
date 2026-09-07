@@ -183,7 +183,12 @@ export function buildDefinitionsCsv(report: DefinitionsReport): string {
   for (const d of report.defined) {
     rows.push(["defined", esc(d.term), `${d.use_count} use(s)`, esc(loc(d.defined_at))].join(","));
   }
-  return rows.join("\n") + "\n";
+  // CRLF, per RFC 4180 — and matching every other CSV export in the tree. This
+  // was the one that used bare LF, which nothing noticed while the browser was
+  // its only consumer: a Blob handed to a download does not get split on a
+  // line ending, and a spreadsheet accepts either. The CLI's `definitions-csv`
+  // is the first caller that reads it back as text.
+  return rows.join("\r\n") + "\r\n";
 }
 
 /** Markdown section for the CLI summary / fix-list style consumers. */

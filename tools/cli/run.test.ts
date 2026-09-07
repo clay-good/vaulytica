@@ -619,3 +619,75 @@ describe("analyze — the closing checklist and critical-dates artifacts", () =>
     await expect(readFile(join(dir, "pasted-mutual-nda.checklist.md"), "utf8")).rejects.toThrow();
   }, 120_000);
 });
+
+/**
+ * The v6 findings-to-action exports and the v10 negotiation deliverables — the
+ * rest of the same gap. Every builder is pure, shipped, and tested; nothing in
+ * `tools/` called one.
+ */
+describe("analyze — obligations, deadlines, and the negotiation posture", () => {
+  const NDA = join(process.cwd(), "tests", "fixtures", "contracts", "pasted-mutual-nda.txt");
+  const LOAN = join(
+    process.cwd(),
+    "tests",
+    "golden",
+    "v4",
+    "fixtures",
+    "banking-loan-agreement-minimal.txt",
+  );
+  const LADDER = join(process.cwd(), "docs", "v6", "examples", "saas-buyer.playbook.json");
+  const dirs: string[] = [];
+  afterAll(async () => {
+    for (const d of dirs) await rm(d, { recursive: true, force: true });
+  });
+  async function out(): Promise<string> {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-v6-exports-"));
+    dirs.push(dir);
+    return dir;
+  }
+
+  it("writes the obligations ledger and the deadlines calendar with no flag", async () => {
+    const dir = await out();
+    await runAnalyze([NDA, "--format", "obligations-csv,deadlines-ics", "--out", dir]);
+    const csv = await readFile(join(dir, "pasted-mutual-nda.obligations.csv"), "utf8");
+    const ics = await readFile(join(dir, "pasted-mutual-nda.deadlines.ics"), "utf8");
+    expect(csv.split("\r\n")[0]).toBe("obligor,modal,action,trigger,qualifier,section,source_text");
+    expect(ics.startsWith("BEGIN:VCALENDAR")).toBe(true);
+  }, 120_000);
+
+  it("writes the posture in all three forms against a real ladder", async () => {
+    const dir = await out();
+    await runAnalyze([
+      LOAN,
+      "--playbook-file",
+      LADDER,
+      "--posture",
+      "--format",
+      "posture-md,posture-csv,posture-sheet",
+      "--out",
+      dir,
+    ]);
+    const md = await readFile(join(dir, "banking-loan-agreement-minimal.posture.md"), "utf8");
+    const csv = await readFile(join(dir, "banking-loan-agreement-minimal.posture.csv"), "utf8");
+    const sheet = await readFile(
+      join(dir, "banking-loan-agreement-minimal.negotiation-sheet.html"),
+      "utf8",
+    );
+    expect(md).toContain("Vaulytica negotiation posture");
+    expect(csv.split("\r\n")[0]).toContain("dimension,tier");
+    expect(sheet).toContain("Negotiation sheet");
+  }, 120_000);
+
+  it("writes the defined-terms CSV, which only JSON and md could reach before", async () => {
+    const dir = await out();
+    await runAnalyze([NDA, "--definitions", "--format", "definitions-csv", "--out", dir]);
+    const csv = await readFile(join(dir, "pasted-mutual-nda.definitions.csv"), "utf8");
+    expect(csv.split("\r\n")[0]).toBe("bucket,term,detail,locations");
+  }, 120_000);
+
+  it("is a usage error to ask for a posture format without --posture", async () => {
+    await expect(
+      runAnalyze([NDA, "--format", "posture-sheet", "--out", await out()]),
+    ).rejects.toThrow(/--posture/);
+  }, 120_000);
+});

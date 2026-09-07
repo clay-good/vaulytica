@@ -120,7 +120,7 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
         ...r.undefined_used,
       ],
     };
-    const row = buildDefinitionsCsv(poisoned).split("\n")[1]!;
+    const row = buildDefinitionsCsv(poisoned).split("\r\n")[1]!;
     // The term cell must be inert text, not a formula: guarded with a leading
     // apostrophe (inside the RFC-4180 quoting the comma forces).
     expect(row).toContain(`"'=HYPERLINK`);
@@ -138,10 +138,18 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
     expect(md).toContain("definitions_hash");
   });
 
+  it("ends its rows with CRLF, like every other CSV export in the tree", async () => {
+    // It used bare LF, and nothing noticed while the browser was its only
+    // consumer — a Blob handed to a download is never split on a line ending.
+    const csv = buildDefinitionsCsv(await buildDefinitionsReport(extracted));
+    expect(csv.includes("\r\n")).toBe(true);
+    expect(/[^\r]\n/.test(csv)).toBe(false);
+  });
+
   it("quotes the undefined-but-used detail so its literal comma keeps the row 4-field (RFC 4180)", async () => {
     const r = await buildDefinitionsReport(extracted);
     const csv = buildDefinitionsCsv(r);
-    const row = csv.split("\n").find((l) => l.startsWith("undefined-but-used"))!;
+    const row = csv.split("\r\n").find((l) => l.startsWith("undefined-but-used"))!;
     // The "N use(s), never defined" detail must be quoted, or its comma splits
     // the row into 5 fields and shifts the locations column.
     expect(row).toMatch(/"\d+ use\(s\), never defined"/);
