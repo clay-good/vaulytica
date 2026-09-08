@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.591.0] — 2026-09-08
+
+### Added
+- **The Action writes a GitHub job summary.** It ended at
+  `node "$VAULYTICA_BIN" "${args[@]}"` — no outputs, no summary — so a CI user
+  got an exit code and a raw step log that GitHub collapses by default. The
+  per-document counts, the honesty caveats and the cross-document summary sat
+  in that log unread: **every caveat wired across the six report surfaces this
+  session reached a CI reader only if they expanded it.**
+
+  The step now captures the tool's human stream and puts it on the run page.
+  Three properties, each pinned by a test:
+
+  - **It is written when the gate FAILS**, which is the case that needs it — and
+    the exit code is unchanged. `set -euo pipefail` would have aborted the step
+    before writing one, so the status is captured deliberately and re-raised.
+  - **stdout is untouched.** With a machine format it carries the artifact
+    itself; teeing it would break the CLI's stream contract and drop a SARIF
+    blob into the summary.
+  - **It says when it truncates.** A job summary is capped at 1 MiB; this bounds
+    at 60,000 characters and names the bound — the same rule the reports follow
+    for their own caps, because a silently truncated log reads as the whole run.
+
+  `summary: false` turns it off. Nothing is written when the tool wrote nothing
+  to stderr — the non-machine-format case, where those lines go to stdout and
+  are already in the log; an empty "Vaulytica" heading on the run page would
+  read as "it found nothing".
+
+### Fixed
+- 🚨 **Two robustness edges found by writing the tests, not by review.** The
+  step runs under `set -u`, so reading `$SUMMARY` unguarded aborted for any
+  caller that did not export it; and the emptiness check used `-s`, which
+  counts a lone newline as output and would have rendered an empty fenced block
+  under a heading. It tests for a non-whitespace character now.
+
 ## [9.590.0] — 2026-09-08
 
 ### Changed

@@ -66,6 +66,10 @@ inputs:
     description: "analyze only: set to true to exit non-zero when a posture front diverges across the bundle — the documents disagree with each other on a rung. Requires posture (and so playbook-file), and two or more inputs."
     required: false
     default: ""
+  summary:
+    description: "Write a GitHub job summary with the run's counts, caveats and gate result. Default true. The tool's human output is what a reader needs and it lands in the raw step log, which is collapsed by default — this puts it on the run page. Set false to keep the summary empty."
+    required: false
+    default: "true"
   fail-on-consistency:
     description: "analyze only: exit non-zero when a CROSS-DOCUMENT finding is at or above this severity: critical|warning|info. Implies consistency. Separate from fail-on, which scores each document alone. Empty = never fail."
     required: false
@@ -109,6 +113,7 @@ runs:
         FAIL_ON_POSTURE: ${{ inputs.fail-on-posture }}
         FAIL_ON_DIVERGENCE: ${{ inputs.fail-on-divergence }}
         FAIL_ON_CONSISTENCY: ${{ inputs.fail-on-consistency }}
+        SUMMARY: ${{ inputs.summary }}
       run: |
         set -euo pipefail
         args=("$CMD")
@@ -177,4 +182,58 @@ runs:
           fi
         fi
         echo "vaulytica ${args[*]}"
-        node "$VAULYTICA_BIN" "${args[@]}"
+        # The human stream — per-document counts, the honesty caveats, the
+        # cross-document summary — is what a reader of this job needs, and it
+        # goes to STDERR whenever a machine format is selected (the Action's
+        # default is `sarif`). In GitHub that lands in the raw step log, which
+        # is collapsed by default and scrolls; the job summary is the surface a
+        # reader actually sees. So capture stderr, replay it, and put it there.
+        #
+        # stdout is deliberately untouched: with a machine format it carries the
+        # artifact itself, and teeing it would both break the CLI's stream
+        # contract and drop a SARIF blob into the summary.
+        log="$(mktemp)"
+        status=0
+        node "$VAULYTICA_BIN" "${args[@]}" 2>"$log" || status=$?
+        cat "$log" >&2
+        # The content check skips an empty log, which is the non-machine-format
+        # case: there the tool writes those same lines to stdout, where they are
+        # already in the step log and in `--out` if the caller asked for it. An
+        # empty "Vaulytica" section on the run page would read as "it found
+        # nothing".
+        #
+        # It tests for a non-whitespace CHARACTER rather than for a non-zero
+        # size: a log holding just a newline is not output, and `-s` would have
+        # rendered it as an empty fenced block under a heading.
+        # `${SUMMARY:-}` rather than `$SUMMARY`: the step runs under `set -u`,
+        # and a caller invoking this script without the input exported (as the
+        # argv test does) would abort on an unbound variable rather than fall
+        # back to the declared default.
+        if [ "${SUMMARY:-}" != "false" ] && [ -n "${GITHUB_STEP_SUMMARY:-}" ] \
+          && grep -q '[^[:space:]]' "$log"; then
+          {
+            echo "## Vaulytica"
+            echo
+            echo "\`vaulytica ${args[*]}\`"
+            echo
+            if [ "$status" -eq 0 ]; then
+              echo "**Passed** — no \`fail-on\` gate tripped."
+            else
+              echo "**Failed (exit $status)** — a \`fail-on\` gate tripped, or the run errored. The lines below say which."
+            fi
+            echo
+            echo '```'
+            # A job summary is capped at 1 MiB. Bound it well under that — and
+            # SAY when the bound bit, because a silently truncated log reads as
+            # the whole run.
+            bytes=$(wc -c < "$log" | tr -d ' ')
+            if [ "$bytes" -gt 60000 ]; then
+              echo "[earlier output omitted — showing the last 60,000 of $bytes characters; the full log is in the step above]"
+              tail -c 60000 "$log"
+            else
+              cat "$log"
+            fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+        fi
+        exit "$status"

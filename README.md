@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,276+ passing tests` · `v9.590.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,283+ passing tests` · `v9.591.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -1195,6 +1195,8 @@ Drop a deal folder in and the same step can gate on **cross-document** conflicts
 
 `consistency: true` reports without gating. Both are assertions that the files belong to the same deal — a directory is not a bundle, and "these two name different governing law" only means something between documents from one transaction.
 
+Every run writes a **GitHub job summary** — the per-document counts, the honesty caveats, and which gate tripped — so the result is on the run page rather than inside a collapsed step log. It is written when the gate **fails** too, which is the case that needs it, and the exit code is unchanged; `summary: false` turns it off.
+
 The Action installs the engine in its own checkout (`tsx` is a runtime dep — no build step) and runs it against your files; the DKB ships with the tool, so **the analysis opens no socket** — nothing leaves the runner, just as nothing leaves the tab. The package is **publish-ready** (`bin` + `files` allow-list) but ships `private: true` so publishing is a deliberate maintainer step. Full recipes — the redline gate, the `npx vaulytica` CLI, and the npm-publish steps — in **[`docs/ci-integration.md`](docs/ci-integration.md)**.
 
 ## v6 — fit the shape of a review
@@ -1381,7 +1383,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 14,276+ tests, ~140s
+npm run test         # vitest — 14,283+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

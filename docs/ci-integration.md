@@ -75,6 +75,7 @@ exposure — "this redline added a critical finding."
 | `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate |
 | `playbook` | both | force a specific playbook id instead of auto-matching |
 | `out` | analyze | directory for one output file per document per format |
+| `summary` | both | `true` (default) writes a **GitHub job summary** with the run's per-document counts, its honesty caveats and the gate result. The tool's human output goes to stderr whenever a machine format is selected — the Action's default — which lands in the raw step log, collapsed by default. This puts it on the run page. It is written on a **failing** gate too, and the exit code is unchanged. `false` writes nothing |
 | `delivery` | analyze | `true` to run the pre-disclosure scan (`HANDOFF-001..005`) over the uploaded container |
 | `fail-on-delivery` | analyze | `critical\|warning\|info` — non-zero exit when a **pre-disclosure** finding is at or above it. Implies `delivery`. `fail-on` does not gate on these |
 | `playbook-file` | analyze | path to your team's custom playbook JSON in the repository |
