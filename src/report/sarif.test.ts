@@ -98,7 +98,14 @@ describe("buildSarif (spec-v8 §20 — SARIF 2.1.0)", () => {
     const log = buildSarif(run([finding("f1", "A", "critical")]));
     const loc = log.runs[0]!.results[0]!.locations[0]!;
     expect(loc.physicalLocation.artifactLocation.uri).toBe("dpa.docx");
-    expect(loc.physicalLocation.region).toEqual({ charOffset: 10, charLength: 20 });
+    expect(loc.physicalLocation.region).toEqual({
+      charOffset: 10,
+      charLength: 20,
+      // The clause itself, in SARIF's own field for it (9.583.0). Offsets alone
+      // make an annotation checkable only by someone holding the extracted text
+      // and willing to count characters; a dashboard reader has neither.
+      snippet: { text: "clause text" },
+    });
     expect(loc.logicalLocations?.[0]).toEqual({ name: "s2", kind: "section" });
   });
 
@@ -576,5 +583,29 @@ describe("the attorney-review caveat reaches SARIF", () => {
     expect(
       log.runs[0]!.results.some((r) => r.ruleId === "VAULYTICA-ATTORNEY-REVIEW-COVERAGE"),
     ).toBe(false);
+  });
+});
+
+describe("the SARIF snippet quotes the clause, and only when there is one", () => {
+  it("carries the excerpt for a finding with a span", () => {
+    const log = buildSarif(run([finding("f1", "A", "critical")]));
+    expect(log.runs[0]!.results[0]!.locations[0]!.physicalLocation.region!.snippet).toEqual({
+      text: "clause text",
+    });
+  });
+
+  it("omits it for a finding about an ABSENCE", () => {
+    // `excerpt.text` on a spanless finding is the rule's own marker string.
+    // Presenting that as a snippet quotes words the document never contained —
+    // the same failure the DOCX comment calls "the worst line in it".
+    const absent: Finding = {
+      ...finding("f2", "B", "warning"),
+      excerpt: { text: "MARKER", section_id: "s2", start_offset: 0, end_offset: 0 },
+    };
+    const region = buildSarif(run([absent])).runs[0]!.results[0]!.locations[0]!.physicalLocation
+      .region!;
+    expect(region.charLength).toBe(0);
+    expect(region.snippet).toBeUndefined();
+    expect(JSON.stringify(region)).not.toContain("MARKER");
   });
 });

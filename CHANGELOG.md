@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.583.0] — 2026-09-08
+
+### Added
+- **SARIF annotations now quote the clause they fired on.** Every result
+  carried the exact `charOffset`/`charLength` and nothing else, which makes an
+  annotation checkable only by someone holding the extracted text and willing
+  to count characters — a code-scanning dashboard reader has neither. The
+  clause rides in `region.snippet.text`, SARIF's own field for it and what a
+  dashboard renders under the annotation.
+
+  Omitted for a finding about an **absence**: its `excerpt.text` is the rule's
+  marker string, and presenting that as a snippet quotes words the document
+  never contained. Both halves pinned, including that the marker string does
+  not appear anywhere in the region.
+
 ## [9.582.0] — 2026-09-08
 
 ### Added

@@ -35,6 +35,7 @@ import {
 import type { V9Surfaces } from "./v9-surfaces.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
 import { erroredRuleNotice } from "./execution-log.js";
+import { truncate } from "./v3/_dx.js";
 import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
@@ -171,7 +172,15 @@ export type SarifLog = {
       locations: Array<{
         physicalLocation: {
           artifactLocation: { uri: string };
-          region?: { charOffset: number; charLength: number };
+          region?: {
+            charOffset: number;
+            charLength: number;
+            /**
+             * The clause the rule fired on, verbatim. SARIF's own place for
+             * it, and what a code-scanning UI renders under the annotation.
+             */
+            snippet?: { text: string };
+          };
         };
         logicalLocations?: Array<{ name: string; kind: string }>;
       }>;
@@ -361,6 +370,15 @@ export function buildSarif(
             region: {
               charOffset: f.excerpt.start_offset,
               charLength: Math.max(0, f.excerpt.end_offset - f.excerpt.start_offset),
+              // The clause itself, in SARIF's own field for it. Offsets alone
+              // make an annotation checkable only by someone holding the
+              // extracted text and willing to count characters; a dashboard
+              // reader has neither. Omitted for a finding about an ABSENCE —
+              // its `excerpt.text` is the rule's marker string, and presenting
+              // that as a snippet quotes words the document never contained.
+              ...(f.excerpt.end_offset > f.excerpt.start_offset
+                ? { snippet: { text: truncate(f.excerpt.text, 900) } }
+                : {}),
             },
           },
           logicalLocations: [{ name: f.excerpt.section_id ?? "document", kind: "section" }],
