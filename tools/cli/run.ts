@@ -274,6 +274,7 @@ import {
 import { buildNegotiationSheet } from "../../src/report/negotiation-sheet.js";
 import { dkbCurrency } from "../../src/report/citations.js";
 import { buildReviewedDocx } from "../../src/report/docx-comments.js";
+import { buildDocxReport } from "../../src/report/docx.js";
 import {
   buildCertificateDocx,
   buildCertificateJson,
@@ -325,6 +326,7 @@ type Format =
   | "html"
   | "md"
   | "csv"
+  | "docx"
   | "docx-comments"
   | "checklist-md"
   | "checklist-csv"
@@ -349,6 +351,11 @@ const VALID_FORMATS = [
   "html",
   "md",
   "csv",
+  // The full attorney-facing report, the artifact this tool's whole output is
+  // shaped around — and until 9.570.0 the ONE the headless surface could not
+  // produce. `docx-comments` is a different thing: a byte-copy of the caller's
+  // own .docx with anchored Word comments. This is the REPORT.
+  "docx",
   "docx-comments",
   // The four artifacts the browser has always offered and the headless surface
   // could not produce at all: the closing checklist (v9 Ready to Sign) and the
@@ -380,6 +387,7 @@ const FORMAT_EXT: Record<Format, string> = {
   html: ".html",
   md: ".fixlist.md",
   csv: ".fixlist.csv",
+  docx: ".report.docx",
   "docx-comments": ".reviewed.docx",
   "checklist-md": ".checklist.md",
   "checklist-csv": ".checklist.csv",
@@ -854,7 +862,7 @@ export async function resolveInputs(
 }
 
 async function renderFormat(
-  fmt: Exclude<Format, "docx-comments">,
+  fmt: Exclude<Format, "docx" | "docx-comments">,
   r: AnalyzeResult,
   dkb: Dkb,
   definitions?: import("../../src/report/definitions.js").DefinitionsReport,
@@ -1177,6 +1185,11 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       "--format docx-comments produces a binary .docx and requires --out <dir> (never stdout)",
     );
   }
+  if (!args.out && args.formats.includes("docx")) {
+    throw new Error(
+      "--format docx produces a binary .docx and requires --out <dir> (never stdout)",
+    );
+  }
   for (const [fmt, need] of Object.entries(FORMAT_REQUIRES_FLAG)) {
     if (args.formats.includes(fmt as Format) && !flagAsserted(args, need.flag)) {
       throw new Error(
@@ -1418,6 +1431,35 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       // `--out` is guaranteed here: ≥2 inputs already require it.
       if ((fmt === "sarif" || fmt === "html") && wantsConsistency && inputs.length >= 2) {
         deferredCrossDoc.push({ fmt, file, result: r, definitions });
+        continue;
+      }
+      if (fmt === "docx") {
+        // The full attorney-facing report. Same builder the browser calls, with
+        // the same v9 surfaces and secondary families threaded in — the only
+        // thing that was ever missing here was the caller. Validated above:
+        // --out is guaranteed.
+        const blob = await buildDocxReport(
+          r.run,
+          r.ingest,
+          deps.dkb,
+          r.playbook,
+          undefined,
+          extractAll(r.ingest.tree),
+          r.secondary_families.length > 0 ? r.secondary_families : undefined,
+          {
+            delivery: r.delivery,
+            criticalDates: r.critical_dates,
+            closingChecklist: r.closing_checklist,
+            relatedDocuments: r.related_documents.length > 0 ? r.related_documents : undefined,
+            secondaryFamiliesOmitted: r.secondary_families_present - r.secondary_families.length,
+          },
+          r.negotiation_posture!,
+        );
+        await mkdir(args.out!, { recursive: true });
+        const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
+        const bytes = Buffer.from(await blob.arrayBuffer());
+        await writeFile(join(args.out!, outName), bytes);
+        human(`  Report: ${(bytes.byteLength / 1024).toFixed(1)} KB → ${outName}\n`);
         continue;
       }
       if (fmt === "docx-comments") {

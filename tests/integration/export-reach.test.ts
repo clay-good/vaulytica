@@ -45,12 +45,19 @@ function reportSources(dir = "src/report"): string[] {
 }
 
 /**
- * Builders that RENDER an artifact — `build*` returning a string.
+ * Builders that RENDER an artifact.
+ *
+ * 🚨 This matched `export function build*` only, so every `export **async**
+ * function build*` was invisible to the whole guard — including
+ * `buildDocxReport`, the **full attorney-facing report**, the artifact this
+ * tool's output is shaped around. It was browser-only from the day the CLI
+ * existed until 9.570.0, and the test written to make exactly that impossible
+ * could not see it. A sweep's blind spot is not a gap in the thing it sweeps.
  */
 function artifactBuilders(): string[] {
   const names = new Set<string>();
   for (const file of reportSources()) {
-    for (const m of read(file).matchAll(/^export function (build[A-Za-z0-9]+)\s*\(/gm)) {
+    for (const m of read(file).matchAll(/^export (?:async )?function (build[A-Za-z0-9]+)\s*\(/gm)) {
       names.add(m[1]!);
     }
   }
@@ -112,6 +119,30 @@ const DECLARED: ReadonlyMap<string, string> = new Map([
   ],
 ]);
 
+/**
+ * Browser-only builders that are a KNOWN GAP, not an exemption.
+ *
+ * The difference matters. `DECLARED` above says "this is fine, here is why".
+ * This says "this is a real gap, it is counted, and it will be closed" — and
+ * the assertion below pins the list by EQUALITY, so the set can only shrink
+ * deliberately. Adding a name here is a decision someone has to make on the
+ * record; it is not a way to make a red test green.
+ *
+ * All four became visible in 9.570.0 when this file learned to see
+ * `export async function` (it had matched `export function` only, which is why
+ * `buildDocxReport` — the full attorney-facing report — was browser-only from
+ * the day the CLI existed and nothing noticed). They are the BUNDLE and
+ * COMPARE artifacts: consolidated multi-document outputs. The CLI already
+ * computes the cross-document run behind them (`--consistency`); what is
+ * missing is the `--format` values that write them.
+ */
+const KNOWN_GAPS: readonly string[] = [
+  "buildBundleDocxReport",
+  "buildBundleJsonBlob",
+  "buildBundleZip",
+  "buildComparisonDocx",
+];
+
 function calls(source: string, name: string): boolean {
   return new RegExp(`\\b${name}\\b`).test(source);
 }
@@ -143,7 +174,7 @@ describe("report-artifact reach: browser and headless", () => {
 
   it("every builder the browser calls is also reachable from the CLI", () => {
     const unreachable = browserReachable().filter(
-      (b) => !calls(headlessSource, b) && !DECLARED.has(b),
+      (b) => !calls(headlessSource, b) && !DECLARED.has(b) && !KNOWN_GAPS.includes(b),
     );
     expect(
       unreachable,
@@ -151,6 +182,17 @@ describe("report-artifact reach: browser and headless", () => {
         "\n  ",
       )}\nWire each into tools/cli (a --format value, or an existing one), or declare it here with the reason.`,
     ).toEqual([]);
+  });
+
+  it("the known gaps are exactly the four bundle/compare artifacts", () => {
+    // Pinned by EQUALITY in both directions. A new browser-only builder cannot
+    // slip in under this list, and a gap that gets closed must be deleted from
+    // it rather than left as a stale claim about the tree.
+    const stillBrowserOnly = browserReachable().filter((b) => !calls(headlessSource, b));
+    expect(
+      stillBrowserOnly.filter((b) => !DECLARED.has(b)).sort(),
+      "the browser-only set moved — close a gap and delete its entry, or add the new one deliberately",
+    ).toEqual([...KNOWN_GAPS].sort());
   });
 
   it("every declared exception is actually used", () => {

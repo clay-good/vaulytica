@@ -104,6 +104,15 @@ export async function loadAccuracyDeps(opts: { dkbDir?: string } = {}): Promise<
 export type DocumentRun = {
   /** EngineRun for the (document × requested playbook). */
   run: EngineRun;
+  /**
+   * The playbook the engine ran under — the object, not just its id.
+   *
+   * `buildDocxReport` reads the playbook's own fields for its scope-of-review
+   * and executive summary, and only this function has the resolved object in
+   * hand. Carrying just the id is what kept the DOCX report — the artifact
+   * this tool's output is shaped around — unreachable from the headless path.
+   */
+  playbook: Playbook;
   /** The playbook the engine ran under. */
   playbook_id: string;
   /** The playbook `matchPlaybook` would auto-select (for classifier measurement). */
@@ -297,6 +306,7 @@ export async function runIngested(
 
   return {
     run,
+    playbook,
     playbook_id: playbook.id,
     auto_matched_playbook_id: match.playbook_id,
     secondary_families,

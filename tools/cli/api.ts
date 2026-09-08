@@ -54,9 +54,20 @@ import type { CustomPlaybook } from "../../src/playbooks/custom-playbook.js";
 import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pipeline.js";
 import type { SecondaryFamilyRun } from "../../src/engine/secondary-families.js";
 import type { RelatedDocument } from "../../src/report/companions.js";
+import type { Playbook } from "../../src/playbooks/types.js";
 
 export type AnalyzeResult = {
   run: EngineRun;
+  /**
+   * The matched playbook itself, not just its id.
+   *
+   * `buildDocxReport` needs the object — its scope-of-review and executive
+   * summary read the playbook's own fields — and only the analyzer has it in
+   * hand. Carrying just the id meant the headless surface could never produce
+   * the DOCX report at all, which is the artifact this tool's whole output is
+   * shaped around.
+   */
+  playbook: Playbook;
   playbook_id: string;
   auto_matched_playbook_id: string;
   /**

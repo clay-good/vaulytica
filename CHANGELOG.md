@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.570.0] — 2026-09-08
+
+### Added
+- **`analyze --format docx` — the full attorney-facing report, from a script.**
+  The cover, the honesty caveats, the compliance matrix, the findings with
+  their cited bases, the audit trail: the artifact this tool's whole output is
+  shaped around. The browser tab has downloaded it since v1 and the CLI could
+  not produce it **at all** — `--format` accepted sixteen values and none of
+  them was the report. Binary, so it requires `--out`.
+
+  `docx-comments` is a *different* artifact and always was: a byte-copy of
+  *your* .docx with anchored Word comments. Having one is not having the other,
+  and the similar name is part of why nobody noticed. Also exposed through the
+  composite Action's `format` input.
+
+  `AnalyzeResult` now carries the matched `playbook` object, not only its id —
+  `buildDocxReport` reads the playbook's own fields, and carrying just the id
+  is what made the report unbuildable headlessly.
+
+### Fixed
+- 🚨 **The guard written to make exactly this impossible could not see it.**
+  `export-reach.test.ts` — "every builder the browser calls is also reachable
+  from the CLI" — matched `export function build*`, so every
+  `export **async** function build*` was invisible to the entire sweep,
+  `buildDocxReport` included. Widened, and it immediately named **four more**
+  browser-only artifacts: `buildBundleDocxReport`, `buildBundleJsonBlob`,
+  `buildBundleZip`, `buildComparisonDocx` — the bundle and compare outputs.
+
+  Those four are recorded as a **`KNOWN_GAPS` list pinned by equality**, not as
+  declared exemptions. The difference is deliberate: an exemption says "this is
+  fine, here is why"; this says "this is a real gap, it is counted, and it can
+  only shrink deliberately." Closing one means deleting its entry, and a new
+  browser-only builder cannot slip in under it.
+
+### Notes
+- Writing the CLI-vs-browser parity check turned up two things about the DOCX
+  container that were assumed and not known: the audit trail prints each rule's
+  **wall-clock** elapsed time, and the `docx` library assigns **random**
+  hyperlink relationship ids. So a DOCX render is *not* byte-reproducible
+  run-to-run; the reproducibility this tool guarantees is `result_hash`, which
+  the report carries and which does not move. The parity test normalizes those
+  two and nothing else.
+
 ## [9.569.0] — 2026-09-08
 
 ### Fixed
