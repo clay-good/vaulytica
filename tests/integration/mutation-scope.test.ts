@@ -46,7 +46,13 @@ const baselineDoc = readFileSync(join(root, "docs", "v7", "mutation-baseline.md"
 function includedTestFiles(source: string): string[] {
   const block = /include:\s*\[([^\]]*)\]/s.exec(source);
   if (!block) return [];
-  return [...block[1]!.matchAll(/"([^"]+)"/g)].map((m) => m[1]!);
+  // Strip line comments first. The list carries explanatory comments, and a
+  // quoted phrase inside one is read as a path — the same trap
+  // `cli-surface-drift` hit on `VALID_FORMATS`, in a second guard, which is
+  // why it is worth fixing here rather than rewording the comment: the next
+  // annotation should not have to avoid quotation marks.
+  const body = block[1]!.replace(/\/\/[^\n]*/g, "");
+  return [...body.matchAll(/"([^"]+)"/g)].map((m) => m[1]!);
 }
 
 /** Every `*.test.ts` in the repo, as repo-relative paths. */

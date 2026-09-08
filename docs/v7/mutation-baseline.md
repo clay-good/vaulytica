@@ -54,6 +54,7 @@ seven minutes with a 120-minute timeout.
 | **All (scoped)** | **56.92%** | 2,298 | 1,714 | 84 | 89 |
 | `jurisdictions.ts` | 67.58% | 239 | 124 | 32 | 6 |
 | `sensitive.ts` | 66.15% → **88.68%** ² | 129 → 172 | 61 → 18 | 0 | 5 → 0 |
+| `mask.ts` | 80.39% → **88.24%** ³ | — | 16 → 10 | 0 | 4 → 2 |
 | `parties.ts` | 61.20% | 571 | 353 | 19 | 21 |
 | `dates.ts` | 60.19% | 305 | 185 | 8 | 22 |
 | `amounts.ts` | 59.15% | 270 | 176 | 8 | 16 |
@@ -86,6 +87,14 @@ entire DOB loop (emptiable with nothing failing), the ABA checksum's *rejection*
 of a nine-digit run that is not a routing number, every confidence label (which
 drives a finding's severity), and the canonical sort that `delivery_hash`
 depends on. Survivors **61 → 18**, no-coverage **5 → 0**.
+
+³ **Joined 2026-09-08**, measured on its own 102 mutants. The module that
+decides *what gets masked*, so it shares `sensitive.ts`'s failure direction. Two
+safety paths were pinned on the way in: `maskEmail`'s *"cannot parse this as an
+email"* branch — the safest failure it has, reveal nothing rather than guess at
+a local part, and entirely unexecuted — and `luhnValid`'s **13–19 digit
+window**, the false-positive control that keeps a 12-digit invoice number from
+being reported as a payment card.
 
 ⚠️ **Read this table against the previous one with care, and not as a
 per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added

@@ -74,6 +74,8 @@ export default defineConfig({
       // 9.552.0 because two of its tests were found passing with the scanner
       // stubbed to return nothing — the class mutation testing exists to find,
       // caught by hand first.
+      // Covers both delivery modules: `delivery.test.ts` is the suite for the
+      // scanner AND the masking helpers (its "masking helpers" describe block).
       "src/delivery/delivery.test.ts",
       "src/extract/amount-postfix-currency.test.ts",
       "src/extract/amounts.test.ts",

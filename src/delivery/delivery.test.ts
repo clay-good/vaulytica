@@ -155,6 +155,38 @@ describe("masking helpers", () => {
   it("masks an email to first char + domain", () => {
     expect(maskEmail("jane.doe@example.com")).toBe("j***@example.com");
   });
+  /**
+   * The masking module's safety paths, which its tests did not reach.
+   *
+   * `maskEmail`'s "I cannot parse this as an email" branch came back
+   * **NoCoverage** — and it is the safest failure the function has: reveal
+   * nothing rather than guess at a local part. If it broke, the fallback for an
+   * unparseable value is to return something, and the something would be the
+   * value.
+   *
+   * `luhnValid`'s length window is the false-positive control for card numbers:
+   * a 12-digit run is too short to be one and a 20-digit run too long, and the
+   * scan reports a Luhn-valid run as a card candidate. Nothing tested either
+   * end.
+   */
+  it("reveals nothing when a value cannot be parsed as an email", () => {
+    expect(maskEmail("notanemail")).toBe("***");
+    expect(maskEmail("@example.com")).toBe("***");
+    expect(maskEmail("")).toBe("***");
+    // And still masks a real one, so the branch above is the fallback and not
+    // the whole function.
+    expect(maskEmail("jane@example.com")).toBe("j***@example.com");
+  });
+
+  it("rejects digit runs outside the card-length window", () => {
+    // 13–19 digits is the range a payment card occupies. Outside it, a
+    // Luhn-valid run is an invoice or part number, not a card.
+    expect(luhnValid("424242424242")).toBe(false); // 12
+    expect(luhnValid("42424242424242424242")).toBe(false); // 20
+    // Separators do not change the length that matters.
+    expect(luhnValid("4242-4242-4242-4242")).toBe(true);
+  });
+
   it("validates Luhn", () => {
     expect(luhnValid("4242424242424242")).toBe(true);
     expect(luhnValid("1234567890123456")).toBe(false);

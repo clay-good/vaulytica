@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.566.0] — 2026-09-08
+
+### Changed
+- **`src/delivery/mask.ts` joins the mutated set** — the module that decides
+  *what gets masked*, so it shares `sensitive.ts`'s failure direction: a mask
+  that does not mask is the same kind of defect as a scan that does not scan.
+  **80.39% → 88.24%** on its own 102 mutants, above the aggregate, so `break: 54`
+  was never at risk.
+
+### Added
+- **Two safety paths pinned on the way in.**
+
+  - **`maskEmail`'s "cannot parse this as an email" branch was entirely
+    unexecuted** — and it is the safest failure the function has: return `***`
+    rather than guess at a local part. If it broke, the fallback for an
+    unparseable value returns *something*, and the something is the value.
+  - **`luhnValid`'s 13–19 digit window** is the false-positive control that
+    keeps a 12-digit invoice number from being reported as a payment card, and
+    neither end of it had a test.
+
+### Fixed
+- 🚨 **A second guard fooled by a quoted phrase in a comment.**
+  `mutation-scope.test.ts` reads the include list by scanning for quoted strings,
+  so adding an explanatory comment containing *"masking helpers"* made it demand
+  a test file by that name — exactly what `cli-surface-drift` did with
+  `VALID_FORMATS` in 9.552.0. Line comments are stripped first now.
+
+  🥇 **Fixed in the guard rather than by rewording the comment**, for the same
+  reason as last time: the next annotation should not have to avoid quotation
+  marks to keep a test happy. Two occurrences in one session is a pattern —
+  **any guard that parses source by regex should strip comments before it
+  believes what it found.**
+
 ## [9.565.0] — 2026-09-08
 
 ### Changed
