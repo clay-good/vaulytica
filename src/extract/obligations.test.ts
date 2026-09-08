@@ -509,3 +509,51 @@ describe("extractObligations — a modal with no verb phrase after it", () => {
     expect(out[0]!.trigger).toMatch(/within 10 days/);
   });
 });
+
+/**
+ * The sentence splitter's paths nothing had executed.
+ *
+ * `splitSentences` came back with twelve **NoCoverage** mutants — lines no test
+ * runs at all — and three of them are the difference between finding a duty and
+ * silently not:
+ *
+ *  - the **no-terminator fallback**. A paragraph with no `.`/`!`/`?` yields zero
+ *    sentences, and without the fallback yields zero obligations. Numbered list
+ *    items, table cells and heading-style clauses routinely have no final
+ *    period, so this branch is what keeps their duties in the ledger — and it
+ *    could have been deleted with nothing failing.
+ *  - `!` and `?` as terminators. Rare in a contract and not absent from one:
+ *    "NOTICE!", a question in an intake form.
+ *  - a paragraph that **opens** with a terminator, which the leading-terminator
+ *    skip exists for.
+ */
+describe("extractObligations — sentences the splitter had never been given", () => {
+  const obl = (text: string) => extractObligations(buildTree(["Agreement", text]), []);
+
+  it("reads a clause with NO sentence terminator at all", () => {
+    // The fallback branch: no terminator, so the whole paragraph is one
+    // sentence. Without it this duty does not exist.
+    const out = obl("Provider shall deliver the Deliverables by Friday");
+    expect(out).toHaveLength(1);
+    expect(out[0]!.obligor).toBe("Provider");
+    expect(out[0]!.action).toContain("deliver the Deliverables");
+  });
+
+  it("treats ? and ! as sentence terminators", () => {
+    const q = obl("Who bears the cost? Provider shall pay all shipping charges.");
+    expect(q).toHaveLength(1);
+    // The duty is the second sentence — the question is not swallowed into it.
+    expect(q[0]!.action).toBe("pay all shipping charges");
+
+    const bang = obl("NOTICE! Recipient must return all materials within ten days.");
+    expect(bang).toHaveLength(1);
+    expect(bang[0]!.obligor).toBe("Recipient");
+    expect(bang[0]!.action).toContain("return all materials");
+  });
+
+  it("skips a terminator that OPENS the paragraph", () => {
+    const out = obl(". Provider shall indemnify the Client against third-party claims.");
+    expect(out).toHaveLength(1);
+    expect(out[0]!.action).toContain("indemnify the Client");
+  });
+});

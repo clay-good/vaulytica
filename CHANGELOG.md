@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.562.0] — 2026-09-08
+
+### Added
+- **Three sentence-splitter paths in `obligations.ts` that nothing had
+  executed**, one of which is the difference between finding a duty and silently
+  not:
+
+  - **the no-terminator fallback.** A paragraph with no `.` `!` or `?` yields
+    zero sentences, and without the fallback yields **zero obligations**.
+    Numbered list items, table cells and heading-style clauses routinely have no
+    final period, so this branch is what keeps their duties in the ledger — and
+    it could have been deleted with nothing failing.
+  - **`!` and `?` as terminators.** Rare in a contract and not absent from one:
+    *"NOTICE!"*, a question in an intake form.
+  - **a paragraph that opens with a terminator**, which the leading-terminator
+    skip exists for.
+
+  `NoCoverage` **12 → 4**. The score moves only 56.82% → 58.82%, and that is the
+  honest shape of this file: its 216 survivors are overwhelmingly the
+  regex-alternation class the mutation baseline records as not worth chasing.
+  🥇 **The value here is the paths, not the percentage** — a NoCoverage line is a
+  behaviour that can be deleted without anything noticing, whatever it is worth
+  in aggregate.
+
 ## [9.561.0] — 2026-09-08
 
 ### Added
