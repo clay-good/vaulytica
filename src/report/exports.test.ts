@@ -533,3 +533,112 @@ describe("the fix list names the clause to edit", () => {
     expect(csv).not.toContain("RULE-MARKER-STRING");
   });
 });
+
+/**
+ * What the calendar says about a deadline it could NOT pin.
+ *
+ * Every unresolved date becomes an all-day "Verify manually" event on a
+ * sentinel date rather than being silently dropped — and the *reason* is the
+ * whole content of that event. Mutation testing found every one of those
+ * sentences, and the sort that orders them, with no test executing it: the
+ * range-deadline case, the two relative-anchor cases, the fiscal-period case,
+ * and the named-anchor case.
+ *
+ * A user subscribes to this file. A deadline the tool could not compute must
+ * arrive saying which deadline and why, or it is a mystery entry they delete.
+ */
+describe("the deadlines calendar explains what it could not resolve", () => {
+  const ex = (dates: unknown[]): ExtractedData =>
+    ({
+      parties: [],
+      dates,
+      amounts: [],
+      jurisdictions: [],
+      definitions: { entries: [] },
+      crossrefs: [],
+      sections: [],
+      classified: [],
+      obligations: [],
+    }) as unknown as ExtractedData;
+
+  /**
+   * RFC 5545 folds long lines at 75 octets with a CRLF + single space, so a
+   * reason sentence is routinely split mid-word in the raw file. Unfold before
+   * matching — the first draft of these tests asserted against the raw text and
+   * "failed" on a renderer that was working correctly.
+   */
+  const unfold = (ics: string): string => ics.replace(/\r\n /g, "");
+
+  const date = (over: Record<string, unknown>): unknown => ({
+    id: "d",
+    type: "relative",
+    raw_text: "the period",
+    position: { section_id: "s1", start: 0, end: 5 },
+    ...over,
+  });
+
+  it("names a range deadline as one, instead of guessing a bound", () => {
+    const ics = unfold(
+      buildDeadlinesIcs(
+        ex([
+          date({ raw_text: "30 to 60 days after signing", offset_days: 30, offset_days_max: 60 }),
+        ]),
+      ),
+    );
+    expect(ics).toContain("Verify manually: 30 to 60 days after signing");
+    expect(ics).toContain("range deadline — verify the controlling bound manually");
+  });
+
+  it("names the anchor it could not resolve, and says so when there is none", () => {
+    const named = unfold(
+      buildDeadlinesIcs(
+        ex([
+          date({
+            raw_text: "30 days after the Closing Date",
+            anchor: "Closing Date",
+            offset_days: 30,
+          }),
+        ]),
+      ),
+    );
+    expect(named).toContain('relative to "Closing Date"');
+    expect(named).toContain("which has no defined calendar date");
+    const anon = unfold(
+      buildDeadlinesIcs(ex([date({ raw_text: "30 days later", offset_days: 30 })])),
+    );
+    expect(anon).toContain("relative date with no resolvable anchor");
+  });
+
+  it("says a fiscal period is not a calendar date", () => {
+    const ics = unfold(
+      buildDeadlinesIcs(
+        ex([date({ type: "fiscal-period", raw_text: "the second fiscal quarter" })]),
+      ),
+    );
+    expect(ics).toContain("fiscal period — no fixed calendar date");
+  });
+
+  it("orders unresolved entries deterministically, by text then section", () => {
+    // The file is regenerated on every analysis; an unstable order makes two
+    // identical documents produce different bytes, which is the property the
+    // whole export layer is built on.
+    const rows = ex([
+      date({ raw_text: "zulu period", type: "fiscal-period" }),
+      date({ raw_text: "alpha period", type: "fiscal-period" }),
+      date({
+        raw_text: "alpha period",
+        type: "fiscal-period",
+        position: { section_id: "s0", start: 0, end: 5 },
+      }),
+    ]);
+    const ics = unfold(buildDeadlinesIcs(rows));
+    const order = [...ics.matchAll(/SUMMARY:Verify manually: ([^\r\n]+)/g)].map((m) => m[1]!);
+    expect(order).toEqual(["alpha period", "alpha period", "zulu period"]);
+    // And the tie between the two "alpha period" rows breaks on section, so
+    // the sections read s0, s1 across the pair before zulu's own s1.
+    const sections = [...ics.matchAll(/from section (s\d)/g)].map((m) => m[1]!);
+    expect(sections).toEqual(["s0", "s1", "s1"]);
+    // Byte-stable across two builds of the same input.
+    expect(unfold(buildDeadlinesIcs(rows))).toBe(ics);
+  });
+});

@@ -147,8 +147,15 @@ instead of a calendar. The suite asserts the bytes and the type per wrapper, and
 guards its own list against the module so a new wrapper cannot be added
 untested. 46.08% → **51.06%**, NoCoverage 100 → 57.
 
-Still short of the bar. The remaining uncovered surface is the deadlines-ICS
-resolution paths; closing those is the work that would make it eligible.
+Then the deadlines-ICS resolution paths themselves (9.588.0): every *"verify
+manually"* reason the calendar gives for a deadline it could **not** pin — the
+range deadline, the two relative-anchor cases, the fiscal period — plus the sort
+that orders them. A user subscribes to that file; a deadline the tool could not
+compute has to arrive saying which one and why, or it is a mystery entry they
+delete. 51.06% → **54.17%**, NoCoverage 57 → 43.
+
+Still short of the 56.92% bar, by under three points. Whatever closes the
+remaining 43 makes it eligible.
 
 ⚠️ **Read this table against the previous one with care, and not as a
 per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added

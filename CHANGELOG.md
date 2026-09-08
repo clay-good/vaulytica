@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.588.0] — 2026-09-08
+
+### Added
+- **The deadlines calendar's "verify manually" reasons now have tests.** Every
+  date the tool cannot pin becomes an all-day sentinel event rather than being
+  silently dropped, and the *reason* is the entire content of that event — the
+  range deadline, the named anchor with no calendar date, the anchorless
+  relative date, the fiscal period. Mutation testing found every one of those
+  sentences, and the sort that orders them, executed by no test.
+
+  A user *subscribes* to this file. A deadline the tool could not compute has to
+  arrive saying which one and why, or it is a mystery entry they delete.
+  `src/report/exports.ts`: 51.06% → **54.17%**, NoCoverage 57 → 43 — under three
+  points from eligibility for the mutated set.
+
+### Fixed
+- 🚨 **The first draft of those tests asserted against the raw `.ics` and
+  "failed" on a renderer that was working.** RFC 5545 folds long lines at 75
+  octets with CRLF + a space, so a reason sentence is routinely split mid-word.
+  The tests unfold before matching, and say why.
+
 ## [9.587.0] — 2026-09-08
 
 ### Fixed
