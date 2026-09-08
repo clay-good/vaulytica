@@ -79,6 +79,50 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
     }
   }, 180_000);
 
+  it("leads every finding with its PROOF, in both of the two honest shapes", async () => {
+    // The DOCX has led every finding with "Evidence — <locator>" + the quoted
+    // clause (or "Basis — ... this finding is about what is absent") since the
+    // report was made to lead with evidence. This file rendered NEITHER: a
+    // reader of the emailable report could not check a single finding against
+    // the document, and could not tell a finding about text from a finding
+    // about an absence. Worse since 9.578.0 — the same page now prints "N of M
+    // findings quote the exact clause text they fired on" while showing none.
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeFile(SPECIMEN, { deps });
+    const html = buildHtmlReport(r.run, r.ingest, deps.dkb, r.playbook);
+
+    const withSpan = r.run.findings.filter((f) => f.excerpt.end_offset > f.excerpt.start_offset);
+    const absences = r.run.findings.filter((f) => f.excerpt.end_offset <= f.excerpt.start_offset);
+    // Guard the fixture: this specimen must exercise BOTH shapes or the test
+    // proves half of what it claims.
+    expect(withSpan.length, "findings with a quoted span").toBeGreaterThan(0);
+    expect(absences.length, "findings about an absence").toBeGreaterThan(0);
+
+    expect(html).toContain("<strong>Evidence</strong> — ");
+    expect(html).toContain("this finding is about what is absent");
+    // Never the shape the DOCX comment calls "the worst line in it": a marker
+    // string presented as a quotation at a zero-width range.
+    expect(html).not.toContain("characters 0–0");
+    // And the actual clause text, not just the label.
+    const quoted = withSpan[0]!.excerpt.text.trim().slice(0, 40);
+    expect(html).toContain(quoted.replace(/&/g, "&amp;").replace(/</g, "&lt;"));
+  }, 180_000);
+
+  it("carries the public model clause — what good looks like — beside the finding", async () => {
+    // In the DOCX and the JSON since spec-v6 Part IV, and absent here. It was
+    // not on the deliberate-omissions list either, so it was a silent omission
+    // rather than a decision.
+    const { modelClauseForRule } = await import("../../src/dkb/model-clauses.js");
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeFile(SPECIMEN, { deps });
+    const withClause = r.run.findings.filter((f) => modelClauseForRule(f.rule_id));
+    expect(withClause.length, "findings whose rule has a model clause").toBeGreaterThan(0);
+    const html = buildHtmlReport(r.run, r.ingest, deps.dkb, r.playbook);
+    expect(html).toContain("Reference model clause");
+    expect(html).toContain("Reference only — Vaulytica does not draft.");
+    expect(html).toContain(modelClauseForRule(withClause[0]!.rule_id)!.title);
+  }, 180_000);
+
   it("renders neither section when there is nothing to render", async () => {
     // Anti-vacuity: without `extracted` the two sections are absent, exactly as
     // they are absent from a DOCX built without it. A report that invents an

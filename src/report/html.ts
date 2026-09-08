@@ -40,6 +40,16 @@
  * pass; who owes what, by when, is likewise content. Filing content under
  * "navigation apparatus" is how a deliberate-omissions list stops being a
  * decision and becomes a place things go.
+ *
+ * 🚨 **And two things were on no list at all** (9.580.0), which is worse than a
+ * misfiled entry — a silent omission is not a decision anyone made. Every
+ * finding here rendered without its **PROOF**: the DOCX leads each one with
+ * "Evidence — <section, characters N–M>" and the quoted clause, or with "Basis
+ * — the document contains no matching clause; this finding is about what is
+ * absent." A reader of the emailable report could not check a single finding
+ * against the document and could not tell those two shapes apart. The
+ * per-finding **public model clause** — what good looks like, with attribution
+ * and license — was likewise in the DOCX and the JSON and not here.
  * Citable: renders the full Thrust-B citation with wrapped URLs
  * (`overflow-wrap: anywhere`) and the §17 freshness signal. In-tab /
  * offline — it ships no network reference. Render-side — zero
@@ -68,6 +78,7 @@ import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./r
 import { erroredRuleNotice } from "./execution-log.js";
 import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
+import { modelClauseForRule } from "../dkb/model-clauses.js";
 import type { ExtractedData } from "../extract/types.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
@@ -149,6 +160,14 @@ const STYLE = `
   .ruleid { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .8rem; color: #666; }
   .tier-badge { display: inline-block; margin-top: .25rem; padding: .1rem .4rem; border-radius: 3px;
     font-size: .7rem; font-weight: bold; background: #1f6feb; color: #fff; }
+  /* The proof block: the locator line and the clause it quotes. Bordered so a
+     reader scanning a printed page can tell the document's OWN words from
+     Vaulytica's, which is the whole point of showing them. */
+  .proof-basis { margin: .5rem 0 .2rem; font-size: .9rem; }
+  blockquote { margin: .2rem 0 .6rem; padding: .4rem .7rem; border-left: 3px solid #c9c9c9;
+    background: #fafafa; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .model-clause { margin: .5rem 0 .2rem; padding: .4rem .7rem; border-left: 3px solid #2f8f5b;
+    background: #f5faf7; }
   .cite, .cite a { overflow-wrap: anywhere; word-break: break-word; }
   .cite { font-size: .85rem; color: #333; margin-top: .4rem; }
   /* #6b6b6b ≈ 5.0:1 on white — clears WCAG 2 AA (4.5:1) for this small,
@@ -198,6 +217,66 @@ function renderCitation(c: SourceCitation, currency?: CitationCurrency): string 
   return `<div class="cite">Authority: ${esc(c.source)} <span class="fresh">(cited — ${esc(c.license || "team policy")})</span></div>`;
 }
 
+/**
+ * The public model clause for a finding's rule — what good looks like, with its
+ * attribution and license. Returns [] for a rule with no reference, so
+ * coverage stays honest.
+ */
+function renderModelClauseReference(f: Finding): string[] {
+  const mc = modelClauseForRule(f.rule_id);
+  if (!mc) return [];
+  return [
+    `<p class="model-clause"><strong>Reference model clause</strong><br>` +
+      `<strong>${esc(mc.title)} — ${esc(mc.source_catalog)}</strong><br>` +
+      `${esc(mc.summary)}</p>`,
+    `<p class="v9-note">Reference only — Vaulytica does not draft. Source: ${esc(
+      mc.source.source,
+    )}${mc.source.attribution ? ` (${esc(mc.source.attribution)})` : ""} [license: ${esc(
+      mc.source.license,
+    )}]</p>`,
+  ];
+}
+
+/** A finding has a span when its excerpt covers a real range of the text. */
+function hasSpan(f: Finding): boolean {
+  return f.excerpt.end_offset > f.excerpt.start_offset;
+}
+
+/**
+ * Where a finding came from, stated precisely enough to check by hand — the
+ * section plus the exact character span, grouped (`12,433`) because a person
+ * reads it. A finding with no span says so rather than printing
+ * `characters 0–0` and sending the reader to look for something that was never
+ * there.
+ */
+function findingLocator(f: Finding): string {
+  if (!hasSpan(f)) return "absent — nothing to quote";
+  const span = `characters ${f.excerpt.start_offset.toLocaleString("en-US")}–${f.excerpt.end_offset.toLocaleString("en-US")}`;
+  return f.excerpt.section_id ? `${f.excerpt.section_id}, ${span}` : span;
+}
+
+/**
+ * The proof for one finding, in the two honest shapes the DOCX uses and never
+ * blurs: the rule fired ON text — show that text under the range it matched at
+ * — or it fired on an ABSENCE, which is said plainly rather than quoting a
+ * marker string at `characters 0–0`.
+ *
+ * "Evidence", not "Quoted": a rule may widen its excerpt to the surrounding
+ * sentence or narrow it to the matched value, so "quoted" is not true of every
+ * finding and "evidence at this range" is.
+ */
+function renderProof(f: Finding): string[] {
+  if (!hasSpan(f)) {
+    return [
+      '<p class="proof-basis"><strong>Basis</strong> — the document contains no matching clause; this finding is about what is absent.</p>',
+    ];
+  }
+  return [
+    `<p class="proof-basis"><strong>Evidence</strong> — ${esc(findingLocator(f))}</p>`,
+    `<blockquote>${esc(truncate(f.excerpt.text, 900))}</blockquote>`,
+  ];
+}
+
 function renderFinding(
   f: Finding,
   bibliography: ReturnType<typeof buildBibliography>,
@@ -219,9 +298,21 @@ function renderFinding(
   // add-attorney-review-ledger — the tier badge, only on a finding whose rule
   // an attorney signed (dormant until the ledger is signed; never fabricated).
   if (f.tier) parts.push(`<div class="tier-badge">${esc(tierBadgeLabel(f.tier))}</div>`);
+  // The PROOF — the DOCX has led every finding with this since the report was
+  // made to lead with evidence, and this file rendered none of it. A reader of
+  // the emailable report could not check a single finding against the document,
+  // and could not tell a finding about text from a finding about an ABSENCE.
+  // Worse since 9.578.0: this surface now prints "N of M findings quote the
+  // exact clause text they fired on" while showing none of them.
+  parts.push(...renderProof(f));
   if (f.explanation) parts.push(`<p>${esc(f.explanation)}</p>`);
   if (f.recommendation)
     parts.push(`<p><strong>Recommendation:</strong> ${esc(f.recommendation)}</p>`);
+  // "What good looks like" — the attributed public model clause, never a
+  // generated redline. In the DOCX and the JSON since spec-v6 Part IV; this
+  // file did not carry it, and it was not on the deliberate-omissions list
+  // either, so it was a silent omission rather than a decision.
+  parts.push(...renderModelClauseReference(f));
   for (const c of f.source_citations) parts.push(renderCitation(c, currency));
   parts.push("</div>");
   return parts.join("\n");

@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.580.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The HTML report rendered no finding PROOF at all.** The DOCX has led
+  every finding with *"Evidence — <section, characters N–M>"* and the quoted
+  clause — or, for a finding about an absence, with *"Basis — the document
+  contains no matching clause"* — since the report was made to lead with
+  evidence. The emailable, print-to-PDF counterpart rendered **neither**. A
+  reader of it could not check a single finding against the document, and could
+  not tell a finding about text from a finding about an absence.
+
+  It got worse in 9.578.0, which added *"N of M findings quote the exact clause
+  text they fired on"* to a page that showed none of them.
+
+- 🚨 **The per-finding public model clause** — what good looks like, with its
+  attribution and license, in the DOCX and the JSON since spec-v6 Part IV — was
+  also absent.
+
+  Unlike 9.579.0's two, neither of these was on the header's deliberate-omissions
+  list. **A silent omission is worse than a misfiled entry: it is not a decision
+  anyone made.**
+
+### Added
+- Two cases in `html-report-content-parity.test.ts`, both with the fixture
+  guarded: the specimen must produce findings of **both** proof shapes and at
+  least one rule carrying a model clause, or the assertions would prove half of
+  what they claim. It also asserts the report never prints `characters 0–0` —
+  the shape the DOCX's own comment calls "the worst line in it", a marker
+  string presented as a quotation at a zero-width range.
+
 ## [9.579.0] — 2026-09-08
 
 ### Fixed
