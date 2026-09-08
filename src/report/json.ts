@@ -12,6 +12,7 @@ import { buildRegimeCoverage } from "../privacy/coverage.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { RULE_TAXONOMY_VERSION } from "../engine/runner.js";
 import { blankTimings } from "../engine/blank-timings.js";
+import { erroredRuleNotice } from "./execution-log.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
@@ -105,6 +106,17 @@ export type JsonReport = {
    * complete one — the cap bites on 7 of the 312 specimens.
    */
   secondary_families_omitted?: number;
+  /**
+   * "N rules could not be evaluated ... treat the corresponding area as
+   * unreviewed."
+   *
+   * The raw `errored` flags ride inside `run.execution_log`, so a consumer
+   * COULD derive this — by iterating 1,825 entries and knowing to look. The
+   * whole point of the notice is that a hole in the analysis should not need
+   * deriving. Emitted only when a rule actually threw, so the common path is
+   * byte-unchanged.
+   */
+  rules_errored_notice?: string;
   /**
    * Public model-clause references for the findings in this report (spec-v6
    * Part IV). One entry per distinct fired rule that carries a reference —
@@ -255,6 +267,7 @@ export function buildJsonReport(
     if (reference) modelRefs.push({ rule_id: f.rule_id, reference });
   }
 
+  const erroredNotice = erroredRuleNotice(run.execution_log);
   const payload: JsonReport = {
     // The run as it is HASHED, not as it was TIMED — see `blankTimings`.
     run: blankTimings(run),
@@ -266,6 +279,7 @@ export function buildJsonReport(
       sha256: ingest.sha256,
       warnings: ingest.warnings,
     },
+    ...(erroredNotice ? { rules_errored_notice: erroredNotice } : {}),
     provenance: {
       dkb_version: run.dkb_version,
       engine_version: run.version,

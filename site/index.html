@@ -885,6 +885,21 @@
         max-width: 56ch;
         text-align: left;
       }
+      /*
+       * A rule that crashed is a HOLE in the analysis, not a footnote — styled
+       * as a warning beside the counts rather than as muted meta text.
+       */
+      .rule-errored {
+        margin: 2px auto 10px;
+        padding: 8px 10px;
+        font-size: 13px;
+        line-height: 1.45;
+        max-width: 56ch;
+        text-align: left;
+        /* Same amber the warning count uses, so the two read as one severity. */
+        border-left: 3px solid #a86700;
+        background: rgba(168, 103, 0, 0.08);
+      }
       .secondary-families {
         margin: 6px 0 8px;
         font-size: 14px;

@@ -58,6 +58,7 @@ import {
 } from "./citations.js";
 import { buildClauseEvidence } from "./clause-evidence.js";
 import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./review-coverage.js";
+import { erroredRuleNotice } from "./execution-log.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { ReportSecondaryFamily } from "./json.js";
@@ -460,6 +461,12 @@ export function buildHtmlReport(
 
   const body: string[] = [];
   body.push(`<h1>Vaulytica Report — ${esc(run.source_file.name)}</h1>`);
+  // A rule that THREW is swallowed by the engine and reported as silence — the
+  // right behaviour for a pure-rule contract, and the wrong thing to leave
+  // unsaid. Until 9.577.0 only the Word report said it; the print-clean HTML a
+  // reader is just as likely to be handed did not.
+  const errored = erroredRuleNotice(run.execution_log);
+  if (errored) body.push(`<p class="v9-note"><strong>${esc(errored)}</strong></p>`);
 
   // Cover proof fields (mirrors the DOCX cover).
   body.push('<dl class="proof">');

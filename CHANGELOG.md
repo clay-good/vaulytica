@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.577.0] — 2026-09-08
+
+### Fixed
+- 🚨 **"This document was NOT checked against them. Treat the corresponding
+  area as unreviewed" reached the Word reports and nothing else.** The engine
+  swallows a rule whose `check` throws and records it as silence — correct for
+  a pure-rule contract, and one bad rule must not take down the run. What is
+  not correct is leaving it unsaid: *"this check crashed"* and *"this check
+  passed"* are not the same sentence to a lawyer relying on the review.
+
+  `ExecutionLogEntry.errored` exists precisely to break that conflation and
+  `erroredRuleNotice` was written to state it — and the print-clean **HTML**,
+  the **JSON**, **SARIF** (what a CI job gates on) and the **browser tab** all
+  showed a clean run with a hole in it.
+
+  Now on all of them: a `rules_errored_notice` field in the JSON (the raw
+  `errored` flags were technically derivable from 1,825 execution-log entries,
+  which is not the same as being told), a **warning**-level
+  `VAULYTICA-RULE-ERRORED` SARIF result — warning, not note, because unlike the
+  other synthetic results it reports a hole in the analysis itself — and an
+  amber block beside the counts in the tab.
+
+### Added
+- `tests/integration/errored-rule-reach.test.ts` — reach and anti-vacuity per
+  surface: each says it when a rule threw, **none** says anything when none
+  did, which is the overwhelmingly common path and must render byte-unchanged.
+- `cap-caveat-reach.test.ts` gains its third instance of one shape. The
+  file's rule, now stated three ways: **a surface that reports a run owes the
+  reader what the run did not do.**
+
 ## [9.576.0] — 2026-09-08
 
 ### Fixed

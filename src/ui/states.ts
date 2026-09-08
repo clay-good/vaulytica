@@ -176,6 +176,17 @@ export type DropzoneState =
        */
       review_coverage?: string;
       /**
+       * "N rules could not be evaluated ... treat the corresponding area as
+       * unreviewed."
+       *
+       * The engine swallows a throwing rule and treats it as silence, which is
+       * right for a pure-rule contract and wrong to leave unsaid: "this check
+       * crashed" and "this check passed" are not the same sentence. Only the
+       * Word report said it. Absent on the overwhelmingly common path where
+       * nothing threw.
+       */
+      rule_errored?: string;
+      /**
        * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law
        * deltas for the governing-law state(s) this document names, for the
        * families where state law dominates (employment non-compete, lending
@@ -651,6 +662,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="negotiation-section" data-role="negotiation" hidden></div>
     <div class="counts" data-role="counts"></div>
     <div class="review-coverage" data-role="review-coverage" hidden></div>
+    <div class="rule-errored" data-role="rule-errored" hidden></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
     <div class="jurisdiction-overlays" data-role="jurisdiction-overlays" hidden></div>
@@ -706,6 +718,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="bundle-title"></div>
     <div class="counts" data-role="counts"></div>
     <div class="review-coverage" data-role="review-coverage" hidden></div>
+    <div class="rule-errored" data-role="rule-errored" hidden></div>
     <label class="cross-doc-toggle" data-role="cross-doc-toggle" hidden>
       <input type="checkbox" data-role="cross-doc-toggle-input" checked />
       <span>Run cross-document consistency checks</span>
@@ -777,6 +790,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderPlaybookProvenance(dz, state.custom_playbook);
     renderSecondaryFamilies(dz, state.secondary_families, state.secondary_families_omitted);
     renderReviewCoverage(dz, state.review_coverage);
+    renderRuleErrored(dz, state.rule_errored);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
@@ -1386,6 +1400,24 @@ function renderReviewCoverage(dz: HTMLElement, sentence: string | undefined): vo
   }
   el.hidden = false;
   el.textContent = sentence;
+}
+
+/**
+ * The crashed-rule notice, beside the counts it qualifies.
+ *
+ * Rendered like a finding rather than a footnote, because it is a hole in the
+ * analysis: an area the document was not checked against at all.
+ */
+function renderRuleErrored(dz: HTMLElement, notice: string | undefined): void {
+  const el = select<HTMLElement>(dz, "rule-errored");
+  if (!el) return;
+  if (!notice) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  el.textContent = notice;
 }
 
 function renderSecondaryFamilies(

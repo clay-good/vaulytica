@@ -34,6 +34,7 @@ import {
 } from "./citations.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
+import { erroredRuleNotice } from "./execution-log.js";
 import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
@@ -112,6 +113,21 @@ const SECONDARY_CAP_RULE_ID = "VAULYTICA-SECONDARY-FAMILIES-CAPPED";
  * a coverage statement.
  */
 const REVIEW_COVERAGE_RULE_ID = "VAULYTICA-ATTORNEY-REVIEW-COVERAGE";
+
+/**
+ * Synthetic rule id for "a rule crashed, so this document was not checked
+ * against it."
+ *
+ * The engine swallows a throwing rule and treats it as silence — correct for a
+ * pure-rule contract, and the wrong thing to leave unsaid, because "this check
+ * crashed" and "this check passed" are not the same sentence to a lawyer
+ * relying on the review. Only the Word reports said it. A CI job gating on
+ * SARIF saw a clean run and no way to learn that a check never ran.
+ *
+ * WARNING level, not note: unlike the other synthetic results here this one
+ * reports a hole in the analysis itself.
+ */
+const ERRORED_RULE_ID = "VAULYTICA-RULE-ERRORED";
 
 /** Severity → SARIF result level. */
 const LEVEL: Record<Severity, "error" | "warning" | "note"> = {
@@ -220,6 +236,8 @@ export function buildSarif(
   const capRuleIds = secondaryOmitted > 0 ? [SECONDARY_CAP_RULE_ID] : [];
   const reviewCoverage = buildReviewCoverage(run.findings);
   const reviewRuleIds = reviewCoverage.total > 0 ? [REVIEW_COVERAGE_RULE_ID] : [];
+  const erroredNotice = erroredRuleNotice(run.execution_log);
+  const erroredRuleIds = erroredNotice ? [ERRORED_RULE_ID] : [];
   // Cross-document (CC-* / CROSS-*). A bundle's conflicts had reached the DOCX
   // appendix and the bundle JSON and no CI surface at all — so a job that
   // gated on them annotated nothing, and SARIF is the artifact the Action
@@ -240,6 +258,7 @@ export function buildSarif(
     ...inputRuleIds,
     ...capRuleIds,
     ...reviewRuleIds,
+    ...erroredRuleIds,
     ...crossRuleIds,
   ];
   const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
@@ -289,6 +308,13 @@ export function buildSarif(
     name: id,
     shortDescription: { text: "How many findings rest on an attorney-reviewed rule" },
   }));
+  const erroredRules: SarifRule[] = erroredRuleIds.map((id) => ({
+    id,
+    name: id,
+    shortDescription: {
+      text: "A rule ended in an error, so this document was not checked against it",
+    },
+  }));
   const crossRules: SarifRule[] = crossRuleIds.map((id) => {
     const f = crossFindings.find((x) => x.rule_id === id)!;
     const descriptor: SarifRule = { id, name: id, shortDescription: { text: f.title } };
@@ -307,6 +333,7 @@ export function buildSarif(
     ...inputRules,
     ...capRules,
     ...reviewRules,
+    ...erroredRules,
     ...crossRules,
   ];
 
@@ -470,6 +497,31 @@ export function buildSarif(
         ]
       : [];
 
+  const erroredResults: SarifResult[] = erroredNotice
+    ? [
+        {
+          ruleId: ERRORED_RULE_ID,
+          ruleIndex: ruleIndex.get(ERRORED_RULE_ID)!,
+          level: "warning" as const,
+          message: { text: erroredNotice },
+          locations: [
+            {
+              physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+              logicalLocations: [{ name: "document", kind: "container" }],
+            },
+          ],
+          partialFingerprints: {
+            "vaulyticaErroredRules/v1": run.execution_log
+              .filter((e) => e.errored)
+              .map((e) => e.rule_id)
+              .join(","),
+            "vaulyticaResultHash/v1": run.result_hash,
+          },
+          properties: { surface: "rule-errored" },
+        },
+      ]
+    : [];
+
   const consistencyHash = consistency?.result_hash ?? "";
   const crossResults: SarifResult[] = crossFindings.map((f) =>
     crossDocumentResult(f, ruleIndex, consistencyHash, currency),
@@ -483,6 +535,7 @@ export function buildSarif(
     ...inputResults,
     ...capResults,
     ...reviewResults,
+    ...erroredResults,
     ...crossResults,
   ];
 

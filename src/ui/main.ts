@@ -17,6 +17,7 @@ import { createProgressBar } from "./progress.js";
 import { createRuleTicker } from "./ticker.js";
 import { registerServiceWorker } from "./sw-register.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "../report/review-coverage.js";
+import { erroredRuleNotice } from "../report/execution-log.js";
 import { hydrateDkbValidation } from "./dkb-validation.js";
 import { V3_FAMILY_LABELS } from "./v3-labels.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
@@ -244,6 +245,8 @@ function renderCompleteState(
     custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
     secondary_families?: import("./pipeline.js").PipelineResult["secondary_families"];
     secondary_families_omitted?: number;
+    review_coverage?: string;
+    rule_errored?: string;
     jurisdiction_overlays?: import("./pipeline.js").PipelineResult["jurisdiction_overlays"];
     regime_coverage?: import("./pipeline.js").PipelineResult["regime_coverage"];
     delivery?: import("./pipeline.js").PipelineResult["delivery"];
@@ -369,6 +372,8 @@ function renderCompleteState(
     // reports compute it — a render-side projection of the run's findings,
     // outside `result_hash`.
     review_coverage: reviewCoverageSentence(buildReviewCoverage(result.run.findings)),
+    // A rule that threw is swallowed as silence; the tab has to say so.
+    rule_errored: erroredRuleNotice(result.run.execution_log),
     // v6 Part VI §21 jurisdiction overlays (Step 101). State-law deltas for
     // the governing-law state(s) the document names, surfaced as a citable
     // reference block. Hidden unless the family is state-sensitive and a

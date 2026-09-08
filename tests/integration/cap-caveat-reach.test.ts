@@ -164,3 +164,43 @@ describe("the attorney-review caveat reaches every surface that reports findings
     expect(states).toMatch(/renderReviewCoverage\(/);
   });
 });
+
+/**
+ * The crashed-rule notice: *"N rules could not be evaluated ... this document
+ * was NOT checked against them. Treat the corresponding area as unreviewed."*
+ *
+ * Third instance of the same shape in this file, and the worst of the three:
+ * the other two qualify a number, this one reports a HOLE. It reached the two
+ * Word reports and nothing else — so a CI job gating on SARIF, a reader handed
+ * the print-clean HTML, and a user watching the tab all saw a clean run.
+ *
+ * `errored-rule-reach.test.ts` proves each surface says it and that none says
+ * it when nothing threw; this asserts the SET of surfaces, so a new one cannot
+ * be added without it.
+ */
+describe("the crashed-rule notice reaches every surface that reports a run", () => {
+  const SURFACES = [
+    "src/report/docx.ts",
+    "src/report/html.ts",
+    "src/report/json.ts",
+    "src/report/sarif.ts",
+    "src/report/bundle.ts",
+    "src/ui/main.ts",
+  ];
+
+  it("each one emits the notice", () => {
+    const missing = SURFACES.filter(
+      (f) => !/erroredRuleNotice/.test(scannable(readFileSync(join(ROOT, f), "utf8"))),
+    );
+    expect(
+      missing,
+      `these report a run and never say a rule crashed:\n  ${missing.join("\n  ")}`,
+    ).toEqual([]);
+  });
+
+  it("the tab renders it, not just computes it", () => {
+    const states = scannable(readFileSync(join(ROOT, "src/ui/states.ts"), "utf8"));
+    expect(states).toMatch(/rule-errored/);
+    expect(states).toMatch(/renderRuleErrored\(/);
+  });
+});
