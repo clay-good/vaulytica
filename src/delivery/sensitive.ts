@@ -19,7 +19,20 @@ import type { SensitiveFact } from "./types.js";
 import { maskDigits, maskEmail, luhnValid, ssnStructurallyValid } from "./mask.js";
 
 /** Cap the scanned text — a 5 MB body is already an enormous document. */
-const MAX_SCAN_CHARS = 5 * 1024 * 1024;
+export const MAX_SCAN_CHARS = 5 * 1024 * 1024;
+
+/**
+ * Did the cap actually bite? Exported because the truncation must be SAID.
+ *
+ * Everything past `MAX_SCAN_CHARS` is invisible to the scan, and for a check
+ * whose whole proposition is "this document is safe to send" a silently partial
+ * read is the worst possible failure: an SSN a megabyte past the cap produces
+ * the same clean report as a document that has none. `readContainer` composes
+ * this into the report's `note`, beside the PDF scan's own reach caveat.
+ */
+export function sensitiveScanTruncated(text: string): boolean {
+  return text.length > MAX_SCAN_CHARS;
+}
 /** Cap distinct hits per type so a pathological input cannot produce unbounded output. */
 const MAX_PER_TYPE = 200;
 

@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.553.0] — 2026-09-07
+
+### Fixed
+- 🚨 **The pre-disclosure scan stopped reading at 5 MB and did not say so.**
+  `scanSensitive` caps the text it looks at, and everything past the cap is
+  invisible — so a 6 MB document with an SSN in its last megabyte produced the
+  **same clean report** as a document that had none. For the one check whose
+  whole proposition is *this is safe to send*, a silently partial read is the
+  worst failure available.
+
+  The report's `note` carries the reach caveat now, beside the PDF branch's own
+  ("annotations inside a compressed object stream are not recovered") — the same
+  mechanism, for the same reason, and it says how much of how much was read.
+
+### Added
+- **Tests for the two paths nothing had ever executed.** When
+  `src/delivery/sensitive.ts` joined the mutated set in 9.552.0, five of its
+  mutants came back **NoCoverage** — not *survived*, but never run at all:
+
+  - the entire **EIN** branch, so a document's employer identification number
+    was detected by code no test had reached;
+  - `text.slice(0, MAX_SCAN_CHARS)`, the cap above.
+
+  🥇 **This is the widening paying for itself in one release.** The scope change
+  did not just add a score — it named two untested paths in the leak scanner
+  within hours, one of which turned out to be a silent honesty gap rather than
+  merely an untested one. *NoCoverage is a stronger signal than Survived and
+  reads right past you in the summary line.*
+
+  ⚠️ **The pack's own guard from 9.545.0 caught one of these new tests**, and was
+  right to: *"says nothing extra about reach when the whole document was read"*
+  was all-negative, and a `readContainer` returning nothing would carry no reach
+  caveat either. It asserts the SSN was found first.
+
 ## [9.552.0] — 2026-09-07
 
 ### Changed

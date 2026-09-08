@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readContainer } from "./container.js";
 import { deriveHandoffFindings } from "./handoff.js";
-import { scanSensitive } from "./sensitive.js";
+import { MAX_SCAN_CHARS, scanSensitive } from "./sensitive.js";
 import { maskDigits, maskEmail, luhnValid, ssnStructurallyValid } from "./mask.js";
 import { scanDelivery } from "./index.js";
 import {
@@ -517,5 +517,59 @@ describe("scanSensitive — a bare 9-digit run that is not an SSN", () => {
     ]) {
       expect(scanSensitive(text).filter((f) => f.type === "ssn")).toHaveLength(0);
     }
+  });
+});
+
+/**
+ * The three paths mutation testing found nobody had exercised.
+ *
+ * When `src/delivery/sensitive.ts` joined the mutated set, five of its mutants
+ * came back **NoCoverage** — not "survived", but never executed at all. Two of
+ * them were real gaps in the check whose failure direction is a leak:
+ *
+ *  - the whole `EIN` branch, so a document's employer identification number was
+ *    detected by code no test had ever run;
+ *  - `text.slice(0, MAX_SCAN_CHARS)`, the cap that decides how much of a
+ *    document is looked at.
+ *
+ * The second was worse than untested. It was **silent**: everything past the
+ * cap is invisible to the scan, and the report said nothing, so a 6 MB document
+ * with an SSN in its last megabyte produced the same clean bill of health as a
+ * document that had none.
+ */
+describe("scanSensitive — the paths nothing had executed", () => {
+  it("finds an EIN, which no test had ever reached", () => {
+    const facts = scanSensitive("Vendor EIN 12-3456789 on file for 1099 reporting.");
+    const ein = facts.find((f) => f.type === "ein");
+    expect(ein).toBeDefined();
+    // Masked like every other digit type: only the tail survives.
+    expect(ein!.masked).toContain("*");
+    expect(ein!.masked).not.toContain("12-3456789");
+  });
+
+  it("stops at the scan cap", () => {
+    // Past the cap the value is invisible — that is the behaviour, and it is
+    // the reason the caveat below has to exist.
+    const filler = "x".repeat(MAX_SCAN_CHARS);
+    expect(scanSensitive(`${filler} SSN 123-45-6789.`).some((f) => f.type === "ssn")).toBe(false);
+    // The same value inside the cap is found, so the negative above is the cap
+    // and not the pattern.
+    expect(scanSensitive("SSN 123-45-6789.").some((f) => f.type === "ssn")).toBe(true);
+  });
+
+  it("SAYS SO when the cap bit — a partial scan must not read as a clean one", () => {
+    const oversized = `${"x".repeat(MAX_SCAN_CHARS)} SSN 123-45-6789.`;
+    const facts = readContainer(new ArrayBuffer(0), "paste", oversized);
+    expect(facts.note).toContain("was not scanned");
+    expect(facts.note).toContain(MAX_SCAN_CHARS.toLocaleString("en-US"));
+  });
+
+  it("says nothing extra about reach when the whole document was read", () => {
+    const facts = readContainer(new ArrayBuffer(0), "paste", "SSN 123-45-6789.");
+    // The positive half first — this pack's own guard requires it, and it is
+    // right to: a `readContainer` that returned nothing would carry no reach
+    // caveat either, and the assertion below would pass for the wrong reason.
+    expect(facts.sensitive.some((f) => f.type === "ssn")).toBe(true);
+    expect(facts.note).not.toContain("was not scanned");
   });
 });

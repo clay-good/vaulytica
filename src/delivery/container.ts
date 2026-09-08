@@ -25,8 +25,27 @@ import type {
   HiddenFact,
 } from "./types.js";
 import { strFromU8 } from "fflate";
-import { scanSensitive } from "./sensitive.js";
+import { MAX_SCAN_CHARS, scanSensitive, sensitiveScanTruncated } from "./sensitive.js";
 import { inflateOoxmlParts } from "../ingest/ooxml.js";
+
+/**
+ * Compose the sensitive-scan's reach caveat onto whatever note the container
+ * already carries.
+ *
+ * The scan stops at `MAX_SCAN_CHARS`, and a report that does not say so reads
+ * exactly like one over a document that was fully clean — which for a check
+ * whose whole proposition is "this is safe to send" is the worst failure
+ * available: an SSN a megabyte past the cap produces the same silence as no SSN
+ * at all. The PDF branch already carries a reach caveat of its own for the
+ * same reason; this one belongs beside it.
+ */
+function withScanReach(text: string, note?: string): string | undefined {
+  if (!sensitiveScanTruncated(text)) return note;
+  const reach =
+    `The sensitive-data scan read the first ${MAX_SCAN_CHARS.toLocaleString("en-US")} ` +
+    `characters of ${text.length.toLocaleString("en-US")}; anything after that was not scanned.`;
+  return note ? `${note} ${reach}` : reach;
+}
 
 /** Per-part read ceiling — bounds the regex work on any one member. */
 const MAX_PART_BYTES = 16 * 1024 * 1024;
@@ -59,7 +78,7 @@ export function readContainer(
   const empty = (note: string, inspectable = false): ContainerFacts => ({
     source,
     inspectable,
-    note,
+    note: withScanReach(text, note),
     revisions: [],
     comments: [],
     hidden: [],
@@ -97,6 +116,7 @@ function readDocx(bytes: ArrayBuffer, text: string): ContainerFacts {
   return {
     source: "docx",
     inspectable: true,
+    note: withScanReach(text, undefined),
     revisions: parseRevisions(document),
     comments: parseComments(comments),
     hidden: parseHidden(document),
@@ -248,7 +268,10 @@ function readPdf(bytes: ArrayBuffer, text: string): ContainerFacts {
   return {
     source: "pdf",
     inspectable: true,
-    note: "PDF scan reads authoring metadata and reviewer annotations (sticky notes, text markup) from the uncompressed byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered.",
+    note: withScanReach(
+      text,
+      "PDF scan reads authoring metadata and reviewer annotations (sticky notes, text markup) from the uncompressed byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered.",
+    ),
     revisions: [],
     comments,
     hidden: [],
