@@ -412,3 +412,49 @@ describe("a duration stated with 'of' is not a deadline", () => {
     });
   }
 });
+
+/**
+ * The numeric-date paths nothing had executed.
+ *
+ * `dates.ts` came back with 22 **NoCoverage** mutants — lines no test in the
+ * mutation set runs — and three of them decide what date a contract's deadline
+ * actually falls on:
+ *
+ *  - the **day-first heuristic**. `13/04/2029` cannot be month 13, so it is read
+ *    as 13 April; `04/13/2029` stays American. The comment beside it argues the
+ *    convention carefully and nothing tested either branch.
+ *  - `isValidIso`'s **month/day range guard**, which is what stops `13/45/2029`
+ *    from becoming a date at all;
+ *  - and its **round-trip check**, which rejects a day that does not exist in
+ *    the month it names (`02/30`).
+ *
+ * A wrong date in a deadline register is worse than a missing one, so these
+ * belong pinned rather than inferred from the corpus.
+ */
+describe("extractDates — numeric dates, both readings and the guards", () => {
+  const isos = (text: string): (string | null | undefined)[] =>
+    extractDates(buildTree(["Agreement", text])).map((d) => d.iso);
+
+  it("reads an impossible month as DAY-first", () => {
+    // 13 cannot be a month, and 04 can, so the only coherent reading is
+    // 13 April — not a silently dropped date and not month 13.
+    expect(isos("The closing occurs on 13/04/2029.")).toContain("2029-04-13");
+  });
+
+  it("keeps the American reading when both halves are plausible", () => {
+    // 04/13 is unambiguous the other way; 03/04 would be genuinely ambiguous and
+    // the module's stated convention is that US wins rather than a guess that
+    // flips with the reader.
+    expect(isos("The closing occurs on 04/13/2029.")).toContain("2029-04-13");
+    expect(isos("The closing occurs on 03/04/2029.")).toContain("2029-03-04");
+  });
+
+  it("refuses a numeric date that is not a date", () => {
+    // Recorded as text, but with no ISO value — the register must not carry a
+    // deadline the document does not state.
+    expect(isos("The closing occurs on 13/45/2029.").filter(Boolean)).toEqual([]);
+    // A day that does not exist in the month it names, which only the
+    // round-trip check catches.
+    expect(isos("The closing occurs on 02/30/2029.").filter(Boolean)).toEqual([]);
+  });
+});

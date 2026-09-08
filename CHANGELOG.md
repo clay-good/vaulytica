@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.563.0] — 2026-09-08
+
+### Added
+- **The numeric-date paths in `dates.ts` that nothing had executed.** Three of
+  its 22 **NoCoverage** lines decide what date a contract's deadline actually
+  falls on:
+
+  - **the day-first heuristic.** `13/04/2029` cannot be month 13, so it reads as
+    13 April; `04/13/2029` stays American. The comment beside it argues that
+    convention carefully — *"a guess that flips with the reader is worse than a
+    stated convention"* — and **neither branch had a test.**
+  - **`isValidIso`'s month/day range guard**, which is what stops `13/45/2029`
+    from becoming a date at all;
+  - **its round-trip check**, which rejects a day that does not exist in the
+    month it names (`02/30`).
+
+  🥇 **A wrong date in a deadline register is worse than a missing one**, which
+  is exactly why these belong pinned rather than inferred from whichever corpus
+  specimen happens to exercise them. Both refusals are asserted as *recorded as
+  text, with no ISO value* — the register must not carry a deadline the document
+  does not state.
+
 ## [9.562.0] — 2026-09-08
 
 ### Added
