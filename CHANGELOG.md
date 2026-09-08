@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.582.0] — 2026-09-08
+
+### Added
+- **The structural version of the four omissions 9.580.0 and 9.581.0 fixed.**
+  Each was found by reading the DOCX's finding renderer beside the HTML's,
+  field by field, and each took its own release. The next one would not be
+  found that way unless someone happened to do the same read.
+
+  `html-report-content-parity.test.ts` now asserts, for a real document, that
+  **every non-empty text field the engine put on every finding appears in the
+  HTML** — title, description, explanation, recommendation, rule id, and the
+  quoted excerpt. Not a comment and not a list: the content itself, checked
+  against the run that produced it. Proven able to fail by deleting the
+  `description` line and watching it name the drop.
+
+### Fixed
+- 🚨 **Two probe errors in that test, caught before it landed** — both the
+  shape this repo keeps finding, where the probe accuses the engine:
+
+  - It used an *approximation* of the report's escaper and reported six
+    missing fields that were present, differing only by a quote mark. It uses
+    the exact escaper now.
+  - It then demanded the excerpt text of findings about an **absence**. Those
+    carry the rule's own marker string in `excerpt.text`, and printing that
+    under an evidence label is the failure the DOCX's comment calls "the worst
+    line in it" — words the contract never contained, presented as a quotation.
+    The renderer was right and the test was wrong.
+
 ## [9.581.0] — 2026-09-08
 
 ### Fixed

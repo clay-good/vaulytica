@@ -183,6 +183,70 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
     expect(buildHtmlReport(catalogRun, ingest, dkb)).not.toContain("your playbook");
   });
 
+  /**
+   * The structural version of the four omissions above.
+   *
+   * Each of them — the proof, the model clause, `description`, the "your
+   * playbook" marker — was found by reading the DOCX's finding renderer beside
+   * this one, field by field, and each took its own release. The next one will
+   * not be found that way unless someone happens to do the same read.
+   *
+   * So: for a real document, every non-empty TEXT field the engine puts on a
+   * finding has to appear in the HTML. Not a comment, not a list — the content
+   * itself, checked against the run that produced it.
+   */
+  it("carries every text field the engine put on every finding", async () => {
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeFile(SPECIMEN, { deps });
+    const html = buildHtmlReport(r.run, r.ingest, deps.dkb, r.playbook);
+    // The report's own escaper, not an approximation of it: an approximation
+    // reports a MISSING FIELD when the difference is a quote mark, which is a
+    // false accusation against the renderer and exactly the kind of probe error
+    // this repo keeps finding.
+    const esc = (t: string): string =>
+      t
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+    expect(r.run.findings.length, "the specimen must produce findings").toBeGreaterThan(3);
+    const missing: string[] = [];
+    for (const f of r.run.findings) {
+      for (const [field, value] of [
+        ["title", f.title],
+        ["description", f.description],
+        ["explanation", f.explanation],
+        ["recommendation", f.recommendation ?? ""],
+        // The excerpt is truncated at 900 chars in the render, so compare a
+        // prefix — the point is that the document's own words are present at
+        // all, which is what "checkable" means.
+        //
+        // 🚨 Only for findings that HAVE a span. A finding about an absence
+        // carries the rule's own marker string in `excerpt.text`, and printing
+        // that under an evidence label is the failure the DOCX's comment calls
+        // "the worst line in it" — words the contract never contained,
+        // presented as a quotation. RISK-001 and TERM-005 on this specimen are
+        // exactly that shape, and the first draft of this test accused the
+        // renderer of dropping them.
+        [
+          "excerpt",
+          f.excerpt.end_offset > f.excerpt.start_offset ? f.excerpt.text.trim().slice(0, 80) : "",
+        ],
+      ] as const) {
+        if (!value || value.trim().length === 0) continue;
+        if (html.includes(esc(value.slice(0, 80)))) continue;
+        missing.push(`${f.rule_id}.${field}`);
+      }
+      if (!html.includes(f.rule_id)) missing.push(`${f.rule_id}.rule_id`);
+    }
+    expect(
+      [...new Set(missing)],
+      `the HTML report drops these finding fields:\n  ${[...new Set(missing)].join("\n  ")}`,
+    ).toEqual([]);
+  }, 180_000);
+
   it("renders neither section when there is nothing to render", async () => {
     // Anti-vacuity: without `extracted` the two sections are absent, exactly as
     // they are absent from a DOCX built without it. A report that invents an
