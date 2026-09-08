@@ -33,6 +33,7 @@ import {
   type CitationCurrency,
 } from "./citations.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
+import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
 import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
@@ -97,6 +98,20 @@ const INPUT_NOTICE_RULE_ID = "VAULYTICA-INPUT-NOTICE";
  * scanned families and no way to learn that four more were never looked at.
  */
 const SECONDARY_CAP_RULE_ID = "VAULYTICA-SECONDARY-FAMILIES-CAPPED";
+
+/**
+ * Synthetic rule id for the attorney-review caveat.
+ *
+ * "0 of N findings cite an attorney-reviewed rule — every rule applied here is
+ * author-asserted" is the single most load-bearing sentence this tool emits,
+ * and the DOCX and HTML reports were the only surfaces carrying it. SARIF is
+ * what a code-scanning dashboard shows a reviewer who never opens the Word
+ * file: it annotated N findings and said nothing about what any of them rests
+ * on. Always emitted when there are findings, exactly as the report always
+ * emits it — a coverage statement you can skip when it is inconvenient is not
+ * a coverage statement.
+ */
+const REVIEW_COVERAGE_RULE_ID = "VAULYTICA-ATTORNEY-REVIEW-COVERAGE";
 
 /** Severity → SARIF result level. */
 const LEVEL: Record<Severity, "error" | "warning" | "note"> = {
@@ -203,6 +218,8 @@ export function buildSarif(
   // Clearly-present families the per-document cap never scanned.
   const secondaryOmitted = v9?.secondaryFamiliesOmitted ?? 0;
   const capRuleIds = secondaryOmitted > 0 ? [SECONDARY_CAP_RULE_ID] : [];
+  const reviewCoverage = buildReviewCoverage(run.findings);
+  const reviewRuleIds = reviewCoverage.total > 0 ? [REVIEW_COVERAGE_RULE_ID] : [];
   // Cross-document (CC-* / CROSS-*). A bundle's conflicts had reached the DOCX
   // appendix and the bundle JSON and no CI surface at all — so a job that
   // gated on them annotated nothing, and SARIF is the artifact the Action
@@ -222,6 +239,7 @@ export function buildSarif(
     ...noticeRuleIds,
     ...inputRuleIds,
     ...capRuleIds,
+    ...reviewRuleIds,
     ...crossRuleIds,
   ];
   const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
@@ -266,6 +284,11 @@ export function buildSarif(
     name: id,
     shortDescription: { text: "Additional detected families were not scanned" },
   }));
+  const reviewRules: SarifRule[] = reviewRuleIds.map((id) => ({
+    id,
+    name: id,
+    shortDescription: { text: "How many findings rest on an attorney-reviewed rule" },
+  }));
   const crossRules: SarifRule[] = crossRuleIds.map((id) => {
     const f = crossFindings.find((x) => x.rule_id === id)!;
     const descriptor: SarifRule = { id, name: id, shortDescription: { text: f.title } };
@@ -283,6 +306,7 @@ export function buildSarif(
     ...noticeRules,
     ...inputRules,
     ...capRules,
+    ...reviewRules,
     ...crossRules,
   ];
 
@@ -419,6 +443,33 @@ export function buildSarif(
         ]
       : [];
 
+  const reviewResults: SarifResult[] =
+    reviewCoverage.total > 0
+      ? [
+          {
+            ruleId: REVIEW_COVERAGE_RULE_ID,
+            ruleIndex: ruleIndex.get(REVIEW_COVERAGE_RULE_ID)!,
+            level: "note" as const,
+            message: { text: reviewCoverageSentence(reviewCoverage) },
+            locations: [
+              {
+                physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+                logicalLocations: [{ name: "document", kind: "container" }],
+              },
+            ],
+            partialFingerprints: {
+              "vaulyticaReviewCoverage/v1": `${reviewCoverage.attorney_reviewed}/${reviewCoverage.total}`,
+              "vaulyticaResultHash/v1": run.result_hash,
+            },
+            properties: {
+              surface: "attorney-review-coverage",
+              attorney_reviewed: reviewCoverage.attorney_reviewed,
+              total: reviewCoverage.total,
+            },
+          },
+        ]
+      : [];
+
   const consistencyHash = consistency?.result_hash ?? "";
   const crossResults: SarifResult[] = crossFindings.map((f) =>
     crossDocumentResult(f, ruleIndex, consistencyHash, currency),
@@ -431,6 +482,7 @@ export function buildSarif(
     ...noticeResults,
     ...inputResults,
     ...capResults,
+    ...reviewResults,
     ...crossResults,
   ];
 

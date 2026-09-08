@@ -26,6 +26,11 @@
 // quoted excerpt, long after the shared helper was corrected.
 import { blankTimings } from "../engine/blank-timings.js";
 import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
+import {
+  buildReviewCoverage,
+  reviewCoverageSentence,
+  type ReviewCoverage,
+} from "./review-coverage.js";
 import { truncate } from "./v3/_dx.js";
 import {
   AlignmentType,
@@ -390,6 +395,13 @@ export type BundleJson = {
   portfolio: PortfolioMatrix;
   portfolio_fingerprint: string;
   /**
+   * Attorney-review coverage over every document's findings — how many rest on
+   * a rule a licensed attorney has signed off on. Always emitted, like the
+   * single-document report's: a coverage statement you can skip when it is
+   * inconvenient is not a coverage statement.
+   */
+  review_coverage: ReviewCoverage;
+  /**
    * Portfolio executive summary (spec-v7 §17): rolled-up
    * critical/warning/info counts across the bundle + a one-line digest
    * per document, so a deal folder opens with the headline. Pure
@@ -454,6 +466,10 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
     })),
     portfolio,
     portfolio_fingerprint: await portfolioFingerprint(fingerprint, portfolio),
+    // What the bundle's findings rest on. A render-side projection like
+    // `portfolio`, outside every hash — and the same caveat the consolidated
+    // DOCX prints, so the two artifacts of one bundle cannot disagree.
+    review_coverage: buildReviewCoverage(input.documents.flatMap((d) => d.run.findings)),
     executive_summary: buildPortfolioExecutiveSummary(
       input.documents.map((d) => ({
         doc_id: d.doc_id,
@@ -552,6 +568,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     ...renderCompanionGapsSection(input.companion_gaps, input.documents),
     ...renderBibliography(bibliography, dkbCurrency(input.dkb.manifest)),
     ...renderAuditTrail(input),
+    ...renderBundleReviewCoverage(input),
     ...renderDisclaimer(),
   ];
 
@@ -1531,6 +1548,24 @@ function renderAuditTrail(input: BundleReportInput): Paragraph[] {
   }
   out.push(pageBreak());
   return out;
+}
+
+/**
+ * Attorney-review coverage for the WHOLE bundle.
+ *
+ * The single-document DOCX and HTML reports have carried this sentence since
+ * the ledger existed; the consolidated report a portfolio reviewer reads did
+ * not. Computed over every document's findings at once, because that is the
+ * scope of the artifact it appears in — a per-document breakdown would say the
+ * same thing N times and answer a question nobody asked of a bundle.
+ *
+ * Beside the disclaimer, which is what it qualifies.
+ */
+function renderBundleReviewCoverage(input: BundleReportInput): Paragraph[] {
+  const all = input.documents.flatMap((d) => d.run.findings);
+  const coverage = buildReviewCoverage(all);
+  if (coverage.total === 0) return [];
+  return [h1("Attorney Review Coverage"), para({ text: reviewCoverageSentence(coverage) })];
 }
 
 function renderDisclaimer(): Paragraph[] {

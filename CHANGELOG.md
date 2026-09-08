@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.576.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The most load-bearing sentence this tool emits reached two surfaces out
+  of six.** *"0 of N findings cite an attorney-reviewed rule — every rule
+  applied here is author-asserted, grounded in a cited authority but not yet
+  signed off by a licensed attorney."* The DOCX and HTML reports have carried
+  it since the review ledger existed. Not carrying it:
+
+  - **the browser tab**, where a user drops a document and reads three severity
+    counts and nothing else;
+  - **SARIF**, which is what a code-scanning dashboard shows a reviewer who
+    never opens the Word file — it annotated N findings and said nothing about
+    what any of them rests on;
+  - **the consolidated bundle report**, which a portfolio reviewer reads
+    instead of the per-document ones.
+
+  All three now carry it: a line under the counts in the tab, a note-level
+  `VAULYTICA-ATTORNEY-REVIEW-COVERAGE` SARIF result, and an "Attorney Review
+  Coverage" section plus a `review_coverage` object in the bundle. Always
+  emitted where there are findings — a coverage statement you can skip when it
+  is inconvenient is not a coverage statement.
+
+### Added
+- `cap-caveat-reach.test.ts` grew a second half, generalizing its own rule:
+  **a surface that renders finding COUNTS owes the reader what those findings
+  rest on.** It also asserts the tab *renders* the sentence rather than merely
+  computing it — a value computed and never rendered is the exact shape of the
+  defect the file exists for.
+
 ## [9.575.0] — 2026-09-08
 
 ### Fixed

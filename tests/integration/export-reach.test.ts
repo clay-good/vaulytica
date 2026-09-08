@@ -117,6 +117,15 @@ const DECLARED: ReadonlyMap<string, string> = new Map([
     "buildComparisonJson",
     "belongs to the compare command, which reaches it through runCompare's own renderer",
   ],
+  [
+    "buildReviewCoverage",
+    // Not an artifact — a pure projection of `run.findings` that the artifact
+    // builders embed. The tab names it directly (it renders the sentence under
+    // the counts); a script obtains the same numbers inside SARIF's
+    // VAULYTICA-ATTORNEY-REVIEW-COVERAGE result and the bundle JSON's
+    // `review_coverage`, so there is nothing here a script cannot get.
+    "a projection helper, not a downloadable artifact; headless callers reach it inside buildSarif and buildBundleJson",
+  ],
 ]);
 
 /**

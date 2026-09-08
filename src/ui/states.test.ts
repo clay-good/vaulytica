@@ -338,6 +338,43 @@ describe("renderState", () => {
     expect(select(dz, "secondary-families")!.hasAttribute("hidden")).toBe(true);
   });
 
+  it("shows what the findings rest on, under the counts", () => {
+    // The most load-bearing sentence this tool emits, and until 9.576.0 the
+    // tab — where a user drops a document and reads three severity counts —
+    // said nothing about it.
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 1, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+      review_coverage:
+        "0 of 1 findings cite an attorney-reviewed rule — every rule applied here is author-asserted, grounded in a cited authority but not yet signed off by a licensed attorney.",
+    });
+    const block = select(dz, "review-coverage")!;
+    expect(block.hasAttribute("hidden")).toBe(false);
+    expect(block.textContent).toContain("0 of 1 findings cite an attorney-reviewed rule");
+  });
+
+  it("hides the review-coverage line when the surface did not compute one", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+    });
+    expect(select(dz, "review-coverage")!.hasAttribute("hidden")).toBe(true);
+  });
+
   it("renders the v6 findings-to-action export row when exports are supplied", () => {
     const dz = document.createElement("div");
     renderState(dz, {

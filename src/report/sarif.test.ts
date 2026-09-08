@@ -69,13 +69,21 @@ describe("buildSarif (spec-v8 §20 — SARIF 2.1.0)", () => {
         finding("f3", "C", "info"),
       ]),
     );
-    expect(log.runs[0]!.results.map((r) => r.level)).toEqual(["error", "warning", "note"]);
+    // The trailing note is the always-emitted attorney-review coverage result
+    // (9.576.0). Filtered out here so this test keeps asserting the severity
+    // MAPPING and nothing else; its own coverage is below.
+    expect(
+      log.runs[0]!.results.filter((r) => !r.ruleId.startsWith("VAULYTICA-")).map((r) => r.level),
+    ).toEqual(["error", "warning", "note"]);
   });
 
   it("one reportingDescriptor per distinct rule, sorted by id, citation→helpUri", () => {
     const log = buildSarif(run([finding("f1", "ZZZ", "info"), finding("f2", "AAA", "critical")]));
     const rules = log.runs[0]!.tool.driver.rules;
-    expect(rules.map((r) => r.id)).toEqual(["AAA", "ZZZ"]);
+    expect(rules.filter((r) => !r.id.startsWith("VAULYTICA-")).map((r) => r.id)).toEqual([
+      "AAA",
+      "ZZZ",
+    ]);
     expect(rules[0]!.helpUri).toBe("https://eur-lex.europa.eu/eli/reg/2016/679/oj");
   });
 
@@ -538,5 +546,35 @@ describe("buildSarif — cross-document findings (CC-* / CROSS-*)", () => {
     expect(
       sarifConformanceViolations(buildSarif(run([]), undefined, undefined, undefined, crossRun())),
     ).toEqual([]);
+  });
+});
+
+describe("the attorney-review caveat reaches SARIF", () => {
+  it("emits one note-level result saying what the findings rest on", () => {
+    // The DOCX and HTML reports have carried this sentence since the ledger
+    // existed; SARIF — what a code-scanning dashboard shows a reviewer who
+    // never opens the Word file — annotated N findings and said nothing about
+    // what any of them rests on.
+    const log = buildSarif(run([finding("f1", "A", "critical"), finding("f2", "B", "info")]));
+    const notes = log.runs[0]!.results.filter(
+      (r) => r.ruleId === "VAULYTICA-ATTORNEY-REVIEW-COVERAGE",
+    );
+    expect(notes).toHaveLength(1);
+    expect(notes[0]!.level).toBe("note");
+    expect(notes[0]!.message.text).toContain("0 of 2 findings cite an attorney-reviewed rule");
+    expect(notes[0]!.properties!.total).toBe(2);
+    expect(notes[0]!.properties!.attorney_reviewed).toBe(0);
+    // The descriptor index has to resolve, or a consumer drops the result.
+    const rules = log.runs[0]!.tool.driver.rules;
+    expect(rules[notes[0]!.ruleIndex!]!.id).toBe("VAULYTICA-ATTORNEY-REVIEW-COVERAGE");
+  });
+
+  it("says nothing when there is nothing to say", () => {
+    // No findings, no coverage claim — "0 of 0" would read as a warning about
+    // a document that produced none.
+    const log = buildSarif(run([]));
+    expect(
+      log.runs[0]!.results.some((r) => r.ruleId === "VAULYTICA-ATTORNEY-REVIEW-COVERAGE"),
+    ).toBe(false);
   });
 });

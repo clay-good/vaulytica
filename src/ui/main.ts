@@ -16,6 +16,7 @@ import { renderState, select, type DropzoneState } from "./states.js";
 import { createProgressBar } from "./progress.js";
 import { createRuleTicker } from "./ticker.js";
 import { registerServiceWorker } from "./sw-register.js";
+import { buildReviewCoverage, reviewCoverageSentence } from "../report/review-coverage.js";
 import { hydrateDkbValidation } from "./dkb-validation.js";
 import { V3_FAMILY_LABELS } from "./v3-labels.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
@@ -364,6 +365,10 @@ function renderCompleteState(
           }))
         : undefined,
     secondary_families_omitted: result.secondary_families_omitted,
+    // The attorney-review caveat, computed the same way the DOCX and HTML
+    // reports compute it — a render-side projection of the run's findings,
+    // outside `result_hash`.
+    review_coverage: reviewCoverageSentence(buildReviewCoverage(result.run.findings)),
     // v6 Part VI §21 jurisdiction overlays (Step 101). State-law deltas for
     // the governing-law state(s) the document names, surfaced as a citable
     // reference block. Hidden unless the family is state-sensitive and a

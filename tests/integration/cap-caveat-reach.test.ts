@@ -1,5 +1,5 @@
 /**
- * Wherever the secondary-family list is RENDERED, the cap must be stated.
+ * Wherever a caveat's SUBJECT is rendered, the caveat must be rendered too.
  *
  * `secondary-family-cap-caveat.test.ts` proves each surface says the number
  * when it is handed one. This asks the prior question: is there a surface
@@ -117,5 +117,50 @@ describe("the secondary-family cap is stated by every renderer of the list", () 
         "\n  ",
       )}`,
     ).toEqual([]);
+  });
+});
+
+/**
+ * The attorney-review caveat: "N of M findings cite a rule whose legal basis a
+ * licensed attorney has signed off on" — at the current zero state, "0 of M …
+ * every rule applied here is author-asserted."
+ *
+ * It is the most load-bearing sentence this tool emits, and it reached the DOCX
+ * and HTML reports only. The BROWSER TAB — where a user drops a document and
+ * reads three severity counts — said nothing. Neither did SARIF, which is what
+ * a code-scanning dashboard shows a reviewer who never opens the Word file, nor
+ * the consolidated bundle report a portfolio reviewer reads.
+ *
+ * Same rule as above, one layer out: a surface that renders FINDING COUNTS owes
+ * the reader what those findings rest on.
+ */
+describe("the attorney-review caveat reaches every surface that reports findings", () => {
+  const SURFACES = [
+    "src/report/docx.ts",
+    "src/report/html.ts",
+    "src/report/json.ts",
+    "src/report/sarif.ts",
+    "src/report/bundle.ts",
+    "src/ui/main.ts",
+  ];
+
+  it("each one computes or emits the coverage", () => {
+    const missing = SURFACES.filter((f) => {
+      const src = scannable(readFileSync(join(ROOT, f), "utf8"));
+      return !/buildReviewCoverage|review_coverage|reviewCoverageSentence/.test(src);
+    });
+    expect(
+      missing,
+      `these report findings and never say what the findings rest on:\n  ${missing.join("\n  ")}`,
+    ).toEqual([]);
+  });
+
+  it("the tab renders it, not just computes it", () => {
+    // `src/ui/main.ts` builds the sentence and `states.ts` is what puts it on
+    // screen; a value computed and never rendered is the exact shape of the
+    // defect this file exists for.
+    const states = scannable(readFileSync(join(ROOT, "src/ui/states.ts"), "utf8"));
+    expect(states).toMatch(/review-coverage/);
+    expect(states).toMatch(/renderReviewCoverage\(/);
   });
 });

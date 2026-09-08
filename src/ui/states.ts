@@ -165,6 +165,17 @@ export type DropzoneState =
        */
       secondary_families_omitted?: number;
       /**
+       * Attorney-review coverage: one sentence saying how many of the findings
+       * above rest on a rule a licensed attorney has signed off on.
+       *
+       * The DOCX and HTML reports have carried it since the ledger existed and
+       * the TAB — where the counts are actually read — did not. At the current
+       * zero state the sentence is "0 of N ... every rule applied here is
+       * author-asserted", which is precisely the caveat a reader needs beside a
+       * severity count and precisely the one an unwired surface swallows.
+       */
+      review_coverage?: string;
+      /**
        * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law
        * deltas for the governing-law state(s) this document names, for the
        * families where state law dominates (employment non-compete, lending
@@ -639,6 +650,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="critical-dates-section" data-role="critical-dates" hidden></div>
     <div class="negotiation-section" data-role="negotiation" hidden></div>
     <div class="counts" data-role="counts"></div>
+    <div class="review-coverage" data-role="review-coverage" hidden></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
     <div class="jurisdiction-overlays" data-role="jurisdiction-overlays" hidden></div>
@@ -693,6 +705,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   "bundle-complete": `
     <div class="dropzone-title" data-role="bundle-title"></div>
     <div class="counts" data-role="counts"></div>
+    <div class="review-coverage" data-role="review-coverage" hidden></div>
     <label class="cross-doc-toggle" data-role="cross-doc-toggle" hidden>
       <input type="checkbox" data-role="cross-doc-toggle-input" checked />
       <span>Run cross-document consistency checks</span>
@@ -763,6 +776,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderNegotiationPosture(dz, state.negotiation_posture);
     renderPlaybookProvenance(dz, state.custom_playbook);
     renderSecondaryFamilies(dz, state.secondary_families, state.secondary_families_omitted);
+    renderReviewCoverage(dz, state.review_coverage);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
@@ -1355,6 +1369,25 @@ function renderPlaybookProvenance(
  * match. The full findings are in the downloadable report. Hidden when no
  * secondary family was activated.
  */
+/**
+ * The attorney-review sentence, directly under the counts.
+ *
+ * Under and not above: it qualifies the numbers, so it has to be read with
+ * them. Hidden when absent, so a surface that does not compute it renders
+ * exactly as it did before.
+ */
+function renderReviewCoverage(dz: HTMLElement, sentence: string | undefined): void {
+  const el = select<HTMLElement>(dz, "review-coverage");
+  if (!el) return;
+  if (!sentence) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  el.textContent = sentence;
+}
+
 function renderSecondaryFamilies(
   dz: HTMLElement,
   families:
