@@ -70,6 +70,11 @@ export default defineConfig({
       // A rule guard that reaches into a mutated extractor: its arbitration-seat
       // cases exercise `src/extract/jurisdictions.ts`, so its kills count.
       "src/engine/rules/exec-employment-guards.test.ts",
+      // The pre-disclosure scanner's own suite. It joined the mutated set in
+      // 9.552.0 because two of its tests were found passing with the scanner
+      // stubbed to return nothing — the class mutation testing exists to find,
+      // caught by hand first.
+      "src/delivery/delivery.test.ts",
       "src/extract/amount-postfix-currency.test.ts",
       "src/extract/amounts.test.ts",
       "src/extract/arbitration-seat-phrasing.test.ts",

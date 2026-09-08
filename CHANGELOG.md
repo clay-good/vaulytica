@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.552.0] — 2026-09-07
+
+### Changed
+- **Mutation testing now covers the pre-disclosure scanner.**
+  `src/delivery/sensitive.ts` joins the seven extractors in the mutated set —
+  the one module in scope whose failure direction is the worst the tree has: a
+  **false negative** that reports a document clean when it is carrying an SSN,
+  a card number, or a direct line out of the building.
+
+  🥇 **It joined for a measured reason, and the reason is 9.544.0.** Two of its
+  tests were found *by hand* passing while the scanner found nothing — the
+  `§Part XIV` leak invariant was three `not.toContain` assertions, and a report
+  containing nothing satisfies every one. **That is exactly the class mutation
+  testing exists to find automatically**, on the module where nobody should be
+  finding it by hand.
+
+  Measured before shipping, because a scope change moves a threshold: the module
+  scores **66.15%** on its own 195 mutants — above the aggregate — so widening
+  can only raise the score, and `break: 54` was never at risk. A full run over
+  the new eight-file set confirms **56.92%** (4,317 mutants). Cost to the weekly
+  job: about 7% more mutants, against a 120-minute timeout it currently uses
+  seven minutes of.
+
+  ⚠️ **Two honesty notes on the new table, both about how to read it.** The
+  mutant count went 2,696 → 4,317 while the scope added only 195, so the rest is
+  the extractors having grown across three weeks of releases — a per-file
+  percentage over half again as many mutants is a *different measurement, not a
+  movement* (`amounts.ts` at 59.15% here against 64.74% in August is 270 kills
+  against 228). And it was measured on a developer machine under concurrent
+  load, at 35 minutes against the ~7 the CI job takes; timeouts count as killed
+  and load produces timeouts, so the figure is the top of a narrow band.
+
+  The break threshold stays **54**, unchanged, still a couple of points under
+  the measurement — the convention this file has always used.
+
 ## [9.551.0] — 2026-09-07
 
 ### Added

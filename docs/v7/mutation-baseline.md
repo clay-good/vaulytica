@@ -8,7 +8,7 @@ Code coverage says a line *ran*; it does not say a test would *catch a bug* on t
 
 ## Scope
 
-Scoped to the **highest-value pure logic**: seven extractors under `src/extract/` — `amounts`, `crossrefs`, `dates`, `jurisdictions`, `obligations`, `parties`, `sections`. These are dense regex/decimal/branch logic that the highest-value temporal, financial, jurisdictional, and obligation rules depend on. The engine core (`src/engine/`) is the next target.
+Scoped to the **highest-value pure logic**: seven extractors under `src/extract/` — `amounts`, `crossrefs`, `dates`, `jurisdictions`, `obligations`, `parties`, `sections` — plus the pre-disclosure scanner `src/delivery/sensitive.ts`. These are dense regex/decimal/branch logic that the highest-value temporal, financial, jurisdictional, and obligation rules depend on, and one module whose false negatives leak. The engine core (`src/engine/`) is the next target.
 
 Stryker runs the test suite once per mutant, so it is **slow** and runs **off the per-push path** — a weekly schedule + on-demand (`.github/workflows/mutation.yml`), never the `ci.yml` gate. Per-mutant runs use a minimal vitest config (`vitest.mutation.config.ts`) that includes only the covering unit-test files, so a run completes in tens of minutes rather than hours.
 
@@ -30,7 +30,54 @@ So they are **declared exclusions**, in `EXCLUDED_COVERING_SUITES` in `vitest.mu
 
 **Consequence for the number below: it is a floor.** Two covering gates do not run, so their kills go uncounted and the published score **understates** the suite's true fault-detection power. The baseline is unchanged at 56.94% because the effective include list is byte-identical to the one that produced it.
 
-## Baseline (2026-08-17, seven-extractor scope)
+### Widened to the pre-disclosure scanner (2026-09-07)
+
+`src/delivery/sensitive.ts` joined the mutated set, and it is the one module here
+whose failure direction is the worst the tree has: a **false negative** that
+reports a document clean when it is carrying an SSN, a card number, or a direct
+line out of the building.
+
+It joined for a measured reason. Two of its tests were found — by hand, by
+stubbing the scanner to return an empty array — **passing while it found
+nothing**. The `§Part XIV` leak invariant was three `not.toContain` assertions,
+and a report containing nothing satisfies every one. That is precisely the class
+mutation testing exists to find automatically, on the module where nobody should
+be finding it by hand.
+
+Cost: 195 mutants on top of 2,696, about 7%, against a job that runs weekly in
+seven minutes with a 120-minute timeout.
+
+## Baseline (2026-09-07, seven extractors + the pre-disclosure scanner)
+
+| File | Mutation score | Killed | Survived | Timeout | No coverage |
+|---|---:|---:|---:|---:|---:|
+| **All (scoped)** | **56.92%** | 2,298 | 1,714 | 84 | 89 |
+| `jurisdictions.ts` | 67.58% | 239 | 124 | 32 | 6 |
+| `sensitive.ts` | 66.15% | 129 | 61 | 0 | 5 |
+| `parties.ts` | 61.20% | 571 | 353 | 19 | 21 |
+| `dates.ts` | 60.19% | 305 | 185 | 8 | 22 |
+| `amounts.ts` | 59.15% | 270 | 176 | 8 | 16 |
+| `obligations.ts` | 55.14% | 264 | 223 | 15 | 4 |
+| `sections.ts` | 51.92% | 27 | 21 | 0 | 4 |
+| `crossrefs.ts` | 45.96% | 493 | 571 | 2 | 11 |
+
+⚠️ **Read this table against the previous one with care, and not as a
+per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added
+one file worth 195 of them; the rest is the extractors themselves having grown
+across three weeks of releases. A per-file percentage computed over half again
+as many mutants is a different measurement, not a movement — `amounts.ts`
+reading 59.15% here against 64.74% in August is 270 kills against 228, on 456
+mutants against 356.
+
+⚠️ **Measured on a developer machine under concurrent load** (other work was
+running; the run took 35 minutes at concurrency 4 against the ~7 the CI job
+takes at 2). Timeouts count as killed, and load produces timeouts, so treat
+56.92% as the top of a narrow band rather than a precise figure. The break
+threshold stays at **54** — unchanged, and still a couple of points under the
+measurement, which is the convention this file has always used.
+
+### The previous baseline, for comparison (2026-08-17, seven-extractor scope)
+
 
 | File | Mutation score | Killed | Survived | Timeout | No coverage |
 |---|---:|---:|---:|---:|---:|
