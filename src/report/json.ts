@@ -11,6 +11,7 @@ import { scopeForPlaybook, type ScopeStatement } from "../verticals/registry.js"
 import { buildRegimeCoverage } from "../privacy/coverage.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { RULE_TAXONOMY_VERSION } from "../engine/runner.js";
+import { blankTimings } from "../engine/blank-timings.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { Playbook } from "../playbooks/types.js";
@@ -255,26 +256,8 @@ export function buildJsonReport(
   }
 
   const payload: JsonReport = {
-    // The run as it is HASHED, not as it was TIMED.
-    //
-    // `elapsed_ms` is a raw `performance.now()` delta — a measurement of the
-    // machine, not of the document. It is blanked before `result_hash` is
-    // computed for exactly that reason, and emitting it raw made this report
-    // the one text artifact that was NOT byte-identical to its own re-render:
-    // 126 differing lines on a single NDA, every one a timing. Nothing a
-    // consumer can act on (the same rule measured 2.96 ms and 0.06 ms on two
-    // consecutive runs), and it silently falsified the README's headline claim
-    // for the one format a CI pipeline diffs and archives.
-    //
-    // Blanked rather than dropped: the field stays in the shape every existing
-    // consumer parses, and `0` is the value `computeResultHash` already
-    // canonicalizes it to — so a verifier that recomputes the hash from this
-    // JSON gets the same answer it always did. `tests/integration/report-reproducibility.test.ts`
-    // holds the whole class.
-    run: {
-      ...run,
-      execution_log: run.execution_log.map((e) => ({ ...e, elapsed_ms: 0 })),
-    },
+    // The run as it is HASHED, not as it was TIMED — see `blankTimings`.
+    run: blankTimings(run),
     ingest: {
       source: ingest.source,
       word_count: ingest.word_count,

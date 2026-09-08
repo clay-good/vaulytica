@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.573.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The bundle JSON had the same defect, and its own comment said it did
+  not.** `buildBundleZip` promises "two runs over the same bundle produce
+  byte-identical archives (assuming the inputs were themselves deterministic)"
+  — and the parenthetical was carrying the whole claim: the per-document runs
+  inside the bundle JSON, and the cross-document execution log beside them,
+  both carried raw wall-clock `elapsed_ms`. **267 differing lines** on a
+  two-document deal room. Blanked on the way out, exactly as in the
+  single-document JSON.
+
+### Changed
+- **`blankTimings` has one owner** (`src/engine/blank-timings.ts`) instead of
+  being spelled out at each emission site. A leaf module that imports nothing —
+  `src/report/json.ts` is in the browser's eager path, and an import of
+  `runner.js` for a three-line helper is how 9.567.0 doubled the entry chunk.
+- `report-reproducibility.test.ts` now covers the **consolidated bundle** too:
+  the bundle JSON byte-for-byte, and every entry of the zip except the embedded
+  DOCX (which carries the `docx` library's random hyperlink ids).
+
 ## [9.572.0] — 2026-09-08
 
 ### Fixed

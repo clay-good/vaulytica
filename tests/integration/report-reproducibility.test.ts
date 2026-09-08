@@ -77,6 +77,48 @@ async function renderAll(): Promise<Record<string, string>> {
   };
 }
 
+/** A two-document deal room, rendered twice. */
+async function renderBundleTwice(): Promise<[Record<string, string>, Record<string, string>]> {
+  const deps = await loadAccuracyDeps();
+  const { runConsistency } = await import("../../src/engine/consistency/runner.js");
+  const { ALL_CONSISTENCY_RULES } = await import("../../src/engine/consistency/rules/index.js");
+  const { buildBundleJsonBlob, buildBundleDocxReport, buildBundleZip } =
+    await import("../../src/report/bundle.js");
+  const files = ["mutual-nda-letter.txt", "legend-nda.txt"];
+  const once = async (): Promise<Record<string, string>> => {
+    const docs = [];
+    const cdocs = [];
+    for (const f of files) {
+      const r = await analyzeFile(join(process.cwd(), "tests", "fixtures", "specimens", f), {
+        deps,
+      });
+      const extracted = extractAll(r.ingest.tree);
+      docs.push({ doc_id: f, source_file_name: f, run: r.run, extracted, ingest: r.ingest });
+      cdocs.push({
+        doc_id: f,
+        source_file_name: f,
+        playbook_id: r.playbook_id,
+        tree: r.ingest.tree,
+        extracted,
+      });
+    }
+    const consistency = await runConsistency({
+      rules: ALL_CONSISTENCY_RULES,
+      documents: cdocs,
+      dkb: deps.dkb,
+    });
+    const input = { documents: docs, consistency, dkb: deps.dkb, consistency_enabled: true };
+    const b64 = async (b: Blob): Promise<string> =>
+      Buffer.from(await b.arrayBuffer()).toString("base64");
+    return {
+      bundle_json: await (await buildBundleJsonBlob(input)).text(),
+      bundle_docx: await b64(await buildBundleDocxReport(input)),
+      bundle_zip: await b64(await buildBundleZip({ ...input, include_per_document_exports: true })),
+    };
+  };
+  return [await once(), await once()];
+}
+
 describe("two renders of the same document produce the same artifacts", () => {
   it("every text artifact is byte-identical, including the JSON", async () => {
     const a = await renderAll();
@@ -106,5 +148,35 @@ describe("two renders of the same document produce the same artifacts", () => {
     // Guard the normalization: if it ate the document the compare is vacuous.
     expect(pa.length).toBeGreaterThan(100_000);
     expect(pa).toBe(part(b.docx!));
+  }, 300_000);
+
+  /**
+   * `buildBundleZip`'s own comment claims it: "File order inside the zip is
+   * lexicographic by basename so two runs over the same bundle produce
+   * byte-identical archives (assuming the inputs were themselves
+   * deterministic)." The parenthetical was doing a lot of work — the inputs
+   * were NOT deterministic, because the consolidated DOCX inside the zip
+   * carried the same wall-clock audit trail the single-document one did.
+   */
+  it("the consolidated bundle JSON is byte-identical, and the zip is too", async () => {
+    const [a, b] = await renderBundleTwice();
+    expect(a.bundle_json!.length).toBeGreaterThan(10_000);
+    expect(a.bundle_json, "bundle JSON is not byte-identical").toBe(b.bundle_json);
+    // The zip embeds the consolidated DOCX, which carries the library's random
+    // hyperlink ids, so the ARCHIVE cannot be compared byte-for-byte. Its other
+    // entries can, and they are what a consumer diffs.
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = (s64: string): Record<string, string> => {
+      const z = unzipSync(new Uint8Array(Buffer.from(s64, "base64")));
+      const out: Record<string, string> = {};
+      for (const [name, bytes] of Object.entries(z)) {
+        if (name.endsWith(".docx")) continue;
+        out[name] = strFromU8(bytes);
+      }
+      return out;
+    };
+    const ea = entries(a.bundle_zip!);
+    expect(Object.keys(ea).length).toBeGreaterThan(4);
+    expect(ea).toEqual(entries(b.bundle_zip!));
   }, 300_000);
 });

@@ -24,6 +24,7 @@
 // `truncate` is imported, not redefined: a local copy of it here kept the
 // pre-fix behavior that splits a surrogate pair and emits U+FFFD into a
 // quoted excerpt, long after the shared helper was corrected.
+import { blankTimings } from "../engine/blank-timings.js";
 import { truncate } from "./v3/_dx.js";
 import {
   AlignmentType,
@@ -427,7 +428,10 @@ export async function bundleFingerprint(
 // Bundle JSON
 
 export async function buildBundleJson(input: BundleReportInput): Promise<BundleJson> {
-  const runs = input.documents.map((d) => d.run);
+  // Blanked on the way out, exactly as in the single-document JSON: a
+  // wall-clock delta is a fact about the machine, and it made the bundle JSON
+  // differ from its own re-render on 267 lines.
+  const runs = input.documents.map((d) => blankTimings(d.run));
   const fingerprint = await bundleFingerprint(runs.map((r) => r.result_hash));
   const portfolio = buildPortfolioMatrix(
     input.documents.map((d) => ({
@@ -443,7 +447,10 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
     dkb_version: input.dkb.manifest.version,
     engine_version: input.engine_version ?? runs[0]?.version ?? "0.0.0",
     consistency_version: input.consistency.version,
-    consistency_execution_log: [...input.consistency.execution_log],
+    consistency_execution_log: input.consistency.execution_log.map((e) => ({
+      ...e,
+      elapsed_ms: 0,
+    })),
     portfolio,
     portfolio_fingerprint: await portfolioFingerprint(fingerprint, portfolio),
     executive_summary: buildPortfolioExecutiveSummary(
