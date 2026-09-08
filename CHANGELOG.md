@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.590.0] — 2026-09-08
+
+### Changed
+- **`src/report/exports.ts` joins the mutated set — and it is the entry worth
+  reading, because it started ineligible.** The fix list, the obligations CSV
+  and the deadlines calendar: the artifacts a reviewer *works from*. It
+  measured **46.08%**, well below the aggregate, so widening to it would have
+  dragged the score toward the `break`.
+
+  That was written into the baseline doc as a *measurement* — a "Measured and
+  NOT yet eligible" section — rather than left as a hunch someone re-measures
+  later. Four releases then took it to **58.53%**, above the mean, and every
+  point came from its **100 NoCoverage** mutants naming something real: the ten
+  `*Blob` wrappers, every "verify manually" reason the calendar gives, the fix
+  list's header receipts and banners, the critical-dates `.ics` description
+  including the range deadline, and now the citation staleness label.
+
+  Two covering suites are **declared excluded** with their measurements —
+  `artifact-digests` (2.17s) and `report-reproducibility` (2.80s), each running
+  the full analyze pipeline against `exports.test.ts`'s 386ms. Their kills go
+  uncounted, so the published number is a floor; both run on every push.
+
+### Added
+- **The citation staleness label** — *"verify currency (retrieved …)"*, the one
+  thing on a fix-list line that says the authority behind an item may have
+  moved — had no test in either direction. A missing label lets a stale
+  citation pass as current; a spurious one sends a reviewer to re-check an
+  authority that is fine.
+- **The three kinds of event the deadlines calendar emits**: "Notice
+  deadline:", "Deadline:", "Date:", plus "Computed from" vs "Extracted from"
+  and the VALARM that only a notice deadline carries — because a notice
+  deadline is the kind where acting *late* is the failure.
+
+### Fixed
+- 🚨 **A fixture error caught before landing.** The anchor map is built from
+  `definitions.entries`, not from an `anchor-definition` date; the first draft
+  supplied the latter, the relative date came out unresolved, and it read as a
+  defect in the resolver rather than a wrong fixture.
+
+- 🚨 **9.589.0's timeout note named the wrong cause, and the correction
+  matters.** It said the wait-for-a-CPU term "grows with the suite." Measured
+  while the local gate reported `register-format-invariance` at **1,542
+  seconds** for nine tests that take about a minute in total: nothing in this
+  repo had regressed — the machine was concurrently running **two other
+  repositories' vitest suites**, eight workers each, 42 node processes between
+  them, at a load average of 22–30.
+
+  So the term is not bounded by this suite at all, and **"re-measure it alone"
+  means alone on the MACHINE**. The two tests the gate failed on
+  (`shall-will`, already budgeted at 300s, and `secondary-family-cap-caveat` at
+  120s) pass together in **68 seconds** when run on their own.
+
+  The response is deliberately *not* to inflate the budgets again — a number
+  tuned against someone else's workload is not a budget. `vitest.config.ts`
+  records the measurement and points at
+  `ps -Ao pid,etime,pcpu,args | grep vitest` as the thing to check before
+  believing a timing failure. CI runs on a dedicated runner and stays the
+  authority.
+
 ## [9.589.0] — 2026-09-08
 
 ### Fixed

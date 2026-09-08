@@ -62,6 +62,17 @@ export const EXCLUDED_COVERING_SUITES: Record<string, string> = {
   // floor. It runs on every push as part of the normal suite.
   "tests/integration/currency-glyph.test.ts":
     "whole-corpus relation: ~14s per run over 310 specimens x2, ~100x the per-mutant cost of a unit suite",
+  // Both cover `src/report/exports.ts` — deliberately, since each renders every
+  // artifact — and both run the FULL analyze pipeline to do it. Measured
+  // 2026-09-08: 2.17s and 2.80s against the 386ms of `exports.test.ts`, which
+  // over ~790 mutants is the difference between a job that finishes and one
+  // nobody waits for. Same call as the three above, and the same caveat: their
+  // kills go uncounted, so the published number is a FLOOR. Both run on every
+  // push as part of the normal suite.
+  "tests/golden/artifact-digests.test.ts":
+    "renders every artifact through the full analyze pipeline: 2.17s per run, ~6x a unit suite",
+  "tests/integration/report-reproducibility.test.ts":
+    "renders every artifact TWICE through the full analyze pipeline: 2.80s per run, ~7x a unit suite",
 };
 
 export default defineConfig({
@@ -90,6 +101,12 @@ export default defineConfig({
       "src/extract/parties-hygiene.test.ts",
       "src/extract/parties.test.ts",
       "src/extract/relative-deadline-phrasing.test.ts",
+      // Covers `src/report/exports.ts`, which joined the mutated set in
+      // 9.590.0 after four releases took it 46.08% -> 58.53%.
+      "src/report/closing-checklist.test.ts",
+      "src/report/exports.test.ts",
+      "src/report/negotiation-export.test.ts",
+      "tests/integration/citation-completeness.test.ts",
       // Imports `critical-dates.ts` for its register TYPE while testing the
       // export Blob wrappers. A type-only import is still an import as far as
       // the scope guard is concerned, and including it costs nothing: the suite

@@ -38,9 +38,18 @@ export default defineConfig({
     // failures were TIMEOUTS, which say nothing about the code.
     //
     // The number a wall-clock timeout measures under a parallel runner is the
-    // test's cost PLUS however long it waited for a CPU, and the second term
-    // grows with the suite. This will need raising again; the fix each time is
-    // to re-measure, not to guess.
+    // test's cost PLUS however long it waited for a CPU.
+    //
+    // 🚨 And that second term is NOT bounded by this suite. Measured
+    // 2026-09-08 while `register-format-invariance` reported **1,542 seconds**
+    // for nine tests that take about a minute in total: the machine was also
+    // running two OTHER repositories' vitest suites, eight workers each, 42
+    // node processes between them. Nothing in this repo had regressed.
+    //
+    // So "re-measure it alone" means alone on the MACHINE, not merely alone in
+    // the suite — `ps -Ao pid,etime,pcpu,args | grep vitest` before believing a
+    // timing failure. This will need raising again; the fix each time is to
+    // measure, not to guess.
     testTimeout: 60_000,
     // spec-v7 Part VIII (Steps 115–116) — code-coverage measurement + gate.
     // Scoped to the shipped browser bundle (`src/`); the build-and-CI-only

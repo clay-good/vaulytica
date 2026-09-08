@@ -8,7 +8,7 @@ Code coverage says a line _ran_; it does not say a test would _catch a bug_ on t
 
 ## Scope
 
-Scoped to the **highest-value pure logic**: seven extractors under `src/extract/` — `amounts`, `crossrefs`, `dates`, `jurisdictions`, `obligations`, `parties`, `sections` — plus the pre-disclosure scanner `src/delivery/sensitive.ts`, its masking helpers `src/delivery/mask.ts`, and the deadline arithmetic `src/report/critical-dates.ts`. These are dense regex/decimal/branch logic that the highest-value temporal, financial, jurisdictional, and obligation rules depend on, and one module whose false negatives leak. The engine core (`src/engine/`) is the next target.
+Scoped to the **highest-value pure logic**: seven extractors under `src/extract/` — `amounts`, `crossrefs`, `dates`, `jurisdictions`, `obligations`, `parties`, `sections` — plus the pre-disclosure scanner `src/delivery/sensitive.ts`, its masking helpers `src/delivery/mask.ts`, the deadline arithmetic `src/report/critical-dates.ts`, and the action exports `src/report/exports.ts`. These are dense regex/decimal/branch logic that the highest-value temporal, financial, jurisdictional, and obligation rules depend on, and one module whose false negatives leak. The engine core (`src/engine/`) is the next target.
 
 Stryker runs the test suite once per mutant, so it is **slow** and runs **off the per-push path** — a weekly schedule + on-demand (`.github/workflows/mutation.yml`), never the `ci.yml` gate. Per-mutant runs use a minimal vitest config (`vitest.mutation.config.ts`) that includes only the covering unit-test files, so a run completes in tens of minutes rather than hours.
 
@@ -62,6 +62,7 @@ seven minutes with a 120-minute timeout.
 | `sections.ts`       | 51.92% → **84.62%** ¹ |   27 → 44 |    21 → 8 |       0 |       4 → 0 |
 | `crossrefs.ts`      |                45.96% |       493 |       571 |       2 |          11 |
 | `critical-dates.ts` | 44.02% → **57.17%** ⁴ | 221 → 287 | 226 → 197 |       0 |     55 → 18 |
+| `exports.ts`        | 46.08% → **58.53%** ⁵ | 362 → 462 | 333 → 299 |       8 |    100 → 34 |
 
 ¹ **Re-measured 2026-09-07 after 9.554.0 and 9.560.0**, scoped to `sections.ts`
 alone over the same 52 mutants, so the two numbers are directly comparable. The
@@ -130,13 +131,39 @@ and nothing had asserted the empty string.
 
 44.02% → **57.17%**, above the aggregate, which is what made the widening safe.
 
+⁵ **Joined 2026-09-08**, on its own **803** mutants — and it is the entry worth
+reading, because it started **ineligible**.
+
+`src/report/exports.ts` is the fix list, the obligations CSV and the deadlines
+calendar: the artifacts a reviewer *works from*. It measured **46.08%**, well
+below the aggregate, so widening to it would have dragged the score toward the
+`break`. That was written down here as a measurement — "Measured and NOT yet
+eligible" — rather than left as a hunch someone re-measures later, and four
+releases then took it to **58.53%**, above the mean.
+
+What raised it was its **100 NoCoverage** mutants, and every one of them named
+something real:
+
+- **All ten `*Blob` wrappers** were executed by no test. They are the product
+  path — the browser downloads files, so it calls `deadlinesIcsBlob`, never
+  `buildDeadlinesIcs` — and the MIME type each sets is not decoration: a `.ics`
+  served as `text/csv` opens in a spreadsheet.
+- **Every "verify manually" reason** the calendar gives for a deadline it could
+  not pin, and the sort that orders them. A user *subscribes* to that file.
+- **The fix list's header**: the asserted-pack receipts, the input-warning
+  banners, the unmatched-document banner — each one changing how the items
+  below it read.
+- **The critical-dates `.ics` description**, including the range deadline, where
+  an all-day event on the window's first day invites a reader to take the
+  earliest date as the controlling one.
+- **The citation staleness label** — the one thing on a fix-list line that says
+  the authority behind an item may have moved — untested in both directions.
+
 ## Measured and NOT yet eligible
 
-`src/report/exports.ts` — the fix list, obligations CSV and deadlines calendar,
-the artifacts a reviewer actually works from. Measured 2026-09-08 on its own
-**787** mutants: **46.08%**, well below the aggregate, so widening to it would
-drag the score toward the `break` rather than away from it. Not eligible, and
-recorded here rather than left as a hunch someone re-measures later.
+*(Empty. `src/report/exports.ts` was the entry here and it graduated; the
+section stays because recording a disqualifying measurement is what made that
+possible.)*
 
 Its **100 NoCoverage** mutants named a real gap on the way past, now closed
 (`src/report/export-blobs.test.ts`): **all ten `*Blob` wrappers were executed by
@@ -164,10 +191,9 @@ and the **range deadline**, where an all-day event on the window's first day
 invites a calendar user to read the earliest date as the controlling one.
 54.17% → **56.16%**, NoCoverage 43 → 36.
 
-Still short of the 56.92% bar — by **0.76 of a point**. The remaining 36 are
-citation-formatting branches and ICS description assembly; what closes them
-makes this module eligible, and the aggregate barely moves either way at that
-distance from the mean.
+Then the **citation staleness label** and the calendar's three event kinds
+(9.590.0): 56.16% → **58.53%**, NoCoverage 36 → 34 — past the bar, and into the
+mutated set.
 
 ⚠️ **Read this table against the previous one with care, and not as a
 per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added

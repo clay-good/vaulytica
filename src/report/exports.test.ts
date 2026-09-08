@@ -715,3 +715,157 @@ describe("the fix list header states what qualifies the list", () => {
     expect(buildFixListMarkdown(baseRun({}))).not.toContain("Document type not recognized");
   });
 });
+
+/**
+ * The staleness label on a fix-list authority.
+ *
+ * `currencyLabel` decides whether a cited source has aged past the DKB's
+ * horizon and, if so, appends *"verify currency (retrieved …)"*. It is the one
+ * thing on a fix-list line that tells a reviewer the authority behind an item
+ * may have moved — and neither the Markdown nor the CSV path that appends it
+ * was executed by a test, in either direction.
+ *
+ * Both directions matter equally. A missing label lets a stale citation pass as
+ * current; a spurious one tells a reviewer to go re-check an authority that is
+ * fine.
+ */
+describe("the fix list flags an authority that may have gone stale", () => {
+  const cited = (retrieved: string): Finding => {
+    const f = finding("GOV-1", "warning", 3);
+    f.source_citations = [
+      {
+        id: "src",
+        source: "Cal. Bus. & Prof. Code § 16600",
+        source_url: "https://example.gov/16600",
+        retrieved_at: retrieved,
+        license: "Public domain",
+        license_url: "",
+      },
+    ];
+    return f;
+  };
+  const currency = { as_of: "2026-09-01", horizon_months: 6 };
+
+  it("appends the label, keeping the link, when the citation has aged out", () => {
+    const md = buildFixListMarkdown(makeRun([cited("2025-01-15")]), undefined, currency);
+    expect(md).toContain(
+      "[Cal. Bus. & Prof. Code § 16600](https://example.gov/16600) — verify currency (retrieved 2025-01-15)",
+    );
+    const csv = buildFixListCsv(makeRun([cited("2025-01-15")]), currency);
+    expect(csv).toContain("verify currency (retrieved 2025-01-15)");
+  });
+
+  it("says nothing when the citation is still inside the horizon", () => {
+    const md = buildFixListMarkdown(makeRun([cited("2026-08-01")]), undefined, currency);
+    expect(md).toContain("[Cal. Bus. & Prof. Code § 16600](https://example.gov/16600)");
+    expect(md).not.toContain("verify currency");
+    expect(buildFixListCsv(makeRun([cited("2026-08-01")]), currency)).not.toContain(
+      "verify currency",
+    );
+  });
+
+  it("says nothing at all when no currency reference was supplied", () => {
+    // The label is a function of (citation, DKB build date). With no build date
+    // there is no basis for the claim, and the report makes none.
+    const md = buildFixListMarkdown(makeRun([cited("2020-01-01")]));
+    expect(md).not.toContain("verify currency");
+  });
+});
+
+/**
+ * The three kinds of event the deadlines calendar emits, and how it labels
+ * each.
+ *
+ * "Notice deadline:", "Deadline:" and "Date:" are not decoration — a notice
+ * deadline is one where acting LATE is the failure, so it alone gets a VALARM
+ * — and "Computed from" vs "Extracted from" tells a reader whether the date was
+ * read out of the document or derived from it. Neither the prefix nor the
+ * description was executed by a test.
+ */
+describe("the deadlines calendar labels what kind of date each event is", () => {
+  // 🚨 The anchor map is built from `definitions.entries`, NOT from an
+  // `anchor-definition` date — the first draft of these tests supplied the
+  // latter and the relative date came out unresolved, which read as a defect in
+  // the resolver rather than a wrong fixture.
+  const ex = (dates: unknown[], defs: unknown[] = []): ExtractedData =>
+    ({
+      parties: [],
+      dates,
+      amounts: [],
+      jurisdictions: [],
+      definitions: { entries: defs },
+      crossrefs: [],
+      sections: [],
+      classified: [],
+      obligations: [],
+    }) as unknown as ExtractedData;
+  const unfold = (ics: string): string => ics.replace(/\r\n /g, "");
+
+  it("calls an extracted absolute date a Date, and says it was extracted", () => {
+    const ics = unfold(
+      buildDeadlinesIcs(
+        ex([
+          {
+            id: "d",
+            type: "absolute",
+            iso: "2026-07-01",
+            raw_text: "July 1, 2026",
+            position: { section_id: "s1", start: 0, end: 5 },
+          },
+        ]),
+      ),
+    );
+    expect(ics).toContain("SUMMARY:Date: July 1\\, 2026");
+    expect(ics).toContain("Extracted from section s1: July 1\\, 2026");
+    // Not a deadline the tool derived, so no alarm and no "Computed".
+    expect(ics).not.toContain("Computed from");
+    expect(ics).not.toContain("BEGIN:VALARM");
+  });
+
+  it("calls a backward-counted relative date a Notice deadline, and alarms on it", async () => {
+    // A notice deadline is one where acting LATE is the failure, which is why
+    // it is the only kind that carries a VALARM.
+    const ics = unfold(
+      buildDeadlinesIcs(
+        ex(
+          [
+            {
+              id: "d",
+              type: "relative",
+              raw_text: "30 days before the Effective Date",
+              anchor: "Effective Date",
+              offset_days: -30,
+              position: { section_id: "s2", start: 0, end: 5 },
+            },
+          ],
+          [{ term: "Effective Date", definition: "July 1, 2026" }],
+        ),
+      ),
+    );
+    expect(ics).toContain("SUMMARY:Notice deadline: 30 days before the Effective Date");
+    expect(ics).toContain("Computed from section s2");
+    expect(ics).toContain("BEGIN:VALARM");
+    expect(ics).toContain("TRIGGER:PT0S");
+  });
+
+  it("gives an unresolved entry the artificial sentinel date, not a real one", () => {
+    // The sentinel is obviously artificial so a reader treats the entry as
+    // "needs attention" rather than as a date to act on.
+    const ics = unfold(
+      buildDeadlinesIcs(
+        ex([
+          {
+            id: "d",
+            type: "fiscal-period",
+            raw_text: "the second fiscal quarter",
+            position: { section_id: "s3", start: 0, end: 5 },
+          },
+        ]),
+      ),
+    );
+    expect(ics).toMatch(/UID:verify-0000-[0-9a-f]+@vaulytica/);
+    expect(ics).toContain("(from section s3)");
+    // 2020-01-01 — obviously not a real deadline, which is the point.
+    expect(ics).toContain("DTSTART;VALUE=DATE:20200101");
+  });
+});
