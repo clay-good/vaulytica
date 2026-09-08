@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.587.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The pre-disclosure pack's reach caveats were composed and read by
+  nobody.** `withScanReach` builds `ContainerFacts.note` out of the pack's four
+  bounds — the sensitive scan stopped at 5 MB, a per-type count hit its cap, a
+  fact array was truncated, the PDF's own caveat — and `summarize` read it
+  **only on the branch where the container could not be inspected at all**. On
+  the normal path nothing consumed it: not the summary, not the DOCX, HTML,
+  JSON, SARIF, or the tab.
+
+  So a 6 MB document scanned to 5 MB reported *"the pre-disclosure scan
+  surfaced no tracked changes, comments, hidden content, metadata, or
+  sensitive-data patterns it can match"* with the truncation invisible — for a
+  check whose whole proposition is "this is safe to send", **the worst failure
+  available**. An SSN a megabyte past the cap produced the same silence as no
+  SSN at all.
+
+  The note now rides in the `summary`, which is the one field every surface
+  already prints, so the caveat reaches all of them at once. `delivery_hash` is
+  over `{facts, findings}` and does not move.
+
+  Third instance of this exact shape on the record: `IngestResult.warnings`
+  (9.416.0) and the secondary-family cap (9.567.0) were both fields that
+  composed an honest caveat and had no consumer. **Check it when adding any new
+  output field.**
+
 ## [9.586.0] — 2026-09-08
 
 ### Added

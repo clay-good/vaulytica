@@ -4,6 +4,7 @@ import { deriveHandoffFindings } from "./handoff.js";
 import { MAX_PER_TYPE, MAX_SCAN_CHARS, scanSensitive } from "./sensitive.js";
 import { maskDigits, maskEmail, luhnValid, ssnStructurallyValid } from "./mask.js";
 import { scanDelivery } from "./index.js";
+import { buildDeliveryReport } from "./report.js";
 import {
   trackedChangesDocx,
   hiddenContentDocx,
@@ -749,5 +750,75 @@ describe("scanSensitive — the behaviours its own mutants exposed", () => {
     // which is what a hash over the list would otherwise depend on.
     const keys = facts.map((f) => `${f.type}|${f.masked}`);
     expect(keys).toEqual([...keys].sort());
+  });
+});
+
+/**
+ * How far the scan REACHED, on the path where the scan actually ran.
+ *
+ * 🚨 `ContainerFacts.note` composes the pack's four reach caveats — the
+ * sensitive scan stopped at 5 MB, a per-type count hit its cap, a fact array
+ * was truncated, the PDF's own caveat — and `summarize` read it **only** on the
+ * branch where the container could not be inspected at all. On the normal path
+ * nothing consumed it: not the summary, not the DOCX, HTML, JSON, SARIF, or the
+ * tab. A 6 MB document scanned to 5 MB reported *"surfaced no ...
+ * sensitive-data patterns"* with the truncation invisible — for a check whose
+ * whole proposition is "this is safe to send", the worst failure available.
+ *
+ * It rides in the summary now, which is the one field every surface prints.
+ */
+describe("the delivery summary says how far the scan reached", () => {
+  const facts = (note?: string): Parameters<typeof buildDeliveryReport>[0] =>
+    ({
+      source: "docx",
+      inspectable: true,
+      ...(note ? { note } : {}),
+    }) as unknown as Parameters<typeof buildDeliveryReport>[0];
+
+  it("carries the caveat when the scan was bounded and found nothing", async () => {
+    const r = await buildDeliveryReport(
+      facts(
+        "The sensitive-data scan read the first 5,242,880 characters of 6,000,000; anything after that was not scanned.",
+      ),
+      [],
+    );
+    expect(r.summary).toContain("surfaced no tracked changes");
+    expect(r.summary).toContain("anything after that was not scanned");
+  });
+
+  it("carries it alongside findings too — a floor is not a total", async () => {
+    const r = await buildDeliveryReport(
+      facts(
+        "The scan reports at most 200 distinct values per type and reached that limit for: ssn. Those counts are a floor, not a total.",
+      ),
+      [
+        {
+          rule_id: "HANDOFF-005",
+          title: "t",
+          description: "d",
+          count: 200,
+          evidence: [],
+          severity: "critical",
+        } as never,
+      ],
+    );
+    expect(r.summary).toContain("review before sending");
+    expect(r.summary).toContain("a floor, not a total");
+  });
+
+  it("says nothing extra when the scan had no bound to report", async () => {
+    // Anti-vacuity: the overwhelmingly common path must read exactly as before.
+    const r = await buildDeliveryReport(facts(), []);
+    expect(r.summary).toBe(
+      "Delivery: the pre-disclosure scan surfaced no tracked changes, comments, hidden content, metadata, or sensitive-data patterns it can match. This is not a guarantee the document is clean.",
+    );
+  });
+
+  it("does not move delivery_hash — the note is render-side, the facts are hashed", async () => {
+    // The hash is over {facts, findings}; two reports whose FACTS differ hash
+    // differently, and that is the property, not the summary wording.
+    const a = await buildDeliveryReport(facts(), []);
+    const b = await buildDeliveryReport(facts(), []);
+    expect(a.delivery_hash).toBe(b.delivery_hash);
   });
 });

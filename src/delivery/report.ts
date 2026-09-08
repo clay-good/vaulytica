@@ -40,14 +40,24 @@ function summarize(facts: ContainerFacts, findings: HandoffFinding[]): string {
   if (!facts.inspectable && findings.length === 0) {
     return `Delivery: ${facts.note ?? "no container to inspect"} — pre-disclosure scan could not run.`;
   }
-  if (findings.length === 0) {
-    return "Delivery: the pre-disclosure scan surfaced no tracked changes, comments, hidden content, metadata, or sensitive-data patterns it can match. This is not a guarantee the document is clean.";
-  }
-  const parts: string[] = [];
-  for (const f of findings) {
-    parts.push(`${f.count} ${labelFor(f)}`);
-  }
-  return `Delivery: ${parts.join(", ")} — review before sending.`;
+  const base =
+    findings.length === 0
+      ? "Delivery: the pre-disclosure scan surfaced no tracked changes, comments, hidden content, metadata, or sensitive-data patterns it can match. This is not a guarantee the document is clean."
+      : `Delivery: ${findings.map((f) => `${f.count} ${labelFor(f)}`).join(", ")} — review before sending.`;
+  // 🚨 `note` carries how far the scan actually REACHED — it stopped at 5 MB,
+  // the per-type count hit its cap, a fact array was truncated — and it was
+  // read here only on the branch where the container could not be inspected at
+  // all. On the normal path `withScanReach` composed the caveats and NOTHING
+  // consumed them: not this summary, not the DOCX, HTML, JSON, SARIF or the
+  // tab. A 6 MB document scanned to 5 MB reported "surfaced no ...
+  // sensitive-data patterns" with the truncation invisible, which for a check
+  // whose whole proposition is "this is safe to send" is the worst failure
+  // available.
+  //
+  // Folded into the summary because the summary is the one field EVERY surface
+  // already prints, so the caveat reaches all of them at once. `delivery_hash`
+  // is over `{facts, findings}` and does not move.
+  return facts.note ? `${base} ${facts.note}` : base;
 }
 
 function labelFor(f: HandoffFinding): string {
