@@ -104,3 +104,58 @@ describe("an anaphoric pronoun is not a responsible party", () => {
     expect(rows.map((r) => r.responsible)).toContain("Institution");
   });
 });
+
+/**
+ * Saying NOTHING is the answer, and every test above only checked what the
+ * register must not say.
+ *
+ * `not.toBe("They")` / `not.toContain("Each Lender")` are all satisfied by a
+ * function that returns any other string — which is how mutation testing found
+ * both `return ""` branches (`!chosen`, and a generic or empty obligor) with
+ * no test executing them. The register's contract is that an unattributable
+ * deadline is published with an EMPTY responsible party, and nothing asserted
+ * the empty string.
+ */
+describe("an unattributable deadline names nobody", () => {
+  it("publishes an empty responsible party when no obligation is near the date", async () => {
+    const rows = await register([
+      "Definitions",
+      '"Effective Date" means July 1, 2026.',
+      "Option",
+      "The option expires thirty (30) days after the Effective Date.",
+    ]);
+    expect(rows.length).toBeGreaterThan(0);
+    // No obligation in the date's section at all — the earliest of the three
+    // ways this function declines to name anyone.
+    expect(rows.every((r) => r.responsible === "")).toBe(true);
+  });
+
+  it("publishes an empty responsible party when the only obligation is too far away", async () => {
+    const filler =
+      "This clause states an ordinary operating covenant of no relevance to the deadline below. ".repeat(
+        8,
+      );
+    const rows = await register([
+      "Definitions",
+      '"Effective Date" means July 1, 2026.',
+      "Term",
+      `Acme Holdings LLC shall deliver quarterly financial statements to the Lender. ${filler}The option expires thirty (30) days after the Effective Date.`,
+    ]);
+    expect(rows.length).toBeGreaterThan(0);
+    // An obligation IS in the section — more than RESPONSIBLE_PROXIMITY_CHARS
+    // away from the date, which is the middle of the three declines and the
+    // one the credit-agreement regression was about.
+    expect(rows.every((r) => r.responsible === "")).toBe(true);
+  });
+
+  it("publishes an empty responsible party for a generic 'each party' obligor", async () => {
+    const rows = await register([
+      "Confidentiality",
+      "Each party shall return or destroy all Confidential Information within thirty (30) days after termination.",
+    ]);
+    expect(rows.length).toBeGreaterThan(0);
+    // "Each party" is a real obligor and a useless name in a register row read
+    // on its own: it identifies neither side.
+    expect(rows.every((r) => r.responsible === "")).toBe(true);
+  });
+});

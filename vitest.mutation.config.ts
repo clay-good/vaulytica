@@ -90,6 +90,11 @@ export default defineConfig({
       "src/extract/parties-hygiene.test.ts",
       "src/extract/parties.test.ts",
       "src/extract/relative-deadline-phrasing.test.ts",
+      // The critical-dates register's three suites. It joined the mutated set
+      // in 9.568.0: the arithmetic behind every date an attorney acts on.
+      "src/report/critical-dates-kind.test.ts",
+      "src/report/critical-dates-responsible.test.ts",
+      "src/report/critical-dates.test.ts",
       "src/extract/sections.test.ts",
       // Reaches `src/extract/dates.ts` for the named-anchor date a two-column
       // table flattens to a pipe. Unit-speed (~130ms), so unlike the

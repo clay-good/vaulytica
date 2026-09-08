@@ -98,6 +98,80 @@ describe("deriveDate — the arithmetic (spec-v9 §25, companion §3)", () => {
     expect(d.reason).toContain("hour");
   });
 
+  /**
+   * What the register prints INSTEAD of a date.
+   *
+   * `deriveDate`'s whole contract is "never guess": when it cannot compute a
+   * date it returns a `reason`, and that sentence is what an attorney reads in
+   * the row where a deadline should be. Mutation testing found four of these
+   * branches with **no test executing them at all** — the fallback for an
+   * older reference shape, the "no offset to apply" refusal, and the two
+   * count-missing arms of the business-day and hours reasons. Every one is a
+   * path that only runs when something upstream is already unusual, which is
+   * exactly when the reader most needs the sentence to be right.
+   *
+   * The existing tests above assert `reason).toContain("business")` and
+   * `toContain("hour")` — true of the mutants too. These pin what the row says.
+   */
+  it("names the anchor it could not resolve, and says so plainly when there is none", () => {
+    const named = deriveDate(rel("Effective Date", "days", 30), null);
+    expect(named.reason).toBe('relative to "Effective Date", which has no defined calendar date');
+    // No anchor at all is a different sentence: there is nothing to name.
+    const anonymous = deriveDate(rel("", "days", 30, { anchor: undefined }), null);
+    expect(anonymous.reason).toBe("relative date with no resolvable anchor");
+  });
+
+  it("prints the count in the business-day and hours reasons, and 'n' when it has none", () => {
+    expect(deriveDate(rel("Effective Date", "business-days", -10), "2025-01-01").reason).toBe(
+      "business-day deadline (10 business days) — no holiday calendar is asserted; verify manually",
+    );
+    expect(
+      deriveDate(
+        rel("Effective Date", "business-days", 0, { offset_count: undefined }),
+        "2025-01-01",
+      ).reason,
+    ).toContain("(n business days)");
+    expect(
+      deriveDate(rel("Security Incident", "hours", -72, { offset_days: undefined }), "2025-01-01")
+        .reason,
+    ).toBe(
+      "72-hour deadline — a sub-day window the calendar register cannot pin; verify the exact time manually",
+    );
+    expect(
+      deriveDate(rel("Security Incident", "hours", 0, { offset_count: undefined }), "2025-01-01")
+        .reason,
+    ).toContain("n-hour deadline");
+  });
+
+  it("falls back to the day-collapsed offset when the calendar unit was never captured", () => {
+    // An older `DateReference` shape: no `offset_unit`/`offset_count`, only the
+    // collapsed `offset_days`. Still deterministic, still resolved.
+    const legacy = deriveDate(
+      rel("Effective Date", undefined, 0, { offset_unit: undefined, offset_days: 45 }),
+      "2025-01-01",
+    );
+    expect(legacy.resolved).toBe(true);
+    expect(legacy.computed_date).toBe("2025-02-15");
+
+    // The same shape with a unit but no count also takes the fallback.
+    const noCount = deriveDate(
+      rel("Effective Date", "days", 0, { offset_count: undefined, offset_days: -1 }),
+      "2025-01-01",
+    );
+    expect(noCount.resolved).toBe(true);
+    expect(noCount.computed_date).toBe("2024-12-31");
+  });
+
+  it("refuses when there is no offset of any kind — it does not fall through to the anchor", () => {
+    const d = deriveDate(
+      rel("Effective Date", undefined, 0, { offset_unit: undefined, offset_days: undefined }),
+      "2025-01-01",
+    );
+    expect(d.resolved).toBe(false);
+    expect(d.computed_date).toBeNull();
+    expect(d.reason).toBe("no offset to apply");
+  });
+
   it("derives both bounds of a disjunctive range as a window", () => {
     const ref = rel("Effective Date", "days", 30, { offset_count_max: 60 });
     const d = deriveDate(ref, "2025-01-01");
@@ -357,6 +431,150 @@ describe("buildCriticalDates — opt-in deadline resolution (add-deadline-comput
     expect(row.deadline_profile_id).toBe("frcp-6");
   });
 
+  /**
+   * A BACKWARD-counted period under an asserted profile.
+   *
+   * "at least 14 days before the hearing" counts back; the profile's
+   * arithmetic counts forward, and an earlier version ran it through
+   * `Math.abs()` — which moved the answer **2N days late**, the single worst
+   * direction of error a deadline register has. The fix keeps the plain
+   * backward arithmetic and SAYS the profile was not applied.
+   *
+   * Mutation testing found the whole branch unexecuted: the guard, the early
+   * return for an unresolved row, and the sentence that explains itself could
+   * all be deleted and every test still passed. The regression that motivated
+   * the code had no test.
+   */
+  it("does NOT apply forward profile arithmetic to a backward-counted period, and says so", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Hearing Date" means July 20, 2026.'],
+      ["Notice", "A party shall file the motion at least 14 days before the Hearing Date."],
+    );
+    const extracted = extractAll(tree);
+    const row = (await buildCriticalDates(extracted, tree, { profile: frcp })).register.find(
+      (r) => r.anchor === "Hearing Date",
+    )!;
+    // Plain backward count: 2026-07-20 − 14 = 2026-07-06. NOT 2026-08-03,
+    // which is where Math.abs() plus a forward roll used to land it.
+    expect(row.computed_date).toBe("2026-07-06");
+    expect(row.deadline_steps).toHaveLength(1);
+    expect(row.deadline_steps![0]!.rule).toBe("frcp-6");
+    expect(row.deadline_steps![0]!.detail).toContain(
+      "the asserted profile's forward-counting arithmetic was not applied",
+    );
+  });
+
+  it("leaves an UNRESOLVED backward-counted row exactly as it was — no empty steps list", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    // 🚨 The first draft of this dropped the anchor DEFINITION to make the row
+    // unresolved — which meant `resolveUnderProfile` was never reached at all
+    // (its caller requires an anchor), so the test passed with the branch
+    // deleted. An unresolved row that DOES reach it needs a defined anchor and
+    // a unit `deriveDate` refuses: backward BUSINESS days.
+    const tree = buildTree(
+      ["Definitions", '"Hearing Date" means July 20, 2026.'],
+      [
+        "Notice",
+        "A party shall file the motion at least 14 business days before the Hearing Date.",
+      ],
+    );
+    const extracted = extractAll(tree);
+    const row = (await buildCriticalDates(extracted, tree, { profile: frcp })).register.find(
+      (r) => r.anchor === "Hearing Date",
+    )!;
+    expect(row.resolved).toBe(false);
+    // Untouched: no step explaining arithmetic the branch did not do, and no
+    // profile stamp claiming the profile decided this row.
+    expect(row.deadline_steps).toBeUndefined();
+    expect(row.deadline_profile_id).toBeUndefined();
+  });
+
+  /**
+   * The profile asserted, and unable to compute.
+   *
+   * The shipped holiday calendars cover 2024–2027, so a deadline anchored
+   * outside them cannot be rolled. Two outcomes, and the whole branch was
+   * unexecuted: a "days" row that plain arithmetic already resolved keeps its
+   * date and gains a step SAYING the profile did not apply (otherwise the
+   * register silently mixes court-rule-correct rows with plain arithmetic
+   * under one asserted profile — an audit finding); a row plain arithmetic
+   * could NOT resolve is published unresolved with the profile's own reason.
+   */
+  it("keeps the plain date but says the profile could not compute it", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2031.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+    );
+    const row = (await buildCriticalDates(extractAll(tree), tree, { profile: frcp })).register.find(
+      (r) => r.anchor === "Effective Date",
+    )!;
+    expect(row.resolved).toBe(true);
+    expect(row.computed_date).toBe("2031-07-04"); // plain arithmetic, unrolled
+    expect(row.deadline_steps).toHaveLength(1);
+    expect(row.deadline_steps![0]!.rule).toBe("frcp-6");
+    expect(row.deadline_steps![0]!.detail).toContain(
+      "the asserted profile could not compute this row",
+    );
+    expect(row.deadline_steps![0]!.detail).toContain(
+      "WITHOUT roll or service rules — verify manually",
+    );
+  });
+
+  it("publishes the profile's own reason when plain arithmetic could not resolve it either", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    // Business days: `deriveDate` refuses without a calendar, and the calendar
+    // does not cover 2031 — so neither can answer, and the row says why.
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2031.'],
+      ["A", "Respond within 10 business days after the Effective Date."],
+    );
+    const row = (await buildCriticalDates(extractAll(tree), tree, { profile: frcp })).register.find(
+      (r) => r.anchor === "Effective Date",
+    )!;
+    expect(row.resolved).toBe(false);
+    expect(row.computed_date).toBeNull();
+    expect(row.reason).toBeTruthy();
+    expect(row.reason).not.toContain("business-day deadline"); // the PROFILE's reason, not deriveDate's
+    expect(row.deadline_steps).toBeUndefined();
+  });
+
+  /**
+   * FRCP 6(d) mail days apply only to periods that run after SERVICE.
+   *
+   * The audit this guard came from: "(Rule 6(d))" was printed as authority on
+   * rows that had nothing to do with service — a contract deadline measured
+   * from an effective date owes no mail days. No test ever passed a
+   * `service_method`, so the trigger/anchor sniff that decides it was never
+   * executed with the adjustment available to apply.
+   */
+  it("adds service days only to a deadline that runs from SERVICE", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.', '"Service Date" means July 1, 2026.'],
+      ["A", "A party shall respond within 10 days after the Service Date."],
+      ["B", "A party shall deliver the notice within 10 days after the Effective Date."],
+    );
+    const reg = await buildCriticalDates(extractAll(tree), tree, {
+      profile: frcp,
+      service_method: "mail",
+    });
+    const served = reg.register.find((r) => r.anchor === "Service Date")!;
+    const contractual = reg.register.find((r) => r.anchor === "Effective Date")!;
+    // Same anchor date, same 10-day count: the served row gets 3 mail days.
+    expect(contractual.computed_date).toBe("2026-07-13"); // Jul 11 Sat → Mon 13
+    expect(served.computed_date).toBe("2026-07-14");
+    expect(served.deadline_steps!.some((s) => /Rule 6\(d\)/.test(s.detail))).toBe(true);
+    // And the contract row is NOT given service authority it never earned.
+    expect(contractual.deadline_steps!.some((s) => /Rule 6\(d\)/.test(s.detail))).toBe(false);
+  });
+
   it("profiles BOTH bounds of a range deadline (window is not left stale/un-profiled)", async () => {
     const { getDeadlineProfile } = await import("../deadlines/profile.js");
     const frcp = getDeadlineProfile("frcp-6")!;
@@ -403,7 +621,30 @@ describe("DDL-001 deadline drafting notes (add-deadline-computation follow-up)",
     );
     const extracted = extractAll(tree);
     const reg = await buildCriticalDates(extracted, tree, { profile: frcp });
-    expect(reg.deadline_notes?.some((n) => n.code === "DDL-001")).toBe(true);
+    const note = reg.deadline_notes?.find((n) => n.code === "DDL-001");
+    expect(note).toBeDefined();
+    // The title is the note. `some(code === "DDL-001")` passes with the
+    // sentence deleted, which is how the singular/plural agreement here went
+    // untested: one rolled deadline reads "1 deadline falls", not "1 deadlines
+    // fall", and the register is read by attorneys.
+    expect(note!.title).toBe("1 deadline falls on a non-court day before rolling forward");
+    expect(note!.severity).toBe("info");
+    expect(note!.detail).toMatch(/"[^"]+" → 2026-07-06/);
+    expect(note!.detail).toContain("Confirm the intended deadline.");
+  });
+
+  it("agrees in number: two rolled deadlines read 'deadlines fall'", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    // Both land on 2026-07-04 (Saturday) and roll to Monday.
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+      ["B", "Object within 3 days after the Effective Date."],
+    );
+    const reg = await buildCriticalDates(extractAll(tree), tree, { profile: frcp });
+    const note = reg.deadline_notes!.find((n) => n.code === "DDL-001")!;
+    expect(note.title).toBe("2 deadlines fall on a non-court day before rolling forward");
   });
 
   it("is absent without a profile (and does not affect the hash)", async () => {

@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.568.0] — 2026-09-08
+
+### Changed
+- **`src/report/critical-dates.ts` joins the mutated set** — the deadline
+  arithmetic, whose failure direction is an attorney acting on a wrong date
+  presented with the same confidence as a right one. It measured **44.02%** on
+  its own 502 mutants, *below* the aggregate and therefore ineligible; pinning
+  the paths below took it to **57.17%**, above the aggregate, which is what
+  made widening safe. `break: 54` is unaffected.
+
+### Added
+- **Six unexecuted branches of the deadline arithmetic now have tests.** All
+  six were `NoCoverage` — no test ran them at all — and two of them exist
+  because of a recorded audit finding:
+
+  - **The backward-counted period under an asserted court profile.** "At least
+    14 days *before* the hearing" counts back; the profile counts forward, and
+    an earlier version ran it through `Math.abs()` and landed the answer **2N
+    days late**. The fix had a comment and no test.
+  - **The FRCP 6(d) service-days sniff.** Mail days extend only periods that
+    run after *service*; "(Rule 6(d))" was once printed as authority on rows
+    that had nothing to do with it. No test had ever passed a `service_method`.
+  - **Both arms of "the asserted profile could not compute this row"**, which
+    keep a register from silently mixing court-rule-correct rows with plain
+    arithmetic under one asserted profile.
+  - **Every `reason` `deriveDate` returns instead of a date** — the sentences
+    that carry its "never guess" contract, including the two count-missing arms.
+  - **Both `return ""` paths of the responsible-party resolver.**
+  - **DDL-001's singular/plural agreement**, which `some(code === "DDL-001")`
+    could not see.
+
+### Fixed
+- 🚨 **Two of those tests were caught vacuous before landing.** One dropped the
+  anchor *definition* to make a row unresolved — which meant the branch under
+  test was never reached at all (its caller requires an anchor), and it passed
+  with that branch deleted. And the responsible-party suite asserted only
+  `not.toBe(<the wrong name>)`, which **every** mutant satisfies; that is
+  exactly why both of its `return ""` paths showed as uncovered. Saying
+  *nothing* is the answer there, and nothing had asserted the empty string.
+
 ## [9.567.0] — 2026-09-08
 
 ### Fixed
