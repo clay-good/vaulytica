@@ -1,0 +1,73 @@
+name: Action smoke (dogfood the published composite Action)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# The composite Action in `action.yml` is what most CI consumers actually call,
+# and until this workflow existed **this repository never ran it**. Its shell
+# body is unit-tested (`tests/integration/action-argv.test.ts` composes the argv
+# from the shipped YAML with the binary stubbed), but nothing executed the real
+# thing: `npm ci --omit=dev` inside the action's own checkout, then
+# `node bin/vaulytica.mjs` against real files. A break there — a bin path that
+# no longer resolves, a runtime dependency that `--omit=dev` drops, a
+# `working-directory` that moves — ships to consumers and this repo learns about
+# it from an issue. `npx vaulytica` had never worked at all until someone tried
+# it; this is the same class one layer out.
+#
+# Deliberately small: one document, one gate, no build. It answers "does the
+# Action run, and does its exit code mean what the docs say", and leaves
+# everything about the engine's behaviour to the suite.
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      # A clean document: the Action must run it and exit 0.
+      - name: Analyze a clean document
+        uses: ./
+        with:
+          command: analyze
+          files: tests/fixtures/contracts/pasted-mutual-nda.txt
+          format: sarif
+          out: smoke-out
+
+      - name: The run produced a SARIF file
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s smoke-out/pasted-mutual-nda.sarif.json
+          node -e 'const j=require("./smoke-out/pasted-mutual-nda.sarif.json");
+            if (j.version !== "2.1.0") { console.error("not SARIF 2.1.0"); process.exit(1); }
+            if (!Array.isArray(j.runs) || j.runs.length !== 1) { console.error("no run"); process.exit(1); }'
+
+      # The gate must actually gate. `continue-on-error` keeps the job green
+      # while the step's own outcome is asserted below — a gate that stopped
+      # failing would otherwise look identical to a document that got cleaner.
+      - name: Pre-disclosure gate on a document carrying an SSN
+        id: handoff
+        continue-on-error: true
+        uses: ./
+        with:
+          command: analyze
+          files: tests/fixtures/action-smoke/with-ssn.txt
+          format: json
+          out: handoff-out
+          fail-on-delivery: critical
+
+      - name: The pre-disclosure gate failed the step, as it must
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.handoff.outcome }}" != "failure" ]; then
+            echo "::error::--fail-on-delivery did not fail the step on a document containing an SSN"
+            exit 1
+          fi

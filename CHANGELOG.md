@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.551.0] — 2026-09-07
+
+### Added
+- **This repository now runs its own GitHub Action.** `action.yml` is what most
+  CI consumers actually call, and **nothing here had ever executed it.** Its
+  shell body is unit-tested — `action-argv.test.ts` composes the argv from the
+  shipped YAML with the binary stubbed — but no test ran the real thing:
+  `npm ci --omit=dev` inside the action's own checkout, then
+  `node bin/vaulytica.mjs` against real files. A break there ships to consumers
+  and this repo learns about it from an issue: a bin path that stops resolving,
+  a runtime dependency `--omit=dev` drops, a `working-directory` that moves.
+
+  🥇 **Same class as `npx vaulytica`, which had never worked at all until
+  someone tried it** — one layer further out. A surface nobody exercises is a
+  surface nobody knows about.
+
+  `action-smoke.yml` is deliberately small: one clean document through the
+  Action (exit 0, and the SARIF it wrote is really SARIF 2.1.0 with one run),
+  and one document carrying an SSN through `fail-on-delivery: critical`, which
+  **must fail its step**. Everything about the engine's behaviour stays in the
+  suite; this answers only *does the Action run, and does its exit code mean
+  what the docs say*.
+
+  ⚠️ The gate step is `continue-on-error` with its `outcome` asserted in the
+  next step, rather than simply expected to fail. Without that the job could
+  only go red — and a gate that **stopped** failing would look exactly like a
+  document that got cleaner.
+
+  Both behaviours were verified locally through the same `bin/vaulytica.mjs`
+  entry the Action invokes (exit 2 on the SSN, exit 0 and a SARIF file on the
+  clean document) before the workflow was written.
+
 ## [9.550.0] — 2026-09-07
 
 ### Added
