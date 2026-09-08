@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.594.0] — 2026-09-08
+
+### Added
+- **The last badge number is guarded too — the badge line is now fully
+  covered.** 9.593.0 left `3 execution-readiness reconciliations`
+  hand-maintained, on the reasoning that `ChecklistCategory` has five members
+  so any count would be a guess. That was the wrong place to look: the README's
+  own v9 spec-table row *names* the three (`STRUCT-017` signatures,
+  `STRUCT-018` attachments, `STRUCT-019` recited formalities).
+
+  The guard reads the ids out of that row and requires each to be a **live
+  launch rule**, so badge, prose and rule array are tied together with no id
+  hardcoded in the test. It fails in both directions, each proven: change the
+  badge and it fails; have the row name a rule that does not ship and it fails.
+  That second half is the one a bare count cannot see — prose describing rules
+  that are not there.
+
+### Fixed
+- 🚨 **The first draft selected the wrong line.** An earlier prose line uses the
+  phrase "execution-readiness reconciliations" without naming any rule, so
+  matching on the phrase alone found it and parsed zero ids. The row is
+  selected on carrying both the phrase *and* a `STRUCT-` id, and the comment
+  says why — the derivation guard caught it rather than the assertion passing
+  on an empty list.
+
 ## [9.593.0] — 2026-09-08
 
 ### Fixed

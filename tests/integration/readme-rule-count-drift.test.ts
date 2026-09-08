@@ -210,10 +210,14 @@ describe("architecture-diagram rule counts", () => {
  * a guard that scans source without doing that has been fooled by a quoted
  * phrase in a comment three times in this repo.
  *
- * Still hand-maintained, deliberately: `3 execution-readiness
- * reconciliations`. `ChecklistCategory` has five members and the badge counts
- * three of something else, so any derivation here would be a guess dressed as
- * a check. Better an honest gap than a green test asserting the wrong thing.
+ * `3 execution-readiness reconciliations` looked underivable at first —
+ * `ChecklistCategory` has five members, and counting those would have been a
+ * guess dressed as a check. The README answers it itself: its v9 spec-table row
+ * names the three (`STRUCT-017` signatures, `STRUCT-018` attachments,
+ * `STRUCT-019` recited formalities). So the guard reads the ids out of that row
+ * and requires each to be a live launch rule — badge, prose and rule array tied
+ * together with no id hardcoded in the test. Add a fourth reconciliation and
+ * the row must name it, which makes the badge fail until it agrees.
  */
 describe("README badge line", () => {
   const badge = readme.split("\n").find((l) => l.includes("deterministic rules"))!;
@@ -258,6 +262,27 @@ describe("README badge line", () => {
     }).filter((e) => e.isDirectory());
     expect(dirs.length).toBeGreaterThan(5);
     expect(badge).toContain(`\`${dirs.length} document sub-domains\``);
+  });
+
+  it("quotes the execution-readiness reconciliations the spec table names", () => {
+    // The v9 row of the roadmap table is where the three are ENUMERATED. An
+    // earlier prose line uses the same phrase without naming any rule, so the
+    // row is selected on carrying both — matching on the phrase alone found
+    // that line and parsed zero ids.
+    const row = readme
+      .split("\n")
+      .find((l) => l.includes("execution-readiness reconciliation") && l.includes("STRUCT-"));
+    expect(row, "the v9 spec-table row moved — update this guard").toBeTruthy();
+    const ids = [...new Set([...row!.matchAll(/STRUCT-\d+/g)].map((m) => m[0]))];
+    expect(ids.length, "no STRUCT ids in the v9 row").toBeGreaterThan(0);
+    // Every one must actually ship, or the prose is describing rules that are
+    // not there — the failure a bare count cannot see.
+    const live = new Set(LAUNCH_RULES.map((r) => r.id));
+    expect(
+      ids.filter((id) => !live.has(id)),
+      "named but not shipped",
+    ).toEqual([]);
+    expect(badge).toContain(`\`${ids.length} execution-readiness reconciliations\``);
   });
 
   it("quotes the live state-law overlay total, across BOTH catalogs", () => {
