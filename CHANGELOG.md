@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.559.0] — 2026-09-07
+
+### Fixed
+- **The tracked-changes notice announced a capped count as a total.**
+  `countRevisions` stops at `MAX_COUNT` (5,000), and `docx-notices.ts` has always
+  carried the comment *"the exact number past it is not what the warning says"*
+  — but the warning did not say it. A document with 12,000 tracked insertions
+  was announced as having **"5000 insertions"**, a flat number the reader takes
+  as the total, in a notice that reaches every surface. It reads *"5000 or more
+  insertions"* now, and only once the cap is actually hit.
+
+  Same shape as the pre-disclosure pack's four caps (9.553.0–9.556.0), found by
+  finishing the `const MAX_*` sweep those releases started.
+
+### Verified, not changed
+- **The rest of the ingest bounds are already honest**, and it is worth writing
+  down which so the sweep is not re-run from scratch:
+
+  - `MAX_DOCUMENT_BYTES` / `MAX_PASTE_CHARS` **throw** a typed
+    `InputTooLargeError` — a hard refusal, the most honest form there is;
+  - `MAX_OCR_PAGES` pushes a warning naming the **exact** page counts:
+    *"Document has 812 pages; OCR was bounded to the first 500. The remaining
+    312 page(s) were not OCR'd."* — the pattern the delivery pack was taught;
+  - `MAX_SECTION_DEPTH` discards **nesting**, not content, and says so;
+  - `MAX_REDLINE_ROWS` prints an honest "and X more" footer.
+
+  🥇 **The honest ones are where the pattern was already written down.** Every
+  cap fixed this week was fixed by copying one of these four.
+
 ## [9.558.0] — 2026-09-07
 
 ### Fixed

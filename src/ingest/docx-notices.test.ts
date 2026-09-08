@@ -5,7 +5,7 @@ import {
   hiddenContentDocx,
   trackedChangesDocx,
 } from "../delivery/_fixtures.js";
-import { countRevisions, docxNotices } from "./docx-notices.js";
+import { MAX_COUNT, countRevisions, docxNotices } from "./docx-notices.js";
 
 describe("countRevisions", () => {
   it("counts the insertions and deletions in a redline", () => {
@@ -81,6 +81,17 @@ describe("docxNotices", () => {
   it("says the deleted text was not analyzed — only when there are deletions", () => {
     expect(docxNotices({ ...none, insertions: 1 })[0]).not.toContain("NOT analyzed");
     expect(docxNotices({ ...none, deletions: 1 })[0]).toContain("NOT analyzed");
+  });
+
+  it("says 'or more' once the count hit its cap", () => {
+    // `count()` stops at MAX_COUNT, and this file's own comment always said the
+    // exact number past it is not what the warning means. The warning did not
+    // say it: a document with 12,000 insertions was announced as having 5000, a
+    // flat number the reader takes as the total.
+    const [w] = docxNotices({ ...none, insertions: MAX_COUNT });
+    expect(w).toContain(`${MAX_COUNT} or more insertions`);
+    // And not below it, where the count IS the total.
+    expect(docxNotices({ ...none, insertions: MAX_COUNT - 1 })[0]).not.toContain("or more");
   });
 
   it("pluralizes honestly", () => {

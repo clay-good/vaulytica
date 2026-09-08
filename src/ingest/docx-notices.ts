@@ -33,8 +33,8 @@ import { inflateOoxmlParts } from "./ooxml.js";
  */
 
 const PARTS = new Set(["word/document.xml", "word/comments.xml"]);
-/** Counting stops here; the exact number past it is not what the warning says. */
-const MAX_COUNT = 5000;
+/** Counting stops here — and past it the warning says "or more", not a total. */
+export const MAX_COUNT = 5000;
 
 export type RevisionCounts = {
   insertions: number;
@@ -80,7 +80,18 @@ export function countRevisions(bytes: ArrayBuffer): RevisionCounts {
   };
 }
 
-const plural = (n: number, noun: string): string => `${n} ${noun}${n === 1 ? "" : "s"}`;
+/**
+ * A count, pluralized — and marked as a FLOOR when it hit the counting cap.
+ *
+ * `count()` stops at {@link MAX_COUNT}, and this file's own comment has always
+ * said "the exact number past it is not what the warning says". The warning did
+ * not say it: a document with 12,000 tracked insertions was announced as having
+ * "5000 insertions", a flat number the reader takes as the total. Same shape as
+ * the pre-disclosure pack's caps, fixed in 9.553.0–9.556.0 — a bound that is not
+ * stated is a number the reader trusts and should not.
+ */
+const plural = (n: number, noun: string): string =>
+  `${n >= MAX_COUNT ? `${n} or more` : n} ${noun}${n === 1 ? "" : "s"}`;
 
 /**
  * The notices a DOCX earns, in the order a reader needs them. Empty when the
