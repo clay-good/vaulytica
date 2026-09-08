@@ -119,6 +119,24 @@ const DECLARED = declaredExceptions([
 ]);
 
 describe("logic in the semantic layer", () => {
+  /**
+   * 🚨 An explicit timeout, because this test out-grew the 30s default and
+   * started failing INTERMITTENTLY rather than honestly.
+   *
+   * It parses every source file under `ROOTS` with the TypeScript compiler.
+   * **Alone it takes ~0.9s**; inside the full parallel suite it was measured at
+   * **30.7s** against a 30s budget. So the number that failed was not this
+   * test's cost, it was its cost plus however long it waited for a CPU — which
+   * means it passed or failed depending on what else the machine was doing. It
+   * failed once in five full-suite runs and, because the failure was a timeout
+   * rather than an assertion, said nothing at all about the tree.
+   *
+   * An intermittently-failing gate is a gate people learn to ignore, and this
+   * one guards against duplicated LOGIC — the class nobody sets out to create
+   * and nobody notices. Budgeted at 4x the measured cost, deliberately
+   * generous: the number is not a performance target, it is the point past
+   * which the machine, not the tree, decided the outcome.
+   */
   it("is not written twice", () => {
     const files = ROOTS.flatMap((root) => sourceFiles(root));
     expect(files.length, "no sources found — the walk is broken").toBeGreaterThan(50);
@@ -145,5 +163,5 @@ describe("logic in the semantic layer", () => {
       duplicated,
       `these bodies are identical — give them one owner:\n  ${duplicated.join("\n  ")}`,
     ).toEqual([]);
-  });
+  }, 120_000);
 });

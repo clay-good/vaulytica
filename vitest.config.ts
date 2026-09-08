@@ -25,9 +25,23 @@ export default defineConfig({
     // says nothing about the code and costs a re-run to diagnose.
     //
     // A ceiling on a known-slow path, not a budget: a test that genuinely
-    // hangs still fails, thirty seconds later. The per-test 120s overrides
-    // already in the suite stay where they are.
-    testTimeout: 30_000,
+    // hangs still fails, a minute later. The per-test 120s overrides already in
+    // the suite stay where they are.
+    //
+    // 🚨 **30s → 60s (9.589.0): the same condition recurred, and this time it
+    // hid.** `duplicate-logic` (a whole-tree TypeScript parse) and
+    // `secondary-family-cap-caveat` (a 312-specimen sweep) each drifted onto
+    // the boundary — **~0.9s and ~6s alone, 30.7s and 30s+ inside the loaded
+    // suite** — so each failed roughly one run in five. What made it expensive
+    // was not the failures but the diagnosis: `npm run verify | tail` reports
+    // **`tail`'s** exit code, so a failed gate read as a passing one, and the
+    // failures were TIMEOUTS, which say nothing about the code.
+    //
+    // The number a wall-clock timeout measures under a parallel runner is the
+    // test's cost PLUS however long it waited for a CPU, and the second term
+    // grows with the suite. This will need raising again; the fix each time is
+    // to re-measure, not to guess.
+    testTimeout: 60_000,
     // spec-v7 Part VIII (Steps 115–116) — code-coverage measurement + gate.
     // Scoped to the shipped browser bundle (`src/`); the build-and-CI-only
     // harnesses (`tools/`, `dkb/build/`) and all test scaffolding are

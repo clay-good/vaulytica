@@ -642,3 +642,76 @@ describe("the deadlines calendar explains what it could not resolve", () => {
     expect(unfold(buildDeadlinesIcs(rows))).toBe(ics);
   });
 });
+
+/**
+ * The fix list's own header — what was switched on, and what qualifies the
+ * whole list.
+ *
+ * A fix list is the artifact a reviewer pastes into a ticket, and every line of
+ * this header changes what the items below it mean: which optional rule packs
+ * ran, that the document was read as a redline with all changes accepted, that
+ * its type was not recognized at all. The block was written for exactly that
+ * reason and mutation testing found none of it executed — each line could be
+ * deleted and every test still passed.
+ */
+describe("the fix list header states what qualifies the list", () => {
+  const baseRun = (over: Record<string, unknown>): EngineRun =>
+    ({ ...makeRun([finding("CAP-1", "critical", 1)]), ...over }) as EngineRun;
+
+  it("names each opt-in pack the user asserted", () => {
+    const md = buildFixListMarkdown(
+      baseRun({
+        filing_profile: { id: "cand-civil", brief_kind: "opposition" },
+        asserted_regimes: ["gdpr", "ccpa"],
+        estate_checks_asserted: true,
+      }),
+    );
+    expect(md).toContain("**Court profile:** cand-civil (opposition brief) — asserted by the user");
+    expect(md).toContain("**Privacy regimes:** gdpr, ccpa — asserted by the user");
+    expect(md).toContain("**Estate checks:** asserted by the user (--estate-checks)");
+  });
+
+  it("names the estate state and its verified formality posture", () => {
+    const md = buildFixListMarkdown(
+      baseRun({ estate_checks_asserted: true, asserted_state: "us-ca" }),
+    );
+    expect(md).toContain("--state us-ca");
+    // The overlay's own headline and citation, not a bare state code: the
+    // formality posture is the reason the pack was switched on.
+    expect(md).toMatch(/--state us-ca\) — California: .+ \(.+\)/);
+  });
+
+  it("says nothing about a pack the user did not assert", () => {
+    // Anti-vacuity, and the property that matters: a report must never imply a
+    // check ran that did not.
+    const md = buildFixListMarkdown(baseRun({}));
+    expect(md).not.toContain("Court profile");
+    expect(md).not.toContain("Privacy regimes");
+    expect(md).not.toContain("Estate checks");
+  });
+
+  it("carries the ingest's caveats about what it could and could not read", () => {
+    const md = buildFixListMarkdown(baseRun({}), undefined, undefined, {
+      warnings: ["Redline read with all changes accepted.", "PDF fell back to OCR."],
+    });
+    expect(md).toContain("> **About this input.** Redline read with all changes accepted.");
+    expect(md).toContain("> **About this input.** PDF fell back to OCR.");
+    // And nothing when the ingest had nothing to say.
+    expect(buildFixListMarkdown(baseRun({}), undefined, undefined, { warnings: [] })).not.toContain(
+      "About this input",
+    );
+  });
+
+  it("carries the unmatched-document banner", () => {
+    const md = buildFixListMarkdown(
+      baseRun({
+        classification_notice: {
+          message: "Fell back to the generic checklist.",
+          reason: "no-match",
+        },
+      }),
+    );
+    expect(md).toContain("> **Document type not recognized.** Fell back to the generic checklist.");
+    expect(buildFixListMarkdown(baseRun({}))).not.toContain("Document type not recognized");
+  });
+});

@@ -102,7 +102,12 @@ describe("the secondary-family cap is stated wherever the capped list is shown",
     expect(worst, "the most families any one specimen clearly contains").toBeGreaterThan(
       MAX_SECONDARY_FAMILIES,
     );
-  });
+    // 🚨 An explicit budget. This sweeps all 312 specimens: ~6s alone, and it
+    // was measured at over 30s inside the loaded suite, where a wall-clock
+    // timeout counts the wait for a CPU as well as the work. It failed about
+    // one run in five, as a timeout — a failure that says nothing about the
+    // corpus it exists to measure.
+  }, 120_000);
 
   it("JSON emits the count, and omits the field when the cap did not bite", async () => {
     const { run, ingest, playbook } = await runFixture(

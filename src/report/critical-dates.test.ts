@@ -679,3 +679,109 @@ describe("DDL-001 renders in the critical-dates markdown (add-deadline-computati
     expect(buildCriticalDatesMarkdown(plain)).not.toContain("Drafting notes");
   });
 });
+
+/**
+ * The critical-dates Markdown's own header lines, and its empty states.
+ *
+ * Mutation testing found both executed by no test: the court-profile receipt
+ * line (which records the BASIS for any rolled or court-day date, and ends
+ * "the filer's own count governs for any certification") and the "_None could
+ * be computed to an absolute date._" empty state. A register that silently
+ * renders an empty table reads as "no deadlines in this document", which is a
+ * different claim from "none could be computed".
+ */
+describe("the critical-dates Markdown states its basis and its empty states", () => {
+  it("names the asserted court profile and its calendar version", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+    );
+    const reg = await buildCriticalDates(extractAll(tree), tree, { profile: frcp });
+    const md = buildCriticalDatesMarkdown(reg);
+    expect(md).toContain("computed under `frcp-6`");
+    expect(md).toContain("The filer's own count governs for any certification.");
+  });
+
+  it("says nothing about a profile when none was asserted", () => {
+    // Anti-vacuity: an unprofiled register must not imply a court rule applied.
+    const md = buildCriticalDatesMarkdown({
+      register: [],
+      critical_dates_hash: "d".repeat(64),
+    } as never);
+    expect(md).not.toContain("as asserted by the user");
+  });
+
+  it("says none COULD be computed, not that there were none", () => {
+    const md = buildCriticalDatesMarkdown({
+      register: [],
+      critical_dates_hash: "d".repeat(64),
+    } as never);
+    expect(md).toContain("_None could be computed to an absolute date._");
+  });
+});
+
+/**
+ * What the critical-dates `.ics` event actually SAYS.
+ *
+ * Three parts of the description were executed by no test: who is responsible,
+ * which court profile computed the date, and — the one that can mislead — the
+ * range deadline. An all-day event on the window's first day, with no text
+ * saying it is a window, invites a calendar user to read the earliest date as
+ * the controlling one. The renderer states both bounds for exactly that
+ * reason and nothing checked it.
+ */
+describe("the critical-dates calendar states what a date rests on", () => {
+  const unfold = (ics: string): string => ics.replace(/\r\n /g, "");
+
+  it("names both bounds of a range deadline", async () => {
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within thirty to sixty days after the Effective Date."],
+    );
+    const reg = await buildCriticalDates(extractAll(tree), tree);
+    const row = reg.register.find((r) => r.window);
+    expect(row, "the specimen must produce a windowed deadline").toBeDefined();
+    const ics = unfold(buildCriticalDatesIcs(reg));
+    expect(ics).toContain(`Range deadline: ${row!.window![0]} to ${row!.window![1]}`);
+    expect(ics).toContain("verify the controlling bound");
+  });
+
+  it("names the court profile that computed the date, and the steps it applied", async () => {
+    const { getDeadlineProfile } = await import("../deadlines/profile.js");
+    const frcp = getDeadlineProfile("frcp-6")!;
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 3 days after the Effective Date."],
+    );
+    const reg = await buildCriticalDates(extractAll(tree), tree, { profile: frcp });
+    const ics = unfold(buildCriticalDatesIcs(reg));
+    expect(ics).toContain("Computed under frcp-6");
+    expect(ics).toContain("as asserted by the user");
+    // The roll step itself, not just the profile id — the basis for the date.
+    expect(ics).toMatch(/rolled forward to \d{4}-\d{2}-\d{2}/);
+  });
+
+  it("says nothing about a profile or a range when there is neither", async () => {
+    // Anti-vacuity: an ordinary computed deadline must not imply a court rule.
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "Respond within 10 days after the Effective Date."],
+    );
+    const ics = unfold(buildCriticalDatesIcs(await buildCriticalDates(extractAll(tree), tree)));
+    expect(ics).not.toContain("Computed under");
+    expect(ics).not.toContain("Range deadline");
+  });
+
+  it("names the responsible party when the register found one", async () => {
+    const tree = buildTree(
+      ["Definitions", '"Effective Date" means July 1, 2026.'],
+      ["A", "The Borrower shall deliver the certificate within 10 days after the Effective Date."],
+    );
+    const reg = await buildCriticalDates(extractAll(tree), tree);
+    const named = reg.register.find((r) => r.responsible);
+    expect(named, "the specimen must attribute at least one deadline").toBeDefined();
+    expect(unfold(buildCriticalDatesIcs(reg))).toContain(`Responsible: ${named!.responsible}.`);
+  });
+});

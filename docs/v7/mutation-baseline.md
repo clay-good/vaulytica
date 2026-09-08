@@ -154,8 +154,20 @@ that orders them. A user subscribes to that file; a deadline the tool could not
 compute has to arrive saying which one and why, or it is a mystery entry they
 delete. 51.06% → **54.17%**, NoCoverage 57 → 43.
 
-Still short of the 56.92% bar, by under three points. Whatever closes the
-remaining 43 makes it eligible.
+Then the artifacts' own **header and description lines** (9.589.0), all
+NoCoverage: the fix list's asserted-pack receipts (court profile, privacy
+regimes, estate state + its formality posture) and its input-warning and
+unmatched-document banners; the critical-dates Markdown's court-profile receipt
+and its *"None **could** be computed"* empty state; and the critical-dates
+`.ics` event description — who is responsible, which profile computed the date,
+and the **range deadline**, where an all-day event on the window's first day
+invites a calendar user to read the earliest date as the controlling one.
+54.17% → **56.16%**, NoCoverage 43 → 36.
+
+Still short of the 56.92% bar — by **0.76 of a point**. The remaining 36 are
+citation-formatting branches and ICS description assembly; what closes them
+makes this module eligible, and the aggregate barely moves either way at that
+distance from the mean.
 
 ⚠️ **Read this table against the previous one with care, and not as a
 per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added

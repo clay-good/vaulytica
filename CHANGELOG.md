@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.589.0] — 2026-09-08
+
+### Fixed
+- 🚨 **An intermittently-failing gate, finally named.** One unnamed test had
+  been failing roughly once in five full-suite runs. It could not be diagnosed
+  because `npm run verify | tail` reports **`tail`'s** exit code, not the
+  gate's — so a failed run looked like a passing one. Captured to a file
+  instead, it was `duplicate-logic.test.ts`, and the failure was a **timeout,
+  not an assertion**: it said nothing about the tree.
+
+  Measured: **~0.9s alone, 30.7s inside the full parallel suite**, against a 30s
+  default. The number that failed was not the test's cost but its cost plus
+  however long it waited for a CPU. Then a second one surfaced the same way:
+  `secondary-family-cap-caveat`, a 312-specimen sweep, **~6s alone and 30s+
+  loaded**.
+
+  Both now carry explicit 120s budgets with the measurement beside them, and
+  the suite default goes **30s → 60s**. The config had already been raised once
+  for this exact condition and its comment says why; the condition recurred
+  because the second term — the wait for a CPU — grows with the suite. It will
+  need raising again, and the fix each time is to re-measure, not to guess.
+
+  An intermittently-failing gate is a gate people learn to ignore, and this one
+  guards duplicated **logic** — the class nobody sets out to create and nobody
+  notices.
+
+### Added
+- **The header and description lines of the reviewer-facing artifacts now have
+  tests.** All were `NoCoverage` — each could be deleted and every test still
+  passed — and each states something that changes how the content below it
+  reads:
+
+  - The **fix list's** asserted-pack receipts (court profile, privacy regimes,
+    estate state *and* the formality posture the state's catalog node carries),
+    its **input-warning** banners ("read as a redline with all changes
+    accepted"), and its unmatched-document banner. Anti-vacuity in each case:
+    a report must never imply a check ran that did not.
+  - The **critical-dates Markdown's** court-profile receipt — which records the
+    basis for any rolled or court-day date and ends *"the filer's own count
+    governs for any certification"* — and its *"None **could** be computed to an
+    absolute date"* empty state. A register that renders an empty table reads
+    as "no deadlines in this document", which is a different claim.
+  - The **critical-dates `.ics` event description**: who is responsible, which
+    profile computed the date and the roll steps it applied, and the **range
+    deadline**. That last one can mislead — an all-day event on the window's
+    first day invites a calendar user to read the earliest date as the
+    controlling one, which is exactly why the renderer states both bounds.
+
+  `src/report/exports.ts`: 54.17% → **56.16%**, NoCoverage 43 → 36, now **0.76
+  of a point** from eligibility for the mutated set.
+
 ## [9.588.0] — 2026-09-08
 
 ### Added
