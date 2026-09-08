@@ -25,6 +25,7 @@
 // pre-fix behavior that splits a surrogate pair and emits U+FFFD into a
 // quoted excerpt, long after the shared helper was corrected.
 import { blankTimings } from "../engine/blank-timings.js";
+import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
 import { truncate } from "./v3/_dx.js";
 import {
   AlignmentType,
@@ -917,7 +918,9 @@ function renderPerDocumentSection(input: BundleReportInput): (Paragraph | Table)
       }
     }
     out.push(...renderPerDocumentRegimeCoverage(doc.run));
-    out.push(...renderPerDocumentSecondaryFamilies(doc.secondary_families));
+    out.push(
+      ...renderPerDocumentSecondaryFamilies(doc.secondary_families, doc.secondary_families_omitted),
+    );
     out.push(spacer());
   }
   out.push(pageBreak());
@@ -958,6 +961,7 @@ function renderPerDocumentRegimeCoverage(run: EngineRun): Paragraph[] {
 // the document's own per-document DOCX download carries the full section.
 function renderPerDocumentSecondaryFamilies(
   secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
+  omitted?: number,
 ): Paragraph[] {
   if (!secondary || secondary.length === 0) return [];
   const out: Paragraph[] = [
@@ -968,6 +972,13 @@ function renderPerDocumentSecondaryFamilies(
       text: "Detected from this document's vocabulary, not confirmed. Where the document is not of that family, an absence below is a clause it was never supposed to carry.",
       italics: true,
     }),
+    // The per-document cap, stated here for the same reason it is stated in the
+    // single-document report: the bundle JSON has carried the number since
+    // 9.567.0 and the CONSOLIDATED REPORT — the artifact a reviewer actually
+    // reads — showed the truncated list as if it were the whole set.
+    ...(omitted && omitted > 0
+      ? [para({ text: cappedFamiliesNotice(omitted, secondary.length), bold: true })]
+      : []),
   ];
   for (const fam of secondary) {
     const c = fam.counts;

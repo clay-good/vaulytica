@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.575.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The consolidated bundle report showed a truncated "also checked" list as
+  if it were the whole set.** The bundle JSON has carried
+  `secondary_families_omitted` since 9.567.0; the DOCX a reviewer actually
+  reads did not. It states the same sentence the single-document report does
+  now, from the same single owner.
+
+### Added
+- **`tests/integration/cap-caveat-reach.test.ts` — the prior question.**
+  9.567.0's test proves each surface says the number *when it is handed one*.
+  This asks whether there is a surface nobody hands it to, which is how the
+  caveat reached one consumer for as long as it did: every renderer was correct
+  on its own terms and the SET of renderers was never enumerated.
+
+  🚨 Two things went wrong writing it, both recorded in the file:
+
+  - A bare `/Also checked/` matched the empty-state copy's "drop a pair and
+    they are **also checked** against each other", and a doc comment in
+    `playbook-candidates.ts` that merely *describes* the section. Comments are
+    stripped and the markers narrowed — the third time a source-scanning guard
+    in this repo has been fooled by a quoted phrase in a comment.
+  - It first accepted the field NAME as evidence, so a file that only
+    **declares** `secondary_families_omitted` passed. Proven by deleting the
+    bundle's notice and watching it stay green. Evidence of a caveat has to be
+    evidence of *rendering* one: import lines are stripped too, so a leftover
+    import cannot stand in for a call.
+
 ## [9.574.0] — 2026-09-08
 
 ### Added

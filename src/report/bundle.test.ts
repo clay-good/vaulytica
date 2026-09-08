@@ -186,6 +186,37 @@ describe("buildBundleJson", () => {
   // tests/integration/secondary-family-cap-caveat.test.ts for the other
   // surfaces. Anti-vacuity is the second half: the field must be ABSENT when
   // the cap did not bite, so every existing bundle stays byte-identical.
+  it("the consolidated DOCX states the cap too, not just the JSON", async () => {
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const base = makeInput();
+    const fam = [
+      {
+        playbook_id: "dpa",
+        playbook_name: "DPA",
+        findings: [],
+        counts: { critical: 0, warning: 0, info: 0 },
+      },
+    ];
+    const docx = async (omitted?: number): Promise<string> => {
+      const blob = await buildBundleDocxReport({
+        ...base,
+        documents: [
+          {
+            ...base.documents[0]!,
+            secondary_families: fam,
+            ...(omitted === undefined ? {} : { secondary_families_omitted: omitted }),
+          },
+          base.documents[1]!,
+        ],
+      });
+      const zip = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+      return strFromU8(zip["word/document.xml"]!);
+    };
+    expect(await docx(4)).toContain("4 further families");
+    // Anti-vacuity: a bundle whose cap did not bite says nothing about it.
+    expect(await docx()).not.toContain("NOT scanned");
+  });
+
   it("carries the per-document count of families the cap left unscanned", async () => {
     const base = makeInput();
     const withCap = await buildBundleJson({

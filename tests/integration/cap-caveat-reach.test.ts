@@ -1,0 +1,121 @@
+/**
+ * Wherever the secondary-family list is RENDERED, the cap must be stated.
+ *
+ * `secondary-family-cap-caveat.test.ts` proves each surface says the number
+ * when it is handed one. This asks the prior question: is there a surface
+ * nobody hands it to? That is how the caveat reached exactly one consumer for
+ * as long as it did — every individual renderer was correct on its own terms,
+ * and the SET of renderers was never enumerated.
+ *
+ * The bundle's consolidated DOCX was the last one: it carried the "Also
+ * checked" list and the "detected, not confirmed" caveat, the bundle JSON had
+ * carried the omitted count since 9.567.0, and the artifact a reviewer actually
+ * reads showed a truncated list as if it were the whole set.
+ *
+ * A file that renders the list and says nothing about the cap fails here. Add a
+ * declared exception with a reason if one is ever genuinely right.
+ */
+
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+
+const ROOT = process.cwd();
+
+/** Every non-test `.ts` under a directory, recursively, POSIX-separated. */
+function sources(dir: string): string[] {
+  const out: string[] = [];
+  for (const e of readdirSync(join(ROOT, dir), { withFileTypes: true }).sort((a, b) =>
+    a.name < b.name ? -1 : 1,
+  )) {
+    const p = `${dir}/${e.name}`;
+    if (e.isDirectory()) out.push(...sources(p));
+    else if (e.name.endsWith(".ts") && !e.name.endsWith(".test.ts")) out.push(p);
+  }
+  return out;
+}
+
+/**
+ * A file RENDERS the list when it walks the families to produce output — the
+ * heading a reader sees is the reliable tell, and it is the same phrase in
+ * every surface ("Additional Checks From Other Detected Families" /
+ * "additional checks from other detected families" / "Also checked").
+ */
+const RENDER_MARKERS = [/other detected families/i, /Also checked \(/, /Also checked: /];
+
+/**
+ * Comments are stripped before the scan.
+ *
+ * 🚨 Twice in this repo a source-scanning guard has been fooled by a quoted
+ * phrase inside a comment, and this one was too on its first run:
+ * `playbook-candidates.ts` DOCUMENTS the section it feeds ("these drive the
+ * report's 'additional checks from other detected families'") without rendering
+ * anything. A guard that reads comments is reading documentation, not code.
+ *
+ * The markers are narrowed for the same reason: a bare /Also checked/ matched
+ * the empty-state copy's "drop a pair and they are also checked against each
+ * other", which is about cross-document checks and not this list at all.
+ */
+function stripComments(src: string): string {
+  return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}
+
+/**
+ * Import lines are stripped too, for the same reason comments are: an
+ * `import { cappedFamiliesNotice }` left behind by a deleted call site is a
+ * mention, not a render. (Lint would eventually flag the unused import — but a
+ * guard that depends on a *different* guard firing first is not a guard.)
+ */
+function scannable(src: string): string {
+  return stripComments(src).replace(/^import\s[\s\S]*?from\s+"[^"]+";$/gm, "");
+}
+
+/**
+ * Saying the cap: the shared sentence, or the phrase every short form of it
+ * carries.
+ *
+ * 🚨 This first accepted `secondary_families_omitted` / `secondaryFamiliesOmitted`
+ * as evidence — and a file that merely DECLARES the field passes that. Proven:
+ * the bundle's notice was deleted and the guard stayed green, because
+ * `BundleDocument` still declares the field two hundred lines away. Evidence of
+ * a caveat has to be evidence of RENDERING one. `cappedFamiliesNotice` is the
+ * single owner of the long form; "NOT scanned" is the phrase the compact form
+ * on the multi-document card shares with it, so the two cannot say opposite
+ * things about whether anything was skipped.
+ */
+const STATES_CAP = [/cappedFamiliesNotice/, /NOT scanned/];
+
+const DECLARED = new Map<string, string>();
+
+describe("the secondary-family cap is stated by every renderer of the list", () => {
+  it("derives a plausible surface (guards the derivation itself)", () => {
+    const files = [...sources("src/report"), ...sources("src/ui"), ...sources("tools/cli")];
+    expect(files.length).toBeGreaterThan(40);
+    const renderers = files.filter((f) =>
+      RENDER_MARKERS.some((re) => re.test(scannable(readFileSync(join(ROOT, f), "utf8")))),
+    );
+    // Four today: the report DOCX and HTML, the browser tab, and the bundle.
+    // An empty set would make the assertion below vacuous.
+    expect(renderers.length).toBeGreaterThanOrEqual(4);
+    expect(renderers).toContain("src/report/bundle.ts");
+    expect(renderers).toContain("src/ui/states.ts");
+  });
+
+  it("no renderer shows the list without saying how much of it is missing", () => {
+    const files = [...sources("src/report"), ...sources("src/ui"), ...sources("tools/cli")];
+    const silent: string[] = [];
+    for (const f of files) {
+      const src = scannable(readFileSync(join(ROOT, f), "utf8"));
+      if (!RENDER_MARKERS.some((re) => re.test(src))) continue;
+      if (STATES_CAP.some((re) => re.test(src))) continue;
+      if (DECLARED.has(f)) continue;
+      silent.push(f);
+    }
+    expect(
+      silent,
+      `these render the "also checked" list and never say the cap truncated it:\n  ${silent.join(
+        "\n  ",
+      )}`,
+    ).toEqual([]);
+  });
+});
