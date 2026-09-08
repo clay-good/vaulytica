@@ -167,7 +167,7 @@ describe("buildFixListCsv", () => {
     const csv = buildFixListCsv(run);
     const rows = csv.trimEnd().split("\r\n");
     expect(rows[0]).toBe(
-      "severity,rule_id,section,title,explanation,recommendation,authority,authority_url",
+      "severity,rule_id,section,title,explanation,recommendation,authority,authority_url,clause",
     );
     expect(rows).toHaveLength(3);
     expect(rows[1]).toContain("critical,MSA-006,s10,");
@@ -480,5 +480,56 @@ describe("buildFixListMarkdown — the ingest's own caveats", () => {
     const bare = buildFixListMarkdown(run);
     expect(buildFixListMarkdown(run, undefined, undefined, { warnings: [] })).toBe(bare);
     expect(bare).not.toContain("About this input");
+  });
+});
+
+/**
+ * A fix list is WORKED FROM, not read.
+ *
+ * It gave a rule id, a title, a section and the reasoning — and no clause. The
+ * one question the artifact exists to answer, "what do I edit?", sent the
+ * reviewer back to the document to find the sentence themselves.
+ *
+ * The two honest shapes stay apart here exactly as they do in the reports: a
+ * finding about an ABSENCE has nothing to quote and says so, rather than
+ * printing the rule's own marker string as if it were the contract's words.
+ */
+describe("the fix list names the clause to edit", () => {
+  const withSpan = (): Finding => {
+    const f = finding("CAP-1", "critical", 4);
+    f.excerpt = {
+      text: "  Liability   is\nunlimited.  ",
+      section_id: "s4",
+      start_offset: 5,
+      end_offset: 40,
+    };
+    return f;
+  };
+  const absence = (): Finding => {
+    const f = finding("MISS-1", "warning", 7);
+    f.excerpt = { text: "RULE-MARKER-STRING", section_id: "s7", start_offset: 0, end_offset: 0 };
+    return f;
+  };
+
+  it("quotes it in the Markdown, whitespace-collapsed for a one-line item", () => {
+    const md = buildFixListMarkdown(makeRun([withSpan()]));
+    expect(md).toContain('- Clause: "Liability is unlimited."');
+  });
+
+  it("says there is nothing to edit when the finding is about an absence", () => {
+    const md = buildFixListMarkdown(makeRun([absence()]));
+    expect(md).toContain("About an absence — there is no clause to edit.");
+    expect(md).not.toContain("RULE-MARKER-STRING");
+  });
+
+  it("appends a clause column to the CSV rather than inserting one", () => {
+    // Appended so a consumer reading by column index keeps working.
+    const csv = buildFixListCsv(makeRun([withSpan(), absence()]));
+    const rows = csv.trimEnd().split("\r\n");
+    expect(rows[0]!.split(",").pop()).toBe("clause");
+    expect(rows[1]).toContain("Liability is unlimited.");
+    // Empty for the absence row, and never the marker string.
+    expect(rows[2]!.endsWith(",")).toBe(true);
+    expect(csv).not.toContain("RULE-MARKER-STRING");
   });
 });

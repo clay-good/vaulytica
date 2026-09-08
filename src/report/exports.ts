@@ -205,6 +205,17 @@ export function buildFixListMarkdown(
       lines.push(`- [ ] **${f.rule_id}** — ${f.title}`);
       const section = f.excerpt.section_id;
       if (section) lines.push(`  - Section: ${section}`);
+      // WHICH WORDS. A fix list is worked from, not read — and it gave a
+      // section id and no clause, so the one question it exists to answer
+      // ("what do I edit?") sent the reviewer back to the document to find the
+      // sentence themselves. The two honest shapes are kept apart exactly as
+      // the reports keep them: a finding about an ABSENCE has no clause to
+      // quote, and says so rather than printing the rule's marker string.
+      if (f.excerpt.end_offset > f.excerpt.start_offset) {
+        lines.push(`  - Clause: "${truncateExcerpt(f.excerpt.text)}"`);
+      } else {
+        lines.push("  - About an absence — there is no clause to edit.");
+      }
       if (f.explanation) lines.push(`  - ${f.explanation}`);
       if (f.recommendation) lines.push(`  - Recommendation: ${f.recommendation}`);
       const cites = citationLineMarkdown(f, currency);
@@ -255,6 +266,15 @@ function csvRow(fields: string[]): string {
 }
 
 /** The findings as a CSV, one row per finding, in the run's sorted order. */
+/**
+ * The clause, at a length a checklist row can hold. 300 rather than the
+ * report's 900: this is a line in a to-do item, not the evidence block.
+ */
+function truncateExcerpt(text: string): string {
+  const t = text.trim().replace(/\s+/g, " ");
+  return t.length > 300 ? `${t.slice(0, 299)}…` : t;
+}
+
 export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): string {
   const rows: string[] = [];
   rows.push(
@@ -267,6 +287,9 @@ export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): st
       "recommendation",
       "authority",
       "authority_url",
+      // Appended, never inserted: a consumer reading by column index keeps
+      // working. Empty for a finding about an absence — see the Markdown note.
+      "clause",
     ]),
   );
   for (const f of run.findings) {
@@ -280,6 +303,7 @@ export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): st
         f.recommendation ?? "",
         citationLine(f, currency),
         citationUrls(f), // spec-v8 §14 — verifiable URL alongside the name
+        f.excerpt.end_offset > f.excerpt.start_offset ? truncateExcerpt(f.excerpt.text) : "",
       ]),
     );
   }

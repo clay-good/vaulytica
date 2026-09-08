@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,234+ passing tests` · `v9.583.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,237+ passing tests` · `v9.584.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -911,7 +911,7 @@ The suite proves the engine is _correct_ on inputs an author wrote down (v7) and
 
 A finding is _citable_ only if you can follow it to the source from the artifact in your hand. Before v8 that was true of the Word doc and the JSON and **false** of the spreadsheet row (URL stripped to a bare name), the calendar event (no source), and a cited-by-team-policy rule (it rendered `"Policy 4.2 — "` with a dangling em-dash). v8 closes every gap and pins it with a gate:
 
-- **Inline-everywhere.** The Markdown fix-list carries a `[source](url)` link; the CSV gains an `authority_url` column; the URL-less custom rule renders cleanly as `Policy 4.2 (cited — team policy)`. A **cross-format completeness meta-test** asserts that for every cited finding, the resolvable URL survives into **all** of DOCX, JSON, Markdown, CSV, SARIF, and HTML — a new output that cannot carry a citation does not ship.
+- **Inline-everywhere.** The Markdown fix-list carries a `[source](url)` link; the CSV gains an `authority_url` column; both also name **the clause to edit** — the fix list is worked from, not read, and a section id alone sends the reviewer back to the document to find the sentence (a finding about an *absence* says there is nothing to edit rather than quoting the rule's marker string); the URL-less custom rule renders cleanly as `Policy 4.2 (cited — team policy)`. A **cross-format completeness meta-test** asserts that for every cited finding, the resolvable URL survives into **all** of DOCX, JSON, Markdown, CSV, SARIF, and HTML — a new output that cannot carry a citation does not ship.
 - **Breadth.** `citationFamily()` recognizes the forms the DKB actually cites beyond US statutes — **EU/GDPR** (`Regulation (EU) 2016/679`), **standards** (`ISO/IEC 27001:2022`, `NIST SP 800-53 Rev. 5`), and **secondary sources** (Restatements, uniform acts) — rendering each conventionally. Only US-statutory forms take a Bluebook parenthetical year (EU/standards embed their own); **pinpoint subsections** like `45 C.F.R. § 164.410(a)(1)` are preserved, never truncated to the base section.
 - **Honesty & wrapping.** A reader-facing **freshness signal** shows the retrieval date (and publication date when genuinely known — _never fabricated_; absent when unknown). It is the _date_, never a computed elapsed "age" — elapsed time depends on the clock and would break determinism. Long citation URLs **wrap** (DOCX run-splitting · HTML `overflow-wrap`) and are **never truncated** — a structure test asserts the full source + URL render.
 - **Integrity tool.** A build-only [`tools/citation-check`](tools/citation-check/) sweeps every citation URL: well-formedness gates every commit (pure), reachability runs on a schedule (network). It is `src/`-isolated — a guard test asserts the browser bundle can never import it.
@@ -1381,7 +1381,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 14,234+ tests, ~140s
+npm run test         # vitest — 14,237+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

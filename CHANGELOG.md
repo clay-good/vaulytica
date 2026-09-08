@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.584.0] — 2026-09-08
+
+### Added
+- **The fix list names the clause to edit.** It carried a rule id, a title, a
+  section and the reasoning — and no clause text. A fix list is *worked from*,
+  not read, and the one question it exists to answer, "what do I edit?", sent
+  the reviewer back to the document to find the sentence themselves.
+
+  Markdown gains `- Clause: "…"` (whitespace-collapsed, 300 chars, so a
+  checklist item stays one line); the CSV gains a `clause` column **appended,
+  never inserted**, so a consumer reading by column index keeps working.
+
+  The two honest shapes stay apart exactly as the reports keep them: a finding
+  about an **absence** has nothing to quote and says *"About an absence — there
+  is no clause to edit"* rather than printing the rule's own marker string as
+  if it were the contract's words. Pinned in both directions, including that
+  the marker string appears nowhere in either artifact.
+
 ## [9.583.0] — 2026-09-08
 
 ### Added
