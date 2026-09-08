@@ -54,6 +54,12 @@ function argv(inputs: Record<string, string>): string {
     OUT: "",
     CONSISTENCY: "",
     FAIL_ON_CONSISTENCY: "",
+    DELIVERY: "",
+    FAIL_ON_DELIVERY: "",
+    PLAYBOOK_FILE: "",
+    POSTURE: "",
+    FAIL_ON_POSTURE: "",
+    FAIL_ON_DIVERGENCE: "",
     ...inputs,
   };
   const out = execFileSync("bash", [scriptPath], { env, encoding: "utf8" });
@@ -103,6 +109,41 @@ describe("the Action composes the argv it advertises", () => {
         "--consistency",
       );
     }
+  });
+
+  it("--fail-on-delivery turns the scan on by itself", () => {
+    // The gate is meaningless without the scan, so the flag implies it rather
+    // than failing on a combination the caller would have to learn.
+    const line = argv({ FILES: "outgoing.docx", FAIL_ON_DELIVERY: "critical" });
+    expect(line).toContain("--delivery --fail-on-delivery critical");
+  });
+
+  it("--fail-on-posture rides with the playbook file it scores against", () => {
+    const line = argv({
+      FILES: "redline.docx",
+      PLAYBOOK_FILE: "team.json",
+      FAIL_ON_POSTURE: "below-acceptable",
+    });
+    expect(line).toContain("--playbook-file team.json");
+    expect(line).toContain("--posture --fail-on-posture below-acceptable");
+  });
+
+  it("drops the posture flags when no playbook file was given to score against", () => {
+    // --posture needs a ladder; asking for it without one would be a usage
+    // error from the CLI, and the Action should not compose one.
+    const line = argv({ FILES: "redline.docx", POSTURE: "true", FAIL_ON_POSTURE: "acceptable" });
+    expect(line).not.toContain("--posture");
+    expect(line).not.toContain("--fail-on-posture");
+  });
+
+  it("--fail-on-divergence turns the posture on, since it scores across it", () => {
+    const line = argv({
+      FILES: "deal/",
+      PLAYBOOK_FILE: "team.json",
+      FAIL_ON_DIVERGENCE: "true",
+    });
+    expect(line).toContain("--posture");
+    expect(line).toContain("--fail-on-divergence");
   });
 
   it("never sends the bundle flags to compare, which has no bundle", () => {

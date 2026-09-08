@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.550.0] — 2026-09-07
+
+### Added
+- **Five of `analyze`'s seven gates are reachable from the Action now; three
+  were not reachable at all.** The Action is how most CI consumers call this
+  tool, and **a gate CI cannot switch on is a gate CI does not have.** New
+  inputs: `delivery`, `fail-on-delivery`, `playbook-file`, `posture`,
+  `fail-on-posture`, `fail-on-divergence`.
+
+  Each implies what it needs rather than making the caller learn a combination:
+  `fail-on-delivery` turns the scan on, `fail-on-posture` and
+  `fail-on-divergence` turn the posture on, and the posture flags ride only with
+  the `playbook-file` they score against — asking for a posture with no ladder
+  would be a usage error from the CLI, and the Action should not compose one.
+
+  The two gates still unreachable are **declared with the reason**, and the
+  guard asserts each declaration is still true: `--fail-on-coherence-regression`
+  needs a **baseline round** — a second set of documents, or a saved coherence
+  artifact — which the Action's single `files` input does not model, and
+  `--fail-on-production-gap` belongs to `--production-qa`, a different mode.
+
+  🥇 **Found by the guard written one release earlier.** 9.549.0's exit-code
+  guard derives the gate list from `parseArgs`; extending it to ask *which of
+  these can a workflow switch on?* answered "four of seven" — and the two
+  hardest-stakes gates in the tree, the pre-disclosure scan and the team's own
+  floor, were among the missing.
+
+  ⚠️ **A new `action.yml` input is a `set -u` landmine for anything driving the
+  script.** The argv test defines every input the step exports, as GitHub does;
+  adding five without adding them there failed six cases with *"unbound
+  variable"* rather than a wrong argv. The failure is loud, which is the point —
+  but it is the reason that harness enumerates the environment rather than
+  passing only what each case sets.
+
 ## [9.549.0] — 2026-09-07
 
 ### Fixed

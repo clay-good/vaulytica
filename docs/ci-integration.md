@@ -75,6 +75,12 @@ exposure — "this redline added a critical finding."
 | `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate |
 | `playbook` | both | force a specific playbook id instead of auto-matching |
 | `out` | analyze | directory for one output file per document per format |
+| `delivery` | analyze | `true` to run the pre-disclosure scan (`HANDOFF-001..005`) over the uploaded container |
+| `fail-on-delivery` | analyze | `critical\|warning\|info` — non-zero exit when a **pre-disclosure** finding is at or above it. Implies `delivery`. `fail-on` does not gate on these |
+| `playbook-file` | analyze | path to your team's custom playbook JSON in the repository |
+| `posture` | analyze | `true` to score the draft against that playbook's `negotiation_positions` |
+| `fail-on-posture` | analyze | `ideal\|acceptable\|below-acceptable` — non-zero exit when any dimension of **this** document sits at or below the rung. Implies `posture`; a not-stated dimension never trips it |
+| `fail-on-divergence` | analyze | `true` to fail when a posture front diverges **across** the bundle. Implies `posture`; needs 2+ inputs |
 | `consistency` | analyze | `true` to read the inputs **as a bundle** and run the cross-document checks; `only` to report the bundle and nothing else (no per-document report, no `out` needed). A directory is not a bundle — assert it only when the documents belong to the same deal |
 | `fail-on-consistency` | analyze | `critical\|warning\|info` — non-zero exit when a **cross-document** finding is at or above it. Implies `consistency`. Separate from `fail-on`, which scores each document alone |
 
@@ -216,6 +222,13 @@ and `analyze` has seven of them, each scoped to what it reads:
 | `--fail-on-divergence` | a posture front the documents disagree on |
 | `--fail-on-coherence-regression` | a binding floor that moved to a worse stated rung vs. a baseline |
 | `--fail-on-production-gap` | a Bates gap in a production set (`--production-qa`) |
+
+Five of the seven are reachable from the Action as inputs of the same name.
+The two that are not need something its single `files` input does not model:
+`--fail-on-coherence-regression` needs a **baseline round** (a second set of
+documents, or a saved coherence artifact), and `--fail-on-production-gap`
+belongs to `--production-qa`, a Bates and privilege-log sweep over a production
+set rather than per-document analysis. Both are available from the CLI.
 
 `compare` uses `2` the same way, when the revision introduced a finding at or
 above the threshold. The rest: `1` for a playbook diff change (`--exit-code`)

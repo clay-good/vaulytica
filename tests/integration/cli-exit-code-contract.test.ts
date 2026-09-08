@@ -27,6 +27,7 @@ const root = process.cwd();
 const read = (...p: string[]): string => readFileSync(join(root, ...p), "utf8");
 const runSource = read("tools", "cli", "run.ts");
 const ciDoc = read("docs", "ci-integration.md");
+const actionYml = read("action.yml");
 const readme = read("README.md");
 
 /** The `--fail-on*` flags `analyze` actually parses. */
@@ -60,6 +61,45 @@ describe("the analyze gate surface", () => {
     expect(
       missing,
       `docs/ci-integration.md's exit-code guidance omits these gates, so a reader branching on exit codes cannot learn they exist:\n  ${missing.join(
+        "\n  ",
+      )}`,
+    ).toEqual([]);
+  });
+
+  it("makes every gate reachable from the Action, which is the CI surface", () => {
+    // The Action is how most CI consumers call this tool, and its input surface
+    // is deliberately small — but a GATE that CI cannot switch on is a gate CI
+    // does not have. Three were unreachable until 9.550.0: the pre-disclosure
+    // scan's, and both halves of the team-ladder one.
+    //
+    // The mapping is the flag name without its `--`, which is how every input
+    // here is named; a gate that needs a differently-named input can be listed
+    // as an exception with the reason, and the assertion will say so.
+    // Declared, with the reason, and asserted USED below so a stale entry
+    // fails here rather than quietly covering a gate that has since arrived.
+    const NEEDS_A_MODE_THE_ACTION_DOES_NOT_EXPOSE = new Map([
+      [
+        "fail-on-coherence-regression",
+        "needs a BASELINE round — a second set of documents, or a saved coherence artifact — which the Action's single `files` input does not model",
+      ],
+      [
+        "fail-on-production-gap",
+        "belongs to `--production-qa`, a different mode: a Bates/privilege-log sweep over a production set rather than per-document analysis",
+      ],
+    ]);
+    const exposes = (name: string): boolean => new RegExp(`^\\s{2}${name}:`, "m").test(actionYml);
+    const missing = gateFlags()
+      .map((f) => f.replace(/^--/, ""))
+      .filter((name) => !exposes(name) && !NEEDS_A_MODE_THE_ACTION_DOES_NOT_EXPOSE.has(name));
+    for (const [name, why] of NEEDS_A_MODE_THE_ACTION_DOES_NOT_EXPOSE) {
+      expect(
+        exposes(name),
+        `declared exception "${name}" (${why}) is exposed now — delete the entry`,
+      ).toBe(false);
+    }
+    expect(
+      missing,
+      `action.yml exposes no input for these gates, so a workflow cannot switch them on:\n  ${missing.join(
         "\n  ",
       )}`,
     ).toEqual([]);

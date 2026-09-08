@@ -42,6 +42,30 @@ inputs:
     description: "analyze only: set to true to read two or more inputs AS A BUNDLE and run the cross-document consistency checks. A directory is not a bundle — assert this only when the documents belong to the same deal. Set to 'only' to report the bundle and nothing else (no per-document report, and no 'out' needed)."
     required: false
     default: ""
+  delivery:
+    description: "analyze only: set to true to run the pre-disclosure scan (HANDOFF-001..005) over the uploaded container — tracked changes, comments, hidden content, authoring metadata, and sensitive-data patterns."
+    required: false
+    default: ""
+  fail-on-delivery:
+    description: "analyze only: exit non-zero when a PRE-DISCLOSURE finding is at or above this severity: critical|warning|info. Implies delivery. Separate from fail-on, which reads the run — the delivery scan sits outside it. Empty = never fail."
+    required: false
+    default: ""
+  playbook-file:
+    description: "analyze only: path to a custom playbook JSON in your repository (your team's positions), loaded instead of relying on the built-in match alone."
+    required: false
+    default: ""
+  posture:
+    description: "analyze only: set to true to classify the draft against the playbook-file's negotiation_positions. Requires playbook-file."
+    required: false
+    default: ""
+  fail-on-posture:
+    description: "analyze only: exit non-zero when any posture dimension sits at or below this rung: ideal|acceptable|below-acceptable. Implies posture. A not-stated dimension never trips it. Empty = never fail."
+    required: false
+    default: ""
+  fail-on-divergence:
+    description: "analyze only: set to true to exit non-zero when a posture front diverges across the bundle — the documents disagree with each other on a rung. Requires posture (and so playbook-file), and two or more inputs."
+    required: false
+    default: ""
   fail-on-consistency:
     description: "analyze only: exit non-zero when a CROSS-DOCUMENT finding is at or above this severity: critical|warning|info. Implies consistency. Separate from fail-on, which scores each document alone. Empty = never fail."
     required: false
@@ -78,6 +102,12 @@ runs:
         PLAYBOOK: ${{ inputs.playbook }}
         OUT: ${{ inputs.out }}
         CONSISTENCY: ${{ inputs.consistency }}
+        DELIVERY: ${{ inputs.delivery }}
+        FAIL_ON_DELIVERY: ${{ inputs.fail-on-delivery }}
+        PLAYBOOK_FILE: ${{ inputs.playbook-file }}
+        POSTURE: ${{ inputs.posture }}
+        FAIL_ON_POSTURE: ${{ inputs.fail-on-posture }}
+        FAIL_ON_DIVERGENCE: ${{ inputs.fail-on-divergence }}
         FAIL_ON_CONSISTENCY: ${{ inputs.fail-on-consistency }}
       run: |
         set -euo pipefail
@@ -108,6 +138,31 @@ runs:
         [ -n "$FAIL_ON" ] && args+=(--fail-on "$FAIL_ON")
         if [ "$CMD" = "analyze" ] && [ -n "$OUT" ]; then
           args+=(--out "$OUT")
+        fi
+        # The pre-disclosure scan and its gate. `--fail-on-delivery` implies the
+        # scan, so the flag is enough on its own; `--fail-on` does NOT gate on
+        # these findings, which is why the gate has a flag of its own.
+        if [ "$CMD" = "analyze" ]; then
+          if [ -n "$FAIL_ON_DELIVERY" ]; then
+            args+=(--delivery --fail-on-delivery "$FAIL_ON_DELIVERY")
+          elif [ "$DELIVERY" = "true" ]; then
+            args+=(--delivery)
+          fi
+        fi
+        # The team's own ladder. --posture needs the playbook file to score
+        # against, so the flags only go on together.
+        if [ "$CMD" = "analyze" ] && [ -n "$PLAYBOOK_FILE" ]; then
+          args+=(--playbook-file "$PLAYBOOK_FILE")
+          if [ -n "$FAIL_ON_POSTURE" ]; then
+            args+=(--posture --fail-on-posture "$FAIL_ON_POSTURE")
+          elif [ "$POSTURE" = "true" ] || [ "$FAIL_ON_DIVERGENCE" = "true" ]; then
+            args+=(--posture)
+          fi
+          # Cross-document posture: the documents disagreeing with each other,
+          # which is a different question from any one of them being low.
+          if [ "$FAIL_ON_DIVERGENCE" = "true" ]; then
+            args+=(--fail-on-divergence)
+          fi
         fi
         # Cross-document checks read the inputs as one bundle. analyze-only, and
         # asserted rather than inferred: a directory of unrelated documents
