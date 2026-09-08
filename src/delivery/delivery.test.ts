@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readContainer } from "./container.js";
 import { deriveHandoffFindings } from "./handoff.js";
-import { MAX_SCAN_CHARS, scanSensitive } from "./sensitive.js";
+import { MAX_PER_TYPE, MAX_SCAN_CHARS, scanSensitive } from "./sensitive.js";
 import { maskDigits, maskEmail, luhnValid, ssnStructurallyValid } from "./mask.js";
 import { scanDelivery } from "./index.js";
 import {
@@ -571,5 +571,42 @@ describe("scanSensitive — the paths nothing had executed", () => {
     // caveat either, and the assertion below would pass for the wrong reason.
     expect(facts.sensitive.some((f) => f.type === "ssn")).toBe(true);
     expect(facts.note).not.toContain("was not scanned");
+  });
+});
+
+/**
+ * Every bound in this pack is now SAID.
+ *
+ * 9.553.0 fixed the scan's 5 MB character cap, which was silent. Two more were
+ * hiding beside it, and the rule is the same for all three: **a bound that is
+ * not stated is a number the reader trusts and should not.**
+ *
+ *  - `MAX_PER_TYPE` stops at 200 distinct values per type. The finding still
+ *    fires, so the document is never called clean — but its count stops being a
+ *    total and becomes a floor, and "247 SSNs" and "200 SSNs" are different
+ *    facts to act on.
+ *  - The PDF path reads the first `MAX_PART_BYTES` of the container. The
+ *    existing note was careful about compressed streams and encrypted regions
+ *    and said nothing about the part of the file it never opened.
+ */
+describe("the pre-disclosure scan states its bounds", () => {
+  it("says when the per-type cap was reached, and names the type", () => {
+    // 250 distinct, structurally valid SSNs: more than the cap.
+    const ssns: string[] = [];
+    for (let i = 0; i < 250; i++) {
+      const serial = String(1000 + i).padStart(4, "0");
+      ssns.push(`123-45-${serial}`);
+    }
+    const facts = readContainer(new ArrayBuffer(0), "paste", ssns.join(" and "));
+    expect(facts.sensitive.filter((f) => f.type === "ssn")).toHaveLength(MAX_PER_TYPE);
+    expect(facts.note).toContain("a floor, not a total");
+    expect(facts.note).toContain("ssn");
+  });
+
+  it("says nothing about the cap when it was not reached", () => {
+    const facts = readContainer(new ArrayBuffer(0), "paste", "SSN 123-45-6789.");
+    // Positive first: the scan ran and found the value.
+    expect(facts.sensitive.some((f) => f.type === "ssn")).toBe(true);
+    expect(facts.note ?? "").not.toContain("a floor, not a total");
   });
 });

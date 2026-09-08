@@ -23,9 +23,16 @@ import type {
   RevisionFact,
   CommentFact,
   HiddenFact,
+  SensitiveFact,
 } from "./types.js";
 import { strFromU8 } from "fflate";
-import { MAX_SCAN_CHARS, scanSensitive, sensitiveScanTruncated } from "./sensitive.js";
+import {
+  MAX_PER_TYPE,
+  MAX_SCAN_CHARS,
+  cappedTypes,
+  scanSensitive,
+  sensitiveScanTruncated,
+} from "./sensitive.js";
 import { inflateOoxmlParts } from "../ingest/ooxml.js";
 
 /**
@@ -39,12 +46,30 @@ import { inflateOoxmlParts } from "../ingest/ooxml.js";
  * at all. The PDF branch already carries a reach caveat of its own for the
  * same reason; this one belongs beside it.
  */
-function withScanReach(text: string, note?: string): string | undefined {
-  if (!sensitiveScanTruncated(text)) return note;
-  const reach =
-    `The sensitive-data scan read the first ${MAX_SCAN_CHARS.toLocaleString("en-US")} ` +
-    `characters of ${text.length.toLocaleString("en-US")}; anything after that was not scanned.`;
-  return note ? `${note} ${reach}` : reach;
+function withScanReach(
+  text: string,
+  note?: string,
+  sensitive: readonly SensitiveFact[] = [],
+): string | undefined {
+  const caveats: string[] = [];
+  if (sensitiveScanTruncated(text)) {
+    caveats.push(
+      `The sensitive-data scan read the first ${MAX_SCAN_CHARS.toLocaleString("en-US")} ` +
+        `characters of ${text.length.toLocaleString("en-US")}; anything after that was not scanned.`,
+    );
+  }
+  // The other bound in the same scan, and the same rule: say it. The finding
+  // still fires, so the document is never called clean — but its count stops
+  // being a total and becomes a floor, and the reader has no way to tell.
+  const capped = cappedTypes(sensitive);
+  if (capped.length > 0) {
+    caveats.push(
+      `The scan reports at most ${MAX_PER_TYPE} distinct values per type and reached that limit ` +
+        `for: ${capped.join(", ")}. Those counts are a floor, not a total.`,
+    );
+  }
+  if (caveats.length === 0) return note;
+  return [note, ...caveats].filter(Boolean).join(" ");
 }
 
 /** Per-part read ceiling — bounds the regex work on any one member. */
@@ -75,16 +100,19 @@ export function readContainer(
   source: ContainerSource,
   text: string,
 ): ContainerFacts {
-  const empty = (note: string, inspectable = false): ContainerFacts => ({
-    source,
-    inspectable,
-    note: withScanReach(text, note),
-    revisions: [],
-    comments: [],
-    hidden: [],
-    metadata: [],
-    sensitive: scanSensitive(text),
-  });
+  const empty = (note: string, inspectable = false): ContainerFacts => {
+    const sensitive = scanSensitive(text);
+    return {
+      source,
+      inspectable,
+      note: withScanReach(text, note, sensitive),
+      revisions: [],
+      comments: [],
+      hidden: [],
+      metadata: [],
+      sensitive,
+    };
+  };
 
   if (source === "paste") return empty("Pasted text has no container to inspect.");
   if (source === "image")
@@ -113,15 +141,16 @@ function readDocx(bytes: ArrayBuffer, text: string): ContainerFacts {
   const core = parts["docProps/core.xml"] ?? "";
   const app = parts["docProps/app.xml"] ?? "";
 
+  const sensitive = scanSensitive(text);
   return {
     source: "docx",
     inspectable: true,
-    note: withScanReach(text, undefined),
+    note: withScanReach(text, undefined, sensitive),
     revisions: parseRevisions(document),
     comments: parseComments(comments),
     hidden: parseHidden(document),
     metadata: parseDocxMetadata(core, app),
-    sensitive: scanSensitive(text),
+    sensitive,
   };
 }
 
@@ -265,18 +294,30 @@ function readPdf(bytes: ArrayBuffer, text: string): ContainerFacts {
   );
   const metadata = parsePdfInfo(ascii);
   const comments = parsePdfAnnotations(ascii);
+  const sensitive = scanSensitive(text);
+  // The third bound in this pack, and the last one that was not said: the byte
+  // window above. A PDF larger than MAX_PART_BYTES has its metadata and
+  // annotations read from the first 16 MB only, and the existing reach note —
+  // which is careful about compressed streams and encrypted regions — said
+  // nothing about the part of the file it never opened.
+  const windowed = bytes.byteLength > MAX_PART_BYTES;
   return {
     source: "pdf",
     inspectable: true,
     note: withScanReach(
       text,
-      "PDF scan reads authoring metadata and reviewer annotations (sticky notes, text markup) from the uncompressed byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered.",
+      "PDF scan reads authoring metadata and reviewer annotations (sticky notes, text markup) from the uncompressed byte regions; annotations or metadata inside a compressed object stream or an encrypted region are not recovered." +
+        (windowed
+          ? ` It read the first ${MAX_PART_BYTES.toLocaleString("en-US")} bytes of ` +
+            `${bytes.byteLength.toLocaleString("en-US")}; the rest of the file was not opened.`
+          : ""),
+      sensitive,
     ),
     revisions: [],
     comments,
     hidden: [],
     metadata,
-    sensitive: scanSensitive(text),
+    sensitive,
   };
 }
 

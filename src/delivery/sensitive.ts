@@ -34,7 +34,24 @@ export function sensitiveScanTruncated(text: string): boolean {
   return text.length > MAX_SCAN_CHARS;
 }
 /** Cap distinct hits per type so a pathological input cannot produce unbounded output. */
-const MAX_PER_TYPE = 200;
+export const MAX_PER_TYPE = 200;
+
+/**
+ * Which types hit the per-type cap, so the caveat can name them.
+ *
+ * Same rule as `sensitiveScanTruncated`: a bound that is not SAID is a number
+ * the reader trusts and should not. The finding still fires when the cap bites —
+ * the document is never called clean — but its count becomes a floor rather
+ * than a total, and "247 SSNs" and "200 SSNs" are different facts to act on.
+ */
+export function cappedTypes(facts: readonly SensitiveFact[]): SensitiveFact["type"][] {
+  const counts = new Map<SensitiveFact["type"], number>();
+  for (const f of facts) counts.set(f.type, (counts.get(f.type) ?? 0) + 1);
+  return [...counts]
+    .filter(([, n]) => n >= MAX_PER_TYPE)
+    .map(([t]) => t)
+    .sort();
+}
 
 const SSN = /\b(\d{3})-(\d{2})-(\d{4})\b/g;
 // The same nine digits written with no separators — the form a spreadsheet

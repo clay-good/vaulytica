@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.555.0] — 2026-09-07
+
+### Fixed
+- **The other two silent bounds in the pre-disclosure scan.** 9.553.0 fixed the
+  5 MB character cap that said nothing; asking the same question of the rest of
+  the pack found two more, and the rule is the same for all three: **a bound
+  that is not stated is a number the reader trusts and should not.**
+
+  - **`MAX_PER_TYPE` stops at 200 distinct values per type.** The finding still
+    fires, so a document is never wrongly called clean — but its count stops
+    being a total and becomes a floor, silently. *"247 SSNs"* and *"200 SSNs"*
+    are different facts to act on. The note now names the types that hit the
+    limit and says the counts are a floor.
+  - **The PDF path reads the first `MAX_PART_BYTES` (16 MB) of the container.**
+    Its existing reach note is careful about compressed object streams and
+    encrypted regions, and said nothing about the part of the file it **never
+    opened**.
+
+  `MAX_CONTAINER_BYTES` was already honest — it refuses the container outright
+  with a note — which is what made the other three stand out once the question
+  was asked of each in turn.
+
+  🥇 **When a scan has a bound, ask whether the bound is SAID.** Three of four
+  in this pack were not, and the pack is the one whose whole proposition is
+  *this document is safe to send*.
+
 ## [9.554.0] — 2026-09-07
 
 ### Added
