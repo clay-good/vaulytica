@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractAmounts } from "./amounts.js";
+import { extractAmounts, wordAmountValue } from "./amounts.js";
 import { buildTree } from "./_fixtures.js";
 
 describe("extractAmounts", () => {
@@ -325,5 +325,39 @@ describe("extractAmounts — a range endpoint is not re-counted", () => {
       ]),
     );
     expect(out.find((a) => a.per_unit)?.per_unit).toBe("share");
+  });
+});
+
+/**
+ * `wordAmountValue` — an exported function with no test at all.
+ *
+ * It came back entirely **NoCoverage**: every line of it, including its own
+ * anchored-pattern guard. That matters more than the usual untested helper,
+ * because its caller is `custom-interpreter.ts`, where it reads a liability or
+ * indemnity cap **written in words** and hands the number to a team's own
+ * negotiation ladder. A wrong answer there is not a missing finding — it is a
+ * draft scored against the wrong threshold.
+ *
+ * The contract worth pinning is that it reads a MONEY phrase, not a bare
+ * number: "two million" alone is null, because a cap is a sum and a sum names
+ * its currency.
+ */
+describe("wordAmountValue", () => {
+  it("reads a spelled sum", () => {
+    expect(wordAmountValue("Two Million Dollars")).toBe(2_000_000);
+    expect(wordAmountValue("one hundred fifty thousand dollars")).toBe(150_000);
+    // "and" and a hyphenated ten-unit, the way a contract actually writes it.
+    expect(wordAmountValue("Three Hundred and Twenty-Five Thousand Dollars")).toBe(325_000);
+  });
+
+  it("returns null for a bare number with no currency noun", () => {
+    // A cap is a sum. "two million" of what is not a threshold to score against.
+    expect(wordAmountValue("two million")).toBeNull();
+    expect(wordAmountValue("Fifty Thousand")).toBeNull();
+  });
+
+  it("returns null for text that is not a sum at all", () => {
+    expect(wordAmountValue("not a number")).toBeNull();
+    expect(wordAmountValue("")).toBeNull();
   });
 });

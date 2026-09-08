@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.564.0] — 2026-09-08
+
+### Added
+- **`wordAmountValue` had no test at all** — every line of it came back
+  **NoCoverage**, including its own anchored-pattern guard. That matters more
+  than the usual untested helper, because its caller is
+  `custom-interpreter.ts`, where it reads a liability or indemnity cap **written
+  in words** and hands the number to a team's own negotiation ladder. A wrong
+  answer there is not a missing finding — it is **a draft scored against the
+  wrong threshold**.
+
+  The contract now pinned is that it reads a *money* phrase, not a bare number:
+  `"Two Million Dollars"` → 2,000,000, `"Three Hundred and Twenty-Five Thousand
+  Dollars"` → 325,000 (the "and" and the hyphenated ten-unit a contract actually
+  writes), and `"two million"` alone → **null**, because a cap is a sum and a sum
+  names its currency.
+
+### Noted, not fixed
+- **`trimVenueTail`'s trailing-connective guard is still unexercised.** Its
+  comment — *"Never end on an internal connective: 'the State of' alone is not a
+  place"* — describes the loop that walks back off a dangling `of`/`the`/`and`,
+  and nothing runs it. It is private, so reaching it means constructing the
+  right venue clause through `extractJurisdictions`; three attempts produced
+  records whose shape did not match what the probe assumed, and guessing at a
+  fixture is how a test gets written against the wrong thing. Left named rather
+  than half-done.
+
 ## [9.563.0] — 2026-09-08
 
 ### Added
