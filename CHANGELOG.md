@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.574.0] — 2026-09-08
+
+### Added
+- **`tests/golden/artifact-digests.test.ts` — the cross-MACHINE half of
+  "byte-identical report on any machine."** 9.572.0's relation renders each
+  artifact twice in one process, which closes *this machine, twice*. This
+  commits a **SHA-256 per artifact** (JSON, HTML, SARIF, fix list MD/CSV,
+  obligations CSV, deadlines `.ics`) for two specimens, and the test matrix
+  runs it on Ubuntu, macOS and Windows — so a machine-dependent byte in a
+  renderer fails on the OS that produces it.
+
+  Digests rather than the artifacts themselves: the JSON report alone is half a
+  megabyte of execution log, and a digest asserts exactly the property the
+  claim is about at a few hundred bytes. The DOCX is deliberately absent — its
+  `nanoid()` hyperlink ids differ on every render on one machine, and that
+  exception is declared and normalized where the DOCX is actually checked.
+
+  ⚠️ It is a **fifth regeneration target**: the engine version is stamped into
+  every artifact, so `VAULYTICA_REGEN_GOLDEN=1` must include it on a version
+  bump.
+
 ## [9.573.0] — 2026-09-08
 
 ### Fixed
