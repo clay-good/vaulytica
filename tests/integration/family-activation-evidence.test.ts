@@ -88,7 +88,8 @@ describe("secondary-family activation evidence", () => {
       const cats = new Set(extracted.classified.map((c) => c.category));
       const terms = new Set(extracted.definitions.entries.map((e) => e.term.toLowerCase()));
 
-      for (const p of selectSecondaryFamilies(deps.extendedPlaybooks, signals, match.playbook_id)) {
+      for (const p of selectSecondaryFamilies(deps.extendedPlaybooks, signals, match.playbook_id)
+        .selected) {
         if (p.match_features.title_keywords.some(inTitle)) byTitle++;
         else if (
           p.match_features.required_clauses.some((c) => cats.has(c) || terms.has(c.toLowerCase()))

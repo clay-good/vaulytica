@@ -4,6 +4,7 @@
  * the inner content stack.
  */
 import { EMPTY_STATE_COPY, v3ErrorMessage } from "./v3/copy.js";
+import { cappedFamiliesNotice } from "../engine/secondary-families.js";
 
 export type DropzoneState =
   | { kind: "empty" }
@@ -157,6 +158,12 @@ export type DropzoneState =
         playbook_name: string;
         counts: { critical: number; warning: number; info: number };
       }>;
+      /**
+       * Further clearly-present families the per-document cap left UNSCANNED.
+       * Rendered as a caveat under the list above: without it a truncated
+       * "also checked" block reads as the complete set.
+       */
+      secondary_families_omitted?: number;
       /**
        * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law
        * deltas for the governing-law state(s) this document names, for the
@@ -424,6 +431,8 @@ export type DropzoneState =
           playbook_name: string;
           counts: { critical: number; warning: number; info: number };
         }>;
+        /** Further clearly-present families the per-document cap left UNSCANNED. */
+        secondary_families_omitted?: number;
         /**
          * What the ingest could and could not read, for THIS document.
          *
@@ -753,7 +762,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderCriticalDates(dz, state.critical_dates);
     renderNegotiationPosture(dz, state.negotiation_posture);
     renderPlaybookProvenance(dz, state.custom_playbook);
-    renderSecondaryFamilies(dz, state.secondary_families);
+    renderSecondaryFamilies(dz, state.secondary_families, state.secondary_families_omitted);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
@@ -1132,6 +1141,8 @@ function renderMultiDocCards(
           playbook_name: string;
           counts: { critical: number; warning: number; info: number };
         }>;
+        /** Further clearly-present families the per-document cap left UNSCANNED. */
+        secondary_families_omitted?: number;
         input_warnings?: ReadonlyArray<string>;
         classification_notice?: string;
         docx_blob: Blob;
@@ -1169,7 +1180,13 @@ function renderMultiDocCards(
                 (f) =>
                   `${escapeHtml(f.playbook_name)} (${f.counts.critical}C · ${f.counts.warning}W · ${f.counts.info}I)`,
               )
-              .join("; ")}</div>`
+              .join("; ")}${
+              d.secondary_families_omitted && d.secondary_families_omitted > 0
+                ? ` — <strong>+${d.secondary_families_omitted} further detected ${
+                    d.secondary_families_omitted === 1 ? "family" : "families"
+                  } NOT scanned</strong>`
+                : ""
+            }</div>`
           : "";
       // Above the counts, not below them: a count read without this line is
       // read wrong, and a reader who scans one line of a card must see it.
@@ -1347,6 +1364,7 @@ function renderSecondaryFamilies(
         counts: { critical: number; warning: number; info: number };
       }>
     | undefined,
+  omitted?: number,
 ): void {
   const el = select<HTMLElement>(dz, "secondary-families");
   if (!el) return;
@@ -1369,9 +1387,16 @@ function renderSecondaryFamilies(
       )}</span> <span class="secondary-family-counts">${detail}</span></li>`;
     })
     .join("");
+  const cap =
+    omitted && omitted > 0
+      ? `<p class="secondary-families-capped" data-role="secondary-families-capped">${escapeHtml(
+          cappedFamiliesNotice(omitted, families.length),
+        )}</p>`
+      : "";
   el.innerHTML = `
     <div class="secondary-families-heading">Also checked (other detected families)</div>
     <ul class="secondary-families-list" data-role="secondary-families-list">${items}</ul>
+    ${cap}
   `;
 }
 

@@ -36,7 +36,7 @@ import type { NegotiationPosture } from "../playbooks/custom-interpreter.js";
  * is not skipped for want of looking, up to the per-document cap. Shared by
  * the JSON and DOCX builders.
  *
- * ⚠️ The cap is real: 22 of the 312 specimens clearly contain more families
+ * ⚠️ The cap is real: 7 of the 312 specimens clearly contain more families
  * than are scanned. The count before truncation reaches the CLI's terminal
  * line; this payload does not carry it yet.
  */
@@ -96,6 +96,14 @@ export type JsonReport = {
    * consumers are unaffected.
    */
   secondary_families?: ReportSecondaryFamily[];
+  /**
+   * How many clearly-present families the per-document cap left UNSCANNED.
+   * Emitted only alongside `secondary_families` and only when the cap
+   * actually bit, so a consumer reading the array knows whether it is the
+   * whole set. Without it, a truncated list is indistinguishable from a
+   * complete one — the cap bites on 7 of the 312 specimens.
+   */
+  secondary_families_omitted?: number;
   /**
    * Public model-clause references for the findings in this report (spec-v6
    * Part IV). One entry per distinct fired rule that carries a reference —
@@ -233,6 +241,7 @@ export function buildJsonReport(
   currency?: CitationCurrency,
   definitions?: import("./definitions.js").DefinitionsReport,
   relatedDocuments?: ReadonlyArray<import("./companions.js").RelatedDocument>,
+  secondaryFamiliesOmitted?: number,
 ): Blob {
   // spec-v6 Part IV — one model-clause reference per distinct fired rule that
   // has one, in first-seen finding order (findings arrive pre-sorted).
@@ -284,6 +293,9 @@ export function buildJsonReport(
   }
   if (secondaryFamilies && secondaryFamilies.length > 0) {
     payload.secondary_families = secondaryFamilies.map((s) => ({ ...s }));
+    if (secondaryFamiliesOmitted && secondaryFamiliesOmitted > 0) {
+      payload.secondary_families_omitted = secondaryFamiliesOmitted;
+    }
   }
   // spec-v9 Thrust A — the Delivery block, outside `run` so `result_hash` is unchanged.
   if (delivery) payload.delivery = delivery;

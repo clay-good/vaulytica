@@ -170,7 +170,7 @@ describe("selectSecondaryFamilies", () => {
       ),
       "msa-vendor-deep", // primary
     );
-    const ids = got.map((p) => p.id);
+    const ids = got.selected.map((p) => p.id);
     expect(ids).toContain("dpa-controller-processor");
     expect(ids).not.toContain("msa-vendor-deep"); // excluded — it's the primary
     expect(ids).not.toContain("ip-licensing-patent"); // not present in the doc
@@ -182,7 +182,9 @@ describe("selectSecondaryFamilies", () => {
       signals("Master Services Agreement", "services and deliverables"),
       "msa-vendor-deep",
     );
-    expect(got).toEqual([]);
+    expect(got.selected).toEqual([]);
+    expect(got.present).toBe(0);
+    expect(got.omitted).toBe(0);
   });
 
   it("caps the number of secondary families", () => {
@@ -191,7 +193,14 @@ describe("selectSecondaryFamilies", () => {
     );
     const title = many.map((_, i) => `Family ${i} Agreement`).join(" and ");
     const got = selectSecondaryFamilies(many, signals(title, ""), "none");
-    expect(got.length).toBeLessThanOrEqual(MAX_SECONDARY_FAMILIES);
+    expect(got.selected.length).toBeLessThanOrEqual(MAX_SECONDARY_FAMILIES);
+    // The cap is only honest if the truncation is countable. Ten families are
+    // present in this title and four are scanned, so six are owed to the
+    // reader — without `omitted` this list is indistinguishable from a
+    // document that genuinely contained exactly four.
+    expect(got.present).toBe(10);
+    expect(got.omitted).toBe(got.present - got.selected.length);
+    expect(got.omitted).toBeGreaterThan(0);
   });
 });
 

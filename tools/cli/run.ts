@@ -871,6 +871,11 @@ async function renderFormat(
     // The matched family's normal pairings. Absent here until 9.515.0, so the
     // headless DOCX/HTML/SARIF carried a section the browser's did.
     relatedDocuments: r.related_documents.length > 0 ? r.related_documents : undefined,
+    // How many clearly-present families the cap left UNSCANNED. The terminal
+    // has said this since the count existed; the FILES the terminal writes did
+    // not, so a report read by anyone but the person at the keyboard showed a
+    // truncated list as a complete one.
+    secondaryFamiliesOmitted: r.secondary_families_present - r.secondary_families.length,
   };
   switch (fmt) {
     case "json":
@@ -906,6 +911,7 @@ async function renderFormat(
         currency,
         definitions,
         r.related_documents.length > 0 ? r.related_documents : undefined,
+        v9surfaces.secondaryFamiliesOmitted,
       ).text();
     case "sarif":
       // The cross-document run rides in only when the caller asserted a bundle

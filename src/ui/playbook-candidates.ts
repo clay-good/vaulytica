@@ -239,32 +239,36 @@ export function selectMatchCandidates(
  * rarely embeds more than a couple of distinct families; the cap bounds the
  * extra engine passes and keeps the "additional checks" section readable.
  *
- * 🚨 **It is a real cap, and "rarely" is not "never".** Measured over the 312
- * specimens: **22 of them clearly contain more families than this**, and
- * `dpa-controller-processor.txt` contains **eight** — four more than are
- * scanned. Use {@link countPresentFamilies} to learn how many were left, and
- * SAY the number wherever the list is shown; the paragraph below this one used
+ * 🚨 **It is a real cap, and "rarely" is not "never".** Measured 2026-09-08
+ * over the 312 specimens: **7 of them clearly contain more families than
+ * this**, and `uk-idta-addendum.txt` contains **eight** — four more than are
+ * scanned. (This said "22 ... and `dpa-controller-processor.txt` contains
+ * eight" — both true when written, neither true now: the false-positive work
+ * that tightened `familyIsPresent` cut the truncated set by two thirds.
+ * `tests/integration/secondary-family-cap-caveat.test.ts` re-measures it.) {@link selectSecondaryFamilies} returns `omitted` alongside the
+ * list — SAY the number wherever the list is shown; the paragraph below used
  * to claim "a present family is never silently skipped", which is exactly what
  * a cap does when it bites.
  */
 export const MAX_SECONDARY_FAMILIES = 4;
 
 /**
- * How many families this document clearly contains, before the cap.
+ * What {@link selectSecondaryFamilies} found: the families it will scan, and
+ * how many it will not.
  *
- * Free to compute — `selectSecondaryFamilies` already evaluates
- * `familyIsPresent` for every extended playbook to decide what to keep — and it
- * is what turns a silent truncation into a stated one: the difference between
- * this and the length of the selected list is the number the reader is not
- * being shown.
+ * `omitted` exists so the cap can be STATED. A truncation nobody says out loud
+ * reads to the reader as "there were only four" — the same clean-looking output
+ * a document with exactly four produces. Every surface that renders `selected`
+ * is expected to render `omitted` beside it when it is non-zero.
  */
-export function countPresentFamilies(
-  extended: readonly Playbook[],
-  signals: CandidateSignals,
-  primaryPlaybookId: string,
-): number {
-  return extended.filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals)).length;
-}
+export type SecondaryFamilySelection = {
+  /** The families that will be scanned — at most {@link MAX_SECONDARY_FAMILIES}. */
+  selected: Playbook[];
+  /** How many families the document clearly contains, before the cap. */
+  present: number;
+  /** `present` minus `selected.length`: clearly present, never scanned. */
+  omitted: number;
+};
 
 /**
  * Whether a document *clearly contains* a given family — the **strict**
@@ -359,23 +363,26 @@ function isCollocation(phrase: string): boolean {
  *
  * ⚠️ Up to {@link MAX_SECONDARY_FAMILIES} of them. This comment used to end
  * "so a genuinely-present family is never silently skipped", which the cap
- * contradicts on 22 of the 312 specimens. {@link countPresentFamilies} gives
- * the number before the cap so a caller can say how many it is not showing.
+ * contradicts on 7 of the 312 specimens. So the return carries `present` — the
+ * count BEFORE the cap — and `omitted`, the number the reader is not being
+ * shown. Returning them together is what makes the truncation sayable without a
+ * second full scan: scoring 255 extended playbooks against the document is the
+ * expensive part, and a caller that asked for the list and the count separately
+ * paid for it twice.
  */
 export function selectSecondaryFamilies(
   extended: readonly Playbook[],
   signals: CandidateSignals,
   primaryPlaybookId: string,
-): Playbook[] {
-  return (
-    extended
-      .filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals))
-      // Score each survivor ONCE. A comparator that recomputes the score does it
-      // O(n log n) times, which was free when the score was a substring count
-      // and is not now that it folds the document.
-      .map((p) => [p, familySignalStrength(p, signals)] as const)
-      .sort((a, b) => (a[1] !== b[1] ? b[1] - a[1] : a[0].id.localeCompare(b[0].id, "en")))
-      .map(([p]) => p)
-      .slice(0, MAX_SECONDARY_FAMILIES)
-  );
+): SecondaryFamilySelection {
+  const ranked = extended
+    .filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals))
+    // Score each survivor ONCE. A comparator that recomputes the score does it
+    // O(n log n) times, which was free when the score was a substring count
+    // and is not now that it folds the document.
+    .map((p) => [p, familySignalStrength(p, signals)] as const)
+    .sort((a, b) => (a[1] !== b[1] ? b[1] - a[1] : a[0].id.localeCompare(b[0].id, "en")))
+    .map(([p]) => p);
+  const selected = ranked.slice(0, MAX_SECONDARY_FAMILIES);
+  return { selected, present: ranked.length, omitted: ranked.length - selected.length };
 }

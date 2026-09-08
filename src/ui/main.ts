@@ -242,6 +242,7 @@ function renderCompleteState(
     v3_frames: import("./pipeline.js").PipelineResult["v3_frames"];
     custom_playbook?: import("./pipeline.js").PipelineResult["custom_playbook"];
     secondary_families?: import("./pipeline.js").PipelineResult["secondary_families"];
+    secondary_families_omitted?: number;
     jurisdiction_overlays?: import("./pipeline.js").PipelineResult["jurisdiction_overlays"];
     regime_coverage?: import("./pipeline.js").PipelineResult["regime_coverage"];
     delivery?: import("./pipeline.js").PipelineResult["delivery"];
@@ -362,6 +363,7 @@ function renderCompleteState(
             counts: f.counts,
           }))
         : undefined,
+    secondary_families_omitted: result.secondary_families_omitted,
     // v6 Part VI §21 jurisdiction overlays (Step 101). State-law deltas for
     // the governing-law state(s) the document names, surfaced as a citable
     // reference block. Hidden unless the family is state-sensitive and a
@@ -735,6 +737,7 @@ async function renderBundleComplete(
               counts: f.counts,
             }))
           : undefined,
+      secondary_families_omitted: d.secondary_families_omitted,
       input_warnings: d.ingest.warnings.length > 0 ? d.ingest.warnings : undefined,
       classification_notice: d.run.classification_notice?.message,
       docx_blob: d.docx_blob,

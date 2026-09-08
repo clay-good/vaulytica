@@ -61,6 +61,7 @@ import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./r
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { ReportSecondaryFamily } from "./json.js";
+import { cappedFamiliesNotice } from "../engine/secondary-families.js";
 import { truncate } from "./v3/_dx.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
@@ -279,12 +280,18 @@ function renderConsistencySection(consistency: ConsistencyRun | undefined): stri
 
 function renderSecondaryFamiliesSection(
   secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
+  omitted?: number,
 ): string[] {
   if (!secondary || secondary.length === 0) return [];
   const out: string[] = ["<h2>Additional checks from other detected families</h2>"];
   out.push(
     '<p class="v9-note">The families below were detected from this document&#39;s own VOCABULARY, not confirmed. A document can discuss another instrument&#39;s subject matter without being one — an 83(b) election letter names restricted stock and a right of first refusal, and is not a stock purchase agreement. Each family was scanned with its own rule set, and those checks assume the document IS one; where it is not, an absence reported below is a clause the document was never supposed to carry. Read this section as a prompt to confirm the family, not as a verdict. Kept separate from the primary findings above, and outside every result hash.</p>',
   );
+  if (omitted && omitted > 0) {
+    out.push(
+      `<p class="v9-note"><strong>${esc(cappedFamiliesNotice(omitted, secondary.length))}</strong></p>`,
+    );
+  }
   for (const fam of secondary) {
     const c = fam.counts;
     out.push(
@@ -590,7 +597,7 @@ export function buildHtmlReport(
   // header promises "same content as docx.ts", and a document that is both an
   // NDA and a DPA had its DPA findings in one human-readable surface and not
   // the other. Findings are the one thing a report may not silently omit.
-  body.push(...renderSecondaryFamiliesSection(secondaryFamilies));
+  body.push(...renderSecondaryFamiliesSection(secondaryFamilies, v9?.secondaryFamiliesOmitted));
   // spec-v3 §59 — the cross-document consistency appendix. The DOCX has
   // rendered it since v3 (`renderConsistencyAppendix`); this file did not, and
   // the omission was not on the deliberate list in the header above — so a

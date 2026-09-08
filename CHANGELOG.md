@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.567.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The secondary-family cap was stated in the terminal and nowhere else.**
+  A document that clearly contains eight families is scanned for four, and the
+  report lists four — byte-for-byte what a document containing exactly four
+  looks like. The reader had no way to tell them apart, and the difference is
+  four whole rule sets that were never run: not "no findings", but *not looked
+  at*. The count existed (`countPresentFamilies`) and reached exactly one
+  consumer — the accuracy harness, which nobody outside this repo reads.
+
+  It now reaches every surface that shows the capped list: the browser tab
+  (single-document panel and the multi-document card), the report **DOCX**,
+  **HTML**, **JSON** (`secondary_families_omitted`) and **SARIF** (a note-level
+  `VAULYTICA-SECONDARY-FAMILIES-CAPPED` result, which is the artifact the
+  composite Action uploads), and the **bundle JSON**'s per-document entry. The
+  CLI's terminal line is unchanged; the *files* it writes are the fix.
+
+- 🚨 **"22 of the 312 specimens" was stale in eight places, including the
+  README.** Re-measured 2026-09-08: **7** specimens are silently truncated, all
+  privacy/transfer documents, and the eight-family document is
+  `uk-idta-addendum.txt`, not `dpa-controller-processor.txt`. Both numbers were
+  true when written; the false-positive work that tightened `familyIsPresent`
+  cut the truncated set by two thirds. The number now has a test that
+  re-measures it rather than a comment that remembers it.
+
+### Changed
+- **`selectSecondaryFamilies` returns `{ selected, present, omitted }`.** One
+  owner for the list and for how much of it is missing — the two cannot drift
+  apart, and the caveat is sayable without a second scan. `tools/accuracy` was
+  asking for both separately and paying for the 255-playbook scoring twice.
+- **`cappedFamiliesNotice` has a single owner** in
+  `src/engine/secondary-families.ts`, so DOCX, HTML and the tab cannot state
+  different numbers of the same fact.
+
+### Added
+- `tests/integration/secondary-family-cap-caveat.test.ts` — reach *and*
+  anti-vacuity for each surface: each says the number when the cap bites, and
+  **none** says anything when it does not, so the 305 of 312 specimens under
+  the cap render byte-identically to before. Proven able to fail: each of the
+  three renderers was stubbed in turn and the test caught it.
+
+  🚨 The DOCX half first compared report **byte lengths** and passed on a
+  **one-byte** difference — compression noise, not a paragraph. It unzips
+  `word/document.xml` and reads the sentence now.
+
 ## [9.566.0] — 2026-09-08
 
 ### Changed

@@ -38,7 +38,6 @@ import {
 } from "../../src/playbooks/index.js";
 import {
   selectMatchCandidates,
-  countPresentFamilies,
   selectSecondaryFamilies,
 } from "../../src/ui/playbook-candidates.js";
 import {
@@ -281,21 +280,19 @@ export async function runIngested(
   };
   // Before the cap. The difference between this and `secondary_families.length`
   // is the number of clearly-present families the reader is NOT being shown —
-  // 22 of the 312 specimens have at least one, and one has four.
-  const secondary_families_present = secondaryFamilies
-    ? countPresentFamilies(deps.extendedPlaybooks, secondarySignals, match.playbook_id)
-    : 0;
-  const secondary_families = secondaryFamilies
-    ? await runSecondaryFamilies(
-        selectSecondaryFamilies(deps.extendedPlaybooks, secondarySignals, match.playbook_id),
-        deps.rules,
-        {
-          tree: ingest.tree,
-          extracted,
-          dkb: deps.dkb,
-          source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
-        },
-      )
+  // 7 of the 312 specimens have at least one, and one has four. `selection`
+  // carries both, so the 255-playbook scan runs once rather than twice.
+  const selection = secondaryFamilies
+    ? selectSecondaryFamilies(deps.extendedPlaybooks, secondarySignals, match.playbook_id)
+    : undefined;
+  const secondary_families_present = selection?.present ?? 0;
+  const secondary_families = selection
+    ? await runSecondaryFamilies(selection.selected, deps.rules, {
+        tree: ingest.tree,
+        extracted,
+        dkb: deps.dkb,
+        source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
+      })
     : [];
 
   return {

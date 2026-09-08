@@ -89,6 +89,15 @@ const CLASSIFICATION_NOTICE_RULE_ID = "VAULYTICA-CLASSIFICATION-NOTICE";
  */
 const INPUT_NOTICE_RULE_ID = "VAULYTICA-INPUT-NOTICE";
 
+/**
+ * Synthetic rule id for "the secondary-family list you are reading is
+ * truncated". Same reasoning as the input notice: the terminal has said this
+ * since the count existed, and SARIF — the artifact the Action uploads, and the
+ * only one a code-scanning dashboard reads — said nothing, so a CI job saw four
+ * scanned families and no way to learn that four more were never looked at.
+ */
+const SECONDARY_CAP_RULE_ID = "VAULYTICA-SECONDARY-FAMILIES-CAPPED";
+
 /** Severity → SARIF result level. */
 const LEVEL: Record<Severity, "error" | "warning" | "note"> = {
   critical: "error",
@@ -191,6 +200,9 @@ export function buildSarif(
   // was a redline read as all-changes-accepted, or was not in English at all.
   const inputWarnings = ingest?.warnings ?? [];
   const inputRuleIds = inputWarnings.length > 0 ? [INPUT_NOTICE_RULE_ID] : [];
+  // Clearly-present families the per-document cap never scanned.
+  const secondaryOmitted = v9?.secondaryFamiliesOmitted ?? 0;
+  const capRuleIds = secondaryOmitted > 0 ? [SECONDARY_CAP_RULE_ID] : [];
   // Cross-document (CC-* / CROSS-*). A bundle's conflicts had reached the DOCX
   // appendix and the bundle JSON and no CI surface at all — so a job that
   // gated on them annotated nothing, and SARIF is the artifact the Action
@@ -209,6 +221,7 @@ export function buildSarif(
     ...dateRuleIds,
     ...noticeRuleIds,
     ...inputRuleIds,
+    ...capRuleIds,
     ...crossRuleIds,
   ];
   const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
@@ -248,6 +261,11 @@ export function buildSarif(
     name: id,
     shortDescription: { text: "About this input — what the analysis could and could not read" },
   }));
+  const capRules: SarifRule[] = capRuleIds.map((id) => ({
+    id,
+    name: id,
+    shortDescription: { text: "Additional detected families were not scanned" },
+  }));
   const crossRules: SarifRule[] = crossRuleIds.map((id) => {
     const f = crossFindings.find((x) => x.rule_id === id)!;
     const descriptor: SarifRule = { id, name: id, shortDescription: { text: f.title } };
@@ -264,6 +282,7 @@ export function buildSarif(
     ...dateRules,
     ...noticeRules,
     ...inputRules,
+    ...capRules,
     ...crossRules,
   ];
 
@@ -373,6 +392,33 @@ export function buildSarif(
     properties: { surface: "input-notice" },
   }));
 
+  const capResults: SarifResult[] =
+    secondaryOmitted > 0
+      ? [
+          {
+            ruleId: SECONDARY_CAP_RULE_ID,
+            ruleIndex: ruleIndex.get(SECONDARY_CAP_RULE_ID)!,
+            level: "note" as const,
+            message: {
+              text: `${secondaryOmitted} further clearly-present ${
+                secondaryOmitted === 1 ? "family was" : "families were"
+              } NOT scanned — the per-document cap stops at the strongest-signal families. Nothing below reports on them, present or absent.`,
+            },
+            locations: [
+              {
+                physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+                logicalLocations: [{ name: "document", kind: "container" }],
+              },
+            ],
+            partialFingerprints: {
+              "vaulyticaSecondaryCap/v1": String(secondaryOmitted),
+              "vaulyticaResultHash/v1": run.result_hash,
+            },
+            properties: { surface: "secondary-families-capped", omitted: secondaryOmitted },
+          },
+        ]
+      : [];
+
   const consistencyHash = consistency?.result_hash ?? "";
   const crossResults: SarifResult[] = crossFindings.map((f) =>
     crossDocumentResult(f, ruleIndex, consistencyHash, currency),
@@ -384,6 +430,7 @@ export function buildSarif(
     ...dateResults,
     ...noticeResults,
     ...inputResults,
+    ...capResults,
     ...crossResults,
   ];
 

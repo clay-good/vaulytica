@@ -179,6 +179,40 @@ describe("bundleFingerprint", () => {
 });
 
 describe("buildBundleJson", () => {
+  // The per-document secondary-family cap must be stated in the bundle for the
+  // same reason it is in the single-document report: a list of four is what a
+  // document with eight families looks like once the cap has silently taken
+  // half of them, and "not looked at" is not "no findings". See
+  // tests/integration/secondary-family-cap-caveat.test.ts for the other
+  // surfaces. Anti-vacuity is the second half: the field must be ABSENT when
+  // the cap did not bite, so every existing bundle stays byte-identical.
+  it("carries the per-document count of families the cap left unscanned", async () => {
+    const base = makeInput();
+    const withCap = await buildBundleJson({
+      ...base,
+      documents: [
+        {
+          ...base.documents[0]!,
+          secondary_families: [
+            {
+              playbook_id: "dpa",
+              playbook_name: "DPA",
+              findings: [],
+              counts: { critical: 0, warning: 0, info: 0 },
+            },
+          ],
+          secondary_families_omitted: 4,
+        },
+        base.documents[1]!,
+      ],
+    });
+    expect(withCap.documents![0]!.secondary_families_omitted).toBe(4);
+    expect(withCap.documents![1]!.secondary_families_omitted).toBeUndefined();
+
+    const uncapped = await buildBundleJson(base);
+    expect("secondary_families_omitted" in uncapped.documents![0]!).toBe(false);
+  });
+
   it("packages runs + cross-doc findings + fingerprint", async () => {
     const out = await buildBundleJson(makeInput());
     expect(out.runs).toHaveLength(2);

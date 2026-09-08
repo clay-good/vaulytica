@@ -53,6 +53,7 @@ import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.j
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
+import { cappedFamiliesNotice } from "../engine/secondary-families.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
@@ -141,7 +142,7 @@ export async function buildDocxReport(
     // spec-v6 multi-family activation — additional families the document
     // also contains, scanned with their own rule sets and quarantined here
     // so the primary report above stays clean.
-    ...renderSecondaryFamiliesSection(secondaryFamilies),
+    ...renderSecondaryFamiliesSection(secondaryFamilies, v9?.secondaryFamiliesOmitted),
     // v3 §§56–58 — conditional summary pages. Each renderer returns [] when
     // the corresponding input is absent, so the page only appears when
     // relevant.
@@ -601,12 +602,13 @@ function isObligationRelevant(f: Finding): boolean {
 // activation). The primary report above covers the matched playbook; this
 // section surfaces every *other* family the document clearly contains, each
 // scanned with its own rule set, so a present family is not skipped for want
-// of looking — up to the per-document cap, which 22 of the 312 specimens
+// of looking — up to the per-document cap, which 7 of the 312 specimens
 // exceed. Each family is clearly labeled and kept separate from the primary
 // findings, including families that ran clean (which is itself reassuring).
 
 function renderSecondaryFamiliesSection(
   secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
+  omitted?: number,
 ): (Paragraph | Table)[] {
   if (!secondary || secondary.length === 0) return [];
   const out: (Paragraph | Table)[] = [
@@ -615,6 +617,9 @@ function renderSecondaryFamiliesSection(
       text: "The families below were detected from this document's own VOCABULARY, not confirmed. A document can discuss another instrument's subject matter without being one — an 83(b) election letter names restricted stock and a right of first refusal, and is not a stock purchase agreement. Each family was scanned with its own rule set, and those checks assume the document IS one; where it is not, an absence reported below is a clause the document was never supposed to carry. Read this section as a prompt to confirm the family, not as a verdict. Kept separate from the primary findings above, and outside every result hash.",
       italics: true,
     }),
+    ...(omitted && omitted > 0
+      ? [para({ text: cappedFamiliesNotice(omitted, secondary.length), bold: true })]
+      : []),
   ];
   for (const fam of secondary) {
     const c = fam.counts;

@@ -734,12 +734,13 @@ describe("analyze — obligations, deadlines, and the negotiation posture", () =
  *
  * `MAX_SECONDARY_FAMILIES` stops at four, and `selectSecondaryFamilies`' own
  * comment used to end "so a genuinely-present family is never silently
- * skipped" — which is exactly what a cap does when it bites. Measured: **22 of
- * the 312 specimens** clearly contain more families than are scanned, and
- * `dpa-controller-processor.txt` contains eight.
+ * skipped" — which is exactly what a cap does when it bites. Measured
+ * 2026-09-08: **7 of the 312 specimens** clearly contain more families than
+ * are scanned, and `uk-idta-addendum.txt` contains eight.
  *
  * The list is still four. What changed is that the line no longer reads as the
- * whole answer.
+ * whole answer — and, since 9.567.0, neither do the FILES the terminal writes:
+ * the same count reaches the JSON, HTML and DOCX reports and the bundle JSON.
  */
 describe("analyze — the secondary-family cap states its overflow", () => {
   const OVER_CAP = join(

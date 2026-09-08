@@ -40,4 +40,16 @@ export type V9Surfaces = {
    * render-side surface that must reach DOCX, HTML and JSON alike.
    */
   relatedDocuments?: ReadonlyArray<RelatedDocument>;
+  /**
+   * How many clearly-present secondary families the per-document cap
+   * (`MAX_SECONDARY_FAMILIES`) left UNSCANNED — an honesty caveat, not a
+   * surface of its own. The "additional checks from other detected families"
+   * section lists at most four; on 7 of the 312 specimens the document
+   * clearly contains more, and without this number a truncated list is
+   * indistinguishable from a complete one.
+   *
+   * Omitted (or zero) when the cap did not bite, which is the overwhelming
+   * majority, so those reports render byte-identically to before.
+   */
+  secondaryFamiliesOmitted?: number;
 };

@@ -189,10 +189,16 @@ export type PreparedDocument = {
    * embedded DPA exhibit) matches one primary playbook but genuinely
    * contains others; each of these runs its own rule set so a present
    * family is not skipped for want of looking — up to
-   * `MAX_SECONDARY_FAMILIES`, which 22 of the 312 specimens exceed. Empty for a
+   * `MAX_SECONDARY_FAMILIES`, which 7 of the 312 specimens exceed. Empty for a
    * single-family document.
    */
   secondary_playbooks: Playbook[];
+  /**
+   * Clearly-present families beyond `MAX_SECONDARY_FAMILIES` that were NOT
+   * scanned. Absent (rather than `0`) when the cap did not bite, so every
+   * report for the 290 of 312 specimens under the cap is byte-unchanged.
+   */
+  secondary_families_omitted?: number;
   /**
    * Pre-disclosure / "Clean to Send" scan (spec-v9 Thrust A). Read once over
    * the ORIGINAL container bytes during preparation — it is independent of the
@@ -297,6 +303,12 @@ export type PipelineResult = {
    * report stays clean. Empty for a single-family document.
    */
   secondary_families: SecondaryFamilyResult[];
+  /**
+   * How many further clearly-present families the per-document cap left
+   * UNSCANNED, so the tab can say the list above it is incomplete. Absent
+   * when the cap did not bite.
+   */
+  secondary_families_omitted?: number;
   /**
    * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law deltas
    * for the governing-law state(s) the document names, for the families where
@@ -515,11 +527,12 @@ export async function prepareDocument(
   // Multi-family activation: other families this document clearly contains,
   // run as secondary scans so a present family is not skipped for want of
   // looking — capped at MAX_SECONDARY_FAMILIES (spec-v6).
-  const secondary_playbooks = selectSecondaryFamilies(
+  const secondarySelection = selectSecondaryFamilies(
     extendedPlaybooks,
     { title: titleSource, body: bodyText, classified: extracted.classified, extracted },
     match.playbook_id,
   );
+  const secondary_playbooks = secondarySelection.selected;
 
   // spec-v9 Thrust A — read the ORIGINAL container bytes once (independent of
   // the rule run, so a frame-toggle re-run never recomputes it). Cross-matter
@@ -546,6 +559,9 @@ export async function prepareDocument(
       reasoning: match.reasoning,
     },
     secondary_playbooks,
+    ...(secondarySelection.omitted > 0
+      ? { secondary_families_omitted: secondarySelection.omitted }
+      : {}),
     delivery,
   };
 }
@@ -736,6 +752,7 @@ export async function runReport(
     criticalDates: hasCriticalDates ? critical_dates : undefined,
     closingChecklist: hasChecklist ? closing_checklist : undefined,
     relatedDocuments: prepared.related_documents,
+    secondaryFamiliesOmitted: prepared.secondary_families_omitted,
   };
   const docx_blob = await buildDocxReport(
     run,
@@ -761,6 +778,7 @@ export async function runReport(
     dkbCurrency(prepared.dkb.manifest),
     undefined,
     prepared.related_documents,
+    prepared.secondary_families_omitted,
   );
   const fixlist_md_blob = fixListMarkdownBlob(
     run,
@@ -839,6 +857,9 @@ export async function runReport(
     v3_frames,
     custom_playbook: customProvenance,
     secondary_families,
+    ...(prepared.secondary_families_omitted
+      ? { secondary_families_omitted: prepared.secondary_families_omitted }
+      : {}),
     jurisdiction_overlays,
     ...(regime_coverage ? { regime_coverage } : {}),
     delivery: prepared.delivery,
@@ -1021,6 +1042,11 @@ export type BundlePerDocument = {
    * consolidated bundle report's per-document subsection.
    */
   secondary_families: SecondaryFamilyResult[];
+  /**
+   * Clearly-present families the per-document cap left UNSCANNED. Absent when
+   * the cap did not bite.
+   */
+  secondary_families_omitted?: number;
   /**
    * Negotiation posture for this document (spec-v12 Thrust B). Present only
    * when the active custom playbook defines `negotiation_positions`; each
@@ -1319,13 +1345,13 @@ export async function prepareBundle(
     // (the custom playbook contributes only its posture positions, spec-v12
     // Thrust B), so the "custom mode redefines rule semantics" rationale that
     // skips secondaries single-doc does not apply here — they always run.
-    const secondaryPlaybooks = selectSecondaryFamilies(
+    const secondarySelection = selectSecondaryFamilies(
       extendedPlaybooks,
       { title: titleSource, body: bundleBody, classified: extracted.classified, extracted },
       match.playbook_id,
     );
     const secondary_families = await runSecondaryFamilies(
-      secondaryPlaybooks,
+      secondarySelection.selected,
       { tree: ingest.tree, extracted, dkb, source_file: sourceFile },
       options.active_frames,
     );
@@ -1352,6 +1378,9 @@ export async function prepareBundle(
       undefined,
       extracted,
       secondary_families,
+      secondarySelection.omitted > 0
+        ? { secondaryFamiliesOmitted: secondarySelection.omitted }
+        : undefined,
     );
     const json_blob = buildJsonReport(
       run,
@@ -1364,6 +1393,9 @@ export async function prepareBundle(
       undefined,
       undefined,
       dkbCurrency(dkb.manifest),
+      undefined,
+      undefined,
+      secondarySelection.omitted,
     );
 
     const v3_detection = detectV3Family(extracted, bodyParts.join(" "));
@@ -1379,6 +1411,9 @@ export async function prepareBundle(
       json_blob,
       v3_detection,
       secondary_families,
+      ...(secondarySelection.omitted > 0
+        ? { secondary_families_omitted: secondarySelection.omitted }
+        : {}),
       negotiation_posture,
     });
     consistencyDocs.push({
@@ -1507,6 +1542,9 @@ export async function runBundleReport(
       extracted: d.extracted,
       ingest: d.ingest,
       secondary_families: d.secondary_families.length > 0 ? d.secondary_families : undefined,
+      ...(d.secondary_families_omitted
+        ? { secondary_families_omitted: d.secondary_families_omitted }
+        : {}),
     })),
     consistency,
     dkb: prepared.dkb,

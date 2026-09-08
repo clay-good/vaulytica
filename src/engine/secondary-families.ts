@@ -5,7 +5,7 @@
  * agreement with a security addendum bolted on — matches one playbook and
  * contains several. `selectSecondaryFamilies` picks the others; this runs the
  * rules gated to each of them, so a present family is not skipped for want of
- * looking. Up to `MAX_SECONDARY_FAMILIES` of them — a cap 22 of the 312
+ * looking. Up to `MAX_SECONDARY_FAMILIES` of them — a cap 7 of the 312
  * specimens exceed, which the caller is responsible for stating.
  *
  * 🚨 **This lived inside `src/ui/pipeline.ts` as a private function, and the
@@ -42,6 +42,26 @@ export type SecondaryFamilyRun = {
   findings: Finding[];
   counts: { critical: number; warning: number; info: number };
 };
+
+/**
+ * The sentence the per-document cap owes the reader.
+ *
+ * One owner because three surfaces say it (report DOCX, report HTML, the tab)
+ * and a caveat two surfaces state differently is worse than one they both omit:
+ * the reader cannot tell which number to believe. The count of families
+ * actually scanned is passed in rather than read from `MAX_SECONDARY_FAMILIES`
+ * so this module does not have to reach up into the UI layer for a constant —
+ * and so the sentence stays true if a caller ever shows fewer than the cap.
+ */
+export function cappedFamiliesNotice(omitted: number, scanned: number): string {
+  const one = omitted === 1;
+  return (
+    `This document clearly contains ${omitted} further ${one ? "family" : "families"} ` +
+    `that ${one ? "was" : "were"} NOT scanned — only the ${scanned} strongest-signal ` +
+    `families are run per document. The list below is therefore incomplete, and a clause ` +
+    `these unscanned families would have checked for is neither reported present nor absent.`
+  );
+}
 
 function countsOf(findings: readonly Finding[]): SecondaryFamilyRun["counts"] {
   let critical = 0;

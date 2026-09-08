@@ -164,6 +164,12 @@ export type BundleDocument = {
    * verbatim for single-family documents.
    */
   secondary_families?: ReadonlyArray<ReportSecondaryFamily>;
+  /**
+   * Clearly-present families the per-document cap left UNSCANNED, so the
+   * bundle states the same truncation the single-document report does. Absent
+   * when the cap did not bite, keeping every existing bundle byte-identical.
+   */
+  secondary_families_omitted?: number;
 };
 
 export type RejectedBundleEntry = {
@@ -324,6 +330,8 @@ export type BundleJsonDocument = {
    * existing consumers and goldens are byte-unaffected.
    */
   secondary_families?: ReportSecondaryFamily[];
+  /** Mirrors `BundleDocument.secondary_families_omitted`. */
+  secondary_families_omitted?: number;
 };
 
 export type BundleJson = {
@@ -491,6 +499,9 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
       }
       if (d.secondary_families && d.secondary_families.length > 0) {
         entry.secondary_families = d.secondary_families.map((s) => ({ ...s }));
+        if (d.secondary_families_omitted && d.secondary_families_omitted > 0) {
+          entry.secondary_families_omitted = d.secondary_families_omitted;
+        }
       }
       return entry;
     });
