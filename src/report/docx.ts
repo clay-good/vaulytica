@@ -53,7 +53,7 @@ import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.j
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
-import { cappedFamiliesNotice } from "../engine/secondary-families.js";
+import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";

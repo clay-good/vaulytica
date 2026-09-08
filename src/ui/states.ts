@@ -4,7 +4,7 @@
  * the inner content stack.
  */
 import { EMPTY_STATE_COPY, v3ErrorMessage } from "./v3/copy.js";
-import { cappedFamiliesNotice } from "../engine/secondary-families.js";
+import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
 
 export type DropzoneState =
   | { kind: "empty" }

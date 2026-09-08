@@ -43,26 +43,6 @@ export type SecondaryFamilyRun = {
   counts: { critical: number; warning: number; info: number };
 };
 
-/**
- * The sentence the per-document cap owes the reader.
- *
- * One owner because three surfaces say it (report DOCX, report HTML, the tab)
- * and a caveat two surfaces state differently is worse than one they both omit:
- * the reader cannot tell which number to believe. The count of families
- * actually scanned is passed in rather than read from `MAX_SECONDARY_FAMILIES`
- * so this module does not have to reach up into the UI layer for a constant —
- * and so the sentence stays true if a caller ever shows fewer than the cap.
- */
-export function cappedFamiliesNotice(omitted: number, scanned: number): string {
-  const one = omitted === 1;
-  return (
-    `This document clearly contains ${omitted} further ${one ? "family" : "families"} ` +
-    `that ${one ? "was" : "were"} NOT scanned — only the ${scanned} strongest-signal ` +
-    `families are run per document. The list below is therefore incomplete, and a clause ` +
-    `these unscanned families would have checked for is neither reported present nor absent.`
-  );
-}
-
 function countsOf(findings: readonly Finding[]): SecondaryFamilyRun["counts"] {
   let critical = 0;
   let warning = 0;

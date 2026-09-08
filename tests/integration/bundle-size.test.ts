@@ -86,8 +86,24 @@ const V2_BASELINE_GZIPPED_KB = 165;
  * keeps the guard from flaking on a marginally larger CI build.
  */
 const V3_BUDGET_GZIPPED_KB = V2_BASELINE_GZIPPED_KB + 705;
-/** Eager-entry budget (first-paint contribution). */
-const EAGER_ENTRY_GZIPPED_KB = 50;
+/**
+ * Eager-entry budget (first-paint contribution).
+ *
+ * 🚨 **Tightened 50 → 30 in 9.569.0, because 50 hid exactly the regression
+ * this file's own header says it exists to catch.** A one-line import in
+ * `src/ui/states.ts` reached `runEngine` through the secondary-family runner
+ * and pulled the engine into the eager chunk: the entry went **84 KB → 151 KB
+ * raw**, first contentful paint went 1.6s → 2.1s, and the 4G Lighthouse budget
+ * failed — while this guard passed, because ~40 KB gzipped is still under 50.
+ * "Fail loudly if a build regression doubles the bundle" is not what a budget
+ * with 2x of slack does.
+ *
+ * Measured at 30: the entry is **23.55 KB** gzipped, so the margin is ~27%,
+ * enough for ordinary growth and not enough to swallow a chunk that should
+ * have been lazy. Raise it deliberately, with the measurement, when real eager
+ * code is added — never to make a failing build pass.
+ */
+const EAGER_ENTRY_GZIPPED_KB = 30;
 
 describe.skipIf(!RUN)("v3 bundle-size guard", () => {
   beforeAll(() => {

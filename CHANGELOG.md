@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.569.0] — 2026-09-08
+
+### Fixed
+- 🚨 **A one-line import doubled the eagerly-loaded entry chunk and broke the
+  4G performance budget.** 9.567.0 put `cappedFamiliesNotice` in
+  `src/engine/secondary-families.ts`, beside the runner that uses it — so
+  `src/ui/states.ts`, which is part of the entry chunk, reached `runEngine`
+  through it. The entry went **84 KB → 151 KB raw** (23.5 KB → ~40 KB
+  gzipped), first contentful paint went **1.6s → 2.1s** against an 1800 ms
+  budget, and Lighthouse CI failed on 9.567.0 and 9.568.0.
+
+  The sentence now lives in `src/engine/secondary-family-notice.ts`, a **leaf
+  module that imports nothing** and says so in its header. Entry back to
+  **84.74 KB / 23.55 KB gzipped**. No behavior changed on any surface.
+
+- 🚨 **The bundle-size guard passed through the whole regression.** Its header
+  says it exists to "fail loudly if a build regression doubles the bundle", and
+  its eager-entry budget was **50 KB gzipped** against a real entry of 23.5 —
+  two full doublings of slack. Tightened to **30 KB**, a ~27% margin over the
+  measured value: enough for ordinary growth, not enough to swallow a chunk
+  that should have been lazy.
+
 ## [9.568.0] — 2026-09-08
 
 ### Changed

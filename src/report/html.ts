@@ -61,7 +61,7 @@ import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./r
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { ReportSecondaryFamily } from "./json.js";
-import { cappedFamiliesNotice } from "../engine/secondary-families.js";
+import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
 import { truncate } from "./v3/_dx.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";

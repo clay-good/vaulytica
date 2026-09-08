@@ -31,7 +31,7 @@ import {
   selectSecondaryFamilies,
   MAX_SECONDARY_FAMILIES,
 } from "../../src/ui/playbook-candidates.js";
-import { cappedFamiliesNotice } from "../../src/engine/secondary-families.js";
+import { cappedFamiliesNotice } from "../../src/engine/secondary-family-notice.js";
 import { matchPlaybook, titleCorpus } from "../../src/playbooks/matcher.js";
 import { selectMatchCandidates } from "../../src/ui/playbook-candidates.js";
 import { ingestPaste } from "../../src/ingest/paste.js";
