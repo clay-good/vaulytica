@@ -29,6 +29,7 @@ import { analyzeFile, loadAccuracyDeps } from "../../tools/cli/api.js";
 import { extractAll } from "../../src/extract/index.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildDocxReport } from "../../src/report/docx.js";
+import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
 
 /** A California employment agreement — the family with a real overlay catalog. */
 const SPECIMEN = join(
@@ -122,6 +123,65 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
     expect(html).toContain("Reference only — Vaulytica does not draft.");
     expect(html).toContain(modelClauseForRule(withClause[0]!.rule_id)!.title);
   }, 180_000);
+
+  it("states what is wrong, not only the reasoning for it", async () => {
+    // The DOCX renders `description` AND `explanation`. This file rendered only
+    // the second, so every finding opened with the reasoning for a claim the
+    // reader had not been given.
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeFile(SPECIMEN, { deps });
+    const html = buildHtmlReport(r.run, r.ingest, deps.dkb, r.playbook);
+    const withBoth = r.run.findings.filter(
+      (f) => f.description && f.explanation && f.description !== f.explanation,
+    );
+    expect(withBoth.length, "findings carrying both fields").toBeGreaterThan(0);
+    const f = withBoth[0]!;
+    const esc = (t: string): string => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    expect(html).toContain(esc(f.description.slice(0, 60)));
+    expect(html).toContain(esc(f.explanation.slice(0, 60)));
+  }, 180_000);
+
+  it("says when a finding came from YOUR playbook, not Vaulytica's catalog", () => {
+    // The DOCX has carried this since custom playbooks shipped; the HTML
+    // rendered the rule id alone, so a finding from a user-supplied standard
+    // was presented exactly like one from the catalog.
+    const base = {
+      id: "f1",
+      rule_id: "CUSTOM-1",
+      rule_version: "1.0.0",
+      severity: "warning" as const,
+      title: "t",
+      description: "d",
+      explanation: "e",
+      source_citations: [],
+      excerpt: { text: "", start_offset: 0, end_offset: 0 },
+      document_position: 0,
+    };
+    const run = {
+      findings: [{ ...base, source: "custom-playbook" }],
+      execution_log: [],
+      version: "9.9.9",
+      dkb_version: "v0.0.1-starter",
+      playbook_id: "p",
+      source_file: { name: "x.docx", sha256: "a".repeat(64), size_bytes: 1 },
+      executed_at: "",
+      result_hash: "c".repeat(64),
+    } as never;
+    const ingest = {
+      source: "docx",
+      word_count: 1,
+      page_count: 1,
+      language: "en",
+      sha256: "a".repeat(64),
+      warnings: [],
+      tree: { sections: [] },
+    } as never;
+    const dkb = loadStarterDkbSync();
+    expect(buildHtmlReport(run, ingest, dkb)).toContain("your playbook");
+    // Anti-vacuity: a catalog finding must NOT say it.
+    const catalogRun = { ...(run as object), findings: [base] } as never;
+    expect(buildHtmlReport(catalogRun, ingest, dkb)).not.toContain("your playbook");
+  });
 
   it("renders neither section when there is nothing to render", async () => {
     // Anti-vacuity: without `extracted` the two sections are absent, exactly as

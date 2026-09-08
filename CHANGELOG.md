@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.581.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The HTML report omitted each finding's own statement of what is wrong.**
+  The DOCX renders `description` *and* `explanation`; this file rendered only
+  the second, so every finding opened with the **reasoning for a claim the
+  reader had not been given**.
+- 🚨 **A finding from a user-supplied playbook looked exactly like one from
+  Vaulytica's catalog.** The DOCX's provenance line carries "your playbook" and
+  its comment says why — *"your standard flagged this" must never be confused
+  with "Vaulytica's catalog flagged this"*. The HTML rendered the rule id alone.
+
+  Third and fourth silent omissions found in the same sweep as 9.580.0's two,
+  by the same method: read the DOCX's finding renderer beside this one, field
+  by field, instead of trusting the header's list.
+
 ## [9.580.0] — 2026-09-08
 
 ### Fixed

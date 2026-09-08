@@ -49,7 +49,12 @@
  * absent." A reader of the emailable report could not check a single finding
  * against the document and could not tell those two shapes apart. The
  * per-finding **public model clause** — what good looks like, with attribution
- * and license — was likewise in the DOCX and the JSON and not here.
+ * and license — was likewise in the DOCX and the JSON and not here. So were
+ * the finding's own `description` (this file rendered only `explanation`, so
+ * every finding opened with the reasoning for a claim the reader had not been
+ * given) and the **"your playbook"** provenance marker, without which a finding
+ * from a user-supplied standard is presented exactly like one from Vaulytica's
+ * catalog.
  * Citable: renders the full Thrust-B citation with wrapped URLs
  * (`overflow-wrap: anywhere`) and the §17 freshness signal. In-tab /
  * offline — it ships no network reference. Render-side — zero
@@ -292,9 +297,20 @@ function renderFinding(
   parts.push(
     `<h3><span class="sev ${f.severity}">${f.severity}</span> ${esc(f.title)} ${refs ? `<span class="ruleid">${refs}</span>` : ""}</h3>`,
   );
+  // The rule behind the finding, named so it can be looked up, re-run, or
+  // disagreed with — and, for a finding from a user-supplied playbook, SAID:
+  // "your standard flagged this" must never be confused with "Vaulytica's
+  // catalog flagged this". The DOCX has carried that distinction since custom
+  // playbooks shipped; this file rendered the rule id alone.
   parts.push(
-    `<div class="ruleid">${esc(f.rule_id)} v${esc(f.rule_version)}${f.excerpt.section_id ? ` · §${esc(f.excerpt.section_id)}` : ""}</div>`,
+    `<div class="ruleid">${esc(f.rule_id)} v${esc(f.rule_version)}${
+      f.excerpt.section_id ? ` · §${esc(f.excerpt.section_id)}` : ""
+    }${f.source === "custom-playbook" ? " · your playbook" : ""}</div>`,
   );
+  // What is wrong, in the finding's own words. The DOCX renders `description`
+  // AND `explanation`; this file rendered only the second, so every finding
+  // here opened with the reasoning for a claim the reader had not been given.
+  if (f.description) parts.push(`<p>${esc(f.description)}</p>`);
   // add-attorney-review-ledger — the tier badge, only on a finding whose rule
   // an attorney signed (dormant until the ledger is signed; never fabricated).
   if (f.tier) parts.push(`<div class="tier-badge">${esc(tierBadgeLabel(f.tier))}</div>`);
