@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.579.0] — 2026-09-08
+
+### Fixed
+- 🚨 **Two entries on the HTML report's "deliberately omitted" list did not
+  belong on it.** `src/report/html.ts` keeps a written list of what the DOCX
+  has and it does not, and that list does real work — it is how the
+  secondary-family findings and the cross-document appendix were both caught
+  missing. But it filed two pieces of CONTENT under *"the paginated report's
+  navigation and reference apparatus"*, next to the findings index and the
+  audit trail:
+
+  - **Jurisdiction overlays.** A California non-compete's Bus. & Prof. Code
+    § 16600 entry is the single most consequential thing this tool can say
+    about that document, and `uncovered_states` is an honest coverage gap that
+    must not read as a clean pass.
+  - **The obligations ledger** — who owes what, by when.
+
+  Both render in the HTML now, from the same data the DOCX uses, and the header
+  says why they were reclassified. Filing content under "navigation apparatus"
+  is how a deliberate-omissions list stops being a decision and becomes a place
+  things go.
+
+  `buildHtmlReport` / `htmlReportBlob` take an optional `extracted`; without it
+  neither section appears, exactly as neither appears in a DOCX built without
+  it. A report that invents an empty "Jurisdiction overlays" heading tells a
+  reader there was nothing to say, which is a different claim from not having
+  looked.
+
+### Added
+- `tests/integration/html-report-content-parity.test.ts` — asserts the content
+  on a real specimen in **both** surfaces, not the comment, with the DOCX side
+  as the anti-vacuity guard: if the fixture ever stops producing overlays or
+  obligations, the HTML assertions would pass for the wrong reason.
+
 ## [9.578.0] — 2026-09-08
 
 ### Fixed

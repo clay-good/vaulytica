@@ -805,6 +805,8 @@ export async function runReport(
     v9surfaces,
     negotiationPosture,
     secondary_families,
+    undefined,
+    prepared.extracted,
   );
 
   const v3_detection = detectV3Family(prepared.extracted, prepared.body_text);

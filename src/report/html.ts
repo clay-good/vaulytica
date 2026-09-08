@@ -26,12 +26,20 @@
  *
  * What the DOCX still has and this does not, deliberately: the cover page and
  * its proof fields, the executive summary, the findings INDEX (a triage table
- * ahead of the same findings rendered below it), the obligations ledger, the
- * extracted-data appendix, the jurisdiction overlays and the audit trail. Those
- * are the paginated report's navigation and reference apparatus; a single
- * scrolling page that a reader can search does not need a triage table over
- * content it already contains. If one of them is ever added, add it here and to
- * this list together.
+ * ahead of the same findings rendered below it), the extracted-data appendix,
+ * and the audit trail. Those are the paginated report's navigation and
+ * reference apparatus; a single scrolling page that a reader can search does
+ * not need a triage table over content it already contains. If one of them is
+ * ever added, add it here and to this list together.
+ *
+ * 🚨 **Two entries were on that list and did not belong on it**: the
+ * jurisdiction overlays and the obligations ledger, both here since 9.579.0. A
+ * California non-compete's Bus. & Prof. Code § 16600 overlay is the single most
+ * consequential thing this tool can say about that document, and
+ * `uncovered_states` is an honest coverage gap that must not read as a clean
+ * pass; who owes what, by when, is likewise content. Filing content under
+ * "navigation apparatus" is how a deliberate-omissions list stops being a
+ * decision and becomes a place things go.
  * Citable: renders the full Thrust-B citation with wrapped URLs
  * (`overflow-wrap: anywhere`) and the §17 freshness signal. In-tab /
  * offline — it ships no network reference. Render-side — zero
@@ -59,6 +67,8 @@ import {
 import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./review-coverage.js";
 import { erroredRuleNotice } from "./execution-log.js";
 import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
+import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
+import type { ExtractedData } from "../extract/types.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { ReportSecondaryFamily } from "./json.js";
@@ -279,6 +289,76 @@ function renderConsistencySection(consistency: ConsistencyRun | undefined): stri
   return out;
 }
 
+/**
+ * State-law overlays — the same content the DOCX renders, in the surface a
+ * reader can email. Empty when the family has no overlay catalog or the
+ * document named no covered state: we do not invent a section.
+ */
+function renderJurisdictionOverlaysSection(overlays: StateOverlayResult | undefined): string[] {
+  if (!overlays || (overlays.matched.length === 0 && overlays.detected_states.length === 0)) {
+    return [];
+  }
+  const topic = overlays.matched[0]?.topic ?? overlays.family;
+  const out: string[] = ["<h2>Jurisdiction overlays</h2>"];
+  out.push(
+    `<p class="v9-note">State law on ${esc(topic)} varies sharply. Vaulytica's overlay catalog covers ${overlays.states_in_catalog} state(s) for the ${esc(
+      overlays.family,
+    )} family. The entries below match the governing-law state(s) this document names. These are a citable reference layer, not findings — they do not change the report's result hash.</p>`,
+  );
+  if (overlays.matched.length > 0) {
+    out.push(
+      "<table><thead><tr><th>State</th><th>Status</th><th>Summary</th><th>Authority</th></tr></thead><tbody>",
+    );
+    for (const o of overlays.matched) {
+      out.push(
+        `<tr><td>${esc(o.state_name)}</td><td>${esc(o.posture)} — ${esc(o.headline)}</td>` +
+          `<td>${esc(truncate(o.summary, 320))}</td><td>${esc(o.citation.source)}</td></tr>`,
+      );
+    }
+    out.push("</tbody></table>");
+    for (const o of overlays.matched) {
+      out.push(
+        `<p><strong>${esc(o.state_name)}: ${esc(o.headline)}</strong></p>` +
+          `<p>${esc(o.recommendation)}</p>` +
+          `<p class="v9-note">Authority: ${esc(o.citation.source)} — ${esc(o.citation.source_url)}</p>`,
+      );
+    }
+  }
+  if (overlays.uncovered_states.length > 0) {
+    out.push(
+      `<p class="v9-note"><strong>No overlay on file for: ${esc(
+        overlays.uncovered_states.map((st) => st.replace(/^us-/, "").toUpperCase()).join(", "),
+      )}.</strong> This is an honest coverage gap — not a clean pass. Verify ${esc(topic)} for ${
+        overlays.uncovered_states.length === 1 ? "that state" : "those states"
+      } manually.</p>`,
+    );
+  }
+  return out;
+}
+
+/** Who owes what, by when — the DOCX's ledger, in the emailable surface. */
+function renderObligationsLedgerSection(extracted: ExtractedData | undefined): string[] {
+  if (!extracted || extracted.obligations.length === 0) return [];
+  const out: string[] = ["<h2>Obligations ledger</h2>"];
+  out.push(
+    `<p class="v9-note">${extracted.obligations.length} obligation${
+      extracted.obligations.length === 1 ? "" : "s"
+    } extracted from the document.</p>`,
+  );
+  out.push(
+    "<table><thead><tr><th>Obligor</th><th>Modal</th><th>Action</th><th>Trigger / Qualifier</th></tr></thead><tbody>",
+  );
+  for (const o of extracted.obligations) {
+    out.push(
+      `<tr><td>${esc(o.obligor)}</td><td>${esc(o.modal)}</td>` +
+        `<td>${esc(truncate(o.action, 160))}</td>` +
+        `<td>${esc([o.trigger, o.qualifier].filter(Boolean).join(" — ") || "—")}</td></tr>`,
+    );
+  }
+  out.push("</tbody></table>");
+  return out;
+}
+
 function renderSecondaryFamiliesSection(
   secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
   omitted?: number,
@@ -453,6 +533,14 @@ export function buildHtmlReport(
   negotiationPosture?: NegotiationPosture,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
   consistency?: ConsistencyRun,
+  /**
+   * The extracted data, for the two sections this file used to omit.
+   *
+   * Optional, so every existing caller renders exactly as it did — the two
+   * sections below simply do not appear without it, the same way they do not
+   * appear in the DOCX when the DOCX is called without `extracted`.
+   */
+  extracted?: ExtractedData,
 ): string {
   const bibliography = buildBibliography(run.findings, dkb);
   const currency = dkbCurrency(dkb.manifest);
@@ -605,6 +693,20 @@ export function buildHtmlReport(
   // NDA and a DPA had its DPA findings in one human-readable surface and not
   // the other. Findings are the one thing a report may not silently omit.
   body.push(...renderSecondaryFamiliesSection(secondaryFamilies, v9?.secondaryFamiliesOmitted));
+  // spec-v6 Part VI §21 — state-law overlays. The header below used to file
+  // these under "the paginated report's navigation and reference apparatus",
+  // alongside the findings index and the audit trail. They are not apparatus:
+  // a California non-compete's Bus. & Prof. Code § 16600 entry is the single
+  // most consequential thing this tool can say about that document, and
+  // `uncovered_states` is an honest coverage gap that must not read as a clean
+  // pass. Both were in the DOCX and absent from the report you can email.
+  body.push(
+    ...renderJurisdictionOverlaysSection(
+      extracted ? selectStateOverlays(run.playbook_id, extracted.jurisdictions) : undefined,
+    ),
+  );
+  // Same reclassification: who owes what, by when, is content.
+  body.push(...renderObligationsLedgerSection(extracted));
   // spec-v3 §59 — the cross-document consistency appendix. The DOCX has
   // rendered it since v3 (`renderConsistencyAppendix`); this file did not, and
   // the omission was not on the deliberate list in the header above — so a
@@ -707,6 +809,7 @@ export function htmlReportBlob(
   negotiationPosture?: NegotiationPosture,
   secondaryFamilies?: ReadonlyArray<ReportSecondaryFamily>,
   consistency?: ConsistencyRun,
+  extracted?: ExtractedData,
 ): Blob {
   return new Blob(
     [
@@ -719,6 +822,7 @@ export function htmlReportBlob(
         negotiationPosture,
         secondaryFamilies,
         consistency,
+        extracted,
       ),
     ],
     { type: "text/html" },

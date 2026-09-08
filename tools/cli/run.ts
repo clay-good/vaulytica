@@ -958,6 +958,11 @@ async function renderFormat(
         undefined,
         r.secondary_families.length > 0 ? r.secondary_families : undefined,
         consistency,
+        // Same re-extraction the JSON path does, and for the same reason: the
+        // overlays and the obligations ledger are built from `extracted`, which
+        // is not part of `run.result_hash`, so this cannot change what a run
+        // verifies to.
+        extractAll(r.ingest.tree),
       );
     case "md": {
       const md = buildFixListMarkdown(r.run, undefined, currency, r.ingest);
