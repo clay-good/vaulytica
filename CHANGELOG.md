@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.585.0] — 2026-09-08
+
+### Added
+- **The cross-format completeness gate gained the second half of its own
+  contract.** It has asserted since spec-v8 §18 that *if any output names a
+  finding, that output carries the finding's resolvable citation*. Nothing
+  asserted the other half — *and the clause the finding fired on* — which is
+  why the HTML report shipped for the life of the project rendering **no clause
+  text at all** (9.580.0) and the fix list gave a section id and no sentence
+  (9.584.0). A citation says where the RULE comes from; the clause says where
+  the FINDING comes from, and a reader needs both.
+
+  Now parameterized over DOCX, JSON, Markdown, CSV, SARIF and HTML, with two
+  cases: every format carries the excerpt of **both** fixture findings (so a
+  format cannot pass by rendering only the first), and **no** format quotes a
+  finding about an absence — whose `excerpt.text` is the rule's marker string,
+  words the document never contained. Proven able to fail by deleting the
+  HTML's proof block.
+
 ## [9.584.0] — 2026-09-08
 
 ### Added

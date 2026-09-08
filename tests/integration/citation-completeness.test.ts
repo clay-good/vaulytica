@@ -20,6 +20,14 @@
  * This gate is what keeps every current and future format honest: a new
  * output that cannot carry a citation does not pass, and therefore does
  * not ship, until it can.
+ *
+ * 🚨 The same contract has a **second half**, added 9.585.0: *if any output
+ * names a finding, that output carries the CLAUSE the finding fired on — or
+ * says plainly that the finding is about an absence.* It was not asserted
+ * anywhere, and the HTML report shipped for the life of the project rendering
+ * **no clause text at all** (fixed 9.580.0), while the fix list gave a section
+ * id and no sentence (9.584.0). A citation says where the RULE comes from; the
+ * clause says where the FINDING comes from, and a reader needs both.
  */
 
 import { describe, expect, it } from "vitest";
@@ -151,6 +159,60 @@ describe("citation-completeness gate (spec-v8 §18 — every format, every cited
 
     // HTML — clickable href.
     expect(buildHtmlReport(run, ingest, loadStarterDkbSync())).toContain(`href="${DKB_URL}"`);
+  });
+
+  it("clause-completeness: every format carries the text the finding fired on", async () => {
+    const run = makeRun();
+    const clause = "processing clause"; // dkbFinding's excerpt, span 0–17
+    const custom = "retain for 36 months"; // customFinding's excerpt, span 5–25
+
+    expect(await docxText(run)).toContain(clause);
+
+    const json = JSON.parse(await buildJsonReport(run, ingest).text());
+    expect(json.run.findings.map((f: Finding) => f.excerpt.text)).toContain(clause);
+
+    expect(buildFixListMarkdown(run)).toContain(clause);
+    expect(buildFixListCsv(run)).toContain(clause);
+    // SARIF's own field for it — region.snippet.text.
+    expect(buildSarifJson(run)).toContain(clause);
+    expect(buildHtmlReport(run, ingest, loadStarterDkbSync())).toContain(clause);
+
+    // Both findings, so a format cannot pass by carrying only the first.
+    for (const text of [
+      await docxText(run),
+      buildFixListMarkdown(run),
+      buildFixListCsv(run),
+      buildSarifJson(run),
+      buildHtmlReport(run, ingest, loadStarterDkbSync()),
+    ]) {
+      expect(text).toContain(custom);
+    }
+  });
+
+  it("clause-completeness: a finding about an ABSENCE is never quoted", async () => {
+    // Its `excerpt.text` is the rule's own marker string. Printing that under
+    // an evidence label quotes words the document never contained — the failure
+    // the DOCX's own comment calls "the worst line in it".
+    const absent: Finding = {
+      ...dkbFinding(),
+      id: "DPA-002-s1-0",
+      rule_id: "DPA-002",
+      excerpt: {
+        text: "MARKER-NEVER-IN-DOCUMENT",
+        section_id: "s1",
+        start_offset: 0,
+        end_offset: 0,
+      },
+    };
+    const run: EngineRun = { ...makeRun(), findings: [absent] };
+    const surfaces = [
+      await docxText(run),
+      buildFixListMarkdown(run),
+      buildFixListCsv(run),
+      buildSarifJson(run),
+      buildHtmlReport(run, ingest, loadStarterDkbSync()),
+    ];
+    for (const text of surfaces) expect(text).not.toContain("MARKER-NEVER-IN-DOCUMENT");
   });
 
   it("URL-less custom finding: every format names it cleanly (no dangling segment)", async () => {
