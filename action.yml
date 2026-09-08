@@ -226,12 +226,22 @@ runs:
             # A job summary is capped at 1 MiB. Bound it well under that — and
             # SAY when the bound bit, because a silently truncated log reads as
             # the whole run.
-            bytes=$(wc -c < "$log" | tr -d ' ')
+            # Node's own runtime warnings are not the tool's output, and two
+            # lines of them at the top of a user-facing summary is what a
+            # reader sees first. Dropped from the SUMMARY only — `cat "$log"
+            # >&2` above already put every byte in the step log, so nothing is
+            # hidden, this is the curated view. The pattern is Node's exact
+            # format (`(node:1234) ExperimentalWarning:` and the paired
+            # `(Use \`node --trace-warnings ...\`)` line), which Vaulytica
+            # itself never emits.
+            clean="$(mktemp)"
+            grep -vE '^\(node:[0-9]+\) [A-Za-z]*Warning:|^\(Use `node --trace-warnings' "$log" > "$clean" || true
+            bytes=$(wc -c < "$clean" | tr -d ' ')
             if [ "$bytes" -gt 60000 ]; then
               echo "[earlier output omitted — showing the last 60,000 of $bytes characters; the full log is in the step above]"
-              tail -c 60000 "$log"
+              tail -c 60000 "$clean"
             else
-              cat "$log"
+              cat "$clean"
             fi
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

@@ -141,6 +141,27 @@ describe("the Action puts the run on the page a reader looks at", () => {
     expect(r.summary!.length).toBeLessThan(70_000);
   });
 
+  it("drops Node's own runtime warnings, and nothing else", () => {
+    // Two lines of Node internals at the top is what a reader sees first, and
+    // they are not the tool's output. They come out of the SUMMARY only — the
+    // step log above still has every byte, so nothing is hidden.
+    const noisy = [
+      "(node:15689) ExperimentalWarning: localStorage is not available",
+      "(Use `node --trace-warnings ...` to show where the warning was created)",
+      "doc.txt  [msa-general]  1C 2W 3I",
+      "vaulytica: warning: Pasted text loses document structure.",
+    ].join("\n");
+    const r = run({}, { out: noisy });
+    expect(r.summary).not.toContain("ExperimentalWarning");
+    expect(r.summary).not.toContain("--trace-warnings");
+    // Everything the tool said survives.
+    expect(r.summary).toContain("1C 2W 3I");
+    expect(r.summary).toContain("Pasted text loses document structure.");
+    // And the step log is untouched — the filter is the summary's view, not a
+    // deletion.
+    expect(r.stderr === "" || r.stderr.includes("ExperimentalWarning")).toBe(true);
+  });
+
   it("writes nothing when the caller turned it off", () => {
     expect(run({ SUMMARY: "false" }, { out: CAVEAT }).summary).toBeNull();
   });

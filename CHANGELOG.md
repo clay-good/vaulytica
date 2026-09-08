@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.592.0] — 2026-09-08
+
+### Added
+- **The smoke workflow proves the job summary end to end**, on the case that
+  needs it. `action-job-summary.test.ts` runs the step's shell body with the
+  binary stubbed; this runs the **real** Action against a real document and
+  reads what it wrote — asserting the summary exists, names the document, and
+  says `Failed (exit 2)` when the pre-disclosure gate trips.
+
+  `GITHUB_STEP_SUMMARY` is redirected into the workspace because GitHub gives
+  each step its own summary file and uploads it when the step ends, so a later
+  step cannot read the previous one back. The mechanism under test is
+  unchanged, and the two existing steps keep writing real summaries, so the run
+  page still shows what a consumer would see. The assertion refuses to pass
+  vacuously: if the gate ever stops failing, it errors instead.
+
+### Fixed
+- 🚨 **The summary led with two lines of Node internals.** Running the real
+  Action end-to-end — rather than reading the script — showed
+  `(node:15689) ExperimentalWarning: localStorage is not available` and its
+  paired `--trace-warnings` line at the top of the first thing a CI reader
+  sees. Those are the runtime's output, not the tool's.
+
+  Filtered from the **summary only**, matching Node's exact prefix format. The
+  step log still receives every byte, so nothing is hidden — the summary is the
+  curated view, and the test asserts the tool's own lines all survive the
+  filter.
+
+  Worth noting what the end-to-end run showed once it was clean: the summary
+  carries the counts, the generic-fallback banner, the pasted-text caveat, the
+  delivery finding *and* its "no container to inspect" reach caveat — the
+  9.587.0 fix — plus the gate line. That is the whole session's caveat work
+  arriving on the page a CI user actually reads.
+
 ## [9.591.0] — 2026-09-08
 
 ### Added
