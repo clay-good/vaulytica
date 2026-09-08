@@ -38,6 +38,7 @@ import {
 } from "../../src/playbooks/index.js";
 import {
   selectMatchCandidates,
+  countPresentFamilies,
   selectSecondaryFamilies,
 } from "../../src/ui/playbook-candidates.js";
 import {
@@ -119,6 +120,8 @@ export type DocumentRun = {
    * document that contains only its matched family.
    */
   secondary_families: SecondaryFamilyRun[];
+  /** Clearly-present families BEFORE `MAX_SECONDARY_FAMILIES` truncates them. */
+  secondary_families_present: number;
   /**
    * The matched family's normal pairings (`Playbook.companion_playbooks`),
    * resolved to display names against the full catalog.
@@ -270,13 +273,21 @@ export async function runIngested(
   // shared owner is `src/engine/secondary-families.ts`. A custom playbook
   // redefines rule semantics, so the browser skips secondaries in that mode;
   // the headless path reaches here only for a built-in match.
+  const secondarySignals = {
+    title: titleSource,
+    body,
+    classified: extracted.classified,
+    extracted,
+  };
+  // Before the cap. The difference between this and `secondary_families.length`
+  // is the number of clearly-present families the reader is NOT being shown —
+  // 22 of the 312 specimens have at least one, and one has four.
+  const secondary_families_present = secondaryFamilies
+    ? countPresentFamilies(deps.extendedPlaybooks, secondarySignals, match.playbook_id)
+    : 0;
   const secondary_families = secondaryFamilies
     ? await runSecondaryFamilies(
-        selectSecondaryFamilies(
-          deps.extendedPlaybooks,
-          { title: titleSource, body, classified: extracted.classified, extracted },
-          match.playbook_id,
-        ),
+        selectSecondaryFamilies(deps.extendedPlaybooks, secondarySignals, match.playbook_id),
         deps.rules,
         {
           tree: ingest.tree,
@@ -292,6 +303,7 @@ export async function runIngested(
     playbook_id: playbook.id,
     auto_matched_playbook_id: match.playbook_id,
     secondary_families,
+    secondary_families_present,
     related_documents: relatedDocuments(playbook.id, allPlaybooks),
   };
 }

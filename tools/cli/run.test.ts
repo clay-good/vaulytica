@@ -730,6 +730,67 @@ describe("analyze — obligations, deadlines, and the negotiation posture", () =
 });
 
 /**
+ * The secondary-family cap says how much it is not showing.
+ *
+ * `MAX_SECONDARY_FAMILIES` stops at four, and `selectSecondaryFamilies`' own
+ * comment used to end "so a genuinely-present family is never silently
+ * skipped" — which is exactly what a cap does when it bites. Measured: **22 of
+ * the 312 specimens** clearly contain more families than are scanned, and
+ * `dpa-controller-processor.txt` contains eight.
+ *
+ * The list is still four. What changed is that the line no longer reads as the
+ * whole answer.
+ */
+describe("analyze — the secondary-family cap states its overflow", () => {
+  const OVER_CAP = join(
+    process.cwd(),
+    "tests",
+    "fixtures",
+    "specimens",
+    "dpa-controller-processor.txt",
+  );
+  const dirs: string[] = [];
+  afterAll(async () => {
+    for (const d of dirs) await rm(d, { recursive: true, force: true });
+  });
+
+  async function line(file: string): Promise<string> {
+    const dir = await mkdtemp(join(tmpdir(), "vaulytica-cap-"));
+    dirs.push(dir);
+    // Both streams: with a machine format active the stream contract sends
+    // every human line to stderr, so capturing stdout alone reads as silence.
+    const out: string[] = [];
+    const so = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation((c) => (out.push(String(c)), true));
+    const se = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation((c) => (out.push(String(c)), true));
+    try {
+      await runAnalyze([file, "--format", "json", "--out", dir]);
+      return out.join("");
+    } finally {
+      so.mockRestore();
+      se.mockRestore();
+    }
+  }
+
+  it("names the count it could not scan", async () => {
+    const text = await line(OVER_CAP);
+    // Positive first: the four it DID scan are listed.
+    expect(text).toContain("vocabulary also matches:");
+    expect(text).toMatch(/further clearly-present families were not scanned/);
+  }, 120_000);
+
+  it("says nothing extra when the cap did not bite", async () => {
+    const text = await line(
+      join(process.cwd(), "tests", "fixtures", "contracts", "pasted-mutual-nda.txt"),
+    );
+    expect(text).not.toContain("not scanned");
+  }, 120_000);
+});
+
+/**
  * The pre-disclosure gate.
  *
  * `HANDOFF-005` is the "do not send this out" check — an SSN, a card number, a

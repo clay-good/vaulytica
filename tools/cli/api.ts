@@ -66,6 +66,13 @@ export type AnalyzeResult = {
    * gate are unchanged. Empty for a document that contains only its match.
    */
   secondary_families: SecondaryFamilyRun[];
+  /**
+   * How many families the document clearly contains, before
+   * `MAX_SECONDARY_FAMILIES` caps the list. Greater than
+   * `secondary_families.length` means the cap bit and the extra families were
+   * never scanned — which the terminal says rather than leaving to inference.
+   */
+  secondary_families_present: number;
   /** The matched family's normal pairings, resolved to display names. */
   related_documents: RelatedDocument[];
   /** The ingest result, so the report builders (JSON/HTML) can render. */

@@ -238,8 +238,33 @@ export function selectMatchCandidates(
  * Most secondary families surfaced per document. A composite agreement
  * rarely embeds more than a couple of distinct families; the cap bounds the
  * extra engine passes and keeps the "additional checks" section readable.
+ *
+ * 🚨 **It is a real cap, and "rarely" is not "never".** Measured over the 312
+ * specimens: **22 of them clearly contain more families than this**, and
+ * `dpa-controller-processor.txt` contains **eight** — four more than are
+ * scanned. Use {@link countPresentFamilies} to learn how many were left, and
+ * SAY the number wherever the list is shown; the paragraph below this one used
+ * to claim "a present family is never silently skipped", which is exactly what
+ * a cap does when it bites.
  */
 export const MAX_SECONDARY_FAMILIES = 4;
+
+/**
+ * How many families this document clearly contains, before the cap.
+ *
+ * Free to compute — `selectSecondaryFamilies` already evaluates
+ * `familyIsPresent` for every extended playbook to decide what to keep — and it
+ * is what turns a silent truncation into a stated one: the difference between
+ * this and the length of the selected list is the number the reader is not
+ * being shown.
+ */
+export function countPresentFamilies(
+  extended: readonly Playbook[],
+  signals: CandidateSignals,
+  primaryPlaybookId: string,
+): number {
+  return extended.filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals)).length;
+}
 
 /**
  * Whether a document *clearly contains* a given family — the **strict**
@@ -330,7 +355,12 @@ function isCollocation(phrase: string): boolean {
  *
  * These drive the report's "additional checks from other detected families"
  * section — a composite MSA that embeds a DPA exhibit gets the DPA rule set
- * too, so a genuinely-present family is never silently skipped.
+ * too, so a genuinely-present family is not skipped for want of looking.
+ *
+ * ⚠️ Up to {@link MAX_SECONDARY_FAMILIES} of them. This comment used to end
+ * "so a genuinely-present family is never silently skipped", which the cap
+ * contradicts on 22 of the 312 specimens. {@link countPresentFamilies} gives
+ * the number before the cap so a caller can say how many it is not showing.
  */
 export function selectSecondaryFamilies(
   extended: readonly Playbook[],

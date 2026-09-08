@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.557.0] — 2026-09-07
+
+### Fixed
+- 🚨 **A comment that asserted the opposite of what the code does.**
+  `selectSecondaryFamilies` ended its doc comment *"so a genuinely-present
+  family is never silently skipped"* — and then truncated its result to
+  `MAX_SECONDARY_FAMILIES`. That is precisely a present family being silently
+  skipped, and **it is not rare**: measured over the 312 specimens, **22 of them
+  clearly contain more families than are scanned**, and
+  `dpa-controller-processor.txt` contains **eight** — four more than it gets.
+
+  A false comment is a defect of its own: the next reader trusts it, and this
+  one had been trusted long enough that the report section it feeds carries the
+  same promise.
+
+- **The CLI now says how many families it is not showing.** The "vocabulary also
+  matches" line lists four and used to stop there, reading as the whole answer.
+  It states the overflow now:
+
+  ```
+  vocabulary also matches: dpa-processor-subprocessor …, vendor-security-addendum … —
+  detected, not confirmed; … Not counted above or in --fail-on.
+  2 further clearly-present families were not scanned (the per-document cap is 4).
+  ```
+
+  `countPresentFamilies` is free to compute — `selectSecondaryFamilies` already
+  evaluates `familyIsPresent` for every extended playbook to decide what to keep.
+
+  ⚠️ **Owed, and named rather than implied: the browser and the report surfaces
+  still do not say it.** The count reaches `AnalyzeResult` and the terminal; the
+  JSON report, the DOCX and HTML "additional checks" sections, and the tab's
+  card each carry the same list and the same silence. Threading it there is five
+  render surfaces and a data field, and whether the cap should exist at all is a
+  product question — the measurement above is the evidence for whoever answers
+  it.
+
+  ⚠️ The test that proves the line captured **stdout only** and read as silence,
+  because with a machine format active the stream contract sends every human
+  line to stderr. My harness, not the tool.
+
 ## [9.556.0] — 2026-09-07
 
 ### Fixed

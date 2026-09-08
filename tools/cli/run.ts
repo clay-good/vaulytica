@@ -1297,8 +1297,17 @@ export async function runAnalyze(argv: string[]): Promise<void> {
             `${sf.playbook_id} (${sf.counts.critical}C ${sf.counts.warning}W ${sf.counts.info}I)`,
         )
         .join(", ");
+      // The cap is real and "rarely more than a couple" is not "never": 22 of
+      // the 312 specimens clearly contain more families than MAX_SECONDARY_
+      // FAMILIES scans, and one contains eight. A list that stops at four
+      // without saying so reads as the whole answer.
+      const omitted = r.secondary_families_present - r.secondary_families.length;
+      const more =
+        omitted > 0
+          ? ` ${omitted} further clearly-present famil${omitted === 1 ? "y was" : "ies were"} not scanned (the per-document cap is ${r.secondary_families.length}).`
+          : "";
       human(
-        `  vocabulary also matches: ${each} — detected, not confirmed; checks assume the document IS one, so an absence there may be a clause it never needed. Not counted above or in --fail-on\n`,
+        `  vocabulary also matches: ${each} — detected, not confirmed; checks assume the document IS one, so an absence there may be a clause it never needed. Not counted above or in --fail-on.${more}\n`,
       );
     }
 
