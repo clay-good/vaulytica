@@ -655,3 +655,67 @@ describe("the container scan states its fact cap", () => {
     expect(facts.note ?? "").not.toContain("a floor, not a total");
   });
 });
+
+/**
+ * Four behaviours the leak scanner has and its tests did not pin.
+ *
+ * Read off `sensitive.ts`'s surviving mutants after 9.556.0 took the module to
+ * 75%. Each is a real difference rather than one of the regex-alternation
+ * variations that are equivalent in practice:
+ *
+ *  - the entire **DOB** loop body could be emptied with nothing failing — the
+ *    same shape as the EIN branch 9.553.0 found, one sensitive type further on;
+ *  - the **ABA checksum** could be made always-true, so nothing asserted that a
+ *    random nine-digit run is *rejected* as a routing number;
+ *  - every **confidence** label could be rewritten, and confidence is what
+ *    drives the finding's severity;
+ *  - the **canonical sort** could be removed, and the whole point of it is that
+ *    `delivery_hash` is stable.
+ */
+describe("scanSensitive — the behaviours its own mutants exposed", () => {
+  it("finds a date of birth", () => {
+    const dob = scanSensitive("Employee DOB: 04/17/1982 on file.").find((f) => f.type === "dob");
+    expect(dob).toBeDefined();
+    // Fully masked: a birth date reveals nothing useful in a location report.
+    expect(dob!.masked).not.toContain("1982");
+  });
+
+  it("rejects a nine-digit run that fails the ABA checksum", () => {
+    // The guard that keeps an invoice or part number from being reported as a
+    // bank routing number. 021000021 is a real, checksum-valid ABA; 123456789
+    // is not, and it must not be reported.
+    expect(scanSensitive("Wire to routing 021000021.").some((f) => f.type === "routing")).toBe(
+      true,
+    );
+    expect(
+      scanSensitive("Reference number 123456789 for the order.").some((f) => f.type === "routing"),
+    ).toBe(false);
+  });
+
+  it("attaches the confidence each type is reported at", () => {
+    // Confidence drives the finding's severity, so a swapped label is a
+    // silently different report. Pinned per type rather than in aggregate.
+    const facts = scanSensitive(
+      "SSN 123-45-6789, card 4242424242424242, routing 021000021, EIN 12-3456789, " +
+        "DOB: 04/17/1982, jane@example.com, 415-555-1234.",
+    );
+    const at = (t: string): string | undefined => facts.find((f) => f.type === t)?.confidence;
+    expect(at("ssn")).toBe("high");
+    expect(at("card")).toBe("high");
+    expect(at("routing")).toBe("medium");
+    expect(at("ein")).toBe("medium");
+    expect(at("dob")).toBe("medium");
+    expect(at("email")).toBe("low");
+    expect(at("phone")).toBe("low");
+  });
+
+  it("returns a canonical order, which is what makes delivery_hash stable", () => {
+    const text = "jane@example.com and SSN 123-45-6789 and 415-555-1234 and card 4242424242424242.";
+    const facts = scanSensitive(text);
+    expect(facts.length).toBeGreaterThan(3);
+    // By type, then by masked value — and NOT the order they appear in the text,
+    // which is what a hash over the list would otherwise depend on.
+    const keys = facts.map((f) => `${f.type}|${f.masked}`);
+    expect(keys).toEqual([...keys].sort());
+  });
+});

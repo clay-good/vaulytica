@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.561.0] — 2026-09-08
+
+### Added
+- **Four more behaviours the leak scanner has and its tests did not pin —
+  `sensitive.ts` goes 66.15% → 88.68%.** Read off its surviving mutants, each a
+  real difference rather than a regex-alternation variation:
+
+  - **the entire DOB loop could be emptied** with nothing failing. Same shape as
+    the EIN branch 9.553.0 found, one sensitive type further on — a date of
+    birth left in a draft, detected by code no test ran.
+  - **the ABA checksum could be made always-true.** Nothing asserted that a
+    random nine-digit run is *rejected* as a routing number — the guard that
+    keeps an invoice or part number out of the report.
+  - **every confidence label could be rewritten**, and confidence is what drives
+    the finding's severity. Pinned per type now, not in aggregate.
+  - **the canonical sort could be removed**, and the whole point of it is that
+    `delivery_hash` is stable. The test asserts the order is by type then masked
+    value, and *not* the order the values appear in the text.
+
+  Survivors **61 → 18**, no-coverage **5 → 0**, measured over the same 195
+  mutants so before and after are directly comparable.
+
+  🥇 **The module has now repaid the mutation widening twice, in two different
+  ways.** `NoCoverage` found the paths nothing executed (9.553.0); `Survived`
+  found the paths that ran without being checked. They are different questions
+  and the summary line runs them together — read both columns.
+
 ## [9.560.0] — 2026-09-07
 
 ### Added

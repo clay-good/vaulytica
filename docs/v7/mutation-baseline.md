@@ -53,7 +53,7 @@ seven minutes with a 120-minute timeout.
 |---|---:|---:|---:|---:|---:|
 | **All (scoped)** | **56.92%** | 2,298 | 1,714 | 84 | 89 |
 | `jurisdictions.ts` | 67.58% | 239 | 124 | 32 | 6 |
-| `sensitive.ts` | 66.15% | 129 | 61 | 0 | 5 |
+| `sensitive.ts` | 66.15% → **88.68%** ² | 129 → 172 | 61 → 18 | 0 | 5 → 0 |
 | `parties.ts` | 61.20% | 571 | 353 | 19 | 21 |
 | `dates.ts` | 60.19% | 305 | 185 | 8 | 22 |
 | `amounts.ts` | 59.15% | 270 | 176 | 8 | 16 |
@@ -76,6 +76,16 @@ worth chasing.
 existed, and the next full run will move it up. It is left as measured rather
 than arithmetically adjusted — this file's whole convention is that the number
 is one that was observed.
+
+² **Re-measured 2026-09-08 after 9.553.0–9.561.0**, scoped to `sensitive.ts`
+alone over the same 195 mutants. The module joined this set *because* two of its
+tests were caught passing with the scanner stubbed to return nothing, and it
+then repaid the widening twice over: **NoCoverage** named an untested EIN branch
+and a silent 5 MB cap, and reading the **survivors** named four more — the
+entire DOB loop (emptiable with nothing failing), the ABA checksum's *rejection*
+of a nine-digit run that is not a routing number, every confidence label (which
+drives a finding's severity), and the canonical sort that `delivery_hash`
+depends on. Survivors **61 → 18**, no-coverage **5 → 0**.
 
 ⚠️ **Read this table against the previous one with care, and not as a
 per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added
