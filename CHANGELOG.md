@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.586.0] — 2026-09-08
+
+### Added
+- 🚨 **All ten export `*Blob` wrappers were executed by no test at all** —
+  found as `NoCoverage` in a scoped mutation run. They are the **product
+  path**: the browser downloads files, so it calls `deadlinesIcsBlob`, never
+  `buildDeadlinesIcs`. A whole layer between well-tested logic and the user,
+  run by nobody.
+
+  `src/report/export-blobs.test.ts` asserts two things per wrapper — that the
+  bytes are the builder's bytes, and that the **MIME type is right**. The type
+  is not decoration: a `.ics` served as `text/csv` opens in a spreadsheet
+  instead of a calendar, and a reader who gets a wall of `BEGIN:VEVENT` in
+  Excel concludes the export is broken. Each type is named, so a copy-paste
+  between two adjacent one-line wrappers cannot go unnoticed — the mistake this
+  file's shape invites. The suite also guards its own list against the module,
+  so a new wrapper cannot be added untested.
+
+### Changed
+- `docs/v7/mutation-baseline.md` gains a **"Measured and NOT yet eligible"**
+  section. `src/report/exports.ts` scores **46.08%** on its own 787 mutants —
+  below the aggregate, so widening to it would drag the score toward the
+  `break`. Recorded as a measurement rather than left as a hunch someone
+  re-measures later. The wrappers above took it to **51.06%** (NoCoverage
+  100 → 57); the deadlines-ICS resolution paths are what remain.
+
 ## [9.585.0] — 2026-09-08
 
 ### Added

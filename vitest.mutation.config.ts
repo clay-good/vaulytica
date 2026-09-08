@@ -90,6 +90,11 @@ export default defineConfig({
       "src/extract/parties-hygiene.test.ts",
       "src/extract/parties.test.ts",
       "src/extract/relative-deadline-phrasing.test.ts",
+      // Imports `critical-dates.ts` for its register TYPE while testing the
+      // export Blob wrappers. A type-only import is still an import as far as
+      // the scope guard is concerned, and including it costs nothing: the suite
+      // is 11 fast unit tests.
+      "src/report/export-blobs.test.ts",
       // The critical-dates register's three suites. It joined the mutated set
       // in 9.568.0: the arithmetic behind every date an attorney acts on.
       "src/report/critical-dates-kind.test.ts",

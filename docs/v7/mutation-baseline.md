@@ -130,6 +130,26 @@ and nothing had asserted the empty string.
 
 44.02% → **57.17%**, above the aggregate, which is what made the widening safe.
 
+## Measured and NOT yet eligible
+
+`src/report/exports.ts` — the fix list, obligations CSV and deadlines calendar,
+the artifacts a reviewer actually works from. Measured 2026-09-08 on its own
+**787** mutants: **46.08%**, well below the aggregate, so widening to it would
+drag the score toward the `break` rather than away from it. Not eligible, and
+recorded here rather than left as a hunch someone re-measures later.
+
+Its **100 NoCoverage** mutants named a real gap on the way past, now closed
+(`src/report/export-blobs.test.ts`): **all ten `*Blob` wrappers were executed by
+no test at all.** They are the product path — the tab downloads files, so it
+calls `deadlinesIcsBlob`, never `buildDeadlinesIcs` — and the MIME type each one
+sets is not decoration: a `.ics` served as `text/csv` opens in a spreadsheet
+instead of a calendar. The suite asserts the bytes and the type per wrapper, and
+guards its own list against the module so a new wrapper cannot be added
+untested. 46.08% → **51.06%**, NoCoverage 100 → 57.
+
+Still short of the bar. The remaining uncovered surface is the deadlines-ICS
+resolution paths; closing those is the work that would make it eligible.
+
 ⚠️ **Read this table against the previous one with care, and not as a
 per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added
 one file worth 195 of them; the rest is the extractors themselves having grown
