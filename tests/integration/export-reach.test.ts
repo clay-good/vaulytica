@@ -118,6 +118,15 @@ const DECLARED: ReadonlyMap<string, string> = new Map([
     "belongs to the compare command, which reaches it through runCompare's own renderer",
   ],
   [
+    "buildClauseEvidence",
+    // Same shape as `buildReviewCoverage` below: a projection of the findings
+    // that the artifact builders embed, not a downloadable artifact. The tab
+    // names it to render the sentence under the counts; a script obtains the
+    // same numbers in the JSON report's `clause_evidence` and in SARIF's
+    // attorney-review result properties.
+    "a projection helper, not a downloadable artifact; headless callers reach it inside buildJsonReport and buildSarif",
+  ],
+  [
     "buildReviewCoverage",
     // Not an artifact — a pure projection of `run.findings` that the artifact
     // builders embed. The tab names it directly (it renders the sentence under

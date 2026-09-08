@@ -31,6 +31,7 @@ import {
   reviewCoverageSentence,
   type ReviewCoverage,
 } from "./review-coverage.js";
+import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import { truncate } from "./v3/_dx.js";
 import {
   AlignmentType,
@@ -1565,7 +1566,12 @@ function renderBundleReviewCoverage(input: BundleReportInput): Paragraph[] {
   const all = input.documents.flatMap((d) => d.run.findings);
   const coverage = buildReviewCoverage(all);
   if (coverage.total === 0) return [];
-  return [h1("Attorney Review Coverage"), para({ text: reviewCoverageSentence(coverage) })];
+  const evidence = clauseEvidenceSentence(buildClauseEvidence(all));
+  return [
+    h1("Attorney Review Coverage"),
+    para({ text: reviewCoverageSentence(coverage) }),
+    ...(evidence ? [para({ text: evidence })] : []),
+  ];
 }
 
 function renderDisclaimer(): Paragraph[] {

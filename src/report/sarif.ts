@@ -35,6 +35,7 @@ import {
 import type { V9Surfaces } from "./v9-surfaces.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
 import { erroredRuleNotice } from "./execution-log.js";
+import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
@@ -235,6 +236,7 @@ export function buildSarif(
   const secondaryOmitted = v9?.secondaryFamiliesOmitted ?? 0;
   const capRuleIds = secondaryOmitted > 0 ? [SECONDARY_CAP_RULE_ID] : [];
   const reviewCoverage = buildReviewCoverage(run.findings);
+  const evidence = buildClauseEvidence(run);
   const reviewRuleIds = reviewCoverage.total > 0 ? [REVIEW_COVERAGE_RULE_ID] : [];
   const erroredNotice = erroredRuleNotice(run.execution_log);
   const erroredRuleIds = erroredNotice ? [ERRORED_RULE_ID] : [];
@@ -477,7 +479,14 @@ export function buildSarif(
             ruleId: REVIEW_COVERAGE_RULE_ID,
             ruleIndex: ruleIndex.get(REVIEW_COVERAGE_RULE_ID)!,
             level: "note" as const,
-            message: { text: reviewCoverageSentence(reviewCoverage) },
+            // Two sentences in one result: legal basis, then textual
+            // evidence. A dashboard shows a result, not a section, so splitting
+            // them would make the second easy to filter away from the first.
+            message: {
+              text: [reviewCoverageSentence(reviewCoverage), clauseEvidenceSentence(evidence)]
+                .filter(Boolean)
+                .join(" "),
+            },
             locations: [
               {
                 physicalLocation: { artifactLocation: { uri: run.source_file.name } },
@@ -492,6 +501,8 @@ export function buildSarif(
               surface: "attorney-review-coverage",
               attorney_reviewed: reviewCoverage.attorney_reviewed,
               total: reviewCoverage.total,
+              quoted_evidence: evidence.quoted,
+              bare_matches: evidence.bare,
             },
           },
         ]

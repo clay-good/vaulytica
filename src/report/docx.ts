@@ -50,6 +50,7 @@ import { buildRegimeCoverage } from "../privacy/coverage.js";
 import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
+import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ReportSecondaryFamily } from "./json.js";
@@ -1272,7 +1273,15 @@ function renderRegimeCoverageSection(run: EngineRun): (Paragraph | Table)[] {
 function renderReviewCoverageSection(run: EngineRun): Paragraph[] {
   const coverage = buildReviewCoverage(run.findings);
   if (coverage.total === 0) return [];
-  return [h2("Attorney review coverage"), para({ text: reviewCoverageSentence(coverage) })];
+  const evidence = clauseEvidenceSentence(buildClauseEvidence(run));
+  return [
+    h2("Attorney review coverage"),
+    para({ text: reviewCoverageSentence(coverage) }),
+    // The second half of "what do these findings rest on": legal basis above,
+    // textual evidence here. Both or neither — a reader given one and not the
+    // other draws the wrong conclusion about the one they got.
+    ...(evidence ? [para({ text: evidence })] : []),
+  ];
 }
 
 // Disclaimer block

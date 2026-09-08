@@ -155,6 +155,21 @@ describe("the attorney-review caveat reaches every surface that reports findings
     ).toEqual([]);
   });
 
+  it("and the other half of it: how checkable the findings are", () => {
+    // Legal basis and textual evidence are one question asked twice. A surface
+    // given one and not the other lets a reader draw the wrong conclusion about
+    // the half they got — "attorney-reviewed" says nothing about whether the
+    // finding quotes the clause it fired on.
+    const missing = SURFACES.filter((f) => {
+      const src = scannable(readFileSync(join(ROOT, f), "utf8"));
+      return !/clauseEvidenceSentence|clause_evidence/.test(src);
+    });
+    expect(
+      missing,
+      `these say what the findings rest on legally and not textually:\n  ${missing.join("\n  ")}`,
+    ).toEqual([]);
+  });
+
   it("the tab renders it, not just computes it", () => {
     // `src/ui/main.ts` builds the sentence and `states.ts` is what puts it on
     // screen; a value computed and never rendered is the exact shape of the
@@ -162,6 +177,7 @@ describe("the attorney-review caveat reaches every surface that reports findings
     const states = scannable(readFileSync(join(ROOT, "src/ui/states.ts"), "utf8"));
     expect(states).toMatch(/review-coverage/);
     expect(states).toMatch(/renderReviewCoverage\(/);
+    expect(states).toMatch(/renderClauseEvidence\(/);
   });
 });
 

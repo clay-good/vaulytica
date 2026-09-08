@@ -360,6 +360,25 @@ describe("renderState", () => {
     expect(block.textContent).toContain("0 of 1 findings cite an attorney-reviewed rule");
   });
 
+  it("shows how checkable the findings are, under the review line", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 1, warning: 0, info: 0 },
+      docx_blob: new Blob(["docx"], { type: "application/octet-stream" }),
+      json_blob: new Blob(["{}"], { type: "application/json" }),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+      clause_evidence:
+        "2 of 3 findings quote the exact clause text they fired on; the remaining 1 rest on a pattern or structural match and warrant a read against the document.",
+    });
+    const block = select(dz, "clause-evidence")!;
+    expect(block.hasAttribute("hidden")).toBe(false);
+    expect(block.textContent).toContain("2 of 3 findings quote the exact clause text");
+  });
+
   it("hides the review-coverage line when the surface did not compute one", () => {
     const dz = document.createElement("div");
     renderState(dz, {
@@ -373,6 +392,7 @@ describe("renderState", () => {
       json_filename: "nda-vaulytica.json",
     });
     expect(select(dz, "review-coverage")!.hasAttribute("hidden")).toBe(true);
+    expect(select(dz, "clause-evidence")!.hasAttribute("hidden")).toBe(true);
   });
 
   it("renders the v6 findings-to-action export row when exports are supplied", () => {

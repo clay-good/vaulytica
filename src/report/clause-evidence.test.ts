@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildClauseEvidence } from "./clause-evidence.js";
+import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
 
 function finding(id: string, excerpt: Finding["excerpt"]): Finding {
@@ -55,5 +55,55 @@ describe("buildClauseEvidence (spec-v8 §25)", () => {
   it("is deterministic", () => {
     const r = run([finding("a", { text: "x", start_offset: 0, end_offset: 1 })]);
     expect(JSON.stringify(buildClauseEvidence(r))).toBe(JSON.stringify(buildClauseEvidence(r)));
+  });
+});
+
+/**
+ * The sentence, and the three shapes it has to get right.
+ *
+ * The per-finding table has been in the JSON since spec-v8 §25 and nowhere
+ * else, so the only reader who ever learned that a third of a report's findings
+ * quote no clause text was one parsing the JSON. These pin the wording rather
+ * than a substring, because the wording IS the surface: a report that says
+ * "some findings" instead of "3 of 9" has not told anyone anything.
+ */
+describe("clauseEvidenceSentence", () => {
+  const quoted = (id: string): Finding =>
+    ({
+      id,
+      rule_id: "R",
+      severity: "warning",
+      excerpt: { text: "the exact clause", start_offset: 0, end_offset: 16 },
+    }) as unknown as Finding;
+  const bare = (id: string): Finding =>
+    ({
+      id,
+      rule_id: "R",
+      severity: "warning",
+      excerpt: { text: "", start_offset: 0, end_offset: 0 },
+    }) as unknown as Finding;
+
+  it("says nothing when there are no findings to characterize", () => {
+    expect(clauseEvidenceSentence(buildClauseEvidence([]))).toBeUndefined();
+  });
+
+  it("states the split when the report is mixed", () => {
+    const s = clauseEvidenceSentence(buildClauseEvidence([quoted("a"), quoted("b"), bare("c")]))!;
+    expect(s).toContain("2 of 3 findings quote the exact clause text");
+    expect(s).toContain("the remaining 1 rest on a pattern or structural match");
+  });
+
+  it("does not hedge when every finding quotes its clause", () => {
+    const s = clauseEvidenceSentence(buildClauseEvidence([quoted("a"), quoted("b")]))!;
+    expect(s).toBe("All 2 findings quote the exact clause text they fired on.");
+    expect(s).not.toContain("remaining");
+  });
+
+  it("says so plainly when NONE of them does", () => {
+    // The case a "N of M" template renders as "0 of 3 ... the remaining 3",
+    // which reads like a partial result. It is not partial; it is every one.
+    const s = clauseEvidenceSentence(buildClauseEvidence([bare("a"), bare("b"), bare("c")]))!;
+    expect(s).toContain("None of the 3 findings quotes clause text");
+    expect(s).toContain("confirm every one against the document itself");
   });
 });

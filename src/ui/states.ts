@@ -187,6 +187,13 @@ export type DropzoneState =
        */
       rule_errored?: string;
       /**
+       * "N of M findings quote the exact clause text they fired on; the
+       * remaining K rest on a pattern or structural match." The second half of
+       * what the findings rest on — legal basis is `review_coverage`, this is
+       * textual evidence. JSON-only since spec-v8 §25.
+       */
+      clause_evidence?: string;
+      /**
        * Jurisdiction overlays (spec-v6 Part VI §21, Step 101). State-law
        * deltas for the governing-law state(s) this document names, for the
        * families where state law dominates (employment non-compete, lending
@@ -662,6 +669,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="negotiation-section" data-role="negotiation" hidden></div>
     <div class="counts" data-role="counts"></div>
     <div class="review-coverage" data-role="review-coverage" hidden></div>
+    <div class="review-coverage" data-role="clause-evidence" hidden></div>
     <div class="rule-errored" data-role="rule-errored" hidden></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
@@ -718,6 +726,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="bundle-title"></div>
     <div class="counts" data-role="counts"></div>
     <div class="review-coverage" data-role="review-coverage" hidden></div>
+    <div class="review-coverage" data-role="clause-evidence" hidden></div>
     <div class="rule-errored" data-role="rule-errored" hidden></div>
     <label class="cross-doc-toggle" data-role="cross-doc-toggle" hidden>
       <input type="checkbox" data-role="cross-doc-toggle-input" checked />
@@ -791,6 +800,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderSecondaryFamilies(dz, state.secondary_families, state.secondary_families_omitted);
     renderReviewCoverage(dz, state.review_coverage);
     renderRuleErrored(dz, state.rule_errored);
+    renderClauseEvidence(dz, state.clause_evidence);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
@@ -1418,6 +1428,19 @@ function renderRuleErrored(dz: HTMLElement, notice: string | undefined): void {
   }
   el.hidden = false;
   el.textContent = notice;
+}
+
+/** How checkable the findings are, directly under the attorney-review line. */
+function renderClauseEvidence(dz: HTMLElement, sentence: string | undefined): void {
+  const el = select<HTMLElement>(dz, "clause-evidence");
+  if (!el) return;
+  if (!sentence) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  el.textContent = sentence;
 }
 
 function renderSecondaryFamilies(

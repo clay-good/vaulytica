@@ -56,9 +56,9 @@ import {
   freshnessSignal,
   type CitationCurrency,
 } from "./citations.js";
-import { buildClauseEvidence } from "./clause-evidence.js";
 import { buildReviewCoverage, reviewCoverageSentence, tierBadgeLabel } from "./review-coverage.js";
 import { erroredRuleNotice } from "./execution-log.js";
+import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { ReportSecondaryFamily } from "./json.js";
@@ -656,6 +656,9 @@ export function buildHtmlReport(
   if (reviewCoverage.total > 0) {
     body.push("<h2>Attorney review coverage</h2>");
     body.push(`<p>${esc(reviewCoverageSentence(reviewCoverage))}</p>`);
+    // Legal basis above, textual evidence here — both or neither.
+    const evidence = clauseEvidenceSentence(buildClauseEvidence(run));
+    if (evidence) body.push(`<p>${esc(evidence)}</p>`);
   }
 
   // Posture block (verbatim, same statements as the DOCX disclaimer).

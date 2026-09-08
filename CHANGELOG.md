@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.578.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The other half of "what do these findings rest on" was JSON-only.**
+  Clause-evidence coverage (spec-v8 §25) records which findings pinned the
+  exact clause text they fired on and which rest on a bare pattern or
+  structural match — the difference between *"here is the sentence"* and
+  *"something in this document matched"*. The second is not wrong, it is
+  **unconfirmed**, and only a reader parsing the JSON ever learned which was
+  which.
+
+  It is one sentence now — `clauseEvidenceSentence`, a single owner beside
+  `reviewCoverageSentence` — on the **DOCX**, **HTML**, **SARIF** (folded into
+  the same result as the review coverage, with `quoted_evidence` /
+  `bare_matches` properties), the **bundle report**, and the **browser tab**.
+  Legal basis and textual evidence are one question asked twice; a surface
+  given one and not the other lets a reader draw the wrong conclusion about the
+  half they got.
+
+  Three shapes, all pinned by tests: the mixed split, "All N quote…", and the
+  case a naive `N of M` template renders as *"0 of 3 … the remaining 3"* —
+  which reads like a partial result when it is every one of them.
+
+### Changed
+- **`buildClauseEvidence` takes the findings, not the run.** It only ever read
+  `run.findings`, and asking for the whole run meant the bundle — which
+  characterizes every document's findings at once — had to synthesize a fake
+  `EngineRun` to call it. A helper's parameter should be what it uses.
+
 ## [9.577.0] — 2026-09-08
 
 ### Fixed
