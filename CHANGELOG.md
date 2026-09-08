@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.554.0] — 2026-09-07
+
+### Added
+- **Tests for the two heading prefixes `sections.ts` documents and nothing
+  executed.** `NUMBER_PREFIX` has four capture groups — dotted decimal,
+  `Article <roman>`, `Section`/`Clause <n>`, and `§ <n>` — and the module header
+  advertises all four. Only the first two had a test. Under mutation the
+  branches returning groups three and four came back **NoCoverage**: not *the
+  tests failed to kill this*, but *no test executes this line*. A documented
+  behaviour with no test is one that can be deleted without anything noticing.
+
+  Both work, and now say so: `Section 4`, `Clause 7`, `Section 12.3`, `§ 9`,
+  `§4.2`, plus the negative that keeps the pattern honest — *"Sectional
+  Interests"* is not `Section 4`.
+
+### Verified, not changed
+- ⚠️ **A scare that was my probe, not the engine, and worth recording because it
+  looked alarming.** Sweeping the corpus for numbered labels returned **zero
+  across all 312 specimens** — and then zero *headings* across all 312, which
+  reads like the whole outline being dead on real input.
+
+  It is not. The specimens are `.txt` read through `ingestPaste`, and pasted
+  text carries no heading structure by design — the ingest already says so in
+  the warning every surface prints: *"Pasted text loses document structure;
+  rules that depend on heading levels or DOCX styles may be skipped."* The
+  outline is exercised through the DOCX path, where headings exist.
+
+  🥇 **A NoCoverage mutant is scoped to the mutation include list, not to the
+  suite**, and the corpus check meant to confirm it used the one ingest path
+  that cannot produce the input. Check *which path* a probe feeds before
+  believing what it reports absent — the third time this session that a probe,
+  not the engine, was the thing at fault.
+
 ## [9.553.0] — 2026-09-07
 
 ### Fixed
