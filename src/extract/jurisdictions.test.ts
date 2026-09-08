@@ -950,3 +950,37 @@ describe("a forum stated as a tribunal", () => {
     expect(venues(text).length).toBeGreaterThan(0);
   });
 });
+
+/**
+ * The forward half of `trimVenueTail`, which decides where a place name ends.
+ *
+ * `VENUE_INTERNAL_WORD` is the list of lowercase words that may sit INSIDE a
+ * place — "District of Columbia", "England and Wales" — and everything else in
+ * lowercase begins the sentence's tail rather than the place. Get it wrong in
+ * either direction and the venue is either truncated to its first word or runs
+ * on into the rest of the clause.
+ *
+ * (The function's *trailing*-connective guard is deliberately unpinned; see the
+ * comment beside it — no capture the current patterns produce ends in one.)
+ */
+describe("venue capture — where the place name ends", () => {
+  const venues = (text: string): string[] =>
+    extractJurisdictions(buildTree(["Agreement", text]))
+      .filter((j) => j.clause_kind === "venue")
+      .map((j) => j.raw_text);
+
+  it("keeps an internal 'and' inside a compound place", () => {
+    // "England and Wales" is one jurisdiction, not England followed by a tail.
+    expect(
+      venues("Venue lies in the courts of England and Wales and the parties submit to them."),
+    ).toContain("England and Wales");
+  });
+
+  it("stops at the sentence's tail rather than running on", () => {
+    expect(
+      venues(
+        "Venue shall lie exclusively in the courts of the State of Delaware and the parties consent to personal jurisdiction.",
+      ),
+    ).toContain("Delaware");
+  });
+});

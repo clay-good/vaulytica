@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.565.0] — 2026-09-08
+
+### Changed
+- **The `trimVenueTail` gap 9.564.0 left named is now closed — as a measured
+  conclusion, not a test.** Its trailing-connective guard (*"the State of alone
+  is not a place"*) reports as NoCoverage because **no capture the current venue
+  patterns produce ends in one of those words**: the forward loop stops at the
+  first lowercase non-internal word, so a trailing `of`/`the`/`and` survives it
+  only when the capture runs to the end of the paragraph on a connective, which
+  the anchored patterns do not allow. Reaching it needs text no document writes
+  (*"venue in the State of and"*).
+
+  🥇 **A test written against invented input tests the fixture, not the rule.**
+  The guard stays, with the measurement beside it, so the next reader does not
+  spend the same afternoon on it.
+
+  What *is* now pinned is the half that runs and decides where a place name
+  ends: **"England and Wales" survives as one jurisdiction** (because `and` is
+  internal), and *"the courts of the State of Delaware and the parties consent
+  to…"* stops at Delaware rather than running into the clause's tail. Get that
+  wrong either way and the venue is truncated to its first word or swallows the
+  sentence.
+
+  ⚠️ Reaching it took reading the type. Three earlier probes printed
+  `j.jurisdiction`, a field that does not exist on `JurisdictionReference` — the
+  value lives in `raw_text` — so they reported `undefined` for records that were
+  perfectly correct. **Read the type before believing a probe's `undefined`.**
+
 ## [9.564.0] — 2026-09-08
 
 ### Added

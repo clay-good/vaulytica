@@ -1108,11 +1108,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "04680a3dc10e64c7b8e1b419ad9c95dbb5fbb7f29757b4dd44004ad0bfd17bc6",
+  "result_hash": "d5965fd389e41c733bb30c1c7b3ea64aa5b0c4e9a73fda6f6ce69574224894d7",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",
     "size_bytes": 8974
   },
-  "version": "9.564.0"
+  "version": "9.565.0"
 }

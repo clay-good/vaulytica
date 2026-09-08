@@ -63,6 +63,18 @@ function trimVenueTail(captured: string): string {
     }
   }
   // Never end on an internal connective: "the State of" alone is not a place.
+  //
+  // ⚠️ DEFENSIVE, and measured as such (2026-09-08). Mutation testing reports
+  // this line as NoCoverage — no test executes it — and the reason is that no
+  // capture the current venue patterns produce ENDS in one of these words. The
+  // forward loop above stops at the first lowercase non-internal word, so a
+  // trailing `of`/`the`/`and` only survives it when the capture runs to the end
+  // of the paragraph on a connective, which the anchored patterns do not allow.
+  // Reaching it from `extractJurisdictions` needs text no document writes
+  // ("venue in the State of and"), so it is left as a guard rather than pinned
+  // with a contrived fixture — a test written against invented input tests the
+  // fixture, not the rule. The forward half IS exercised: "England and Wales"
+  // survives precisely because `and` is internal.
   while (end > 0 && VENUE_INTERNAL_WORD.test(words[end - 1]!)) end -= 1;
   return words.slice(0, end).join(" ");
 }
