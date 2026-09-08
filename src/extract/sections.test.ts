@@ -91,4 +91,34 @@ describe("extractSections — the Section/Clause and § prefixes", () => {
     // "Sectional" is not "Section 4": the pattern needs the number.
     expect(labelFor("Sectional Interests")).toBeUndefined();
   });
+
+  /**
+   * Three behaviours the pattern has and nothing pinned. Each was found as a
+   * SURVIVING regex mutant on `NUMBER_PREFIX`, and each is a real difference
+   * rather than one of the equivalent-mutant variations inside the alternation
+   * (`\s+` → `\s` and friends) that the mutation baseline records as not worth
+   * chasing.
+   */
+  it("reads a MULTI-DIGIT dotted decimal, not just a single digit", () => {
+    // Dropping the `+` from the first group's leading `\d+` leaves "12.3"
+    // matching nothing at all — the group takes "1", the dotted tail then fails,
+    // and the whole heading falls through unlabelled.
+    expect(labelFor("12.3 Termination")).toBe("12.3");
+    expect(labelFor("7. Definitions")).toBe("7");
+  });
+
+  it("reads an Article numbered with an ARABIC numeral, not only a roman one", () => {
+    // The `Article` branch is `([IVXLCDM]+|\d+)`, and only the roman half had a
+    // test — so the arabic half could be deleted and nothing would notice.
+    expect(labelFor("Article 4 — Payment")).toBe("Article 4");
+    expect(labelFor("Article XIV Indemnity")).toBe("Article XIV");
+  });
+
+  it("anchors at the START of the heading", () => {
+    // Without `^` the pattern matches anywhere, and a heading that MENTIONS a
+    // cross-reference would be labelled with the number it cites — "Obligations
+    // of Section 4" becoming section 4 of the document.
+    expect(labelFor("Obligations of Section 4")).toBeUndefined();
+    expect(labelFor("The parties agree in Article II")).toBeUndefined();
+  });
 });

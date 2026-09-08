@@ -58,8 +58,24 @@ seven minutes with a 120-minute timeout.
 | `dates.ts` | 60.19% | 305 | 185 | 8 | 22 |
 | `amounts.ts` | 59.15% | 270 | 176 | 8 | 16 |
 | `obligations.ts` | 55.14% | 264 | 223 | 15 | 4 |
-| `sections.ts` | 51.92% | 27 | 21 | 0 | 4 |
+| `sections.ts` | 51.92% → **84.62%** ¹ | 27 → 44 | 21 → 8 | 0 | 4 → 0 |
 | `crossrefs.ts` | 45.96% | 493 | 571 | 2 | 11 |
+
+¹ **Re-measured 2026-09-07 after 9.554.0 and 9.560.0**, scoped to `sections.ts`
+alone over the same 52 mutants, so the two numbers are directly comparable. The
+tests that moved it pinned four behaviours the module documents and nothing
+executed: the `Section`/`Clause` and `§` prefix groups, an `Article` numbered
+with an **arabic** numeral rather than a roman one, a **multi-digit** dotted
+decimal (`12.3`, where dropping the `+` leaves the heading unlabelled entirely),
+and the `^` **anchor** — without which *"Obligations of Section 4"* is labelled
+with the number it merely cites. The eight survivors left are the
+equivalent-mutant variations inside the alternation this file records as not
+worth chasing.
+
+**The aggregate below is now a floor**: it was measured before these tests
+existed, and the next full run will move it up. It is left as measured rather
+than arithmetically adjusted — this file's whole convention is that the number
+is one that was observed.
 
 ⚠️ **Read this table against the previous one with care, and not as a
 per-file trend.** The mutant count went 2,696 → **4,317** on a scope that added

@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.560.0] — 2026-09-07
+
+### Added
+- **Three more behaviours `NUMBER_PREFIX` has and nothing pinned — `sections.ts`
+  goes 51.92% → 84.62%.** Reading the module's *surviving* mutants (not just the
+  NoCoverage ones 9.554.0 acted on) separated three real differences from the
+  equivalent-mutant noise the mutation baseline records as not worth chasing:
+
+  - **a multi-digit dotted decimal.** Dropping the `+` from the first group's
+    `\d+` leaves `"12.3 Termination"` matching **nothing at all** — the group
+    takes `1`, the dotted tail fails, and the heading falls through unlabelled.
+  - **an `Article` numbered with an arabic numeral.** The branch is
+    `([IVXLCDM]+|\d+)` and only the roman half had a test, so the arabic half
+    could have been deleted with nothing noticing.
+  - **the `^` anchor.** Without it the pattern matches anywhere, and a heading
+    that merely *cites* a cross-reference takes its number: *"Obligations of
+    Section 4"* would be labelled section 4 of the document.
+
+  Verified by re-running Stryker scoped to the module over the same 52 mutants,
+  so the before and after are directly comparable: survivors **21 → 8**, killed
+  **27 → 44**, no-coverage **4 → 0**. The eight left are the `\s+`-to-`\s` class
+  inside the alternation.
+
+  The aggregate in `docs/v7/mutation-baseline.md` is left **as measured** rather
+  than arithmetically adjusted — it is a floor now, and this file's whole
+  convention is that the number is one that was observed.
+
+### Verified, not changed
+- **The `const MAX_*` sweep is closed.** `src/playbooks`' six caps are all **zod
+  schema bounds** — a playbook that exceeds one is rejected with a validation
+  error, never silently truncated, which is the same honest form as the ingest
+  byte caps that throw. Together with 9.559.0's ingest findings, every bound in
+  `src/` has now been read and each is either enforced by refusal, stated in a
+  warning, or preserves content.
+
 ## [9.559.0] — 2026-09-07
 
 ### Fixed
