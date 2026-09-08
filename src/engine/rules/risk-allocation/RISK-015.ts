@@ -71,7 +71,7 @@ export function isStatutoryDandOIndemnity(text: string): boolean {
     // property-management indemnity between two businesses, and it still needs
     // its cap; "The Partnership shall indemnify the General Partner" does not.
     new RegExp(
-      `\\b(?:the\\s+)?(?:Partnership|Company|Corporation|Trust|LLC|Limited\\s+Liability\\s+Company)\\s+(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}indemnif\\w+[^.]{0,100}?\\b(?:General\\s+Partner|Managing\\s+Member|Manager|Managers|Members?|Directors?|Officers?|Trustees?)\\b[^.]{0,200}?\\b(?:fraud|willful\\s+misconduct|gross\\s+negligence|knowing\\s+violation\\s+of\\s+law)\\b`,
+      `\\b(?:the\\s+)?(?:Partnership|Company|Corporation|Trust|LLC|Limited\\s+Liability\\s+Company)\\s+(?:shall|will|must|(?:is|are)\\s+required\\s+to|agrees\\s+to)${MODAL_QUALIFIER}indemnif\\w+[^.]{0,100}?\\b(?:General\\s+Partner|Managing\\s+Member|Manager|Managers|Members?|Directors?|Officers?|Trustees?)\\b[^.]{0,200}?\\b(?:fraud|willful\\s+misconduct|gross\\s+negligence|knowing\\s+violation\\s+of\\s+law)\\b`,
       "i",
     ).test(text) ||
     // The THIRD-PARTY RELIANCE indemnity of a personal instrument, which is
@@ -134,7 +134,7 @@ export const rule: Rule = {
     // aggregate cap to state. Requiring a claim / loss / liability / damage
     // after the preposition keeps the branch on the clause it is about.
     const INDEMNITY = new RegExp(
-      `\\b(?:shall|will|must|agrees?\\s+to)${MODAL_QUALIFIER}(?:defend,?\\s+(?:and\\s+)?)?indemnify|\\bhold\\s+(?:\\w+\\s+)?harmless\\b(?:[^.]|\\.(?=\\d)){0,80}?\\b(?:from|against)\\b(?:[^.]|\\.(?=\\d)){0,40}?\\b(?:claims?|loss|losses|liabilit(?:y|ies)|damages?|costs?|expenses?|suits?|actions?|proceedings?|judgments?|penalt(?:y|ies)|fines?)\\b|\\bdefend\\s+and\\s+indemnify\\b|\\bindemnification\\s+obligations?\\b`,
+      `\\b(?:shall|will|must|(?:is|are)\\s+required\\s+to|agrees?\\s+to)${MODAL_QUALIFIER}(?:defend,?\\s+(?:and\\s+)?)?indemnify|\\bhold\\s+(?:\\w+\\s+)?harmless\\b(?:[^.]|\\.(?=\\d)){0,80}?\\b(?:from|against)\\b(?:[^.]|\\.(?=\\d)){0,40}?\\b(?:claims?|loss|losses|liabilit(?:y|ies)|damages?|costs?|expenses?|suits?|actions?|proceedings?|judgments?|penalt(?:y|ies)|fines?)\\b|\\bdefend\\s+and\\s+indemnify\\b|\\bindemnification\\s+obligations?\\b`,
       "i",
     );
     // "Each party's total liability under this Agreement shall not exceed

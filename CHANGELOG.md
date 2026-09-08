@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.596.0] — 2026-09-08
+
+### Fixed
+- 🚨 **Three rules were blind to "is required to" — the plain-language spelling
+  of the same obligation.** "Vendor **is required to** indemnify" is the
+  identical clause as "Vendor **shall** indemnify". The obligation *extractor*
+  has read that form for a long time (it is in `MODALS`), but two indemnity
+  rules matched on their own alternation, and that alternation spelled
+  `shall|will|must|agrees to` and stopped.
+
+  Measured over the 185 specimens that write an obligation: **30 lost a
+  finding** — RISK-011 on 26 documents, RISK-015 on 10 — plus DARK-003 on one.
+  That is RISK-015's "must" blindness recurring for the next synonym, and the
+  fix was the same mechanical shape it was then: one more alternative in a list
+  that already spells the others.
+
+  **Zero cost.** No golden moved on any real specimen — this is pure recall, not
+  a widening that trades precision for it. And the gains the rewrite produces
+  (CHOICE-003 on 43 documents, FIN-005 on 24, six more) were measured
+  **identical before and after** the change, so they are artifacts of the
+  rewrite itself and none is attributable to it.
+
+### Added
+- **A fourth metamorphic relation**, holding it: writing every positive `shall`
+  as `is required to` must lose nothing. Its debt list is **empty**.
+
+### Notes
+- 🚨 **The first measurement was wrong and would have sent a fix to the wrong
+  file.** Rewriting *every* `shall` produced "is required to **not** disclose",
+  which no drafter writes, and OBLI-005 "lost" nine documents because its
+  negation filter reasonably does not match that — it looked like an extractor
+  defect. The mutation leaves `shall not` alone now (plain language writes that
+  as "must not" or "is prohibited from") and OBLI-005's loss vanished entirely.
+  **A mutation that produces English nobody writes measures nothing.**
+- ✅ The frontier's *"354 recognizers read 'shall' and not 'must' — a dedicated
+  pass"* item is **closed and was already closed**: 354 → 25, each of the 25
+  documented as correct as written, held by equality, with `MUST_DEBT` empty.
+  Nearly re-did finished work by trusting the note over the file.
+
 ## [9.595.0] — 2026-09-08
 
 ### Added

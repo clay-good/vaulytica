@@ -13,7 +13,10 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 // interchangeably — a one-way shift of any of them is the same asymmetry.
 const READER =
   "(?:Customer|Licensee|Employee|User|Subscriber|Tenant|Lessee|Borrower|Guarantor|you)";
-const VERB = "(?:shall|must|agrees?\\s+to|will)";
+// "is/are required to" is the plain-language spelling of the same duty —
+// "you are required to pay our attorneys' fees" is the identical clause. One
+// more alternative in a list that already spells the synonyms.
+const VERB = "(?:shall|must|(?:is|are)\\s+required\\s+to|agrees?\\s+to|will)";
 const DRAFTER =
   "(?:Provider|Vendor|Company|Licensor|Employer|Landlord|Lessor|Lender|Bank|Creditor|us|our)";
 const FEES =

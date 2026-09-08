@@ -180,6 +180,59 @@ describe("shall and will are the same obligation", () => {
     expect(probed).toBeGreaterThan(150);
     expect(broken).toEqual([]);
   }, 300_000);
+  /**
+   * The fourth spelling, and the first that is not a modal at all.
+   *
+   * A plain-language house style writes "Vendor **is required to** indemnify".
+   * The obligation EXTRACTOR has read that form for a long time — it is in
+   * `MODALS` — but two indemnity rules matched on their own alternation and
+   * that alternation spelled `shall|will|must|agrees to` and stopped. Measured
+   * 2026-09-08 over the 185 specimens that write an obligation: **30 lost a
+   * finding**, RISK-011 on 26 documents and RISK-015 on 10. That is RISK-015's
+   * "must" blindness recurring for the next synonym, and the fix was the same
+   * mechanical shape — one more alternative in a list that already spells the
+   * others.
+   *
+   * 🚨 **The first measurement of this was wrong and would have sent a fix to
+   * the wrong file.** Rewriting *every* `shall` produced "is required to not
+   * disclose", which no drafter writes, and OBLI-005 "lost" nine documents
+   * because its negation filter reasonably does not match that. The mutation
+   * leaves `shall not` alone now — plain language writes that as "must not" or
+   * "is prohibited from" — and OBLI-005's loss disappeared entirely. A
+   * mutation that produces English nobody writes measures nothing.
+   *
+   * DARK-003 was the last one and the same shape again: its `VERB` constant
+   * spelled `shall|must|agrees to|will`. The debt list is empty.
+   *
+   * The GAINS this rewrite produces (CHOICE-003 on 43 documents, FIN-005 on
+   * 24, and six others) are artifacts of the rewrite itself, not of any rule
+   * change: they were measured as identical before and after the fix. Only
+   * losses are asserted here, for that reason.
+   */
+  const REQUIRED_TO_DEBT: readonly string[] = [];
+
+  it("writing a positive 'shall' as 'is required to' loses only what is owed", async () => {
+    const deps = await loadAccuracyDeps({});
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = text
+        .replace(/\bshall\b(?!\s+not\b)/g, "is required to")
+        .replace(/\bShall\b(?!\s+not\b)/g, "Is required to");
+      if (mutated === text) continue;
+      probed++;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(before).filter((id) => !ids(after).includes(id));
+      if (lost.length) broken.push(`${name}: lost ${lost.join(",")}`);
+    }
+    expect(probed, "the corpus never writes an obligation").toBeGreaterThan(150);
+    expect(broken).toEqual([...REQUIRED_TO_DEBT]);
+  }, 300_000);
+
   it("writing every 'shall' as 'must' moves a finding on only the documents still owed", async () => {
     const deps = await loadAccuracyDeps({});
     const broken: string[] = [];
