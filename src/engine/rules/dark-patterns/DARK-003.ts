@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { MODAL_QUALIFIER } from "../_helpers.js";
+import { MODAL_QUALIFIER, OBLIGATION_MODAL } from "../_helpers.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 
 // Consumer terms address the reader in the second person — "YOU shall pay
@@ -13,10 +13,10 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 // interchangeably — a one-way shift of any of them is the same asymmetry.
 const READER =
   "(?:Customer|Licensee|Employee|User|Subscriber|Tenant|Lessee|Borrower|Guarantor|you)";
-// "is/are required to" is the plain-language spelling of the same duty —
-// "you are required to pay our attorneys' fees" is the identical clause. One
-// more alternative in a list that already spells the synonyms.
-const VERB = "(?:shall|must|(?:is|are)\\s+required\\s+to|agrees?\\s+to|will)";
+// The shared obligation vocabulary: "you are required to pay our attorneys'
+// fees" and "you undertake to pay …" are the identical clause as "you shall
+// pay". One owner, so the next spelling is added in one place.
+const VERB = OBLIGATION_MODAL;
 const DRAFTER =
   "(?:Provider|Vendor|Company|Licensor|Employer|Landlord|Lessor|Lender|Bank|Creditor|us|our)";
 const FEES =

@@ -856,6 +856,37 @@ const SIGNED_RIDER_INTO_PARENT = new RegExp(
  */
 export const MODAL_QUALIFIER = String.raw`(?:,\s*[^.;]{0,60}?,|(?:\s+(?!not\b|never\b|no\b|nor\b)[a-z][\w'’-]*){1,3})?\s+`;
 
+/**
+ * The ways a document says a party is bound to do something — one owner.
+ *
+ * The obligation EXTRACTOR has read every one of these for a long time (its own
+ * `MODALS` list), and the RULES did not: each carried its own alternation, and
+ * those alternations stopped at different places. Measured 2026-09-08 over the
+ * 185 specimens that write an obligation, rewriting `shall` as each synonym:
+ *
+ * | spelling | documents that lost a finding |
+ * |---|---|
+ * | `agrees to` | 0 — already in every list |
+ * | `is required to` | 30 (fixed 9.596.0) |
+ * | `is obligated to` | 30 |
+ * | `undertakes to` | 36 |
+ * | `covenants to` | 36 |
+ *
+ * The same four rules every time. Four scattered edits per new synonym is how a
+ * list that exists four times ends up disagreeing with itself, which is what
+ * `shared-vocabulary.test.ts` exists to stop — so the vocabulary lives here and
+ * the next synonym is a one-line change in one place.
+ *
+ * ⚠️ **Only forms that take a bare infinitive belong here.** "is responsible
+ * for" reads as an obligation to a person and does NOT: a drafter writes
+ * "responsible for indemnify**ing**", so slotting it before a bare verb matches
+ * English nobody writes. Measuring it that way produced a loss that looked real
+ * and was not.
+ *
+ * A rule needing more (RISK-011's `hereby`) composes: `(?:${OBLIGATION_MODAL}|hereby)`.
+ */
+export const OBLIGATION_MODAL = String.raw`(?:shall|will|must|(?:is|are)\s+(?:required|obligated)\s+to|agrees?\s+to|undertakes?\s+to|covenants?\s+(?:and\s+agrees?\s+)?to)`;
+
 export { PAGE_FURNITURE };
 
 export function isIncorporatedExhibit(ctx: RuleContext): boolean {

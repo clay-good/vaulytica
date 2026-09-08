@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, MODAL_QUALIFIER } from "../_helpers.js";
+import { emit, firstParagraphMatch, MODAL_QUALIFIER, OBLIGATION_MODAL } from "../_helpers.js";
 import { isStatutoryDandOIndemnity } from "./RISK-015.js";
 
 const PROCEDURE = [
@@ -44,7 +44,7 @@ const PROCEDURE = [
 // accused a correctly drafted document of an incomplete clause it never
 // purported to contain.
 const OPERATIVE_INDEMNITY = new RegExp(
-  `\\b(?:shall|will|must|(?:is|are)\\s+required\\s+to|agrees?\\s+to|hereby)${MODAL_QUALIFIER}(?:(?:further|also|fully|jointly\\s+and\\s+severally|at\\s+all\\s+times)\\s+)?(?:defend,?\\s+)?indemnif|\\bindemnifies\\b|\\bindemnification\\s+by\\b`,
+  `\\b(?:${OBLIGATION_MODAL}|hereby)${MODAL_QUALIFIER}(?:(?:further|also|fully|jointly\\s+and\\s+severally|at\\s+all\\s+times)\\s+)?(?:defend,?\\s+)?indemnif|\\bindemnifies\\b|\\bindemnification\\s+by\\b`,
   "i",
 );
 

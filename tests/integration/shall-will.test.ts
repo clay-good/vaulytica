@@ -209,29 +209,102 @@ describe("shall and will are the same obligation", () => {
    * change: they were measured as identical before and after the fix. Only
    * losses are asserted here, for that reason.
    */
-  const REQUIRED_TO_DEBT: readonly string[] = [];
 
-  it("writing a positive 'shall' as 'is required to' loses only what is owed", async () => {
-    const deps = await loadAccuracyDeps({});
-    const broken: string[] = [];
-    let probed = 0;
-    for (const name of SPECIMENS) {
-      const text = readFileSync(join(DIR, name), "utf8");
-      const mutated = text
-        .replace(/\bshall\b(?!\s+not\b)/g, "is required to")
-        .replace(/\bShall\b(?!\s+not\b)/g, "Is required to");
-      if (mutated === text) continue;
-      probed++;
-      const before = await analyzeText(text, name, { deps });
-      const after = await analyzeText(mutated, name, { deps });
-      const ids = (r: typeof before): string[] =>
-        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
-      const lost = ids(before).filter((id) => !ids(after).includes(id));
-      if (lost.length) broken.push(`${name}: lost ${lost.join(",")}`);
+  /**
+   * Every spelling the obligation extractor reads, not just the one that was
+   * measured first.
+   *
+   * Fixing `is required to` in three rules left the identical hole open for the
+   * next synonym: `is obligated to` lost the same 30 documents, `undertakes to`
+   * and `covenants to` 36 each — the same four rules every time, because each
+   * carried its own alternation and they stopped at different places. The
+   * vocabulary has one owner now (`OBLIGATION_MODAL`), and this relation is
+   * parameterized so a new spelling is one entry here rather than a new test.
+   *
+   * ⚠️ `is responsible for` is deliberately absent. It does not take a bare
+   * infinitive — a drafter writes "responsible for indemnify**ing**" — so
+   * substituting it for `shall` produces English nobody writes, and the loss it
+   * "measured" was an artifact of the mutation. Same trap as rewriting
+   * `shall not` to `is required to not`, which is what made OBLI-005 look
+   * broken when it was not.
+   *
+   * ONE spelling is probed across the corpus, not five. Before the shared
+   * constant they were five independent alternations and each needed its own
+   * measurement; now they are one, and running five 85-second corpus sweeps to
+   * exercise a single constant five times buys nothing. The rest of the class
+   * is held by the static guard below, which is instant and catches the actual
+   * regression — a rule going back to a private alternation.
+   */
+  const OBLIGATION_SPELLINGS = ["is obligated to"] as const;
+
+  for (const spelling of OBLIGATION_SPELLINGS) {
+    it(`writing a positive 'shall' as '${spelling}' loses no finding`, async () => {
+      const deps = await loadAccuracyDeps({});
+      const broken: string[] = [];
+      let probed = 0;
+      const Capital = spelling[0]!.toUpperCase() + spelling.slice(1);
+      for (const name of SPECIMENS) {
+        const text = readFileSync(join(DIR, name), "utf8");
+        const mutated = text
+          .replace(/\bshall\b(?!\s+not\b)/g, spelling)
+          .replace(/\bShall\b(?!\s+not\b)/g, Capital);
+        if (mutated === text) continue;
+        probed++;
+        const before = await analyzeText(text, name, { deps });
+        const after = await analyzeText(mutated, name, { deps });
+        const ids = (r: typeof before): string[] =>
+          [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+        const lost = ids(before).filter((id) => !ids(after).includes(id));
+        if (lost.length) broken.push(`${name}: lost ${lost.join(",")}`);
+      }
+      expect(probed, "the corpus never writes an obligation").toBeGreaterThan(150);
+      // Only LOSSES. The gains this rewrite produces (CHOICE-003 on 43
+      // documents, FIN-005 on 24) are artifacts of the rewrite itself: they
+      // were measured identical before and after the rules changed.
+      expect(broken).toEqual([]);
+    }, 300_000);
+  }
+
+  /**
+   * The regression this needs to catch: a rule going back to a private
+   * alternation.
+   *
+   * These four each carried their own `shall|will|must|…` list, and the lists
+   * stopped at different places — which is why one synonym cost 30 documents
+   * and the next cost 36. They read the shared vocabulary now, and this is
+   * instant where a corpus sweep per spelling is 85 seconds each.
+   *
+   * 🚨 A first draft also flagged any line spelling `shall` beside `will` or
+   * `must` in these files, and it was WRONG on four of five hits: RISK-015
+   * carries a repeated-modal *sequence* (`(?:hereby\s+|agrees?\s+to\s+|shall\s+…)*`,
+   * a different construct), a liability-cap slot (`(?:shall|will|must|is|are|may)?`
+   * before "be limited"), and a negation (`(?:do|does|shall|will|must)\s+not\s+apply`).
+   * None is an obligation-modal slot, and a guard that cannot tell them apart
+   * gets silenced rather than obeyed. The precise half is kept; the corpus
+   * relation above is what catches a rule that actually stops reading a
+   * spelling, because it starts losing findings again.
+   */
+  it("the rules that match an obligation modal use the one shared vocabulary", () => {
+    for (const rel of [
+      "src/engine/rules/risk-allocation/RISK-011.ts",
+      "src/engine/rules/risk-allocation/RISK-015.ts",
+      "src/engine/rules/risk-allocation/RISK-016.ts",
+      "src/engine/rules/dark-patterns/DARK-003.ts",
+    ]) {
+      // 🚨 Import lines are stripped first. Without that, replacing the only
+      // USE of the constant with a hand-written alternation left the import
+      // behind and this passed — proven by trying it. A name in an import is
+      // not evidence of using it, which is the same defect
+      // `cap-caveat-reach.test.ts` was fixed for the same day.
+      const src = readFileSync(join(process.cwd(), rel), "utf8").replace(
+        /^import\s[\s\S]*?from\s+"[^"]+";$/gm,
+        "",
+      );
+      expect(src, `${rel} no longer reads the shared obligation vocabulary`).toContain(
+        "OBLIGATION_MODAL",
+      );
     }
-    expect(probed, "the corpus never writes an obligation").toBeGreaterThan(150);
-    expect(broken).toEqual([...REQUIRED_TO_DEBT]);
-  }, 300_000);
+  });
 
   it("writing every 'shall' as 'must' moves a finding on only the documents still owed", async () => {
     const deps = await loadAccuracyDeps({});

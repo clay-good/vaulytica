@@ -5,6 +5,7 @@ import {
   excerptWindow,
   firstParagraphMatch,
   MODAL_QUALIFIER,
+  OBLIGATION_MODAL,
 } from "../_helpers.js";
 
 /**
@@ -38,7 +39,7 @@ export const rule: Rule = {
       // deliberately omitted so "shall provide insurance CERTIFICATES" and
       // "shall have insurance PROCEEDS applied" are not misread as the mandate.
       new RegExp(
-        `\\b(?:(?:shall|must|will|agrees?\\s+to|(?:is|are)\\s+(?:required|obligated)\\s+to)${MODAL_QUALIFIER}(?:maintain|carry|procure|obtain|purchase|secure|keep\\s+in\\s+force)\\s+[^.]{0,80}\\binsurance\\b|insurance\\s+(?:shall|must|will)\\s+be\\s+(?:maintained|carried|procured|obtained|purchased|secured|kept\\s+in\\s+force))`,
+        `\\b(?:${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:maintain|carry|procure|obtain|purchase|secure|keep\\s+in\\s+force)\\s+[^.]{0,80}\\binsurance\\b|insurance\\s+(?:shall|must|will)\\s+be\\s+(?:maintained|carried|procured|obtained|purchased|secured|kept\\s+in\\s+force))`,
         "i",
       ),
     );

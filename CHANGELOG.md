@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.597.0] — 2026-09-08
+
+### Fixed
+- 🚨 **Fixing one synonym left the identical hole open for the next four.**
+  9.596.0 taught three rules to read `is required to`. Measured immediately
+  after, over the same 185 specimens: `is obligated to` lost the same 30
+  documents, `undertakes to` and `covenants to` **36 each** — the same four
+  rules every time (RISK-011, RISK-015, RISK-016, DARK-003), because each
+  carried its own alternation and they stopped at different places.
+
+  The obligation *extractor* has read all of these for a long time. The rules
+  had not, and patching them one spelling at a time is how a list that exists
+  four times ends up disagreeing with itself.
+
+  **The vocabulary now has one owner**, `OBLIGATION_MODAL` in
+  `src/engine/rules/_helpers.ts`, beside `MODAL_QUALIFIER`. All five spellings
+  lose nothing, and **no golden moved** — pure recall again, no precision
+  traded for it. A rule needing more composes:
+  `(?:${OBLIGATION_MODAL}|hereby)`.
+
+  ⚠️ `is responsible for` is deliberately **not** in it. It does not take a
+  bare infinitive — a drafter writes "responsible for indemnify**ing**" — so
+  substituting it for `shall` produces English nobody writes, and the 9-document
+  "loss" it measured was an artifact of the mutation, the same trap as rewriting
+  `shall not` to `is required to not`.
+
+### Changed
+- **Five corpus relations became one plus a static guard.** Once the vocabulary
+  has a single owner, sweeping the corpus five times exercises the same constant
+  five times: 425 seconds for no added signal. One sweep stays (it is what
+  catches a rule that genuinely stops reading a spelling — it starts losing
+  findings), plus an instant assertion that the four rules use the owner.
+  The file is 76s, up from 49s, for a guarantee across five spellings.
+
+### Notes
+- 🚨 **Two guards I wrote in this release were wrong, both caught by trying
+  them.**
+  - The static guard first flagged any line spelling `shall` beside `will` or
+    `must` in those files, and was **wrong on four of five hits**: a
+    repeated-modal *sequence*, a liability-cap slot, and a negation are not
+    obligation-modal slots. A guard that cannot tell them apart gets silenced
+    rather than obeyed, so only the precise half shipped.
+  - Then it passed with the constant's only *use* deleted, because the **import
+    line still named it** — the identical defect `cap-caveat-reach.test.ts` was
+    fixed for earlier the same day. Import lines are stripped now.
+
 ## [9.596.0] — 2026-09-08
 
 ### Fixed
