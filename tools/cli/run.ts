@@ -276,6 +276,12 @@ import { dkbCurrency } from "../../src/report/citations.js";
 import { buildReviewedDocx } from "../../src/report/docx-comments.js";
 import { buildDocxReport } from "../../src/report/docx.js";
 import {
+  buildBundleJsonBlob,
+  buildBundleDocxReport,
+  buildBundleZip,
+  type BundleDocument,
+} from "../../src/report/bundle.js";
+import {
   buildCertificateDocx,
   buildCertificateJson,
   verifyCertificateHash,
@@ -328,6 +334,9 @@ type Format =
   | "csv"
   | "docx"
   | "docx-comments"
+  | "bundle-json"
+  | "bundle-docx"
+  | "bundle-zip"
   | "checklist-md"
   | "checklist-csv"
   | "dates-md"
@@ -357,6 +366,14 @@ const VALID_FORMATS = [
   // own .docx with anchored Word comments. This is the REPORT.
   "docx",
   "docx-comments",
+  // The three CONSOLIDATED artifacts: one report for the whole deal room, not
+  // one per file. The browser has built them on every multi-document drop since
+  // v4; the CLI ran the cross-document rules (9.535.0) and still could not write
+  // the report they belong in. Each needs --consistency, because a directory is
+  // not a bundle.
+  "bundle-json",
+  "bundle-docx",
+  "bundle-zip",
   // The four artifacts the browser has always offered and the headless surface
   // could not produce at all: the closing checklist (v9 Ready to Sign) and the
   // critical-dates register (v9 Tracked to Its Dates), each in the two forms a
@@ -388,6 +405,11 @@ const FORMAT_EXT: Record<Format, string> = {
   md: ".fixlist.md",
   csv: ".fixlist.csv",
   docx: ".report.docx",
+  // These three are named for the BUNDLE, not for a document, so the stem is
+  // supplied by the writer rather than a source filename.
+  "bundle-json": ".json",
+  "bundle-docx": ".docx",
+  "bundle-zip": ".zip",
   "docx-comments": ".reviewed.docx",
   "checklist-md": ".checklist.md",
   "checklist-csv": ".checklist.csv",
@@ -862,7 +884,7 @@ export async function resolveInputs(
 }
 
 async function renderFormat(
-  fmt: Exclude<Format, "docx" | "docx-comments">,
+  fmt: Exclude<Format, "docx" | "docx-comments" | "bundle-json" | "bundle-docx" | "bundle-zip">,
   r: AnalyzeResult,
   dkb: Dkb,
   definitions?: import("../../src/report/definitions.js").DefinitionsReport,
@@ -1190,6 +1212,16 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       "--format docx produces a binary .docx and requires --out <dir> (never stdout)",
     );
   }
+  // All three bundle formats write ONE file for the whole run, so there is no
+  // "single input × single format" case where stdout would be a complete
+  // delivery target — and two of the three are binary besides.
+  for (const f of ["bundle-json", "bundle-docx", "bundle-zip"] as const) {
+    if (!args.out && args.formats.includes(f)) {
+      throw new Error(
+        `--format ${f} writes one consolidated artifact for the whole bundle and requires --out <dir>`,
+      );
+    }
+  }
   for (const [fmt, need] of Object.entries(FORMAT_REQUIRES_FLAG)) {
     if (args.formats.includes(fmt as Format) && !flagAsserted(args, need.flag)) {
       throw new Error(
@@ -1246,6 +1278,10 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // the pair, so a bundle whose DPA contradicts its own privacy notice came back
   // as two clean documents.
   const consistencyDocs: ConsistencyDocument[] = [];
+  // The consolidated bundle's per-document entries. Collected in the same pass
+  // as `consistencyDocs` and for the same reason: the bundle report is not
+  // knowable until every document has been read.
+  const bundleDocs: BundleDocument[] = [];
   const deferredCrossDoc: {
     fmt: "sarif" | "html";
     file: string;
@@ -1258,8 +1294,16 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // between documents that belong to the same deal. The browser gets that
   // assertion for free — the user dropped them together — and the CLI has to
   // ask for it. Implied by the two flags that are useless without it.
+  // The consolidated bundle formats. They IMPLY a bundle in exactly the sense
+  // --consistency asserts one, so they turn the cross-document run on rather
+  // than failing when it is absent: asking for one report about a deal room is
+  // asking to treat those files as a deal room.
+  const wantsBundle =
+    args.formats.includes("bundle-json") ||
+    args.formats.includes("bundle-docx") ||
+    args.formats.includes("bundle-zip");
   const wantsConsistency = Boolean(
-    args.consistency || args.emitConsistency || args.failOnConsistency,
+    args.consistency || args.emitConsistency || args.failOnConsistency || wantsBundle,
   );
   const filing = filingOptionFrom(args);
   const deadline = deadlineOptionFrom(args);
@@ -1288,14 +1332,28 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     // disambiguated label the posture surface prints.
     // Only when the caller asserted a bundle: a single input has nothing to be
     // consistent WITH, and the extra `extractAll` is not free.
-    if (wantsConsistency && inputs.length >= 2)
+    if (wantsConsistency && inputs.length >= 2) {
+      const extracted = extractAll(r.ingest.tree);
       consistencyDocs.push({
         doc_id: documentLabel(file, inputs),
         source_file_name: basename(file),
         playbook_id: r.playbook_id,
         tree: r.ingest.tree,
-        extracted: extractAll(r.ingest.tree),
+        extracted,
       });
+      if (wantsBundle) {
+        const omitted = r.secondary_families_present - r.secondary_families.length;
+        bundleDocs.push({
+          doc_id: documentLabel(file, inputs),
+          source_file_name: basename(file),
+          run: r.run,
+          extracted,
+          ingest: r.ingest,
+          ...(r.secondary_families.length > 0 ? { secondary_families: r.secondary_families } : {}),
+          ...(omitted > 0 ? { secondary_families_omitted: omitted } : {}),
+        });
+      }
+    }
 
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
@@ -1508,6 +1566,12 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         );
         continue;
       }
+      // The three consolidated formats are ONE artifact for the whole run, not
+      // one per document, so they are written after the loop — the bundle is
+      // not knowable until every document has been read.
+      if (fmt === "bundle-json" || fmt === "bundle-docx" || fmt === "bundle-zip") {
+        continue;
+      }
       if ((fmt === "dates-md" || fmt === "dates-ics") && !r.critical_dates) {
         process.stderr.write(
           `vaulytica: warning: ${file}: no critical-dates register to render — skipping --format ${fmt}\n`,
@@ -1605,6 +1669,55 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     );
   }
 
+  // The consolidated bundle artifacts: ONE report for the deal room. Written
+  // here because every one of them needs the cross-document run, and that is not
+  // knowable until the loop above has read every document.
+  //
+  // `buildBundleZip` builds the DOCX and the JSON itself, so asking for all
+  // three does not build any of them twice in a way that could disagree — the
+  // zip's copies come from the same call the standalone files come from.
+  if (wantsBundle) {
+    if (!consistency || bundleDocs.length < 2) {
+      process.stderr.write(
+        `vaulytica: warning: the bundle formats consolidate a deal room and need at least two inputs; ` +
+          `${inputs.length} given — no bundle artifact was written\n`,
+      );
+    } else {
+      const bundleInput = {
+        documents: bundleDocs,
+        consistency,
+        dkb: deps.dkb,
+        consistency_enabled: true,
+      };
+      await mkdir(args.out!, { recursive: true });
+      const stem = "bundle";
+      if (args.formats.includes("bundle-json")) {
+        const blob = await buildBundleJsonBlob(bundleInput);
+        const name = stem + FORMAT_EXT["bundle-json"];
+        await writeFile(join(args.out!, name), Buffer.from(await blob.arrayBuffer()));
+        human(`\nwrote consolidated bundle JSON → ${name}\n`);
+      }
+      if (args.formats.includes("bundle-docx")) {
+        const blob = await buildBundleDocxReport(bundleInput);
+        const name = stem + FORMAT_EXT["bundle-docx"];
+        await writeFile(join(args.out!, name), Buffer.from(await blob.arrayBuffer()));
+        human(`wrote consolidated bundle report → ${name}\n`);
+      }
+      if (args.formats.includes("bundle-zip")) {
+        // The "everything" archive: the consolidated report and JSON plus each
+        // document's own action exports, which is what a portfolio reviewer
+        // would otherwise download one at a time.
+        const blob = await buildBundleZip({
+          ...bundleInput,
+          include_per_document_exports: true,
+        });
+        const name = stem + FORMAT_EXT["bundle-zip"];
+        await writeFile(join(args.out!, name), Buffer.from(await blob.arrayBuffer()));
+        human(`wrote bundle archive → ${name}\n`);
+      }
+    }
+  }
+
   if (args.emitConsistency) {
     if (!consistency) {
       process.stderr.write(
@@ -1699,10 +1812,17 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     regressed = coherenceRegressed(movement);
   }
 
-  if (args.out)
-    human(
-      `\nwrote ${args.formats.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`,
+  if (args.out) {
+    // The bundle formats write ONE artifact for the whole run, so counting them
+    // "for N file(s)" claims N files that do not exist. They announce
+    // themselves individually above; this line is about the per-document ones.
+    const perDoc = args.formats.filter(
+      (f) => f !== "bundle-json" && f !== "bundle-docx" && f !== "bundle-zip",
     );
+    if (perDoc.length > 0)
+      human(`\nwrote ${perDoc.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`);
+    else human(`\nwrote → ${resolve(args.out)}\n`);
+  }
   if (breached) {
     process.stderr.write(`\n✗ findings breached --fail-on ${args.failOn}\n`);
     process.exitCode = 2;

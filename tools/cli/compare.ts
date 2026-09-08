@@ -29,7 +29,7 @@
  * Build/CI-only; never imported by `src/`.
  */
 
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { analyzeFile, loadAccuracyDeps } from "./api.js";
 import {
   compareRuns,
@@ -38,6 +38,7 @@ import {
   type SeverityCounts,
 } from "../../src/report/compare.js";
 import { buildClauseDiff, type ClauseDiff } from "../../src/report/clause-diff.js";
+import { buildComparisonDocx } from "../../src/report/compare-docx.js";
 import { comparePosture, type PostureMovement } from "../../src/report/posture-movement.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import type { Severity } from "../../src/engine/index.js";
@@ -52,7 +53,9 @@ type CompareArgs = {
   playbookFile?: string;
   /** spec-v11 — diff the negotiation posture between the two drafts. */
   posture: boolean;
-  format: "json" | "markdown";
+  format: "json" | "markdown" | "docx";
+  /** Where a binary format is written. Required for, and only used by, `docx`. */
+  out?: string;
   failOn?: Severity;
   /** spec-v11 Thrust C — exit non-zero when any posture dimension regressed. */
   failOnRegression: boolean;
@@ -100,7 +103,8 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
         break;
       case "--format": {
         const v = argv[++i];
-        if (v !== "json" && v !== "markdown") throw new Error(`--format must be json|markdown`);
+        if (v !== "json" && v !== "markdown" && v !== "docx")
+          throw new Error(`--format must be json|markdown|docx`);
         args.format = v;
         break;
       }
@@ -118,6 +122,9 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
       case "--confirm-pairing":
         args.confirmPairing = true;
         break;
+      case "--out":
+        args.out = requireValue(flag, argv[++i]);
+        break;
       case "--dkb":
         args.dkb = requireValue(flag, argv[++i]);
         break;
@@ -128,7 +135,7 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
   }
   if (positional.length !== 2) {
     throw new Error(
-      "usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
+      "usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown|docx] [--out <path>] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
     );
   }
   if (args.posture && !args.playbookFile) {
@@ -137,6 +144,14 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
   if (args.failOnRegression && !args.posture) {
     throw new Error("--fail-on-regression requires --posture");
   }
+  // Binary: there is no "just pipe it" fallback, and writing a .docx to a
+  // terminal is a corrupted file, not an inconvenience.
+  if (args.format === "docx" && !args.out) {
+    throw new Error("--format docx produces a binary .docx and requires --out <path>");
+  }
+  if (args.out && args.format !== "docx") {
+    throw new Error("--out is only used by --format docx; the text formats go to stdout");
+  }
   return {
     base: positional[0]!,
     revised: positional[1]!,
@@ -144,6 +159,7 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     ...(args.playbookFile ? { playbookFile: args.playbookFile } : {}),
     posture: args.posture!,
     format: args.format!,
+    ...(args.out ? { out: args.out } : {}),
     ...(args.failOn ? { failOn: args.failOn } : {}),
     failOnRegression: args.failOnRegression!,
     confirmPairing: args.confirmPairing!,
@@ -327,7 +343,14 @@ export async function runCompare(argv: string[]): Promise<void> {
       ? await comparePosture(baseR.negotiation_posture, revisedR.negotiation_posture)
       : undefined;
 
-  if (args.format === "json") {
+  if (args.format === "docx") {
+    // The comparison as the artifact a reviewer circulates, not a terminal
+    // dump. Same builder the browser's compare view downloads; it was the last
+    // report builder with no headless caller.
+    const blob = await buildComparisonDocx(cmp, clauseDiff, postureMovement);
+    await writeFile(args.out!, Buffer.from(await blob.arrayBuffer()));
+    process.stderr.write(`wrote comparison report → ${args.out}\n`);
+  } else if (args.format === "json") {
     process.stdout.write(
       JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff, postureMovement), null, 2) + "\n",
     );

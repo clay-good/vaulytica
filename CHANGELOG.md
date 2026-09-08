@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.571.0] — 2026-09-08
+
+### Added
+- **`analyze --format bundle-json|bundle-docx|bundle-zip` — the consolidated
+  deal-room report, from a script.** One artifact for the whole set, not one
+  per file: the bundle JSON (per-document runs + the cross-document findings +
+  the bundle fingerprint), the consolidated DOCX, and the "everything" zip
+  (both of those plus each document's own fix list, deadlines calendar and JSON
+  report). The browser has built all three on every multi-document drop since
+  v4; the CLI learned to *run* the cross-document rules in 9.535.0 and still
+  could not write the report they belong in.
+
+  🚨 **A directory is not a bundle**, so these assert one — they *imply*
+  `--consistency` rather than making you type it twice, need at least two
+  inputs, and require `--out`. Given one input they say so and write nothing: a
+  valid, empty "bundle" of one reads as a portfolio that came back clean.
+
+- **`compare --format docx --out <path>`** — the comparison as the artifact a
+  reviewer circulates rather than a terminal dump. `--out` is refused on the
+  text formats instead of being silently ignored.
+
+### Fixed
+- 🚨 **`export-reach.test.ts`'s `KNOWN_GAPS` list is empty again.** The four
+  entries it was pinned to in 9.570.0 were exactly these: `buildBundleDocxReport`,
+  `buildBundleJsonBlob`, `buildBundleZip`, `buildComparisonDocx`. The list was
+  pinned by equality precisely so it could only shrink deliberately, and this is
+  it shrinking. Every report builder the browser can reach, a script can now
+  reach.
+- The `--out` summary line counted a consolidated artifact "for N file(s)",
+  claiming N files that were never written.
+
 ## [9.570.0] — 2026-09-08
 
 ### Added

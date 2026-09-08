@@ -128,20 +128,16 @@ const DECLARED: ReadonlyMap<string, string> = new Map([
  * deliberately. Adding a name here is a decision someone has to make on the
  * record; it is not a way to make a red test green.
  *
- * All four became visible in 9.570.0 when this file learned to see
- * `export async function` (it had matched `export function` only, which is why
- * `buildDocxReport` — the full attorney-facing report — was browser-only from
- * the day the CLI existed and nothing noticed). They are the BUNDLE and
- * COMPARE artifacts: consolidated multi-document outputs. The CLI already
- * computes the cross-document run behind them (`--consistency`); what is
- * missing is the `--format` values that write them.
+ * It held four entries for one release. All four became visible in 9.570.0
+ * when this file learned to see `export async function` (it had matched
+ * `export function` only, which is why `buildDocxReport` — the full
+ * attorney-facing report — was browser-only from the day the CLI existed and
+ * nothing noticed): the bundle DOCX, bundle JSON and bundle zip, plus the
+ * comparison DOCX. All four were closed in 9.571.0 (`--format
+ * bundle-json|bundle-docx|bundle-zip` and `compare --format docx`), so the
+ * list is empty — which is the state it is supposed to be in.
  */
-const KNOWN_GAPS: readonly string[] = [
-  "buildBundleDocxReport",
-  "buildBundleJsonBlob",
-  "buildBundleZip",
-  "buildComparisonDocx",
-];
+const KNOWN_GAPS: readonly string[] = [];
 
 function calls(source: string, name: string): boolean {
   return new RegExp(`\\b${name}\\b`).test(source);
@@ -184,14 +180,14 @@ describe("report-artifact reach: browser and headless", () => {
     ).toEqual([]);
   });
 
-  it("the known gaps are exactly the four bundle/compare artifacts", () => {
+  it("the known-gap list is exactly what the tree still has", () => {
     // Pinned by EQUALITY in both directions. A new browser-only builder cannot
     // slip in under this list, and a gap that gets closed must be deleted from
     // it rather than left as a stale claim about the tree.
     const stillBrowserOnly = browserReachable().filter((b) => !calls(headlessSource, b));
     expect(
       stillBrowserOnly.filter((b) => !DECLARED.has(b)).sort(),
-      "the browser-only set moved — close a gap and delete its entry, or add the new one deliberately",
+      "a report builder is browser-only — wire it into tools/, or add it to KNOWN_GAPS deliberately",
     ).toEqual([...KNOWN_GAPS].sort());
   });
 
