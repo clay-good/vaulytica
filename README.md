@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,199+ passing tests` · `v9.571.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,201+ passing tests` · `v9.572.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -20,7 +20,7 @@ Vaulytica is the opposite. It is a **pure function**:
 report = engine(documents, DKB, playbook)
 ```
 
-Same document + same engine version + same Deterministic Knowledge Base version → **byte-identical report on any machine, at any time.** The report carries a `result_hash` so you can prove it. The stamped engine version is the released package version — it changes on every release, so identical provenance really does mean identical behavior (a guard test pins the stamp to `package.json`). Every finding traces to a numbered rule; findings that assert what the law is cite a pinned public source, and findings that rest on drafting practice say so instead of borrowing legal authority they don't have. Your document never leaves the browser tab — open DevTools and check: the only network requests are same-origin GETs of the app's own static assets (rule data, playbooks), and none carries document content. An e2e gate intercepts every request during a full DOCX and PDF analysis to keep that claim true.
+Same document + same engine version + same Deterministic Knowledge Base version → **byte-identical report on any machine, at any time.** The report carries a `result_hash` so you can prove it, and a metamorphic gate renders every artifact twice from the same run and asserts the bytes match ([`report-reproducibility.test.ts`](tests/integration/report-reproducibility.test.ts)) — JSON, SARIF, HTML, the fix list, the obligations ledger and the deadlines calendar, all identical. The one declared exception is inside the `.docx` container: the `docx` library assigns each hyperlink a `nanoid()` relationship id, so citation links differ while every rendered word does not. Nothing else varies: the per-rule wall-clock timings the engine measures are blanked on the way into an artifact, exactly as they are blanked on the way into the hash. The stamped engine version is the released package version — it changes on every release, so identical provenance really does mean identical behavior (a guard test pins the stamp to `package.json`). Every finding traces to a numbered rule; findings that assert what the law is cite a pinned public source, and findings that rest on drafting practice say so instead of borrowing legal authority they don't have. Your document never leaves the browser tab — open DevTools and check: the only network requests are same-origin GETs of the app's own static assets (rule data, playbooks), and none carries document content. An e2e gate intercepts every request during a full DOCX and PDF analysis to keep that claim true.
 
 ## How it works (end to end)
 
@@ -1381,7 +1381,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 14,199+ tests, ~140s
+npm run test         # vitest — 14,201+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

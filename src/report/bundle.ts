@@ -1497,7 +1497,7 @@ function renderAuditTrail(input: BundleReportInput): Paragraph[] {
     for (const e of d.run.execution_log) {
       out.push(
         para({
-          text: `${e.rule_id} v${e.rule_version} — ${describeExecutionLogEntry(e)}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
+          text: `${e.rule_id} v${e.rule_version} — ${describeExecutionLogEntry(e)}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""}`,
         }),
       );
     }
@@ -1507,7 +1507,7 @@ function renderAuditTrail(input: BundleReportInput): Paragraph[] {
   for (const e of input.consistency.execution_log) {
     out.push(
       para({
-        text: `${e.rule_id} v${e.rule_version} — ${describeConsistencyLogEntry(e, plural(e.findings_count, "finding"))} (${formatElapsed(e.elapsed_ms)} ms)`,
+        text: `${e.rule_id} v${e.rule_version} — ${describeConsistencyLogEntry(e, plural(e.findings_count, "finding"))}`,
       }),
     );
   }
@@ -1630,10 +1630,6 @@ function severityColor(severity: Severity): string {
 
 function plural(n: number, noun: string): string {
   return `${n} ${noun}${n === 1 ? "" : "s"}`;
-}
-
-function formatElapsed(ms: number): string {
-  return (Math.round(ms * 1000) / 1000).toFixed(3);
 }
 
 function formatHumanDate(iso: string): string {

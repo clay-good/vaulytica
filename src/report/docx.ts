@@ -1218,7 +1218,7 @@ function renderAuditTrail(
       : []),
     ...run.execution_log.map((e) =>
       para({
-        text: `${e.rule_id} v${e.rule_version} — ${describeExecutionLogEntry(e)}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""} (${formatElapsed(e.elapsed_ms)} ms)`,
+        text: `${e.rule_id} v${e.rule_version} — ${describeExecutionLogEntry(e)}${e.fired && e.finding_id ? ` → ${e.finding_id}` : ""}`,
       }),
     ),
     spacer(),
@@ -1381,13 +1381,6 @@ function countFindings(findings: Finding[]): Record<"critical" | "warning" | "in
   const out = { critical: 0, warning: 0, info: 0 };
   for (const f of findings) out[f.severity]++;
   return out;
-}
-
-function formatElapsed(ms: number): string {
-  // Stable rounding to 3 decimals; the execution log values are
-  // performance.now() deltas and would otherwise vary at the
-  // microsecond level across runs.
-  return (Math.round(ms * 1000) / 1000).toFixed(3);
 }
 
 function formatHumanDate(iso: string): string {

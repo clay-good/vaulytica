@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.572.0] — 2026-09-08
+
+### Fixed
+- 🚨 **"Byte-identical report on any machine, at any time" was false for two of
+  the seven artifacts, and nothing had ever checked it.** `result_hash`
+  equality has been tested since day one — and the hash deliberately blanks the
+  volatile fields, so it is structurally incapable of seeing what makes two
+  renders of the *same run* differ. Measured on one NDA:
+
+  | artifact | identical? |
+  |---|---|
+  | fix list (MD/CSV), obligations CSV, deadlines `.ics`, HTML, SARIF | yes |
+  | **JSON** | **no** — 126 differing lines, every one a per-rule `elapsed_ms` |
+  | **DOCX** | **no** — the same timings, plus a random hyperlink id per citation |
+
+  A wall-clock measurement is a fact about the machine, not about the document.
+  It is blanked before `result_hash` is computed for exactly that reason, and
+  it is now blanked on the way into the **JSON report** and dropped from the
+  **DOCX and bundle audit trails** for the same one. The field keeps its shape
+  in the JSON (`0`, the value the hash canonicalization already uses), so a
+  verifier recomputing the hash from the file gets the answer it always did.
+
+  The remaining variance is one declared exception: the `docx` library assigns
+  hyperlink relationship ids with `nanoid()`, unreachable through its public
+  API. Citation links differ; every rendered word does not.
+
+  `tests/integration/report-reproducibility.test.ts` renders every artifact
+  twice and holds the whole class — including the DOCX, which must differ in
+  *exactly* that one known way and nothing else.
+
+- 🚨 **`docs/determinism.md` described a mechanism the code does not have.** It
+  said `elapsed_ms` **is** part of the canonicalized payload, "rounded to 3
+  decimals via `formatElapsed`", and that it "participates in the hash only at
+  the rounded-3-decimal precision, which is stable." All three were false:
+  `formatElapsed` was a report-render helper that never touched the hash, the
+  canonicalization blanks the field outright, and rounding would not have saved
+  it — the same rule measured **2.96 ms and 0.06 ms** on two consecutive runs.
+  This is the page a reader consults to decide whether to trust the hash.
+
 ## [9.571.0] — 2026-09-08
 
 ### Added

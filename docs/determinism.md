@@ -44,14 +44,29 @@ The DKB is shipped as JSON. It does not poll for updates. A given `dkb_version` 
 
 ### 6. Excluded volatile fields
 
-Two fields are **excluded** from the result hash:
+**Three** fields are **excluded** from the result hash:
 
 - `executed_at` — the ISO timestamp of the run. Recorded for display only.
+- per-rule `elapsed_ms` — raw `performance.now()` deltas. **Blanked to `0`**
+  before hashing (`computeResultHash`, [`src/engine/runner.ts`](../src/engine/runner.ts)),
+  not rounded. The cross-document runner does the same thing to its own
+  execution log.
 - `result_hash` itself — obviously.
 
-Everything else, including the `playbook_match_reasoning` string and the per-rule `elapsed_ms`, **is** part of the canonicalized payload — *except* `elapsed_ms` is rounded to 3 decimals via `formatElapsed` in the report builder to avoid the microsecond-level wobble between machines. Inside the run JSON, `elapsed_ms` is raw `performance.now()` deltas; the runner pre-rounds these via `stableStringify` so the hash is stable across machines with different timer resolution.
+Everything else, including the `playbook_match_reasoning` string, **is** part of
+the canonicalized payload.
 
-> **Implementation note:** if you find a corner case where `elapsed_ms` varies enough to perturb the JSON-canonicalized hash, file an issue — that's a determinism bug. The expected behavior is that `elapsed_ms` participates in the hash only at the rounded-3-decimal precision, which is stable.
+> 🚨 **This section used to say the opposite**, and said it in detail: that
+> `elapsed_ms` **is** part of the canonicalized payload, "rounded to 3 decimals
+> via `formatElapsed`", and that it "participates in the hash only at the
+> rounded-3-decimal precision, which is stable." All three claims were false.
+> `formatElapsed` is a **report-render** helper and has never touched the hash;
+> the canonicalization blanks the field outright; and rounding would not have
+> saved it anyway — the same rule on the same document was measured at
+> **2.96 ms and 0.06 ms** on two consecutive runs of the same machine, which no
+> decimal precision reconciles. A document describing a mechanism the code does
+> not have is worse than no document: this is the page a reader consults to
+> decide whether to trust the hash.
 
 ## Reproducing a report on a different machine
 
