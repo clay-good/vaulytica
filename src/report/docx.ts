@@ -600,8 +600,9 @@ function isObligationRelevant(f: Finding): boolean {
 // Additional checks from other detected families (spec-v6 multi-family
 // activation). The primary report above covers the matched playbook; this
 // section surfaces every *other* family the document clearly contains, each
-// scanned with its own rule set, so a present family is never silently
-// skipped. Each family is clearly labeled and kept separate from the primary
+// scanned with its own rule set, so a present family is not skipped for want
+// of looking — up to the per-document cap, which 22 of the 312 specimens
+// exceed. Each family is clearly labeled and kept separate from the primary
 // findings, including families that ran clean (which is itself reassuring).
 
 function renderSecondaryFamiliesSection(

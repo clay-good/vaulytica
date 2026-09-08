@@ -4,7 +4,9 @@
  * A composite document — an MSA with a data-processing exhibit, a services
  * agreement with a security addendum bolted on — matches one playbook and
  * contains several. `selectSecondaryFamilies` picks the others; this runs the
- * rules gated to each of them, so a present family is never silently skipped.
+ * rules gated to each of them, so a present family is not skipped for want of
+ * looking. Up to `MAX_SECONDARY_FAMILIES` of them — a cap 22 of the 312
+ * specimens exceed, which the caller is responsible for stating.
  *
  * 🚨 **This lived inside `src/ui/pipeline.ts` as a private function, and the
  * headless path therefore did not have it at all.** Measured over the 312

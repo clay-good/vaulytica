@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.558.0] — 2026-09-07
+
+### Fixed
+- **The same false claim, in six places — including the README paragraph a user
+  reads.** 9.557.0 corrected `selectSecondaryFamilies`' doc comment; grepping
+  the phrase found that *"a present family is never silently skipped"* had been
+  copied into `pipeline.ts` (twice), `report/json.ts`, `engine/secondary-families.ts`,
+  `report/docx.ts`, and — worst — the README's own description of composite-document
+  handling, where it is a promise made to a user rather than a note to a
+  maintainer.
+
+  It is not true with a cap, and the cap bites on **22 of the 312 specimens**.
+  Every copy now says what actually happens: scanned with every family it
+  clearly contains, **up to four**, and the CLI says how many more were present.
+
+  🥇 **A false statement propagates by copy-paste, and the copies outlive the
+  original.** Fixing the comment where the code is does not fix the promise on
+  the front page. When you correct a claim, grep the claim — not the file.
+
 ## [9.557.0] — 2026-09-07
 
 ### Fixed

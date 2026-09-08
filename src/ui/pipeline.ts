@@ -188,7 +188,9 @@ export type PreparedDocument = {
    * multi-family activation). A composite agreement (e.g. an MSA with an
    * embedded DPA exhibit) matches one primary playbook but genuinely
    * contains others; each of these runs its own rule set so a present
-   * family is never silently skipped. Empty for a single-family document.
+   * family is not skipped for want of looking — up to
+   * `MAX_SECONDARY_FAMILIES`, which 22 of the 312 specimens exceed. Empty for a
+   * single-family document.
    */
   secondary_playbooks: Playbook[];
   /**
@@ -511,7 +513,8 @@ export async function prepareDocument(
   ]);
 
   // Multi-family activation: other families this document clearly contains,
-  // run as secondary scans so a present family is never skipped (spec-v6).
+  // run as secondary scans so a present family is not skipped for want of
+  // looking — capped at MAX_SECONDARY_FAMILIES (spec-v6).
   const secondary_playbooks = selectSecondaryFamilies(
     extendedPlaybooks,
     { title: titleSource, body: bodyText, classified: extracted.classified, extracted },

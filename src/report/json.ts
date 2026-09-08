@@ -33,7 +33,12 @@ import type { NegotiationPosture } from "../playbooks/custom-interpreter.js";
  * activation). A composite document (e.g. an MSA embedding a DPA exhibit)
  * matches one primary playbook but genuinely contains others; each is
  * scanned with its own rule set and surfaced separately so a present family
- * is never silently skipped. Shared by the JSON and DOCX builders.
+ * is not skipped for want of looking, up to the per-document cap. Shared by
+ * the JSON and DOCX builders.
+ *
+ * ⚠️ The cap is real: 22 of the 312 specimens clearly contain more families
+ * than are scanned. The count before truncation reaches the CLI's terminal
+ * line; this payload does not carry it yet.
  */
 export type ReportSecondaryFamily = {
   playbook_id: string;
