@@ -610,3 +610,48 @@ describe("the pre-disclosure scan states its bounds", () => {
     expect(facts.note ?? "").not.toContain("a floor, not a total");
   });
 });
+
+/**
+ * The fourth bound, and the last one in this pack that was silent.
+ *
+ * Each container fact array stops at `MAX_FACTS`, so a document with 3,000
+ * tracked changes reports 2,000 — and the closing checklist then tells a
+ * reviewer to clear "2,000 tracked changes", a floor presented as a total.
+ *
+ * The comparison DOCX had the right answer for its own cap all along:
+ * `MAX_REDLINE_ROWS`'s comment says it "shows the first N and an honest 'and X
+ * more' footer rather than truncating silently". This is that, for the
+ * container scan.
+ */
+describe("the container scan states its fact cap", () => {
+  it("says when a fact kind hit the cap, and names the kind", () => {
+    // More tracked insertions than the cap allows.
+    const runs = Array.from(
+      { length: 2100 },
+      (_, i) => `<w:ins w:author="A"><w:r><w:t>edit ${i}</w:t></w:r></w:ins>`,
+    ).join("");
+    const facts = readContainer(
+      buildDocx({ document: documentXml(`<w:p>${runs}</w:p>`) }),
+      "docx",
+      "body text",
+    );
+    // Positive first: the scan really did read 2,000 of them.
+    expect(facts.revisions.length).toBe(2000);
+    expect(facts.note).toContain("a floor, not a total");
+    expect(facts.note).toContain("tracked changes");
+  });
+
+  it("says nothing about the cap for an ordinary redline", () => {
+    const facts = readContainer(
+      buildDocx({
+        document: documentXml(
+          '<w:p><w:ins w:author="A"><w:r><w:t>one edit</w:t></w:r></w:ins></w:p>',
+        ),
+      }),
+      "docx",
+      "body text",
+    );
+    expect(facts.revisions.length).toBe(1);
+    expect(facts.note ?? "").not.toContain("a floor, not a total");
+  });
+});

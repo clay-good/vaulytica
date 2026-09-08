@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.556.0] — 2026-09-07
+
+### Fixed
+- **The fourth and last silent bound in the pre-disclosure pack.** Each
+  container fact array stops at `MAX_FACTS` (2,000), so a document with 3,000
+  tracked changes reports **2,000** — and the closing checklist then tells a
+  reviewer to clear *"2,000 tracked changes"*, a floor presented as a total. The
+  note now names the kinds that hit the limit and says the counts are a floor.
+
+  🥇 **The right answer was already in the tree.** `MAX_REDLINE_ROWS` in the
+  comparison DOCX caps its table at 100 rows, and its comment reads: *"shows the
+  first N and an honest 'and X more' footer rather than truncating silently."*
+  One cap in this codebase had the rule written down; four others in the pack
+  that most needs it did not. **When you find a bound that is said, go read the
+  others.**
+
+  A sweep of every `MAX_*` constant in `src/` is what turned this one up, and
+  the sweep is the record: of the pack's four bounds, `MAX_CONTAINER_BYTES` was
+  honest from the start (it refuses the container outright, with a note), and
+  `MAX_SCAN_CHARS` (9.553.0), `MAX_PER_TYPE`, `MAX_PART_BYTES` (9.555.0) and now
+  `MAX_FACTS` were not.
+
 ## [9.555.0] — 2026-09-07
 
 ### Fixed

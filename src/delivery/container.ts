@@ -50,6 +50,7 @@ function withScanReach(
   text: string,
   note?: string,
   sensitive: readonly SensitiveFact[] = [],
+  factCounts: Readonly<Record<string, number>> = {},
 ): string | undefined {
   const caveats: string[] = [];
   if (sensitiveScanTruncated(text)) {
@@ -66,6 +67,22 @@ function withScanReach(
     caveats.push(
       `The scan reports at most ${MAX_PER_TYPE} distinct values per type and reached that limit ` +
         `for: ${capped.join(", ")}. Those counts are a floor, not a total.`,
+    );
+  }
+  // The fourth bound in this pack. Each fact array stops at MAX_FACTS, so a
+  // document with 3,000 tracked changes reports 2,000 — and the closing
+  // checklist then tells a reviewer to clear "2,000 tracked changes", a floor
+  // presented as a total. `MAX_REDLINE_ROWS` in the comparison DOCX had the
+  // right answer for its own cap all along: show the first N and say how many
+  // more, "rather than truncating silently".
+  const cappedFacts = Object.entries(factCounts)
+    .filter(([, n]) => n >= MAX_FACTS)
+    .map(([label]) => label)
+    .sort();
+  if (cappedFacts.length > 0) {
+    caveats.push(
+      `The container scan records at most ${MAX_FACTS.toLocaleString("en-US")} items per kind ` +
+        `and reached that limit for: ${cappedFacts.join(", ")}. Those counts are a floor, not a total.`,
     );
   }
   if (caveats.length === 0) return note;
@@ -142,14 +159,22 @@ function readDocx(bytes: ArrayBuffer, text: string): ContainerFacts {
   const app = parts["docProps/app.xml"] ?? "";
 
   const sensitive = scanSensitive(text);
+  const revisions = parseRevisions(document);
+  const commentFacts = parseComments(comments);
+  const hidden = parseHidden(document);
+  const metadata = parseDocxMetadata(core, app);
   return {
     source: "docx",
     inspectable: true,
-    note: withScanReach(text, undefined, sensitive),
-    revisions: parseRevisions(document),
-    comments: parseComments(comments),
-    hidden: parseHidden(document),
-    metadata: parseDocxMetadata(core, app),
+    note: withScanReach(text, undefined, sensitive, {
+      "tracked changes": revisions.length,
+      comments: commentFacts.length,
+      "hidden content": hidden.length,
+    }),
+    revisions,
+    comments: commentFacts,
+    hidden,
+    metadata,
     sensitive,
   };
 }
