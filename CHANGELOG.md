@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.595.0] — 2026-09-08
+
+### Added
+- **Every cross-document rule is asserted reachable.** The consistency runner
+  skips a rule whose `requires` are not satisfied — `ran: false, "skipped
+  (requires not satisfied)"` — which is correct behaviour and a silent failure
+  mode: a rule gated on a `DocKind` that gets renamed stops running everywhere
+  and reports exactly what a rule that ran and found nothing reports. `kindOf`
+  has been edited more than once (a `privacy_policy` kind was added for
+  CC-008/CC-009) and nothing checked that the existing gates still matched
+  anything afterwards.
+
+  `cross-document-reachability.test.ts` assembles all 312 specimens as one
+  bundle and requires **all 22 rules to execute**. Deliberately not a findings
+  assertion — a directory is not a bundle, and the conflicts such a set
+  produces are true and meaningless. The question is only "could this check run
+  at all", the cross-document form of `boilerplate-satisfaction`'s "can this
+  check fail?". Proven to fail by making one rule's `requires` unsatisfiable.
+
+### Notes
+- **Two probes came back clean, recorded so nobody re-runs them.**
+  - **No rule throws on the corpus.** Zero `execution_log[].errored` across all
+    312 specimens, so 9.577.0's crashed-rule notice is a genuine safety net
+    rather than cover for a live defect.
+  - **All 22 cross-document rules run; 14 fire, 8 run silent.** The eight are
+    not a defect — those conflicts do not occur in this corpus — but they are
+    the ones a `requires` regression would hide behind, which is why the new
+    assertion is on `ran` and not on findings.
+
 ## [9.594.0] — 2026-09-08
 
 ### Added
