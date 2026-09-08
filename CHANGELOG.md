@@ -2,6 +2,61 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.593.0] — 2026-09-08
+
+### Fixed
+- 🚨 **Reverts 9.592.0's smoke-workflow assertion, which could not work — and
+  broke `main`.** It ran the Action with
+  `env: GITHUB_STEP_SUMMARY: <workspace>/smoke-summary.md` and grepped the
+  result. The runner assigns `GITHUB_STEP_SUMMARY` to **every step it
+  executes**, including a composite action's own steps (it runs them under
+  generated ids like `summary.__run_2`), so a caller cannot redirect it. The
+  Action wrote a real summary; the file the assertion looked for was never
+  created.
+
+  The local simulation passed because there was no runner to override the
+  variable — my probe was wrong, not the code. There is also no supported way
+  for a later step to read an earlier step's summary back: the runner finalizes
+  and uploads it when the step ends, and reading its internal
+  `_runner_file_commands/step_summary_*` files is an undocumented detail, not
+  something to build a shipped gate on.
+
+  The reason is written into the workflow where the next person will look for
+  it. The mechanism stays proven by `action-job-summary.test.ts`, which runs the
+  step's own shell body extracted from `action.yml`; the smoke workflow's
+  existing steps still exercise the real path end to end.
+
+### Added
+- **The README badge line is drift-guarded.** It is the first thing anyone
+  reads and it was the least checked: the rule counts are guarded where they
+  appear in prose and in the architecture doc, while the badge carried its own
+  unguarded copies. `22 cross-document checks` was correct only because nobody
+  had added a `CC-` rule since it was written — the shape
+  `shared-vocabulary.test.ts` exists for, and one this session already caught
+  going stale (`22 of the 312 specimens`, really 7, wrong in eight places).
+
+  Five numbers now derive from what ships, each proven to fail on its own:
+  cross-document checks (live rule array), pre-disclosure checks (the distinct
+  `HANDOFF-` ids), derived-deadline families (the `CriticalDateKind` union),
+  document sub-domains (the v4 ruleset directories), and the state-law overlay
+  total.
+
+  That last one is a **sum across two catalogs** — 37 non-compete /
+  security-deposit / usury overlays plus 51 will-formality nodes (50 states +
+  DC) — and the guard asserts both are non-empty, because one checked against
+  either catalog alone would pass while the badge was wrong about the other.
+
+  🚨 Comments are stripped before the two source scans: a guard that reads
+  source without doing that has been fooled by a quoted phrase in a comment
+  three times in this repo.
+
+### Notes
+- **`3 execution-readiness reconciliations` is left hand-maintained, on
+  purpose.** `ChecklistCategory` has five members and the badge counts three of
+  something else, so any derivation would be a guess dressed as a check. The
+  test says so where a reader will find it — an honest gap beats a green
+  assertion about the wrong number.
+
 ## [9.592.0] — 2026-09-08
 
 ### Added

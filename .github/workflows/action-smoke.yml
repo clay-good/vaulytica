@@ -72,43 +72,29 @@ jobs:
             exit 1
           fi
 
-      # The job summary, end to end, on the case that needs it.
+      # 🚨 The job summary is NOT asserted here, and that is a finding rather
+      # than an omission.
       #
-      # `action-job-summary.test.ts` runs the step's shell body with the binary
-      # stubbed; this runs the real Action against a real document and reads
-      # what it wrote. `GITHUB_STEP_SUMMARY` is redirected to a path in the
-      # workspace because GitHub gives each step its OWN summary file and
-      # uploads it when the step ends — a later step cannot read the previous
-      # one back. The mechanism under test is unchanged: the step writes to
-      # whatever `GITHUB_STEP_SUMMARY` names, and must do it on a FAILING gate.
-      # The two steps above keep writing real summaries, so the run page still
-      # shows what a consumer would see.
-      - name: Summary is written even when the gate fails
-        id: summary
-        continue-on-error: true
-        uses: ./
-        env:
-          GITHUB_STEP_SUMMARY: ${{ github.workspace }}/smoke-summary.md
-        with:
-          command: analyze
-          files: tests/fixtures/action-smoke/with-ssn.txt
-          format: json
-          out: summary-out
-          fail-on-delivery: critical
-
-      - name: The summary carries the run, not just an exit code
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${{ steps.summary.outcome }}" != "failure" ]; then
-            echo "::error::the gate stopped failing — this assertion would be vacuous"
-            exit 1
-          fi
-          test -s "$GITHUB_WORKSPACE/smoke-summary.md"
-          grep -q '^## Vaulytica' "$GITHUB_WORKSPACE/smoke-summary.md"
-          # The gate result, and the document the tool actually named. A summary
-          # that says only "failed" is the exit code with extra steps.
-          grep -q 'Failed (exit 2)' "$GITHUB_WORKSPACE/smoke-summary.md"
-          grep -q 'with-ssn' "$GITHUB_WORKSPACE/smoke-summary.md"
-          echo "--- summary written by the Action ---"
-          cat "$GITHUB_WORKSPACE/smoke-summary.md"
+      # 9.592.0 added two steps that ran the Action with
+      # `env: GITHUB_STEP_SUMMARY: <workspace>/smoke-summary.md` and grepped the
+      # result. It failed: the runner assigns `GITHUB_STEP_SUMMARY` to every
+      # step it executes — including a composite action's own steps, which it
+      # runs under generated ids like `summary.__run_2` — so a caller cannot
+      # redirect it. The Action wrote a real summary; the file the assertion
+      # looked for was never created. A local simulation passed because there
+      # was no runner to override the variable.
+      #
+      # There is no supported way for a later step to read an earlier step's
+      # summary back: the runner finalizes and uploads it when the step ends.
+      # Reading the runner's internal `_runner_file_commands/step_summary_*`
+      # files would work and is an undocumented implementation detail, which is
+      # not something to build a shipped gate on.
+      #
+      # So the mechanism is proven where it can be:
+      # `tests/integration/action-job-summary.test.ts` runs the step's own shell
+      # body — extracted from `action.yml`, so it is the shipped text — and
+      # asserts the summary is written on a FAILING gate, that the exit code
+      # survives, that the bound is stated when it truncates, and that only
+      # Node's runtime warnings are filtered. The steps above still exercise the
+      # real path end to end; their summaries are what a consumer sees on this
+      # run's page.

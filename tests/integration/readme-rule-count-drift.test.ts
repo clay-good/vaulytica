@@ -15,11 +15,13 @@
  * guard depends on what ships, not on a bundler-resolved copy.
  */
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
 import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
+import { STATE_OVERLAYS } from "../../src/dkb/state-overlays.js";
+import { ESTATE_FORMALITIES } from "../../src/dkb/estate-formalities.js";
 
 const root = process.cwd();
 const readme = readFileSync(join(root, "README.md"), "utf8");
@@ -189,5 +191,83 @@ describe("architecture-diagram rule counts", () => {
 
   it("quotes the live cross-document check count", () => {
     expect(architecture).toContain(`+ ${ALL_CONSISTENCY_RULES.length} cross-document checks`);
+  });
+});
+
+/**
+ * The badge line — the first thing anyone reads, and the least guarded.
+ *
+ * The counts above are checked where they appear in prose and in the
+ * architecture doc. The README's own badge line carries its OWN copies of
+ * several of them, and those copies were unguarded: `22 cross-document checks`
+ * was correct only because nobody had added a CC- rule since it was written.
+ * This is the shape `shared-vocabulary.test.ts` exists for — a number in two
+ * places will eventually disagree with itself — and this session already found
+ * a stale one (`22 of the 312 specimens`, really 7, wrong in eight places).
+ *
+ * Each assertion derives the number from what ships. Two are read out of source
+ * text rather than an exported constant, and 🚨 comments are stripped first:
+ * a guard that scans source without doing that has been fooled by a quoted
+ * phrase in a comment three times in this repo.
+ *
+ * Still hand-maintained, deliberately: `3 execution-readiness
+ * reconciliations`. `ChecklistCategory` has five members and the badge counts
+ * three of something else, so any derivation here would be a guess dressed as
+ * a check. Better an honest gap than a green test asserting the wrong thing.
+ */
+describe("README badge line", () => {
+  const badge = readme.split("\n").find((l) => l.includes("deterministic rules"))!;
+  const strip = (src: string): string =>
+    src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+
+  it("derives a plausible badge line (guards the derivation itself)", () => {
+    // An empty or mis-found line would make every assertion below vacuous.
+    expect(badge).toBeDefined();
+    expect(badge).toContain("`0 servers`");
+    expect(badge.length).toBeGreaterThan(200);
+  });
+
+  it("quotes the live cross-document check count", () => {
+    expect(badge).toContain(`\`${ALL_CONSISTENCY_RULES.length} cross-document checks\``);
+  });
+
+  it("quotes the live pre-disclosure check count", () => {
+    const src = strip(
+      readdirSync(join(root, "src", "delivery"))
+        .filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"))
+        .map((f) => readFileSync(join(root, "src", "delivery", f), "utf8"))
+        .join("\n"),
+    );
+    const ids = new Set([...src.matchAll(/HANDOFF-(\d+)/g)].map((m) => m[0]));
+    expect(ids.size, "no HANDOFF ids found — the scan is broken").toBeGreaterThan(0);
+    expect(badge).toContain(`\`${ids.size} pre-disclosure checks\``);
+  });
+
+  it("quotes the live derived-deadline family count", () => {
+    const src = strip(readFileSync(join(root, "src", "report", "critical-dates.ts"), "utf8"));
+    const union = /export type CriticalDateKind =([\s\S]*?);/.exec(src);
+    expect(union, "CriticalDateKind is no longer a string union — update this guard").toBeTruthy();
+    const kinds = [...union![1]!.matchAll(/"([a-z-]+)"/g)].map((m) => m[1]!);
+    expect(kinds.length, "no kinds parsed").toBeGreaterThan(0);
+    expect(badge).toContain(`\`${kinds.length} derived-deadline families\``);
+  });
+
+  it("quotes the live document sub-domain count", () => {
+    const dirs = readdirSync(join(root, "src", "engine", "rules", "v4"), {
+      withFileTypes: true,
+    }).filter((e) => e.isDirectory());
+    expect(dirs.length).toBeGreaterThan(5);
+    expect(badge).toContain(`\`${dirs.length} document sub-domains\``);
+  });
+
+  it("quotes the live state-law overlay total, across BOTH catalogs", () => {
+    // The number is a sum, and that is the interesting part: 37 non-compete /
+    // security-deposit / usury overlays plus 51 will-formality nodes (50 states
+    // + DC). A guard against either catalog alone would pass while the badge
+    // was wrong about the other.
+    const total = STATE_OVERLAYS.length + ESTATE_FORMALITIES.length;
+    expect(STATE_OVERLAYS.length).toBeGreaterThan(0);
+    expect(ESTATE_FORMALITIES.length).toBeGreaterThan(0);
+    expect(badge).toContain(`\`${total} state-law overlays`);
   });
 });
