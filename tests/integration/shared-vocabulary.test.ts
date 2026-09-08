@@ -60,6 +60,15 @@ const VOCABULARIES: readonly Vocabulary[] = [
     owner: "src/extract/absolute-date.ts",
     definition: /function firstAbsoluteIso\s*\(/,
   },
+  {
+    // Four rules each spelled their own `shall|will|must|…` alternation and
+    // the lists stopped at different places, so one synonym cost 30 documents
+    // a finding and the next cost 36 (9.596.0 / 9.597.0). This is the registry
+    // entry that keeps a fifth copy from being written.
+    what: "the obligation-modal vocabulary (shall / must / is required to / undertakes to …)",
+    owner: "src/engine/rules/_helpers.ts",
+    definition: /export const OBLIGATION_MODAL\s*=/,
+  },
 ];
 
 describe("a shared vocabulary", () => {

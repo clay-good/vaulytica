@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.598.0] — 2026-09-08
+
+### Added
+- **`OBLIGATION_MODAL` is registered in `shared-vocabulary.test.ts`**, the
+  repo's list of things allowed exactly one definition. That file exists
+  because *"a table that exists four times will disagree with itself"*, and the
+  obligation vocabulary is the clearest case of it yet: four rules, four
+  private alternations stopping at four different places, one synonym costing
+  30 documents a finding and the next costing 36.
+
+  Registering it is what keeps a fifth copy from being written — proven by
+  planting a stray definition in RISK-011 and watching the guard name it.
+
 ## [9.597.0] — 2026-09-08
 
 ### Fixed
