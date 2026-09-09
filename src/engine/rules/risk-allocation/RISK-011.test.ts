@@ -63,3 +63,46 @@ describe("RISK-011 v1.7.0 — 'indemnify, defend, and hold harmless the Escrow A
     expect(RISK_011.check(ctx)).not.toBeNull();
   });
 });
+
+/**
+ * Approval IS consent.
+ *
+ * "amounts paid in settlement approved by Provider" and "no settlement without
+ * the indemnitor's prior written approval" are the ordinary way half of
+ * technology indemnities write the settlement-consent term, and the element
+ * read only the word "consent" — so an indemnity that plainly contains the
+ * term was told it was missing it.
+ *
+ * That is the failure direction that matters for a presence rule: its false
+ * NEGATIVE is a missed absence, its false POSITIVE is a confident accusation
+ * about a clause the document has. Found by the clean-document method on a
+ * complete SaaS agreement; the specimen corpus does not move (35 findings
+ * before, 35 after), because every specimen happens to write "consent".
+ */
+describe("RISK-011 — settlement consent written as approval", () => {
+  const INDEMNITY = (settlement: string) =>
+    RISK_011.check(
+      buildContext([
+        "9. Indemnification",
+        `Provider shall defend Customer against any third-party claim that the Service infringes a patent, and shall indemnify Customer for damages finally awarded or ${settlement} The indemnified party shall give prompt written notice of the claim and allow the indemnifying party sole control of the defense.`,
+      ]),
+    );
+
+  it("reads 'amounts paid in settlement approved by' as the consent term", () => {
+    expect(INDEMNITY("amounts paid in settlement approved by Provider.")).toBeNull();
+  });
+
+  it("reads a prior-written-approval settlement bar the same way", () => {
+    expect(
+      INDEMNITY(
+        "amounts paid in settlement, and shall not settle any claim without Customer's prior written approval.",
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports the element missing when the clause says nothing about settlement", () => {
+    const f = INDEMNITY("amounts paid to the claimant.");
+    expect(f, "an indemnity with no settlement term went unreported").not.toBeNull();
+    expect(f!.description).toContain("settlement consent");
+  });
+});

@@ -1,0 +1,133 @@
+ENTERPRISE SOFTWARE-AS-A-SERVICE SUBSCRIPTION AGREEMENT
+
+This Enterprise Software-as-a-Service Subscription Agreement (this "Agreement") is entered into as of March 2, 2026 (the "Effective Date") by and between Corvent Systems, Inc., a Delaware corporation with its principal place of business at 400 Harbor Street, Boston, Massachusetts ("Provider"), and Ridgeline Manufacturing LLC, a Michigan limited liability company with its principal place of business at 88 Foundry Road, Grand Rapids, Michigan ("Customer"). Provider and Customer are each a "Party" and together the "Parties."
+
+1. Definitions.
+
+"Affiliate" means any entity that controls, is controlled by, or is under common control with a Party.
+
+"Authorized User" means an employee or contractor of Customer or its Affiliates whom Customer permits to access the Service.
+
+"Customer Data" means all data, content, and information submitted to the Service by or on behalf of Customer or its Authorized Users.
+
+"Documentation" means the then-current user guides published by Provider for the Service.
+
+"Service" means Provider's hosted Corvent Operations Platform, as described in the Documentation and in each Order Form.
+
+"Order Form" means an ordering document executed by both Parties that references this Agreement.
+
+2. The Service.
+
+2.1 Provider shall make the Service available to Customer and its Authorized Users during the Subscription Term in accordance with this Agreement, each Order Form, and the Documentation.
+
+2.2 Provider shall maintain the Service in accordance with the Service Level Agreement attached as Exhibit A, which provides for 99.9% monthly uptime and a service credit as Customer's sole remedy for a failure to meet it.
+
+2.3 Provider shall provide technical support in accordance with the support terms attached as Exhibit B.
+
+3. Fees and Payment.
+
+3.1 Customer shall pay the fees set out in each Order Form. Provider shall invoice Customer annually in advance, and Customer shall pay each undisputed invoice within thirty (30) days after the date of the invoice.
+
+3.2 Fees are exclusive of taxes. Customer is responsible for all sales, use, and value-added taxes other than taxes on Provider's income.
+
+3.3 Provider may increase the fees for a renewal term by giving Customer at least sixty (60) days' written notice before the end of the then-current term, and any such increase shall not exceed five percent (5%) of the fees for the expiring term.
+
+3.4 Undisputed amounts more than thirty (30) days overdue accrue interest at one percent (1%) per month or the maximum rate permitted by law, whichever is less.
+
+4. Term and Termination.
+
+4.1 This Agreement begins on the Effective Date and continues for an initial term of three (3) years (the "Initial Term").
+
+4.2 After the Initial Term, this Agreement renews for successive one-year terms unless either Party gives written notice of non-renewal at least sixty (60) days before the end of the then-current term.
+
+4.3 Either Party may terminate this Agreement for material breach if the breaching Party fails to cure the breach within thirty (30) days after written notice describing it.
+
+4.4 Customer may terminate any Order Form for convenience on ninety (90) days' written notice, in which case Provider shall refund prepaid fees for the unused portion of the Subscription Term.
+
+4.5 On termination or expiration, Provider shall make Customer Data available for export in a machine-readable format for ninety (90) days, after which Provider shall delete it. Sections 1, 5, 6, 7, 8, 9, and 11 survive termination.
+
+5. Customer Data; Security and Privacy.
+
+5.1 As between the Parties, Customer owns all right, title, and interest in Customer Data. Customer grants Provider a non-exclusive license to host, copy, and process Customer Data solely to provide the Service.
+
+5.2 Provider shall maintain an information security program that includes encryption of Customer Data in transit and at rest, annual penetration testing, and role-based access controls, and shall maintain SOC 2 Type II certification during the Subscription Term.
+
+5.3 Provider shall notify Customer without undue delay and in any event within seventy-two (72) hours after becoming aware of a breach of security leading to the unauthorized disclosure of Customer Data.
+
+5.4 The Data Processing Addendum attached as Exhibit C governs Provider's processing of personal data on Customer's behalf.
+
+6. Intellectual Property.
+
+6.1 Provider owns all right, title, and interest in the Service, the Documentation, and all improvements to them. Customer owns Customer Data.
+
+6.2 Provider grants Customer a non-exclusive, non-transferable right to access and use the Service during the Subscription Term for Customer's internal business purposes.
+
+6.3 If Customer provides feedback about the Service, Provider may use it without obligation, and Customer retains no ownership in the Service as a result.
+
+7. Confidentiality.
+
+7.1 Each Party shall protect the other's Confidential Information with at least the care it uses for its own confidential information and no less than reasonable care, and shall not disclose it except to those of its employees, Affiliates, and advisors who need to know it and are bound by confidentiality obligations no less protective than these.
+
+7.2 Confidential Information does not include information that is or becomes public through no fault of the receiving Party, was known to the receiving Party without restriction before disclosure, is independently developed without use of the disclosing Party's Confidential Information, or is received from a third party without restriction.
+
+7.3 A Party may disclose Confidential Information to the extent required by law, provided that it gives the other Party prompt notice where legally permitted and reasonable assistance in seeking protective treatment.
+
+7.4 These confidentiality obligations continue for three (3) years after termination, and indefinitely for trade secrets.
+
+8. Warranties and Disclaimers.
+
+8.1 Each Party represents and warrants that it has the authority to enter into this Agreement.
+
+8.2 Provider warrants that the Service will perform materially in accordance with the Documentation. Customer's exclusive remedy for a breach of this warranty is for Provider to correct the Service or, if Provider cannot do so within thirty (30) days, to refund prepaid fees for the affected period.
+
+8.3 EXCEPT AS EXPRESSLY STATED IN THIS AGREEMENT, PROVIDER DISCLAIMS ALL OTHER WARRANTIES, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+9. Indemnification.
+
+9.1 Provider shall defend Customer against any third-party claim alleging that the Service infringes a United States patent, copyright, or trade secret, and shall indemnify Customer for damages finally awarded or amounts paid in settlement approved by Provider.
+
+9.2 Customer shall defend Provider against any third-party claim alleging that Customer Data infringes the rights of a third party or violates applicable law, and shall indemnify Provider for damages finally awarded or amounts paid in settlement approved by Customer.
+
+9.3 The indemnified Party shall give prompt written notice of the claim, allow the indemnifying Party sole control of the defense, and provide reasonable cooperation at the indemnifying Party's expense.
+
+10. Limitation of Liability.
+
+10.1 NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR LOST PROFITS OR REVENUE.
+
+10.2 EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO THE FEES PAID OR PAYABLE BY CUSTOMER IN THE TWELVE (12) MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM.
+
+10.3 The limits in Sections 10.1 and 10.2 do not apply to a Party's indemnification obligations under Section 9, to Customer's obligation to pay fees, or to a Party's gross negligence or willful misconduct.
+
+11. General.
+
+11.1 This Agreement is governed by the laws of the State of New York, without regard to its conflict-of-laws rules.
+
+11.2 Any dispute arising out of this Agreement shall be brought exclusively in the state or federal courts located in New York County, New York, and each Party consents to the jurisdiction of those courts.
+
+11.3 Neither Party may assign this Agreement without the other's prior written consent, except to a successor in connection with a merger or sale of all or substantially all of its assets.
+
+11.4 Notices must be in writing and are effective on delivery to the addresses above, with a copy to legal@corvent.example for Provider and legal@ridgeline.example for Customer.
+
+11.5 Neither Party is liable for a failure to perform caused by an event beyond its reasonable control, provided it resumes performance as soon as practicable.
+
+11.6 This Agreement, together with its Exhibits and each Order Form, is the entire agreement between the Parties and supersedes all prior proposals and understandings. It may be amended only by a writing signed by both Parties.
+
+11.7 If any provision is held unenforceable, it shall be modified to the minimum extent necessary and the remainder of this Agreement remains in effect.
+
+11.8 This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+CORVENT SYSTEMS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+Date: March 2, 2026
+
+RIDGELINE MANUFACTURING LLC
+
+By: /s/ Daniel Okafor
+Name: Daniel Okafor
+Title: Chief Operating Officer
+Date: March 2, 2026

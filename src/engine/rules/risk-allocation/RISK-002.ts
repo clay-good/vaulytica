@@ -104,6 +104,45 @@ export const rule: Rule = {
           if (at >= 0 && (!best || (byAt >= 0 ? at < best.at : at > best.at))) best = { key, at };
         }
       }
+      // 🚨 "CLOSEST TO THE VERB" IS THE PROTECTED PARTY IN THE SPLIT DEFEND /
+      // INDEMNIFY FORM, which is how most technology contracts write it:
+      //
+      //   "Provider shall defend Customer against any claim …,
+      //    and shall indemnify Customer for damages finally awarded."
+      //
+      // The run-up to "indemnif" ends "…defend Customer against any claim …
+      // and shall ", so the nearest surface is CUSTOMER — the party being
+      // protected — and the sentence was credited backwards. When both sides
+      // are drafted that way the mutual indemnity collapses onto one party and
+      // the rule reports a symmetric clause as one-sided: measured on a
+      // complete SaaS agreement with §9.1 Provider→Customer and §9.2
+      // Customer→Provider, the counts came out 0 and 2.
+      //
+      // The indemnitor is the SUBJECT, and in an obligation the subject is what
+      // stands immediately before the modal. Taking the last "<surface> shall|
+      // will|must|agrees to" in the run-up finds "Provider shall" and skips
+      // "defend Customer", while still reading "Customer shall indemnify
+      // Vendor" correctly and still preferring the nearest such subject when a
+      // fronted phrase names the other party first. No modal in the run-up (a
+      // noun-phrase indemnity, "the indemnification obligations of Seller")
+      // leaves the original nearest-surface answer untouched.
+      if (byAt < 0) {
+        let subjectBest: { key: string; at: number } | null = null;
+        for (const p of parties) {
+          const key = p.name.toLowerCase();
+          for (const surface of [key, ...(p.role ? [p.role.toLowerCase()] : [])]) {
+            const re = new RegExp(
+              `\\b${surface.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b[^.]{0,40}?\\b(?:shall|will|must|agrees?\\s+to)\\b`,
+              "g",
+            );
+            let m: RegExpExecArray | null;
+            while ((m = re.exec(before)) !== null) {
+              if (!subjectBest || m.index > subjectBest.at) subjectBest = { key, at: m.index };
+            }
+          }
+        }
+        if (subjectBest) best = subjectBest;
+      }
       if (!best) continue;
       // A JOINT indemnity ("Buyer and Seller shall jointly and severally
       // indemnify the Escrow Agent") is every named indemnitor's obligation —

@@ -87,7 +87,12 @@ describe("the secondary-family cap is stated wherever the capped list is shown",
       if (sel.omitted > 0) capped++;
       worst = Math.max(worst, sel.present);
     }
-    // Measured 2026-09-08 over 312 specimens: **7** are silently truncated,
+    // Measured 2026-09-09 over 313 specimens: **8** are silently truncated —
+    // seven privacy/transfer documents plus the enterprise SaaS agreement added
+    // in 9.632.0, which clearly contains an MSA, two NDA perspectives and a
+    // EULA beside its own family.
+    //
+    // Previously measured 2026-09-08 over 312 specimens: **7** were truncated,
     // all of them privacy/transfer documents (the DPA, the two SCC modules,
     // three privacy notices, and `uk-idta-addendum.txt`, which clearly
     // contains **eight** families and is scanned for four).

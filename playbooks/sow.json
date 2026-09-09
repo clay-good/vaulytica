@@ -17,7 +17,7 @@
       "the fee is",
       "the work starts"
     ],
-    "negative_features": ["the Service is a hosted", "Subscription Term", "lease", "Tenant", "Employee", "the Discloser"]
+    "negative_features": ["the Service is a hosted", "Subscription Term", "lease", "Tenant", "the Employee", "the Discloser"]
   },
   "expected_clauses": [
     {"category": "payment-terms", "severity_if_missing": "critical"},

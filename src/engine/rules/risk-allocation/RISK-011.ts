@@ -34,7 +34,18 @@ const PROCEDURE = [
   // puts ~110 chars between "settle" and "consent". Bound the run to one
   // sentence ([^.]) — where a co-occurring settle/consent is always the
   // settlement-consent term — and accept either order.
-  ["settlement consent", /settl\w*[^.]{0,160}consent|consent[^.]{0,120}settl/i],
+  //
+  // APPROVAL IS CONSENT. "amounts paid in settlement approved by Provider" and
+  // "no settlement without the indemnitor's prior written approval" are the
+  // ordinary way half of technology indemnities write this term, and reading
+  // only the word "consent" reported an indemnity that plainly contains it as
+  // missing it — the failure direction that matters for a presence rule, since
+  // its false positive is a confident accusation about a clause the document
+  // has. Found by the clean-document method on a complete SaaS agreement.
+  [
+    "settlement consent",
+    /settl\w*[^.]{0,160}(?:consent|approv\w*)|(?:consent|approv\w*)[^.]{0,120}settl/i,
+  ],
 ] as const;
 
 // An operative indemnity promise, as distinct from a passing reference. A

@@ -27,7 +27,7 @@
       "make the service available",
       "subscription fee"
     ],
-    "negative_features": ["independent contractor", "lease", "Premises", "Tenant", "Landlord", "Employee", "the Discloser"]
+    "negative_features": ["independent contractor", "lease", "Premises", "Tenant", "Landlord", "the Employee", "the Discloser"]
   },
   "expected_clauses": [
     {"category": "payment-terms", "severity_if_missing": "critical"},

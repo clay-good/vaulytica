@@ -4882,6 +4882,40 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "transition-services-agreement",
     findings: ["OBLI-005", "OBLI-008", "RISK-007", "STRUCT-009", "TEMP-007", "TERM-006"],
   },
+  // A COMPLETE, professionally-drafted enterprise SaaS subscription agreement,
+  // authored by the clean-document method: every standard clause present, so
+  // every finding is a candidate bug. It found two, both in the indemnity
+  // (9.632.0), and neither moved the rest of this corpus — which is why the
+  // document is here rather than only in a rule's unit test.
+  //
+  //  - RISK-002 read the SPLIT defend/indemnify form backwards ("Provider
+  //    shall defend Customer …, and shall indemnify Customer"), so a mutual
+  //    indemnity scored 0-2 and was reported as one-sided.
+  //  - RISK-011 read only the word "consent", so "amounts paid in settlement
+  //    APPROVED BY Provider" was reported as an indemnity with no settlement
+  //    term.
+  //
+  // What remains is correct about the draft: two Title-Case terms it uses
+  // without defining ("Confidential Information", "Subscription Term"), three
+  // Exhibits it references and does not attach, an auto-renewal, and a
+  // termination-for-convenience right only the Customer has.
+  "enterprise-saas-subscription.txt": {
+    playbook: "saas-customer",
+    findings: [
+      "OBLI-005",
+      "RISK-007",
+      "RISK-013",
+      "RISK-014",
+      "STRUCT-006",
+      "STRUCT-009",
+      "STRUCT-018",
+      "TEMP-004",
+      "TEMP-007",
+      "TEMP-008",
+      "TERM-001",
+      "TERM-003",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

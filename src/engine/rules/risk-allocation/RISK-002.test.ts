@@ -99,3 +99,73 @@ describe("RISK-002 v1.3.0 — a signatory is not a party bearing indemnity", () 
     ).not.toBeNull();
   });
 });
+
+/**
+ * The split defend/indemnify form — how most technology contracts write a
+ * mutual indemnity, and the shape this rule read BACKWARDS.
+ *
+ *   "Provider shall defend Customer against any claim …,
+ *    and shall indemnify Customer for damages finally awarded."
+ *
+ * The indemnitor was taken as the party surface CLOSEST to the verb, and in
+ * that sentence the closest surface is CUSTOMER — the party being protected.
+ * When both sides are drafted that way (§9.1 Provider→Customer, §9.2
+ * Customer→Provider) both sentences land on the same party and a symmetric
+ * indemnity is reported as one-sided: measured on a complete SaaS agreement,
+ * the counts came out 0 and 2.
+ *
+ * The subject is what stands before the MODAL, so that is what the rule reads
+ * now. Found by the clean-document method — a professionally complete contract
+ * where every finding is a candidate bug — not by the corpus, which does not
+ * move at all on this fix (11 findings before, 11 after).
+ */
+describe("RISK-002 — the indemnitor is the subject, not the nearest name", () => {
+  const PREAMBLE =
+    'This Agreement is between Corvent Systems, Inc., a Delaware corporation ("Provider"), and Ridgeline Manufacturing LLC, a Michigan limited liability company ("Customer").';
+  const check = (...lines: string[]) =>
+    RISK_002.check(buildContext(["Services Agreement", PREAMBLE, ...lines]));
+
+  it("reads a mutual indemnity written as defend-then-indemnify as mutual", () => {
+    expect(
+      check(
+        "Provider shall defend Customer against any third-party claim alleging that the Service infringes a patent, and shall indemnify Customer for damages finally awarded.",
+        "Customer shall defend Provider against any third-party claim alleging that Customer Data infringes the rights of a third party, and shall indemnify Provider for damages finally awarded.",
+      ),
+      "a mutual indemnity was reported as asymmetric",
+    ).toBeNull();
+  });
+
+  it("still reads the compact form as mutual", () => {
+    expect(
+      check(
+        "Provider shall defend, indemnify, and hold harmless Customer from any third-party claim.",
+        "Customer shall defend, indemnify, and hold harmless Provider from any third-party claim.",
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports a genuinely one-sided indemnity, and names the right side", () => {
+    const finding = check(
+      "Customer shall indemnify Provider from any claim.",
+      "Customer shall indemnify Provider from any other claim.",
+      "Customer shall indemnify Provider from a third claim.",
+    );
+    expect(finding, "a three-to-nothing indemnity went unreported").not.toBeNull();
+    // The indemnitor carries the count, and it is the CUSTOMER here.
+    expect(finding!.description).toContain("ridgeline manufacturing llc=3");
+    expect(finding!.description).toContain("corvent systems, inc=0");
+  });
+
+  it("is not fooled by a fronted phrase naming the other party first", () => {
+    // "Under its agreement with Provider, Customer shall indemnify …" — the
+    // first surface in the sentence is the wrong one, which is why the rule
+    // takes the LAST subject-plus-modal rather than the first surface.
+    const finding = check(
+      "Under its agreement with Provider, Customer shall indemnify Provider from any claim.",
+      "Under its agreement with Provider, Customer shall indemnify Provider from another claim.",
+      "Under its agreement with Provider, Customer shall indemnify Provider from a third claim.",
+    );
+    expect(finding).not.toBeNull();
+    expect(finding!.description).toContain("ridgeline manufacturing llc=3");
+  });
+});

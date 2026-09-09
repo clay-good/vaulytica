@@ -713,6 +713,12 @@ const HYPHEN_WRAP_DEBT: readonly string[] = [
   "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
   "construction-contract.txt: lost - gained CHOICE-003,CHOICE-006",
   "cookie-notice-uk.txt: lost - gained IPDATA-008",
+  // Added with the specimen in 9.632.0, and the same shape as the entries
+  // around it: a long word broken across a line hides the phrase a suppression
+  // was keying on, the suppression lifts, and an INFO finding about venue
+  // appears. The document's governing-law and venue clauses are unchanged; what
+  // moved is what the engine could read of them.
+  "enterprise-saas-subscription.txt: lost - gained CHOICE-003",
   "hold-harmless.txt: lost RISK-010 gained -",
   "indemnification-agreement.txt: lost - gained GOV-145",
   "independent-contractor.txt: lost RISK-007 gained -",

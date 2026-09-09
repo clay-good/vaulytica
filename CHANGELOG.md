@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.632.0] — 2026-09-09
+
+### Fixed
+- **A mutual indemnity written the way most technology contracts write it was
+  reported as one-sided.** RISK-002 takes the indemnitor to be the party
+  surface *closest* to the verb — and in the split defend/indemnify form the
+  closest surface is the party being **protected**:
+
+  > "Provider shall defend **Customer** against any claim …, and shall
+  > indemnify Customer for damages finally awarded."
+
+  Both sides drafted that way (§9.1 Provider→Customer, §9.2 Customer→Provider)
+  collapse onto the same party, so a symmetric indemnity scored **0 and 2** and
+  was reported as asymmetric — a warning about risk allocation that the
+  document contradicts. The indemnitor is the SUBJECT, and in an obligation the
+  subject is what stands before the modal, so the rule now takes the last
+  `<party> shall|will|must|agrees to` in the run-up. A fronted phrase naming
+  the other party first ("Under its agreement with Provider, Customer shall
+  indemnify…") still resolves correctly, and a clause with no modal keeps the
+  old answer.
+
+- **An indemnity whose settlement term is written as APPROVAL was told it had
+  none.** RISK-011's settlement-consent element read only the word "consent",
+  while "amounts paid in settlement **approved by** Provider" and "no
+  settlement without prior written **approval**" are how half of technology
+  indemnities write it. For a presence rule this is the failure direction that
+  matters: its false positive is a confident accusation about a clause the
+  document plainly contains.
+
+  **Both were found by the clean-document method** — author a professionally
+  complete contract for a mainstream family and treat every finding as a
+  candidate bug. A complete enterprise SaaS subscription agreement drew 14
+  findings; twelve were correct observations about the draft, and two were
+  these. Neither moves the specimen corpus at all (RISK-002: 11 findings before
+  and after, one count corrected in a D&O indemnity; RISK-011: 35 before, 35
+  after), which is exactly why the corpus could not find them — every specimen
+  happens to write the other form.
+
+- **Two playbooks penalized the most ordinary word in a B2B contract.**
+  `saas-customer` and `sow` listed `"Employee"` among their negative features —
+  matched case-insensitively, so *"Authorized User means an **employee** or
+  contractor of Customer"*, boilerplate in every enterprise SaaS agreement,
+  charged the family a penalty against itself. 142 of the 312 specimens contain
+  the word; the three SaaS-shaped ones happen not to, which is why the
+  self-penalizing invariant had never fired.
+
+  Narrowed to `"the Employee"` — the defined-party form an employment contract
+  uses, and the same shape `"the Discloser"` already had in the same list.
+  Measured across the corpus: **zero documents re-route**, and one
+  (`joint-development.txt`) recovers the confidence it was being docked —
+  0.9 → 1.0. Found by the repo's own guard, which failed the moment the clean
+  document was added to the corpus.
+
+### Changed
+- **The corpus is 313 specimens, and the numbers that quote it moved with it.**
+  Adding one document makes three claims stale at once: the README's "7 of the
+  312 corpus specimens" whose secondary-family list is silently truncated is now
+  **8 of 313** (the new agreement clearly contains an MSA, two NDA perspectives
+  and a EULA beside its own family), and `docs/architecture.md`'s English-floor
+  note counted 312. Re-measured rather than incremented.
+
+### Added
+- The clean document joins the corpus as
+  `tests/fixtures/specimens/enterprise-saas-subscription.txt`, so the shapes
+  that found these two are permanent: a split defend/indemnify mutual
+  indemnity, a settlement term written as approval, an SLA with a credit-only
+  remedy, a 72-hour breach-notice, and a survival list.
+
 ## [9.631.0] — 2026-09-09
 
 ### Added
