@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.604.0] — 2026-09-08
+
+### Fixed
+- 🚨 **A foreign-entity counterparty was registered TWICE, as two parties.** Two
+  readers see the same party and spell it differently:
+  `FOREIGN_ENTITY_ROLE_PARTY` strips the suffix into `entity_type`
+  ("Nordic Freight" + `AB`) while the generic role-labelled reader keeps it
+  ("Nordic Freight AB"). `registerParty` keys on the exact lowercased name, so
+  those never merged — **a two-party agreement with a foreign counterparty
+  reported three parties**, reproducibly, for `AB`, `B.V.` and `Oy`.
+
+  It is not hypothetical: `dpa-defined-term.txt` carries it in the corpus today,
+  registering both "Meridiaan Zorgtechnologie" and "Meridiaan Zorgtechnologie
+  B.V". Three rules reason over the party set — including **RISK-002**, whose
+  own file comment records this exact failure mode reached by a different route:
+  a phantom standing beside the real party, making an indemnity read as running
+  one way.
+
+  The key now ignores a trailing **foreign** suffix, built from the same
+  `FOREIGN_ENTITY_SUFFIX` list the stripping reader uses, so the two spellings
+  it can produce are exactly the two this reconciles. It is **not** a general
+  "same company" matcher: "Acme Holdings LLC" and "Acme LLC" stay two parties,
+  and that is asserted.
+
+  The **document's own spelling wins** the display name — merging on the shorter
+  key removes the phantom, but the name a report shows should be the one the
+  contract writes, not the one a reader happened to strip.
+
+- **The dot-stripped spelling was missed at first.** `cleanPartyName` drops a
+  trailing period, so the stored name is "Delta Logistiek B.V" while the suffix
+  list spells `B\.V\.` — an exact match never fired and the B.V. party stayed
+  split. Every literal dot in the list is optional in the reconciliation.
+
+### Added
+- **Three party SHAPES had no test at all** — reported as `NoCoverage`: the
+  natural person named with a descriptive clause, the foreign entity, and the
+  "doing business as" guard. Each loop could have been deleted whole and every
+  test still passed. A party the extractor misses is not a degraded finding; it
+  is a party absent from the report, the obligations ledger, and every rule that
+  reasons about who owes what.
+
+### Notes
+- No golden moved. On the one corpus specimen that carries the phantom it did
+  not flip a finding — the cost was in the party list every report prints and in
+  the set the mutuality rules reason over, which is where it would bite next.
+
 ## [9.603.0] — 2026-09-08
 
 ### Fixed

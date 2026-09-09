@@ -631,6 +631,20 @@ const NATURAL_PERSON_ROLE = String.raw`${ONE_SIDED_ROLE}|Vendor|Customer|Client|
  * is what makes them safe — no prose reads "… AS (\"Vantablack\")".
  */
 const FOREIGN_ENTITY_SUFFIX = String.raw`A/S|AS|ASA|AB|Oyj|Oy|ApS|B\.V\.|BV|N\.V\.|NV|S\.A\.S\.|SAS|S\.A\.|SA|S\.p\.A\.|SpA|S\.r\.l\.|Srl|S\.L\.|SL|SARL|S\.à\s?r\.l\.|KGaA|GmbH|K\.K\.|KK|Pte\.?\s+Ltd\.?|Pty\.?\s+Ltd\.?|Sdn\.?\s+Bhd\.?`;
+/**
+ * A trailing foreign entity suffix, for reconciling the two spellings the
+ * readers can produce for one party. Built from {@link FOREIGN_ENTITY_SUFFIX}
+ * so there is one list, not two that drift.
+ */
+const FOREIGN_SUFFIX_TAIL = new RegExp(
+  // Every literal dot in the list is made OPTIONAL. `cleanPartyName` strips a
+  // trailing period, so the stored name is "Delta Logistiek B.V" while the list
+  // spells `B\.V\.` — an exact match never fired and the B.V. party stayed
+  // split in two.
+  String.raw`[\s,]+(?:${FOREIGN_ENTITY_SUFFIX.replace(/\\\./g, String.raw`\.?`)})\.?$`,
+  "i",
+);
+
 const FOREIGN_ENTITY_ROLE_PARTY = new RegExp(
   String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s+(${FOREIGN_ENTITY_SUFFIX})\s*\(\s*(?:(?:the|each|collectively,?|together|individually)\s+){0,2}["“”']([^"”'’)]{1,60})["“”']\s*\)`,
   "g",
@@ -1232,9 +1246,31 @@ function registerParty(
   },
 ): void {
   const clean = stripHeadingPrefix(repairFieldRun(name));
-  const key = clean.toLowerCase();
+  // 🚨 The key ignores a trailing FOREIGN entity suffix, because two readers see
+  // the same party and spell it differently: `FOREIGN_ENTITY_ROLE_PARTY` strips
+  // the suffix into `entity_type` ("Nordic Freight" + `AB`) while the generic
+  // role-labelled reader keeps it ("Nordic Freight AB"). Keyed on the exact
+  // name, those are two parties — so a two-party agreement with a foreign
+  // counterparty reported THREE, and every rule that reasons about the party
+  // set saw a phantom beside the real one. `dpa-defined-term.txt` carries it
+  // today: "Meridiaan Zorgtechnologie" and "Meridiaan Zorgtechnologie B.V".
+  //
+  // Exactly the failure the preamble reader's own comment describes a few
+  // hundred lines up — a phantom standing beside the real party and making
+  // RISK-002 read an indemnity as one-sided — reached by a different route.
+  //
+  // Only the foreign suffixes, and only at the END: this is the list the
+  // stripping reader itself uses, so the two spellings it can produce are
+  // exactly the two this reconciles. It is not a general "same company"
+  // matcher, which would merge "Acme Holdings" into "Acme".
+  const key = clean.toLowerCase().replace(FOREIGN_SUFFIX_TAIL, "");
   const existing = map.get(key);
   if (existing) {
+    // The document's own spelling wins. Two readers produce one party under two
+    // names ("Nordic Freight" and "Nordic Freight AB"); merging on the shorter
+    // key is what removes the phantom, but the NAME a report shows should be
+    // the one the contract writes, not the one a reader happened to strip.
+    if (clean.length > existing.name.length) existing.name = clean;
     existing.role = existing.role ?? extras.role;
     existing.entity_type = existing.entity_type ?? extras.entity_type;
     existing.jurisdiction_of_formation =

@@ -1181,3 +1181,75 @@ describe("a cover block's entity descriptor on its own line", () => {
     for (const party of p) expect(party.jurisdiction_of_formation).toBeUndefined();
   });
 });
+
+/**
+ * Three party SHAPES the extractor reads and nothing tested.
+ *
+ * Mutation testing reported all three loops as `NoCoverage`: the natural person
+ * named with a descriptive clause, the foreign entity, and the "d/b/a" trading
+ * name. Each could have been deleted whole and every test still passed.
+ *
+ * A party the extractor misses is not a degraded finding — it is a party absent
+ * from the report, from the obligations ledger, and from every rule that reasons
+ * about who owes what. The two-party rules read the party SET, so a document
+ * whose counterparty is "Klaus Meyer, an individual" or "Zeta Handels GmbH"
+ * looks one-sided to them.
+ */
+describe("the party shapes that had no test", () => {
+  const partiesOf = (line: string) => extractParties(buildTree(["Agreement", line]));
+
+  it("reads a natural person named with a descriptive clause", () => {
+    const parties = partiesOf(
+      'This Agreement is between Acme Corp., a Delaware corporation ("Company"), and Klaus Meyer, an individual residing in Berlin ("Consultant").',
+    );
+    const consultant = parties.find((p) => p.role === "Consultant");
+    expect(consultant, "the natural person was not extracted at all").toBeDefined();
+    expect(consultant!.name).toBe("Klaus Meyer");
+    expect(consultant!.entity_type).toBe("individual");
+    // And the entity beside them still reads normally. `cleanPartyName` drops
+    // the trailing period, so the stored name is "Acme Corp".
+    expect(parties.find((p) => p.role === "Company")?.name).toBe("Acme Corp");
+  });
+
+  it("reads a foreign entity by its own suffix, not just US ones", () => {
+    const parties = partiesOf(
+      'This Agreement is between Zeta Handels GmbH ("Supplier") and Nordic Freight AB ("Carrier").',
+    );
+    const supplier = parties.find((p) => p.role === "Supplier");
+    const carrier = parties.find((p) => p.role === "Carrier");
+    expect(supplier, "the GmbH was not extracted").toBeDefined();
+    expect(carrier, "the AB was not extracted").toBeDefined();
+    // The name is the document's own spelling, suffix included; `entity_type`
+    // carries the suffix too, which is what tells a reader (and a jurisdiction
+    // rule) this is not a Delaware corporation.
+    expect(supplier!.name).toBe("Zeta Handels GmbH");
+    expect(carrier!.name).toBe("Nordic Freight AB");
+    expect(supplier!.entity_type).toBe("GmbH");
+    expect(carrier!.entity_type).toBe("AB");
+
+    // 🚨 And ONE party each, not two. Two readers see a foreign entity and
+    // spell it differently — one strips the suffix into `entity_type`, the
+    // other keeps it — so keyed on the exact name a two-party agreement
+    // reported THREE parties, with a phantom standing beside the real one.
+    expect(parties).toHaveLength(2);
+  });
+
+  it("does not read the words after 'doing business as' when they are not a name", () => {
+    // The pattern needs its `i` flag for "d/b/a", which weakens the capture's
+    // leading `[A-Z]` to any letter — the reason the code guards it. A lowercase
+    // description is not a trading name.
+    const parties = partiesOf(
+      "Acme Corp. is doing business as a regional carrier throughout the territory.",
+    );
+    expect(parties.map((p) => p.name)).not.toContain("a regional carrier");
+  });
+
+  it("keeps two similarly-named entities apart", () => {
+    // The suffix reconciliation above must not become a general "same company"
+    // matcher: a parent and its subsidiary routinely differ by one token.
+    const parties = partiesOf(
+      'This Agreement is between Acme Holdings LLC ("Parent") and Acme LLC ("Subsidiary").',
+    );
+    expect(parties.map((p) => p.name).sort()).toEqual(["Acme Holdings LLC", "Acme LLC"]);
+  });
+});
