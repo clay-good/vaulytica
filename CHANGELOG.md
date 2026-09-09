@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.610.0] — 2026-09-09
+
+### Added
+- **The certificate a filer hands to a court had never been rendered by a
+  test.** `buildCertificateDocx` — the one-page artifact that certifies to a
+  judge that no generative AI touched the analysis — was one of four functions
+  in `src/report/certificate.ts` that no test called, along with the label it
+  prints for asserted opt-in packs and both Blob wrappers. The model was well
+  covered; the document made from it was not. Branch coverage of the module was
+  46%.
+
+  This is the same gap the export Blob wrappers had: **the path the product
+  takes is not the path the tests take.** The browser calls
+  `certificateDocxBlob`; the CLI calls `buildCertificateDocx`; the test suite
+  called neither.
+
+  What makes a rendering test unusual here is what is being rendered. The five
+  certification statements were written to survive a legal review — the scope
+  limit ("certifies what this tool did", never the filer's compliance), the
+  no-AI claim, the privacy claim in its approved form, and the attorney's own
+  duty under ABA Formal Opinion 512. **A certificate that silently dropped one
+  would still open in Word, still verify its own hash, and still be wrong in
+  front of a judge.** So the test unzips the DOCX and requires each statement
+  verbatim, every field label and value, the asserted-checks line in both of
+  its shapes (with and without a state) and its absence when nothing was
+  asserted, that no document text leaks in, and that both Blobs carry their
+  real MIME type rather than octet-stream.
+
+  Proven by breaking it three ways: deleting the ABA statement fails 2,
+  serving the DOCX as `application/octet-stream` fails 1, and dropping the
+  asserted-checks line fails 2.
+
+### Changed
+- Nothing in the certificate itself. The audit that produced these tests looked
+  for a rendering defect and did not find one — including the case worth
+  checking, a `--state` asserted without `--estate-checks`, which cannot reach
+  the label because `activateEstateChecks` sets both or neither.
+
 ## [9.609.0] — 2026-09-09
 
 ### Fixed
