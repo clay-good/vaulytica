@@ -1087,11 +1087,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "d1d934237d3eb0a6fbb555b81ab3a8f5a30c2550f8d6a3277ed9d0ea909fb1b1",
+  "result_hash": "9582426ff764cfc4aa977c32a9f824e8ad43ab37ba8ef663d4618605d15b9688",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.620.0"
+  "version": "9.621.0"
 }

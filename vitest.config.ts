@@ -69,9 +69,13 @@ export default defineConfig({
       ],
       reporter: ["text-summary", "json-summary", "html"],
       // Floors (regression-only) — set a couple points under the measured
-      // baseline (statements 92.22 · branches 81.06 · functions 92.80 ·
-      // lines 93.73, measured 2026-08-17), leaving headroom for cross-platform
-      // drift (the gate runs on ubuntu/Node-22 CI). A ratchet raises these as
+      // baseline (statements 94.19 · branches 85.40 · functions 94.51 ·
+      // lines 95.54, measured 2026-09-09), leaving headroom for cross-platform
+      // drift (the gate runs on ubuntu/Node-22 CI). Previous turn of the
+      // ratchet: 92.22 · 81.06 · 92.80 · 93.73 (2026-08-17) behind floors of
+      // 90/78/90/91. What moved branches 81.1 → 85.4 was the v9 UI-rendering
+      // work — the result card's panels, the download wiring, and `bootUi`,
+      // none of which had a test before 9.615.0. A ratchet raises these as
       // coverage climbs; they only ever fail on a *drop*. Ratcheted here from
       // 85/85/70/83, which were a couple points under the FIRST baseline
       // (2026-06-05) and had been left ~8 points behind ever since — a floor
@@ -79,10 +83,10 @@ export default defineConfig({
       // README's coverage table quotes these; mutation-scope.test.ts pins the
       // two together.
       thresholds: {
-        lines: 91,
-        functions: 90,
-        branches: 78,
-        statements: 90,
+        lines: 93,
+        functions: 92,
+        branches: 82,
+        statements: 92,
       },
     },
   },

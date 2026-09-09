@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.621.0] — 2026-09-09
+
+### Changed
+- **The coverage ratchet turned, for the first time since 2026-08-17.** The
+  config's own comment asks for this — "a ratchet raises these as coverage
+  climbs" — and the floors had fallen four points behind:
+
+  | Metric | Was measured | Old floor | Now measured | New floor |
+  |---|---:|---:|---:|---:|
+  | Statements | 92.2% | 90 | **94.2%** | 92 |
+  | Branches | 81.1% | 78 | **85.4%** | 82 |
+  | Functions | 92.8% | 90 | **94.5%** | 92 |
+  | Lines | 93.7% | 91 | **95.5%** | 93 |
+
+  Same rule as before — a couple of points under the measured value, leaving
+  headroom for cross-platform drift, failing only on a *drop* and never on an
+  aspiration. What moved branches 81.1% → 85.4% was this run of UI-rendering
+  work: the result card's panels, the download wiring, and `bootUi`, none of
+  which had a test before 9.615.0.
+
+  The floors are live, not decorative: raising the branch floor to 92 fails the
+  gate with exit 1. README's coverage table is updated with it, since a floor
+  quoted in two places is a floor that will disagree with itself.
+
 ## [9.620.0] — 2026-09-09
 
 ### Added
