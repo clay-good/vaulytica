@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.601.0] — 2026-09-08
+
+### Added
+- **The permissive leg, measured and pinned — and deliberately not fixed.**
+  Obligation and prohibition both had large, concentrated exposure. The
+  permissive side does not: rewriting `may` as `is permitted to`,
+  `is entitled to` or `has the right to` moves **9 of 285 documents**, and the
+  number is **identical for all three spellings** — the tell that it is one
+  missing alternation, not three. TERM-003 accounts for 4; six other rules for
+  one each.
+
+  🚨 **The reason it was not fixed is worth more than the fix would have been.**
+  Three of those rules carry the mechanical `<party> may <verb>` shape, so a
+  shared `PERMISSIVE_MODAL` looked like the obvious mirror of
+  `OBLIGATION_MODAL` — and it was written, applied, and then **reverted**.
+  Unlike the obligation rules, those patterns are regex **literals**, not
+  template strings: dropping a constant in as `${…}` does not interpolate, it
+  matches that text literally and silently breaks the rule. Doing it properly
+  means converting three literals to constructed `RegExp`s, which is a larger
+  change than 9 documents warrants without someone deciding it is worth it. An
+  unused constant is dead code, so it went too.
+
+  The measurement is a relation pinned by **equality**, not a comment nobody
+  re-measures: fixing one means lowering it on purpose, and a new rule blind to
+  the spelling shows up rather than passing quietly.
+
+### Fixed
+- 🚨 **The list written from the probe's output was wrong.** The probe printed
+  its top six and `DARK-009` was the seventh — a truncated probe reads exactly
+  like a complete one. The equality assertion caught it immediately; a
+  `toContain`-style check would not have.
+
 ## [9.600.0] — 2026-09-08
 
 ### Fixed

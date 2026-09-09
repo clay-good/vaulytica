@@ -356,6 +356,72 @@ describe("shall and will are the same obligation", () => {
     expect([...lost].sort()).toEqual([...PROHIBITION_DEBT]);
   }, 300_000);
 
+  /**
+   * The third leg, measured and deliberately NOT fixed.
+   *
+   * Obligation and prohibition both had large, concentrated exposure. The
+   * PERMISSIVE side does not. Rewriting `may` across the corpus as
+   * `is permitted to`, `is entitled to` and `has the right to` (2026-09-08):
+   * **9 of 285 documents move, and the number is identical for all three
+   * spellings** — the tell that it is one missing alternation, not three.
+   *
+   * | rule | documents |
+   * |---|---|
+   * | TERM-003 | 4 |
+   * | TERM-009, DARK-001, TEMP-002, MSA-023, DARK-008, DARK-009 | 1 each |
+   *
+   * 🚨 DARK-009 is in that list because the assertion is an EQUALITY. The probe
+   * that produced these numbers printed its top six and DARK-009 was the
+   * seventh, so the list written from the probe output was wrong — a truncated
+   * probe reads exactly like a complete one.
+   *
+   * Three of them (TERM-003, TERM-009, DARK-001) carry the mechanical
+   * `<party> may <verb>` shape. **They were not fixed, and the reason is worth
+   * more than the fix**: unlike the obligation rules, those patterns are regex
+   * LITERALS, not template strings. Dropping a shared constant into them as
+   * `${...}` does not interpolate — it matches that text literally and silently
+   * breaks the rule. Doing it properly means converting three literals to
+   * constructed `RegExp`s, which is a larger change than 9 documents warrants
+   * without someone deciding it is worth it.
+   *
+   * TEMP-002, DARK-008 and MSA-023 do not match a permissive modal at all, so
+   * a shared constant would not have reached them either.
+   *
+   * Recorded here rather than in a comment nobody re-measures. The number is
+   * small and the shape is known; what is missing is a decision, not an
+   * investigation.
+   */
+  it("the permissive rewrite moves only the documents measured", async () => {
+    const deps = await loadAccuracyDeps({});
+    const lost = new Set<string>();
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = text
+        .replace(/\bmay\b(?!\s+not\b)/g, "is permitted to")
+        .replace(/\bMay\b(?!\s+not\b)/g, "Is permitted to");
+      if (mutated === text) continue;
+      probed++;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      for (const id of ids(before).filter((i) => !ids(after).includes(i))) lost.add(id);
+    }
+    expect(probed, "the corpus never grants a permission").toBeGreaterThan(200);
+    // Equality, so fixing one means lowering this on purpose — and so a NEW
+    // rule blind to the spelling shows up here rather than passing quietly.
+    expect([...lost].sort()).toEqual([
+      "DARK-001",
+      "DARK-008",
+      "DARK-009",
+      "MSA-023",
+      "TEMP-002",
+      "TERM-003",
+      "TERM-009",
+    ]);
+  }, 300_000);
+
   it("writing every 'shall' as 'must' moves a finding on only the documents still owed", async () => {
     const deps = await loadAccuracyDeps({});
     const broken: string[] = [];
