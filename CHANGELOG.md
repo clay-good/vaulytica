@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.628.0] — 2026-09-09
+
+### Added
+- **SARIF — the artifact the Action uploads — now carries the state-law
+  overlays.** The overlays are where the answer changes by jurisdiction: a
+  non-compete governed by California law is void under Bus. & Prof. Code
+  § 16600, and attempting to enforce it is an independent violation under
+  § 16600.5. The DOCX, the standalone HTML and the in-tab card have printed
+  that for releases. **The one surface a code-scanning dashboard reads carried
+  no overlay of any kind**, so a pipeline analyzing that agreement annotated
+  thirteen findings and said nothing about the statute that decides them.
+
+  That is the same argument `cli-jurisdiction-overlay.test.ts` was written
+  about, one surface over — and the CLI's own comment makes it for the JSON
+  path: *"the one surface a script can read did not."*
+
+  Two note-level rule ids, beside the classification notice, the input notices
+  and the secondary-family cap:
+
+  | | |
+  |---|---|
+  | `VAULYTICA-JURISDICTION-OVERLAY` | one per matched state — the state, its posture, what its law does, the recommendation, and the citation (with `state`, `posture`, `topic`, `citation_url` in `properties`) |
+  | `VAULYTICA-JURISDICTION-OVERLAY-GAP` | the detected states the catalog does **not** cover: "an honest coverage gap, not a clean pass" |
+
+  Both are `note` level by design — a caveat and a citation to read, never a
+  violation, and never something a `--fail-on` gate can trip on. The overlays
+  are computed outside `run` from `extracted`, exactly as the JSON and HTML
+  paths take them, so `result_hash` is untouched and every run still verifies
+  to the same value. A caller that passes no extraction gets **byte-identical**
+  SARIF, which is asserted.
+
+  Wired on both paths that produce SARIF — the CLI's `--format sarif` and the
+  browser's blob — and guarded end-to-end: unwiring the CLI fails the
+  California document's SARIF test, unwiring the results fails two unit tests,
+  and `honesty-caveat-reach.test.ts` now counts SARIF among the surfaces that
+  must show the coverage gap with the overlays (three surfaces render neither,
+  and that list is a standing record).
+
+  Structural conformance is asserted with the new results present: SARIF 2.1.0
+  ingestion rules — `level` enum, resolvable `ruleIndex`, string
+  `partialFingerprints`, `message.text` — all hold.
+
 ## [9.627.0] — 2026-09-09
 
 ### Fixed

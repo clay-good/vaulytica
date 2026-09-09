@@ -947,7 +947,20 @@ async function renderFormat(
       // The cross-document run rides in only when the caller asserted a bundle
       // (--consistency); each conflict lands in the SARIF of the document its
       // first excerpt names, so it appears exactly once across the set.
-      return buildSarifJson(r.run, v9surfaces, currency, r.ingest, consistency);
+      //
+      // The overlays are re-extracted here for the same reason the JSON and
+      // HTML paths do it, and to close the same gap one surface over: SARIF is
+      // the artifact the Action uploads, and it carried no state-law overlay at
+      // all — a California non-compete annotated its findings and said nothing
+      // about § 16600. Outside `run`, so `result_hash` is unchanged.
+      return buildSarifJson(
+        r.run,
+        v9surfaces,
+        currency,
+        r.ingest,
+        consistency,
+        extractAll(r.ingest.tree),
+      );
     case "html":
       return buildHtmlReport(
         r.run,

@@ -40,6 +40,8 @@ import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.j
 import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
+import { selectStateOverlays } from "../dkb/state-overlays.js";
+import type { ExtractedData } from "../extract/types.js";
 import type { ConsistencyFinding, ConsistencyRun } from "../engine/consistency/types.js";
 
 /**
@@ -115,6 +117,30 @@ const SECONDARY_CAP_RULE_ID = "VAULYTICA-SECONDARY-FAMILIES-CAPPED";
  * a coverage statement.
  */
 const REVIEW_COVERAGE_RULE_ID = "VAULYTICA-ATTORNEY-REVIEW-COVERAGE";
+
+/**
+ * Synthetic rule ids for the state-law overlay layer.
+ *
+ * The overlays are where the answer actually changes by jurisdiction: a
+ * non-compete governed by California law is void under Bus. & Prof. Code
+ * § 16600, and attempting to enforce it is an independent violation under
+ * § 16600.5. The DOCX, the HTML and the in-tab card all print that. **SARIF —
+ * the artifact the Action uploads and the only one a code-scanning dashboard
+ * reads — carried no overlay of any kind**, so a pipeline analyzing that
+ * agreement annotated its findings and said nothing about the statute that
+ * decides them. The CLI's own comment makes this argument for the JSON path;
+ * this is the same gap one surface over.
+ *
+ * Both ride at `note` level, next to the classification notice, the input
+ * notices and the secondary-family cap — a caveat and a citation to read, never
+ * a violation, and never something a `--fail-on` gate can trip on.
+ *
+ * The GAP is emitted for the same reason it is on every other surface: a
+ * detected state the catalog does not cover has to be named, because silence
+ * reads as "checked, and fine".
+ */
+const OVERLAY_RULE_ID = "VAULYTICA-JURISDICTION-OVERLAY";
+const OVERLAY_GAP_RULE_ID = "VAULYTICA-JURISDICTION-OVERLAY-GAP";
 
 /**
  * Synthetic rule id for "a rule crashed, so this document was not checked
@@ -222,6 +248,13 @@ export function buildSarif(
   currency?: CitationCurrency,
   ingest?: Pick<IngestResult, "warnings">,
   consistency?: ConsistencyRun,
+  /**
+   * Extraction output, for the jurisdiction overlays. Optional and outside
+   * `run`, exactly as the JSON and HTML paths take it — the overlays are a
+   * reference layer, not findings, so `result_hash` is untouched and a run
+   * still verifies to the same value.
+   */
+  extracted?: Pick<ExtractedData, "jurisdictions">,
 ): SarifLog {
   // One reportingDescriptor per distinct rule that produced a finding, in
   // sorted rule-id order for determinism. The v9 surfaces extend this with the
@@ -259,6 +292,14 @@ export function buildSarif(
     (f) => f.excerpts[0]?.source_file_name === run.source_file.name,
   );
   const crossRuleIds = [...new Set(crossFindings.map((f) => f.rule_id))].sort();
+  // State-law overlays for the governing-law state(s) this document names.
+  const overlays = extracted
+    ? selectStateOverlays(run.playbook_id, extracted.jurisdictions)
+    : undefined;
+  const overlayMatched = overlays?.matched ?? [];
+  const overlayUncovered = overlays?.uncovered_states ?? [];
+  const overlayRuleIds = overlayMatched.length > 0 ? [OVERLAY_RULE_ID] : [];
+  const overlayGapRuleIds = overlayUncovered.length > 0 ? [OVERLAY_GAP_RULE_ID] : [];
   // Engine / handoff / date / notice rule-id namespaces are disjoint, so the
   // combined index is collision-free and every result's ruleIndex resolves.
   const allRuleIds = [
@@ -271,6 +312,8 @@ export function buildSarif(
     ...reviewRuleIds,
     ...erroredRuleIds,
     ...crossRuleIds,
+    ...overlayRuleIds,
+    ...overlayGapRuleIds,
   ];
   const ruleIndex = new Map(allRuleIds.map((id, i) => [id, i]));
 
@@ -314,6 +357,16 @@ export function buildSarif(
     name: id,
     shortDescription: { text: "Additional detected families were not scanned" },
   }));
+  const overlayRules: SarifRule[] = overlayRuleIds.map((id) => ({
+    id,
+    name: id,
+    shortDescription: { text: "State-law overlay for the governing-law state" },
+  }));
+  const overlayGapRules: SarifRule[] = overlayGapRuleIds.map((id) => ({
+    id,
+    name: id,
+    shortDescription: { text: "No state-law overlay on file for a detected state" },
+  }));
   const reviewRules: SarifRule[] = reviewRuleIds.map((id) => ({
     id,
     name: id,
@@ -346,6 +399,8 @@ export function buildSarif(
     ...reviewRules,
     ...erroredRules,
     ...crossRules,
+    ...overlayRules,
+    ...overlayGapRules,
   ];
 
   // Thrust B: which rule ids are execution-readiness items, so the results
@@ -490,6 +545,68 @@ export function buildSarif(
         ]
       : [];
 
+  // One result per matched overlay, so a dashboard shows the state, what its
+  // law does to this family, and the citation to check it against.
+  const overlayResults: SarifResult[] = overlayMatched.map((o) => ({
+    ruleId: OVERLAY_RULE_ID,
+    ruleIndex: ruleIndex.get(OVERLAY_RULE_ID)!,
+    level: "note" as const,
+    message: {
+      text: `${o.state_name}: ${o.headline}. ${o.summary} ${o.recommendation} (${o.citation.source})`,
+    },
+    locations: [
+      {
+        physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+        logicalLocations: [{ name: "document", kind: "container" }],
+      },
+    ],
+    partialFingerprints: {
+      "vaulyticaOverlay/v1": o.id,
+      "vaulyticaResultHash/v1": run.result_hash,
+    },
+    properties: {
+      surface: "jurisdiction-overlay",
+      state: o.jurisdiction,
+      posture: o.posture,
+      topic: o.topic,
+      citation: o.citation.source,
+      citation_url: o.citation.source_url,
+    },
+  }));
+
+  const overlayGapResults: SarifResult[] =
+    overlayUncovered.length > 0
+      ? [
+          {
+            ruleId: OVERLAY_GAP_RULE_ID,
+            ruleIndex: ruleIndex.get(OVERLAY_GAP_RULE_ID)!,
+            level: "note" as const,
+            message: {
+              text: `No state-law overlay on file for ${overlayUncovered
+                .map((st) => st.replace(/^us-/, "").toUpperCase())
+                .join(", ")} — an honest coverage gap, not a clean pass. Verify ${
+                overlays?.family ?? "the governing state's law"
+              } for ${overlayUncovered.length === 1 ? "that state" : "those states"} manually.`,
+            },
+            locations: [
+              {
+                physicalLocation: { artifactLocation: { uri: run.source_file.name } },
+                logicalLocations: [{ name: "document", kind: "container" }],
+              },
+            ],
+            partialFingerprints: {
+              "vaulyticaOverlayGap/v1": overlayUncovered.join(","),
+              "vaulyticaResultHash/v1": run.result_hash,
+            },
+            properties: {
+              surface: "jurisdiction-overlay-gap",
+              uncovered_states: [...overlayUncovered],
+              states_in_catalog: overlays?.states_in_catalog ?? 0,
+            },
+          },
+        ]
+      : [];
+
   const reviewResults: SarifResult[] =
     reviewCoverage.total > 0
       ? [
@@ -566,6 +683,8 @@ export function buildSarif(
     ...reviewResults,
     ...erroredResults,
     ...crossResults,
+    ...overlayResults,
+    ...overlayGapResults,
   ];
 
   // Tool-run provenance: which opt-in packs were asserted (each rides in the
@@ -753,8 +872,9 @@ export function buildSarifJson(
   currency?: CitationCurrency,
   ingest?: Pick<IngestResult, "warnings">,
   consistency?: ConsistencyRun,
+  extracted?: Pick<ExtractedData, "jurisdictions">,
 ): string {
-  return JSON.stringify(buildSarif(run, v9, currency, ingest, consistency), null, 2);
+  return JSON.stringify(buildSarif(run, v9, currency, ingest, consistency, extracted), null, 2);
 }
 
 export function sarifBlob(
@@ -762,8 +882,10 @@ export function sarifBlob(
   v9?: V9Surfaces,
   currency?: CitationCurrency,
   ingest?: Pick<IngestResult, "warnings">,
+  consistency?: ConsistencyRun,
+  extracted?: Pick<ExtractedData, "jurisdictions">,
 ): Blob {
-  return new Blob([buildSarifJson(run, v9, currency, ingest)], {
+  return new Blob([buildSarifJson(run, v9, currency, ingest, consistency, extracted)], {
     type: "application/sarif+json",
   });
 }

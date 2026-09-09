@@ -609,3 +609,101 @@ describe("the SARIF snippet quotes the clause, and only when there is one", () =
     expect(JSON.stringify(region)).not.toContain("MARKER");
   });
 });
+
+/**
+ * The state-law overlays on the CI surface.
+ *
+ * The overlays are where the answer changes by jurisdiction — a non-compete
+ * governed by California law is void under Bus. & Prof. Code § 16600 — and the
+ * DOCX, the HTML and the in-tab card have printed that for releases. SARIF, the
+ * artifact the Action uploads and the only one a code-scanning dashboard reads,
+ * carried **no overlay of any kind**: a pipeline analyzing that agreement
+ * annotated its findings and said nothing about the statute that decides them.
+ *
+ * Both notes ride at `note` level beside the classification notice and the
+ * input notices: a caveat and a citation to read, never a violation, and never
+ * something a `--fail-on` gate can trip on.
+ */
+describe("SARIF carries the jurisdiction overlays", () => {
+  const employmentRun = (): EngineRun => ({
+    version: "0.1.0",
+    dkb_version: "v0.0.1-starter",
+    playbook_id: "employment-at-will-us",
+    source_file: { name: "employment.docx", sha256: "a".repeat(64), size_bytes: 10 },
+    executed_at: "",
+    findings: [],
+    execution_log: [],
+    result_hash: "b".repeat(64),
+  });
+
+  const governedBy = (state: string) =>
+    ({
+      jurisdictions: [
+        { clause_kind: "governing-law", jurisdiction_id: state, raw_text: `laws of ${state}` },
+      ],
+    }) as never;
+
+  it("names the state, what its law does, and the citation", () => {
+    const sarif = buildSarif(
+      employmentRun(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      governedBy("us-ca"),
+    );
+    const notes = sarif.runs[0]!.results.filter(
+      (r) => r.ruleId === "VAULYTICA-JURISDICTION-OVERLAY",
+    );
+    expect(notes.length, "the CI surface carried no overlay").toBeGreaterThan(0);
+    expect(notes[0]!.level).toBe("note");
+    expect(notes[0]!.message.text).toContain("California");
+    expect(notes[0]!.message.text).toMatch(/16600|void|unenforceable/i);
+    expect(notes[0]!.properties?.state).toBe("us-ca");
+    // The descriptor is registered, so `ruleIndex` resolves for a consumer.
+    const rules = sarif.runs[0]!.tool.driver.rules!;
+    expect(rules[notes[0]!.ruleIndex]!.id).toBe("VAULYTICA-JURISDICTION-OVERLAY");
+  });
+
+  it("says an uncovered state is a gap, not a pass", () => {
+    // Alabama has no non-compete overlay; 34 of 50 states do not.
+    const sarif = buildSarif(
+      employmentRun(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      governedBy("us-al"),
+    );
+    const gaps = sarif.runs[0]!.results.filter(
+      (r) => r.ruleId === "VAULYTICA-JURISDICTION-OVERLAY-GAP",
+    );
+    expect(gaps, "an uncovered state reached CI as silence").toHaveLength(1);
+    expect(gaps[0]!.level).toBe("note");
+    expect(gaps[0]!.message.text).toContain("AL");
+    expect(gaps[0]!.message.text).toContain("an honest coverage gap, not a clean pass");
+    expect(gaps[0]!.properties?.uncovered_states).toEqual(["us-al"]);
+  });
+
+  it("adds nothing at all when no extraction is supplied", () => {
+    // Back-compat: every existing caller that does not pass `extracted` gets
+    // byte-identical SARIF, so `result_hash` and every golden stay put.
+    expect(buildSarifJson(employmentRun())).toBe(
+      buildSarifJson(employmentRun(), undefined, undefined, undefined, undefined, undefined),
+    );
+    const sarif = buildSarif(employmentRun());
+    expect(sarif.runs[0]!.results.some((r) => r.ruleId?.includes("OVERLAY"))).toBe(false);
+  });
+
+  it("stays structurally conformant with the overlay results present", () => {
+    const sarif = buildSarif(
+      employmentRun(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      governedBy("us-ca"),
+    );
+    expect(sarifConformanceViolations(sarif)).toEqual([]);
+  });
+});

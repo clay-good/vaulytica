@@ -40,7 +40,7 @@ writeFileSync(
   "utf8",
 );
 
-async function analyzeJson(): Promise<Record<string, unknown>> {
+async function analyzeRaw(format: string): Promise<string> {
   const out: string[] = [];
   const realOut = process.stdout.write.bind(process.stdout);
   const realErr = process.stderr.write.bind(process.stderr);
@@ -50,12 +50,16 @@ async function analyzeJson(): Promise<Record<string, unknown>> {
   }) as typeof process.stdout.write;
   process.stderr.write = (() => true) as typeof process.stderr.write;
   try {
-    await runAnalyze([DOC, "--format", "json"]);
+    await runAnalyze([DOC, "--format", format]);
   } finally {
     process.stdout.write = realOut;
     process.stderr.write = realErr;
   }
-  const text = out.join("");
+  return out.join("");
+}
+
+async function analyzeJson(): Promise<Record<string, unknown>> {
+  const text = await analyzeRaw("json");
   const start = text.indexOf("{");
   return JSON.parse(text.slice(start)) as Record<string, unknown>;
 }
@@ -76,5 +80,33 @@ describe("CLI json report — jurisdiction overlays", () => {
     const ca = overlays!.matched.find((m) => m.jurisdiction === "us-ca");
     expect(ca, "no California overlay matched").toBeDefined();
     expect(ca!.posture).toBe("prohibited");
+  }, 60_000);
+});
+
+/**
+ * And the same question one surface over: SARIF is what the Action uploads and
+ * what a code-scanning dashboard reads, and it carried **no overlay at all**
+ * until 9.628.0 — the identical silence this file was written about, on the
+ * surface a CI job actually consumes.
+ */
+describe("CLI sarif — jurisdiction overlays", () => {
+  it("carries the state-law overlay as a note-level result", async () => {
+    const text = await analyzeRaw("sarif");
+    const sarif = JSON.parse(text.slice(text.indexOf("{"))) as {
+      runs: Array<{
+        results: Array<{ ruleId: string; level: string; message: { text: string } }>;
+        tool: { driver: { rules: Array<{ id: string }> } };
+      }>;
+    };
+    const notes = sarif.runs[0]!.results.filter(
+      (r) => r.ruleId === "VAULYTICA-JURISDICTION-OVERLAY",
+    );
+    expect(notes.length, "the CI surface carried no overlay").toBeGreaterThan(0);
+    expect(notes[0]!.level, "an overlay is a caveat to read, not a violation").toBe("note");
+    expect(notes[0]!.message.text).toContain("California");
+    // The descriptor is registered alongside it, so a consumer can resolve it.
+    expect(
+      sarif.runs[0]!.tool.driver.rules.some((r) => r.id === "VAULYTICA-JURISDICTION-OVERLAY"),
+    ).toBe(true);
   }, 60_000);
 });

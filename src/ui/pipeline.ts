@@ -796,6 +796,11 @@ export async function runReport(
     v9surfaces,
     dkbCurrency(prepared.dkb.manifest),
     prepared.ingest,
+    undefined,
+    // The state-law overlays, so the CI surface carries what the report and the
+    // card already show. Outside `run`, exactly as the JSON and HTML paths take
+    // it, so `result_hash` is untouched.
+    prepared.extracted,
   );
   const html_blob = htmlReportBlob(
     run,
