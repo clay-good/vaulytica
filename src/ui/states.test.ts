@@ -2303,3 +2303,113 @@ describe("the critical-dates register", () => {
     expect(el.querySelector("b"), "document text became markup").toBeNull();
   });
 });
+
+/**
+ * The jurisdiction-overlay card, and the honest gap it has to state.
+ *
+ * The overlays are the state-law layer — a non-compete that is void in
+ * California, a security deposit capped in one state and not another. What
+ * makes this card different from the others is `uncovered_states`: when the
+ * document names a state the catalog has no overlay for, the card must say so
+ * in terms — "an honest coverage gap, not a clean pass" — because silence
+ * there is indistinguishable from "we checked and it is fine," which is the
+ * single most expensive way a compliance tool can be wrong.
+ */
+describe("the jurisdiction-overlay card", () => {
+  const overlay = (over: Record<string, unknown> = {}) => ({
+    state_name: "California",
+    posture: "prohibited" as const,
+    topic: "non-compete",
+    headline: "Void and unenforceable",
+    summary: "California voids employee non-competes except on the sale of a business.",
+    recommendation: "Remove the covenant or carve California out.",
+    citation: { source: "Cal. Bus. & Prof. Code § 16600", source_url: "https://example.gov/16600" },
+    ...over,
+  });
+  const state = (jurisdiction_overlays: unknown) =>
+    ({
+      kind: "complete",
+      filename: "employment.docx",
+      playbook_name: "Employment (at-will, US)",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["d"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "a.docx",
+      json_filename: "a.json",
+      jurisdiction_overlays,
+    }) as never;
+
+  it("stays hidden when there is neither a match nor a gap", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({ family: "non-compete", states_in_catalog: 37, matched: [], uncovered_states: [] }),
+    );
+    const el = select<HTMLElement>(dz, "jurisdiction-overlays")!;
+    expect(el.hidden).toBe(true);
+    expect(el.innerHTML).toBe("");
+  });
+
+  it("shows the state, its posture, the recommendation and a citation link", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        family: "non-compete",
+        states_in_catalog: 37,
+        matched: [overlay()],
+        uncovered_states: [],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "jurisdiction-overlays")!;
+    expect(el.hidden).toBe(false);
+    expect(el.textContent).toContain("California");
+    expect(el.textContent).toContain("Void and unenforceable");
+    expect(el.textContent).toContain("Remove the covenant");
+    expect(el.textContent).toContain("37 states covered");
+    expect(el.innerHTML).toContain("overlay-prohibited");
+    const link = el.querySelector("a.overlay-cite") as HTMLAnchorElement | null;
+    expect(link, "the citation had no link").not.toBeNull();
+    expect(link!.getAttribute("href")).toBe("https://example.gov/16600");
+    // A link that opens a new tab must not hand the opener to that page.
+    expect(link!.getAttribute("rel")).toContain("noopener");
+  });
+
+  it("states an uncovered state as a coverage gap, not a pass", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        family: "non-compete",
+        states_in_catalog: 37,
+        matched: [overlay()],
+        uncovered_states: ["us-nd", "us-wy"],
+      }),
+    );
+    const text = select<HTMLElement>(dz, "jurisdiction-overlays")!.textContent ?? "";
+    expect(text).toContain("ND, WY");
+    expect(text, "the gap was not stated as a gap").toContain(
+      "an honest coverage gap, not a clean pass",
+    );
+    expect(text).toContain("those states");
+  });
+
+  it("says it in the singular for one uncovered state, and shows the gap with no matches at all", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        family: "security-deposit",
+        states_in_catalog: 51,
+        matched: [],
+        uncovered_states: ["us-nd"],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "jurisdiction-overlays")!;
+    // The gap alone is enough to show the card: a document whose only state is
+    // uncovered is exactly the case that must not render as silence.
+    expect(el.hidden).toBe(false);
+    expect(el.textContent).toContain("ND");
+    expect(el.textContent).toContain("that state");
+  });
+});

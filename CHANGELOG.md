@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.619.0] — 2026-09-09
+
+### Added
+- **The overlay card's honest coverage gap now has a test.** The
+  jurisdiction-overlay card is the state-law layer — a non-compete void in
+  California, a security deposit capped in one state and not another — and what
+  makes it different from every other panel is `uncovered_states`. When a
+  document names a state the catalog has no overlay for, the card must say so
+  in terms: *"an honest coverage gap, not a clean pass."* Silence there is
+  indistinguishable from "we checked and it is fine," which is the most
+  expensive way a compliance tool can be wrong. Nothing rendered the card.
+
+  Four tests: hidden when there is neither a match nor a gap; the matched
+  state's posture class, headline, recommendation and citation link; the gap
+  named by state with its "not a clean pass" wording and the plural; and the
+  case that matters most — **a gap with no matches at all still shows the
+  card**, because a document whose only state is uncovered is exactly the one
+  that must not render as silence.
+
+  The citation link is checked for `rel="noopener"` as well: it opens in a new
+  tab, and a new tab must not be handed the opener.
+
+  Proven by breaking two: suppressing the gap notice fails 2, dropping the
+  `rel` fails 1.
+
 ## [9.618.0] — 2026-09-09
 
 ### Added
