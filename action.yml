@@ -74,6 +74,14 @@ inputs:
     description: "analyze only: exit non-zero when a CROSS-DOCUMENT finding is at or above this severity: critical|warning|info. Implies consistency. Separate from fail-on, which scores each document alone. Empty = never fail."
     required: false
     default: ""
+  production-qa:
+    description: "analyze only: run production QA over a document production SET (a directory or .zip given in 'files') instead of per-document analysis — Bates sequence + privilege-log reconciliation against the single .csv member, plus a pre-production handoff sweep. Emits a JSON report with its own production_qa_hash."
+    required: false
+    default: "false"
+  fail-on-production-gap:
+    description: "analyze only: exit non-zero when production QA finds a Bates sequence gap. Implies production-qa. The CLI flag exists FOR this check — 'a CI check before a production goes out' — and until 9.631.0 the Action could not switch it on."
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
@@ -114,6 +122,8 @@ runs:
         FAIL_ON_DIVERGENCE: ${{ inputs.fail-on-divergence }}
         FAIL_ON_CONSISTENCY: ${{ inputs.fail-on-consistency }}
         SUMMARY: ${{ inputs.summary }}
+        PRODUCTION_QA: ${{ inputs.production-qa }}
+        FAIL_ON_PRODUCTION_GAP: ${{ inputs.fail-on-production-gap }}
       run: |
         set -euo pipefail
         args=("$CMD")
@@ -179,6 +189,18 @@ runs:
             args+=(--consistency-only)
           elif [ "$CONSISTENCY" = "true" ]; then
             args+=(--consistency)
+          fi
+        fi
+        # Production QA over a production SET. A distinct analyze mode rather
+        # than a per-document flag: `--fail-on-production-gap` implies
+        # `--production-qa`, so the gate alone is enough. The CLI flag's own
+        # comment says it exists "for a CI check before a production goes out" —
+        # and the Action, which is that CI check, could not switch it on.
+        if [ "$CMD" = "analyze" ]; then
+          if [ "${FAIL_ON_PRODUCTION_GAP:-}" = "true" ]; then
+            args+=(--production-qa --fail-on-production-gap)
+          elif [ "${PRODUCTION_QA:-}" = "true" ]; then
+            args+=(--production-qa)
           fi
         fi
         echo "vaulytica ${args[*]}"

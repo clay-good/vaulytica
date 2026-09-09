@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.631.0] — 2026-09-09
+
+### Added
+- **The Action can now run production QA — the mode whose gate exists *for*
+  CI.** `--fail-on-production-gap`'s own comment in the CLI says it is there for
+  *"a CI check before a production goes out."* The Action **is** that check, and
+  it exposed neither the mode nor the gate: a litigation team could run the
+  Bates-sequence and privilege-log reconciliation at a terminal and nowhere
+  else. Same shape as the three gates found unreachable from the Action in the
+  9.5xx series — a gate CI cannot switch on is a gate CI does not have.
+
+  Two inputs, `production-qa` and `fail-on-production-gap`, wired the way the
+  other gate pairs are: the gate implies the mode, so the flag is enough on its
+  own, and neither is ever sent to `compare`, which has no such mode.
+
+  Measured while doing it: of the CLI's seven `--fail-on*` gates the Action now
+  exposes six. The seventh, `--fail-on-coherence-regression`, needs a baseline
+  round the Action's single `files` input does not model, and stays a declared
+  exception with that reason.
+
+  **The repo's own guard did the bookkeeping.**
+  `cli-exit-code-contract.test.ts` already held "every gate is reachable from
+  the Action" with a declared-exception list, and it asserts each exception is
+  still *used* — so making this gate reachable made the stale entry fail. Its
+  recorded reason ("belongs to `--production-qa`, a different mode") was true;
+  the conclusion drawn from it was wrong, and the flag's own comment said so.
+
+### Fixed
+- **The Action's own reach guard was pushing authors toward a fatal spelling.**
+  It asserted that every exported input appears in the script as `$VAR` — but
+  the script runs under `set -u`, where a plain `$VAR` on a variable the runner
+  did not set is an **unbound variable** that kills the whole step. That is not
+  hypothetical: it happened with `$SUMMARY` in 9.591.0 and again here with
+  `$FAIL_ON_PRODUCTION_GAP`, caught only because `action-argv.test.ts` runs the
+  real script. The guard now accepts `${VAR:-}` — the safe form — as a read.
+
 ## [9.630.0] — 2026-09-09
 
 ### Added

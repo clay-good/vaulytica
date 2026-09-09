@@ -61,9 +61,15 @@ describe("action.yml input reach", () => {
     for (const [name, env] of exported) {
       // `command` picks the subcommand rather than adding a flag, so it is read
       // as `$CMD` throughout; the check is only that the variable is consumed.
-      expect(script, `action.yml exports ${env} (from "${name}") but never reads it`).toContain(
-        `$${env}`,
-      );
+      //
+      // 🚨 Both spellings count. The script runs under `set -u`, where a plain
+      // `$VAR` on a variable the runner did not set is a FATAL "unbound
+      // variable" — twice in this repo an input was added that way and the
+      // whole step died (`$SUMMARY` in 9.591.0, `$FAIL_ON_PRODUCTION_GAP` in
+      // 9.631.0). `${VAR:-}` is the safe form, and a guard that accepts only
+      // `$VAR` quietly pushes the author toward the unsafe one.
+      const read = script.includes(`$${env}`) || script.includes(`\${${env}:-}`);
+      expect(read, `action.yml exports ${env} (from "${name}") but never reads it`).toBe(true);
     }
   });
 });

@@ -82,10 +82,13 @@ describe("the analyze gate surface", () => {
         "fail-on-coherence-regression",
         "needs a BASELINE round — a second set of documents, or a saved coherence artifact — which the Action's single `files` input does not model",
       ],
-      [
-        "fail-on-production-gap",
-        "belongs to `--production-qa`, a different mode: a Bates/privilege-log sweep over a production set rather than per-document analysis",
-      ],
+      // `fail-on-production-gap` WAS listed here, with the reason "belongs to
+      // `--production-qa`, a different mode". That reason was true and the
+      // conclusion was wrong: the flag's own comment in the CLI says it exists
+      // for "a CI check before a production goes out", and the Action is that
+      // check. 9.631.0 gave the Action both the mode and the gate, and this
+      // guard is what noticed the entry had gone stale — which is what the
+      // "asserted USED" rule below is for.
     ]);
     const exposes = (name: string): boolean => new RegExp(`^\\s{2}${name}:`, "m").test(actionYml);
     const missing = gateFlags()

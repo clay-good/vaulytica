@@ -169,3 +169,40 @@ describe("the Action composes the argv it advertises", () => {
     expect(() => argv({ CMD: "compare", BASE: "a.docx", REVISED: "" })).toThrow();
   });
 });
+
+/**
+ * Production QA — the mode whose gate exists FOR CI, and which CI could not
+ * switch on.
+ *
+ * `--fail-on-production-gap`'s own comment in `tools/cli/run.ts` says it is
+ * there for "a CI check before a production goes out". The Action **is** that
+ * check, and it exposed neither the mode nor the gate: a litigation team could
+ * run the Bates/privilege-log reconciliation at a terminal and nowhere else.
+ * Same shape as the three gates found unreachable from the Action in 9.5xx.
+ */
+describe("the Action can run production QA", () => {
+  it("passes --production-qa when asked to report", () => {
+    expect(argv({ FILES: "./production", PRODUCTION_QA: "true" })).toContain("--production-qa");
+  });
+
+  it("passes the gate alone, since the flag implies the mode", () => {
+    const args = argv({ FILES: "./production", FAIL_ON_PRODUCTION_GAP: "true" });
+    expect(args).toContain("--production-qa");
+    expect(args).toContain("--fail-on-production-gap");
+    // The CLI rejects the gate without the mode, so they must go together.
+    expect(args.indexOf("--production-qa")).toBeLessThan(args.indexOf("--fail-on-production-gap"));
+  });
+
+  it("adds neither by default, and treats anything but 'true' as not asserted", () => {
+    const off = argv({ FILES: "./production" });
+    expect(off).not.toContain("--production-qa");
+    expect(off).not.toContain("--fail-on-production-gap");
+    expect(argv({ FILES: "./production", PRODUCTION_QA: "yes" })).not.toContain("--production-qa");
+  });
+
+  it("never sends it to compare, which has no such mode", () => {
+    expect(
+      argv({ CMD: "compare", BASE: "a.docx", REVISED: "b.docx", PRODUCTION_QA: "true" }),
+    ).not.toContain("--production-qa");
+  });
+});

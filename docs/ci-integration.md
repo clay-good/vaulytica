@@ -3,7 +3,7 @@
 Vaulytica is "a linter for legal documents," and a linter belongs in the
 pipeline. The same deterministic, no-AI, no-server engine the browser runs is
 available headless — as a **GitHub Action**, as the **`vaulytica` CLI**, or as a
-plain `node` invocation. The Deterministic Knowledge Base ships *with* the tool,
+plain `node` invocation. The Deterministic Knowledge Base ships _with_ the tool,
 so a CI run opens **no socket**: nothing leaves the runner, exactly as nothing
 leaves the browser tab.
 
@@ -23,7 +23,7 @@ on: [pull_request]
 
 permissions:
   contents: read
-  security-events: write   # required to upload SARIF
+  security-events: write # required to upload SARIF
 
 jobs:
   vaulytica:
@@ -32,16 +32,16 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Lint contracts
-        uses: clay-good/vaulytica@v9        # pin a tag/SHA in production
+        uses: clay-good/vaulytica@v9 # pin a tag/SHA in production
         with:
           command: analyze
-          files: contracts/                 # a path, dir, or *.docx glob
+          files: contracts/ # a path, dir, or *.docx glob
           format: sarif
-          out: vaulytica-out                # one .sarif.json per document
-          fail-on: critical                 # exit non-zero on any critical finding
+          out: vaulytica-out # one .sarif.json per document
+          fail-on: critical # exit non-zero on any critical finding
 
       - name: Upload SARIF
-        if: always()                        # upload even when the lint step failed
+        if: always() # upload even when the lint step failed
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: vaulytica-out
@@ -54,43 +54,45 @@ redline; with `fail-on` it fails the check when the revision **introduced** new
 exposure — "this redline added a critical finding."
 
 ```yaml
-      - name: Compare the negotiated redline against the template
-        uses: clay-good/vaulytica@v9
-        with:
-          command: compare
-          base: templates/msa.docx
-          revised: deal/acme-msa.docx
-          format: markdown          # a human-readable redline in the step log
-          fail-on: critical         # fail if the counterparty's edits added a critical
+- name: Compare the negotiated redline against the template
+  uses: clay-good/vaulytica@v9
+  with:
+    command: compare
+    base: templates/msa.docx
+    revised: deal/acme-msa.docx
+    format: markdown # a human-readable redline in the step log
+    fail-on: critical # fail if the counterparty's edits added a critical
 ```
 
 ### Action inputs
 
-| Input | For | Meaning |
-|---|---|---|
-| `command` | both | `analyze` (default) or `compare` |
-| `files` | analyze | path / single-segment glob / directory of `.pdf` `.docx` `.txt` `.md` |
-| `base`, `revised` | compare | the two documents to diff |
-| `format` | both | analyze: `json,sarif,html,md,csv,docx,docx-comments,bundle-json,bundle-docx,bundle-zip,checklist-md,checklist-csv,dates-md,dates-ics,obligations-csv,deadlines-ics,posture-md,posture-csv,posture-sheet,definitions-csv` (default `sarif`) · compare: `json\|markdown\|docx` |
-| `fail-on` | both | `critical\|warning\|info` — non-zero exit when a finding (analyze) / *introduced* finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate |
-| `playbook` | both | force a specific playbook id instead of auto-matching |
-| `out` | analyze | directory for one output file per document per format |
-| `summary` | both | `true` (default) writes a **GitHub job summary** with the run's per-document counts, its honesty caveats and the gate result. The tool's human output goes to stderr whenever a machine format is selected — the Action's default — which lands in the raw step log, collapsed by default. This puts it on the run page. It is written on a **failing** gate too, and the exit code is unchanged. `false` writes nothing |
-| `delivery` | analyze | `true` to run the pre-disclosure scan (`HANDOFF-001..005`) over the uploaded container |
-| `fail-on-delivery` | analyze | `critical\|warning\|info` — non-zero exit when a **pre-disclosure** finding is at or above it. Implies `delivery`. `fail-on` does not gate on these |
-| `playbook-file` | analyze | path to your team's custom playbook JSON in the repository |
-| `posture` | analyze | `true` to score the draft against that playbook's `negotiation_positions` |
-| `fail-on-posture` | analyze | `ideal\|acceptable\|below-acceptable` — non-zero exit when any dimension of **this** document sits at or below the rung. Implies `posture`; a not-stated dimension never trips it |
-| `fail-on-divergence` | analyze | `true` to fail when a posture front diverges **across** the bundle. Implies `posture`; needs 2+ inputs |
-| `consistency` | analyze | `true` to read the inputs **as a bundle** and run the cross-document checks; `only` to report the bundle and nothing else (no per-document report, no `out` needed). A directory is not a bundle — assert it only when the documents belong to the same deal |
-| `fail-on-consistency` | analyze | `critical\|warning\|info` — non-zero exit when a **cross-document** finding is at or above it. Implies `consistency`. Separate from `fail-on`, which scores each document alone |
+| Input                    | For     | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `command`                | both    | `analyze` (default) or `compare`                                                                                                                                                                                                                                                                                                                                                                                         |
+| `files`                  | analyze | path / single-segment glob / directory of `.pdf` `.docx` `.txt` `.md`                                                                                                                                                                                                                                                                                                                                                    |
+| `base`, `revised`        | compare | the two documents to diff                                                                                                                                                                                                                                                                                                                                                                                                |
+| `format`                 | both    | analyze: `json,sarif,html,md,csv,docx,docx-comments,bundle-json,bundle-docx,bundle-zip,checklist-md,checklist-csv,dates-md,dates-ics,obligations-csv,deadlines-ics,posture-md,posture-csv,posture-sheet,definitions-csv` (default `sarif`) · compare: `json\|markdown\|docx`                                                                                                                                             |
+| `fail-on`                | both    | `critical\|warning\|info` — non-zero exit when a finding (analyze) / _introduced_ finding (compare) is at or above it. Empty = never fail; any **other** value is a usage error (exit 1), so a typo fails the job loudly instead of silently disabling the gate                                                                                                                                                          |
+| `playbook`               | both    | force a specific playbook id instead of auto-matching                                                                                                                                                                                                                                                                                                                                                                    |
+| `out`                    | analyze | directory for one output file per document per format                                                                                                                                                                                                                                                                                                                                                                    |
+| `summary`                | both    | `true` (default) writes a **GitHub job summary** with the run's per-document counts, its honesty caveats and the gate result. The tool's human output goes to stderr whenever a machine format is selected — the Action's default — which lands in the raw step log, collapsed by default. This puts it on the run page. It is written on a **failing** gate too, and the exit code is unchanged. `false` writes nothing |
+| `delivery`               | analyze | `true` to run the pre-disclosure scan (`HANDOFF-001..005`) over the uploaded container                                                                                                                                                                                                                                                                                                                                   |
+| `fail-on-delivery`       | analyze | `critical\|warning\|info` — non-zero exit when a **pre-disclosure** finding is at or above it. Implies `delivery`. `fail-on` does not gate on these                                                                                                                                                                                                                                                                      |
+| `playbook-file`          | analyze | path to your team's custom playbook JSON in the repository                                                                                                                                                                                                                                                                                                                                                               |
+| `posture`                | analyze | `true` to score the draft against that playbook's `negotiation_positions`                                                                                                                                                                                                                                                                                                                                                |
+| `fail-on-posture`        | analyze | `ideal\|acceptable\|below-acceptable` — non-zero exit when any dimension of **this** document sits at or below the rung. Implies `posture`; a not-stated dimension never trips it                                                                                                                                                                                                                                        |
+| `fail-on-divergence`     | analyze | `true` to fail when a posture front diverges **across** the bundle. Implies `posture`; needs 2+ inputs                                                                                                                                                                                                                                                                                                                   |
+| `consistency`            | analyze | `true` to read the inputs **as a bundle** and run the cross-document checks; `only` to report the bundle and nothing else (no per-document report, no `out` needed). A directory is not a bundle — assert it only when the documents belong to the same deal                                                                                                                                                             |
+| `fail-on-consistency`    | analyze | `critical\|warning\|info` — non-zero exit when a **cross-document** finding is at or above it. Implies `consistency`. Separate from `fail-on`, which scores each document alone                                                                                                                                                                                                                                          |
+| `production-qa`          | analyze | `true` to run production QA over a document production **set** (a directory or `.zip` in `files`) instead of per-document analysis: Bates sequence + privilege-log reconciliation against the single `.csv` member, plus a pre-production handoff sweep                                                                                                                                                                  |
+| `fail-on-production-gap` | analyze | `true` — non-zero exit when production QA finds a **Bates sequence gap**. Implies `production-qa`. The flag exists for exactly this check; until 9.631.0 the Action could not switch it on                                                                                                                                                                                                                               |
 
 The Action is a **composite** action: it installs only the engine's runtime
 dependencies in its own checkout (`npm ci --omit=dev` — `tsx` is a runtime dep,
 so the TypeScript CLI runs with no build step; the dev-only `sharp` native build
 and Playwright are skipped, while `esbuild`'s postinstall, which `tsx` needs,
 still runs) and runs it against your checked-out files. The engine is the
-*same* engine the tab runs, proven byte-identical by the parity test — so a
+_same_ engine the tab runs, proven byte-identical by the parity test — so a
 number on a dashboard describes shipped behavior.
 
 ## 2. The `vaulytica` CLI
@@ -147,7 +149,7 @@ Cross-document (2 documents)  2C 0W 1I
   CC-008  [critical]  Privacy notice promises no third-party disclosure; the DPA authorises sub-processors  (privacy-notice.txt ↔ dpa.txt)
 ```
 
-For the pure question — *does this deal folder contradict itself?* —
+For the pure question — _does this deal folder contradict itself?_ —
 `--consistency-only` reports the bundle and nothing else: no per-document
 report, and therefore no `--out`.
 
@@ -188,8 +190,8 @@ npx vaulytica analyze redline.docx --playbook-file team.json --posture \\
 ```
 
 Exit 2 when any dimension of **this** document sits at or below the rung named,
-with each breach printed by dimension. It is the direct answer to *does this
-draft sit below our floor?* — `--fail-on-divergence` compares the documents to
+with each breach printed by dimension. It is the direct answer to _does this
+draft sit below our floor?_ — `--fail-on-divergence` compares the documents to
 each other, and `--fail-on-coherence-regression` compares the package to a
 baseline. A dimension the draft says nothing about is **not stated**, not a
 shortfall, and never trips the gate.
@@ -214,15 +216,15 @@ about it: that combination now warns on stderr and names the flag.
 Exit codes are CI-meaningful. **`2` means a gate you asked for was breached**,
 and `analyze` has seven of them, each scoped to what it reads:
 
-| Gate | Breaches on |
-|---|---|
-| `--fail-on <sev>` | a finding in the run, for a single document |
-| `--fail-on-delivery <sev>` | a pre-disclosure (`HANDOFF-*`) finding — these sit outside the run, so `--fail-on` never sees them |
-| `--fail-on-posture <rung>` | a dimension of **this** document at or below the rung (a not-stated dimension never counts) |
-| `--fail-on-consistency <sev>` | a cross-document conflict in the bundle |
-| `--fail-on-divergence` | a posture front the documents disagree on |
-| `--fail-on-coherence-regression` | a binding floor that moved to a worse stated rung vs. a baseline |
-| `--fail-on-production-gap` | a Bates gap in a production set (`--production-qa`) |
+| Gate                             | Breaches on                                                                                        |
+| -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `--fail-on <sev>`                | a finding in the run, for a single document                                                        |
+| `--fail-on-delivery <sev>`       | a pre-disclosure (`HANDOFF-*`) finding — these sit outside the run, so `--fail-on` never sees them |
+| `--fail-on-posture <rung>`       | a dimension of **this** document at or below the rung (a not-stated dimension never counts)        |
+| `--fail-on-consistency <sev>`    | a cross-document conflict in the bundle                                                            |
+| `--fail-on-divergence`           | a posture front the documents disagree on                                                          |
+| `--fail-on-coherence-regression` | a binding floor that moved to a worse stated rung vs. a baseline                                   |
+| `--fail-on-production-gap`       | a Bates gap in a production set (`--production-qa`)                                                |
 
 Five of the seven are reachable from the Action as inputs of the same name.
 The two that are not need something its single `files` input does not model:
@@ -283,7 +285,7 @@ test files); the runtime data is resolved relative to the package's own tree, so
 
 - **No socket during analysis.** The DKB ships with the tool; the engine never
   fetches anything. `npm`'s dependency install is ordinary CI infrastructure —
-  the *analysis* of your documents reaches no network.
+  the _analysis_ of your documents reaches no network.
 - **Deterministic.** Same documents + same engine + same DKB → byte-identical
   `result_hash` on the runner and on a developer's laptop. A CI finding is the
   finding, reproducibly.
