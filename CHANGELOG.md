@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.611.0] — 2026-09-09
+
+### Fixed
+- **One unreadable subdirectory dropped the user's entire folder on the
+  floor.** `collectFilesFromEntries` — the walker behind the browser's
+  folder-drop and "Choose folder…" affordance — promises in its own docstring
+  to *"skip inaccessible entries silently: the drop UX should never throw
+  because one subdirectory wasn't readable."*
+
+  It skipped an unreadable **file**. It did not skip an unreadable
+  **directory**: `readAllDirectoryEntries` rejects on a reader error, nothing
+  caught it, the rejection escaped the whole walk, and `onDrop` calls the
+  walker as `void collect(...).then(...)` with **no `.catch`**. So a folder
+  containing one permission-denied subdirectory — routine on a shared drive —
+  produced no files, no error, and no visible response at all. The user drops a
+  matter folder and nothing happens.
+
+  A directory read now fails the same way a file read does: that branch is
+  skipped, the rest of the folder is still collected.
+
+### Added
+- **The two ways a real folder differs from a test fixture now have tests.**
+  The existing fixture returned every child in a single `readEntries` call, so
+  neither of the walker's real-world behaviors was exercised:
+
+  | | |
+  |---|---|
+  | `readEntries` **batches** — Chrome returns at most 100 entries per call | a walker that reads once loses everything past the hundredth file, silently |
+  | parts of a real tree are **not readable** | see above |
+
+  A 250-file directory served 100 at a time now asserts all 250 arrive (the
+  drain was correct; nothing held it), and the unreadable directory and file
+  each assert the rest of the drop survives. Proven by removing each half:
+  deleting the drain loop fails 1, deleting the directory skip fails 1.
+
+  Noted, not touched: `enumerateFolderEntry` in `src/ingest/multi.ts` is a
+  second copy of this walker, exported and called by nobody, and it carries the
+  defect fixed here. Two implementations of one recursive walk is how the next
+  copy disagrees with the first.
+
 ## [9.610.0] — 2026-09-09
 
 ### Added

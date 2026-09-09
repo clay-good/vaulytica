@@ -335,7 +335,18 @@ async function walkEntry(entry: FileSystemEntry, out: File[]): Promise<void> {
   if (entry.isDirectory) {
     const dir = entry as FileSystemDirectoryEntry;
     const reader = dir.createReader();
-    const children = await readAllDirectoryEntries(reader);
+    // 🚨 The same silence the file read above gets, for the same reason — and
+    // the DIRECTORY is the case this function's own docstring names. Without
+    // it `readAllDirectoryEntries` rejects, the rejection propagates out of
+    // the whole walk, and `onDrop` (which has no `.catch`) drops the user's
+    // entire folder on the floor: no files, no error, nothing happens. One
+    // unreadable subdirectory is a routine thing on a shared drive.
+    let children: FileSystemEntry[];
+    try {
+      children = await readAllDirectoryEntries(reader);
+    } catch {
+      return;
+    }
     for (const child of children) await walkEntry(child, out);
   }
 }

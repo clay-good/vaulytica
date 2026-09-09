@@ -358,4 +358,84 @@ describe("collectFilesFromEntries", () => {
     const files = await collectFilesFromEntries([makeFileEntry("a.pdf"), makeFileEntry("b.docx")]);
     expect(files.map((f) => f.name)).toEqual(["a.pdf", "b.docx"]);
   });
+
+  /**
+   * The two ways a real folder differs from the fixture above: it arrives in
+   * BATCHES, and parts of it are not readable.
+   *
+   * `readEntries` is specified to return a batch at a time and Chrome returns
+   * at most 100 entries per call, so a walker that reads once and stops loses
+   * everything past the hundredth file — silently, which for a document review
+   * is the worst possible failure. The reader below batches the way the
+   * browser does.
+   */
+  function makeBatchingDirEntry(
+    name: string,
+    children: FileSystemEntry[],
+    batchSize: number,
+  ): FileSystemDirectoryEntry {
+    let i = 0;
+    return {
+      isFile: false,
+      isDirectory: true,
+      name,
+      createReader: () => ({
+        readEntries: (ok: (entries: FileSystemEntry[]) => void) => {
+          const slice = children.slice(i, i + batchSize);
+          i += slice.length;
+          ok(slice);
+        },
+      }),
+    } as unknown as FileSystemDirectoryEntry;
+  }
+
+  /** A directory whose reader fails — a permission-denied share, typically. */
+  function makeUnreadableDirEntry(name: string): FileSystemDirectoryEntry {
+    return {
+      isFile: false,
+      isDirectory: true,
+      name,
+      createReader: () => ({
+        readEntries: (_ok: unknown, err: (e: Error) => void) =>
+          err(new Error("directory not readable")),
+      }),
+    } as unknown as FileSystemDirectoryEntry;
+  }
+
+  function makeUnreadableFileEntry(name: string): FileSystemFileEntry {
+    return {
+      isFile: true,
+      isDirectory: false,
+      name,
+      file: (_ok: unknown, err: (e: Error) => void) => err(new Error("permission denied")),
+    } as unknown as FileSystemFileEntry;
+  }
+
+  it("drains readEntries until it is empty, the way the browser batches", async () => {
+    const kids = Array.from({ length: 250 }, (_, n) => makeFileEntry(`f${n}.pdf`));
+    const files = await collectFilesFromEntries([makeBatchingDirEntry("root", kids, 100)]);
+    expect(files, "a folder past the first batch was silently truncated").toHaveLength(250);
+    expect(files[249]!.name).toBe("f249.pdf");
+  });
+
+  it("skips an unreadable SUBDIRECTORY instead of losing the whole drop", async () => {
+    // The case this function's docstring names. Before the fix the rejection
+    // escaped the walk, and `onDrop` has no `.catch`: the user's folder
+    // vanished with no files and no error.
+    const files = await collectFilesFromEntries([
+      makeDirEntry("root", [
+        makeFileEntry("keep.pdf"),
+        makeUnreadableDirEntry("locked"),
+        makeFileEntry("keep2.docx"),
+      ]),
+    ]);
+    expect(files.map((f) => f.name)).toEqual(["keep.pdf", "keep2.docx"]);
+  });
+
+  it("skips an unreadable FILE the same way", async () => {
+    const files = await collectFilesFromEntries([
+      makeDirEntry("root", [makeFileEntry("keep.pdf"), makeUnreadableFileEntry("locked.pdf")]),
+    ]);
+    expect(files.map((f) => f.name)).toEqual(["keep.pdf"]);
+  });
 });
