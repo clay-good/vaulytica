@@ -273,3 +273,39 @@ describe("party extraction hygiene", () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * A party's name never ends in punctuation — and something downstream depends
+ * on it.
+ *
+ * `resolveObligor` matches a subject's tail against the party set with
+ * `endsWith`, AFTER stripping trailing `,;.` from the subject. If a stored name
+ * kept its own trailing period, "Vanterra Systems, Inc." could never match a
+ * subject ending in "…Vanterra Systems, Inc", and every corporation written
+ * "Inc." / "Corp." / "Ltd." would fall through to the last-six-words fallback
+ * and be published as a FRAGMENT in the obligations ledger.
+ *
+ * Measured over the whole specimen corpus: **0 of 951** extracted party names
+ * end in punctuation, because `cleanPartyName` trims it. That is the invariant
+ * the obligor match rests on, held here rather than defended twice — a guard
+ * beats defensive code for an input the extractor cannot produce.
+ */
+describe("the shape the obligor match depends on", () => {
+  it("never stores a party name ending in punctuation", async () => {
+    const { readdirSync, readFileSync } = await import("node:fs");
+    const { ingestPaste } = await import("../ingest/paste.js");
+    const dir = "tests/fixtures/specimens";
+    const offenders: string[] = [];
+    let total = 0;
+    for (const name of readdirSync(dir).filter((n) => n.endsWith(".txt"))) {
+      const { tree } = await ingestPaste(readFileSync(`${dir}/${name}`, "utf8"));
+      for (const p of extractParties(tree)) {
+        total++;
+        if (/[.,;]$/.test(p.name)) offenders.push(`${name}: ${JSON.stringify(p.name)}`);
+      }
+    }
+    // Anti-vacuity: the sweep has to have seen the corpus.
+    expect(total).toBeGreaterThan(900);
+    expect(offenders).toEqual([]);
+  }, 900_000);
+});

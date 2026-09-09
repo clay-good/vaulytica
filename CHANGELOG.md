@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.626.0] — 2026-09-09
+
+### Added
+- **Who the duty lands on — the four answers `resolveObligor` can give, three
+  of which no test reached.** The obligor is printed in the obligations ledger
+  and read by OBLI-002 to decide whether a duty is one-sided, so getting it
+  wrong is not cosmetic: attributing a **mutual** obligation to one party
+  manufactures an asymmetry the document does not contain. A scoped mutation
+  run on `src/extract/obligations.ts` (57.03%) named the role branch of the
+  compound-subject resolver, the direct party-name match and the last-resort
+  fallback as executed by no test.
+
+  | Subject | Obligor |
+  |---|---|
+  | "The Provider **and** the Customer shall each…" | `the parties` — not the Customer, whom `endsWith` would otherwise pick |
+  | "Vanterra Systems, Inc. **and** Halbrook Diagnostics LLC shall jointly…" | `the parties` |
+  | an eleven-word subject ending in the party's name | the **party**, not the last six words |
+  | the same, in the document's own casing | the casing the **document** used, not the party list's |
+  | a subject naming no known party | the last ≤6 words — a fragment, deliberately, because it is evidence a reader can check |
+
+- **The invariant the direct-name match rests on, held where it belongs.**
+  That match compares a subject's tail — already stripped of trailing `,;.` —
+  against the stored party names. If a name kept its own trailing period,
+  "Vanterra Systems, Inc." could never match a subject ending in "…Vanterra
+  Systems, Inc", and every corporation written "Inc." / "Corp." / "Ltd." would
+  be published as a fragment. Measured across the corpus: **0 of 951** extracted
+  party names end in punctuation. That is now a test (anti-vacuity checked, and
+  it fails 13 when names are given a trailing period).
+
+  🚨 **And the first version of this release was a defect I invented.** Handing
+  `resolveObligor` a party object whose name ended in "." reproduced the
+  fragment, so a fix went in — until it was measured: **0 obligors changed
+  across 3,187 in 312 documents**, because the extractor never produces such a
+  name. The code change was reverted and replaced with the guard above. A
+  defensive branch for an input the extractor cannot produce is not a fix; it
+  is a second place for the truth to live.
+
 ## [9.625.0] — 2026-09-09
 
 ### Added

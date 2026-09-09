@@ -557,3 +557,74 @@ describe("extractObligations — sentences the splitter had never been given", (
     expect(out[0]!.action).toContain("indemnify the Client");
   });
 });
+
+/**
+ * Who is on the hook — the four answers `resolveObligor` can give, three of
+ * which no test reached.
+ *
+ * The obligor is printed in the obligations ledger and read by OBLI-002 to
+ * decide whether a duty is one-sided, so getting it wrong is not a cosmetic
+ * error: attributing a MUTUAL obligation to one party manufactures an
+ * asymmetry that the document does not contain. Mutation testing reported the
+ * role branch of the compound-subject resolver, the direct party-name match
+ * and the last-resort fallback as executed by no test at all.
+ */
+describe("resolveObligor — who the duty lands on", () => {
+  const parties = [
+    { name: "Vanterra Systems, Inc.", role: "provider" },
+    { name: "Halbrook Diagnostics LLC", role: "customer" },
+  ] as unknown as Parameters<typeof extractObligations>[1];
+
+  const obligor = (line: string): string | undefined =>
+    extractObligations(buildTree(["Agreement", line]), parties)[0]?.obligor;
+
+  it("reads a compound subject of two ROLES as both parties, not the last one", () => {
+    // The `endsWith` matches below key on the TAIL of the subject, so without
+    // this branch "The Provider and the Customer" resolves to the Customer
+    // alone and OBLI-002 reports a shared duty as one-sided.
+    expect(obligor("The Provider and the Customer shall each maintain insurance.")).toBe(
+      "the parties",
+    );
+  });
+
+  it("reads a compound subject of two NAMES the same way", () => {
+    expect(
+      obligor("Vanterra Systems, Inc. and Halbrook Diagnostics LLC shall jointly fund the escrow."),
+    ).toBe("the parties");
+  });
+
+  it("picks the party name out of a long subject, rather than its last six words", () => {
+    // The discriminating case for the direct-name branch: a subject of ELEVEN
+    // words ending in the party's name. The last-resort fallback would answer
+    // "under this Agreement, Halbrook Diagnostics LLC"; the name match answers
+    // the party.
+    expect(
+      obligor(
+        "The party receiving the Services under this Agreement, Halbrook Diagnostics LLC shall pay the fees.",
+      ),
+    ).toBe("Halbrook Diagnostics LLC");
+  });
+
+  it("reports the casing the DOCUMENT used, not the casing of the party list", () => {
+    // Matching is lower-cased; what is published has to be what the document
+    // wrote, or the obligations ledger quietly renames the party.
+    expect(
+      obligor(
+        "The party receiving the Services under this Agreement, HALBROOK DIAGNOSTICS LLC shall pay the fees.",
+      ),
+    ).toBe("HALBROOK DIAGNOSTICS LLC");
+  });
+
+  it("falls back to the last few words when the subject names no known party", () => {
+    // Deliberate, and the reason is recorded in this module: an unresolvable
+    // subject yields a FRAGMENT rather than an empty string, because the
+    // fragment is at least evidence a reader can check. The alternative —
+    // emitting "" — is the state OBLI-001 exists to flag and the extractor
+    // never produces.
+    const fragment = obligor(
+      "The party responsible for the retained subcontractor performing the work shall indemnify the other.",
+    );
+    expect(fragment).toBe("the retained subcontractor performing the work");
+    expect(fragment!.split(/\s+/).length).toBeLessThanOrEqual(6);
+  });
+});
