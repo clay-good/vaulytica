@@ -89,10 +89,16 @@ function withScanReach(
   return [note, ...caveats].filter(Boolean).join(" ");
 }
 
-/** Per-part read ceiling — bounds the regex work on any one member. */
-const MAX_PART_BYTES = 16 * 1024 * 1024;
-/** Container byte ceiling — mirrors the ingest single-document cap (v8 §7). */
-const MAX_CONTAINER_BYTES = 50 * 1024 * 1024;
+/**
+ * Per-part read ceiling — bounds the regex work on any one member.
+ *
+ * Exported so the test that pins the "the rest of the file was not opened"
+ * notice reads the same number the notice prints, the way `MAX_PER_TYPE` and
+ * `MAX_SCAN_CHARS` already are.
+ */
+export const MAX_PART_BYTES = 16 * 1024 * 1024;
+/** Container byte ceiling — mirrors the ingest single-document cap (v8 §7). Exported for the test that pins the skip notice. */
+export const MAX_CONTAINER_BYTES = 50 * 1024 * 1024;
 /** Per-fact-array cap — a pathological document cannot produce unbounded output. */
 const MAX_FACTS = 2000;
 /** Excerpt truncation length — location only, never the full content. */
@@ -383,7 +389,7 @@ function parsePdfAnnotations(ascii: string): CommentFact[] {
     const after = end >= 0 ? rawAfter.slice(0, end) : rawAfter;
     const window = before + after;
 
-    const authorLit = /\/T\s{0,8}\(([^)]{0,200})\)/.exec(window)?.[1];
+    const authorLit = /\/T\s{0,8}\(((?:\\.|[^()\\]){0,200})\)/.exec(window)?.[1];
     const authorHex = /\/T\s{0,8}<([0-9A-Fa-f]{0,400})>/.exec(window)?.[1];
     const author =
       authorLit !== undefined
@@ -392,7 +398,17 @@ function parsePdfAnnotations(ascii: string): CommentFact[] {
           ? decodePdfHex(authorHex)
           : undefined;
 
-    const contentsLit = /\/Contents\s{0,8}\(([^)]{0,400})\)/.exec(window)?.[1];
+    // 🚨 `[^)]` ended the string at the first `)` — INCLUDING an escaped one,
+    // which is how a PDF writes a parenthesis inside a comment. "Ask Jane
+    // \\(urgent\\) about the cap" came back as "Ask Jane (urgent\\", a comment
+    // cut off mid-word with a stray backslash, and `decodePdfLiteral`'s
+    // handling of `\\)` could never receive one: the branch was unreachable
+    // through this path. Escapes are consumed as a unit now. Alternatives are
+    // disjoint and the repetition is bounded, so the pattern stays linear.
+    // (Unescaped BALANCED parens — legal in a PDF literal — still end the
+    // capture early; that needs a counter, not a regex, and an excerpt cut at
+    // a nested paren is a shorter excerpt, not a wrong one.)
+    const contentsLit = /\/Contents\s{0,8}\(((?:\\.|[^()\\]){0,400})\)/.exec(window)?.[1];
     const contentsHex = /\/Contents\s{0,8}<([0-9A-Fa-f]{0,800})>/.exec(window)?.[1];
     const contents =
       contentsLit !== undefined

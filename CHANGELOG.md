@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.614.0] — 2026-09-09
+
+### Fixed
+- **A PDF comment containing a parenthesis came back cut off mid-word.** The
+  annotation reader captured `/Contents (…)` with `[^)]`, which ends the string
+  at the first `)` — **including an escaped one**, which is how a PDF writes a
+  parenthesis inside a comment. `Ask Jane \(urgent\) about the cap` reached the
+  delivery report as `Ask Jane (urgent\` — a reviewer's note truncated, with a
+  stray backslash where the rest of it should be.
+
+  `decodePdfLiteral` handles `\)` and always has; it simply could never receive
+  one, because the capture stopped before it. An unreachable escape branch and
+  a mangled excerpt are the same defect seen from two ends.
+
+  Escapes are now consumed as a unit in both the `/Contents` and `/T` (author)
+  captures. The alternatives are disjoint and the repetition stays bounded, so
+  the patterns remain linear — the adversarial PDF in the suite (50,000
+  unterminated characters, 20,000 open parens) still finishes in under a
+  second. Unescaped *balanced* parens, which are also legal in a PDF literal,
+  still end the capture early: that needs a counter rather than a regex, and an
+  excerpt cut at a nested paren is a shorter excerpt, not a wrong one.
+
+### Added
+- **The bound the honesty block names and never tested.** "The pre-disclosure
+  scan states its bounds" lists four: `MAX_SCAN_CHARS`, `MAX_PER_TYPE`,
+  `MAX_FACTS`, and *"the PDF path reads the first `MAX_PART_BYTES` of the
+  container"* — whose notice exists because "the existing note said nothing
+  about the part of the file it never opened." Three were pinned. Mutation
+  testing reported the fourth's two string literals as executed by no test.
+
+  Now pinned in both directions: an over-window PDF must state how much it
+  opened **and** how much it did not, an ordinary one must say nothing, and a
+  container past the 50 MB ceiling must say it skipped rather than report
+  `inspectable: false` with no note — which would read as a document with
+  nothing in it. Both caps are exported for the tests, the way `MAX_PER_TYPE`
+  and `MAX_SCAN_CHARS` already were. Removing the window notice fails 1;
+  reverting the escape fix fails 1.
+
+  Measured but **not** widened: `src/delivery/container.ts` scores **60.37%**,
+  above the 59.66% aggregate and so eligible for the mutated set. It is left
+  out on purpose — the tests above allocate a 16 MB and a 50 MB buffer, and
+  Stryker reruns the covering suite once per mutant. The same call the
+  fast-check gates already have, recorded here rather than made silently.
+
 ## [9.613.0] — 2026-09-09
 
 ### Fixed

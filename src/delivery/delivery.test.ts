@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readContainer } from "./container.js";
 import { deriveHandoffFindings } from "./handoff.js";
 import { MAX_PER_TYPE, MAX_SCAN_CHARS, scanSensitive } from "./sensitive.js";
+import { MAX_CONTAINER_BYTES, MAX_PART_BYTES } from "./container.js";
 import { maskDigits, maskEmail, luhnValid, ssnStructurallyValid } from "./mask.js";
 import { scanDelivery } from "./index.js";
 import { buildDeliveryReport } from "./report.js";
@@ -641,6 +642,84 @@ describe("the pre-disclosure scan states its bounds", () => {
     // Positive first: the scan ran and found the value.
     expect(facts.sensitive.some((f) => f.type === "ssn")).toBe(true);
     expect(facts.note ?? "").not.toContain("a floor, not a total");
+  });
+});
+
+/**
+ * The bound the block above NAMES and never tested.
+ *
+ * Its docstring lists four: `MAX_SCAN_CHARS`, `MAX_PER_TYPE`, `MAX_FACTS` —
+ * and *"the PDF path reads the first `MAX_PART_BYTES` of the container"*, whose
+ * notice was added because "the existing note was careful about compressed
+ * streams and encrypted regions and said nothing about the part of the file it
+ * never opened." Three of the four were pinned. Mutation testing reported the
+ * fourth's two string literals as executed by no test at all.
+ *
+ * A bound that is not said is a number the reader trusts and should not — and
+ * a notice with no test is a bound that can stop being said.
+ */
+describe("the container scan states its byte window", () => {
+  const pdfOfSize = (size: number): ArrayBuffer => {
+    const buf = new Uint8Array(size);
+    buf.set(new TextEncoder().encode("%PDF-1.7\n1 0 obj\n<< /Title (Big) >>\nendobj\n"));
+    return buf.buffer.slice(0, size) as ArrayBuffer;
+  };
+
+  it("says how much of an over-window PDF it opened, and how much it did not", () => {
+    const size = MAX_PART_BYTES + 1;
+    const facts = readContainer(pdfOfSize(size), "pdf", "body text");
+    // Positive first: the scan really did read the part it opened.
+    expect(facts.inspectable).toBe(true);
+    expect(facts.metadata.some((m) => m.field === "title")).toBe(true);
+    expect(facts.note).toContain(`${MAX_PART_BYTES.toLocaleString("en-US")} bytes of`);
+    expect(facts.note).toContain(size.toLocaleString("en-US"));
+    expect(facts.note).toContain("the rest of the file was not opened");
+  });
+
+  it("says nothing about a window it did not need", () => {
+    const facts = readContainer(pdfOfSize(4096), "pdf", "body text");
+    expect(facts.inspectable).toBe(true);
+    expect(facts.note ?? "").not.toContain("was not opened");
+  });
+
+  it("says it skipped a container past the size ceiling, rather than calling it clean", () => {
+    const facts = readContainer(new ArrayBuffer(MAX_CONTAINER_BYTES + 1), "pdf", "body text");
+    // Uninspectable, and it SAYS so: an over-size container that reported
+    // `inspectable: false` with no note would read as a document with nothing
+    // in it.
+    expect(facts.inspectable).toBe(false);
+    expect(facts.note).toContain("exceeds the container-scan size limit");
+    expect(facts.revisions).toEqual([]);
+  });
+});
+
+/**
+ * PDF literal-string escapes, in the one place they carry a reviewer's words.
+ *
+ * `decodePdfLiteral` is what turns `/Contents (Call opposing counsel\\(!\\))`
+ * into the excerpt a delivery report shows, and it had no test: mutation
+ * testing reported its whole body, its escape map and its `??` fallback as
+ * uncovered. An annotation whose text comes back mangled is a comment a
+ * reviewer cannot recognize as the one they have to clear.
+ */
+describe("PDF annotation text survives its escapes", () => {
+  it("decodes the escapes a PDF writer emits", () => {
+    const text =
+      "%PDF-1.7\n" +
+      "/Subtype /Text /Contents (Ask Jane \\(urgent\\) about 50\\\\50\\nline two)\n" +
+      "%%EOF\n";
+    const bytes = new TextEncoder().encode(text);
+    const facts = readContainer(
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
+      "pdf",
+      "body text",
+    );
+    const excerpt = facts.comments[0]?.excerpt ?? "";
+    expect(excerpt).toContain("Ask Jane (urgent) about 50\\50");
+    // `clean()` folds the decoded newline to a space downstream; what matters
+    // is that the escape did not survive as a literal backslash-n.
+    expect(excerpt).toContain("line two");
+    expect(excerpt).not.toContain("\\n");
   });
 });
 
