@@ -6,9 +6,11 @@ import { emit } from "../_helpers.js";
 // Bare "cannot" is deliberately NOT added: it reads too broadly, sweeping in
 // savings clauses ("rights that cannot be waived") and conditionals ("if the
 // importer cannot comply") that are not restrictive covenants. ("is not
-// permitted to" is a genuine negative form the obligation extractor does not yet
-// capture, so widening this filter alone would not surface it.)
-const NEG = /\b(shall\s+not|may\s+not|must\s+not|is\s+prohibited\s+from|will\s+not)\b/i;
+// permitted to" needed BOTH halves — the extractor had to capture the form
+// before this filter could classify it, which is why widening the filter alone
+// would not have surfaced it. Both landed in 9.599.0.)
+const NEG =
+  /\b(shall\s+not|may\s+not|must\s+not|(?:is|are)\s+not\s+permitted\s+to|(?:is|are)\s+prohibited\s+from|will\s+not)\b/i;
 
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {

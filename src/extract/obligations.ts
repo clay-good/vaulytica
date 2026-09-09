@@ -29,6 +29,15 @@ import {
 // shorter overlap. (v7 §8: modal completeness.)
 const MODALS = [
   "may not",
+  // The negative of "is permitted to", and the one OBLI-005's own comment named
+  // as missing: "Employee is not permitted to disclose" is the identical
+  // restriction as "Employee shall not disclose". Measured 2026-09-08 by
+  // rewriting `shall not` across the corpus — **66 of the 121 documents that
+  // write a prohibition lost OBLI-005 entirely**, because the obligation was
+  // never extracted at all. It sits before "is permitted to" so the negative
+  // wins the overlap, which is what the ordering note above is for.
+  "is not permitted to",
+  "are not permitted to",
   "is required to",
   // Plural subjects state the same duty in the "are …" form — "the parties are
   // required to maintain insurance". Only the singular forms were listed, so a

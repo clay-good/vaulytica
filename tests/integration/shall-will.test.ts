@@ -306,6 +306,52 @@ describe("shall and will are the same obligation", () => {
     }
   });
 
+  /**
+   * The prohibition, spelled the other ways.
+   *
+   * The positive obligation had five spellings and four rules that stopped at
+   * different places. The NEGATIVE has the same shape: "Employee **is not
+   * permitted to** disclose" is the identical restriction as "Employee **shall
+   * not** disclose", and OBLI-005's own comment had named the gap — the
+   * obligation extractor did not capture the form at all, so widening the rule's
+   * filter alone would not have surfaced it.
+   *
+   * Measured 2026-09-08 over the 121 specimens that write a prohibition:
+   * **66 lost OBLI-005 entirely**. Both halves landed together (`MODALS` to
+   * capture it, `NEG` to classify it) and the loss went to zero.
+   *
+   * `must not` and `may not` were already clean. `is prohibited from` is NOT
+   * probed here: it does not take a bare infinitive — a drafter writes
+   * "prohibited from disclos**ing**" — so substituting it for `shall not`
+   * produces English nobody writes, the same trap as `is responsible for`.
+   *
+   * RISK-003 (2 documents) and PERS-002 (3) still move, and they are declared
+   * rather than silently tolerated: each carries its own negation alternation,
+   * the same private-list shape the positive side had before `OBLIGATION_MODAL`.
+   */
+  const PROHIBITION_DEBT: readonly string[] = ["PERS-002", "RISK-003"];
+
+  it("writing 'shall not' as 'is not permitted to' loses only what is declared", async () => {
+    const deps = await loadAccuracyDeps({});
+    const lost = new Set<string>();
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = text
+        .replace(/\bshall not\b/g, "is not permitted to")
+        .replace(/\bShall not\b/g, "Is not permitted to");
+      if (mutated === text) continue;
+      probed++;
+      const before = await analyzeText(text, name, { deps });
+      const after = await analyzeText(mutated, name, { deps });
+      const ids = (r: typeof before): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      for (const id of ids(before).filter((i) => !ids(after).includes(i))) lost.add(id);
+    }
+    expect(probed, "the corpus never writes a prohibition").toBeGreaterThan(100);
+    expect([...lost].sort()).toEqual([...PROHIBITION_DEBT]);
+  }, 300_000);
+
   it("writing every 'shall' as 'must' moves a finding on only the documents still owed", async () => {
     const deps = await loadAccuracyDeps({});
     const broken: string[] = [];

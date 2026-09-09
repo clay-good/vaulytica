@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.599.0] — 2026-09-08
+
+### Fixed
+- 🚨 **The prohibition had the same defect as the obligation, and the code
+  already said so.** "Employee **is not permitted to** disclose" is the
+  identical restriction as "Employee **shall not** disclose", and OBLI-005's own
+  comment had named the gap: *"'is not permitted to' is a genuine negative form
+  the obligation extractor does not yet capture, so widening this filter alone
+  would not surface it."*
+
+  Measured over the 121 specimens that write a prohibition: **66 lost OBLI-005
+  entirely** — not a downgraded finding, the obligation was never extracted at
+  all. Both halves landed together, exactly as that comment predicted was
+  necessary: `MODALS` to capture the form, `NEG` to classify it.
+
+  Loss now zero. **No golden moved**, and the gains the rewrite produces
+  (RISK-015 on 9 documents, seven singles) were measured **identical before and
+  after** — artifacts of the rewrite, none attributable to the change.
+
+### Added
+- A relation holding it, with **declared debt**: RISK-003 (2 documents) and
+  PERS-002 (3) still move, each carrying its own private negation alternation —
+  the same shape the positive side had before `OBLIGATION_MODAL` owned it.
+  Named rather than silently tolerated.
+
+### Notes
+- `must not` and `may not` were already clean. `is prohibited from` is
+  deliberately **not** probed: it does not take a bare infinitive — a drafter
+  writes "prohibited from disclos**ing**" — so substituting it for `shall not`
+  produces English nobody writes. Third time that trap has appeared in two
+  releases, and each time the give-away is the same: the mutation reads wrong
+  out loud.
+
 ## [9.598.0] — 2026-09-08
 
 ### Added
