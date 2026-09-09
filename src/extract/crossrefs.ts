@@ -304,6 +304,21 @@ const NAMES_A_CODE =
 // is statutory: no contract numbers its own sections past three digits.
 const STATUTE_SECTION_LABEL = /^\d{4,}$/;
 
+// A TRAILING CAPITAL LETTER on a flat section number is a statute's numbering
+// and never a contract's. "Section 280G", "Section 409A", "§ 24L", "§ 148C",
+// "Section 10D", "Section 303A" — the Internal Revenue Code, the Massachusetts
+// wage and non-compete statutes, the Exchange Act clawback rule, the NYSE
+// manual. A contract numbers its own divisions 4.2 and 12.1.3; it does not
+// letter them.
+//
+// The trailing-"of the Code" guard does not reach these, because the document
+// cites the statute ONCE in full and then uses the number as a LABEL — a
+// section of an executive employment agreement is *headed* "5.6 Section 280G",
+// and the operative citation in its body is to § 4999. Measured across all 319
+// specimens: nine documents use this shape, thirty-odd times, and every single
+// one is a statute. Not one is an internal division.
+const STATUTE_LETTERED_LABEL = /^\d{1,4}[A-Z]$/;
+
 // A section number the DOCUMENT ITSELF ties to a code ("Section 409A of the
 // Internal Revenue Code") is statutory wherever it appears — an executive
 // agreement introduces 409A/280G that way and then cites them bare in later
@@ -673,6 +688,12 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
         ? undefined
         : normalizeLabel(namespace ? `${namespace} ${label}` : label);
       const resolved = normalized ? labelIndex.get(normalized) : undefined;
+      // A lettered label that the outline does NOT have is a statute, not a
+      // broken internal reference. Tested AFTER the lookup on purpose: a
+      // document that really does letter its own divisions — an agreement
+      // amended to insert a "Section 9A" — still resolves them, and only the
+      // dangling label is dropped.
+      if (resolved === undefined && STATUTE_LETTERED_LABEL.test(bareLabel)) continue;
       // Capture any trailing parenthetical sub-reference chain
       // ("(a)(ii)") that follows the matched label, without disturbing
       // resolution (which keys on the section number) or `raw_text`.

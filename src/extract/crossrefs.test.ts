@@ -187,10 +187,20 @@ describe("extractCrossRefs", () => {
     expect(refs).toHaveLength(0);
   });
 
-  it("reports a genuinely unresolved letter-suffixed section with its honest raw text", () => {
-    // A bare "Section 409A" with no external qualifier and no matching outline
-    // node is genuinely unresolved — but it must be reported as "Section 409A",
-    // never silently truncated to "Section 409".
+  it("treats a dangling letter-suffixed section as the statutory citation it is", () => {
+    // 9.640.0 — this used to assert the opposite, that a bare "Section 409A"
+    // with no "of the Code" qualifier is a broken internal reference. Measured
+    // over 319 specimens, that shape occurs in nine documents about thirty
+    // times and is a STATUTE every time (409A, 280G, 10D, 303A, 2A, 48E, 24L,
+    // 148C): a contract numbers its own divisions 4.2 and 12.1.3 and does not
+    // letter them. An executive employment agreement heads its own section
+    // "5.6 Section 280G" and cites § 4999 in the body, so the label never
+    // carries a qualifier to be read by — its own shape has to settle it.
+    //
+    // The capture must still be "Section 409A" and never truncated to "Section
+    // 409": a truncated capture would carry no letter, would not be recognized
+    // as statutory, and would surface here as a broken reference to "Section
+    // 409". The next test is that canary.
     const t = normalize({
       type: "document",
       sections: [
@@ -215,10 +225,9 @@ describe("extractCrossRefs", () => {
         },
       ],
     });
-    const refs = extractCrossRefs(t, extractSections(t));
-    const ref = refs.find((r) => /409A/.test(r.raw_text));
-    expect(ref?.raw_text).toBe("Section 409A");
-    expect(ref?.unresolved).toBe(true);
+    expect(extractCrossRefs(t, extractSections(t)).filter((r) => /409/.test(r.raw_text))).toEqual(
+      [],
+    );
   });
 
   it("captures a trailing parenthetical sub-reference chain", () => {
@@ -479,6 +488,29 @@ describe("tax-statute section numbering", () => {
   it("still reports an ordinary dangling section reference", () => {
     expect(unres("Payment terms are stated in Section 12 of this Agreement.")).toContain(
       "Section 12",
+    );
+  });
+
+  // A statute cited ONCE in full and thereafter used as a LABEL — which is how
+  // an executive employment agreement heads its own sections, "5.5 Section
+  // 409A" and "5.6 Section 280G" — leaves the label with no "of the Code"
+  // qualifier to be read by. The number's own shape settles it: a trailing
+  // capital letter is a statute's numbering and never a contract's. Measured
+  // over 319 specimens: nine documents use the shape, ~30 times, and every one
+  // is a statute (409A, 280G, 10D, 303A, 2A, 48E, 24L, 148C).
+  it.each([
+    "Section 280G reductions are computed before any excise tax applies.",
+    "If Executive is a specified employee within the meaning of Section 409A, payment is delayed six months.",
+    "This Section is entered into in compliance with the Massachusetts Noncompetition Agreement Act, M.G.L. c. 149, § 24L.",
+    "Executive is entitled to the paid sick time required by M.G.L. c. 149, § 148C.",
+    "The Company maintains a clawback policy under Section 10D of the Exchange Act and Section 303A of the listing manual.",
+  ])("does not report a lettered statutory label as a broken reference: %s", (text) => {
+    expect(unres(text)).toEqual([]);
+  });
+
+  it("still reports a dangling reference whose number carries no letter", () => {
+    expect(unres("The indemnity is stated in Section 280 of this Agreement.")).toContain(
+      "Section 280",
     );
   });
 

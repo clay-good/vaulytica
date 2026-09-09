@@ -5139,6 +5139,46 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-003",
     ],
   },
+  // A COMPLETE executive employment agreement — the eighth clean document
+  // (9.640.0). At-will language that survives the severance promise, base
+  // salary with a no-decrease covenant, target bonus, an option grant, the
+  // Massachusetts sick-time and Wage Act citations, D&O indemnification with
+  // six-year tail coverage, the DTSA notice, protected-activity language, an
+  // inventions assignment with the statutory carve-out, Cause and Good Reason
+  // both defined with notice and cure, § 409A and § 280G, and a restrictive
+  // covenant set drafted to the Massachusetts Noncompetition Agreement Act
+  // with garden leave.
+  //
+  // ONE defect, and it is about the STATUTES: STRUCT-007 reported "Section
+  // 280G" and "§ 24L" as broken internal cross-references. Both are statutory
+  // labels a document uses AFTER citing the statute once in full — the section
+  // is HEADED "5.6 Section 280G" and its body cites § 4999 — so no "of the
+  // Code" qualifier trails them. The number's own shape settles it: a trailing
+  // capital letter is a statute's numbering, never a contract's.
+  //
+  // What remains is true of the draft: no clawback policy (EMP-007 — a real
+  // gap for a CFO under the Exchange Act listing rules), a one-way
+  // confidentiality obligation, "best efforts" used and undefined, the
+  // non-compete and non-solicit reported as present, and a D&O indemnity with
+  // no defense-control or settlement-consent mechanics and no aggregate cap —
+  // which is what a D&O indemnity is.
+  "executive-employment-complete.txt": {
+    playbook: "executive-employment",
+    findings: [
+      "EMP-007",
+      "OBLI-002",
+      "OBLI-004",
+      "OBLI-005",
+      "OBLI-008",
+      "PERS-001",
+      "PERS-002",
+      "PERS-005",
+      "RISK-011",
+      "RISK-015",
+      "TEMP-008",
+      "TERM-007",
+    ],
+  },
   "enterprise-saas-subscription.txt": {
     playbook: "saas-customer",
     findings: [

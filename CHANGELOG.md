@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.640.0] — 2026-09-09
+
+### Fixed
+- **A statute used as a label is not a broken cross-reference.** The eighth
+  clean document — a complete executive employment agreement — drew twelve
+  findings, and the only defect was about the tax code. STRUCT-007 reported
+  **"Section 280G"** and **"§ 24L"** as references that resolve to no section of
+  the agreement.
+
+  Both are statutory labels a document uses *after* citing the statute once in
+  full. The section is **headed** "5.6 Section 280G" and its body cites § 4999
+  of the Internal Revenue Code; the non-compete cites "M.G.L. c. 149, **§ 24L**"
+  by the abbreviation of the code, not its spelled-out name. Neither carries an
+  "of the … Code" trailer for the existing guards to read.
+
+  The number's own shape settles it: **a trailing capital letter is a statute's
+  numbering and never a contract's.** A contract numbers its own divisions 4.2
+  and 12.1.3; it does not letter them. Measured over all 319 existing
+  specimens: nine documents use the shape about thirty times — 409A, 280G, 10D,
+  303A, 2A, 48E, 24L, 148C — and every one is a statute. Not one is an internal
+  division.
+
+  The test runs **after** the outline lookup, so an agreement amended to insert
+  a genuine "Section 9A" would still resolve it, and only a dangling lettered
+  label is read as the citation it is. Zero corpus movement.
+
+  This reverses one existing test, which asserted that a bare "Section 409A" is
+  a broken internal reference. Its real purpose — that the capture is never
+  truncated to "Section 409" — is preserved and now has an explicit canary: a
+  truncated capture would carry no letter, and would surface as a broken
+  reference to "Section 409".
+
+  The specimen also joins `format-invariance`'s hyphen-wrap debt list, on the
+  ONE shape the resolver cannot decide and the third instance of it:
+  **"Commonwealth" appears in this agreement exactly once.** Broken across a
+  line as "Common-wealth", neither of the resolver's two tests can fire — the
+  document never writes the compound unbroken, and the joined halves are not a
+  word it uses elsewhere — so the jurisdiction extractor records "Common-wealth
+  of Massachusetts" and three CHOICE rules report a governing-law/venue mismatch
+  the document does not have. 🚨 Not a fourth resolver rule: TAIL, HEAD and WRAP
+  GEOMETRY have each been tried and rejected, and this case wants a dictionary
+  the resolver deliberately does not have.
+
+### Added
+- `tests/fixtures/specimens/executive-employment-complete.txt` — the eighth
+  clean document, and the 320th specimen.
+
 ## [9.639.0] — 2026-09-09
 
 ### Fixed
