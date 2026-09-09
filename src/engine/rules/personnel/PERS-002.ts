@@ -21,9 +21,13 @@ export const rule: Rule = {
       // without the solicit token (audit). The protected object is as often
       // "clients", "personnel", or "staff" as "employees"/"customers" —
       // "vendors"/"suppliers"/"contractors" are deliberately excluded so a
+      // "is not permitted to solicit" is the same restriction as "shall not
+      // solicit" — the plain-language spelling. Admitted by name rather than by
+      // letting anything sit between "not" and the verb: a general widening
+      // would also match "not REQUIRED to solicit", which says the opposite.
       // procurement clause ("shall not solicit bids from vendors") is not
       // misread as a personnel non-solicit.
-      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+(?:to\s+)?(?:solicit|induce|encourage|persuade|recruit)\b[^.;\n]{0,80}\b(?:employees?|customers?|clients?|personnel|staff)\b/i,
+      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+(?:to\s+|permitted\s+to\s+)?(?:solicit|induce|encourage|persuade|recruit)\b[^.;\n]{0,80}\b(?:employees?|customers?|clients?|personnel|staff)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

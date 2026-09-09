@@ -325,11 +325,15 @@ describe("shall and will are the same obligation", () => {
    * "prohibited from disclos**ing**" — so substituting it for `shall not`
    * produces English nobody writes, the same trap as `is responsible for`.
    *
-   * RISK-003 (2 documents) and PERS-002 (3) still move, and they are declared
-   * rather than silently tolerated: each carries its own negation alternation,
-   * the same private-list shape the positive side had before `OBLIGATION_MODAL`.
+   * RISK-003 and PERS-002 were the last two, and they were NOT the private-list
+   * shape the positive side had. Neither reads a modal at all: PERS-002 matches
+   * `not\s+(?:to\s+)?solicit` and RISK-003 `not\s+exceed` — an adjacency
+   * between "not" and the verb. Letting anything sit in that gap would also
+   * match "not **required** to solicit", which says the opposite, so the
+   * plain-language form is admitted BY NAME (`permitted\s+to\s+`) instead. The
+   * debt list is empty.
    */
-  const PROHIBITION_DEBT: readonly string[] = ["PERS-002", "RISK-003"];
+  const PROHIBITION_DEBT: readonly string[] = [];
 
   it("writing 'shall not' as 'is not permitted to' loses only what is declared", async () => {
     const deps = await loadAccuracyDeps({});

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.600.0] — 2026-09-08
+
+### Fixed
+- **The last two documents owed on the prohibition, closed — and NOT the way
+  the positive side was closed.** RISK-003 and PERS-002 were declared debt in
+  9.599.0 on the assumption they carried private modal lists like the four
+  indemnity rules did. They do not. Neither reads a modal at all: PERS-002
+  matches `not\s+(?:to\s+)?solicit` and RISK-003 `not\s+exceed` — an
+  **adjacency** between "not" and the verb.
+
+  🚨 **That distinction is the whole design.** Letting anything sit in that gap
+  would also match *"not **required** to solicit"*, which says the opposite — a
+  permission read as a restrictive covenant, a confident finding about a clause
+  that is not there. So the plain-language form is admitted **by name**
+  (`permitted\s+to\s+`), never by a general widening.
+
+  Both directions are pinned in `PERS-002.test.ts`: the prohibition fires, and
+  *"the broker is not required to solicit"* and *"Agent is not obligated to
+  solicit"* do not. Proven by replacing the named form with a general
+  `not\s+(?:\w+\s+){0,2}` widening and watching the inversion cases fail.
+
+  The prohibition debt list is empty. No golden moved.
+
 ## [9.599.0] — 2026-09-08
 
 ### Fixed

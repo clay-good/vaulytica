@@ -30,7 +30,7 @@ export const rule: Rule = {
       // Only the phrases that INVERT under negation are guarded. "shall NOT
       // EXCEED" is a cap and must keep matching, which is why `not exceed`
       // stays untouched.
-      /\bindemni(?:f|t)[\s\S]{0,200}?(?:not\s+exceed|(?<!\bnot\s)(?<!\bnever\s)(?<!\bin\s+no\s+way\s)capped\s+at|(?<!\bnot\s)(?<!\bnever\s)(?<!\bin\s+no\s+way\s)limited\s+to|aggregate\s+(?:liability|cap)\s+(?:of|equal\s+to)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,25}?exceed)/i,
+      /\bindemni(?:f|t)[\s\S]{0,200}?(?:not\s+(?:permitted\s+to\s+)?exceed|(?<!\bnot\s)(?<!\bnever\s)(?<!\bin\s+no\s+way\s)capped\s+at|(?<!\bnot\s)(?<!\bnever\s)(?<!\bin\s+no\s+way\s)limited\s+to|aggregate\s+(?:liability|cap)\s+(?:of|equal\s+to)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,25}?exceed)/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {
