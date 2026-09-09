@@ -458,3 +458,51 @@ describe("extractDates — numeric dates, both readings and the guards", () => {
     expect(isos("The closing occurs on 02/30/2029.").filter(Boolean)).toEqual([]);
   });
 });
+
+/**
+ * A DURATION is not a DEADLINE, and "of" is what separates them.
+ *
+ * "within 30 days **of** the Effective Date" is a deadline — something is due.
+ * "a term **of** thirty (30) days" is how long something lasts, and reading it
+ * as a deadline puts an entry in the critical-dates register that the contract
+ * never set: a date an attorney would be told to diary, derived from a clause
+ * that names no obligation at all.
+ *
+ * `isBareOfDuration` draws that line — the connector ends in "of the" and does
+ * NOT contain "within" — and mutation testing reported it, and both branches
+ * that consult it, as executed by no test.
+ */
+describe("a duration is not a deadline", () => {
+  const relatives = (line: string) =>
+    extractDates(buildTree(["Agreement", line])).filter((d) => d.type === "relative");
+
+  it("reads 'within N days of the anchor' as a deadline", () => {
+    const [d] = relatives("The notice must be delivered within 30 days of the Effective Date.");
+    expect(d, "the deadline was not read at all").toBeDefined();
+    expect(d!.anchor).toBe("Effective Date");
+    expect(d!.offset_days).toBe(30);
+  });
+
+  it("does NOT read 'a term of N days of the anchor' as one", () => {
+    // No "within": the days measure how long the term runs, not when something
+    // is due. The anchor is still recognized as a named date; only the phantom
+    // deadline is suppressed.
+    expect(
+      relatives("This Agreement has an initial term of thirty (30) days of the Closing Date."),
+    ).toEqual([]);
+    expect(
+      relatives("The parties agree to a cure period of thirty (30) days of the Notice Date."),
+    ).toEqual([]);
+  });
+
+  it("applies the same rule to a RANGE, which has its own branch", () => {
+    const [ranged] = relatives("Respond within thirty to sixty days after the Effective Date.");
+    expect(ranged, "the ranged deadline was not read").toBeDefined();
+    expect(ranged!.offset_days).toBe(30);
+
+    // The range branch consults the same guard, and it was equally untested.
+    expect(relatives("A period of thirty to sixty days of the Effective Date applies.")).toEqual(
+      [],
+    );
+  });
+});

@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.606.0] — 2026-09-08
+
+### Added
+- **A contract's *term* is not a *deadline*, and nothing tested the line
+  between them.** Mutation testing reported `isBareOfDuration` in
+  `src/extract/dates.ts` — and both branches that consult it — as executed by
+  no test at all (`NoCoverage` at lines 95, 288–291, 337, 372–374).
+
+  The guard exists because the same preposition does two jobs:
+
+  | Text | Reading | Register entry |
+  |---|---|---|
+  | "within 30 days **of the** Effective Date" | a deadline — something is due | yes, offset 30 |
+  | "an initial term **of** thirty (30) days **of the** Closing Date" | how long the term runs | **none** |
+  | "a cure period **of** thirty (30) days **of the** Notice Date" | how long the period runs | **none** |
+  | "A period **of** thirty to sixty days **of the** Effective Date" | a ranged duration | **none** |
+
+  Without it, a clause that names no obligation puts a date in the critical-
+  dates register that the contract never set — an attorney is told to diary a
+  deadline derived from a duration. The guard was written correctly and worked;
+  it simply had nothing holding it there. It does now, in both the single-
+  relative branch and the RANGE_RELATIVE branch, which had its own uncovered
+  skip.
+
+  Proven by disabling it: `isBareOfDuration` forced to `return false` fails
+  **6 assertions**. The lesson from 9.605.0 held again — "write a test for the
+  uncovered block" is not the same question as "find what the block uniquely
+  does", and only the second produces a test that bites.
+
 ## [9.605.0] — 2026-09-08
 
 ### Added
