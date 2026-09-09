@@ -461,8 +461,15 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // Section limits the publication rights in Section 11") became the whole
   // incorporated list, so the operative enumeration was never read and
   // TEMP-012 reported the indemnity as unnamed in a clause that names it.
+  // A PARENTHETICAL QUALIFIER after an item does not end the list. "Sections 2
+  // (as to amounts accrued), 4, 5, 8, and 12 survive" is ordinary drafting —
+  // the survival clause qualifies how much of a section survives — and a
+  // separator that admitted only ",", "and" and "&" stopped the capture dead at
+  // "2", so every section after the first parenthetical was invisible. The
+  // qualifier is dropped before the numbers are split out, so a numeral inside
+  // it ("(other than Section 2.3)") cannot be mistaken for a listed section.
   const LIST =
-    /\b(?:Sections?|Clauses?|Articles?)\s+(\d+(?:\.\d+)*(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*)*)/gi;
+    /\b(?:Sections?|Clauses?|Articles?)\s+(\d+(?:\.\d+)*(?:\s*\([^()]{0,80}\))?(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*(?:\s*\([^()]{0,80}\))?)*)/gi;
   // "Articles" belongs beside them. A long-form agreement divides itself into
   // Articles and its survival clause names them — "Articles 4, 6, 8 and 9
   // survive termination" — and a list that reads only Sections and Clauses
@@ -478,7 +485,11 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   LIST.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = LIST.exec(survivalText)) !== null) {
-    for (const n of m[1]!.split(/[^0-9.]+/).filter(Boolean)) nums.add(n);
+    for (const n of m[1]!
+      .replace(/\([^()]*\)/g, " ")
+      .split(/[^0-9.]+/)
+      .filter(Boolean))
+      nums.add(n);
   }
   RANGE.lastIndex = 0;
   let r: RegExpExecArray | null;

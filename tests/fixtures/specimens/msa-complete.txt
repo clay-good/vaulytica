@@ -1,0 +1,167 @@
+MASTER SERVICES AGREEMENT
+
+THIS MASTER SERVICES AGREEMENT (this "Agreement") is made as of March 16, 2026 (the "Effective Date") between Halbrook Analytics, Inc., a Delaware corporation with its principal place of business at 88 Wharfside Street, Boston, Massachusetts ("Provider"), and Corriston Freight Systems, LLC, an Ohio limited liability company with its principal place of business at 2200 Ravenna Road, Cleveland, Ohio ("Customer"). Provider and Customer are each a "Party" and together the "Parties."
+
+RECITALS
+
+A. Provider provides data engineering and analytics services.
+
+B. Customer wishes to engage Provider to perform those services from time to time under statements of work executed under this Agreement.
+
+1. Services.
+
+1.1 Statements of Work. Provider shall perform the services described in each statement of work signed by both Parties that references this Agreement (each, a "Statement of Work" or "SOW"). Each Statement of Work must state the scope of services, the deliverables, the schedule, the acceptance criteria, the fees, and the name of each Party's project manager.
+
+1.2 Order of Precedence. If a Statement of Work conflicts with this Agreement, this Agreement controls, except where the Statement of Work expressly identifies the conflicting section of this Agreement and states that it is being amended for that Statement of Work only.
+
+1.3 Change Orders. Either Party may request a change to a Statement of Work. No change is binding until both Parties sign a written change order stating the change in scope, the change in fees, and the change in schedule.
+
+1.4 Acceptance. Customer shall review each deliverable within ten (10) business days after delivery and shall either accept it or give Provider a written statement of the ways in which it fails to meet the acceptance criteria. Provider shall correct the deficiencies within fifteen (15) days after receiving that statement and resubmit the deliverable. A deliverable that Customer does not reject within the review period is deemed accepted.
+
+1.5 Personnel. Provider shall assign personnel with the skill and experience the Statement of Work requires, and shall remain responsible for the acts and omissions of its personnel and its approved subcontractors. Provider shall not engage a subcontractor to perform a material portion of the services without Customer's prior written consent, which Customer shall not unreasonably withhold.
+
+2. Fees and Payment.
+
+2.1 Fees. Customer shall pay the fees set out in each Statement of Work. Unless the Statement of Work says otherwise, services are billed monthly in arrears at the rates set out on Exhibit A.
+
+2.2 Invoices. Provider shall invoice Customer monthly. Customer shall pay each undisputed invoice within thirty (30) days after receipt.
+
+2.3 Disputed Amounts. Customer may withhold payment of an amount it disputes in good faith if it gives Provider written notice of the dispute within fifteen (15) days after receiving the invoice, describing the basis for the dispute. The Parties shall use good-faith efforts to resolve the dispute within thirty (30) days. Customer shall pay all undisputed amounts when due.
+
+2.4 Late Payment. Undisputed amounts not paid when due bear interest at the lesser of one percent (1%) per month or the maximum rate permitted by applicable law.
+
+2.5 Expenses. Customer shall reimburse Provider for reasonable travel and out-of-pocket expenses that Customer approves in advance in writing, at cost and without markup.
+
+2.6 Taxes. Fees are exclusive of sales, use, and similar transaction taxes. Customer is responsible for those taxes, except taxes based on Provider's net income, property, or employees.
+
+3. Term and Termination.
+
+3.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, unless terminated earlier under this Section 3. The Parties may extend the term by written agreement.
+
+3.2 Termination for Convenience. Either Party may terminate this Agreement or any Statement of Work for convenience on sixty (60) days' prior written notice to the other Party. Customer shall pay Provider for services performed and expenses incurred through the effective date of termination.
+
+3.3 Termination for Cause. Either Party may terminate this Agreement or any Statement of Work if the other Party materially breaches it and fails to cure the breach within thirty (30) days after receiving written notice describing the breach in reasonable detail.
+
+3.4 Termination for Insolvency. Either Party may terminate this Agreement immediately on written notice if the other Party becomes insolvent, makes an assignment for the benefit of creditors, or has a receiver appointed over a substantial part of its assets, or if a bankruptcy proceeding is commenced against it and is not dismissed within sixty (60) days.
+
+3.5 Effect of Termination. On termination or expiration, Provider shall deliver to Customer all completed and work-in-progress deliverables for which Customer has paid, together with all Customer Data in Provider's possession, in a commercially reasonable format, within thirty (30) days after Customer's written request. Customer shall pay all amounts owed for services performed before the effective date of termination.
+
+3.6 Survival. Sections 2 (as to amounts accrued), 4, 5, 6, 7, 8, 9, 10, and 12 survive the termination or expiration of this Agreement.
+
+4. Intellectual Property.
+
+4.1 Customer Materials. As between the Parties, Customer owns all right, title, and interest in the data, content, and materials Customer provides to Provider (the "Customer Materials"), including all intellectual property rights in them. Customer grants Provider a non-exclusive, royalty-free license to use the Customer Materials solely to perform the services during the term.
+
+4.2 Deliverables. On Customer's payment in full for a deliverable, Provider assigns to Customer all right, title, and interest in that deliverable, including all copyrights and other intellectual property rights in it. Provider shall execute any documents Customer reasonably requests to perfect that assignment.
+
+4.3 Provider Background IP. Provider retains all right, title, and interest in the tools, libraries, methods, and know-how it owned before the Effective Date or develops outside this Agreement ("Background IP"). To the extent a deliverable incorporates Background IP, Provider grants Customer a perpetual, irrevocable, worldwide, non-exclusive, royalty-free, transferable license to use, reproduce, modify, and distribute that Background IP as part of the deliverable.
+
+4.4 Feedback. Customer may give Provider suggestions about the services. Provider may use that feedback without obligation to Customer, provided the feedback does not include Customer's Confidential Information.
+
+5. Confidentiality.
+
+5.1 Definition. "Confidential Information" means non-public information one Party (the "Disclosing Party") discloses to the other (the "Receiving Party") that is marked confidential or that a reasonable person would understand to be confidential from its nature or the circumstances of disclosure, including pricing, product plans, customer lists, and technical information.
+
+5.2 Exclusions. Confidential Information does not include information that is or becomes public through no fault of the Receiving Party, that the Receiving Party lawfully knew before disclosure, that a third party discloses to the Receiving Party without a duty of confidence, or that the Receiving Party independently develops without use of or reference to the Disclosing Party's Confidential Information.
+
+5.3 Obligations. The Receiving Party shall not use the Disclosing Party's Confidential Information except to perform this Agreement, and shall not disclose it except to its employees, contractors, and advisors who need it for that purpose and who are bound by confidentiality obligations at least as protective as this Section 5. The Receiving Party shall protect the Confidential Information with at least reasonable care.
+
+5.4 Compelled Disclosure. If the Receiving Party is required by law or court order to disclose Confidential Information, it shall give the Disclosing Party prompt written notice, to the extent legally permitted, so that the Disclosing Party may seek a protective order, and shall disclose only the portion legally required.
+
+5.5 Term. The obligations in this Section 5 continue for five (5) years after the termination or expiration of this Agreement, and continue indefinitely as to any Confidential Information that is a trade secret for so long as it remains a trade secret under applicable law.
+
+5.6 Return or Destruction. On the Disclosing Party's written request, the Receiving Party shall return or destroy the Disclosing Party's Confidential Information, except for copies retained in routine backups or as required by law, which remain subject to this Section 5.
+
+6. Data Protection and Security.
+
+6.1 Customer Data. "Customer Data" means data Customer or its users provide to Provider or that Provider processes on Customer's behalf. Customer owns all Customer Data.
+
+6.2 Security Program. Provider shall maintain an information security program that includes administrative, physical, and technical safeguards appropriate to the sensitivity of the Customer Data, including encryption of Customer Data in transit and at rest, role-based access controls, and annual security awareness training for personnel with access to Customer Data.
+
+6.3 Security Incident. Provider shall notify Customer without undue delay, and in any event within seventy-two (72) hours, after Provider becomes aware of any unauthorized access to or disclosure of Customer Data, shall describe the nature of the incident and the data affected, and shall cooperate with Customer's investigation and any notification Customer is required to make.
+
+6.4 Personal Data. If Provider processes personal data on Customer's behalf, the Parties shall execute the data processing addendum attached as Exhibit B, which governs that processing and is incorporated into this Agreement.
+
+6.5 Audit. Once each calendar year, on thirty (30) days' prior written notice and during normal business hours, Customer may audit Provider's compliance with this Section 6, or may request Provider's most recent SOC 2 Type II report in place of an audit.
+
+7. Representations and Warranties.
+
+7.1 Mutual. Each Party represents and warrants that it is duly organized and validly existing, that it has the authority to enter into this Agreement, and that this Agreement is enforceable against it.
+
+7.2 Provider Warranties. Provider represents and warrants that the services will be performed in a professional and workmanlike manner in accordance with the applicable Statement of Work, that each deliverable will conform in all material respects to the acceptance criteria for ninety (90) days after acceptance, and that the deliverables will not infringe any third party's intellectual property rights.
+
+7.3 Remedy. If Provider breaches Section 7.2, Provider shall re-perform the affected services or correct the affected deliverable at no additional charge. If Provider cannot do so within thirty (30) days, Customer may terminate the affected Statement of Work and receive a refund of the fees paid for the non-conforming services or deliverable.
+
+7.4 Compliance with Law. Each Party shall comply with all laws applicable to its performance under this Agreement, including anti-corruption, export control, and data protection laws.
+
+7.5 Disclaimer. EXCEPT AS EXPRESSLY STATED IN THIS SECTION 7, NEITHER PARTY MAKES ANY WARRANTY OF ANY KIND, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, AND EACH PARTY SPECIFICALLY DISCLAIMS ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+8. Indemnification.
+
+8.1 By Provider. Provider shall defend Customer and its officers, directors, and employees against any third-party claim alleging that a deliverable infringes or misappropriates that third party's intellectual property rights, and shall indemnify Customer for damages, liabilities, and reasonable attorneys' fees finally awarded against Customer or paid in settlement of that claim.
+
+8.2 By Customer. Customer shall defend Provider and its officers, directors, and employees against any third-party claim alleging that the Customer Materials infringe or misappropriate that third party's intellectual property rights, and shall indemnify Provider for damages, liabilities, and reasonable attorneys' fees finally awarded against Provider or paid in settlement of that claim.
+
+8.3 Procedure. The Party seeking indemnity shall give the indemnifying Party prompt written notice of the claim, sole control of the defense and settlement of the claim, and reasonable cooperation at the indemnifying Party's expense. The indemnifying Party shall not settle a claim in a way that imposes a non-monetary obligation on or admits fault by the indemnified Party without that Party's prior written consent. A delay in notice relieves the indemnifying Party of its obligations only to the extent it is prejudiced by the delay.
+
+8.4 Exclusions. Provider has no obligation under Section 8.1 to the extent the claim arises from the Customer Materials, from Customer's modification of a deliverable, or from Customer's use of a deliverable in combination with materials Provider did not supply, where the claim would not have arisen but for that modification or combination.
+
+8.5 Remedies. If a deliverable is held to infringe, Provider shall at its option and expense procure the right for Customer to continue using it, replace or modify it so that it is non-infringing while materially conforming to the acceptance criteria, or, if neither is commercially reasonable, terminate the affected Statement of Work and refund the fees Customer paid for the affected deliverable.
+
+9. Limitation of Liability.
+
+9.1 Exclusion of Indirect Damages. NEITHER PARTY IS LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR ANY LOST PROFITS, LOST REVENUE, OR LOSS OF DATA, ARISING OUT OF THIS AGREEMENT, EVEN IF THE PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF THOSE DAMAGES.
+
+9.2 Cap. EACH PARTY'S TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATING TO THIS AGREEMENT IS LIMITED TO THE FEES PAID OR PAYABLE UNDER THE STATEMENT OF WORK GIVING RISE TO THE CLAIM IN THE TWELVE (12) MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM.
+
+9.3 Exceptions. The limitations in Sections 9.1 and 9.2 do not apply to a Party's indemnification obligations under Section 8, to a Party's breach of Section 5, to Customer's obligation to pay fees, or to a Party's gross negligence, willful misconduct, or fraud.
+
+10. Insurance. Provider shall maintain, at its own expense, commercial general liability insurance of at least Two Million Dollars ($2,000,000) per occurrence, professional liability (errors and omissions) insurance of at least Five Million Dollars ($5,000,000) per claim, cyber liability insurance of at least Five Million Dollars ($5,000,000) per claim, and workers' compensation insurance in the amounts required by law. Provider shall name Customer as an additional insured on the commercial general liability policy and shall furnish certificates of insurance on request.
+
+11. Relationship of the Parties; Non-Solicitation.
+
+11.1 Independent Contractor. Provider is an independent contractor. Nothing in this Agreement creates a partnership, joint venture, agency, or employment relationship. Neither Party may bind the other.
+
+11.2 Non-Solicitation. During the term and for twelve (12) months afterward, neither Party shall solicit for employment any employee of the other Party who was directly involved in performing or receiving the services. This Section 11.2 does not prohibit a general advertisement not targeted at those employees, or the hiring of a person who responds to one.
+
+12. General.
+
+12.1 Governing Law. This Agreement is governed by the laws of the State of New York, without regard to its conflict-of-laws rules. The United Nations Convention on Contracts for the International Sale of Goods does not apply.
+
+12.2 Venue. The state and federal courts located in New York County, New York have exclusive jurisdiction over any dispute arising out of or relating to this Agreement, and each Party consents to personal jurisdiction and venue in those courts.
+
+12.3 Escalation. Before commencing litigation, the Parties shall escalate the dispute to an executive of each Party with authority to settle it, who shall confer in good faith for at least fifteen (15) business days.
+
+12.4 Injunctive Relief. Nothing in Section 12.3 prevents either Party from seeking injunctive relief to protect its Confidential Information or intellectual property.
+
+12.5 Notices. Notices under this Agreement must be in writing and are effective on delivery when sent by nationally recognized overnight courier or certified mail, return receipt requested, to the address stated above, attention General Counsel, with a copy by email that does not by itself constitute notice.
+
+12.6 Assignment. Neither Party may assign this Agreement without the other Party's prior written consent, except that either Party may assign it in its entirety, on written notice and without consent, to a successor in connection with a merger, reorganization, or sale of all or substantially all of its assets. Any other attempted assignment is void.
+
+12.7 Force Majeure. Neither Party is liable for any delay or failure to perform, other than a payment obligation, caused by an event beyond its reasonable control, including natural disaster, war, terrorism, labor dispute, epidemic, or failure of the public internet, provided the affected Party gives prompt notice and uses commercially reasonable efforts to resume performance. If the event continues for more than sixty (60) days, either Party may terminate the affected Statement of Work on written notice.
+
+12.8 Publicity. Neither Party may use the other Party's name, logo, or trademarks in any press release, customer list, or marketing material without that Party's prior written consent.
+
+12.9 Amendment and Waiver. This Agreement may be amended only by a writing signed by both Parties. A waiver is effective only if it is in writing and signed by the waiving Party, and a waiver of one breach is not a waiver of any other.
+
+12.10 Severability. If any provision of this Agreement is held unenforceable, that provision shall be modified to the minimum extent necessary to make it enforceable, and the remaining provisions remain in full force and effect.
+
+12.11 Entire Agreement. This Agreement, together with all Statements of Work and Exhibits, is the entire agreement between the Parties about its subject matter and supersedes all prior and contemporaneous agreements and understandings about that subject matter. Any pre-printed terms on a purchase order or similar document have no effect.
+
+12.12 Counterparts. This Agreement may be signed in counterparts, including by electronic signature, each of which is an original and all of which together are one agreement.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+HALBROOK ANALYTICS, INC.
+
+By: /s/ Priya Raghunathan
+Name: Priya Raghunathan
+Title: Chief Executive Officer
+Date: March 16, 2026
+
+CORRISTON FREIGHT SYSTEMS, LLC
+
+By: /s/ Daniel Okereke
+Name: Daniel Okereke
+Title: Chief Operating Officer
+Date: March 16, 2026

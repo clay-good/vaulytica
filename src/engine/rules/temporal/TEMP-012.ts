@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "TEMP-012",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Survival clause silent on confidentiality / IP / indemnity",
   category: "temporal",
   default_severity: "warning",

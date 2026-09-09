@@ -73,7 +73,7 @@ export function survivalListGaps(
 /** TEMP-007 — Survival list completeness (info). */
 export const rule: Rule = {
   id: "TEMP-007",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Survival list completeness",
   category: "temporal",
   default_severity: "info",

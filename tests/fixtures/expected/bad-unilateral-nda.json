@@ -538,7 +538,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-012",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -750,7 +750,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-006",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -758,7 +758,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -794,7 +794,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-012",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -1000,7 +1000,7 @@
       "id": "TEMP-012-s1.3-491",
       "recommendation": "Add explicit named references to the missing obligation(s): confidentiality. Standard drafting names every sticky section by number or category in the survival clause.",
       "rule_id": "TEMP-012",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Survival clause does not name 1 sticky obligation"
@@ -1078,7 +1078,7 @@
       "explanation": "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
       "id": "TEMP-007-s1.3-537",
       "rule_id": "TEMP-007",
-      "rule_version": "1.5.0",
+      "rule_version": "1.6.0",
       "severity": "info",
       "source_citations": [],
       "title": "Survival list may be missing categories: confidentiality, governing law"
@@ -1087,11 +1087,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "b59e713c0f3d66fc6c7c222ce11b43df9ad1dd8c411f936eae2f23e6fe128a4b",
+  "result_hash": "ec61f45d568439ca02b9593e5c7e5858092d7907b2075cd6efc5fe69f64122de",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.634.0"
+  "version": "9.635.0"
 }

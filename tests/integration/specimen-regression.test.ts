@@ -3905,6 +3905,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // no compliance-with-laws warranty, and no confidentiality-breach indemnity.
   "msa-customer-side.txt": {
     playbook: "msa-customer-deep",
+    // RISK-012 joined this row in 9.635.0: the document HAS an IP indemnity —
+    // "indemnify, defend and hold harmless Customer … against any third-party
+    // claim that the Services infringe" — and the rule's 80-character window
+    // between the two words was eleven characters too narrow to read it.
     findings: [
       "MSA-003",
       "MSA-011",
@@ -3914,6 +3918,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-005",
       "RISK-007",
       "RISK-010",
+      "RISK-012",
       "RISK-013",
       "STRUCT-009",
       "TEMP-006",
@@ -4960,6 +4965,56 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-013",
       "RISK-015",
       "STRUCT-018",
+    ],
+  },
+  // A COMPLETE master services agreement — the fourth clean document (9.635.0):
+  // statements of work, acceptance, fees and disputed amounts, three
+  // termination rights, IP assignment against background IP, confidentiality,
+  // security and incident notice, warranties with a disclaimer, mutual IP
+  // indemnity with procedure, a cap with carve-outs, insurance, and general
+  // boilerplate. It drew five defects, four of them on drafting so conventional
+  // it is what a form book prints:
+  //
+  //  - TEMP-012 and TEMP-007 both read the survival clause as naming nothing,
+  //    because "Sections 2 (as to amounts accrued), 4, 5, …" stops the
+  //    enumeration expander dead at "2": its separator admitted only ",",
+  //    "and" and "&", never a PARENTHETICAL QUALIFIER. One helper, two rules.
+  //  - MSA-021 said there is no data-return clause about a section that says
+  //    Provider "shall deliver … all Customer Data in Provider's possession" —
+  //    the verb list had return/delete/destroy and not DELIVER.
+  //  - MSA-025 said there is no amendment-in-writing clause about "may be
+  //    amended only by a writing signed by both Parties" — the pattern wanted
+  //    the exact words "in writing".
+  //  - MSA-027 warned that the precedence clause buries operative terms,
+  //    because the MASTER agreement's own warranty section mentions the SOW
+  //    within 200 characters of "intellectual property".
+  //
+  // What remains is true of the draft: no SLA, no transition-assistance
+  // clause, no confidentiality-breach indemnity, no AI clause, two Exhibits
+  // referenced and not attached, and an undefined "commercially reasonable
+  // efforts". PERS-004 is correct too — a mutual no-solicit between the
+  // parties is the clause the DOJ scrutinizes, and the rule asks the reader to
+  // confirm it is ancillary and narrow rather than calling it a defect.
+  "msa-complete.txt": {
+    playbook: "msa-customer-deep",
+    findings: [
+      "MSA-003",
+      "MSA-016",
+      "MSA-020",
+      "MSA-028",
+      "MSA-030",
+      "OBLI-005",
+      "OBLI-008",
+      "PERS-002",
+      "PERS-004",
+      "RISK-007",
+      "RISK-010",
+      "RISK-012",
+      "RISK-013",
+      "STRUCT-018",
+      "TEMP-006",
+      "TEMP-008",
+      "TERM-001",
     ],
   },
   "enterprise-saas-subscription.txt": {

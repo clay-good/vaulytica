@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** RISK-012 — IP indemnity scope (info). */
 export const rule: Rule = {
   id: "RISK-012",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "IP indemnity scope",
   category: "risk-allocation",
   default_severity: "info",
@@ -17,7 +17,18 @@ export const rule: Rule = {
       // indemnify" (infringement-first), and the natural verb-first "shall
       // indemnify … against patent infringement" / "… from any infringing use",
       // which the first two branches missed.
-      /\b(?:ip|intellectual\s+property)\s+indemnif|\binfring(?:e|ement)\b[\s\S]{0,80}\bindemnif|\bindemnif\w+[\s\S]{0,80}\binfring(?:e|ement|ing)\b/i,
+      // The window is 140 and it may not cross a SENTENCE. "…alleging that a
+      // deliverable infringes or misappropriates that third party's
+      // intellectual property rights, and shall indemnify Customer…" is
+      // textbook drafting, and it is 88 characters between the two words — so
+      // an 80-character window missed the clause the rule exists to find, and
+      // `msa-customer-side.txt`'s IP indemnity with it. Widening alone is not
+      // the fix: at 140 across sentences the rule also matched an indemnity
+      // PROCEDURE sentence following an unrelated infringement sentence (two
+      // specimens), which is a co-occurrence, not an indemnity. An IP indemnity
+      // states both halves in ONE sentence. `\.(?=\d)` is the repo's idiom for
+      // a decimal point inside a figure.
+      /\b(?:ip|intellectual\s+property)\s+indemnif|\binfring(?:e|ement)\b(?:[^.]|\.(?=\d)){0,140}\bindemnif|\bindemnif\w+(?:[^.]|\.(?=\d)){0,140}\binfring(?:e|ement|ing)\b/i,
     );
     if (!hit) return null;
     // Negated-detector guard: an IP-indemnity DISCLAIMER — "Vendor does NOT

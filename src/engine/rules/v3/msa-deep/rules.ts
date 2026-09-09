@@ -118,7 +118,7 @@ function buildPrecedenceConsistencyRule(): Rule {
   const { id: dkb_id } = CONFIG.cite_for("Order-of-precedence consistency");
   return {
     id: "MSA-027",
-    version: "1.0.0",
+    version: "1.1.0",
     name: "Order-of-precedence may bury operative terms",
     category: CONFIG.category,
     default_severity: "warning",
@@ -138,8 +138,17 @@ function buildPrecedenceConsistencyRule(): Rule {
           text,
         );
       if (!msaOverSow) return null;
+      // The operative term must LIVE in the subordinate document, not merely
+      // appear in the same sentence as its name. The MSA's own warranty clause
+      // — "the services will be performed in accordance with the applicable
+      // Statement of Work … and the deliverables will not infringe any third
+      // party's intellectual property" — put "Statement of Work" 200 characters
+      // from "intellectual property" and was read as the SOW carrying the IP
+      // terms, so a complete MSA that keeps every operative term in the master
+      // agreement was warned that its precedence clause buries them. A stating
+      // verb between the two is what marks the attachment as the PLACE.
       const operativeInSow =
-        /(?:SOW|Statement\s+of\s+Work|Order\s+Form|Schedule|Exhibit|Annexure|Annex|Appendix|Attachment)[^.]{0,200}(?:indemn|liability\s+cap|aggregate\s+liability|intellectual\s+property|IP\s+ownership|warrant)/is.test(
+        /(?:SOW|Statement\s+of\s+Work|Order\s+Form|Schedule|Exhibit|Annexure|Annex|Appendix|Attachment)\b[^.]{0,80}?\b(?:states?|sets?\s+out|sets?\s+forth|contains?|specif(?:y|ies)|governs?|provides?\s+for|includes?)\b[^.]{0,120}?(?:indemn|liability\s+cap|aggregate\s+liability|intellectual\s+property|IP\s+ownership|warrant)/is.test(
           text,
         ) ||
         /(?:indemn\w+|liability\s+cap|aggregate\s+liability|intellectual\s+property|IP\s+ownership|warrant\w+)[^.]{0,200}(?:set\s+out\s+in|set\s+forth\s+in|contained\s+in|provided\s+in|appears\s+in)\s+(?:the\s+)?(?:SOW|Statement\s+of\s+Work|Order\s+Form|Schedule|Exhibit|Annexure|Annex|Appendix|Attachment)/is.test(
@@ -722,7 +731,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-021",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Data return / portability on termination",
     description: "MSA must address data return or portability on termination.",
     citation: "Commercial drafting baseline — data return",
@@ -742,6 +751,16 @@ export const MSA_DEEP_RULES: Rule[] = [
       /(?:return|delet(?:e|es|ion)|destroy(?:ed|s)?|dispose\s+of)\b[^.]{0,40}?\b(?:(?:customer|client)\s+data|company\s+data|(?:customer|client)\s+information|the\s+data|all\s+data|your\s+data|its\s+data|the\s+(?:customer|client)['’]?s?\s+data)\b/i,
       /provid\w+\s+[^.]{0,30}?(?:copy|export)\s+of\s+[^.]{0,30}?\bdata\b/i,
       /(data\s+portability|export\s+(?:in\s+)?(?:a\s+)?machine[- ]readable)/i,
+      // The obligation is as often drafted as DELIVERING the data as returning
+      // it — "Provider shall deliver to Customer all completed deliverables …
+      // together with all Customer Data in Provider's possession". The verb was
+      // absent from the list above, and so was any window wide enough to reach
+      // across the rest of the hand-back sentence, so a complete MSA was told it
+      // has no data-return clause. The window is wider here than in the pattern
+      // above and the data object is correspondingly narrower: a NAMED body of
+      // data ("all Customer Data", "the Customer's data"), never the bare "the
+      // data", so an ordinary delivery obligation is not read as the hand-back.
+      /(?:deliver|return|hand\s+over|make\s+available|transfer)\w*\b[^.]{0,120}?\b(?:all\s+(?:of\s+the\s+)?(?:(?:customer|client|company)\s+)?data|(?:customer|client|company)['’]?s?\s+data)\b/i,
     ],
     default_severity: "warning",
     denied_if: expressDenial(
@@ -861,6 +880,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-025",
+    version: "1.1.0",
     name: "Amendment-in-writing and no-waiver",
     description: "MSA must include amendment-in-writing and no-waiver clauses.",
     citation: "Commercial drafting baseline — amendment / waiver",
@@ -871,8 +891,16 @@ export const MSA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add: 'no amendment is effective unless in writing signed by both parties' and 'no failure to enforce shall be deemed a waiver.'",
     present_patterns: [
-      /amend\w+.{0,40}(?:in\s+writing|written\s+(?:and\s+)?signed)/is,
+      // "amended only by A WRITING SIGNED by both parties" and "by a WRITTEN
+      // INSTRUMENT signed" are the two commonest forms of this clause, and
+      // neither is "in writing" or "written signed" — so the textbook drafting
+      // of amendment-in-writing read as no amendment clause at all. Any
+      // writing/written within the window of an amendment verb is the clause.
+      /amend\w+.{0,40}\bwrit(?:ing|ten)\b/is,
       /(?:no\s+(?:waiver|failure)|(?:shall|will|must)\s+not\s+be\s+deemed\s+a\s+waiver)/i,
+      // The affirmative form of no-waiver: "a waiver of one breach is not a
+      // waiver of any other", "a waiver is effective only if in writing".
+      /\bwaiver\b[^.]{0,80}?\b(?:is\s+not\s+a\s+waiver|effective\s+only\s+if\s+[^.]{0,40}?\bwrit(?:ing|ten)\b)/i,
     ],
     default_severity: "info",
   }),

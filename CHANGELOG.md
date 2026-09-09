@@ -2,6 +2,72 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.635.0] — 2026-09-09
+
+### Fixed
+- **Four clauses a master services agreement writes the ordinary way, all four
+  reported missing or mis-stated.** The fourth clean document — a complete MSA
+  with statements of work, acceptance, disputed-amount withholding, three
+  termination rights, IP assignment against background IP, confidentiality,
+  security-incident notice, warranties with a disclaimer, a mutual IP indemnity
+  with procedure, a cap with carve-outs, insurance and full boilerplate — drew
+  twenty-one findings. Five were defects, and none of them needed exotic
+  drafting to find:
+
+  | Rule | The document says | The rule read |
+  |---|---|---|
+  | **TEMP-012** + **TEMP-007** | "Sections 2 (**as to amounts accrued**), 4, 5, 6, 7, 8, 9, 10, and 12 survive" | the enumeration expander's separator admitted only `,`, `and` and `&` — a **parenthetical qualifier** stopped the capture dead at "2", so §5 (Confidentiality) and §8 (Indemnification) were never incorporated |
+  | **MSA-021** | "Provider shall **deliver** to Customer … all Customer Data in Provider's possession, in a commercially reasonable format" | return / delete / destroy / dispose of — never *deliver*, and no window wide enough to reach across the rest of the hand-back sentence |
+  | **MSA-025** | "may be amended only by **a writing signed** by both Parties" | the literal words "in writing" or "written signed" |
+  | **MSA-027** | the master agreement's own warranty section: services performed "in accordance with the applicable **Statement of Work** … deliverables will not infringe any third party's **intellectual property**" | any co-occurrence of an attachment noun and an operative term within 200 characters, which read the MSA's own warranty as terms living in the SOW |
+
+  One helper fix closes two rules: `expandSurvivalSectionRefs` is what TEMP-006,
+  TEMP-007 and TEMP-012 all resolve a numbered survival list through. The
+  qualifier is stripped before the numbers are split out, so a numeral inside it
+  ("Sections 3 (other than Section 8) and 4") cannot be mistaken for a listed
+  section.
+
+  MSA-027's second branch already stated the right test — the operative term
+  must be **set out in** the attachment — and the loose first branch is now held
+  to the same standard by requiring a stating verb (states / sets out / sets
+  forth / contains / specifies / governs / provides for / includes) between the
+  attachment noun and the operative term. Its canonical positive
+  ("indemnification and limitation of liability … are set out in the SOW") is
+  unaffected.
+
+  All five move **zero** of the 315 existing specimens: this is drafting the
+  corpus happens not to contain, which is the whole point of authoring a
+  document that is complete on purpose.
+
+  Two more came out of the corpus relations the new specimen joined:
+
+  - **RISK-012 read an IP indemnity only when its two halves sat 80 characters
+    apart.** "…alleging that a deliverable **infringes** or misappropriates that
+    third party's intellectual property rights, and shall **indemnify**
+    Customer…" is 88. The window is 140 now and may not cross a **sentence** —
+    widening alone would have matched an indemnity *procedure* sentence
+    following an unrelated infringement sentence, which is a co-occurrence, not
+    an indemnity. `msa-customer-side.txt` gains the IP indemnity it has always
+    had. Found by the obligation-spelling relation, where the extra characters
+    of "is obligated to" pushed a clause that *did* fit over the edge.
+  - **`(each, a "Statement of Work" or "SOW")` defined neither term.** The
+    definitions extractor reads the OR-alias in the `"X" or "Y" means …` form
+    and in the paired `and`-collective parenthetical, but not in the
+    parenthetical that introduces two names for one thing — so the long name,
+    the one the document's headings use, was reported as used but never defined.
+
+### Changed
+- 🚨 **The obligation-spelling relation was rewriting a prohibition into its
+  opposite.** `shall not` is excluded from the `shall` → `is obligated to`
+  mutation because "is obligated to not" is English nobody writes. "**Neither**
+  party shall solicit" is a prohibition too, and the mutation turned it into
+  "neither party is obligated to solicit" — so the PERS-004 it "lost" was the
+  mutation's doing. A negation is not always carried by the word *not*.
+
+### Added
+- `tests/fixtures/specimens/msa-complete.txt` — the fourth clean document, and
+  the 316th specimen.
+
 ## [9.634.0] — 2026-09-09
 
 ### Fixed

@@ -245,9 +245,22 @@ describe("shall and will are the same obligation", () => {
       const Capital = spelling[0]!.toUpperCase() + spelling.slice(1);
       for (const name of SPECIMENS) {
         const text = readFileSync(join(DIR, name), "utf8");
+        // ⚠️ A NEGATION IS NOT ALWAYS CARRIED BY "NOT". `shall not` is excluded
+        // above because "is obligated to not" is English nobody writes — but
+        // "NEITHER party shall solicit" is a prohibition too, and rewriting it
+        // as "neither party is obligated to solicit" says the OPPOSITE of what
+        // the clause says. The loss it measured (PERS-004 on a mutual
+        // no-solicit) was the mutation's, not the rule's. Same trap, second
+        // spelling of it.
+        const negatedSubject = (whole: string, at: number): boolean =>
+          /\b(?:neither|nor)\b[^.;:]{0,40}$/i.test(whole.slice(Math.max(0, at - 60), at));
         const mutated = text
-          .replace(/\bshall\b(?!\s+not\b)/g, spelling)
-          .replace(/\bShall\b(?!\s+not\b)/g, Capital);
+          .replace(/\bshall\b(?!\s+not\b)/g, (m, at: number, whole: string) =>
+            negatedSubject(whole, at) ? m : spelling,
+          )
+          .replace(/\bShall\b(?!\s+not\b)/g, (m, at: number, whole: string) =>
+            negatedSubject(whole, at) ? m : Capital,
+          );
         if (mutated === text) continue;
         probed++;
         const before = await analyzeText(text, name, { deps });

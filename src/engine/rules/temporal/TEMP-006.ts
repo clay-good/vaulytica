@@ -5,7 +5,7 @@ import { survivalListGaps } from "./TEMP-007.js";
 /** TEMP-006 — Survival clause present (info). */
 export const rule: Rule = {
   id: "TEMP-006",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Survival clause present",
   category: "temporal",
   default_severity: "info",

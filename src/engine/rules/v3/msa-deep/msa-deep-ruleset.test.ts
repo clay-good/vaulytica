@@ -544,3 +544,79 @@ describe("MSA pack — English drafting conventions", () => {
     },
   );
 });
+
+// Three defects a COMPLETE master services agreement found (9.635.0): the
+// hand-back clause drafted with "deliver", the amendment clause drafted as "a
+// writing signed", and a precedence warning drawn by the master agreement's own
+// warranty section.
+describe("the clean-document findings — MSA-021 / MSA-025 / MSA-027", () => {
+  const fires = async (id: string, ...body: string[]) =>
+    (
+      await runEngine({
+        rules: MSA_DEEP_RULES,
+        ctx: withPb(buildContext(["Master Services Agreement", ...body]), CUSTOMER),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  it("MSA-021 reads a hand-back drafted as DELIVERING the customer's data", async () => {
+    expect(
+      await fires(
+        "MSA-021",
+        "On termination, Provider shall deliver to Customer all completed and work-in-progress deliverables for which Customer has paid, together with all Customer Data in Provider's possession, in a commercially reasonable format, within thirty (30) days after Customer's written request.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-021 still fires on an agreement that says nothing about the data", async () => {
+    expect(
+      await fires(
+        "MSA-021",
+        "On termination, Customer shall pay all amounts owed for services performed before the effective date of termination.",
+      ),
+    ).toBe(true);
+  });
+
+  it("MSA-021 does not read an ordinary delivery obligation as the hand-back", async () => {
+    expect(
+      await fires(
+        "MSA-021",
+        "Provider shall deliver the monthly report to Customer within five business days after the end of each month.",
+      ),
+    ).toBe(true);
+  });
+
+  it.each([
+    "This Agreement may be amended only by a writing signed by both Parties.",
+    "No amendment is effective unless made by a written instrument signed by each party.",
+    "A waiver is effective only if it is in writing and signed by the waiving Party, and a waiver of one breach is not a waiver of any other.",
+  ])("MSA-025 reads amendment / waiver boilerplate: %s", async (b) => {
+    expect(await fires("MSA-025", b)).toBe(false);
+  });
+
+  it("MSA-025 still fires on an agreement carrying neither clause", async () => {
+    expect(
+      await fires("MSA-025", "The Parties shall perform the services described in each SOW."),
+    ).toBe(true);
+  });
+
+  it("MSA-027 does not read the MSA's own warranty clause as terms living in the SOW", async () => {
+    expect(
+      await fires(
+        "MSA-027",
+        "If a Statement of Work conflicts with this Agreement, this Agreement controls over the Statement of Work.",
+        "Provider represents and warrants that the services will be performed in accordance with the applicable Statement of Work and that the deliverables will not infringe any third party's intellectual property rights.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-027 still fires when the SOW is stated to carry the operative terms", async () => {
+    expect(
+      await fires(
+        "MSA-027",
+        "If a Statement of Work conflicts with this Agreement, this Agreement controls over the Statement of Work.",
+        "Each Statement of Work sets out the indemnification and the aggregate liability cap for the services it describes.",
+      ),
+    ).toBe(true);
+  });
+});

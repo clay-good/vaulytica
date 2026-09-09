@@ -211,3 +211,47 @@ describe("TEMP-012 — an indemnity this document does not contain", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TEMP-012 — a parenthetical qualifier inside the survival list (v1.5.0)", () => {
+  // "Sections 2 (as to amounts accrued), 5, 8, and 12 survive" is ordinary
+  // drafting: the clause qualifies how much of a section survives. The
+  // enumeration expander's separator admitted only ",", "and" and "&", so the
+  // capture stopped dead at "2" and every section after the first qualifier was
+  // invisible — a complete MSA whose Section 5 is Confidentiality and Section 8
+  // Indemnification was told its survival clause names neither.
+  it("reads the sections listed after a parenthetical qualifier", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Master Services Agreement",
+          "5. Confidentiality.",
+          "The Receiving Party shall protect the Disclosing Party's Confidential Information.",
+          "8. Indemnification.",
+          "Provider shall indemnify Customer against any third-party claim.",
+          "3.6 Survival.",
+          "Sections 2 (as to amounts accrued), 5, 8, and 12 survive the termination of this Agreement.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  // The qualifier is dropped before the numbers are split out, so a numeral
+  // inside it is not mistaken for a listed section.
+  it("does not read a section number that appears only inside the qualifier", () => {
+    expect(
+      TEMP_012.check(
+        buildContext([
+          "Agreement",
+          "8. Indemnification.",
+          "Provider shall indemnify Customer against any third-party claim.",
+          "12. Survival.",
+          "Sections 3 (other than Section 8) and 4 survive termination.",
+          "3. Notices.",
+          "Notices must be in writing.",
+          "4. Assignment.",
+          "Neither party may assign this Agreement.",
+        ]),
+      )?.description,
+    ).toContain("indemnification");
+  });
+});

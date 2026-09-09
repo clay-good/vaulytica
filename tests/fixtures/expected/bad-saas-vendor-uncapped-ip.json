@@ -539,7 +539,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-012",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -752,14 +752,14 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-006",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -794,7 +794,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-012",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -1060,7 +1060,7 @@
       "explanation": "IP indemnity protects against third-party infringement claims. Standard scope is third-party claims only; broader scope shifts more risk to the indemnifying party.",
       "id": "RISK-012-s1.1-207",
       "rule_id": "RISK-012",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [],
       "title": "IP indemnity present"
@@ -1104,11 +1104,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "40cfdce4a1c8fcb8bb9c3402d3256ed6fad1c66e042d5ba1c60848505f1ad0f6",
+  "result_hash": "f0717d69852e9faaab2ba626578e9c645870b30e838082c07f33d1061fb78cdd",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.634.0"
+  "version": "9.635.0"
 }

@@ -175,6 +175,22 @@ const DEFINITION_PAIR_PARENTHETICAL =
   /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|severally|hereinafter|THE|THIS|THESE|EACH|AN?|COLLECTIVELY|TOGETHER|INDIVIDUALLY|SEVERALLY|HEREINAFTER)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D][\s,]+and\b[^)]*?\b(?:collectively|together|individually|each|severally)\b[^)]*?\bthe\s+["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
+ * The OR-ALIAS parenthetical: TWO names for ONE thing, introduced together.
+ *
+ *   `(each, a "Statement of Work" or "SOW")`
+ *   `(the "Agreement" or "Master Agreement")`
+ *
+ * `DEFINITION_ALIASED` reads this shape only in the `"X" or "Y" means …` form,
+ * and `DEFINITION_PARENTHETICAL` needs its quote closed by `)`, so the first
+ * name — the long one the document's headings use — was lost and the term it
+ * names was reported as used but never defined. The connective is `or`, not
+ * the `and` of the paired collective/individual idiom above: these are
+ * alternative names, not two different groups.
+ */
+const DEFINITION_OR_ALIAS_PARENTHETICAL =
+  /\((?:\s*(?:the|this|these|each|an?|collectively|together|individually|hereinafter)[,]?\s+)*["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s+or\s+(?:(?:the|an?)\s+)?["\u201C]([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
+
+/**
  * The two-term parenthetical WITHOUT a collective connective — the shape
  * `DEFINITION_PAIR_PARENTHETICAL` cannot see because it requires one of
  * "collectively / together / individually / each / severally" between the two
@@ -2248,7 +2264,11 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
       form: "parenthetical",
     });
   }
-  for (const pairRe of [DEFINITION_PAIR_PARENTHETICAL, DEFINITION_APPOSITIVE_PAIR_PARENTHETICAL]) {
+  for (const pairRe of [
+    DEFINITION_PAIR_PARENTHETICAL,
+    DEFINITION_APPOSITIVE_PAIR_PARENTHETICAL,
+    DEFINITION_OR_ALIAS_PARENTHETICAL,
+  ]) {
     pairRe.lastIndex = 0;
     while ((m = pairRe.exec(text)) !== null) {
       const before = text.slice(Math.max(0, m.index - 160), m.index);
