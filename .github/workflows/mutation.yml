@@ -21,7 +21,16 @@ jobs:
     # the six-hour default. Generous on purpose: complete runs in August took
     # about seven minutes, and a run on 2026-08-27 took over fifty on the same
     # scope, so this bound exists to stop a hang, not to police duration.
-    timeout-minutes: 120
+    # Raised 120 -> 180 on 2026-09-08, from this job's own history: 48 min
+    # (08-27), 64 min (08-31), **95 min** (09-07) — 79% of the old budget and
+    # trending up, before `critical-dates.ts` and `exports.ts` joined the
+    # mutated set and five more covering suites joined the per-mutant run. The
+    # next scheduled run was the one that would breach it, and over-budget
+    # reports as `cancelled`, which reads like a supersede rather than a
+    # failure — the same trap `test-matrix.yml` documents at length. Raised with
+    # headroom rather than to the edge, so a slow runner does not decide the
+    # outcome.
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6

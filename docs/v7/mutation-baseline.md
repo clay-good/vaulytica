@@ -76,15 +76,27 @@ the usual couple of points under a measured number rather than an aspiration.
 with them — `crossrefs.ts` is the same 45.96% against a different denominator.
 Read a row against the run that produced it.
 
-🚨 **The job's health regressed, and that is the number to act on next.** It took
-**61 minutes** against roughly seven for the old seven-file scope, and logged
-**79 test-runner out-of-memory restarts**. Stryker recovers from each — the score
-above is real, and it finished inside the workflow's 120-minute timeout — but the
-margin is now thin and the cause is the same one already recorded for the
-fast-check gates: a per-mutant run that reruns heavier and heavier covering
-suites. Lowering `concurrency` or raising the child heap are the obvious levers;
-neither is guessed at here, because validating either costs another hour-long
-run.
+🚨 **The RUNTIME is the number to act on, and the evidence is in CI, not here.**
+This local run took 61 minutes and logged 79 test-runner out-of-memory restarts —
+but it used the config default `concurrency: 4`, and **the workflow already
+overrides that to 2** for exactly this reason (see `mutation.yml`, which explains
+the choice). So those two figures describe a laptop, not the job.
+
+What the job actually does, from its own run history:
+
+| run        |   duration |
+| ---------- | ---------: |
+| 2026-08-27 |     48 min |
+| 2026-08-31 |     64 min |
+| 2026-09-07 | **95 min** |
+
+Against a **120-minute** timeout — 79% of budget, trending up, and that last run
+predates `critical-dates.ts` and `exports.ts` joining the scope plus five more
+covering suites. The next scheduled run is the one that breaches it, and
+over-budget reports as `cancelled`, which reads like a supersede rather than a
+failure (the same trap `test-matrix.yml` documents). The budget is raised to 180
+on that evidence, the way this repo has raised every other one: after measuring,
+with the numbers written down.
 
 📊 19 mutants **errored** (16 in `obligations.ts`, 3 in `parties.ts`) — a mutant
 that cannot compile or run is neither killed nor survived. Unchanged in kind from

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.603.0] — 2026-09-08
+
+### Fixed
+- 🚨 **9.602.0's note blamed the wrong thing, and the correction is the useful
+  part.** It reported a local mutation run at **61 minutes with 79 test-runner
+  out-of-memory restarts** and read that as the job's health regressing. It is
+  not: that run used the config default `concurrency: 4`, and **the workflow
+  already overrides it to 2** for precisely this reason, with the rationale
+  written beside it. Those figures describe a laptop.
+
+  The job's real number was in its own run history the whole time — and it says
+  something more urgent than the laptop did.
+
+- **The mutation workflow's timeout goes 120 → 180 minutes, on that history.**
+  48 min (08-27), 64 min (08-31), **95 min (09-07)** — 79% of the old budget and
+  trending up, and that last run predates `critical-dates.ts` and `exports.ts`
+  joining the mutated set plus five more covering suites joining the per-mutant
+  run. **The next scheduled run was the one that would breach it**, and
+  over-budget reports as **`cancelled`**, which reads like a supersede rather
+  than a failure — the trap `test-matrix.yml` documents at length. Raised with
+  headroom rather than to the edge, so a slow runner does not decide the
+  outcome.
+
 ## [9.602.0] — 2026-09-08
 
 ### Changed
@@ -24,13 +47,8 @@ All notable changes to this project will be documented in this file. Format adap
 ### Notes
 - 🚨 **The job's health regressed, and that is the number to act on next.** It
   took **61 minutes** against roughly seven for the old seven-file scope, and
-  logged **79 test-runner out-of-memory restarts**. Stryker recovers from each,
-  so the score is real and it finished inside the workflow's 120-minute
-  timeout — but the margin is now thin, and the cause is the one already on the
-  record for the fast-check gates: a per-mutant run that reruns heavier and
-  heavier covering suites. Lowering `concurrency` or raising the child heap are
-  the obvious levers; **neither is guessed at**, because validating either
-  costs another hour-long run.
+  logged **79 test-runner out-of-memory restarts**. (Corrected in 9.603.0 — that
+  measured a laptop at `concurrency: 4`, not the job.)
 - 19 mutants **errored** (16 in `obligations.ts`, 3 in `parties.ts`). A mutant
   that cannot compile or run is neither killed nor survived; recorded so the
   column is not misread as a defect.
