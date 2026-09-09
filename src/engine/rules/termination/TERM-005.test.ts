@@ -465,3 +465,29 @@ describe("TERM-005 — 'after which' states the consequence", () => {
     ).not.toBeNull();
   });
 });
+
+// A complete construction subcontract states its wind-down twice — once in the
+// for-cause clause, once in the for-convenience clause — and both were read as
+// saying nothing (9.639.0). Two spellings were missing: the PASSIVE verb, and a
+// cut-off written as "before termination" rather than "through the termination
+// date".
+describe("TERM-005 — payment for work performed BEFORE termination", () => {
+  it.each([
+    "Subcontractor shall be paid for Work properly performed before termination, less Contractor's reasonable cost of completion.",
+    "Subcontractor shall be paid for Work performed prior to termination, materials properly ordered and not returnable, and demobilization costs.",
+    "Supplier will pay for Services supplied up to the termination date.",
+    "Buyer shall pay Seller for goods delivered and accepted before the effective date of termination.",
+  ])("reads the wind-down: %s", (text) => {
+    expect(TERM_005.check(doc(text))).toBeNull();
+  });
+
+  it("still fires when the only mention of payment is a failure-to-pay TRIGGER", () => {
+    expect(
+      TERM_005.check(
+        doc(
+          "Contractor may terminate this Subcontract if Subcontractor fails to pay its lower-tier subcontractors within thirty (30) days.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

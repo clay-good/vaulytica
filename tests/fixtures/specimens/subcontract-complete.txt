@@ -1,0 +1,135 @@
+CONSTRUCTION SUBCONTRACT AGREEMENT
+
+THIS SUBCONTRACT AGREEMENT (this "Subcontract") is made as of June 8, 2026 (the "Effective Date") between Ellerslie Construction Group, Inc., an Illinois corporation ("Contractor"), and Vantry Mechanical Services LLC, an Illinois limited liability company ("Subcontractor"), for work on the Northgate Medical Office Building at 4400 Larkspur Road, Naperville, Illinois (the "Project"), owned by Northgate Property Partners, LP (the "Owner").
+
+RECITALS
+
+A. Contractor has entered into a general contract with Owner dated April 20, 2026 for construction of the Project (the "Prime Contract").
+
+B. Contractor wishes to engage Subcontractor to perform the mechanical, HVAC and plumbing portion of the work, and Subcontractor wishes to perform it, on the terms below.
+
+1. Scope of Work.
+
+1.1 The Work. Subcontractor shall furnish all labor, materials, equipment, tools, supervision, and services necessary to perform the mechanical, HVAC and plumbing work described in Exhibit A and shown on the drawings and specifications listed in Exhibit B (the "Work"), in accordance with this Subcontract and the Contract Documents.
+
+1.2 Contract Documents. The Contract Documents consist of this Subcontract, the Prime Contract (excluding Contractor's pricing and confidential financial terms), the drawings and specifications in Exhibit B, the project schedule in Exhibit C, and all approved change orders. Subcontractor acknowledges that it has been afforded the opportunity to review the Prime Contract.
+
+1.3 Flow-Down. Subcontractor assumes toward Contractor all obligations and responsibilities that Contractor assumes toward Owner under the Prime Contract, to the extent applicable to the Work, and is entitled to all rights and remedies against Contractor that Contractor has against Owner, to the same extent. Where the Prime Contract and this Subcontract conflict, the more stringent requirement applicable to the Work governs.
+
+1.4 Coordination. Subcontractor shall coordinate the Work with the work of Contractor and other subcontractors, shall attend weekly progress meetings, and shall keep the site free of debris caused by its operations at the end of each working day.
+
+2. Subcontract Price and Payment.
+
+2.1 Price. Contractor shall pay Subcontractor One Million Eight Hundred Forty Thousand Dollars ($1,840,000) for the Work (the "Subcontract Price"), subject to additions and deductions by change order.
+
+2.2 Progress Payments. Subcontractor shall submit an application for payment by the twenty-fifth (25th) day of each month for Work performed through that date, with a schedule of values, certified payroll, and conditional lien waivers from Subcontractor and its lower-tier subcontractors and suppliers for the amount then requested. Contractor shall pay Subcontractor within ten (10) days after Contractor receives payment from Owner for the Work covered by that application. Payment by Owner to Contractor is a timing mechanism only and is not a condition precedent to Contractor's obligation to pay Subcontractor; if Owner has not paid within sixty (60) days after Subcontractor's conforming application, Contractor shall pay Subcontractor for the Work performed, provided the non-payment is not caused by Subcontractor's default.
+
+2.3 Retainage. Contractor may retain ten percent (10%) of each progress payment until the Work is fifty percent (50%) complete, after which no further retainage will be withheld provided the Work is on schedule and free of uncured defects. Retainage shall be released within thirty (30) days after final completion of the Work and acceptance by Owner.
+
+2.4 Final Payment. Contractor shall pay the balance of the Subcontract Price, including retainage, within thirty (30) days after the last of: completion and acceptance of the Work; submission of final unconditional lien waivers, warranties, as-built drawings, operation and maintenance manuals, and required closeout documents; and Contractor's receipt of final payment from Owner for the Work.
+
+2.5 Interest. Amounts not paid when due bear interest at the rate provided by the Illinois Contractor Prompt Payment Act, 815 ILCS 603/1 et seq.
+
+2.6 Right to Stop Work. If Contractor fails to pay Subcontractor an undisputed amount within seven (7) days after it is due, Subcontractor may, on seven (7) days' additional written notice, suspend the Work until payment is received, and the schedule and Subcontract Price shall be equitably adjusted for the suspension.
+
+3. Schedule and Delay.
+
+3.1 Time. Time is of the essence. Subcontractor shall begin the Work within five (5) days after Contractor's written notice to proceed and shall complete the Work in accordance with the project schedule attached as Exhibit C, as it may be updated by Contractor in the ordinary course.
+
+3.2 Excusable Delay. Subcontractor's time for performance shall be extended for delays beyond its reasonable control, including acts of Owner or Contractor, differing site conditions, unusually severe weather, labor disputes not caused by Subcontractor, and force majeure, provided Subcontractor gives Contractor written notice within seven (7) days after it becomes aware of the delay.
+
+3.3 Liquidated Damages. If Subcontractor's culpable delay causes Contractor to incur liquidated damages under the Prime Contract, Subcontractor is responsible for the portion of those damages attributable to its delay. Subcontractor is not liable for delay damages caused by Owner, Contractor, or another subcontractor.
+
+3.4 Acceleration. Contractor may direct Subcontractor to accelerate the Work. If the acceleration is not caused by Subcontractor's culpable delay, it is a change under Section 4 and the Subcontract Price shall be adjusted for the additional cost, including overtime and additional crews.
+
+4. Changes.
+
+4.1 Change Orders. Contractor may direct changes in the Work within its general scope. No change is binding until both parties sign a written change order stating the change in the Work, the adjustment to the Subcontract Price, and the adjustment to the schedule.
+
+4.2 Claims. If Subcontractor believes it is entitled to an adjustment, it shall give Contractor written notice within ten (10) days after the event giving rise to the claim and shall submit supporting cost and schedule documentation within twenty (20) days after the notice. Subcontractor shall proceed with the Work pending resolution.
+
+4.3 Differing Site Conditions. If Subcontractor encounters subsurface or concealed conditions materially differing from those indicated in the Contract Documents, it shall stop the affected Work, give Contractor prompt written notice, and the Subcontract Price and schedule shall be equitably adjusted.
+
+5. Insurance and Bonds.
+
+5.1 Insurance. Before beginning the Work and throughout its performance, Subcontractor shall maintain commercial general liability insurance of at least Two Million Dollars ($2,000,000) per occurrence and Four Million Dollars ($4,000,000) in the aggregate on an occurrence form, automobile liability of at least One Million Dollars ($1,000,000), workers' compensation at statutory limits with employer's liability of at least One Million Dollars ($1,000,000), and excess or umbrella liability of at least Five Million Dollars ($5,000,000). Subcontractor shall name Contractor, Owner, and any other party the Prime Contract requires as additional insureds on a primary and non-contributory basis for ongoing and completed operations, and shall furnish certificates and endorsements before beginning the Work.
+
+5.2 Waiver of Subrogation. To the extent of insurance actually carried, Contractor and Subcontractor waive all rights against each other and against Owner for damages caused by fire or other perils covered by property insurance for the Project, and shall obtain endorsements from their insurers confirming that waiver.
+
+5.3 Bonds. Subcontractor shall furnish a performance bond and a labor and material payment bond, each in the full amount of the Subcontract Price, issued by a surety licensed in Illinois and rated A- or better by A.M. Best. The premium is included in the Subcontract Price.
+
+6. Indemnification.
+
+6.1 Subcontractor Indemnity. To the fullest extent permitted by law, Subcontractor shall indemnify, defend, and hold harmless Contractor, Owner, and their officers, directors, agents, and employees from and against claims, damages, losses, and expenses, including reasonable attorneys' fees, arising out of or resulting from performance of the Work, but only to the extent caused by the negligent acts or omissions of Subcontractor, its lower-tier subcontractors, or anyone for whose acts they are liable. This indemnity does not extend to any claim caused by the sole or contributory negligence of an indemnitee, which the Illinois Construction Contract Indemnification for Negligence Act, 740 ILCS 35/1, makes void and unenforceable.
+
+6.2 Procedure. Contractor shall give Subcontractor prompt written notice of any claim for which indemnity is sought and shall cooperate in the defense. Subcontractor's obligation to defend arises on tender of the claim and is not conditioned on a determination of liability.
+
+7. Warranty and Correction of Work.
+
+7.1 Warranty. Subcontractor warrants that the Work will be performed in a good and workmanlike manner, will conform to the Contract Documents, and will be free from defects in materials and workmanship for one (1) year after final completion of the Work or acceptance by Owner, whichever is later, or for the longer period the Prime Contract or the manufacturer's warranty requires.
+
+7.2 Correction. Subcontractor shall correct defective Work promptly at its own expense on written notice, including the cost of removing and replacing other work damaged by the correction. If Subcontractor fails to begin correction within five (5) days after notice, Contractor may correct the Work and deduct the reasonable cost from amounts owed.
+
+8. Safety and Compliance.
+
+8.1 Safety. Subcontractor is responsible for the safety of its personnel and its portion of the Work, shall comply with the Occupational Safety and Health Act and the Project safety program, shall designate a competent safety representative on site, and shall report any recordable incident to Contractor within twenty-four (24) hours.
+
+8.2 Hazardous Materials. Subcontractor shall not bring hazardous materials to the site except those disclosed in writing and necessary for the Work, and shall handle and dispose of them in accordance with law. Subcontractor is not responsible for pre-existing hazardous materials it did not bring to the site; on encountering them it shall stop the affected Work and notify Contractor immediately.
+
+8.3 Compliance with Law. Subcontractor shall comply with all applicable laws, ordinances, codes and regulations, shall obtain the permits and inspections for its trade, and shall pay all taxes on its Work. Subcontractor shall verify the employment eligibility of its personnel.
+
+9. Liens and Waivers. Subcontractor shall keep the Project free of liens arising from the Work and shall, within ten (10) days after written notice, discharge or bond over any lien filed by it or by a lower-tier subcontractor or supplier for which Subcontractor has been paid. Subcontractor shall furnish conditional lien waivers with each application for payment and unconditional waivers on receipt of payment.
+
+10. Suspension and Termination.
+
+10.1 Suspension for Convenience. Contractor may suspend the Work in whole or in part on written notice. If the suspension is not caused by Subcontractor's default and lasts more than thirty (30) days, the Subcontract Price and schedule shall be equitably adjusted.
+
+10.2 Termination for Cause. If Subcontractor fails to supply enough properly skilled workers or proper materials, fails to make payment to its lower-tier subcontractors or suppliers, disregards laws or the directions of a public authority, or otherwise materially breaches this Subcontract, and fails to cure within three (3) business days after written notice, Contractor may terminate the Subcontract and finish the Work by whatever method it considers expedient. Subcontractor shall be paid for Work properly performed before termination, less Contractor's reasonable cost of completion and other damages.
+
+10.3 Termination for Convenience. Contractor may terminate this Subcontract for convenience on seven (7) days' written notice. Subcontractor shall be paid for Work performed, materials properly ordered and not returnable, demobilization costs, and a reasonable allowance for overhead and profit on the Work performed, but not for anticipated profit on Work not performed.
+
+10.4 Wrongful Termination. A termination for cause later determined to be wrongful is treated as a termination for convenience.
+
+11. Dispute Resolution.
+
+11.1 Escalation. The parties shall first attempt to resolve any dispute by direct negotiation between their project executives within fifteen (15) days after written notice of the dispute.
+
+11.2 Mediation. Any dispute not resolved by negotiation shall be submitted to non-binding mediation administered by the American Arbitration Association under its Construction Industry Mediation Procedures, as a condition precedent to litigation.
+
+11.3 Litigation. Any dispute not resolved by mediation shall be resolved in the state or federal courts located in DuPage County, Illinois, and each party consents to jurisdiction and venue in those courts. If a dispute involves Owner and arises out of the Prime Contract, Subcontractor shall, at Contractor's election, join in the dispute resolution procedure of the Prime Contract.
+
+11.4 Continued Performance. Subcontractor shall continue to perform the Work and Contractor shall continue to pay undisputed amounts during any dispute.
+
+12. General.
+
+12.1 Governing Law. This Subcontract is governed by the laws of the State of Illinois, without regard to its conflict-of-laws rules.
+
+12.2 Independent Contractor. Subcontractor is an independent contractor. Nothing in this Subcontract creates a partnership, joint venture, or employment relationship.
+
+12.3 Assignment. Subcontractor may not assign this Subcontract or subcontract the whole of the Work without Contractor's prior written consent. Contractor may assign this Subcontract to Owner or to its surety in connection with the Prime Contract.
+
+12.4 Notices. Notices must be in writing and are effective on delivery when sent by hand, by nationally recognized overnight courier, or by certified mail, return receipt requested, to the addresses stated above.
+
+12.5 Confidentiality. Subcontractor shall keep confidential the pricing and financial terms of the Prime Contract disclosed to it and shall not use them except to perform the Work.
+
+12.6 Entire Agreement; Amendment. This Subcontract, together with the Contract Documents, is the entire agreement between the parties about the Work and supersedes all prior negotiations and agreements about it. It may be amended only by a written instrument signed by both parties, and no failure to enforce any provision is a waiver of it.
+
+12.7 Severability. If any provision is held unenforceable, it shall be modified to the minimum extent necessary and the remaining provisions remain in full force and effect.
+
+12.8 Counterparts. This Subcontract may be signed in counterparts, including by electronic signature, each of which is an original.
+
+IN WITNESS WHEREOF, the parties have executed this Subcontract as of the Effective Date.
+
+ELLERSLIE CONSTRUCTION GROUP, INC.
+
+By: /s/ Marcus Ellerslie
+Name: Marcus Ellerslie
+Title: President
+Date: June 8, 2026
+
+VANTRY MECHANICAL SERVICES LLC
+
+By: /s/ Ingrid Vantry
+Name: Ingrid Vantry
+Title: Managing Member
+Date: June 8, 2026

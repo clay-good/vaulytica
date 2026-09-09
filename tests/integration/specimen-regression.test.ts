@@ -5096,6 +5096,49 @@ export const EXPECTED: Record<string, Expectation> = {
       "TRANSFER-020",
     ],
   },
+  // A COMPLETE construction subcontract — the seventh clean document (9.639.0),
+  // and a family the corpus had only in flawed form. Flow-down, progress
+  // payments with a pay-when-paid timing clause that is expressly NOT a
+  // condition precedent, retainage, excusable delay, differing site conditions,
+  // AIA-style comparative-fault indemnity with the Illinois anti-indemnity
+  // statute named, insurance with additional insureds and waiver of
+  // subrogation, bonds, warranty, safety, liens, three termination paths, and
+  // mediation as a condition precedent to litigation.
+  //
+  // ONE defect: TERM-005 said the document does not state what happens on
+  // termination, about a Subcontract that says it twice — "Subcontractor shall
+  // BE PAID for Work properly performed BEFORE TERMINATION, less Contractor's
+  // reasonable cost of completion" and the same again for convenience. The
+  // rule's dedicated pay-for-work-performed branch read only the ACTIVE verb
+  // and only the cut-off "through the termination date".
+  //
+  // What remains is true of the draft, and two of them are the same call the
+  // office lease got: a mechanical subcontract allocates risk through
+  // insurance, bonds and a comparative-fault indemnity rather than a liability
+  // cap (RISK-005, RISK-015), it has no IP-ownership clause because it creates
+  // no IP (IPDATA-001), only the Contractor may terminate for convenience
+  // (TERM-003 — correct, and the asymmetry is the point of the clause), the
+  // confidentiality obligation runs one way because only the Subcontractor
+  // receives the Prime Contract's pricing (OBLI-002), the indemnity states
+  // notice and cooperation but not defense control or settlement consent
+  // (RISK-011), and three Exhibits are referenced and not attached.
+  "subcontract-complete.txt": {
+    playbook: "subcontractor-agreement",
+    findings: [
+      "FIN-006",
+      "IPDATA-001",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-005",
+      "RISK-010",
+      "RISK-011",
+      "RISK-013",
+      "RISK-015",
+      "STRUCT-018",
+      "TERM-001",
+      "TERM-003",
+    ],
+  },
   "enterprise-saas-subscription.txt": {
     playbook: "saas-customer",
     findings: [

@@ -112,7 +112,16 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // trigger the branches above require. The full phrase is unambiguous;
     // "pay" is deliberately NOT added to CONSEQUENCE (a failure-to-pay
     // termination TRIGGER would then read as an effect clause).
-    String.raw`|\bpay\b${SAME_SENTENCE}{0,160}\bthrough\s+the\s+(?:date\s+of\s+termination|termination\s+date|effective\s+date\s+of\s+termination)\b` +
+    // 9.639.0 — two more spellings of the same clause. The verb is as often
+    // PASSIVE ("Subcontractor shall BE PAID for Work properly performed"), and
+    // the cut-off is as often "BEFORE termination" / "prior to termination" /
+    // "up to the termination date" as "through the termination date". A
+    // complete construction subcontract states its wind-down twice, in the
+    // for-cause and for-convenience clauses, and both were read as saying
+    // nothing. "pay" is still deliberately out of CONSEQUENCE: the full phrase
+    // is what makes this unambiguous, so a failure-to-pay termination TRIGGER
+    // cannot read as an effect clause.
+    String.raw`|\bpa(?:y|id)\b${SAME_SENTENCE}{0,160}\b(?:through|before|prior\s+to|up\s+to)\s+(?:the\s+)?(?:date\s+of\s+termination|termination\s+date|effective\s+date\s+of\s+termination|termination)\b` +
     // "If Buyer terminates for Seller's material breach, the earnest deposit
     // shall be returned" — the conditional form states a termination
     // consequence with no "upon termination" trigger at all.

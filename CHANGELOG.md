@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.639.0] — 2026-09-09
+
+### Fixed
+- **A subcontract that says what happens on termination twice was told it says
+  it nowhere.** The seventh clean document — a complete construction subcontract
+  with flow-down, retainage, a pay-when-paid clause that is expressly *not* a
+  condition precedent, differing site conditions, bonds, and three termination
+  paths — drew twelve findings, eleven of them true of the draft.
+
+  TERM-005 has a dedicated branch for the wind-down that states no trigger
+  ("Customer shall **pay** for all Services performed … **through the
+  termination date**"). It read only the ACTIVE verb, and only that one cut-off.
+  A subcontract writes it passively and cuts off the other way:
+  "Subcontractor shall **be paid** for Work properly performed **before
+  termination**, less Contractor's reasonable cost of completion" — and again in
+  the for-convenience clause. Both forms are read now, along with "prior to
+  termination" and "up to the termination date".
+
+  **"pay" is still deliberately out of the general consequence list** — the full
+  phrase is what makes this branch unambiguous, so a failure-to-pay termination
+  TRIGGER cannot read as an effect-of-termination clause. A negative test pins
+  that. Zero corpus movement: the six specimens the widened branch newly matches
+  already satisfied the rule another way.
+
+### Added
+- `tests/fixtures/specimens/subcontract-complete.txt` — the seventh clean
+  document, and the 319th specimen.
+
 ## [9.638.0] — 2026-09-09
 
 ### Fixed
