@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.615.0] — 2026-09-09
+
+### Added
+- **The function that wires the whole browser UI had no test at all.**
+  `src/ui/main.ts` measured **0% of 185 statements** — the file `docs/architecture.md`
+  describes as the one that "boots the dropzone, theme toggle, service-worker
+  registration, and the pipeline." If `bootUi` stopped binding the drop zone,
+  every feature in the browser would be dead and the suite would stay green.
+
+  Five tests now cover the wiring — not the pipeline, so they stay fast and
+  headless: a **rejected** file and the drag state never reach the analyzer.
+
+  | | |
+  |---|---|
+  | the drop zone renders its empty state | the page's central affordance actually appears |
+  | a dropped `.doc` becomes the error state | proves the drop zone is bound, through the real event |
+  | `dragenter` / `dragleave` toggle `is-dragging` | `dragover` only preventDefaults — that is what stops the browser navigating to the file |
+  | each optional panel renders when given a container | playbook, privacy-regime, estate |
+  | and nothing is rendered when none is given | the option docs' own claim: "when absent, the affordance is simply not rendered" |
+
+  Statement coverage of the module goes 0% → 20%, branch 0% → 9.4%. That is a
+  floor, not a finish: the rest is the analyze/compare/bundle paths, which pull
+  the full pipeline. Proven to bite: unbinding the drop zone fails 2, and
+  dropping the regime panel's binding fails 1.
+
 ## [9.614.0] — 2026-09-09
 
 ### Fixed
