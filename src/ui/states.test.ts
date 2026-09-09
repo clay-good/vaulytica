@@ -2000,3 +2000,185 @@ describe("the complete state's download buttons", () => {
     expect(select(dz, "download-status")!.textContent).toMatch(/could not save/i);
   });
 });
+
+/**
+ * The two panels a reviewer acts on before a document leaves the building —
+ * "Clean to send?" and "Ready to sign?" — rendered by nobody's test.
+ *
+ * Both carry a sentence the product depends on: the pre-disclosure card
+ * promises it "never certifies the document clean," and the checklist that it
+ * "does not certify the document is ready to sign." Both are presence-only and
+ * must disappear when there is nothing to say, because a panel that renders
+ * empty reads as a clean bill.
+ *
+ * And both print text taken from the analyzed document. That is the one place
+ * a document's own bytes reach the page as markup if `escapeHtml` is ever
+ * dropped.
+ */
+describe("the pre-disclosure card", () => {
+  const finding = (over: Record<string, unknown> = {}) => ({
+    rule_id: "HANDOFF-002",
+    severity: "critical" as const,
+    title: "Tracked changes remain",
+    description: "The file still carries redlines from the drafting round.",
+    count: 3,
+    evidence: ["ins by A. Drafter", "del by B. Reviewer", "ins by A. Drafter"],
+    ...over,
+  });
+  const state = (delivery: unknown) =>
+    ({
+      kind: "complete",
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["d"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "a.docx",
+      json_filename: "a.json",
+      delivery,
+    }) as never;
+
+  it("stays hidden for a clean, inspectable document", () => {
+    const dz = document.createElement("div");
+    renderState(dz, state({ inspectable: true, summary: "Nothing found.", findings: [] }));
+    const el = select<HTMLElement>(dz, "delivery")!;
+    expect(el.hidden).toBe(true);
+    expect(el.innerHTML).toBe("");
+  });
+
+  it("shows what it found, and says it does not certify the document clean", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        inspectable: true,
+        summary: "3 items to clear before sending.",
+        findings: [finding()],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "delivery")!;
+    expect(el.hidden).toBe(false);
+    expect(el.textContent).toContain("HANDOFF-002");
+    expect(el.textContent).toContain("Tracked changes remain");
+    expect(el.textContent).toContain("3 items to clear before sending.");
+    expect(el.textContent, "the card dropped its own disclaimer").toContain(
+      "never certifies the document clean",
+    );
+    // The worst severity present drives the heading class.
+    expect(el.innerHTML).toContain("delivery-heading-critical");
+  });
+
+  it("takes its heading severity from the worst finding, not the first", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        inspectable: true,
+        summary: "s",
+        findings: [
+          finding({ severity: "info", rule_id: "HANDOFF-009" }),
+          finding({ severity: "warning", rule_id: "HANDOFF-004" }),
+        ],
+      }),
+    );
+    expect(select<HTMLElement>(dz, "delivery")!.innerHTML).toContain("delivery-heading-warning");
+  });
+
+  it("caps the evidence it lists and names the remainder exactly", () => {
+    const dz = document.createElement("div");
+    const evidence = Array.from({ length: 9 }, (_, i) => `redline ${i}`);
+    renderState(
+      dz,
+      state({
+        inspectable: true,
+        summary: "s",
+        findings: [finding({ count: 40, evidence })],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "delivery")!;
+    expect(el.textContent).toContain("redline 5");
+    expect(el.textContent, "the seventh item was listed past the cap").not.toContain("redline 6");
+    // 40 found, 6 shown: the number said has to be the number withheld.
+    expect(el.textContent).toContain("and 34 more");
+  });
+
+  it("escapes document text rather than letting it become markup", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        inspectable: true,
+        summary: "s",
+        findings: [finding({ evidence: ['<img src=x onerror="boom">'] })],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "delivery")!;
+    expect(el.querySelector("img"), "document text became a live element").toBeNull();
+    expect(el.textContent).toContain("<img src=x");
+  });
+});
+
+describe("the closing checklist", () => {
+  const state = (closing_checklist: unknown) =>
+    ({
+      kind: "complete",
+      filename: "spa.docx",
+      playbook_name: "Stock Purchase Agreement",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["d"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "a.docx",
+      json_filename: "a.json",
+      closing_checklist,
+    }) as never;
+
+  it("stays hidden when there is nothing left to resolve", () => {
+    const dz = document.createElement("div");
+    renderState(dz, state({ open_count: 0, items: [] }));
+    const el = select<HTMLElement>(dz, "closing-checklist")!;
+    expect(el.hidden).toBe(true);
+    expect(el.innerHTML).toBe("");
+  });
+
+  it("groups items by category, counts each group, and says it certifies nothing", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        open_count: 3,
+        items: [
+          { category: "handoff", rule_id: "HANDOFF-002", label: "Clear tracked changes" },
+          { category: "signature", rule_id: "EXEC-001", label: "Signature block incomplete" },
+          { category: "signature", rule_id: "EXEC-004", label: "No date line", section: "12.3" },
+        ],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "closing-checklist")!;
+    expect(el.hidden).toBe(false);
+    expect(el.textContent).toContain("3 readiness items to resolve");
+    expect(el.textContent).toContain("Signatures (2)");
+    expect(el.textContent).toContain("Pre-send cleanup (1)");
+    expect(el.textContent).toContain("§12.3");
+    expect(el.textContent, "the checklist dropped its own disclaimer").toContain(
+      "does not certify the document is ready to sign",
+    );
+    // Fixed category order: signatures before pre-send cleanup, whatever order
+    // the items arrived in.
+    const html = el.innerHTML;
+    expect(html.indexOf("Signatures")).toBeLessThan(html.indexOf("Pre-send cleanup"));
+  });
+
+  it("says 'item' for one and 'items' for more", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        open_count: 1,
+        items: [{ category: "blank", rule_id: "BLANK-001", label: "Unfilled [insert]" }],
+      }),
+    );
+    expect(select<HTMLElement>(dz, "closing-checklist")!.textContent).toContain(
+      "1 readiness item to resolve",
+    );
+  });
+});

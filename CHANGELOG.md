@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.617.0] — 2026-09-09
+
+### Added
+- **The two panels a reviewer acts on before a document leaves the building had
+  no rendering test.** "Clean to send?" (the pre-disclosure card) and "Ready to
+  sign?" (the closing checklist) are the last two things read before a file goes
+  out, and both carry a sentence the product depends on: the card "never
+  certifies the document clean," the checklist "does not certify the document is
+  ready to sign."
+
+  Nine tests, on the three properties that matter for a panel like this:
+
+  | | |
+  |---|---|
+  | **presence-only** | both must vanish when there is nothing to say — a panel that renders empty reads as a clean bill |
+  | **the disclaimer** | asserted verbatim in each; deleting either fails a test |
+  | **document text is escaped** | evidence strings come from the analyzed file, and that is the one path by which a document's own bytes could reach the page as markup |
+
+  Plus the behaviors underneath: the heading takes the **worst** severity
+  present rather than the first finding's, the evidence list caps at six and
+  the "…and N more" must name the exact remainder (40 found, 6 shown, 34 said),
+  the checklist groups in fixed category order with per-group counts, and it
+  says "item" for one and "items" for more.
+
+  Proven by breaking three: dropping `escapeHtml` from the evidence renders a
+  live `<img>` and fails 1, flattening the remainder to "and more" fails 1,
+  softening the disclaimer to "is clean" fails 1.
+
 ## [9.616.0] — 2026-09-09
 
 ### Fixed
