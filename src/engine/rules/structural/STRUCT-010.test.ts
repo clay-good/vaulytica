@@ -9,7 +9,11 @@ import { buildContext } from "../../_test-fixtures.js";
  * specimen corpus at all. Every specimen is plain text, and pasted text has no
  * headings (`ingestPaste` says so in its own docstring), so the check has
  * nothing to compare a TOC against. The documents it CAN reach are the ones
- * that carry headings — in practice, DOCX. In practice, Word wrote the TOC.
+ * that carry headings: DOCX, and — measured 2026-09-09, correcting the first
+ * version of this note — a PDF whose headings are set in a larger type size,
+ * which `buildTreeFromPages` promotes to sections (`pdf.test.ts`, "a PDF's
+ * heading tree comes from type size"). Either way the TOC was written by a word
+ * processor.
  *
  * And a Word TOC puts its page number on a TAB STOP. Flattened to text, a
  * perfectly correct "1. Services" entry arrives as "1. Services\t3", which

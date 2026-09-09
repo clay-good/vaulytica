@@ -152,3 +152,85 @@ describe("reviewer annotations a PDF carries but its text layer does not", () =>
     expect(markupAnnotationNotice(0)).toBeNull();
   });
 });
+
+/**
+ * How a PDF gets a SECTION TREE at all.
+ *
+ * `buildTreeFromPages` reads structure out of type size: a paragraph whose
+ * largest glyph is at least two points above the page's median, on one line,
+ * under 120 characters, is a heading, and its nesting level is derived from how
+ * far above the median it sits. Every existing test in this file builds a
+ * one-line, one-size PDF, so none of that ran — and it is the spine of every
+ * rule that reads `section.heading`: a PDF with no headings is one flat
+ * section, exactly like pasted text, and the heading-dependent rules go quiet
+ * on it without saying so.
+ */
+describe("a PDF's heading tree comes from type size", () => {
+  function pdfWithLines(lines: Array<{ size: number; y: number; text: string }>): ArrayBuffer {
+    const stream = lines
+      .map((l) => `BT /F1 ${l.size} Tf 72 ${l.y} Td (${l.text}) Tj ET`)
+      .join("\n");
+    const objects = [
+      "<</Type/Catalog/Pages 2 0 R>>",
+      "<</Type/Pages/Kids[3 0 R]/Count 1>>",
+      "<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>",
+      `<</Length ${stream.length}>>\nstream\n${stream}\nendstream`,
+      "<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>",
+    ];
+    let pdf = "%PDF-1.4\n";
+    const offsets: number[] = [];
+    objects.forEach((body, i) => {
+      offsets.push(pdf.length);
+      pdf += `${i + 1} 0 obj\n${body}\nendobj\n`;
+    });
+    const xrefPos = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    for (const off of offsets) pdf += `${String(off).padStart(10, "0")} 00000 n \n`;
+    pdf += `trailer\n<</Size ${objects.length + 1}/Root 1 0 R>>\nstartxref\n${xrefPos}\n%%EOF`;
+    const bytes = new Uint8Array(pdf.length);
+    for (let i = 0; i < pdf.length; i += 1) bytes[i] = pdf.charCodeAt(i) & 0xff;
+    return bytes.buffer;
+  }
+
+  const BODY = [
+    { size: 11, y: 690, text: "This Agreement is made as of the Effective Date." },
+    { size: 11, y: 620, text: "Provider shall perform the Services." },
+    { size: 11, y: 600, text: "Client shall pay the fees." },
+    { size: 11, y: 580, text: "Each party bears its own costs." },
+  ];
+
+  it("promotes a larger line to a heading and nests a smaller one under it", async () => {
+    const result = await ingestPdfBuffer(
+      pdfWithLines([
+        { size: 18, y: 720, text: "MASTER SERVICES AGREEMENT" },
+        BODY[0]!,
+        { size: 14, y: 650, text: "1. Services" },
+        ...BODY.slice(1),
+      ]),
+      { allowOcr: false },
+    );
+    const top = result.tree.sections;
+    expect(top).toHaveLength(1);
+    expect(top[0]!.heading).toBe("MASTER SERVICES AGREEMENT");
+    expect(top[0]!.level).toBe(1);
+    // The preamble under the title is kept, not swallowed by the promotion.
+    expect(top[0]!.paragraphs).toHaveLength(1);
+    // The 14pt line is a heading too, and a DEEPER one: the level comes from
+    // the distance above the median, so a sub-heading nests rather than
+    // becoming a sibling of the document's own name.
+    const sub = top[0]!.children;
+    expect(sub).toHaveLength(1);
+    expect(sub[0]!.heading).toBe("1. Services");
+    expect(sub[0]!.level).toBeGreaterThan(top[0]!.level);
+    expect(sub[0]!.paragraphs.length).toBeGreaterThan(0);
+  });
+
+  it("gives a single-size PDF one flat, unheaded section", async () => {
+    // The case that makes heading-dependent rules go quiet — worth pinning so
+    // the difference between the two shapes is a fact of record, not a guess.
+    const result = await ingestPdfBuffer(pdfWithLines(BODY), { allowOcr: false });
+    expect(result.tree.sections).toHaveLength(1);
+    expect(result.tree.sections[0]!.heading).toBe("");
+    expect(result.tree.sections[0]!.paragraphs.length).toBeGreaterThan(0);
+  });
+});

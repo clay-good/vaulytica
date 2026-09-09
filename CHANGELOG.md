@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.623.0] — 2026-09-09
+
+### Added
+- **How a PDF gets a section tree at all, finally under test.**
+  `buildTreeFromPages` reads structure out of **type size**: a paragraph whose
+  largest glyph sits at least two points above the page's median, on one line,
+  under 120 characters, is a heading — and its nesting level comes from how far
+  above the median it sits. Every existing PDF test built a one-line, one-size
+  document, so none of that ran.
+
+  It is the spine of every rule that reads `section.heading`. A PDF with no
+  size contrast is **one flat, unheaded section**, exactly like pasted text, and
+  the heading-dependent rules go quiet on it without saying so. Both shapes are
+  now pinned: an 18pt title becomes a level-1 section whose preamble paragraph
+  is kept, a 14pt "1. Services" nests *under* it rather than beside it, and a
+  single-size PDF yields one section with an empty heading.
+
+  Proven by breaking two: disabling heading detection fails 1, flattening every
+  level to 1 fails 1.
+
+### Fixed
+- **A claim this changelog made five releases ago was too narrow.** 9.608.0 said
+  STRUCT-010's reachable input was "in practice, DOCX." Measured: a PDF whose
+  headings are set in a larger type size gets sections too, so the TOC-parity
+  rule reaches those as well. The note in `STRUCT-010.test.ts` is corrected and
+  points at the test that settles it — a false claim outlives the fix it
+  describes, and this repo keeps finding its own copies.
+
 ## [9.622.0] — 2026-09-09
 
 ### Added
