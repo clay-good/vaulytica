@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.637.0] — 2026-09-09
+
+### Fixed
+- **Two CRITICAL false accusations on textbook Article 28 drafting, and a rule
+  that never tested the precondition its own description states.** The sixth
+  clean document — a complete controller-to-processor DPA with every Art. 28(3)
+  obligation, the SCCs Module Two with the options selected, the UK Addendum,
+  and completed Annexes I and II — drew twenty-one findings.
+
+  | Rule | The document says | The rule read |
+  |---|---|---|
+  | **DPA-024** (critical) | a 48-hour breach-notice clause, followed by "Processor shall **not notify a Supervisory Authority or any Data Subject on Controller's behalf** without Controller's prior written instruction" | `shall not notify` with the word "Controller" anywhere in the next 60 characters — so the clause that stops the processor making the controller's *own* Art. 33(1) notification was read as a refusal to notify the controller |
+  | **DPA-006** (critical) | "**Controller is responsible for** the lawfulness of the Personal Data it provides and for having a lawful basis for the Processing" | `controller shall comply` / `controller shall determine` only |
+  | **TRANSFER-018** | nothing about adequacy at all — it transfers on the SCCs | the rule's description begins "**Where an adequacy decision is relied on**" and it tested no such thing, so it asked five corpus DPAs for a fallback against the invalidation of a decision none of them relies on |
+
+  A fourth defect came out of the same widening, in a place nobody was
+  looking: **DPA-006 had been firing on the v3 fixture named for a different
+  rule**, whose §3 is headed "Rights and Obligations of the Controller" and
+  reads "Controller is responsible for ensuring the lawfulness of the
+  processing". It was a false accusation the whole time, and the fixture's
+  expectation carried it as if it were the point.
+
+  TRANSFER-018 is gated now. The v3 presence builder gained the `applicable_if`
+  field `buildV4PresenceRule` has carried since the Reg Z / OWBPA / DGCL rules,
+  and gated ids are registered in `V3_GATED_PRESENCE_RULE_IDS`, which
+  `presence-rule-satisfiable.test.ts` now reads alongside its v4 sibling — so
+  the exception list cannot drift from the rules it describes. **Five specimens
+  move**, all in the direction the rule's own text asks for.
+
+### Added
+- `tests/fixtures/specimens/dpa-complete.txt` — the sixth clean document, and
+  the 318th specimen. Its remaining findings record an open question rather
+  than a defect: the governing law, liability cap and termination rights it
+  takes from the Principal Agreement **by reference** are reported absent by
+  CHOICE-001, RISK-005 and TERM-002. One cause, five faces, deliberately left
+  for its own change — how an ancillary document should be read is a judgment,
+  not a pattern that is merely too narrow.
+
 ## [9.636.0] — 2026-09-09
 
 ### Fixed

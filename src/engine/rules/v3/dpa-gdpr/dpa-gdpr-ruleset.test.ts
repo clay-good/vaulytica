@@ -748,3 +748,44 @@ describe("Article 28 as a sub-processing agreement answers it", () => {
     ).toBe(true);
   });
 });
+
+// Two defects a COMPLETE controller-to-processor DPA found (9.637.0), both
+// reported at CRITICAL on textbook Article 28 drafting.
+describe("the clean-document findings — DPA-024 / DPA-006", () => {
+  const fires = async (id: string, ...body: string[]) =>
+    (
+      await runEngine({
+        rules: DPA_GDPR_RULES,
+        ctx: withDpa(buildContext(["Data Processing Agreement", ...body])),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === id);
+
+  // The clause that keeps the processor from making the CONTROLLER's Art. 33(1)
+  // notification for it is not a refusal to notify the controller.
+  it("DPA-024 does not read 'shall not notify a Supervisory Authority on Controller's behalf' as a refusal", async () => {
+    expect(
+      await fires(
+        "DPA-024",
+        "Processor shall notify Controller without undue delay, and in any event within forty-eight (48) hours, after becoming aware of a Personal Data Breach. Processor shall not notify a Supervisory Authority or any Data Subject on Controller's behalf without Controller's prior written instruction.",
+      ),
+    ).toBe(false);
+  });
+
+  it.each([
+    "Processor is not required to notify Controller of any personal data breach.",
+    "Processor shall not notify the Controller of a personal data breach.",
+    "Processor has no obligation to notify Controller of any security breach.",
+  ])("DPA-024 still fires on a genuine refusal: %s", async (body) => {
+    expect(await fires("DPA-024", body)).toBe(true);
+  });
+
+  it("DPA-006 reads the controller's obligations stated as RESPONSIBILITY", async () => {
+    expect(
+      await fires(
+        "DPA-006",
+        "Controller is responsible for the lawfulness of the Personal Data it provides and for having a lawful basis for the Processing.",
+      ),
+    ).toBe(false);
+  });
+});

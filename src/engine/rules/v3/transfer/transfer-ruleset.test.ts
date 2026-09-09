@@ -226,3 +226,40 @@ describe("TRANSFER-003 — SCC-modification detection recognizes active verbs (v
     expect(await fires(b)).toBe(false);
   });
 });
+
+// TRANSFER-018's own description says "WHERE AN ADEQUACY DECISION IS RELIED
+// ON", and until 9.637.0 the rule tested no such thing.
+describe("TRANSFER-018 — a rule that states a precondition must test it", () => {
+  const fires = async (...body: string[]) =>
+    (
+      await runEngine({
+        rules: TRANSFER_RULES,
+        ctx: withPb(buildContext(["Data Processing Agreement", ...body]), SCC2),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "TRANSFER-018");
+
+  it("stands down on a DPA that transfers on the SCCs and never mentions adequacy", async () => {
+    expect(
+      await fires(
+        "The Standard Contractual Clauses, Module Two, are incorporated into this DPA and apply to that transfer, with Controller as data exporter and Processor as data importer.",
+      ),
+    ).toBe(false);
+  });
+
+  it("still fires on a DPA that DOES rely on an adequacy decision and states no fallback", async () => {
+    expect(
+      await fires(
+        "Transfers to the United Kingdom are made in reliance on the adequacy decision adopted by the European Commission on 28 June 2021.",
+      ),
+    ).toBe(true);
+  });
+
+  it("stays silent when the adequacy reliance carries its fallback", async () => {
+    expect(
+      await fires(
+        "Transfers are made in reliance on an adequacy decision. If the adequacy decision is invalidated, the parties shall promptly implement the EU SCCs.",
+      ),
+    ).toBe(false);
+  });
+});

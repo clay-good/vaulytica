@@ -37,6 +37,7 @@ import { V4_RULES } from "../../src/engine/rules/v4/index.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
 import { V4_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v4/_helpers.js";
+import { V3_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v3/_regulated-rule.js";
 import { buildContext } from "../../src/engine/_test-fixtures.js";
 import type { Rule, RuleContext } from "../../src/engine/finding.js";
 
@@ -80,7 +81,7 @@ describe("every presence rule can report its own absence", () => {
     for (const id of [...ids].sort()) {
       const rule = rules.get(id);
       if (!rule) continue;
-      if (V4_GATED_PRESENCE_RULE_IDS.has(id)) continue;
+      if (V4_GATED_PRESENCE_RULE_IDS.has(id) || V3_GATED_PRESENCE_RULE_IDS.has(id)) continue;
       const playbooks = (rule as Rule & { playbooks?: string[] }).playbooks ?? [];
       const ctx: RuleContext = {
         ...base,

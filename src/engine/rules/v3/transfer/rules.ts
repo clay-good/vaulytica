@@ -450,6 +450,7 @@ export const TRANSFER_RULES: Rule[] = [
   }),
   presenceAll({
     id: "TRANSFER-018",
+    version: "1.1.0",
     name: "Adequacy decision currency clause",
     description:
       "Where an adequacy decision is relied on, the DPA should anchor the reliance with a fallback for invalidation.",
@@ -461,6 +462,17 @@ export const TRANSFER_RULES: Rule[] = [
       "Adequacy decisions can be invalidated (Schrems I, Schrems II). A fallback to SCCs / IDTA prevents transfer disruption.",
     recommendation:
       "Add: 'In the event the relied-upon adequacy decision is invalidated, the parties shall promptly implement the EU SCCs / UK Addendum / UK IDTA as a fallback.'",
+    // The rule's own description says "WHERE AN ADEQUACY DECISION IS RELIED
+    // ON" — and until 9.637.0 it tested no such thing, so five corpus DPAs
+    // that transfer on the Standard Contractual Clauses and never mention
+    // adequacy were told they lack a fallback for the invalidation of a
+    // decision they do not rely on. The SCCs ARE the fallback. Gated on the
+    // document actually invoking an adequacy basis.
+    applicable_if: [
+      /\badequa(?:cy|te)\b/i,
+      /\b(?:article|art\.?)\s*45\b/i,
+      /Data\s+Privacy\s+Framework|\bDPF\b|Privacy\s+Shield/i,
+    ],
     present_patterns: [
       /(adequacy\s+decision\s+is\s+(?:invalidated|revoked)|fallback\s+(?:to\s+)?SCC|substitute\s+(?:transfer\s+)?mechanism)/i,
     ],

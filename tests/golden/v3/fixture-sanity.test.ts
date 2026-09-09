@@ -37,11 +37,16 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   "mutual-nda-deep-missing-dtsa-fail.txt": ["NDA-D-001"],
 
   // Article 28(3)(a) GDPR DPA with the documented-instructions clause
-  // removed. DPA-007 is the load-bearing critical; the controller-side
-  // duty in DPA-006 also fires because removing §4 also lost the
-  // "Controller shall provide Processor with documented instructions"
-  // sentence.
-  "dpa-controller-processor-missing-documented-instructions-fail.txt": ["DPA-007", "DPA-006"],
+  // removed. DPA-007 is the load-bearing critical.
+  //
+  // DPA-006 came off this row in 9.637.0, and it was a false accusation the
+  // whole time: the fixture's §3 is headed "Rights and Obligations of the
+  // Controller" and reads "Controller is responsible for ensuring the
+  // lawfulness of the processing" — which is exactly what Art. 28(3)
+  // introductory asks for. The rule read only "controller shall comply" and
+  // "controller shall determine", so it never saw the clause it was standing
+  // over.
+  "dpa-controller-processor-missing-documented-instructions-fail.txt": ["DPA-007"],
 
   // AI Addendum that explicitly permits training on Customer Data on
   // an opt-out basis. ADDENDA-011 fires (critical) per FTC enforcement

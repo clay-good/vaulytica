@@ -143,6 +143,11 @@ const TERM_FORMAT_DEBT: readonly string[] = [
   "demand-for-inspection.txt [blank lines stripped] lost:PROPOUNDING PARTY,RESPONDING PARTY gained:-",
   "demand-letter.txt [double-spaced] lost:- gained:Our Client",
   "do-liability-policy.txt [double-spaced] lost:- gained:Named Insured,Policy Period",
+  // 9.637.0 — the sixth clean document, and the same Annex shape the list
+  // already carries: "Competent Supervisory Authority: the Irish Data
+  // Protection Commission" is a FIELD BLOCK in Annex I, and once the blank
+  // lines go its rows join into prose the field-label reader cannot see.
+  "dpa-complete.txt [blank lines stripped] lost:Competent Supervisory Authority gained:-",
   "earnout.txt [smart quotes] lost:Sellers' Representative gained:Sellers’ Representative",
   "equipment-finance-lease.txt [blank lines stripped] lost:LLC LESSEE gained:-",
   "escrow-agreement-indemnity.txt [smart quotes] lost:Sellers' Representative gained:Sellers’ Representative",

@@ -73,6 +73,22 @@ export type PresenceSpec = {
   recommendation: string;
   present_patterns: RegExp[];
   /**
+   * Applicability gate, the same mechanism `buildV4PresenceRule` has carried
+   * since the Reg Z / OWBPA / DGCL rules were written: when it is set and none
+   * of its patterns match the document, the rule stands down entirely.
+   *
+   * It exists because a rule whose DESCRIPTION states a precondition must TEST
+   * that precondition. TRANSFER-018 reads "Where an adequacy decision is relied
+   * on, the DPA should anchor the reliance with a fallback for invalidation" —
+   * and fired on every DPA in the corpus, five of which rely on the Standard
+   * Contractual Clauses and never mention adequacy at all. A finding whose own
+   * text says it may not apply is not a finding.
+   *
+   * Ids built with a gate are recorded in `V3_GATED_PRESENCE_RULE_IDS` so the
+   * satisfiability guard's exception list cannot drift from the rules.
+   */
+  applicable_if?: readonly RegExp[];
+  /**
    * Express-denial patterns. A presence rule looks for the words the required
    * clause would use, so a document that AFFIRMATIVELY DISCLAIMS the clause
    * matches the topic words and the rule stays SILENT — while a document that
@@ -221,8 +237,11 @@ export function adoptsStandardFormInFull(ctx: RuleContext): boolean {
   );
 }
 
+export const V3_GATED_PRESENCE_RULE_IDS = new Set<string>();
+
 export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfig): Rule {
   const { id: dkb_id } = config.cite_for(spec.citation);
+  if (spec.applicable_if) V3_GATED_PRESENCE_RULE_IDS.add(spec.id);
   return {
     id: spec.id,
     version: spec.version ?? "1.0.0",
@@ -236,6 +255,7 @@ export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfi
       if (config.supplied_by_standard_form?.has(spec.id) && adoptsStandardFormInFull(ctx))
         return null;
       const text = fullText(ctx);
+      if (spec.applicable_if && !spec.applicable_if.some((re) => re.test(text))) return null;
       if (spec.denied_if) {
         // An express denial outranks the presence check: the topic words are
         // present precisely because the document is disclaiming the clause.

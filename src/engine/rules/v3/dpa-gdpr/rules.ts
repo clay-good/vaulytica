@@ -261,6 +261,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-006",
+    version: "1.1.0",
     name: "Obligations and rights of the controller stated",
     description: "DPA must state the obligations and rights of the controller.",
     citation: "GDPR Art. 28(3) introductory",
@@ -281,7 +282,14 @@ export const DPA_GDPR_RULES: Rule[] = [
     // controller-to-processor DPA — which carries neither — still has to state
     // them itself.
     present_patterns: [
-      /(obligations\s+and\s+rights\s+of\s+the\s+controller|controller\s+(shall|will|must)\s+(comply|determine))/i,
+      /(obligations\s+and\s+rights\s+of\s+the\s+controller|rights\s+and\s+obligations\s+of\s+the\s+controller|controller\s+(shall|will|must)\s+(comply|determine|ensure|instruct|provide))/i,
+      // The commonest way a DPA states the controller's Art. 28(3) obligations
+      // is to allocate RESPONSIBILITY — "Controller is responsible for the
+      // lawfulness of the Personal Data it provides and for having a lawful
+      // basis for the Processing" — which names neither "comply" nor
+      // "determine", so a complete DPA was told at CRITICAL that it does not
+      // state them.
+      /\bcontroller\s+(?:is|shall\s+be|will\s+be|must\s+be|remains)\s+(?:solely\s+)?responsible\s+for\b/i,
       /\barticle\s*28\s*\(\s*4\s*\)/i,
       /\bsame\s+(?:data[- ]protection\s+)?obligations\b[^.]{0,160}?\b(?:principal|main|upstream|head)\s+(?:dpa|data\s+processing\s+agreement|contract|agreement)/is,
     ],
@@ -705,7 +713,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-024",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Processor breach notice to controller (Art. 33(2))",
     description:
       "Processor must notify the controller without undue delay after becoming aware of a personal data breach.",
@@ -741,7 +749,16 @@ export const DPA_GDPR_RULES: Rule[] = [
     // deadline under Art. 33(1).
     denied_if: [
       /\b(?:is|are)\s+not\s+(?:required|obligated|obliged)\s+to\s+(?:notify|inform)\b/i,
-      /\b(?:shall|will|must|does|do)\s+not\s+(?:notify|inform)\b[^.]{0,60}?\b(?:controller|breach)/i,
+      // The OBJECT of the refusal must be the CONTROLLER. "Processor shall not
+      // notify a Supervisory Authority or any Data Subject on Controller's
+      // behalf without Controller's prior written instruction" is the opposite
+      // of a refusal to notify the controller — it is the clause that keeps the
+      // processor from making the controller's Art. 33(1) notification for it —
+      // and the old window merely required the word "Controller" within 60
+      // characters, so a complete DPA with a 48-hour breach-notice clause was
+      // told at CRITICAL that its breach notification is expressly excused.
+      /\b(?:shall|will|must|does|do)\s+not\s+(?:notify|inform)\s+(?:the\s+)?(?:controller|customer|client|company|data\s+exporter)\b/i,
+      /\b(?:shall|will|must|does|do)\s+not\s+(?:notify|inform)\s+(?:it|them|the\s+other\s+party)?\s*(?:of|about)\s+[^.]{0,40}?\bbreach\b/i,
       /\bno\s+(?:obligation|duty)\s+to\s+(?:notify|inform)\b/i,
     ],
     denied_title: "Processor breach notification expressly excused",

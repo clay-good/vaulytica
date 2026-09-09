@@ -1962,6 +1962,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // What is left is on the page: this DPA names no transfer mechanism, no EU
   // representative and no sub-processor annex, and it incorporates rather than
   // restates the technical measures.
+  // TRANSFER-018 came off this row (and four others) in 9.637.0: the rule asks
+  // for a fallback against the invalidation of an adequacy decision, and its
+  // own description says "where an adequacy decision is relied on". These
+  // documents transfer on the Standard Contractual Clauses and never mention
+  // adequacy at all — the SCCs ARE the fallback.
   "dpa-defined-term.txt": {
     playbook: "dpa-controller-processor",
     findings: [
@@ -1984,7 +1989,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "DPA-054",
       "DPA-055",
       "OBLI-005",
-      "TRANSFER-018",
       "TRANSFER-019",
       "TRANSFER-020",
     ],
@@ -2220,7 +2224,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // the adequacy decision being invalidated, and this one does not.
   "uk-idta-addendum.txt": {
     playbook: "uk-idta-addendum",
-    findings: ["TRANSFER-018", "TEMP-002"],
+    findings: ["TEMP-002"],
   },
 
   // An executed EU SCC Module Two set — a cover page, the option selections,
@@ -2238,8 +2242,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // What is left is on the page. The importer is a US processor and no Article
   // 27 representative is named (DPA-030); there is no notices clause outside
   // the Annex I.A contacts (DPA-051); and it adds no fallback for the adequacy
-  // decision being invalidated (TRANSFER-018), which a careful exporter's
-  // counsel does.
+  // decision being invalidated, which a careful exporter's counsel does —
+  // though TRANSFER-018 itself came off in 9.637.0, since the set relies on the
+  // SCCs rather than on any adequacy decision.
   //
   // DPA-044 came off at 9.379.0, and it was a false accusation the whole time:
   // the set signs "Date: 2 February 2026" in Annex I.A, which is the field the
@@ -2248,7 +2253,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // the one thing this family can rely on about its documents.
   "scc-module-2.txt": {
     playbook: "scc-module-2",
-    findings: ["DPA-030", "DPA-051", "TRANSFER-018", "OBLI-005", "OBLI-008", "TEMP-002"],
+    findings: ["DPA-030", "DPA-051", "OBLI-005", "OBLI-008", "TEMP-002"],
   },
 
   // A university exclusive license, the 231st specimen and the first for
@@ -4182,7 +4187,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "STRUCT-006",
       "STRUCT-018",
       "TERM-002",
-      "TRANSFER-018",
       "TRANSFER-020",
       "OBLI-005",
     ],
@@ -4347,7 +4351,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "DPA-051",
       "DPA-055",
       "STRUCT-007",
-      "TRANSFER-018",
       "CHOICE-003",
     ],
   },
@@ -5043,6 +5046,57 @@ export const EXPECTED: Record<string, Expectation> = {
   "mutual-nda-complete.txt": {
     playbook: "mutual-nda-deep",
     findings: ["NDA-D-018", "NDA-D-019", "NDA-D-022", "OBLI-005", "RISK-001", "TERM-007"],
+  },
+  // A COMPLETE controller-to-processor DPA — the sixth clean document
+  // (9.637.0). Every Article 28(3) obligation in order, the SCCs Module Two
+  // with the options selected, the UK Addendum, Annex I details and Annex II
+  // measures. Three defects, two of them CRITICAL:
+  //
+  //  - DPA-024 said the breach notification is "expressly excused" about a
+  //    document with a 48-hour notice clause. The denial pattern needed only
+  //    the word "Controller" within 60 characters of "shall not notify", and
+  //    the clause it matched — "Processor shall not notify a Supervisory
+  //    Authority or any Data Subject ON CONTROLLER'S BEHALF" — is the opposite
+  //    of a refusal: it keeps the processor from making the controller's own
+  //    Art. 33(1) notification for it.
+  //  - DPA-006 said the controller's obligations are not stated about
+  //    "Controller is responsible for the lawfulness of the Personal Data it
+  //    provides". The pattern read only "controller shall comply/determine".
+  //  - TRANSFER-018 asked for a fallback against the invalidation of an
+  //    adequacy decision the document does not rely on. Its own description
+  //    begins "Where an adequacy decision is relied on" and it tested nothing
+  //    of the kind; five corpus DPAs were told the same thing.
+  //
+  // What remains is true of the draft: no TIA reference, no Art. 27
+  // representative, no notice or survival clause of its own, no
+  // public-authority-request clause, and the governing law, liability cap and
+  // termination rights it takes from the Principal Agreement by reference —
+  // which CHOICE-001, RISK-005 and TERM-002 report as absent. That last group
+  // is one cause with five faces and is deliberately left for its own change:
+  // it is a judgment about how an ancillary document should be read, not a
+  // pattern that is simply too narrow.
+  "dpa-complete.txt": {
+    playbook: "dpa-controller-processor",
+    findings: [
+      "CHOICE-001",
+      "CHOICE-003",
+      "DPA-030",
+      "DPA-034",
+      "DPA-051",
+      "DPA-052",
+      "DPA-054",
+      "DPA-055",
+      "IPDATA-001",
+      "OBLI-005",
+      "RISK-001",
+      "RISK-005",
+      "STRUCT-006",
+      "STRUCT-007",
+      "TERM-002",
+      "TERM-007",
+      "TRANSFER-019",
+      "TRANSFER-020",
+    ],
   },
   "enterprise-saas-subscription.txt": {
     playbook: "saas-customer",

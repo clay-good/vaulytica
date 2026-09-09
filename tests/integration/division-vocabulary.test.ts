@@ -73,6 +73,14 @@ const rename =
 const ARTICLE_DEBT: readonly string[] = [
   "bylaws-corporation.txt: lost - gained STRUCT-007",
   "consent-judgment.txt: lost - gained STRUCT-007",
+  // 9.637.0 — the sixth clean document joins both lists for one reason: its UK
+  // Addendum clause says "neither party able to end the Addendum under Section
+  // 19", a reference to a section of ANOTHER instrument, named in the same
+  // sentence. STRUCT-007 reports it as unresolved (correctly, against this
+  // document's own outline), and the rename makes it stop being seen — so the
+  // finding moves. The external-citation guard above knows STATUTES; a numbered
+  // section of a named CONTRACT instrument is the same shape and is not covered.
+  "dpa-complete.txt: lost STRUCT-007 gained -",
   // 9.634.0 — FOUR entries left this list when the statutory-citation guard
   // above was anchored: `equity-incentive-plan`, `executive-employment`,
   // `merger-agreement` and `option-grant` were never ambiguous documents at
@@ -92,6 +100,11 @@ const CLAUSE_DEBT: readonly string[] = [
   // 9.634.0 — EMPTY, for the same reason the Article list lost four: every
   // entry here was a statutory citation the transform had renamed. A relation
   // whose debt list is empty is the strongest form of the claim it makes.
+  //
+  // 9.637.0 — one entry, and the same one the Article list gained: a numbered
+  // section of a NAMED external instrument ("the Addendum … under Section 19")
+  // is the contract-world twin of the statutory citation the guard above knows.
+  "dpa-complete.txt: lost STRUCT-007 gained -",
 ];
 
 async function moved(mutate: (t: string) => string): Promise<{ moved: string[]; probed: number }> {
