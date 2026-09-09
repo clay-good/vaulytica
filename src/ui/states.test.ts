@@ -2413,3 +2413,90 @@ describe("the jurisdiction-overlay card", () => {
     expect(el.textContent).toContain("that state");
   });
 });
+
+/**
+ * The three halves of the production-QA card nothing exercised.
+ *
+ * The card is tested for the case where a log was supplied, the sweep was
+ * clean and one issue was found. Its other branches are the ones that carry
+ * bad news: a member that could NOT be scanned, a sweep that DID flag
+ * something, and a privilege log the parser had warnings about. Each is a
+ * number or a caveat that has to reach the reviewer before a production goes
+ * out — the "nothing found" wording is what a silent branch degrades into.
+ */
+describe("the production-QA card's other branches", () => {
+  const state = (production_qa: unknown) =>
+    ({
+      kind: "bundle-complete",
+      document_count: 3,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["d"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "b.docx",
+      bundle_json_filename: "b.json",
+      production_qa,
+    }) as never;
+  const base = {
+    member_count: 4,
+    bates_count: 4,
+    log_present: true,
+    log_warnings: [],
+    findings: [],
+    production_qa_hash: "a".repeat(64),
+  };
+
+  it("says a clean reconciliation found nothing, rather than showing an empty list", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, state(base));
+    const card = select<HTMLElement>(dz, "bundle-production-qa")!;
+    expect(card.hidden).toBe(false);
+    expect(card.textContent).toContain("No Bates or privilege-log reconciliation issues found");
+    expect(card.textContent).toContain("0 issues");
+    document.body.removeChild(dz);
+  });
+
+  it("counts the members it could NOT inspect, and what the sweep flagged", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(
+      dz,
+      state({ ...base, delivery_sweep: { members_scanned: 4, flags: 2, uninspectable: 1 } }),
+    );
+    const text = select<HTMLElement>(dz, "bundle-production-qa")!.textContent ?? "";
+    expect(text).toContain("4 members scanned");
+    expect(text, "a member that could not be scanned went unmentioned").toContain(
+      "(1 uninspectable)",
+    );
+    expect(text).toContain("2 flagged for review");
+    document.body.removeChild(dz);
+  });
+
+  it("surfaces the privilege log's own parse warnings", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(
+      dz,
+      state({
+        ...base,
+        log_warnings: ["Unterminated quoted field near end of input; closed implicitly."],
+      }),
+    );
+    const text = select<HTMLElement>(dz, "bundle-production-qa")!.textContent ?? "";
+    expect(text, "the log parser's warning never reached the reviewer").toContain(
+      "Privilege log: Unterminated quoted field",
+    );
+    document.body.removeChild(dz);
+  });
+
+  it("says so when no privilege log was supplied at all", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    renderState(dz, state({ ...base, log_present: false }));
+    expect(select<HTMLElement>(dz, "bundle-production-qa")!.textContent).toContain(
+      "privilege log not supplied",
+    );
+    document.body.removeChild(dz);
+  });
+});

@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.620.0] — 2026-09-09
+
+### Added
+- **The production-QA card's other three branches — the ones that carry bad
+  news.** The card was tested for the happy path: a log supplied, a clean
+  sweep, one issue found. Its remaining branches were not, and each is a number
+  or a caveat that has to reach a reviewer before a production goes out:
+
+  | Branch | What silence would mean |
+  |---|---|
+  | `uninspectable > 0` | a member the sweep could **not** open, counted as if it had been checked |
+  | `flags > 0` | the sweep found something and said nothing |
+  | `log_warnings` | the privilege-log parser's own warning (an unterminated quoted field, say) never reaching the reviewer |
+  | `log_present: false` | "privilege log not supplied" degrading into no statement at all |
+
+  Also pinned: a clean reconciliation must **say** it found nothing rather than
+  render an empty list. Proven by breaking two: dropping the uninspectable
+  count fails 1, suppressing the log warnings fails 1.
+
 ## [9.619.0] — 2026-09-09
 
 ### Added
