@@ -20,9 +20,14 @@
  * against the 0.5 threshold and fell to `generic-fallback`, so none of its
  * family's checks ran. With the title seen it scores 0.7 and routes.
  *
- * Four copies of one line is the pattern worth remembering — the helper now
- * lives beside `matchPlaybook`, which is the only reason a fifth cannot
- * appear.
+ * Four copies of one line is the pattern worth remembering.
+ *
+ * 🚨 And extracting the helper did NOT stop a fifth: four more copies survived
+ * in the test harnesses (`tests/integration/_pipeline-helpers.ts`, both golden
+ * pipelines, the bundle pipeline), where they routed 78 of 312 specimens to a
+ * different family than the product gives the same bytes. A helper is not a
+ * single owner until something forbids the bypass —
+ * `tests/integration/title-input-single-owner.test.ts` is that something.
  */
 
 import { readFileSync } from "node:fs";

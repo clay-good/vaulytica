@@ -19,6 +19,7 @@ import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
 import { LAUNCH_RULES, runEngine, type EngineRun } from "../../src/engine/index.js";
 import {
   matchPlaybook,
+  titleCorpus,
   parsePlaybook,
   LAUNCH_PLAYBOOK_IDS,
   type Playbook,
@@ -95,7 +96,7 @@ export async function runFixture(path: string, fileName?: string): Promise<RunFi
   });
   const playbooks = await loadAllPlaybooks();
 
-  const titleSource = ingest.tree.sections[0]?.heading ?? name;
+  const titleSource = titleCorpus(ingest.tree, name);
   // Walk every section + child for the body text so distinguishing-phrase
   // matching sees the whole document, not just section[0]. Matches what
   // the browser pipeline does in src/ui/pipeline.ts.

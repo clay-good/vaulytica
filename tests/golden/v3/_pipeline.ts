@@ -33,6 +33,7 @@ import {
 } from "../../../src/engine/index.js";
 import {
   matchPlaybook,
+  titleCorpus,
   parsePlaybook,
   LAUNCH_PLAYBOOK_IDS,
   type Playbook,
@@ -124,7 +125,7 @@ export async function runV3Fixture(path: string, fileName?: string): Promise<Run
   // pick a v2 fallback.
   const forced = await readForcedPlaybook(path);
 
-  const titleSource = ingest.tree.sections[0]?.heading ?? name;
+  const titleSource = titleCorpus(ingest.tree, name);
   const bodyParts: string[] = [];
   const walkSections = (sections: import("../../../src/ingest/types.js").Section[]): void => {
     for (const s of sections) {

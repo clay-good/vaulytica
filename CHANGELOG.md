@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.609.0] — 2026-09-09
+
+### Fixed
+- **Four more copies of the empty-title bug were hiding in the test harnesses,
+  and they routed a quarter of the corpus to the wrong family.** The title is
+  the largest single contributor to a playbook score (0.3, against 0.2 per
+  distinguishing phrase). Every call site used to build that input by hand as
+  `ingest.tree.sections[0]?.heading ?? filename` — and `??` catches null and
+  undefined, not the **empty string** a plain-text document's tree carries. The
+  production fix extracted `titleCorpus` and, by its own account, covered
+  "three production call sites plus the parity test."
+
+  It did not. The line survived in `tests/integration/_pipeline-helpers.ts` —
+  the helper roughly forty integration tests use to run the 312-specimen
+  corpus — and in all three golden pipelines (v3, v4, bundle). Measured across
+  the specimen corpus, harness routing against product routing:
+
+  | | |
+  |---|---|
+  | Specimens routed to a **different playbook** than the product gives the same bytes | **78 of 312 (25%)** |
+  | `indemnification-agreement.txt`, `ip-assignment.txt`, `earnout.txt`, … | → `generic-fallback` |
+  | `handbook.txt` | `employment-at-will-us` → `employee-handbook` |
+  | `eula.txt` | `copyright-license` → `eula` |
+  | `gdpr-notice.txt` | `dpa-controller-processor` → `privacy-notice-gdpr` |
+
+  In every case the product's routing is the right one. Every metamorphic
+  relation and false-positive sweep built on that helper had been measuring a
+  pipeline no user runs — often `generic-fallback`, whose ruleset is the
+  thinnest in the catalog, so the sweeps were weaker than they read.
+
+  The repo's own pasted-text fixture makes the mechanism visible: routed by the
+  harness, `pasted-mutual-nda.txt` matched `mutual-nda` at **0.8 with no title
+  signal at all**; through `titleCorpus` it matches at **1.0** on "mutual
+  non-disclosure agreement". Three golden hashes moved, all of them
+  `playbook_match_confidence` / `_reasoning` — no finding changed, because the
+  golden fixtures pin their family with a `.playbook` sidecar. That sidecar is
+  exactly why this could hide for so long.
+
+### Added
+- **A guard that makes `titleCorpus` a single owner instead of a suggestion.**
+  `title-input-single-owner.test.ts` scans `src`, `tests`, `tools` and `site`
+  with comments stripped and fails on any file but the matcher that rebuilds
+  the title with `sections[0]?.heading ??`, and separately asserts that each of
+  the five harnesses that route a document calls `titleCorpus`. It is
+  anti-vacuity checked (it must see 500+ files and name the harness), and its
+  pattern is proven against the offending line verbatim.
+
+  The claim it corrects was itself in a docstring — "the only reason a fifth
+  cannot appear" — which is the shape this repo keeps meeting: a false claim
+  outlives the fix it describes. `title-corpus.test.ts` now says what actually
+  happened.
+
 ## [9.608.0] — 2026-09-08
 
 ### Fixed

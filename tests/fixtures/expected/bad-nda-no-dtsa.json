@@ -1030,12 +1030,12 @@
   ],
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
-  "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "c34b67c4f2fcfab2f0dafa8a7f14f392ec87fced23fa0bd20b3a1a1ce15ae457",
+  "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way nda\", \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
+  "result_hash": "34a84307d12016cbfea590806b28226aa8cd731f61473221a9da83964e2fb509",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",
     "size_bytes": 9006
   },
-  "version": "9.608.0"
+  "version": "9.609.0"
 }

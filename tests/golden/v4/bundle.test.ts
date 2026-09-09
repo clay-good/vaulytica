@@ -41,7 +41,7 @@ import {
 } from "../../../src/engine/consistency/index.js";
 import { loadStarterDkbSync } from "../../../src/engine/_test-fixtures.js";
 import { extractAll } from "../../../src/extract/index.js";
-import { matchPlaybook } from "../../../src/playbooks/index.js";
+import { matchPlaybook, titleCorpus } from "../../../src/playbooks/index.js";
 
 import { ingestFixture, listV4Bundles, loadAllPlaybooks } from "./_pipeline.js";
 
@@ -132,7 +132,7 @@ async function runBundle(name: string): Promise<BundleResult> {
     const extracted = extractAll(ingest.tree, {
       classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
     });
-    const titleSource = ingest.tree.sections[0]?.heading ?? entry;
+    const titleSource = titleCorpus(ingest.tree, entry);
     const bodyParts: string[] = [];
     const walk = (sections: import("../../../src/ingest/types.js").Section[]): void => {
       for (const s of sections) {
