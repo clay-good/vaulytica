@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { bootUi } from "./main.js";
 
 /**
@@ -15,6 +15,18 @@ import { bootUi } from "./main.js";
  * directions.
  */
 describe("bootUi", () => {
+  // 🚨 `dragenter` fires `preloadPipeline()`, whose `void import("./pipeline.js")`
+  // is deliberately unawaited — it races the user's file-pick gesture in the
+  // browser. In a test it races TEARDOWN instead: the chunk finished loading
+  // after the environment closed and vitest failed the whole run with an
+  // `EnvironmentTeardownError`, while every test still reported green. (It
+  // passed locally and broke CI, which is the timing all the way through.)
+  // Loading the module up front puts it in the registry, so the preload
+  // resolves from cache inside the test's own lifetime.
+  beforeAll(async () => {
+    await import("./pipeline.js");
+  }, 60_000);
+
   const dropzone = (): HTMLElement => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);
@@ -47,6 +59,8 @@ describe("bootUi", () => {
     // `dragenter` is what sets it — `dragover` only preventDefaults, which is
     // what keeps the browser from navigating to the dropped file.
     dz.dispatchEvent(new Event("dragenter", { bubbles: true, cancelable: true }));
+    // Let the (now cached) preload settle inside the test's own lifetime.
+    await new Promise((r) => setTimeout(r, 0));
     expect(dz.classList.contains("is-dragging")).toBe(true);
     dz.dispatchEvent(new Event("dragleave", { bubbles: true, cancelable: true }));
     expect(dz.classList.contains("is-dragging")).toBe(false);

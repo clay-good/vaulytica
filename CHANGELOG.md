@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.616.0] — 2026-09-09
+
+### Fixed
+- **The new `bootUi` drag test broke the deploy workflow, and every test still
+  reported green.** `dragenter` fires `preloadPipeline()`, whose
+  `void import("./pipeline.js")` is deliberately unawaited — in the browser it
+  races the user's file-pick gesture. In a test it raced **teardown**: the chunk
+  finished loading after the environment closed, vitest reported
+  `EnvironmentTeardownError` as an unhandled rejection and exited non-zero on
+  14,348 passing tests. It passed locally and failed in CI, which is the same
+  timing seen from the other side. The module is now loaded up front so the
+  preload resolves from the registry inside the test's own lifetime.
+
+### Added
+- **Every download button now has to hand over the file it names.** The
+  complete result card wires **nineteen** `wire(role, blob, filename)` triples,
+  and no test had ever clicked one. A list that long, written by copy-paste,
+  fails in the one way nothing else catches: the button says "Obligations
+  (CSV)", the browser saves the deadlines calendar under a `.csv` name, and
+  every rendering assertion still passes. This repo has met the family before —
+  a `.ics` served as `text/csv` opens in a spreadsheet.
+
+  The check is **content-addressed**: each fixture blob's bytes are the name of
+  the role it belongs to, so a crossed pair cannot pass. `saveBlob` prefers the
+  File System Access API, so a fake `showSaveFilePicker` captures both halves —
+  the suggested filename and the bytes actually written — and the two are
+  asserted together, per button, for all nineteen plus the report's own DOCX
+  and JSON.
+
+  The empty-blob path is pinned too: a zero-byte report must say "Could not
+  save…" rather than hand the user an empty file. Proven by breaking both —
+  crossing the obligations wire to the calendar fails 1, deleting the
+  empty-blob guard fails 2.
+
 ## [9.615.0] — 2026-09-09
 
 ### Added

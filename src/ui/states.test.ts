@@ -1883,3 +1883,120 @@ describe("input notice — the ingest's caveats about what it read", () => {
     expect(el.textContent).toContain("<img");
   });
 });
+
+/**
+ * Every download button hands over the file it names.
+ *
+ * The complete state wires **nineteen** `wire(role, blob, filename)` triples,
+ * and no test had ever clicked one. A list that long, written by copy-paste,
+ * fails in a way nothing else catches: the button says "Obligations (CSV)",
+ * the browser saves the deadlines calendar under a `.csv` name, and every
+ * assertion about rendering still passes. The repo has met the family before —
+ * a `.ics` served as `text/csv` opens in a spreadsheet.
+ *
+ * The check is content-addressed: each blob's bytes are the name of the role
+ * it belongs to, so a crossed pair cannot pass. `saveBlob` prefers the File
+ * System Access API, so a fake `showSaveFilePicker` captures both halves of
+ * the promise — the suggested filename and the bytes actually written.
+ */
+describe("the complete state's download buttons", () => {
+  type Saved = { name: string; text: string };
+
+  async function clickAndCapture(dz: HTMLElement, role: string): Promise<Saved> {
+    let written: Blob | undefined;
+    let suggested = "";
+    (window as unknown as Record<string, unknown>).showSaveFilePicker = (opts: {
+      suggestedName: string;
+    }) => {
+      suggested = opts.suggestedName;
+      return Promise.resolve({
+        createWritable: () =>
+          Promise.resolve({
+            write: (b: Blob) => {
+              written = b;
+              return Promise.resolve();
+            },
+            close: () => Promise.resolve(),
+          }),
+      });
+    };
+    const btn = select<HTMLButtonElement>(dz, role);
+    expect(btn, `no button for role ${role}`).not.toBeNull();
+    btn!.click();
+    // The click handler is async; let its microtasks drain.
+    await new Promise((r) => setTimeout(r, 0));
+    delete (window as unknown as Record<string, unknown>).showSaveFilePicker;
+    expect(written, `${role} saved nothing`).toBeDefined();
+    return { name: suggested, text: await written!.text() };
+  }
+
+  /** A blob whose bytes ARE its role, so a crossed wire cannot pass. */
+  const b = (role: string): Blob => new Blob([role], { type: "text/plain" });
+
+  const EXPORTS = [
+    ["export-fixlist-md", "fixlist_md"],
+    ["export-fixlist-csv", "fixlist_csv"],
+    ["export-obligations-csv", "obligations_csv"],
+    ["export-deadlines-ics", "deadlines_ics"],
+    ["export-html", "html"],
+    ["export-sarif", "sarif"],
+    ["export-closing-checklist-md", "closing_checklist_md"],
+    ["export-closing-checklist-csv", "closing_checklist_csv"],
+    ["export-critical-dates-ics", "critical_dates_ics"],
+    ["export-critical-dates-md", "critical_dates_md"],
+    ["export-negotiation-sheet", "negotiation_sheet"],
+    ["export-negotiation-md", "negotiation_posture_md"],
+    ["export-negotiation-csv", "negotiation_posture_csv"],
+    ["export-certificate-docx", "certificate_docx"],
+    ["export-certificate-json", "certificate_json"],
+    ["export-definitions-csv", "definitions_csv"],
+    ["export-definitions-json", "definitions_json"],
+    ["export-reviewed-docx", "reviewed_docx"],
+  ] as const;
+
+  const state = () => {
+    const ex: Record<string, Blob | string> = {};
+    for (const [, key] of EXPORTS) {
+      ex[`${key}_blob`] = b(key);
+      ex[`${key}_filename`] = `nda-${key}.out`;
+    }
+    return {
+      kind: "complete" as const,
+      filename: "nda.docx",
+      playbook_name: "Mutual NDA",
+      counts: { critical: 1, warning: 0, info: 0 },
+      docx_blob: b("report_docx"),
+      json_blob: b("report_json"),
+      docx_filename: "nda-vaulytica.docx",
+      json_filename: "nda-vaulytica.json",
+      exports: ex as never,
+    };
+  };
+
+  it("saves the report itself under its own name", async () => {
+    const dz = document.createElement("div");
+    renderState(dz, state());
+    expect(await clickAndCapture(dz, "docx-download")).toEqual({
+      name: "nda-vaulytica.docx",
+      text: "report_docx",
+    });
+    expect(await clickAndCapture(dz, "json-download")).toEqual({
+      name: "nda-vaulytica.json",
+      text: "report_json",
+    });
+  });
+
+  it.each(EXPORTS)("%s saves its own artifact, not a neighbour's", async (role, key) => {
+    const dz = document.createElement("div");
+    renderState(dz, state());
+    expect(await clickAndCapture(dz, role)).toEqual({ name: `nda-${key}.out`, text: key });
+  });
+
+  it("reports an empty blob instead of saving a zero-byte file", async () => {
+    const dz = document.createElement("div");
+    renderState(dz, { ...state(), docx_blob: new Blob([]) });
+    select<HTMLButtonElement>(dz, "docx-download")!.click();
+    await new Promise((r) => setTimeout(r, 0));
+    expect(select(dz, "download-status")!.textContent).toMatch(/could not save/i);
+  });
+});
