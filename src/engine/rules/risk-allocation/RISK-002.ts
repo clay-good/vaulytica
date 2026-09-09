@@ -28,7 +28,21 @@ export const rule: Rule = {
     // `/^[A-Z]/` filter afterwards does not help: by then the match that
     // should have been found is gone. It cost three specimens their finding
     // before the corpus regression caught it.
-    const lines = allMatches(ctx, /[A-Z][^.]*\b(?:indemnif|INDEMNIF)[^.]*\./);
+    // 🚨 THE PERIOD INSIDE AN AMOUNT ENDS THE SENTENCE. `[^.]` stops at the
+    // decimal point in "$1,250,000.00", so an indemnity sentence carrying a
+    // figure — a cap, a basket, an escrow amount, which is most indemnity
+    // sentences in a purchase agreement — was read truncated, and the party
+    // surfaces before the verb were cut away with it. Measured by the
+    // cents-rewriting relation: writing every whole-dollar amount with cents
+    // MOVED this rule's verdict on an asset purchase agreement.
+    //
+    // The `\.(?=\d)` idiom is the repo's established answer to this class —
+    // FIN-005 names EMP-025, the SOW readers and STRUCT-017 as the earlier
+    // instances. A decimal point is the only period these clauses contain.
+    const lines = allMatches(
+      ctx,
+      /[A-Z](?:[^.]|\.(?=\d))*\b(?:indemnif|INDEMNIF)(?:[^.]|\.(?=\d))*\./,
+    );
     if (lines.length === 0) return null;
     // Only the parties that BEAR the agreement. The extractor also records
     // the natural persons who SIGN it — "Rosalind Achterberg", "Emeka

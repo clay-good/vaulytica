@@ -1,0 +1,146 @@
+ASSET PURCHASE AGREEMENT
+
+THIS ASSET PURCHASE AGREEMENT (this "Agreement") is entered into as of May 8, 2026 (the "Effective Date") by and among Kestrel Industrial Holdings, Inc., a Delaware corporation ("Buyer"), Thornbury Precision Machining LLC, a Wisconsin limited liability company ("Seller"), and Margaret Thornbury, the sole member of Seller (the "Member").
+
+RECITALS
+
+A. Seller operates a precision machining business at 1420 Lakeshore Drive, Milwaukee, Wisconsin (the "Business").
+
+B. Buyer wishes to purchase substantially all of the assets of the Business, and Seller wishes to sell them, on the terms set out in this Agreement.
+
+1. Purchase and Sale of Assets.
+
+1.1 Purchased Assets. At the Closing, Seller shall sell, assign, transfer, and deliver to Buyer, and Buyer shall purchase, all right, title, and interest in the assets used in the Business (the "Purchased Assets"), including all machinery and equipment, inventory, accounts receivable, customer lists and contracts, intellectual property, permits to the extent transferable, and goodwill.
+
+1.2 Excluded Assets. The Purchased Assets do not include Seller's cash and cash equivalents, corporate records, insurance policies, tax refunds attributable to periods before the Closing, or the assets listed on Schedule 1.2.
+
+1.3 Assumed Liabilities. Buyer shall assume only the obligations arising after the Closing under the contracts listed on Schedule 1.3 (the "Assumed Liabilities").
+
+1.4 Excluded Liabilities. Buyer does not assume, and Seller shall remain solely responsible for, all other liabilities of Seller, including any liability for taxes, employee compensation and benefits accrued before the Closing, product liability for products sold before the Closing, and any environmental liability arising from conditions existing before the Closing.
+
+2. Purchase Price.
+
+2.1 The purchase price for the Purchased Assets is Twelve Million Two Hundred Fifty Thousand Dollars ($12,250,000) (the "Purchase Price"), subject to adjustment under Section 2.3.
+
+2.2 At the Closing, Buyer shall pay the Purchase Price as follows: (a) Eleven Million Dollars ($11,000,000) in cash by wire transfer of immediately available funds; and (b) One Million Two Hundred Fifty Thousand Dollars ($1,250,000) to the Escrow Agent to be held under the Escrow Agreement attached as Exhibit A for eighteen (18) months after the Closing as security for Seller's indemnification obligations under this Agreement.
+
+2.3 Working Capital Adjustment. The Purchase Price shall be increased or decreased dollar for dollar to the extent the Closing Working Capital differs from the Target Working Capital of One Million Dollars ($1,000,000). Buyer shall deliver a statement of Closing Working Capital within sixty (60) days after the Closing. Seller may dispute the statement within thirty (30) days after receipt, and any dispute not resolved within thirty (30) days after Buyer receives the notice of dispute shall be submitted to a nationally recognized accounting firm agreed by the parties, whose determination is final and binding.
+
+2.4 Allocation. The parties shall allocate the Purchase Price among the Purchased Assets in accordance with Section 1060 of the Internal Revenue Code, as set out on Schedule 2.4, and shall file all tax returns consistently with that allocation.
+
+3. Closing.
+
+3.1 The closing of the transactions contemplated by this Agreement (the "Closing") shall take place remotely by exchange of electronic signatures on the third business day after the conditions in Section 6 are satisfied or waived, or on such other date as the parties agree (the "Closing Date").
+
+3.2 At the Closing, Seller shall deliver a bill of sale, an assignment and assumption agreement, assignments of the intellectual property, the escrow agreement, payoff letters and lien releases for all indebtedness secured by the Purchased Assets, and a certificate of non-foreign status.
+
+3.3 At the Closing, Buyer shall deliver the cash portion of the Purchase Price, the escrow deposit, and the assignment and assumption agreement.
+
+4. Representations and Warranties of Seller and the Member.
+
+Seller and the Member jointly and severally represent and warrant to Buyer as follows:
+
+4.1 Organization. Seller is duly organized, validly existing, and in good standing under the laws of the State of Wisconsin and has all requisite power to own the Purchased Assets and to carry on the Business.
+
+4.2 Authority. Seller has full power and authority to execute this Agreement and to consummate the transactions contemplated by it. This Agreement constitutes the legal, valid, and binding obligation of Seller, enforceable against Seller in accordance with its terms.
+
+4.3 Title to Assets. Seller has good and marketable title to the Purchased Assets, free and clear of all liens other than the liens listed on Schedule 4.3, which shall be released at or before the Closing.
+
+4.4 Financial Statements. The financial statements of the Business delivered to Buyer were prepared in accordance with generally accepted accounting principles applied consistently and fairly present in all material respects the financial condition and results of operations of the Business.
+
+4.5 Absence of Undisclosed Liabilities. The Business has no liabilities other than those reflected in the financial statements, those incurred in the ordinary course since the date of the most recent balance sheet, and those listed on Schedule 4.5.
+
+4.6 Contracts. Schedule 1.3 lists each contract material to the Business. Each such contract is in full force and effect, and neither Seller nor, to Seller's knowledge, any counterparty is in default under it.
+
+4.7 Compliance with Law. Seller is in compliance in all material respects with all laws applicable to the Business, and Seller has not received written notice of any violation that remains uncured.
+
+4.8 Litigation. Except as listed on Schedule 4.8, there is no action, suit, or proceeding pending or, to Seller's knowledge, threatened against Seller relating to the Business.
+
+4.9 Employees and Benefits. Schedule 4.9 lists each employee of the Business, their compensation, and each benefit plan. Seller has paid all wages and benefits accrued through the Closing.
+
+4.10 Intellectual Property. Seller owns or has the right to use all intellectual property used in the Business, and to Seller's knowledge the Business does not infringe the intellectual property of any third party.
+
+4.11 Environmental. To Seller's knowledge, the Business has been operated in compliance with environmental laws, and no hazardous substance has been released at the facility in a quantity requiring remediation.
+
+4.12 Taxes. Seller has filed all tax returns required to be filed and paid all taxes shown due on them.
+
+4.13 Brokers. Except for the fee payable to Corbett Advisory Partners, which Seller shall pay, no broker is entitled to a fee in connection with this Agreement.
+
+5. Representations and Warranties of Buyer.
+
+Buyer represents and warrants to Seller that Buyer is duly organized and validly existing, has full power and authority to execute this Agreement, and has sufficient funds available to pay the Purchase Price.
+
+6. Conditions to Closing.
+
+6.1 The obligation of each party to close is conditioned on the other party's representations and warranties being true and correct in all material respects as of the Closing Date, the other party having performed its covenants in all material respects, and no order or injunction prohibiting the transactions being in effect.
+
+6.2 Buyer's obligation to close is further conditioned on delivery of the third-party consents listed on Schedule 6.2, release of all liens on the Purchased Assets, and the absence of any Material Adverse Effect on the Business since the Effective Date.
+
+7. Covenants.
+
+7.1 Conduct of Business. Between the Effective Date and the Closing, Seller shall conduct the Business in the ordinary course and shall not sell any material asset, incur indebtedness secured by the Purchased Assets, or increase employee compensation other than in the ordinary course.
+
+7.2 Access. Seller shall give Buyer and its representatives reasonable access during normal business hours to the properties, books, and records of the Business.
+
+7.3 Non-Competition. For three (3) years after the Closing, Seller and the Member shall not, within one hundred (100) miles of Milwaukee, Wisconsin, engage in the precision machining business, or solicit any customer or employee of the Business, provided that a passive investment of less than two percent (2%) in a public company is permitted.
+
+7.4 Confidentiality. Seller and the Member shall keep confidential all non-public information concerning the Business after the Closing, except as required by law.
+
+7.5 Employees. Buyer may offer employment to any employee of the Business. Seller shall terminate the employment of each employee who accepts Buyer's offer effective as of the Closing and shall pay all accrued wages and vacation.
+
+8. Indemnification.
+
+8.1 Seller and the Member shall jointly and severally indemnify Buyer and its officers, directors, and affiliates against any loss arising out of (a) any breach of a representation or warranty of Seller, (b) any breach of a covenant of Seller, and (c) any Excluded Liability.
+
+8.2 Buyer shall indemnify Seller against any loss arising out of any breach of a representation, warranty, or covenant of Buyer, and any Assumed Liability.
+
+8.3 Survival. The representations and warranties survive the Closing for eighteen (18) months, except that the representations in Sections 4.1, 4.2, 4.3, 4.12, and 4.13 (the "Fundamental Representations") survive until sixty (60) days after the expiration of the applicable statute of limitations.
+
+8.4 Basket. Seller has no indemnification obligation under Section 8.1(a) until the aggregate losses exceed One Hundred Twenty-Two Thousand Five Hundred Dollars ($122,500), after which Seller is liable for the full amount of all losses including the amount of the basket.
+
+8.5 Cap. Seller's aggregate liability under Section 8.1(a) shall not exceed the escrow amount of One Million Two Hundred Fifty Thousand Dollars ($1,250,000), except that the basket and the cap do not apply to a breach of a Fundamental Representation or to fraud, for which Seller's liability shall not exceed the Purchase Price.
+
+8.6 Procedure. A party seeking indemnification shall give written notice of the claim within thirty (30) days after becoming aware of it. The indemnifying party may assume the defense of a third-party claim with counsel reasonably acceptable to the indemnified party, and shall not settle any claim without the indemnified party's prior written consent, which shall not be unreasonably withheld.
+
+8.7 Exclusive Remedy. Except for fraud and for claims for specific performance, indemnification under this Section 8 is the exclusive remedy of the parties for any breach of this Agreement.
+
+9. Termination.
+
+9.1 This Agreement may be terminated before the Closing by mutual written consent, by either party if the Closing has not occurred by August 31, 2026 (provided the terminating party is not in breach), or by either party if the other party breaches a representation or covenant and does not cure the breach within twenty (20) days after written notice.
+
+10. General.
+
+10.1 This Agreement is governed by the laws of the State of Delaware, without regard to its conflict-of-laws rules.
+
+10.2 Any action arising out of this Agreement shall be brought exclusively in the Court of Chancery of the State of Delaware, and each party consents to that court's jurisdiction and waives any objection to venue.
+
+10.3 Each party shall bear its own expenses in connection with this Agreement.
+
+10.4 Notices must be in writing and delivered by hand, overnight courier, or email with confirmation of receipt to the addresses set out below.
+
+10.5 This Agreement, together with the Schedules and Exhibits, is the entire agreement among the parties and supersedes all prior negotiations, including the letter of intent dated February 14, 2026. It may be amended only by a writing signed by all parties.
+
+10.6 If any provision is held unenforceable, it shall be modified to the minimum extent necessary and the remainder remains in effect.
+
+10.7 This Agreement may be executed in counterparts, including by electronic signature.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+KESTREL INDUSTRIAL HOLDINGS, INC.
+
+By: /s/ Priyanka Venkataraman
+Name: Priyanka Venkataraman
+Title: President
+Date: May 8, 2026
+
+THORNBURY PRECISION MACHINING LLC
+
+By: /s/ Margaret Thornbury
+Name: Margaret Thornbury
+Title: Sole Member
+Date: May 8, 2026
+
+MARGARET THORNBURY, individually
+
+/s/ Margaret Thornbury
+Date: May 8, 2026

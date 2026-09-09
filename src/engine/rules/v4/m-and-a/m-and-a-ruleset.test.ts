@@ -830,3 +830,69 @@ describe("MNA-031 reads DGCL § 262 written with the sign", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * Two APA clauses written the way an APA writes them, each reported missing.
+ *
+ * Found by the clean-document method on a complete asset purchase agreement
+ * (9.634.0): a $12.25M deal with an escrowed indemnity, a working-capital
+ * adjustment, thirteen seller representations and a three-year non-compete.
+ *
+ *  - **MNA-026 fired at CRITICAL** on a document whose closing conditions
+ *    require "delivery of the third-party consents listed on Schedule 6.2".
+ *    The rule read "required consents" and a handful of named-counterparty
+ *    forms; **"third-party consents" is the term of art** and matched nothing.
+ *  - **MNA-027** fired on a document whose §7.5 says "Buyer may offer
+ *    employment to any employee of the Business. Seller shall terminate the
+ *    employment of each employee who accepts…". The rule named the artifacts
+ *    of a transfer — a defined "Transferred Employees" group, offer letters —
+ *    or the statute, and not the clause itself.
+ *
+ * Neither moves the corpus: no specimen fires either rule today.
+ */
+describe("M&A — an APA's own phrasing for consents and employees", () => {
+  const firedFor = async (...paras: string[]): Promise<Set<string>> => {
+    const ctx = withPb(
+      buildContext(
+        [
+          "ASSET PURCHASE AGREEMENT",
+          "Buyer shall purchase substantially all of the assets of the Business from Seller.",
+        ],
+        ...paras.map((p) => ["Section", p] as [string, ...string[]]),
+      ),
+      APA_PB,
+    );
+    const run = await runEngine({
+      rules: M_AND_A_RULES,
+      ctx,
+      executed_at: "2026-05-12T00:00:00Z",
+      source_file: SRC,
+    });
+    return new Set(run.findings.map((f) => f.rule_id));
+  };
+
+  it("accepts 'the third-party consents listed on Schedule 6.2'", async () => {
+    const fired = await firedFor(
+      "Buyer's obligation to close is conditioned on delivery of the third-party consents listed on Schedule 6.2 and release of all liens on the Purchased Assets.",
+    );
+    expect(
+      fired.has("MNA-026"),
+      "a consents condition written the ordinary way was reported missing, at critical",
+    ).toBe(false);
+  });
+
+  it("accepts an employees clause that offers employment", async () => {
+    const fired = await firedFor(
+      "Buyer may offer employment to any employee of the Business. Seller shall terminate the employment of each employee who accepts Buyer's offer effective as of the Closing and shall pay all accrued wages and vacation.",
+    );
+    expect(fired.has("MNA-027")).toBe(false);
+  });
+
+  it("still reports both when the APA addresses neither", async () => {
+    const fired = await firedFor(
+      "The purchase price is $12,250,000, payable at the Closing by wire transfer.",
+    );
+    expect(fired.has("MNA-026")).toBe(true);
+    expect(fired.has("MNA-027")).toBe(true);
+  });
+});

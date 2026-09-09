@@ -39,12 +39,29 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
  * A rename that leaves an EXTERNAL statutory citation alone. "Section 16 of
  * the Securities Exchange Act" is that statute's own name for its own
  * division, and no drafter renames it when they rename their own.
+ *
+ * 🚨 That guard did not work for a MULTI-DIGIT citation, which is most of
+ * them. `\d+` inside the lookahead BACKTRACKS: on "Section 1060 of the
+ * Internal Revenue Code" it can match just "106", and after "106" the next
+ * characters are "0 of the" — not `\s+of\s+the\s+[A-Z]` — so the negative
+ * lookahead succeeds and the citation is renamed to "Article 1060 of the
+ * Internal Revenue Code". It held only for single-digit sections, where `\d+`
+ * cannot give a digit back; internal cross-references are usually one or two
+ * digits and statutes are usually three or four ("§ 1060", "§ 409A",
+ * "§ 16600"), which is exactly the wrong way round.
+ *
+ * A negative lookahead placed after a quantifier that can backtrack is not a
+ * guard. The digit run is anchored with `\b` now, so the lookahead is applied
+ * where it was meant to be — after the whole number.
  */
 const rename =
   (word: string, plural: string) =>
   (t: string): string =>
     t
-      .replace(new RegExp(String.raw`\bSection(?=\s+\d+(?!\s+of\s+the\s+[A-Z]))`, "g"), word)
+      .replace(
+        new RegExp(String.raw`\bSection(?=\s+\d+(?:\.\d+)*\b(?!\s+of\s+the\s+[A-Z]))`, "g"),
+        word,
+      )
       .replace(/\bSections(?=\s+\d)/g, plural);
 
 /**
@@ -56,10 +73,11 @@ const rename =
 const ARTICLE_DEBT: readonly string[] = [
   "bylaws-corporation.txt: lost - gained STRUCT-007",
   "consent-judgment.txt: lost - gained STRUCT-007",
-  "equity-incentive-plan.txt: lost - gained STRUCT-007",
-  "executive-employment.txt: lost - gained STRUCT-007",
-  "merger-agreement.txt: lost - gained MNA-031",
-  "option-grant.txt: lost - gained STRUCT-007",
+  // 9.634.0 — FOUR entries left this list when the statutory-citation guard
+  // above was anchored: `equity-incentive-plan`, `executive-employment`,
+  // `merger-agreement` and `option-grant` were never ambiguous documents at
+  // all. The transform had been renaming "Section 409A of the Internal Revenue
+  // Code" and its siblings, and the movement it measured was its own.
 ];
 
 /**
@@ -71,9 +89,9 @@ const ARTICLE_DEBT: readonly string[] = [
  * leaves the reference outside it. A real document renames both or neither.
  */
 const CLAUSE_DEBT: readonly string[] = [
-  "employee-stock-purchase-plan.txt: lost - gained STRUCT-007",
-  "equity-incentive-plan.txt: lost - gained STRUCT-007",
-  "merger-agreement.txt: lost - gained MNA-031",
+  // 9.634.0 — EMPTY, for the same reason the Article list lost four: every
+  // entry here was a statutory citation the transform had renamed. A relation
+  // whose debt list is empty is the strongest form of the claim it makes.
 ];
 
 async function moved(mutate: (t: string) => string): Promise<{ moved: string[]; probed: number }> {

@@ -592,7 +592,12 @@ const APA_RULES: Rule[] = [
       "Add 'Purchase Price Allocation' specifying how the parties will allocate the price among asset classes for Form 8594 purposes.",
     present_patterns: [
       /allocation\s+of\s+(the\s+)?purchase\s+price/i,
-      /(section\s+1060|form\s+8594)/i,
+      // The citation in both of its ordinary spellings. A tax lawyer writes
+      // "§ 1060" as often as "Section 1060", and the rule read only the word —
+      // so an APA that allocates the price "in accordance with § 1060 of the
+      // Internal Revenue Code" was told it had no allocation clause. (This
+      // repo has met the same shape before: `\b` can never match before `§`.)
+      /(?:section|§)\s*1060|form\s+8594/i,
     ],
   }),
   presence({
@@ -614,6 +619,14 @@ const APA_RULES: Rule[] = [
     // every named third party.
     present_patterns: [
       /required\s+consents/i,
+      // "THIRD-PARTY CONSENTS" is the term of art, and the rule read only
+      // "required consents". A closing condition phrased "delivery of the
+      // third-party consents listed on Schedule 6.2" — the way an APA
+      // ordinarily writes it — matched nothing, and the document was told at
+      // CRITICAL that it addressed consents nowhere. The branch below wanted
+      // "assignment"/"transfer" within 40 characters, which a conditions
+      // section does not supply.
+      /third.party\s+consents?/i,
       /(assignment|transfer).{0,40}(third.party\s+consent|consent\s+to\s+assign)/is,
       /non.assignable/i,
       /(?:assignment|assign|transfer)[^.]{0,120}?\b(?:landlord|lessor|licensor|lender|counterpart(?:y|ies)|third\s+part(?:y|ies))(?:['’]s)?\s+(?:prior\s+)?written\s+consent/is,
@@ -640,6 +653,13 @@ const APA_RULES: Rule[] = [
       /transferred\s+employees?/i,
       /\bwarn\s+act\b/i,
       /offer\s+letters?\s+to\s+employees/i,
+      // The clause itself, in the phrasing an APA uses: "Buyer may OFFER
+      // EMPLOYMENT to any employee of the Business. Seller shall terminate the
+      // employment of each employee who accepts…". The three patterns above
+      // name the artifacts of a transfer (a defined "Transferred Employees"
+      // group, offer letters) or the statute; a document that allocates the
+      // transfer without either was told it had no employee clause at all.
+      /offer\s+employment\b/i,
     ],
     default_severity: "warning",
   }),

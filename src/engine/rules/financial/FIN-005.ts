@@ -56,6 +56,16 @@ const PAYMENT_TERMS = new RegExp(
     // the first day of each month" as a payment term. The decimal point is the
     // only period this clause ever contains.
     `\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|remit)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bon\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
+    // A PURCHASE AGREEMENT states its payment term as an EVENT, not a
+    // day-count: "At the Closing, Buyer shall pay the Purchase Price … by wire
+    // transfer of immediately available funds". That names the moment payment
+    // is due, which is the question this rule asks — and every asset, stock and
+    // merger agreement writes it this way, with the event FRONTED before the
+    // subject, so none of the branches above (which lead on the verb) can see
+    // it. Bounded to one sentence and to the pay/remit/deliver verbs so an
+    // unrelated "at the Closing" sentence is not read as a payment term.
+    `\\bat\\s+(?:the\\s+)?closing\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\b(?:shall|will|must)${MODAL_QUALIFIER}(?:pay|remit|deliver|wire)\\b`,
+    `\\b(?:shall|will|must)${MODAL_QUALIFIER}(?:pay|remit|wire)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bat\\s+(?:the\\s+)?closing\\b`,
     `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed|owing|(?:you|he|she|they|it)\\s+owes?)|balance|fees?|royalt(?:y|ies))\\s+[\\s\\w,%§]{0,40}?(?:is|are|(?:shall|will)\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+|made\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,

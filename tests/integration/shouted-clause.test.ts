@@ -67,6 +67,12 @@ const shout =
  * that has thrown them away.
  */
 const DISCLAIMER_DEBT: readonly string[] = [
+  // The APA added in 9.634.0, in the same two shapes the list already records:
+  // shouting the disclaimer paragraph makes STRUCT-005 read a shouted clause
+  // (as it does for `stock-purchase-agreement.txt`), and shouting the liability
+  // paragraph erases the capitalisation RISK-002's sentence-start anchor and
+  // OBLI-002's subject reading both depend on.
+  "asset-purchase-complete.txt: lost - gained STRUCT-005",
   "assignment-and-assumption-agreement.txt: lost STRUCT-018 gained -",
   "franchise.txt: lost STRUCT-006 gained -",
   "net-lease.txt: lost STRUCT-018 gained -",
@@ -76,6 +82,11 @@ const DISCLAIMER_DEBT: readonly string[] = [
 
 const LIABILITY_DEBT: readonly string[] = [
   "articles-org.txt: lost - gained STRUCT-007",
+  "asset-purchase-complete.txt: lost - gained OBLI-002,RISK-002",
+  // 9.634.0 — `msa-customer-side.txt` LEFT this list: it no longer gains
+  // RISK-002, because the indemnity-sentence scan stopped ending at the decimal
+  // point inside an amount. The harness had been measuring a truncation rather
+  // than the shouting.
   "assignment-of-claim.txt: lost STRUCT-018 gained -",
   "cohabitation-agreement.txt: lost STRUCT-018 gained -",
   "commercial-indemnity-agreement.txt: lost - gained RISK-002",
@@ -84,7 +95,6 @@ const LIABILITY_DEBT: readonly string[] = [
   "insurance-endorsement.txt: lost - gained STRUCT-007",
   "joint-venture.txt: lost STRUCT-017 gained -",
   "master-purchase-agreement.txt: lost - gained OBLI-002",
-  "msa-customer-side.txt: lost - gained RISK-002",
   "net-lease.txt: lost STRUCT-006 gained -",
   "ny-good-guy-guaranty.txt: lost STRUCT-006 gained -",
   "partnership-agreement.txt: lost OBLI-002 gained -",

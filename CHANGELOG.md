@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.634.0] — 2026-09-09
+
+### Fixed
+- **Three clauses an asset purchase agreement writes the ordinary way, each
+  reported missing — one of them at CRITICAL.** The third clean document (a
+  $12.25M deal with an escrowed indemnity, a working-capital adjustment,
+  thirteen seller representations, a basket and a cap, a three-year
+  non-compete) drew thirteen findings. Ten are true of the draft. Three were
+  defects, and each is the same shape: the rule knew one spelling of a term of
+  art and the document used another.
+
+  | Rule | The document says | The rule read |
+  |---|---|---|
+  | **MNA-026** (critical) | closing conditioned on "delivery of the **third-party consents** listed on Schedule 6.2" | only "required consents", plus named-counterparty forms needing "assignment"/"transfer" within 40 characters |
+  | **MNA-027** | "Buyer may **offer employment** to any employee of the Business. Seller shall terminate the employment of each employee who accepts…" | the *artifacts* of a transfer — a defined "Transferred Employees" group, offer letters — or the WARN Act |
+  | **FIN-005** | "**At the Closing**, Buyer shall pay the Purchase Price … by wire transfer of immediately available funds" | day-count terms, plus "payable **at** closing" in the passive — never the active, fronted form every purchase agreement uses |
+
+  The two M&A rules move no specimen (none fires either today). FIN-005 moves
+  exactly one: **`mipa.txt`, whose §1.3 is titled "Payment at Closing"**, was
+  being told it "references fees but no 'Net X' or 'due within' clause was
+  found."
+
+  🚨 **The first draft of the FIN-005 tests was vacuous and the bite-check
+  caught it** — they passed with the new branches deleted, because
+  `ANY_PAYMENT` gates the rule and "the Purchase Price" alone does not trip it,
+  so the document never reached the payment-term check at all. With a fee
+  sentence added they fail 2 without the fix. A test that never reaches the
+  code under test is green for the wrong reason.
+
+- **An indemnity sentence carrying a dollar amount was read truncated.**
+  RISK-002 scans indemnity sentences with `[^.]`, which stops at the **decimal
+  point in "$1,250,000.00"** — so a cap, a basket or an escrow figure inside
+  the sentence cut it short and took the party surfaces before the verb with
+  it. Found by the cents-rewriting relation, which moved this rule's verdict on
+  the new APA. Fixed with the repo's established idiom for this class,
+  `(?:[^.]|\.(?=\d))`; FIN-005's own comment names EMP-025, the SOW readers and
+  STRUCT-017 as the earlier instances. It retires a debt entry too:
+  `msa-customer-side.txt` no longer moves under the shouted-clause relation,
+  because that movement was the truncation and not the shouting.
+
+- **A metamorphic relation had been renaming statutory citations for as long as
+  it has existed.** `division-vocabulary`'s rename guard —
+  `\bSection(?=\s+\d+(?!\s+of\s+the\s+[A-Z]))` — was written to leave
+  "Section 16 of the Securities Exchange Act" alone. It does not: `\d+`
+  **backtracks**, so on "Section 1060 of the Internal Revenue Code" it matches
+  "106", finds "0 of the" after it, and the negative lookahead succeeds. The
+  guard held only for single-digit sections — and internal cross-references are
+  one or two digits while statutes are three or four (§ 1060, § 409A, § 16600),
+  which is exactly the wrong way round.
+
+  **A negative lookahead placed after a quantifier that can backtrack is not a
+  guard.** Anchoring the digit run retired **four of the six** entries in the
+  Article debt list and **all three** in the Clause list: `equity-incentive-plan`,
+  `executive-employment`, `merger-agreement`, `option-grant` and
+  `employee-stock-purchase-plan` were never ambiguous documents — the relation
+  had been measuring its own rewrite.
+
+- **MNA-025 read "Section 1060" but not "§ 1060".** A tax lawyer writes the
+  section sign as often as the word, and the rule accepted only one — so an APA
+  allocating the price "in accordance with § 1060 of the Internal Revenue Code"
+  was told it had no allocation clause. (`\b` can never match before `§` is a
+  shape this repo has met before.)
+
+### Added
+- The document joins the corpus as
+  `tests/fixtures/specimens/asset-purchase-complete.txt` — the corpus's first
+  complete APA with a full representations article, indemnity basket and cap,
+  and a working-capital true-up. Adding it is what surfaced the two defects
+  above: it is the first specimen whose indemnity sentences carry figures and
+  whose tax clause cites a four-digit statute.
+
 ## [9.633.0] — 2026-09-09
 
 ### Added

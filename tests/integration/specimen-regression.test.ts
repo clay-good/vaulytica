@@ -1477,11 +1477,14 @@ export const EXPECTED: Record<string, Expectation> = {
 
   // A membership interest purchase agreement, stamped EXECUTION VERSION, with
   // decimal-numbered schedules and a fraud carve-out from the indemnity cap.
+  // 9.634.0: FIN-005 dropped. This document's §1.3 is titled "Payment at
+  // Closing" and says "At the Closing, Buyer shall pay … by wire transfer of
+  // immediately available funds" — a payment term stated as an EVENT, which
+  // the rule now reads. It was the one specimen the change moved.
   "mipa.txt": {
     playbook: "membership-interest-purchase-agreement",
     findings: [
       "MNA-103",
-      "FIN-005",
       "IPDATA-001",
       "STRUCT-006",
       "STRUCT-018",
@@ -4899,6 +4902,37 @@ export const EXPECTED: Record<string, Expectation> = {
   // without defining ("Confidential Information", "Subscription Term"), three
   // Exhibits it references and does not attach, an auto-renewal, and a
   // termination-for-convenience right only the Customer has.
+  // A COMPLETE asset purchase agreement — the third clean document (9.634.0),
+  // and the one that found the most: a $12.25M deal with an escrowed indemnity,
+  // a working-capital adjustment, thirteen seller representations, a basket and
+  // a cap, and a three-year non-compete.
+  //
+  //  - MNA-026 fired at CRITICAL because the closing condition says "the
+  //    third-party consents listed on Schedule 6.2" and the rule read only
+  //    "required consents".
+  //  - MNA-027 fired because §7.5 says "Buyer may offer employment to any
+  //    employee" and the rule named only the artifacts of a transfer.
+  //  - FIN-005 fired because the price is payable "At the Closing" — an EVENT,
+  //    not a day-count — which every purchase agreement writes that way.
+  //
+  // What remains is true of the draft: no bulk-sales waiver, "Material Adverse
+  // Effect" used without a definition, nine Schedules and Exhibits referenced
+  // and not attached, and a survival clause that does not name confidentiality.
+  "asset-purchase-complete.txt": {
+    playbook: "asset-purchase-agreement",
+    findings: [
+      "MNA-024",
+      "OBLI-005",
+      "OBLI-007",
+      "PERS-001",
+      "PERS-005",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-006",
+      "TEMP-008",
+      "TEMP-012",
+    ],
+  },
   // A COMPLETE commercial office lease, the second document authored by the
   // clean-document method (9.633.0). Unlike the SaaS agreement before it, this
   // one found NOTHING — every finding it draws is true of the draft, which is

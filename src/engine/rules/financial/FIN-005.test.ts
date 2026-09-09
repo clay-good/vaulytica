@@ -529,3 +529,58 @@ describe("FIN-005 v1.15.0 — the amount a person owes", () => {
     expect(FIN_005.check(buildContext(["Maturity Date", clause]))).toBeNull();
   });
 });
+
+/**
+ * A purchase agreement states its payment term as an EVENT, not a day-count.
+ *
+ * "At the Closing, Buyer shall pay the Purchase Price … by wire transfer of
+ * immediately available funds" names the moment payment is due, which is the
+ * question this rule asks. Every asset, stock and merger agreement writes it
+ * that way — and with the event FRONTED before the subject, so every branch
+ * above (each of which leads on the verb) was blind to it.
+ *
+ * `mipa.txt` in the corpus has a section actually titled **"Payment at
+ * Closing"** and was told it "references fees but no 'Net X' or 'due within'
+ * clause was found." It is the one specimen this change moves.
+ */
+describe("FIN-005 — payment due at the closing", () => {
+  /**
+   * 🚨 The first draft of these tests was VACUOUS and the bite-check caught it:
+   * they passed with the new branches deleted, because the document never
+   * reached the payment-term check at all — `ANY_PAYMENT` gates the rule, and
+   * "the Purchase Price" alone does not trip it. The fee sentence below is what
+   * makes the rule ask the question these tests exist to answer.
+   */
+  const FEE = "Buyer shall pay a transaction fee of $50,000 to the Advisor.";
+
+  it("reads the fronted form a purchase agreement uses", () => {
+    expect(
+      FIN_005.check(
+        doc(
+          FEE,
+          "At the Closing, Buyer shall pay the Purchase Price by wire transfer of immediately available funds.",
+        ),
+      ),
+      "a payment term stated as an event was reported missing",
+    ).toBeNull();
+  });
+
+  it("reads it with the verb first", () => {
+    expect(
+      FIN_005.check(doc(FEE, "Buyer shall pay the balance at Closing by wire transfer.")),
+    ).toBeNull();
+  });
+
+  it("still reports a document that names a closing but no payment term", () => {
+    // The negative control: "closing" in the document is not a payment term,
+    // and a fee with no stated due date is exactly what this rule exists for.
+    const finding = FIN_005.check(
+      doc(
+        FEE,
+        "The Closing shall take place remotely on the third business day after the conditions are satisfied.",
+      ),
+    );
+    expect(finding, "a fee with no due date went unreported").not.toBeNull();
+    expect(finding!.title).toBe("No payment-term clause detected");
+  });
+});

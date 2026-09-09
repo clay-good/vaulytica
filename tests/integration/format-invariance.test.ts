@@ -710,6 +710,10 @@ describe("a finding's quote is really in the document", () => {
  * the arbitration clause, not its opinion about venue.
  */
 const HYPHEN_WRAP_DEBT: readonly string[] = [
+  // Same class again, with the APA added in 9.634.0: a broken word hides the
+  // phrase a suppression keys on, the suppression lifts, and the INFO venue
+  // finding appears.
+  "asset-purchase-complete.txt: lost - gained CHOICE-003",
   "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
   "construction-contract.txt: lost - gained CHOICE-003,CHOICE-006",
   "cookie-notice-uk.txt: lost - gained IPDATA-008",
