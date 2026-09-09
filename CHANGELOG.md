@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.625.0] — 2026-09-09
+
+### Added
+- **What a scanned PDF is told about itself.** A document with no text layer is
+  the one input where every finding rests on a machine's guess at the letters,
+  and `ingestPdfBuffer` has three things to say about that: the OCR fallback
+  ran, structure may be lost, and **N words came back below the confidence
+  threshold**. All three are warnings a reviewer reads before trusting a party
+  name or an amount — and the whole branch was untested, because every other
+  test in the file passes `allowOcr: false`.
+
+  Three tests, with the recognizer itself stubbed (what needs testing is what
+  `pdf.ts` does with the text, not tesseract): the OCR path says it ran, why,
+  and names the uncertainty count; it says "word" for one and **says nothing at
+  all when the scan was confident throughout** — a warning that always fires
+  stops being information; and with OCR unavailable it explains that analysis
+  covers only the extractable text rather than claiming to have OCR'd.
+
+  Proven by breaking two: zeroing the uncertainty count fails 2, dropping the
+  "OCR fallback was used" notice fails 2.
+
+  Not covered: the `MAX_OCR_PAGES` bound's own warning, which needs a 501-page
+  document to reach — recorded here rather than left as an unexplained gap.
+
 ## [9.624.0] — 2026-09-09
 
 ### Added

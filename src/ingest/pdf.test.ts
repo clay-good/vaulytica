@@ -1,5 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
 
+/**
+ * The OCR branch is reached through a dynamic `import("./ocr.js")`, so the
+ * recognizer itself is stubbed here: what needs testing is what `pdf.ts` does
+ * with the text it gets back — the warnings — not tesseract. Every other test
+ * in this file passes `allowOcr: false` and never reaches this module.
+ */
+const ocrText = vi.hoisted(() => ({
+  value: "SCANNED LEASE AGREEMENT\n\nTenant [uncertain] shall pay rent of $2,400 [uncertain].",
+}));
+vi.mock("./ocr.js", () => ({ runOcr: async () => ocrText.value }));
+
 import { ingestPdfBuffer, assessTextLayer, markupAnnotationNotice } from "./pdf.js";
 
 // The first call lazily loads pdfjs (`legacy/build/pdf.mjs`) — a heavy module
@@ -232,5 +243,85 @@ describe("a PDF's heading tree comes from type size", () => {
     expect(result.tree.sections).toHaveLength(1);
     expect(result.tree.sections[0]!.heading).toBe("");
     expect(result.tree.sections[0]!.paragraphs.length).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * What a SCANNED PDF is told about itself.
+ *
+ * A document with no text layer is the one input where every finding rests on
+ * a machine's guess at the letters, and `ingestPdfBuffer` has three things to
+ * say about that — the OCR fallback ran, the structure may be lost, and N
+ * words came back below the confidence threshold. All three are warnings a
+ * reviewer reads before trusting a party name or an amount, and the whole
+ * branch was untested: every other test in this file passes `allowOcr: false`.
+ */
+describe("a scanned PDF is told it was OCR'd, and how confident that was", () => {
+  /** A PDF with pages that draw a rectangle and no text at all. */
+  function imageOnlyPdf(pages = 2): ArrayBuffer {
+    const stream = "0 0 100 100 re f";
+    const kids = Array.from({ length: pages }, (_, i) => `${3 + i} 0 R`).join(" ");
+    const objects = [
+      "<</Type/Catalog/Pages 2 0 R>>",
+      `<</Type/Pages/Kids[${kids}]/Count ${pages}>>`,
+      ...Array.from(
+        { length: pages },
+        () =>
+          `<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents ${3 + pages} 0 R/Resources<<>>>>`,
+      ),
+      `<</Length ${stream.length}>>\nstream\n${stream}\nendstream`,
+    ];
+    let pdf = "%PDF-1.4\n";
+    const offsets: number[] = [];
+    objects.forEach((body, i) => {
+      offsets.push(pdf.length);
+      pdf += `${i + 1} 0 obj\n${body}\nendobj\n`;
+    });
+    const xrefPos = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    for (const off of offsets) pdf += `${String(off).padStart(10, "0")} 00000 n \n`;
+    pdf += `trailer\n<</Size ${objects.length + 1}/Root 1 0 R>>\nstartxref\n${xrefPos}\n%%EOF`;
+    const bytes = new Uint8Array(pdf.length);
+    for (let i = 0; i < pdf.length; i += 1) bytes[i] = pdf.charCodeAt(i) & 0xff;
+    return bytes.buffer;
+  }
+
+  it("says OCR ran, why, and how many words it was unsure of", async () => {
+    const result = await ingestPdfBuffer(imageOnlyPdf(), { allowOcr: true });
+    const joined = result.warnings.join(" | ");
+    expect(joined).toContain("Text layer is effectively empty");
+    expect(joined).toContain("OCR fallback was used");
+    expect(joined, "the uncertainty count never reached the reviewer").toContain(
+      'OCR flagged 2 low-confidence words (marked "[uncertain]"',
+    );
+    // The recognized text is what the engine will read.
+    const text = result.tree.sections
+      .flatMap((s) => s.paragraphs.flatMap((p) => p.runs.map((r) => r.text)))
+      .join(" ");
+    expect(text).toContain("SCANNED LEASE AGREEMENT");
+  });
+
+  it("says 'word' for one, and nothing at all when OCR was confident throughout", async () => {
+    ocrText.value = "A clean scan with one [uncertain] word.";
+    const one = await ingestPdfBuffer(imageOnlyPdf(), { allowOcr: true });
+    expect(one.warnings.join(" | ")).toContain("OCR flagged 1 low-confidence word (");
+
+    ocrText.value = "A clean scan with nothing uncertain about it at all.";
+    const none = await ingestPdfBuffer(imageOnlyPdf(), { allowOcr: true });
+    expect(none.warnings.join(" | ")).toContain("OCR fallback was used");
+    expect(
+      none.warnings.join(" | "),
+      "a confident scan was still told words were uncertain",
+    ).not.toContain("low-confidence");
+  });
+
+  it("explains itself instead of OCR-ing when OCR is not available", async () => {
+    const result = await ingestPdfBuffer(imageOnlyPdf(), { allowOcr: false });
+    const joined = result.warnings.join(" | ");
+    expect(joined).toContain("This looks like a scanned PDF without a text layer");
+    expect(joined).toContain("analysis covers only the extractable text");
+    expect(joined, "it claimed to have OCR'd without doing so").not.toContain(
+      "OCR fallback was used",
+    );
   });
 });
