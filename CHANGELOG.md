@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.607.0] — 2026-09-08
+
+### Security
+- **Five dependency advisories closed; `npm audit` is at zero.** All five were
+  in the *dev* toolchain — `npm audit --omit=dev` was already clean, so no
+  shipped artifact was affected — but the toolchain is what builds and grades
+  every release, and a build tool that can read arbitrary files is a supply
+  path into the artifact.
+
+  | Package | Was | Now | Advisory |
+  |---|---|---|---|
+  | `js-yaml` | 4.1.1 | 4.3.2 | 2 high |
+  | `sharp` | 0.35.3 | 0.35.4 | high |
+  | `vitest` / `@vitest/mocker` | 4.1.8 | 4.1.11 | [GHSA-82fw-gwwq-j7x9](https://github.com/advisories/GHSA-82fw-gwwq-j7x9) — path traversal / arbitrary file read via the redirect mock (moderate) |
+
+  `vitest` moved by patch only, inside the current major: the fix landed in
+  4.1.11, and taking 5.0.0 for it would be a toolchain migration this release
+  has no reason to carry. Verified by running the whole gate on the upgraded
+  toolchain — **14,305 tests pass**, coverage and build unchanged.
+
 ## [9.606.0] — 2026-09-08
 
 ### Added
