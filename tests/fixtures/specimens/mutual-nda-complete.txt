@@ -1,0 +1,79 @@
+MUTUAL NONDISCLOSURE AGREEMENT
+
+THIS MUTUAL NONDISCLOSURE AGREEMENT (this "Agreement") is made as of April 2, 2026 (the "Effective Date") between Wrenfield Diagnostics, Inc., a Delaware corporation with offices at 410 Kestrel Way, Durham, North Carolina ("Wrenfield"), and Calder & Boyne Instruments LLC, a North Carolina limited liability company with offices at 77 Falkirk Avenue, Raleigh, North Carolina ("Calder"). Each party may disclose Confidential Information to the other in connection with the Purpose, and each is referred to as the "Disclosing Party" when it discloses and the "Receiving Party" when it receives.
+
+1. Purpose. The parties wish to evaluate a potential commercial collaboration in which Calder would manufacture assay cartridges for Wrenfield (the "Purpose"). Each party may disclose Confidential Information to the other solely to evaluate, negotiate, and, if the parties so agree, perform that collaboration.
+
+2. Confidential Information.
+
+2.1 Definition. "Confidential Information" means any non-public information the Disclosing Party discloses to the Receiving Party, in any form, that is marked or identified as confidential at the time of disclosure or that a reasonable person would understand to be confidential from its content or the circumstances of its disclosure. It includes business plans, pricing, forecasts, customer and supplier information, product designs, specifications, formulations, manufacturing processes, software, source code, research data, clinical data, and the existence and terms of this Agreement and of the discussions between the parties.
+
+2.2 Trade Secrets. Confidential Information that qualifies as a trade secret under the Defend Trade Secrets Act of 2016, 18 U.S.C. § 1836, or under applicable state law remains protected as a trade secret for as long as it qualifies, notwithstanding the term stated in Section 6.
+
+2.3 Exclusions. Confidential Information does not include information that: (a) is or becomes generally available to the public other than through a breach of this Agreement by the Receiving Party; (b) was rightfully in the Receiving Party's possession without a duty of confidentiality before the Disclosing Party disclosed it; (c) a third party discloses to the Receiving Party without breach of any obligation owed to the Disclosing Party; or (d) the Receiving Party independently develops without use of or reference to the Disclosing Party's Confidential Information. The Receiving Party bears the burden of establishing an exclusion by written records.
+
+3. Obligations of the Receiving Party.
+
+3.1 Use. The Receiving Party shall use the Disclosing Party's Confidential Information solely for the Purpose and for no other purpose, and shall not use it to compete with the Disclosing Party or to reverse engineer, disassemble, or decompile any item the Disclosing Party furnishes.
+
+3.2 Disclosure. The Receiving Party shall not disclose the Disclosing Party's Confidential Information to any person except to its and its affiliates' employees, officers, directors, contractors, and professional advisors who need it for the Purpose, who are informed of its confidential nature, and who are bound by written obligations of confidentiality at least as protective as this Agreement. The Receiving Party is responsible for any breach of this Agreement by any person to whom it discloses Confidential Information.
+
+3.3 Care. The Receiving Party shall protect the Disclosing Party's Confidential Information with at least the degree of care it uses to protect its own confidential information of like importance, and in no event less than a reasonable degree of care.
+
+3.4 Notice of Unauthorized Disclosure. The Receiving Party shall notify the Disclosing Party promptly in writing on becoming aware of any unauthorized use or disclosure of the Disclosing Party's Confidential Information, and shall cooperate with the Disclosing Party to regain possession of it and prevent its further unauthorized use.
+
+4. Compelled Disclosure. If the Receiving Party is required by law, regulation, or a valid order of a court or governmental authority to disclose Confidential Information, it may do so, provided it gives the Disclosing Party prompt written notice before disclosure to the extent legally permitted, reasonably cooperates with the Disclosing Party at the Disclosing Party's expense in seeking a protective order or other confidential treatment, and discloses only that portion of the Confidential Information it is legally required to disclose.
+
+5. Whistleblower Immunity. Under 18 U.S.C. § 1833(b), an individual shall not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, solely for the purpose of reporting or investigating a suspected violation of law, or that is made in a complaint or other document filed under seal in a lawsuit or other proceeding. Nothing in this Agreement limits that immunity, and nothing in this Agreement prohibits either party or its personnel from communicating with, or providing information to, a government agency about a suspected violation of law.
+
+6. Term. This Agreement begins on the Effective Date and continues for two (2) years, unless either party terminates it earlier on thirty (30) days' prior written notice. The obligations in Sections 3 and 4 continue for five (5) years after the date of each disclosure, and continue for as long as the information remains a trade secret under Section 2.2.
+
+7. Return or Destruction. On the Disclosing Party's written request, and in any event on termination or expiration of this Agreement, the Receiving Party shall promptly return to the Disclosing Party or destroy all Confidential Information of the Disclosing Party in its possession, together with all copies, notes, and derivative materials, and shall certify in writing that it has done so. The Receiving Party may retain one archival copy in its legal files, and copies made by automatic backup systems that it cannot practicably delete, in each case subject to the confidentiality obligations of this Agreement for as long as the copy is retained.
+
+8. No License; No Warranty.
+
+8.1 No License. Each party retains all right, title, and interest in and to its own Confidential Information. Nothing in this Agreement grants either party any license or other right in the other party's Confidential Information, patents, copyrights, trademarks, or other intellectual property, whether by implication, estoppel, or otherwise, except the limited right to use the Confidential Information for the Purpose.
+
+8.2 No Warranty. All Confidential Information is provided "AS IS". NEITHER PARTY MAKES ANY WARRANTY, EXPRESS OR IMPLIED, AS TO THE ACCURACY OR COMPLETENESS OF ITS CONFIDENTIAL INFORMATION, AND NEITHER PARTY IS LIABLE FOR ANY ERROR IN OR OMISSION FROM IT.
+
+8.3 No Residuals. Nothing in this Agreement grants the Receiving Party any right to use the unaided memory of its personnel to use or disclose the Disclosing Party's Confidential Information; the parties expressly reject any residuals right.
+
+9. No Obligation to Proceed. Nothing in this Agreement obligates either party to proceed with the Purpose, to enter into any further agreement, to purchase or supply any product or service, or to refrain from evaluating, negotiating, or entering into any transaction with any third party. Neither party is restricted from independently developing or acquiring products or services that compete with those of the other, provided it does so without use of the other's Confidential Information.
+
+10. No Publicity. Neither party may use the other party's name, logo, or trademarks, or disclose the existence or subject matter of the discussions between the parties, in any press release, marketing material, or public statement without the other party's prior written consent.
+
+11. Remedies. Each party acknowledges that a breach of this Agreement may cause the other irreparable harm for which monetary damages are an inadequate remedy, and that the non-breaching party is entitled to seek injunctive relief and specific performance, without the necessity of posting a bond, in addition to any other remedy available at law or in equity. Each party's rights and remedies under this Agreement are cumulative.
+
+12. Non-Solicitation. During the term of this Agreement and for twelve (12) months afterward, neither party shall knowingly solicit for employment any employee of the other party who was introduced to it in connection with the Purpose. A general advertisement not targeted at those employees, and the hiring of a person who responds to one, do not violate this Section 12.
+
+13. General.
+
+13.1 Governing Law. This Agreement is governed by the laws of the State of North Carolina, without regard to its conflict-of-laws rules.
+
+13.2 Venue. The state and federal courts located in Wake County, North Carolina have exclusive jurisdiction over any dispute arising out of or relating to this Agreement, and each party consents to personal jurisdiction and venue in those courts.
+
+13.3 Notices. Notices under this Agreement must be in writing and are effective on delivery when sent by nationally recognized overnight courier or certified mail, return receipt requested, to the address stated above, attention General Counsel.
+
+13.4 Assignment. Neither party may assign this Agreement without the other party's prior written consent, except that either party may assign it in its entirety, on written notice and without consent, to a successor in connection with a merger, reorganization, or sale of all or substantially all of its assets. This Agreement binds and benefits the parties and their permitted successors and assigns.
+
+13.5 Entire Agreement; Amendment. This Agreement is the entire agreement between the parties about the confidential treatment of information disclosed for the Purpose and supersedes all prior and contemporaneous agreements and understandings about that subject matter. It may be amended only by a written instrument signed by both parties. No failure or delay in exercising any right is a waiver of that right.
+
+13.6 Severability. If any provision of this Agreement is held unenforceable, that provision shall be modified to the minimum extent necessary to make it enforceable, and the remaining provisions remain in full force and effect.
+
+13.7 Counterparts. This Agreement may be signed in counterparts, including by electronic signature, each of which is an original and all of which together are one agreement.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+WRENFIELD DIAGNOSTICS, INC.
+
+By: /s/ Amara Oyelaran
+Name: Amara Oyelaran
+Title: Chief Business Officer
+Date: April 2, 2026
+
+CALDER & BOYNE INSTRUMENTS LLC
+
+By: /s/ Tomasz Wierzbicki
+Name: Tomasz Wierzbicki
+Title: Managing Member
+Date: April 2, 2026

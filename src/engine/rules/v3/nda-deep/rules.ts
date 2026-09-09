@@ -259,7 +259,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Exclusion: independently developed",
     description:
       "Confidential Information should exclude information independently developed by the receiver without reference to the Confidential Information.",
@@ -272,17 +272,27 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "Add: 'Confidential Information does not include information independently developed by Receiving Party without use of or reference to Disclosing Party's Confidential Information.'",
     present_patterns: [
-      /independently\s+(developed|derived|created)/i,
+      // Every tense of the verb, not only the past participle. The exclusion is
+      // as often drafted as a RELATIVE CLAUSE in the present — "information
+      // that … the Receiving Party independently DEVELOPS without use of or
+      // reference to the Disclosing Party's Confidential Information" — and the
+      // participle-only list missed it, so a complete mutual NDA was told at
+      // CRITICAL that it has no independent-development carve-out.
+      /independently\s+(?:develop(?:s|ed|ing)?|deriv(?:e|es|ed|ing)|creat(?:e|es|ed|ing))\b/i,
       // The NOUN form "the result of independent DEVELOPMENT / derivation /
       // creation" carries the same carve-out and was missed by the adverb-verb
       // pattern above.
       /independent\s+(?:development|derivation|creation)/i,
-      /without\s+(use\s+of|reference\s+to)\s+(the\s+)?confidential/i,
+      // "without use of OR REFERENCE TO the Confidential Information" states
+      // both alternatives; the two-branch pattern read either one alone, and the
+      // conjoined form — the commonest of the three — matched neither.
+      /without\s+(?:use\s+of|reference\s+to)(?:\s+or\s+(?:use\s+of|reference\s+to))?\s+[^.]{0,40}?confidential/i,
     ],
   }),
 
   language({
     id: "NDA-D-010",
+    version: "1.1.0",
     name: "Residuals clause flagged for awareness",
     description:
       "Residuals clauses permit the receiver to use general knowledge retained in memory. Not inherently wrong but consequential for the discloser.",
@@ -295,6 +305,16 @@ export const NDA_DEEP_RULES: Rule[] = [
     recommendation:
       "If you are the disclosing party, consider deleting the residuals clause or narrowing it to non-trade-secret information explicitly.",
     bad_patterns: [/\bresiduals?\b/i, /(retained\s+in.{0,40}(unaided\s+)?memory)/is],
+    // A clause that REJECTS residuals is the discloser-favourable drafting this
+    // rule exists to ask for, and it names the same word. "Nothing in this
+    // Agreement grants the Receiving Party any right to use the unaided memory
+    // of its personnel …; the parties expressly reject any residuals right" was
+    // reported as "Residuals clause present — review for the discloser's
+    // position", with a recommendation to delete the clause that protects them.
+    exclude_if: [
+      /\b(?:no|not|never|nothing|reject(?:s|ed)?|disclaim(?:s|ed)?|waive[sd]?)\b[^.]{0,120}?\b(?:residuals?|unaided\s+memory)\b/i,
+      /\b(?:residuals?|unaided\s+memory)\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be|must\s+be)\s+(?:expressly\s+)?(?:not|no)\b/i,
+    ],
     default_severity: "info",
   }),
 
@@ -368,7 +388,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-013",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Return-or-destruction clause present",
     description:
       "NDA should require return or destruction of Confidential Information upon request or termination.",
@@ -390,7 +410,16 @@ export const NDA_DEEP_RULES: Rule[] = [
       // narrow original matched only the exact "return or destroy" idiom and
       // "destroy all copies", so a compliant NDA drafted any other standard way
       // was falsely flagged missing.
-      /\breturn(?:ed|s)?\s+(?:or|and)\s+destroy(?:ed|s)?\b/i,
+      // The two verbs are routinely separated by the object or by the party
+      // the material goes back to — "return TO THE DISCLOSING PARTY or
+      // destroy", "returned to Discloser and destroyed" — and an adjacency-only
+      // pattern read none of them. It matters more than it looks: the two
+      // patterns below name "Confidential Information" literally, so on a
+      // document that calls it Proprietary Information this idiom is the only
+      // one left, and the rule reported a return-or-destruction clause missing
+      // from a document that has one. Found by the defined-term rename
+      // relation.
+      /\breturn(?:ed|s|ing)?\b[^.]{0,60}?\b(?:or|and)\s+(?:promptly\s+)?destroy(?:ed|s|ing)?\b/i,
       /\b(?:return(?:s|ed|ing)?|destroy(?:s|ed|ing)?|delet(?:e|es|ed|ing)|eras(?:e|es|ed|ing))\b[^.]{0,40}?\b(?:all\s+|the\s+|such\s+|any\s+)?(?:copies\s+of\s+(?:the\s+)?)?confidential\s+information\b/i,
       /destruction\s+of\s+confidential|destroy\s+all\s+copies/i,
     ],

@@ -5017,6 +5017,33 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-001",
     ],
   },
+  // A COMPLETE mutual NDA — the fifth clean document (9.636.0), and the
+  // flagship family. Purpose, a full Confidential Information definition with
+  // the four standard exclusions, a trade-secret tail, use and disclosure
+  // limits, compelled disclosure, the DTSA § 1833(b) whistleblower notice,
+  // term, return-or-destruction with an archival carve-out, no licence, no
+  // warranty, an express REJECTION of residuals, no obligation to proceed,
+  // remedies, a mutual non-solicit, and general boilerplate. Two defects:
+  //
+  //  - NDA-D-009 said at CRITICAL that there is no independent-development
+  //    carve-out about "(d) the Receiving Party independently DEVELOPS without
+  //    use of or reference to the Disclosing Party's Confidential
+  //    Information" — the pattern read only the past participle, and the
+  //    conjoined "without use of OR reference to" matched neither branch of
+  //    the other pattern.
+  //  - NDA-D-010 reported a residuals clause, and recommended deleting it, on
+  //    a clause that REJECTS residuals. A discloser-favourable clause names
+  //    the same word as the thing it refuses.
+  //
+  // What remains is true of the draft: no authority representation, no
+  // no-precedent clause, no indemnity (an NDA conventionally has none), and a
+  // North Carolina choice of law, which NDA-D-018 correctly calls unusual
+  // against its eight-jurisdiction list while saying a small-state choice may
+  // be deliberate.
+  "mutual-nda-complete.txt": {
+    playbook: "mutual-nda-deep",
+    findings: ["NDA-D-018", "NDA-D-019", "NDA-D-022", "OBLI-005", "RISK-001", "TERM-007"],
+  },
   "enterprise-saas-subscription.txt": {
     playbook: "saas-customer",
     findings: [

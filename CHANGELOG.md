@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.636.0] — 2026-09-09
+
+### Fixed
+- **A complete mutual NDA was told at CRITICAL that it lacks the carve-out it
+  states.** The fifth clean document — the flagship family — drew eight
+  findings, two of them defects:
+
+  | Rule | The document says | The rule read |
+  |---|---|---|
+  | **NDA-D-009** (critical) | "(d) the Receiving Party independently **develops** without use of **or** reference to the Disclosing Party's Confidential Information" | `independently (developed\|derived\|created)` — the past participle only; and `without (use of\|reference to) … confidential` as two separate branches, so the conjoined form matched neither |
+  | **NDA-D-010** | "the parties expressly **reject** any residuals right" | `\bresiduals?\b` — so the discloser-favourable clause was reported as "Residuals clause present", recommending its deletion |
+
+  A carve-out is as often drafted as a relative clause in the present tense as
+  a participle, and a clause that REFUSES a thing names the same word as the
+  thing. Both fixes fire strictly less or strictly more conservatively; neither
+  moves any of the 316 existing specimens.
+
+- **A return-or-destruction clause the rule could only see under one name.**
+  NDA-D-013's three patterns are an adjacency-only "return or destroy" plus two
+  that name **"Confidential Information" literally** — so on a document that
+  calls it Proprietary Information (half the NDAs ever written), the idiom was
+  the only pattern left, and "return **to the Disclosing Party** or destroy"
+  does not fit it. The rule reported the clause missing from a document that
+  has one. Found by the defined-term rename relation, which the new specimen
+  joined.
+
+### Added
+- `tests/fixtures/specimens/mutual-nda-complete.txt` — the fifth clean
+  document, and the 317th specimen.
+
 ## [9.635.0] — 2026-09-09
 
 ### Fixed

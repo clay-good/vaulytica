@@ -476,3 +476,53 @@ describe("the words an ENGLISH NDA is drafted in", () => {
     },
   );
 });
+
+// Two defects a COMPLETE mutual NDA found (9.636.0): the independent-
+// development carve-out drafted in the present tense, and a clause that REJECTS
+// residuals read as a residuals clause.
+describe("the clean-document findings — NDA-D-009 / NDA-D-010", () => {
+  const nda = (pb: Playbook, ...body: string[]) =>
+    withPb(buildContext(["Mutual Nondisclosure Agreement", ...body] as [string, ...string[]]), pb);
+  const ruleById = (id: string) => NDA_DEEP_RULES.find((r) => r.id === id)!;
+
+  it.each([
+    "Confidential Information does not include information that the Receiving Party independently develops without use of or reference to the Disclosing Party's Confidential Information.",
+    "…information the Receiving Party is independently developing at the time of disclosure.",
+    "…information that the Receiving Party independently derives from public sources.",
+  ])("NDA-D-009 reads the carve-out in every tense: %s", (body) => {
+    expect(ruleById("NDA-D-009").check(nda(MUTUAL, body))).toBeNull();
+  });
+
+  it("NDA-D-009 still fires on an exclusions list that omits the carve-out", () => {
+    expect(
+      ruleById("NDA-D-009").check(
+        nda(
+          MUTUAL,
+          "Confidential Information does not include information that is or becomes generally available to the public other than through a breach of this Agreement.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("NDA-D-010 does not read a clause REJECTING residuals as a residuals clause", () => {
+    expect(
+      ruleById("NDA-D-010").check(
+        nda(
+          MUTUAL,
+          "Nothing in this Agreement grants the Receiving Party any right to use the unaided memory of its personnel to use or disclose the Disclosing Party's Confidential Information; the parties expressly reject any residuals right.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("NDA-D-010 still fires on a genuine residuals grant", () => {
+    expect(
+      ruleById("NDA-D-010").check(
+        nda(
+          MUTUAL,
+          "The Receiving Party may use any residuals of the Confidential Information retained in the unaided memory of its personnel for any purpose.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
