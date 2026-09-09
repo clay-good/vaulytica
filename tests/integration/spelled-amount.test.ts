@@ -117,6 +117,14 @@ const PERCENT_DEBT: readonly string[] = [
   "il-secured-promissory-note.txt: lost FIN-009 gained -",
   "loan-agreement.txt: lost FIN-009 gained -",
   "ny-residential-lease.txt: lost FIN-009 gained -",
+  // Added with the specimen in 9.633.0, and the same known shape as the seven
+  // around it: FIN-009 parses the RATE and asserts usury, so a percentage
+  // written in words alone ("five percent") is a rate it cannot read. The lease
+  // states its late charge as "five percent (5%)"; strip the numeral and the
+  // finding goes. Deliberately unrepaired — a word-parser for a rate that is
+  // routinely fractional ("one and one-half percent per month") would risk a
+  // confident false accusation about a legal limit.
+  "office-lease-complete.txt: lost FIN-009 gained -",
   "promissory-note-secured.txt: lost FIN-009 gained -",
   "promissory-note.txt: lost FIN-009 gained -",
 ];

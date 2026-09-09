@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.633.0] — 2026-09-09
+
+### Added
+- **A second clean document — and it found nothing, which is the point of
+  recording it.** A complete commercial office lease (seven-year term, base-year
+  operating expenses with an audit right and a 5% controllable-expense cap,
+  casualty and condemnation, subordination with non-disturbance, mutual
+  indemnities with negligence carve-outs) joins the corpus. Every one of its
+  nine findings is true of the draft.
+
+  Two looked like candidates and are not. RISK-005 (no limitation-of-liability
+  clause) and RISK-015 (indemnity without an aggregate cap) are *conventional*
+  for a lease, which allocates risk through insurance and waiver of subrogation
+  instead — but they are not wrong, and not family-wide noise either: only **3
+  of the 11** lease-family specimens draw each. Silencing them with a
+  `rule_overrides` entry would be a product judgment on thin evidence, and the
+  playbook already skips what it judged inapplicable (`PERS-*`, `IPDATA-*`). Left
+  as-is, deliberately, with the measurement written beside the specimen.
+
+  The clean-document method paid three defects on the SaaS agreement in 9.632.0
+  and none here. Both outcomes belong in the record.
+
+### Changed
+- **`loadAllPlaybooks` in `tests/integration/_pipeline-helpers.ts` says what it
+  actually loads: the twelve LAUNCH playbooks.** Correct for what that helper
+  runs — the v2 golden corpus, all launch families — and *not* what the product
+  routes against, which is those plus `playbooks/extended.json`: **292
+  playbooks, not 12**.
+
+  🚨 The name cost a measurement. Routing the 313-specimen corpus through that
+  set put **42 documents on `generic-fallback` that the product routes to a
+  family of their own**, and "42 routing defects" survived until it was checked
+  against `specimen-regression.test.ts`'s recorded expectations — which
+  disagreed with it 142 times. The candidate set is half the answer to any
+  routing question, and a third same-named helper in `tests/golden/v4/` has a
+  third scope again. All three are now named in the docstring.
+
 ## [9.632.0] — 2026-09-09
 
 ### Fixed

@@ -4899,6 +4899,35 @@ export const EXPECTED: Record<string, Expectation> = {
   // without defining ("Confidential Information", "Subscription Term"), three
   // Exhibits it references and does not attach, an auto-renewal, and a
   // termination-for-convenience right only the Customer has.
+  // A COMPLETE commercial office lease, the second document authored by the
+  // clean-document method (9.633.0). Unlike the SaaS agreement before it, this
+  // one found NOTHING — every finding it draws is true of the draft, which is
+  // worth recording: the method's hit rate is not one for one.
+  //
+  // The two that looked like candidates and are not: RISK-005 (no
+  // limitation-of-liability clause) and RISK-015 (indemnity without an
+  // aggregate cap). A commercial lease conventionally allocates risk through
+  // insurance and waiver of subrogation rather than a liability cap, which
+  // makes both findings *conventional* — but not wrong, and not family-wide
+  // noise either: only 3 of the 11 lease-family specimens draw RISK-005 and 3
+  // draw RISK-015, so several leases in this corpus do carry the clause. A
+  // `rule_overrides` entry to silence them would be a product judgment on thin
+  // evidence, and the playbook already skips what it judged inapplicable
+  // (PERS-*, IPDATA-*). Left as-is, deliberately.
+  "office-lease-complete.txt": {
+    playbook: "lease-commercial-multitenant",
+    findings: [
+      "FIN-009",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-005",
+      "RISK-010",
+      "RISK-011",
+      "RISK-013",
+      "RISK-015",
+      "STRUCT-018",
+    ],
+  },
   "enterprise-saas-subscription.txt": {
     playbook: "saas-customer",
     findings: [

@@ -30,6 +30,27 @@ const PLAYBOOK_DIR = join(__dirname, "..", "..", "playbooks");
 
 let cachedPlaybooks: Playbook[] | null = null;
 
+/**
+ * The twelve LAUNCH playbooks — not the catalog.
+ *
+ * 🚨 The name says "all", and it means all of `LAUNCH_PLAYBOOK_IDS`. That is
+ * correct for what this helper runs (`tests/fixtures/contracts/`, the v2 golden
+ * corpus, whose documents are all launch families) and it is the right scope
+ * for `runFixture` below — but it is NOT what the product routes against. The
+ * browser, the CLI and `tools/accuracy/pipeline.ts` load
+ * `playbooks/extended.json` as well: **292 playbooks, not 12**. A caller that
+ * needs the catalog adds it explicitly, as `commercial-routing.test.ts` does.
+ *
+ * Worth the paragraph because the name cost a measurement: routing the
+ * 313-specimen corpus through this set put 42 documents on
+ * `generic-fallback` that the product routes to a family of their own, and the
+ * conclusion "42 routing defects" survived until it was checked against
+ * `specimen-regression.test.ts`'s recorded expectations, which disagreed with
+ * it 142 times. The candidate set is half the answer to any routing question.
+ *
+ * (The same-named helper in `tests/golden/v4/_pipeline.ts` is a THIRD scope:
+ * launch plus the `src/playbooks/v3` and `v4` directories.)
+ */
 export async function loadAllPlaybooks(): Promise<Playbook[]> {
   if (cachedPlaybooks) return cachedPlaybooks;
   const playbooks: Playbook[] = [];
