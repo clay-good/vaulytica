@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.608.0] — 2026-09-08
+
+### Fixed
+- **STRUCT-010 told documents with a perfectly correct Table of Contents that
+  every line of it was broken.** The TOC-parity rule compares each TOC entry to
+  the document's headings. A Word TOC field puts its page number on a **tab
+  stop**, and the dot leader is a tab-leader character rather than literal
+  periods — so flattened to text, a correct "1. Services" entry arrives as
+  `1. Services\t3`. The rule stripped a *literal* dot leader and nothing else,
+  compared the rest verbatim, and reported the page number as a renumbering.
+
+  Measured on four TOC shapes against the same three-section document, before
+  and after:
+
+  | TOC shape | Before | After |
+  |---|---|---|
+  | Word tab leader (`1. Services\t3`) | **3 entries accused** | none |
+  | collapsed to spaces (`1. Services 3`) | **3 entries accused** | none |
+  | literal dot leader (`1. Services ..... 3`) | none | none |
+  | trailing period (`1. Services.`) | **2 entries accused** | none |
+  | genuinely stale (`9. Source Code Escrow`) | 1 — correct | 1 — correct |
+
+  Both sides of the comparison are now normalized the same way (case, dash
+  style, whitespace runs, a trailing period), and a trailing page number is
+  tried **in addition to** the literal line, never instead of it — so a heading
+  that legitimately ends in a number ("Exhibit 3") still matches itself.
+
+### Added
+- **STRUCT-010 has tests, and finding out why it had none is the finding.**
+  The rule cannot fire on the specimen corpus *at all*: all 312 specimens are
+  plain text, pasted text has no headings by construction (`ingestPaste` says
+  so in its own docstring), and a parity check with nothing to compare against
+  returns early. Its coverage — 57% of statements, 25% of branches, the lowest
+  of any rule in the catalog — was the visible end of that.
+
+  So the documents the rule can reach are the ones with headings, which in
+  practice means DOCX, which in practice means Word wrote the TOC — the exact
+  shape it got wrong. Seven tests now cover the fire path, the four
+  false-positive shapes above, the number-terminated heading, and the silent
+  no-TOC case. Each half of the fix was proven by removing it: dropping the
+  page-number strip fails 2, dropping the trailing-punctuation strip fails 1.
+
+  Not widened: the gate still requires a section headed exactly "Table of
+  Contents" or "Contents". A Form ADV writes "Item 3. Table of Contents" and an
+  SEC circular runs its whole TOC into one semicolon-separated paragraph past
+  the 120-character line filter. Both are real; neither can be measured against
+  this corpus, and widening a gate no corpus can hold is how false positives
+  ship.
+
 ## [9.607.0] — 2026-09-08
 
 ### Security
