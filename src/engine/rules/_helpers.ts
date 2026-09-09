@@ -717,8 +717,58 @@ const RATIFIES_PARENT =
 // five clauses of the MSA it names in its first sentence. A period followed by
 // a capital across a space still ends the run, so it cannot cross into the next
 // sentence.
-const ISSUED_UNDER_PARENT =
-  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Statement\s+of\s+Work|SOW|Order\s+Form|Order|Rider|Amendment|Letter|Agreement|Annexure|Annex|Appendix|Appendices|Addendum|Schedule|Exhibit|Attachment)\b(?:[^.;]|\.(?!\s+[A-Z])){0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?)\s+(?:and\s+subject\s+to\s+)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract)|MSA|SOW|IRA|SPA|LPA)\b/;
+// Two more spellings of the same claim, and the ones a data processing
+// agreement uses: "THIS DATA PROCESSING AGREEMENT forms part of, and IS
+// SUBJECT TO, the Master Services Agreement dated March 16, 2026". Neither
+// "forms part of" nor "is subject to" was a connector here, so a complete DPA
+// was told it has no governing law, no liability cap, no indemnity, no IP
+// allocation, no venue and no termination-for-cause clause — six clauses of
+// the agreement it names in its first sentence, and six rules that all consult
+// this one helper. The comma-delimited pair between them is admitted too,
+// because that is how the sentence is punctuated.
+// 🚨 THE SELF-NAMING OPENING IS SHOUTED AND THE DOCUMENT AROUND IT IS NOT.
+// "THIS DATA PROCESSING AGREEMENT (this "DPA") forms part of, and is subject
+// to, the Master Services Agreement" is the universal drafting convention, and
+// this pattern is case-SENSITIVE — deliberately, because the PARENT has to be
+// a named instrument. `isAllCaps` only case-folds when the WHOLE document
+// shouts, which is not this document. So the two halves are treated
+// separately now: the instrument NAMES itself in either case, and the parent it
+// names must still be capitalized.
+//
+// The shouted spellings are built from the plain words, never by
+// upper-casing the pattern SOURCE — `\s+`.toUpperCase() is `\S+`, which
+// silently turns a whitespace class into "any non-space".
+const SELF_NAMED_INSTRUMENT_NOUNS = [
+  "Statement of Work",
+  "SOW",
+  "Order Form",
+  "Order",
+  "Rider",
+  "Amendment",
+  "Letter",
+  "Agreement",
+  "Annexure",
+  "Annex",
+  "Appendix",
+  "Appendices",
+  "Addendum",
+  "Schedule",
+  "Exhibit",
+  "Attachment",
+  // A document is as often a Contract or a Deed as an Agreement, and the
+  // defined-term rename relation says so: renaming Agreement to Contract across
+  // a DPA brought six findings back, because the document could no longer name
+  // ITSELF even though the parent it names was still matched.
+  "Contract",
+  "Deed",
+] as const;
+const SELF_NAMED_NOUN_ALT = SELF_NAMED_INSTRUMENT_NOUNS.flatMap((n) => [n, n.toUpperCase()])
+  .map((n) => n.replace(/ /g, String.raw`\s+`))
+  .join("|");
+
+const ISSUED_UNDER_PARENT = new RegExp(
+  String.raw`\b(?:This|THIS)\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:${SELF_NAMED_NOUN_ALT})\b(?:[^.;]|\.(?!\s+[A-Z])){0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?|forms?\s+(?:a\s+)?part\s+of|(?:is|are)\s+subject\s+to)\s*,?\s*(?:and\s+(?:is\s+|are\s+)?(?:subject\s+to|governed\s+by)\s*,?\s*)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|AGREEMENT|LEASE|CONTRACT)|MSA|SOW|IRA|SPA|LPA)\b`,
+);
 const PARENT_CONTROLS =
   // Case-SENSITIVE by design: the parent has to be a NAMED instrument, which
   // is what `[A-Z]` and the capitalized "Agreement" enforce. Only the leading
@@ -1085,15 +1135,48 @@ export const GOVERNING_LAW_PRESENT: readonly RegExp[] = [
   /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
 ];
 
+/**
+ * The lines of a document that SHOUT, joined.
+ *
+ * `isAllCaps` asks the question of the whole document, and a contract that
+ * shouts one clause is not an all-caps document. But a shouted LINE offers no
+ * case contrast either — every test the case-sensitive patterns make of it is
+ * unsatisfiable — so the case-blind twin is the right reading of that line and
+ * of nothing else. Found when the shouted-clause relation upper-cased the
+ * preamble of a DPA (its first line says "an Ohio limited liability company",
+ * which is what the transform keys on) and six absence findings came back:
+ * "forms part of … the Master Services Agreement" had become "FORMS PART OF …
+ * THE MASTER SERVICES AGREEMENT" and stopped being read as a parent reference.
+ */
+function shoutedTextOf(ctx: RuleContext): string {
+  const shouted: string[] = [];
+  const walk = (sections: RuleContext["tree"]["sections"]): void => {
+    for (const section of sections) {
+      for (const p of section.paragraphs) {
+        const t = p.runs.map((r) => r.text).join(" ");
+        if (/[A-Z]/.test(t) && t === t.toUpperCase()) shouted.push(t);
+      }
+      walk(section.children);
+    }
+  };
+  walk(ctx.tree.sections);
+  return shouted.join("\n");
+}
+
 export function amendsParentAgreement(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
   const named = isAllCaps(text)
     ? [caseBlind(ISSUED_UNDER_PARENT), caseBlind(PARENT_CONTROLS)]
     : [ISSUED_UNDER_PARENT, PARENT_CONTROLS];
+  const shouted = isAllCaps(text) ? "" : shoutedTextOf(ctx);
   return (
     RATIFIES_PARENT.test(text) ||
     SUPPLEMENTS_PARENT.test(text) ||
     named.some((re) => re.test(text)) ||
+    (shouted.length > 0 &&
+      [caseBlind(ISSUED_UNDER_PARENT), caseBlind(PARENT_CONTROLS)].some((re) =>
+        re.test(shouted),
+      )) ||
     INCORPORATED_INTO_PARENT.test(text) ||
     SIGNED_RIDER_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text) ||

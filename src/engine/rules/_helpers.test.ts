@@ -778,3 +778,60 @@ describe("amendsParentAgreement — a passing reference is not subordination", (
     ).toBe(true);
   });
 });
+
+/**
+ * The opening a data processing agreement writes, and the two things about it
+ * the helper did not know: the connector, and the SHOUT.
+ *
+ * Six rules consult `amendsParentAgreement` — CHOICE-001, CHOICE-003,
+ * IPDATA-001, RISK-001, RISK-005 and TERM-002 — so one gap in this vocabulary
+ * is six confident accusations that a document lacks clauses it takes from the
+ * agreement it names in its first sentence.
+ */
+describe("amendsParentAgreement — 'forms part of' and a shouted self-name", () => {
+  const ctxWith = (body: string): RuleContext => buildContext(["Agreement", body]);
+
+  it.each([
+    'THIS DATA PROCESSING AGREEMENT (this "DPA") forms part of, and is subject to, the Master Services Agreement dated March 16, 2026 (the "Principal Agreement") between the parties.',
+    'This Data Processing Agreement (this "DPA") forms part of the Subscription Agreement dated February 9, 2026 between the parties.',
+    "THIS SECURITY ADDENDUM is subject to the Master Services Agreement between the parties.",
+  ])("reads a document that names itself under a parent: %s", (body) => {
+    expect(amendsParentAgreement(ctxWith(body))).toBe(true);
+  });
+
+  it("still refuses a standalone deal document that merely NAMES another instrument", () => {
+    expect(
+      amendsParentAgreement(
+        ctxWith(
+          "At the Closing, Buyer shall deposit One Million Dollars ($1,000,000) with the Escrow Agent to be held under the Escrow Agreement attached as Exhibit A.",
+        ),
+      ),
+    ).toBe(false);
+  });
+
+  // A shouted LINE offers no case contrast, so the case-sensitive test of it is
+  // unsatisfiable — and `isAllCaps` asks the question of the whole document,
+  // which this is not. Found by the shouted-clause relation, which upper-cases
+  // any line mentioning liability: a DPA's preamble says "an Ohio limited
+  // liability company", so the whole preamble shouted and the parent reference
+  // in it stopped being read.
+  it("reads the parent reference when the LINE shouts and the document does not", () => {
+    expect(
+      amendsParentAgreement(
+        buildContext([
+          "Data Processing Agreement",
+          'THIS DATA PROCESSING AGREEMENT (THIS "DPA") FORMS PART OF, AND IS SUBJECT TO, THE MASTER SERVICES AGREEMENT DATED MARCH 16, 2026 BETWEEN CORRISTON FREIGHT SYSTEMS, LLC, AN OHIO LIMITED LIABILITY COMPANY.',
+          "Processor shall process the Personal Data only on documented instructions from Controller.",
+        ]),
+      ),
+    ).toBe(true);
+  });
+
+  it("still refuses a subordinate-sounding phrase with no self-naming opening", () => {
+    expect(
+      amendsParentAgreement(
+        ctxWith("The obligations of the Borrower are subject to the Senior Credit Agreement."),
+      ),
+    ).toBe(false);
+  });
+});

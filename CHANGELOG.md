@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.638.0] — 2026-09-09
+
+### Fixed
+- **One vocabulary gap, six confident accusations.** A data processing
+  agreement opens "**THIS DATA PROCESSING AGREEMENT** (this "DPA") **forms part
+  of, and is subject to,** the Master Services Agreement dated March 16, 2026"
+  — and was told it has no governing law, no venue, no IP allocation, no
+  indemnity, no liability cap and no termination-for-cause clause. All six of
+  those rules already consult `amendsParentAgreement`; the helper did not know
+  this document's spelling of the claim, and two separate things were missing:
+
+  - **The connector.** `under` / `pursuant to` / `issued under` / `governed by`
+    were the ways a document could say it is subordinate. "Forms part of" and
+    "is subject to" — the two a DPA actually uses — were not among them.
+  - 🚨 **The self-naming opening is SHOUTED and the document around it is
+    not.** The pattern is case-sensitive on purpose (the *parent* has to be a
+    named instrument), and the `isAllCaps` fallback only folds case when the
+    **whole document** shouts. "THIS DATA PROCESSING AGREEMENT" in an otherwise
+    mixed-case document matched nothing. The two halves are separated now: the
+    instrument may name itself in either case, the parent it names must still be
+    capitalized.
+
+  The shouted spellings are built from the plain words, never by upper-casing
+  the pattern **source** — `\s+`.toUpperCase() is `\S+`, which silently turns a
+  whitespace class into "any non-space".
+
+  Two more spellings of the same gap came out of the corpus relations, and both
+  are the reason those relations exist:
+
+  - **A document is as often a Contract or a Deed as an Agreement.** Renaming
+    "Agreement" to "Contract" across the DPA brought all six findings back: the
+    document could no longer name ITSELF, though the parent it names was still
+    matched. Found by the defined-term rename relation and the instrument
+    vocabulary relation, independently.
+  - 🚨 **A shouted LINE in a document that does not shout.** `isAllCaps` asks
+    the question of the whole document, and the case-blind twin was reached only
+    then. The shouted-clause relation upper-cases any line mentioning liability
+    — a DPA preamble says "an Ohio **limited liability** company", so the whole
+    preamble shouted and the parent reference inside it stopped being read. A
+    shouted line offers no case contrast either, so it gets the same case-blind
+    reading the all-caps document gets, and nothing else does.
+
+  **Two specimens move, both correctly**: the new `dpa-complete.txt` loses all
+  six, and `dpa-controller-processor.txt` — which has said "forms part of the
+  Subscription Agreement" since it was written — loses four that were false the
+  whole time. Nothing else in the corpus moves, and the two negative guards
+  hold: a standalone deal document that merely NAMES an escrow agreement, and a
+  subordinate-sounding phrase with no self-naming opening, are both still
+  refused.
+
 ## [9.637.0] — 2026-09-09
 
 ### Fixed

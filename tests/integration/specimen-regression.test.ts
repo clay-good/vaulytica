@@ -4821,6 +4821,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // Article 28(3)(g) clause — "the Processor DELETES OR RETURNS all Personal
   // Data … after the END of the provision of services" — and the check read
   // neither the trigger noun "end" nor the third-person "deletes"/"returns".
+  // 9.638.0 — FOUR findings came off this row, and they were false the whole
+  // time. The document's first sentence says it "forms part of the Subscription
+  // Agreement dated February 9, 2026", and `amendsParentAgreement` — which
+  // IPDATA-001, RISK-001, RISK-005 and TERM-002 all consult — did not know that
+  // spelling. The IP allocation, the indemnity, the liability cap and the
+  // termination machinery live in the agreement this DPA names in its opening
+  // line.
   "dpa-controller-processor.txt": {
     playbook: "dpa-controller-processor",
     // DPA-044 came off when the effective-date check stopped requiring the
@@ -4834,11 +4841,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "DPA-052",
       "DPA-054",
       "DPA-055",
-      "IPDATA-001",
-      "RISK-001",
-      "RISK-005",
       "STRUCT-006",
-      "TERM-002",
       "TRANSFER-018",
       "TRANSFER-020",
     ],
@@ -5071,28 +5074,23 @@ export const EXPECTED: Record<string, Expectation> = {
   // representative, no notice or survival clause of its own, no
   // public-authority-request clause, and the governing law, liability cap and
   // termination rights it takes from the Principal Agreement by reference —
-  // which CHOICE-001, RISK-005 and TERM-002 report as absent. That last group
-  // is one cause with five faces and is deliberately left for its own change:
-  // it is a judgment about how an ancillary document should be read, not a
-  // pattern that is simply too narrow.
+  // which CHOICE-001, RISK-005 and TERM-002 reported as absent until 9.638.0.
+  // That was one cause with six faces, and it is closed in the shared
+  // vocabulary: all six of those rules consult `amendsParentAgreement`, which
+  // did not know "forms part of" as a connector, nor a SHOUTED self-name in an
+  // otherwise mixed-case document.
   "dpa-complete.txt": {
     playbook: "dpa-controller-processor",
     findings: [
-      "CHOICE-001",
-      "CHOICE-003",
       "DPA-030",
       "DPA-034",
       "DPA-051",
       "DPA-052",
       "DPA-054",
       "DPA-055",
-      "IPDATA-001",
       "OBLI-005",
-      "RISK-001",
-      "RISK-005",
       "STRUCT-006",
       "STRUCT-007",
-      "TERM-002",
       "TERM-007",
       "TRANSFER-019",
       "TRANSFER-020",
