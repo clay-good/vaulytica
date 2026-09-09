@@ -342,3 +342,84 @@ describe("selectPrivilegeLogMember", () => {
     ]);
   });
 });
+
+/* ---------------- ingestEntries / ingestBundle ---------------- */
+
+/**
+ * "A single corrupt file does not poison the whole bundle" — `ingestEntries`
+ * says so in its docstring, and nothing tested it.
+ *
+ * It is the promise that matters most in a bundle: a reviewer drops a matter
+ * folder, one file in it is a `.docx` that is not really a `.docx` (a renamed
+ * export, a truncated download), and the question is whether they get the
+ * other three documents plus a named rejection, or an error and nothing. The
+ * two functions that answer it — the bundle ingest and its plan-and-ingest
+ * wrapper — had no test at all.
+ */
+describe("ingestEntries", () => {
+  const docxBytes = async (): Promise<ArrayBuffer> => {
+    const { readFile } = await import("node:fs/promises");
+    const buf = await readFile("tests/fixtures/contracts/mutual-nda.docx");
+    return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+  };
+
+  it("ingests the good documents and rejects only the corrupt one", async () => {
+    const { ingestEntries } = await import("./multi.js");
+    const good = await docxBytes();
+    const result = await ingestEntries([
+      { ok: true, filename: "nda.docx", kind: "docx", bytes: good, size_bytes: good.byteLength },
+      {
+        ok: true,
+        filename: "broken.docx",
+        kind: "docx",
+        bytes: strToU8("this is not a docx").buffer as ArrayBuffer,
+        size_bytes: 18,
+      },
+    ]);
+    expect(result.ingested.map((d) => d.filename)).toEqual(["nda.docx"]);
+    expect(result.rejected).toHaveLength(1);
+    expect(result.rejected[0]!.filename).toBe("broken.docx");
+    expect(result.rejected[0]!.reason, "the rejection carried no reason").toBeTruthy();
+    // Only the bytes actually ingested are counted.
+    expect(result.total_bytes).toBe(good.byteLength);
+  });
+
+  it("passes a planner rejection straight through with its reason", async () => {
+    const { ingestEntries } = await import("./multi.js");
+    const result = await ingestEntries([
+      { ok: false, filename: "notes.txt", reason: "Vaulytica accepts .pdf and .docx" },
+    ]);
+    expect(result.ingested).toEqual([]);
+    expect(result.rejected).toEqual([
+      { filename: "notes.txt", reason: "Vaulytica accepts .pdf and .docx" },
+    ]);
+    expect(result.total_bytes).toBe(0);
+  });
+});
+
+describe("ingestBundle", () => {
+  it("plans and ingests in one call", async () => {
+    const { ingestBundle } = await import("./multi.js");
+    const { readFile } = await import("node:fs/promises");
+    const buf = await readFile("tests/fixtures/contracts/mutual-nda.docx");
+    const bytes = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+    const result = await ingestBundle([
+      { filename: "nda.docx", bytes, size_bytes: bytes.byteLength },
+    ]);
+    expect(result.ingested).toHaveLength(1);
+    expect(result.ingested[0]!.result.tree.sections.length).toBeGreaterThan(0);
+  });
+
+  it("throws the cap's own message when the bundle is too big to plan", async () => {
+    const { ingestBundle } = await import("./multi.js");
+    const many = Array.from({ length: MAX_BUNDLE_FILES + 1 }, (_, i) => ({
+      filename: `doc-${i}.docx`,
+      bytes: fakeBytes(8),
+      size_bytes: 8,
+    }));
+    // The wrapper is documented as throwing; callers wanting a non-throwing
+    // surface are told to call planBundle directly, so the message a user
+    // would see has to survive the throw.
+    await expect(ingestBundle(many)).rejects.toThrow(BUNDLE_CAP_MESSAGE);
+  });
+});

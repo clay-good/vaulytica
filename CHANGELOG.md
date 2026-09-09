@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.622.0] — 2026-09-09
+
+### Added
+- **"A single corrupt file does not poison the whole bundle" now has a test.**
+  `ingestEntries` says exactly that in its docstring, and neither it nor its
+  plan-and-ingest wrapper `ingestBundle` had one — the two functions that run
+  every multi-document drop.
+
+  It is the promise that matters most in a bundle: a reviewer drops a matter
+  folder, one file in it is a `.docx` that is not really a `.docx` (a renamed
+  export, a truncated download), and the question is whether they get the other
+  documents plus a **named** rejection, or an error and nothing.
+
+  Four tests: the good document ingests while the corrupt one is rejected *with
+  a reason*, `total_bytes` counts only what was actually read, a planner
+  rejection passes straight through with its own message, and `ingestBundle`
+  throws the cap's own user-facing message when the bundle is too big to plan —
+  which has to survive the throw, since the docstring sends callers who want a
+  non-throwing surface to `planBundle` instead.
+
+  Proven by breaking two: re-throwing from the per-file catch fails 1, zeroing
+  `total_bytes` fails 1.
+
 ## [9.621.0] — 2026-09-09
 
 ### Changed
