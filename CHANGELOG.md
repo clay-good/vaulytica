@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.624.0] — 2026-09-09
+
+### Added
+- **The DKB loader's per-file failure kinds, one level below the ones already
+  tested.** `DkbLoadError.cause_kind` is not decoration — the UI's error copy
+  branches on it, and the loader's own comment explains why a
+  **reachable-but-corrupt** manifest must be classified `schema` rather than
+  `network`: mislabeling it hides a bad deploy behind a stale cache. Both
+  manifest cases were pinned. The same distinction one level down — in the
+  per-artifact fetch, where a CDN can 404 one file of seven or serve valid JSON
+  of the wrong shape — was not.
+
+  Three tests: a missing artifact is `network` and the message **names the file
+  and the status**; a well-served artifact of the wrong shape is `schema`, with
+  the underlying validation error kept as `cause`; and a `fetch` that throws
+  outright (offline, no cache) is `network` with the "no cached DKB is
+  available" message rather than an uncaught crash.
+
+  Proven by breaking two: mislabeling the per-file schema failure as `network`
+  fails 1, dropping the filename from the fetch error fails 1.
+
+  Noted, not touched: `fetchPlaybooks` in `src/playbooks/loader.ts` — the
+  exported fetch-and-validate helper — has **no caller anywhere**, while the
+  browser's real playbook loading is a private copy inside `ui/pipeline.ts`
+  (`ensurePlaybooks`) that differs in its parallelism and its error text. One
+  job, two implementations, and the exported "single owner" is the one nobody
+  calls. The same shape as `enumerateFolderEntry` in 9.611.0.
+
 ## [9.623.0] — 2026-09-09
 
 ### Added
