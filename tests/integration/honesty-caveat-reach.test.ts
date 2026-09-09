@@ -77,3 +77,96 @@ describe("the honesty caveats reach every findings surface", () => {
     expect(/\bwarnings\b/.test(src)).toBe(false);
   });
 });
+
+/**
+ * The THIRD caveat, and the rule that keeps it honest: a surface that shows the
+ * overlays has to show the gap in them.
+ *
+ * `StateOverlayResult.uncovered_states` is the same kind of fact as the two
+ * above — about the ANALYSIS, not the contract. A document names North Dakota,
+ * the catalog has no North Dakota overlay for that family, and the card must
+ * say *"an honest coverage gap, not a clean pass"*, because silence there is
+ * indistinguishable from "we checked and it is fine."
+ *
+ * The rule is conditional rather than universal, and deliberately so. Measured
+ * 2026-09-09 across the eight surfaces above: four render overlays at all — the
+ * JSON report (which emits the whole `StateOverlayResult`, gap included), the
+ * DOCX, the standalone HTML and the in-tab card. **SARIF, the bundle report,
+ * the Markdown fix list and the CLI's terminal output render no overlay of any
+ * kind**, so for them the gap does not arise; adding overlays to SARIF — the
+ * surface a CI pipeline actually reads — is a product decision, recorded rather
+ * than guessed at.
+ *
+ * So: whoever shows the good news shows the gap with it.
+ */
+describe("a surface that renders jurisdiction overlays renders their coverage gap", () => {
+  /**
+   * The three surfaces that WRITE the gap into their own prose. The JSON
+   * report is deliberately not here: it emits the whole `StateOverlayResult`
+   * object, so the gap rides along structurally and its own name never appears
+   * in the file. Structural pass-through is a render — it just cannot be shown
+   * by a grep, so the JSON is asserted behaviourally below.
+   */
+  const OVERLAY_SURFACES: ReadonlyArray<[file: string, what: string]> = [
+    ["src/report/docx.ts", "the DOCX report"],
+    ["src/report/html.ts", "the standalone HTML report"],
+    ["src/ui/states.ts", "the in-tab result states"],
+  ];
+
+  /** Comments are documentation, not rendering. */
+  const code = (file: string): string =>
+    readFileSync(join(process.cwd(), file), "utf8").replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, "");
+
+  it("names the surfaces that actually render an overlay", () => {
+    // Anti-vacuity: if a surface stopped rendering overlays entirely this list
+    // would be wrong, and the guard below would pass by rendering nothing.
+    for (const [file, what] of OVERLAY_SURFACES) {
+      expect(/matched\b/.test(code(file)), `${what} no longer reads the matched overlays`).toBe(
+        true,
+      );
+    }
+  });
+
+  it("every one of them also reads uncovered_states", () => {
+    const missing: string[] = [];
+    for (const [file, what] of OVERLAY_SURFACES) {
+      if (!/uncovered_states/.test(code(file))) missing.push(`${file} — ${what}`);
+    }
+    expect(
+      missing,
+      "a surface shows which states the catalog covers and stays silent about the ones it does not",
+    ).toEqual([]);
+  });
+
+  it("the JSON report carries the gap in its output, not just in its type", async () => {
+    const { selectStateOverlays } = await import("../../src/dkb/state-overlays.js");
+    // A governing-law state the catalog has no non-compete overlay for. If the
+    // corpus's own catalog ever covers every state this falls back to
+    // asserting the field's presence, which is still the property that matters.
+    const overlays = selectStateOverlays("employment-at-will-us", [
+      { state: "us-nd", raw_text: "governed by the laws of the State of North Dakota" },
+    ] as never);
+    expect(overlays, "the selector produced nothing to assert on").not.toBeUndefined();
+    expect(
+      Object.keys(overlays ?? {}),
+      "the overlay result stopped carrying its coverage gap",
+    ).toContain("uncovered_states");
+  });
+
+  it("the four surfaces that render no overlay are still the four", () => {
+    // Not a prohibition — a record. If one of these grows an overlay section,
+    // this test fails and the author has to add it to OVERLAY_SURFACES above,
+    // which is what puts the gap question in front of them.
+    for (const [file, what] of [
+      ["src/report/sarif.ts", "the SARIF (CI) surface"],
+      ["src/report/bundle.ts", "the bundle report"],
+      ["src/report/exports.ts", "the Markdown fix list"],
+      ["tools/cli/run.ts", "the CLI's terminal output"],
+    ] as const) {
+      expect(
+        /jurisdiction_overlays/.test(code(file)),
+        `${what} now renders overlays — add it to OVERLAY_SURFACES and give it the gap`,
+      ).toBe(false);
+    }
+  });
+});

@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.627.0] — 2026-09-09
+
+### Fixed
+- **The overlay coverage gap was guarded by an `if` that skipped itself.** The
+  HTML/DOCX parity test checked the "honest coverage gap — not a clean pass"
+  wording only *inside* `if (html.includes("No overlay on file for"))` — a test
+  that passes hardest the moment the thing it guards disappears. Proven: with
+  the gap suppressed in either surface it stayed green.
+
+  It now constructs the case. **Alabama has no non-compete overlay** (34 of 50
+  states do not), so a document governed by Alabama law is the shape where both
+  reports must say the gap rather than printing an empty overlay section, which
+  a reader takes for a clean bill. Unconditional, both surfaces, and it fails 1
+  when either one suppresses the notice.
+
+### Added
+- **A third honesty caveat joins the reach test — conditionally, which is the
+  interesting part.** `uncovered_states` is the same kind of fact as the
+  classification notice and the ingest warnings: about the ANALYSIS, not the
+  contract. Measured across the eight findings surfaces:
+
+  | | |
+  |---|---|
+  | render overlays **and** the gap | DOCX, standalone HTML, in-tab card, JSON report |
+  | render **no overlay at all** | SARIF, the bundle report, the Markdown fix list, the CLI's terminal output |
+
+  So the guard is "whoever shows the good news shows the gap with it", plus a
+  standing record of the four that show neither — if one of them grows an
+  overlay section the test fails, which is what puts the gap question in front
+  of the author. The JSON report is asserted **behaviourally** rather than by
+  grep: it emits the whole `StateOverlayResult`, so the gap rides along
+  structurally and its own name never appears in the file. Structural
+  pass-through is a render; it just cannot be shown by a static scan.
+
+  Measured and **not** built: SARIF — the surface a CI pipeline actually reads —
+  carries no overlay of any kind, so a California non-compete analyzed in CI
+  says nothing about § 16600. That is the same argument the CLI's own comment
+  makes for the JSON path, but adding overlays to SARIF means deciding whether
+  they are results, notifications or properties, which is a product decision
+  and not a session tail.
+
 ## [9.626.0] — 2026-09-09
 
 ### Added

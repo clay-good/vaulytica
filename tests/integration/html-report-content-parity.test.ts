@@ -74,9 +74,65 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
 
     expect(html).toContain("Jurisdiction overlays");
     expect(html).toContain("Obligations ledger");
-    // The coverage gap has to say it is a gap, in both.
-    if (html.includes("No overlay on file for")) {
-      expect(html).toContain("honest coverage gap — not a clean pass");
+    // The coverage gap has to say it is a gap, in both — asserted
+    // unconditionally in its own test below, because an `if (html.includes(…))`
+    // here would skip itself the moment the gap stopped being rendered.
+  }, 180_000);
+
+  /**
+   * 🚨 The gap check above used to be `if (html.includes("No overlay on file
+   * for")) { expect(...) }` — a test that passes hardest when the thing it
+   * guards has disappeared. This one constructs the case instead.
+   *
+   * Alabama has no non-compete overlay in the catalog (34 of 50 states do
+   * not), so a document governed by Alabama law is the shape where both
+   * reports must say "an honest coverage gap — not a clean pass" rather than
+   * printing an empty overlay section, which a reader takes for a clean bill.
+   */
+  it("says an uncovered state is a GAP, in both reports, unconditionally", async () => {
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeFile(SPECIMEN, { deps });
+    const extracted = {
+      ...extractAll(r.ingest.tree),
+      jurisdictions: [
+        {
+          clause_kind: "governing-law",
+          jurisdiction_id: "us-al",
+          raw_text: "governed by the laws of the State of Alabama",
+        },
+      ],
+    } as ReturnType<typeof extractAll>;
+
+    const html = buildHtmlReport(
+      r.run,
+      r.ingest,
+      deps.dkb,
+      r.playbook,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      extracted,
+    );
+    const docxXml = strFromU8(
+      unzipSync(
+        new Uint8Array(
+          await (
+            await buildDocxReport(r.run, r.ingest, deps.dkb, r.playbook, undefined, extracted)
+          ).arrayBuffer(),
+        ),
+      )["word/document.xml"]!,
+    );
+
+    for (const [surface, text] of [
+      ["the HTML report", html],
+      ["the DOCX report", docxXml],
+    ] as const) {
+      expect(text, `${surface} did not name the uncovered state`).toContain("AL");
+      expect(text, `${surface} rendered an uncovered state without calling it a gap`).toContain(
+        "honest coverage gap",
+      );
+      expect(text, `${surface} did not say the gap is not a pass`).toContain("not a clean pass");
     }
   }, 180_000);
 
