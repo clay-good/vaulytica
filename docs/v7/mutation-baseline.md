@@ -53,6 +53,7 @@ seven minutes with a 120-minute timeout.
 | ------------------- | -------------: | -----: | -------: | ------: | ----------: |
 | **All (scoped)**    |     **59.66%** |  3,249 |    2,153 |     106 |         116 |
 | `sensitive.ts`      |         88.68% |    188 |       23 |       0 |           1 |
+| `privilege-log.ts`  |         60.53% |    193 |      106 |      11 |          27 |
 | `mask.ts`           |         88.24% |     89 |       10 |       1 |           2 |
 | `sections.ts`       |         84.62% |     44 |        8 |       0 |           0 |
 | `jurisdictions.ts`  |         67.58% |    239 |      124 |      32 |           6 |
@@ -63,6 +64,16 @@ seven minutes with a 120-minute timeout.
 | `obligations.ts`    |         57.95% |    276 |      215 |      23 |           2 |
 | `critical-dates.ts` |         57.57% |    289 |      195 |       0 |          18 |
 | `crossrefs.ts`      |         45.96% |    493 |      575 |       2 |           7 |
+
+> **`privilege-log.ts` joined on 2026-09-09 (9.613.0)** and its row above is
+> its own scoped measurement, not part of the 59.66% aggregate — that number
+> has not been re-measured since. It was probed at **56.42%**, below the
+> aggregate and therefore ineligible; its 39 NoCoverage mutants were
+> concentrated in `splitBatesRange`'s dash branches, reading them found a real
+> defect (an em-dash range never split, so `parseBates` rejected the whole cell
+> and the entry left every Bates range check silently), and pinning the range
+> shapes took it to **60.53%** — above the aggregate, which is what made
+> widening eligible.
 
 **This is the first aggregate measured on the current scope, and it replaces a
 floor that had drifted.** The previous table said 56.92% and its own footnotes

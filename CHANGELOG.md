@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.613.0] — 2026-09-09
+
+### Fixed
+- **An em-dash Bates range left the entry out of every range check.**
+  `splitBatesRange` decides whether a privilege-log cell is a RANGE or a single
+  id, and that decides whether the entry participates in PROD-010/011/012 at
+  all. It handled the en dash and said so — *"en-dash never appears inside a
+  Bates id"* — but not the em dash, so `PROD_0001—PROD_0009` came back whole,
+  `parseBates` rejected it, and the entry **silently dropped out of every Bates
+  range check**. That is the same failure this function's own audit finding
+  describes, one code point over.
+
+  A privilege log is a CSV written by opposing counsel, typically in Word or
+  Excel, and Word's autocorrect turns a typed hyphen range into an em dash.
+  This CSV never passes through the ingest normalizer that folds dash variants
+  everywhere else in the tree — it is parsed exactly as typed.
+
+  The split now takes the whole long-dash family (en U+2013, em U+2014,
+  horizontal bar U+2015), spaced or not. Hyphen-like code points
+  (U+2010/U+2011/U+2212) are deliberately excluded: those *can* sit inside an
+  id, and the both-halves-parse loop is the right test for them.
+
+### Added
+- **The privilege-log parser joins the mutated set at 60.53%** (from 56.42%).
+  Its 39 NoCoverage mutants were concentrated in exactly the dash branches
+  above — the em-dash defect is what reading them found. Nine range shapes are
+  now pinned: spaced hyphen, en/em/horizontal-bar with and without spaces, the
+  word "to", a bare hyphen that splits only where both halves parse as ids, a
+  single hyphen-convention id kept whole, and two non-Bates cells that must
+  still split rather than be swallowed. Reverting to en-dash-only fails 3.
+
+  The convention held: a module is only eligible for the mutated set once it
+  measures **above** the aggregate (59.66%), so the work is to raise it first
+  and widen second. `break` stays at 57 — the aggregate has not been
+  re-measured since the ten-module run.
+
 ## [9.612.0] — 2026-09-09
 
 ### Added

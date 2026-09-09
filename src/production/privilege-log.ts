@@ -174,13 +174,23 @@ function mapHeader(cell: string): MappedField | null {
 function splitBatesRange(value: string): { start?: string; end?: string } {
   const trimmed = value.trim();
   if (trimmed.length === 0) return {};
-  const spaced = /^(.+?)\s+(?:-|–|to)\s+(.+)$/i.exec(trimmed);
+  const spaced = /^(.+?)\s+(?:-|[\u2013-\u2015]|to)\s+(.+)$/i.exec(trimmed);
   if (spaced) {
     return { start: spaced[1]?.trim() || undefined, end: spaced[2]?.trim() || undefined };
   }
-  const enDash = /^(.+?)\s*–\s*(.+)$/.exec(trimmed); // en-dash never appears inside a Bates id
-  if (enDash) {
-    return { start: enDash[1]?.trim() || undefined, end: enDash[2]?.trim() || undefined };
+  // A LONG DASH — en (U+2013), em (U+2014), horizontal bar (U+2015) — never
+  // appears inside a Bates id, so it splits a cell wherever it sits, spaces or
+  // not. All three, not just the en dash: a log written or round-tripped
+  // through Word arrives with whatever its autocorrect produced, and an
+  // unsplit "PROD_0001—PROD_0009" is not a range at all — `parseBates` rejects
+  // the whole cell, and the entry drops out of every range check
+  // (PROD-010/011/012), which is the same silent skip this function's
+  // first-hyphen audit finding describes. Hyphen-like code points
+  // (U+2010/U+2011/U+2212) are deliberately NOT here: those can sit inside an
+  // id, and the both-halves-parse loop below is the right test for them.
+  const longDash = /^(.+?)\s*[\u2013-\u2015]\s*(.+)$/.exec(trimmed);
+  if (longDash) {
+    return { start: longDash[1]?.trim() || undefined, end: longDash[2]?.trim() || undefined };
   }
   for (let i = trimmed.indexOf("-"); i !== -1; i = trimmed.indexOf("-", i + 1)) {
     const left = trimmed.slice(0, i).trim();

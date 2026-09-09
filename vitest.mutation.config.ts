@@ -124,6 +124,12 @@ export default defineConfig({
       // count toward the published score.
       "tests/integration/table-flattened-labels.test.ts",
       "src/extract/venue-phrasing.test.ts",
+      // The privilege-log parser's two suites. It joined the mutated set in
+      // 9.613.0 at 60.53%, above the aggregate — a CSV written by opposing
+      // counsel, where a cell that fails to split drops the entry out of every
+      // Bates range check silently.
+      "src/production/privilege-log.test.ts",
+      "src/production/reconcile.test.ts",
     ],
     environment: "node",
     globals: false,

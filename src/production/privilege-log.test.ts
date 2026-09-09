@@ -132,6 +132,62 @@ describe("parsePrivilegeLog — audit-round pins", () => {
   });
 });
 
+/**
+ * Which cell shapes become a RANGE, and which stay one id.
+ *
+ * This decides whether an entry participates in PROD-010/011/012 at all: a
+ * cell that fails to split leaves `bates_start` holding the whole string,
+ * `parseBates` rejects it, and the entry drops out of every range check —
+ * silently. That is the failure the first-hyphen audit finding describes, and
+ * mutation testing found `splitBatesRange`'s dash branches executed by no
+ * test.
+ *
+ * 🚨 Measured across the shapes below, one was wrong: an EM-dash range
+ * (`PROD_0001—PROD_0009`) did not split. Only the en dash was handled, and a
+ * privilege log written in Word — or round-tripped through it — carries
+ * whatever its autocorrect produced. This CSV never passes through the
+ * ingest normalizer that folds dash variants elsewhere in the tree; it is
+ * parsed as typed.
+ */
+describe("parsePrivilegeLog — what counts as a Bates range", () => {
+  const range = (cell: string): [string | undefined, string | undefined] => {
+    const log = parsePrivilegeLog(`Bates Range,Description\n"${cell}",memo`);
+    const e = log.entries[0];
+    return [e?.bates_start, e?.bates_end];
+  };
+
+  it.each([
+    ["ABC-000124 - ABC-000125", "spaced ASCII hyphen, hyphen-convention ids"],
+    ["ABC-000124–ABC-000125", "en dash, no spaces"],
+    ["ABC-000124 – ABC-000125", "en dash, spaced"],
+    ["ABC-000124—ABC-000125", "EM dash, no spaces"],
+    ["ABC-000124 — ABC-000125", "em dash, spaced"],
+    ["ABC-000124―ABC-000125", "horizontal bar"],
+    ["ABC-000124 to ABC-000131", "the word 'to'"],
+  ])("splits %j (%s)", (cell) => {
+    const [start, end] = range(cell);
+    expect(start, `${cell} did not split — the entry drops out of every range check`).toBe(
+      "ABC-000124",
+    );
+    expect(end).toBeTruthy();
+  });
+
+  it("splits a bare hyphen only where both halves are Bates ids", () => {
+    expect(range("ABC000124-ABC000125")).toEqual(["ABC000124", "ABC000125"]);
+  });
+
+  it("keeps a single hyphen-convention id whole", () => {
+    // The case the audit finding is about: "ABC-000124" is one id, and
+    // splitting it on its own internal hyphen yields start="ABC".
+    expect(range("ABC-000124")).toEqual(["ABC-000124", undefined]);
+  });
+
+  it("still splits a cell that is not Bates at all, rather than swallowing it", () => {
+    expect(range("Smith Memo - Draft")).toEqual(["Smith Memo", "Draft"]);
+    expect(range("DOC 1 to DOC 9")).toEqual(["DOC 1", "DOC 9"]);
+  });
+});
+
 describe("parsePrivilegeLog — properties", () => {
   it("never throws on arbitrary strings", () => {
     fc.assert(
