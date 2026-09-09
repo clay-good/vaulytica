@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,418+ passing tests` · `v9.628.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,418+ passing tests` · `v9.629.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -175,13 +175,14 @@ flowchart LR
 
 All three "Last Look" surfaces render in **every** format the report speaks, not just JSON. Each renders only when non-empty, so a clean document produces a byte-identical v8-era report — render-side, zero `result_hash` churn ([`src/report/v9-surfaces.ts`](src/report/v9-surfaces.ts)).
 
-| Surface                               |        JSON         |   DOCX    |   HTML    |                SARIF                 | Markdown | CSV | `.ics` |            tab            | CLI flag           |
-| ------------------------------------- | :-----------------: | :-------: | :-------: | :----------------------------------: | :------: | :-: | :----: | :-----------------------: | :----------------- |
-| **Clean to Send** (`HANDOFF-001…005`) |     `delivery`      | § section | § section |         first-class results          |    —     |  —  |   —    |     "Clean to send?"      | `--delivery`       |
-| **Ready to Sign** (closing checklist) | `closing_checklist` | § section | § section | — _(projection of existing results)_ |    ✓     |  ✓  |   —    |     "Ready to sign?"      | `--checklist`      |
-| **Tracked to Its Dates** (register)   |  `critical_dates`   | § section | § section |        `DATE-*` note results         |    ✓     |  —  |   ✓    | "Your calendar, computed" | `--critical-dates` |
+| Surface                               |          JSON           |   DOCX    |   HTML    |                SARIF                 | Markdown | CSV | `.ics` |            tab            | CLI flag                             |
+| ------------------------------------- | :---------------------: | :-------: | :-------: | :----------------------------------: | :------: | :-: | :----: | :-----------------------: | :----------------------------------- |
+| **Clean to Send** (`HANDOFF-001…005`) |       `delivery`        | § section | § section |         first-class results          |    —     |  —  |   —    |     "Clean to send?"      | `--delivery`                         |
+| **Ready to Sign** (closing checklist) |   `closing_checklist`   | § section | § section | — _(projection of existing results)_ |    ✓     |  ✓  |   —    |     "Ready to sign?"      | `--checklist`                        |
+| **Tracked to Its Dates** (register)   |    `critical_dates`     | § section | § section |        `DATE-*` note results         |    ✓     |  —  |   ✓    | "Your calendar, computed" | `--critical-dates`                   |
+| **Jurisdiction overlays** (state law) | `jurisdiction_overlays` | § section | § section |     note results + coverage gap      |    —     |  —  |   —    |  "Jurisdiction overlays"  | (always, with a governing-law state) |
 
-In SARIF the handoff findings cite the _container_ (no text offset → no `region`, a `kind: "container"` logical location), and the derived deadlines surface at `note` level anchored to their source section — both carry their own hash (`delivery_hash` / `critical_dates_hash`) as a `partialFingerprint` so a CI consumer dedupes them across runs. The closing checklist is a pure projection of findings already in the run, so it is _not_ re-emitted as SARIF results (that would double-count).
+In SARIF the handoff findings cite the _container_ (no text offset → no `region`, a `kind: "container"` logical location), and the derived deadlines surface at `note` level anchored to their source section — both carry their own hash (`delivery_hash` / `critical_dates_hash`) as a `partialFingerprint` so a CI consumer dedupes them across runs. The closing checklist is a pure projection of findings already in the run, so it is _not_ re-emitted as SARIF results (that would double-count). The **jurisdiction overlays** ride at `note` level too (9.628.0) — one result per matched state carrying its posture, what its law does, and the citation, plus one for the coverage gap when the document names a state the catalog does not cover, because "no overlay on file" read as silence is indistinguishable from "checked, and fine." They are computed outside `run`, so a caller that supplies no extraction gets byte-identical SARIF and `result_hash` never moves.
 
 ## Negotiation posture — your ladder, scored against the draft (v10)
 

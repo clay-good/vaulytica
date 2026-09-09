@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.629.0] — 2026-09-09
+
+### Changed
+- **The README's surface matrix now has a row for the jurisdiction overlays**,
+  which it did not — the table that says which of JSON/DOCX/HTML/SARIF/Markdown/
+  CSV/`.ics`/tab carries each surface listed the three "Last Look" surfaces and
+  not the state-law layer, so the answer to "does my CI job see the California
+  overlay?" was not written down anywhere even before 9.628.0 made it yes.
+
+  A claim about reach that lives only in the code is a claim a reader cannot
+  check.
+
+- **Recorded, so the next reader need not re-open it:** the bundle report's
+  omission is *not* the same as SARIF's was. Its per-document subsections are a
+  capped summary, and the per-document DOCX and JSON that ride in the same
+  package carry the overlays in full — a bundle user does get them. SARIF had no
+  artifact that carried them at all. The note lives in
+  `honesty-caveat-reach.test.ts`, beside the list it explains.
+
 ## [9.628.0] — 2026-09-09
 
 ### Added

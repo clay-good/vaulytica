@@ -158,6 +158,12 @@ describe("a surface that renders jurisdiction overlays renders their coverage ga
     // Not a prohibition — a record. If one of these grows an overlay section,
     // this test fails and the author has to add it to OVERLAY_SURFACES above,
     // which is what puts the gap question in front of them.
+    //
+    // Measured 2026-09-09, so the next reader does not have to re-open it: the
+    // BUNDLE report is not the same kind of omission as SARIF was. Its
+    // per-document subsections are a capped SUMMARY, and the per-document DOCX
+    // and JSON that ride in the same package carry the overlays in full — a
+    // bundle user does get them. SARIF had no artifact that carried them at all.
     for (const [file, what] of [
       ["src/report/bundle.ts", "the bundle report"],
       ["src/report/exports.ts", "the Markdown fix list"],
