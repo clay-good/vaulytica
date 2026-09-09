@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.612.0] — 2026-09-09
+
+### Added
+- **The fuzz gate now covers the three surfaces that read bytes someone else
+  wrote.** Every input it fuzzed before is the user's own document. These are
+  not: a **privilege log** is a CSV produced by opposing counsel, and a
+  **delivery container** is a file that arrived from outside. Each declares
+  "never throws" in its own docstring — `parsePrivilegeLog` three times,
+  `readContainer` and `scanDelivery` once each — and each recovers from
+  malformed input rather than rejecting it, which is precisely the contract a
+  boundary gate exists to hold. None of the three was in it.
+
+  Four properties, at the seed the gate already fixes:
+
+  | Surface | Property |
+  |---|---|
+  | `parsePrivilegeLog` | arbitrary CSV-ish text (quotes, commas, newlines, `","`, `""` as units — the characters that decide field boundaries are the ones that break parsers) returns a log with all three arrays |
+  | `readContainer` | arbitrary bytes × every `ContainerSource` returns facts, **and an uninspectable container must carry a note** — an uninspectable container with no note is a silent skip |
+  | `readContainer` | bytes that open with `PK\x03\x04`, because random bytes almost never reach the archive reader and a hostile `.docx` always does |
+  | `scanDelivery` | arbitrary bytes × source × text × party list resolves to a report |
+
+  No defect surfaced — the three were as total as they claim. Proven to bite
+  anyway: making `parsePrivilegeLog` throw on an unterminated quote fails 1, and
+  blanking the uninspectable-container note fails 1.
+
 ## [9.611.0] — 2026-09-09
 
 ### Fixed
