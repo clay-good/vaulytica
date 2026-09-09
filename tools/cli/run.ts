@@ -294,6 +294,7 @@ import {
   buildDefinitionsCsv,
 } from "../../src/report/definitions.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
+import { overlayFamilyForPlaybook, selectStateOverlays } from "../../src/dkb/state-overlays.js";
 import {
   ladderHash,
   resolvePositionsForRole,
@@ -1473,6 +1474,30 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       human(
         `  Closing checklist: ${r.closing_checklist.open_count} readiness item(s) to resolve.\n`,
       );
+    }
+
+    // The state-law overlays, in the same one-line shape as the surfaces above.
+    //
+    // For a non-compete this is the single most consequential line the tool can
+    // print — California voids the covenant outright — and the terminal, the
+    // surface a reviewer sees FIRST, said nothing about it while the DOCX, the
+    // HTML, the JSON, the card and (since 9.628.0) SARIF all did. The family
+    // check runs before the re-extraction so a document with no overlay family
+    // pays nothing.
+    if (overlayFamilyForPlaybook(r.playbook_id)) {
+      const overlays = selectStateOverlays(r.playbook_id, extractAll(r.ingest.tree).jurisdictions);
+      for (const o of overlays?.matched ?? []) {
+        human(`  ${o.state_name}: ${o.headline} — ${o.recommendation} (${o.citation.source})\n`);
+      }
+      const uncovered = overlays?.uncovered_states ?? [];
+      if (uncovered.length > 0) {
+        // Same sentence the reports use: silence here reads as a clean pass.
+        process.stderr.write(
+          `vaulytica: warning: ${file}: no state-law overlay on file for ${uncovered
+            .map((st) => st.replace(/^us-/, "").toUpperCase())
+            .join(", ")} — an honest coverage gap, not a clean pass\n`,
+        );
+      }
     }
     if (r.negotiation_posture) {
       const c = r.negotiation_posture.counts;

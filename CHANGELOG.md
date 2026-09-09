@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.630.0] — 2026-09-09
+
+### Added
+- **The terminal — the surface a reviewer sees first — now names the governing
+  state's law.** The CLI prints a one-line summary for the delivery scan, the
+  critical dates, the closing checklist and the negotiation posture, and printed
+  **nothing** about the state-law overlays. For a non-compete that is the single
+  most consequential line the tool can produce: California voids the covenant
+  outright under Bus. & Prof. Code § 16600.
+
+  Now, in the same one-line shape as its neighbours:
+
+  ```
+    California: Void / unenforceable — Remove the covenant or carve California out. (Cal. Bus. & Prof. Code § 16600)
+  ```
+
+  and, on stderr where the other caveats live, `no state-law overlay on file for
+  AL — an honest coverage gap, not a clean pass`. The family lookup runs before
+  the re-extraction, so a document with no overlay family pays nothing.
+
+  With 9.628.0 this closes the class: **every surface that can carry the
+  overlays now does** — JSON, DOCX, HTML, the tab, SARIF, and the terminal. The
+  reach guard caught the bookkeeping itself: adding the terminal made
+  `honesty-caveat-reach.test.ts`'s "the three surfaces that render no overlay"
+  record fail, which is exactly what that record is for. Two remain (the bundle
+  report and the Markdown fix list), each for a reason written down beside the
+  list.
+
+  🚨 **The first version of the test for this passed with the feature deleted.**
+  It asserted on **stdout**, and under a machine format the report owns stdout
+  while `human()` writes to stderr — so it found "California" inside the JSON
+  payload rather than in the terminal line. Reading the right stream takes it
+  from 1 failure to 2 when the block is disabled. A test that reads the wrong
+  stream is a test of the wrong surface.
+
 ## [9.629.0] — 2026-09-09
 
 ### Changed

@@ -1033,11 +1033,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-residential-us (score 1). Title matched: \"residential lease\". Distinguishing phrases: \"security deposit\", \"residential\".",
-  "result_hash": "39c33e8a996bcaa90dc8db2c72ac5ccdbc60a7d7f82b0b8a1158ea2743569100",
+  "result_hash": "56586b0cfd8f5e1b445f81ec7c0e4ae2af5ff65b6b84b8e701cf4d3061bcedf8",
   "source_file": {
     "name": "bad-residential-lease-deposit.docx",
     "sha256": "a3aaac8da5682c5a7ff4d3cd79191c3344d5f3bc6ec7abe5d833f6234acf6973",
     "size_bytes": 9410
   },
-  "version": "9.629.0"
+  "version": "9.630.0"
 }

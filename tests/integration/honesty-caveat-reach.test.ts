@@ -112,6 +112,7 @@ describe("a surface that renders jurisdiction overlays renders their coverage ga
     ["src/report/html.ts", "the standalone HTML report"],
     ["src/ui/states.ts", "the in-tab result states"],
     ["src/report/sarif.ts", "the SARIF (CI) surface"],
+    ["tools/cli/run.ts", "the CLI's terminal output"],
   ];
 
   /** Comments are documentation, not rendering. */
@@ -154,7 +155,7 @@ describe("a surface that renders jurisdiction overlays renders their coverage ga
     ).toContain("uncovered_states");
   });
 
-  it("the three surfaces that render no overlay are still the three", () => {
+  it("the two surfaces that render no overlay are still the two", () => {
     // Not a prohibition — a record. If one of these grows an overlay section,
     // this test fails and the author has to add it to OVERLAY_SURFACES above,
     // which is what puts the gap question in front of them.
@@ -167,7 +168,6 @@ describe("a surface that renders jurisdiction overlays renders their coverage ga
     for (const [file, what] of [
       ["src/report/bundle.ts", "the bundle report"],
       ["src/report/exports.ts", "the Markdown fix list"],
-      ["tools/cli/run.ts", "the CLI's terminal output"],
     ] as const) {
       expect(
         /selectStateOverlays|jurisdiction_overlays/.test(code(file)),

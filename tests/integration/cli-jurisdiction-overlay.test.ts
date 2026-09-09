@@ -41,21 +41,29 @@ writeFileSync(
 );
 
 async function analyzeRaw(format: string): Promise<string> {
+  return (await analyzeStreams(format)).out;
+}
+
+async function analyzeStreams(format: string): Promise<{ out: string; err: string }> {
   const out: string[] = [];
+  const err: string[] = [];
   const realOut = process.stdout.write.bind(process.stdout);
   const realErr = process.stderr.write.bind(process.stderr);
   process.stdout.write = ((s: string | Uint8Array) => {
     out.push(String(s));
     return true;
   }) as typeof process.stdout.write;
-  process.stderr.write = (() => true) as typeof process.stderr.write;
+  process.stderr.write = ((s: string | Uint8Array) => {
+    err.push(String(s));
+    return true;
+  }) as typeof process.stderr.write;
   try {
     await runAnalyze([DOC, "--format", format]);
   } finally {
     process.stdout.write = realOut;
     process.stderr.write = realErr;
   }
-  return out.join("");
+  return { out: out.join(""), err: err.join("") };
 }
 
 async function analyzeJson(): Promise<Record<string, unknown>> {
@@ -108,5 +116,63 @@ describe("CLI sarif — jurisdiction overlays", () => {
     expect(
       sarif.runs[0]!.tool.driver.rules.some((r) => r.id === "VAULYTICA-JURISDICTION-OVERLAY"),
     ).toBe(true);
+  }, 60_000);
+});
+
+/**
+ * And the surface a reviewer sees FIRST.
+ *
+ * The terminal prints a one-line summary for the delivery scan, the critical
+ * dates, the closing checklist and the negotiation posture — and printed
+ * nothing about the governing state's law, which for a non-compete is the most
+ * consequential line the tool can produce. The document below chooses
+ * California, where § 16600 voids the covenant outright.
+ */
+describe("CLI terminal — jurisdiction overlays", () => {
+  it("names the state, what its law does, and the citation", async () => {
+    // 🚨 Read the HUMAN stream, not stdout. Under a machine format the report
+    // owns stdout and `human()` writes to stderr — so asserting on stdout here
+    // would have found "California" inside the JSON payload and passed with the
+    // terminal line deleted. (It did, on the first draft of this test.)
+    const { err } = await analyzeStreams("json");
+    expect(err, "the terminal said nothing about the governing state").toContain("California");
+    expect(err).toMatch(/Void|unenforceable/i);
+    expect(err, "the terminal named no authority for the overlay").toMatch(/16600/);
+  }, 60_000);
+
+  it("warns on stderr when a detected state has no overlay on file", async () => {
+    const doc = join(tmp, "north-dakota-non-compete.txt");
+    writeFileSync(
+      doc,
+      [
+        "NON-COMPETITION AGREEMENT",
+        "",
+        "Desmond Vaillancourt agrees that for five years after leaving Halcyon Analytics, Inc. he will not work for any competitor anywhere in the United States.",
+        "",
+        "This applies to any business that competes with the Company in any way.",
+        "",
+        "Alabama law governs.",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    const err: string[] = [];
+    const realOut = process.stdout.write.bind(process.stdout);
+    const realErr = process.stderr.write.bind(process.stderr);
+    process.stdout.write = (() => true) as typeof process.stdout.write;
+    process.stderr.write = ((s: string | Uint8Array) => {
+      err.push(String(s));
+      return true;
+    }) as typeof process.stderr.write;
+    try {
+      await runAnalyze([doc, "--format", "json"]);
+    } finally {
+      process.stdout.write = realOut;
+      process.stderr.write = realErr;
+    }
+    const text = err.join("");
+    expect(text, "an uncovered state passed in silence").toContain("no state-law overlay on file");
+    expect(text).toContain("AL");
+    expect(text).toContain("an honest coverage gap, not a clean pass");
   }, 60_000);
 });
