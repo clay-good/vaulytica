@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.605.0] — 2026-09-08
+
+### Added
+- **The signature-line reader's one unique job now has a test that guards it** —
+  and finding out what that job *is* took disabling the code to see what broke.
+
+  The `By:`/`Name:` line reader looked like it handled two-column signature
+  blocks, so that is what three tests were written for first. **All three were
+  vacuous**: a short name is already picked up by the tabular `SIGNATURE_FIELD`
+  pass below it, and every one of those fixtures passed with the branch deleted.
+
+  What is actually left to it is a name too long for that pass's five-word cap.
+  Without its cut at the next label, the rest of the line comes along and
+  registers one party named "<name> Title: Chief Executive Officer" — the
+  regression the code comment describes. One test replaces the three, and it
+  fails when the cut is removed.
+
+### Notes
+- 🚨 **A test can cover a line and guard nothing.** Mutation testing named this
+  block `NoCoverage`, but a pre-existing test already exercised most of it; what
+  was unguarded was one `.replace(…)` inside it. "Write a test for the uncovered
+  block" is not the same as "find what the block uniquely does" — and only the
+  second produces a test that bites.
+
 ## [9.604.0] — 2026-09-08
 
 ### Fixed

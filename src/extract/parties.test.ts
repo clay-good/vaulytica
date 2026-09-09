@@ -1244,6 +1244,28 @@ describe("the party shapes that had no test", () => {
     expect(parties.map((p) => p.name)).not.toContain("a regional carrier");
   });
 
+  it("cuts a long signer's name at the next label, instead of splicing the line", () => {
+    // 🚨 This is the ONLY case the `By:`/`Name:` line reader uniquely handles,
+    // and finding it took disabling the code to see what broke. A short name is
+    // already picked up by the tabular `SIGNATURE_FIELD` pass below it, so
+    // two-column fixtures pass with this branch deleted — three tests written
+    // for it first were all vacuous.
+    //
+    // What is left to it: a name too long for that pass's five-word cap. Without
+    // the cut at the next label, the rest of the line came along and registered
+    // one party named "<name> Title: Chief Executive Officer" — the regression
+    // the code comment describes.
+    const long = "Bartholomew Fitzgerald Montgomery Wellington Chesterfield III";
+    const withLabel = extractParties(
+      buildTree(["Agreement", `By: ${long}  Title: Chief Executive Officer`]),
+    );
+    expect(withLabel.map((p) => p.name)).toEqual([long]);
+
+    // And the second signer's column is still its own party, not spliced on.
+    const twoSigners = extractParties(buildTree(["Agreement", `By: ${long}  By: Jane Roe`]));
+    expect(twoSigners.map((p) => p.name).sort()).toEqual([long, "Jane Roe"]);
+  });
+
   it("keeps two similarly-named entities apart", () => {
     // The suffix reconciliation above must not become a general "same company"
     // matcher: a parent and its subsidiary routinely differ by one token.

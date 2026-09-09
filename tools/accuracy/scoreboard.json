@@ -2,7 +2,7 @@
   "schema_version": 1,
   "corpus_version": "v0.0.0-seed",
   "dkb_version": "v2026-09-06-local",
-  "engine_version": "9.604.0",
+  "engine_version": "9.605.0",
   "catalog": {
     "rules": 1825,
     "playbooks": 267
@@ -44,5 +44,5 @@
   "notes": [
     "No real annotated documents yet. The accuracy harness is verified by unit tests; the ground-truth corpus (spec-v5 Step 68) and attorney annotations (Step 70) are human-gated and pending. No headline precision/recall number is published until real documents land — by design, this is the dishonesty v5 exists to break."
   ],
-  "scoreboard_hash": "c29c78842e1f0becd052e694b7663bce796a7b8ae555c64813733c48c63ea71c"
+  "scoreboard_hash": "21c155ef5fddda2a62edf5f98ed9e1f8a05db4121aeeba5c312fb73c1664b91f"
 }
