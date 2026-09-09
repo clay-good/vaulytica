@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.618.0] — 2026-09-09
+
+### Added
+- **"Your calendar, computed" — the card whose dates an attorney copies into a
+  diary — had no rendering test.** Six now cover the two rules this repo has
+  been bitten by before, plus the ordinary ones.
+
+  A row can resolve to a **window** rather than a single day, and a card that
+  printed one end of a window would look right and be wrong — the report once
+  printed the *low* end of a liability cap for exactly that reason. Both ends
+  are now asserted.
+
+  A row that could **not** be computed must say "Verify manually" **and why** —
+  never a date, and never silence, because a missing row reads as a deadline
+  that does not exist. Pinned in both directions: the unresolved card shows the
+  reason, carries the `cd-unresolved` class, and must not show a date.
+
+  Also: the summary line's counts, the disclaimer verbatim ("not a
+  determination that a deadline is met, missed, or binding"), the fallback label
+  for an unrecognized kind, and escaping of the trigger and anchor — which are
+  document text, and so the one path by which a file's own bytes could reach
+  the page as markup.
+
+  Proven by breaking two: printing only the window's first end fails 1, showing
+  a date on an unresolved row fails 1.
+
 ## [9.617.0] — 2026-09-09
 
 ### Added

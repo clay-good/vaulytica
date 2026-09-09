@@ -2182,3 +2182,124 @@ describe("the closing checklist", () => {
     );
   });
 });
+
+/**
+ * The critical-dates register — "Your calendar, computed" — is the card whose
+ * output an attorney copies into a diary. Nothing rendered it.
+ *
+ * Two of its rules are the ones this repo has been bitten by before. A row can
+ * resolve to a WINDOW rather than a single day, and a card that printed one end
+ * of a window would look right and be wrong (the report once printed the LOW
+ * end of a liability cap for the same reason). And a row that could NOT be
+ * computed must say "Verify manually" and why — never a date, and never
+ * silence, because a missing row reads as a deadline that does not exist.
+ */
+describe("the critical-dates register", () => {
+  const row = (over: Record<string, unknown> = {}) => ({
+    rule_id: "TEMP-004",
+    kind: "auto_renewal_notice",
+    resolved: true,
+    computed_date: "2026-11-30",
+    trigger: "Auto-renewal notice deadline",
+    anchor: "Effective Date",
+    responsible: "Customer",
+    ...over,
+  });
+  const state = (critical_dates: unknown) =>
+    ({
+      kind: "complete",
+      filename: "saas.docx",
+      playbook_name: "SaaS Subscription",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["d"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "a.docx",
+      json_filename: "a.json",
+      critical_dates,
+    }) as never;
+
+  it("stays hidden when the document computes to no dates", () => {
+    const dz = document.createElement("div");
+    renderState(dz, state({ resolved_count: 0, unresolved_count: 0, rows: [] }));
+    const el = select<HTMLElement>(dz, "critical-dates")!;
+    expect(el.hidden).toBe(true);
+    expect(el.innerHTML).toBe("");
+  });
+
+  it("shows the computed date with its trigger, anchor and responsible party", () => {
+    const dz = document.createElement("div");
+    renderState(dz, state({ resolved_count: 1, unresolved_count: 0, rows: [row()] }));
+    const el = select<HTMLElement>(dz, "critical-dates")!;
+    expect(el.hidden).toBe(false);
+    expect(el.textContent).toContain("2026-11-30");
+    expect(el.textContent).toContain("Auto-renewal notice deadline");
+    expect(el.textContent).toContain("anchor: Effective Date");
+    expect(el.textContent).toContain("responsible: Customer");
+    expect(el.textContent).toContain("1 computed · 0 to verify manually");
+    expect(el.textContent, "the register dropped its own disclaimer").toContain(
+      "not a determination that a deadline is met, missed, or binding",
+    );
+  });
+
+  it("prints BOTH ends of a window, not one of them", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        resolved_count: 1,
+        unresolved_count: 0,
+        rows: [row({ computed_date: null, window: ["2026-09-01", "2026-10-01"] })],
+      }),
+    );
+    const text = select<HTMLElement>(dz, "critical-dates")!.textContent ?? "";
+    expect(text).toContain("2026-09-01");
+    expect(text, "the far end of the window was not shown").toContain("2026-10-01");
+  });
+
+  it("says 'Verify manually' and why, rather than showing a date it could not compute", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        resolved_count: 0,
+        unresolved_count: 1,
+        rows: [
+          row({
+            resolved: false,
+            computed_date: null,
+            reason: "The Effective Date is left blank in the document.",
+          }),
+        ],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "critical-dates")!;
+    expect(el.textContent).toContain("Verify manually");
+    expect(el.textContent).toContain("The Effective Date is left blank");
+    expect(el.textContent, "an uncomputable row still showed a date").not.toContain("2026-11-30");
+    expect(el.innerHTML).toContain("cd-unresolved");
+  });
+
+  it("labels an unrecognized kind rather than rendering an empty one", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({ resolved_count: 1, unresolved_count: 0, rows: [row({ kind: "not_a_known_kind" })] }),
+    );
+    expect(select<HTMLElement>(dz, "critical-dates")!.textContent).toContain("Deadline");
+  });
+
+  it("escapes document text in the trigger and the anchor", () => {
+    const dz = document.createElement("div");
+    renderState(
+      dz,
+      state({
+        resolved_count: 1,
+        unresolved_count: 0,
+        rows: [row({ trigger: '<img src=x onerror="boom">', anchor: "<b>Closing</b>" })],
+      }),
+    );
+    const el = select<HTMLElement>(dz, "critical-dates")!;
+    expect(el.querySelector("img"), "document text became a live element").toBeNull();
+    expect(el.querySelector("b"), "document text became markup").toBeNull();
+  });
+});
