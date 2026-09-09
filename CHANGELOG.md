@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.602.0] — 2026-09-08
+
+### Changed
+- **The mutation baseline is a measured number again.** The published aggregate
+  said **56.92%** and its own footnotes admitted it was a floor: taken before
+  `sections.ts`, `sensitive.ts` and `mask.ts` were raised, and before
+  `critical-dates.ts` and `exports.ts` joined the set at all. The full run
+  finally happened — **59.66%** over the ten-module scope (3,249 killed / 2,153
+  survived / 106 timeout / 116 no-coverage).
+
+  `thresholds.break` moves **54 → 57**, the usual couple of points under a
+  measured number. The floor moves only *after* a measurement, never ahead of
+  one. README and the baseline doc now quote the same figure, which the drift
+  guard enforces.
+
+  ⚠️ Per-file rows are **not** comparable to the previous table: both the
+  `mutate` set and the include list changed, and several denominators moved
+  with them.
+
+### Notes
+- 🚨 **The job's health regressed, and that is the number to act on next.** It
+  took **61 minutes** against roughly seven for the old seven-file scope, and
+  logged **79 test-runner out-of-memory restarts**. Stryker recovers from each,
+  so the score is real and it finished inside the workflow's 120-minute
+  timeout — but the margin is now thin, and the cause is the one already on the
+  record for the fast-check gates: a per-mutant run that reruns heavier and
+  heavier covering suites. Lowering `concurrency` or raising the child heap are
+  the obvious levers; **neither is guessed at**, because validating either
+  costs another hour-long run.
+- 19 mutants **errored** (16 in `obligations.ts`, 3 in `parties.ts`). A mutant
+  that cannot compile or run is neither killed nor survived; recorded so the
+  column is not misread as a defect.
+
+### Added
+- **The README says what the findings rest on.** Three honesty lines shipped to
+  every surface this session — the attorney-review coverage, the clause-evidence
+  split, and the crashed-rule notice — and the README described the ledger
+  behind the first while never mentioning that the tool now *states* any of
+  them. The result-card section carries all three.
+
 ## [9.601.0] — 2026-09-08
 
 ### Added

@@ -47,22 +47,48 @@ be finding it by hand.
 Cost: 195 mutants on top of 2,696, about 7%, against a job that runs weekly in
 seven minutes with a 120-minute timeout.
 
-## Baseline (2026-09-07, seven extractors + the pre-disclosure scanner)
+## Baseline (2026-09-08, ten modules — re-measured on a full run)
 
-| File                |        Mutation score |    Killed |  Survived | Timeout | No coverage |
-| ------------------- | --------------------: | --------: | --------: | ------: | ----------: |
-| **All (scoped)**    |            **56.92%** |     2,298 |     1,714 |      84 |          89 |
-| `jurisdictions.ts`  |                67.58% |       239 |       124 |      32 |           6 |
-| `sensitive.ts`      | 66.15% → **88.68%** ² | 129 → 172 |   61 → 18 |       0 |       5 → 0 |
-| `mask.ts`           | 80.39% → **88.24%** ³ |         — |   16 → 10 |       0 |       4 → 2 |
-| `parties.ts`        |                61.20% |       571 |       353 |      19 |          21 |
-| `dates.ts`          |                60.19% |       305 |       185 |       8 |          22 |
-| `amounts.ts`        |                59.15% |       270 |       176 |       8 |          16 |
-| `obligations.ts`    |                55.14% |       264 |       223 |      15 |           4 |
-| `sections.ts`       | 51.92% → **84.62%** ¹ |   27 → 44 |    21 → 8 |       0 |       4 → 0 |
-| `crossrefs.ts`      |                45.96% |       493 |       571 |       2 |          11 |
-| `critical-dates.ts` | 44.02% → **57.17%** ⁴ | 221 → 287 | 226 → 197 |       0 |     55 → 18 |
-| `exports.ts`        | 46.08% → **58.53%** ⁵ | 362 → 462 | 333 → 299 |       8 |    100 → 34 |
+| File                | Mutation score | Killed | Survived | Timeout | No coverage |
+| ------------------- | -------------: | -----: | -------: | ------: | ----------: |
+| **All (scoped)**    |     **59.66%** |  3,249 |    2,153 |     106 |         116 |
+| `sensitive.ts`      |         88.68% |    188 |       23 |       0 |           1 |
+| `mask.ts`           |         88.24% |     89 |       10 |       1 |           2 |
+| `sections.ts`       |         84.62% |     44 |        8 |       0 |           0 |
+| `jurisdictions.ts`  |         67.58% |    239 |      124 |      32 |           6 |
+| `amounts.ts`        |         62.55% |    286 |      169 |       8 |           7 |
+| `dates.ts`          |         61.61% |    312 |      182 |       9 |          18 |
+| `parties.ts`        |         61.36% |    571 |      353 |      23 |          21 |
+| `exports.ts`        |         58.53% |    462 |      299 |       8 |          34 |
+| `obligations.ts`    |         57.95% |    276 |      215 |      23 |           2 |
+| `critical-dates.ts` |         57.57% |    289 |      195 |       0 |          18 |
+| `crossrefs.ts`      |         45.96% |    493 |      575 |       2 |           7 |
+
+**This is the first aggregate measured on the current scope, and it replaces a
+floor that had drifted.** The previous table said 56.92% and its own footnotes
+said so — it was taken before `sections.ts`, `sensitive.ts` and `mask.ts` were
+raised, and before `critical-dates.ts` and `exports.ts` joined at all. Measured
+2026-09-08 over the full ten-module set: **59.66%**, so `break` moves 54 → 57,
+the usual couple of points under a measured number rather than an aspiration.
+
+⚠️ **Per-file numbers here are NOT comparable to the previous table.** Both the
+`mutate` set and the include list changed, and several files' mutant counts moved
+with them — `crossrefs.ts` is the same 45.96% against a different denominator.
+Read a row against the run that produced it.
+
+🚨 **The job's health regressed, and that is the number to act on next.** It took
+**61 minutes** against roughly seven for the old seven-file scope, and logged
+**79 test-runner out-of-memory restarts**. Stryker recovers from each — the score
+above is real, and it finished inside the workflow's 120-minute timeout — but the
+margin is now thin and the cause is the same one already recorded for the
+fast-check gates: a per-mutant run that reruns heavier and heavier covering
+suites. Lowering `concurrency` or raising the child heap are the obvious levers;
+neither is guessed at here, because validating either costs another hour-long
+run.
+
+📊 19 mutants **errored** (16 in `obligations.ts`, 3 in `parties.ts`) — a mutant
+that cannot compile or run is neither killed nor survived. Unchanged in kind from
+previous runs; recorded so the column is not read as a defect.
 
 ¹ **Re-measured 2026-09-07 after 9.554.0 and 9.560.0**, scoped to `sections.ts`
 alone over the same 52 mutants, so the two numbers are directly comparable. The
@@ -135,7 +161,7 @@ and nothing had asserted the empty string.
 reading, because it started **ineligible**.
 
 `src/report/exports.ts` is the fix list, the obligations CSV and the deadlines
-calendar: the artifacts a reviewer *works from*. It measured **46.08%**, well
+calendar: the artifacts a reviewer _works from_. It measured **46.08%**, well
 below the aggregate, so widening to it would have dragged the score toward the
 `break`. That was written down here as a measurement — "Measured and NOT yet
 eligible" — rather than left as a hunch someone re-measures later, and four
@@ -149,7 +175,7 @@ something real:
   `buildDeadlinesIcs` — and the MIME type each sets is not decoration: a `.ics`
   served as `text/csv` opens in a spreadsheet.
 - **Every "verify manually" reason** the calendar gives for a deadline it could
-  not pin, and the sort that orders them. A user *subscribes* to that file.
+  not pin, and the sort that orders them. A user _subscribes_ to that file.
 - **The fix list's header**: the asserted-pack receipts, the input-warning
   banners, the unmatched-document banner — each one changing how the items
   below it read.
@@ -161,9 +187,9 @@ something real:
 
 ## Measured and NOT yet eligible
 
-*(Empty. `src/report/exports.ts` was the entry here and it graduated; the
+_(Empty. `src/report/exports.ts` was the entry here and it graduated; the
 section stays because recording a disqualifying measurement is what made that
-possible.)*
+possible.)_
 
 Its **100 NoCoverage** mutants named a real gap on the way past, now closed
 (`src/report/export-blobs.test.ts`): **all ten `*Blob` wrappers were executed by
@@ -174,8 +200,8 @@ instead of a calendar. The suite asserts the bytes and the type per wrapper, and
 guards its own list against the module so a new wrapper cannot be added
 untested. 46.08% → **51.06%**, NoCoverage 100 → 57.
 
-Then the deadlines-ICS resolution paths themselves (9.588.0): every *"verify
-manually"* reason the calendar gives for a deadline it could **not** pin — the
+Then the deadlines-ICS resolution paths themselves (9.588.0): every _"verify
+manually"_ reason the calendar gives for a deadline it could **not** pin — the
 range deadline, the two relative-anchor cases, the fiscal period — plus the sort
 that orders them. A user subscribes to that file; a deadline the tool could not
 compute has to arrive saying which one and why, or it is a mystery entry they
@@ -185,7 +211,7 @@ Then the artifacts' own **header and description lines** (9.589.0), all
 NoCoverage: the fix list's asserted-pack receipts (court profile, privacy
 regimes, estate state + its formality posture) and its input-warning and
 unmatched-document banners; the critical-dates Markdown's court-profile receipt
-and its *"None **could** be computed"* empty state; and the critical-dates
+and its _"None **could** be computed"_ empty state; and the critical-dates
 `.ics` event description — who is responsible, which profile computed the date,
 and the **range deadline**, where an all-day event on the window's first day
 invites a calendar user to read the earliest date as the controlling one.
@@ -247,4 +273,4 @@ The remaining survivors are the ratchet target, but crossrefs shows where that r
 
 ## Gate (regression-only, Step 124)
 
-`stryker.config.json` sets `thresholds.break = 54` — a couple points under the measured 56.94%, with headroom for cross-platform drift. The scheduled job fails if the score drops below the floor; it never blocks on an unmet aspiration. **Ratchet up as survivors are killed** — the same measure-first discipline coverage and the v5 scoreboard use. The break threshold applies only in the mutation workflow, not the per-push gate.
+`stryker.config.json` sets `thresholds.break = 57` — a couple points under the **59.66%** measured on the full ten-module run of 2026-09-08, with headroom for cross-platform drift. (It read 54 against an older 56.94% until that run happened; the floor moves only after a real measurement, never ahead of one.) The scheduled job fails if the score drops below the floor; it never blocks on an unmet aspiration. **Ratchet up as survivors are killed** — the same measure-first discipline coverage and the v5 scoreboard use. The break threshold applies only in the mutation workflow, not the per-push gate.
