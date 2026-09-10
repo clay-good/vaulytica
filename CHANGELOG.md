@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.662.0] — 2026-09-10
+
+Found by rendering the clean deal room's consolidated bundle report and
+**reading its bibliography** — the list of authorities an attorney checks.
+
+### Fixed
+- 🚨 **A citation named the Standard Contractual Clauses and linked to the
+  GDPR.** Entries 11, 14 and 15 of that bibliography read
+
+  ```
+  [11] Commission Implementing Decision (EU) 2021/914, Clause 14
+       — https://eur-lex.europa.eu/eli/reg/2016/679/oj
+  ```
+
+  while entry 18 linked the same instrument correctly. `dpa-gdpr`'s `cite_for`
+  returned **one constant URL for all 55 of its citations**, and five of them
+  name a different instrument with its own ELI. 🥇 **Every other `cite_for` in
+  the tree that spans more than one instrument branches on the citation** — the
+  `transfer` ruleset two directories over cites the SCCs correctly — so the
+  shape of the fix was already written down next door.
+
+- 🚨 **A fall-through default asserted NIST as the authority for the GDPR right
+  to erasure.** `addenda`'s `urlForCitation` ended
+  `return "https://www.nist.gov/"` — a real authority for an unrelated
+  standards body, handed to any citation its table did not recognize. Exactly
+  **two** citations reached it and **both were GDPR** ("GDPR **Art.** 17", the
+  other abbreviation, and "GDPR Article **28(2)**", a different article than
+  the two anchored deep-links). The default was 100% wrong and 0% right, and it
+  failed quietly: the finding still looked cited.
+
+  **Asserting no authority is honest; asserting the wrong one is not.** The
+  default is the empty string now — already an accepted state, which the
+  citation gates read as "no public source" — and the table gained a generic
+  GDPR entry. Lookup is longest-key-first, so a generic key can never shadow
+  an anchored deep-link by sitting in the wrong place in the literal.
+
+### Added
+- **`citation-instrument-match.test.ts`** — over the citations the engine
+  ACTUALLY EMITS across all 327 specimens, because the finding is where a
+  reader meets them. It asserts an SCC citation resolves to the SCC ELI, and
+  that an EU instrument resolves to a **europa.eu domain**.
+
+  🥇 The domain, not the path, is the assertion, and that is the whole design.
+  An EU regulation has several legitimate URLs — the ELI, the CELEX
+  consolidated text, a Commission guidance page for the topic an article
+  governs — and choosing among them is editorial. Two of the guard's first
+  three flags were exactly those, my table being stricter than the truth; only
+  the third was real. Linking an EU instrument to a US standards body is not
+  editorial, and that is what the check now pins.
+
 ## [9.661.0] — 2026-09-10
 
 Found by rendering the flagship artifact — the attorney-facing DOCX report —

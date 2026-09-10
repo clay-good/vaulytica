@@ -60,13 +60,37 @@ const URL_BY_CITATION: Record<string, string> = {
   "EU Digital Content Directive 2019/770": "https://eur-lex.europa.eu/eli/dir/2019/770/oj",
   "EU Consumer Rights Directive 2011/83": "https://eur-lex.europa.eu/eli/dir/2011/83/oj",
   "ROSCA 15 U.S.C. § 8403": "https://www.law.cornell.edu/uscode/text/15/8403",
+  // The generic GDPR fallback, below the two anchored deep-links above. Two
+  // citations in this file reached NEITHER of those — "GDPR **Art.** 17" (the
+  // other abbreviation) and "GDPR Article **28(2)**" (a different article) —
+  // and fell through to the default, which asserted NIST as the authority for
+  // the right to erasure.
+  GDPR: "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
 };
 
+/**
+ * The URL for a citation, most specific key first.
+ *
+ * 🚨 Two things were wrong here. Matching was in OBJECT KEY ORDER, so adding a
+ * generic key would have shadowed the anchored `GDPR Article 13` / `14`
+ * deep-links depending on where it landed in the literal; longest-key-first
+ * makes specificity explicit instead of implicit.
+ *
+ * And the fall-through returned **`https://www.nist.gov/`** — a real authority
+ * for an unrelated standards body, asserted for any citation the table did not
+ * recognize. Every citation that actually reached it was a GDPR one, so the
+ * default was 100% wrong and 0% right, and it failed QUIETLY: the finding
+ * still looked cited. **Asserting no authority is honest; asserting the wrong
+ * one is not.** An empty `source_url` is an accepted state — a custom
+ * playbook's team-policy citation carries one — and the citation gates read it
+ * as "no public source", which is exactly what an unrecognized citation has.
+ */
 function urlForCitation(citation: string): string {
-  for (const key of Object.keys(URL_BY_CITATION)) {
+  const keys = Object.keys(URL_BY_CITATION).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
     if (citation.startsWith(key)) return URL_BY_CITATION[key] ?? "";
   }
-  return "https://www.nist.gov/";
+  return "";
 }
 
 function makeConfig(applies_to_playbooks: string[]): RegulatedRuleConfig {

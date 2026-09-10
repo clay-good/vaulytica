@@ -88,9 +88,24 @@ const CONFIG: RegulatedRuleConfig = {
   category: "dpa-gdpr",
   applies_to_playbooks: DPA_PLAYBOOKS,
   cite_for(citation: string) {
+    // 🚨 This returned the GDPR's ELI for EVERY citation in the ruleset, and
+    // five of them name a DIFFERENT INSTRUMENT: Commission Implementing
+    // Decision (EU) 2021/914, the Standard Contractual Clauses. So a DPA's
+    // bibliography — the list of authorities an attorney checks — read
+    //
+    //   [11] Commission Implementing Decision (EU) 2021/914, Clause 14
+    //        — https://eur-lex.europa.eu/eli/reg/2016/679/oj
+    //
+    // pointing at Regulation 2016/679. The SCCs are at their own ELI, and the
+    // `transfer` ruleset two directories over already cites them correctly:
+    // every other `cite_for` in the tree that spans more than one instrument
+    // BRANCHES on the citation, and this was the only one that did not.
+    const scc = citation.includes("2021/914");
     return {
-      id: `gdpr-${citation.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
-      source_url: "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      id: `${scc ? "scc" : "gdpr"}-${citation.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
+      source_url: scc
+        ? "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj"
+        : "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
     };
   },
   supplied_by_standard_form: SUPPLIED_BY_THE_SCC_TEXT,
