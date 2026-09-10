@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.654.0] — 2026-09-10
+
+The generalization of 9.653.0's root cause, asked of the whole rule engine
+instead of one extractor.
+
+### Added
+- 🥇 **`negation-compound-dependency.test.ts` — which findings depend on a
+  NEGATED adjective?** A hyphen is a word boundary, so a `\b`-anchored
+  recognizer for "exclusive" opens inside **"non-exclusive"**, where the
+  compound means the opposite of the word the pattern was written for. The
+  relation strips the negation across the corpus (`non-binding` →
+  `binding`) and names every specimen whose finding set turns on one.
+
+  It is **not** an invariance relation — the transform inverts the document's
+  meaning — so movement is not automatically a failure. It is a dependency
+  probe, and the number it pins answers a question no other guard here asks.
+  Today the answer is **none of the finding set**, over the **51** specimens
+  that carry such a compound.
+
+  **That zero was checked, not assumed.** The sharpest candidate for a false
+  read is `subcontract-complete.txt`, whose dispute clause sends disputes to
+  *"non-binding mediation administered by the American Arbitration
+  Association"* — a rule matching a bare "binding" near "arbitration" would
+  call that a mandatory-arbitration clause. `CHOICE-006` requires the two words
+  together and correctly stays silent; rewrite the phrase to "binding
+  arbitration" and it fires. So the zero is correctness.
+
+  **When the number moves, that is the signal, not the failure**: a rule whose
+  outcome turns on one of these adjectives has just been added, and the author
+  owes one answer — does it read the `non-`, or only the adjective?
+
+  Deliberately excluded: `non-disclosure`, `non-compete`, `non-solicitation`.
+  Those name a KIND of clause rather than negating one, and a rule matching
+  "disclosure" inside "non-disclosure agreement" is reading the document
+  correctly. Adding "disclosure" to the list is also how the relation was
+  proven to fail on purpose — it moves `uk-mutual-nda.txt`.
+
 ## [9.653.0] — 2026-09-10
 
 Found by **reading the obligations ledger** over the fourteen clean documents.
