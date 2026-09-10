@@ -107,6 +107,76 @@ describe("extractObligations", () => {
     expect(obli?.obligor).toBe("the parties");
   });
 
+  it("reads a proviso's own subject as the obligor, not the party before it", () => {
+    // `except` has two grammars and they name opposite parties.
+    //
+    // As a PREPOSITION it narrows the subject ("Each party except the
+    // Provider shall …"), and the carve-out must come off before the obligor
+    // is resolved — the case above.
+    //
+    // As a SUBORDINATOR it opens a PROVISO that carries its OWN subject and
+    // its own duty, and stripping there is the same inversion one step on: it
+    // deletes the real obligor and leaves the `endsWith` match to land on
+    // whoever the clause BEFORE happened to name. Here that is Supplier, so
+    // the obligations ledger printed SUPPLIER as owing a duty not to remove
+    // Supplier's own notice — the duty is OEM's, and it is owed TO Supplier.
+    //
+    // `splitModalClauses` already draws this distinction for `provided that`
+    // (PROVISO_LEAD). This is the same repair for `except`.
+    const tree = buildTree([
+      "Branding",
+      "OEM may label the OEM Products under OEM's own brand and need not " +
+        "identify Supplier, except that OEM shall not remove or obscure any " +
+        "Supplier notice embedded in the firmware.",
+    ]);
+    const obli = extractObligations(tree, []).find((o) => /remove or obscure/.test(o.action));
+    expect(obli, "the proviso's duty is no longer extracted at all").toBeDefined();
+    expect(obli?.obligor).toBe("OEM");
+    // A proviso subject is not a carve-out: nobody is excluded here.
+    expect(obli?.obligor_exclusion).toBeUndefined();
+  });
+
+  it("does not read a cross-reference or a bare preposition as an excluded party", () => {
+    // The other three `except` subjects in the corpus. None carves out a
+    // party, and each produced a confident non-answer in a field whose whole
+    // job is to name the party that does NOT owe the duty.
+    const cases: [string, string][] = [
+      // "except as provided in …" — a cross-reference. Excluded "as provided
+      // in a".
+      [
+        "Waiver",
+        "Each Spouse waives the right to elect against the other's will, to a " +
+          "spousal or family allowance, to homestead, and to any statutory " +
+          "share, except as provided in a will, revocable trust, or " +
+          "beneficiary designation executed after the date of this Agreement.",
+      ],
+      // "except by will or the laws of descent" — a manner. Excluded "by".
+      [
+        "Transfer",
+        "The Option is not transferable except by will or the laws of descent " +
+          "and distribution, and during the Optionee's lifetime is exercisable " +
+          "only by the Optionee.",
+      ],
+      // A shouted warranty disclaimer. Excluded "AS THOSE".
+      [
+        "Warranty",
+        "THIS WARRANTY IS IN LIEU OF ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, " +
+          "INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, " +
+          "EXCEPT AS THOSE MAY NOT BE EXCLUDED UNDER MANDATORY LAW.",
+      ],
+    ];
+    for (const [heading, text] of cases) {
+      const oblis = extractObligations(buildTree([heading, text]), []);
+      expect(
+        oblis.length,
+        `${heading}: nothing extracted, so this asserts nothing`,
+      ).toBeGreaterThan(0);
+      for (const o of oblis) {
+        expect(o.obligor_exclusion, `${heading} excluded ${o.obligor_exclusion}`).toBeUndefined();
+      }
+    }
+  });
+
   it("splits a coordinated sentence into one obligation per party", () => {
     const parties = extractParties(
       buildTree([

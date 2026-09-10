@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.689.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The obligations ledger named the wrong party.** "OEM may label the OEM
+  Products under OEM's own brand and need not identify Supplier, **except that
+  OEM shall not remove or obscure any Supplier notice** embedded in the
+  firmware" was extracted with **obligor `Supplier`** — a duty not to remove
+  Supplier's own notice, billed to the party it is owed *to*. Eight of the
+  eleven corpus obligations whose subject contained `except` named the wrong
+  party; the obligations CSV is an artifact a lawyer reads.
+
+  🥇 **`except` has two grammars and they point at opposite parties.** As a
+  PREPOSITION it narrows the subject ("Each party except the Provider shall
+  maintain insurance"), and the carve-out must come off before the obligor is
+  resolved or the trailing excluded name wins the `endsWith` match. As a
+  SUBORDINATOR (`except that`) it opens a **proviso carrying its own subject
+  and its own duty**, and stripping there is the same inversion one step
+  further on: it deletes the real obligor and leaves the match to land on
+  whoever the clause *before* happened to name. The extractor knew only the
+  first grammar and applied it to both.
+
+  🥇 **The repair was already written next door.** `splitModalClauses` draws
+  exactly this distinction for `provided that` (`PROVISO_LEAD`, "which also
+  fixes the obligor it used to corrupt"). `except` never got the twin.
+
+  Twelve of the corpus's 242 `except` obligations move, every one to a better
+  answer: `Supplier`→`OEM`, `the parties`→`the Subordinated Agent`,
+  `not obligated to, cure any objection`→`Seller`, `the parties`→`Bank`,
+  `or repairs to the Subleased Premises`→`Sublandlord`,
+  `and bears her own business expenses`→`Company`,
+  `We are not required to agree`→`we`,
+  `act for the Board between meetings`→`it`. No finding, `result_hash` or
+  golden changes — obligations are a report surface, not a rule input, which
+  is exactly why no relation in the suite could see this.
+
+- 🚨 **`obligor_exclusion` was a 100% false positive on real documents.** The
+  field shipped with a doc comment stating its purpose, two unit tests behind a
+  hand-made fixture, and eleven corpus rows — **none of them a party.** It
+  recorded the conjunction and whatever followed: `"that Bank"`, `"AS THOSE"`,
+  `"as provided in a"`, `"by"`. It now fires only on an `except` PHRASE naming
+  a party, and stripping the clause off the subject is separated from recording
+  it, so a cross-reference is still removed before the obligor is resolved
+  without being reported as an excluded party.
+
+  🥇 **A dead field is a symptom, not the defect.** Nothing read this one, so
+  nothing could disagree with it — but the obligor resolution *branched on it*,
+  and that branch is what produced the eight misattributions above.
+
+### Added
+- **`tests/integration/obligor-attribution.test.ts`** — the measurement that
+  would have shown all eleven on the day they shipped, and it needs no reader
+  for the field. A **base rate** in the shape of `v3-extractor-base-rate.test.ts`
+  (how much of the corpus does this claim? committed by equality, now `0`), and
+  a **check of what the values actually are** — an exclusion has one job, so a
+  proviso's obligor is compared against the subject read out of the raw text.
+  A base rate alone says a detector fired eleven times; it cannot say all
+  eleven are junk.
+
+  🚨 **The guard states its own blind spot.** It sees only provisos the
+  splitter gave their own clause. `, except that` is not a boundary in the
+  splitter's `CONJ`, so "Each party shall bear its own expenses, except that
+  **Parent** shall pay all filing fees under the HSR Act" is still one row with
+  obligor `the parties` and Parent's duty absorbed into its action. Four
+  specimens are in that state (`merger-agreement`, `contingency-fee-agreement`,
+  `equity-incentive-plan`, `source-code-escrow`); widening `CONJ` changes how
+  many obligations the whole corpus yields, so it is its own change with its
+  own measurement.
+
 ## [9.688.0] — 2026-09-10
 
 ### Added

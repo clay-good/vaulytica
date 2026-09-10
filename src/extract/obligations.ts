@@ -95,16 +95,19 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
       // dropped and its text absorbed into the first (v7 §8 follow-up).
       for (const cl of splitModalClauses(sentence)) {
         const modal = cl.modal.toLowerCase().replace(/\s+/g, " ");
-        const subject = cl.subject;
         const predicate = cl.predicate;
+        // `except` has two grammars and they point at OPPOSITE parties, so
+        // the subject is resolved before either is applied.
+        const subject = exceptProvisoSubject(cl.subject);
         const obligorExclusion = scopeExclusion(subject);
-        // Resolve the obligor from the subject with any "except <party>"
-        // carve-out removed — otherwise the trailing excluded name wins the
-        // `endsWith` match and the EXCLUDED party is reported as the obligor
-        // ("Each party except the Provider" → obligor "Provider").
-        const subjectForObligor = obligorExclusion
-          ? subject.replace(/\bexcept\b[\s\S]*$/i, "").trim()
-          : subject;
+        // A trailing `except …` always comes off before the obligor is
+        // resolved, whether or not it named a party — otherwise the tail wins
+        // the `endsWith` match and the obligor reads "Each party except the
+        // Provider" → "Provider", or "…any statutory share, except as
+        // provided in a". Stripping and RECORDING are separate questions: an
+        // `except` clause is a qualifier on the duty, and only an `except`
+        // PHRASE naming a party is a carve-out `scopeExclusion` reports.
+        const subjectForObligor = stripExceptTail(subject);
         const obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
         const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim();
         const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
@@ -288,6 +291,73 @@ function decomposeNestedTriggers(trigger: string): string[] | undefined {
 }
 
 /**
+ * `except` has two grammars, and they name OPPOSITE parties.
+ *
+ * As a PREPOSITION it narrows the subject — "Each party except the Provider
+ * shall maintain insurance" — and the carve-out must come off before the
+ * obligor is resolved, or the trailing excluded name wins the `endsWith`
+ * match and the one party that does not owe the duty is reported as owing it.
+ * That is `scopeExclusion` below.
+ *
+ * As a SUBORDINATOR (`except that`) it opens a PROVISO carrying its own
+ * subject and its own duty, and stripping there is the same inversion one step
+ * further on: it deletes the real obligor and leaves the `endsWith` match to
+ * land on whoever the clause BEFORE happened to name. "OEM may label the
+ * Products under OEM's own brand and need not identify Supplier, except that
+ * OEM shall not remove any Supplier notice" reported SUPPLIER as owing a duty
+ * not to remove Supplier's own notice — the duty is OEM's, and it is owed TO
+ * Supplier. Eight of the corpus's eleven `except` subjects were misattributed
+ * this way, and the obligations ledger is a CSV a lawyer reads.
+ *
+ * `splitModalClauses` already draws exactly this distinction for `provided
+ * that` (PROVISO_LEAD, "which also fixes the obligor it used to corrupt").
+ * This is the same repair for `except`, which never got it.
+ */
+const EXCEPT_THAT = /\bexcept\s+that\b/i;
+
+function exceptProvisoSubject(subject: string): string {
+  const m = EXCEPT_THAT.exec(subject);
+  if (!m) return subject;
+  const after = subject.slice(m.index + m[0].length).trim();
+  // An `except that` with nothing after it inside this clause is a proviso
+  // whose subject was elided; the sentence's own subject still governs.
+  return after.length > 0 ? after : subject;
+}
+
+/**
+ * Take a trailing `except …` off the subject before the obligor is resolved.
+ *
+ * Whether or not the clause named a party, its tail wins the `endsWith` match
+ * otherwise: "Each party except the Provider" resolved to "Provider" — the one
+ * party carved out — and "…to any statutory share, except as provided in a"
+ * resolved to that fragment.
+ *
+ * A clause boundary INSIDE the tail means the `except` clause has ENDED and
+ * the sentence's real subject follows it, so nothing is stripped: "Nothing in
+ * this Declaration prohibits an Owner from installing a solar energy device
+ * … except as permitted by Sections 202.010 and 202.007 of the Texas Property
+ * Code, and the Board shall …" owes its duty to the Board, and cutting at
+ * `except` would leave the obligor reading "energy device or a rain barrel".
+ */
+function stripExceptTail(subject: string): string {
+  const i = subject.search(/\bexcept\b/i);
+  if (i < 0) return subject;
+  if (/,\s+and\s+|;\s+/.test(subject.slice(i))) return subject;
+  return subject.slice(0, i).trim() || subject;
+}
+
+/**
+ * Function words that open an `except` CLAUSE rather than name a party.
+ * "except as provided in a will", "except by will or the laws of descent",
+ * "EXCEPT AS THOSE MAY NOT BE EXCLUDED UNDER MANDATORY LAW" — the remaining
+ * three corpus `except` subjects, each of which put a cross-reference or a
+ * bare preposition into a field whose whole job is to name the party that
+ * does NOT owe the duty.
+ */
+const EXCEPT_NOT_A_PARTY =
+  /^(?:as|by|to|for|in|on|with|under|upon|pursuant|where|when|while|insofar|if|and|or|the\s*$)\b/i;
+
+/**
  * Capture a scope-narrowing exclusion in the obligor subject:
  * "Each party except the Provider shall …" → "Provider".
  */
@@ -296,7 +366,9 @@ function scopeExclusion(subject: string): string | undefined {
     subject.replace(/[,;]\s*$/, "").trim(),
   );
   if (!m) return undefined;
-  return trimEdges(m[1]!, /[\s.]/).trim() || undefined;
+  const excluded = trimEdges(m[1]!, /[\s.]/).trim();
+  if (!excluded || EXCEPT_NOT_A_PARTY.test(excluded)) return undefined;
+  return excluded;
 }
 
 function splitSentences(text: string): { text: string; start: number }[] {
