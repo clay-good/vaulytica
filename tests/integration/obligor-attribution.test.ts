@@ -55,6 +55,21 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
  */
 const EXCLUSION_SPECIMENS = 0;
 
+/**
+ * Duties that exist only because a proviso gets its own clause. Each was
+ * absorbed into the preceding clause's `qualifier` before 9.690.0 — present in
+ * the raw text, absent from the ledger, and invisible to any check that
+ * compares an extracted obligor against what a clause says.
+ */
+const RECOVERED: ReadonlyArray<[file: string, obligor: string, action: string]> = [
+  ["merger-agreement.txt", "Parent", "pay all filing fees under the HSR Act"],
+  ["source-code-escrow.txt", "Depositor", "bear the cost of any verification"],
+  ["physician-employment.txt", "Physician", "bear one-half of the cost of the tail"],
+  ["contingency-fee-agreement.txt", "the Firm", "waive unreimbursed costs"],
+  ["joint-development.txt", "the parties", "share equally the cost"],
+  ["sow.txt", "Supplier's technical lead", "be on site at Client's Hartford facility"],
+];
+
 describe("obligor attribution over the specimen corpus", () => {
   it("records a scope exclusion only where a document states one", async () => {
     const files = readdirSync(DIR)
@@ -68,10 +83,12 @@ describe("obligor attribution over the specimen corpus", () => {
     let provisos = 0;
     const exclusions: string[] = [];
     const misattributed: string[] = [];
+    const byFile = new Map<string, { obligor: string; action: string }[]>();
 
     for (const file of files) {
       const ingest = await ingestPaste(readFileSync(join(DIR, file), "utf8"));
       const extracted = extractAll(ingest.tree);
+      byFile.set(file, extracted.obligations);
       for (const o of extracted.obligations) {
         obligations += 1;
         if (o.obligor_exclusion) exclusions.push(`${file}: "${o.obligor_exclusion}"`);
@@ -122,20 +139,25 @@ describe("obligor attribution over the specimen corpus", () => {
 
     // Anti-vacuity for the second assertion: the corpus must actually contain
     // provisos, or the loop above proves nothing about them.
-    // 🚨 This counts only provisos the splitter gave their OWN clause, which
-    // is the case the fix above covers. It does NOT see a proviso MERGED into
-    // the clause before it — `, except that` is not a boundary in the
-    // splitter's CONJ, so "Each party shall bear its own expenses, except that
-    // Parent shall pay all filing fees under the HSR Act" is one row, obligor
-    // "the parties", and Parent's duty is absorbed into its action. Four
-    // specimens (merger-agreement, contingency-fee-agreement,
-    // equity-incentive-plan, source-code-escrow) are in that state; widening
-    // CONJ changes how many obligations the whole corpus yields, so it is its
-    // own change with its own measurement.
-    expect(provisos, "no specimen carries an `except that … shall` proviso").toBeGreaterThan(5);
+    // Anti-vacuity: the corpus must actually contain provisos the splitter
+    // gave their own clause, or the loop above proves nothing about them.
+    expect(provisos, "no specimen carries an `except that … shall` proviso").toBeGreaterThan(8);
     expect(
       misattributed,
       "a proviso's duty is attributed to a party other than the one the proviso names",
     ).toEqual([]);
+
+    // 🚨 The other half, and the one a mismatch check cannot make: a duty
+    // that is not extracted at all cannot be misattributed. `, except that`
+    // was not a boundary in the splitter's CONJ, so an affirmative proviso
+    // was merged into the clause before it — QUALIFIER_RE then recorded the
+    // whole proviso as that clause's `qualifier`, and the duty inside it
+    // never became a row. Every assertion above passed in that state.
+    for (const [file, obligor, action] of RECOVERED) {
+      const row = byFile
+        .get(file)
+        ?.find((o) => o.obligor === obligor && o.action.startsWith(action));
+      expect(row, `${file}: "${obligor} … ${action}" is not in the ledger`).toBeDefined();
+    }
   }, 300_000);
 });

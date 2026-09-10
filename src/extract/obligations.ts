@@ -222,6 +222,7 @@ function splitModalClauses(
     String.raw`(?:,\s+and\s+|;\s+and\s+|;\s+|(?<!\b(?:${ABBREV_BEFORE_NUMBER})\b)\.\s+)`,
     "gi",
   );
+  const EXCEPT_BOUNDARY = /\bexcept\s+that\s+/gi;
   // Anchored, so it fires only when the candidate new subject BEGINS with the
   // proviso — "the fee, provided that …" mid-subject is untouched.
   const PROVISO_LEAD = /^provided\s*,?\s*(?:however\s*,?\s*)?that\b/i;
@@ -237,6 +238,18 @@ function splitModalClauses(
     let last: RegExpExecArray | null = null;
     let cm: RegExpExecArray | null;
     while ((cm = CONJ.exec(region)) !== null) last = cm;
+    // `, except that <subject> <modal>` opens a proviso that carries its own
+    // subject and its own duty, and CONJ does not list it — so "Each party
+    // shall bear its own expenses, except that Parent shall pay all filing
+    // fees under the HSR Act" was ONE obligation, obligor "the parties", with
+    // Parent's duty absorbed into its action. The proviso's own subject is the
+    // boundary, and the later of the two wins: a proviso that opens AFTER the
+    // last conjunction is the nearer clause start.
+    EXCEPT_BOUNDARY.lastIndex = 0;
+    let lastExcept: RegExpExecArray | null = null;
+    let em: RegExpExecArray | null;
+    while ((em = EXCEPT_BOUNDARY.exec(region)) !== null) lastExcept = em;
+    if (lastExcept && (!last || lastExcept.index > last.index)) last = lastExcept;
     if (!last) continue; // no clause boundary → subordinate modal, keep merged
     const subjectStart = regionStart + last.index + last[0].length;
     // A proviso carries its own modal, so the semicolon boundary split it into

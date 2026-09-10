@@ -136,6 +136,26 @@ describe("extractObligations", () => {
     expect(obli?.obligor_exclusion).toBeUndefined();
   });
 
+  it("gives an affirmative proviso its own clause, so its duty is not lost", () => {
+    // `, except that` was not a boundary in CONJ, so a proviso carrying its
+    // own subject and its own modal was merged into the clause before it.
+    // QUALIFIER_RE then swallowed the whole proviso as that clause's
+    // `qualifier`, and the duty inside it never became a row at all: the
+    // ledger said "the parties shall bear their own expenses" and nowhere
+    // said that Parent pays the HSR filing fees.
+    const tree = buildTree([
+      "Expenses",
+      "Each party shall bear its own expenses, except that Parent shall pay " +
+        "all filing fees under the HSR Act.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis.length).toBe(2);
+    expect(oblis[0]?.obligor).toBe("the parties");
+    expect(oblis[0]?.action).toBe("bear its own expenses");
+    expect(oblis[1]?.obligor).toBe("Parent");
+    expect(oblis[1]?.action).toBe("pay all filing fees under the HSR Act");
+  });
+
   it("does not read a cross-reference or a bare preposition as an excluded party", () => {
     // The other three `except` subjects in the corpus. None carves out a
     // party, and each produced a confident non-answer in a field whose whole

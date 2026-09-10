@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.690.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A proviso's duty never reached the ledger at all.** "Each party shall
+  bear its own expenses, **except that Parent shall pay all filing fees under
+  the HSR Act**" produced ONE obligation — obligor `the parties`, action `bear
+  its own expenses` — and Parent's duty was recorded as that obligation's
+  *qualifier*. Present in the document, absent from the obligations ledger.
+
+  `, except that` was not a boundary in `splitModalClauses`'s `CONJ`, so an
+  affirmative proviso carrying its own subject and its own modal was merged
+  into the clause before it, and `QUALIFIER_RE` then swallowed the whole
+  proviso. The proviso's subject is now a clause boundary in its own right,
+  and the later of it and the last conjunction wins — a proviso that opens
+  after the last conjunction is the nearer clause start.
+
+  🥇 **This is the half a mismatch check cannot see.** 9.689.0 fixed the
+  obligations that named the WRONG party and committed a guard that compares
+  every proviso's obligor against the subject read out of the raw text. Every
+  assertion in it passed while these duties were missing entirely — **a duty
+  that is not extracted cannot be misattributed.** The guard now asserts the
+  six by name.
+
+  Six duties enter the corpus ledger for the first time: `Parent` pays the HSR
+  filing fees, `Depositor` bears the cost of a verification that reveals a
+  material deficiency, `Physician` bears one-half of the tail premium, `the
+  Firm` waives unreimbursed costs where there is no recovery, `the parties`
+  share the third-party testing cost, and `Supplier's technical lead` is on
+  site for the integration weeks. Four further rows are the two classes already
+  recorded against this extractor — a negative-fronted subject ("no
+  indemnification shall be made …") and a liability-cap clause whose subject is
+  a fragment — and neither is made worse by being visible. Corpus obligations
+  3,678 → 3,688. No finding, `result_hash` or golden changes.
+
 ## [9.689.0] — 2026-09-10
 
 ### Fixed
