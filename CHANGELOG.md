@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.642.0] — 2026-09-09
+
+### Fixed
+- **"Distributor shall administer end-user warranty claims" is a clause about
+  who administers warranty claims.** The tenth clean document — a complete
+  cross-border exclusive distribution agreement — drew fifteen findings, and the
+  one defect was a word order. COMM-039 said at CRITICAL that no clause states
+  who handles warranty claims and returns, about §7.2, which says exactly that
+  and allocates the cost.
+
+  The rule's four patterns read the noun before the verb (`warranty claims …
+  administered`) and never the ACTIVE voice a drafter actually uses. Either
+  order is read now. Zero corpus movement.
+
+### Added
+- `tests/fixtures/specimens/distribution-complete.txt` — the tenth clean
+  document, and the 322nd specimen.
+
+  Two of its first-draft findings were the **document's** gaps rather than the
+  engine's, and the document was completed instead of the rules changed — which
+  is the method working in the other direction. COMM-026 asks an exclusive
+  appointment to say something about competing products, and a well-drafted one
+  does (this one permits them, with conditions). OBLI-003 flagged "except **as
+  needed** to sell remaining inventory" — a discretionary trigger where a
+  bounded cross-reference belongs.
+
 ## [9.641.0] — 2026-09-09
 
 ### Fixed

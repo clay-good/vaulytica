@@ -512,7 +512,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-039",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Warranty pass-through and warranty-claim administration",
     description:
       "A distribution agreement should state how the Supplier's product warranty reaches end customers and who administers warranty claims and returns.",
@@ -534,6 +534,13 @@ const DISTRIBUTION_RULES: Rule[] = [
       /warrant\w*[\s\S]{0,40}(pass|extend|assign)\w*[\s\S]{0,30}(customer|end\s+user)/is,
       /\brma\b|return\s+material\s+authori[sz]\w+/i,
       /warranty\s+claim\w*[\s\S]{0,40}(administ|handl|process|honou?r)/is,
+      // EITHER ORDER. The clause is drafted in the ACTIVE voice as often as the
+      // passive — "Distributor shall ADMINISTER end-user WARRANTY CLAIMS and
+      // Supplier shall reimburse its labour and freight costs" — and a
+      // noun-then-verb pattern reads none of them. A complete exclusive
+      // distribution agreement was told at CRITICAL that no clause says who
+      // handles warranty claims, about the sentence that says it.
+      /\b(?:administ|handl|process|honou?r)\w*[\s\S]{0,40}\bwarranty\s+claim/is,
     ],
     // Express-denial guard: a refusal names the same pass-through the
     // obligation does. Without it the distributor carries warranty exposure to

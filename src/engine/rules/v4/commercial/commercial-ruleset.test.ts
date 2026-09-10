@@ -451,3 +451,33 @@ describe("COMM-035 / COMM-039 — obligations expressly refused", () => {
     expect(await titles(id, pb, text)).toEqual([title]);
   });
 });
+
+// The defect the tenth clean document found (9.642.0): COMM-039 read the
+// warranty-administration clause in one word order only.
+describe("COMM-039 — who administers warranty claims, in either word order", () => {
+  const DIST2: Playbook = { id: "distribution-agreement", version: "1.0.0" };
+  const fires = async (text: string) =>
+    (
+      await runEngine({
+        rules: COMMERCIAL_V4_RULES as Rule[],
+        ctx: withPb(buildContext(["Warranty", text]), DIST2),
+        source_file: SRC,
+      })
+    ).findings.some((f) => f.rule_id === "COMM-039");
+
+  it.each([
+    "Distributor shall administer end-user warranty claims and Supplier shall reimburse Distributor's reasonable labour and freight costs of doing so.",
+    "Distributor will handle all warranty claims from end customers in the Territory.",
+    "Warranty claims are administered by Distributor at Supplier's expense.",
+  ])("reads the clause: %s", async (text) => {
+    expect(await fires(text)).toBe(false);
+  });
+
+  it("still fires on a distribution agreement that says nothing about warranty administration", async () => {
+    expect(
+      await fires(
+        "Supplier warrants that the Products will conform to their specifications for twenty-four (24) months after delivery.",
+      ),
+    ).toBe(true);
+  });
+});

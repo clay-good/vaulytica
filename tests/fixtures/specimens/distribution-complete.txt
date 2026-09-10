@@ -1,0 +1,133 @@
+EXCLUSIVE DISTRIBUTION AGREEMENT
+
+THIS EXCLUSIVE DISTRIBUTION AGREEMENT (this "Agreement") is entered into as of May 4, 2026 (the "Effective Date") between Larkmoor Instruments GmbH, a company organized under the laws of Germany with its registered office at Industriestrasse 14, 70565 Stuttgart ("Supplier"), and Ardent Scientific Supply, Inc., a Delaware corporation with its principal place of business at 900 Halsted Avenue, Chicago, Illinois ("Distributor").
+
+1. Appointment.
+
+1.1 Grant. Supplier appoints Distributor as its exclusive distributor of the products listed on Exhibit A (the "Products") in the United States and Canada (the "Territory"), for resale to end users and to sub-distributors approved under Section 1.4. Distributor accepts the appointment.
+
+1.2 Exclusivity. During the term, Supplier shall not appoint another distributor for the Products in the Territory and shall not sell the Products directly to customers in the Territory, except that Supplier may continue to sell to the house accounts listed on Exhibit B, on which Distributor earns a commission of five percent (5%) of net invoice value.
+
+1.3 Reservation. Supplier retains all rights outside the Territory and for products not listed on Exhibit A. Distributor shall not actively solicit customers outside the Territory, and shall refer inquiries it receives from outside the Territory to Supplier. Nothing in this Agreement restricts Distributor from fulfilling unsolicited orders from outside the Territory.
+
+1.4 Sub-Distributors. Distributor may appoint sub-distributors within the Territory with Supplier's prior written consent, not to be unreasonably withheld. Distributor remains responsible for its sub-distributors' performance and shall bind each to terms no less protective of Supplier than this Agreement.
+
+1.5 Competing Products. Distributor may distribute products that compete with the Products, provided that it does not use Supplier's Confidential Information or the trademarks licensed under Section 6.1 to do so, does not represent a competing product as originating with Supplier, and continues to meet the minimum purchase obligation in Section 4.2. Distributor shall notify Supplier before adding a competing product line in the same instrument category.
+
+1.6 Resale Pricing. Distributor sets its own resale prices. Supplier may publish non-binding suggested resale prices, and nothing in this Agreement obliges Distributor to adhere to them.
+
+2. Orders, Supply and Delivery.
+
+2.1 Purchase Orders. Distributor shall order Products by written purchase order stating the Products, quantities, requested delivery dates, and destination. An order is accepted when Supplier confirms it in writing or ships against it. This Agreement prevails over any conflicting terms on a purchase order or acknowledgement.
+
+2.2 Forecasts. Distributor shall provide a rolling six-month non-binding forecast on the first Business Day of each month, of which the first sixty (60) days are binding as to quantity.
+
+2.3 Delivery. Supplier shall deliver the Products DAP Distributor's warehouse in Elk Grove Village, Illinois (Incoterms 2020), within thirty (30) days after order acceptance, or on the confirmed date if later. Title and risk of loss pass on delivery at the named place.
+
+2.4 Shortages. If Supplier cannot meet accepted orders, it shall allocate available Products among its distributors and its own accounts on a fair and proportionate basis and shall notify Distributor of the shortfall promptly.
+
+2.5 Inspection and Rejection. Distributor may reject Products that do not conform to the specifications by notice within thirty (30) days after delivery, or within thirty (30) days after discovery for defects not reasonably discoverable on inspection. Supplier shall, at its option, replace or refund the price of rejected Products and shall pay the freight both ways.
+
+3. Prices and Payment.
+
+3.1 Prices. Prices are those on Exhibit C as of the order date. Supplier may change prices on ninety (90) days' prior written notice, and the change does not apply to orders accepted before the notice or shipped within that ninety-day period.
+
+3.2 Payment. Distributor shall pay each invoice within forty-five (45) days after the invoice date. Amounts not paid when due bear interest at the lesser of one percent (1%) per month or the maximum rate permitted by law.
+
+3.3 Taxes. Prices exclude sales, use, value-added and similar taxes, which are Distributor's responsibility, other than taxes on Supplier's net income.
+
+3.4 Currency and Set-Off. All amounts are payable in U.S. dollars. Distributor may set off amounts Supplier owes it under this Agreement against amounts due, on ten (10) days' prior written notice identifying the amounts.
+
+4. Distributor Obligations.
+
+4.1 Promotion. Distributor shall use commercially reasonable efforts to promote and sell the Products in the Territory, maintain a trained sales and technical support organization, attend the trade shows listed on Exhibit D, and maintain inventory sufficient to meet reasonably anticipated demand.
+
+4.2 Minimum Purchases. Distributor shall purchase at least One Million Two Hundred Thousand Dollars ($1,200,000) of Products in each contract year. If Distributor fails to meet the minimum in any contract year, Supplier's sole remedy is to convert the appointment to non-exclusive on sixty (60) days' written notice given within ninety (90) days after the end of that year.
+
+4.3 Reporting. Distributor shall provide quarterly reports of sales by Product and by end-user segment, and of inventory on hand, within thirty (30) days after each quarter end.
+
+4.4 Compliance. Distributor shall comply with all laws applicable to its performance, including the U.S. Foreign Corrupt Practices Act, the UK Bribery Act 2010, export control and sanctions laws, and shall not export or re-export the Products contrary to those laws. Distributor shall not offer anything of value to a government official to obtain or retain business.
+
+4.5 No Modification. Distributor shall not modify the Products, alter or remove any marking or serial number, or repackage the Products without Supplier's prior written consent, except that Distributor may add its own labelling as required by applicable law.
+
+5. Supplier Obligations. Supplier shall supply accepted orders in accordance with Section 2, provide product documentation, marketing materials and training reasonably necessary for Distributor to perform, notify Distributor at least one hundred eighty (180) days before discontinuing a Product or making a change that affects form, fit or function, and continue to supply spare parts for five (5) years after a Product is discontinued.
+
+6. Trademarks and Intellectual Property.
+
+6.1 Licence. Supplier grants Distributor a non-exclusive, royalty-free licence to use Supplier's trademarks listed on Exhibit E solely to promote and resell the Products in the Territory during the term, in accordance with Supplier's brand guidelines.
+
+6.2 Ownership. Supplier owns all intellectual property in the Products, its trademarks and its documentation. Distributor acquires no rights in them other than the licence in Section 6.1, and all goodwill from Distributor's use of the trademarks accrues to Supplier.
+
+6.3 No Registration. Distributor shall not register, or attempt to register, any of Supplier's trademarks or any confusingly similar mark, or any domain name containing them, and shall assign to Supplier any such registration it obtains.
+
+6.4 Notice of Infringement. Each party shall notify the other promptly of any infringement or suspected infringement of Supplier's intellectual property in the Territory of which it becomes aware. Supplier decides whether to take action and controls any proceeding, and Distributor shall cooperate at Supplier's expense.
+
+7. Warranty.
+
+7.1 Product Warranty. Supplier warrants to Distributor that the Products will conform to their specifications and be free from defects in material and workmanship for twenty-four (24) months after delivery to the end user, or thirty (30) months after delivery to Distributor, whichever occurs first.
+
+7.2 Remedy. Supplier shall repair or replace defective Products, or refund the price paid, at its option. Distributor shall administer end-user warranty claims and Supplier shall reimburse Distributor's reasonable labour and freight costs of doing so at the rates on Exhibit F.
+
+7.3 Exclusions. The warranty does not cover damage from misuse, accident, unauthorized modification, or use contrary to the documentation.
+
+7.4 Disclaimer. EXCEPT AS STATED IN THIS SECTION 7, SUPPLIER MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, AND DISCLAIMS THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Distributor shall not make any warranty on Supplier's behalf beyond the warranty in this Section 7.
+
+8. Product Liability, Indemnity and Insurance.
+
+8.1 Supplier Indemnity. Supplier shall defend Distributor against any third-party claim that a Product infringes a patent, copyright or trademark, or that a Product as supplied caused death, personal injury or property damage, and shall indemnify Distributor for damages and reasonable attorneys' fees finally awarded or paid in settlement, except to the extent the claim arises from Distributor's modification of the Product, its failure to follow the documentation, or its own negligence.
+
+8.2 Distributor Indemnity. Distributor shall defend and indemnify Supplier against any third-party claim arising from Distributor's marketing statements beyond the documentation, its modification of a Product, or its breach of Section 4.4.
+
+8.3 Procedure. The party seeking indemnity shall give prompt written notice, tender sole control of the defence, and cooperate at the indemnifying party's expense. The indemnifying party shall not settle a claim imposing a non-monetary obligation on the indemnified party without its consent.
+
+8.4 Insurance. Each party shall maintain commercial general liability insurance, including products and completed operations coverage, of at least Five Million Dollars ($5,000,000) per occurrence, and shall name the other as an additional insured for claims arising out of the Products. Certificates shall be furnished on request.
+
+9. Limitation of Liability. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS. EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO THE AMOUNTS PAID BY DISTRIBUTOR TO SUPPLIER IN THE TWELVE (12) MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM. These limits do not apply to the indemnities in Section 8, to a party's breach of Section 10, to Distributor's obligation to pay for Products delivered, or to a party's gross negligence, willful misconduct or fraud.
+
+10. Confidentiality. Each party shall keep the other's non-public information confidential, use it only to perform this Agreement, and disclose it only to personnel and advisors bound by equivalent obligations. These obligations continue for five (5) years after the term ends, and indefinitely for anything that is a trade secret. They do not apply to information that is public through no fault of the receiving party, was known to it without a duty of confidence, is received from a third party free to disclose it, or is independently developed without use of the disclosing party's information. A party compelled by law to disclose shall give prompt notice where legally permitted and disclose only what is required.
+
+11. Term and Termination.
+
+11.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, renewing automatically for successive one-year periods unless either party gives written notice of non-renewal at least one hundred eighty (180) days before the end of the then-current term.
+
+11.2 Termination for Cause. Either party may terminate this Agreement if the other materially breaches it and fails to cure within sixty (60) days after written notice describing the breach, or immediately if the other becomes insolvent, makes an assignment for the benefit of creditors, or has a bankruptcy proceeding commenced against it that is not dismissed within sixty (60) days.
+
+11.3 Termination for Convenience. Either party may terminate this Agreement without cause on one hundred eighty (180) days' prior written notice.
+
+11.4 Effect of Termination. On termination or expiry: Supplier shall fulfil accepted orders scheduled to ship within ninety (90) days, unless the termination is for Distributor's breach or insolvency; Distributor may sell its remaining inventory for one hundred eighty (180) days, subject to this Agreement; Supplier shall repurchase, at Distributor's net invoice cost less ten percent (10%), any unsold, unopened and currently saleable Products Distributor elects to return within that period; Distributor shall cease using Supplier's trademarks, other than in connection with the sale of the remaining inventory this Section 11.4 permits, and shall transfer any domain or listing containing them; each party shall return or destroy the other's confidential information; and all amounts owed become due on the later of their original due date and thirty (30) days after termination. Sections 6.2, 6.3, 8, 9, 10, 11.4 and 12 survive.
+
+11.5 No Compensation. Except as Section 11.4 provides, neither party owes the other compensation, indemnity or damages for goodwill, lost profits, or investments made in reliance on this Agreement, by reason of termination or non-renewal in accordance with its terms.
+
+12. General.
+
+12.1 Governing Law. This Agreement is governed by the laws of the State of Illinois, without regard to its conflict-of-laws rules. The United Nations Convention on Contracts for the International Sale of Goods does not apply.
+
+12.2 Dispute Resolution. Any dispute arising out of this Agreement shall be finally resolved by arbitration under the Rules of Arbitration of the International Chamber of Commerce by three arbitrators, seated in Chicago, Illinois, conducted in English. Judgment on the award may be entered in any court of competent jurisdiction. Either party may seek interim or injunctive relief from a court to protect its intellectual property or confidential information.
+
+12.3 Independent Contractors. The parties are independent contractors. Neither is the agent of the other, and neither may bind the other or hold itself out as authorized to do so.
+
+12.4 Assignment. Neither party may assign this Agreement without the other's prior written consent, except that either may assign it in its entirety, on notice, to a successor in a merger or sale of all or substantially all of its assets. Any other attempted assignment is void.
+
+12.5 Force Majeure. Neither party is liable for a delay or failure to perform, other than a payment obligation, caused by an event beyond its reasonable control, provided it gives prompt notice and uses commercially reasonable efforts to resume. If the event continues for more than one hundred twenty (120) days, either party may terminate on written notice.
+
+12.6 Notices. Notices must be in writing and are effective on delivery when sent by internationally recognized courier to the addresses stated above, attention Legal Department.
+
+12.7 Entire Agreement; Amendment. This Agreement and its Exhibits are the entire agreement between the parties about its subject matter and supersede all prior understandings about it. It may be amended only by a writing signed by both parties, and no failure to enforce a provision is a waiver of it.
+
+12.8 Severability. If a provision is held unenforceable, it shall be modified to the minimum extent necessary and the rest remains in effect.
+
+12.9 Counterparts; Language. This Agreement may be signed in counterparts, including electronically. The English text governs.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+LARKMOOR INSTRUMENTS GMBH
+
+By: /s/ Annelie Brandtner
+Name: Annelie Brandtner
+Title: Managing Director
+
+ARDENT SCIENTIFIC SUPPLY, INC.
+
+By: /s/ Desmond Ardent
+Name: Desmond Ardent
+Title: President

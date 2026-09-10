@@ -5230,6 +5230,57 @@ export const EXPECTED: Record<string, Expectation> = {
       "TEMP-007",
     ],
   },
+  // A COMPLETE exclusive distribution agreement — the tenth clean document
+  // (9.642.0), cross-border and antitrust-aware: exclusivity with a house-account
+  // carve-out, an active-solicitation restriction that leaves unsolicited orders
+  // alone, resale pricing left to the Distributor with only non-binding
+  // suggestions, sub-distributor consent, binding and non-binding forecast
+  // windows, DAP Incoterms, a fair-allocation shortage clause, a
+  // minimum-purchase covenant whose sole remedy is conversion to non-exclusive,
+  // an FCPA/UKBA compliance covenant, a trademark licence with goodwill
+  // accruing to the Supplier, a warranty with pass-through administration,
+  // product-liability indemnities both ways, a cap with carve-outs, a mutual
+  // NDA, ICC arbitration, and a full effect-of-termination clause with
+  // inventory repurchase.
+  //
+  // ONE defect: COMM-039 said at CRITICAL that no clause states who handles
+  // warranty claims, about §7.2 — "Distributor shall ADMINISTER end-user
+  // WARRANTY CLAIMS and Supplier shall reimburse Distributor's reasonable
+  // labour and freight costs of doing so." The rule read the noun before the
+  // verb ("warranty claims … administered") and never the ACTIVE voice.
+  //
+  // Two findings the first draft drew were the DOCUMENT's gaps, not the
+  // engine's, and the document was completed rather than the rules changed:
+  // COMM-026 asks an exclusive appointment to say something about competing
+  // products, and a well-drafted one does (this one now permits them, with
+  // conditions); and OBLI-003 flagged "except AS NEEDED to sell remaining
+  // inventory", a discretionary trigger where a bounded cross-reference belongs.
+  //
+  // What remains is true of the draft: six Exhibits referenced and not attached,
+  // an auto-renewal with a 180-day notice window (long, and correctly flagged
+  // twice — once as unusual, once as buried), indemnities carved out of the
+  // liability cap, an undefined "commercially reasonable efforts", and the
+  // arbitration, insurance, force-majeure, survival, consequential-damages and
+  // convenience-termination clauses reported as present.
+  "distribution-complete.txt": {
+    playbook: "distribution-agreement",
+    findings: [
+      "CHOICE-006",
+      "DARK-002",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "RISK-010",
+      "RISK-013",
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-004",
+      "TEMP-005",
+      "TEMP-006",
+      "TERM-001",
+    ],
+  },
   "enterprise-saas-subscription.txt": {
     playbook: "saas-customer",
     findings: [
