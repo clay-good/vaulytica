@@ -83,7 +83,7 @@ A `distinguishing_phrase` is worth 0.2 and the contribution caps at three, so th
 
 The test is not "does this word appear in my family's documents" but "would I be surprised to find it in a document that is **not** this family". A bare `"Employee"` failed that test: it sat in `employment-at-will-us` for eight releases, and it appears in NDAs, leases, policies, and law-firm engagement letters. A hand-written engagement letter used it once, in a boilerplate list of the people the firm was _not_ representing, and that one word plus the near-universal `confidentiality-obligation` category was enough to route the letter to the employment playbook and skip every ENG check. Its siblings `"at-will"`, `"base compensation"`, `"your position"`, and `"FLSA"` all pass the test; the single common noun did not.
 
-Prefer the family's terms of art, its statutory and rule citations, and its two- and three-word collocations. Treat a single common noun as a smell. `distinguishing-base-rate.test.ts` enforces this by measurement: no phrase may appear in more than **15%** of the specimen corpus unless it is allowlisted there with a reason. The bar is low because a phrase does not only feed the 0.5 routing threshold — it also counts toward `familyIsPresent`'s three-signal bar, which runs a family's entire rule pack as a secondary scan on a document that merely uses the word. That bar additionally requires at least one of the three signals to be a **collocation** (multi-word, or a hyphenated compound like `non-disturbance`) or a `required_clauses` hit — three bare nouns a whole domain shares (`borrower`, `lender`, `commitment`) are not evidence a document *is* your family. An **acronym** title keyword (`"co"`, `"cla"`, `"sig"`) is matched at a word boundary, so *company*, *clause* and *signature* do not trigger it, and it counts as only **one weak signal** toward secondary activation rather than as the document's name — because acronyms collide across families (*MSA* is both a Master Services and a Marital Settlement Agreement) and `"co"` matches the "Co." in any company name — but it still has to be a name the family is genuinely called, because one title-keyword hit is enough to run the whole pack as a secondary family. The same caution applies to `required_clauses`, which is worth _more_ (0.4) and matches a broad classifier category: `term`, `payment-terms`, and `confidentiality-obligation` are true of nearly every commercial document, so they are close to free score for whichever playbook lists them.
+Prefer the family's terms of art, its statutory and rule citations, and its two- and three-word collocations. Treat a single common noun as a smell. `distinguishing-base-rate.test.ts` enforces this by measurement: no phrase may appear in more than **15%** of the specimen corpus unless it is allowlisted there with a reason. The bar is low because a phrase does not only feed the 0.5 routing threshold — it also counts toward `familyIsPresent`'s three-signal bar, which runs a family's entire rule pack as a secondary scan on a document that merely uses the word. That bar additionally requires at least one of the three signals to be a **collocation** (multi-word, or a hyphenated compound like `non-disturbance`) or a `required_clauses` hit — three bare nouns a whole domain shares (`borrower`, `lender`, `commitment`) are not evidence a document _is_ your family. An **acronym** title keyword (`"co"`, `"cla"`, `"sig"`) is matched at a word boundary, so _company_, _clause_ and _signature_ do not trigger it, and it counts as only **one weak signal** toward secondary activation rather than as the document's name — because acronyms collide across families (_MSA_ is both a Master Services and a Marital Settlement Agreement) and `"co"` matches the "Co." in any company name — but it still has to be a name the family is genuinely called, because one title-keyword hit is enough to run the whole pack as a secondary family. The same caution applies to `required_clauses`, which is worth _more_ (0.4) and matches a broad classifier category: `term`, `payment-terms`, and `confidentiality-obligation` are true of nearly every commercial document, so they are close to free score for whichever playbook lists them.
 
 ### Is the document an agreement?
 
@@ -120,9 +120,24 @@ The profiles' membership is guarded by
 add the new id to the matching list there. The filing profile is asserted
 identical across every member, so a family cannot join it with 52 of the 53.
 
+## 2b. Where the file goes
+
+The 12 **launch** playbooks live at `playbooks/<id>.json` and are registered in
+`LAUNCH_PLAYBOOK_IDS`. Everything else lives under `src/playbooks/v3` … `v7` and
+is bundled into the served `playbooks/extended.json` by `npm run playbooks:bundle`
+— never edit the bundle, it is generated and `extended-playbooks.test.ts` fails
+on drift. The wave directories are reviewable units, so add to the one whose
+description your family fits, and add a new directory (plus its entry in
+[`EXTENDED_SOURCE_DIRS`](../tools/build-extended-playbooks.ts) and in the wave
+lists that sweep them, such as `v34-title-vacuity.test.ts`) rather than growing a
+closed wave. `v7` is the open one: families the **clean-document method** found
+missing, where a complete, well-drafted document of a type the catalog cannot
+name routes somewhere else and is judged by another family's rules.
+
 ## 3. Register
 
-Add the id to [`LAUNCH_PLAYBOOK_IDS`](../src/playbooks/registry.ts):
+Add the id to [`LAUNCH_PLAYBOOK_IDS`](../src/playbooks/registry.ts) — **launch
+playbooks only**; an extended family needs no registry entry:
 
 ```ts
 export const LAUNCH_PLAYBOOK_IDS = [

@@ -158,12 +158,13 @@ export const EXPECTED: Record<string, Expectation> = {
   "warehousing-3pl.txt": {
     playbook: "warehousing-3pl-agreement",
     findings: [
-      "RISK-015",
-      "RISK-016",
-      "STRUCT-018",
       "OBLI-005",
       "RISK-007",
       "RISK-010",
+      "RISK-015",
+      "RISK-016",
+      "STRUCT-018",
+      "TEMP-008",
       "TERM-001",
     ],
   },
@@ -275,13 +276,14 @@ export const EXPECTED: Record<string, Expectation> = {
   "sponsorship-agreement.txt": {
     playbook: "sponsorship-agreement",
     findings: [
-      "RISK-015",
-      "STRUCT-018",
       "IPDATA-005",
       "OBLI-005",
       "RISK-007",
       "RISK-010",
       "RISK-013",
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-008",
     ],
   },
   // An FTC-compliant influencer endorsement agreement. It routed to
@@ -295,7 +297,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // the brand to train and monitor.
   "influencer-agreement.txt": {
     playbook: "influencer-agreement",
-    findings: ["COMM-183", "RISK-015", "STRUCT-018", "OBLI-005", "RISK-007"],
+    findings: ["COMM-183", "OBLI-005", "RISK-007", "RISK-015", "STRUCT-018", "TEMP-008"],
   },
   // An OEM agreement — the OEM incorporates the components, it does not
   // resell them. It routed to `distribution-agreement` at 0.6 and drew five
@@ -310,7 +312,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // a response time but no support tiering.
   "oem-agreement.txt": {
     playbook: "oem-agreement",
-    findings: ["COMM-239", "STRUCT-018", "OBLI-002", "OBLI-005", "RISK-007"],
+    findings: ["COMM-239", "OBLI-002", "OBLI-005", "RISK-007", "STRUCT-018", "TEMP-008"],
   },
   // A cross-border joint development agreement. It routed to
   // `consulting-agreement` at 1.0, then to `mutual-nda`: the JDA family's own
@@ -324,13 +326,14 @@ export const EXPECTED: Record<string, Expectation> = {
   "joint-development.txt": {
     playbook: "joint-development-agreement",
     findings: [
-      "RISK-001",
-      "STRUCT-006",
-      "STRUCT-018",
       "CHOICE-006",
       "OBLI-005",
+      "RISK-001",
       "RISK-007",
+      "STRUCT-006",
+      "STRUCT-018",
       "TEMP-006",
+      "TEMP-008",
       "TERM-001",
       "TERM-007",
     ],
@@ -398,15 +401,16 @@ export const EXPECTED: Record<string, Expectation> = {
     // consultancy all call their customer the Client.
     findings: [
       "IPDATA-004",
-      "RISK-015",
-      "STRUCT-006",
       "OBLI-002",
       "OBLI-005",
       "PERS-002",
       "RISK-006",
       "RISK-007",
       "RISK-010",
+      "RISK-015",
+      "STRUCT-006",
       "TEMP-006",
+      "TEMP-008",
       "TERM-001",
     ],
   },
@@ -448,10 +452,6 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "COMM-025",
       "COMM-040",
-      "RISK-015",
-      "STRUCT-006",
-      "STRUCT-018",
-      "TERM-003",
       "OBLI-002",
       "OBLI-005",
       "OBLI-008",
@@ -459,7 +459,12 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-007",
       "RISK-010",
       "RISK-013",
+      "RISK-015",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-008",
       "TERM-001",
+      "TERM-003",
     ],
   },
   // A Delaware limited partnership agreement. RISK-015 and RISK-011 both
@@ -559,13 +564,14 @@ export const EXPECTED: Record<string, Expectation> = {
   "property-management.txt": {
     playbook: "property-management-agreement",
     findings: [
-      "RISK-015",
-      "RISK-016",
-      "TEMP-004",
       "OBLI-005",
       "RISK-010",
       "RISK-011",
+      "RISK-015",
+      "RISK-016",
+      "TEMP-004",
       "TEMP-006",
+      "TEMP-008",
       "TERM-001",
     ],
   },
@@ -627,7 +633,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // family's own minimal-PASS fixture.
   "copyright-license.txt": {
     playbook: "copyright-license",
-    findings: ["OBLI-002", "OBLI-005", "RISK-011", "TEMP-006"],
+    findings: ["OBLI-002", "OBLI-005", "RISK-011", "TEMP-006", "TEMP-008"],
   },
   // A university exclusive patent license, Bayh-Dole subject. It routed to
   // `eula` — an end-user licence for consumer software — and was told it
@@ -652,6 +658,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-010",
       "RISK-015",
       "STRUCT-018",
+      "TEMP-008",
       "TERM-001",
       "TERM-003",
     ],
@@ -818,12 +825,13 @@ export const EXPECTED: Record<string, Expectation> = {
   "payer-provider.txt": {
     playbook: "payer-provider-agreement",
     findings: [
+      "OBLI-005",
+      "RISK-010",
       "STRUCT-006",
       "STRUCT-018",
       "TEMP-004",
-      "OBLI-005",
-      "RISK-010",
       "TEMP-007",
+      "TEMP-008",
       "TERM-001",
       "TERM-007",
     ],
@@ -957,7 +965,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // six findings for the clauses that live in the form it incorporates.
   "advertising-insertion-order.txt": {
     playbook: "advertising-insertion-order",
-    findings: ["STRUCT-018"],
+    findings: ["STRUCT-018", "TEMP-008"],
   },
   // An irrevocable trust — the 194th specimen, and the first for
   // `irrevocable-trust`. EST-401..407 are all satisfied: the express
@@ -1319,15 +1327,16 @@ export const EXPECTED: Record<string, Expectation> = {
   "source-code-escrow.txt": {
     playbook: "source-code-escrow-agreement",
     findings: [
-      "RISK-015",
-      "STRUCT-018",
       "CHOICE-006",
       "IPDATA-003",
       "IPDATA-006",
       "OBLI-005",
       "RISK-011",
+      "RISK-015",
       "STRUCT-005",
+      "STRUCT-018",
       "TEMP-007",
+      "TEMP-008",
       "TERM-007",
     ],
   },
@@ -1368,7 +1377,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // A convertible promissory note behind a restrictive-securities legend.
   "convertible-note.txt": {
     playbook: "convertible-note",
-    findings: ["EQT-018", "OBLI-005", "STRUCT-006", "CHOICE-003"],
+    findings: ["CHOICE-003", "EQT-018", "OBLI-005", "STRUCT-006", "TEMP-008"],
   },
 
   // A law-firm engagement letter: no styled title, and the only thing above
@@ -1506,7 +1515,10 @@ export const EXPECTED: Record<string, Expectation> = {
   "will.txt": { playbook: "last-will-and-testament", findings: ["EST-060"] },
 
   // A confidential settlement agreement enforceable in a named federal court.
-  "settlement.txt": { playbook: "confidential-settlement", findings: ["SET-009", "OBLI-005"] },
+  "settlement.txt": {
+    playbook: "confidential-settlement",
+    findings: ["OBLI-005", "SET-009", "TEMP-008"],
+  },
 
   // A desktop EULA that recites FAR 12.212's quoted phrase.
   // An Article 30 record of processing activities: a REGISTER a controller
@@ -1836,7 +1848,7 @@ export const EXPECTED: Record<string, Expectation> = {
 
   "eula.txt": {
     playbook: "eula",
-    findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TERM-007"],
+    findings: ["ADDENDA-018", "IPDATA-010", "OBLI-005", "RISK-007", "TEMP-008", "TERM-007"],
   },
 
   // A Delaware LLC operating agreement: a governance instrument, not a
@@ -2022,7 +2034,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // services agreement does all four.
   "baa-subcontractor.txt": {
     playbook: "baa-subcontractor",
-    findings: ["OBLI-005", "OBLI-008", "TEMP-006", "TERM-007"],
+    findings: ["OBLI-005", "OBLI-008", "TEMP-006", "TEMP-008", "TERM-007"],
   },
 
   // A model CCPA service-provider addendum, the 241st specimen and the first
@@ -2065,7 +2077,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // drafted to SOP 50 10 should produce.
   "sba-loan-agreement.txt": {
     playbook: "sba-loan-agreement",
-    findings: ["OBLI-005"],
+    findings: ["OBLI-005", "TEMP-008"],
   },
 
   // A well-drafted private-target stock purchase agreement, the 239th specimen
@@ -2091,15 +2103,16 @@ export const EXPECTED: Record<string, Expectation> = {
   "stock-purchase-agreement.txt": {
     playbook: "stock-purchase-agreement",
     findings: [
-      "RISK-002",
-      "RISK-005",
-      "STRUCT-018",
       "OBLI-002",
       "OBLI-005",
       "PERS-002",
+      "RISK-002",
       "RISK-003",
+      "RISK-005",
+      "STRUCT-018",
       "TEMP-002",
       "TEMP-006",
+      "TEMP-008",
     ],
   },
 
@@ -2137,9 +2150,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // features, which is the direction the steal actually runs.
   //
   // OBLI-002 is right: only Contractor holds anything in confidence here.
+  //
+  // TERM-003 gained in 9.643.0 and is right too: § 9.2 gives the convenience
+  // right to Client alone. It had been suppressed because the for-cause
+  // sentence before it opens "Either party may terminate", and the mutual
+  // escape's window reached across the period into the NEXT sentence's "for
+  // convenience".
   "work-for-hire.txt": {
     playbook: "work-for-hire-agreement",
-    findings: ["OBLI-002", "OBLI-005"],
+    findings: ["OBLI-002", "OBLI-005", "TERM-003"],
   },
 
   // A founder restricted stock purchase agreement, the 236th specimen and the
@@ -3179,16 +3198,17 @@ export const EXPECTED: Record<string, Expectation> = {
   "trademark-license-food.txt": {
     playbook: "trademark-license",
     findings: [
-      "RISK-015",
-      "STRUCT-006",
-      "STRUCT-018",
       "CHOICE-003",
       "OBLI-005",
       "RISK-003",
       "RISK-006",
       "RISK-007",
       "RISK-011",
+      "RISK-015",
       "STRUCT-005",
+      "STRUCT-006",
+      "STRUCT-018",
+      "TEMP-008",
     ],
   },
 
@@ -3355,7 +3375,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // and "loan agreement" as negative features — the instruments every
   // security agreement names in its first recital as the obligations it
   // secures.
-  "security-agreement.txt": { playbook: "security-agreement", findings: ["OBLI-005"] },
+  "security-agreement.txt": { playbook: "security-agreement", findings: ["OBLI-005", "TEMP-008"] },
 
   // A Wisconsin premarital agreement. Its playbook listed "during the
   // marriage" as a negative feature, which is what a premarital agreement is
@@ -3437,14 +3457,15 @@ export const EXPECTED: Record<string, Expectation> = {
   "po-terms.txt": {
     playbook: "purchase-order-terms",
     findings: [
-      "RISK-004",
       "FIN-007",
       "OBLI-005",
       "OBLI-008",
+      "RISK-004",
       "RISK-007",
       "RISK-010",
       "RISK-013",
       "RISK-015",
+      "TEMP-008",
       "TEMP-012",
       "TERM-001",
     ],
@@ -3933,6 +3954,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-013",
       "STRUCT-009",
       "TEMP-006",
+      "TEMP-008",
       "TERM-001",
       "TERM-003",
       "TERM-006",
@@ -4900,7 +4922,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // exactly what the document already had.
   "transition-services-agreement.txt": {
     playbook: "transition-services-agreement",
-    findings: ["OBLI-005", "OBLI-008", "RISK-007", "STRUCT-009", "TEMP-007", "TERM-006"],
+    findings: [
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "STRUCT-009",
+      "TEMP-007",
+      "TEMP-008",
+      "TERM-006",
+    ],
   },
   // A COMPLETE, professionally-drafted enterprise SaaS subscription agreement,
   // authored by the clean-document method: every standard clause present, so
@@ -5141,6 +5171,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-013",
       "RISK-015",
       "STRUCT-018",
+      "TEMP-009",
       "TERM-001",
       "TERM-003",
     ],
@@ -5228,6 +5259,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-011",
       "STRUCT-018",
       "TEMP-007",
+      "TEMP-008",
     ],
   },
   // A COMPLETE exclusive distribution agreement — the tenth clean document
@@ -5278,7 +5310,68 @@ export const EXPECTED: Record<string, Expectation> = {
       "TEMP-004",
       "TEMP-005",
       "TEMP-006",
+      "TEMP-008",
       "TERM-001",
+    ],
+  },
+  // A COMPLETE enterprise software licence — the eleventh clean document
+  // (9.643.0): a perpetual object-code licence with server and named-user
+  // limits, affiliate use, a reverse-engineering restriction that yields to
+  // interoperability law, a self-certification-first audit clause,
+  // acceptance testing with a refund exit, support with severity targets and a
+  // termination remedy, a source-code escrow, an IP indemnity with a
+  // depreciating refund, a no-disabling-device warranty, a HIPAA business
+  // associate agreement, and a cap with carve-outs.
+  //
+  // TWO defects, one of them a whole class:
+  //
+  //  - 🥇 TEMP-008 reported a material-breach cure period of TWENTY days,
+  //    reading §3.3's "Licensor shall CORRECT THE FAILURE within twenty (20)
+  //    days" — an acceptance-testing correction window. "Cure" and "remedy"
+  //    presuppose a breach; "correct" is an ordinary word, and the file already
+  //    drew that line for "correct the invoice".
+  //  - 🥇 And the document's REAL cure clause — "materially breaches it and
+  //    FAILS TO CURE WITHIN THIRTY (30) DAYS" — matched neither branch of the
+  //    matcher, because the breach noun sits before the conjunction and the
+  //    count after the verb. **24 corpus specimens state their cure period that
+  //    way and had none read**, which also kept TEMP-009's unusual-length
+  //    judgment off every one of them.
+  //
+  // And a third defect, in the CATALOG rather than in a rule. The document had
+  // no family: a negotiated perpetual enterprise licence landed on
+  // `copyright-license` at 0.6 and was told about IPL-023 (attribution / moral
+  // rights) and IPL-024 (§ 203 termination of transfers) — an AUTHOR's
+  // concerns, correct for the family they belong to and irrelevant here. It
+  // was a 0.6 THREE-WAY TIE decided by the alphabet: `healthcare-poa` scored
+  // the same 0.6 on "principal", "agent" and "hipaa" (the vocabulary of every
+  // commercial contract that mentions an escrow agent and a BAA — those three
+  // are now anchored to health-care collocations), and `mutual-nda` after it.
+  // `eula` was the nearest thing the catalog had and it lost twice over: its
+  // title keyword is "software license agreement", which is NOT contained in
+  // "SOFTWARE LICENSE AND SUPPORT AGREEMENT", and it carries "protected health
+  // information" as a NEGATIVE feature — so a hospital's licence was penalized
+  // for the BAA a hospital's licence necessarily has. An EULA is a
+  // click-through consumer form under the Digital Content Directive; this is a
+  // bilateral bargain with escrow, acceptance testing and an SLA.
+  // `software-license-enterprise` is that family, and the title carries it
+  // outright.
+  "software-licence-complete.txt": {
+    playbook: "software-license-enterprise",
+    findings: [
+      "IPDATA-006",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "RISK-011",
+      "RISK-013",
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-004",
+      "TEMP-006",
+      "TEMP-008",
+      "TERM-003",
+      "TERM-007",
     ],
   },
   "enterprise-saas-subscription.txt": {

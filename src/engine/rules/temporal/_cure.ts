@@ -19,8 +19,17 @@ import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
  * and hyphen-joined in the adjacent form ("5-day"); `PERIOD_COUNT` reads all
  * three.
  */
+// "CORRECT" IS AN ORDINARY WORD AND "CURE" IS A TERM OF ART. The verbs share
+// this trigger, but not the noun list: "cure the failure" and "remedy the
+// failure" presuppose a breach, while "correct the failure" is what an
+// ACCEPTANCE-TESTING clause says about a failure to meet acceptance criteria —
+// "Licensor shall correct the failure within twenty (20) days and Licensee
+// shall retest". A complete software licence reported a material-breach cure
+// period of 20 days on that sentence, when its actual cure period is the 30
+// days in its termination clause. The file already drew this line for "correct
+// the invoice"; a test failure is the same shape one step further.
 const CURE_TRIGGER =
-  "(?:cure|remed(?:y|ies)|correct)\\s+(?:such\\s+|the\\s+|any\\s+|its\\s+)?(?:breach|default|failure|violation|non[-\\s]?performance)|opportunity\\s+to\\s+(?:cure|remedy|correct)|cure\\s+period";
+  "(?:cure|remed(?:y|ies))\\s+(?:such\\s+|the\\s+|any\\s+|its\\s+)?(?:breach|default|failure|violation|non[-\\s]?performance)|correct\\s+(?:such\\s+|the\\s+|any\\s+|its\\s+)?(?:breach|default|violation|non[-\\s]?performance)|opportunity\\s+to\\s+(?:cure|remedy|correct)|cure\\s+period";
 // The reversed (count-first) branch also accepts a bare "to cure / remedy /
 // correct" with no explicit breach noun — "shall have 90 days to cure" — which
 // the count-first drafting frequently leaves implicit.
@@ -32,14 +41,33 @@ const DAYS = `(${PERIOD_COUNT})[-\\s]days?`;
 // wide gap would let it grab an unrelated leading count, e.g. read "60 days
 // prior written notice and a 30-day cure period" as a 60-day cure period. A
 // short window keeps it locked onto the adjacent count (the real 30).
+/**
+ * 🥇 THE COMMONEST CURE CLAUSE IN ENGLISH PUTS THE BREACH IN THE OTHER CLAUSE.
+ *
+ * "Either party may terminate if the other materially breaches this Agreement
+ * and FAILS TO CURE WITHIN THIRTY (30) DAYS after written notice" — the breach
+ * noun sits before the conjunction, so the forward branch (which wants the noun
+ * after the cure verb) sees nothing, and the count comes after, so the
+ * count-first branch sees nothing either. **24 of 322 corpus specimens state a
+ * cure period this way and had none read**, which also kept TEMP-009's
+ * unusual-length judgment off every one of them.
+ *
+ * `[^.]` keeps the span inside the sentence, so the "within" belongs to the
+ * cure and not to a later clause.
+ */
+// The count carries a qualifier as often as not — "within ten (10) BUSINESS
+// days", "within thirty (30) CALENDAR days" — and 41 corpus specimens write a
+// deadline that way.
+const FAILS_TO_CURE = `(?:fail(?:s|ed|ing)?\\s+to|does\\s+not|do\\s+not)\\s+(?:cure|remedy|correct)\\b[^.]{0,40}?\\bwithin\\s+(${PERIOD_COUNT})[-\\s](?:business\\s+|calendar\\s+|working\\s+)?days?`;
+
 export const CURE_PERIOD = new RegExp(
-  `\\b(?:${CURE_TRIGGER})[\\s\\S]{0,80}?${DAYS}|${DAYS}\\b[\\s\\S]{0,20}?(?:${REVERSED_ANCHOR})`,
+  `\\b(?:${CURE_TRIGGER})[\\s\\S]{0,80}?${DAYS}|${DAYS}\\b[\\s\\S]{0,20}?(?:${REVERSED_ANCHOR})|${FAILS_TO_CURE}`,
   "i",
 );
 
 /** The cure-period length in days from a `CURE_PERIOD` match (either branch). */
 export function curePeriodDays(m: RegExpMatchArray): number {
-  return countValue(m[1] ?? m[2] ?? "");
+  return countValue(m[1] ?? m[2] ?? m[3] ?? "");
 }
 
 /**

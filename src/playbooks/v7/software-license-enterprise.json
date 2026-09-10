@@ -1,0 +1,73 @@
+{
+  "id": "software-license-enterprise",
+  "version": "1.0.0",
+  "name": "Enterprise Software License and Support Agreement",
+  "description": "Negotiated on-premises software license — a perpetual or term grant in object code, with maintenance and support, source-code escrow, an acceptance test, a software warranty and an IP indemnity. Distinct from `eula`, which lints a click-through end-user form under EU consumer law, and from `copyright-license`, which reads a § 106 grant of works. Carries no ruleset of its own; it selects the always-on commercial packs with the columns an enterprise license actually has.",
+  "match_features": {
+    "title_keywords": [
+      "software license and support agreement",
+      "software license and maintenance agreement",
+      "software license and services agreement",
+      "enterprise software license agreement",
+      "master software license agreement",
+      "software license and support"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "perpetual license",
+      "object-code",
+      "object code form",
+      "source-code escrow",
+      "source code escrow",
+      "license fee",
+      "supported versions",
+      "maintenance and support"
+    ],
+    "negative_features": [
+      "by clicking",
+      "end user license agreement",
+      "shrink-wrap"
+    ]
+  },
+  "expected_clauses": [
+    "license-grant",
+    "ip-ownership",
+    "fees-and-payment",
+    "warranty",
+    "indemnification-ip",
+    "cap-on-liability",
+    "confidentiality-obligation",
+    "term",
+    "termination-for-cause",
+    "survival",
+    "governing-law"
+  ],
+  "expected_defined_terms": [
+    "Software",
+    "Documentation",
+    "Licensee",
+    "Licensor"
+  ],
+  "rule_overrides": {},
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": [
+    "US"
+  ],
+  "companion_playbooks": [
+    "source-code-escrow-agreement",
+    "sow",
+    "baa"
+  ],
+  "compliance_matrix_columns": [
+    "License grant (scope, perpetuity, permitted users)",
+    "Delivery and acceptance",
+    "Maintenance and support commitments",
+    "Source-code escrow",
+    "Software warranty and remedy",
+    "IP indemnity and mitigation",
+    "Limitation of liability and its carve-outs",
+    "Effect of termination on a perpetual grant"
+  ]
+}

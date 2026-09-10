@@ -2,6 +2,85 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.643.0] — 2026-09-09
+
+### Fixed
+- 🥇 **The commonest cure clause in English put its breach in the other clause,
+  and the matcher could not read it.** "Either party may terminate if the other
+  materially breaches this Agreement and **fails to cure within thirty (30)
+  days** after written notice" — the breach noun sits before the conjunction, so
+  the forward branch (which wants the noun after the cure verb) saw nothing, and
+  the count comes after the verb, so the count-first branch saw nothing either.
+
+  **24 of 322 corpus specimens state their cure period this way and had none
+  read** — and because TEMP-009 shares this matcher, its unusual-length judgment
+  never reached any of them. Three more join once the count's qualifier is
+  admitted ("within ten (10) **business** days", which 41 specimens write).
+
+- **"Correct" is an ordinary word; "cure" is a term of art.** The same matcher
+  read §3.3 of a complete software licence — "Licensor shall **correct the
+  failure** within twenty (20) days and Licensee shall retest", an
+  acceptance-testing correction window — as a material-breach cure period, and
+  reported **20 days** for a document whose cure period is 30. The verbs share
+  the trigger but not the noun list now: "cure the failure" and "remedy the
+  failure" presuppose a breach, "correct the failure" does not. The file had
+  already drawn this line for "correct the invoice".
+
+  **27 specimens move**, every one of them gaining the cure period it states.
+
+- 🥇 **A termination article grants a mutual right for CAUSE and a one-sided
+  right for CONVENIENCE, and TERM-003's escape hatch read across the period
+  between them.** Its "either party may terminate … for convenience" test
+  allowed 160 characters of anything, including a full stop, so
+  *"Either party may terminate for material breach on ten (10) days' notice. …
+  Client may terminate for convenience …"* silenced the finding the second
+  sentence exists to draw. Two specimens.
+
+  The instructive part is how it was found: the same clause with the period
+  written `30 days` instead of `thirty (30) days` is seven characters shorter,
+  which is all it took to slip inside the window — so **one document was read
+  two ways depending on how it typed a number**, and the parenthetical-numeral
+  relation caught it. The escape may not cross a sentence now.
+
+- **"Principal", "agent" and "hipaa" are the vocabulary of every commercial
+  contract that mentions an escrow agent and a business associate agreement**,
+  and all three sat in `healthcare-poa`'s `distinguishing_phrases` — three hits,
+  the full 0.6, on an enterprise software licence. A health care POA's agent is
+  named *the health care agent*; the family's own collocations carry it now, and
+  the real specimen still routes on its title. `agent` leaves the
+  `distinguishing-base-rate` debt list.
+
+### Added
+- 🥇 **`software-license-enterprise` — the family the catalog could not name.**
+  A negotiated, perpetual, on-premises software licence had no home: it landed
+  on `copyright-license` at 0.6 in a **three-way tie decided by the alphabet**
+  (`healthcare-poa` above, then `mutual-nda`), and was told about IPL-023
+  (attribution / moral rights) and IPL-024 (§ 203 termination of transfers) —
+  an **author's** concerns, correct for their own family and irrelevant to a
+  licence of object code.
+
+  `eula` was the nearest thing in the catalog and it lost twice over: its title
+  keyword is "software license agreement", which is not contained in "SOFTWARE
+  LICENSE AND SUPPORT AGREEMENT", and it carries "protected health information"
+  as a **negative** feature — so a hospital's licence was penalized for the BAA
+  a hospital's licence necessarily has. An EULA is a click-through consumer form
+  read under the Digital Content Directive; this is a bilateral bargain with
+  acceptance testing, an SLA, source-code escrow and an IP indemnity. The new
+  family carries the columns an enterprise licence actually has and no ruleset
+  of its own.
+
+  It opens `src/playbooks/v7/` — families the clean-document method finds
+  missing. A family lands there when a complete, well-drafted document of a type
+  the catalog cannot name routes somewhere else and is judged by that family's
+  rules.
+
+- `tests/fixtures/specimens/software-licence-complete.txt` — the eleventh clean
+  document, and the 323rd specimen: a perpetual object-code licence with server
+  and named-user limits, a self-certification-first audit clause, acceptance
+  testing, support with severity targets, a source-code escrow, an IP indemnity
+  with a depreciating refund, a HIPAA business associate agreement, and a cap
+  with carve-outs.
+
 ## [9.642.0] — 2026-09-09
 
 ### Fixed

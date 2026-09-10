@@ -84,7 +84,13 @@ const KNOWN_BROAD = new Map<string, string>([
     "hold harmless",
     "the family's own name; high because many contracts carry the clause it detects",
   ],
-  ["agent", "the appointed decision-maker under a healthcare power of attorney IS the Agent"],
+  // "agent" was here, on the same reasoning as "principal" — and it was the
+  // reasoning that was wrong. A healthcare POA's Agent is named "the health
+  // care agent"; the bare noun is the escrow agent, the registered agent and
+  // the agent of every commercial party. With "hipaa" beside it, three words
+  // of ordinary commercial English put `healthcare-poa` at the full 0.6 on an
+  // enterprise software licence with a BAA (9.643.0). Retired in favor of the
+  // family's own collocations.
   // 🚨 Broad, and MEASURED AS LOAD-BEARING. Dropping it re-routes
   // `settlement-confidential-minimal` and
   // `settlement-confidential-missing-consideration-fail` to `mutual-release`

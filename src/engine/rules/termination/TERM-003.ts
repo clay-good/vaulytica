@@ -16,7 +16,7 @@ function countConvenienceGrantees(text: string): number {
 /** TERM-003 — Termination asymmetry (warning). */
 export const rule: Rule = {
   id: "TERM-003",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Termination asymmetry",
   category: "termination",
   default_severity: "warning",
@@ -32,9 +32,20 @@ export const rule: Rule = {
       ctx,
       /\b(?:Provider|Vendor|Customer|Company|Employer|Client|Licensee|Licensor|Subscriber|Supplier|Contractor)\s+may\s+terminate[\s\S]{0,160}\bfor\s+convenience\b/i,
     );
+    // The mutual escape may not cross a SENTENCE. A termination article
+    // routinely opens "Either party may terminate this Agreement if the other
+    // materially breaches it and fails to cure within thirty (30) days after
+    // written notice" and then grants ONE party a convenience right in the next
+    // sentence; at 160 characters across the period the escape swallowed both
+    // and reported a reciprocal right nobody granted. It is spelling-sensitive
+    // in the worst way — the same clause written "30 days" instead of "thirty
+    // (30) days" is seven characters shorter and slips inside the window, so
+    // the same document was read two ways depending on how it typed a number.
+    // A reciprocal convenience right is stated in ONE sentence.
+    // `\.(?=\d)` is the repo's idiom for a decimal point inside a figure.
     const mutual = firstParagraphMatch(
       ctx,
-      /\beither\s+party\s+may\s+terminate[\s\S]{0,160}\bfor\s+convenience\b/i,
+      /\beither\s+party\s+may\s+terminate(?:[^.]|\.(?=\d)){0,160}\bfor\s+convenience\b/i,
     );
     if (!oneSided || mutual) return null;
     // A reciprocal right is often granted as two symmetric sentences ("Company

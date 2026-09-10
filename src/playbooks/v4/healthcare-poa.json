@@ -13,25 +13,18 @@
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
-      "principal",
-      "agent",
-      "proxy",
+      "health care agent",
+      "healthcare agent",
+      "health care proxy",
       "medical decisions",
       "health care decisions",
-      "incapacity",
-      "hipaa"
+      "life-sustaining",
+      "hipaa authorization"
     ],
-    "negative_features": [
-      "this advance directive",
-      "durable poa financial",
-      "prenup"
-    ]
+    "negative_features": ["this advance directive", "durable poa financial", "prenup"]
   },
   "expected_clauses": [],
-  "expected_defined_terms": [
-    "Principal",
-    "Agent"
-  ],
+  "expected_defined_terms": ["Principal", "Agent"],
   "rule_overrides": {
     "CHOICE-001": {
       "skip": true
@@ -70,13 +63,8 @@
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "STATE-HEALTHCARE-POA",
-  "applicable_jurisdictions": [
-    "US"
-  ],
-  "companion_playbooks": [
-    "advance-directive",
-    "durable-poa-financial"
-  ],
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["advance-directive", "durable-poa-financial"],
   "compliance_matrix_columns": [
     "Principal + agent + successor",
     "Scope of authority",

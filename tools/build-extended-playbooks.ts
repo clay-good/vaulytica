@@ -36,6 +36,13 @@ export const EXTENDED_SOURCE_DIRS = [
   // (engagement letters, discovery, pleadings) rather than documents its
   // client is a party to.
   join(REPO_ROOT, "src", "playbooks", "v6"),
+  // The seventh wave — families the CLEAN-DOCUMENT method found missing. No
+  // spec wave of its own: a family lands here when a complete, well-drafted
+  // document of a type the catalog cannot name routes somewhere else and is
+  // judged by another family's rules. The first is
+  // `software-license-enterprise`, which a perpetual on-premises licence
+  // needed after landing on `copyright-license` in a three-way 0.6 tie.
+  join(REPO_ROOT, "src", "playbooks", "v7"),
 ];
 export const EXTENDED_MANIFEST_PATH = join(REPO_ROOT, "playbooks", "extended.json");
 

@@ -30,7 +30,7 @@ import {
 } from "../../src/engine/rules/v4/_helpers.js";
 
 const familyName = new Map<string, string>();
-for (const wave of ["v3", "v4", "v5", "v6"]) {
+for (const wave of ["v3", "v4", "v5", "v6", "v7"]) {
   const dir = join(process.cwd(), "src", "playbooks", wave);
   if (!existsSync(dir)) continue;
   const files = readdirSync(dir);

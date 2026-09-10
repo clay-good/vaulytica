@@ -1,0 +1,141 @@
+SOFTWARE LICENSE AND SUPPORT AGREEMENT
+
+THIS SOFTWARE LICENSE AND SUPPORT AGREEMENT (this "Agreement") is entered into as of February 10, 2026 (the "Effective Date") between Grantham Systems, Inc., a Delaware corporation with its principal place of business at 55 Ironwood Drive, Austin, Texas ("Licensor"), and Bellweather Regional Health System, a Michigan nonprofit corporation with its principal place of business at 1200 Cadwell Street, Ann Arbor, Michigan ("Licensee").
+
+1. Definitions.
+
+1.1 "Software" means Licensor's Meridian Scheduling Platform in object-code form, the versions and modules listed on Exhibit A, together with any Updates Licensor provides under Section 5.
+
+1.2 "Documentation" means the user and administrator manuals Licensor makes generally available for the Software, as updated from time to time by Licensor's publication of a revised manual.
+
+1.3 "Authorized Users" means Licensee's employees, contractors and medical staff who access the Software for Licensee's internal business purposes, up to the user count on Exhibit A.
+
+1.4 "Update" means a bug fix, patch, service pack or minor release Licensor makes generally available to supported customers at no additional charge. "Upgrade" means a new major release Licensor markets and licenses separately.
+
+1.5 "Licensee Data" means data Licensee or its Authorized Users enter into or generate through the Software, including protected health information as defined by HIPAA.
+
+2. License Grant.
+
+2.1 Grant. Licensor grants Licensee a perpetual, non-exclusive, non-transferable (except as Section 13.3 permits) license to install and use the Software in object-code form, on the number of servers and for the number of Authorized Users stated on Exhibit A, for Licensee's internal business purposes at the facilities listed on Exhibit B.
+
+2.2 Copies. Licensee may make a reasonable number of copies for backup, archival, disaster-recovery and non-production testing, provided each copy carries Licensor's proprietary notices. A disaster-recovery instance may be run in production only while the primary instance is unavailable.
+
+2.3 Affiliates. Licensee may permit its controlled affiliates to use the Software under this license, provided Licensee remains responsible for their compliance and the aggregate use stays within the limits on Exhibit A.
+
+2.4 Restrictions. Licensee shall not: sublicense, rent, lease, or provide the Software as a service bureau to third parties; reverse engineer, decompile or disassemble the Software, except to the extent that restriction is unenforceable under applicable law and then only after giving Licensor notice and a reasonable opportunity to provide the needed interoperability information; remove or obscure proprietary notices; or use the Software to develop a competing product.
+
+2.5 Reservation. Licensor reserves all rights not expressly granted. The Software is licensed, not sold, and Licensee acquires no ownership interest in it.
+
+2.6 Verification. Not more than once in any twelve-month period, on thirty (30) days' prior written notice and during normal business hours, Licensor may verify Licensee's deployment against the limits on Exhibit A, using a self-certification questionnaire in the first instance. Any on-site verification shall be conducted by an independent auditor bound by confidentiality, shall not unreasonably disrupt Licensee's operations, shall comply with Licensee's security and patient-privacy policies, and shall be at Licensor's expense unless it reveals under-licensing of more than five percent (5%), in which case Licensee shall pay the reasonable cost of the verification and license the excess at the then-current rates.
+
+3. Delivery, Installation and Acceptance.
+
+3.1 Delivery. Licensor shall deliver the Software electronically within ten (10) Business Days after the Effective Date.
+
+3.2 Installation. Licensor shall install and configure the Software in Licensee's environment and complete the interface work described on Exhibit C.
+
+3.3 Acceptance Testing. Licensee shall have thirty (30) days after Licensor notifies it that the installation is complete to test the Software against the acceptance criteria on Exhibit D. Licensee shall notify Licensor in writing of any failure to meet the criteria. Licensor shall correct the failure within twenty (20) days and Licensee shall retest. If the Software fails to meet the criteria after two correction cycles, Licensee may terminate this Agreement and Licensor shall refund all fees paid. The Software is deemed accepted if Licensee does not give notice within the testing period or places the Software into production use.
+
+4. Fees and Payment.
+
+4.1 License Fee. Licensee shall pay a one-time license fee of Four Hundred Eighty Thousand Dollars ($480,000), payable fifty percent (50%) on the Effective Date and fifty percent (50%) on acceptance under Section 3.3.
+
+4.2 Support Fee. Licensee shall pay an annual support fee of Ninety-Six Thousand Dollars ($96,000) for the first support year, payable on acceptance and annually in advance thereafter. Licensor may increase the support fee for any renewal year by no more than the lesser of five percent (5%) and the increase in the Consumer Price Index for All Urban Consumers over the preceding twelve months, on at least ninety (90) days' written notice before the renewal date.
+
+4.3 Professional Services. Services beyond those in Exhibit C are charged at the rates on Exhibit E, on a statement of work signed by both parties.
+
+4.4 Payment Terms. Licensee shall pay undisputed invoices within forty-five (45) days after receipt. Licensee may withhold a disputed amount if it gives written notice of the dispute within twenty (20) days after the invoice and pays all undisputed amounts. Overdue undisputed amounts bear interest at one percent (1%) per month or the maximum rate permitted by law, whichever is less.
+
+4.5 Taxes. Fees exclude sales, use and similar taxes, which are Licensee's responsibility, other than taxes on Licensor's net income. Licensee shall provide its exemption certificate where applicable.
+
+5. Support and Maintenance.
+
+5.1 Support Services. During each support year Licensor shall: provide telephone and email support during the hours on Exhibit F; respond and restore according to the severity levels and target times on Exhibit F; provide Updates at no additional charge, it being understood that an Upgrade is licensed separately; and maintain the Software so that it continues to perform in accordance with the Documentation.
+
+5.2 Severity and Remedies. If Licensor fails to meet the restoration target for a Severity 1 incident in three consecutive months, Licensee may terminate support on thirty (30) days' written notice and receive a pro-rata refund of the prepaid support fee for the remainder of the support year.
+
+5.3 Supported Versions. Licensor shall support the current release and the two immediately preceding major releases, and shall give at least twelve (12) months' written notice before ending support for a release.
+
+5.4 Excluded. Support does not cover problems caused by Licensee's modification of the Software, use contrary to the Documentation, or third-party products Licensor did not supply. Licensor shall notify Licensee before treating an issue as excluded, and shall provide reasonable assistance in diagnosing the cause.
+
+5.5 Renewal. Support renews for successive one-year terms unless either party gives sixty (60) days' written notice before the end of the then-current support year. Licensee may reinstate lapsed support by paying the fees that would have been due plus a reinstatement fee of ten percent (10%) of one year's support fee.
+
+6. Escrow. Licensor shall maintain a source-code escrow for the Software with a recognized escrow agent, deposit the current source code and build instructions within thirty (30) days after the Effective Date and after each major release, and name Licensee as a beneficiary at Licensor's expense. The escrow agreement shall release the deposit to Licensee if Licensor ceases to support the Software, becomes insolvent, or has a bankruptcy proceeding commenced against it that is not dismissed within sixty (60) days. On release, Licensee may use the source code solely to maintain and support the Software for its own internal use under the license in Section 2.
+
+7. Intellectual Property.
+
+7.1 Ownership. Licensor owns all right, title and interest in the Software, the Documentation and all intellectual property in them, including any modifications, enhancements or derivative works Licensor makes, whether or not suggested by Licensee.
+
+7.2 Feedback. Licensee may give Licensor suggestions about the Software. Licensor may use that feedback without obligation to Licensee, provided the feedback does not include Licensee Data or Licensee's confidential information.
+
+7.3 Licensee Data. As between the parties, Licensee owns all Licensee Data. Licensor may access Licensee Data only as necessary to provide support and shall not use it for any other purpose.
+
+7.4 IP Indemnity. Licensor shall defend Licensee against any third-party claim that the Software infringes a patent, copyright, trademark or trade secret, and shall indemnify Licensee for damages and reasonable attorneys' fees finally awarded or paid in settlement. If the Software is held to infringe, Licensor shall at its expense procure the right for Licensee to continue using it, replace or modify it to be non-infringing while materially conforming to the Documentation, or, if neither is commercially reasonable, refund the license fee depreciated on a straight-line basis over five (5) years. This indemnity does not apply to a claim arising from Licensee's modification of the Software, its use in combination with products Licensor did not supply where the claim would not have arisen otherwise, or its continued use of a version after Licensor provided a non-infringing replacement.
+
+8. Warranties.
+
+8.1 Software Warranty. Licensor warrants that for twelve (12) months after acceptance the Software will perform in all material respects in accordance with the Documentation. Licensee's remedy for a breach of this warranty is correction of the Software or, if Licensor cannot correct it within sixty (60) days, a refund of the license fee and termination of this Agreement.
+
+8.2 Malicious Code. Licensor warrants that the Software as delivered does not contain any virus, worm, trap door, back door, time bomb or disabling device, and that it will not disable the Software or deny Licensee access to it for any reason, including a fee dispute, except through the termination rights in Section 11.
+
+8.3 Non-Infringement. Licensor warrants that it has the right to grant the license in Section 2 and that the Software does not infringe the intellectual property rights of any third party.
+
+8.4 Mutual. Each party warrants that it is duly organized, has the authority to enter into this Agreement, and will comply with the laws applicable to its performance.
+
+8.5 Disclaimer. EXCEPT AS EXPRESSLY STATED IN THIS SECTION 8, LICENSOR MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, AND DISCLAIMS THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+9. Confidentiality and Data Protection.
+
+9.1 Confidentiality. Each party shall keep the other's non-public information confidential, use it only to perform this Agreement, and disclose it only to personnel and advisors who need it and are bound by equivalent obligations. These obligations continue for five (5) years after termination, and indefinitely for anything that is a trade secret. They do not apply to information that is public through no fault of the receiving party, was known to it without a duty of confidence, is received from a third party free to disclose it, or is independently developed without use of the disclosing party's information.
+
+9.2 HIPAA. The parties shall execute the business associate agreement attached as Exhibit G, which governs Licensor's handling of protected health information and is incorporated into this Agreement. If the business associate agreement conflicts with this Agreement as to protected health information, it prevails.
+
+9.3 Security. Licensor shall maintain administrative, physical and technical safeguards appropriate to the sensitivity of Licensee Data, including encryption in transit and at rest, role-based access control, and annual security awareness training for personnel with access to Licensee Data. Licensor shall notify Licensee without undue delay, and in any event within forty-eight (48) hours, after becoming aware of any unauthorized access to Licensee Data.
+
+10. Limitation of Liability. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS OR LOST DATA. EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO THE GREATER OF THE FEES PAID IN THE TWENTY-FOUR (24) MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM AND FIVE HUNDRED THOUSAND DOLLARS ($500,000). These limits do not apply to Licensor's indemnity under Section 7.4, either party's breach of Section 9, Licensor's breach of Section 8.2, Licensee's obligation to pay fees, or either party's gross negligence, willful misconduct or fraud.
+
+11. Term and Termination.
+
+11.1 Term. The license granted in Section 2 is perpetual. This Agreement continues until terminated as provided in this Section 11.
+
+11.2 Termination for Cause. Either party may terminate this Agreement if the other materially breaches it and fails to cure within thirty (30) days after written notice describing the breach. Licensee may terminate support for convenience at the end of any support year under Section 5.5.
+
+11.3 Effect of Termination. On termination for Licensee's uncured material breach of Section 2, the license ends and Licensee shall cease using the Software and, at Licensor's election, return or destroy all copies and certify that it has done so. On any other termination, the perpetual license in Section 2 survives and only support ends. In all cases Licensor shall return or destroy Licensee's confidential information and, on request, deliver Licensee Data in a commercially reasonable format within thirty (30) days.
+
+11.4 Survival. Sections 1, 2.4, 2.5, 7, 9, 10, 11.3, 11.4 and 13 survive the termination of this Agreement.
+
+12. Compliance. Each party shall comply with applicable law, including export control and sanctions laws and anti-corruption laws. Licensee shall not export the Software contrary to those laws.
+
+13. General.
+
+13.1 Governing Law. This Agreement is governed by the laws of the State of Michigan, without regard to its conflict-of-laws rules. The United Nations Convention on Contracts for the International Sale of Goods does not apply.
+
+13.2 Venue. The state and federal courts located in Washtenaw County, Michigan have exclusive jurisdiction over any dispute arising out of this Agreement, and each party consents to jurisdiction and venue there.
+
+13.3 Assignment. Neither party may assign this Agreement without the other's prior written consent, except that either may assign it in its entirety, on written notice, to a successor in a merger, reorganization or sale of all or substantially all of its assets, provided the successor is not a competitor of the other party. Any other attempted assignment is void.
+
+13.4 Notices. Notices must be in writing and are effective on delivery when sent by hand, nationally recognized overnight courier, or certified mail, return receipt requested, to the addresses stated above, attention General Counsel.
+
+13.5 Force Majeure. Neither party is liable for a delay or failure to perform, other than a payment obligation, caused by an event beyond its reasonable control, provided it gives prompt notice and uses commercially reasonable efforts to resume performance.
+
+13.6 Independent Contractors. The parties are independent contractors, and neither may bind the other.
+
+13.7 Entire Agreement; Amendment. This Agreement and its Exhibits are the entire agreement between the parties about its subject matter and supersede all prior understandings about it. It may be amended only by a writing signed by both parties, and no failure to enforce a provision is a waiver of it. Pre-printed terms on a purchase order have no effect.
+
+13.8 Severability. If a provision is held unenforceable, it shall be modified to the minimum extent necessary and the rest remains in effect.
+
+13.9 Counterparts. This Agreement may be signed in counterparts, including electronically, each of which is an original.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.
+
+GRANTHAM SYSTEMS, INC.
+
+By: /s/ Miriam Grantham
+Name: Miriam Grantham
+Title: Chief Executive Officer
+
+BELLWEATHER REGIONAL HEALTH SYSTEM
+
+By: /s/ Olusegun Adebayo
+Name: Olusegun Adebayo
+Title: Chief Information Officer
