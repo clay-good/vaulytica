@@ -56,6 +56,72 @@ describe("v3 role classifier", () => {
 });
 
 describe("v3 data-category extractor", () => {
+  /**
+   * 🚨 HIPAA's first identifier is the ordinary English word.
+   *
+   * `hipaa-names` was a bare `/\bnames?\b/i` while every sibling in the
+   * catalog requires a phrase that NAMES the category ("telephone numbers",
+   * "medical record numbers", "dates of birth"). It matched "shall **name**
+   * Licensor as an additional insured", the "**Name:**" line of every
+   * signature block, and "trade **name**": **235 of 327 specimens** were
+   * recorded as containing a HIPAA identifier, an office lease and a patent
+   * licence among them. Scoped in 9.675.0 to 18, every one a privacy or health
+   * document.
+   */
+  it("does not read an ordinary use of the word 'name' as a HIPAA identifier", () => {
+    for (const sentence of [
+      "Licensee shall name Licensor as an additional insured under the policy.",
+      "Name: Ruth Okonjo",
+      "The Products are sold under the trade name Halcyon.",
+      "Each party shall name a relationship manager within ten (10) days.",
+    ]) {
+      const cats = extractDataCategories(buildTree(["Clause", sentence]));
+      expect(
+        cats.map((c) => c.slug),
+        `"${sentence}" was read as containing a HIPAA identifier`,
+      ).not.toContain("hipaa-names");
+    }
+  });
+
+  it("reads the bare word inside a real category list", () => {
+    // The false-negative direction, and the one that matters most: an Annex I
+    // list writes the identifier bare, and refusing it would trade a false
+    // positive for a miss on the document type this extractor exists for.
+    for (const sentence of [
+      "Categories of Personal Data: name, business contact details, employee identification number.",
+      "Categories include names, telephone numbers and email addresses.",
+      "The data elements are name, address and date of birth.",
+      "Protected Health Information includes the patient's name and medical record number.",
+    ]) {
+      const cats = extractDataCategories(buildTree(["Annex I", sentence]));
+      expect(
+        cats.map((c) => c.slug),
+        `"${sentence}" is a category list and should record the identifier`,
+      ).toContain("hipaa-names");
+    }
+  });
+
+  it("reads a qualified name anywhere, without needing a list", () => {
+    for (const sentence of [
+      "The Provider collects the patient name at intake.",
+      "Please print your full name below.",
+      "We ask for the first name of the child.",
+    ]) {
+      const cats = extractDataCategories(buildTree(["Clause", sentence]));
+      expect(cats.map((c) => c.slug)).toContain("hipaa-names");
+    }
+  });
+
+  it("records the term itself, not the lead-in that qualified it", () => {
+    // `raw_text` and `position` stay on the term because the context is a
+    // paragraph-level precondition rather than part of the match.
+    const cats = extractDataCategories(
+      buildTree(["Annex I", "Categories of Personal Data: name, business contact details."]),
+    );
+    const hit = cats.find((c) => c.slug === "hipaa-names");
+    expect(hit?.raw_text).toBe("name");
+  });
+
   it("detects HIPAA identifiers", () => {
     const tree = buildTree([
       "PHI",

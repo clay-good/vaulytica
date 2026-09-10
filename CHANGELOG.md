@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.675.0] — 2026-09-10
+
+Found immediately after 9.674.0 made `extracted_v3` reachable — reading what
+the newly-wired extractors actually say.
+
+### Fixed
+- 🚨 **HIPAA's first identifier is the ordinary English word, and the detector
+  was a bare `/\bnames?\b/i`.** `hipaa-names` matched *"Licensee shall **name**
+  Licensor as an additional insured"*, the **`Name:`** line of every signature
+  block, and *"trade **name**"*. **235 of 327 specimens were recorded as
+  containing a HIPAA identifier** — an office lease and a patent licence among
+  them.
+
+  🥇 **Every other row in the same catalog already showed the answer**:
+  "telephone numbers", "fax numbers", "social security numbers", "medical
+  record numbers", "dates of birth". Each requires a phrase that NAMES the
+  category. This row was the sole outlier. *(Fourth time this session the fix
+  was already written next door.)*
+
+  🥇 **But the obvious repair would have traded a false positive for a worse
+  false negative.** A real Annex I list writes the identifier bare —
+  *"Categories of Personal Data: **name**, business contact details, employee
+  identification number"* — so requiring a qualifier would have missed the
+  document type this extractor exists for. Two rows now share the slug: the
+  **qualified** form ("patient name", "full name", "name of the individual")
+  anywhere, and the **bare** word only in a paragraph that is enumerating data
+  categories.
+
+  The context is a paragraph-level precondition rather than part of the match,
+  so `raw_text` and `position` stay on the term instead of stretching back over
+  the lead-in. **235 → 18 documents**, and the 18 are exactly the privacy and
+  health documents: the DPAs, the SCC modules, the ROPA, the UK IDTA, the PHI
+  authorization, the telehealth consent. Both directions pinned, including the
+  four Annex I phrasings and four ordinary uses of the word.
+
+The category was dormant until yesterday — nothing renders `data_categories` —
+which is precisely why it had drifted this far unnoticed. Wiring a layer up is
+also how you find out what it has been saying.
+
 ## [9.674.0] — 2026-09-10
 
 The half of 9.673.0's diagnosis that *was* engineering. The v3 report layer has

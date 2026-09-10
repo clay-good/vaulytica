@@ -16,12 +16,63 @@ type CategoryDef = {
   label: string;
   group: DataCategoryGroup;
   rx: RegExp;
+  /**
+   * A paragraph-level precondition. When present, `rx` decides WHERE the match
+   * is and this decides WHETHER the paragraph is talking about data categories
+   * at all — so `raw_text` and `position` stay on the term itself rather than
+   * stretching back over the lead-in.
+   *
+   * Only `hipaa-names` needs it, and the reason is that HIPAA's first
+   * identifier is the ordinary English word. See the entry below.
+   */
+  context?: RegExp;
 };
+
+/**
+ * A paragraph that is enumerating data categories.
+ *
+ * "Categories of Personal Data: name, business contact details, employee
+ * identification number" — a real Annex I list, with the word bare. Signature
+ * blocks ("Name: Ruth Okonjo") and ordinary covenants ("shall name Licensor as
+ * an additional insured") are not, and no lead-in precedes them.
+ */
+const DATA_CATEGORY_CONTEXT =
+  /categor(?:y|ies)\s+(?:of|include|includes|are|comprise|consist)\b|types?\s+of\s+(?:personal\s+)?data|data\s+elements?|(?:personal\s+data|protected\s+health\s+information|PHI)\s+(?:includes?|means|consists?\s+of|comprises?)|identifiers?\s+(?:include|includes|means)/i;
 
 /** Controlled vocabulary; longest-first ordering kept by hand. */
 export const CATEGORY_CATALOG: CategoryDef[] = [
   // HIPAA 18 identifiers (45 C.F.R. § 164.514(b)(2)).
-  { slug: "hipaa-names", label: "names", group: "hipaa-identifier", rx: /\bnames?\b/i },
+  // 🚨 HIPAA's first identifier is the ordinary English word "name", and this
+  // row used to be a bare `/\bnames?\b/i`. Every other row in this catalog
+  // requires a phrase that NAMES the category — "telephone numbers", "medical
+  // record numbers", "dates of birth" — and this one matched "shall **name**
+  // Licensor as an additional insured", the "**Name:**" line of every
+  // signature block, and "trade **name**". **235 of 327 specimens** were
+  // recorded as containing a HIPAA identifier, including an office lease and a
+  // patent licence.
+  //
+  // Two rows now, sharing a slug (the `seen` key is `slug|paragraph`, so a
+  // paragraph matching both records one category):
+  //
+  //   1. the QUALIFIED form, which names the category wherever it appears;
+  //   2. the BARE word, but only in a paragraph that is enumerating data
+  //      categories — because a real Annex I list writes it bare
+  //      ("Categories of Personal Data: name, business contact details, …")
+  //      and refusing that would trade a false positive for a false negative
+  //      on the one document type where this matters most.
+  {
+    slug: "hipaa-names",
+    label: "names",
+    group: "hipaa-identifier",
+    rx: /\b(?:patient|individual|employee|customer|member|data\s+subject|resident|consumer|full|first|last|given|family)\s+names?\b|\bnames?\s+of\s+(?:the\s+)?(?:individual|patient|data\s+subject|employee|consumer)s?\b/i,
+  },
+  {
+    slug: "hipaa-names",
+    label: "names",
+    group: "hipaa-identifier",
+    rx: /\bnames?\b/i,
+    context: DATA_CATEGORY_CONTEXT,
+  },
   {
     slug: "hipaa-geo-subdivisions",
     label: "geographic subdivisions smaller than state",
@@ -210,6 +261,7 @@ export function extractDataCategories(tree: DocumentTree): DataCategory[] {
   const out: DataCategory[] = [];
   forEachParagraph(tree, (ctx) => {
     for (const cat of CATEGORY_CATALOG) {
+      if (cat.context && !cat.context.test(ctx.text)) continue;
       const m = cat.rx.exec(ctx.text);
       if (m) {
         const key = `${cat.slug}|${ctx.paragraph.id}`;
