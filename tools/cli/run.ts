@@ -257,7 +257,7 @@ import { verifyReproducibilityFromFile, explainReproResult, type SavedReport } f
 import type { Severity } from "../../src/engine/index.js";
 import { extractAll } from "../../src/extract/index.js";
 import { buildJsonReport } from "../../src/report/json.js";
-import { buildSarifJson } from "../../src/report/sarif.js";
+import { buildSarif, sarifConformanceViolations } from "../../src/report/sarif.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import {
   buildFixListMarkdown,
@@ -1037,7 +1037,7 @@ async function renderFormat(
         r.related_documents.length > 0 ? r.related_documents : undefined,
         v9surfaces.secondaryFamiliesOmitted,
       ).text();
-    case "sarif":
+    case "sarif": {
       // The cross-document run rides in only when the caller asserted a bundle
       // (--consistency); each conflict lands in the SARIF of the document its
       // first excerpt names, so it appears exactly once across the set.
@@ -1047,7 +1047,20 @@ async function renderFormat(
       // the artifact the Action uploads, and it carried no state-law overlay at
       // all — a California non-compete annotated its findings and said nothing
       // about § 16600. Outside `run`, so `result_hash` is unchanged.
-      return buildSarifJson(
+      //
+      // 🥇 `sarifConformanceViolations` says in its own docstring that it is
+      // "exposed (not test-only) so a caller writing SARIF — e.g. the CLI —
+      // can self-check its output before handing it to a downstream tool". It
+      // had no caller anywhere: not the CLI it names, and it had never been run
+      // over the corpus. That matters here more than anywhere, because SARIF is
+      // the artifact the Action uploads by default and a malformed log does not
+      // fail loudly — GitHub Code Scanning drops the results and reports
+      // nothing, which reads as a clean scan.
+      //
+      // A warning, not a gate. The artifact still goes to stdout: a downstream
+      // tool refusing it is a better outcome than this tool deciding on the
+      // user's behalf that they get nothing.
+      const log = buildSarif(
         r.run,
         v9surfaces,
         currency,
@@ -1055,6 +1068,19 @@ async function renderFormat(
         consistency,
         extractAll(r.ingest.tree),
       );
+      const violations = sarifConformanceViolations(log);
+      if (violations.length > 0) {
+        process.stderr.write(
+          `vaulytica: warning: this SARIF log does not conform to the structural rules ` +
+            `GitHub Code Scanning enforces, and an uploader may silently drop its results:\n`,
+        );
+        for (const v of violations.slice(0, 10)) process.stderr.write(`  - ${v}\n`);
+        if (violations.length > 10) {
+          process.stderr.write(`  … and ${violations.length - 10} more\n`);
+        }
+      }
+      return JSON.stringify(log, null, 2);
+    }
     case "html":
       return buildHtmlReport(
         r.run,

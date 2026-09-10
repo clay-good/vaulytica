@@ -114,6 +114,16 @@ const headlessSource = readdirSync(join(ROOT, "tools", "cli"))
  */
 const DECLARED: ReadonlyMap<string, string> = new Map([
   [
+    "buildSarifJson",
+    // A one-line wrapper: `JSON.stringify(buildSarif(...), null, 2)`. The CLI
+    // deliberately calls `buildSarif` instead, because it needs the LOG OBJECT
+    // to run `sarifConformanceViolations` over it before writing — SARIF is
+    // the artifact the Action uploads and a malformed one is dropped silently
+    // by GitHub Code Scanning, so the self-check has to happen on the way out.
+    // The artifact itself is fully reachable: `--format sarif`.
+    "a stringify wrapper; the CLI calls buildSarif directly so it can self-check the log first",
+  ],
+  [
     "buildComparisonJson",
     "belongs to the compare command, which reaches it through runCompare's own renderer",
   ],

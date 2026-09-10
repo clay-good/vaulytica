@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.681.0] — 2026-09-10
+
+A checker with no caller has never checked anything but its own fixtures.
+
+### Fixed
+- 🥇 **`sarifConformanceViolations` had no caller — including the one its own
+  docstring names.** The function says it is *"exposed (not test-only) so a
+  caller writing SARIF — e.g. the CLI — can self-check its output before
+  handing it to a downstream tool"*. Nothing called it: not the CLI, not the
+  browser, and it had never been run over the corpus. It was well tested
+  against **four hand-built fixtures** and had "has teeth" tests for each rule
+  — and four fixtures cannot cover 1,825 rules × 327 documents.
+
+  🚨 **The failure mode is the quiet one.** SARIF is the artifact the Action
+  uploads by default, and a malformed log is not rejected loudly — **GitHub
+  Code Scanning drops the results and reports nothing**, which reads as a clean
+  scan.
+
+  The CLI self-checks now and names each violation on stderr. It is a
+  **warning, not a gate**: the artifact still goes to stdout, because a
+  downstream tool refusing it is a better outcome than this tool deciding on
+  the user's behalf that they get nothing.
+
+### Added
+- **`sarif-conformance-corpus.test.ts`** — every log the engine builds, over
+  every document it has. **Zero violations across all 327 specimens**, which is
+  the answer nobody had. ~28s, with anti-vacuity on both halves: a corpus that
+  vanished and a corpus whose logs carry no results would each pass with an
+  empty violation list while proving nothing. Broken on purpose against an
+  invalid `level`, which it names per result.
+
+  Same gap as the nine report artifacts with no headless caller and the
+  cross-document engine that ran only in the browser. **When a function's
+  docstring names its caller, check that the caller exists.**
+
 ## [9.680.0] — 2026-09-10
 
 Reading the pages 9.674.0 made visible. They read honestly — *"the following
