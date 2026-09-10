@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.684.0] — 2026-09-10
+
+The two 9.683.0 named as cheap because they carry checksums. They were.
+
+### Added
+- **IBAN and VIN detection.** These need no label, which is what separates them
+  from the licence, passport and record numbers added in the two releases
+  before: a bare pattern is safe precisely because **the value validates
+  itself**.
+
+  **IBAN** — ISO 13616 / ISO 7064 mod-97-10. Move the first four characters to
+  the end, map letters to two digits each, take mod 97; a valid IBAN gives 1.
+  Mandatory and universal, so a shaped run that passes is an IBAN. ⚠️ Computed
+  digit by digit rather than with a numeric conversion: an IBAN can be 34
+  characters, which becomes a 68-digit number, and `Number` loses precision
+  long before that.
+
+  **VIN** — the FMVSS 115 weighted mod-11 check digit at position 9, accepted
+  on its own at **high** confidence. ⚠️ **That check digit is North American.**
+  A European or Japanese VIN carries no valid one, so a *labelled* VIN is
+  accepted at **medium** without it — losing every vehicle not sold into the US
+  market would be the wrong trade for a scan whose job is to find what is
+  there. A 17-character contract reference that is neither checked nor labelled
+  is ignored, and that pair is pinned.
+
+  🥇 **Measured before either was written**: zero documents in the corpus carry
+  an IBAN-shaped or VIN-shaped run, so both are purely additive and corpus
+  findings are unchanged at 69 documents. The checksums were verified against
+  known-good values *and* against the same values with one digit changed.
+
+Still undetected, and still a real decision each: NPI, SWIFT/BIC, IP address. A
+bare NPI is ten digits with no context, and a dotted quad appears in version
+strings and URLs as readily as in an access log.
+
 ## [9.683.0] — 2026-09-10
 
 The positive control, continued. 9.682.0 planted four identifiers; this planted

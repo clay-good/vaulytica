@@ -127,6 +127,56 @@ export function itinStructurallyValid(area: string, group: string, serial: strin
   );
 }
 
+/**
+ * IBAN check, ISO 13616 / ISO 7064 mod-97-10.
+ *
+ * Move the first four characters to the end, map each letter to two digits
+ * (A=10 … Z=35), and take the whole thing mod 97; a valid IBAN gives 1. The
+ * checksum is mandatory and universal, which is what makes a bare pattern safe
+ * here where it would not be for a licence or passport number: an arbitrary
+ * alphanumeric run has a ~1% chance of passing, and it has to be
+ * IBAN-SHAPED first.
+ *
+ * Computed digit by digit rather than with BigInt: an IBAN can be 34
+ * characters, which becomes a 68-digit number, and `Number` loses precision
+ * long before that.
+ */
+export function ibanValid(value: string): boolean {
+  const compact = value.replace(/[\s-]/g, "").toUpperCase();
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(compact)) return false;
+  const rearranged = compact.slice(4) + compact.slice(0, 4);
+  let remainder = 0;
+  for (const ch of rearranged) {
+    const chunk = /\d/.test(ch) ? ch : String(ch.charCodeAt(0) - 55);
+    for (const d of chunk) remainder = (remainder * 10 + Number(d)) % 97;
+  }
+  return remainder === 1;
+}
+
+/**
+ * North American VIN check digit (FMVSS 115, 49 C.F.R. § 565.15).
+ *
+ * Position 9 is a weighted mod-11 check over the other sixteen characters.
+ * ⚠️ It is NOT universal — a European or Japanese VIN carries no valid check
+ * digit — so the caller must accept a labelled VIN as well, or lose every
+ * vehicle not sold into the US market.
+ */
+export function vinCheckDigitValid(value: string): boolean {
+  const v = value.toUpperCase();
+  if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(v)) return false;
+  const translit = "0123456789.ABCDEFGH..JKLMN.P.R..STUVWXYZ";
+  const weights = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2];
+  let sum = 0;
+  for (let i = 0; i < 17; i += 1) {
+    const idx = translit.indexOf(v[i]!);
+    if (idx < 0) return false;
+    sum += (idx % 10) * weights[i]!;
+  }
+  const check = sum % 11;
+  const expected = check === 10 ? "X" : String(check);
+  return v[8] === expected;
+}
+
 export function ssnStructurallyValid(area: string, group: string, serial: string): boolean {
   const a = Number(area);
   const g = Number(group);

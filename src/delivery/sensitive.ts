@@ -23,6 +23,8 @@ import {
   luhnValid,
   ssnStructurallyValid,
   itinStructurallyValid,
+  ibanValid,
+  vinCheckDigitValid,
 } from "./mask.js";
 
 /** Cap the scanned text — a 5 MB body is already an enormous document. */
@@ -143,6 +145,24 @@ const MEDICAL_RECORD =
 const HEALTH_PLAN =
   /\bhealth\s+plan\s+(?:beneficiary|member|subscriber)\s*(?:no\.?|number|#|id)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9-]{3,17}[A-Za-z0-9])\b/gi;
 
+/**
+ * The two identifiers that carry their own checksum.
+ *
+ * These need no label, which is what separates them from everything above: a
+ * bare pattern is safe precisely because the value validates itself. Measured
+ * over the corpus before writing either — **zero documents** carry an
+ * IBAN-shaped or VIN-shaped run, so both are purely additive.
+ *
+ * ⚠️ The VIN check digit is North American (FMVSS 115). A European or Japanese
+ * VIN carries no valid one, so a LABELLED VIN is accepted without it — losing
+ * every vehicle not sold into the US market would be the wrong trade for a
+ * scan whose job is to find what is there.
+ */
+const IBAN_SHAPE = /\b([A-Z]{2}\d{2}(?:[ -]?[A-Z0-9]{4}){2,7}(?:[ -]?[A-Z0-9]{1,3})?)\b/g;
+const VIN_SHAPE = /\b([A-HJ-NPR-Z0-9]{17})\b/g;
+const VIN_LABELLED =
+  /\b(?:VIN|vehicle\s+identification\s+(?:no\.?|number))\s*[:#]?\s*([A-HJ-NPR-Z0-9]{17})\b/gi;
+
 const PASSPORT = /\bpassports?\s*(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9]{6,9})\b/gi;
 
 const EMAIL = /\b[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\.[A-Za-z]{2,24}\b/g;
@@ -241,6 +261,17 @@ export function scanSensitive(text: string): SensitiveFact[] {
   // (the SSA never issues 900+) — so it fell through the SSN detector by
   // design and through everything else by omission. It is what a non-resident
   // or undocumented worker has INSTEAD of an SSN.
+  while ((m = IBAN_SHAPE.exec(body)) !== null) {
+    if (ibanValid(m[1]!)) push("iban", "high", maskAlphanumeric(m[1]!, 4), m[1]!);
+  }
+  // Checksum first, then the label — a US VIN validates itself; a foreign one
+  // needs the document to say what it is.
+  while ((m = VIN_SHAPE.exec(body)) !== null) {
+    if (vinCheckDigitValid(m[1]!)) push("vin", "high", maskAlphanumeric(m[1]!, 4), m[1]!);
+  }
+  while ((m = VIN_LABELLED.exec(body)) !== null) {
+    push("vin", "medium", maskAlphanumeric(m[1]!, 4), m[1]!);
+  }
   ITIN.lastIndex = 0;
   while ((m = ITIN.exec(body)) !== null) {
     if (itinStructurallyValid(m[1]!, m[2]!, m[3]!)) {

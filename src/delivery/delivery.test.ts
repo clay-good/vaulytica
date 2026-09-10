@@ -1028,3 +1028,54 @@ describe("scanSensitive — the remaining statutory identifiers", () => {
     expect(masked).toMatch(/119$/);
   });
 });
+
+/**
+ * The two identifiers that carry their own checksum.
+ *
+ * These need no label, which is what separates them from the licence, passport
+ * and record numbers: a bare pattern is safe precisely because the value
+ * validates itself. Measured over the corpus before either was written — zero
+ * documents carry an IBAN-shaped or VIN-shaped run, so both are additive.
+ */
+describe("scanSensitive — checksummed identifiers", () => {
+  const facts = (text: string) => scanSensitive(text);
+  const types = (text: string): string[] => facts(text).map((f) => f.type);
+
+  it("detects an IBAN in both the spaced and compact forms", () => {
+    expect(types("Payment to IBAN GB29 NWBK 6016 1331 9268 19.")).toContain("iban");
+    expect(types("Remit to DE89370400440532013000 before the due date.")).toContain("iban");
+  });
+
+  it("rejects an IBAN-shaped run whose mod-97 check fails", () => {
+    // The positive half first: the same string with its real check digits is
+    // found, so this cannot pass on a scanner returning nothing.
+    expect(types("Payment to IBAN GB29 NWBK 6016 1331 9268 19.")).toContain("iban");
+    expect(types("Reference GB29 NWBK 6016 1331 9268 18 is void.")).not.toContain("iban");
+  });
+
+  it("detects a US VIN from its check digit alone, at high confidence", () => {
+    const [f] = facts("Vehicle 1HGCM82633A004352 was delivered.");
+    expect(f?.type).toBe("vin");
+    expect(f?.confidence).toBe("high");
+  });
+
+  it("accepts a FOREIGN VIN when the document labels it", () => {
+    // ⚠️ The check digit is North American (FMVSS 115). A European VIN carries
+    // no valid one, and losing every vehicle not sold into the US market would
+    // be the wrong trade for a scan whose job is to find what is there.
+    const [f] = facts("Vehicle Identification Number WVWZZZ1JZXW000010.");
+    expect(f?.type).toBe("vin");
+    expect(f?.confidence).toBe("medium");
+  });
+
+  it("ignores a 17-character reference that is neither checked nor labelled", () => {
+    expect(types("Vehicle 1HGCM82633A004352 was delivered.")).toContain("vin");
+    expect(types("Contract reference ABCDEFGH12345678Z applies.")).not.toContain("vin");
+  });
+
+  it("reveals only a suffix, for both", () => {
+    expect(facts("Remit to DE89370400440532013000 today.")[0]?.masked).toMatch(/3000$/);
+    expect(facts("Vehicle 1HGCM82633A004352 was delivered.")[0]?.masked).toMatch(/4352$/);
+    expect(facts("Vehicle 1HGCM82633A004352 was delivered.")[0]?.masked).not.toContain("1HG");
+  });
+});
