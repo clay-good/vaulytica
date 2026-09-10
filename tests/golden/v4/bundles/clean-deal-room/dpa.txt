@@ -1,0 +1,41 @@
+DATA PROCESSING ADDENDUM
+
+THIS DATA PROCESSING ADDENDUM (this "DPA") is entered into as of January 15, 2026 between Bellhaven Analytics, Inc., a Delaware corporation ("Provider"), and Quarrymill Foods, LLC, a Delaware limited liability company ("Customer"). This DPA forms part of, and is subject to, the Master Services Agreement between the parties dated January 15, 2026 (the "Agreement"). Capitalized terms used and not defined in this DPA have the meanings given in the Agreement.
+
+1. Roles. Customer is the controller and Provider is the processor of the personal data contained in Customer Data. Provider processes that personal data only on Customer's documented instructions, including as to transfers, unless law to which Provider is subject requires otherwise, in which case Provider shall inform Customer before processing unless that law forbids it.
+
+2. Subject Matter and Duration. The subject matter of the processing is the provision of the Services. It lasts for the term of the Agreement and any period in which Provider retains Customer Data under Section 9. The nature and purpose of the processing, the types of personal data and the categories of data subjects are described in Annex 1.
+
+3. Confidentiality. Provider shall ensure that persons authorized to process the personal data are bound by a duty of confidentiality. This obligation continues for five (5) years after termination, and indefinitely for anything that is a trade secret, matching Section 6 of the Agreement.
+
+4. Security. Provider shall implement appropriate technical and organizational measures, described in Annex 2, including encryption of personal data in transit and at rest, access control on the principle of least privilege, logging, annual penetration testing, and an annual review of the measures.
+
+5. Subprocessors. Customer gives general authorization for Provider to engage subprocessors. Provider shall maintain a list of subprocessors, shall give Customer thirty (30) days' notice before adding or replacing one, and Customer may object on reasonable data-protection grounds within that period, in which case the parties shall work in good faith to find an alternative and Customer may terminate the affected Services if none is found. Provider shall impose on each subprocessor data-protection obligations no less protective than those in this DPA and remains liable for its subprocessors' performance.
+
+6. Data Subject Requests. Provider shall, taking into account the nature of the processing, assist Customer by appropriate technical and organizational measures in responding to requests to exercise data subject rights, and shall forward a request it receives directly to Customer without undue delay and shall not respond to it itself except on Customer's instruction.
+
+7. Assistance. Provider shall assist Customer in ensuring compliance with the obligations of security, breach notification, data protection impact assessment and prior consultation, taking into account the nature of the processing and the information available to Provider.
+
+8. Personal Data Breach. Provider shall notify Customer without undue delay and in any event within forty-eight (48) hours after becoming aware of a personal data breach affecting Customer Data, and shall provide the information Customer reasonably requires to meet its own notification obligations.
+
+9. Return or Deletion. On termination of the Agreement, Provider shall, at Customer's election, return Customer Data to Customer or delete it, and delete existing copies, within thirty (30) days, unless law requires it to retain the data, in which case Provider shall inform Customer of the requirement and continue to protect the retained data under this DPA.
+
+10. Audit. Provider shall make available to Customer the information necessary to demonstrate compliance with this DPA and shall allow for and contribute to audits, including inspections, conducted by Customer or an auditor it mandates, on thirty (30) days' notice and not more than once per year except after a personal data breach. Provider may satisfy this obligation in the first instance by providing its current SOC 2 Type II report.
+
+11. Transfers. Provider shall not transfer personal data to a country outside the United Kingdom or the European Economic Area without a valid transfer mechanism. Where the Standard Contractual Clauses apply, Module Two (controller to processor) is incorporated by reference, with Customer as data exporter and Provider as data importer, and the parties complete the annexes with the information in Annex 1 and Annex 2.
+
+12. Liability and Precedence. Each party's liability under this DPA is subject to Section 9 of the Agreement. In the event of a conflict between this DPA and the Agreement, this DPA controls as to the processing of personal data, as Section 3 of the Agreement provides.
+
+13. Governing Law. This DPA is governed by the laws of the State of Delaware, excluding its conflict-of-laws rules, and the courts located in New Castle County, Delaware have exclusive jurisdiction, as Sections 11.1 and 11.2 of the Agreement provide.
+
+BELLHAVEN ANALYTICS, INC.
+
+By: /s/ Marisol Bellhaven-Ntuli
+Name: Marisol Bellhaven-Ntuli
+Title: Chief Executive Officer
+
+QUARRYMILL FOODS, LLC
+
+By: /s/ Aloysius Quarrymill
+Name: Aloysius Quarrymill
+Title: Manager

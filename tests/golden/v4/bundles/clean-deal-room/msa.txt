@@ -1,0 +1,75 @@
+MASTER SERVICES AGREEMENT
+
+THIS MASTER SERVICES AGREEMENT (this "Agreement") is entered into as of January 15, 2026 (the "Effective Date") between Bellhaven Analytics, Inc., a Delaware corporation with its principal place of business at 210 Kestrel Way, Wilmington, Delaware ("Provider"), and Quarrymill Foods, LLC, a Delaware limited liability company with its principal place of business at 4501 Tannery Road, Wilmington, Delaware ("Customer").
+
+1. Definitions.
+
+1.1 "Services" means the professional services Provider performs under a Statement of Work.
+
+1.2 "Statement of Work" or "SOW" means a document signed by both parties that describes Services, deliverables, fees and a schedule, and that incorporates this Agreement by reference.
+
+1.3 "Deliverables" means the work product Provider delivers to Customer under a Statement of Work.
+
+1.4 "Customer Data" means data Customer or its users provide to Provider, or that Provider generates for Customer, in performing the Services.
+
+1.5 "Confidential Information" means non-public information one party discloses to the other in connection with this Agreement, including Customer Data, the Deliverables, pricing, and the terms of this Agreement.
+
+1.6 "DPA" means the Data Processing Addendum between the parties dated January 15, 2026.
+
+2. Services. Provider shall perform the Services described in each Statement of Work with the care and skill of a competent professional in its field, and in accordance with the schedule stated in that Statement of Work.
+
+3. Order of Precedence. If there is a conflict between documents, the following order controls: first the DPA, then this Agreement, then a Statement of Work, then an Order Form. A Statement of Work may vary this Agreement only where it says expressly that it does so and identifies the section it varies.
+
+4. Fees and Payment. Fees are stated in each Statement of Work and are quoted and payable in United States dollars. Customer shall pay undisputed invoices within thirty (30) days after receipt. Customer may withhold a disputed amount if it gives written notice of the dispute within ten (10) days after the invoice and pays all undisputed amounts. Overdue undisputed amounts bear interest at one percent (1%) per month or the maximum rate permitted by law, whichever is less.
+
+5. Intellectual Property. Customer owns the Deliverables on payment in full. Provider retains ownership of its pre-existing materials, tools and know-how, and grants Customer a non-exclusive, perpetual, worldwide licence to use those materials as incorporated in the Deliverables. Customer owns Customer Data.
+
+6. Confidentiality. Each party shall keep the other's Confidential Information confidential, use it only to perform this Agreement, and disclose it only to personnel and advisors who need it and are bound by equivalent obligations. These obligations continue for five (5) years after termination, and indefinitely for anything that is a trade secret. They do not apply to information that is public through no fault of the receiving party, was known to it without a duty of confidence, is received from a third party free to disclose it, or is independently developed without use of the disclosing party's information.
+
+7. Data Protection. Provider processes Customer Data as Customer's processor, on Customer's documented instructions, under the DPA. The DPA forms part of this Agreement.
+
+8. Indemnification. Provider shall defend Customer against a third-party claim that a Deliverable infringes a patent, copyright, trademark or trade secret, and shall indemnify Customer for damages and reasonable attorneys' fees finally awarded or paid in settlement. Customer shall defend Provider against a third-party claim arising from Customer Data or from Customer's instructions, and shall indemnify Provider on the same basis. The indemnified party shall notify the indemnifying party promptly, give it control of the defense, and cooperate at the indemnifying party's expense.
+
+9. Limitation of Liability.
+
+9.1 Exclusion. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS.
+
+9.2 Cap. EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO THE FEES PAID AND PAYABLE UNDER THE APPLICABLE STATEMENT OF WORK IN THE TWELVE (12) MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM. These limits do not apply to a party's indemnity obligations under Section 8, to either party's breach of Section 6, to Customer's obligation to pay fees, or to either party's gross negligence, willful misconduct or fraud.
+
+10. Term and Termination.
+
+10.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, and renews for successive one-year terms unless either party gives sixty (60) days' written notice before the end of the then-current term.
+
+10.2 Termination for Cause. Either party may terminate this Agreement or any Statement of Work if the other materially breaches it and fails to cure within thirty (30) days after written notice describing the breach.
+
+10.3 Termination for Convenience. Customer may terminate any Statement of Work for convenience on thirty (30) days' written notice, and shall pay for Services performed and non-cancelable commitments incurred before the effective date of termination.
+
+10.4 Effect of Termination. On termination, Provider shall deliver the Deliverables in progress and return or destroy Customer's Confidential Information, and shall return or delete Customer Data in accordance with the DPA.
+
+10.5 Survival. Sections 1, 4, 5, 6, 8, 9, 10.4, 10.5 and 11 survive expiration or termination of this Agreement.
+
+11. General.
+
+11.1 Governing Law. This Agreement is governed by the laws of the State of Delaware, excluding its conflict-of-laws rules.
+
+11.2 Venue. The state and federal courts located in New Castle County, Delaware have exclusive jurisdiction over any dispute arising out of this Agreement, and each party consents to personal jurisdiction and venue there.
+
+11.3 Notices. Notices must be in writing and are effective on delivery when sent by hand, by nationally recognized overnight courier, or by certified mail to the addresses in the preamble.
+
+11.4 Assignment. Neither party may assign this Agreement without the other's written consent, except to a successor to all or substantially all of its business, on written notice.
+
+11.5 Independent Contractors. The parties are independent contractors. Nothing in this Agreement creates a partnership, joint venture, agency or employment relationship.
+
+11.6 Entire Agreement. This Agreement, with the DPA and each Statement of Work, is the entire agreement between the parties about its subject matter and supersedes all prior agreements about it. It may be amended only by a writing signed by both parties.
+
+BELLHAVEN ANALYTICS, INC.
+
+By: /s/ Marisol Bellhaven-Ntuli
+Name: Marisol Bellhaven-Ntuli
+Title: Chief Executive Officer
+
+QUARRYMILL FOODS, LLC
+
+By: /s/ Aloysius Quarrymill
+Name: Aloysius Quarrymill
+Title: Manager

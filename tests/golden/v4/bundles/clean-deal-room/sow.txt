@@ -1,0 +1,37 @@
+STATEMENT OF WORK NO. 1
+
+THIS STATEMENT OF WORK NO. 1 (this "SOW") is entered into as of February 1, 2026 between Bellhaven Analytics, Inc., a Delaware corporation ("Provider"), and Quarrymill Foods, LLC, a Delaware limited liability company ("Customer"), under and subject to the Master Services Agreement between the parties dated January 15, 2026 (the "Agreement"). Capitalized terms used and not defined in this SOW have the meanings given in the Agreement.
+
+1. Services. Provider shall build a demand-forecasting model for Customer's regional distribution network, comprising: data ingestion from Customer's warehouse management system; a baseline forecast at the SKU-week level; a reconciliation report against Customer's current planning process; and a handover workshop for Customer's planning team.
+
+2. Deliverables. Provider shall deliver the model code and its documentation, the reconciliation report, and the workshop materials. Each is a Deliverable under Section 1.3 of the Agreement, and Customer owns it on payment in full under Section 5 of the Agreement.
+
+3. Schedule. Work begins on February 9, 2026. The baseline forecast is due April 10, 2026, the reconciliation report May 8, 2026, and the handover workshop by May 29, 2026.
+
+4. Acceptance. Customer shall review each Deliverable within ten (10) business days after delivery and shall accept it or state in writing what does not conform to this SOW. Provider shall correct a stated nonconformity within ten (10) business days and resubmit. A Deliverable Customer does not reject within the review period is accepted.
+
+5. Fees. Fees for the Services are $284,000, quoted and payable in United States dollars, invoiced as follows: $85,200 on the start of work, $113,600 on acceptance of the baseline forecast, and $85,200 on acceptance of the reconciliation report. Payment terms are those in Section 4 of the Agreement.
+
+6. Expenses. Customer shall reimburse pre-approved travel expenses at cost, without markup, supported by receipts.
+
+7. Customer Data. Customer shall provide the historical order and inventory extracts described in Appendix 1 by February 9, 2026. Provider processes Customer Data under the Data Processing Addendum between the parties dated January 15, 2026.
+
+8. Personnel. Provider shall staff the engagement with the named team in Appendix 2 and shall not replace a named person without Customer's consent, not to be unreasonably withheld.
+
+9. Change Control. A change to the Services, the Deliverables, the schedule or the fees takes effect only when both parties sign a written change order referencing this SOW.
+
+10. Term. This SOW begins on February 1, 2026 and continues until the Services are complete or the SOW is terminated under Section 10 of the Agreement.
+
+11. Incorporation. This SOW incorporates the Agreement by reference and does not vary it. In the event of a conflict, the order of precedence in Section 3 of the Agreement controls.
+
+BELLHAVEN ANALYTICS, INC.
+
+By: /s/ Marisol Bellhaven-Ntuli
+Name: Marisol Bellhaven-Ntuli
+Title: Chief Executive Officer
+
+QUARRYMILL FOODS, LLC
+
+By: /s/ Aloysius Quarrymill
+Name: Aloysius Quarrymill
+Title: Manager

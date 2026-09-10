@@ -342,6 +342,29 @@ describe("CROSS-DATE-001", () => {
     expect(run.findings[0]!.title).toMatch(/chronology impossible/);
   });
 
+  // A MASTER agreement ANTICIPATES its subordinate instruments; every SOW under
+  // it is dated after it, and that is the whole point of a master agreement.
+  it("does not fire when the master only ANTICIPATES the later instrument", async () => {
+    const msa = makeDoc("msa", "msa-general", [
+      "Agreement",
+      "This Master Services Agreement is effective as of January 15, 2026. Provider shall " +
+        "perform the Services described in each Statement of Work, in accordance with the " +
+        "schedule stated in that Statement of Work. Customer may terminate any Statement of " +
+        "Work for convenience on thirty (30) days' notice.",
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Statement of Work",
+      "This Statement of Work is effective as of February 1, 2026 under the Master Services " +
+        "Agreement dated January 15, 2026.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_DATE_001],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings).toHaveLength(0);
+  });
+
   it("does not fire when the chronology is sane", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Agreement",

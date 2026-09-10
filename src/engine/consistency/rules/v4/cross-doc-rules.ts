@@ -231,8 +231,7 @@ export const CROSS_DATE_001: ConsistencyRule = {
         // Does A reference B explicitly?
         const aText = fullText(a);
         const bKindLabel = kindLabel(kindOf(b));
-        const refersToB = bKindLabel ? new RegExp(`\\b${bKindLabel}\\b`, "i").test(aText) : false;
-        if (!refersToB) continue;
+        if (!bKindLabel || !referencesDefinitely(aText, bKindLabel)) continue;
         out.push(
           makeConsistencyFinding({
             rule: CROSS_DATE_001,
@@ -822,6 +821,43 @@ function canonicalLaw(raw: string): string {
     )
     .replace(/[^a-z]+/g, " ")
     .trim();
+}
+
+/**
+ * A MASTER agreement ANTICIPATES its subordinate instruments; it does not
+ * cross-reference them.
+ *
+ * "Provider shall perform the Services described in EACH Statement of Work",
+ * "in accordance with the schedule stated in THAT Statement of Work" (a
+ * demonstrative points back at the generic mention before it),
+ * "Customer may terminate ANY Statement of Work for convenience", "the fees
+ * paid under THE APPLICABLE Statement of Work" — every one of those is a
+ * master agreement describing a class of documents that will be signed later,
+ * which is the whole point of a master agreement, and every SOW under it is
+ * dated after it. A bare mention of the kind label reported that normal,
+ * correct arrangement as a chronology paradox. The same is true of an MSA that
+ * anticipates a data processing addendum signed weeks later.
+ *
+ * A genuine stale or back-dated cross-reference points at ONE instrument
+ * definitely — "the Business Associate Agreement attached as Schedule B, which
+ * the parties acknowledge is effective as of June 1, 2026". So at least one
+ * mention must be definite: not preceded by an anticipatory determiner, and not
+ * the document's own DEFINITION of the term (which opens on a quotation mark).
+ */
+function referencesDefinitely(text: string, label: string): boolean {
+  const ANTICIPATORY =
+    /\b(?:each|any|a|an|every|all|such|no|other|another|applicable|relevant|respective|individual|separate|that|this|those|these)\s+(?:\w+\s+){0,2}$/i;
+  const re = new RegExp(`\\b${label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "gi");
+  for (const m of text.matchAll(re)) {
+    const before = text.slice(Math.max(0, m.index - 40), m.index);
+    if (ANTICIPATORY.test(before)) continue;
+    // Both curly forms, in both directions: a Word document's quotation marks
+    // are U+2018/U+2019 and U+201C/U+201D, and a definition list is exactly
+    // where they appear.
+    if (/["“”‘’']\s*$/.test(before)) continue;
+    return true;
+  }
+  return false;
 }
 
 function kindLabel(kind: DocKind): string | null {

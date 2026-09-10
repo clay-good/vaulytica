@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.648.0] — 2026-09-09
+
+### Added
+- 🥇 **The clean-document method, applied to the CROSS-DOCUMENT engine.**
+  Fifteen complete single documents have been authored against the per-document
+  rules and each one paid; the cross-document engine had never been given the
+  same test. Its bundles are one-defect fixtures — two documents of a dozen
+  lines, built so exactly one CROSS-* rule fires — and the only "clean" one is
+  twenty-four lines long.
+
+  `tests/golden/v4/bundles/clean-deal-room/` is a deliberately **consistent**
+  deal room: a master services agreement, a statement of work issued under it,
+  and a data processing addendum that forms part of it. Same parties, same
+  governing law and venue, same currency, same cap and the same carve-outs, the
+  same five-year confidentiality survival in the MSA and the DPA, the same order
+  of precedence stated identically in all three, and dates in the order a real
+  engagement signs them. The whole bundle must draw **nothing**, and
+  `tests/integration/clean-deal-room.test.ts` says so.
+
+### Fixed
+- 🥇 **A master agreement ANTICIPATES its subordinate instruments; it does not
+  cross-reference them.** The clean deal room's first run drew one conflict, and
+  it was false: CROSS-DATE-001 called the MSA's "Provider shall perform the
+  Services described in **each** Statement of Work" a chronology paradox,
+  because the SOW is dated after the master — which is what a master agreement
+  is *for*. Any MSA + SOW pair signed in the ordinary order was accused, and so
+  was any MSA that anticipates a DPA signed weeks later.
+
+  A bare mention of the kind label is not a cross-reference. At least one
+  mention must be **definite** — not behind an anticipatory determiner (*each*,
+  *any*, *a*, *the applicable*), not behind a demonstrative pointing back at one
+  (*that* Statement of Work), and not the document's own definition of the term.
+  A genuine stale or back-dated reference points at one instrument definitely,
+  the way the `effective-date-paradox` fixture does.
+
 ## [9.647.0] — 2026-09-09
 
 ### Added
