@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.649.0] — 2026-09-09
+
+### Added
+- **A second clean deal room, for the two rules the first cannot reach.**
+  CC-001 and CC-004 compare a HIPAA business associate agreement against the
+  master agreement it hangs off, and a food distributor's analytics engagement
+  has no protected health information.
+  `tests/golden/v4/bundles/clean-deal-room-phi/` is a clinical-analytics MSA,
+  its statement of work, and a BAA whose permitted uses are the MSA's purpose
+  word for word and whose term is the MSA's term.
+
+  **Between the two rooms every one of the twenty-two cross-document rules is
+  exercised by drafting that agrees with itself**, and a third assertion says so
+  — a rule no clean room can reach has never been shown to stay quiet on a
+  correct bundle.
+
+### Fixed
+- 🥇 **A defined term that is the first half of an instrument's NAME is not a
+  use of the term.** A BAA defines "Business Associate" as a party, and the
+  master agreement it hangs off says *"BAA" means the **Business Associate
+  Agreement** between the parties dated March 2, 2026* — a document title. The
+  `\b` after the term sits happily in the middle of the longer name, so
+  CROSS-DEFTERM-002 told the master agreement it silently borrows a definition
+  it never uses.
+
+  The test is whether the match continues into another Title-Case word. A
+  genuine use is followed by a verb, a preposition or punctuation ("Business
+  Associate shall", "Customer Data."), never by a second capitalized word — and
+  a sentence boundary puts a period in between, so "…during the Term. The
+  parties…" is unaffected.
+
 ## [9.648.0] — 2026-09-09
 
 ### Added

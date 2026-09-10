@@ -24,6 +24,17 @@
  * It found one on its first run. CROSS-DATE-001 called the MSA's reference to
  * "each Statement of Work" a chronology paradox, because the SOW is dated after
  * the master that anticipates it — which is what a master agreement is for.
+ *
+ * `clean-deal-room-phi/` is the second room, and it exists for the two rules the
+ * first cannot reach: CC-001 and CC-004 compare a BAA against the MSA it hangs
+ * off, and a food distributor's analytics engagement has no protected health
+ * information. A clinical-analytics MSA, its SOW, and a HIPAA business associate
+ * agreement whose permitted uses are the MSA's purpose word for word, and whose
+ * term is the MSA's term. Between the two rooms every one of the twenty-two
+ * cross-document rules is exercised by drafting that agrees with itself.
+ *
+ * It found one too: CROSS-DEFTERM-002 read the "Business Associate" in
+ * "the Business Associate Agreement" as a borrowed defined term.
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -36,26 +47,43 @@ import { runConsistency } from "../../src/engine/consistency/runner.js";
 import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
 import type { ConsistencyDocument } from "../../src/engine/consistency/types.js";
 
-const DIR = join(process.cwd(), "tests", "golden", "v4", "bundles", "clean-deal-room");
 const dkb = loadStarterDkbSync();
 
-describe("a deal room that agrees with itself", () => {
+interface Room {
+  readonly dir: string;
+  readonly members: readonly string[];
+  /** The rules that cannot reach this room, and why the room is right to lack them. */
+  readonly unreachable: readonly string[];
+}
+
+const ROOMS: readonly Room[] = [
+  {
+    dir: "clean-deal-room",
+    members: ["dpa.txt", "msa.txt", "order-form.txt", "privacy-notice.txt", "sow.txt"],
+    // The BAA pair: a food distributor's analytics engagement has no PHI.
+    unreachable: ["CC-001", "CC-004"],
+  },
+  {
+    dir: "clean-deal-room-phi",
+    members: ["baa.txt", "msa.txt", "sow.txt"],
+    // The DPA pair and the privacy-notice pair: this room is HIPAA, not GDPR,
+    // and carries no published notice.
+    unreachable: ["CC-002", "CC-003", "CC-008", "CC-009"],
+  },
+];
+
+describe.each(ROOMS)("a deal room that agrees with itself — $dir", (room) => {
   it("reports no cross-document conflict", async () => {
-    const files = readdirSync(DIR)
+    const dir = join(process.cwd(), "tests", "golden", "v4", "bundles", room.dir);
+    const files = readdirSync(dir)
       .filter((f) => f.endsWith(".txt"))
       .sort();
-    expect(files, "the clean deal room lost its members").toEqual([
-      "dpa.txt",
-      "msa.txt",
-      "order-form.txt",
-      "privacy-notice.txt",
-      "sow.txt",
-    ]);
+    expect(files, "the clean deal room lost its members").toEqual([...room.members]);
 
     const documents: ConsistencyDocument[] = [];
     for (const file of files) {
-      const ingest = await ingestPaste(readFileSync(join(DIR, file), "utf8"));
-      const sidecar = join(DIR, `${file}.playbook`);
+      const ingest = await ingestPaste(readFileSync(join(dir, file), "utf8"));
+      const sidecar = join(dir, `${file}.playbook`);
       documents.push({
         doc_id: file,
         source_file_name: file,
@@ -71,27 +99,34 @@ describe("a deal room that agrees with itself", () => {
 
     // 🚨 ANTI-VACUITY. A relation whose assertion is "nothing was reported"
     // passes hardest when nothing RAN — the failure this repo has met on a
-    // leak-scan invariant and on its own reach guard. The bundle is built to
-    // give twenty of the twenty-two cross-document rules something to compare,
-    // and the two that stay behind are the BAA pair (CC-001, CC-004): a food
-    // distributor's analytics engagement has no protected health information,
-    // and `clean-msa-baa` is where that pairing lives.
-    const ran = run.execution_log.filter((e) => e.ran).map((e) => e.rule_id);
-    expect(
-      ran.length,
-      `only ${ran.length} cross-document rules had anything to compare — the bundle stopped exercising the engine`,
-    ).toBeGreaterThanOrEqual(20);
+    // leak-scan invariant and on its own reach guard. Both halves are pinned:
+    // which rules had something to compare, and which could not reach this room.
     expect(
       run.execution_log.filter((e) => !e.ran).map((e) => e.rule_id),
-      "a rule stopped running — check whether the bundle still carries the documents it requires",
-    ).toEqual(["CC-001", "CC-004"]);
+      "a rule stopped running — check whether the room still carries the documents it requires",
+    ).toEqual([...room.unreachable]);
+    expect(
+      run.execution_log.filter((e) => e.ran).length,
+      "too few cross-document rules had anything to compare",
+    ).toBeGreaterThanOrEqual(ALL_CONSISTENCY_RULES.length - room.unreachable.length);
+
     const conflicts = run.findings.map(
       (f) =>
         `${f.rule_id}[${[...new Set(f.excerpts.map((e) => e.doc_id))].sort().join("+")}]: ${f.title}`,
     );
     expect(
       conflicts,
-      `these three documents agree — every conflict is a false one:\n  ${conflicts.join("\n  ")}`,
+      `these documents agree — every conflict is a false one:\n  ${conflicts.join("\n  ")}`,
     ).toEqual([]);
   }, 120_000);
+});
+
+// Between the two rooms, every shipped cross-document rule is exercised by
+// drafting that agrees with itself. A rule that no clean room can reach has
+// never been shown to stay quiet on a correct bundle.
+it("between them, the rooms reach every cross-document rule", () => {
+  const unreached = ALL_CONSISTENCY_RULES.map((r) => r.id).filter((id) =>
+    ROOMS.every((room) => room.unreachable.includes(id)),
+  );
+  expect(unreached, "no clean deal room exercises these rules").toEqual([]);
 });

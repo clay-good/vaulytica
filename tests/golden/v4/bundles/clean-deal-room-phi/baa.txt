@@ -1,0 +1,41 @@
+BUSINESS ASSOCIATE AGREEMENT
+
+THIS BUSINESS ASSOCIATE AGREEMENT (this "BAA") is entered into as of March 2, 2026 between Silverbrook Health Partners, Inc., a Rhode Island non-profit corporation ("Covered Entity"), and Ashgrove Clinical Analytics, LLC, a Delaware limited liability company ("Business Associate"). This BAA forms part of, and is subject to, the Master Services Agreement between the parties dated March 2, 2026 (the "Agreement"). Capitalized terms used and not defined in this BAA have the meanings given in the HIPAA Rules at 45 C.F.R. Parts 160 and 164, or, where not defined there, in the Agreement.
+
+1. Definitions. "PHI" means protected health information, as defined at 45 C.F.R. § 160.103, that Business Associate creates, receives, maintains or transmits for or on behalf of Covered Entity under the Agreement. "HIPAA Rules" means the Privacy, Security, Breach Notification and Enforcement Rules at 45 C.F.R. Parts 160 and 164.
+
+2. Permitted Uses and Disclosures. Business Associate may use and disclose PHI only to perform the Services described in the Agreement — readmission-risk analytics and reporting to Covered Entity's care-management team — and only as this BAA or law requires or permits. Business Associate shall not use or disclose PHI for its own research, for product development outside the Services, or to create a de-identified data set. Business Associate may use PHI for its proper management and administration and to carry out its legal responsibilities, and may disclose PHI for those purposes only if the disclosure is required by law or the recipient agrees in writing to protect the PHI and to notify Business Associate of any breach of its confidentiality.
+
+3. Minimum Necessary. Business Associate shall limit its uses, disclosures and requests of PHI to the minimum necessary to accomplish the intended purpose, in accordance with 45 C.F.R. § 164.502(b).
+
+4. Safeguards. Business Associate shall implement the administrative, physical and technical safeguards required by the Security Rule at 45 C.F.R. §§ 164.308, 164.310 and 164.312, including encryption of PHI in transit and at rest, access control on the principle of least privilege, audit logging, workforce training, and an annual risk analysis, and shall maintain policies and procedures documenting them.
+
+5. Subcontractors. Business Associate shall require each subcontractor that creates, receives, maintains or transmits PHI on its behalf to agree in writing to restrictions and conditions at least as protective as those in this BAA, as 45 C.F.R. § 164.502(e)(1)(ii) requires. Business Associate shall give Covered Entity thirty (30) days' notice before engaging a new subcontractor, and Covered Entity may object on reasonable grounds within that period.
+
+6. Reporting. Business Associate shall report to Covered Entity any use or disclosure of PHI not permitted by this BAA, any security incident, and any breach of unsecured PHI, without unreasonable delay and in no case later than ten (10) calendar days after discovery. The report shall identify each individual whose PHI was involved, so far as known, and the information Covered Entity needs to meet its own obligations under 45 C.F.R. § 164.404. Unsuccessful security incidents that do not result in unauthorized access, such as pings and port scans, are reported in the aggregate on request.
+
+7. Individual Rights. Business Associate shall, within fifteen (15) days of Covered Entity's request, make PHI in a Designated Record Set available to Covered Entity so that Covered Entity can meet its obligations under 45 C.F.R. § 164.524; make amendments Covered Entity directs under 45 C.F.R. § 164.526; and provide an accounting of disclosures under 45 C.F.R. § 164.528.
+
+8. Access by the Secretary. Business Associate shall make its internal practices, books and records relating to the use and disclosure of PHI available to the Secretary of the United States Department of Health and Human Services for purposes of determining Covered Entity's compliance with the HIPAA Rules.
+
+9. Term. This BAA begins on March 2, 2026 and continues for the term of the Agreement, and terminates when the Agreement terminates or expires, subject to Section 10. It does not extend beyond the Agreement.
+
+10. Termination and Return of PHI. Covered Entity may terminate this BAA and the Agreement if Business Associate materially breaches this BAA and fails to cure within thirty (30) days after written notice describing the breach. On termination, Business Associate shall return or destroy all PHI it holds, and shall require its subcontractors to do the same. Where return or destruction is infeasible, Business Associate shall notify Covered Entity, shall extend the protections of this BAA to that PHI, and shall limit further uses and disclosures to the purposes that make return or destruction infeasible.
+
+11. Obligations of Covered Entity. Covered Entity shall notify Business Associate of any limitation in its notice of privacy practices, of any change in or revocation of an individual's authorization, and of any restriction on the use or disclosure of PHI to which it has agreed, in each case to the extent it affects Business Associate's use or disclosure of PHI. Covered Entity shall not ask Business Associate to use or disclose PHI in a way that would not be permitted if done by Covered Entity.
+
+12. Interpretation. Any ambiguity in this BAA is resolved to permit compliance with the HIPAA Rules. In the event of a conflict between this BAA and the Agreement, this BAA controls as to PHI, as Section 3 of the Agreement provides.
+
+13. Governing Law. This BAA is governed by the laws of the State of Rhode Island, excluding its conflict-of-laws rules, and the courts located in Providence County, Rhode Island have exclusive jurisdiction, as Sections 11.1 and 11.2 of the Agreement provide.
+
+SILVERBROOK HEALTH PARTNERS, INC.
+
+By: /s/ Emmanuel Silverbrook
+Name: Emmanuel Silverbrook
+Title: Chief Operating Officer
+
+ASHGROVE CLINICAL ANALYTICS, LLC
+
+By: /s/ Persephone Ashgrove-Dutta
+Name: Persephone Ashgrove-Dutta
+Title: Chief Executive Officer

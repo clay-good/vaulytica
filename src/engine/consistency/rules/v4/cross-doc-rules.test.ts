@@ -321,6 +321,33 @@ describe("CROSS-DEFTERM-001", () => {
   });
 });
 
+// A defined term that is the FIRST HALF of an instrument's name is not a use of
+// the term. A BAA defines "Business Associate" as a party, and the master
+// agreement it hangs off says '"BAA" means the Business Associate Agreement
+// dated March 2, 2026' — a document title, not a borrowed definition.
+describe("CROSS-DEFTERM-002 — an instrument's NAME is not a use of the term", () => {
+  it("does not fire on 'the Business Associate Agreement'", async () => {
+    const msa = makeDoc("msa", "msa-general", [
+      "Agreement",
+      'This Master Services Agreement is effective as of March 2, 2026. "BAA" means the ' +
+        "Business Associate Agreement between the parties dated March 2, 2026. Provider is " +
+        "Customer's business associate.",
+    ]);
+    const baa = makeDoc("baa", "baa", [
+      "Agreement",
+      "This Business Associate Agreement is between Silverbrook Health Partners, Inc. " +
+        '("Covered Entity") and Ashgrove Clinical Analytics, LLC ("Business Associate"), ' +
+        "effective as of March 2, 2026.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_DEFTERM_002],
+      documents: [msa, baa],
+      dkb: STARTER_DKB,
+    });
+    expect(run.findings.map((f) => f.title)).toEqual([]);
+  });
+});
+
 /* ---------------- CROSS-DATE-001 ----------------- */
 
 describe("CROSS-DATE-001", () => {

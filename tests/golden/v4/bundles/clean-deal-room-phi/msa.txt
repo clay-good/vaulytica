@@ -1,0 +1,71 @@
+MASTER SERVICES AGREEMENT
+
+THIS MASTER SERVICES AGREEMENT (this "Agreement") is entered into as of March 2, 2026 (the "Effective Date") between Ashgrove Clinical Analytics, LLC, a Delaware limited liability company with its principal place of business at 88 Chandler Street, Providence, Rhode Island ("Provider"), and Silverbrook Health Partners, Inc., a Rhode Island non-profit corporation with its principal place of business at 1401 Elmgrove Avenue, Providence, Rhode Island ("Customer").
+
+1. Definitions.
+
+1.1 "Services" means the readmission-risk analytics services Provider performs under a Statement of Work, comprising ingestion of Customer's clinical and claims extracts, model scoring, and reporting to Customer's care-management team.
+
+1.2 "Statement of Work" means a document signed by both parties that describes Services, deliverables, fees and a schedule, and that incorporates this Agreement by reference.
+
+1.3 "Customer Data" means data Customer provides to Provider, or that Provider generates for Customer, in performing the Services. Customer Data includes protected health information as defined in 45 C.F.R. § 160.103.
+
+1.4 "BAA" means the Business Associate Agreement between the parties dated March 2, 2026.
+
+1.5 "Confidential Information" means non-public information one party discloses to the other in connection with this Agreement, including Customer Data, pricing, and the terms of this Agreement.
+
+2. Purpose and Scope. Provider performs the Services solely to provide readmission-risk analytics and reporting to Customer, and for no other purpose. Provider shall not use Customer Data for its own research, for product development outside the Services, or to create a de-identified data set, except as the BAA expressly permits.
+
+3. Order of Precedence. If there is a conflict between documents, the following order controls: first the BAA, then this Agreement, then a Statement of Work. A Statement of Work may vary this Agreement only where it says expressly that it does so and identifies the section it varies.
+
+4. Fees and Payment. Fees are stated in each Statement of Work and are quoted and payable in United States dollars. Customer shall pay undisputed invoices within thirty (30) days after receipt. Overdue undisputed amounts bear interest at one percent (1%) per month or the maximum rate permitted by law, whichever is less.
+
+5. Protected Health Information. Provider is Customer's business associate. Provider shall use and disclose protected health information only as the BAA permits, and the BAA forms part of this Agreement.
+
+6. Intellectual Property. Customer owns Customer Data and the reports Provider delivers. Provider retains ownership of its models, tools and know-how, and grants Customer a non-exclusive, perpetual licence to use those materials as incorporated in the reports.
+
+7. Confidentiality. Each party shall keep the other's Confidential Information confidential, use it only to perform this Agreement, and disclose it only to personnel and advisors who need it and are bound by equivalent obligations. These obligations continue for six (6) years after termination, and indefinitely for anything that is a trade secret.
+
+8. Indemnification. Provider shall defend Customer against a third-party claim arising from Provider's breach of the BAA or from a report's infringement of a patent, copyright, trademark or trade secret, and shall indemnify Customer for damages and reasonable attorneys' fees finally awarded or paid in settlement. Customer shall defend Provider against a third-party claim arising from Customer's instructions or from the accuracy of Customer Data, and shall indemnify Provider on the same basis.
+
+9. Limitation of Liability.
+
+9.1 Exclusion. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS.
+
+9.2 Cap. EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO THE FEES PAID AND PAYABLE UNDER THE APPLICABLE STATEMENT OF WORK IN THE TWELVE (12) MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM. These limits do not apply to a party's indemnity obligations under Section 8, to either party's breach of Section 7, to Provider's breach of the BAA, to Customer's obligation to pay fees, or to either party's gross negligence, willful misconduct or fraud.
+
+10. Term and Termination.
+
+10.1 Term. This Agreement begins on the Effective Date and continues for three (3) years, and renews for successive one-year terms unless either party gives sixty (60) days' written notice before the end of the then-current term.
+
+10.2 Termination for Cause. Either party may terminate this Agreement or any Statement of Work if the other materially breaches it and fails to cure within thirty (30) days after written notice describing the breach.
+
+10.3 Effect of Termination. On termination, Provider shall return or destroy Customer's Confidential Information, and shall return or destroy protected health information in accordance with the BAA.
+
+10.4 Survival. Sections 1, 4, 5, 6, 7, 8, 9, 10.3, 10.4 and 11 survive expiration or termination of this Agreement.
+
+11. General.
+
+11.1 Governing Law. This Agreement is governed by the laws of the State of Rhode Island, excluding its conflict-of-laws rules.
+
+11.2 Venue. The state and federal courts located in Providence County, Rhode Island have exclusive jurisdiction over any dispute arising out of this Agreement, and each party consents to personal jurisdiction and venue there.
+
+11.3 Notices. Notices must be in writing and are effective on delivery when sent by hand, by nationally recognized overnight courier, or by certified mail to the addresses in the preamble.
+
+11.4 Assignment. Neither party may assign this Agreement without the other's written consent, except to a successor to all or substantially all of its business, on written notice.
+
+11.5 Independent Contractors. The parties are independent contractors. Nothing in this Agreement creates a partnership, joint venture, agency or employment relationship.
+
+11.6 Entire Agreement. This Agreement, with the BAA and each Statement of Work, is the entire agreement between the parties about its subject matter and supersedes all prior agreements about it. It may be amended only by a writing signed by both parties.
+
+ASHGROVE CLINICAL ANALYTICS, LLC
+
+By: /s/ Persephone Ashgrove-Dutta
+Name: Persephone Ashgrove-Dutta
+Title: Chief Executive Officer
+
+SILVERBROOK HEALTH PARTNERS, INC.
+
+By: /s/ Emmanuel Silverbrook
+Name: Emmanuel Silverbrook
+Title: Chief Operating Officer

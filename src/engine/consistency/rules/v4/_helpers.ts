@@ -460,12 +460,29 @@ export function findDefinedTermUsageDrift(
     if (!/\s/.test(def.term.trim())) continue;
     // Find the first paragraph in `user` that uses the term verbatim (with
     // its defined casing). The defined-term casing carries the signal.
-    const re = new RegExp(`\\b${escapeRegExp(def.term)}\\b`);
+    // A defined term that is the FIRST HALF OF AN INSTRUMENT'S NAME is not a
+    // use of the term. A BAA defines "Business Associate" as a party, and the
+    // master agreement it hangs off says '"BAA" means the Business Associate
+    // Agreement between the parties dated March 2, 2026' — a document title,
+    // not a borrowed defined term. `\b` after the term sits happily in the
+    // middle of the longer name, so the master agreement was told it silently
+    // borrows a definition it never uses.
+    //
+    // The test is whether the match continues into another Title-Case word.
+    // A genuine use is followed by a verb, a preposition or punctuation
+    // ("Business Associate shall", "Customer Data. "), never by a second
+    // capitalized word — and a sentence boundary puts a period in between, so
+    // "…during the Term. The parties…" is unaffected.
+    const re = new RegExp(`\\b${escapeRegExp(def.term)}\\b`, "g");
     let usePos: DocPosition | null = null;
     forEachParagraph(user.tree, (p) => {
       if (usePos) return;
-      const idx = p.text.search(re);
-      if (idx >= 0) usePos = { section_id: p.section.id, start: p.start, end: p.end };
+      for (const m of p.text.matchAll(re)) {
+        const after = p.text.slice(m.index + m[0].length, m.index + m[0].length + 24);
+        if (/^\s+[A-Z]/.test(after)) continue;
+        usePos = { section_id: p.section.id, start: p.start, end: p.end };
+        break;
+      }
     });
     if (!usePos) continue;
     out.push({

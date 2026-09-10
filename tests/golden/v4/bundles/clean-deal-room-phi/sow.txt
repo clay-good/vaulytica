@@ -1,0 +1,33 @@
+STATEMENT OF WORK NO. 1
+
+THIS STATEMENT OF WORK NO. 1 (this "SOW") is entered into as of March 16, 2026 between Ashgrove Clinical Analytics, LLC, a Delaware limited liability company ("Provider"), and Silverbrook Health Partners, Inc., a Rhode Island non-profit corporation ("Customer"), under and subject to the Master Services Agreement between the parties dated March 2, 2026 (the "Agreement"). Capitalized terms used and not defined in this SOW have the meanings given in the Agreement.
+
+1. Services. Provider shall implement and operate readmission-risk analytics for Customer's two acute-care campuses: ingestion of Customer's clinical and claims extracts; monthly model scoring at the encounter level; a risk report delivered to Customer's care-management team; and a quarterly model-performance review.
+
+2. Purpose Limitation. Provider shall use Customer Data only to perform the Services described in Section 1. Provider shall not use Customer Data for its own research, for product development outside the Services, or to create a de-identified data set, as Section 2 of the Agreement and Section 2 of the Business Associate Agreement between the parties dated March 2, 2026 both provide.
+
+3. Schedule. Implementation begins March 23, 2026. The first monthly risk report is due June 5, 2026, and each subsequent report by the fifth business day of the month.
+
+4. Fees. Fees for the Services are $312,000 per year, quoted and payable in United States dollars, invoiced quarterly in arrears. Payment terms are those in Section 4 of the Agreement.
+
+5. Data Handling. Customer shall provide the clinical and claims extracts described in Appendix 1. Provider processes protected health information under the Business Associate Agreement between the parties dated March 2, 2026.
+
+6. Personnel. Provider shall staff the engagement with the named team in Appendix 2 and shall not replace a named person without Customer's consent, not to be unreasonably withheld.
+
+7. Change Control. A change to the Services, the schedule or the fees takes effect only when both parties sign a written change order referencing this SOW.
+
+8. Term. This SOW begins on March 16, 2026 and continues until the Services are complete or the SOW is terminated under Section 10 of the Agreement.
+
+9. Incorporation. This SOW incorporates the Agreement by reference and does not vary it. In the event of a conflict, the order of precedence in Section 3 of the Agreement controls.
+
+ASHGROVE CLINICAL ANALYTICS, LLC
+
+By: /s/ Persephone Ashgrove-Dutta
+Name: Persephone Ashgrove-Dutta
+Title: Chief Executive Officer
+
+SILVERBROOK HEALTH PARTNERS, INC.
+
+By: /s/ Emmanuel Silverbrook
+Name: Emmanuel Silverbrook
+Title: Chief Operating Officer
