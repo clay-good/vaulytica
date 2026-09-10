@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.669.0] — 2026-09-10
+
+9.666.0's own consumer list. The CLI grew an exit code with a new meaning; the
+surface that reports it to a CI reader had not been told.
+
+### Fixed
+- 🥇 **The Action's job summary said "a `fail-on` gate tripped, or the run
+  errored" for every non-zero exit, and 9.666.0 gave `1` a third meaning.** A
+  run that could not read one file now skips it, names it, analyzes the rest,
+  writes the report, and exits `1`. A reader who saw *"Failed (exit 1) — a gate
+  tripped, or the run errored"* had **no reason to go looking for the report
+  that exists**.
+
+  The headline distinguishes them now: `2` is a gate the caller asked for,
+  tripping on a document the tool read fine; `1` is the tool not doing the job
+  as asked, with the line pointing at the named inputs and saying the report
+  covers the rest. The roll-up itself already reached the summary — the Action
+  replays the whole stderr stream into it — so this is the sentence above it
+  catching up.
+
+Nothing else about the summary changes: it is still written on a failing gate,
+still bounded at 60,000 characters with the truncation stated, and the exit code
+is still passed through untouched.
+
 ## [9.668.0] — 2026-09-10
 
 An audit of the README's headline badge against the code. **All eleven numbers

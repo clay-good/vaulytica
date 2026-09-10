@@ -238,10 +238,20 @@ runs:
             echo
             echo "\`vaulytica ${args[*]}\`"
             echo
+            # 1 and 2 are different answers and a reader acts on them
+            # differently. `2` is a gate the caller asked for, tripping on a
+            # document the tool read fine. `1` is the tool not doing the job as
+            # asked — and since 9.666.0 that includes a run that DID produce a
+            # report, for the inputs it could read, while naming the ones it
+            # could not. "a gate tripped, or the run errored" described neither
+            # of those, so a reader who saw exit 1 had no reason to look for the
+            # report that exists.
             if [ "$status" -eq 0 ]; then
               echo "**Passed** — no \`fail-on\` gate tripped."
+            elif [ "$status" -eq 2 ]; then
+              echo "**Failed (exit 2)** — a \`fail-on\` gate tripped. The lines below say which."
             else
-              echo "**Failed (exit $status)** — a \`fail-on\` gate tripped, or the run errored. The lines below say which."
+              echo "**Failed (exit $status)** — no \`fail-on\` gate tripped; the run could not be completed as asked. If an input could not be READ, the lines below name it and the report covers the rest."
             fi
             echo
             echo '```'

@@ -125,6 +125,24 @@ describe("the Action puts the run on the page a reader looks at", () => {
     expect(r.summary).toContain("1C 2W 3I");
   });
 
+  it("tells a 1 from a 2, because a reader acts on them differently", () => {
+    // `2` is a gate the caller asked for, tripping on a document the tool read
+    // fine. `1` is the tool not doing the job as asked — and since 9.666.0 that
+    // includes a run that DID produce a report, for the inputs it could read,
+    // while naming the ones it could not. A reader who sees "a gate tripped, or
+    // the run errored" has no reason to go looking for the report that exists.
+    const gate = run({ FAIL_ON: "critical" }, { out: CAVEAT, status: 2 });
+    expect(gate.summary).toContain("a `fail-on` gate tripped");
+    expect(gate.summary).not.toContain("could not be completed as asked");
+
+    const partial = run({}, { out: CAVEAT, status: 1 });
+    expect(partial.status).toBe(1);
+    expect(partial.summary).toContain("**Failed (exit 1)**");
+    expect(partial.summary).toContain("no `fail-on` gate tripped");
+    expect(partial.summary).toContain("could not be READ");
+    expect(partial.summary).toContain("the report covers the rest");
+  });
+
   it("still replays the tool's output to the step log", () => {
     // Capturing stderr must not mean swallowing it: the raw log stays complete.
     const r = run({ FAIL_ON: "critical" }, { out: CAVEAT, status: 2 });
