@@ -13,13 +13,19 @@ All notable changes to this project will be documented in this file. Format adap
   twenty-four lines long.
 
   `tests/golden/v4/bundles/clean-deal-room/` is a deliberately **consistent**
-  deal room: a master services agreement, a statement of work issued under it,
-  and a data processing addendum that forms part of it. Same parties, same
+  deal room: a master services agreement, a statement of work and an order form
+  issued under it, a data processing addendum that forms part of it, and the
+  customer's published privacy notice. Same parties, same
   governing law and venue, same currency, same cap and the same carve-outs, the
   same five-year confidentiality survival in the MSA and the DPA, the same order
   of precedence stated identically in all three, and dates in the order a real
-  engagement signs them. The whole bundle must draw **nothing**, and
-  `tests/integration/clean-deal-room.test.ts` says so.
+  engagement signs them, and a notice whose "who we share it with", sub-processor
+  and international-transfer sections say what the DPA says. The whole bundle
+  must draw **nothing**, and `tests/integration/clean-deal-room.test.ts` says so
+  — with an anti-vacuity assertion beside it, because a relation that asserts an
+  empty result passes hardest when nothing ran. **Twenty of the twenty-two
+  cross-document rules have something to compare here** and all twenty stay
+  silent; the two that do not are the BAA pair, which `clean-msa-baa` owns.
 
 ### Fixed
 - 🥇 **A master agreement ANTICIPATES its subordinate instruments; it does not

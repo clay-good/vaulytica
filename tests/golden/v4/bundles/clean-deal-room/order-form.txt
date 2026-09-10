@@ -1,0 +1,29 @@
+ORDER FORM NO. 1
+
+This Order Form No. 1 is entered into as of February 1, 2026 between Bellhaven Analytics, Inc., a Delaware corporation ("Provider"), and Quarrymill Foods, LLC, a Delaware limited liability company ("Customer"), under and subject to the Master Services Agreement between the parties dated January 15, 2026 (the "Agreement"). Capitalized terms used and not defined in this Order Form have the meanings given in the Agreement.
+
+Ordered Items. Forecasting platform subscription, tier "Regional", for up to twenty-five (25) named users at Customer's Wilmington and Tannery Road sites.
+
+Order Term. Three (3) years, beginning February 1, 2026 and ending January 31, 2029, coterminous with the Agreement.
+
+Fees. $96,000 per year, quoted and payable in United States dollars, invoiced annually in advance. Payment terms are those in Section 4 of the Agreement.
+
+Renewal. The Order Term renews for successive one-year terms unless either party gives sixty (60) days' written notice before the end of the then-current Order Term, matching Section 10.1 of the Agreement.
+
+Support. Provider shall respond to a Severity 1 report within two (2) hours and to all other reports within one (1) business day, during Customer's business hours.
+
+Data Protection. Provider processes Customer Data under the Data Processing Addendum between the parties dated January 15, 2026.
+
+Precedence. This Order Form does not vary the Agreement. In the event of a conflict, the order of precedence in Section 3 of the Agreement controls.
+
+BELLHAVEN ANALYTICS, INC.
+
+By: /s/ Marisol Bellhaven-Ntuli
+Name: Marisol Bellhaven-Ntuli
+Title: Chief Executive Officer
+
+QUARRYMILL FOODS, LLC
+
+By: /s/ Aloysius Quarrymill
+Name: Aloysius Quarrymill
+Title: Manager

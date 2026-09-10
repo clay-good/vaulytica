@@ -9,8 +9,9 @@
  * CROSS-* rule fire — and the only "clean" one is twenty-four lines long.
  *
  * `tests/golden/v4/bundles/clean-deal-room/` is a deliberately CONSISTENT deal
- * room: a master services agreement, a statement of work issued under it, and
- * a data processing addendum that forms part of it. Same parties, same
+ * room: a master services agreement, a statement of work and an order form
+ * issued under it, a data processing addendum that forms part of it, and the
+ * customer's published privacy notice. Same parties, same
  * governing law and venue, same currency, same liability cap and the same
  * carve-outs, the same five-year confidentiality survival in both the MSA and
  * the DPA, the same order of precedence stated identically in all three, and
@@ -46,6 +47,8 @@ describe("a deal room that agrees with itself", () => {
     expect(files, "the clean deal room lost its members").toEqual([
       "dpa.txt",
       "msa.txt",
+      "order-form.txt",
+      "privacy-notice.txt",
       "sow.txt",
     ]);
 
@@ -65,6 +68,23 @@ describe("a deal room that agrees with itself", () => {
     }
 
     const run = await runConsistency({ rules: ALL_CONSISTENCY_RULES, documents, dkb });
+
+    // 🚨 ANTI-VACUITY. A relation whose assertion is "nothing was reported"
+    // passes hardest when nothing RAN — the failure this repo has met on a
+    // leak-scan invariant and on its own reach guard. The bundle is built to
+    // give twenty of the twenty-two cross-document rules something to compare,
+    // and the two that stay behind are the BAA pair (CC-001, CC-004): a food
+    // distributor's analytics engagement has no protected health information,
+    // and `clean-msa-baa` is where that pairing lives.
+    const ran = run.execution_log.filter((e) => e.ran).map((e) => e.rule_id);
+    expect(
+      ran.length,
+      `only ${ran.length} cross-document rules had anything to compare — the bundle stopped exercising the engine`,
+    ).toBeGreaterThanOrEqual(20);
+    expect(
+      run.execution_log.filter((e) => !e.ran).map((e) => e.rule_id),
+      "a rule stopped running — check whether the bundle still carries the documents it requires",
+    ).toEqual(["CC-001", "CC-004"]);
     const conflicts = run.findings.map(
       (f) =>
         `${f.rule_id}[${[...new Set(f.excerpts.map((e) => e.doc_id))].sort().join("+")}]: ${f.title}`,

@@ -1,0 +1,27 @@
+QUARRYMILL FOODS PRIVACY NOTICE
+
+Last updated January 15, 2026.
+
+This notice explains how Quarrymill Foods, LLC ("we", "us") collects and uses personal information, and the choices you have. It applies to our website, our customer accounts, and our order and delivery services.
+
+Information We Collect. We collect the information you give us when you create an account or place an order — your name, contact details, delivery address and order history; information about how you use our website, including device and usage data; and payment information, which our payment processor collects and we do not store.
+
+How We Use It. We use personal information to take and fulfil orders, to provide customer support, to operate and improve our services including demand forecasting, to prevent fraud, and to meet our legal obligations. Where we rely on legitimate interests, we balance those interests against your rights, and where we rely on consent you may withdraw it at any time.
+
+Who We Share It With. We share personal information with service providers who process it on our behalf and only on our instructions, under written contracts that require them to protect it — including our hosting, payment, delivery and analytics providers. Our analytics provider, Bellhaven Analytics, Inc., processes order and inventory information to produce demand forecasts for us. We also share information where the law requires it, and with a buyer in connection with a sale of our business. Except as described in this section, we do not sell or share your personal information with third parties.
+
+Sub-Processors. Our service providers may engage sub-processors to help them perform their services for us. We require each service provider to give us notice before adding or replacing a sub-processor, to let us object on reasonable data-protection grounds, and to remain responsible for its sub-processors' performance.
+
+International Transfers. We are based in the United States and personal information we collect is processed in the United States. Where we transfer personal information from the United Kingdom or the European Economic Area, we rely on the Standard Contractual Clauses, or the UK International Data Transfer Addendum where it applies, and we take the additional measures those instruments require. You may ask us for a copy of the safeguards we rely on.
+
+How Long We Keep It. We keep account and order information for as long as your account is open and for six (6) years afterwards, to meet tax and accounting requirements. We keep website usage data for thirteen (13) months. When personal information is no longer needed, we delete it or anonymise it.
+
+Your Rights. Depending on where you live, you may have the right to access the personal information we hold about you, to correct it, to delete it, to object to or restrict our use of it, to receive it in a portable format, and to withdraw consent. To exercise a right, contact us at the address below. We will respond within one month, and we will tell you if we need longer. You may also complain to your data protection authority.
+
+Security. We protect personal information with encryption in transit and at rest, access control on the principle of least privilege, logging, and regular testing, and we require the same of our service providers.
+
+Children. Our services are not directed to children under 16 and we do not knowingly collect their personal information.
+
+Changes. We will post any change to this notice here and, where the change is material, we will tell you before it takes effect.
+
+Contact Us. Quarrymill Foods, LLC, Attn: Privacy, 4501 Tannery Road, Wilmington, Delaware. privacy@quarrymill.example.
