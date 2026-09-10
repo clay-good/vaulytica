@@ -873,6 +873,80 @@ describe("runCustomPlaybook — determinism", () => {
  * invisible: 14 of 327 specimens located a notice period before 9.651.0 and
  * 108 do now.
  */
+/**
+ * A term clause ordinarily names no "term of" at all.
+ *
+ * "This Agreement begins on the Effective Date and continues for three (3)
+ * years" is the commonest way a contract states how long it lasts, and until
+ * 9.652.0 `term_length_days` read only "term of N years" and "N-year term"
+ * (28 of 327 specimens; 40 now). The subject has to be the INSTRUMENT: "this
+ * obligation continues for five (5) years" is a survival period, not a term,
+ * and a bare `this \\w+` anchor read three specimens' survival clauses as their
+ * term.
+ */
+describe("term_length_days — the instrument, not the obligation", () => {
+  const TERM_RULE = {
+    id: "R1",
+    title: "Term <= 2 years",
+    description: "d",
+    severity: "warning" as const,
+    assert: {
+      kind: "numeric_threshold" as const,
+      metric: "term_length_days" as const,
+      comparator: "lte" as const,
+      value: 730,
+    },
+  };
+
+  async function term(body: string) {
+    return runCustomPlaybook(pb({ custom_rules: [TERM_RULE] }), {
+      tree: tree("Term and Termination", body),
+      extracted: emptyExtracted(),
+    });
+  }
+
+  it("reads a term stated as the Agreement continuing for a period", async () => {
+    const run = await term(
+      "This Agreement begins on the Effective Date and continues for three (3) years, " +
+        "unless terminated earlier under this Section 3.",
+    );
+    expect(run.unevaluable).toHaveLength(0);
+    expect(run.findings[0]!.explanation).toContain("term_length_days = 1095");
+  });
+
+  it("reads a term stated as a copula", async () => {
+    const run = await term("The Term is ten (10) years from the date the business opens.");
+    expect(run.unevaluable).toHaveLength(0);
+    expect(run.findings[0]!.explanation).toContain("term_length_days = 3650");
+  });
+
+  it("reads a term stated as remaining in effect", async () => {
+    const run = await term(
+      "This Agreement remains in full force and effect for a period of five (5) years.",
+    );
+    expect(run.unevaluable).toHaveLength(0);
+    expect(run.findings[0]!.explanation).toContain("term_length_days = 1825");
+  });
+
+  it("does not read a survival period as the term", async () => {
+    const run = await term(
+      "This obligation continues for five (5) years after the termination or expiration " +
+        "of this Agreement.",
+    );
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable[0]!.reason).toContain("term_length_days");
+  });
+
+  it("does not read a confidentiality survival clause as the term", async () => {
+    const run = await term(
+      "The obligations in this Section 5 continue for five (5) years after the " +
+        "termination or expiration of this Agreement.",
+    );
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable[0]!.reason).toContain("term_length_days");
+  });
+});
+
 describe("notice_period_days — the plural possessive", () => {
   const NOTICE_RULE = {
     id: "R1",

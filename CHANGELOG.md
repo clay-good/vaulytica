@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.652.0] — 2026-09-10
+
+The generalization of 9.651.0. Two ladder metrics were dead; the obvious next
+question is *how many others are*, and the answer needed a sweep the repo did
+not have.
+
+### Added
+- 🥇 **`ladder-metric-reach.test.ts` — every numeric ladder metric must actually
+  READ the corpus.** It runs all nine metrics over the 327 specimens and commits
+  the reach of each by EQUALITY, so widening a pattern means raising a number on
+  purpose. The headline assertion is that no metric reads **zero** documents: a
+  metric nothing in a 327-document corpus exercises is not a strict metric, it
+  is an unreachable one. This is the guard that would have caught both of
+  9.651.0's defects at authoring time, and it runs in ~1.5s.
+
+  A LOW number is not automatically a defect, and the file says which are
+  honest: only two specimens cap an indemnity by a stated figure, and ten carry
+  an uptime percentage at all. What is never honest is zero.
+
+### Fixed
+- 🥇 **A term clause ordinarily names no "term of" at all.** `term_length_days`
+  read `term of N years` and `N-year term`. The commonest way a contract states
+  how long it lasts is *"This Agreement begins on the Effective Date and
+  continues for three (3) years"* — and the subject is the whole difference
+  between a term and a **survival period**. Anchoring the new pattern on a bare
+  `this \w+` reads three specimens' *"this obligation continues for five (5)
+  years"* as their term; anchoring it on `SELF_NAMED_INSTRUMENT_NOUNS` — the
+  list added in 9.650.0 that already owns "the noun an instrument calls itself"
+  — reads twelve more real terms and none of the three. Reach 28 → 40 of 327,
+  every added span checked by hand. A second pattern reads the copula form
+  ("The Term is ten (10) years"), which is where the remaining gains came from.
+
+### Corrected
+- 🚨 **9.651.0's entry said `liability_cap_multiple` located a value in "zero"
+  documents. It was one** (`work-for-hire.txt`, "capped at three times the
+  fees"). The probe that produced the zero hand-rolled the multiplier regex
+  without `PERIOD_COUNT`, so a multiplier written as a **word** was invisible to
+  the probe and not to the engine — the eighth "my probe, not the engine" error
+  in this project's log, and the first one caught by a guard rather than by
+  re-reading. The entry and the new test's header both carry the real number.
+
 ## [9.651.0] — 2026-09-10
 
 Found by **reading the negotiation ladder** the fifteen clean documents produce.
@@ -18,10 +59,11 @@ silently.
   *"each party's total liability is limited to the fees paid in the twelve (12)
   months before the event giving rise to the claim"*. That **is** a cap of one
   times fees; a negotiator calls it a 1x cap. Measured over the 327-specimen
-  corpus, the explicit form appears in **zero** documents and the implicit form
-  in **twenty** — so the dimension the shipped `saas-buyer` example ladder leads
-  with ("Liability cap must be at least 12x fees", severity `critical`) had
-  never once evaluated against any document in the repo.
+  corpus, the explicit form appears in **one** document (`work-for-hire.txt`,
+  "capped at three times the fees") and the implicit form in **twenty** — so
+  the dimension the shipped `saas-buyer` example ladder leads with ("Liability
+  cap must be at least 12x fees", severity `critical`) reached one document in
+  327 and now reaches twenty-one.
 
   A cap stated as a **sum** stays out: "limited to One Million Dollars
   ($1,000,000)" and "shall not exceed the escrow amount" are not multiples of

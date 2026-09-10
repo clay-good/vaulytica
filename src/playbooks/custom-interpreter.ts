@@ -32,6 +32,7 @@ import { SEVERITY_RANK } from "../engine/finding.js";
 import type { SourceCitation } from "../dkb/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { PERIOD_COUNT, countValue } from "../extract/counts.js";
+import { SELF_NAMED_NOUN_ALT } from "../extract/instrument-nouns.js";
 import { AMOUNT_IN_WORDS, CURRENCY_GLYPHS, wordAmountValue } from "../extract/amounts.js";
 import { stableStringify } from "../engine/runner.js";
 import type {
@@ -846,6 +847,33 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
       );
       all(new RegExp(`(${METRIC_NUMBER})[\\s-](year|month|day)\\s+term`, "g"), (m) =>
         withUnit(metricNumber(m[1]), m[2]!),
+      );
+      // The commonest term clause names no "term of" at all: "This Agreement
+      // begins on the Effective Date and continues for three (3) years". The
+      // subject has to be the INSTRUMENT, and that is the whole difference
+      // between a term and a SURVIVAL period — "this obligation continues for
+      // five (5) years" is not how long the contract lasts. Anchoring on a
+      // bare `this \w+` reads three specimens' survival clauses as their term;
+      // anchoring on `SELF_NAMED_INSTRUMENT_NOUNS`, the list that already owns
+      // "the noun an instrument calls itself", reads twelve more real terms
+      // and none of the three. Corpus reach 28 -> 40 of 327, every added span
+      // checked by hand.
+      all(
+        new RegExp(
+          `\\bthis\\s+(?:${SELF_NAMED_NOUN_ALT.toLowerCase()})[^.]{0,90}?` +
+            `\\b(?:(?:shall|will|must)\\s+)?(?:continues?|remains?\\s+in\\s+(?:full\\s+force\\s+and\\s+)?effect)` +
+            `\\s+for\\s+(?:a\\s+period\\s+of\\s+)?(${METRIC_NUMBER})\\s+(year|month|day)s?`,
+          "g",
+        ),
+        (m) => withUnit(metricNumber(m[1]), m[2]!),
+      );
+      // "The Term is ten (10) years", "The initial term shall be one (1) year".
+      all(
+        new RegExp(
+          `\\b(?:the\\s+)?(?:initial\\s+)?term\\s+(?:is|(?:shall|will|must)\\s+be)\\s+(${METRIC_NUMBER})\\s+(year|month|day)s?`,
+          "g",
+        ),
+        (m) => withUnit(metricNumber(m[1]), m[2]!),
       );
       break;
     case "payment_term_days":
