@@ -5333,6 +5333,40 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-001",
     ],
   },
+  // A COMPLETE patent licence — the fifteenth clean document (9.647.0): an
+  // exclusive field-of-use grant with Bayh-Dole reserved rights, sublicensing
+  // that survives as a direct licence, diligence milestones with a
+  // convert-to-non-exclusive remedy, a running royalty that stops at the last
+  // Valid Claim in each country (Brulotte / Kimble), a combination-product
+  // ratio, a stacking credit with a floor, sublicensing-revenue tiers,
+  // prosecution control with a step-in at a bar date, § 287(a) marking,
+  // first-right enforcement with a recovery split, a challenge clause that
+  // preserves what may not be waived, a § 365(n) bankruptcy clause, and a
+  // country-by-country term that runs to a paid-up licence.
+  //
+  // ZERO rule defects — the first clean document to find none. That is the
+  // result, not the absence of one: the `patent-license` pack (IPL-007..012)
+  // and every always-on pack read textbook licensing drafting correctly.
+  //
+  // The one thing it moved was a DESCRIPTION rather than a finding: RISK-006
+  // said the payment carve-out was missing from a § 10.3 that carves out
+  // "Licensee's obligation to pay amounts due" — the literal noun phrase
+  // "payment obligations" is the rarer of the two spellings.
+  "patent-licence-complete.txt": {
+    playbook: "patent-license",
+    findings: [
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-006",
+      "RISK-007",
+      "RISK-010",
+      "STRUCT-018",
+      "TEMP-006",
+      "TEMP-008",
+    ],
+  },
+
   // A COMPLETE unit franchise agreement — the fourteenth clean document
   // (9.646.0): an FTC-Rule-compliant 14-day/7-day delivery recital, a protected
   // territory with reserved channels, site approval on stated criteria, an

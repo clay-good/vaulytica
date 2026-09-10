@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.647.0] — 2026-09-09
+
+### Added
+- `tests/fixtures/specimens/patent-licence-complete.txt` — the fifteenth clean
+  document, and the 327th specimen: an exclusive field-of-use grant with
+  Bayh-Dole reserved rights, sublicensing that survives termination as a direct
+  licence, diligence milestones with a convert-to-non-exclusive remedy, a
+  running royalty that stops at the last Valid Claim in each country
+  (*Brulotte* / *Kimble*), a combination-product ratio, a stacking credit with a
+  floor, sublicensing-revenue tiers, prosecution control with a step-in right at
+  a bar date, 35 U.S.C. § 287(a) marking, first-right enforcement with a
+  recovery split, a challenge clause that preserves what may not be waived, a
+  11 U.S.C. § 365(n) bankruptcy clause, and a country-by-country term that runs
+  to a paid-up licence.
+
+  **Zero rule defects — the first clean document to find none.** That is the
+  result rather than the absence of one: the `patent-license` pack
+  (IPL-007..012) and every always-on pack read textbook licensing drafting
+  correctly, and the document routed to its own family on its title.
+
+### Fixed
+- **A carve-out list names the payment obligation the way a drafter says it.**
+  RISK-006's `payment obligations` category matched only that literal noun
+  phrase, so a § 10.3 carving out "Licensee's **obligation to pay** amounts due"
+  was reported as missing the category — the same shape as the `indemnity` /
+  `indemnif` widening one row above it in the same table.
+
 ## [9.646.0] — 2026-09-09
 
 ### Fixed

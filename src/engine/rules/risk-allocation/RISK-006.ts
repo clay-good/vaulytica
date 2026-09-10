@@ -17,7 +17,13 @@ const TYPICAL = [
   ["indemnification", /\bindemnif|\bindemnit(?:y|ies)\b/i],
   ["IP indemnity", /(?:ip|intellectual\s+property)\s+indemnit/i],
   ["confidentiality breach", /confidential/i],
-  ["payment obligations", /payment\s+obligations?/i],
+  // Same shape as the `indemnity` widening above, one row down: a carve-out
+  // list names the payment obligation the way a drafter says it — "Licensee's
+  // OBLIGATION TO PAY amounts due", "Customer's obligation to pay fees" — and
+  // the literal noun phrase "payment obligations" is the rarer of the two. A
+  // complete patent licence carving out the obligation to pay was told the
+  // category was missing.
+  ["payment obligations", /payment\s+obligations?|obligations?\s+to\s+pay\b/i],
 ] as const;
 
 /**
@@ -116,7 +122,7 @@ function sectionMatch(
 /** RISK-006 — LoL exceptions list (info). */
 export const rule: Rule = {
   id: "RISK-006",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "LoL exceptions list",
   category: "risk-allocation",
   default_severity: "info",

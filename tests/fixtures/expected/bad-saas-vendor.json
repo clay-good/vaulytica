@@ -502,7 +502,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-006",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -1227,7 +1227,7 @@
       "explanation": "Typical LoL carve-outs include fraud, willful misconduct, IP indemnity, confidentiality breach, and accrued payment obligations. Missing categories may be deliberate but are worth confirming.",
       "id": "RISK-006-s1.4-784",
       "rule_id": "RISK-006",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "info",
       "source_citations": [],
       "title": "LoL exceptions: 1/6 typical carve-outs present"
@@ -1253,11 +1253,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "a4f2eeaba9d3f75035c538122c91a154eea9e239660adffd0b2d82e0bd3efcb7",
+  "result_hash": "35a2131d39570d6e9189c297b352515a79ef813005c9b30729c07d23c3a8ec6a",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.646.0"
+  "version": "9.647.0"
 }

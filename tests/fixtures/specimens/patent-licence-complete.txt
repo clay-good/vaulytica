@@ -1,0 +1,171 @@
+PATENT LICENSE AGREEMENT
+
+THIS PATENT LICENSE AGREEMENT (this "Agreement") is entered into as of February 24, 2026 (the "Effective Date") between Ravensworth Institute of Technology, a Massachusetts non-profit corporation with its principal place of business at 12 Quarry Row, Worcester, Massachusetts ("Licensor"), and Ilioux Therapeutics, Inc., a Delaware corporation with its principal place of business at 940 Sandpiper Way, San Carlos, California ("Licensee").
+
+RECITALS
+
+Licensor owns the patents and applications listed on Exhibit A, which arose from research at Licensor's Bioconjugation Laboratory. Licensee wishes to develop and sell products covered by those patents. The parties enter into this Agreement to permit that development on the terms below.
+
+1. Definitions.
+
+1.1 "Licensed Patents" means the patents and patent applications listed on Exhibit A, together with any continuation, divisional, continuation-in-part (to the extent its claims are entitled to the priority date of a listed application), reissue, reexamination certificate, extension, supplementary protection certificate, and any foreign counterpart of any of them.
+
+1.2 "Licensed Product" means a product whose manufacture, use, sale, offer for sale or importation would, but for the licence granted in Section 2, infringe a Valid Claim of the Licensed Patents in the country in which that act occurs.
+
+1.3 "Valid Claim" means a claim of an issued, unexpired patent within the Licensed Patents that has not been held invalid or unenforceable by a court or agency of competent jurisdiction in a decision from which no appeal can be taken, and that has not been abandoned, disclaimed or admitted to be invalid. A claim of a pending application is a Valid Claim only until the seventh anniversary of its earliest priority date, after which it is not a Valid Claim unless and until it issues.
+
+1.4 "Field of Use" means the treatment of human autoimmune disease by antibody-drug conjugates. It does not include diagnostics, veterinary use, or research-reagent sales.
+
+1.5 "Territory" means worldwide.
+
+1.6 "Net Sales" means the gross amount invoiced by Licensee, its Affiliates and its Sublicensees for the sale of a Licensed Product to a third party, less, to the extent actually allowed and taken: trade and quantity discounts; credits for returns, rejections and recalls; sales, use and value-added taxes and customs duties invoiced separately; outbound freight and insurance invoiced separately; and rebates and chargebacks required by a government payor. A transfer between Licensee, an Affiliate and a Sublicensee for resale is not a sale; the resale is. A transfer for use in a clinical trial, for compassionate use, or as a bona fide sample at no charge is not a sale.
+
+1.7 "Combination Product" means a Licensed Product sold together with one or more active components that are not covered by a Valid Claim, for a single price.
+
+1.8 "Affiliate" means an entity that controls, is controlled by, or is under common control with a party, where control means ownership of more than fifty percent (50%) of the voting equity, for so long as that relationship exists.
+
+1.9 "Sublicensee" means a third party to which Licensee grants a sublicence under Section 2.3.
+
+1.10 "Sublicensing Revenue" means consideration Licensee receives from a Sublicensee for the grant of a sublicence, excluding amounts that are royalties on the Sublicensee's Net Sales, payments for research or development work at no more than Licensee's fully burdened cost, reimbursement of patent costs, and equity purchased at no more than fair market value.
+
+2. Grant.
+
+2.1 Exclusive Licence. Licensor grants Licensee an exclusive licence, with the right to sublicense under Section 2.3, under the Licensed Patents, to make, have made, use, offer for sale, sell and import Licensed Products in the Field of Use in the Territory for the Term.
+
+2.2 Reserved Rights. Licensor reserves the right to practise the Licensed Patents, and to permit other non-profit and academic institutions to practise them, for research, teaching and other non-commercial purposes, including research sponsored by a third party where no rights in the results are granted to that third party beyond a non-exclusive research licence. This Agreement is subject to the rights of the United States government under 35 U.S.C. §§ 200–212 and its implementing regulations, including the requirement that a Licensed Product sold in the United States be substantially manufactured in the United States.
+
+2.3 Sublicensing. Licensee may grant sublicences within the scope of Section 2.1. Each sublicence shall be in writing, shall bind the Sublicensee to the terms of this Agreement that protect Licensor (including Sections 5, 6, 8, 9 and 12), and shall provide that it survives termination of this Agreement as a direct licence from Licensor on the same terms, provided the Sublicensee is not then in breach and agrees in writing to perform to Licensor. Licensee shall give Licensor a copy of each sublicence within thirty (30) days after signing, redacted only as to terms unrelated to the Licensed Patents.
+
+2.4 Improvements. Licensee owns the improvements it makes to the subject matter of the Licensed Patents. Licensor owns the improvements it makes. Neither party is obliged to license its improvements to the other, and no improvement is added to the Licensed Patents except by a written amendment signed by both parties.
+
+2.5 No Implied Licence. Except for the licence expressly granted in Section 2.1, neither party grants the other any right under its intellectual property, by implication, estoppel or otherwise.
+
+3. Diligence.
+
+3.1 Development Obligation. Licensee shall use commercially reasonable efforts to develop, obtain regulatory approval for, and commercialize at least one Licensed Product in the Field of Use, and shall furnish Licensor an annual written progress report on or before March 1 of each year describing the work done and the work planned.
+
+3.2 Milestones. Licensee shall achieve the following: first dosing of a human subject in a Phase 1 trial by December 31, 2028; first dosing in a Phase 3 trial by December 31, 2032; and first commercial sale by December 31, 2036. Licensee may extend any milestone once by twelve (12) months on written notice and payment of $75,000.
+
+3.3 Remedy for Failure. If Licensee fails to meet a milestone as extended, Licensor may, as its sole remedy for that failure, either convert the licence in Section 2.1 to a non-exclusive licence or terminate this Agreement, in each case on sixty (60) days' written notice, provided that the notice is of no effect if Licensee achieves the milestone within that period.
+
+4. Consideration.
+
+4.1 Licence Issue Fee. Licensee shall pay Licensor a non-refundable, non-creditable licence issue fee of $250,000 within thirty (30) days after the Effective Date.
+
+4.2 Annual Maintenance Fee. Licensee shall pay $50,000 on each anniversary of the Effective Date until the first commercial sale of a Licensed Product. Each payment is creditable against running royalties payable in the same calendar year.
+
+4.3 Milestone Payments. Licensee shall pay $1,000,000 on first dosing in a Phase 3 trial, $5,000,000 on the first approval of a Licensed Product by the United States Food and Drug Administration, and $3,000,000 on the first marketing authorization by the European Medicines Agency. Each milestone payment is due once, within forty-five (45) days after the event.
+
+4.4 Running Royalty. Licensee shall pay a running royalty of four percent (4%) of Net Sales of Licensed Products in each country, on a Licensed-Product-by-Licensed-Product and country-by-country basis, for so long as the manufacture, use or sale of that Licensed Product in that country is covered by a Valid Claim. No royalty is payable on Net Sales in a country after the last Valid Claim covering that Licensed Product in that country has expired, been abandoned or been held invalid, and this Agreement does not require a royalty on the practice of an expired patent.
+
+4.5 Combination Products. For a Combination Product, Net Sales are multiplied by A / (A + B), where A is the average invoiced price of the Licensed Product sold separately and B is the average invoiced price of the other active components sold separately, in the same country and period. If either is not sold separately, the parties shall agree in good faith on a fair adjustment based on their relative value, and failing agreement within sixty (60) days shall refer the question to an independent valuation expert whose determination is final.
+
+4.6 Royalty Stacking. If Licensee must obtain a licence from a third party to a patent that would otherwise be infringed by the manufacture, use or sale of a Licensed Product in a country, Licensee may credit fifty percent (50%) of the royalties it pays that third party against the royalties due under Section 4.4 in that country, provided that the royalty due under Section 4.4 is not reduced below two percent (2%) of Net Sales in any period.
+
+4.7 Sublicensing Revenue. Licensee shall pay Licensor twenty percent (20%) of Sublicensing Revenue received before the first dosing in a Phase 1 trial, and ten percent (10%) of Sublicensing Revenue received after it.
+
+4.8 Payment, Currency and Withholding. Royalties and Sublicensing Revenue accrue quarterly and are due within sixty (60) days after the end of each calendar quarter. Amounts invoiced in a currency other than United States dollars are converted at the rate Licensee uses in its audited financial statements for the same period. If law requires Licensee to withhold tax, Licensee shall pay the withheld amount to the authority, furnish Licensor the receipt, and cooperate with Licensor in obtaining any available treaty relief. An amount not paid when due bears interest at one percent (1%) per month or the maximum rate permitted by law, whichever is less.
+
+5. Reports, Records and Audit.
+
+5.1 Royalty Reports. With each payment under Section 4.8, Licensee shall furnish a report stating, by Licensed Product and country, units sold, gross invoiced amounts, each deduction taken in arriving at Net Sales, the royalty due, the currency conversion applied, and any credit taken under Section 4.6.
+
+5.2 Records. Licensee shall keep, and shall require its Affiliates and Sublicensees to keep, records sufficient to verify the amounts payable, for five (5) years after the period to which they relate.
+
+5.3 Audit. Once per calendar year, on thirty (30) days' notice, Licensor may have an independent certified public accountant reasonably acceptable to Licensee examine those records during business hours, solely to verify the amounts payable. The accountant shall report to Licensor only the amounts due and any discrepancy, and shall be bound by Section 8. Licensor bears the cost, except that Licensee bears it, and shall pay the shortfall with interest, if the audit shows an underpayment of more than five percent (5%) for the period audited.
+
+6. Patent Prosecution, Marking and Enforcement.
+
+6.1 Prosecution. Licensor shall control the preparation, filing, prosecution and maintenance of the Licensed Patents, using counsel reasonably acceptable to Licensee. Licensor shall give Licensee copies of material filings and office actions in time for Licensee to comment, and shall consider Licensee's comments in good faith. Licensee shall reimburse Licensor's documented out-of-pocket patent costs incurred after the Effective Date within forty-five (45) days of invoice, and shall reimburse the costs incurred before the Effective Date, stated on Exhibit B, in four equal quarterly instalments.
+
+6.2 Abandonment. If Licensor decides not to file, prosecute or maintain a Licensed Patent in a country, it shall notify Licensee at least sixty (60) days before the relevant bar date, and Licensee may take over that filing at its own cost, in which case Licensor assigns that patent or application in that country to Licensee and it ceases to be a Licensed Patent.
+
+6.3 Marking. Licensee shall mark Licensed Products, or their packaging where marking the product is impracticable, with the applicable patent numbers, or with the word "Patent" and a freely accessible internet address that associates the product with the patent numbers, in accordance with 35 U.S.C. § 287(a), and shall require its Affiliates and Sublicensees to do the same. Licensee shall comply with the marking laws of each other country in which Licensed Products are sold.
+
+6.4 Enforcement. Each party shall notify the other of a third party's infringement of a Licensed Patent in the Field of Use of which it becomes aware. Licensee has the first right, at its own cost, to bring an action against that infringement, using counsel reasonably acceptable to Licensor, and shall keep Licensor informed. If Licensee does not bring an action within one hundred twenty (120) days after notice, Licensor may do so at its own cost. The party not controlling an action shall join as a party if necessary for standing, at the controlling party's expense, and shall cooperate. Neither party may settle in a way that admits the invalidity or unenforceability of a Licensed Patent, or that grants a licence under a Licensed Patent outside the settling party's own rights, without the other's written consent.
+
+6.5 Recoveries. A recovery is applied first to each party's out-of-pocket litigation costs, pro rata if it is insufficient. Of the remainder, the party that controlled the action retains seventy-five percent (75%) and pays twenty-five percent (25%) to the other, except that the portion of a recovery representing lost sales of Licensed Products is treated as Net Sales and bears the royalty in Section 4.4.
+
+6.6 Third-Party Infringement Claims. If a third party asserts that the manufacture, use or sale of a Licensed Product infringes that third party's patent, Licensee shall defend at its own cost and shall notify Licensor. Licensor shall cooperate at Licensee's expense. Section 4.6 governs any royalty Licensee must pay to resolve the claim.
+
+7. Validity and Challenge.
+
+7.1 No Challenge by Sublicensees. Licensee shall include in each sublicence a term permitting Licensor to terminate the sublicence if the Sublicensee challenges the validity or enforceability of a Licensed Patent, other than as a defence to an infringement claim brought against it.
+
+7.2 Challenge by Licensee. If Licensee brings or funds a proceeding challenging the validity or enforceability of a Licensed Patent, other than as a defence to a claim brought against it, the running royalty in Section 4.4 doubles for the duration of the proceeding and Licensee shall pay Licensor's costs of the proceeding if the challenge does not succeed. Licensee is not obliged to continue paying royalties on a claim finally held invalid, and nothing in this Section requires Licensee to waive a right that may not be waived as a matter of law.
+
+8. Confidentiality.
+
+8.1 Obligation. Each party shall keep the other's non-public information confidential, use it only to perform this Agreement, and disclose it only to personnel, Affiliates, Sublicensees and advisors who need it and are bound by equivalent obligations. These obligations continue for seven (7) years after the end of the Term, and indefinitely for anything that is a trade secret.
+
+8.2 Exceptions. Section 8.1 does not apply to information that is public through no fault of the receiving party, was known to it without a duty of confidence, is received from a third party free to disclose it, or is independently developed without use of the disclosing party's information. A party may disclose as required by law, by a securities regulator, or by a court order if it gives the other prompt notice, to the extent legally permitted, and cooperates in seeking protective treatment. Licensee may disclose the terms of this Agreement to an actual or prospective investor, acquirer, Sublicensee or lender under a written confidentiality obligation.
+
+8.3 Publication. Licensor may publish the results of its own research, including research underlying the Licensed Patents. Licensor shall give Licensee a copy at least forty-five (45) days before submission, shall remove Licensee's confidential information at Licensee's request, and shall delay publication by up to ninety (90) days from that date at Licensee's written request so that a patent application may be filed.
+
+9. Representations, Warranties and Disclaimers.
+
+9.1 Authority. Each party represents that it has the authority to enter into this Agreement and that doing so does not breach an agreement to which it is a party.
+
+9.2 Title. Licensor represents that, as of the Effective Date, it owns the Licensed Patents listed on Exhibit A, has not granted a licence under them in the Field of Use to any other party, and is not aware of a third-party claim that the Licensed Patents are invalid.
+
+9.3 Disclaimer. Licensor does not warrant that the Licensed Patents are valid or enforceable, that a patent will issue from any application, or that the manufacture, use or sale of a Licensed Product will not infringe a third party's rights. Except as stated in Sections 9.1 and 9.2, Licensor disclaims all warranties, express and implied, including the implied warranties of merchantability and fitness for a particular purpose.
+
+10. Indemnification and Insurance.
+
+10.1 Indemnity. Licensee shall defend Licensor, its trustees, officers, employees and students against a third-party claim arising from the development, manufacture, use, sale or importation of a Licensed Product by Licensee, its Affiliates or its Sublicensees, and shall indemnify them for damages and reasonable attorneys' fees finally awarded or paid in settlement, except to the extent the claim arises from Licensor's gross negligence or willful misconduct. Licensor shall notify Licensee promptly of a claim, and Licensee shall control the defense with counsel reasonably acceptable to Licensor. No settlement imposing a non-monetary obligation on Licensor, or admitting its liability, may be made without its written consent.
+
+10.2 Insurance. From the first dosing of a human subject, Licensee shall maintain commercial general liability insurance including products liability and clinical trial coverage of at least $5,000,000 per occurrence, shall name Licensor as an additional insured, shall furnish certificates on request, and shall give Licensor thirty (30) days' notice of cancellation. The insurance shall be kept in force during the Term and for five (5) years after the last commercial sale.
+
+10.3 Limitation of Liability. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS. LICENSOR'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO THE AMOUNTS LICENSEE HAS PAID LICENSOR UNDER THIS AGREEMENT. These limits do not apply to Licensee's obligations under Section 10.1, to Licensee's obligation to pay amounts due, to either party's breach of Section 8, or to either party's gross negligence, willful misconduct or fraud.
+
+11. Term and Termination.
+
+11.1 Term. This Agreement begins on the Effective Date and, unless terminated earlier, continues on a country-by-country basis until the expiration of the last Valid Claim covering a Licensed Product in that country (the "Term"). On expiration in a country, the licence in Section 2.1 becomes fully paid, irrevocable and royalty-free in that country.
+
+11.2 Termination by Licensee. Licensee may terminate this Agreement in whole, or as to a country or a Licensed Patent, on ninety (90) days' written notice.
+
+11.3 Termination by Licensor. Licensor may terminate this Agreement if Licensee materially breaches it and fails to cure within sixty (60) days after written notice describing the breach, except that the cure period is thirty (30) days for a failure to pay. Licensor may terminate immediately if Licensee becomes insolvent, makes an assignment for the benefit of creditors, or has a bankruptcy proceeding commenced against it that is not dismissed within sixty (60) days. Licensor may terminate under Section 3.3 for a missed milestone.
+
+11.4 Effect of Termination. On termination other than by expiration, the licence in Section 2.1 ends; Licensee shall pay all amounts accrued to the effective date of termination and furnish a final report within sixty (60) days; and Licensee, its Affiliates and its Sublicensees may sell Licensed Products in inventory or in process on that date for up to six (6) months, subject to the royalty in Section 4.4. A sublicence continues as a direct licence from Licensor on the terms of Section 2.3.
+
+11.5 Survival. Sections 1, 4 (as to amounts accrued before termination), 5.2, 5.3, 6.5, 8, 9.3, 10, 11.4, 11.5 and 12 survive expiration or termination of this Agreement.
+
+12. General.
+
+12.1 Governing Law. This Agreement is governed by the laws of the Commonwealth of Massachusetts, excluding its conflict-of-laws rules, except that questions of patent validity, enforceability, inventorship and infringement are governed by the patent law of the country in which the patent was granted.
+
+12.2 Venue. The state and federal courts located in Suffolk County, Massachusetts have exclusive jurisdiction over any dispute arising out of this Agreement, and each party consents to personal jurisdiction and venue there.
+
+12.3 Notices. Notices must be in writing and are effective on delivery when sent by hand, by nationally recognized overnight courier, or by certified mail to the addresses in the preamble, with a copy to each party's general counsel at the same address. A party may change its notice address on written notice.
+
+12.4 Assignment. Neither party may assign this Agreement without the other's written consent, except that either party may assign it in full, on written notice, to a successor to all or substantially all of the business to which this Agreement relates, provided the successor assumes it in writing. An assignment in breach of this Section is void.
+
+12.5 Bankruptcy. The licence granted in Section 2.1 is a licence to rights to intellectual property as defined in 11 U.S.C. § 101(35A), and Licensee retains the elections available to it under 11 U.S.C. § 365(n).
+
+12.6 Export and Compliance. Each party shall comply with the laws applicable to its performance, including the Export Administration Regulations, economic sanctions administered by the Office of Foreign Assets Control, and the U.S. Foreign Corrupt Practices Act.
+
+12.7 Use of Name. Neither party may use the other's name or trademarks in a press release or marketing material without the other's prior written consent, except that Licensee may state the existence and general subject matter of this Agreement where required by law or a securities regulator.
+
+12.8 Independent Contractors. The parties are independent contractors. Nothing in this Agreement creates a partnership, joint venture, agency or employment relationship.
+
+12.9 No Waiver. A party's failure or delay in enforcing a provision is not a waiver of it, and a waiver on one occasion is not a waiver on any other.
+
+12.10 Severability. If a provision is held unenforceable, it is modified to the least extent necessary to make it enforceable, and the remaining provisions stay in effect.
+
+12.11 Entire Agreement. This Agreement, with Exhibits A and B, is the entire agreement between the parties about its subject matter and supersedes all prior agreements and understandings about it, including the option agreement between the parties dated August 15, 2025. It may be amended only by a writing signed by both parties.
+
+12.12 Counterparts. This Agreement may be signed in counterparts, including by electronic signature, each of which is an original and all of which together are one agreement.
+
+IN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.
+
+RAVENSWORTH INSTITUTE OF TECHNOLOGY
+
+By: /s/ Perpetua Ravensworth-Adeyemi
+Name: Perpetua Ravensworth-Adeyemi
+Title: Director, Office of Technology Transfer
+
+ILIOUX THERAPEUTICS, INC.
+
+By: /s/ Casimir Ilioux
+Name: Casimir Ilioux
+Title: Chief Executive Officer

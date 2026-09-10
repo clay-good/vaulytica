@@ -106,3 +106,17 @@ describe("RISK-006 — the section, not the paragraph (v1.4.0)", () => {
     expect(f).toBeNull();
   });
 });
+
+// A carve-out list names the payment obligation the way a drafter says it.
+describe("RISK-006 — the obligation to pay (v1.5.0)", () => {
+  it('reads "obligation to pay" as the payment carve-out', () => {
+    const f = RISK_006.check(
+      buildContext([
+        "Liability",
+        "10.3 Limitation of Liability. Neither party is liable for indirect damages. These " +
+          "limits do not apply to Licensee's obligation to pay amounts due.",
+      ]),
+    );
+    expect(f?.description).toContain("Present: payment obligations");
+  });
+});

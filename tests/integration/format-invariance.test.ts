@@ -746,6 +746,7 @@ const HYPHEN_WRAP_DEBT: readonly string[] = [
   "lease-assignment-retail.txt: lost - gained CHOICE-004,CHOICE-009,CHOICE-012",
   "ma-restrictive-covenant.txt: lost OBLI-002 gained -",
   "msa-customer-side.txt: lost TERM-001,TERM-003 gained -",
+  "patent-licence-complete.txt: lost - gained CHOICE-004,CHOICE-009,CHOICE-012",
   "physician-employment.txt: lost - gained CHOICE-003",
   "saas-tos.txt: lost - gained CHOICE-003",
   "separation-agreement.txt: lost - gained RISK-001",
