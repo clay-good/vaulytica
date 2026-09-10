@@ -1079,3 +1079,42 @@ describe("scanSensitive — checksummed identifiers", () => {
     expect(facts("Vehicle 1HGCM82633A004352 was delivered.")[0]?.masked).not.toContain("1HG");
   });
 });
+
+/**
+ * National Provider Identifier — and why the bare form is graded LOW.
+ *
+ * An NPI is ten digits beginning 1 or 2, checked by Luhn over `80840` + the
+ * number. A US area code may also begin with 2, so "2125551234" written
+ * without separators has roughly a one-in-ten chance of passing by accident —
+ * and `PHONE` requires separators, so nothing else contradicts the guess. Same
+ * grading the module already gives a bare SSN, for the same reason: the
+ * structure is right and the context is missing.
+ */
+describe("scanSensitive — National Provider Identifier", () => {
+  const facts = (text: string) => scanSensitive(text);
+  const types = (text: string): string[] => facts(text).map((f) => f.type);
+
+  it("detects a labelled NPI at high confidence", () => {
+    const [f] = facts("National Provider Identifier 1234567893 on the claim.");
+    expect(f?.type).toBe("npi");
+    expect(f?.confidence).toBe("high");
+  });
+
+  it("detects a bare NPI, but only at low confidence", () => {
+    const [f] = facts("Provider 1245319599 submitted the claim.");
+    expect(f?.type).toBe("npi");
+    expect(f?.confidence).toBe("low");
+  });
+
+  it("rejects a ten-digit run whose check digit fails", () => {
+    // Positive half first, so this cannot pass on a scanner returning nothing.
+    expect(types("Provider 1245319599 submitted the claim.")).toContain("npi");
+    expect(types("Reference 1234567890 applies.")).not.toContain("npi");
+  });
+
+  it("leaves a separated phone number to the phone detector", () => {
+    const t = types("Call us on (212) 555-1234 during business hours.");
+    expect(t).toContain("phone");
+    expect(t).not.toContain("npi");
+  });
+});

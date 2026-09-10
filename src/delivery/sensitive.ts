@@ -25,6 +25,7 @@ import {
   itinStructurallyValid,
   ibanValid,
   vinCheckDigitValid,
+  npiValid,
 } from "./mask.js";
 
 /** Cap the scanned text — a 5 MB body is already an enormous document. */
@@ -158,6 +159,26 @@ const HEALTH_PLAN =
  * every vehicle not sold into the US market would be the wrong trade for a
  * scan whose job is to find what is there.
  */
+/**
+ * National Provider Identifier, in both the labelled and bare forms.
+ *
+ * ⚠️ **The bare form is graded LOW, and the reason is a phone number.** An NPI
+ * is ten digits beginning 1 or 2, and a US area code may also begin with 2 —
+ * so "2125551234" written without separators has roughly a one-in-ten chance
+ * of passing the Luhn check by accident. `PHONE` requires separators and would
+ * not catch it, so nothing else contradicts the guess.
+ *
+ * That is the same grading the module already gives a bare SSN, and for the
+ * same reason: the structure is right and the context is missing. A LABELLED
+ * NPI has both, so it is high.
+ *
+ * Zero ten-digit runs beginning 1 or 2 exist anywhere in the corpus, labelled
+ * or not, so this is additive either way.
+ */
+const NPI_LABELLED =
+  /\b(?:NPI|national\s+provider\s+identifier)\s*(?:no\.?|number|#)?\s*[:#]?\s*([12]\d{9})\b/gi;
+const NPI_BARE = /\b([12]\d{9})\b/g;
+
 const IBAN_SHAPE = /\b([A-Z]{2}\d{2}(?:[ -]?[A-Z0-9]{4}){2,7}(?:[ -]?[A-Z0-9]{1,3})?)\b/g;
 const VIN_SHAPE = /\b([A-HJ-NPR-Z0-9]{17})\b/g;
 const VIN_LABELLED =
@@ -261,6 +282,12 @@ export function scanSensitive(text: string): SensitiveFact[] {
   // (the SSA never issues 900+) — so it fell through the SSN detector by
   // design and through everything else by omission. It is what a non-resident
   // or undocumented worker has INSTEAD of an SSN.
+  while ((m = NPI_LABELLED.exec(body)) !== null) {
+    if (npiValid(m[1]!)) push("npi", "high", maskDigits(m[1]!, 4), m[1]!);
+  }
+  while ((m = NPI_BARE.exec(body)) !== null) {
+    if (npiValid(m[1]!)) push("npi", "low", maskDigits(m[1]!, 4), m[1]!);
+  }
   while ((m = IBAN_SHAPE.exec(body)) !== null) {
     if (ibanValid(m[1]!)) push("iban", "high", maskAlphanumeric(m[1]!, 4), m[1]!);
   }

@@ -177,6 +177,18 @@ export function vinCheckDigitValid(value: string): boolean {
   return v[8] === expected;
 }
 
+/**
+ * NPI check digit — Luhn over `80840` + the ten-digit number (CMS).
+ *
+ * The 80840 prefix is the ISO 7812 issuer identifier the NPI standard borrows
+ * so the number validates as a card-style Luhn value. Verified against three
+ * published NPIs and against one of them with a digit changed.
+ */
+export function npiValid(digits: string): boolean {
+  if (!/^[12]\d{9}$/.test(digits)) return false;
+  return luhnValid("80840" + digits);
+}
+
 export function ssnStructurallyValid(area: string, group: string, serial: string): boolean {
   const a = Number(area);
   const g = Number(group);

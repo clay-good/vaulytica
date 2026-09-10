@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.685.0] — 2026-09-10
+
+The third of the three 9.683.0 deferred — and it turned out to carry a checksum
+after all.
+
+### Added
+- **National Provider Identifier.** An NPI is ten digits beginning 1 or 2,
+  validated by **Luhn over `80840` + the number** — the ISO 7812 issuer prefix
+  the NPI standard borrows so the value checks like a card. It was listed as
+  "ten bare digits with no context" a release ago; it is not.
+
+  ⚠️ **The bare form is graded LOW, and the reason is a phone number.** A US
+  area code may also begin with 2, so "2125551234" written without separators
+  has roughly a one-in-ten chance of passing by accident — and `PHONE` requires
+  separators, so nothing else in the module would contradict the guess. That is
+  the same grading a bare SSN already gets, for the same reason: the structure
+  is right and the context is missing. A **labelled** NPI has both and is high.
+
+  Verified against three published NPIs and against one of them with a digit
+  changed. Zero ten-digit runs beginning 1 or 2 exist anywhere in the corpus,
+  labelled or not, so this is additive and corpus findings stay at 69
+  documents.
+
+Remaining, and now genuinely a judgment rather than a gap: **SWIFT/BIC** (no
+checksum; the country code is the only constraint) and **IP address** (HIPAA
+identifier 16, but a dotted quad is a version string as often as an access
+log). Both would need a false-positive measurement this corpus cannot supply,
+because it contains neither.
+
 ## [9.684.0] — 2026-09-10
 
 The two 9.683.0 named as cheap because they carry checksums. They were.
