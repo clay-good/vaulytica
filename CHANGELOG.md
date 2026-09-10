@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.674.0] — 2026-09-10
+
+The half of 9.673.0's diagnosis that *was* engineering. The v3 report layer has
+a producer.
+
+### Added
+- 🥇 **`buildV3ReportInputs` — the cross-border transfers summary (§56), the
+  subprocessor inventory (§57) and the insurance schedule (§58) are reachable
+  for the first time.** Six renderers shipped with spec-v3, with tests behind
+  each, and `buildDocxReport` has accepted them as an optional fifth argument
+  ever since. **Nothing constructed it.** ~760 lines of code that shipped, was
+  tested, was specified, and could not be obtained from any surface.
+
+  Both surfaces go through the one producer — the CLI's `--format docx` and
+  both in-tab call sites — so the browser and a script render the same pages
+  from the same document. That is the parity this layer never had, and
+  `v3-report-reach.test.ts` now holds it: a surface that renders a DOCX must
+  build the sections, and must not construct the inputs by hand.
+
+  Cheap enough to run unconditionally — the nine v3 extractors take **~7.6ms
+  per document**, 2.5s across all 327 specimens — and not a theoretical
+  surface: **37 specimens carry a subprocessor inventory, 10 carry transfer
+  mechanisms, 3 carry an insurance schedule.** Roughly one document in seven.
+
+  🥇 **It found something on a document nobody would have thought to check.**
+  The complete patent licence's §10.2 requires commercial general liability at
+  **$5,000,000 per occurrence** with **thirty days' notice of cancellation**,
+  and the insurance page now says so — a page that existed only for COI
+  playbooks in anyone's mental model. Pinned as a test.
+
+  Every field is omitted rather than passed empty, and the caller passes
+  `undefined` when a document carries none of this, so a report without v3
+  language is byte-identical to the one rendered before this existed. **Zero
+  golden churn across 1,114 golden assertions.**
+
+### Not built, on purpose
+- 🚨 **The §54 compliance matrix.** Its cells cannot be derived from the data
+  that exists, and deriving them from a column LABEL would make this tool
+  render a legal conclusion. `inputs.test.ts` pins the negative and
+  `v3-report-reach.test.ts` watches the playbook schema for the mapping that
+  would change the answer. Full reasoning in BUILD_PROGRESS step 32 (b).
+
 ## [9.673.0] — 2026-09-10
 
 A re-diagnosis, not a feature. The v3 report layer has been picked up and put

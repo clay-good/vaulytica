@@ -24,6 +24,7 @@ import {
 } from "../ingest/multi.js";
 import type { IngestResult } from "../ingest/types.js";
 import { extractAll } from "../extract/index.js";
+import { buildV3ReportInputs, hasV3Sections } from "../report/v3/inputs.js";
 import { loadDkb } from "../dkb/index.js";
 import type { DKB } from "../dkb/types.js";
 import {
@@ -754,12 +755,19 @@ export async function runReport(
     relatedDocuments: prepared.related_documents,
     secondaryFamiliesOmitted: prepared.secondary_families_omitted,
   };
+  // The v3 report sections (§§56–58). Same producer the CLI uses, so the two
+  // surfaces render the same pages from the same document — the parity this
+  // layer never had, because nothing constructed the argument on either side.
+  const v3Inputs = buildV3ReportInputs(prepared.ingest.tree, {
+    parties: prepared.extracted.parties,
+    dkb_build_date: prepared.dkb.manifest.built_at,
+  });
   const docx_blob = await buildDocxReport(
     run,
     prepared.ingest,
     prepared.dkb,
     prepared.playbook,
-    undefined,
+    hasV3Sections(v3Inputs) ? v3Inputs : undefined,
     prepared.extracted,
     secondary_families,
     v9surfaces,
@@ -1377,12 +1385,16 @@ export async function prepareBundle(
       });
     }
 
+    const bundleV3 = buildV3ReportInputs(ingest.tree, {
+      parties: extracted.parties,
+      dkb_build_date: dkb.manifest.built_at,
+    });
     const docx_blob = await buildDocxReport(
       run,
       ingest,
       dkb,
       playbook,
-      undefined,
+      hasV3Sections(bundleV3) ? bundleV3 : undefined,
       extracted,
       secondary_families,
       secondarySelection.omitted > 0

@@ -275,6 +275,7 @@ import { buildNegotiationSheet } from "../../src/report/negotiation-sheet.js";
 import { dkbCurrency } from "../../src/report/citations.js";
 import { buildReviewedDocx } from "../../src/report/docx-comments.js";
 import { buildDocxReport } from "../../src/report/docx.js";
+import { buildV3ReportInputs, hasV3Sections } from "../../src/report/v3/inputs.js";
 import {
   buildBundleJsonBlob,
   buildBundleDocxReport,
@@ -1679,13 +1680,24 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         // the same v9 surfaces and secondary families threaded in — the only
         // thing that was ever missing here was the caller. Validated above:
         // --out is guaranteed.
+        // The v3 report sections — the cross-border transfers summary (§56),
+        // the subprocessor inventory (§57) and the insurance schedule (§58).
+        // Shipped and tested since spec-v3 and constructed by nothing until
+        // 9.674.0, so they could not be obtained from any surface. Passed only
+        // when the document actually carries that language, which keeps every
+        // other report byte-identical.
+        const docxExtracted = extractAll(r.ingest.tree);
+        const v3Inputs = buildV3ReportInputs(r.ingest.tree, {
+          parties: docxExtracted.parties,
+          dkb_build_date: deps.dkb.manifest.built_at,
+        });
         const blob = await buildDocxReport(
           r.run,
           r.ingest,
           deps.dkb,
           r.playbook,
-          undefined,
-          extractAll(r.ingest.tree),
+          hasV3Sections(v3Inputs) ? v3Inputs : undefined,
+          docxExtracted,
           r.secondary_families.length > 0 ? r.secondary_families : undefined,
           {
             delivery: r.delivery,
