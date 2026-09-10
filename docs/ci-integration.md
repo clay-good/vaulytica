@@ -213,8 +213,28 @@ a check on must not change the exit code of a job that was already passing — s
 `--fail-on` alone still does not gate. What it no longer does is stay quiet
 about it: that combination now warns on stderr and names the flag.
 
-Exit codes are CI-meaningful. **`2` means a gate you asked for was breached**,
-and `analyze` has seven of them, each scoped to what it reads:
+Exit codes are CI-meaningful. **`1` means the tool could not do the job you
+asked for** and **`2` means a gate you asked for was breached**.
+
+A **`1` that still produced a report** is worth knowing about: since 9.666.0, a
+file the tool cannot open — a corrupt `.docx`, a PDF with no valid structure —
+no longer takes the whole run down with it. The readable documents in a folder
+are analyzed and their report is written; each unreadable file is named with
+its reason as it is skipped, and the end of the run rolls them up:
+
+```
+vaulytica: 1 of 6 input(s) could not be read and are ABSENT from this report —
+the analysis below covers only the rest:
+  - deal-room/amendment.docx: Corrupted zip: can't find end of central directory
+```
+
+The exit code stays **1** in that case on purpose. A partial bundle reported as
+success is worse than the crash it replaces, so **CI cannot pass on a deal room
+the tool could only half read** — but the five documents it *could* read are no
+longer lost to the sixth it could not. A single unreadable input is still a
+hard error: there is nothing to survive for.
+
+`analyze` has seven gates, each scoped to what it reads:
 
 | Gate                             | Breaches on                                                                                        |
 | -------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -246,13 +266,25 @@ be dangerous the tool says something instead — `--delivery --fail-on critical`
 warns on stderr that the pre-disclosure findings it just reported are not what
 `--fail-on` reads.
 
-**Stream contract.** With a machine-readable format active (`json`, `sarif`,
-`csv`), stdout carries exactly one serialized artifact — every human summary,
-note, and progress line goes to stderr. So `vaulytica analyze x.docx --format
-json | jq .` and `--format csv > out.csv` just work, and a pipeline never has
-to strip a prefix line. Human formats (`md`, the default summaries) keep
-stdout. Exit codes are unaffected by the format choice. The contract is pinned
-per subcommand by `tests/integration/cli-stream-contract.test.ts`.
+**Stream contract.** With a format a **program parses** active — anything whose
+artifact is `.json`, `.csv` or `.ics` — stdout carries exactly one serialized
+artifact, and every human summary, note, and progress line goes to stderr. So
+`vaulytica analyze x.docx --format json | jq .`, `--format obligations-csv >
+o.csv` and `--format dates-ics > deadlines.ics` all just work, and a pipeline
+never has to strip a prefix line.
+
+This list used to be the literal three (`json`, `sarif`, `csv`) and six more
+machine-parsed formats had shipped since without joining it, so
+`obligations-csv` wrote a CSV whose header row was the third line and
+`dates-ics` wrote a file no calendar application would open (fixed in 9.658.0).
+It is derived from the artifact's own extension now, so a format added tomorrow
+is covered the day it is added.
+
+Human formats keep stdout on purpose: `md`, `checklist-md`, `dates-md`,
+`posture-md`, `html` and `posture-sheet` are read by a person, and the summary
+line is context rather than corruption. Exit codes are unaffected by the format
+choice. The contract is pinned per subcommand — and, since 9.658.0, over every
+format the CLI accepts — by `tests/integration/cli-stream-contract.test.ts`.
 
 Inside this repository the same commands run through `npm run cli -- <command>`.
 

@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.667.0] — 2026-09-10
+
+Docs, brought back in line with the two releases that changed what the CLI
+actually does. **Grep the CLAIM, not the file** — a false statement propagates
+by copy-paste and the copies outlive the original.
+
+### Changed
+- **`docs/ci-integration.md`'s stream contract still named the literal three.**
+  It read *"With a machine-readable format active (`json`, `sarif`, `csv`)"* —
+  the exact sentence 9.658.0 made false, and the same list that had gone stale
+  in the code. It now states the rule the code derives: any format whose
+  artifact is `.json`, `.csv` or `.ics`, with the six that were missing named
+  explicitly and the human formats (`md`, `checklist-md`, `dates-md`,
+  `posture-md`, `html`, `posture-sheet`) documented as keeping stdout on
+  purpose.
+
+- **The exit-code section did not distinguish `1` from `2`, and now has to.**
+  9.666.0 introduced a `1` that still produces a report: a folder whose
+  unreadable files were skipped, named, and rolled up, with the readable ones
+  analyzed. That is a materially different thing for a CI author to reason
+  about than a crash, and the section now shows the roll-up verbatim and says
+  why the exit code stays non-zero — a partial bundle reported as success is
+  worse than the crash it replaces.
+
+Also probed and clean, recorded so it is not re-run: a 426 KB / 65,430-word
+contract analyzes in **2.75s**, and the adversarial shapes this repo has hung
+on before — a 3,000-line table of contents with dot leaders, 20,000 consecutive
+commas, a 615 KB single paragraph, 3,000 nested parentheses — all finish in
+**under 3 seconds**. The quadratic guards hold.
+
 ## [9.666.0] — 2026-09-10
 
 Found by putting one damaged `.docx` in a deal room of five perfectly readable
