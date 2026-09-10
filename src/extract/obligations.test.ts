@@ -77,6 +77,33 @@ describe("extractObligations", () => {
     expect(obli?.nested_triggers?.join(" ")).toMatch(/written notice/);
   });
 
+  it("does not split a nested trigger on a DEMONSTRATIVE that", () => {
+    // Splitting on the bare word decomposed "if that changes" into
+    // ["if", "changes"]. A demonstrative `that` names WHICH ONE and opens no
+    // sub-condition, so there is nothing to decompose here.
+    const tree = buildTree([
+      "Jurisdiction",
+      "The Company shall file the action in the Court of Chancery, and if that court lacks " +
+        "jurisdiction the Company shall file in the Superior Court.",
+    ]);
+    for (const o of extractObligations(tree, [])) {
+      expect(o.nested_triggers, `decomposed ${JSON.stringify(o.trigger)}`).toBeUndefined();
+    }
+  });
+
+  it("does not split on a purposive so-that", () => {
+    // "so that X can meet the deadline" states a PURPOSE, not a condition the
+    // duty waits on — and the clause after it is not a sub-trigger.
+    const tree = buildTree([
+      "Requests",
+      "The Service Provider shall respond within ten (10) business days of the Business's " +
+        "request so that the Business can meet the forty-five (45) day statutory deadline.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis.length).toBeGreaterThan(0);
+    for (const o of oblis) expect(o.nested_triggers).toBeUndefined();
+  });
+
   it("captures a scope-narrowing obligor exclusion", () => {
     const tree = buildTree([
       "Confidentiality",

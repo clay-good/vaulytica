@@ -295,9 +295,26 @@ function splitModalClauses(
  * "that …" conditions; extraction otherwise keeps only the top level.
  * Returns the ordered sub-clauses, or undefined when there is no nesting.
  */
+/**
+ * 🚨 **`that` is not always a complementizer, and splitting on the bare word
+ * turned a trigger into nonsense.** "if that changes" decomposed to
+ * `["if", "changes"]`; "within thirty (30) days of entry of that order — that
+ * is" to `["within thirty (30) days of entry of", "order —", "is"]`. A
+ * DEMONSTRATIVE `that` names WHICH ONE ("that court", "that person", "that
+ * order") and opens no sub-condition at all.
+ *
+ * The test is the determiner lookahead `LEADING_SUBORDINATOR` already uses on
+ * the obligor for exactly this distinction — a complementizer is followed by a
+ * new subject, a demonstrative by the noun it modifies. `so that` is excluded
+ * separately: it states a PURPOSE ("so that the Business can meet the
+ * forty-five (45) day statutory deadline"), not a condition the duty waits on.
+ */
+const NESTED_COMPLEMENTIZER =
+  /(?<!\bso\s)\bthat\s+(?=(?:the|a|an|its|his|her|their|our|your|each|any|no|such|all|either|both|every|this|these|those|it)\s+\S)/gi;
+
 function decomposeNestedTriggers(trigger: string): string[] | undefined {
   const parts = trigger
-    .split(/\bthat\b/i)
+    .split(NESTED_COMPLEMENTIZER)
     .map((p) => trimEdges(p, /[\s,]/))
     .filter((p) => p.length > 0);
   return parts.length >= 2 ? parts : undefined;

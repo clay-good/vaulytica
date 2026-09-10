@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.691.0] — 2026-09-10
+
+### Fixed
+- 🚨 **`nested_triggers` decomposed "if that changes" into `["if",
+  "changes"]`.** The chain of sub-conditions was produced by splitting the
+  trigger on the bare word `that`, and a DEMONSTRATIVE `that` names WHICH ONE
+  rather than opening a sub-clause. "within thirty (30) days of entry of that
+  order — that is" came apart into three fragments; "upon receipt of an
+  undertaking by that person to repay all amounts advanced …" lost the person
+  the undertaking is from.
+
+  🥇 **The distinction was already drawn next door.** `LEADING_SUBORDINATOR`
+  tells a complementizer from a demonstrative with a determiner lookahead — a
+  complementizer is followed by a new subject, a demonstrative by the noun it
+  modifies — and applies it to the obligor a few lines away. `so that` is
+  excluded separately, because it states a PURPOSE ("so that the Business can
+  meet the forty-five (45) day statutory deadline") and not a condition the
+  duty waits on.
+
+  Populated triggers over the corpus drop **24 → 6**, and all six are now
+  genuine two-condition chains: "if it is ultimately determined **that** the
+  person is not entitled to indemnification", "if it determines **that** it can
+  no longer meet its obligations under Applicable Privacy Law". Eighteen were
+  noise.
+
+  ⚠️ **The field is still computed and still rendered nowhere.** No §-numbered
+  spec section calls for a decomposed trigger, and every surface that shows a
+  trigger shows it whole, so giving this a consumer would be inventing a
+  feature rather than delivering one. It is recorded here as correct-and-dormant
+  rather than left correct-looking and wrong — a dead field that is also wrong
+  is what produced the obligor misattributions in 9.689.0.
+
 ## [9.690.0] — 2026-09-10
 
 ### Fixed
