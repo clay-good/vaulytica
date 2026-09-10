@@ -135,7 +135,7 @@ export function isStatutoryIdiomUse(
   // a word that is not its defined term, in the one sentence where the phrase
   // is not the drafter's to choose.
   if (lower === "products") {
-    return /^\s*(?:[-\u2013\/]|\s+and)\s*completed\s+operations\b/i.test(
+    return /^\s*(?:[-\u2013/]|\s+and)\s*completed\s+operations\b/i.test(
       text.slice(index + matchLength, index + matchLength + 32),
     );
   }

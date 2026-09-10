@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.651.0] — 2026-09-10
+
+Found by **reading the negotiation ladder** the fifteen clean documents produce.
+The ladder is the last of the derived artifacts never asked of correct drafting,
+and both defects share a failure shape the register's did not: a metric that
+locates no value is reported **unevaluable**, and an unevaluable dimension does
+not read as a wrong answer — it drops off the ladder the negotiator reads,
+silently.
+
+### Fixed
+- 🥇 **The commonest liability cap in commercial contracting was unreadable.**
+  `liability_cap_multiple` read only an explicit multiplier — "12x fees", "two
+  times the aggregate fees". But the ordinary cap writes no multiplier at all:
+  *"each party's total liability is limited to the fees paid in the twelve (12)
+  months before the event giving rise to the claim"*. That **is** a cap of one
+  times fees; a negotiator calls it a 1x cap. Measured over the 327-specimen
+  corpus, the explicit form appears in **zero** documents and the implicit form
+  in **twenty** — so the dimension the shipped `saas-buyer` example ladder leads
+  with ("Liability cap must be at least 12x fees", severity `critical`) had
+  never once evaluated against any document in the repo.
+
+  A cap stated as a **sum** stays out: "limited to One Million Dollars
+  ($1,000,000)" and "shall not exceed the escrow amount" are not multiples of
+  anything, and `liability_cap_amount` is the metric that reads those. A
+  greater-of cap is admitted for its fee component, which is what this metric
+  names. Six tests pin both directions, and an explicit "two times the fees"
+  still reads 2 rather than gaining a spurious second value of 1.
+
+- 🥇 **`days'` — the plural possessive — was spelled `days's`.** The
+  `notice_period_days` pattern read `days(?:['’]s)?`, an apostrophe that
+  *requires* a trailing "s". No contract writes "sixty (60) days's written
+  notice"; every one of them writes **`days'`**. One character (`s` → `s?`)
+  took the metric from locating a notice period in **14 of 327 specimens to
+  108**. Same lesson as
+  [`spelled-period`](tests/integration/spelled-period.test.ts) and the
+  straight-vs-curly apostrophe before it: a convention has a third spelling, and
+  the guard written for the second cannot see it. Swept the tree for the same
+  shape — every other `['’]s` in `src/` is a singular possessive
+  ("Customer's", "the party's") and correct as written.
+
+Neither fix moves a finding: the posture is computed by
+`custom-interpreter.ts` from the document text and carries its own
+`posture_hash` outside `result_hash`. `posture-format-invariance.test.ts` — the
+relation over 327 specimens under five format transforms — stays green, so the
+new readings are format-invariant. The only golden churn in this release is the
+engine-version stamp.
+
 ## [9.650.0] — 2026-09-09
 
 Found by **reading the critical-dates register** the fifteen clean documents

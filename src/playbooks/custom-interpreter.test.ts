@@ -853,6 +853,137 @@ describe("runCustomPlaybook — determinism", () => {
   });
 });
 
+/**
+ * The commonest liability cap in commercial contracting writes no multiplier.
+ *
+ * "Each party's total liability is limited to the fees paid in the twelve (12)
+ * months before the event giving rise to the claim" is a cap of ONE times
+ * fees, and until 9.651.0 `liability_cap_multiple` read only the explicit form
+ * ("12x fees", "two times the aggregate fees"). Measured over the 327-specimen
+ * corpus the explicit form appears in **zero** documents and the implicit form
+ * in **twenty**, so the dimension the shipped `saas-buyer` ladder leads with
+ * was unevaluable on every document the repo has — a dimension that silently
+ * drops off the ladder rather than reading as a wrong answer.
+ */
+/**
+ * A notice period's ordinary spelling carries a PLURAL possessive.
+ *
+ * "sixty (60) days' written notice" — apostrophe, no trailing "s". The class
+ * read `(?:['’]s)?`, which demands "days's", so the dominant spelling was
+ * invisible: 14 of 327 specimens located a notice period before 9.651.0 and
+ * 108 do now.
+ */
+describe("notice_period_days — the plural possessive", () => {
+  const NOTICE_RULE = {
+    id: "R1",
+    title: "Notice <= 30d",
+    description: "d",
+    severity: "warning" as const,
+    assert: {
+      kind: "numeric_threshold" as const,
+      metric: "notice_period_days" as const,
+      comparator: "lte" as const,
+      value: 30,
+    },
+  };
+
+  async function notice(body: string) {
+    return runCustomPlaybook(pb({ custom_rules: [NOTICE_RULE] }), {
+      tree: tree("Term and Termination", body),
+      extracted: emptyExtracted(),
+    });
+  }
+
+  it.each([
+    ["a straight apostrophe", "sixty (60) days' written notice"],
+    ["a curly apostrophe", "sixty (60) days’ written notice"],
+    ["no possessive at all", "sixty (60) days written notice"],
+    ["business days", "sixty (60) business days' prior written notice"],
+    ["digits alone", "60 days' notice"],
+  ])("reads a notice period written with %s", async (_label, phrase) => {
+    const run = await notice(`Either party may terminate for convenience on ${phrase}.`);
+    expect(run.unevaluable).toHaveLength(0);
+    expect(run.findings[0]!.explanation).toContain("notice_period_days = 60");
+  });
+});
+
+describe("liability_cap_multiple — a cap whose base is the fees", () => {
+  const CAP_RULE = {
+    id: "R1",
+    title: "Cap >= 12x",
+    description: "d",
+    severity: "warning" as const,
+    assert: {
+      kind: "numeric_threshold" as const,
+      metric: "liability_cap_multiple" as const,
+      comparator: "gte" as const,
+      value: 12,
+    },
+  };
+
+  async function cap(body: string) {
+    return runCustomPlaybook(pb({ custom_rules: [CAP_RULE] }), {
+      tree: tree("Limitation of Liability", body),
+      extracted: emptyExtracted(),
+    });
+  }
+
+  it("reads a fee-based cap that states no multiplier as 1x", async () => {
+    const run = await cap(
+      "Each party's total liability arising out of this Agreement is limited to " +
+        "the fees paid in the twelve (12) months before the event giving rise to the claim.",
+    );
+    expect(run.unevaluable).toHaveLength(0);
+    expect(run.findings).toHaveLength(1);
+    expect(run.findings[0]!.explanation).toContain("liability_cap_multiple = 1");
+  });
+
+  it("reads a greater-of cap for its fee component", async () => {
+    const run = await cap(
+      "Licensor's total liability is limited to the greater of the fees paid in the " +
+        "twenty-four (24) months before the claim and Five Hundred Thousand Dollars ($500,000).",
+    );
+    expect(run.unevaluable).toHaveLength(0);
+    expect(run.findings[0]!.explanation).toContain("liability_cap_multiple = 1");
+  });
+
+  it("reads a fee base named across intervening words", async () => {
+    const run = await cap(
+      "Licensor's aggregate liability shall not exceed the amounts Licensee has " +
+        "actually paid Licensor under this Agreement.",
+    );
+    expect(run.unevaluable).toHaveLength(0);
+    expect(run.findings[0]!.explanation).toContain("liability_cap_multiple = 1");
+  });
+
+  it("does not read an explicit multiplier as 1x as well", async () => {
+    const run = await cap(
+      "Provider's total liability shall not exceed two times the aggregate fees paid " +
+        "in the twelve (12) months before the claim.",
+    );
+    expect(run.findings[0]!.explanation).toContain("liability_cap_multiple = 2");
+    expect(run.findings[0]!.explanation).not.toContain("2, 1");
+  });
+
+  it("leaves a cap stated as a SUM to liability_cap_amount", async () => {
+    const run = await cap(
+      "Each Party's total liability arising out of this Agreement is limited to " +
+        "One Million Dollars ($1,000,000).",
+    );
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable[0]!.reason).toContain("liability_cap_multiple");
+  });
+
+  it("leaves an escrow-funded indemnity cap unevaluable", async () => {
+    const run = await cap(
+      "Seller's aggregate liability under Section 8.1(a) shall not exceed the escrow " +
+        "amount of One Million Two Hundred Fifty Thousand Dollars ($1,250,000).",
+    );
+    expect(run.findings).toHaveLength(0);
+    expect(run.unevaluable[0]!.reason).toContain("liability_cap_multiple");
+  });
+});
+
 // --- ladder fingerprint (spec-v15) ------------------------------------------
 
 describe("ladderHash — playbook ladder fingerprint", () => {

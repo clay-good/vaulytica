@@ -815,9 +815,19 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
 
   switch (metric) {
     case "notice_period_days":
+      // `days'` — an apostrophe with NO trailing "s" — is the possessive of a
+      // plural noun, and "sixty (60) days' written notice" is how a contract
+      // ordinarily states a notice period. The class here used to be
+      // `(?:['’]s)?`, which demands "days's": not English, and not written
+      // in any of the 327 specimens. It cost the corpus 94 documents — the
+      // metric located a notice period in 14 and now locates one in 108 — so
+      // the ladder dimension went unevaluable on almost every document that
+      // plainly states its notice, which reads as silence rather than as a
+      // wrong answer. Optional `s` covers all three spellings: `days`,
+      // `days'`, `days's`.
       all(
         new RegExp(
-          `(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days(?:['’]s)?\\s+(?:prior\\s+|advance\\s+)?(?:written\\s+)?notice`,
+          `(${METRIC_NUMBER})\\s+(?:calendar\\s+|business\\s+)?days(?:['’]s?)?\\s+(?:prior\\s+|advance\\s+)?(?:written\\s+)?notice`,
           "g",
         ),
         (m) => metricNumber(m[1]),
@@ -855,6 +865,34 @@ function extractMetricValues(metric: string, facts: DocFacts): number[] {
           "g",
         ),
         (m) => metricNumber(m[1]),
+      );
+      // The commonest liability cap in commercial contracting states no
+      // multiplier at all: "each party's total liability is limited to the
+      // fees paid in the twelve (12) months before the event giving rise to
+      // the claim". That IS a cap of one times fees — a negotiator calls it a
+      // 1x cap — and the multiplier pattern above cannot see it, because the
+      // document never writes the "1x". Over the 327-specimen corpus the
+      // multiplier pattern locates a value in ZERO documents and this one
+      // locates twenty, so without it the dimension the shipped `saas-buyer`
+      // ladder leads with ("Liability cap must be at least 12x fees",
+      // severity critical) is unevaluable on every document the repo has —
+      // and an unevaluable dimension does not read as a wrong answer, it
+      // drops off the ladder silently.
+      //
+      // The base must be the FEES. A cap stated as a sum ("limited to One
+      // Million Dollars ($1,000,000)", "not exceed the escrow amount") is not
+      // a multiple of anything and stays out; `liability_cap_amount` is the
+      // metric that reads those. A greater-of cap ("the greater of the fees
+      // paid in the twelve (12) months and $500,000") is admitted for its fee
+      // component, which is what this metric names.
+      all(
+        new RegExp(
+          `liab[a-z]*[^.]{0,120}?(?:limited\\s+to|(?:shall|will|is|are|must)?\\s*not\\s+exceed|capped\\s+at)` +
+            `\\s+(?:the\\s+greater\\s+of\\s+)?(?:the\\s+)?(?:total\\s+|aggregate\\s+|annual\\s+|trailing\\s+)*` +
+            `(?:fees|amounts?(?:\\s+\\w+){0,3}?\\s+paid)`,
+          "g",
+        ),
+        () => 1,
       );
       break;
     case "liability_cap_amount":
