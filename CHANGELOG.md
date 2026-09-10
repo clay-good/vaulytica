@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.697.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A negotiation-posture row contradicted itself in two adjacent columns.**
+  Rendering the posture for the `saas-buyer` example ladder produced:
+
+  | Dimension | Tier | What we found | Guidance |
+  |---|---|---|---|
+  | Governing law | **Acceptable** | Governing law is New York; your playbook **allows only Delaware**. | New York or California **are acceptable**. |
+
+  The tier is right — the playbook's ideal is Delaware and its floor admits New
+  York, so the draft sits at `acceptable`. Carrying the ideal rung's violation
+  as the row's "what we found" is right too: it says *why* the draft is not
+  ideal. **The wording was wrong.** All four violation messages were written as
+  statements about the playbook as a whole ("your playbook allows only…",
+  "…requires it to be mutual", "…forbids it"), which is true only when a
+  position is BELOW THE FLOOR — and it is the acceptable tier that shows them.
+
+  `evaluatePredicate` now takes the rung it is evaluating, so an ideal-rung
+  violation says "your **ideal position** allows only Delaware" and the row
+  agrees with its own guidance. 🚨 **Below the floor the phrasing is
+  unchanged**, because there the violated rung IS the playbook's limit and
+  "your playbook" is exactly right — the load-bearing negative in the test.
+
+  This is a deal lead's artifact, taken into a negotiation. A row that says the
+  playbook forbids what the next column calls acceptable is not a cosmetic
+  defect: it is the tool disagreeing with itself about the client's own
+  position.
+
+  🥇 **Found by rendering the posture and reading it** — the seventh defect
+  this session from printing an artifact nobody had printed. `--posture`
+  requires a `--playbook-file`, which is why it had never been eyeballed.
+
+### Unchanged, and deliberately
+- The posture table's **Band** and **Met rung** columns render "—" on every row
+  of the example ladder. That is documented behaviour, not a dead column: they
+  are the schema-v3 ladder detail and the example playbook defines no
+  intermediate rungs.
+
 ## [9.696.0] — 2026-09-10
 
 ### Fixed

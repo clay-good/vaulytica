@@ -586,3 +586,58 @@ describe("a liability cap in another currency", () => {
     expect(p.positions[0]!.tier).toBe("ideal");
   });
 });
+
+describe("an acceptable row does not contradict its own guidance", () => {
+  // 🚨 A position that MEETS the floor but misses the ideal is reported at the
+  // `acceptable` tier carrying the IDEAL rung's violation as its "what we
+  // found" — that is the point, it says why the draft is not ideal. But every
+  // violation message was written as a statement about the playbook AS A
+  // WHOLE, so one row of the negotiation posture read:
+  //
+  //   | Governing law | Acceptable | Governing law is New York; your playbook
+  //   | ALLOWS ONLY DELAWARE. | New York or California ARE ACCEPTABLE. |
+  //
+  // — a flat contradiction between two adjacent columns, in an artifact a deal
+  // lead takes into a negotiation. The playbook does allow New York; the IDEAL
+  // does not.
+  const governingLaw: NegotiationPosition = {
+    dimension: "Governing law",
+    ideal: { kind: "governing_law_in", allowed: ["Delaware"] },
+    acceptable: { kind: "governing_law_in", allowed: ["Delaware", "New York", "California"] },
+    guidance: {
+      ideal: "Delaware — our preferred forum.",
+      acceptable: "New York or California are acceptable.",
+      walk_away: "Any other state — route to legal before agreeing.",
+    },
+  };
+
+  it("attributes the shortfall to the IDEAL rung, not the playbook", async () => {
+    const result = await posture(
+      ["This Agreement is governed by the laws of the State of New York."],
+      [governingLaw],
+    );
+    const row = result.positions[0]!;
+    expect(row.tier).toBe("acceptable");
+    expect(row.detail).toContain("your ideal position");
+    expect(row.detail, "the row says the playbook forbids what its guidance allows").not.toContain(
+      "your playbook",
+    );
+    // The shortfall is still stated — naming the rung must not silence it.
+    expect(row.detail).toContain("Delaware");
+    expect(row.guidance).toContain("New York or California");
+  });
+
+  it("still says 'your playbook' below the floor, where that is true", async () => {
+    // The load-bearing negative. Below the floor the ACCEPTABLE rung is what
+    // was violated, and that rung IS the playbook's limit — the whole-playbook
+    // phrasing is correct there and must not be reworded away.
+    const result = await posture(
+      ["This Agreement is governed by the laws of the Commonwealth of Massachusetts."],
+      [governingLaw],
+    );
+    const row = result.positions[0]!;
+    expect(row.tier).toBe("below-acceptable");
+    expect(row.detail).toContain("your playbook");
+    expect(row.detail).not.toContain("your ideal position");
+  });
+});

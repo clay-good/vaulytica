@@ -417,7 +417,7 @@ export async function ladderHash(playbook: CustomPlaybook): Promise<string | nul
  */
 function classifyPosition(pos: NegotiationPosition, facts: DocFacts): NegotiationPositionResult {
   const dimension = pos.dimension;
-  const ideal = evaluatePredicate(pos.ideal, facts);
+  const ideal = evaluatePredicate(pos.ideal, facts, "ideal");
   if (ideal.kind === "compliant") {
     return compact({ dimension, tier: "ideal", guidance: pos.guidance?.ideal });
   }
@@ -488,7 +488,36 @@ function excerptOf(text: string | undefined): string | undefined {
 // Predicate evaluation
 // ---------------------------------------------------------------------------
 
-function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcome {
+/**
+ * Which rung of the ladder a predicate is being evaluated for, so a violation
+ * can say what it actually violated.
+ *
+ * 🚨 A position that MEETS the floor but misses the ideal is reported at the
+ * `acceptable` tier with the IDEAL rung's violation as its "what we found" —
+ * that is the point, it says why the draft is not ideal. But every message was
+ * written as a statement about the playbook as a whole, so one row of the
+ * negotiation posture read:
+ *
+ *   | Governing law | **Acceptable** | Governing law is New York; your
+ *   | playbook **allows only Delaware**. | New York or California **are
+ *   | acceptable**. |
+ *
+ * — a flat contradiction between two adjacent columns, in an artifact a deal
+ * lead takes into a negotiation. The playbook allows New York; the IDEAL
+ * does not. Naming the rung is the difference.
+ */
+type LadderRung = "ideal" | "floor";
+
+/** How to refer to what a violated predicate came from, in prose. */
+function rungRef(rung: LadderRung): string {
+  return rung === "ideal" ? "your ideal position" : "your playbook";
+}
+
+function evaluatePredicate(
+  p: CustomPredicate,
+  facts: DocFacts,
+  rung: LadderRung = "floor",
+): PredicateOutcome {
   switch (p.kind) {
     case "clause_present": {
       const hit = findClause(p.pattern, p.section_heading, facts);
@@ -503,7 +532,7 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       if (!hit) return { kind: "compliant" };
       return {
         kind: "violated",
-        detail: `A clause matching ${describeClauseTarget(p.pattern, p.section_heading)} is present, but your playbook forbids it.`,
+        detail: `A clause matching ${describeClauseTarget(p.pattern, p.section_heading)} is present, but ${rungRef(rung)} forbids it.`,
         section_id: hit.section_id,
         clause_text: hit.text,
         position: hit.position,
@@ -550,7 +579,7 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       const g0 = usable[0]!;
       return {
         kind: "violated",
-        detail: `Governing law is ${found}; your playbook allows only ${p.allowed.join(", ")}.`,
+        detail: `Governing law is ${found}; ${rungRef(rung)} allows only ${p.allowed.join(", ")}.`,
         section_id: g0.position.section_id,
         clause_text: g0.raw_text,
         position: g0.position.start,
@@ -582,7 +611,7 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       if (mutual) return { kind: "compliant" };
       return {
         kind: "violated",
-        detail: `The ${p.clause} clause appears one-way — it carries no mutual / each-party / both-parties language; your playbook requires it to be mutual.`,
+        detail: `The ${p.clause} clause appears one-way — it carries no mutual / each-party / both-parties language; ${rungRef(rung)} requires it to be mutual.`,
         section_id: hit.section_id,
         clause_text: hit.text,
         position: hit.position,
@@ -612,7 +641,7 @@ function evaluatePredicate(p: CustomPredicate, facts: DocFacts): PredicateOutcom
       if (offending.length === 0) return { kind: "compliant" };
       return {
         kind: "violated",
-        detail: `Found ${p.metric} = ${offending.join(", ")}; your playbook requires ${p.metric} ${comparatorWord(p.comparator)} ${p.value}.`,
+        detail: `Found ${p.metric} = ${offending.join(", ")}; ${rungRef(rung)} requires ${p.metric} ${comparatorWord(p.comparator)} ${p.value}.`,
       };
     }
   }
