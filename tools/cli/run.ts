@@ -1063,7 +1063,7 @@ async function renderFormat(
     case "posture-csv":
       return buildNegotiationPostureCsv(r.negotiation_posture!);
     case "posture-sheet":
-      return buildNegotiationSheet(r.negotiation_posture!, r.playbook_id);
+      return buildNegotiationSheet(r.negotiation_posture!, r.playbook_id, caveats);
     case "definitions-csv":
       return buildDefinitionsCsv(definitions!);
   }

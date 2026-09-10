@@ -16,6 +16,7 @@
  * on the body means every cell wraps; no horizontal scroll at any width.
  */
 
+import type { ArtifactCaveats } from "./exports.js";
 import type {
   NegotiationPosture,
   NegotiationTier,
@@ -40,6 +41,8 @@ const STYLE = `
   h1 { font-size: 1.6rem; color: var(--mint); border-bottom: 2px solid var(--mint); padding-bottom:.3rem; }
   h2 { font-size: 1.15rem; margin-top: 1.6rem; }
   .counts { background:#f6f8f7; border:1px solid #dde3e1; border-radius:6px; padding:.6rem .9rem; margin:1rem 0; font-size:.9rem; }
+  .caveat { background:#fff8e6; border-left:4px solid #b8860b; padding:.6rem .9rem; margin:1rem 0; font-size:.9rem; }
+  .caveat strong { display:block; }
   .group { margin-top: 1rem; }
   ul.positions { list-style: none; padding: 0; margin:.5rem 0; }
   ul.positions li { border:1px solid #dde3e1; border-left-width:4px; border-radius:6px;
@@ -107,13 +110,32 @@ function renderPosition(p: NegotiationPositionResult, action: Action): string {
  * Build the standalone negotiation sheet as a single-file HTML string.
  * `title` is an optional document/playbook label for the header.
  */
-export function buildNegotiationSheet(posture: NegotiationPosture, title?: string): string {
+export function buildNegotiationSheet(
+  posture: NegotiationPosture,
+  title?: string,
+  caveats?: ArtifactCaveats,
+): string {
   const c = posture.counts;
   const body: string[] = [];
   body.push(`<h1>Negotiation sheet${title ? ` — ${esc(title)}` : ""}</h1>`);
   body.push(
     `<div class="counts">${c.below_acceptable} to escalate · ${c.acceptable} to push · ${c.unevaluable} to verify · ${c.ideal} holding</div>`,
   );
+  // The two facts about the ANALYSIS, above the ladder they qualify. This is
+  // the sheet a negotiator carries into a call: "no document family matched"
+  // and "this PDF fell back to OCR" change what every rung below means, and
+  // the sheet is separately obtainable as a file (`--format posture-sheet`),
+  // so the terminal that printed those to stderr is not in the room.
+  if (caveats?.warnings && caveats.warnings.length > 0) {
+    for (const w of caveats.warnings) {
+      body.push(`<div class="caveat"><strong>About this input.</strong>${esc(w)}</div>`);
+    }
+  }
+  if (caveats?.classification_notice) {
+    body.push(
+      `<div class="caveat"><strong>Document type not recognized.</strong>${esc(caveats.classification_notice.message)}</div>`,
+    );
+  }
 
   if (posture.positions.length === 0) {
     body.push("<p><em>No negotiation positions were defined in the active playbook.</em></p>");

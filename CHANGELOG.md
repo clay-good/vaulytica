@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.660.0] — 2026-09-10
+
+9.659.0 gave the caveats to every **Markdown** artifact and drew the line there.
+The line was in the wrong place: HTML is prose too.
+
+### Fixed
+- 🥇 **The negotiation sheet — the one-page artifact a negotiator carries into
+  a call — said nothing about whether the engine recognized the document.**
+  `--format posture-sheet` writes a standalone HTML file, so the terminal that
+  printed "no known document family matched" to stderr is not in the room. The
+  ladder means something different when the document was not recognized, or
+  when the PDF fell back to OCR. Both caveats now render above the ladder they
+  qualify, escaped like every other untrusted string in that file, and the
+  sheet is byte-identical when given none.
+
+- **The reach guard is over PROSE artifacts now, not Markdown ones.** It had
+  just been written, and it drew its own boundary at the file extension —
+  which is why it passed while an HTML artifact in a different file had no
+  caveats at all. It carries a builder → file map now and covers
+  `negotiation-sheet.ts` alongside `exports.ts`.
+
 ## [9.659.0] — 2026-09-10
 
 The item 9.658.0 measured and left. The honesty caveats reach whoever RAN the

@@ -137,3 +137,46 @@ describe("negotiation sheet (spec-v10 Step 170)", () => {
     expect(a).toContain("No negotiation positions were defined");
   });
 });
+
+/**
+ * The sheet a negotiator carries into a call.
+ *
+ * `--format posture-sheet` writes a standalone HTML file, so the terminal that
+ * printed "no known document family matched" to stderr is not in the room.
+ * The ladder means something different when the engine did not recognize the
+ * document, or when the PDF fell back to OCR.
+ */
+describe("buildNegotiationSheet — the honesty caveats", () => {
+  const empty = {
+    positions: [],
+    counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+    posture_hash: "p",
+  };
+
+  it("renders both caveats above the ladder", () => {
+    const html = buildNegotiationSheet(empty, "Acme MSA", {
+      warnings: ["This PDF fell back to OCR; text may be imperfect."],
+      classification_notice: { message: "No known document family matched this document." },
+    });
+    expect(html).toContain("About this input.");
+    expect(html).toContain("fell back to OCR");
+    expect(html).toContain("Document type not recognized.");
+    expect(html).toContain("No known document family matched");
+    // Above the ladder it qualifies, not buried under it.
+    expect(html.indexOf("About this input.")).toBeLessThan(html.indexOf("</body>"));
+  });
+
+  it("escapes caveat text, which is untrusted like every other string here", () => {
+    const html = buildNegotiationSheet(empty, undefined, {
+      warnings: ['<script>alert("x")</script>'],
+    });
+    expect(html).not.toContain("<script>alert");
+    expect(html).toContain("&lt;script&gt;");
+  });
+
+  it("is byte-identical when given no caveats", () => {
+    expect(buildNegotiationSheet(empty, "Acme MSA")).toBe(
+      buildNegotiationSheet(empty, "Acme MSA", { warnings: [] }),
+    );
+  });
+});

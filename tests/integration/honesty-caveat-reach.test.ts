@@ -53,29 +53,32 @@ const FINDING_SURFACES: ReadonlyArray<[file: string, what: string]> = [
  * an `.ics` is deliberately out — there is no honest place for prose in either,
  * and the caveat reaches whoever ran the command on stderr.
  */
-describe("every Markdown artifact accepts the caveats", () => {
-  const MARKDOWN_BUILDERS = [
-    "buildFixListMarkdown",
-    "buildCriticalDatesMarkdown",
-    "buildClosingChecklistMarkdown",
-    "buildNegotiationPostureMarkdown",
-  ];
+describe("every prose artifact accepts the caveats", () => {
+  /** Builder → the file it is declared in. Markdown and HTML alike. */
+  const PROSE_BUILDERS: Record<string, string> = {
+    buildFixListMarkdown: "src/report/exports.ts",
+    buildCriticalDatesMarkdown: "src/report/exports.ts",
+    buildClosingChecklistMarkdown: "src/report/exports.ts",
+    buildNegotiationPostureMarkdown: "src/report/exports.ts",
+    // HTML is prose too, and this one is the sheet a negotiator carries into a
+    // call — separately obtainable as a file via `--format posture-sheet`.
+    buildNegotiationSheet: "src/report/negotiation-sheet.ts",
+  };
 
   it("names every Markdown builder in exports.ts", () => {
     const src = readFileSync(join(process.cwd(), "src/report/exports.ts"), "utf8");
     const found = [...src.matchAll(/export function (build\w*Markdown)\(/g)].map((m) => m[1]!);
     expect(
-      found.filter((f) => !MARKDOWN_BUILDERS.includes(f)),
+      found.filter((f) => !(f in PROSE_BUILDERS)),
       "a new Markdown artifact must join this list and take the caveats",
     ).toEqual([]);
-    expect(found.sort()).toEqual([...MARKDOWN_BUILDERS].sort());
   });
 
   it("each one takes the caveats and the CLI hands them over", () => {
-    const src = readFileSync(join(process.cwd(), "src/report/exports.ts"), "utf8");
     const cli = readFileSync(join(process.cwd(), "tools/cli/run.ts"), "utf8");
     const missing: string[] = [];
-    for (const fn of MARKDOWN_BUILDERS) {
+    for (const [fn, file] of Object.entries(PROSE_BUILDERS)) {
+      const src = readFileSync(join(process.cwd(), file), "utf8");
       // The fix list takes the whole IngestResult, which is where its two
       // fields come from; the other three take an ArtifactCaveats.
       const sig = new RegExp(`export function ${fn}\\(([^)]*)\\)`, "s").exec(src);
