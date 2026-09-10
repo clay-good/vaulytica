@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.676.0] — 2026-09-10
+
+Reading the next newly-reachable v3 extractor, the same way 9.675.0 read the
+one before it.
+
+### Fixed
+- 🚨 **A role was assigned to a city.** `PARENS_ROLE_RX` captures the Title-Case
+  run immediately before the role marker, and in a preamble that run is often
+  not the party:
+
+  > …Larkmoor Instruments GmbH, a company organized under the laws of Germany
+  > with its registered office at Industriestrasse 14, 70565 **Stuttgart**
+  > ("Supplier")…
+
+  The Supplier was recorded as **Stuttgart**, with a fabricated `party_id` of
+  `role:stuttgart`, at confidence **1.0**. `partyForName`'s substring fallback
+  cannot rescue that — "stuttgart" is not a substring of "larkmoor instruments
+  gmbh" in either direction — so it invented an entity out of the captured
+  text.
+
+  🥇 **The binding it needed had already been extracted.** `extractParties`
+  resolves the defined-term alias and records it: Larkmoor's `Party` carries
+  `role: "Supplier"` and `aliases: ["Supplier", …]`. The classifier had that
+  list passed in and asked it only about the captured NAME — never about the
+  ROLE, the one thing it is certain of. It asks the role first now, on both the
+  quoted-definition and the parenthetical branch. Corpus: assignments naming a
+  non-party **12 → 9**, with no assignment lost.
+
+### Measured, not built
+- **The remaining 9.** Six are honest — a form or a template naming a role with
+  no entity behind it, which is a real detection that simply cannot name a
+  party, and the synthetic `role:` id says so. Three are not: an SCC **"Module
+  Two"**, a **"MODULE THREE"**, and a document **TITLE**. Naming those by their
+  role would fix all three — and would also throw away *"Rowan Regional Health
+  System"*, a real entity the v2 party extractor missed and this one surfaced.
+  That trade is a product call, not a derivation, so it is written down here
+  and pinned in the test rather than guessed at.
+
 ## [9.675.0] — 2026-09-10
 
 Found immediately after 9.674.0 made `extracted_v3` reachable — reading what

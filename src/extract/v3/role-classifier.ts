@@ -55,6 +55,39 @@ const RECITAL_RX =
 
 const CCPA_CLAUSE_RX = /\bas\s+(?:a|the)\s+([A-Za-z][A-Za-z\s-]{2,40})\s+under\s+the\s+CCPA\b/i;
 
+/**
+ * The party a ROLE ALIAS names.
+ *
+ * 🚨 `PARENS_ROLE_RX` captures the Title-Case run immediately before the role
+ * marker, and in a preamble that run is often not the party:
+ *
+ *   "…Larkmoor Instruments GmbH, a company organized under the laws of Germany
+ *    with its registered office at Industriestrasse 14, 70565 **Stuttgart**
+ *    ("Supplier")…"
+ *
+ * — so the Supplier was recorded as **Stuttgart**, a city, with a fabricated
+ * `party_id` of `role:stuttgart`. `partyForName`'s substring fallback cannot
+ * rescue that: "stuttgart" is not a substring of "larkmoor instruments gmbh"
+ * in either direction, so it invented an entity from the captured text.
+ *
+ * 🥇 The binding it needed was already extracted. `extractParties` resolves the
+ * defined-term alias and records it: Larkmoor's `Party` carries
+ * `role: "Supplier"` and `aliases: ["Supplier", …]`. The classifier had that
+ * list passed in and asked it only about the captured NAME, never about the
+ * ROLE — the one thing it is certain of. Ask that first.
+ */
+function partyForRoleAlias(parties: Party[], alias: string): { id: string; name: string } | null {
+  const a = alias.trim().toLowerCase();
+  if (!a) return null;
+  for (const p of parties) {
+    if (p.role !== undefined && p.role.toLowerCase() === a) return { id: p.id, name: p.name };
+  }
+  for (const p of parties) {
+    if (p.aliases?.some((x) => x.toLowerCase() === a)) return { id: p.id, name: p.name };
+  }
+  return null;
+}
+
 function partyForName(parties: Party[], name: string): { id: string; name: string } {
   const trimmed = name.trim();
   const lower = trimmed.toLowerCase();
@@ -100,7 +133,9 @@ export function classifyRoles(tree: DocumentTree, parties: Party[] = []): RoleAs
       if (!term) continue;
       const role = matchRole(term);
       if (role) {
-        const party = partyForName(parties, term);
+        // The quoted term IS the role alias, so ask the party list about it
+        // before falling back to reading it as a name.
+        const party = partyForRoleAlias(parties, term) ?? partyForName(parties, term);
         push(
           role,
           party,
@@ -118,7 +153,7 @@ export function classifyRoles(tree: DocumentTree, parties: Party[] = []): RoleAs
       if (!alias) continue;
       const role = matchRole(alias);
       if (role) {
-        const party = partyForName(parties, entity);
+        const party = partyForRoleAlias(parties, alias) ?? partyForName(parties, entity);
         push(
           role,
           party,

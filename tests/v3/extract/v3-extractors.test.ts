@@ -55,6 +55,87 @@ describe("v3 role classifier", () => {
   });
 });
 
+/**
+ * A role belongs to a PARTY, and the party list already says which.
+ *
+ * 🚨 `PARENS_ROLE_RX` captures the Title-Case run immediately before the role
+ * marker, and in a preamble that run is often not the party:
+ *
+ *   "…Larkmoor Instruments GmbH, a company organized under the laws of Germany
+ *    with its registered office at Industriestrasse 14, 70565 Stuttgart
+ *    ("Supplier")…"
+ *
+ * The Supplier was recorded as **Stuttgart** — a city — with a fabricated
+ * `party_id` of `role:stuttgart`. The substring fallback could not rescue it,
+ * and the binding it needed had already been extracted: Larkmoor's `Party`
+ * carries `role: "Supplier"` and `aliases: ["Supplier", …]`. The classifier had
+ * that list passed in and asked it only about the captured NAME, never about
+ * the ROLE — the one thing it is certain of.
+ */
+describe("classifyRoles — the party a role belongs to", () => {
+  const PREAMBLE =
+    "This Agreement is entered into between Larkmoor Instruments GmbH, a company " +
+    "organized under the laws of Germany with its registered office at " +
+    'Industriestrasse 14, 70565 Stuttgart ("Supplier"), and Ardent Scientific ' +
+    'Supply, Inc., a Delaware corporation ("Distributor").';
+
+  const parties = [
+    {
+      id: "party-1",
+      name: "Larkmoor Instruments GmbH",
+      role: "Supplier",
+      aliases: ["Supplier", "Larkmoor Instruments", "Larkmoor"],
+      positions: [],
+    },
+  ];
+
+  it("does not name a city as the party a role belongs to", () => {
+    const roles = classifyRoles(buildTree(["Agreement", PREAMBLE]), parties);
+    const supplier = roles.find((r) => r.role === "service-supplier");
+    expect(supplier?.party_name).toBe("Larkmoor Instruments GmbH");
+    expect(supplier?.party_name).not.toBe("Stuttgart");
+  });
+
+  it("uses the real party id, not a synthetic one, when the role resolves", () => {
+    const roles = classifyRoles(buildTree(["Agreement", PREAMBLE]), parties);
+    const supplier = roles.find((r) => r.role === "service-supplier");
+    expect(supplier?.party_id).toBe("party-1");
+    expect(supplier?.party_id).not.toMatch(/^role:/);
+  });
+
+  it("still resolves when the alias is only in the aliases list", () => {
+    const viaAlias = [
+      { id: "party-9", name: "Halcyon Data Ltd", aliases: ["Processor"], positions: [] },
+    ];
+    const roles = classifyRoles(
+      buildTree(["DPA", 'Halcyon Data Ltd of 4 Rivergate, Dublin ("Processor") shall process.']),
+      viaAlias,
+    );
+    expect(roles.find((r) => r.role === "processor")?.party_name).toBe("Halcyon Data Ltd");
+  });
+
+  it("marks an unbound role with a synthetic id rather than a real one", () => {
+    // A form or an SCC module that names a role without an entity behind it is
+    // still a real detection — it just cannot name a party. The synthetic
+    // `role:` id is what says so, and it is what a consumer reads to tell a
+    // bound role from an unbound one.
+    //
+    // ⚠️ 9 of the corpus's 22 assignments are still in this state, and three of
+    // those name something that is plainly not an entity (an SCC "Module Two",
+    // a document TITLE). Naming them by their role instead would fix that and
+    // would also throw away "Rowan Regional Health System" — a real entity the
+    // v2 party extractor missed and this one surfaced. Measured, and left:
+    // that trade is a product call, not a derivation.
+    const roles = classifyRoles(
+      buildTree(["SCC", 'Module Two ("Controller") transfers to the data importer.']),
+      [],
+    );
+    const hit = roles.find((r) => r.role === "controller");
+    expect(hit).toBeDefined();
+    expect(hit!.party_id).toMatch(/^role:/);
+  });
+});
+
 describe("v3 data-category extractor", () => {
   /**
    * 🚨 HIPAA's first identifier is the ordinary English word.
