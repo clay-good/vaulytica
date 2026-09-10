@@ -683,3 +683,46 @@ describe("extractObligations — a modal inside a hyphenated compound", () => {
     expect(oblis.some((o) => o.modal === "shall")).toBe(true);
   });
 });
+
+/**
+ * A subordinator is not part of the subject it introduces.
+ *
+ * "obtain written assurances from the recipient THAT the recipient will
+ * notify …" makes the duty the recipient's; the "that" attaches the clause and
+ * printed straight into the obligations ledger's obligor column. 11 rows
+ * across the corpus.
+ */
+describe("resolveObligor — a leading subordinator", () => {
+  it("strips a 'that' introducing the clause whose subject follows", () => {
+    const tree = buildTree([
+      "Confidentiality",
+      "Business Associate shall obtain reasonable assurances from the recipient that " +
+        "the PHI will be held confidentially, and that the recipient will notify " +
+        "Business Associate of any breach of confidentiality.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    const row = oblis.find((o) => o.modal === "will");
+    expect(row?.obligor).toBe("the recipient");
+  });
+
+  it("keeps a DEMONSTRATIVE 'that', which names which one", () => {
+    // "that party" is a subject whose first word is doing real work: strip it
+    // and the ledger no longer says which party owes the duty.
+    const tree = buildTree([
+      "Notices",
+      "If a party receives a notice, that party shall acknowledge it within two days.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis[0]!.obligor.toLowerCase()).toContain("that party");
+  });
+
+  it("strips a leading 'which' the same way", () => {
+    const tree = buildTree([
+      "Approvals",
+      "Tenant shall make the alterations with plans Landlord approves, which the " +
+        "approval shall not be unreasonably withheld.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis.every((o) => !/^which\s/i.test(o.obligor))).toBe(true);
+  });
+});

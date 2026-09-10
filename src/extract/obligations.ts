@@ -410,7 +410,36 @@ function stripFrontedAdverbial(subject: string): string {
   return tail.length > 0 ? tail : subject;
 }
 
+/**
+ * A subordinator is not part of the subject it introduces.
+ *
+ * "obtain written assurances from the recipient **that** the recipient will
+ * notify …" makes the duty the recipient's; the "that" is the conjunction that
+ * attaches the clause, and it printed straight into the obligations ledger's
+ * obligor column ("that the recipient", "that the Work", "That the Grantor").
+ * 11 rows across the corpus, every one a clean improvement.
+ *
+ * The determiner lookahead is what keeps this off a DEMONSTRATIVE. "that party
+ * shall …" is a subject whose first word is doing real work, and stripping it
+ * would lose which party. So the strip fires only when a determiner follows —
+ * "that **the** recipient", never "that party".
+ */
+const LEADING_SUBORDINATOR =
+  /^(?:that|which|whereby|whereupon)\s+(?=(?:the|a|an|its|his|her|their|our|your|each|any|no|such|all|either|both|every|this|these|those)\s+\S)/i;
+
 function resolveObligor(subject: string, partyNames: Set<string>, partyRoles: Set<string>): string {
+  return stripSubordinator(resolveObligorInner(subject, partyNames, partyRoles));
+}
+
+function stripSubordinator(obligor: string): string {
+  return obligor.replace(LEADING_SUBORDINATOR, "");
+}
+
+function resolveObligorInner(
+  subject: string,
+  partyNames: Set<string>,
+  partyRoles: Set<string>,
+): string {
   const trimmed = trimEdges(stripFrontedAdverbial(subject), /[,;.\s]/);
   const lower = trimmed.toLowerCase();
   // A compound subject naming TWO parties ("The Provider and the Customer shall

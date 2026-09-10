@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.655.0] — 2026-09-10
+
+More of the obligations ledger, read over the corpus rather than one document.
+173 of 3,678 obligors open with a preposition or a conjunction — no English
+noun phrase starts that way. Most of that is the general fragment problem
+already measured and deliberately left (honouring the module header's promise
+of `obligor: ""` makes OBLI-001 fire on 55% of specimens, a product decision).
+Two sub-shapes have their own clean answer; one of them is shipped here.
+
+### Fixed
+- **A subordinator is not part of the subject it introduces.** *"obtain
+  reasonable assurances from the recipient **that** the recipient will notify
+  Business Associate of any breach"* makes the duty the recipient's — the
+  "that" is the conjunction attaching the clause, and it printed straight into
+  the ledger's obligor column: "that the recipient", "that the Work", "That the
+  Grantor". **11 rows**, every one a clean improvement, and the obligation count
+  is unchanged (3,678) because nothing is dropped, only trimmed.
+
+  The determiner lookahead is what keeps this off a **demonstrative**: *"that
+  party shall acknowledge it"* is a subject whose first word is doing real work,
+  and stripping it would lose which party. The strip fires only on "that **the**
+  recipient", never on "that party". Both directions are pinned.
+
+### Measured, not built
+- **The negative-fronted INVERSION**, 6 rows across 5 specimens: *"In no event
+  shall the Escrow Agent be liable …"* puts the subject AFTER the modal, so the
+  obligor reads "In no event" and the action opens with the real subject
+  ("the Escrow Agent be liable for indirect, special, punitive …"). Fixing it
+  needs a subject-boundary parser — the subject ends at a bare infinitive, and
+  there is no closed set of those. The one tractable route is to accept a
+  predicate prefix that ends in a known party name or role, and **it reaches
+  only 3 of the 6**: `cloud-services-agreement.txt` writes "PROVIDER'S
+  AGGREGATE LIABILITY" (a possessive, which no party tail matches) and both
+  sublease specimens have no party in the subject at all ("the term of this
+  Sublease extend beyond"). Three repairs do not pay for reworking
+  `resolveObligor`'s matching into a shared prefix search.
+
+- **The other predicate KINDS are not the weak spot.** After 9.651–9.652 found
+  three dead numeric metrics, the same reach question was asked of
+  `governing_law_in`, `clause_mutual` and `cross_ref_resolves` over the 327
+  specimens: 194, 105/114/36 and 327 respectively. All healthy, none dead.
+  They read structured extractor output rather than hand-written regexes, which
+  is why. Measured and not committed as a guard — the numeric metrics are the
+  family that carries the risk, and they are the family the guard covers.
+
 ## [9.654.0] — 2026-09-10
 
 The generalization of 9.653.0's root cause, asked of the whole rule engine
