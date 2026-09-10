@@ -148,3 +148,20 @@ describe("PERS-009 — a covenant given on the sale of a business", () => {
     ).not.toBeNull();
   });
 });
+
+// "is not permitted to solicit" is the same prohibition as "shall not solicit".
+// PERS-002 admits the plain-language form by name; PERS-009 did not, so the
+// same clause was a warning in one spelling and silent in the other.
+describe("PERS-009 — the prohibition, spelled plainly (v1.6.0)", () => {
+  it("fires on 'is not permitted to solicit' with a long duration", () => {
+    expect(
+      PERS_009.check(
+        buildContext([
+          "Non-Solicitation",
+          "For two (2) years after the Term ends, Franchisee is not permitted to solicit an " +
+            "employee of Franchisor or of another franchisee.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

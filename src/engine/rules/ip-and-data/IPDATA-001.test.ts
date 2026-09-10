@@ -238,3 +238,46 @@ describe("IPDATA-001 — retention with the rights modified before the object (v
     ).not.toBeNull();
   });
 });
+
+// A franchise agreement's intellectual property is "the Marks". It never writes
+// "intellectual property", so the ownership-object list matched nothing and a
+// document whose Section 7 is headed "Marks", with an "Ownership" subsection,
+// was told at warning that it allocates no IP.
+describe("IPDATA-001 — the family's word for its IP (v1.14.0)", () => {
+  const silent = (b: string) => IPDATA_001.check(buildContext(["Marks", b]) as never) === null;
+
+  it("reads 'Franchisor owns the Marks'", () => {
+    expect(
+      silent(
+        "7.2 Ownership. Franchisor owns the Marks and the goodwill associated with them. " +
+          "Franchisee's use inures to Franchisor's benefit.",
+      ),
+    ).toBe(true);
+  });
+
+  it("reads goodwill inurement written as “to Licensor's benefit”", () => {
+    expect(
+      silent(
+        "All goodwill arising from Licensee's use of the licensed marks inures to Licensor's " +
+          "benefit.",
+      ),
+    ).toBe(true);
+  });
+
+  // Without the goodwill sentence beside it, "the Marks" is the whole of the
+  // allocation — which is why the ownership-object list needs the word.
+  it("reads 'owns the Marks' with no goodwill sentence beside it", () => {
+    expect(
+      silent(
+        "7.2 Ownership. Franchisor owns the Marks, and Franchisee's use of them is licensed " +
+          "under this Agreement for the Term.",
+      ),
+    ).toBe(true);
+  });
+
+  it("still fires on a document that allocates nothing", () => {
+    expect(
+      silent("Franchisee shall pay a royalty of six percent (6%) of Gross Sales each week."),
+    ).toBe(false);
+  });
+});

@@ -262,7 +262,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.13.0"
+      "rule_version": "1.14.0"
     },
     {
       "elapsed_ms": 0,
@@ -457,7 +457,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -498,10 +498,11 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "RISK-006-s1.4-784",
+      "fired": true,
       "ran": true,
       "rule_id": "RISK-006",
-      "rule_version": "1.2.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -643,7 +644,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-009",
-      "rule_version": "1.10.0"
+      "rule_version": "1.11.0"
     },
     {
       "elapsed_ms": 0,
@@ -945,7 +946,7 @@
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.13.0",
+      "rule_version": "1.14.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1215,6 +1216,23 @@
       "title": "Efforts standard \"best efforts\" undefined"
     },
     {
+      "description": "Present: indemnification. Missing: fraud, willful misconduct, IP indemnity, confidentiality breach, payment obligations.",
+      "document_position": 784,
+      "excerpt": {
+        "end_offset": 902,
+        "section_id": "s1.4",
+        "start_offset": 784,
+        "text": "Provider's aggregate liability shall not exceed three (3) months of fees paid, except for indemnification obligations."
+      },
+      "explanation": "Typical LoL carve-outs include fraud, willful misconduct, IP indemnity, confidentiality breach, and accrued payment obligations. Missing categories may be deliberate but are worth confirming.",
+      "id": "RISK-006-s1.4-784",
+      "rule_id": "RISK-006",
+      "rule_version": "1.4.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "LoL exceptions: 1/6 typical carve-outs present"
+    },
+    {
       "description": "Indemnity clause appears to be missing: notice, defense control, settlement consent.",
       "document_position": 616,
       "excerpt": {
@@ -1235,11 +1253,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "5af32b0ace944cc1de1c7dd8e7e1e78e288c80c3e56ad1033cc3feba9682e807",
+  "result_hash": "a4f2eeaba9d3f75035c538122c91a154eea9e239660adffd0b2d82e0bd3efcb7",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.645.0"
+  "version": "9.646.0"
 }

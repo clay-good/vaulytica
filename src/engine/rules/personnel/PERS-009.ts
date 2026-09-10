@@ -34,7 +34,13 @@ import type { DocPosition } from "../../../extract/types.js";
 const NON_SOLICIT_KEYWORD = /\b(?:solicit|no[- ]hire|no[- ]poach)\b/i;
 const NON_SOLICIT_NEGATIVES = [
   /\bnon[- ]solicit(?:ation)?\b/i,
+  // "is not PERMITTED TO solicit" is the same prohibition as "shall not
+  // solicit", and PERS-002 already admits the plain-language form by name for
+  // exactly this reason. PERS-009 did not, so a franchise agreement's
+  // post-term non-solicit was a warning in one spelling and silent in the
+  // other — which `shall-will.test.ts` says out loud.
   /\b(?:shall|must|may|will|agrees?)\s+not\s+solicit\b/i,
+  /\bis\s+not\s+permitted\s+to\s+solicit\b/i,
   /\bnot\s+to\s+solicit\b/i,
   /\bno[- ]hire\b/i,
   /\bno[- ]poach\b/i,
@@ -84,7 +90,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",

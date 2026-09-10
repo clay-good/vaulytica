@@ -2,6 +2,68 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.646.0] — 2026-09-09
+
+### Fixed
+- 🥇 **RISK-006 said "0/6 typical carve-outs present. Present: none." about a
+  section that carves out five.** Two causes in one finding. It read only the
+  **first** exception clause in a limitation-of-liability section — and the
+  first one is the damages exclusion's, not the cap's ("…OR FOR LOST PROFITS,
+  EXCEPT FOR AMOUNTS PAYABLE UNDER SECTION 11") — and it did not know the phrase
+  that introduces a modern carve-out list, **"These limits DO NOT APPLY TO"**.
+
+  Every exception clause in the section is read now, each still bounded to its
+  own sentence. **Four other clean documents state their carve-outs the same
+  way and drew no RISK-006 at all**; all four gain it.
+
+  And a third cause underneath both: the rule read one **paragraph**, while a
+  limitation-of-liability article puts its heading in one paragraph and its
+  clause in the next. The symptom was a finding that depended on the document's
+  blank lines — strip them, the paragraphs merge, and the finding appears, which
+  is what `format-invariance` said out loud. The rule reads the enclosing
+  **section** now and quotes the paragraph the carve-out list is actually in.
+  **Ten more corpus specimens gain the finding**, including the flagship
+  `enterprise-saas-subscription`, `msa-customer-side` and `saas-tos`. A
+  manager-exculpation article ("LIMITATION OF LIABILITY **OF MANAGERS**" in an
+  articles of organization) is not a commercial cap and is excluded by name.
+
+- 🥇 **A franchise agreement's intellectual property is "the Marks".**
+  IPDATA-001 said at WARNING that the agreement allocates no intellectual
+  property, about a § 7 headed "Marks" whose § 7.2 is headed "Ownership" and
+  reads "Franchisor owns the Marks and the goodwill associated with them". The
+  ownership-object list held data / IP / work product; service marks and trade
+  dress join it. The goodwill-inurement branch missed the same clause twice
+  over: the inurement sentence is the one **after** the goodwill sentence, and
+  it says "inures to Franchisor's benefit", not "to the benefit of".
+
+- **PERS-009 read the prohibition in one spelling only.** "Franchisee **is not
+  permitted to** solicit" is the same restriction as "shall not solicit" —
+  PERS-002 admits the plain-language form by name for exactly this reason — so
+  the same post-term non-solicit was a warning in one spelling and silent in the
+  other. Found by `shall-will.test.ts`, whose prohibition debt list is empty
+  again.
+
+- **STRUCT-009 could not see a hyphenated attributive.** An attributive noun is
+  as often hyphenated as spaced — "site-selection assistance",
+  "commitment-fee calculation" — and the separator list held only whitespace, so
+  a document defining "Site" was told it miscapitalized the term in a phrase
+  where the word is a modifier.
+
+### Added
+- `tests/fixtures/specimens/franchise-complete.txt` — the fourteenth clean
+  document, and the 326th specimen: an FTC-Rule delivery recital, a protected
+  territory with reserved channels, a brand fund with a no-franchise-sales
+  restriction, approved-supplier terms with a rebate disclosure, a
+  capital-expenditure ceiling on System changes, a Marks licence with goodwill
+  inurement, blue-pencilled post-term covenants, transfer with a right of first
+  refusal, renewal with 180 days' notice of any unmet condition, and a state
+  franchise-relationship-law override that outranks the governing-law clause.
+
+  Three findings were the **document's** and the document was fixed: it defines
+  "Franchise Disclosure Document" now, says "a proposed location" where it does
+  not mean the defined Site, and names the point-of-sale platform rather than
+  "the designated reporting system".
+
 ## [9.645.0] — 2026-09-09
 
 ### Fixed

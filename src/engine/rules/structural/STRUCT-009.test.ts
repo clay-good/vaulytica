@@ -110,3 +110,16 @@ describe("STRUCT-009 — the insurance coverage part (v1.10.0)", () => {
     expect(STRUCT_009.check(ctx)?.description).toBe("Products");
   });
 });
+
+// An attributive noun is as often hyphenated as spaced.
+describe("STRUCT-009 — a hyphenated attributive (v1.11.0)", () => {
+  it('does not report "Site" for "site-selection assistance"', () => {
+    const ctx = buildContext([
+      "Unit Franchise Agreement",
+      '"Site" means the location approved under Section 3.1 and identified on Exhibit B.',
+      "The fee is fully earned on delivery of the initial training and site-selection assistance.",
+      "Franchisee shall build out the Site at its own expense.",
+    ]);
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+});

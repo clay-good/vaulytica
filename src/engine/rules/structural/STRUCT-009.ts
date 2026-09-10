@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -187,8 +187,13 @@ export function isQuotedIdiomUse(text: string, index: number, length: number): b
  * lowercase word" test would swallow ordinary sentences, where the word after
  * the term is a verb or a preposition and the term IS the subject.
  */
+// The separator may be a HYPHEN. An attributive noun is as often hyphenated as
+// spaced — "site-selection assistance", "commitment-fee calculation" — and
+// `\s+` could not see it, so a franchise agreement that defines "Site" was told
+// it miscapitalized the term in "the initial training and site-selection
+// assistance", where the word is a modifier and not the Site at all.
 const ATTRIBUTIVE_HEAD =
-  /^\s+(?:fee|fees|letter|letters|date|dates|period|periods|rate|rates|price|prices|amount|amounts|notice|notices|certificate|certificates|schedule|schedules|statement|statements|report|reports|threshold|thresholds|manager|managers|management|training|log|logs|register|registers|custodian|custodians|retention|policy|programme?)\b/;
+  /^[\s\u2010\u2011-]+(?:fee|fees|letter|letters|date|dates|period|periods|rate|rates|price|prices|amount|amounts|notice|notices|certificate|certificates|schedule|schedules|statement|statements|report|reports|threshold|thresholds|manager|managers|management|training|log|logs|register|registers|custodian|custodians|retention|policy|programme?|selection|approval|approvals)\b/;
 
 export function isAttributiveUse(text: string, index: number, length: number): boolean {
   return ATTRIBUTIVE_HEAD.test(text.slice(index + length, index + length + 24));

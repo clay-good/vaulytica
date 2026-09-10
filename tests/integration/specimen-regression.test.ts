@@ -312,7 +312,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // a response time but no support tiering.
   "oem-agreement.txt": {
     playbook: "oem-agreement",
-    findings: ["COMM-239", "OBLI-002", "OBLI-005", "RISK-007", "STRUCT-018", "TEMP-008"],
+    findings: [
+      "COMM-239",
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-006",
+      "RISK-007",
+      "STRUCT-018",
+      "TEMP-008",
+    ],
   },
   // A cross-border joint development agreement. It routed to
   // `consulting-agreement` at 1.0, then to `mutual-nda`: the JDA family's own
@@ -1925,6 +1933,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-005",
       "PERS-002",
       "RISK-002",
+      "RISK-006",
       "RISK-007",
       "TEMP-004",
       "TERM-001",
@@ -2330,6 +2339,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "CHOICE-006",
       "FIN-008",
       "OBLI-005",
+      "RISK-006",
       "RISK-007",
     ],
   },
@@ -2530,6 +2540,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "STRUCT-018",
       "TEMP-012",
       "OBLI-005",
+      "RISK-006",
       "RISK-007",
       "RISK-010",
       "RISK-011",
@@ -3461,6 +3472,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-005",
       "OBLI-008",
       "RISK-004",
+      "RISK-006",
       "RISK-007",
       "RISK-010",
       "RISK-013",
@@ -3496,6 +3508,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-004",
       "IPDATA-005",
       "OBLI-005",
+      "RISK-006",
       "RISK-007",
       "TEMP-004",
       "TEMP-005",
@@ -3948,6 +3961,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "MSA-028",
       "MSA-030",
       "OBLI-005",
+      "RISK-006",
       "RISK-007",
       "RISK-010",
       "RISK-012",
@@ -4775,6 +4789,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-006",
       "RISK-002",
       "RISK-004",
+      "RISK-006",
       "RISK-007",
       "TEMP-004",
     ],
@@ -4895,6 +4910,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "CHOICE-006",
       "OBLI-005",
       "OBLI-008",
+      "RISK-006",
       "RISK-007",
       "TEMP-007",
     ],
@@ -4925,6 +4941,7 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "OBLI-005",
       "OBLI-008",
+      "RISK-006",
       "RISK-007",
       "STRUCT-009",
       "TEMP-007",
@@ -5049,6 +5066,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-008",
       "PERS-002",
       "PERS-004",
+      "RISK-006",
       "RISK-007",
       "RISK-010",
       "RISK-012",
@@ -5302,6 +5320,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-002",
       "OBLI-005",
       "OBLI-008",
+      "RISK-006",
       "RISK-007",
       "RISK-010",
       "RISK-013",
@@ -5314,6 +5333,67 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-001",
     ],
   },
+  // A COMPLETE unit franchise agreement — the fourteenth clean document
+  // (9.646.0): an FTC-Rule-compliant 14-day/7-day delivery recital, a protected
+  // territory with reserved channels, site approval on stated criteria, an
+  // initial fee, a royalty, a brand fund with a no-franchise-sales restriction,
+  // approved-supplier terms with a rebate disclosure, a capital-expenditure
+  // ceiling on System changes, a Marks licence with goodwill inurement, an
+  // audit with an understatement threshold, in-term and post-term covenants
+  // with a blue-pencil clause, transfer with a right of first refusal, renewal
+  // on stated conditions with 180 days' notice of any unmet one, termination
+  // with and without cure, post-term de-identification, an anti-waiver clause
+  // for franchise statutes, and a state-relationship-law override that
+  // outranks the governing-law clause.
+  //
+  // THREE defects:
+  //
+  //  - 🥇 RISK-006 said "0/6 typical carve-outs present. Present: none." about
+  //    a § 19 that carves out the indemnity, a confidentiality breach, gross
+  //    negligence, willful misconduct and fraud. Two causes, one finding: the
+  //    rule read only the FIRST exception clause in the section — and the first
+  //    one is the damages exclusion's, not the cap's — and it did not know the
+  //    phrase that introduces a modern carve-out list, "These limits DO NOT
+  //    APPLY TO". Four other clean documents had the same list and drew no
+  //    RISK-006 at all; all four gain it here.
+  //  - 🥇 IPDATA-001 said at WARNING that the agreement allocates no
+  //    intellectual property, about a § 7 headed "Marks" whose § 7.2 is headed
+  //    "Ownership". **A franchise agreement's IP is "the Marks"** and the
+  //    ownership-object list held data / IP / work product. The
+  //    goodwill-inurement branch missed it twice over: the inurement sentence
+  //    is the one AFTER the goodwill sentence, and it says "inures to
+  //    Franchisor's benefit", not "to the benefit of".
+  //  - STRUCT-009 could not see a HYPHENATED attributive: "site-selection
+  //    assistance" is a modifier, not the defined "Site", and the separator
+  //    list held only whitespace.
+  //
+  // Three findings were the DOCUMENT's and the document was fixed: it now
+  // defines "Franchise Disclosure Document" (STRUCT-006), says "a proposed
+  // location" where it does not mean the defined Site, and names the
+  // point-of-sale platform rather than "the designated reporting system".
+  //
+  // PERS-009 (24-month non-solicit) and RISK-015 (indemnity outside the cap)
+  // are true of the document and deliberate in the family.
+  "franchise-complete.txt": {
+    playbook: "franchise-agreement",
+    findings: [
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-008",
+      "PERS-002",
+      "PERS-009",
+      "RISK-006",
+      "RISK-007",
+      "RISK-010",
+      "RISK-013",
+      "RISK-015",
+      "STRUCT-018",
+      "TEMP-002",
+      "TEMP-007",
+      "TEMP-008",
+    ],
+  },
+
   // A COMPLETE joint development agreement — the thirteenth clean document
   // (9.645.0): background and foreground IP with a sole/joint split on
   // inventorship, an express displacement of the 35 U.S.C. § 262 default with a
@@ -5343,6 +5423,7 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "OBLI-005",
       "OBLI-008",
+      "RISK-006",
       "RISK-007",
       "STRUCT-018",
       "TEMP-006",
@@ -5380,6 +5461,7 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "OBLI-005",
       "OBLI-008",
+      "RISK-006",
       "RISK-007",
       "RISK-010",
       "RISK-013",
@@ -5439,6 +5521,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "OBLI-002",
       "OBLI-005",
       "OBLI-008",
+      "RISK-006",
       "RISK-007",
       "RISK-011",
       "RISK-013",
@@ -5455,6 +5538,7 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "saas-customer",
     findings: [
       "OBLI-005",
+      "RISK-006",
       "RISK-007",
       "RISK-013",
       "RISK-014",
