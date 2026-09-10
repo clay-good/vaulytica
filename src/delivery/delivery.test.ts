@@ -901,3 +901,63 @@ describe("the delivery summary says how far the scan reached", () => {
     expect(a.delivery_hash).toBe(b.delivery_hash);
   });
 });
+
+/**
+ * CCPA § 1798.140(ae)(1)(A) names four identifiers in one sentence.
+ *
+ * "a consumer's **social security**, **driver's license**, state
+ * identification card, or **passport** number". This scan detected the first
+ * and neither of the other two, so a document carrying a licence or passport
+ * number was reported clean before disclosure — the failure direction that
+ * matters most in this module.
+ */
+describe("scanSensitive — licence and passport numbers", () => {
+  const types = (text: string): string[] => scanSensitive(text).map((f) => f.type);
+
+  it.each([
+    ["Passport No. X12345678 issued by the United States.", "passport"],
+    ["Passport Number: 987654321", "passport"],
+    ["Driver's License Number D1234567 (California).", "driver-licence"],
+    ["Drivers License #: A9876543", "driver-licence"],
+    ["Driving Licence No. SMITH901234AB9CD", "driver-licence"],
+    // The curly apostrophe, which `apostrophe-tolerance.test.ts` caught this
+    // pattern missing before it shipped. Word autocorrects the straight one.
+    ["Driver’s License Number D1234567 (California).", "driver-licence"],
+  ])("detects %s", (text, type) => {
+    expect(types(text)).toContain(type);
+  });
+
+  it("reveals only a SUFFIX, never the leading character", () => {
+    // 🚨 `maskDigits` passes non-digits through verbatim, so a passport
+    // `X12345678` would come back `X*****678` — leaking the first character of
+    // the identifier the scan exists to flag. Alphanumeric ids use
+    // `maskAlphanumeric`, and this is the assertion that keeps them there.
+    const [fact] = scanSensitive("Passport No. X12345678 issued by the United States.");
+    expect(fact?.masked).not.toContain("X");
+    expect(fact?.masked).toMatch(/^\*+678$/);
+  });
+
+  it("needs the label, because neither number has a format to recognise", () => {
+    // A driver's licence has no national format and a US passport number is
+    // nine alphanumerics with no checksum, so a bare pattern would match a
+    // contract number or an invoice reference on every second page.
+    for (const text of [
+      "Reference number A9876543 applies to this order.",
+      "Purchase Order No. X12345678 is attached.",
+      "Policy number D1234567 remains in force.",
+    ]) {
+      expect(types(text), `"${text}" was read as an identity document`).toEqual([]);
+    }
+  });
+
+  it("does not read a licence GRANT as a licence number", () => {
+    // The word this repo uses ~45 times for the other sense.
+    expect(types("Licensor grants Licensee a licence to use the Software.")).toEqual([]);
+    expect(types("This licence is non-exclusive and non-transferable.")).toEqual([]);
+  });
+
+  it("grades them medium: the document said what it is, nothing verifies it", () => {
+    const [fact] = scanSensitive("Driver's License Number D1234567 (California).");
+    expect(fact?.confidence).toBe("medium");
+  });
+});

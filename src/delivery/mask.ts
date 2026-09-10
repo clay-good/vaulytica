@@ -34,6 +34,36 @@ export function maskDigits(value: string, revealLast = 4): string {
  * Mask an email, revealing only the first character of the local part and the
  * domain (the domain is rarely the sensitive half): `j***@example.com`.
  */
+/**
+ * Mask an ALPHANUMERIC identifier, revealing only a suffix.
+ *
+ * 🚨 `maskDigits` passes every non-digit through verbatim, which is right for
+ * an SSN or a card number and wrong for anything carrying letters: a passport
+ * number `X12345678` would come back `X*****678`, leaking the leading
+ * character of the very identifier the scan exists to flag. This module's rule
+ * is that a revealing type reveals a SUFFIX — never a prefix — and a driver's
+ * licence or passport number is alphanumeric by construction.
+ *
+ * Separators (spaces, hyphens) are preserved so the shape stays legible; every
+ * other character before the last `revealLast` alphanumerics becomes `*`.
+ */
+export function maskAlphanumeric(value: string, revealLast = 4): string {
+  const alnum = value.replace(/[^A-Za-z0-9]/g, "");
+  const keep = Math.min(revealLast, alnum.length);
+  const hideCount = alnum.length - keep;
+  let seen = 0;
+  let out = "";
+  for (const ch of value) {
+    if (/[A-Za-z0-9]/.test(ch)) {
+      out += seen < hideCount ? "*" : ch;
+      seen += 1;
+    } else {
+      out += ch;
+    }
+  }
+  return out;
+}
+
 export function maskEmail(value: string): string {
   const at = value.indexOf("@");
   if (at <= 0) return "***";

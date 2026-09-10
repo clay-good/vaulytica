@@ -16,7 +16,13 @@
  */
 
 import type { SensitiveFact } from "./types.js";
-import { maskDigits, maskEmail, luhnValid, ssnStructurallyValid } from "./mask.js";
+import {
+  maskAlphanumeric,
+  maskDigits,
+  maskEmail,
+  luhnValid,
+  ssnStructurallyValid,
+} from "./mask.js";
 
 /** Cap the scanned text — a 5 MB body is already an enormous document. */
 export const MAX_SCAN_CHARS = 5 * 1024 * 1024;
@@ -74,6 +80,28 @@ const EIN = /\b(\d{2})-(\d{7})\b/g;
 const CARD = /\b\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,7}\b|\b\d{4}[ -]\d{6}[ -]\d{5}\b/g;
 const ROUTING = /\b(\d{9})\b/g;
 const DOB = /(?:DOB|D\.O\.B\.|date of birth)\D{0,20}(\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4})/gi;
+/**
+ * Driver's-licence and passport numbers — LABEL-GATED, like the DOB above.
+ *
+ * 🚨 CCPA § 1798.140(ae)(1)(A) names four identifiers in one sentence: "a
+ * consumer's social security, **driver's license**, state identification card,
+ * or **passport** number". This scan detected the first and neither of the
+ * other two, so a document carrying a licence or passport number was reported
+ * clean before disclosure — the failure direction that matters most in this
+ * module.
+ *
+ * 🥇 They have to be label-gated and the DOB detector shows why. A driver's
+ * licence number has **no national format** (California `D1234567`, New York
+ * nine digits, Florida a letter plus twelve), and a US passport number is nine
+ * alphanumerics with no checksum. A bare pattern for either would match a
+ * contract number, an invoice reference or a policy number on every second
+ * page. The label is the evidence, so these are `medium` confidence: the
+ * document said what the value is, and nothing verifies the value itself.
+ */
+const DRIVER_LICENCE =
+  /\b(?:driver['’]?s?|driving)\s+licen[sc]e\s*(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9 -]{4,17}[A-Za-z0-9])\b/gi;
+const PASSPORT = /\bpassports?\s*(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9]{6,9})\b/gi;
+
 const EMAIL = /\b[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\.[A-Za-z]{2,24}\b/g;
 const PHONE = /\b(?:\+?1[ .-]?)?\(?\d{3}\)?[ .-]\d{3}[ .-]\d{4}\b/g;
 
@@ -140,6 +168,15 @@ export function scanSensitive(text: string): SensitiveFact[] {
   }
   while ((m = EIN.exec(body)) !== null) {
     push("ein", "medium", maskDigits(m[0], 3), m[0]);
+  }
+  // The captured group, not the whole match: the label is context, not the
+  // identifier, and echoing it back would put "Driver's License Number" in the
+  // evidence beside a mask that is meant to be the only thing shown.
+  while ((m = DRIVER_LICENCE.exec(body)) !== null) {
+    push("driver-licence", "medium", maskAlphanumeric(m[1]!.trim(), 3), m[1]!.trim());
+  }
+  while ((m = PASSPORT.exec(body)) !== null) {
+    push("passport", "medium", maskAlphanumeric(m[1]!, 3), m[1]!);
   }
   while ((m = CARD.exec(body)) !== null) {
     if (luhnValid(m[0])) push("card", "high", maskDigits(m[0], 4), m[0]);

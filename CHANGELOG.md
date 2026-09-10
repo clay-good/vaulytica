@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.682.0] — 2026-09-10
+
+Found by running a **positive control** over the pre-disclosure scanner — the
+module whose failure direction is the worst in the tree, because a false
+negative reports a document clean before it is handed to the other side.
+
+### Fixed
+- 🚨 **CCPA § 1798.140(ae)(1)(A) names four identifiers in one sentence, and the
+  scan detected one of them.** *"a consumer's **social security**, **driver's
+  license**, state identification card, or **passport** number."* Planting each
+  in turn: SSN (dashed and bare), date of birth, bank routing, credit card and
+  EIN were all caught, correctly masked and confidence-graded. **Driver's
+  licence and passport numbers were not detected at all.**
+
+  🥇 **They have to be label-gated, and the module's own DOB detector shows
+  why.** A driver's licence number has no national format — California
+  `D1234567`, New York nine digits, Florida a letter plus twelve — and a US
+  passport number is nine alphanumerics with no checksum. A bare pattern for
+  either would match a contract number, an invoice reference or a policy number
+  on every second page. The label is the evidence, so both are **medium**
+  confidence: the document said what the value is, and nothing verifies the
+  value itself. Pinned in both directions, including that *"Licensor grants
+  Licensee a licence to use the Software"* is not a licence number.
+
+- 🚨 **A new mask, because the existing one would have leaked the identifier.**
+  `maskDigits` passes every non-digit through verbatim — right for an SSN or a
+  card number, wrong for anything carrying letters. A passport `X12345678`
+  would have come back **`X*****678`**, revealing the leading character of the
+  very value the scan exists to flag. This module's rule is that a revealing
+  type reveals a **suffix**, never a prefix, so alphanumeric identifiers get
+  `maskAlphanumeric`, and a test asserts the mask contains no `X`.
+
+Zero corpus movement: no specimen carries a labelled licence or passport
+number, so the detectors are purely additive and no golden moves.
+
 ## [9.681.0] — 2026-09-10
 
 A checker with no caller has never checked anything but its own fixtures.
