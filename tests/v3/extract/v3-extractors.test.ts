@@ -442,6 +442,64 @@ describe("v3 breach-timing extractor", () => {
 });
 
 describe("v3 audit-rights extractor", () => {
+  /**
+   * 🚨 An audit RIGHT is an entitlement, not the word "audit".
+   *
+   * The trigger was `/\b(?:audit|inspect|inspection)[^.]{0,400}\./i`, so any
+   * sentence containing the word produced a record: **107 of 327 specimens**,
+   * and **80% of the records carried no detail at all** because there were no
+   * audit terms to read. 107 → 56 documents in 9.677.0.
+   */
+  it("does not read the WORD audit as an audit right", () => {
+    for (const sentence of [
+      "The Audit Committee of the Board shall meet at least twice each year.",
+      "The Architect performs periodic inspections, and does not control or have charge of construction means, methods or sequences.",
+      "Lessee shall inspect each item of Equipment on delivery and sign an acceptance certificate.",
+      "The Company retains independent auditors.",
+    ]) {
+      expect(
+        extractAuditRights(buildTree(["Clause", sentence])),
+        `"${sentence}" was read as granting an audit right`,
+      ).toHaveLength(0);
+    }
+  });
+
+  it("reads a right whose entitlement sits far from the verb", () => {
+    // The notice period, the frequency cap and the scope all go between them,
+    // which is exactly how a well-drafted audit clause reads. A tight window
+    // loses the clauses this extractor exists for.
+    const tree = buildTree([
+      "Audit",
+      "Business Associate may, on thirty (30) days' written notice and not more " +
+        "than once in any twelve-month period, audit Subcontractor's handling of PHI.",
+    ]);
+    const a = extractAuditRights(tree);
+    expect(a).toHaveLength(1);
+    expect(a[0]!.notice_days).toBe(30);
+  });
+
+  it("reads the PLURAL noun, which is how the GDPR states it", () => {
+    // Art. 28(3)(h): "allow for and contribute to audits, including
+    // inspections". `\baudit\b` cannot match "audits" — the boundary falls
+    // between "t" and "s", where there is none.
+    const tree = buildTree([
+      "Audit",
+      "Processor shall allow for and contribute to audits, including inspections, " +
+        "conducted by the Controller or another auditor mandated by the Controller.",
+    ]);
+    expect(extractAuditRights(tree)).toHaveLength(1);
+  });
+
+  it("reads the passive form, which names no entitled party", () => {
+    const tree = buildTree([
+      "Audit",
+      "Processor shall be audited annually by an independent auditor.",
+    ]);
+    const a = extractAuditRights(tree);
+    expect(a).toHaveLength(1);
+    expect(a[0]!.frequency_per_year).toBe(1);
+  });
+
   it("captures frequency, notice, methods", () => {
     const tree = buildTree([
       "Audit",

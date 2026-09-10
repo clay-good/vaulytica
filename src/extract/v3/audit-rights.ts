@@ -6,7 +6,59 @@ import type { DocumentTree } from "../../ingest/types.js";
 import type { AuditCostAllocation, AuditMethod, AuditRights } from "./types.js";
 import { forEachParagraph, posInParagraph } from "../walk.js";
 
-const AUDIT_RX = /\b(?:audit|inspect|inspection)[^.]{0,400}\./i;
+/**
+ * A clause granting an AUDIT RIGHT — not any sentence containing the word.
+ *
+ * 🚨 This was `/\b(?:audit|inspect|inspection)[^.]{0,400}\./i`, the bare word,
+ * so it produced an `AuditRights` record for **107 of 327 specimens** and
+ * **80% of those records carried no detail at all** — every field null or
+ * "unspecified", because there were no audit terms to read. What it had found
+ * was the word:
+ *
+ *   - a board's **"Audit Committee."** (a governance body, not a right);
+ *   - an architect **disclaiming** site duty — "inspections, and does not
+ *     control or have charge of construction means…";
+ *   - a stockholder's DGCL § 220 right to **inspect the stock ledger**;
+ *   - a lessee's acceptance duty — "Lessee shall **inspect** each item of
+ *     Equipment on delivery".
+ *
+ * An audit right is an ENTITLEMENT: a party may audit, has the right to audit,
+ * shall permit an audit, or must make records available for one.
+ *
+ * 🥇 **The entitlement marker and the audit verb sit far apart**, because the
+ * notice period, the frequency cap and the scope all go between them —
+ * "Business Associate **may**, on thirty (30) days' written notice and not more
+ * than once in any twelve-month period, **audit** Subcontractor's handling of
+ * PHI". A tight window loses exactly the well-drafted clauses this exists for,
+ * so the gap is generous and the alternation carries the weight.
+ *
+ * ⚠️ And the noun is routinely PLURAL: GDPR Art. 28(3)(h) is "allow for and
+ * contribute to **audits**, including **inspections**". `\baudit\b` cannot
+ * match "audits" — the boundary falls between "t" and "s", where there is
+ * none. Every branch reads `audits?` / `inspections?`.
+ *
+ * 107 → 56 documents. The ones dropped are the word without the right; the
+ * ones kept include every DPA, BAA and service-provider agreement in the
+ * corpus.
+ */
+const AUDIT_RX = new RegExp(
+  "\\b(?:" +
+    "rights?\\s+to\\s+(?:audit|inspect)|" +
+    "audit\\s+rights?|" +
+    "(?:may|(?:shall|will|must)\\s+(?:have|be\\s+entitled|permit|allow|afford)|" +
+    "is\\s+entitled|reserves?\\s+the\\s+right)[^.]{0,200}?\\b(?:audits?|inspects?|inspections?)\\b|" +
+    "(?:permit|allow|afford|grant)s?[^.]{0,120}?\\b(?:audits?|inspections?)\\b|" +
+    "subject\\s+to\\s+(?:an?\\s+)?audit|" +
+    // The PASSIVE form, which names no entitled party at all: "Processor shall
+    // be audited annually by an independent auditor." Caught by the extractor's
+    // own existing test, not by the corpus — a reminder that a suite written
+    // before a pattern is narrowed is the cheapest review of the narrowing.
+    "(?:shall|will|must|is|are|be)\\s+(?:be\\s+)?audited\\b|" +
+    "make[^.]{0,40}?available[^.]{0,120}?\\b(?:audits?|inspects?|inspections?)\\b|" +
+    "\\b(?:audits?|inspects?|inspections?)[^.]{0,120}?\\b(?:upon|on)\\s+[^.]{0,40}?notice" +
+    ")[^.]{0,400}\\.",
+  "i",
+);
 
 // Audit-frequency drafting has several equivalent annual forms: "once per
 // year", "once annually", "an annual audit", "once in any twelve (12) month

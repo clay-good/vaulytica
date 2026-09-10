@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.677.0] — 2026-09-10
+
+The third newly-reachable v3 extractor, read the same way as the two before it.
+
+### Fixed
+- 🚨 **An audit RIGHT is an entitlement, not the word "audit".** The trigger was
+  `/\b(?:audit|inspect|inspection)[^.]{0,400}\./i`, so any sentence containing
+  the word produced an `AuditRights` record: **107 of 327 specimens**, and
+  **80% of those records carried no detail at all** — every field null or
+  "unspecified", because there were no audit terms to read. What it had found
+  was the word:
+
+  - a board's **"Audit Committee."**, a governance body;
+  - an architect **disclaiming** site duty — *"inspections, and does not
+    control or have charge of construction means…"*;
+  - a stockholder's DGCL § 220 right to **inspect the stock ledger**;
+  - a lessee's acceptance duty — *"Lessee shall **inspect** each item of
+    Equipment on delivery"*.
+
+  **107 → 50 documents, 171 → 58 records, no-detail 137 → 36**, and records
+  anchored on a bare heading word **25 → 0**. Every DPA, BAA and
+  service-provider agreement in the corpus is kept.
+
+  🥇 **The entitlement and the audit verb sit far apart**, because the notice
+  period, the frequency cap and the scope all go between them — *"Business
+  Associate **may**, on thirty (30) days' written notice and not more than once
+  in any twelve-month period, **audit** Subcontractor's handling of PHI"*. A
+  tight window loses exactly the well-drafted clauses this exists for, so the
+  gap is generous and the alternation carries the weight.
+
+  ⚠️ **And the noun is routinely PLURAL.** GDPR Art. 28(3)(h) is *"allow for and
+  contribute to **audits**, including **inspections**"*, and `\baudit\b` cannot
+  match "audits" — the boundary falls between "t" and "s", where there is none.
+  My first draft dropped `dpa-complete.txt` for exactly that reason. The same
+  lesson as `days'`, three days running.
+
+  🥇 **The extractor's own existing test caught the other gap**: the PASSIVE
+  form, *"Processor shall be audited annually"*, which names no entitled party
+  at all. A suite written before a pattern is narrowed is the cheapest review
+  of the narrowing.
+
 ## [9.676.0] — 2026-09-10
 
 Reading the next newly-reachable v3 extractor, the same way 9.675.0 read the
