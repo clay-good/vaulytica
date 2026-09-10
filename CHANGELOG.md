@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.687.0] — 2026-09-10
+
+### Added
+- 🥇 **An e2e spec that skips when its fixture is missing can stop running
+  without anyone noticing.** Every Playwright spec opens with the same honest
+  guard — `test.skip(!existsSync(FIXTURE), "fixture missing: …")` — which is
+  right for a checkout that lacks a binary and wrong for a *deleted* one: the
+  drop-zone smoke test, the no-network privacy proof and the axe accessibility
+  sweep would each go quiet and **CI would stay green**.
+
+  All six fixtures are present today — `baa-minimal-pass.docx`,
+  `mutual-nda.docx`, `bad-nda.docx`, `vendor-saas-agreement.docx` and the two
+  bundle documents — which is the answer, not the reason to skip the guard.
+  `cli-fixture-guard.test.ts` already closes this for the CLI's fixtures; this
+  is the e2e counterpart. A zero-byte fixture is caught too, because it passes
+  `existsSync` and fails inside the browser, which reads as a flaky e2e rather
+  than a missing file.
+
+  ⚠️ **Two narrowings, both learned by running it.** Matching every quoted
+  filename swept in the DOWNLOAD a spec asserts on (`report.docx`,
+  `bundle.docx`) and two deliberately overflow-stressing names. Matching any
+  `join(...)` still swept in `join(tmp, "scanned.pdf")`, a file the spec
+  *writes*. 🥇 **The root of the join is the signal** — a fixture is rooted at a
+  stable location (`__dirname`, `process.cwd()`, a module-level `CONST`) and a
+  scratch file at a runtime variable — which is a rule rather than a list of
+  names to ignore.
+
+Also probed and clean, recorded so it is not re-run: the container reader is
+honest on every input it cannot inspect (pasted text, empty, malformed — each
+carries a `note` saying why), and `ContainerFacts.note` reaches every surface
+via the delivery summary, which is where 9.5xx folded it after finding it had
+no consumer on the inspectable path.
+
 ## [9.686.0] — 2026-09-10
 
 The other half of the pre-disclosure pack, put through the same positive
