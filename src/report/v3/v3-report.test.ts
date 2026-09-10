@@ -379,3 +379,56 @@ describe("v3 renderers use the shared, fixed helpers", () => {
     expect(textOf(out)).toContain("30 days");
   });
 });
+
+/**
+ * One row per distinct mechanism-and-place.
+ *
+ * The extractor records every occurrence, correctly — `uk-idta-addendum.txt`
+ * names the EU SCCs in three separate paragraphs. The table drops the
+ * position, so all three rendered byte-identically, and three identical rows
+ * tell a reader nothing the first one did not. A section column would not have
+ * fixed it: all three sit in the same section.
+ */
+describe("renderTransfersSummary — repeated references", () => {
+  const ref = (kind: string, location: string, raw_text: string) =>
+    ({
+      kind,
+      location,
+      raw_text,
+      position: { section_id: "s1", paragraph_id: "s1.p1", start: 0, end: raw_text.length },
+    }) as never;
+
+  /** Body rows in the section's one table (total rows minus the header). */
+  function bodyRows(refs: unknown[]): number {
+    for (const node of renderTransfersSummary(refs as never)) {
+      const root = (node as unknown as { root?: unknown[] }).root;
+      if (!Array.isArray(root)) continue;
+      const rows = root.filter(
+        (c) => (c as { constructor?: { name?: string } })?.constructor?.name === "TableRow",
+      );
+      if (rows.length > 0) return rows.length - 1;
+    }
+    throw new Error("no table rendered");
+  }
+
+  it("collapses references that render identically", () => {
+    expect(
+      bodyRows([
+        ref("scc-unspecified", "inline", "EU SCCs"),
+        ref("scc-unspecified", "inline", "EU SCCs"),
+        ref("scc-unspecified", "inline", "EU SCCs"),
+      ]),
+    ).toBe(1);
+  });
+
+  it("keeps references that differ in mechanism, location or excerpt", () => {
+    expect(
+      bodyRows([
+        ref("scc-unspecified", "inline", "EU SCCs"),
+        ref("scc-unspecified", "annex", "EU SCCs"),
+        ref("uk-addendum", "inline", "EU SCCs"),
+        ref("scc-unspecified", "inline", "Standard Contractual Clauses"),
+      ]),
+    ).toBe(4);
+  });
+});

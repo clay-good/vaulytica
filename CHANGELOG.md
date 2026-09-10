@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.680.0] — 2026-09-10
+
+Reading the pages 9.674.0 made visible. They read honestly — *"the following
+transfer mechanisms were **detected**"*, and the subprocessor page states
+plainly that it does not fetch URLs at run time — but one table repeats itself.
+
+### Fixed
+- **Three identical rows in the cross-border transfer summary.**
+  `uk-idta-addendum.txt` names the EU SCCs in three separate paragraphs, which
+  the extractor records correctly. The table drops the position, so all three
+  render byte-identically — *"EU SCC (module unspecified) | inline | EU SCCs"*,
+  three times — and three identical rows tell a reader nothing the first one
+  did not.
+
+  🥇 **A section column would not have fixed it: all three sit in the same
+  section.** That is the difference from 9.657.0, where the register's
+  checklist was hiding a real distinguishing field (the kind) and the answer
+  was to print it. Here there is nothing to print, so the answer is to
+  collapse. Deduplicated on what the reader SEES, in first-occurrence order, so
+  the table stays a deterministic projection of the extractor's own order.
+
+  2 rows across the corpus — small, but in a page that had never been rendered
+  in a real report until yesterday.
+
 ## [9.679.0] — 2026-09-10
 
 The class behind 9.675–9.678, closed.

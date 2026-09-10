@@ -31,11 +31,34 @@ export function renderTransfersSummary(refs: TransferMechanismReference[]): (Par
   if (refs.length === 0) {
     return []; // Section is conditional; emit nothing when no transfer detected.
   }
+  // ONE ROW PER DISTINCT MECHANISM-AND-PLACE.
+  //
+  // The extractor records every occurrence, correctly: `uk-idta-addendum.txt`
+  // names the EU SCCs in three separate paragraphs. The TABLE drops the
+  // position, so all three render byte-identically — "EU SCC (module
+  // unspecified) | inline | EU SCCs", three times — and three identical rows
+  // tell a reader nothing the first one did not.
+  //
+  // 🥇 A section column would not fix it: all three sit in the same section.
+  // That is the difference from 9.657.0, where the register's checklist was
+  // hiding a real distinguishing field (the kind) and the answer was to print
+  // it. Here there is nothing to print, so the answer is to collapse.
+  //
+  // Deduplicated on what the reader SEES, in first-occurrence order, so the
+  // table stays a deterministic projection of the extractor's own order.
+  const rendered = refs.map((r) => [
+    KIND_LABEL[r.kind] ?? r.kind,
+    r.location,
+    truncate(r.raw_text, 160),
+  ]);
+  const distinct = new Map<string, string[]>();
+  for (const cells of rendered) {
+    const key = cells.join("\u0000");
+    if (!distinct.has(key)) distinct.set(key, cells);
+  }
   const table = buildTable([
     headerRow(["Mechanism", "Location in document", "Excerpt (truncated)"]),
-    ...refs.map((r) =>
-      bodyRow([KIND_LABEL[r.kind] ?? r.kind, r.location, truncate(r.raw_text, 160)]),
-    ),
+    ...[...distinct.values()].map((cells) => bodyRow(cells)),
   ]);
   const tiaMentioned = refs.some((r) => /\bTIA\b|transfer\s+impact\s+assessment/i.test(r.raw_text));
   const supplementaryMentioned = refs.some((r) =>
