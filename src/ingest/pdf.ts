@@ -1,5 +1,5 @@
 import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./types.js";
-import { countWords, normalize } from "./normalize.js";
+import { countWords, noTextWarning, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes, MAX_OCR_PAGES } from "./limits.js";
 import { languageFields } from "./language.js";
@@ -163,10 +163,12 @@ export async function ingestPdfBuffer(
           `OCR flagged ${uncertain} low-confidence word${uncertain === 1 ? "" : "s"} (marked "[uncertain]" in the text). Verify any party name, amount, or date near an [uncertain] marker before relying on a finding.`,
         );
       }
+      const ocrWordCount = countWords(normalized);
+      warnings.push(...noTextWarning(ocrWordCount));
       return {
         tree: normalized,
         source: "pdf",
-        word_count: countWords(normalized),
+        word_count: ocrWordCount,
         page_count: pdfDoc.numPages,
         ...languageFields(normalized, warnings),
         sha256,
@@ -182,11 +184,13 @@ export async function ingestPdfBuffer(
 
   const tree = buildTreeFromPages(pages);
   const normalized = normalize(tree);
+  const word_count = countWords(normalized);
+  warnings.push(...noTextWarning(word_count));
 
   return {
     tree: normalized,
     source: "pdf",
-    word_count: countWords(normalized),
+    word_count,
     page_count: pdfDoc.numPages,
     ...languageFields(normalized, warnings),
     sha256,

@@ -302,6 +302,36 @@ export function normalize(tree: DocumentTree): DocumentTree {
  * explicit stack, no recursion) so it is stack-safe on an arbitrarily deep
  * tree — part of the spec-v8 §7 recursion-guard contract.
  */
+/**
+ * The caveat an ingest owes a document it could read NOTHING out of.
+ *
+ * 🚨 A zero-byte file used to come back with a full analysis and no mention of
+ * being empty: `word_count: 0`, and three findings telling the reader the
+ * document has **no parties identified**, **no Effective Date** and **no
+ * defined terms**. Every one of those is true of nothing at all, and the only
+ * caveat it carried was the generic "pasted text loses structure" note.
+ *
+ * The findings themselves are correct and deliberately left — a presence rule
+ * firing on a document with no legal content is documented behaviour, held by
+ * `presence-rule-satisfiable.test.ts`, and suppressing rules on short input is
+ * how a real analysis gets silently skipped. What was missing is the ingest
+ * saying what it read, which is the ingest's whole job: `IngestResult.warnings`
+ * answers "what could and could not be READ", and "nothing" is the most
+ * important answer it has.
+ *
+ * One owner, called by every ingest path, because a DOCX of only images and a
+ * PDF whose text layer came back blank need the same sentence as an empty
+ * paste.
+ */
+export function noTextWarning(word_count: number): string[] {
+  if (word_count > 0) return [];
+  return [
+    "No readable text was found in this file. Every finding below is about an empty document, " +
+      "not about your contract — check that the file is the one you meant and that its text is " +
+      "selectable rather than a scanned image.",
+  ];
+}
+
 export function countWords(tree: DocumentTree): number {
   let n = 0;
   const stack: Section[] = [...tree.sections].reverse();

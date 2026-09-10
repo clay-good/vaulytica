@@ -1,5 +1,5 @@
 import type { DocumentTree, IngestResult, Paragraph, Section } from "./types.js";
-import { countWords, normalize } from "./normalize.js";
+import { countWords, noTextWarning, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertPasteChars } from "./limits.js";
 import { stripPleadingLineNumbers } from "./line-numbers.js";
@@ -32,11 +32,13 @@ export async function ingestPaste(text: string): Promise<IngestResult> {
   const normalized = normalize(tree);
 
   const language = languageFields(normalized, warnings);
+  const word_count = countWords(normalized);
+  warnings.push(...noTextWarning(word_count));
 
   return {
     tree: normalized,
     source: "paste",
-    word_count: countWords(normalized),
+    word_count,
     ...language,
     sha256: await sha256Hex(text),
     warnings,

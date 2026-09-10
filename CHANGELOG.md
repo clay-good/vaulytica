@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.665.0] — 2026-09-10
+
+Found by handing the CLI the inputs a real user hands it by accident: an empty
+file, a one-byte file, a few bytes of binary, a UTF-8 BOM.
+
+### Fixed
+- 🚨 **A zero-byte file came back with a full analysis and no mention of being
+  empty.** `word_count: 0`, and three findings telling the reader the document
+  has **no parties identified**, **no Effective Date found** and **no defined
+  terms detected**. Every one is true of nothing at all. The only caveat it
+  carried was the generic "pasted text loses structure" note.
+
+  The findings are deliberately left alone: a presence rule firing on a
+  document with no legal content is documented behaviour, held by
+  `presence-rule-satisfiable.test.ts`, and suppressing rules on short input is
+  how a real analysis gets silently skipped. 🥇 **What was missing is the
+  ingest saying what it read, which is the ingest's whole job.**
+  `IngestResult.warnings` answers *"what could and could not be READ"*, and
+  **"nothing" is the most important answer it has.**
+
+  The sentence says what the emptiness MEANS for the report rather than
+  reporting a number, because a reader who sees "0 words" still reads the
+  findings underneath it:
+
+  > No readable text was found in this file. Every finding below is about an
+  > empty document, not about your contract — check that the file is the one
+  > you meant and that its text is selectable rather than a scanned image.
+
+  One owner (`noTextWarning` in `normalize.ts`, beside `countWords`), called
+  from **all four** ingest word-count sites — paste, DOCX, and both PDF paths,
+  text-layer and OCR — because a DOCX of only images and a PDF whose text layer
+  came back blank need the same sentence as an empty paste. It reaches every
+  surface for free: `IngestResult.warnings` has been swept to all of them since
+  9.490.0, and to the standalone prose artifacts since 9.659.0.
+
 ## [9.664.0] — 2026-09-10
 
 The method of 9.651–9.663, written down as a gate.

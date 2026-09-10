@@ -65,3 +65,45 @@ describe("ingestPaste", () => {
     expect(r.word_count).toBe(4);
   });
 });
+
+/**
+ * An ingest owes a caveat to a document it could read NOTHING out of.
+ *
+ * A zero-byte file used to come back with a full analysis and no mention of
+ * being empty: `word_count: 0`, and three findings telling the reader the
+ * document has no parties identified, no Effective Date and no defined terms.
+ * Every one is true of nothing at all, and the only caveat it carried was the
+ * generic "pasted text loses structure" note.
+ *
+ * The findings are deliberately left alone — a presence rule firing on a
+ * document with no legal content is documented behaviour — and what was
+ * missing is the ingest saying what it read, which is the ingest's whole job.
+ */
+describe("ingestPaste — a file with no readable text", () => {
+  it("warns when the paste is empty", async () => {
+    const r = await ingestPaste("");
+    expect(r.word_count).toBe(0);
+    expect(r.warnings.some((w) => w.startsWith("No readable text was found"))).toBe(true);
+  });
+
+  it("warns when the paste is only whitespace and punctuation", async () => {
+    const r = await ingestPaste("\n\n   \t\n");
+    expect(r.word_count).toBe(0);
+    expect(r.warnings.some((w) => w.startsWith("No readable text was found"))).toBe(true);
+  });
+
+  it("says nothing of the kind for a document that has text", async () => {
+    const r = await ingestPaste("AGREEMENT\n\nProvider shall deliver the Services.\n");
+    expect(r.word_count).toBeGreaterThan(0);
+    expect(r.warnings.some((w) => w.startsWith("No readable text was found"))).toBe(false);
+  });
+
+  it("tells the reader the findings are about an empty document", async () => {
+    const r = await ingestPaste("");
+    const w = r.warnings.find((x) => x.startsWith("No readable text was found"))!;
+    // The sentence has to say what it MEANS for the report, not just report a
+    // number — a reader who sees "0 words" still reads the findings below it.
+    expect(w).toContain("about an empty document");
+    expect(w).toContain("scanned image");
+  });
+});

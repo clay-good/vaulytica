@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { DocumentTree } from "./types.js";
-import { countWords, normalize } from "./normalize.js";
+import { countWords, normalize, noTextWarning } from "./normalize.js";
 import { flattenText } from "./types.js";
 
 const treeOf = (heading: string, paragraphs: string[][]): DocumentTree => ({
@@ -198,5 +198,22 @@ describe("footnote markers", () => {
     expect(text(normalize(doc("The premises are 500 m\u00B2 and the load is 10\u00B2 kg.")))).toBe(
       "The premises are 500 m\u00B2 and the load is 10\u00B2 kg.",
     );
+  });
+});
+
+/**
+ * One owner for the empty-document caveat, called by every ingest path — a
+ * DOCX of only images and a PDF whose text layer came back blank need the same
+ * sentence as an empty paste.
+ */
+describe("noTextWarning", () => {
+  it("is silent for any document with words", () => {
+    expect(noTextWarning(1)).toEqual([]);
+    expect(noTextWarning(50_000)).toEqual([]);
+  });
+
+  it("speaks exactly once for a document with none", () => {
+    expect(noTextWarning(0)).toHaveLength(1);
+    expect(noTextWarning(0)[0]).toContain("No readable text was found");
   });
 });

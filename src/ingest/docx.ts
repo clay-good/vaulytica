@@ -1,5 +1,5 @@
 import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./types.js";
-import { countWords, normalize } from "./normalize.js";
+import { countWords, noTextWarning, normalize } from "./normalize.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes } from "./limits.js";
 import { countRevisions, docxNotices } from "./docx-notices.js";
@@ -69,11 +69,13 @@ export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> 
   const normalized = normalize(tree);
 
   const language = languageFields(normalized, warnings);
+  const word_count = countWords(normalized);
+  warnings.push(...noTextWarning(word_count));
 
   return {
     tree: normalized,
     source: "docx",
-    word_count: countWords(normalized),
+    word_count,
     ...language,
     sha256: await sha256Hex(buf),
     warnings,
