@@ -36,7 +36,10 @@ const FRONTED =
 
 /**
  * Obligations whose sentence opens with a fronted condition and whose trigger
- * is STILL empty. Measured 2026-09-10; **258 before 9.692.0**.
+ * is STILL empty. Measured 2026-09-10; **258 before 9.692.0**, 60 after it,
+ * and 48 once 9.693.0 stopped reading a modal inside the protasis as the duty
+ * — those rows had the condition in the ACTION, so they were counted as
+ * having no trigger and were right to be.
  *
  * Sixty is not zero because the trigger VOCABULARY is `TRIGGER_RE`'s and was
  * deliberately not widened here: `Where …`, `Unless …` and `Should …` are not
@@ -44,7 +47,7 @@ const FRONTED =
  * is a separate decision with its own measurement. Widening WHERE a trigger is
  * looked for and widening WHAT counts as one are different changes.
  */
-const FRONTED_WITHOUT_TRIGGER = 60;
+const FRONTED_WITHOUT_TRIGGER = 48;
 
 describe("the obligations ledger says when", () => {
   it("reads a fronted condition as the trigger", async () => {

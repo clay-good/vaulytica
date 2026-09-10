@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.693.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A condition read as the duty, and the duty swallowed inside it.**
+  "If Supplier cannot meet accepted orders, it shall allocate available
+  Products among its distributors and its own account" reached the obligations
+  ledger as **modal `cannot`**, action "meet accepted orders, it shall allocate
+  …", trigger empty. The row asserts something the document does not say, and
+  the duty it does say is buried in the action column.
+
+  `CONJ` has no boundary at ", it ", so the whole sentence stayed one clause
+  owned by the FIRST modal — which sits inside the protasis, where it states
+  when the duty arises rather than what it is. A modal inside a fronted
+  condition is now dropped, but only when a modal survives outside it, so a
+  sentence whose only modal is the conditional one still yields its obligation.
+  **15 corpus rows → 2**; three of them had published an obligor of "If it" or
+  "If a conflict arises that we".
+
+  The apodosis then refers back with a pronoun — "it shall allocate" — and a
+  ledger column reading "it" names nobody, so the protasis supplies the party
+  when it names one. 🚨 **Only a BARE pronoun is resolved this way**: "If Wife
+  cannot refinance within that period, **the homestead** shall be listed for
+  sale" is not a duty of the Wife's, and an apodosis with its own subject is
+  left alone. Thirteen obligors improve, ten of them from a sentence fragment
+  to a party (`Seller`, `Venue`, `Contractor`, `your provider`, `my wife`,
+  `that beneficiary`).
+
+- 🚨 **225 of 3,687 actions carried a stranded separator.** Excising the
+  trigger left the space that preceded it in front of the comma that followed:
+  "install operating system and application updates **within thirty (30)
+  days**, and store Company information …" rendered as "…updates , and store
+  …". The doubled-comma collapse next to it had been written for the same
+  class of seam and stopped one character short.
+
+  🥇 **Found by generating the obligations CSV and reading it** — the same pass
+  that found the two defects above and the empty trigger column in 9.692.0.
+  Four defects in one artifact nobody had printed.
+
 ## [9.692.0] — 2026-09-10
 
 ### Fixed

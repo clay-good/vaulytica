@@ -108,7 +108,17 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // `except` clause is a qualifier on the duty, and only an `except`
         // PHRASE naming a party is a carve-out `scopeExclusion` reports.
         const subjectForObligor = stripExceptTail(subject);
-        const obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
+        let obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
+        // The apodosis of a conditional usually refers back to the protasis
+        // with a pronoun — "If Supplier cannot meet accepted orders, IT shall
+        // allocate available Products …" — and a ledger column reading "it"
+        // names nobody. Only a BARE pronoun is resolved this way: an apodosis
+        // with its own subject is not coreferent, and "If Wife cannot
+        // refinance within that period, THE HOMESTEAD shall be listed for
+        // sale" would otherwise be recorded as a duty of the Wife's.
+        if (BARE_PRONOUN.test(obligor)) {
+          obligor = protasisObligor(subject, partyNames, partyRoles) ?? obligor;
+        }
         // A FRONTED condition is a trigger too, and it lives in the SUBJECT.
         // `TRIGGER_RE` was only ever run over the predicate, so "If my wishes
         // are unknown, my agent shall …" reached the obligations ledger with
@@ -146,6 +156,13 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // execution" loses the middle clause and reads "deliver the
         // Deliverables, , no later than …". Collapse the doubled separator.
         action = action.replace(/,\s*,/g, ",");
+        // The same excision leaves the space that preceded the cut clause
+        // stranded BEFORE the comma that followed it: "install operating
+        // system and application updates within thirty days, and store
+        // Company information …" became "…updates , and store …". 225 of the
+        // corpus's 3,688 rows carried one, in the action column of a CSV a
+        // lawyer reads.
+        action = action.replace(/\s+([,;])/g, "$1").replace(/\s{2,}/g, " ");
 
         // A MODAL WITH NO VERB PHRASE AFTER IT IS NOT AN OBLIGATION. "will" is
         // also a noun, and legal documents are where it is one: "employment
@@ -194,6 +211,43 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
  * is kept with the first obligation. Conservative by design: an ambiguous
  * coordination stays one obligation rather than fabricating a second.
  */
+/** A pronoun standing alone names nobody in a ledger column. */
+const BARE_PRONOUN = /^(?:it|they|he|she|we)$/i;
+
+/**
+ * The party the protasis names, for an apodosis that refers back to it with a
+ * pronoun. Truncated at the protasis's own modal, so the subject is what is
+ * resolved and not the whole condition.
+ */
+function protasisObligor(
+  subject: string,
+  partyNames: Set<string>,
+  partyRoles: Set<string>,
+): string | undefined {
+  const p = PROTASIS.exec(subject);
+  if (!p) return undefined;
+  let inner = p[0]
+    .replace(/^\s*(?:if|when|unless|should|in\s+the\s+event|where)\s+/i, "")
+    .replace(/[,\s]+$/, "");
+  MODAL_RE.lastIndex = 0;
+  const m = MODAL_RE.exec(inner);
+  if (m) inner = inner.slice(0, m.index).trim();
+  if (!inner) return undefined;
+  const resolved = resolveObligor(inner, partyNames, partyRoles);
+  // Only a party is an improvement on a pronoun. A protasis whose subject is
+  // not one ("If a conflict arises that we cannot cure", "If a provision is
+  // held unenforceable") has nothing better to offer, and substituting its
+  // fragment would trade a vague obligor for a wrong one.
+  const key = resolved.toLowerCase();
+  return partyNames.has(key) || partyRoles.has(key) || key === "the parties" ? resolved : undefined;
+}
+
+/**
+ * A sentence opening with a subordinate clause that closes on a comma. Bounded
+ * and `[^.;]` so it cannot run past the sentence it fronts.
+ */
+const PROTASIS = /^\s*(?:if|when|unless|should|in\s+the\s+event|where)\b[^.;]{3,200}?,\s/i;
+
 function splitModalClauses(
   sentence: string,
 ): { subject: string; predicate: string; modal: string }[] {
@@ -218,6 +272,25 @@ function splitModalClauses(
     modals.push({ index: m.index, len: m[0].length, text: m[1]! });
   }
   if (modals.length === 0) return [];
+
+  // A MODAL INSIDE A FRONTED CONDITION IS PART OF THE CONDITION, NOT THE DUTY.
+  // "If Supplier cannot meet total demand, it shall allocate available
+  // Products among its distributors …" has its duty in the apodosis; `cannot`
+  // states when the duty arises. `CONJ` has no boundary at ", it ", so the
+  // whole sentence became ONE obligation with modal `cannot` and action "meet
+  // accepted orders, it shall allocate …" — the condition read as the duty and
+  // the real duty swallowed inside it. 15 corpus rows, every one wrong, and
+  // three of them published an obligor of "If it" or "If a conflict arises
+  // that we".
+  //
+  // Only dropped when a modal survives OUTSIDE the protasis, so a sentence
+  // whose only modal is the conditional one still yields its obligation.
+  const protasis = PROTASIS.exec(sentence);
+  if (protasis && modals.some((x) => x.index >= protasis[0].length)) {
+    const kept = modals.filter((x) => x.index >= protasis[0].length);
+    modals.length = 0;
+    modals.push(...kept);
+  }
 
   // The `.\s+` alternative recovers a duty stranded when splitSentences kept an
   // ambiguous abbreviation ("5:00 p.m. The Provider shall …") in one sentence.

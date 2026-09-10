@@ -77,6 +77,65 @@ describe("extractObligations", () => {
     expect(obli?.nested_triggers?.join(" ")).toMatch(/written notice/);
   });
 
+  it("does not read a modal inside the protasis as the duty", () => {
+    // "If Supplier cannot meet accepted orders, it shall allocate available
+    // Products …" has its duty in the apodosis; `cannot` states when the duty
+    // arises. CONJ has no boundary at ", it ", so the whole sentence became
+    // ONE obligation with modal `cannot` and action "meet accepted orders, it
+    // shall allocate …" — the condition read as the duty, the duty swallowed.
+    const tree = buildTree([
+      "Allocation",
+      "If Supplier cannot meet accepted orders, it shall allocate available Products " +
+        "among its distributors and its own account.",
+    ]);
+    // Parties are supplied because only a PARTY is an improvement on a
+    // pronoun: a protasis subject that resolves to nothing better is left
+    // alone rather than traded for a fragment.
+    const parties = extractParties(
+      buildTree([
+        "Parties",
+        'This Agreement is between Acme Corp. ("Supplier") and Globex Inc. ("Distributor").',
+      ]),
+    );
+    const oblis = extractObligations(tree, parties);
+    expect(oblis.length).toBe(1);
+    expect(oblis[0]?.modal).toBe("shall");
+    expect(oblis[0]?.trigger).toBe("If Supplier cannot meet accepted orders");
+    expect(oblis[0]?.action).toBe(
+      "allocate available Products among its distributors and its own account",
+    );
+    // The apodosis refers back with a pronoun; a ledger column reading "it"
+    // names nobody, so the protasis supplies the party.
+    expect(oblis[0]?.obligor).toBe("Supplier");
+  });
+
+  it("does not take the protasis subject when the apodosis has its own", () => {
+    // 🚨 The load-bearing negative. "If Wife cannot refinance …, THE HOMESTEAD
+    // shall be listed for sale" is not a duty of the Wife's — the apodosis
+    // names its own subject and only a BARE pronoun is resolved back.
+    const tree = buildTree([
+      "Homestead",
+      "If Wife cannot refinance within that period, the homestead shall be listed for sale.",
+    ]);
+    const [obli] = extractObligations(tree, []);
+    expect(obli?.obligor).toBe("the homestead");
+    expect(obli?.trigger).toBe("If Wife cannot refinance within that period");
+  });
+
+  it("leaves no stranded space where the trigger was cut out", () => {
+    // Excising the trigger left the space that preceded it in front of the
+    // comma that followed: "…updates , and store Company information…".
+    const tree = buildTree([
+      "Security",
+      "Each user shall install operating system and application updates within " +
+        "thirty (30) days, and store Company information only in approved systems.",
+    ]);
+    for (const o of extractObligations(tree, [])) {
+      expect(o.action, "a stranded separator seam").not.toMatch(/\s[,;]/);
+      expect(o.action).not.toMatch(/\s{2,}/);
+    }
+  });
+
   it("reads a fronted condition as the trigger", () => {
     // `TRIGGER_RE` was run over the predicate only, and a fronted condition
     // lives in the SUBJECT — so the one column a lawyer scans to answer "when
