@@ -390,7 +390,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1104,11 +1104,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "690e2ca60ebebaf9760154109b54a59e4bfce7dd047a697cd109e688566ec2a2",
+  "result_hash": "0a715933c26d0f4625caa023024efe1a5dfc8ac9b06480b5e7dd17243b62c0c0",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.644.0"
+  "version": "9.645.0"
 }

@@ -55,3 +55,34 @@ describe("OBLI-009 — residuals detection recognizes plural 'unaided memories' 
     ).toBe(false);
   });
 });
+
+// NDA-D-009 detects the same clause and learned this in 9.640.0; this sibling
+// did not, so the same paragraph drew a warning from one rule and not the
+// other. The patterns have a single owner in `_helpers.ts` now.
+describe("OBLI-009 — a clause that REJECTS residuals (v1.2.0)", () => {
+  const fires = (b: string) => !!OBLI_009.check(buildContext(["Confidentiality", b]) as never);
+
+  it("stays silent when the paragraph's own heading is the only bare 'Residuals'", () => {
+    expect(
+      fires(
+        "7.3 Residuals. Nothing in this Agreement grants a residuals right, and neither Party " +
+          "may use the other's Confidential Information on the basis that its personnel retained " +
+          "it in unaided memory.",
+      ),
+    ).toBe(false);
+  });
+
+  it("stays silent on an express rejection", () => {
+    expect(fires("The parties expressly reject any residuals right.")).toBe(false);
+  });
+
+  it("still fires on a genuine residuals grant in a paragraph containing an unrelated 'not'", () => {
+    expect(
+      fires(
+        "Recipient shall not disclose Confidential Information to any third party. Recipient's " +
+          "personnel may use Residuals for any purpose, and nothing in this Section limits that " +
+          "right.",
+      ),
+    ).toBe(true);
+  });
+});

@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.645.0] — 2026-09-09
+
+### Fixed
+- 🥇 **Two rules detect a residuals clause and only one of them learned to read
+  a clause that REJECTS one.** NDA-D-009 was taught in 9.640.0; OBLI-009 was
+  not, so a joint development agreement whose § 7.3 is headed "Residuals" and
+  says *"Nothing in this Agreement grants a residuals right, and neither Party
+  may use the other's Confidential Information on the basis that its personnel
+  retained it in unaided memory"* was warned that a residuals clause is present,
+  and told to strike the clause that protects it.
+
+  `isPresenceDisclaimed` could not have caught it either way: the paragraph's
+  first match is the section HEADING, which has nothing before it to read, and
+  the disclaimer sits in the next sentence. The check is on the whole paragraph
+  now, and the patterns have a single owner in `_helpers.ts`, registered in
+  `shared-vocabulary.test.ts` so a third copy cannot be written.
+
+- **"Confidential information" does not distinguish an NDA.** It sat in both
+  NDA-deep families' `distinguishing_phrases` and matches **49 of 325**
+  specimens — the phrase every commercial contract in the corpus uses. The
+  325th specimen is what pushed it over the 15% base-rate line, and the line was
+  right: both families keep "disclosing party", "receiving party", "trade
+  secret", "§ 1833(b)" and "irreparable harm", and nothing in the corpus
+  re-routes.
+
+### Added
+- `tests/fixtures/specimens/joint-development-complete.txt` — the thirteenth
+  clean document, and the 325th specimen: background and foreground IP with a
+  sole/joint split on inventorship, an express displacement of the 35 U.S.C.
+  § 262 default with a partition and accounting waiver, prosecution control with
+  a step-in right at a bar date, first-right enforcement with shared recoveries,
+  a publication review with a 90-day patent delay, a joint steering committee
+  with a deadlock path, and field-limited exclusivity. Eight findings, none of
+  them false.
+
+  One finding was the **document's**: § 6.3 wrote "as authorship practice in the
+  field requires" in an agreement that defines "Field" as a field of use, and
+  STRUCT-009 was right that the two collide. The document names the scientific
+  discipline instead.
+
 ## [9.644.0] — 2026-09-09
 
 ### Fixed

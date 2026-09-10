@@ -394,7 +394,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1235,11 +1235,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "aa3bf878ba51f61f4d0a130050638ab93b63269fee0efd741118ab1922934c5f",
+  "result_hash": "5af32b0ace944cc1de1c7dd8e7e1e78e288c80c3e56ad1033cc3feba9682e807",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.644.0"
+  "version": "9.645.0"
 }

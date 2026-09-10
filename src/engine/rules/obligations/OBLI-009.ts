@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import {
+  emit,
+  excerptWindow,
+  firstParagraphMatch,
+  isPresenceDisclaimed,
+  rejectsResiduals,
+} from "../_helpers.js";
 
 /**
  * OBLI-009 — Residuals clause swallows confidentiality (warning,
@@ -18,7 +24,7 @@ import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "
  */
 export const rule: Rule = {
   id: "OBLI-009",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Residuals clause swallows confidentiality",
   category: "obligations",
   default_severity: "warning",
@@ -35,6 +41,15 @@ export const rule: Rule = {
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
+    // A paragraph that REJECTS residuals is the drafting this rule exists to
+    // ask for. NDA-D-009 learned that in 9.640.0 and this sibling did not, so
+    // a joint development agreement whose § 7.3 says "Nothing in this Agreement
+    // grants a residuals right" was warned that a residuals clause is present,
+    // with a recommendation to strike the clause protecting it. The check is on
+    // the whole PARAGRAPH because the first match here is the section heading
+    // "Residuals.", which has nothing before it for `isPresenceDisclaimed` to
+    // read.
+    if (rejectsResiduals(hit.text)) return null;
     return emit(ctx, rule, {
       title: "Residuals clause present",
       description: hit.match[0],

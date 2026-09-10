@@ -392,7 +392,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1106,11 +1106,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "14623d7a6541f49310df66dd31d8eb3788155dd4a4d74e761a2a2e914db0a9da",
+  "result_hash": "49a01de13b6a483b6a16240d8417e52bd92c4d2b57f4e7b7efbde2091edd3d40",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.644.0"
+  "version": "9.645.0"
 }

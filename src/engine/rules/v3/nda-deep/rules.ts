@@ -9,7 +9,7 @@
  * the NDA-deep playbooks via `applies_to_playbooks`.
  */
 
-import { expressDenial } from "../../_helpers.js";
+import { expressDenial, RESIDUALS_REJECTED } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildNdaCompoundRule,
@@ -311,10 +311,10 @@ export const NDA_DEEP_RULES: Rule[] = [
     // of its personnel …; the parties expressly reject any residuals right" was
     // reported as "Residuals clause present — review for the discloser's
     // position", with a recommendation to delete the clause that protects them.
-    exclude_if: [
-      /\b(?:no|not|never|nothing|reject(?:s|ed)?|disclaim(?:s|ed)?|waive[sd]?)\b[^.]{0,120}?\b(?:residuals?|unaided\s+memory)\b/i,
-      /\b(?:residuals?|unaided\s+memory)\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be|must\s+be)\s+(?:expressly\s+)?(?:not|no)\b/i,
-    ],
+    // The patterns live in `_helpers.ts` because OBLI-009 detects the same
+    // clause and needs the same guard; `shared-vocabulary.test.ts` keeps a
+    // second copy from being written.
+    exclude_if: [...RESIDUALS_REJECTED],
     default_severity: "info",
   }),
 

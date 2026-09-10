@@ -1,0 +1,149 @@
+JOINT DEVELOPMENT AGREEMENT
+
+THIS JOINT DEVELOPMENT AGREEMENT (this "Agreement") is entered into as of April 14, 2026 (the "Effective Date") between Halvorsen Photonics, Inc., a Delaware corporation with its principal place of business at 18 Foundry Lane, Cambridge, Massachusetts ("Halvorsen"), and Tuenda Materials Corporation, a California corporation with its principal place of business at 3600 Aliso Creek Road, Irvine, California ("Tuenda"). Each is a "Party" and together they are the "Parties."
+
+RECITALS
+
+Halvorsen designs and manufactures short-wave infrared sensor modules. Tuenda develops thin-film coating chemistries for optical substrates. The Parties wish to combine those capabilities to develop a coated sensor window that improves transmission at low temperature, on the terms in this Agreement.
+
+1. Definitions.
+
+1.1 "Project" means the development work described in the statement of work attached as Exhibit A, as amended by the Joint Steering Committee under Section 3.
+
+1.2 "Field" means short-wave infrared imaging for industrial inspection and automotive sensing. It does not include medical imaging, defense, or space applications.
+
+1.3 "Background IP" means intellectual property owned or controlled by a Party as of the Effective Date, or developed by that Party outside the Project, together with any improvement to it made outside the Project.
+
+1.4 "Foreground IP" means an invention, work of authorship, know-how, mask work, or other intellectual property conceived or first reduced to practice in the performance of the Project.
+
+1.5 "Sole Foreground IP" means Foreground IP conceived solely by the employees or contractors of one Party. "Joint Foreground IP" means Foreground IP conceived jointly by employees or contractors of both Parties, inventorship being determined under United States patent law.
+
+1.6 "Confidential Information" means non-public information a Party discloses to the other in connection with this Agreement, including the Project results, Background IP disclosures, and the terms of this Agreement.
+
+1.7 "Affiliate" means an entity that controls, is controlled by, or is under common control with a Party, where control means ownership of more than fifty percent (50%) of the voting equity.
+
+2. The Project.
+
+2.1 Scope. Each Party shall perform the tasks assigned to it in Exhibit A, using personnel with the skills the tasks require, and shall use commercially reasonable efforts to meet the milestone dates in Exhibit A.
+
+2.2 Resources. Each Party shall bear its own costs of performing the Project, including personnel, materials and facilities, except for the shared tooling costs allocated in Exhibit B.
+
+2.3 Materials. Materials one Party furnishes to the other for the Project remain the furnishing Party's property, shall be used only for the Project, and shall be returned or destroyed at the furnishing Party's election on completion. Neither Party shall reverse engineer the other's materials except as Exhibit A expressly requires for the Project.
+
+2.4 Records. Each Party shall keep contemporaneous written records of the Project work it performs, including laboratory notebooks sufficient to establish conception and reduction to practice, and shall retain them for seven (7) years after the end of the Term.
+
+2.5 Subcontracting. Neither Party may subcontract Project work without the other's prior written consent, not to be unreasonably withheld. A Party remains responsible for its subcontractors and shall bind each to confidentiality and invention-assignment obligations sufficient to give effect to Section 5.
+
+3. Governance.
+
+3.1 Joint Steering Committee. The Parties establish a Joint Steering Committee of two representatives from each Party. The Committee shall meet at least monthly, review progress against the milestones, and approve amendments to Exhibit A.
+
+3.2 Decisions. Committee decisions require the affirmative vote of at least one representative of each Party. The Committee may not amend this Agreement, change the allocation of intellectual property, or commit a Party to additional expenditure.
+
+3.3 Deadlock. If the Committee does not resolve a matter within twenty (20) business days, either Party may escalate it in writing to a senior executive of each Party, who shall confer within fifteen (15) business days. If they do not resolve it, the matter stands unresolved and neither Party is obliged to act, and either Party may terminate under Section 9.2.
+
+3.4 Project Managers. Each Party shall name a project manager as its day-to-day point of contact and may replace that person on written notice.
+
+4. Background IP.
+
+4.1 Ownership. Each Party retains ownership of its Background IP. Nothing in this Agreement assigns or transfers Background IP.
+
+4.2 Identification. Exhibit C lists the Background IP each Party brings to the Project. A Party shall notify the other before using Background IP not listed on Exhibit C in the Project, and Exhibit C is updated accordingly.
+
+4.3 Licence for the Project. Each Party grants the other a non-exclusive, royalty-free, non-transferable licence, without the right to sublicense except to a subcontractor engaged under Section 2.5, to use its Background IP solely to perform the Project during the Term.
+
+4.4 Licence to Practice Foreground IP. Each Party grants the other a non-exclusive, worldwide, royalty-free licence under its Background IP, with the right to sublicense to its Affiliates and to customers as part of a product, solely to the extent necessary to make, use and sell products incorporating Foreground IP the other Party owns or co-owns under Section 5, and solely in the Field. This licence survives termination and is irrevocable except for the licensee's uncured material breach of this Section.
+
+5. Foreground IP.
+
+5.1 Sole Foreground IP. Sole Foreground IP is owned by the Party whose personnel conceived it. Each Party shall cause its employees and contractors to assign to it the Foreground IP they conceive, and each Party shall promptly disclose Foreground IP to the other in writing.
+
+5.2 Joint Foreground IP. Joint Foreground IP is owned jointly by the Parties, each holding an undivided one-half interest.
+
+5.3 Displacing the § 262 Default. 35 U.S.C. § 262 permits each joint owner of a United States patent to make, use, offer to sell and sell the invention, and to license it, without the consent of the other owner and without accounting to the other owner. The Parties displace that default. Neither Party may license, assign, encumber or otherwise transfer its interest in Joint Foreground IP, in whole or in part, without the other Party's prior written consent, except that either Party may assign its entire interest together with the business to which it relates under Section 11.4. Each Party waives any right it may have under the law of any jurisdiction to require partition of, or an accounting for, Joint Foreground IP.
+
+5.4 Practice of Joint Foreground IP. Each Party may make, use and sell products incorporating Joint Foreground IP for its own account, worldwide, without accounting to the other, in the Field and outside it. Neither Party owes the other a royalty on its own practice.
+
+5.5 Exclusivity in the Field. For three (3) years after the end of the Term, neither Party shall license Joint Foreground IP to a third party for use in the Field without the other's written consent. Outside the Field, either Party may license Joint Foreground IP to a third party on written notice to the other, subject to Section 5.3.
+
+5.6 Patent Prosecution. Halvorsen shall control the preparation, filing, prosecution and maintenance of patent applications claiming Joint Foreground IP, using counsel reasonably acceptable to Tuenda, and shall share the costs equally with Tuenda. Halvorsen shall give Tuenda copies of material filings and office actions and a reasonable opportunity to comment, and shall consider Tuenda's comments in good faith. If Halvorsen decides not to file, prosecute or maintain an application or patent in a country, it shall notify Tuenda at least sixty (60) days before a bar date or abandonment, and Tuenda may take it over at Tuenda's cost, in which case Halvorsen assigns that application or patent in that country to Tuenda.
+
+5.7 Enforcement. If a Party learns of a third party's infringement of Joint Foreground IP, it shall notify the other. Halvorsen has the first right to bring an action in the Field, at its own cost, and shall keep Tuenda informed. If Halvorsen does not bring an action within ninety (90) days after notice, Tuenda may do so at its own cost. The Party not controlling an action shall join as a party if necessary for standing, at the controlling Party's expense. Recoveries are applied first to each Party's litigation costs and the remainder is shared equally. Neither Party may settle in a way that admits the invalidity or unenforceability of Joint Foreground IP without the other's written consent.
+
+5.8 No Implied Licences. Except for the licences expressly granted in this Agreement, neither Party grants the other any right under its intellectual property, by implication, estoppel or otherwise.
+
+6. Publication.
+
+6.1 Review. A Party wishing to publish or present Project results shall give the other a copy at least forty-five (45) days before submission. The reviewing Party may request removal of its Confidential Information, and the publishing Party shall remove it.
+
+6.2 Patent Delay. The reviewing Party may require a delay of up to ninety (90) days from the date it receives the copy, so that a patent application covering Foreground IP disclosed in the publication may be filed. A delay may be required once for a given manuscript.
+
+6.3 Attribution. A publication shall identify the contributing personnel of both Parties as the authorship practice of the relevant scientific discipline requires, and shall acknowledge the collaboration.
+
+7. Confidentiality.
+
+7.1 Obligation. Each Party shall keep the other's Confidential Information confidential, use it only for the Project and to exercise its rights under this Agreement, and disclose it only to its personnel, Affiliates, subcontractors and advisors who need it and are bound by equivalent obligations. These obligations continue for seven (7) years after the end of the Term, and indefinitely for anything that is a trade secret.
+
+7.2 Exceptions. Section 7.1 does not apply to information that is public through no fault of the receiving Party, was known to it without a duty of confidence, is received from a third party free to disclose it, or is independently developed without use of the disclosing Party's Confidential Information. A Party may disclose Confidential Information as required by law or court order if it gives the other prompt notice, to the extent legally permitted, and cooperates in seeking protective treatment.
+
+7.3 Residuals. Nothing in this Agreement grants a residuals right, and neither Party may use the other's Confidential Information on the basis that its personnel retained it in unaided memory.
+
+8. Representations, Warranties and Liability.
+
+8.1 Authority. Each Party represents that it has the authority to enter into this Agreement and that doing so does not breach an agreement to which it is a party.
+
+8.2 Background IP Rights. Each Party represents that it owns or controls the Background IP it contributes with the right to grant the licences in Section 4, and that to its knowledge the licensed Background IP does not infringe a third party's intellectual property.
+
+8.3 No Development Warranty. Neither Party warrants that the Project will achieve any technical result, that Foreground IP will be patentable, or that a product can be commercialized. Except as expressly stated in this Agreement, each Party disclaims the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+
+8.4 Indemnity. Each Party shall defend the other against a third-party claim arising from the indemnifying Party's breach of Section 8.2 or from bodily injury or property damage caused by the indemnifying Party's negligence in performing the Project, and shall indemnify the other for damages and reasonable attorneys' fees finally awarded or paid in settlement. The indemnified Party shall notify the indemnifying Party promptly, give it control of the defense, and cooperate at the indemnifying Party's expense; no settlement imposing a non-monetary obligation on the indemnified Party may be made without its consent.
+
+8.5 Limitation of Liability. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS. EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO ONE MILLION DOLLARS ($1,000,000). These limits do not apply to a Party's obligations under Section 8.4, either Party's breach of Section 5.3, Section 5.5 or Section 7, or either Party's gross negligence, willful misconduct or fraud.
+
+9. Term and Termination.
+
+9.1 Term. This Agreement begins on the Effective Date and continues for two (2) years, unless extended by written agreement or terminated earlier under this Section 9 (the "Term").
+
+9.2 Termination. Either Party may terminate this Agreement if the other materially breaches it and fails to cure within thirty (30) days after written notice describing the breach; if the other becomes insolvent, makes an assignment for the benefit of creditors, or has a bankruptcy proceeding commenced against it that is not dismissed within sixty (60) days; or if a matter escalated under Section 3.3 remains unresolved sixty (60) days after the escalation notice. Either Party may terminate for convenience on ninety (90) days' written notice given after the first anniversary of the Effective Date.
+
+9.3 Effect of Termination. On expiration or termination, each Party shall stop Project work, deliver to the other a written report of the Foreground IP it has conceived, return or destroy the other's Confidential Information and furnished materials, and pay its share of costs incurred before the effective date of termination. Ownership of Foreground IP conceived before termination is not affected, and the licences in Sections 4.4, 5.4 and 5.5 continue according to their terms.
+
+9.4 Survival. Sections 1, 2.4, 4, 5, 6, 7, 8.3, 8.4, 8.5, 9.3, 9.4, 10 and 11 survive expiration or termination of this Agreement.
+
+10. Export, Anti-Corruption and Compliance. Each Party shall comply with the laws applicable to its performance, including the Export Administration Regulations, the International Traffic in Arms Regulations, economic sanctions administered by the Office of Foreign Assets Control, and the U.S. Foreign Corrupt Practices Act. Neither Party shall furnish to the other technical data whose export requires a licence it has not obtained, and a Party shall mark such data before furnishing it.
+
+11. General.
+
+11.1 Governing Law. This Agreement is governed by the laws of the State of Delaware, excluding its conflict-of-laws rules.
+
+11.2 Venue. The state and federal courts located in Wilmington, Delaware have exclusive jurisdiction over any dispute arising out of this Agreement, and each Party consents to personal jurisdiction and venue there.
+
+11.3 Notices. Notices must be in writing and are effective on delivery when sent by hand, by nationally recognized overnight courier, or by certified mail to the addresses in the preamble, with a copy to each Party's general counsel at the same address. A Party may change its notice address on written notice.
+
+11.4 Assignment. Neither Party may assign this Agreement without the other's written consent, except that a Party may assign it in full, on written notice, to a successor to all or substantially all of the business to which this Agreement relates, provided the successor assumes this Agreement in writing. An assignment in breach of this Section is void.
+
+11.5 Independent Contractors. The Parties are independent contractors. Nothing in this Agreement creates a partnership, joint venture, agency or employment relationship, and neither Party may bind the other.
+
+11.6 Publicity. Neither Party may use the other's name or trademarks in a press release or marketing material without the other's prior written consent, except that either Party may state the existence of the collaboration after the first public announcement the Parties approve together.
+
+11.7 No Waiver. A Party's failure or delay in enforcing a provision is not a waiver of it, and a waiver on one occasion is not a waiver on any other.
+
+11.8 Severability. If a provision is held unenforceable, it is modified to the least extent necessary to make it enforceable, and the remaining provisions stay in effect.
+
+11.9 Entire Agreement. This Agreement, with Exhibits A, B and C, is the entire agreement between the Parties about its subject matter and supersedes all prior agreements and understandings about it, including the mutual non-disclosure agreement between the Parties dated November 2, 2025, except that Confidential Information exchanged under that agreement is treated as Confidential Information under this Agreement. This Agreement may be amended only by a writing signed by both Parties.
+
+11.10 Counterparts. This Agreement may be signed in counterparts, including by electronic signature, each of which is an original and all of which together are one agreement.
+
+IN WITNESS WHEREOF, the Parties have signed this Agreement as of the Effective Date.
+
+HALVORSEN PHOTONICS, INC.
+
+By: /s/ Ingrid Halvorsen-Baptiste
+Name: Ingrid Halvorsen-Baptiste
+Title: Chief Technology Officer
+
+TUENDA MATERIALS CORPORATION
+
+By: /s/ Rafael Oyekunle Tuenda
+Name: Rafael Oyekunle Tuenda
+Title: President

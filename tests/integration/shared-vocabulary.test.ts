@@ -69,6 +69,16 @@ const VOCABULARIES: readonly Vocabulary[] = [
     owner: "src/engine/rules/_helpers.ts",
     definition: /export const OBLIGATION_MODAL\s*=/,
   },
+  {
+    // Two rules detect a residuals clause — NDA-D-009 and OBLI-009 — and the
+    // repair that taught the first one to read a clause REJECTING residuals
+    // reached only that one, so a joint development agreement saying "Nothing
+    // in this Agreement grants a residuals right" was still warned that a
+    // residuals clause is present (9.645.0).
+    what: "the residuals-rejection patterns",
+    owner: "src/engine/rules/_helpers.ts",
+    definition: /export const RESIDUALS_REJECTED\s*:/,
+  },
 ];
 
 describe("a shared vocabulary", () => {

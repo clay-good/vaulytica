@@ -388,7 +388,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-009",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -907,7 +907,7 @@
       "id": "OBLI-009-s1.2-697",
       "recommendation": "Strike the residuals clause, or narrow it dramatically — limit to general industry know-how, exclude trade secrets and PII expressly, exclude information memorized in bad faith, and limit to natural persons who actually had access (not 'Representatives').",
       "rule_id": "OBLI-009",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Residuals clause present"
@@ -1032,11 +1032,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "eb05f9a3a808edaaaa9982167034a58bbc41f1463bb2f4ae6c66f444d7161c9e",
+  "result_hash": "b59643c22ad843e8025ffcd8b9c53bcb7b909f98be03ef1c77c633a52d3eeda3",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.644.0"
+  "version": "9.645.0"
 }

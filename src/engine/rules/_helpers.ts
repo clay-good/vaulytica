@@ -315,6 +315,32 @@ export function clauseStartBefore(text: string, at: number): number {
  * in this one. Honesty-first: a presence-detector that would fire on the
  * disclaimed form suppresses instead — a missed flag is safer than a false one.
  */
+/**
+ * A clause that REJECTS residuals names the same word as one that grants them.
+ *
+ * "7.3 Residuals. Nothing in this Agreement grants a residuals right, and
+ * neither Party may use the other's Confidential Information on the basis that
+ * its personnel retained it in unaided memory" is the discloser-favourable
+ * drafting a residuals detector exists to ask for, and it was reported as a
+ * residuals clause — twice, by two different rules, because the repair reached
+ * NDA-D-009 and left OBLI-009 with the same blindness. {@link
+ * isPresenceDisclaimed} cannot see it: the paragraph's first match is the
+ * section HEADING, which has nothing before it at all, and the disclaimer in
+ * the next sentence is not adjacent to the trigger it governs.
+ *
+ * Bounded to a single sentence, so a genuine residuals clause in a paragraph
+ * that happens to contain an unrelated "not" still fires.
+ */
+export const RESIDUALS_REJECTED: readonly RegExp[] = [
+  /\b(?:no|not|never|nothing|reject(?:s|ed)?|disclaim(?:s|ed)?|waive[sd]?)\b[^.]{0,120}?\b(?:residuals?|unaided\s+memory)\b/i,
+  /\b(?:residuals?|unaided\s+memory)\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be|must\s+be)\s+(?:expressly\s+)?(?:not|no)\b/i,
+];
+
+/** True when `text` rejects a residuals right rather than granting one. */
+export function rejectsResiduals(text: string): boolean {
+  return RESIDUALS_REJECTED.some((re) => re.test(text));
+}
+
 export function isPresenceDisclaimed(paragraph: string, matchIndex: number): boolean {
   const before = paragraph.slice(clauseStartBefore(paragraph, matchIndex), matchIndex);
   return CLAUSE_ABSENCE.test(before);

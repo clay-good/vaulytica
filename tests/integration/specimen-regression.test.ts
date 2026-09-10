@@ -5314,6 +5314,44 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-001",
     ],
   },
+  // A COMPLETE joint development agreement — the thirteenth clean document
+  // (9.645.0): background and foreground IP with a sole/joint split on
+  // inventorship, an express displacement of the 35 U.S.C. § 262 default with a
+  // partition and accounting waiver, prosecution control with a step-in right
+  // at a bar date, first-right enforcement with shared recoveries, a
+  // publication review with a 90-day patent delay, a joint steering committee
+  // with a deadlock path, field-limited exclusivity, and an anti-residuals
+  // clause.
+  //
+  // ONE defect, and it is the sibling-rule shape: OBLI-009 warned that a
+  // residuals clause is present, about § 7.3 — headed "Residuals" and saying
+  // "Nothing in this Agreement grants a residuals right" — and recommended
+  // striking the clause that protects the discloser. NDA-D-009 detects the same
+  // clause and learned to read the rejection in 9.640.0; the repair never
+  // reached this rule. The patterns have a single owner now, registered in
+  // `shared-vocabulary.test.ts`.
+  //
+  // `isPresenceDisclaimed` could not have caught it either way: the paragraph's
+  // first match is the section HEADING, which has nothing before it at all.
+  //
+  // One finding was the DOCUMENT's, not the engine's — § 6.3 read "as
+  // authorship practice in the field requires" in a document that defines
+  // "Field" as a field of use, and STRUCT-009 was right that the two collide.
+  // The document names the scientific discipline now.
+  "joint-development-complete.txt": {
+    playbook: "joint-development-agreement",
+    findings: [
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "STRUCT-018",
+      "TEMP-006",
+      "TEMP-008",
+      "TERM-001",
+      "TERM-007",
+    ],
+  },
+
   // A COMPLETE manufacture-and-supply agreement — the twelfth clean document
   // (9.644.0): a rolling forecast with a binding window, purchase-order
   // conflicting-terms control, DDP delivery with a late-delivery cover remedy,
