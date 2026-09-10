@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.696.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The document's own title counted as a use of the term it defines.** A
+  BAA defines "Business Associate" as a party and is headed *Business
+  Associate Agreement*; an OEM agreement defines "OEM" and is headed *OEM
+  AGREEMENT*. `\b` sits happily inside the longer name, so the TITLE was the
+  term's first "use" and **35 documents were told they use a party role before
+  defining it — on the line that names the document.** `Service Provider`,
+  `Contractor`, `Executive`, `Carrier`, `Influencer`, `Medical Director`,
+  `Lease`, `Venture`: every one a defined role inside its own instrument's
+  name.
+
+  🥇 **The distinction was already drawn, one release ago, in another file.**
+  `_helpers.ts` teaches CROSS-DEFTERM-002 that "an instrument's NAME is not a
+  use of the defined term inside it" (9.687.0). The definitions extractor —
+  which feeds the definitions report, and through it the CSV a reviewer reads
+  — never got it. That is the fifth time this session that the answer was
+  already written next door.
+
+  🚨 **A narrower test than the sibling's, because this feeds a second
+  bucket.** `_helpers.ts` can use "any following capitalised word": over-
+  filtering there only suppresses a finding. Here `used_at` also decides
+  UNUSED, and the broad test moves 82 rows instead of 35 while taking eight
+  terms' genuine uses with it. `INSTRUMENT_NAME_TAIL` requires up to three
+  further capitalised words ending in a document-kind noun.
+
+  🚨 **And the name-only mention is HELD BACK, not dropped.** If the title is
+  the term's only mention, discarding it swaps one false finding for another —
+  the term becomes "defined and never used". A DPA that defines "Processing"
+  and otherwise says only "Processing Agreement" is exactly that case, and it
+  is why the corpus's `unused` count is **unchanged at 91** while
+  `used_before_defined` falls 473 → 438 and `defined` rises 876 → 911.
+
+  Both halves were proven by disabling them: without the test the title is a
+  use again; without the hold-back "Processing" loses every use it has.
+
 ## [9.695.0] — 2026-09-10
 
 ### Fixed

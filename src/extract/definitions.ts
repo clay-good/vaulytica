@@ -44,6 +44,20 @@ import { forEachParagraph, forEachSection, posInParagraph, SENTENCE_END } from "
 // period, so the closing quote never lined up and the whole definition was
 // dropped (STRUCT-006 then reported the term as used-but-undefined). Safe
 // because the term is quote-bounded: a period can only sit BETWEEN the quotes.
+/**
+ * The tail of an instrument's NAME, immediately after a defined term: up to
+ * three further capitalised words ending in a document-kind noun. "Business
+ * Associate **Agreement**", "OEM **AGREEMENT**", "Equipment **Lease**".
+ *
+ * Anchored at the match's end and deliberately narrow. The broader test — any
+ * following capitalised word, which is what `_helpers.ts` uses where
+ * over-filtering only suppresses a finding — moves 82 rows instead of 32 here
+ * and takes eight terms' genuine uses with it, because this feeds the UNUSED
+ * bucket as well.
+ */
+const INSTRUMENT_NAME_TAIL =
+  /^\s+(?:[A-Z][A-Za-z]*\s+){0,3}(?=[A-Z])(?:agreement|terms|guaranty|note|policy|addendum|deed|lease|plan|charter|bylaws|certificate|licen[cs]e)\b/i;
+
 const DEFINITION_INLINE =
   /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+|will\s+)?means?\b/gi;
 // The other inline defining verbs — `"Effective Date" refers to …`, `"Territory"
@@ -1033,6 +1047,9 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
       .map((v) => escapeRegExp(v).replace(/['’]/g, "['’]"))
       .join("|");
     const needle = new RegExp(`\\b(?:${alternatives})\\b`, "g");
+    // A mention inside an INSTRUMENT'S NAME is held back until the end: it is
+    // only a use if the document has no other. See INSTRUMENT_NAME_TAIL.
+    const nameOnlyUses: DocPosition[] = [];
     forEachParagraph(tree, (ctx) => {
       // Skip the definition itself. For an express definition that is the
       // whole paragraph — a term repeated inside its own definition body
@@ -1081,9 +1098,27 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
           pos.start < definitionSentenceEnd
         )
           continue;
+        // 🚨 AN INSTRUMENT'S NAME IS NOT A USE OF THE DEFINED TERM INSIDE IT.
+        // A BAA defines "Business Associate" as a party and is titled
+        // "Business Associate Agreement"; an OEM agreement defines "OEM" and
+        // is headed "OEM AGREEMENT". `\b` sits happily inside the longer
+        // name, so the title counted as the term's FIRST use and 32 documents
+        // were told they use a party role before defining it — on the line
+        // that names the document. `_helpers.ts` draws this same distinction
+        // for CROSS-DEFTERM-002; the extractor never got it.
+        //
+        // Held back rather than dropped: if the title is the ONLY mention,
+        // discarding it would report the term as defined and never used, which
+        // is a different false finding. A DPA that defines "Processing" and
+        // otherwise says only "Processing Agreement" is exactly that case.
+        if (INSTRUMENT_NAME_TAIL.test(ctx.text.slice(m.index + m[0].length))) {
+          nameOnlyUses.push(pos);
+          continue;
+        }
         entry.used_at.push(pos);
       }
     });
+    if (entry.used_at.length === 0) entry.used_at.push(...nameOnlyUses);
 
     // A term the document uses only in the other case is USED — the defect is
     // the capitalization, and STRUCT-009 already reports exactly that. An

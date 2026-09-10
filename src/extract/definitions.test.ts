@@ -2724,3 +2724,39 @@ describe("extractDefinitions — a form's routing instruction defines nothing", 
     expect(terms).toContain("To Be Confirmed");
   });
 });
+
+describe("an instrument's name is not a use of the defined term inside it", () => {
+  it("does not read the document's own title as the term's first use", async () => {
+    // A BAA defines "Business Associate" as a party and is titled "Business
+    // Associate Agreement"; `\\b` sits happily inside the longer name, so the
+    // TITLE counted as the first use and the document was told it uses a
+    // party role before defining it — on the line that names the document.
+    const tree = buildTree([
+      "OEM AGREEMENT",
+      'This OEM Agreement is between Northwind Components, Inc. ("Supplier") and ' +
+        'Larkfield Devices, LLC ("OEM"). OEM shall order by purchase order.',
+    ]);
+    const defs = extractDefinitions(tree);
+    const oem = defs.entries.find((e) => e.term === "OEM");
+    expect(oem, "the term is no longer extracted at all").toBeDefined();
+    // The real use is the operative sentence, not either title.
+    expect(oem!.used_at.length).toBe(1);
+    expect(oem!.used_at[0]!.start).toBeGreaterThan(oem!.defined_at.start);
+  });
+
+  it("keeps a name-only mention rather than reporting the term unused", async () => {
+    // 🚨 The load-bearing negative. If the instrument's name is the ONLY
+    // mention, discarding it swaps one false finding for another: the term
+    // becomes "defined and never used". A DPA that defines "Processing" and
+    // otherwise says only "Processing Agreement" is exactly that case.
+    const tree = buildTree([
+      "Data Processing",
+      '"Processing" means any operation performed on personal data. This ' +
+        "Processing Agreement governs those operations.",
+    ]);
+    const defs = extractDefinitions(tree);
+    const term = defs.entries.find((e) => e.term === "Processing");
+    expect(term, "the term is no longer extracted at all").toBeDefined();
+    expect(term!.used_at.length).toBeGreaterThan(0);
+  });
+});
