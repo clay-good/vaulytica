@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.661.0] — 2026-09-10
+
+Found by rendering the flagship artifact — the attorney-facing DOCX report —
+for a clean document and **reading its cover page**.
+
+### Fixed
+- 🚨 **The report's cover said the analysis was performed on 1 January 1970.**
+
+  ```
+  Analysis date: 1970-01-01T00:00:00.000Z  (Thu, 01 Jan 1970 00:00:00 GMT)
+  ```
+
+  `executed_at` is blanked on the way into an artifact exactly as it is blanked
+  on the way into `result_hash` — that is what makes two machines produce
+  identical bytes — and `renderCover` read the blank as a missing value and
+  fell back to `new Date(0)`. So the cover printed the epoch as a **date**, on
+  the page a reader looks at first, in the document the whole tool is shaped
+  around.
+
+  🥇 **The same document already said it correctly a thousand paragraphs
+  later.** Its own audit trail reads `Executed at: (omitted from hash)`, which
+  is also what `html.ts` prints and what the bundle DOCX prints — the
+  single-document cover was the only surface that got it wrong, and it
+  contradicted itself inside one file. The cover now reads *"(omitted from hash
+  — this report is reproducible on any machine)"*, which says what the blank
+  MEANS rather than hiding it.
+
+  Guarded across surfaces: for one run with a blank timestamp, the DOCX names
+  no epoch anywhere, its cover and its audit trail agree, and the HTML report
+  says the same thing — plus the negative, that a run carrying a real timestamp
+  still prints it.
+
+Also swept: nothing else in the tree falls back to an epoch, and the rendered
+report carries no other placeholder artifact (`undefined`, `null`, `NaN`,
+`[object`, an unfilled template) across its 2,604 paragraphs.
+
 ## [9.660.0] — 2026-09-10
 
 9.659.0 gave the caveats to every **Markdown** artifact and drew the line there.

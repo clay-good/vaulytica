@@ -597,6 +597,67 @@ describe("buildDocxReport", () => {
   });
 });
 
+/**
+ * A blanked timestamp is the determinism default, not a missing value — and
+ * every surface must say so the same way.
+ *
+ * `executed_at` is blanked on the way into an artifact exactly as it is
+ * blanked on the way into `result_hash`, so two machines produce identical
+ * bytes. The DOCX cover fell back to `new Date(0)` and printed that blank as a
+ * DATE:
+ *
+ *     Analysis date: 1970-01-01T00:00:00.000Z  (Thu, 01 Jan 1970 00:00:00 GMT)
+ *
+ * on the attorney-facing cover page — while the AUDIT TRAIL of the same
+ * document, a thousand paragraphs later, said "(omitted from hash)", which is
+ * also what `html.ts` and the bundle DOCX say. One artifact contradicting
+ * itself about its own provenance, on the page a reader looks at first.
+ */
+describe("a blanked executed_at is never printed as a date", () => {
+  async function docxText(run: EngineRun): Promise<string> {
+    const blob = await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    return (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+  }
+
+  it("the DOCX names no epoch anywhere when the timestamp is blank", async () => {
+    const run = makeRun();
+    run.executed_at = "";
+    const text = await docxText(run);
+    expect(text).not.toContain("1970");
+    expect(text).not.toContain("Jan 1970");
+  });
+
+  it("the cover and the audit trail agree", async () => {
+    const run = makeRun();
+    run.executed_at = "";
+    const text = await docxText(run);
+    expect(text).toContain("Analysis date: (omitted from hash");
+    expect(text).toContain("Executed at: (omitted from hash)");
+  });
+
+  it("every surface says 'omitted from hash' for the same blank run", async () => {
+    const run = makeRun();
+    run.executed_at = "";
+    const { buildHtmlReport } = await import("./html.js");
+    const html = buildHtmlReport(run, ingest, loadStarterDkbSync(), loadMutualNda());
+    expect(html).toContain("omitted from hash");
+    expect(html).not.toContain("1970");
+    expect(await docxText(run)).toContain("omitted from hash");
+  });
+
+  it("still prints a real timestamp when the run carries one", async () => {
+    const run = makeRun();
+    run.executed_at = "2026-05-12T12:00:00.000Z";
+    const text = await docxText(run);
+    expect(text).toContain("2026-05-12T12:00:00.000Z");
+    expect(text).not.toContain("omitted from hash — this report is reproducible");
+  });
+});
+
 describe("buildJsonReport", () => {
   it("serializes the run plus ingest summary as pretty JSON", async () => {
     const blob = buildJsonReport(makeRun(), ingest);

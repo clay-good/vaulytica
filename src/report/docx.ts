@@ -224,8 +224,21 @@ export async function buildDocxReport(
 
 function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): Paragraph[] {
   const confidence = run.playbook_match_confidence ?? null;
-  const isoDate = run.executed_at || new Date(0).toISOString();
-  const humanDate = formatHumanDate(isoDate);
+  // 🚨 An EMPTY `executed_at` is the determinism default, not a missing value:
+  // the wall clock is blanked on the way into the artifact exactly as it is
+  // blanked on the way into `result_hash`, so two machines produce identical
+  // bytes. Falling back to `new Date(0)` printed that blank as a DATE, and the
+  // attorney-facing cover of this report said
+  //
+  //     Analysis date: 1970-01-01T00:00:00.000Z  (Thu, 01 Jan 1970 00:00:00 GMT)
+  //
+  // while the audit trail of the SAME document, 1,000 paragraphs later, said
+  // "(omitted from hash)" — the wording html.ts also uses. One artifact
+  // contradicting itself about its own provenance, on the page a reader looks
+  // at first.
+  const dateLine = run.executed_at
+    ? `${run.executed_at}  (${formatHumanDate(run.executed_at)})`
+    : "(omitted from hash — this report is reproducible on any machine)";
 
   // Asserted opt-in packs, recorded on the cover so the receipt shows what the
   // user turned on (each rides inside the hashed run).
@@ -267,7 +280,7 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
     }),
     spacer(),
     coverField("Input file", ingest_filename(ingest, run)),
-    coverField("Analysis date", `${isoDate}  (${humanDate})`),
+    coverField("Analysis date", dateLine),
     coverField("File SHA-256", run.source_file.sha256),
     coverField("Engine version", run.version),
     coverField("DKB version", run.dkb_version),
