@@ -1118,3 +1118,68 @@ describe("scanSensitive — National Provider Identifier", () => {
     expect(t).not.toContain("npi");
   });
 });
+
+/**
+ * Every rung of HANDOFF-004's ladder, because a rung nothing reaches is a
+ * severity the tool advertises and never gives.
+ *
+ * The rule's own header promises "info → warning → critical". A probe that
+ * exercised only `creator` saw `warning` three times and read the top rung as
+ * dead — it is not, and the reason is worth pinning: only the fields that name
+ * an ORGANIZATION (`company` / `manager` / `template`) are cross-matter
+ * checked. `creator` and `lastModifiedBy` normally carry a PERSON's name, and
+ * a person's name not matching a party is the ordinary case, not a leak.
+ */
+describe("deriveHandoffFindings — the HANDOFF-004 severity ladder", () => {
+  const facts = (over: Record<string, unknown>) =>
+    ({
+      source: "docx",
+      inspectable: true,
+      revisions: [],
+      comments: [],
+      hidden: [],
+      metadata: [],
+      sensitive: [],
+      ...over,
+    }) as never;
+
+  const sev = (over: Record<string, unknown>, parties: string[] = []): string | undefined =>
+    deriveHandoffFindings(facts(over), parties).find((f) => f.rule_id === "HANDOFF-004")?.severity;
+
+  it("info when the metadata names no identity at all", () => {
+    expect(sev({ metadata: [{ field: "application", value: "Word" }] })).toBe("info");
+  });
+
+  it("warning when an identity field is present", () => {
+    expect(sev({ metadata: [{ field: "creator", value: "A. Reviewer" }] })).toBe("warning");
+  });
+
+  it("critical when an ORGANIZATION field names an entity that is not a party", () => {
+    expect(
+      sev({ metadata: [{ field: "company", value: "Opposing Counsel LLP" }] }, [
+        "Acme Corp",
+        "Globex Inc",
+      ]),
+    ).toBe("critical");
+  });
+
+  it("not critical when that organization IS a party, suffix and all", () => {
+    // "Acme Corp." against a party list holding "Acme Corporation" — the
+    // corporate-suffix normalization is what keeps this off a false leak.
+    expect(
+      sev({ metadata: [{ field: "company", value: "Acme Corp." }] }, ["Acme Corporation"]),
+    ).toBe("warning");
+  });
+
+  it("never cross-matter-checks a person field, however it is filled", () => {
+    expect(
+      sev({ metadata: [{ field: "creator", value: "Opposing Counsel LLP" }] }, ["Acme Corp"]),
+    ).toBe("warning");
+  });
+
+  it("cannot adjudicate with no party list, and does not over-claim", () => {
+    expect(sev({ metadata: [{ field: "company", value: "Opposing Counsel LLP" }] }, [])).toBe(
+      "warning",
+    );
+  });
+});

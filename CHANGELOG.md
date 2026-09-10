@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.686.0] — 2026-09-10
+
+The other half of the pre-disclosure pack, put through the same positive
+control as the scanner: **can each rule fire, and can each rung of its severity
+ladder be reached?**
+
+All five HANDOFF rules fire on their own trigger and the clean control produces
+nothing. `HANDOFF-005` escalates correctly, and the `itin` type added in
+9.683.0 inherits `critical` from its high confidence with no wiring.
+
+### Changed
+- **A comment in `isCrossMatter` described a branch `creator` can never
+  reach.** It read as though a bare person name were adjudicated against the
+  party list "when a party list exists" — but the `ENTITY_FIELDS` guard three
+  lines above returns first, and `creator` / `lastModifiedBy` are not in that
+  set. They are excluded **on purpose**: those fields normally carry a person's
+  name, and a person's name not matching a party is the ordinary case, not a
+  leak. The comment now says that, in a module where a reader deciding what to
+  redact is the whole point.
+
+### Added
+- **`HANDOFF-004`'s ladder is pinned at all four rungs**, because a rung
+  nothing reaches is a severity the tool advertises and never gives. 🥇 My own
+  probe read the top rung as dead — it exercised only `creator`, saw `warning`
+  three times, and concluded the documented `critical` was unreachable. It is
+  reachable; the probe was wrong, which is the ninth time this session that a
+  suspected engine defect was my measurement instead. The tests now hold: info
+  for non-identity metadata, warning for an identity field, **critical for an
+  organization field naming an entity that is not a party**, not-critical when
+  that organization *is* a party ("Acme Corp." against "Acme Corporation" — the
+  corporate-suffix normalization), never cross-matter-checked for a person
+  field however it is filled, and no over-claiming with no party list.
+
 ## [9.685.0] — 2026-09-10
 
 The third of the three 9.683.0 deferred — and it turned out to carry a checksum

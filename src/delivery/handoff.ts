@@ -123,9 +123,14 @@ function isCrossMatter(mf: MetadataFact, parties: readonly string[]): boolean {
   // Dates and pure timestamps are never an entity name.
   const value = normalizeEntity(mf.value);
   if (value.length < 3) return false;
-  // A field that is a bare person name (creator/lastModifiedBy) is a leak only
-  // when a party list exists to compare against; with no parties we cannot
-  // adjudicate, so we do not over-claim.
+  // ⚠️ `creator` and `lastModifiedBy` never reach this point — the
+  // `ENTITY_FIELDS` guard above returns first — and the comment that used to
+  // sit here said they did. They are excluded on purpose: those fields
+  // normally carry a PERSON's name, and a person's name not matching a party
+  // name is the ordinary case, not a leak.
+  //
+  // With no party list there is nothing to compare against, so the check
+  // cannot adjudicate and does not over-claim.
   if (parties.length === 0) return false;
   for (const p of parties) {
     const np = normalizeEntity(p);
