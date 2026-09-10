@@ -551,7 +551,7 @@ export async function buildCriticalDates(
   const sectionText = tree ? buildSectionText(tree) : new Map<string, string>();
   const paragraphText = tree ? buildParagraphText(tree) : new Map<string, string>();
 
-  const rows: CriticalDate[] = [];
+  let rows: CriticalDate[] = [];
   for (const ref of extracted.dates) {
     if (ref.type !== "relative") continue;
     // Need an offset to derive a deadline at all.
@@ -597,6 +597,30 @@ export async function buildCriticalDates(
       (a.section ?? "").localeCompare(b.section ?? "", "en")
     );
   });
+
+  // ONE REGISTER ENTRY PER DISTINCT ROW.
+  //
+  // A row identical to another in EVERY field is the same entry: the same
+  // trigger phrase, the same anchor, the same section, the same reason. The
+  // register is user-visible prose — a checklist a lawyer works through — and
+  // it was handing out three identical checkboxes for one thing to verify
+  // ("For twelve (12) months after the end of her employment (section s1) —
+  // relative to 'end of her employment', which has no defined calendar date",
+  // three times in `executive-employment-complete.txt`). 20 rows across 17 of
+  // the 327 specimens, every one an UNRESOLVED "verify manually" entry.
+  //
+  // 🥇 It belongs HERE and not in a renderer. 9.656.0 deduplicated the .ics
+  // and left the Markdown alone, so one register rendered as 0 duplicates in
+  // the calendar and 20 in the checklist — two renderings of one thing
+  // disagreeing about what it contains. The register is the single owner, so
+  // every surface it feeds (Markdown, .ics, DOCX, JSON) now agrees, and
+  // `critical_dates_hash` covers the deduplicated set.
+  const distinct = new Map<string, CriticalDate>();
+  for (const row of rows) {
+    const key = stableStringify(row);
+    if (!distinct.has(key)) distinct.set(key, row);
+  }
+  rows = [...distinct.values()];
 
   const resolved_count = rows.filter((r) => r.resolved).length;
   const critical_dates_hash = await sha256Hex(stableStringify({ register: rows }));

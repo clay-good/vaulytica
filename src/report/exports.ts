@@ -775,9 +775,23 @@ export function buildCriticalDatesMarkdown(register: CriticalDatesRegister): str
     lines.push(
       "These deadlines reference an anchor with no concrete calendar date in the document, so they were not computed — verify each by hand.",
     );
+    // The KIND and the RESPONSIBLE party, which the resolved table above has
+    // carried in its own columns from the start and this half dropped.
+    //
+    // Two register rows can share a trigger and differ only in kind — the same
+    // clause read as both a notice period and an opt-out window — and without
+    // the kind the checklist printed them as two identical checkboxes for one
+    // thing to verify. The `.ics` rendering of the SAME register never had the
+    // problem, because its SUMMARY leads with `KIND_LABEL`. Two renderings of
+    // one register must not disagree about what it contains.
     for (const r of unresolved) {
-      const where = r.section ? ` (section ${r.section})` : "";
-      lines.push(`- [ ] \`${r.trigger}\`${where} — ${r.reason ?? "anchor unresolved"}`);
+      const where = r.section ? `section ${r.section}` : "";
+      const who = r.responsible ? `responsible: ${mdCell(r.responsible)}` : "";
+      const parts = [where, who].filter(Boolean).join(", ");
+      const context = parts ? ` (${parts})` : "";
+      lines.push(
+        `- [ ] **${KIND_LABEL[r.kind]}**: \`${r.trigger}\`${context} — ${r.reason ?? "anchor unresolved"}`,
+      );
     }
   }
 

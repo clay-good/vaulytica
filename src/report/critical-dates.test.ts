@@ -354,6 +354,80 @@ describe("buildCriticalDates — the register (spec-v9 §29, companion §5)", ()
   });
 });
 
+/**
+ * One register entry per distinct row, and a checklist that says which is which.
+ *
+ * A row identical to another in EVERY field is the same entry, and the register
+ * is a checklist a lawyer works through — three identical checkboxes for one
+ * thing to verify is three times the work and no more information. 20 rows
+ * across 17 of the 327 specimens, every one an unresolved "verify manually"
+ * entry.
+ *
+ * The remainder of the shape lived in the Markdown renderer: two rows CAN
+ * share a trigger and differ only in kind (the same clause read as both a
+ * notice period and an opt-out window), and the unresolved checklist printed
+ * neither the kind nor the responsible party, both of which the resolved table
+ * above it has carried in its own columns from the start. The `.ics` rendering
+ * of the same register never had the problem — its SUMMARY leads with the kind
+ * label. Two renderings of one register must not disagree about what it holds.
+ */
+describe("buildCriticalDates — one entry per distinct row", () => {
+  it("collapses two rows identical in every field", async () => {
+    // The same undated deadline stated twice in one section. Without the
+    // deduplication this register carries two rows identical in every field.
+    const tree = buildTree([
+      "Covenants",
+      "Executive shall not solicit for twelve (12) months after the end of her " +
+        "employment. Executive shall not compete for twelve (12) months after the " +
+        "end of her employment.",
+    ]);
+    const reg = await buildCriticalDates(extractAll(tree), tree);
+    expect(reg.register).toHaveLength(1);
+  });
+
+  it("counts and hashes the deduplicated register", async () => {
+    const tree = buildTree([
+      "Covenants",
+      "Executive shall not solicit for twelve (12) months after the end of her " +
+        "employment. Executive shall not compete for twelve (12) months after the " +
+        "end of her employment.",
+    ]);
+    const reg = await buildCriticalDates(extractAll(tree), tree);
+    expect(reg.resolved_count + reg.unresolved_count).toBe(reg.register.length);
+    expect(reg.unresolved_count).toBe(1);
+  });
+
+  it("names the kind and the responsible party on every verify-manually line", async () => {
+    const tree = buildTree([
+      "Cure",
+      "Borrower shall cure the default within ten (10) days after it is due.",
+    ]);
+    const reg = await buildCriticalDates(extractAll(tree), tree);
+    const md = buildCriticalDatesMarkdown(reg);
+    const checkboxes = md.split("\n").filter((l) => l.startsWith("- [ ] "));
+    expect(checkboxes.length).toBeGreaterThan(0);
+    for (const line of checkboxes) {
+      // The kind, in bold, before the trigger — the same vocabulary the
+      // resolved table's Type column and the .ics SUMMARY use.
+      expect(line).toMatch(/^- \[ \] \*\*[^*]+\*\*: `/);
+    }
+    expect(md).toContain("responsible: Borrower");
+  });
+
+  it("keeps two rows that share a trigger but not a kind, and tells them apart", async () => {
+    const tree = buildTree([
+      "Cure",
+      "Borrower shall cure the default within ten (10) days after it is due.",
+    ]);
+    const reg = await buildCriticalDates(extractAll(tree), tree);
+    const md = buildCriticalDatesMarkdown(reg);
+    const checkboxes = md.split("\n").filter((l) => l.startsWith("- [ ] "));
+    // Whatever the classifier produced, no two checklist lines may be identical:
+    // that is the property the reader depends on.
+    expect(new Set(checkboxes).size).toBe(checkboxes.length);
+  });
+});
+
 describe("critical-dates exports (spec-v9 §29/§30, Step 163)", () => {
   async function fixtureRegister() {
     const tree = buildTree(

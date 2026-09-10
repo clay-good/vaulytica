@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.657.0] — 2026-09-10
+
+The .ics duplicate of 9.656.0 asked one more question: **do the OTHER table
+artifacts repeat themselves?** Six were measured over the 327 specimens —
+obligations CSV, fix-list CSV, definitions CSV, critical-dates Markdown,
+critical-dates .ics, closing-checklist CSV. Five were clean. One was not, and
+the reason was that 9.656.0's fix had been put in the wrong place.
+
+### Fixed
+- 🥇 **The same register rendered 0 duplicates as a calendar and 20 as a
+  checklist.** 9.656.0 deduplicated the `.ics` in the RENDERER, so two
+  renderings of one register disagreed about what it contains. The register is
+  the single owner; `buildCriticalDates` now collapses rows identical in every
+  field, and `critical_dates_hash`, `resolved_count` and `unresolved_count`
+  cover the deduplicated set — so the Markdown, the `.ics`, the DOCX and the
+  JSON all agree. **20 rows across 17 of 327 specimens**, every one an
+  unresolved "verify manually" entry: three identical checkboxes for one thing
+  to verify is three times the work and no more information.
+
+- 🥇 **The unresolved half of the register dropped two columns the resolved half
+  carries.** The remaining five looked identical only because the checklist
+  printed neither the **kind** nor the **responsible party**, both of which the
+  resolved table above it has had as columns from the start — and the `.ics`
+  never had the problem, because its `SUMMARY` leads with the kind label. Those
+  five are real, distinct rows: the same clause classified as both a notice
+  period and an opt-out window, or as both a cure window and a notice period.
+  A verify-manually line now reads
+
+  ```
+  - [ ] **Cure window**: `within ten (10) days after it is due` (section s1, responsible: Borrower) — relative to "it is due", which has no defined calendar date
+  ```
+
+  Duplicate rows across all six table artifacts: **0**, except two identical
+  obligations in one document, which the document really does state twice.
+
+⚠️ This moves `critical_dates_hash` and the register on the affected specimens —
+real semantic churn, regenerated deliberately, and the first golden movement in
+this run that is not the engine-version stamp.
+
 ## [9.656.0] — 2026-09-10
 
 Found by **opening the .ics** the deadlines export produces, rather than
