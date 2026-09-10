@@ -145,6 +145,60 @@ describe("a bundle survives one unreadable file", () => {
     expect(bundle.rejected).toBeUndefined();
   }, 300_000);
 
+  it("names the files a directory walk skipped for their extension", async () => {
+    // Naming `notes.rtf` directly is a hard error that says "unsupported input
+    // type"; leaving the same file in a folder used to produce a report that
+    // pretended it was not there. That asymmetry is not cosmetic, because the
+    // cross-document engine reasons about what the bundle CONTAINS: put
+    // `dpa.doc` in a deal room and CROSS-MISSING-001 reports the DPA missing
+    // from a bundle the user believes holds one.
+    const dir = mkdtempSync(join(tmp, "mixed-"));
+    const picks = readdirSync(SPECIMENS)
+      .filter((f) => f.endsWith("-complete.txt"))
+      .sort()
+      .slice(0, 2);
+    for (const f of picks) writeFileSync(join(dir, f), readFileSync(join(SPECIMENS, f), "utf8"));
+    writeFileSync(join(dir, "logo.png"), Buffer.from("89504e470d0a1a0a", "hex"));
+    writeFileSync(join(dir, "amendment.doc"), "an old-format Word file");
+
+    const out = mkdtempSync(join(tmp, "out-"));
+    const c = await capture([dir, "--consistency", "--format", "bundle-json", "--out", out]);
+
+    expect(c.stderr).toContain("were skipped");
+    expect(c.stderr).toContain("logo.png");
+    expect(c.stderr).toContain("amendment.doc");
+    // The reason a reader needs: a document it cannot read is one it cannot
+    // see in the bundle.
+    expect(c.stderr).toContain("cannot see in the bundle");
+
+    // And in the artifact, not only the terminal.
+    const bundle = JSON.parse(readFileSync(join(out, "bundle.json"), "utf8")) as {
+      rejected?: Array<{ filename: string }>;
+      runs?: unknown[];
+    };
+    expect(bundle.runs?.length ?? 0).toBe(2);
+    expect((bundle.rejected ?? []).map((r) => r.filename).sort()).toEqual([
+      "amendment.doc",
+      "logo.png",
+    ]);
+  }, 300_000);
+
+  it("skipping an unsupported file is not a failure", async () => {
+    // Unlike a corrupt container, this is correct behaviour: a deal room holds
+    // a logo and a README, and the run did exactly what it should. It just has
+    // to say so. The exit code must not move.
+    const dir = mkdtempSync(join(tmp, "mixed2-"));
+    const picks = readdirSync(SPECIMENS)
+      .filter((f) => f.endsWith("-complete.txt"))
+      .sort()
+      .slice(0, 2);
+    for (const f of picks) writeFileSync(join(dir, f), readFileSync(join(SPECIMENS, f), "utf8"));
+    writeFileSync(join(dir, "logo.png"), Buffer.from("89504e470d0a1a0a", "hex"));
+    const out = mkdtempSync(join(tmp, "out-"));
+    const c = await capture([dir, "--consistency", "--format", "bundle-json", "--out", out]);
+    expect(c.exitCode ?? 0).toBe(0);
+  }, 300_000);
+
   it("a SINGLE unreadable input is still a hard error", async () => {
     // Nothing to survive for: the error is the answer.
     const dir = mkdtempSync(join(tmp, "solo-"));

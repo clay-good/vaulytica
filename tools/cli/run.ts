@@ -863,8 +863,29 @@ function parseArgs(argv: string[]): Args {
   return args;
 }
 
-/** Recursively collect supported files under a directory. */
-async function walkDir(dir: string): Promise<string[]> {
+/**
+ * Files under a directory whose extension is not one this tool reads.
+ *
+ * 🚨 A directory walk used to drop these SILENTLY, and the asymmetry with the
+ * named-file branch below is the defect: naming `notes.rtf` directly is a hard
+ * error that says "unsupported input type", while leaving the same file in a
+ * folder produced a report that simply pretended it was not there.
+ *
+ * That is not a cosmetic omission, because the cross-document engine reasons
+ * about what the bundle CONTAINS. Put `dpa.doc` — the old Word extension — in a
+ * deal room and `CROSS-MISSING-001` reports *"sow.txt references the DPA but no
+ * DPA is in the bundle"*, confidently, about a bundle the user believes holds
+ * one. The same shape the named-file branch's own comment describes: an unknown
+ * extension turning into "a full, confidently wrong findings report".
+ *
+ * These do NOT fail the run. A deal room legitimately holds a logo, a
+ * spreadsheet and a README, and skipping those is correct behaviour — it just
+ * has to be SAID.
+ */
+export const SKIPPED_UNSUPPORTED = "unsupported file type";
+
+/** Recursively collect supported files under a directory, and what it skipped. */
+async function walkDir(dir: string, skipped: Array<{ file: string; reason: string }> = []) {
   const out: string[] = [];
   // Code-unit ordering (not `localeCompare`, which depends on the host
   // locale/ICU and would make a directory analysis non-reproducible across
@@ -875,10 +896,11 @@ async function walkDir(dir: string): Promise<string[]> {
   )) {
     if (entry.name.startsWith(".")) continue;
     const full = join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...(await walkDir(full)));
+    if (entry.isDirectory()) out.push(...(await walkDir(full, skipped)).files);
     else if (SUPPORTED_EXT.has(extname(entry.name).toLowerCase())) out.push(full);
+    else skipped.push({ file: full, reason: SKIPPED_UNSUPPORTED });
   }
-  return out;
+  return { files: out, skipped };
 }
 
 /**
@@ -904,9 +926,20 @@ export function globToRegExp(pattern: string): RegExp {
 export async function resolveInputs(
   target: string,
   opts: { asText?: boolean } = {},
+  /**
+   * Filled with the entries a DIRECTORY walk skipped for an unsupported
+   * extension. An out-parameter rather than a wider return type, so the many
+   * callers that only want the file list are untouched — and optional, so a
+   * caller that does not ask keeps the old behaviour exactly.
+   */
+  skipped?: Array<{ file: string; reason: string }>,
 ): Promise<string[]> {
   const st = await stat(target).catch(() => null);
-  if (st?.isDirectory()) return walkDir(target);
+  if (st?.isDirectory()) {
+    const walked = await walkDir(target);
+    if (skipped) skipped.push(...walked.skipped);
+    return walked.files;
+  }
   if (st?.isFile()) {
     // A directly named file honors the same allowlist directory and glob
     // resolution apply (fix-cli-input-type-honesty): an unknown extension
@@ -1246,7 +1279,25 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     return;
   }
 
-  const inputs = await resolveInputs(args.target, { asText: args.asText });
+  // What the directory walk passed over. Not a failure — a deal room
+  // legitimately holds a logo, a spreadsheet and a README — but it has to be
+  // SAID, because the cross-document engine reasons about what the bundle
+  // CONTAINS and will otherwise report a document missing that the user
+  // supplied under an extension this tool does not read.
+  const skippedInputs: Array<{ file: string; reason: string }> = [];
+  const inputs = await resolveInputs(args.target, { asText: args.asText }, skippedInputs);
+  if (skippedInputs.length > 0) {
+    const shown = skippedInputs.slice(0, 10);
+    process.stderr.write(
+      `vaulytica: ${skippedInputs.length} file(s) in ${args.target} were skipped — this tool reads ` +
+        `${[...SUPPORTED_EXT].sort().join(", ")}, and a document it cannot read is a document it ` +
+        `cannot see in the bundle:\n`,
+    );
+    for (const sk of shown) process.stderr.write(`  - ${sk.file} (${sk.reason})\n`);
+    if (skippedInputs.length > shown.length) {
+      process.stderr.write(`  … and ${skippedInputs.length - shown.length} more\n`);
+    }
+  }
   // Delivery completeness (fix-cli-output-completeness): every rendered
   // artifact must have a destination. Multi-format or multi-input runs
   // used to render everything and silently drop it (summary line, exit 0)
@@ -1843,8 +1894,15 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         //
         // Same shape as 9.659.0, one level up: the caveat reached the terminal
         // that ran the command and not the artifact that outlives it.
-        ...(unreadable.length > 0
-          ? { rejected: unreadable.map((u) => ({ filename: basename(u.file), reason: u.reason })) }
+        // Both kinds of absence, in the one field the renderer already has:
+        // a file the run could not READ, and a file it does not read at all.
+        ...(unreadable.length + skippedInputs.length > 0
+          ? {
+              rejected: [...unreadable, ...skippedInputs].map((u) => ({
+                filename: basename(u.file),
+                reason: u.reason,
+              })),
+            }
           : {}),
       };
       await mkdir(args.out!, { recursive: true });

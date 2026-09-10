@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.671.0] — 2026-09-10
+
+The mirror of the named-file rule, found by putting a `.png`, a `.csv` and a
+`README.md` in a deal room.
+
+### Fixed
+- 🚨 **A directory walk dropped unsupported files silently, and the
+  cross-document engine then reported a document missing that the user had
+  supplied.** Naming `notes.rtf` directly is a hard error — *"unsupported input
+  type: … (supported: .docx, .md, .pdf, .txt …; pass `--as-text`)"* — added
+  deliberately, because an unknown extension used to fall through to a silent
+  UTF-8 decode and *"a full, confidently wrong findings report"*. Leaving the
+  same file in a **folder** produced a report that simply pretended it was not
+  there.
+
+  🥇 **That asymmetry is not cosmetic, because `CROSS-MISSING-001` reasons about
+  what the bundle CONTAINS.** Put `dpa.doc` — the old Word extension — in a deal
+  room, and the report says *"sow.txt references the DPA but no DPA is in the
+  bundle"*, confidently, about a bundle the user believes holds one. The named-
+  file branch's own comment describes exactly this failure; the directory branch
+  had the same one at the level above.
+
+  The skipped files are named on stderr with the supported list and the reason
+  a reader needs — *"a document it cannot read is a document it cannot see in
+  the bundle"* — and recorded in the bundle report's `rejected` field beside the
+  unreadable ones, so the artifact says it too. Long lists are capped at ten
+  with the remainder counted.
+
+  🥇 **The exit code does NOT move, and that is the difference from 9.666.0.** A
+  corrupt container is the tool failing to do what was asked; skipping a logo is
+  the tool doing exactly the right thing. It just has to say so. Both pinned.
+
 ## [9.670.0] — 2026-09-10
 
 The last consumer on 9.666.0's list, and the one that outlives the terminal.
