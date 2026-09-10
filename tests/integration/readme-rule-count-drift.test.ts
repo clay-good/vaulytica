@@ -154,6 +154,36 @@ describe("README rule counts", () => {
   });
 });
 
+/**
+ * Every rule WAVE must be in the sums, or the totals go quietly stale.
+ *
+ * The README badge, the landing page's hero and `docs/architecture.md` all
+ * quote `LAUNCH + V3 + V4 + V5 + V6`. Each of those is derived from what ships,
+ * so none can drift — but the SUM is a hardcoded list of waves, and a `v7`
+ * that landed without joining it would leave three guards comparing a stale
+ * total against a stale page and passing. A guard blind to a new category is
+ * the shape this session hit twice already (the CLI's machine-format list, and
+ * a caveat sweep that drew its own boundary at Markdown while an HTML artifact
+ * had no caveats at all).
+ *
+ * `src/playbooks/v7/` already exists — the open catalog wave added in 9.643.0 —
+ * so the next rule wave is not hypothetical. It has no rules directory yet, and
+ * this is what will say so on the day it does.
+ */
+describe("the rule-count sums cover every wave", () => {
+  it("names every versioned rule directory that ships", () => {
+    const waves = readdirSync(join(root, "src", "engine", "rules"), { withFileTypes: true })
+      .filter((e) => e.isDirectory() && /^v\d+$/.test(e.name))
+      .map((e) => e.name)
+      .sort();
+    expect(
+      waves,
+      "a new rule wave shipped — add its V<n>_RULES to every sum in this file, " +
+        "to the README badge, the landing hero and docs/architecture.md",
+    ).toEqual(["v3", "v4", "v5", "v6"]);
+  });
+});
+
 describe("landing-page rule counts", () => {
   it("quotes the live catalog total in the hero facts strip", () => {
     // The hero states the headline number before anything else on the page.

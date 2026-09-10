@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.672.0] — 2026-09-10
+
+### Added
+- **Every rule WAVE must be in the sums, or three totals go quietly stale.**
+  The README badge, the landing page's hero and `docs/architecture.md` all quote
+  `LAUNCH + V3 + V4 + V5 + V6`. Each addend derives from what ships, so none can
+  drift — but the **sum is a hardcoded list of waves**, and a `v7` that landed
+  without joining it would leave all three guards comparing a stale total
+  against a stale page and passing.
+
+  🥇 That is the shape this session hit twice already: the CLI's machine-format
+  list, written when there were three formats and never widened as nine more
+  shipped; and a caveat sweep that drew its own boundary at Markdown while an
+  HTML artifact in the next file had no caveats at all. **A guard blind to a new
+  category is worse than no guard, because it reports the category it cannot
+  see as fine.**
+
+  `src/playbooks/v7/` already exists — the open catalog wave added in 9.643.0 —
+  so the next rule wave is not hypothetical. It has no rules directory yet, and
+  this guard is what will say so on the day it does, naming every place the new
+  addend has to go.
+
 ## [9.671.0] — 2026-09-10
 
 The mirror of the named-file rule, found by putting a `.png`, a `.csv` and a
