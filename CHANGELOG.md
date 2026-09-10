@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.653.0] — 2026-09-10
+
+Found by **reading the obligations ledger** over the fourteen clean documents.
+The ledger is a lawyer's checklist of who must do what, and it is built from the
+extractor rather than from findings — so the 327-specimen corpus could not see
+this, and did not: the finding set and every golden are **byte-identical**
+before and after.
+
+### Fixed
+- 🥇 **A hyphen is a word boundary, so "at-will" read as the modal "will".**
+  `MODAL_RE` opens on `\b`, which sits between the "-" and the "will", and
+  employment documents are where that bites. The rows were not near-misses but
+  nonsense: *"No provision of this Agreement alters the at-will nature of the
+  employment"* became obligor **"of this Agreement alters the at-"**, action
+  **"nature of the employment"**, and the section heading *"Term; At-Will
+  Employment."* became a duty to do "Employment". **22 rows across 13
+  specimens**, every one false.
+
+  None was reachable by the empty-action guard added for the same word being a
+  noun ("employment is at will", "any trust created under this Will"), because
+  there the action comes back BLANK. In a hyphenated compound the second half
+  supplies a plausible-looking action, so the row looks like a duty. The test is
+  a hyphen with a **word character before it** — a genuine compound. A dash that
+  opens a clause ("— shall pay") is not one, and an em-dash is not a hyphen.
+
+  **Honest cost, 2 rows:** two real duties in sentences that ALSO say "at-will"
+  keep their action verbatim but gain three words of prefix on the obligor
+  ("any such alteration" → "at-will relationship, and any such alteration").
+  The spurious modal had been acting as a clause boundary. That is the known
+  obligor-fragment class, not a new one, and 22 nonsense rows for 2 longer
+  prefixes is the trade. Corpus obligations 3,700 → 3,678.
+
 ## [9.652.0] — 2026-09-10
 
 The generalization of 9.651.0. Two ladder metrics were dead; the obvious next

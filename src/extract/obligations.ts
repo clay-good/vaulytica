@@ -191,6 +191,20 @@ function splitModalClauses(
   MODAL_RE.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = MODAL_RE.exec(sentence)) !== null) {
+    // A HYPHEN IS A WORD BOUNDARY, so the `\b` in MODAL_RE opens inside a
+    // hyphenated compound and "at-will" reads as the modal "will". Employment
+    // documents are full of it, and the resulting row is not a near-miss but
+    // nonsense: "No provision of this Agreement alters the at-will nature of
+    // the employment" became obligor "of this Agreement alters the at-",
+    // action "nature of the employment", and a section heading "Term; At-Will
+    // Employment." became a duty to do "Employment". 22 rows across 13
+    // specimens, every one false, and none reachable by the empty-action guard
+    // below because the compound's SECOND half supplies a plausible action.
+    //
+    // The test is a hyphen with a word character before it — a genuine
+    // compound. A dash that OPENS a clause ("— shall pay") is not one, and an
+    // em-dash is not a hyphen at all.
+    if (m.index > 0 && /\w[-\u2010\u2011]$/.test(sentence.slice(0, m.index))) continue;
     modals.push({ index: m.index, len: m[0].length, text: m[1]! });
   }
   if (modals.length === 0) return [];

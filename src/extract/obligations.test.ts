@@ -628,3 +628,58 @@ describe("resolveObligor — who the duty lands on", () => {
     expect(fragment!.split(/\s+/).length).toBeLessThanOrEqual(6);
   });
 });
+
+/**
+ * A HYPHEN IS A WORD BOUNDARY, and employment documents are where that bites.
+ *
+ * `MODAL_RE` opens on `\b`, which sits between the "-" and the "will" of
+ * "at-will", so the compound's second half read as the obligation modal. The
+ * empty-action guard cannot reach these: the compound's FIRST half supplies a
+ * plausible-looking obligor and its remainder a plausible-looking action, so
+ * the row is nonsense rather than blank. 22 rows across 13 specimens.
+ */
+describe("extractObligations — a modal inside a hyphenated compound", () => {
+  it("does not read the 'will' of 'at-will' as a modal", () => {
+    const tree = buildTree([
+      "Employment",
+      "No provision of this Agreement alters the at-will nature of the employment.",
+    ]);
+    expect(extractObligations(tree, [])).toHaveLength(0);
+  });
+
+  it("does not turn an at-will section heading into a duty", () => {
+    const tree = buildTree(["Employment", "Term; At-Will Employment."]);
+    expect(extractObligations(tree, [])).toHaveLength(0);
+  });
+
+  it("keeps the real duty in a sentence that also says at-will", () => {
+    const tree = buildTree([
+      "Employment",
+      "No manager has authority to alter the at-will relationship, and any such " +
+        "alteration must be in a writing signed by the Chief Executive Officer.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis).toHaveLength(1);
+    expect(oblis[0]!.modal).toBe("must");
+    expect(oblis[0]!.action).toContain("be in a writing signed by the Chief Executive Officer");
+  });
+
+  it("still reads a modal that merely FOLLOWS a hyphenated word", () => {
+    const tree = buildTree([
+      "Services",
+      "The sub-contractor shall deliver the Services on the agreed date.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis).toHaveLength(1);
+    expect(oblis[0]!.modal).toBe("shall");
+  });
+
+  it("still reads a modal after a dash that opens a clause", () => {
+    const tree = buildTree([
+      "Services",
+      "The Provider has one duty — Provider shall deliver the Services on time.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis.some((o) => o.modal === "shall")).toBe(true);
+  });
+});
