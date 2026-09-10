@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.673.0] — 2026-09-10
+
+A re-diagnosis, not a feature. The v3 report layer has been picked up and put
+down repeatedly because the project's own record described it as a wiring task.
+Half of it is. The other half is not, and that half must not be built by an
+engineer.
+
+### Changed
+- 🥇 **BUILD_PROGRESS step 32: the compliance-matrix builder is not a wiring
+  task.** Two separate things are missing and only one is engineering.
+
+  **(a) The whole v3 report layer has no producer.** `V3ReportInputs` is
+  constructed by nothing in `src/`, `tools/` or the UI — the type, its
+  re-exports and the `docx.ts` parameter are its only mentions. So the
+  compliance matrix, transfers summary, subprocessor page and insurance page —
+  **~760 lines of shipped code with 16 passing tests** — are unreachable from
+  every surface. That half is wiring, and the transfers, subprocessor and
+  insurance pages need no new judgment at all.
+
+  **(b) The matrix CELLS cannot be derived from the data that exists.** A
+  `MatrixCell` carries Pass / Partial / Fail / N/A per column. Playbooks
+  declare `compliance_matrix_columns` — human-readable labels like *"AM Best
+  rating ≥ A-"*, *"General liability ≥ $1M / $2M"* — and a single-string
+  `regulator_frame`. **No playbook maps a column to the rules that decide it**,
+  and nothing else does either. Rows are derivable from the frame; cells are
+  not.
+
+  🚨 **And the shortcut is the one thing this product must never do.** The
+  posture is *lints, references, positions — but never renders a legal
+  conclusion*, and a cell reading **Pass** against a coverage minimum is
+  exactly a legal conclusion. Deriving it heuristically from column text would
+  be the highest-consequence version of the confidently-wrong failure the rest
+  of the tree spends 14,800 tests preventing. Authoring a
+  `compliance_matrix_rules` mapping is a legal judgment, and it belongs beside
+  the attorney sign-offs in the blocked-on-a-human column.
+
+### Added
+- **`v3-report-reach.test.ts`** — the inverse of `export-reach.test.ts`. That
+  file asserts every artifact the browser can produce the CLI can too; this one
+  records that **neither** surface can produce these, so the day someone wires
+  them up it fails and points at the two things actually in the way. It also
+  watches the playbook schema for a column → rule mapping, because that
+  appearing is the signal that (b) has been answered by someone qualified to
+  answer it.
+
 ## [9.672.0] — 2026-09-10
 
 ### Added
