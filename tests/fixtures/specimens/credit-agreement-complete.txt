@@ -1,0 +1,85 @@
+TERM LOAN AND SECURITY AGREEMENT
+
+THIS TERM LOAN AND SECURITY AGREEMENT (this "Agreement") is entered into as of August 14, 2026 (the "Closing Date") between Fernbank Commercial Bank, N.A., a national banking association ("Lender"), and Calderwood Foods, Inc., a Delaware corporation ("Borrower").
+
+1. Definitions. Capitalized terms have the meanings given where first used. In addition: "Business Day" means any day other than a Saturday, Sunday, or day on which banks in New York are authorized to close. "GAAP" means generally accepted accounting principles in the United States, consistently applied. "Material Adverse Effect" means a material adverse change in the business, assets, operations, or financial condition of Borrower, or in Borrower's ability to perform its obligations under the Loan Documents. "Loan Documents" means this Agreement, the Note, the security documents, and each other document executed in connection with the Loan. "Permitted Liens" means: liens for taxes not yet due or contested in good faith with adequate reserves; carriers', warehousemen's, mechanics' and other statutory liens arising in the ordinary course for amounts not yet delinquent; deposits securing workers' compensation, unemployment insurance and similar obligations; purchase-money liens and capital-lease liens on the equipment acquired, securing debt permitted by Section 6; easements, zoning restrictions and similar encumbrances that do not materially impair the use of the property; and liens in favor of Lender.
+
+2. The Loan.
+
+2.1 Term Loan. On the Closing Date, Lender shall make a term loan to Borrower in the principal amount of Six Million Dollars ($6,000,000) (the "Loan"), evidenced by a promissory note in the form of Exhibit A (the "Note").
+
+2.2 Use of Proceeds. Borrower shall use the proceeds of the Loan solely to refinance existing indebtedness, to acquire equipment for its Peoria plant, and for general working capital. Borrower shall not use any proceeds to purchase or carry margin stock.
+
+2.3 Interest. The Loan bears interest at Term SOFR plus three and one-quarter percent (3.25%) per annum, computed on the basis of a 360-day year for actual days elapsed. Interest is payable monthly in arrears on the first Business Day of each month. On the occurrence and during the continuance of an Event of Default, the Loan bears interest at two percent (2.00%) above the rate otherwise in effect.
+
+2.4 Maximum Rate. Notwithstanding anything to the contrary, no provision of the Loan Documents requires the payment of interest exceeding the maximum rate permitted by applicable law. If interest received exceeds that maximum, the excess shall be applied to principal or refunded to Borrower.
+
+2.5 Repayment. Borrower shall repay the principal in sixty (60) equal monthly installments of One Hundred Thousand Dollars ($100,000), beginning October 1, 2026, with the remaining principal balance and all accrued interest due and payable on September 1, 2031 (the "Maturity Date").
+
+2.6 Prepayment. Borrower may prepay the Loan in whole or in part at any time before the Maturity Date without premium or penalty, on three (3) Business Days' prior written notice, together with accrued interest on the amount prepaid. Prepayments are applied to installments in inverse order of maturity.
+
+2.7 Fees. Borrower shall pay Lender a commitment fee of Sixty Thousand Dollars ($60,000) on the Closing Date, and shall reimburse Lender for its reasonable and documented out-of-pocket costs of closing, including counsel fees not to exceed Thirty-Five Thousand Dollars ($35,000).
+
+2.8 Late Charge. Any payment not made within ten (10) days after its due date bears a late charge of five percent (5%) of the overdue amount, to the extent permitted by applicable law.
+
+2.9 Payments. All payments are due in immediately available funds by 2:00 p.m. New York time on the due date, without setoff or counterclaim. A payment due on a day that is not a Business Day is due on the next Business Day, with interest accruing to that day.
+
+3. Conditions Precedent. Lender's obligation to make the Loan is subject to: (a) receipt of this Agreement, the Note, and the security documents, each duly executed; (b) filed UCC-1 financing statements and other actions perfecting Lender's security interest; (c) a certificate of Borrower's secretary as to organizational documents, good standing, and incumbency; (d) an opinion of Borrower's counsel in form and substance reasonably satisfactory to Lender; (e) certificates of insurance naming Lender as loss payee and additional insured; (f) payment of the fees in Section 2.7; and (g) the accuracy of the representations in Section 4 as of the Closing Date.
+
+4. Representations and Warranties. Borrower represents and warrants that: it is duly organized, validly existing, and in good standing in Delaware and qualified in each jurisdiction where the failure to qualify would have a Material Adverse Effect; the execution and performance of the Loan Documents are within its powers and have been duly authorized, and do not violate its organizational documents, any law, or any agreement binding on it; the Loan Documents are its legal, valid, and binding obligations, enforceable in accordance with their terms; its financial statements delivered to Lender fairly present its financial condition in accordance with GAAP and no Material Adverse Effect has occurred since the date of the most recent statements; there is no litigation pending or, to its knowledge, threatened that would reasonably be expected to have a Material Adverse Effect; it has filed all required tax returns and paid all taxes due; it owns the Collateral free of liens other than Permitted Liens; it is in compliance with all applicable laws, including environmental laws and the Employee Retirement Income Security Act of 1974; and it is not an investment company under the Investment Company Act of 1940.
+
+5. Affirmative Covenants. Until the Loan is paid in full or the Maturity Date, whichever is later, Borrower shall: deliver audited annual financial statements within one hundred twenty (120) days after each fiscal year end and unaudited monthly statements within thirty (30) days after each month end, in each case with a compliance certificate; maintain its existence and all licenses material to its business; pay its taxes and other obligations as they come due, except those contested in good faith with adequate reserves; maintain property, casualty, business-interruption, and liability insurance with responsible insurers in amounts customary for its industry, naming Lender as loss payee and additional insured, and give Lender thirty (30) days' notice before any cancellation; keep proper books and records and permit Lender to inspect them and the Collateral during normal business hours on reasonable prior notice, at Borrower's expense once each year and more often after an Event of Default; comply in all material respects with applicable laws; and notify Lender within five (5) Business Days after learning of any Event of Default, any litigation seeking more than Two Hundred Fifty Thousand Dollars ($250,000), or any event reasonably expected to have a Material Adverse Effect.
+
+6. Negative Covenants. Until the Loan is paid in full, Borrower shall not, without Lender's prior written consent: incur indebtedness other than the Loan, trade payables incurred in the ordinary course, purchase-money debt and capital leases not exceeding Five Hundred Thousand Dollars ($500,000) in the aggregate, and subordinated debt on terms Lender approves; create or permit any lien on its assets other than Permitted Liens; merge or consolidate with, or acquire all or substantially all the assets of, any person; sell, lease, or otherwise dispose of assets outside the ordinary course, other than obsolete equipment and dispositions not exceeding Two Hundred Fifty Thousand Dollars ($250,000) in any fiscal year; make distributions or redeem equity while an Event of Default exists or would result; make loans or investments other than cash equivalents and advances to employees not exceeding Fifty Thousand Dollars ($50,000); change its fiscal year, its legal name, its state of organization, or the location of the Collateral without thirty (30) days' prior written notice; or enter into a transaction with an affiliate other than on arm's-length terms.
+
+7. Financial Covenants. Borrower shall maintain, tested quarterly on the last day of each fiscal quarter: a fixed charge coverage ratio of not less than 1.20 to 1.00; a funded debt to EBITDA ratio of not more than 3.00 to 1.00; and minimum liquidity of Seven Hundred Fifty Thousand Dollars ($750,000). Each ratio is computed in accordance with GAAP on a trailing twelve-month basis.
+
+8. Security.
+
+8.1 Grant. Borrower grants Lender a continuing security interest in all of Borrower's personal property, now owned or later acquired, including accounts, inventory, equipment, general intangibles, deposit accounts, investment property, instruments, chattel paper, documents, letter-of-credit rights, commercial tort claims described on Schedule 8.1, and all proceeds and products of the foregoing (the "Collateral"), to secure all obligations under the Loan Documents.
+
+8.2 Perfection. Borrower authorizes Lender to file financing statements describing the Collateral, including an all-assets description, and shall execute control agreements for its deposit and securities accounts within thirty (30) days after the Closing Date.
+
+8.3 Further Assurances. Borrower shall execute the documents and take the actions Lender reasonably requests to create, perfect, and maintain the security interest and its priority.
+
+8.4 Collateral Covenants. Borrower shall keep the Collateral at the locations listed on Schedule 8.4, maintain it in good repair, and not permit it to become a fixture or accession to property Lender does not have a lien on without Lender's consent.
+
+9. Events of Default. Each of the following is an "Event of Default": Borrower fails to pay principal when due, or interest or any other amount within five (5) days after it is due; Borrower breaches Section 6 or Section 7; Borrower breaches any other covenant and fails to cure it within thirty (30) days after the earlier of notice from Lender and Borrower's knowledge of it; any representation proves to have been materially false when made; Borrower defaults on other indebtedness exceeding Two Hundred Fifty Thousand Dollars ($250,000) and the default results in acceleration; a judgment exceeding Two Hundred Fifty Thousand Dollars ($250,000) is entered and not stayed, satisfied, or bonded within thirty (30) days; Borrower becomes insolvent, makes an assignment for the benefit of creditors, or has a bankruptcy proceeding commenced by it or, if commenced against it, not dismissed within sixty (60) days; a Material Adverse Effect occurs; or any Loan Document ceases to be enforceable or Lender's security interest ceases to be perfected and first-priority.
+
+10. Remedies. On an Event of Default, Lender may declare all obligations immediately due and payable, except that on a bankruptcy Event of Default they become due automatically without notice or demand; cease making advances; charge the default rate; and exercise all rights of a secured party under the Uniform Commercial Code, including taking possession of the Collateral, requiring Borrower to assemble it at a place Lender designates, and selling it at public or private sale. Lender shall give Borrower ten (10) days' prior notice of a sale, which the parties agree is commercially reasonable notice. Proceeds are applied to expenses of collection, then accrued interest, then principal, then other obligations, with any surplus paid as required by law. Lender's rights are cumulative, and no delay in exercising a right is a waiver of it.
+
+11. Expenses and Indemnity. Borrower shall pay Lender's reasonable and documented out-of-pocket expenses of enforcing the Loan Documents, including attorneys' fees. Borrower shall indemnify Lender and its officers, directors, employees, and agents against claims, losses, and expenses arising out of the Loan or the Collateral, including environmental liabilities, except to the extent caused by the indemnitee's gross negligence or willful misconduct. This indemnity survives repayment of the Loan and the termination of this Agreement.
+
+12. Miscellaneous.
+
+12.1 Governing Law. This Agreement is governed by the laws of the State of New York, without regard to its conflict-of-laws rules, except that the perfection and priority of the security interest are governed by the Uniform Commercial Code of the jurisdiction where Borrower is located.
+
+12.2 Venue. Any action arising out of the Loan Documents shall be brought in the state or federal courts located in New York County, New York, and each party consents to jurisdiction and venue there.
+
+12.3 Waiver of Jury Trial. EACH PARTY WAIVES ITS RIGHT TO A TRIAL BY JURY IN ANY ACTION ARISING OUT OF THE LOAN DOCUMENTS OR THE TRANSACTIONS CONTEMPLATED BY THEM.
+
+12.4 Notices. Notices must be in writing and are effective on delivery when sent by hand, overnight courier, or certified mail, return receipt requested, to the addresses stated above.
+
+12.5 Assignment. Borrower may not assign its rights or obligations without Lender's prior written consent. Lender may assign or sell participations in the Loan, and may share Borrower's information with prospective assignees and participants who agree to keep it confidential.
+
+12.6 Confidentiality. Lender shall keep Borrower's non-public information confidential, except that it may disclose it to its affiliates, auditors, and counsel, to bank regulators, as required by law, and to permitted assignees and participants under Section 12.5.
+
+12.7 Entire Agreement; Amendment. The Loan Documents are the entire agreement between the parties about the Loan and supersede all prior negotiations. No amendment or waiver is effective unless in writing and signed by Lender and, in the case of an amendment, by Borrower.
+
+12.8 Severability. If any provision is held unenforceable, it shall be modified to the minimum extent necessary and the remaining provisions remain in full force and effect.
+
+12.9 Counterparts. This Agreement may be signed in counterparts, including by electronic signature, each of which is an original.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the Closing Date.
+
+FERNBANK COMMERCIAL BANK, N.A.
+
+By: /s/ Rosalind Achterberg
+Name: Rosalind Achterberg
+Title: Senior Vice President
+
+CALDERWOOD FOODS, INC.
+
+By: /s/ Terrence Calderwood
+Name: Terrence Calderwood
+Title: Chief Executive Officer

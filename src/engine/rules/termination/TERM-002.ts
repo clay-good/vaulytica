@@ -136,14 +136,34 @@ const FOR_CAUSE = new RegExp(
     // sentence (the list is semicolon-separated), so `[^.]` keeps it from
     // stitching across a period; the wider windows reach the enumerated ground.
     "|" +
-    String.raw`${TERMINATE}[^.]{0,280}?${BREACH}[^.]{0,150}?${UNCURED}`,
+    String.raw`${TERMINATE}[^.]{0,280}?${BREACH}[^.]{0,150}?${UNCURED}` +
+    // 🥇 THE LOAN WORLD'S WORD FOR TERMINATION-FOR-CAUSE IS ACCELERATION.
+    // A fully-funded term loan has no commitment to terminate and never uses
+    // the verb: on an Event of Default "Lender may declare all obligations
+    // immediately due and payable" — enumerated grounds, a cure period, and an
+    // enforcement consequence, which is exactly what this rule looks for. The
+    // branches above all require a termination verb, so a complete credit
+    // agreement was told it states no path to terminate for material breach,
+    // and so was `uk-facility-agreement.txt`, whose §" the Lender may, by
+    // notice to the Borrower, cancel the Facility and declare all outstanding
+    // amounts immediately due and payable" says it twice over.
+    //
+    // BOTH halves are required — the term of art AND the acceleration — so a
+    // document that merely mentions an event of default in passing does not
+    // satisfy the check. `[\s\S]` spans the sentence boundary between the
+    // Events-of-Default section and the Remedies section that follows it,
+    // bounded so it cannot reach across a document.
+    "|" +
+    String.raw`\bEvents?\s+of\s+Default\b[\s\S]{0,600}?\b(?:declare|declared)\b[^.]{0,120}?\b(?:immediately\s+)?due\s+and\s+payable\b` +
+    "|" +
+    String.raw`\b(?:declare|declared)\b[^.]{0,120}?\b(?:immediately\s+)?due\s+and\s+payable\b[\s\S]{0,600}?\bEvents?\s+of\s+Default\b`,
   "i",
 );
 
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.12.0",
+  version: "1.13.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

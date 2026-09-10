@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.641.0] — 2026-09-09
+
+### Fixed
+- 🥇 **The loan world's word for termination-for-cause is ACCELERATION.** The
+  ninth clean document — a complete $6,000,000 secured term loan with a usury
+  savings clause, conditions precedent, thirteen representations, affirmative
+  and negative covenant packages, three financial covenants, an all-assets
+  Article 9 grant, nine Events of Default and the full UCC remedies clause —
+  drew ten findings, and the one defect was a whole vocabulary.
+
+  TERM-002 said the document states no path to terminate for material breach. A
+  fully-funded term loan **has no commitment to terminate and never uses the
+  verb**: it enumerates Events of Default, gives a cure period, and says
+  "Lender may **declare all obligations immediately due and payable**". That is
+  the mechanism the rule looks for — enumerated grounds, a cure period, an
+  enforcement consequence — written in the vocabulary the family actually uses,
+  and every one of the rule's fourteen branches required a termination verb.
+
+  Both halves are required, so a document that merely mentions an event of
+  default in passing does not satisfy the check, and an acceleration with no
+  default grounds behind it does not either. Two negative tests pin that.
+
+  **One specimen moves**: `uk-facility-agreement.txt`, whose "the Lender may, by
+  notice to the Borrower, cancel the Facility and declare all outstanding
+  amounts immediately due and payable" has been drawing this false finding since
+  the day it was written.
+
+  The specimen also joins `spelled-amount`'s percentage list for the ninth
+  time: its late charge is "five percent (5%)", and stripping the numeral leaves
+  FIN-009 a rate it cannot read. Deliberately unrepaired for the reason recorded
+  there — the rule parses the rate and asserts usury, and a rate is routinely
+  fractional ("one and one-half percent per month"), so a word-parser would risk
+  a confident false accusation about a legal limit.
+
+### Added
+- `tests/fixtures/specimens/credit-agreement-complete.txt` — the ninth clean
+  document, and the 321st specimen.
+
 ## [9.640.0] — 2026-09-09
 
 ### Fixed

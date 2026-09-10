@@ -3893,9 +3893,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // does not "terminate for cause", it ACCELERATES — clause 8.2 cancels the
   // Facility and declares the loan due — and whether that satisfies a
   // termination check is a question for the family, not a defect in the rule.
+  // TERM-002 came off this row in 9.641.0, and it was a false accusation the
+  // whole time: "the Lender may, by notice to the Borrower, cancel the Facility
+  // and declare all outstanding amounts immediately due and payable" IS this
+  // facility's termination-for-cause path. The loan world's word for that path
+  // is ACCELERATION on an Event of Default, and every branch of the rule
+  // required a termination verb.
   "uk-facility-agreement.txt": {
     playbook: "loan-agreement",
-    findings: ["BNK-011", "TERM-002", "OBLI-005", "RISK-010", "RISK-011", "STRUCT-009", "TEMP-006"],
+    findings: ["BNK-011", "OBLI-005", "RISK-010", "RISK-011", "STRUCT-009", "TEMP-006"],
   },
 
   // The first specimen for `msa-customer-deep`, which was the ONE playbook in
@@ -5177,6 +5183,51 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-015",
       "TEMP-008",
       "TERM-007",
+    ],
+  },
+  // A COMPLETE secured term loan — the ninth clean document (9.641.0). Six
+  // million dollars at Term SOFR + 3.25%, a usury savings clause, a sixty-month
+  // amortization, prepayment without penalty, conditions precedent, thirteen
+  // representations, affirmative and negative covenant packages, three financial
+  // covenants, an all-assets Article 9 grant with perfection and further
+  // assurances, nine Events of Default, the full UCC remedies clause, an
+  // environmental indemnity, and a jury-trial waiver.
+  //
+  // ONE defect, and it is a whole vocabulary: TERM-002 said the document states
+  // no path to terminate for material breach. A fully-funded term loan has no
+  // commitment to terminate and never uses the verb — it enumerates Events of
+  // Default, gives a cure period, and says "Lender may declare all obligations
+  // immediately due and payable". THE LOAN WORLD'S WORD FOR
+  // TERMINATION-FOR-CAUSE IS ACCELERATION.
+  //
+  // What remains is true of the draft, and two of them are the call the office
+  // lease and the subcontract got: a credit agreement allocates risk through
+  // collateral, covenants and the default rate rather than a liability cap
+  // (RISK-005), and it owns no IP to allocate (IPDATA-001). The rest is on the
+  // page — a Material Adverse Effect condition (OBLI-007, correctly surfaced for
+  // a borrower to negotiate), three Exhibits and Schedules referenced and not
+  // attached, a one-way confidentiality obligation (only the Lender owes one),
+  // an indemnity with no defense-control mechanics, a survival clause that names
+  // only the indemnity, and the jury waiver and late fee reported as present.
+  //
+  // ⚠️ OBLI-005 reports "Negative covenants: 3" for a document whose §6 is a
+  // nine-item negative-covenant package. That is not this rule's defect: the
+  // obligation extractor emits ONE obligation per sentence, and §6 is one
+  // sentence with a colon and semicolons. Splitting an enumerated covenant list
+  // is a measured, deliberately unfixed extractor decision.
+  "credit-agreement-complete.txt": {
+    playbook: "security-agreement",
+    findings: [
+      "CHOICE-008",
+      "FIN-009",
+      "IPDATA-001",
+      "OBLI-002",
+      "OBLI-005",
+      "OBLI-007",
+      "RISK-005",
+      "RISK-011",
+      "STRUCT-018",
+      "TEMP-007",
     ],
   },
   "enterprise-saas-subscription.txt": {

@@ -108,10 +108,15 @@ const percentInWords = (s: string): string =>
     });
 
 /**
- * FIN-009's seven, and nothing else. Equality, not a subset: a new divergence
+ * FIN-009's nine, and nothing else. Equality, not a subset: a new divergence
  * fails, and so does a repair that is not recorded.
  */
 const PERCENT_DEBT: readonly string[] = [
+  // 9.641.0 — the ninth clean document, and the same shape a ninth time: the
+  // term loan states its late charge as "five percent (5%)", and stripping the
+  // numeral leaves FIN-009 a rate it cannot read. The reason it stays
+  // unrepaired is below.
+  "credit-agreement-complete.txt: lost FIN-009 gained -",
   "equipment-finance.txt: lost FIN-009 gained -",
   "equipment-lease.txt: lost FIN-009 gained -",
   "il-secured-promissory-note.txt: lost FIN-009 gained -",

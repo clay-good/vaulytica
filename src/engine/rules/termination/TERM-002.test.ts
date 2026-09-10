@@ -360,3 +360,37 @@ describe("TERM-002 — cause grounds enumerated inline", () => {
     expect(TERM_002.check(doc(text))).not.toBeNull();
   });
 });
+
+// 🥇 THE LOAN WORLD'S WORD FOR TERMINATION-FOR-CAUSE IS ACCELERATION (9.641.0).
+// A fully-funded term loan has no commitment to terminate and never uses the
+// verb: it enumerates Events of Default, gives a cure period, and says the
+// lender may declare the obligations immediately due and payable.
+describe("TERM-002 — acceleration on an Event of Default is the for-cause path", () => {
+  it.each([
+    "On an Event of Default, Lender may declare all obligations immediately due and payable and exercise all rights of a secured party under the Uniform Commercial Code.",
+    "If an Event of Default is continuing, the Lender may, by notice to the Borrower, cancel the Facility and declare all outstanding amounts immediately due and payable.",
+    "Lender may declare the unpaid principal balance due and payable upon the occurrence of any Event of Default described in Section 9.",
+  ])("reads the acceleration remedy: %s", (text) => {
+    expect(TERM_002.check(doc(text))).toBeNull();
+  });
+
+  it("still fires on a document that merely mentions an event of default", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "Borrower shall notify Lender within five (5) Business Days after learning of any Event of Default.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("still fires on an acceleration with no default grounds behind it", () => {
+    expect(
+      TERM_002.check(
+        doc(
+          "All amounts outstanding are due and payable on the Maturity Date without further notice.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
