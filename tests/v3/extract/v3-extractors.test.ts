@@ -441,6 +441,39 @@ describe("v3 breach-timing extractor", () => {
   });
 });
 
+describe("v3 breach-timing extractor", () => {
+  /**
+   * 🚨 The NAME of a breach-notification regulation is not a breach event.
+   *
+   * A BAA's definitions sentence carries a breach noun and a notification word
+   * in one sentence, which is all `BREACH_RX` asks for, so both BAAs in the
+   * corpus recorded a breach-timing obligation from their glossary with every
+   * field "unspecified".
+   */
+  it("does not read a glossary reference to the Breach Notification Rule as an obligation", () => {
+    const tree = buildTree([
+      "Definitions",
+      "Terms used but not defined here have the meanings given them in the Privacy Rule, " +
+        "the Security Rule, the Breach Notification Rule, and the Enforcement Rule at " +
+        "45 C.F.R. Parts 160 and 164.",
+    ]);
+    expect(extractBreachTimings(tree)).toHaveLength(0);
+  });
+
+  it("still reads a real obligation in a sentence that also names the Rule", () => {
+    // Masked, not excluded: a sentence may legitimately do both, and dropping
+    // it wholesale would lose the obligation it states.
+    const tree = buildTree([
+      "Breach",
+      "Business Associate shall comply with the Breach Notification Rule and shall " +
+        "notify Covered Entity of any Breach of Unsecured PHI within sixty (60) days.",
+    ]);
+    const b = extractBreachTimings(tree);
+    expect(b).toHaveLength(1);
+    expect(b[0]!.max_delay_hours).toBe(60 * 24);
+  });
+});
+
 describe("v3 audit-rights extractor", () => {
   /**
    * 🚨 An audit RIGHT is an entitlement, not the word "audit".

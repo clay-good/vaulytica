@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.678.0] — 2026-09-10
+
+The last two newly-reachable v3 extractors. One was clean; one had a small,
+precise defect in the document type it exists for.
+
+### Probed and clean
+- **`security_measures`** reads what it should. Every record across the corpus
+  is a genuinely named control — multi-factor authentication, penetration
+  testing, access control, incident response, business continuity, encryption
+  in transit. No change, and recorded here so it is not re-probed.
+
+### Fixed
+- 🚨 **The NAME of a breach-notification regulation is not a breach event.** A
+  BAA's definitions sentence — *"Terms used but not defined here have the
+  meanings given them in the Privacy Rule, the Security Rule, the **Breach
+  Notification Rule**, and the Enforcement Rule at 45 C.F.R. Parts 160 and
+  164"* — carries a breach noun and a notification word in one sentence, which
+  is all the trigger asks for. **Both BAAs in the corpus recorded a
+  breach-timing obligation from their glossary**, every field "unspecified", in
+  precisely the document type this extractor exists for.
+
+  🥇 **Masked, not excluded.** A sentence may legitimately do both — *"shall
+  comply with the Breach Notification Rule and shall notify Covered Entity
+  within sixty (60) days"* is a real obligation — so dropping the sentence
+  would lose it. Masking only the rule NAME leaves any real breach-plus-notify
+  pair to match on its own. ⚠️ Equal-length masking, because `position` is
+  computed from the match index and any other replacement would shift every
+  offset after it.
+
+### Measured, not built
+- **10 of the remaining 43 breach-timing records still carry no detail**, and
+  the causes are two and both are genuine questions. Some are real obligations
+  whose terms the field parsers do not yet read (*"Subcontractor shall report a
+  cyber incident to the Department of Defense"* — the DFARS 72-hour rule
+  stated by reference). The rest turn on the word's other sense: a pleading's
+  *"Plaintiff failed to notify Defendant of the alleged **breach**"* is a
+  CONTRACT breach, not a data breach, and telling those apart is a judgment
+  about meaning rather than a fold of drafting.
+
 ## [9.677.0] — 2026-09-10
 
 The third newly-reachable v3 extractor, read the same way as the two before it.

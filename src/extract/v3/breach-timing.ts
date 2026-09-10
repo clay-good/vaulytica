@@ -86,10 +86,37 @@ function normalizeToHours(n: number, unit: string): number {
   return n;
 }
 
+/**
+ * The NAME of a breach-notification regulation is not a breach event.
+ *
+ * 🚨 A BAA's definitions sentence — "Terms used but not defined here have the
+ * meanings given them in the Privacy Rule, the Security Rule, the **Breach
+ * Notification Rule**, and the Enforcement Rule at 45 C.F.R. Parts 160 and
+ * 164" — carries a breach noun and a notification word in one sentence, which
+ * is all `BREACH_RX` asks for. Both BAAs in the corpus recorded a
+ * breach-timing obligation from their glossary, with every field
+ * "unspecified", in exactly the document type this extractor exists for.
+ *
+ * Masked rather than excluded, because a sentence may legitimately do both:
+ * "shall comply with the Breach Notification Rule and notify Covered Entity
+ * within sixty (60) days" is a real obligation, and dropping the whole
+ * sentence would lose it. Masking the rule NAME leaves any real breach-plus-
+ * notify pair elsewhere in the sentence to match on its own.
+ *
+ * ⚠️ Equal-length masking (spaces), because `position` is computed from the
+ * match index and any other replacement would shift every offset after it.
+ */
+const BREACH_RULE_NAME =
+  /\b(?:(?:security|data|personal\s+information)\s+)?breach\s+notification\s+(?:rules?|acts?|laws?|regulations?|requirements?)\b/gi;
+
+function maskRuleNames(text: string): string {
+  return text.replace(BREACH_RULE_NAME, (name) => " ".repeat(name.length));
+}
+
 export function extractBreachTimings(tree: DocumentTree): BreachTiming[] {
   const out: BreachTiming[] = [];
   forEachParagraph(tree, (ctx) => {
-    const m = BREACH_RX.exec(ctx.text);
+    const m = BREACH_RX.exec(maskRuleNames(ctx.text));
     if (!m) return;
     const window = m[0];
     const numeric = NUMERIC_TIME_RX.exec(window);
