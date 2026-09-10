@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.695.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A financial threshold misstated by six orders of magnitude.** "If Net
+  Revenue for the First Earnout Period is at least **$28,000,000**, Buyer shall
+  pay the Earnout Amount" reached the obligations ledger with a trigger reading
+  **`is at least $28`**. A revolving credit agreement's "less than the greater
+  of **$7,500,000** and 12.5% of the aggregate Commitments" became "the greater
+  of $7"; a sponsorship threshold of "fewer than **18,000** registered
+  participants" became "fewer than 18".
+
+  `TRIGGER_RE` and `QUALIFIER_RE` bounded a clause with `[^,;.]+` — **a comma
+  is not always a clause boundary.** A separator is now admitted where it
+  cannot be punctuation: a comma followed by exactly three digits, or a decimal
+  point followed by a digit. "within 30 days, 60 days" still stops at the
+  comma and a sentence-final period still ends the clause.
+
+  Four corpus rows — rare, and the single worst thing this column can say. The
+  ledger's whole job is to state a duty and the condition it turns on; a
+  condition off by a factor of a million is worse than no condition at all.
+
+  The three branches are disjoint (each consumes one character, and `[^,;.]`
+  excludes the other two), so there is nothing for the engine to backtrack
+  over — the quadratic-pattern hazard this file has hit before (spec-v8 §5)
+  does not apply, and the fuzz-boundary gate is green.
+
+### Added
+- Two assertions in `obligation-trigger-reach.test.ts` and two unit tests, the
+  second of each being the load-bearing negative: **only** a comma followed by
+  three digits is admitted, so an ordinary list still ends the clause. Proven
+  by reverting `CLAUSE_CHAR` to `[^,;.]`, which puts `$28` back.
+
 ## [9.694.0] — 2026-09-10
 
 ### Fixed

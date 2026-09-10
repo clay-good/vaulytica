@@ -154,6 +154,41 @@ describe("extractObligations", () => {
     expect(obli?.action).toBe("indemnify Architect from any claim arising out of that use");
   });
 
+  it("keeps a grouped number whole in the trigger", () => {
+    // A comma is not always a clause boundary. "at least $28,000,000" was cut
+    // to "at least $28" — the threshold off by six orders of magnitude.
+    const tree = buildTree([
+      "Earnout",
+      "If Net Revenue for the First Earnout Period is at least $28,000,000, Buyer " +
+        "shall pay the Earnout Amount.",
+    ]);
+    const [obli] = extractObligations(tree, []);
+    expect(obli?.trigger).toBe(
+      "If Net Revenue for the First Earnout Period is at least $28,000,000",
+    );
+    expect(obli?.action).toBe("pay the Earnout Amount");
+  });
+
+  it("still stops at a comma that is punctuation", () => {
+    // The load-bearing negative: only a comma followed by exactly three
+    // digits is admitted, so an ordinary list still ends the clause.
+    const tree = buildTree([
+      "Notice",
+      "If the Customer objects, the Provider shall respond within ten (10) days, " +
+        "and the parties shall confer.",
+    ]);
+    const oblis = extractObligations(tree, []);
+    expect(oblis.length).toBeGreaterThan(0);
+    // The predicate's own trigger wins the column (see the test above); what
+    // matters here is that NO trigger runs past the comma into the next clause.
+    expect(oblis.some((o) => o.trigger === "within ten (10) days")).toBe(true);
+    for (const o of oblis) {
+      expect(o.trigger ?? "", "a trigger ran through a comma that is punctuation").not.toMatch(
+        /,\s+and\b/,
+      );
+    }
+  });
+
   it("prefers the predicate's own trigger over the fronted one", () => {
     // The fronted clause is a FALLBACK. A predicate that states its own
     // deadline still owns the column, and that trigger is still excised from

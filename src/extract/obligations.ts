@@ -72,11 +72,35 @@ const MODALS = [
 
 const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+")})\b`, "gi");
 
-const TRIGGER_RE =
-  /\b(upon\s[^,;.]+|if\s[^,;.]+|when\s[^,;.]+|promptly\s+after\s[^,;.]+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b[^,;.]*)/i;
+/**
+ * One character of clause text.
+ *
+ * 🚨 **A comma is not always a clause boundary.** `[^,;.]+` stopped a trigger
+ * at the first thousands separator, so "If Net Revenue for the First Earnout
+ * Period is at least **$28,000,000**, Buyer shall pay the Earnout Amount"
+ * reached the obligations ledger as `is at least $28` — a financial threshold
+ * misstated by six orders of magnitude, in an artifact an attorney acts on. A
+ * credit agreement's "$7,500,000" became "$7"; a sponsorship threshold of
+ * "18,000 registered participants" became "18".
+ *
+ * A separator is admitted only where it cannot be punctuation: a comma
+ * followed by exactly three digits, or a decimal point followed by a digit.
+ * "within 30 days, 60 days" still stops at the comma, and a sentence-final
+ * period still ends the clause. The three branches are disjoint — each
+ * consumes exactly one character and `[^,;.]` excludes the other two — so
+ * there is no ambiguity for the engine to backtrack over (spec-v8 §5).
+ */
+const CLAUSE_CHAR = String.raw`(?:[^,;.]|,(?=\d{3}(?!\d))|\.(?=\d))`;
 
-const QUALIFIER_RE =
-  /\b(subject\s+to\s[^,;.]+|except\s[^,;.]+|provided\s+that\s[^,;.]+|provided,\s+however,\s+that\s[^,;.]+)/i;
+const TRIGGER_RE = new RegExp(
+  String.raw`\b(upon\s${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+|when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
+  "i",
+);
+
+const QUALIFIER_RE = new RegExp(
+  String.raw`\b(subject\s+to\s${CLAUSE_CHAR}+|except\s${CLAUSE_CHAR}+|provided\s+that\s${CLAUSE_CHAR}+|provided,\s+however,\s+that\s${CLAUSE_CHAR}+)`,
+  "i",
+);
 
 export function extractObligations(tree: DocumentTree, parties: Party[]): Obligation[] {
   const partyNames = new Set(parties.map((p) => p.name.toLowerCase()));

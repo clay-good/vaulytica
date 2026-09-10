@@ -89,4 +89,37 @@ describe("the obligations ledger says when", () => {
 
     expect(empty).toBe(FRONTED_WITHOUT_TRIGGER);
   }, 300_000);
+
+  it("does not cut a trigger at a thousands separator", async () => {
+    // 🚨 `[^,;.]+` treated every comma as a clause boundary, so a threshold
+    // written the way money is written was truncated: "If Net Revenue for the
+    // First Earnout Period is at least $28,000,000" reached the ledger as
+    // "…is at least $28". Four corpus rows, each a financial threshold
+    // misstated by orders of magnitude in an artifact an attorney acts on —
+    // rare, and the single worst thing this column can say.
+    const files = readdirSync(DIR)
+      .filter((f) => f.endsWith(".txt"))
+      .sort();
+    const truncated: string[] = [];
+    let withNumber = 0;
+
+    for (const file of files) {
+      const ingest = await ingestPaste(readFileSync(join(DIR, file), "utf8"));
+      for (const o of extractAll(ingest.tree).obligations) {
+        if (!o.trigger) continue;
+        if (/\d[\d,]*,\d{3}/.test(o.trigger)) withNumber += 1;
+        const at = o.raw_text.indexOf(o.trigger);
+        if (at < 0) continue;
+        // The trigger ends exactly where the source continues with ",NNN".
+        if (/^,\d{3}\b/.test(o.raw_text.slice(at + o.trigger.length))) {
+          truncated.push(`${file}: "…${o.trigger.slice(-40)}"`);
+        }
+      }
+    }
+
+    // Anti-vacuity: zero truncations is the answer a harness that read no
+    // trigger at all would also give.
+    expect(withNumber, "no trigger carries a grouped number").toBeGreaterThan(3);
+    expect(truncated).toEqual([]);
+  }, 300_000);
 });
