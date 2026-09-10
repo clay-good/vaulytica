@@ -106,6 +106,44 @@ function citationUrls(f: Finding): string {
  * ambiguous date becomes a manual-verify action item rather than silence
  * (spec-v6 §13).
  */
+/**
+ * The two facts about the ANALYSIS — never about the contract — that qualify
+ * anything derived from it: what the ingest could and could not READ, and
+ * whether any document family matched at all.
+ *
+ * `buildFixListMarkdown` has carried both since 9.490.0. The other three
+ * Markdown artifacts in this file did not, and each of them is separately
+ * obtainable: `analyze x.pdf --critical-dates --format dates-md > register.md`
+ * hands a colleague a page of deadlines with nothing on it saying the PDF fell
+ * back to OCR, or that no family matched and the findings behind it may be
+ * irrelevant. The caveat reaches the person who RAN the command, on stderr; it
+ * did not reach the person who receives the file.
+ *
+ * Optional and gated on presence, so a caller that passes nothing produces the
+ * byte-identical artifact it did before this existed.
+ */
+export type ArtifactCaveats = {
+  /** `IngestResult.warnings` — what the ingest could and could not read. */
+  readonly warnings?: readonly string[];
+  /** `EngineRun.classification_notice` — no document family matched. */
+  readonly classification_notice?: { readonly message: string } | undefined;
+};
+
+/** The caveat block, blank-line-terminated, or nothing at all. */
+function caveatLines(caveats: ArtifactCaveats | undefined): string[] {
+  if (!caveats) return [];
+  const lines: string[] = [];
+  if (caveats.warnings && caveats.warnings.length > 0) {
+    for (const w of caveats.warnings) lines.push(`> **About this input.** ${w}`);
+    lines.push("");
+  }
+  if (caveats.classification_notice) {
+    lines.push(`> **Document type not recognized.** ${caveats.classification_notice.message}`);
+    lines.push("");
+  }
+  return lines;
+}
+
 export function buildFixListMarkdown(
   run: EngineRun,
   extracted?: ExtractedData,
@@ -146,14 +184,12 @@ export function buildFixListMarkdown(
   // accepted" or "this PDF fell back to OCR" changes what every line below it
   // means. Every report surface carries these; this one took no `ingest` at
   // all, so it was the last one that could not.
-  if (ingest && ingest.warnings.length > 0) {
-    for (const w of ingest.warnings) lines.push(`> **About this input.** ${w}`);
-    lines.push("");
-  }
-  if (run.classification_notice) {
-    lines.push(`> **Document type not recognized.** ${run.classification_notice.message}`);
-    lines.push("");
-  }
+  lines.push(
+    ...caveatLines({
+      warnings: ingest?.warnings,
+      classification_notice: run.classification_notice,
+    }),
+  );
   lines.push(
     "Each item below is a finding to resolve, ordered by severity. This list is a deterministic projection of the run — it adds no judgment beyond what the report contains.",
   );
@@ -727,7 +763,10 @@ const KIND_LABEL: Record<CriticalDate["kind"], string> = {
  * Pure projection of the register — no wall-clock, no "days remaining"
  * (§3 corollary 4): the absolute date is shown, never a computed age.
  */
-export function buildCriticalDatesMarkdown(register: CriticalDatesRegister): string {
+export function buildCriticalDatesMarkdown(
+  register: CriticalDatesRegister,
+  caveats?: ArtifactCaveats,
+): string {
   const lines: string[] = [];
   lines.push("# Vaulytica critical dates");
   lines.push("");
@@ -738,6 +777,11 @@ export function buildCriticalDatesMarkdown(register: CriticalDatesRegister): str
   lines.push(
     "Each deadline below is computed from the document's own terms by calendar arithmetic (`anchor ± N`). These are the dates the document places on your calendar; they are not legal determinations that a deadline is met, missed, or binding.",
   );
+  const caveatBlock = caveatLines(caveats);
+  if (caveatBlock.length > 0) {
+    lines.push("");
+    lines.push(...caveatBlock);
+  }
   // add-deadline-computation — when a court profile was asserted, name it in the
   // header so the receipt records the basis for any rolled/court-day date.
   const profileRow = register.register.find((r) => r.deadline_profile_id);
@@ -931,7 +975,10 @@ const CHECKLIST_CATEGORY_ORDER: ChecklistCategory[] = [
  * reports the items left to resolve and never asserts the document is "ready
  * to sign."
  */
-export function buildClosingChecklistMarkdown(checklist: ClosingChecklist): string {
+export function buildClosingChecklistMarkdown(
+  checklist: ClosingChecklist,
+  caveats?: ArtifactCaveats,
+): string {
   const lines: string[] = [];
   lines.push("# Vaulytica closing checklist");
   lines.push("");
@@ -940,6 +987,13 @@ export function buildClosingChecklistMarkdown(checklist: ClosingChecklist): stri
   lines.push(
     "Each item is an execution-readiness gap the engine detected — work it down before closing. This is a deterministic projection of the findings; it does not certify the document is ready to sign or validly executed.",
   );
+  // Above the empty-checklist early return: "no readiness item was detected" is
+  // exactly the sentence a reader most needs the input caveat beside.
+  const caveatBlock = caveatLines(caveats);
+  if (caveatBlock.length > 0) {
+    lines.push("");
+    lines.push(...caveatBlock);
+  }
   if (checklist.items.length === 0) {
     lines.push("");
     lines.push(
@@ -1005,7 +1059,10 @@ function postureFinding(p: NegotiationPositionResult): string {
  * · guidance · section). A deterministic projection of the team's ladder
  * against the draft; advisory, never a legal conclusion (spec-v10 §3).
  */
-export function buildNegotiationPostureMarkdown(posture: NegotiationPosture): string {
+export function buildNegotiationPostureMarkdown(
+  posture: NegotiationPosture,
+  caveats?: ArtifactCaveats,
+): string {
   const c = posture.counts;
   const lines: string[] = [];
   lines.push("# Vaulytica negotiation posture");
@@ -1017,6 +1074,11 @@ export function buildNegotiationPostureMarkdown(posture: NegotiationPosture): st
   lines.push(
     "Where this draft sits on your team's ladder, per dimension. Computed deterministically from your playbook's positions — it shows where you stand, not whether a term is legally adequate, enforceable, or market.",
   );
+  const caveatBlock = caveatLines(caveats);
+  if (caveatBlock.length > 0) {
+    lines.push("");
+    lines.push(...caveatBlock);
+  }
   if (posture.positions.length === 0) {
     lines.push("");
     lines.push("_No negotiation positions were defined._");

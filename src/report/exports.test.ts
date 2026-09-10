@@ -4,7 +4,11 @@ import {
   buildFixListCsv,
   buildObligationsCsv,
   buildDeadlinesIcs,
+  buildCriticalDatesMarkdown,
+  buildClosingChecklistMarkdown,
+  buildNegotiationPostureMarkdown,
   collectDeadlines,
+  type ArtifactCaveats,
 } from "./exports.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { DateReference, ExtractedData, Obligation } from "../extract/types.js";
@@ -920,5 +924,58 @@ describe("the deadlines calendar labels what kind of date each event is", () => 
     expect(ics).toContain("(from section s3)");
     // 2020-01-01 — obviously not a real deadline, which is the point.
     expect(ics).toContain("DTSTART;VALUE=DATE:20200101");
+  });
+});
+
+/**
+ * The artifacts a colleague RECEIVES, rather than the terminal that produced
+ * them.
+ *
+ * The classification notice and the ingest warnings reach whoever ran the
+ * command — on stderr, correctly. They did not reach the person handed
+ * `register.md`: `analyze x.pdf --critical-dates --format dates-md > register.md`
+ * wrote a page of deadlines with nothing on it saying the PDF fell back to OCR,
+ * or that no document family matched and the findings behind it may be
+ * irrelevant. `buildFixListMarkdown` has carried both since 9.490.0; the other
+ * three Markdown artifacts in this file did not.
+ */
+describe("the Markdown artifacts carry the honesty caveats", () => {
+  const CAVEATS: ArtifactCaveats = {
+    warnings: ["This PDF fell back to OCR; text may be imperfect."],
+    classification_notice: { message: "No known document family matched this document." },
+  };
+
+  const register = {
+    register: [],
+    resolved_count: 0,
+    unresolved_count: 0,
+    critical_dates_hash: "h",
+  };
+  const checklist = { items: [], open_count: 0 };
+  const posture = {
+    positions: [],
+    counts: { ideal: 0, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+    posture_hash: "p",
+  };
+
+  const SURFACES: ReadonlyArray<[string, (c?: ArtifactCaveats) => string]> = [
+    ["critical-dates register", (c) => buildCriticalDatesMarkdown(register, c)],
+    ["closing checklist", (c) => buildClosingChecklistMarkdown(checklist, c)],
+    ["negotiation posture", (c) => buildNegotiationPostureMarkdown(posture, c)],
+  ];
+
+  it.each(SURFACES)("%s renders both caveats when given them", (_what, build) => {
+    const md = build(CAVEATS);
+    expect(md).toContain("**About this input.**");
+    expect(md).toContain("fell back to OCR");
+    expect(md).toContain("**Document type not recognized.**");
+    expect(md).toContain("No known document family matched");
+  });
+
+  it.each(SURFACES)("%s is byte-identical when given none", (_what, build) => {
+    // Gated on presence: a caller that passes nothing produces exactly the
+    // artifact it did before the parameter existed.
+    expect(build(undefined)).toBe(build({ warnings: [], classification_notice: undefined }));
+    expect(build(undefined)).not.toContain("About this input");
   });
 });

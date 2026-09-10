@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.659.0] — 2026-09-10
+
+The item 9.658.0 measured and left. The honesty caveats reach whoever RAN the
+command; they did not reach the person handed the file.
+
+### Fixed
+- 🥇 **`--format dates-md > register.md` handed a colleague a page of deadlines
+  with no caveat on it.** `analyze x.pdf --critical-dates --format dates-md`
+  prints "this PDF fell back to OCR" and "no known document family matched…
+  the findings may be irrelevant or misleading" — on **stderr**, correctly, to
+  the person at the terminal. Redirect stdout to a file and hand that file on
+  and neither sentence exists. `buildFixListMarkdown` has carried both since
+  9.490.0; the critical-dates register, the closing checklist and the
+  negotiation posture — each separately obtainable as its own file — had not.
+
+  All four now render the same block from one `caveatLines` helper. Optional
+  and gated on **content**, not on the parameter: a caller that passes nothing,
+  or passes a caveats object with nothing in it, produces the byte-identical
+  artifact it did before the parameter existed. Both directions are pinned.
+
+  A `.csv` and an `.ics` are deliberately out. There is no honest place for
+  prose in either, and the caveat reaches the terminal that produced them.
+
+- 🥇 **`honesty-caveat-reach.test.ts` was at FILE granularity, and
+  `exports.ts` builds seven artifacts.** It passed for the whole file because
+  the fix list read both fields. **A guard satisfied by one artifact inside a
+  file says nothing about the other six.** A second sweep now works at BUILDER
+  granularity: it enumerates every `build*Markdown` export in `exports.ts`,
+  requires each to take the caveats, and requires the CLI to actually pass them
+  — because a parameter nothing supplies is decoration. Broken on purpose, it
+  names each builder and each missing call site individually.
+
 ## [9.658.0] — 2026-09-10
 
 Found by running the CLI for the artifacts this session has been reading, and

@@ -944,6 +944,14 @@ async function renderFormat(
 ): Promise<string> {
   // Deterministic citation-currency reference — the DKB's own build date.
   const currency = dkbCurrency(dkb.manifest);
+  // The two honesty caveats, for the Markdown artifacts a person receives as a
+  // FILE. They already reach whoever ran the command, on stderr; a colleague
+  // handed `register.md` never saw that terminal. Gated on presence inside the
+  // builders, so a run with neither renders byte-identically.
+  const caveats = {
+    warnings: r.ingest.warnings,
+    classification_notice: r.run.classification_notice,
+  };
   // The v9 "Last Look" surfaces, populated only when the matching flag ran
   // (--delivery / --critical-dates / --checklist). Threaded into every format.
   const v9surfaces = {
@@ -1039,11 +1047,11 @@ async function renderFormat(
     // flag has been validated AND the surface came back non-empty (the caller
     // warns and skips otherwise), so the non-null assertions hold.
     case "checklist-md":
-      return buildClosingChecklistMarkdown(r.closing_checklist!);
+      return buildClosingChecklistMarkdown(r.closing_checklist!, caveats);
     case "checklist-csv":
       return buildClosingChecklistCsv(r.closing_checklist!);
     case "dates-md":
-      return buildCriticalDatesMarkdown(r.critical_dates!);
+      return buildCriticalDatesMarkdown(r.critical_dates!, caveats);
     case "dates-ics":
       return buildCriticalDatesIcs(r.critical_dates!);
     case "obligations-csv":
@@ -1051,7 +1059,7 @@ async function renderFormat(
     case "deadlines-ics":
       return buildDeadlinesIcs(extractAll(r.ingest.tree));
     case "posture-md":
-      return buildNegotiationPostureMarkdown(r.negotiation_posture!);
+      return buildNegotiationPostureMarkdown(r.negotiation_posture!, caveats);
     case "posture-csv":
       return buildNegotiationPostureCsv(r.negotiation_posture!);
     case "posture-sheet":

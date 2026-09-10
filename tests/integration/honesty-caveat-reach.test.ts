@@ -41,6 +41,57 @@ const FINDING_SURFACES: ReadonlyArray<[file: string, what: string]> = [
   ["src/ui/states.ts", "the in-tab result states"],
 ];
 
+/**
+ * The reach test above is at FILE granularity, and `src/report/exports.ts`
+ * builds seven artifacts. It passed because the fix list read both fields
+ * while the register, the closing checklist and the negotiation posture — each
+ * separately obtainable as its own file — did not. A guard satisfied by one
+ * artifact inside a file says nothing about the other six.
+ *
+ * So this one is at BUILDER granularity: every Markdown artifact a person can
+ * receive as a file must take an `ArtifactCaveats` and render it. A `.csv` or
+ * an `.ics` is deliberately out — there is no honest place for prose in either,
+ * and the caveat reaches whoever ran the command on stderr.
+ */
+describe("every Markdown artifact accepts the caveats", () => {
+  const MARKDOWN_BUILDERS = [
+    "buildFixListMarkdown",
+    "buildCriticalDatesMarkdown",
+    "buildClosingChecklistMarkdown",
+    "buildNegotiationPostureMarkdown",
+  ];
+
+  it("names every Markdown builder in exports.ts", () => {
+    const src = readFileSync(join(process.cwd(), "src/report/exports.ts"), "utf8");
+    const found = [...src.matchAll(/export function (build\w*Markdown)\(/g)].map((m) => m[1]!);
+    expect(
+      found.filter((f) => !MARKDOWN_BUILDERS.includes(f)),
+      "a new Markdown artifact must join this list and take the caveats",
+    ).toEqual([]);
+    expect(found.sort()).toEqual([...MARKDOWN_BUILDERS].sort());
+  });
+
+  it("each one takes the caveats and the CLI hands them over", () => {
+    const src = readFileSync(join(process.cwd(), "src/report/exports.ts"), "utf8");
+    const cli = readFileSync(join(process.cwd(), "tools/cli/run.ts"), "utf8");
+    const missing: string[] = [];
+    for (const fn of MARKDOWN_BUILDERS) {
+      // The fix list takes the whole IngestResult, which is where its two
+      // fields come from; the other three take an ArtifactCaveats.
+      const sig = new RegExp(`export function ${fn}\\(([^)]*)\\)`, "s").exec(src);
+      if (!sig) {
+        missing.push(`${fn}: not found`);
+        continue;
+      }
+      if (!/caveats\??:|ingest\??:/.test(sig[1]!)) missing.push(`${fn}: takes no caveats`);
+      // And the CLI must actually pass them, or the parameter is decoration.
+      const call = new RegExp(`${fn}\\([^;]*?(caveats|r\\.ingest)`, "s");
+      if (!call.test(cli)) missing.push(`${fn}: the CLI never passes them`);
+    }
+    expect(missing).toEqual([]);
+  });
+});
+
 describe("the honesty caveats reach every findings surface", () => {
   it("each surface reads the classification notice", () => {
     const missing: string[] = [];
