@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.664.0] — 2026-09-10
+
+The method of 9.651–9.663, written down as a gate.
+
+### Added
+- 🥇 **`artifact-prose-sanity.test.ts` — render every artifact for the clean
+  documents and read it.** Almost every defect in this run was invisible to the
+  finding set and to every golden: the ladder's dead metrics, `at-will` read as
+  an obligation modal, a fifth of the deadlines calendar being duplicate
+  events, a register that rendered 20 duplicates as a checklist and 0 as a
+  calendar, a cover page that said the analysis ran on 1 January 1970. Each was
+  found by building the artifact a user receives and looking at it. This file
+  does the mechanical half automatically, over nine artifacts × fourteen clean
+  documents:
+
+  - a value that leaked as `undefined` / `NaN` / `[object Object]`;
+  - a blanked timestamp printed as the Unix epoch;
+  - an unfilled template placeholder;
+  - two identical rows in a table a person works down.
+
+  The clean documents are the specimens on purpose: a defect that shows up on a
+  **complete, well-drafted contract** is unambiguous, because "the document
+  really is like that" is not available as an explanation.
+
+  Broken on purpose against this session's own defects — disabling the register
+  deduplication brings back three duplicate checkboxes by name.
+
+⚠️ **The word list matters, and the first draft got it wrong twice.**
+`\bnull\b` is out: *"null and void"* is ordinary contract English, quoted
+verbatim by these artifacts. And `undefined` is matched only in a **value
+position** — a whole CSV cell, or the right-hand side of `label: value` —
+because `OBLI-008`'s finding title is *"Efforts standard "commercially
+reasonable efforts" undefined"*, the English adjective, on six of the fourteen
+clean documents. A leaked JavaScript `undefined` stands alone where a value
+should be; the adjective never does. Both readings were flagged by the first
+run and neither was a defect.
+
 ## [9.663.0] — 2026-09-10
 
 The sequel 9.662.0's guard asked for. A citation that links the wrong

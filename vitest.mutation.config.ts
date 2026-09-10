@@ -106,6 +106,7 @@ export default defineConfig({
       "src/report/closing-checklist.test.ts",
       "src/report/exports.test.ts",
       "src/report/negotiation-export.test.ts",
+      "tests/integration/artifact-prose-sanity.test.ts",
       "tests/integration/citation-completeness.test.ts",
       // Imports `critical-dates.ts` for its register TYPE while testing the
       // export Blob wrappers. A type-only import is still an import as far as
