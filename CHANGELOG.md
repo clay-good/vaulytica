@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.668.0] — 2026-09-10
+
+An audit of the README's headline badge against the code. **All eleven numbers
+are correct** — 1,825 deterministic rules (exactly the execution-log size of a
+full run), 22 cross-document checks, 20 export formats, and the rest. One of
+them was correct by luck.
+
+### Added
+- **`20 export formats` was the last unguarded number on the badge.** Every
+  other figure there derives from what ships — the cross-document rules from
+  `ALL_CONSISTENCY_RULES`, the pre-disclosure checks from a scan for
+  `HANDOFF-` ids, the deadline families from the `CriticalDateKind` union, the
+  overlays from both catalogs summed. This one sat as a hand-maintained
+  literal, and a format is the easiest thing on that list to add:
+  `VALID_FORMATS` gained twelve entries across v8–v10 with nothing checking the
+  badge kept up.
+
+  🥇 9.658.0 is the cautionary case, and it was in the same file: a **second**
+  list of formats — the ones a program parses — also went stale as formats were
+  added, and the result was a CSV whose header row was its third line. **A
+  number nobody has to remember is a number that stays true.**
+
+  The guard parses `VALID_FORMATS` out of `run.ts` with comments stripped
+  first, asserts the scan found something and that the list has no duplicate,
+  then requires the badge to quote the count.
+
 ## [9.667.0] — 2026-09-10
 
 Docs, brought back in line with the two releases that changed what the CLI

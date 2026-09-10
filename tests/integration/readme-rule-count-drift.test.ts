@@ -285,6 +285,25 @@ describe("README badge line", () => {
     expect(badge).toContain(`\`${ids.length} execution-readiness reconciliations\``);
   });
 
+  it("quotes the live export-format count", () => {
+    // The last unguarded number on the badge. Every other one here derives
+    // from what ships; this one sat as a hand-maintained literal, and a format
+    // is the easiest thing on the list to add — `VALID_FORMATS` gained twelve
+    // entries across v8-v10 without anything checking the badge kept up.
+    //
+    // 9.658.0 is the cautionary case: a second list in that same file, of the
+    // formats a program parses, ALSO went stale as formats were added, and the
+    // result was a CSV whose header row was its third line. A number nobody
+    // has to remember is a number that stays true.
+    const src = strip(readFileSync(join(root, "tools", "cli", "run.ts"), "utf8"));
+    const block = /const VALID_FORMATS = \[([\s\S]*?)\] as const;/.exec(src);
+    expect(block, "VALID_FORMATS is no longer a literal array — update this guard").toBeTruthy();
+    const formats = [...block![1]!.matchAll(/^\s*"([a-z-]+)",/gm)].map((m) => m[1]!);
+    expect(formats.length, "no formats parsed — the scan is broken").toBeGreaterThan(0);
+    expect(new Set(formats).size, "VALID_FORMATS has a duplicate").toBe(formats.length);
+    expect(badge).toContain(`\`${formats.length} export formats\``);
+  });
+
   it("quotes the live state-law overlay total, across BOTH catalogs", () => {
     // The number is a sum, and that is the interesting part: 37 non-compete /
     // security-deposit / usury overlays plus 51 will-formality nodes (50 states
