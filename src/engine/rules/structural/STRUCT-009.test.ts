@@ -75,3 +75,38 @@ describe("STRUCT-009 — more attributive heads (v1.9.0)", () => {
     expect(STRUCT_009.check(ctx)).toBeNull();
   });
 });
+
+// The ISO commercial general liability coverage part is named "products and
+// completed operations", and every supply, distribution and construction
+// agreement with an insurance clause writes it that way. It is the policy's
+// name for the coverage, not the agreement's defined term.
+describe("STRUCT-009 — the insurance coverage part (v1.10.0)", () => {
+  it('does not report "Products" for "products and completed operations"', () => {
+    const ctx = buildContext([
+      "Manufacture and Supply Agreement",
+      '"Products" means the components listed on Exhibit A, manufactured to the Specifications.',
+      "Supplier shall maintain commercial general liability insurance of at least $5,000,000 per occurrence including products and completed operations, and shall name Buyer as an additional insured.",
+      "Supplier shall deliver the Products DDP Buyer's plant.",
+    ]);
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+
+  it("does not report it when a certificate hyphenates the aggregate", () => {
+    const ctx = buildContext([
+      "Manufacture and Supply Agreement",
+      '"Products" means the components listed on Exhibit A, manufactured to the Specifications.',
+      "The certificate shall show a $2,000,000 products-completed operations aggregate.",
+      "Supplier shall deliver the Products DDP Buyer's plant.",
+    ]);
+    expect(STRUCT_009.check(ctx)).toBeNull();
+  });
+
+  it("still reports a bare lowercase use of the same term", () => {
+    const ctx = buildContext([
+      "Manufacture and Supply Agreement",
+      '"Products" means the components listed on Exhibit A, manufactured to the Specifications.',
+      "Supplier shall pack the products in accordance with the Specifications.",
+    ]);
+    expect(STRUCT_009.check(ctx)?.description).toBe("Products");
+  });
+});

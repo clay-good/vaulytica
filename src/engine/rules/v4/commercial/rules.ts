@@ -252,6 +252,20 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
       /(repair|replace\w*|refund)[\s\S]{0,60}(sole|exclusive|only)\s+remed/is,
       /essential\s+purpose/i,
       /limitation\s+of\s+remed\w+/i,
+      // § 2-719(1)(a) is "in addition to OR in substitution for" — a remedy
+      // the parties agree on is a § 2-719 agreement whether or not it is
+      // exclusive, and a buyer-side supply agreement deliberately writes the
+      // non-exclusive one: "Buyer's REMEDY for breach of the warranty is
+      // REPAIR, REPLACEMENT OR CREDIT at Buyer's election. This remedy is in
+      // addition to, and not in place of, Buyer's rights under Sections 10 and
+      // 11." All four patterns above require the word "exclusive" (or the
+      // failure-of-essential-purpose fallback that only an exclusive remedy
+      // needs), so a complete Remedy section reported at CRITICAL that no
+      // remedies clause was found at all. The remedy word and its content must
+      // sit in ONE sentence, so an unrelated "adequate remedy at law" recital
+      // elsewhere in the paragraph cannot stand in for the clause.
+      // `\.(?=\d)` is the repo's idiom for a decimal point inside a figure.
+      /\bremed(?:y|ies)\b(?:[^.]|\.(?=\d)){0,90}\b(?:repair|replac\w+|refund|credit)\w*|\b(?:repair|replac\w+|refund|credit)\w*(?:[^.]|\.(?=\d)){0,90}\bremed(?:y|ies)\b/i,
     ],
   }),
   presence({

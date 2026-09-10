@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.644.0] — 2026-09-09
+
+### Fixed
+- 🥇 **§ 2-719 is "in addition to OR in substitution for", and COMM-025 could
+  only read the second half.** All four of its patterns required the word
+  "exclusive" — or the failure-of-essential-purpose fallback that only an
+  exclusive remedy needs — so a complete manufacture-and-supply agreement was
+  told at **CRITICAL** that no exclusive-remedy or remedies-limitation clause
+  was found, about § 9.2, which is headed "Remedy" and says the remedy is
+  repair, replacement or credit.
+
+  A buyer-side supply agreement writes the NON-exclusive one deliberately
+  ("This remedy is in addition to, and not in place of, Buyer's rights under
+  Sections 10 and 11"), and that is a § 2-719(1)(a) agreement. The remedy word
+  and its content must sit in one sentence, so an "adequate remedy at law"
+  recital elsewhere in the paragraph cannot stand in for the clause.
+
+- **"Products and completed operations" is the name of an insurance coverage,
+  not a lowercase slip.** STRUCT-009 read the ISO commercial general liability
+  coverage part — in the one sentence of an insurance clause whose wording
+  belongs to the policy and not to the drafter — as an inconsistent
+  capitalization of the defined term "Products", and asked the drafter to
+  capitalize a word that is not their term. The hyphenated form a certificate
+  uses for the aggregate is read the same way.
+
+- **`manufacturing-supply-agreement` expected a defined "Delivery".** A supply
+  agreement defines "Delivery Date" or "Delivery Point"; bare "Delivery" is the
+  document's own subject, which shape 3 of `expected-defined-terms.test.ts`
+  names as a defect in the list rather than in the document. Curated away.
+
+### Added
+- `tests/fixtures/specimens/manufacturing-supply-complete.txt` — the twelfth
+  clean document, and the 324th specimen: a rolling forecast with a binding
+  window, purchase-order conflicting-terms control, DDP delivery with a
+  late-delivery cover remedy, change control with a last-time buy, an indexed
+  price adjustment, inspection and rejection windows, a 36-month warranty with
+  an epidemic-defect clause, IATF 16949 quality with audit and corrective
+  action, recall cost allocation, product-liability and IP indemnities,
+  business continuity and second sourcing, Buyer-owned tooling, a § 2-615 force
+  majeure with allocation, a seven-year service-parts tail, and a cap with
+  carve-outs. Ten findings, none of them false.
+
 ## [9.643.0] — 2026-09-09
 
 ### Fixed

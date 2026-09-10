@@ -1,0 +1,201 @@
+MANUFACTURE AND SUPPLY AGREEMENT
+
+THIS MANUFACTURE AND SUPPLY AGREEMENT (this "Agreement") is entered into as of March 3, 2026 (the "Effective Date") between Kelbrook Precision Works, LLC, an Ohio limited liability company with its principal place of business at 4100 Ridgeway Parkway, Dayton, Ohio ("Supplier"), and Northwind Mobility Corporation, a Delaware corporation with its principal place of business at 2200 Willowbank Road, Novi, Michigan ("Buyer").
+
+1. Definitions.
+
+1.1 "Products" means the components listed on Exhibit A, manufactured to the Specifications, together with any component added to Exhibit A by a change order signed by both parties.
+
+1.2 "Specifications" means, for each Product, the drawings, tolerances, materials, test methods and packaging requirements identified on Exhibit A, as amended only under the change-control procedure in Section 6.
+
+1.3 "Purchase Order" means Buyer's written or electronic order for Products issued under Section 3, identifying the Product, quantity, unit price, Delivery Date and ship-to location.
+
+1.4 "Delivery Date" means the date on which Products are to be delivered at the delivery point stated in Section 5.1.
+
+1.5 "Forecast" means the rolling twelve-month volume estimate Buyer provides under Section 4.
+
+1.6 "Affiliate" means an entity that controls, is controlled by, or is under common control with a party, where control means ownership of more than fifty percent (50%) of the voting equity.
+
+1.7 "Confidential Information" means non-public information disclosed by one party to the other in connection with this Agreement, including the Specifications, tooling designs, pricing, Forecasts and manufacturing processes.
+
+2. Supply and Purchase Commitment.
+
+2.1 Supply. Supplier shall manufacture and sell to Buyer, and Buyer shall purchase from Supplier, the Products ordered under this Agreement, in the quantities stated in accepted Purchase Orders and in accordance with the Specifications.
+
+2.2 Requirements. Buyer shall purchase from Supplier not less than eighty percent (80%) of its annual requirements for the Products, measured across each calendar year. Buyer shall use commercially reasonable efforts to promote and support the platform in which the Products are used, and Supplier shall use commercially reasonable efforts to supply Buyer's requirements. Buyer may source the balance of its requirements from a second source qualified under Section 12.
+
+2.3 Capacity. Supplier shall maintain manufacturing capacity sufficient to supply one hundred twenty percent (120%) of the most recent twelve-month Forecast, and shall notify Buyer within five (5) business days if it becomes aware that it will be unable to do so.
+
+2.4 Allocation. If Supplier's output of a Product is reduced below the quantity needed to meet accepted Purchase Orders, Supplier shall allocate available Products among Buyer and its other customers in proportion to each customer's purchases of that Product during the preceding twelve months, and shall notify Buyer of the allocation and its expected duration.
+
+3. Purchase Orders.
+
+3.1 Issuance and Acceptance. Buyer shall order Products by Purchase Order. Supplier shall accept or reject each Purchase Order in writing within three (3) business days after receipt, and a Purchase Order Supplier does not reject within that period is deemed accepted. Supplier may reject a Purchase Order only if it exceeds the capacity commitment in Section 2.3, states a Delivery Date shorter than the lead time on Exhibit A, or states a price or term inconsistent with this Agreement.
+
+3.2 Conflicting Terms. This Agreement governs. Any additional or different term in a Purchase Order, order acknowledgment, invoice or similar document is of no effect and is objected to, except that quantity, unit price consistent with Exhibit B, Delivery Date and ship-to location stated in an accepted Purchase Order are binding.
+
+3.3 Cancellation and Rescheduling. Buyer may cancel or reschedule an accepted Purchase Order more than thirty (30) days before its Delivery Date at no charge. Within thirty (30) days of the Delivery Date, Buyer shall pay Supplier's documented cost of finished Products, work in process and non-cancelable raw materials attributable to the canceled quantity, and Supplier shall deliver that finished inventory to Buyer.
+
+4. Forecasts.
+
+4.1 Rolling Forecast. On the first business day of each month Buyer shall give Supplier a rolling twelve-month Forecast by Product and month.
+
+4.2 Binding Window. The first three (3) months of each Forecast are binding on Buyer as to quantity. Months four (4) through six (6) authorize Supplier to procure long-lead raw materials, and Buyer shall reimburse Supplier's documented cost of raw materials procured against those months if the corresponding Purchase Orders are not issued. Months seven (7) through twelve (12) are non-binding planning estimates and create no liability for either party.
+
+5. Delivery, Title and Risk of Loss.
+
+5.1 Delivery Terms. Supplier shall deliver Products DDP Buyer's plant at Novi, Michigan (Incoterms 2020), on the Delivery Date stated in the accepted Purchase Order. Time is of the essence as to Delivery Dates.
+
+5.2 Lead Time. The lead time for each Product is stated on Exhibit A. Supplier shall not change a lead time without Buyer's written consent.
+
+5.3 Title and Risk. Title and risk of loss pass to Buyer on delivery at the delivery point in Section 5.1.
+
+5.4 Late Delivery. If Supplier fails to deliver conforming Products on the Delivery Date, Supplier shall notify Buyer promptly, expedite delivery at its own expense, and pay the documented incremental freight and premium-transport cost Buyer incurs as a result. If a delivery is more than ten (10) days late, Buyer may cancel the affected quantity and purchase substitute goods, and Supplier shall pay the difference between the substitute price and the price under this Agreement, up to one hundred fifty percent (150%) of the price of the affected quantity.
+
+5.5 Packaging and Documentation. Supplier shall package Products in accordance with the Specifications and include with each shipment a packing list, certificate of conformance and, where the Specifications require, lot traceability data.
+
+6. Specifications and Change Control.
+
+6.1 Changes by Agreement. Neither party may change the Specifications, the manufacturing location, a sub-tier supplier of a characteristic-critical component, or a process affecting form, fit, function or regulatory status of a Product except by a change order signed by both parties.
+
+6.2 Change Requests. Either party may propose a change. The proposing party shall submit the proposed change in writing, and the other party shall respond within fifteen (15) business days with its acceptance or with the cost and schedule impact it requires. A change order takes effect only when signed by both parties.
+
+6.3 Cost of Changes. A change Buyer requires is at Buyer's cost, including obsolete inventory and tooling rework. A change Supplier requires for its own convenience is at Supplier's cost. A change required by applicable law is shared equally.
+
+6.4 Last-Time Buy. Supplier shall give Buyer twelve (12) months' written notice before discontinuing a Product or a component of a Product, and shall accept a last-time-buy order placed within that notice period for delivery within eighteen (18) months after the notice.
+
+7. Price, Invoicing and Payment.
+
+7.1 Price. Unit prices are stated on Exhibit B and are firm through December 31, 2026. Prices include packaging and DDP delivery and exclude sales, use and value-added taxes.
+
+7.2 Price Adjustment. After the firm period, either party may request a price adjustment once per calendar year on ninety (90) days' written notice, supported by documented changes in raw-material indices, labor rates and volume. If the parties do not agree on a new price within sixty (60) days after the request, the then-current price continues until they do, and either party may terminate the affected Product on one hundred eighty (180) days' notice.
+
+7.3 Steel and Resin Index. Notwithstanding Section 7.2, the steel and resin content of each Product is repriced quarterly against the published index identified on Exhibit B, up or down, with no minimum or maximum adjustment.
+
+7.4 Invoicing and Payment. Supplier shall invoice on shipment. Buyer shall pay undisputed invoices within forty-five (45) days after the later of receipt of the invoice and receipt of the Products. Buyer may withhold a disputed amount if it gives written notice of the dispute within twenty (20) days after the invoice and pays all undisputed amounts. Overdue undisputed amounts bear interest at one percent (1%) per month or the maximum rate permitted by law, whichever is less.
+
+7.5 Set-Off. Buyer may set off against amounts owed to Supplier any amount Supplier owes Buyer under this Agreement that is liquidated and undisputed.
+
+8. Inspection, Acceptance and Nonconforming Goods.
+
+8.1 Inspection. Buyer may inspect Products on arrival. Buyer's inspection, or its failure to inspect, does not relieve Supplier of its warranty obligations and is not an acceptance of nonconforming Products.
+
+8.2 Rejection. Buyer may reject Products that do not conform to the Specifications by notifying Supplier within thirty (30) days after delivery, or within thirty (30) days after Buyer discovers a defect that a reasonable incoming inspection would not have revealed. Products not rejected within those periods are accepted, subject to the warranty in Section 9.
+
+8.3 Remedy for Nonconformity. On rejection, Supplier shall, at Buyer's election, replace the rejected Products within the lead time on Exhibit A or credit their price, and shall bear the cost of return freight, inbound freight on replacements, and Buyer's documented sorting and rework costs. Supplier shall issue return authorization within three (3) business days of a rejection notice; if it does not, Buyer may return the Products without one.
+
+9. Warranty.
+
+9.1 Product Warranty. Supplier warrants that for thirty-six (36) months after delivery each Product will conform to the Specifications, be free from defects in material and workmanship, be free of liens, and be manufactured in compliance with applicable law.
+
+9.2 Remedy. Buyer's remedy for breach of the warranty in Section 9.1 is repair, replacement or credit at Buyer's election, together with the costs stated in Section 8.3. This remedy is in addition to, and not in place of, Buyer's rights under Sections 10 and 11.
+
+9.3 Implied Warranties. Supplier makes no warranty other than those stated in this Agreement, and disclaims the implied warranties of merchantability and fitness for a particular purpose, except that this Section 9.3 does not limit Supplier's obligations under Sections 9.1, 10 and 11.
+
+9.4 Epidemic Defect. If Products from a lot or from three (3) consecutive months of production fail at a rate exceeding two percent (2%) from a single root cause, Supplier shall, at its own expense, investigate the root cause, implement a corrective action, and repair or replace the affected Products in Buyer's inventory and in the field, including reasonable removal and reinstallation costs.
+
+10. Quality, Audit and Recall.
+
+10.1 Quality System. Supplier shall maintain a quality management system certified to IATF 16949 and shall notify Buyer within five (5) business days of any suspension or withdrawal of that certification.
+
+10.2 Audit. On thirty (30) days' notice, not more than once per calendar year except for cause, Buyer or its representative may audit Supplier's manufacturing, quality and traceability records relating to the Products during normal business hours. Buyer shall bear its own audit costs, and Supplier shall bear them if the audit reveals a material nonconformity.
+
+10.3 Corrective Action. Supplier shall respond to a Buyer corrective-action request with containment within twenty-four (24) hours, an interim corrective action within five (5) business days, and a root-cause analysis and permanent corrective action within thirty (30) days.
+
+10.4 Recall. If either party reasonably concludes that a Product requires a recall or field action, it shall notify the other within twenty-four (24) hours. The parties shall cooperate in the recall. Supplier shall bear the cost of a recall to the extent it arises from a Product's failure to conform to the Specifications or from a defect in material or workmanship, and Buyer shall bear it to the extent it arises from Buyer's design, Buyer's assembly, or a change Buyer required.
+
+11. Indemnification.
+
+11.1 Supplier Indemnity. Supplier shall defend Buyer and its Affiliates against any third-party claim arising from bodily injury, death or damage to tangible property caused by a Product's failure to conform to the Specifications or by a defect in material or workmanship, and shall indemnify Buyer for damages and reasonable attorneys' fees finally awarded or paid in settlement of such a claim.
+
+11.2 IP Indemnity. Supplier shall defend Buyer against any third-party claim that a Product, other than a portion made to Buyer's design, infringes a patent, copyright, trademark or trade secret, and shall indemnify Buyer for damages and reasonable attorneys' fees finally awarded or paid in settlement. If a Product is held to infringe, Supplier shall at its expense procure the right for Buyer to continue using it, or replace or modify it to be non-infringing while continuing to meet the Specifications.
+
+11.3 Buyer Indemnity. Buyer shall defend Supplier against any third-party claim that a portion of a Product made to Buyer's design or specification infringes a patent, copyright, trademark or trade secret, and shall indemnify Supplier for damages and reasonable attorneys' fees finally awarded or paid in settlement.
+
+11.4 Procedure. The indemnified party shall notify the indemnifying party promptly of a claim, give it sole control of the defense, and cooperate at the indemnifying party's expense. Failure to notify promptly relieves the indemnifying party only to the extent it is prejudiced. No settlement that imposes a non-monetary obligation on the indemnified party or admits its liability may be made without its written consent.
+
+12. Business Continuity and Second Source.
+
+12.1 Continuity Plan. Supplier shall maintain a written business-continuity plan covering fire, natural disaster, labor disruption and sub-tier supplier failure, and shall furnish it to Buyer on request.
+
+12.2 Second Source. Buyer may qualify a second source for any Product. Supplier shall cooperate in the qualification, including furnishing the Specifications and process documentation that Buyer owns or that Supplier is otherwise free to disclose.
+
+12.3 Contingency Inventory. Supplier shall maintain four (4) weeks of finished-goods safety stock for each Product identified on Exhibit A as a critical part.
+
+13. Tooling and Intellectual Property.
+
+13.1 Tooling. Tooling paid for by Buyer is Buyer's property, and Supplier shall mark it as Buyer's, keep it insured for replacement value, use it only to make Products for Buyer, and deliver it to Buyer within thirty (30) days after Buyer's written request. Supplier shall maintain and repair Buyer-owned tooling at Buyer's cost for normal wear and at its own cost for damage caused by Supplier's negligence.
+
+13.2 Background IP. Each party keeps ownership of the intellectual property it owned before the Effective Date or develops outside this Agreement. Nothing in this Agreement transfers ownership of a party's background intellectual property.
+
+13.3 Buyer Designs. Buyer owns the Specifications and the designs of the Products to the extent Buyer created or paid for them, and Supplier assigns to Buyer any improvement to those designs that Supplier makes in the course of manufacturing the Products. Supplier retains ownership of its own manufacturing processes and general know-how.
+
+13.4 Trademarks. Supplier shall apply Buyer's part numbers and, where the Specifications require, Buyer's trademarks to Products, solely for Buyer's account and only as directed. Supplier acquires no rights in Buyer's trademarks.
+
+14. Confidentiality.
+
+14.1 Obligation. Each party shall keep the other's Confidential Information confidential, use it only to perform this Agreement, and disclose it only to personnel, Affiliates and advisors who need it and are bound by equivalent obligations. These obligations continue for five (5) years after termination, and indefinitely for anything that is a trade secret.
+
+14.2 Exceptions. Section 14.1 does not apply to information that is public through no fault of the receiving party, was known to it without a duty of confidence, is received from a third party free to disclose it, or is independently developed without use of the disclosing party's information. A party may disclose Confidential Information as required by law or court order if it gives the other party prompt notice, to the extent legally permitted, and cooperates in seeking protective treatment.
+
+15. Compliance.
+
+15.1 Laws. Each party shall comply with the laws applicable to its performance, including export controls, economic sanctions, and the U.S. Foreign Corrupt Practices Act.
+
+15.2 Supply-Chain Disclosures. Supplier shall furnish, on Buyer's request, conflict-minerals declarations in the current CMRT format, substance declarations required by RoHS and REACH, and country-of-origin certificates.
+
+15.3 Labor. Supplier shall not use forced labor, child labor or trafficked labor, and shall require the same of its sub-tier suppliers.
+
+16. Insurance. Supplier shall maintain commercial general liability insurance of at least $5,000,000 per occurrence including products and completed operations, automobile liability of at least $2,000,000, workers' compensation at statutory limits, and property insurance covering Buyer-owned tooling at replacement value. Supplier shall name Buyer as an additional insured on the general liability and automobile policies, furnish certificates on request, and give Buyer thirty (30) days' notice of cancellation.
+
+17. Force Majeure. Neither party is liable for a delay or failure in performance, other than an obligation to pay money, caused by an event beyond its reasonable control, including fire, flood, earthquake, epidemic, war, terrorism, embargo, and a governmental act or order. The affected party shall notify the other within five (5) business days, describe the expected duration, and use commercially reasonable efforts to resume performance. A shortage of materials or labor is an event of force majeure only if it results from an event of the kind listed above and Supplier cannot obtain substitutes on commercially reasonable terms. If an event of force majeure continues for more than sixty (60) days, either party may terminate the affected Purchase Orders, and Buyer may terminate this Agreement, in each case without liability for the terminated quantity.
+
+18. Term and Termination.
+
+18.1 Term. This Agreement begins on the Effective Date and continues for five (5) years, and renews for successive one-year terms unless either party gives one hundred eighty (180) days' written notice before the end of the then-current term.
+
+18.2 Termination for Cause. Either party may terminate this Agreement if the other materially breaches it and fails to cure within thirty (30) days after written notice describing the breach. Buyer may also terminate this Agreement for convenience on one hundred eighty (180) days' written notice, in which case Buyer shall pay for finished Products, work in process and non-cancelable raw materials in accordance with Section 3.3.
+
+18.3 Insolvency. Either party may terminate this Agreement immediately if the other becomes insolvent, makes an assignment for the benefit of creditors, or has a bankruptcy proceeding commenced against it that is not dismissed within sixty (60) days.
+
+18.4 Transition. On expiration or termination for any reason, Supplier shall continue to supply Products under accepted Purchase Orders and, at Buyer's request, for up to twelve (12) months after the effective date of termination at the prices then in effect, shall accept a last-time-buy order under Section 6.4, and shall deliver Buyer-owned tooling and Buyer's Confidential Information to Buyer. Supplier shall supply service parts for seven (7) years after the last production delivery, at prices agreed under Section 7.2.
+
+18.5 Survival. Sections 1, 7.4, 8.3, 9, 10.4, 11, 13, 14, 18.4, 18.5, 19 and 20 survive expiration or termination of this Agreement.
+
+19. Limitation of Liability. NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS. EACH PARTY'S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT IS LIMITED TO THE GREATER OF THE AMOUNTS PAID AND PAYABLE UNDER THIS AGREEMENT IN THE TWELVE (12) MONTHS BEFORE THE EVENT GIVING RISE TO THE CLAIM AND TWO MILLION DOLLARS ($2,000,000). These limits do not apply to Supplier's obligations under Sections 9.4, 10.4 and 11, Buyer's obligations under Section 11.3, Buyer's obligation to pay for Products, either party's breach of Section 14, or either party's gross negligence, willful misconduct or fraud.
+
+20. General.
+
+20.1 Governing Law. This Agreement is governed by the laws of the State of Michigan, excluding its conflict-of-laws rules and the United Nations Convention on Contracts for the International Sale of Goods.
+
+20.2 Venue. The state and federal courts located in Oakland County, Michigan have exclusive jurisdiction over any dispute arising out of this Agreement, and each party consents to personal jurisdiction and venue there.
+
+20.3 Escalation. Before filing suit, other than for injunctive relief, the parties shall refer a dispute to a vice president of each party, who shall meet within twenty (20) business days of a written escalation notice.
+
+20.4 Notices. Notices must be in writing and are effective on delivery when sent by hand, by nationally recognized overnight courier, or by certified mail to the addresses in the preamble, with a copy to each party's general counsel at the same address. A party may change its notice address on written notice.
+
+20.5 Assignment. Neither party may assign this Agreement without the other's written consent, except that either party may assign it in full to an Affiliate or to a successor to all or substantially all of its business or assets to which this Agreement relates, on written notice. An assignment in breach of this Section is void.
+
+20.6 Independent Contractors. The parties are independent contractors. Nothing in this Agreement creates a partnership, joint venture, agency or employment relationship.
+
+20.7 No Waiver. A party's failure or delay in enforcing a provision is not a waiver of it, and a waiver on one occasion is not a waiver on any other.
+
+20.8 Severability. If a provision is held unenforceable, it is modified to the least extent necessary to make it enforceable, and the remaining provisions stay in effect.
+
+20.9 Entire Agreement. This Agreement, with Exhibits A and B, is the entire agreement between the parties about its subject matter and supersedes all prior agreements and understandings about it. It may be amended only by a writing signed by both parties.
+
+20.10 Counterparts. This Agreement may be signed in counterparts, including by electronic signature, each of which is an original and all of which together are one agreement.
+
+IN WITNESS WHEREOF, the parties have signed this Agreement as of the Effective Date.
+
+KELBROOK PRECISION WORKS, LLC
+
+By: /s/ Marguerite Oyelaran
+Name: Marguerite Oyelaran
+Title: President
+
+NORTHWIND MOBILITY CORPORATION
+
+By: /s/ Desmond Achterberg
+Name: Desmond Achterberg
+Title: Vice President, Global Purchasing

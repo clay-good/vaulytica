@@ -5314,6 +5314,45 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-001",
     ],
   },
+  // A COMPLETE manufacture-and-supply agreement — the twelfth clean document
+  // (9.644.0): a rolling forecast with a binding window, purchase-order
+  // conflicting-terms control, DDP delivery with a late-delivery cover remedy,
+  // change control with a last-time buy, an indexed price adjustment,
+  // inspection and rejection windows, a 36-month warranty with an epidemic-
+  // defect clause, IATF 16949 quality with audit and corrective action, recall
+  // cost allocation, product-liability and IP indemnities, business continuity
+  // and second sourcing, Buyer-owned tooling, a UCC § 2-615 force majeure with
+  // allocation, a seven-year service-parts tail, and a cap with carve-outs.
+  //
+  // TWO defects:
+  //
+  //  - 🥇 COMM-025 said at CRITICAL that no remedies clause was found, about
+  //    § 9.2, which is headed "Remedy" and says the remedy is repair,
+  //    replacement or credit. All four of its patterns required the word
+  //    "exclusive" (or the failure-of-essential-purpose fallback only an
+  //    exclusive remedy needs) — but UCC § 2-719(1)(a) is "in addition to OR
+  //    in substitution for", and a buyer-side supply agreement deliberately
+  //    writes the NON-exclusive one.
+  //  - STRUCT-009 read "products and completed operations" — the ISO
+  //    commercial general liability coverage part, in the one sentence of an
+  //    insurance clause whose wording is the policy's and not the drafter's —
+  //    as a lowercase slip of the defined term "Products".
+  "manufacturing-supply-complete.txt": {
+    playbook: "manufacturing-supply-agreement",
+    findings: [
+      "OBLI-005",
+      "OBLI-008",
+      "RISK-007",
+      "RISK-010",
+      "RISK-013",
+      "STRUCT-018",
+      "TEMP-004",
+      "TEMP-006",
+      "TEMP-008",
+      "TERM-001",
+    ],
+  },
+
   // A COMPLETE enterprise software licence — the eleventh clean document
   // (9.643.0): a perpetual object-code licence with server and named-user
   // limits, affiliate use, a reverse-engineering restriction that yields to

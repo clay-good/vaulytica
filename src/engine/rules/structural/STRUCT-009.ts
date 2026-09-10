@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -125,6 +125,18 @@ export function isStatutoryIdiomUse(
   if (lower === "company" || lower === "corporation" || lower === "partnership") {
     return /\b(?:limited\s+liability|joint\s+stock|professional|nonprofit|non-profit|limited|general|holding)\s+$/i.test(
       text.slice(Math.max(0, index - 24), index),
+    );
+  }
+  // Every insurance clause in a goods contract names the ISO commercial
+  // general liability coverage part "products and completed operations" (a
+  // certificate writes the aggregate the same way, hyphenated). It is the
+  // coverage's own name, in lowercase because that is what the policy calls
+  // it — a document that also defines "Products" was being told to capitalize
+  // a word that is not its defined term, in the one sentence where the phrase
+  // is not the drafter's to choose.
+  if (lower === "products") {
+    return /^\s*(?:[-\u2013\/]|\s+and)\s*completed\s+operations\b/i.test(
+      text.slice(index + matchLength, index + matchLength + 32),
     );
   }
   if (lower !== "personal data") return false;

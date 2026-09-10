@@ -92,6 +92,34 @@ describe("v4 Commercial — manufacturing / supply agreement (A.10)", () => {
     expect(bare.has("COMM-025")).toBe(true);
   });
 
+  // § 2-719(1)(a) is "in addition to OR in substitution for". A buyer-side
+  // supply agreement states its warranty remedy and expressly declines to make
+  // it exclusive; that is a § 2-719 agreement, and reporting at CRITICAL that
+  // no remedies clause was found is a false accusation about the section that
+  // is headed "Remedy".
+  it("COMM-025 clears on a NON-exclusive stated warranty remedy", async () => {
+    const nonExclusive = await fired(
+      MFG,
+      "9.2 Remedy. Buyer's remedy for breach of the warranty in Section 9.1 is repair, " +
+        "replacement or credit at Buyer's election. This remedy is in addition to, and not " +
+        "in place of, Buyer's rights under Sections 10 and 11.",
+    );
+    expect(nonExclusive.has("COMM-025")).toBe(false);
+  });
+
+  // The remedy word and its content must sit in ONE sentence: an "adequate
+  // remedy at law" recital in the same paragraph as an unrelated repair
+  // obligation is not a remedies clause.
+  it("COMM-025 still fires when 'remedy' and 'repair' are in different sentences", async () => {
+    const recital = await fired(
+      MFG,
+      "Seller shall sell the Goods to Buyer at the price in Exhibit A. The parties agree that " +
+        "money damages are not an adequate remedy. Seller shall repair the loading dock at its " +
+        "own expense before the first delivery.",
+    );
+    expect(recital.has("COMM-025")).toBe(true);
+  });
+
   it("COMM-040 fires when implied warranties are neither granted nor disclaimed", async () => {
     const bare = await fired(
       MFG,

@@ -33,7 +33,7 @@
     ]
   },
   "expected_clauses": [],
-  "expected_defined_terms": ["Goods", "Products", "Specifications", "Purchase Order", "Delivery"],
+  "expected_defined_terms": ["Goods", "Products", "Specifications", "Purchase Order"],
   "rule_overrides": {},
   "balanced_defaults": [],
   "sources": [],
