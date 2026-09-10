@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.679.0] — 2026-09-10
+
+The class behind 9.675–9.678, closed.
+
+### Added
+- 🥇 **`v3-extractor-base-rate.test.ts` — how much of the corpus does each
+  extractor claim?** Wiring the v3 layer up (9.674.0) made nine extractors
+  readable, and reading them produced **four defects in four releases, every
+  one the same shape: a common English word standing in for a concept.**
+
+  | | was | is |
+  |---|---|---|
+  | `hipaa-names` — `/\bnames?\b/i` | 235 of 327 | 18 |
+  | `audit_rights` — the bare word "audit" / "inspect" | 107 | 50 |
+  | `breach_timings` — the NAME of the Breach Notification Rule | — | masked |
+  | `classifyRoles` — the Title-Case run before the role marker | a **city** | the party |
+
+  🥇 **Each was invisible for the same reason: nothing measured how much of the
+  corpus an extractor CLAIMED.** A detector for a specialised concept that
+  fires on three quarters of a corpus spanning leases, wills, pleadings and
+  NDAs is not detecting the concept.
+
+  This is the extractor-side counterpart of `distinguishing-base-rate.test.ts`,
+  which holds a playbook's distinguishing phrases below a 0.15 share for
+  exactly the same reason. Both ends are guarded: **zero** is a dead extractor,
+  and a share above **half the corpus** is a trigger that has quietly become a
+  common word. Between them the nine counts are committed by equality, because
+  the ceiling alone would not have caught `audit_rights` at 33%.
+
+  Broken on purpose against the real defect: with the `hipaa-names` context
+  gate removed it fails with *"data_categories claims 77% of a corpus that is
+  mostly not about it"*.
+
 ## [9.678.0] — 2026-09-10
 
 The last two newly-reachable v3 extractors. One was clean; one had a small,
