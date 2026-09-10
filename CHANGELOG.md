@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.688.0] — 2026-09-10
+
+### Added
+- 🚨 **The DKB records the GDPR as `us-federal`, and now something says so.**
+  The statutory index has three entries whose recorded jurisdiction contradicts
+  where they are published: **Regulation (EU) 2016/679** on EUR-Lex, and the
+  **UETA** and **Uniform Trade Secrets Act** on the Uniform Law Commission's
+  site. The GDPR is not United States federal law, and a uniform act is a model
+  statute a state may or may not have enacted — not federal law either.
+
+  🥇 **Nothing reads the field, which is the only reason this is latent rather
+  than live.** `StatutoryIndexEntry.jurisdiction` has no consumer anywhere in
+  `src/` or `tools/` — the `.jurisdiction` reads in the tree belong to
+  `STATE_OVERLAYS` and `ESTATE_FORMALITIES`, different types entirely. No
+  routing, no overlay selection and no report line depends on it being wrong.
+
+  **It is deliberately not fixed here.** `dkb/dist/` is content-hashed and
+  `dkb_version` sits inside `result_hash`, so correcting three rows churns
+  every golden in the repo. That is its own change, made on purpose, not a
+  tail.
+
+  What this file does instead is make the wrongness **visible and bounded**. It
+  names the three, so a fourth cannot join them quietly; it asserts each
+  declared exception is still present, so the DKB pass that fixes one must
+  delete it here; and it asserts the field still has no consumer, so the day
+  someone starts routing on `jurisdiction` the test tells them the data is not
+  yet trustworthy. Broken on purpose against a planted fourth mismatch, which
+  it names.
+
 ## [9.687.0] — 2026-09-10
 
 ### Added
