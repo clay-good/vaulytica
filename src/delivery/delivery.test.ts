@@ -961,3 +961,70 @@ describe("scanSensitive — licence and passport numbers", () => {
     expect(fact?.confidence).toBe("medium");
   });
 });
+
+/**
+ * The rest of the identifiers the statutes this tool cites actually name.
+ *
+ * A positive control over the whole scanner showed these undetected. Each is
+ * named in a rule the engine cites elsewhere: **state identification card
+ * number** completes CCPA § 1798.140(ae)(1)(A)'s four, and **medical record
+ * number** and **health plan beneficiary number** are HIPAA identifiers 6 and
+ * 7 (45 C.F.R. § 164.514(b)(2)(i)(F)–(G)). The **ITIN** fell through by
+ * design: `ssnStructurallyValid` rejects any area of 900+, which is right for
+ * an SSN and is exactly the range the IRS issues — and an ITIN is what a
+ * non-resident or undocumented worker has *instead of* an SSN.
+ */
+describe("scanSensitive — the remaining statutory identifiers", () => {
+  const types = (text: string): string[] => scanSensitive(text).map((f) => f.type);
+
+  it.each([
+    ["State Identification Card Number S12345678 (Texas).", "state-id"],
+    ["Medical Record Number MRN-8842119 for the patient.", "medical-record"],
+    ["Health Plan Beneficiary Number HPB-449201 applies.", "health-plan-id"],
+    ["Taxpayer ID 912-70-4455 on file.", "itin"],
+  ])("detects %s", (text, type) => {
+    expect(types(text)).toContain(type);
+  });
+
+  it("an ITIN is high confidence and never reported as an SSN", () => {
+    const facts = scanSensitive("Taxpayer ID 912-70-4455 on file.");
+    expect(facts.map((f) => f.type)).not.toContain("ssn");
+    expect(facts.find((f) => f.type === "itin")?.confidence).toBe("high");
+  });
+
+  it("rejects a 9xx value outside the IRS group ranges", () => {
+    // 9XX-GG-SSSS with GG in 50-65, 70-88, 90-92, 94-99. 69 is unassigned, so
+    // a nine-digit reference in that shape is not an ITIN — while 70 is, which
+    // is the half that keeps this from passing on a scanner returning nothing.
+    expect(types("Taxpayer ID 912-70-4455 on file.")).toContain("itin");
+    expect(types("Reference 912-69-4455 for the shipment.")).not.toContain("itin");
+  });
+
+  it("does not read a LIST of identifier categories as identifiers", () => {
+    // 🥇 The mirror of the `hipaa-names` fix. `data-sharing.txt` defines PHI as
+    // "…Social Security number, medical record number, health plan number,
+    // account number…", and the label matched with the FOLLOWING WORD as its
+    // value — two findings whose evidence was the mask `***ber`, the word
+    // "number". For a CATEGORY extractor a list of categories is the signal;
+    // for a VALUE scanner the same list is the noise.
+    const phi =
+      "Protected Health Information includes name, address, telephone and fax number, " +
+      "email address, Social Security number, medical record number, health plan number, " +
+      "account number, certificate or license number. The patient's record is " +
+      "Medical Record Number MRN-8842119.";
+    // The VALUE in the last sentence is still found — that is what keeps this
+    // from passing on a scanner that returned nothing at all.
+    expect(types(phi)).toContain("medical-record");
+    expect(scanSensitive(phi).filter((f) => f.type === "medical-record")).toHaveLength(1);
+    expect(types(phi)).not.toContain("health-plan-id");
+  });
+
+  it("keeps the value out of the evidence when it walks into prose", () => {
+    // The value admits hyphens and never a space; allowing one masked
+    // "MRN-8842119 for the patient" as `***-******* *** the`, putting three
+    // words of the document into evidence meant to be a mask and nothing else.
+    const masked = scanSensitive("Medical Record Number MRN-8842119 for the patient.")[0]?.masked;
+    expect(masked).not.toMatch(/\s/);
+    expect(masked).toMatch(/119$/);
+  });
+});

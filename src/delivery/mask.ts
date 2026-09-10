@@ -102,6 +102,31 @@ export function luhnValid(digits: string): boolean {
  * ranges the SSA never issues (area 000/666/900-999, group 00, serial 0000)
  * so a random nine-digit run does not masquerade as an SSN.
  */
+/**
+ * Whether a 9-digit value is structurally a US **ITIN**.
+ *
+ * 🚨 `ssnStructurallyValid` rejects any area of 900 or above, which is right —
+ * the SSA has never issued one — and that is precisely the range the IRS uses
+ * for Individual Taxpayer Identification Numbers. So an ITIN fell through the
+ * SSN detector by design and through everything else by omission, and an ITIN
+ * is what a non-resident or undocumented worker has *instead of* an SSN. A
+ * scan that catches one and not the other is not protecting the same people.
+ *
+ * The structure is precise enough to stand on its own: `9XX-GG-SSSS` where the
+ * GROUP is 50–65, 70–88, 90–92 or 94–99. Everything else in the 9XX range is
+ * unassigned, which keeps a nine-digit invoice number from reading as one.
+ */
+export function itinStructurallyValid(area: string, group: string, serial: string): boolean {
+  const a = Number(area);
+  const g = Number(group);
+  const s = Number(serial);
+  if (a < 900 || a > 999) return false;
+  if (s === 0) return false;
+  return (
+    (g >= 50 && g <= 65) || (g >= 70 && g <= 88) || (g >= 90 && g <= 92) || (g >= 94 && g <= 99)
+  );
+}
+
 export function ssnStructurallyValid(area: string, group: string, serial: string): boolean {
   const a = Number(area);
   const g = Number(group);

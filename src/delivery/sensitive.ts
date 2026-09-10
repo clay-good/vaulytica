@@ -22,6 +22,7 @@ import {
   maskEmail,
   luhnValid,
   ssnStructurallyValid,
+  itinStructurallyValid,
 } from "./mask.js";
 
 /** Cap the scanned text — a 5 MB body is already an enormous document. */
@@ -71,6 +72,8 @@ const SSN = /\b(\d{3})-(\d{2})-(\d{4})\b/g;
 // the §14 honesty contract phrases every hit as "spans match SSN format"
 // rather than as a count of SSNs. Still gated on `ssnStructurallyValid`.
 const SSN_BARE = /\b(\d{3})(\d{2})(\d{4})\b/g;
+/** An ITIN in the dashed form. Structure is checked by `itinStructurallyValid`. */
+const ITIN = /\b(9\d{2})-(\d{2})-(\d{4})\b/g;
 const EIN = /\b(\d{2})-(\d{7})\b/g;
 // First alternative: the 4-4-4-… grouping (Visa/MC 16-digit, and a contiguous
 // 15-digit Amex, whose last group absorbs into \d{1,7}). Second: American
@@ -99,7 +102,47 @@ const DOB = /(?:DOB|D\.O\.B\.|date of birth)\D{0,20}(\d{1,2}[/.-]\d{1,2}[/.-]\d{
  * document said what the value is, and nothing verifies the value itself.
  */
 const DRIVER_LICENCE =
-  /\b(?:driver['’]?s?|driving)\s+licen[sc]e\s*(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9 -]{4,17}[A-Za-z0-9])\b/gi;
+  /\b(?:driver['’]?s?|driving)\s+licen[sc]e\s*(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9-]{4,17}[A-Za-z0-9])\b/gi;
+/**
+ * The rest of the identifiers the statutes this tool cites actually name.
+ *
+ * A positive control over the whole scanner — plant each identifier in turn —
+ * showed the labelled ones below were not detected at all. Each is named in a
+ * rule the engine already cites elsewhere:
+ *
+ *   - **state identification card number** completes CCPA
+ *     § 1798.140(ae)(1)(A)'s four ("social security, driver's license, state
+ *     identification card, or passport");
+ *   - **medical record number** and **health plan beneficiary number** are
+ *     HIPAA identifiers 6 and 7, 45 C.F.R. § 164.514(b)(2)(i)(F)–(G).
+ *
+ * Label-gated for the same reason as the licence and passport: none has a
+ * format to recognise, and a bare pattern would match an invoice or a policy
+ * number on every page.
+ *
+ * ⚠️ The captured value admits hyphens and NEVER a space. Allowing one let the
+ * capture walk out of the identifier and into the sentence — "MRN-8842119 for
+ * the patient" masked as `***-******* *** the`, which puts three words of the
+ * document into evidence that is supposed to be a mask and nothing else.
+ *
+ * 🥇 And it must contain a DIGIT, because a document that ENUMERATES these
+ * categories is not a document that contains them. `data-sharing.txt` defines
+ * PHI as "…Social Security number, **medical record number**, health plan
+ * number, account number…", and the label matched with the following word as
+ * its value: two findings whose evidence was the mask `***ber` — the word
+ * "number". An identifier without a digit is a word.
+ *
+ * That is the mirror of the `hipaa-names` fix in 9.675.0 and worth holding
+ * both ways: for a CATEGORY extractor a list of categories is the signal, and
+ * for a VALUE scanner the same list is the noise.
+ */
+const STATE_ID =
+  /\bstate\s+(?:identification|id)\s+(?:card\s+)?(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9-]{4,17}[A-Za-z0-9])\b/gi;
+const MEDICAL_RECORD =
+  /\b(?:medical\s+record|MRN)\s*(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9-]{3,17}[A-Za-z0-9])\b/gi;
+const HEALTH_PLAN =
+  /\bhealth\s+plan\s+(?:beneficiary|member|subscriber)\s*(?:no\.?|number|#|id)?\s*[:#]?\s*([A-Za-z0-9][A-Za-z0-9-]{3,17}[A-Za-z0-9])\b/gi;
+
 const PASSPORT = /\bpassports?\s*(?:no\.?|number|#)?\s*[:#]?\s*([A-Za-z0-9]{6,9})\b/gi;
 
 const EMAIL = /\b[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\.[A-Za-z]{2,24}\b/g;
@@ -173,10 +216,36 @@ export function scanSensitive(text: string): SensitiveFact[] {
   // identifier, and echoing it back would put "Driver's License Number" in the
   // evidence beside a mask that is meant to be the only thing shown.
   while ((m = DRIVER_LICENCE.exec(body)) !== null) {
-    push("driver-licence", "medium", maskAlphanumeric(m[1]!.trim(), 3), m[1]!.trim());
+    const v = m[1]!.trim();
+    if (/\d/.test(v)) push("driver-licence", "medium", maskAlphanumeric(v, 3), v);
   }
   while ((m = PASSPORT.exec(body)) !== null) {
-    push("passport", "medium", maskAlphanumeric(m[1]!, 3), m[1]!);
+    if (/\d/.test(m[1]!)) push("passport", "medium", maskAlphanumeric(m[1]!, 3), m[1]!);
+  }
+  /** An identifier carries a digit; a word does not. */
+  const looksLikeValue = (v: string): boolean => /\d/.test(v);
+
+  while ((m = STATE_ID.exec(body)) !== null) {
+    const v = m[1]!.trim();
+    if (looksLikeValue(v)) push("state-id", "medium", maskAlphanumeric(v, 3), v);
+  }
+  while ((m = MEDICAL_RECORD.exec(body)) !== null) {
+    const v = m[1]!.trim();
+    if (looksLikeValue(v)) push("medical-record", "medium", maskAlphanumeric(v, 3), v);
+  }
+  while ((m = HEALTH_PLAN.exec(body)) !== null) {
+    const v = m[1]!.trim();
+    if (looksLikeValue(v)) push("health-plan-id", "medium", maskAlphanumeric(v, 3), v);
+  }
+  // An ITIN is 9XX-GG-SSSS, which `ssnStructurallyValid` rejects on purpose
+  // (the SSA never issues 900+) — so it fell through the SSN detector by
+  // design and through everything else by omission. It is what a non-resident
+  // or undocumented worker has INSTEAD of an SSN.
+  ITIN.lastIndex = 0;
+  while ((m = ITIN.exec(body)) !== null) {
+    if (itinStructurallyValid(m[1]!, m[2]!, m[3]!)) {
+      push("itin", "high", maskDigits(m[0], 4), m[0]);
+    }
   }
   while ((m = CARD.exec(body)) !== null) {
     if (luhnValid(m[0])) push("card", "high", maskDigits(m[0], 4), m[0]);

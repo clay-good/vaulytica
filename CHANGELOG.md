@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.683.0] — 2026-09-10
+
+The positive control, continued. 9.682.0 planted four identifiers; this planted
+ten more.
+
+### Fixed
+- 🚨 **The fourth CCPA identifier, two HIPAA identifiers, and the ITIN.**
+
+  | | named in |
+  |---|---|
+  | **state identification card number** | CCPA § 1798.140(ae)(1)(A) — completes its four |
+  | **medical record number** | HIPAA identifier 6, 45 C.F.R. § 164.514(b)(2)(i)(F) |
+  | **health plan beneficiary number** | HIPAA identifier 7, § 164.514(b)(2)(i)(G) |
+  | **ITIN** | the number a non-resident has *instead of* an SSN |
+
+  🥇 **The ITIN fell through by design.** `ssnStructurallyValid` rejects any
+  area of 900 or above — right, the SSA has never issued one — and that is
+  exactly the range the IRS uses. So it was excluded from the SSN detector
+  deliberately and from everything else by omission. **A scan that catches an
+  SSN and not an ITIN is not protecting the same people.** Structure is precise
+  enough to stand alone (`9XX-GG-SSSS`, group 50–65 / 70–88 / 90–92 / 94–99),
+  so it is high confidence, and a 9xx value outside those groups is rejected.
+
+- 🚨 **Two false positives the first draft introduced, both caught by
+  measurement before shipping.**
+
+  The captured value allowed a **space**, so it walked out of the identifier
+  and into the sentence: "MRN-8842119 for the patient" masked as
+  `***-******* *** the` — three words of the document in evidence that is
+  supposed to be a mask and nothing else.
+
+  🥇 And it must contain a **digit**, because *a document that enumerates these
+  categories is not a document that contains them*. `data-sharing.txt` defines
+  PHI as "…Social Security number, **medical record number**, health plan
+  number, account number…", and the label matched with the following word as
+  its value: two findings whose evidence was `***ber` — the word "number". That
+  is the exact mirror of the `hipaa-names` fix in 9.675.0, and worth holding
+  both ways: **for a CATEGORY extractor a list of categories is the signal; for
+  a VALUE scanner the same list is the noise.**
+
+⚠️ `negative-assertion.test.ts` caught both of the new negative tests passing on
+an empty result — the failure mode it exists for. Each now asserts what must be
+FOUND before what must not be echoed. Corpus findings unchanged at 69 documents.
+
+### Measured, not built
+- Still undetected, and each is a real decision rather than an oversight: NPI,
+  IBAN, SWIFT/BIC, IP address, and vehicle VIN. IBAN and VIN carry checksums
+  and would be cheap; an IP address is HIPAA identifier 16 but a dotted quad
+  also appears in version strings and URLs, and a bare NPI is ten digits with
+  no context. Each needs its own false-positive measurement, which is the work
+  this release did for the four above.
+
 ## [9.682.0] — 2026-09-10
 
 Found by running a **positive control** over the pre-disclosure scanner — the
