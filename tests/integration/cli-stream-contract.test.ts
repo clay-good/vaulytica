@@ -194,6 +194,86 @@ describe("CLI stream contract (machine formats own stdout)", () => {
     }
   });
 
+  /**
+   * 🚨 The contract named THREE formats and twelve more had shipped.
+   *
+   * `MACHINE_FORMATS` was the literal `["json", "sarif", "csv"]`, written when
+   * those were the only three. Every artifact format added since — the closing
+   * checklist, the critical-dates register, the obligations ledger, the
+   * deadlines calendar, the negotiation posture, the definitions CSV — wrote
+   * its artifact to stdout UNDERNEATH the human summary line, so
+   * `--format obligations-csv > o.csv` produced a CSV whose header row was the
+   * third line and `--format dates-ics` produced a file no calendar
+   * application will open.
+   *
+   * This sweep is over every format the CLI accepts, taken from `run.ts`'s own
+   * `VALID_FORMATS`, so a format added tomorrow is covered the day it is
+   * added. The defect was never a wrong list — it was a list that had to be
+   * remembered.
+   */
+  it("every stdout-capable format owns stdout, with the summary on stderr", async () => {
+    const { runAnalyze } = await import("../../tools/cli/run.js");
+    const source = readFileSync(RUN_TS, "utf8");
+    const validBlock = /const VALID_FORMATS = \[([\s\S]*?)\] as const;/.exec(source);
+    expect(validBlock, "VALID_FORMATS not found in run.ts").not.toBeNull();
+    const formats = [...validBlock![1]!.matchAll(/^\s*"([a-z-]+)",/gm)].map((m) => m[1]!);
+    expect(formats.length).toBeGreaterThanOrEqual(20);
+
+    // The five that never reach stdout: binary .docx, and the three bundle
+    // artifacts that write one file for the whole run. Markdown and HTML are
+    // read by a PERSON — `--format md`'s stdout summary is pinned by its own
+    // test as intended — so the sweep is over the formats a PROGRAM parses.
+    const outOnly = new Set(["docx", "docx-comments", "bundle-json", "bundle-docx", "bundle-zip"]);
+    const human = new Set([
+      "html",
+      "md",
+      "checklist-md",
+      "dates-md",
+      "posture-md",
+      "posture-sheet",
+    ]);
+    const stdoutFormats = formats.filter((f) => !outOnly.has(f) && !human.has(f));
+    expect(stdoutFormats.length).toBeGreaterThanOrEqual(8);
+
+    // The flag each surface needs before it exists at all, taken from run.ts's
+    // own FORMAT_REQUIRES map rather than restated here.
+    const FLAGS: Record<string, string[]> = {};
+    for (const m of source.matchAll(/"([a-z-]+)":\s*\{\s*flag:\s*"(--[a-z-]+)"/g)) {
+      FLAGS[m[1]!] = [m[2]!];
+    }
+    expect(Object.keys(FLAGS).length).toBeGreaterThanOrEqual(8);
+    // The posture needs a playbook file as well as its flag; its own tests
+    // cover that surface.
+    const POSTURE = new Set(["posture-csv"]);
+
+    const impure: string[] = [];
+    for (const format of stdoutFormats) {
+      if (POSTURE.has(format)) continue; // needs a playbook file; covered by its own tests
+      const c = await capture(() =>
+        runAnalyze([TXT_FIXTURE, ...(FLAGS[format] ?? []), "--format", format]),
+      );
+      // The per-file summary is the human line that used to lead every one of
+      // these. It is recognizable anywhere it appears, which is the point.
+      if (/\[[a-z0-9-]+\]\s+\d+C\s+\d+W\s+\d+I/.test(c.stdout)) {
+        impure.push(`${format}: summary line on stdout`);
+        continue;
+      }
+      if (format === "dates-ics" || format === "deadlines-ics") {
+        if (!c.stdout.startsWith("BEGIN:VCALENDAR")) {
+          impure.push(`${format}: stdout does not begin with BEGIN:VCALENDAR`);
+        }
+      }
+      if (format.endsWith("-csv") || format === "csv") {
+        // A CSV's first line is its header row, or the artifact is empty.
+        const first = c.stdout.split(/\r?\n/)[0] ?? "";
+        if (first !== "" && !/^[a-z_]+(,[a-z_]+)+$/.test(first)) {
+          impure.push(`${format}: first line is not a header row — ${JSON.stringify(first)}`);
+        }
+      }
+    }
+    expect(impure).toEqual([]);
+  }, 180_000);
+
   it("analyze --format json: stdout parses, summary line on stderr", async () => {
     const { runAnalyze } = await import("../../tools/cli/run.js");
     const c = await capture(() => runAnalyze([TXT_FIXTURE, "--format", "json"]));

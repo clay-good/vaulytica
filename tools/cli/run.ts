@@ -354,7 +354,20 @@ type Format =
  * carries ONLY the serialized artifact — every human summary/progress line
  * goes to stderr, so `analyze x.docx --format json | jq .` just works.
  */
-const MACHINE_FORMATS: ReadonlySet<Format> = new Set(["json", "sarif", "csv"]);
+/**
+ * The five formats that never reach stdout: two are binary `.docx`, and the
+ * three bundle artifacts write ONE file for the whole run, so there is no
+ * single-input case where stdout is a complete delivery target. Each is
+ * rejected with its own message when `--out` is missing; this set is what
+ * {@link MACHINE_FORMATS} subtracts, so the two lists cannot drift.
+ */
+const OUT_ONLY_FORMATS: ReadonlySet<Format> = new Set([
+  "docx",
+  "docx-comments",
+  "bundle-json",
+  "bundle-docx",
+  "bundle-zip",
+]);
 const VALID_FORMATS = [
   "json",
   "sarif",
@@ -399,6 +412,38 @@ const VALID_FORMATS = [
   // `--definitions`; its CSV had no caller.
   "definitions-csv",
 ] as const;
+/**
+ * Every format a PROGRAM parses — JSON, SARIF, CSV, iCalendar — and therefore
+ * every format that must OWN stdout, with human summary and progress lines
+ * going to stderr instead.
+ *
+ * 🚨 This used to be the literal `["json", "sarif", "csv"]`, written when those
+ * were the only three. **Six more machine-parsed formats shipped since and none
+ * of them joined**, so the stream contract this file's own docstring states was
+ * false for all of them: `analyze x.docx --format obligations-csv > o.csv`
+ * wrote
+ *
+ * ```
+ * x.docx  [msa-deep]  1C 2W 1I
+ *   Critical dates: 0 computed, 1 to verify manually.
+ * obligor,modal,action,...
+ * ```
+ *
+ * — a CSV whose header row is the third line, which a spreadsheet reads as
+ * data under a two-column header. `--format dates-ics` was worse: two lines
+ * before `BEGIN:VCALENDAR` make a file no calendar application will open.
+ *
+ * Derived from the artifact's own EXTENSION rather than listed, so a format
+ * added tomorrow is covered the day it is added. The defect was not a wrong
+ * list — it was a list that had to be remembered.
+ *
+ * Markdown and HTML formats are deliberately NOT here. They are read by a
+ * person, the summary line is context rather than corruption, and
+ * `--format md`'s stdout summary is pinned by its own test as intended
+ * behaviour.
+ */
+const MACHINE_EXTENSIONS = [".json", ".csv", ".ics"];
+
 const FORMAT_EXT: Record<Format, string> = {
   json: ".json",
   sarif: ".sarif.json",
@@ -423,6 +468,12 @@ const FORMAT_EXT: Record<Format, string> = {
   "posture-sheet": ".negotiation-sheet.html",
   "definitions-csv": ".definitions.csv",
 };
+
+const MACHINE_FORMATS: ReadonlySet<Format> = new Set(
+  VALID_FORMATS.filter(
+    (f) => !OUT_ONLY_FORMATS.has(f) && MACHINE_EXTENSIONS.some((e) => FORMAT_EXT[f].endsWith(e)),
+  ),
+);
 
 /**
  * Formats that render an ASSERTED surface: the flag that computes it must be

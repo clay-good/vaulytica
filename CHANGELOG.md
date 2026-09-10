@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.658.0] — 2026-09-10
+
+Found by running the CLI for the artifacts this session has been reading, and
+looking at **which stream** they came out on.
+
+### Fixed
+- 🚨 **`--format obligations-csv > o.csv` wrote a CSV whose header row was the
+  third line.** `run.ts`'s own docstring states the stream contract — *"when
+  any of these is selected, stdout carries ONLY the serialized artifact"* — and
+  `MACHINE_FORMATS` was the literal `["json", "sarif", "csv"]`, written when
+  those were the only three. **Six more machine-parsed formats shipped since
+  and none of them joined.** Every one of them wrote its artifact underneath
+  the human summary:
+
+  ```
+  x.docx  [msa-deep]  1C 2W 1I
+    Critical dates: 0 computed, 1 to verify manually.
+  obligor,modal,action,trigger,qualifier,section,source_text
+  ```
+
+  A spreadsheet reads that as data under a two-column header. `--format
+  dates-ics` was worse — two lines before `BEGIN:VCALENDAR` make a file **no
+  calendar application will open**, which is the entire purpose of the format.
+  Affected: `checklist-csv`, `dates-ics`, `obligations-csv`, `deadlines-ics`,
+  `posture-csv`, `definitions-csv`.
+
+  🥇 **The set is derived now, not listed** — from the artifact's own extension
+  (`.json` / `.csv` / `.ics`) minus the five formats that never reach stdout —
+  so a format added tomorrow is covered the day it is added. *The defect was
+  not a wrong list; it was a list that had to be remembered.*
+
+  Markdown and HTML are deliberately excluded: they are read by a person, the
+  summary is context rather than corruption, and `--format md`'s stdout summary
+  is pinned by its own test as intended behaviour.
+
+- **`cli-stream-contract.test.ts` now sweeps every format**, taking the format
+  list from `VALID_FORMATS` and each surface's gating flag from
+  `FORMAT_REQUIRES` — both parsed from `run.ts` rather than restated — and
+  asserting a CSV begins with a header row and an `.ics` with `BEGIN:VCALENDAR`.
+  Broken on purpose: it names each affected format individually.
+
+### Measured, not built
+- **A standalone artifact file carries no honesty caveat.** The classification
+  notice and the ingest warnings do reach the user — on **stderr**, correctly,
+  and a bread recipe's critical-dates register prints "No known document family
+  matched… may be irrelevant or misleading" there. But redirect stdout to a
+  file and hand that file to a colleague and the caveat is gone. Putting it
+  inside the artifact means threading the ingest result through builders that
+  today take only their own data structure (`buildCriticalDatesMarkdown(register)`),
+  and for a `.csv` or an `.ics` there is no honest place to put prose. Worth
+  doing for the Markdown surfaces; too large for the tail of this run.
+
 ## [9.657.0] — 2026-09-10
 
 The .ics duplicate of 9.656.0 asked one more question: **do the OTHER table
