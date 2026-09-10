@@ -92,5 +92,17 @@ export function tcpa(label: string): SourceCitation {
 
 /** Practitioner-baseline / state dealer-statute citation for commercial law. */
 export function commPractice(id: string, label: string, url: string): SourceCitation {
-  return v4Cite({ id: `comm-${id}`, source: label, source_url: url });
+  // 🚨 This passed no licence, so `v4Cite`'s default stamped "Public domain
+  // (US government work)" on a DRAFTING-PRACTICE baseline whose source is the
+  // American Bar Association — a private professional association whose
+  // materials are copyrighted. Its sibling `maPractice` in the M&A helpers has
+  // always set the right label; this one never did. Three citations across the
+  // corpus.
+  return v4Cite({
+    id: `comm-${id}`,
+    source: label,
+    source_url: url,
+    license: "Practitioner reference — fair-use citation",
+    license_url: url,
+  });
 }

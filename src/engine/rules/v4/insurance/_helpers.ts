@@ -43,6 +43,12 @@ export function stateInsCode(): SourceCitation {
     source:
       "State insurance code (varies by state — e.g., CA Ins. Code §§ 380 et seq.; NY Ins. L. § 3420; TX Ins. § 541)",
     source_url: "https://content.naic.org/state-insurance-departments",
+    // The cited authority is state statute; the URL is the NAIC's directory of
+    // state insurance departments, a finding aid. Either way it is not a work
+    // of the United States government, which is what `v4Cite`'s default
+    // asserted.
+    license: "Public domain (US state code)",
+    license_url: "https://content.naic.org/state-insurance-departments",
   });
 }
 

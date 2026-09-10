@@ -65,6 +65,54 @@ const INSTRUMENTS: ReadonlyArray<{
   },
 ];
 
+/**
+ * A citation must not claim a licence the source does not have.
+ *
+ * `findStatuteCitation` stamped "Public domain (US government work)" on every
+ * entry in the DKB's statutory index, and `v4Cite` defaults to the same string
+ * for any helper that omits one. Between them, six citations across the corpus
+ * asserted a US public-domain licence over material that is not a US
+ * government work at all: **Regulation (EU) 2016/679**, the **UETA**, three
+ * American Bar Association drafting baselines, and the **NAIC**'s directory of
+ * state insurance departments. A claim that a private association's
+ * copyrighted material is in the public domain is not a small error to make in
+ * an attorney-facing report.
+ *
+ * 🚨 The DKB's own `jurisdiction` field cannot arbitrate this — the GDPR is
+ * recorded there as `us-federal`. Publisher, read from the URL, can.
+ */
+describe("a US-government-work licence is claimed only for US government works", () => {
+  /** Where US federal and state law is actually published. */
+  const US_PUBLIC =
+    /\.gov(\/|$)|\.gov\.|law\.cornell\.edu|leginfo\.legislature|legislature\.|\.us(\/|$)|naic\.org/;
+
+  it("over every specimen the engine analyzes", async () => {
+    const files = readdirSync(DIR)
+      .filter((f) => f.endsWith(".txt"))
+      .sort();
+    const wrong = new Set<string>();
+    let claimed = 0;
+
+    for (const file of files) {
+      const r = await analyzeText(readFileSync(join(DIR, file), "utf8"), file);
+      for (const f of r.run.findings) {
+        for (const c of f.source_citations ?? []) {
+          if (!c.license?.includes("US government work")) continue;
+          claimed += 1;
+          if (c.source_url && !US_PUBLIC.test(c.source_url)) {
+            wrong.add(`${c.source_url} — claimed as a US government work`);
+          }
+        }
+      }
+    }
+
+    // Anti-vacuity: most citations in this corpus ARE US public law, so a run
+    // that stopped emitting licences entirely must not pass as "all correct".
+    expect(claimed).toBeGreaterThan(50);
+    expect([...wrong].sort()).toEqual([]);
+  }, 300_000);
+});
+
 describe("every citation links the instrument it names", () => {
   it("over every specimen the engine analyzes", async () => {
     const files = readdirSync(DIR)

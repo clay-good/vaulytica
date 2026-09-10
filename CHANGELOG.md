@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.663.0] — 2026-09-10
+
+The sequel 9.662.0's guard asked for. A citation that links the wrong
+instrument is one failure; a citation that claims the wrong **licence** is the
+other, and it is the more serious of the two.
+
+### Fixed
+- 🚨 **Six citations asserted a US public-domain licence over material that is
+  not a US government work.** `findStatuteCitation` stamped "Public domain (US
+  government work)" on **every** entry in the DKB's statutory index, and
+  `v4Cite` defaults to the same string for any helper that omits one. Between
+  them:
+
+  | Source | What it actually is |
+  |---|---|
+  | Regulation (EU) 2016/679 (GDPR) | An EU regulation, on EUR-Lex |
+  | UETA § 7 | A Uniform Law Commission act |
+  | American Bar Association ×3 | A private association's copyrighted material |
+  | NAIC state-department directory | A private standard-setting body |
+
+  Telling a reader that the ABA's Business Law materials are in the public
+  domain is not a small error to make in an attorney-facing report.
+
+- 🥇 **The DKB's own `jurisdiction` field cannot arbitrate this — the GDPR is
+  recorded there as `us-federal`.** So the licence is read from the
+  **publisher**, out of the canonical URL, which is true regardless of what the
+  jurisdiction field says: a document served from `eur-lex.europa.eu` is not a
+  work of the United States government. The fallback stays the US public-domain
+  licence, correct for the other 27 statutory entries, so exactly three DKB
+  citations move.
+
+- **`commPractice` never set a licence and its sibling always had.** The
+  commercial drafting-practice helper passed none, so `v4Cite`'s default landed
+  on an ABA baseline; `maPractice` in the M&A helpers has set "Practitioner
+  reference — fair-use citation" from the start. Same for the insurance
+  helper's `stateInsCode`, now "Public domain (US state code)".
+
+### Added
+- A second sweep in `citation-instrument-match.test.ts`: a citation may claim
+  the US-government-work licence only when its source is published where US
+  federal or state law actually lives. Broken on purpose, it names each
+  offending URL.
+
+### Known, not fixed
+- 🚨 **The DKB records the GDPR, the UETA and the Uniform Trade Secrets Act
+  with `jurisdiction: "us-federal"`.** Wrong for the GDPR and conventional at
+  best for a uniform act. It is a data defect in a **content-hashed** artifact,
+  so correcting it means regenerating the DKB and re-verifying every consumer
+  of that field — its own change, not a tail. The licence fix above is correct
+  independently of it.
+
 ## [9.662.0] — 2026-09-10
 
 Found by rendering the clean deal room's consolidated bundle report and

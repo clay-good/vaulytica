@@ -299,6 +299,44 @@ export function findSource(dkb: DKB, id: string): SourceCitation | undefined {
   return dkb.manifest.sources.find((s) => s.id === id);
 }
 
+/**
+ * The licence a statutory source carries, read from WHERE IT IS PUBLISHED.
+ *
+ * 🚨 `findStatuteCitation` used to stamp "Public domain (US government work)"
+ * on every entry in the index, and three of them are not US government works:
+ * Regulation (EU) 2016/679 (the GDPR) on EUR-Lex, and the UETA and the Uniform
+ * Trade Secrets Act on the Uniform Law Commission's site. So an attorney-facing
+ * bibliography asserted a US public-domain licence over an EU regulation and
+ * over two copyrighted uniform acts.
+ *
+ * 🚨 The DKB's own `jurisdiction` field cannot be used for this: all three are
+ * recorded as **`us-federal`**, which is wrong for the GDPR and conventional
+ * at best for a uniform act. That is a DATA defect in a content-hashed
+ * artifact and is left for its own change; reading the publisher out of the
+ * URL is correct regardless of what the jurisdiction field says, and it is
+ * simply true — a document served from eur-lex.europa.eu is not a work of the
+ * United States government.
+ *
+ * The fallback stays the US public-domain licence, which is right for the other
+ * 27 entries (federal and state codes on `.gov` and Cornell LII), so this
+ * changes exactly the three citations it should.
+ */
+function statuteLicense(canonical_url: string): { license: string; license_url: string } {
+  if (/(^|\.)europa\.eu/.test(canonical_url)) {
+    return {
+      license: "Public domain or regulator re-use",
+      license_url: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
+    };
+  }
+  if (/(^|\.)uniformlaws\.org/.test(canonical_url)) {
+    return { license: "Uniform Law Commission", license_url: "https://www.uniformlaws.org/" };
+  }
+  return {
+    license: "Public domain (US government work)",
+    license_url: "https://www.usa.gov/government-works",
+  };
+}
+
 /** Look up a statutory entry's citation by id, materialized as a SourceCitation. */
 export function findStatuteCitation(dkb: DKB, id: string): SourceCitation | undefined {
   const stat = dkb.statutes.find((s) => s.id === id);
@@ -309,7 +347,6 @@ export function findStatuteCitation(dkb: DKB, id: string): SourceCitation | unde
     source_url: stat.canonical_url,
     retrieved_at: stat.retrieved_at,
     source_published_at: stat.source_published_at,
-    license: "Public domain (US government work)",
-    license_url: "https://www.usa.gov/government-works",
+    ...statuteLicense(stat.canonical_url),
   };
 }

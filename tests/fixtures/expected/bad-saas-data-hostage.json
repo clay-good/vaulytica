@@ -1074,8 +1074,8 @@
       "source_citations": [
         {
           "id": "stat-gdpr-art-28",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
+          "license": "Public domain or regulator re-use",
+          "license_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
           "retrieved_at": "2026-05-11T00:00:00Z",
           "source": "Regulation (EU) 2016/679 (GDPR), Article 28 — Processor",
           "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A02016R0679-20160504"
@@ -1120,11 +1120,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "40b728fbd0758306b4c5036f58070e2da2d1efe5071244b89be1c68e0ec105a7",
+  "result_hash": "533e806574dccc0e154bb3ce15243a7eb2d80ed6659d71b9dd20ae639f8dff14",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.662.0"
+  "version": "9.663.0"
 }
