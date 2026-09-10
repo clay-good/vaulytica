@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.656.0] — 2026-09-10
+
+Found by **opening the .ics** the deadlines export produces, rather than
+reading the code that writes it. The writer is careful — RFC 5545 escaping,
+octet-aware folding at 73, a fixed DTSTAMP for determinism, and a structural
+sweep over all 327 specimens finds **zero** violations. The defect was in the
+content.
+
+### Fixed
+- 🥇 **A contract naming the Closing Date five times became five calendar
+  entries.** Every UID in the file was `<index>-<hash of the event's content>`
+  — a construction that states its own intent and then defeats it. The hash is
+  over exactly the fields that make two events the same event; prepending the
+  position makes two identical events two distinct entries. **393 of the
+  corpus's 1,997 deadline events were exact duplicates — 19.7%, across 171 of
+  327 documents**, one asset purchase agreement contributing 15 of its 23.
+  Events 1,997 → **1,604**.
+
+- 🥇 **The same index broke re-import, which is what a UID is FOR.** RFC 5545's
+  UID is how a calendar client recognizes the SAME event on a later import, so
+  a positional one means inserting a date near the top of a revised contract
+  re-keys every deadline below it: re-importing the revision adds a second full
+  set of events instead of updating the first. UIDs are content-addressed now,
+  and a test pins the property directly — an event keeps its UID no matter what
+  precedes it.
+
+  `fnv1a` is 32 bits, so two DIFFERENT events could in principle collide, and
+  silently merging two real deadlines is the one outcome a calendar must not
+  produce. A colliding key takes a numeric suffix; an identical key does not,
+  because it is the same event. Verified across the corpus: **zero** distinct
+  events share a UID.
+
+All four UID sites — resolved and unresolved deadlines, resolved and unresolved
+critical dates — go through one `icsUidFactory`, because `duplicate-logic.test.ts`
+holds `src/report` at zero repeated function bodies and four copies of this is
+exactly what that guard exists to stop.
+
+⚠️ One existing test asserted `UID:verify-0000-<hash>` — it was pinning the
+defect. It now asserts the content-addressed form **and** that no positional
+index comes back.
+
 ## [9.655.0] — 2026-09-10
 
 More of the obligations ledger, read over the corpus rather than one document.

@@ -426,6 +426,56 @@ describe("buildDeadlinesIcs", () => {
   });
 });
 
+/**
+ * A contract naming the Closing Date five times is ONE date in a calendar.
+ *
+ * Every UID here used to be `<index>-<hash of the event's content>` — a
+ * construction that states its own intent and then defeats it, because the
+ * position makes two identical events two distinct entries. 393 of the
+ * corpus's 1,997 deadline events (19.7%, across 171 of 327 documents) were
+ * exact duplicates. The position also broke re-import: a UID is how a calendar
+ * client recognizes the SAME event later, so inserting a date near the top of
+ * a revised contract re-keyed every deadline below it.
+ */
+describe("buildDeadlinesIcs — one calendar entry per event", () => {
+  function icsFor(...isos: string[]): string {
+    const ex = emptyExtracted();
+    ex.dates = isos.map((iso) => date("absolute", iso, { iso }));
+    return buildDeadlinesIcs(ex);
+  }
+
+  const events = (ics: string): string[] =>
+    [...ics.matchAll(/BEGIN:VEVENT\r\n([\s\S]*?)END:VEVENT/g)].map((m) => m[1]!);
+
+  it("emits one VEVENT when the same date is extracted twice", () => {
+    expect(events(icsFor("2025-06-01", "2025-06-01"))).toHaveLength(1);
+  });
+
+  it("still emits both when the dates differ", () => {
+    expect(events(icsFor("2025-06-01", "2025-07-01"))).toHaveLength(2);
+  });
+
+  it("gives an event the same UID no matter what precedes it", () => {
+    // The re-import property: adding a date ABOVE an existing one must not
+    // change the existing one's identity.
+    const alone = /^UID:(.*)$/m.exec(events(icsFor("2025-07-01"))[0]!)![1];
+    const after = /^UID:(.*)$/m.exec(events(icsFor("2025-06-01", "2025-07-01"))[1]!)![1];
+    expect(after).toBe(alone);
+  });
+
+  it("carries no positional index in the UID", () => {
+    for (const ev of events(icsFor("2025-06-01", "2025-07-01"))) {
+      expect(/^UID:\d{4}-/m.test(ev)).toBe(false);
+    }
+  });
+
+  it("never gives two DIFFERENT events the same UID", () => {
+    const evs = events(icsFor("2025-06-01", "2025-07-01", "2025-08-01"));
+    const uids = evs.map((e) => /^UID:(.*)$/m.exec(e)![1]!);
+    expect(new Set(uids).size).toBe(evs.length);
+  });
+});
+
 describe("citation completeness across action exports (spec-v8 §14, Step 140)", () => {
   // The §14 contract: if an output names a finding, that output carries the
   // finding's resolvable citation. Parameterized over the action-item formats
@@ -863,7 +913,10 @@ describe("the deadlines calendar labels what kind of date each event is", () => 
         ]),
       ),
     );
-    expect(ics).toMatch(/UID:verify-0000-[0-9a-f]+@vaulytica/);
+    // Content-addressed, with no positional index: this line used to read
+    // `verify-0000-<hash>` and was pinning the defect the UID rework removed.
+    expect(ics).toMatch(/UID:verify-[0-9a-f]+@vaulytica/);
+    expect(ics).not.toMatch(/UID:verify-\d{4}-/);
     expect(ics).toContain("(from section s3)");
     // 2020-01-01 — obviously not a real deadline, which is the point.
     expect(ics).toContain("DTSTART;VALUE=DATE:20200101");
