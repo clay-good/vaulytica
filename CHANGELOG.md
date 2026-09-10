@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.692.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The obligations ledger did not say WHEN.** The ledger has one column a
+  lawyer scans to answer "when does this bite?", and **258 of the corpus's
+  3,688 obligations left it empty while their own sentence opened with the
+  answer.** "If my wishes are unknown, my agent shall make decisions consistent
+  with the instructions in Part 2" reached the CSV, the HTML table and the DOCX
+  report with a blank trigger. So did "If Owner uses the Instruments of Service
+  without retaining Architect, Owner shall indemnify Architect from any claim
+  arising out of that use" — a duty that exists only under a condition, filed
+  as if it were unconditional.
+
+  The cause was one word: `TRIGGER_RE` was run over the **predicate**. A
+  FRONTED condition lives in the SUBJECT, and `stripFrontedAdverbial` — a few
+  lines away in the same file — already identifies exactly that material to
+  keep it out of the obligor, then discards it.
+
+  **198 obligations gain a trigger** (258 → 60 still empty). The trigger
+  VOCABULARY is unchanged: `TRIGGER_RE` still decides, exactly as it does on
+  the predicate, so `Where …`, `Unless …` and `Should …` remain non-triggers
+  on both sides. Widening WHERE a trigger is looked for and widening WHAT
+  counts as one are different changes, and the second is not made here.
+
+  🥇 **Found by generating the artifact a user receives and reading it.** No
+  rule reads `Obligation.trigger`, so no golden, no `result_hash` and no
+  metamorphic relation in the suite moves whether that column is full or empty
+  — the same blind spot that hid a deadline running from an anchor called
+  "end". Three of this session's four defects were invisible to every relation
+  the suite has.
+
+### Added
+- **`tests/integration/obligation-trigger-reach.test.ts`** — the count of
+  obligations whose sentence opens with a fronted condition and whose trigger
+  is still empty, committed by equality, with an anti-vacuity assertion that
+  the triggers are actually coming out of the fronted clause rather than from
+  a predicate that happens to match more.
+
+### Known
+- `TRIGGER_RE`'s `if\s[^,;.]+` stops at a comma, so a threshold written with
+  thousands separators truncates: "If Net Revenue for the First Earnout Period
+  is at least $28,000,000" is recorded as "…at least $28". Pre-existing and
+  identical on the predicate side; unchanged here.
+
 ## [9.691.0] — 2026-09-10
 
 ### Fixed

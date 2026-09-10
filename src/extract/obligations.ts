@@ -109,7 +109,14 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // PHRASE naming a party is a carve-out `scopeExclusion` reports.
         const subjectForObligor = stripExceptTail(subject);
         const obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
-        const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim();
+        // A FRONTED condition is a trigger too, and it lives in the SUBJECT.
+        // `TRIGGER_RE` was only ever run over the predicate, so "If my wishes
+        // are unknown, my agent shall …" reached the obligations ledger with
+        // an EMPTY trigger column — the one column a lawyer scans to answer
+        // "when does this bite?". 258 of the corpus's 3,688 obligations were
+        // in that state. `stripFrontedAdverbial` already identifies exactly
+        // this material to keep it out of the obligor, and then discards it.
+        const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim() ?? frontedTrigger(subject);
         const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
         const qualifier = QUALIFIER_RE.exec(predicate)?.[0]?.trim();
         let action = predicate;
@@ -503,6 +510,25 @@ function splitSentences(text: string): { text: string; start: number }[] {
  */
 const FRONTED_ADVERBIAL =
   /^(?:within|for|if|upon|on|before|after|during|notwithstanding|subject\s+to|in\s+the\s+event|at|unless|when|while|except|to\s+the\s+(?:fullest\s+|maximum\s+|greatest\s+|extent\s+)?extent|following|pending|provided|in\s+connection\s+with|in\s+accordance\s+with|from|until|as\s+of|beginning|commencing|so\s+long\s+as|concurrently|promptly|immediately|thereafter|not\s+later\s+than|no\s+later\s+than|between\s+the)\b/i;
+
+/**
+ * The trigger inside a fronted adverbial, when the predicate states none.
+ *
+ * Same material `stripFrontedAdverbial` removes from the obligor, read for
+ * what it says rather than thrown away. The trigger VOCABULARY is unchanged —
+ * `TRIGGER_RE` decides, exactly as it does on the predicate — so this widens
+ * where a trigger is looked for and not what counts as one.
+ */
+function frontedTrigger(subject: string): string | undefined {
+  const s = subject.trimStart();
+  if (!FRONTED_ADVERBIAL.test(s)) return undefined;
+  const lastComma = s.lastIndexOf(",");
+  // Nothing after the comma means the whole subject is the adverbial and no
+  // subject follows it — not a fronted clause, and `stripFrontedAdverbial`
+  // leaves it alone for the same reason.
+  if (lastComma < 0 || !s.slice(lastComma + 1).trim()) return undefined;
+  return TRIGGER_RE.exec(s.slice(0, lastComma))?.[0]?.trim();
+}
 
 function stripFrontedAdverbial(subject: string): string {
   if (!FRONTED_ADVERBIAL.test(subject.trimStart())) return subject;

@@ -77,6 +77,37 @@ describe("extractObligations", () => {
     expect(obli?.nested_triggers?.join(" ")).toMatch(/written notice/);
   });
 
+  it("reads a fronted condition as the trigger", () => {
+    // `TRIGGER_RE` was run over the predicate only, and a fronted condition
+    // lives in the SUBJECT — so the one column a lawyer scans to answer "when
+    // does this bite?" was empty on 258 of the corpus's 3,688 obligations.
+    const tree = buildTree([
+      "Indemnity",
+      "If Owner uses the Instruments of Service without retaining Architect, Owner " +
+        "shall indemnify Architect from any claim arising out of that use.",
+    ]);
+    const [obli] = extractObligations(tree, []);
+    expect(obli?.obligor).toBe("Owner");
+    expect(obli?.trigger).toBe(
+      "If Owner uses the Instruments of Service without retaining Architect",
+    );
+    // The trigger came from the subject, so the action keeps all of itself.
+    expect(obli?.action).toBe("indemnify Architect from any claim arising out of that use");
+  });
+
+  it("prefers the predicate's own trigger over the fronted one", () => {
+    // The fronted clause is a FALLBACK. A predicate that states its own
+    // deadline still owns the column, and that trigger is still excised from
+    // the action — which the fronted one never is.
+    const tree = buildTree([
+      "Notice",
+      "Upon receipt of an invoice, the Customer shall pay it within thirty (30) days.",
+    ]);
+    const [obli] = extractObligations(tree, []);
+    expect(obli?.trigger).toBe("within thirty (30) days");
+    expect(obli?.action).toBe("pay it");
+  });
+
   it("does not split a nested trigger on a DEMONSTRATIVE that", () => {
     // Splitting on the bare word decomposed "if that changes" into
     // ["if", "changes"]. A demonstrative `that` names WHICH ONE and opens no
