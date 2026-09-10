@@ -501,7 +501,40 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
       });
       continue;
     }
-    // named-anchor / anchor-definition: a reference, not a dated event.
+    // A named anchor the document itself DEFINES is not unresolved. "This
+    // Agreement begins on the Effective Date" with a first line reading "made
+    // as of March 16, 2026 (the \"Effective Date\")" was published as
+    // **"Verify manually: Effective Date — no concrete date attached"**, on
+    // the sentinel date, in the calendar a lawyer imports — while `anchors`,
+    // built four lines up from the document's own definitions, held
+    // `effective date → 2026-03-16` and was never consulted. 154 references
+    // across 46 specimens told the user to go and check a date the tool had
+    // already resolved.
+    //
+    // 🚨 **Case-exact, deliberately.** A defined term is capitalised by
+    // drafting convention, and "the effective date **of termination**" is
+    // lowercase precisely because it is NOT the defined "Effective Date" —
+    // yet the extractor records `anchor: "Effective Date"` for both. Five
+    // corpus references are of that shape, every one a termination date the
+    // document does not fix, and resolving them would put a **wrong date** in
+    // a calendar rather than an honest "verify manually". A document that
+    // lowercases its own defined terms simply stays unresolved, which is the
+    // safe direction to fail.
+    if (date.anchor) {
+      const iso = anchors.get(normalizeAnchor(date.anchor));
+      if (iso && date.raw_text.trim() === date.anchor.trim()) {
+        events.push({
+          iso,
+          summary: date.raw_text,
+          section,
+          raw_text: date.raw_text,
+          computed: false,
+          notice: false,
+        });
+        continue;
+      }
+    }
+    // Otherwise a reference, not a dated event.
     unresolved.push({
       raw_text: date.raw_text,
       reason: "named anchor — no concrete date attached",

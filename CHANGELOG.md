@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.694.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The calendar told a lawyer to go and check a date the tool had already
+  resolved.** `msa-complete.txt` opens "made as of **March 16, 2026** (the
+  "Effective Date")" and §3.1 says "This Agreement begins on the Effective
+  Date". The `.ics` a user imports carried:
+
+  ```
+  SUMMARY:Verify manually: Effective Date
+  DESCRIPTION:Verify manually — named anchor — no concrete date attached
+  DTSTART;VALUE=DATE:20200101
+  ```
+
+  on the sentinel date — while `buildAnchorMap`, built **four lines above the
+  branch that wrote it** from the document's own definitions, held
+  `effective date → 2026-03-16`. The named-anchor case fell straight through to
+  the catch-all and never looked it up. **154 references across 46 specimens**
+  told the user to verify a date the document defines in its first line.
+
+  🚨 **Case-exact, deliberately, and that is the load-bearing half.** The
+  extractor records `anchor: "Effective Date"` for "the effective date **of
+  termination**" as well — a date the document does not fix and cannot.
+  Matching on the anchor NAME alone would have put 2026-03-16 in the calendar
+  against a termination that has not happened: a **wrong date**, which is
+  worse than the honest "verify manually" it replaced. Five corpus references
+  are of that shape and all five stay unresolved. A document that lowercases
+  its own defined terms simply keeps the verify-manually item — the safe
+  direction to fail.
+
+  🥇 **Found by generating the artifact and reading it.** Nobody had printed
+  this calendar. That is now five defects from one pass over two artifacts
+  (9.692.0–9.694.0), none of them visible to any findings relation.
+
+### Added
+- **`tests/integration/named-anchor-resolution.test.ts`** — both numbers
+  committed by equality: the references resolved (154) and the ones held back
+  because their text is not the defined term (5). Lowering the second by
+  "improving" the match is exactly how a wrong date reaches a calendar, so the
+  test says so. Both halves were proven by disabling them: without the lookup
+  154 → 0, without the case test the five wrong dates appear.
+
+### Unchanged, and deliberately
+- The sentinel date `2020-01-01` on genuinely unresolved items **stays**. It is
+  a documented design decision (spec-v7 §17): the date is obviously artificial
+  so the user reads it as "needs attention", the SUMMARY says "Verify
+  manually", the DESCRIPTION gives the reason, and it keeps the file
+  byte-identical across machines. 646 register rows still carry it, which is
+  the honest count of what this tool cannot date.
+
 ## [9.693.0] — 2026-09-10
 
 ### Fixed

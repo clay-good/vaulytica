@@ -108,6 +108,12 @@ export default defineConfig({
       "src/report/negotiation-export.test.ts",
       "tests/integration/artifact-prose-sanity.test.ts",
       "tests/integration/citation-completeness.test.ts",
+      // Drives `collectDeadlines` over the corpus for the named-anchor
+      // resolution that put the Effective Date in the calendar — and, more
+      // importantly, for the case-exact test that keeps "the effective date of
+      // termination" OUT of it. Both numbers are pinned by equality, so a
+      // mutant that relaxes either is killed.
+      "tests/integration/named-anchor-resolution.test.ts",
       // Imports `critical-dates.ts` for its register TYPE while testing the
       // export Blob wrappers. A type-only import is still an import as far as
       // the scope guard is concerned, and including it costs nothing: the suite
