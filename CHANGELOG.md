@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.666.0] — 2026-09-10
+
+Found by putting one damaged `.docx` in a deal room of five perfectly readable
+documents.
+
+### Fixed
+- 🚨 **One unreadable file poisoned the whole bundle.** `analyzeFile` throws on
+  a corrupt container — *"Corrupted zip: can't find end of central directory"*,
+  *"Invalid PDF structure"* — and the throw escaped the per-file loop, so the
+  run produced **no output at all**. Five documents the tool could read
+  perfectly were lost to a sixth it could not.
+
+  🥇 **`src/ingest/multi.ts`'s `ingestEntries` has promised the opposite in its
+  own docstring since it was written** — *"a single corrupt file does not
+  poison the whole bundle"* — and it delivers it, per file. For the browser.
+  The CLI walks directories itself and never called it, so the headless surface
+  never had the guarantee the browser has had all along. Same shape as the
+  cross-document engine being browser-only: **when a behaviour is implemented
+  for one consumer, walk the consumer list.**
+
+  🥇 **The run still FAILS, and that half matters as much as the other.**
+  Reporting a partial bundle as success would be worse than the crash it
+  replaces. Each rejected file is named with its reason as it is skipped, the
+  end of the run rolls them up — *"1 of 6 input(s) could not be read and are
+  ABSENT from this report"*, because the per-file line scrolls away behind the
+  analysis of the documents that worked — and the exit code stays **1**, so CI
+  cannot pass on a deal room the tool could only half read.
+
+  A SINGLE unreadable input keeps the old behaviour and throws: there is
+  nothing to survive for, and the error is the answer. Both directions pinned.
+
 ## [9.665.0] — 2026-09-10
 
 Found by handing the CLI the inputs a real user hands it by accident: an empty

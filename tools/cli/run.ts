@@ -1385,25 +1385,55 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   );
   const filing = filingOptionFrom(args);
   const deadline = deadlineOptionFrom(args);
+  // 🚨 ONE UNREADABLE FILE USED TO POISON THE WHOLE RUN. `analyzeFile` throws
+  // on a corrupt container — "Corrupted zip: can't find end of central
+  // directory", "Invalid PDF structure" — and the throw escaped this loop, so a
+  // deal room of five perfectly readable documents plus one damaged .docx
+  // produced NO output at all.
+  //
+  // `src/ingest/multi.ts`'s `ingestEntries` has always promised the opposite in
+  // its own docstring — "a single corrupt file does not poison the whole
+  // bundle" — and it delivers it, per file, for the browser. The CLI walks
+  // directories itself and never called it, so the headless surface never had
+  // the guarantee the browser has had all along. Same shape as the
+  // cross-document engine being browser-only: when a behaviour is implemented
+  // for one consumer, walk the consumer list.
+  //
+  // The run still FAILS. Reporting a partial bundle as success would be worse
+  // than the crash it replaces: the rejected files are named with their reason
+  // and the exit code stays non-zero, so CI cannot pass on a deal room the tool
+  // could only half read.
+  const unreadable: Array<{ file: string; reason: string }> = [];
   for (const file of inputs) {
-    const r = await analyzeFile(file, {
-      playbookId: args.playbook,
-      deps,
-      asText: args.asText,
-      delivery: args.delivery,
-      criticalDates: args.criticalDates,
-      checklist: args.checklist,
-      customPlaybook,
-      posture: args.posture,
-      filing,
-      deadline,
-      regimes: args.regimes as RegimeId[] | undefined,
-      estateChecks: args.estateChecks,
-      estateState: args.estateState,
-      // The product surface scans composite documents the way the browser
-      // does. Off by default in the API for cost (see AssertedPackOptions).
-      secondaryFamilies: true,
-    });
+    let r: Awaited<ReturnType<typeof analyzeFile>>;
+    try {
+      r = await analyzeFile(file, {
+        playbookId: args.playbook,
+        deps,
+        asText: args.asText,
+        delivery: args.delivery,
+        criticalDates: args.criticalDates,
+        checklist: args.checklist,
+        customPlaybook,
+        posture: args.posture,
+        filing,
+        deadline,
+        regimes: args.regimes as RegimeId[] | undefined,
+        estateChecks: args.estateChecks,
+        estateState: args.estateState,
+        // The product surface scans composite documents the way the browser
+        // does. Off by default in the API for cost (see AssertedPackOptions).
+        secondaryFamilies: true,
+      });
+    } catch (e) {
+      // A single input has nothing to survive FOR, so it keeps the old
+      // behaviour: the error is the answer.
+      if (inputs.length === 1) throw e;
+      const reason = e instanceof Error ? e.message : String(e);
+      unreadable.push({ file, reason });
+      process.stderr.write(`vaulytica: ${file}: could not be read (${reason}) — skipped.\n`);
+      continue;
+    }
 
     // `doc_id` must be unique across the bundle (the runner rejects a
     // duplicate) and is what the finding's excerpts name, so it uses the same
@@ -1719,6 +1749,19 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       const worst = worstSeverity(r);
       if (worst !== null && SEVERITY_RANK[worst] <= SEVERITY_RANK[args.failOn]) breached = true;
     }
+  }
+
+  // Every file that could not be read, named together at the end — the
+  // per-file line above scrolls away behind the analysis of the ones that
+  // could. A reader has to be able to answer "what is NOT in this report?"
+  // without re-reading the whole log.
+  if (unreadable.length > 0) {
+    process.stderr.write(
+      `vaulytica: ${unreadable.length} of ${inputs.length} input(s) could not be read and are ` +
+        `ABSENT from this report — the analysis below covers only the rest:\n`,
+    );
+    for (const u of unreadable) process.stderr.write(`  - ${u.file}: ${u.reason}\n`);
+    process.exitCode = 1;
   }
 
   // spec-v12 Thrust A — cross-document posture coherence. Only meaningful for a
