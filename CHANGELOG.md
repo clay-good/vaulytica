@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.670.0] — 2026-09-10
+
+The last consumer on 9.666.0's list, and the one that outlives the terminal.
+
+### Fixed
+- 🥇 **The bundle report said nothing about the file the run could not read.**
+  A colleague handed `bundle.docx` saw a report on five documents with nothing
+  to tell them the deal room held six. The roll-up went to stderr, which is the
+  terminal that ran the command — not the artifact that leaves it.
+
+  🥇 **The renderer was already built for this.** `BundleReportInput.rejected`
+  and its **"Skipped Files"** appendix have existed since the browser's
+  `planBundle` gained rejections (unsupported extension, oversized), and the
+  executive summary already knew how to say *"1 file in the drop was skipped —
+  see the Skipped Files appendix"*. A corrupt container is the same kind of
+  absence; the CLI simply never filled the field. **Only the wiring was
+  missing** — the same story as the cross-document engine, `ingestEntries`, and
+  the nine report artifacts before it.
+
+  The field stays optional, so a run where every file was readable produces the
+  byte-identical artifact it did before. Both directions pinned.
+
+This is the third time in this run that the fix was *"give the existing thing
+its caller"* rather than write anything new. That is what a list of surfaces is
+for.
+
 ## [9.669.0] — 2026-09-10
 
 9.666.0's own consumer list. The CLI grew an exit code with a new meaning; the

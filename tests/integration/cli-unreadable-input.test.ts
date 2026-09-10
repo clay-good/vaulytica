@@ -105,6 +105,46 @@ describe("a bundle survives one unreadable file", () => {
     expect(c.exitCode).toBe(1);
   }, 300_000);
 
+  it("records the missing file IN THE REPORT, not only on stderr", async () => {
+    // `BundleReportInput.rejected` and its "Skipped Files" appendix have
+    // existed since the browser's `planBundle` gained rejections (unsupported
+    // extension, oversized). A corrupt container is the same kind of absence
+    // and the CLI simply never filled the field, so a colleague handed
+    // `bundle.json` saw a report on three documents with nothing saying the
+    // deal room held four. Same shape as 9.659.0, one level up: the caveat
+    // reached the terminal that ran the command and not the artifact that
+    // outlives it.
+    const dir = roomWithOneCorruptFile(3);
+    const out = mkdtempSync(join(tmp, "out-"));
+    await capture([dir, "--consistency", "--format", "bundle-json", "--out", out]);
+    const raw = readFileSync(join(out, "bundle.json"), "utf8");
+    expect(raw).toContain("broken.docx");
+    const bundle = JSON.parse(raw) as {
+      rejected?: Array<{ filename: string; reason: string }>;
+    };
+    expect(bundle.rejected).toHaveLength(1);
+    expect(bundle.rejected![0]!.filename).toBe("broken.docx");
+    expect(bundle.rejected![0]!.reason).toMatch(/zip|central directory/i);
+  }, 300_000);
+
+  it("says nothing of the kind when every file could be read", async () => {
+    // The field is optional and omitting it preserves the prior renderer
+    // output verbatim, so a clean run must not grow a "Skipped Files" section.
+    const dir = mkdtempSync(join(tmp, "clean-"));
+    const picks = readdirSync(SPECIMENS)
+      .filter((f) => f.endsWith("-complete.txt"))
+      .sort()
+      .slice(0, 3);
+    for (const f of picks) writeFileSync(join(dir, f), readFileSync(join(SPECIMENS, f), "utf8"));
+    const out = mkdtempSync(join(tmp, "out-"));
+    const c = await capture([dir, "--consistency", "--format", "bundle-json", "--out", out]);
+    expect(c.exitCode ?? 0).toBe(0);
+    const bundle = JSON.parse(readFileSync(join(out, "bundle.json"), "utf8")) as {
+      rejected?: unknown[];
+    };
+    expect(bundle.rejected).toBeUndefined();
+  }, 300_000);
+
   it("a SINGLE unreadable input is still a hard error", async () => {
     // Nothing to survive for: the error is the answer.
     const dir = mkdtempSync(join(tmp, "solo-"));

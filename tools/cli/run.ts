@@ -1833,6 +1833,19 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         consistency,
         dkb: deps.dkb,
         consistency_enabled: true,
+        // The files this run could not READ belong in the report, not only on
+        // stderr. `BundleReportInput.rejected` and its "Skipped Files"
+        // appendix have existed since the browser's `planBundle` gained
+        // rejections (unsupported extension, oversized) — a corrupt container
+        // is the same kind of absence and the CLI simply never filled the
+        // field. Without it, a colleague handed `bundle.docx` sees a report on
+        // five documents with nothing saying the deal room held six.
+        //
+        // Same shape as 9.659.0, one level up: the caveat reached the terminal
+        // that ran the command and not the artifact that outlives it.
+        ...(unreadable.length > 0
+          ? { rejected: unreadable.map((u) => ({ filename: basename(u.file), reason: u.reason })) }
+          : {}),
       };
       await mkdir(args.out!, { recursive: true });
       const stem = "bundle";
