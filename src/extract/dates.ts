@@ -1,3 +1,4 @@
+import { SELF_NAMED_NOUN_ALT } from "./instrument-nouns.js";
 import type { DocumentTree } from "../ingest/types.js";
 import type { DateReference } from "./types.js";
 import { forEachParagraph, posInParagraph } from "./walk.js";
@@ -117,8 +118,20 @@ const RANGE_RELATIVE = new RegExp(
 // "within 10 business days" was read correctly, because the digits cannot be
 // the slot's first word and the qualifier cannot be its second alone — so the
 // bug appeared only in the spelling a plain-language drafter uses.
+// The anchor may contain a period that is IMMEDIATELY followed by a LETTER.
+// That period is inside an abbreviation — "deposited in the U.S. mail" — and
+// the terminator used to stop at the first "." of any kind, so the register
+// told a reader the deadline runs from something called "being deposited in
+// the U". A period followed by a DIGIT deliberately still terminates: it is as
+// often a decimal inside a figure the anchor should not swallow ("interest at
+// 1.5% per annum"), and admitting it there costs the whole deadline rather than
+// a word of its label, because the "%" that follows can never be part of an
+// anchor. The test is
+// deliberately case-FREE: this pattern carries the `i` flag, under which
+// `[A-Z]` matches lowercase too, so a sentence-boundary test written on case
+// would be inert here (the same trap the `isBareOfDuration` comment records).
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$)`,
   "gi",
 );
 
@@ -464,16 +477,23 @@ function countOf(wordGroup: string | undefined, digitGroup: string | undefined):
  * "Effective Date of this Agreement" / "Closing Date hereof" over-extend the
  * capture (the lookahead only stops at punctuation), so they never match the
  * "effective date" resolution key and a computable deadline is reported
- * unresolved. Only removes "of this/the <doc>" / "hereof|hereto|hereunder" /
- * "under this/the <doc>" — a substantive "Date of Termination" is untouched.
+ * unresolved. Only removes "of this/the <instrument>" / "hereof|hereto|
+ * hereunder" / "under this/the <instrument>" — a substantive "Date of
+ * Termination" is untouched.
+ *
+ * 🚨 The `<instrument>` slot used to be a bare `\w+(\s+\w+){0,2}`, which is
+ * any noun at all — so "for seven (7) years after **the end of the Term**" was
+ * trimmed to the anchor "end", and the register told a reader the deadline runs
+ * from something called "end". A self-reference names an INSTRUMENT, and
+ * `instrument-nouns.ts` is the list.
  */
+const SELF_REFERENCE_TAIL = new RegExp(
+  String.raw`\s+(?:of\s+(?:this|the)\s+(?:[A-Za-z][\w&.-]*\s+){0,2}(?:${SELF_NAMED_NOUN_ALT})|hereof|hereto|hereunder|under\s+(?:this|the)\s+(?:[A-Za-z][\w&.-]*\s+){0,2}(?:${SELF_NAMED_NOUN_ALT}))\s*$`,
+  "i",
+);
+
 function trimAnchorQualifier(anchor: string): string {
-  return anchor
-    .replace(
-      /\s+(?:of\s+(?:this|the)\s+\w+(?:\s+\w+){0,2}|hereof|hereto|hereunder|under\s+(?:this|the)\s+\w+(?:\s+\w+){0,2})\s*$/i,
-      "",
-    )
-    .trim();
+  return anchor.replace(SELF_REFERENCE_TAIL, "").trim();
 }
 
 /** Title-case a (possibly multi-word, hyphenated) anchor alias. */

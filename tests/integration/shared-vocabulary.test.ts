@@ -70,6 +70,17 @@ const VOCABULARIES: readonly Vocabulary[] = [
     definition: /export const OBLIGATION_MODAL\s*=/,
   },
   {
+    // Two very different questions are answered from the instrument-noun list —
+    // "does this document say it is issued under a parent?" and "is a captured
+    // date anchor over-extended into a document self-reference?" — and a second
+    // copy would let one of them drift. Moved out of `_helpers.ts` into the
+    // extract layer in 9.650.0 so the extractor can read it without the rules
+    // layer.
+    what: "the instrument self-naming nouns (Agreement / Addendum / Statement of Work …)",
+    owner: "src/extract/instrument-nouns.ts",
+    definition: /export const SELF_NAMED_INSTRUMENT_NOUNS\s*=/,
+  },
+  {
     // Two rules detect a residuals clause — NDA-D-009 and OBLI-009 — and the
     // repair that taught the first one to read a clause REJECTING residuals
     // reached only that one, so a joint development agreement saying "Nothing

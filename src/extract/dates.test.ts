@@ -399,7 +399,11 @@ describe("a duration stated with 'of' is not a deadline", () => {
   const stillDates: Array<[string, string]> = [
     ["Payment is due within thirty (30) days of the invoice date.", "invoice date"],
     ["Kickoff occurs within 10 business days of the Effective Date.", "Effective Date"],
-    ["The record is kept for seven (7) years after the end of the Study.", "end"],
+    // The anchor is "the end of the Study", not "end". The self-reference trim
+    // used to take "of the <any noun>", so the register told a reader the
+    // deadline runs from something called "end"; it takes "of this/the
+    // <INSTRUMENT>" now (9.650.0).
+    ["The record is kept for seven (7) years after the end of the Study.", "end of the Study"],
     [
       "Notice is due within thirty (30) days after receipt of an approved time log.",
       "receipt of an approved time log",
@@ -504,5 +508,54 @@ describe("a duration is not a deadline", () => {
     expect(relatives("A period of thirty to sixty days of the Effective Date applies.")).toEqual(
       [],
     );
+  });
+});
+
+// A self-reference names an INSTRUMENT. "of this Agreement" is one and comes
+// off; "of the Term", "of the Study", "of the Services" are not and stay, so a
+// reader is not told the deadline runs from something called "end".
+describe("the anchor's self-reference trim", () => {
+  const anchorOf = (text: string): string | undefined =>
+    extractDates(buildTree(["Agreement", text])).find((d) => d.type === "relative")?.anchor;
+
+  it("strips the instrument self-reference", () => {
+    expect(
+      anchorOf("Notice is due within thirty (30) days after the Effective Date of this Agreement."),
+    ).toBe("Effective Date");
+  });
+
+  it("keeps a substantive 'of the <noun>' tail", () => {
+    expect(anchorOf("Records are kept for seven (7) years after the end of the Term.")).toBe(
+      "end of the Term",
+    );
+  });
+});
+
+// A period inside an abbreviation is not a sentence end. The anchor terminator
+// stopped at the first "." of any kind, so a notice clause's anchor read
+// "being deposited in the U".
+describe("the anchor and an abbreviation's period", () => {
+  const anchorOf = (text: string): string | undefined =>
+    extractDates(buildTree(["Agreement", text])).find((d) => d.type === "relative")?.anchor;
+
+  // The abbreviation's INNER period is read through; its final one still ends
+  // the anchor, because that period is followed by a space and a space is the
+  // one signal available under the `i` flag. "U.S" beats "U", which is what the
+  // register used to print.
+  it("reads through the inner period of an abbreviation", () => {
+    expect(
+      anchorOf("Notice is sufficient forty-eight hours after being deposited in the U.S. mail."),
+    ).toBe("being deposited in the U.S");
+  });
+
+  // A period followed by a DIGIT still terminates. It is as often a decimal
+  // inside a figure, and admitting it there costs the whole deadline rather
+  // than a word of its label.
+  it("still stops at a decimal point", () => {
+    expect(
+      anchorOf(
+        "Payment is due within thirty (30) days of invoice, with interest at 1.5% per month.",
+      ),
+    ).toBe("invoice");
   });
 });

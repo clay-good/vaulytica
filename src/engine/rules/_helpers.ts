@@ -2,6 +2,7 @@ import type { DocPosition } from "../../extract/types.js";
 import { PAGE_FURNITURE } from "../../ingest/page-furniture.js";
 import type { RuleContext, Severity } from "../finding.js";
 import { findSource, findStatuteCitation, makeFinding } from "../finding.js";
+import { SELF_NAMED_NOUN_ALT } from "../../extract/instrument-nouns.js";
 import { forEachParagraph, SENTENCE_END } from "../../extract/walk.js";
 import type { ClassifiedParagraph } from "../../extract/types.js";
 import type { SourceCitation } from "../../dkb/types.js";
@@ -764,33 +765,6 @@ const RATIFIES_PARENT =
 // The shouted spellings are built from the plain words, never by
 // upper-casing the pattern SOURCE — `\s+`.toUpperCase() is `\S+`, which
 // silently turns a whitespace class into "any non-space".
-const SELF_NAMED_INSTRUMENT_NOUNS = [
-  "Statement of Work",
-  "SOW",
-  "Order Form",
-  "Order",
-  "Rider",
-  "Amendment",
-  "Letter",
-  "Agreement",
-  "Annexure",
-  "Annex",
-  "Appendix",
-  "Appendices",
-  "Addendum",
-  "Schedule",
-  "Exhibit",
-  "Attachment",
-  // A document is as often a Contract or a Deed as an Agreement, and the
-  // defined-term rename relation says so: renaming Agreement to Contract across
-  // a DPA brought six findings back, because the document could no longer name
-  // ITSELF even though the parent it names was still matched.
-  "Contract",
-  "Deed",
-] as const;
-const SELF_NAMED_NOUN_ALT = SELF_NAMED_INSTRUMENT_NOUNS.flatMap((n) => [n, n.toUpperCase()])
-  .map((n) => n.replace(/ /g, String.raw`\s+`))
-  .join("|");
 
 const ISSUED_UNDER_PARENT = new RegExp(
   String.raw`\b(?:This|THIS)\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:${SELF_NAMED_NOUN_ALT})\b(?:[^.;]|\.(?!\s+[A-Z])){0,160}?\b(?:under|pursuant\s+to|issued\s+under|governed\s+by(?:\s+the\s+terms\s+of)?|forms?\s+(?:a\s+)?part\s+of|(?:is|are)\s+subject\s+to)\s*,?\s*(?:and\s+(?:is\s+|are\s+)?(?:subject\s+to|governed\s+by)\s*,?\s*)?(?:that\s+certain\s+)?the\s+(?:(?:[A-Z][\w&.-]*\s+){1,5}(?:Agreement|Lease|Contract|AGREEMENT|LEASE|CONTRACT)|MSA|SOW|IRA|SPA|LPA)\b`,

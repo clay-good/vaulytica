@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.650.0] — 2026-09-09
+
+Found by **reading the critical-dates register** the fifteen clean documents
+produce. A register row is user-visible prose — *"relative to X, which has no
+defined calendar date"* — so a mangled anchor is a sentence the reader has to
+decode.
+
+### Fixed
+- 🥇 **"For seven (7) years after the end of the Term" ran from something called
+  "end".** The anchor's self-reference trim removed a trailing
+  `of this/the <any noun>`, which is any noun at all — it exists to take
+  "Effective Date **of this Agreement**" down to "Effective Date", and it took
+  "the end **of the Term**" down to "end". A self-reference names an
+  **instrument**, and the instrument-noun list is now the slot.
+
+  That list had been sitting in the rules layer, where the extractor cannot
+  reach it. It moves to `src/extract/instrument-nouns.ts` — the lower layer,
+  which the rules already import from — and `shared-vocabulary.test.ts` names it
+  as the single owner, because the two questions it answers are far apart: *does
+  this document say it is issued under a parent?* (a gap there was six false
+  accusations per ancillary document in 9.638.0) and *is a date anchor
+  over-extended into a self-reference?*
+
+- **A period inside an abbreviation is not a sentence end.** The anchor
+  terminator stopped at the first "." of any kind, so a notice clause read
+  *"forty-eight hours after being deposited in the U"*. A period immediately
+  followed by a letter is read through. One followed by a **digit** still
+  terminates: it is as often a decimal inside a figure, and admitting it there
+  costs the whole deadline rather than a word of its label, because the "%" that
+  follows can never be part of an anchor. The test is deliberately case-free —
+  this pattern carries the `i` flag, under which `[A-Z]` matches lowercase too.
+
 ## [9.649.0] — 2026-09-09
 
 ### Added
