@@ -33,6 +33,7 @@ import {
   renderCoherenceMovementSummary,
   buildCoherenceMovementJson,
 } from "../../src/report/coherence-movement.js";
+import { wrongKindOfJson } from "./coherence-sequence.js";
 
 export type CompareCoherenceFormat = "markdown" | "json";
 
@@ -63,7 +64,23 @@ export async function compareCoherenceArtifacts(
   const errors: string[] = [];
   if (!base.ok) errors.push(...base.errors.map((e) => `base: ${e}`));
   if (!revised.ok) errors.push(...revised.errors.map((e) => `revised: ${e}`));
-  if (!base.ok || !revised.ok) return { ok: false, errors };
+  if (!base.ok || !revised.ok) {
+    // The same wrong turn the `coherence-*` reads take, named the same way —
+    // see `wrongKindOfJson` and the comment in `coherence-sequence.ts`.
+    const wrong = [baseText, revisedText].map(wrongKindOfJson).find((w) => w !== null);
+    if (wrong) {
+      return {
+        ok: false,
+        errors: [
+          `that looks like ${wrong}, not a posture-coherence artifact.`,
+          "  A coherence artifact is written by: vaulytica analyze <docs> " +
+            "--playbook-file <playbook.json> --posture --emit-coherence <path>",
+          "  To compare two ANALYSES of a document, use: vaulytica compare <base> <revised>",
+        ],
+      };
+    }
+    return { ok: false, errors };
+  }
 
   // spec-v15 cross-ladder guard, now between two artifacts. Both pinned and
   // equal → verified. Both pinned and different → a hard error. Either unpinned

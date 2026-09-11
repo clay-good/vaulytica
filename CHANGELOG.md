@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.702.0] — 2026-09-10
+
+### Fixed
+- 🚨 **Thirty commands described a shape mismatch without naming the mistake.**
+  The 28 `coherence-*` reads, `posture-review` and `compare-coherence` take a
+  posture-coherence artifact — and the commonest `.json` this tool writes is an
+  analysis report. Running `analyze --format json` and then a coherence read on
+  the results printed:
+
+  ```
+  ✗ round 1: schema must be one of "vaulytica.posture-coherence.v1", … (got undefined)
+    round 1: coherence_hash must be a string
+    round 1: dimensions must be an array
+  ```
+
+  Every line true, none of them saying "you passed a report". It now says which
+  file it got and how to produce the one it wants:
+
+  ```
+  ✗ that looks like an analysis report, not a posture-coherence artifact.
+    A coherence artifact is written by: vaulytica analyze <docs> \
+      --playbook-file <playbook.json> --posture --emit-coherence <path>
+  ```
+
+  🥇 **One fix, thirty commands.** Every `coherence-*` read and
+  `posture-review` come through `verifyCoherenceSequence`; `compare-coherence`
+  through its own pair parse, and both now call one `wrongKindOfJson`. It names
+  an analysis report, a custom playbook and a verification certificate — the
+  three shapes this tool writes.
+
+  🚨 **The schema errors are NOT replaced in general.** For a file this tool did
+  not write they are the most useful thing to show, so they survive; the name
+  replaces them only when the input is recognisably one of ours, which is
+  exactly when a name is available and more useful than a shape. That is the
+  load-bearing negative in the test.
+
+  This is the third instance of one class: `diff` was fixed for it, `verify` in
+  9.701.0, and these thirty now. **When a command has a sibling that takes the
+  other kind of file, each one's wrong turn is the other's happy path** — and
+  this repo emits four kinds of JSON to eight commands that read them.
+
+### Added
+- **`tests/integration/cli-coherence-wrong-input.test.ts`** — the named
+  messages, the surviving schema errors, and `wrongKindOfJson`'s recognition of
+  each shape. Proven by disabling the detection, which puts the three-line
+  schema list straight back.
+
 ## [9.701.0] — 2026-09-10
 
 ### Fixed

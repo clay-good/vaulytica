@@ -31,6 +31,26 @@ export type CoherenceSequence =
     };
 
 /**
+ * The kind of JSON a caller passed by mistake, named in the words they would
+ * recognise — or `null` when it is not a shape this tool writes, in which case
+ * the schema errors are the most useful thing to show.
+ */
+export function wrongKindOfJson(text: string): string | null {
+  let v: unknown;
+  try {
+    v = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (typeof v !== "object" || v === null) return null;
+  const o = v as Record<string, unknown>;
+  if ("run" in o && "ingest" in o) return "an analysis report";
+  if (o.schema === "vaulytica.verification-certificate.v1") return "a verification certificate";
+  if ("rules" in o || "catalog_version" in o || "rule_overrides" in o) return "a custom playbook";
+  return null;
+}
+
+/**
  * Parse and verify N ≥ 2 saved coherence artifacts (in round order) and run the
  * cross-ladder guard across the whole sequence, returning the verified rounds
  * ready for a trajectory computation.
@@ -45,7 +65,36 @@ export async function verifyCoherenceSequence(texts: string[]): Promise<Coherenc
   parsed.forEach((p, i) => {
     if (!p.ok) errors.push(...p.errors.map((e) => `round ${i + 1}: ${e}`));
   });
-  if (errors.length > 0) return { ok: false, errors };
+  if (errors.length > 0) {
+    // 🚨 SAY WHAT THE FILE IS, NOT ONLY WHAT IS MISSING FROM IT.
+    //
+    // These commands read a posture-coherence artifact, and the commonest
+    // `.json` this tool writes is an analysis report — so running
+    // `analyze --format json` and then a `coherence-*` read on the results is
+    // the natural wrong guess. Every schema line it printed was true and none
+    // of them said "you passed a report":
+    //
+    //     ✗ round 1: schema must be one of "vaulytica.posture-coherence.v1", …
+    //       round 1: coherence_hash must be a string
+    //       round 1: dimensions must be an array
+    //
+    // Exactly the mistake `cli-diff-wrong-input.test.ts` names for `diff`, on
+    // thirty commands at once — every `coherence-*` read and `posture-review`
+    // come through this one function.
+    const wrong = texts.map(wrongKindOfJson).find((w) => w !== null);
+    if (wrong) {
+      return {
+        ok: false,
+        errors: [
+          `that looks like ${wrong}, not a posture-coherence artifact.`,
+          "  A coherence artifact is written by: vaulytica analyze <docs> " +
+            "--playbook-file <playbook.json> --posture --emit-coherence <path>",
+          "  (it needs two or more documents with a posture, and one artifact per round).",
+        ],
+      };
+    }
+    return { ok: false, errors };
+  }
 
   // spec-v15/v16 cross-ladder guard, across the whole sequence. Two or more
   // pinned artifacts whose pins differ → a hard error (name the two rounds). Any
