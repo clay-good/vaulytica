@@ -217,6 +217,43 @@ describe("buildBundleJson", () => {
     expect(await docx()).not.toContain("NOT scanned");
   });
 
+  // 🚨 THE SAME REPAIR, ONE LEVEL DOWN. The families cap says so; the FINDINGS
+  // cap inside each family did not. A block headed "0 critical, 10 warning, 9
+  // informational" listed ten rows and stopped, with nothing marking the other
+  // nine — and unlike the primary list it carries no "Top N" label either.
+  it("a family whose findings list is capped says how many it did not show", async () => {
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const base = makeInput();
+    const findings: Finding[] = Array.from({ length: 19 }, (_, n) =>
+      finding(`f-${n + 1}`, n < 10 ? "warning" : "info", `MSA-${String(n + 1).padStart(3, "0")}`),
+    );
+    const docxOf = async (n: number): Promise<string> => {
+      const blob = await buildBundleDocxReport({
+        ...base,
+        documents: [
+          {
+            ...base.documents[0]!,
+            secondary_families: [
+              {
+                playbook_id: "msa-customer-deep",
+                playbook_name: "MSA — Customer-Side",
+                findings: findings.slice(0, n),
+                counts: { critical: 0, warning: Math.min(n, 10), info: Math.max(0, n - 10) },
+              },
+            ],
+          },
+          base.documents[1]!,
+        ],
+      });
+      const zip = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+      return strFromU8(zip["word/document.xml"]!);
+    };
+    expect(await docxOf(19)).toContain("+9 more from this family not listed");
+    // The load-bearing negative: a family that fits says nothing about a cap.
+    expect(await docxOf(10)).not.toContain("more from this family not listed");
+    expect(await docxOf(3)).not.toContain("more from this family not listed");
+  });
+
   it("carries the per-document count of families the cap left unscanned", async () => {
     const base = makeInput();
     const withCap = await buildBundleJson({

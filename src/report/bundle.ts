@@ -1010,11 +1010,29 @@ function renderPerDocumentSecondaryFamilies(
       out.push(para({ text: "No findings from this family's checks.", italics: true }));
       continue;
     }
-    for (const f of pickTop(fam.findings, BUNDLE_TOP_N)) {
+    const shown = pickTop(fam.findings, BUNDLE_TOP_N);
+    for (const f of shown) {
       out.push(
         para({
           text: `[${f.severity.toUpperCase()}] ${f.rule_id} — ${f.title}`,
           color: severityColor(f.severity),
+        }),
+      );
+    }
+    // 🚨 THE SAME REPAIR THIS FILE ALREADY MADE ONE LEVEL UP, one level down.
+    //
+    // The families cap says so (`cappedFamiliesNotice`, for the reason written
+    // above it: the consolidated report "showed the truncated list as if it
+    // were the whole set"). The FINDINGS cap inside each family did not — a
+    // block headed "0 critical, 10 warning, 9 informational" listed ten rows
+    // and stopped, with nothing marking the other nine. The primary list at
+    // least labels itself "Top N findings:"; this one had no label at all.
+    if (fam.findings.length > shown.length) {
+      const omitted = fam.findings.length - shown.length;
+      out.push(
+        para({
+          text: `+${omitted} more from this family not listed — only the ${BUNDLE_TOP_N} highest-severity are shown here.`,
+          italics: true,
         }),
       );
     }

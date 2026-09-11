@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.705.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A truncated list presented as the whole set — the same repair this file
+  had already made one level up.** In the consolidated bundle report, each
+  additional detected family is headed with its counts and then listed:
+
+  ```
+  MSA — Customer-Side Deep Analysis (msa-customer-deep) — 0 critical, 10 warning, 9 informational
+    [WARNING] MSA-001 — IP infringement indemnity missing
+    …ten rows…
+  ```
+
+  Ten rows under a heading that says nineteen, with nothing marking the other
+  nine. The primary per-document list at least labels itself "Top N
+  findings:"; this one carried no label at all.
+
+  🥇 **`bundle.ts` already fixed exactly this for the FAMILIES cap**, and the
+  comment above that repair states the principle: the consolidated report is
+  *"the artifact a reviewer actually reads"*, and it *"showed the truncated
+  list as if it were the whole set"*. The findings cap **inside** each family
+  is the same sentence one level down. It now says `+9 more from this family
+  not listed — only the 10 highest-severity are shown here.`
+
+  🚨 A family whose findings fit says nothing about a cap, so every bundle that
+  was already complete reads exactly as before — the load-bearing negative in
+  the test, asserted at both the boundary (10) and below it (3).
+
+  Third instance this session of one class: *a cap is a silent truncation
+  until something says the number* — OBLI-005's four covenants in 9.699.0, and
+  this.
+
 ## [9.704.0] — 2026-09-10
 
 ### Fixed
