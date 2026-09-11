@@ -314,6 +314,7 @@ import {
   coherenceRegressed,
   renderCoherenceMovementSummary,
 } from "../../src/report/coherence-movement.js";
+import { jsonKindOf, wrongKindOfJson, READ_BY, WRITTEN_BY } from "./json-kind.js";
 
 const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
@@ -2294,16 +2295,17 @@ export async function runVerify(argv: string[]): Promise<void> {
   // 'findings')`: true, internal, and silent about the mistake — to a reader
   // auditing a receipt, which is the one audience this command has.
   if (parsed.schema !== CERTIFICATE_SCHEMA && !isSavedReportShape(parsed)) {
-    const looksLikePlaybook =
-      "rules" in parsed || "catalog_version" in parsed || "rule_overrides" in parsed;
+    const kind = jsonKindOf(JSON.stringify(parsed));
+    const wrong = wrongKindOfJson(JSON.stringify(parsed), "report");
     throw new Error(
-      looksLikePlaybook
-        ? `that looks like a custom playbook, not an analysis report.\n` +
-            `  verify re-derives a saved report's result_hash; a playbook has no run to re-derive.\n` +
-            `  To compare two playbook files, use: vaulytica diff <a.json> <b.json>`
+      wrong && kind
+        ? `that looks like ${wrong}, not an analysis report.\n` +
+            `  To read ${wrong}, use: ${READ_BY[kind]}\n` +
+            `  verify re-derives a saved report's result_hash, from a JSON written by\n` +
+            `  \`${WRITTEN_BY.report}\` or \`${WRITTEN_BY.certificate}\`.`
         : `${reportPath} is not a Vaulytica analysis report or verification certificate.\n` +
-            `  Expected a JSON file written by \`analyze --format json\` (a \`run\` block with a\n` +
-            `  result_hash) or by \`analyze --certificate\`.`,
+            `  Expected a JSON file written by \`${WRITTEN_BY.report}\` (a \`run\` block with a\n` +
+            `  result_hash) or by \`${WRITTEN_BY.certificate}\`.`,
     );
   }
   // A verification certificate is an alternative provenance source

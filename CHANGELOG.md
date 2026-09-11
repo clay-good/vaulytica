@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.703.0] — 2026-09-10
+
+### Fixed
+- 🚨 **`diff`'s repair had only ever recognised ONE of the three sibling
+  shapes.** `cli-diff-wrong-input.test.ts` names this defect precisely — *"Every
+  line is true and none of them says 'you passed a report'"* — and the fix
+  detected an analysis report. Hand `diff` a **verification certificate** or a
+  **posture-coherence artifact** and the shape dump it was written to end came
+  straight back:
+
+  ```
+  ✗ invalid playbook:
+    a: (root): Unrecognized keys: "schema", "coherence_hash", "ladder_hash", …
+    a: catalog_version: Invalid input: expected string, received undefined
+  ```
+
+  🥇 **This tool writes four kinds of JSON and eight of its commands read
+  one**, so every command has three neighbouring wrong turns — and each fix so
+  far had been written for whichever one its author happened to hit.
+  `tools/cli/json-kind.ts` is the single owner that ends it: one recogniser,
+  four kinds, and `diff`, `verify` and the thirty coherence reads all ask it
+  before printing a schema list.
+
+  A misplaced file is now also pointed at the command that **reads** it, not
+  only told what this one wanted:
+
+  ```
+  vaulytica: that looks like a custom playbook, not an analysis report.
+    To read a custom playbook, use: vaulytica diff <a.json> <b.json>
+    verify re-derives a saved report's result_hash, from a JSON written by
+    `vaulytica analyze <docs> --format json` or `vaulytica analyze <docs> --certificate`.
+  ```
+
+  🚨 **JSON this tool did not write still gets the schema errors.** There is no
+  name to give then, and the shape mismatch is the most useful answer —
+  asserted in all three guards.
+
 ## [9.702.0] — 2026-09-10
 
 ### Fixed

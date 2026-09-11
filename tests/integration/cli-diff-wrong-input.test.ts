@@ -55,6 +55,36 @@ describe("diff, handed an analysis report by mistake", () => {
     expect(err).not.toContain("Unrecognized keys");
   });
 
+  it("names the other two shapes this tool writes, too", async () => {
+    // 🚨 The original repair recognised ONE of the three sibling shapes. A
+    // verification certificate and a posture-coherence artifact still got the
+    // shape dump this test exists to end — "Unrecognized keys: schema, tool,
+    // input, playbook_id, …". `json-kind.ts` is the single owner that names
+    // all four kinds (9.703.0).
+    const tmp = mkdtempSync(join(tmpdir(), "vaul-diff3-"));
+    const cases: [name: string, body: unknown, expected: string][] = [
+      [
+        "cert",
+        { schema: "vaulytica.verification-certificate.v1", tool: {}, input: {} },
+        "verification certificate",
+      ],
+      [
+        "coh",
+        { schema: "vaulytica.posture-coherence.v2", coherence_hash: "x", dimensions: [] },
+        "posture-coherence artifact",
+      ],
+    ];
+    for (const [name, body, expected] of cases) {
+      const a = join(tmp, `${name}-a.json`);
+      const b = join(tmp, `${name}-b.json`);
+      writeFileSync(a, JSON.stringify(body), "utf8");
+      writeFileSync(b, JSON.stringify(body), "utf8");
+      const err = await stderrOf([a, b]);
+      expect(err, `${name}: not named`).toContain(`looks like a ${expected}`);
+      expect(err, `${name}: still a schema dump`).not.toContain("Unrecognized keys");
+    }
+  });
+
   it("still reports a genuine playbook schema error as one", async () => {
     // A file that is neither a report nor a valid playbook keeps the detailed
     // errors — those are the useful output when the input really is meant to

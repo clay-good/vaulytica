@@ -56,6 +56,23 @@ describe("verify, handed the wrong kind of JSON", () => {
     expect(code).toBe(1);
   }, 120_000);
 
+  it("names a posture-coherence artifact, the third shape this tool writes", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "vaulytica-verify-coh-"));
+    const coh = join(dir, "r1.coherence.json");
+    writeFileSync(
+      coh,
+      JSON.stringify({
+        schema: "vaulytica.posture-coherence.v2",
+        coherence_hash: "x",
+        dimensions: [],
+      }),
+    );
+    const { err, code } = await stderrOf([coh, SPECIMEN]);
+    expect(err).toContain("looks like a posture-coherence artifact");
+    expect(err).not.toContain("Cannot read properties");
+    expect(code).toBe(1);
+  }, 120_000);
+
   it("names any other JSON as not a report, and says what to pass instead", async () => {
     const { err, code } = await stderrOf(["package.json", SPECIMEN]);
     expect(err).toContain("is not a Vaulytica analysis report or verification certificate");

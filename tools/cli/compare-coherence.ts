@@ -33,7 +33,7 @@ import {
   renderCoherenceMovementSummary,
   buildCoherenceMovementJson,
 } from "../../src/report/coherence-movement.js";
-import { wrongKindOfJson } from "./coherence-sequence.js";
+import { wrongKindOfJson } from "./json-kind.js";
 
 export type CompareCoherenceFormat = "markdown" | "json";
 
@@ -67,7 +67,9 @@ export async function compareCoherenceArtifacts(
   if (!base.ok || !revised.ok) {
     // The same wrong turn the `coherence-*` reads take, named the same way —
     // see `wrongKindOfJson` and the comment in `coherence-sequence.ts`.
-    const wrong = [baseText, revisedText].map(wrongKindOfJson).find((w) => w !== null);
+    const wrong = [baseText, revisedText]
+      .map((t) => wrongKindOfJson(t, "coherence"))
+      .find((w) => w != null);
     if (wrong) {
       return {
         ok: false,

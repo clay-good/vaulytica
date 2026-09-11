@@ -19,6 +19,7 @@ import {
   type CustomPlaybook,
 } from "../../src/playbooks/custom-playbook.js";
 import { diffPlaybooks, diffPlaybooksMarkdown } from "../../src/playbooks/diff.js";
+import { wrongKindOfJson } from "./json-kind.js";
 
 export type DiffFormat = "markdown" | "json";
 
@@ -97,17 +98,14 @@ export async function runDiff(argv: string[]): Promise<void> {
     // ("Unrecognized keys: run, ingest, provenance…") describe the shape
     // mismatch without naming the mistake. Say it plainly when the input is
     // recognizably a report.
-    const looksLikeReport = [aText, bText].some((t) => {
-      try {
-        const v: unknown = JSON.parse(t);
-        return typeof v === "object" && v !== null && "run" in v;
-      } catch {
-        return false;
-      }
-    });
-    if (looksLikeReport) {
+    // 🚨 Three shapes, not one. The original repair recognised an analysis
+    // report and left a verification certificate and a posture-coherence
+    // artifact to the same shape dump it was written to end — see
+    // `json-kind.ts`, the single owner that names all four kinds.
+    const wrong = [aText, bText].map((t) => wrongKindOfJson(t, "playbook")).find((w) => w != null);
+    if (wrong) {
       process.stderr.write(
-        "✗ that looks like an analysis report, not a custom playbook.\n" +
+        `✗ that looks like ${wrong}, not a custom playbook.\n` +
           "  `diff` compares two custom playbook files (the JSON you pass to --playbook-file).\n" +
           "  To compare two ANALYSES of a document, use: vaulytica compare <base> <revised>\n",
       );

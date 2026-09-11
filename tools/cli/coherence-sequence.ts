@@ -20,6 +20,7 @@ import {
   parsePostureCoherenceJson,
   type PostureCoherence,
 } from "../../src/report/posture-coherence.js";
+import { wrongKindOfJson } from "./json-kind.js";
 
 export type CoherenceSequence =
   | { ok: false; errors: string[] }
@@ -29,26 +30,6 @@ export type CoherenceSequence =
       /** A non-fatal advisory when cross-ladder verification could not run (an unpinned round). */
       ladderNote: string | null;
     };
-
-/**
- * The kind of JSON a caller passed by mistake, named in the words they would
- * recognise — or `null` when it is not a shape this tool writes, in which case
- * the schema errors are the most useful thing to show.
- */
-export function wrongKindOfJson(text: string): string | null {
-  let v: unknown;
-  try {
-    v = JSON.parse(text);
-  } catch {
-    return null;
-  }
-  if (typeof v !== "object" || v === null) return null;
-  const o = v as Record<string, unknown>;
-  if ("run" in o && "ingest" in o) return "an analysis report";
-  if (o.schema === "vaulytica.verification-certificate.v1") return "a verification certificate";
-  if ("rules" in o || "catalog_version" in o || "rule_overrides" in o) return "a custom playbook";
-  return null;
-}
 
 /**
  * Parse and verify N ≥ 2 saved coherence artifacts (in round order) and run the
@@ -81,7 +62,7 @@ export async function verifyCoherenceSequence(texts: string[]): Promise<Coherenc
     // Exactly the mistake `cli-diff-wrong-input.test.ts` names for `diff`, on
     // thirty commands at once — every `coherence-*` read and `posture-review`
     // come through this one function.
-    const wrong = texts.map(wrongKindOfJson).find((w) => w !== null);
+    const wrong = texts.map((t) => wrongKindOfJson(t, "coherence")).find((w) => w != null);
     if (wrong) {
       return {
         ok: false,

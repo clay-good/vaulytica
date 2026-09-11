@@ -22,7 +22,8 @@
  * available and more useful than a shape.
  */
 import { describe, expect, it } from "vitest";
-import { verifyCoherenceSequence, wrongKindOfJson } from "../../tools/cli/coherence-sequence.js";
+import { verifyCoherenceSequence } from "../../tools/cli/coherence-sequence.js";
+import { jsonKindOf } from "../../tools/cli/json-kind.js";
 import { compareCoherenceArtifacts } from "../../tools/cli/compare-coherence.js";
 
 const REPORT = JSON.stringify({ run: { result_hash: "x", findings: [] }, ingest: {} });
@@ -66,9 +67,9 @@ describe("a coherence read, handed the wrong kind of JSON", () => {
   });
 
   it("recognises each kind by the fields that distinguish it", () => {
-    expect(wrongKindOfJson(REPORT)).toBe("an analysis report");
-    expect(wrongKindOfJson(PLAYBOOK)).toBe("a custom playbook");
-    expect(wrongKindOfJson(STRANGER)).toBeNull();
-    expect(wrongKindOfJson("not json at all")).toBeNull();
+    expect(jsonKindOf(REPORT)).toBe("report");
+    expect(jsonKindOf(PLAYBOOK)).toBe("playbook");
+    expect(jsonKindOf(STRANGER)).toBeNull();
+    expect(jsonKindOf("not json at all")).toBeNull();
   });
 });
