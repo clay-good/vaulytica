@@ -1044,6 +1044,9 @@ export function buildClosingChecklistMarkdown(
     for (const i of group) {
       const where = i.section ? ` _(section ${i.section})_` : "";
       lines.push(`- [ ] **${i.rule_id}** — ${i.label}${where}`);
+      // The label of a reconciliation item is a COUNT; the detail names what
+      // was counted, which is what makes the box tickable.
+      if (i.detail) lines.push(`      ${i.detail}`);
     }
   }
   lines.push("");
@@ -1051,14 +1054,23 @@ export function buildClosingChecklistMarkdown(
 }
 
 /**
- * The Closing Checklist as CSV (category, rule_id, item, section). Uses the
+ * The Closing Checklist as CSV (category, rule_id, item, detail, section).
+ * Uses the
  * same RFC 4180 + formula-injection-guarded field encoder as the fix list.
  */
 export function buildClosingChecklistCsv(checklist: ClosingChecklist): string {
   const rows: string[] = [];
-  rows.push(csvRow(["category", "rule_id", "item", "section"]));
+  rows.push(csvRow(["category", "rule_id", "item", "detail", "section"]));
   for (const i of checklist.items) {
-    rows.push(csvRow([CHECKLIST_CATEGORY_LABEL[i.category], i.rule_id, i.label, i.section ?? ""]));
+    rows.push(
+      csvRow([
+        CHECKLIST_CATEGORY_LABEL[i.category],
+        i.rule_id,
+        i.label,
+        i.detail ?? "",
+        i.section ?? "",
+      ]),
+    );
   }
   return rows.join("\r\n") + "\r\n";
 }

@@ -29,6 +29,20 @@ export type ChecklistItem = {
   rule_id: string;
   /** One-line, checkable label. */
   label: string;
+  /**
+   * The finding's own one-sentence description, when it carries information
+   * the label does not.
+   *
+   * `labelFor` used to say "the finding titles are already one-line and
+   * checkable" and that is false for every RECONCILIATION rule in the
+   * readiness set: `STRUCT-018` titles itself "Referenced attachments not
+   * present: 3", `STRUCT-017` "Declared parties with no signature line: 2",
+   * `STRUCT-013` "Unfilled template placeholders: 4". A count is not a
+   * checkable item — the names are in the description and were reaching no
+   * checklist surface at all. On the 327-specimen corpus the checklists hold
+   * 109 items across 107 documents, and 107 of those items are a bare count.
+   */
+  detail?: string;
   /** Section the item sits in, when known. */
   section?: string;
 };
@@ -79,6 +93,7 @@ export function buildClosingChecklist(
       category: spec.category,
       rule_id: f.rule_id,
       label: labelFor(f),
+      ...(detailFor(f) ? { detail: detailFor(f)! } : {}),
       ...(f.excerpt.section_id ? { section: f.excerpt.section_id } : {}),
       _order: spec.order,
       _pos: f.document_position,
@@ -112,8 +127,28 @@ export function buildClosingChecklist(
 }
 
 function labelFor(f: Finding): string {
-  // The finding titles are already one-line and checkable; reuse them.
+  // The finding titles are one-line; reuse them as the item's headline. They
+  // are not always *checkable* on their own — see `detailFor`.
   return f.title;
+}
+
+/**
+ * The detail line for an item: the finding's own description, which is where
+ * a reconciliation rule names the things it counted. Suppressed when it would
+ * only restate the label, so a checklist gains a second line only where that
+ * line says something new.
+ */
+function detailFor(f: Finding): string | undefined {
+  const d = f.description.trim();
+  if (d.length === 0) return undefined;
+  return normalize(d) === normalize(f.title) ? undefined : d;
+}
+
+function normalize(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }
 
 function handoffLabel(h: ChecklistHandoff): string {

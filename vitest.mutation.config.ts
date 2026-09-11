@@ -103,6 +103,7 @@ export default defineConfig({
       "src/extract/relative-deadline-phrasing.test.ts",
       // Covers `src/report/exports.ts`, which joined the mutated set in
       // 9.590.0 after four releases took it 46.08% -> 58.53%.
+      "src/report/closing-checklist-detail.test.ts",
       "src/report/closing-checklist.test.ts",
       "src/report/exports.test.ts",
       "src/report/negotiation-export.test.ts",

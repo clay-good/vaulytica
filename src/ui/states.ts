@@ -271,6 +271,8 @@ export type DropzoneState =
           category: string;
           rule_id: string;
           label: string;
+          /** What a count-shaped label counted; rendered under the item. */
+          detail?: string;
           section?: string;
         }>;
       };
@@ -1678,7 +1680,10 @@ function renderClosingChecklist(
     const lis = items
       .map((i) => {
         const where = i.section ? ` <span class="cl-section">§${escapeHtml(i.section)}</span>` : "";
-        return `<li class="cl-item"><span class="cl-rule">${escapeHtml(i.rule_id)}</span> ${escapeHtml(i.label)}${where}</li>`;
+        // "Referenced attachments not present: 3" is not a tickable item; the
+        // detail is where the three are named.
+        const detail = i.detail ? `<div class="cl-detail">${escapeHtml(i.detail)}</div>` : "";
+        return `<li class="cl-item"><span class="cl-rule">${escapeHtml(i.rule_id)}</span> ${escapeHtml(i.label)}${where}${detail}</li>`;
       })
       .join("");
     return `<div class="cl-group"><div class="cl-group-head">${escapeHtml(CHECKLIST_CATEGORY_LABEL[cat] ?? cat)} (${items.length})</div><ul class="cl-list">${lis}</ul></div>`;

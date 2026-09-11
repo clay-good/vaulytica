@@ -448,6 +448,7 @@ function renderCompleteState(
             category: i.category,
             rule_id: i.rule_id,
             label: i.label,
+            detail: i.detail,
             section: i.section,
           })),
         }

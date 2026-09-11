@@ -1439,6 +1439,27 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // as `consistencyDocs` and for the same reason: the bundle report is not
   // knowable until every document has been read.
   const bundleDocs: BundleDocument[] = [];
+  /**
+   * How many files each per-document format ACTUALLY wrote.
+   *
+   * The summary line used to say "wrote <formats> for ${inputs.length}
+   * file(s)", which is true only when no document skipped a format. Every
+   * derived-artifact format skips the documents that have nothing to say on
+   * that surface — a contract with no derivable deadline, nothing left to
+   * close, no defined terms — and the skip is announced per file on stderr
+   * and then contradicted by the total on stdout. Over the 327-specimen
+   * corpus `--format checklist-md` warned 220 times that it was skipping and
+   * then reported "wrote checklist-md for 327 file(s)"; 107 were written.
+   *
+   * The line directly below already carries this reasoning for the bundle
+   * formats — "counting them 'for N file(s)' claims N files that do not
+   * exist". Same mistake, one branch over: counting the INPUTS rather than
+   * the writes.
+   */
+  const wroteByFormat = new Map<Format, number>();
+  const countWrite = (fmt: Format): void => {
+    wroteByFormat.set(fmt, (wroteByFormat.get(fmt) ?? 0) + 1);
+  };
   const deferredCrossDoc: {
     // 🚨 "docx" joined in 9.712.0: the DOCX carries the §59 consistency
     // appendix, so it too cannot be rendered until the cross-document run
@@ -1735,6 +1756,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         await mkdir(args.out!, { recursive: true });
         const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
         await writeFile(join(args.out!, outName), reviewed.bytes);
+        countWrite(fmt);
         human(
           `  Reviewed copy: ${reviewed.anchored} comment(s) anchored` +
             `${reviewed.unanchored > 0 ? `, ${reviewed.unanchored} collected at document start` : ""} → ${outName}\n`,
@@ -1783,6 +1805,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         await mkdir(args.out, { recursive: true });
         const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
         await writeFile(join(args.out, outName), content);
+        countWrite(fmt);
       } else {
         // By construction single input × single format (validated above),
         // so stdout is a complete delivery target — never render-and-drop.
@@ -1910,6 +1933,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       const outName = basename(d.file, extname(d.file)) + FORMAT_EXT[d.fmt];
       const bytes = Buffer.from(await blob.arrayBuffer());
       await writeFile(join(args.out!, outName), bytes);
+      countWrite(d.fmt);
       human(`  Report: ${(bytes.byteLength / 1024).toFixed(1)} KB → ${outName}\n`);
       continue;
     }
@@ -1925,6 +1949,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       join(args.out!, basename(d.file, extname(d.file)) + FORMAT_EXT[d.fmt]),
       content,
     );
+    countWrite(d.fmt);
   }
 
   // The consolidated bundle artifacts: ONE report for the deal room. Written
@@ -2097,9 +2122,18 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     const perDoc = args.formats.filter(
       (f) => f !== "bundle-json" && f !== "bundle-docx" && f !== "bundle-zip",
     );
-    if (perDoc.length > 0)
-      human(`\nwrote ${perDoc.join(", ")} for ${inputs.length} file(s) → ${resolve(args.out)}\n`);
-    else human(`\nwrote → ${resolve(args.out)}\n`);
+    if (perDoc.length > 0) {
+      // Per format, the number of files it actually wrote — not the number of
+      // inputs. A format that skipped every document says "0 of N", which is
+      // the one number a reader who missed the stderr warnings needs.
+      const parts = perDoc.map((f) => {
+        const wrote = wroteByFormat.get(f) ?? 0;
+        return wrote === inputs.length
+          ? `${f} for ${wrote} file(s)`
+          : `${f} for ${wrote} of ${inputs.length} file(s)`;
+      });
+      human(`\nwrote ${parts.join(", ")} → ${resolve(args.out)}\n`);
+    } else human(`\nwrote → ${resolve(args.out)}\n`);
   }
   if (breached) {
     process.stderr.write(`\n✗ findings breached --fail-on ${args.failOn}\n`);

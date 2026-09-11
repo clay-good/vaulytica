@@ -613,7 +613,7 @@ describe("analyze — the closing checklist and critical-dates artifacts", () =>
     const csv = await readFile(join(dir, "banking-loan-agreement-minimal.checklist.csv"), "utf8");
     expect(md).toContain("Vaulytica closing checklist");
     // CRLF: the CSV exports use RFC-4180 line endings.
-    expect(csv.split("\r\n")[0]).toBe("category,rule_id,item,section");
+    expect(csv.split("\r\n")[0]).toBe("category,rule_id,item,detail,section");
     expect(csv).toContain("STRUCT-003");
   }, 120_000);
 
@@ -654,6 +654,51 @@ describe("analyze — the closing checklist and critical-dates artifacts", () =>
     }
     expect(err.join("")).toContain("no closing checklist to render");
     await expect(readFile(join(dir, "pasted-mutual-nda.checklist.md"), "utf8")).rejects.toThrow();
+  }, 120_000);
+
+  it("counts the files a format actually wrote, not the files it was given", async () => {
+    // The summary line said "wrote <format> for ${inputs.length} file(s)" —
+    // true only when nothing skipped. Every derived-artifact format skips the
+    // documents with nothing to say on that surface, and the test above is the
+    // proof that the skip happens: over the 327-specimen corpus this line
+    // announced 327 checklists and wrote 107. The bundle branch immediately
+    // below it already carried this reasoning; the per-document branch counted
+    // the inputs.
+    const src = await mkdtemp(join(tmpdir(), "vaulytica-mixed-"));
+    dirs.push(src);
+    await writeFile(join(src, "loan.txt"), await readFile(WITH_CHECKLIST, "utf8"));
+    await writeFile(join(src, "nda.txt"), await readFile(NDA, "utf8"));
+    const dir = await out();
+    const stdout: string[] = [];
+    const so = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation((c) => (stdout.push(String(c)), true));
+    const se = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+    try {
+      await runAnalyze([src, "--checklist", "--format", "checklist-md", "--out", dir]);
+    } finally {
+      so.mockRestore();
+      se.mockRestore();
+    }
+    expect(stdout.join("")).toContain("wrote checklist-md for 1 of 2 file(s)");
+    expect((await readdir(dir)).filter((f) => f.endsWith(".checklist.md"))).toHaveLength(1);
+  }, 120_000);
+
+  it("says 'for N file(s)' with no ratio when every input was written", async () => {
+    const dir = await out();
+    const stdout: string[] = [];
+    const so = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation((c) => (stdout.push(String(c)), true));
+    const se = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+    try {
+      await runAnalyze([NDA, "--format", "md", "--out", dir]);
+    } finally {
+      so.mockRestore();
+      se.mockRestore();
+    }
+    expect(stdout.join("")).toContain("wrote md for 1 file(s)");
+    expect(stdout.join("")).not.toContain("1 of 1");
   }, 120_000);
 });
 

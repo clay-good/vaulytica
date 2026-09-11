@@ -560,8 +560,11 @@ function renderClosingChecklistSection(checklist: ClosingChecklist): string[] {
     out.push('<ul class="v9-list">');
     for (const i of group) {
       const where = i.section ? ` <span class="ruleid">§${esc(i.section)}</span>` : "";
+      // A reconciliation item's label is a count; the detail names what was
+      // counted, and without it the reader cannot act on the row.
+      const detail = i.detail ? `<div class="v9-evi">${esc(i.detail)}</div>` : "";
       out.push(
-        `<li class="warn"><span class="ruleid">${esc(i.rule_id)}</span> ${esc(i.label)}${where}</li>`,
+        `<li class="warn"><span class="ruleid">${esc(i.rule_id)}</span> ${esc(i.label)}${where}${detail}</li>`,
       );
     }
     out.push("</ul>");

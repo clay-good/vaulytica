@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.715.0] — 2026-09-11
+
+### Fixed
+- 🥇 **Nobody had ever read a closing checklist, and 107 of the 109 items on
+  the ones it produces could not be ticked.** The artifact is the list an
+  attorney works down before a deal closes. Printed over the 327-specimen
+  corpus, every item on it reduced to this:
+
+  > - [ ] **STRUCT-018** — Referenced attachments not present: 9 _(section s1)_
+
+  Which nine? The document does not say, and neither did any other checklist
+  surface. **A count is not a checkable item.**
+
+  `labelFor` carried the premise in a comment — "the finding titles are
+  already one-line and checkable" — and that is false for every
+  RECONCILIATION rule in the readiness set: `STRUCT-018` titles itself with a
+  count of absent attachments, `STRUCT-017` with a count of unsigned parties,
+  `STRUCT-013` with a count of unfilled placeholders. Over the 327-specimen
+  corpus the checklists hold 109 items across 107 documents, and **107 of them
+  are a bare count**. **The names were in the
+  finding's `description` all along**, authored by the rule, printed in the
+  report, and reaching no checklist surface at all.
+
+  Each item now carries a `detail` — the finding's own one-sentence
+  description, suppressed when it would only restate the label — rendered as
+  an indented line in the Markdown, a `detail` column in the CSV
+  (`category,rule_id,item,detail,section`), a sub-line in the HTML report and
+  the tab, and a column in the DOCX table. The same nine now read:
+
+  > Exhibit A, Schedule 1.2, Schedule 1.3, Schedule 2.4, Schedule 4.3,
+  > Schedule 4.5, Schedule 4.8, Schedule 4.9, Schedule 6.2 are referenced but
+  > not attached to the document.
+
+  🚨 **The first form of the reach guard was vacuous.** It asserted the
+  rendering function's body matched `/\bdetail\b/`, and the deletion it
+  exists to catch leaves `const detail = ""` behind — so it stayed green
+  through the regression. It matches a MEMBER access now, and was proven by
+  putting the defect back. `closing-checklist-detail.test.ts` holds the list
+  of the five surfaces that render an item, including the field-by-field
+  re-mapping in `ui/main.ts` where a new field is silently dropped.
+
+- 🚨 **`wrote checklist-md for 327 file(s)` — it wrote 107.** Every
+  derived-artifact format skips the documents with nothing to say on that
+  surface, warns per file on stderr, and then the closing summary on stdout
+  counted the INPUTS. Over the corpus it announced 220 skips and claimed 327
+  files.
+
+  🥇 **The reasoning was already written on the line above**, for the bundle
+  formats: "counting them 'for N file(s)' claims N files that do not exist."
+  Same mistake, one branch over. The summary now reports what each format
+  actually wrote, and says `for 107 of 327 file(s)` whenever the two differ —
+  so a format that wrote nothing says `0 of N` rather than going quiet.
+
 ## [9.714.0] — 2026-09-10
 
 ### Fixed

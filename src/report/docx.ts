@@ -758,12 +758,16 @@ function renderClosingChecklistSection(
     new Table({
       width: { size: 100, type: WidthType.PERCENTAGE },
       rows: [
-        headerRow(["Category", "Rule", "Item", "Section"]),
+        headerRow(["Category", "Rule", "Item", "Detail", "Section"]),
         ...checklist.items.map((i) =>
           bodyRow([
             CHECKLIST_CAT_LABEL[i.category],
             i.rule_id,
             truncate(i.label, 240),
+            // A reconciliation item's label is a count; the detail names what
+            // was counted. The archived deliverable is the copy a reader comes
+            // back to, so it is the last place to drop it.
+            i.detail ? truncate(i.detail, 240) : "—",
             i.section ?? "—",
           ]),
         ),
