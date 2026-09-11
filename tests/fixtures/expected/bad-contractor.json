@@ -1089,7 +1089,7 @@
       "title": "No limitation-of-liability clause detected"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "description": "No Effective Date is named, defined, or stated near the top of this document.",
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
@@ -1215,11 +1215,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "137d4c6fadd702c79c249ff2a2f92f9693bd5760f14acfa2e418cc5835289df9",
+  "result_hash": "d742e8fc5042193498672ad4cf93bd7b194bdbc9a235a3c0e3aaa180a8857e76",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.712.0"
+  "version": "9.713.0"
 }

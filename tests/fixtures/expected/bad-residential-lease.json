@@ -1010,7 +1010,7 @@
       "title": "No indemnification clause detected"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "description": "No Effective Date is named, defined, or stated near the top of this document.",
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
@@ -1191,11 +1191,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.8). Title matched: \"residential rental agreement\", \"rental agreement\". Distinguishing phrases: \"residential\".",
-  "result_hash": "864c53f0c11240c656454e6f799803f6a19f3fe0da59eda31e6ba1e6971dec71",
+  "result_hash": "b6af184eda0948a5557b7c8e5aea8a18c38e64feb997c9e85030edb09b603e9f",
   "source_file": {
     "name": "bad-residential-lease.docx",
     "sha256": "e9329baa96e35c934a6bdbb32721f88752314e62fbcce83220e7bfa5c353c638",
     "size_bytes": 9203
   },
-  "version": "9.712.0"
+  "version": "9.713.0"
 }

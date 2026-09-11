@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.713.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A bread recipe was told that "this Agreement" has no signature block.**
+  Handed a document no family matches, the engine says so plainly:
+
+  > No known document family matched this document … The findings below may be
+  > irrelevant or misleading **for a document that is not a contract**.
+
+  and then printed, three lines below it:
+
+  ```
+  [CRITICAL] STRUCT-003 — The end of this Agreement does not contain the standard signature pattern.
+  [WARNING]  STRUCT-001 — Vaulytica could not identify the parties to this Agreement.
+  [WARNING]  STRUCT-002 — No Effective Date is named, defined, or stated near the top of this Agreement.
+  ```
+
+  The notice says "this may not be a contract" and the findings call it an
+  Agreement. Same self-contradiction as the posture row that disagreed with its
+  own guidance (9.697.0) and the portfolio rollup that disagreed with its own
+  legend (9.704.0) — and here it is the CRITICAL finding that asserts it.
+
+  Three descriptions, each firing on **every** unrecognized document, now say
+  "this document": true whether or not it is a contract, and it loses nothing
+  when it is one.
+
+  🚨 **No specimen could have caught this.** The corpus is 327 recognized
+  documents, so nothing in it routes to the fallback — the defect lives on
+  exactly the input a corpus of contracts cannot contain, which is why the new
+  guard is a static sweep over the four packs the fallback runs (named in its
+  own notice) rather than a corpus relation.
+
+  Found by running the tool on an empty file, a whitespace-only file, a
+  one-character file and a bread recipe. The honesty caveats all fired
+  correctly on each — including "No readable text was found in this file" —
+  which is what made the one contradiction visible.
+
 ## [9.712.0] — 2026-09-10
 
 ### Fixed

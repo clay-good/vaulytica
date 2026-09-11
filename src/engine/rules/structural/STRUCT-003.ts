@@ -586,7 +586,7 @@ export const rule: Rule = {
     return makeFinding({
       rule,
       title: "No signature block detected",
-      description: "The end of this Agreement does not contain the standard signature pattern.",
+      description: "The end of this document does not contain the standard signature pattern.",
       excerptText: truncate(last.text, 160),
       explanation:
         "A contract without identifiable signatures may be unenforceable or invalid. Electronic signatures are permitted under ESIGN and state UETA equivalents, but the document must still record the parties' consent to be bound — typically via a 'By / Name / Title / Date' block.",

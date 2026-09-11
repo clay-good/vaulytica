@@ -1029,7 +1029,7 @@
       "title": "Insurance requirement without coverage minimum"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "description": "No Effective Date is named, defined, or stated near the top of this document.",
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
@@ -1182,11 +1182,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Master Agreement\".",
-  "result_hash": "0db088134707cae36a1abd56f0f230f4d12cd61ec6783f350f8aaf5f43f6702c",
+  "result_hash": "b044b8a7a9ff0ef8dd05acc905f1dbaf0816bebaa77239532052201eb2312247",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",
     "size_bytes": 9221
   },
-  "version": "9.712.0"
+  "version": "9.713.0"
 }

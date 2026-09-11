@@ -110,7 +110,7 @@ export const rule: Rule = {
     return makeFinding({
       rule,
       title: "No Effective Date found",
-      description: "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      description: "No Effective Date is named, defined, or stated near the top of this document.",
       excerptText: "(no Effective Date reference matched)",
       explanation:
         "Most contracts identify a starting point that other date references rely on. Without it, relative terms like 'within 30 days after the Effective Date' have no anchor.",

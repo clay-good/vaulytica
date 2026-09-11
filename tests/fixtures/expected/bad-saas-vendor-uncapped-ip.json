@@ -901,7 +901,7 @@
       "title": "Indemnification without aggregate cap"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "description": "No Effective Date is named, defined, or stated near the top of this document.",
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
@@ -1104,11 +1104,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "5b875f99066a11fafb6acc256fa98a73eacb2bbf63e954d4a5c3e2cc33ccdd07",
+  "result_hash": "e49c362be7d98a5709e98c95c9f612b8b19412353c0a618f6fdee29bbaf96cfc",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.712.0"
+  "version": "9.713.0"
 }

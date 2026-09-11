@@ -931,7 +931,7 @@
       "title": "No indemnification clause detected"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "description": "No Effective Date is named, defined, or stated near the top of this document.",
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
@@ -1021,11 +1021,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "fdee90ec41f93c42bf31c8f3199533a190f5ffeefca6ad2bedd04a17f7ee2221",
+  "result_hash": "a0de2e09ca0d040feeeffa1ddbf47920708f9f44fc65c5c64b60d9c57050a0cb",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.712.0"
+  "version": "9.713.0"
 }

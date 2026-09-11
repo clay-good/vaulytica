@@ -950,7 +950,7 @@
       "title": "No indemnification clause detected"
     },
     {
-      "description": "No Effective Date is named, defined, or stated near the top of this Agreement.",
+      "description": "No Effective Date is named, defined, or stated near the top of this document.",
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
@@ -1033,11 +1033,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-residential-us (score 1). Title matched: \"residential lease\". Distinguishing phrases: \"security deposit\", \"residential\".",
-  "result_hash": "a13b412dfcadac229a990e49c802ddb032ae2bed8c9a216875137a5547266450",
+  "result_hash": "0f9aaaacf85602736076bdd54c69ad5baa6e60ba7721c8429de76dadd62b156a",
   "source_file": {
     "name": "bad-residential-lease-deposit.docx",
     "sha256": "a3aaac8da5682c5a7ff4d3cd79191c3344d5f3bc6ec7abe5d833f6234acf6973",
     "size_bytes": 9410
   },
-  "version": "9.712.0"
+  "version": "9.713.0"
 }

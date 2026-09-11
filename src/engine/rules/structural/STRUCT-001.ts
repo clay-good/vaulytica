@@ -32,7 +32,7 @@ export const rule: Rule = {
     return makeFinding({
       rule,
       title: "No parties identified",
-      description: "Vaulytica could not identify the parties to this Agreement.",
+      description: "Vaulytica could not identify the parties to this document.",
       excerptText: "(no preamble or signature block matched the expected patterns)",
       explanation:
         "A contract that does not clearly name its parties is unenforceable as a matter of basic contract drafting. Add a preamble identifying the parties (typical pattern: 'This Agreement is made between X and Y') or ensure the signature block names each party clearly.",
