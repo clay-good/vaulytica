@@ -61,6 +61,35 @@ const FINDING_SURFACES: ReadonlyArray<[file: string, what: string]> = [
  * an `.ics` is deliberately out — there is no honest place for prose in either,
  * and the caveat reaches whoever ran the command on stderr.
  */
+/**
+ * 🚨 The FILE-granularity flaw again, in the other file that builds two
+ * artifacts. `src/report/bundle.ts` builds the consolidated DOCX **and** the
+ * bundle JSON, and it passed the reach test above because the DOCX renders
+ * both caveats — while the JSON carried neither. A CI pipeline consuming
+ * `bundle.json` got findings with no way to learn that a document was pasted
+ * text, fell back to OCR, or is a redline read as all-changes-accepted.
+ *
+ * A `.csv` and an `.ics` are deliberately exempt above — "there is no honest
+ * place for prose in either". That reasoning does not reach JSON: the
+ * single-document report has carried an `ingest` envelope from the start, so
+ * the place exists and is already the convention.
+ */
+describe("the machine artifacts carry the caveats too", () => {
+  it("the bundle JSON reports what the ingest could not read", async () => {
+    const { buildBundleJson } = await import("../../src/report/bundle.js");
+    expect(typeof buildBundleJson).toBe("function");
+    const src = readFileSync(join(process.cwd(), "src/report/bundle.ts"), "utf8");
+    // The TYPE must declare it and the assembly must populate it — a field
+    // declared and never filled is the shape of the defect this replaces.
+    expect(src, "BundleJson does not declare the ingest warnings").toMatch(
+      /ingest_warnings\?:\s*Array</,
+    );
+    expect(src, "the assembly never populates ingest_warnings").toMatch(
+      /\{ ingest_warnings: ingestWarnings \}/,
+    );
+  });
+});
+
 describe("every prose artifact accepts the caveats", () => {
   /** Builder → the file it is declared in. Markdown and HTML alike. */
   const PROSE_BUILDERS: Record<string, string> = {

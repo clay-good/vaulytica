@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.707.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The bundle JSON told a CI pipeline nothing about what the ingest could
+  read.** The consolidated DOCX prints "About this input: Pasted text loses
+  document structure…" beneath each document; `bundle.json` carried **no
+  ingest warnings at all**, so a machine consumer got findings with no way to
+  learn that a document was pasted text, fell back to OCR, or is a redline read
+  as all-changes-accepted.
+
+  🥇 **`honesty-caveat-reach.test.ts` lists `bundle.ts` and passed** — because
+  that check is at FILE granularity and this file builds TWO artifacts. The
+  test's own docstring names the flaw, for the other file it happens in:
+
+  > The reach test above is at FILE granularity, and `src/report/exports.ts`
+  > builds seven artifacts… **A guard satisfied by one artifact inside a file
+  > says nothing about the other six.**
+
+  It was fixed there and not here. `bundle.json` now carries
+  `ingest_warnings` per document.
+
+  🚨 **A `.csv` and an `.ics` are deliberately exempt from that guard** —
+  "there is no honest place for prose in either". That reasoning does not
+  reach JSON: the single-document report has carried an `ingest` envelope from
+  the start, so the place exists and is already the convention.
+
+  The field is emitted only when a document actually carries a warning, so a
+  bundle of clean inputs stays byte-identical for every existing consumer —
+  the load-bearing negative, and the reason all 345 goldens changed hash only.
+
 ## [9.706.0] — 2026-09-10
 
 ### Fixed

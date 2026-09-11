@@ -1078,3 +1078,36 @@ describe("buildBundleDocxReport — per-document honesty caveats", () => {
     expect(xml).not.toContain("may be irrelevant or misleading");
   });
 });
+
+describe("buildBundleJson — the caveats a machine consumer needs", () => {
+  // 🚨 `honesty-caveat-reach.test.ts` lists `bundle.ts` and passed, because
+  // that check is at FILE granularity and this file builds TWO artifacts: the
+  // consolidated DOCX rendered "About this input:" under each document and the
+  // JSON carried nothing. A CI pipeline consuming `bundle.json` got findings
+  // with no way to learn that a document was pasted text, fell back to OCR, or
+  // is a redline read as all-changes-accepted.
+  it("reports what the ingest could not read, per document", async () => {
+    const base = makeInput();
+    const json = await buildBundleJson({
+      ...base,
+      documents: [
+        { ...base.documents[0]!, ingest: { warnings: ["This PDF fell back to OCR."] } },
+        base.documents[1]!,
+      ],
+    } as typeof base);
+    expect(json.ingest_warnings).toEqual([
+      {
+        source_file_name: base.documents[0]!.source_file_name,
+        warnings: ["This PDF fell back to OCR."],
+      },
+    ]);
+  });
+
+  it("omits the field entirely when every input read cleanly", async () => {
+    // The load-bearing negative: a bundle of clean inputs stays byte-identical
+    // for every existing consumer, which is why the field is optional.
+    const json = await buildBundleJson(makeInput());
+    expect(json.ingest_warnings).toBeUndefined();
+    expect(Object.keys(json)).not.toContain("ingest_warnings");
+  });
+});

@@ -343,6 +343,24 @@ export type BundleJsonDocument = {
 
 export type BundleJson = {
   runs: EngineRun[];
+  /**
+   * What the ingest could and could not READ, per document — the same
+   * `IngestResult.warnings` the consolidated DOCX prints as "About this
+   * input:" beneath each document's heading.
+   *
+   * 🚨 The bundle JSON carried none of it. `honesty-caveat-reach.test.ts`
+   * lists `bundle.ts` and passed, because that check is at FILE granularity
+   * and this file builds BOTH artifacts — the DOCX read the field and the
+   * JSON did not. The test's own docstring names that flaw for
+   * `exports.ts`; it applies here identically. A CI pipeline consuming
+   * `bundle.json` was given findings with no way to learn that a document
+   * was pasted text, or fell back to OCR, or is a redline read as
+   * all-changes-accepted.
+   *
+   * Emitted only when at least one document carries a warning, so a bundle
+   * of clean inputs stays byte-identical for existing consumers.
+   */
+  ingest_warnings?: Array<{ source_file_name: string; warnings: string[] }>;
   cross_doc_findings: ConsistencyFinding[];
   bundle_fingerprint: string;
   dkb_version: string;
@@ -453,8 +471,15 @@ export async function buildBundleJson(input: BundleReportInput): Promise<BundleJ
       run: d.run,
     })),
   );
+  const ingestWarnings = input.documents
+    .map((d) => ({
+      source_file_name: d.source_file_name,
+      warnings: [...(d.ingest?.warnings ?? [])],
+    }))
+    .filter((w) => w.warnings.length > 0);
   const out: BundleJson = {
     runs,
+    ...(ingestWarnings.length > 0 ? { ingest_warnings: ingestWarnings } : {}),
     cross_doc_findings: [...input.consistency.findings],
     bundle_fingerprint: fingerprint,
     dkb_version: input.dkb.manifest.version,
