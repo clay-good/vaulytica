@@ -105,3 +105,32 @@ describe("the compliance matrix stays underivable until someone qualified derive
     ).toBe(false);
   });
 });
+
+describe("a bundle's conflicts reach BOTH human-readable surfaces", () => {
+  // 🚨 `docx.ts` renders the §59 consistency appendix from
+  // `V3ReportInputs.consistency` — and nothing ever set it. The CLI hands the
+  // same `ConsistencyRun` straight to `buildHtmlReport`, so one run put a
+  // "Cross-document consistency" section in the HTML report and NOTHING in the
+  // DOCX. `html.ts`'s own comment describes that state for the mirror image of
+  // it — "a bundle's conflicts reached one human-readable surface and not the
+  // other" — and it was repaired in that direction only.
+  it("the producer accepts a consistency run and a section counts as one", () => {
+    const src = readFileSync(join(ROOT, "src", "report", "v3", "inputs.ts"), "utf8");
+    expect(src, "buildV3ReportInputs cannot carry a ConsistencyRun").toMatch(
+      /consistency\?:\s*ConsistencyRun/,
+    );
+    expect(src, "the producer never sets it").toMatch(/\{ consistency: options\.consistency \}/);
+    // A run whose ONLY v3 content is the appendix must still reach the report.
+    expect(src, "hasV3Sections ignores the appendix").toMatch(/inputs\.consistency/);
+  });
+
+  it("the CLI defers the DOCX until the cross-document run exists", () => {
+    const cli = readFileSync(join(ROOT, "tools", "cli", "run.ts"), "utf8");
+    // The deferral list is what decides: a format rendered inside the
+    // per-document loop cannot see a run that does not exist yet.
+    expect(cli, "the DOCX is not deferred, so it renders before the run").toMatch(
+      /fmt:\s*"sarif"\s*\|\s*"html"\s*\|\s*"docx"/,
+    );
+    expect(cli).toMatch(/consistency:\s*consistency \?\? undefined/);
+  });
+});

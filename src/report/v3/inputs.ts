@@ -32,6 +32,7 @@ import { extractAllV3 } from "../../extract/v3/index.js";
 import type { DocumentTree } from "../../ingest/types.js";
 import type { Party } from "../../extract/types.js";
 import type { V3ReportInputs } from "./types.js";
+import type { ConsistencyRun } from "../../engine/consistency/types.js";
 
 /**
  * Build the v3 report sections a document actually supports.
@@ -44,7 +45,22 @@ import type { V3ReportInputs } from "./types.js";
  */
 export function buildV3ReportInputs(
   tree: DocumentTree,
-  options: { parties?: readonly Party[]; dkb_build_date?: string } = {},
+  options: {
+    parties?: readonly Party[];
+    dkb_build_date?: string;
+    /**
+     * 🚨 The cross-document consistency run, when this document was analysed
+     * as part of a bundle.
+     *
+     * `docx.ts` renders the §59 appendix from `V3ReportInputs.consistency` —
+     * and nothing ever set it, so the section was unreachable. Meanwhile the
+     * CLI passes the same `ConsistencyRun` straight to `buildHtmlReport`, and
+     * `html.ts`'s own comment describes the resulting state exactly, for the
+     * mirror image of it: "a bundle's conflicts reached one human-readable
+     * surface and not the other". It was repaired in that direction only.
+     */
+    consistency?: ConsistencyRun;
+  } = {},
 ): V3ReportInputs {
   const v3 = extractAllV3(tree, { parties: [...(options.parties ?? [])] });
 
@@ -65,6 +81,7 @@ export function buildV3ReportInputs(
     ...(v3.subprocessor ? { subprocessor: v3.subprocessor } : {}),
     ...(hasInsurance ? { insurance } : {}),
     ...(options.dkb_build_date ? { dkb_build_date: options.dkb_build_date } : {}),
+    ...(options.consistency ? { consistency: options.consistency } : {}),
     extracted_v3: v3,
   };
 }
@@ -77,5 +94,9 @@ export function buildV3ReportInputs(
  * golden in the tree was recorded against.
  */
 export function hasV3Sections(inputs: V3ReportInputs): boolean {
-  return Boolean(inputs.transfers?.length || inputs.subprocessor || inputs.insurance);
+  // `consistency` counts: the §59 appendix is a section, and a bundle whose
+  // documents conflict must reach the DOCX as well as the HTML.
+  return Boolean(
+    inputs.transfers?.length || inputs.subprocessor || inputs.insurance || inputs.consistency,
+  );
 }

@@ -1440,7 +1440,10 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // knowable until every document has been read.
   const bundleDocs: BundleDocument[] = [];
   const deferredCrossDoc: {
-    fmt: "sarif" | "html";
+    // 🚨 "docx" joined in 9.712.0: the DOCX carries the §59 consistency
+    // appendix, so it too cannot be rendered until the cross-document run
+    // exists.
+    fmt: "sarif" | "html" | "docx";
     file: string;
     result: AnalyzeResult;
     definitions?: import("../../src/report/definitions.js").DefinitionsReport;
@@ -1703,43 +1706,17 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         continue;
       }
       if (fmt === "docx") {
-        // The full attorney-facing report. Same builder the browser calls, with
-        // the same v9 surfaces and secondary families threaded in — the only
-        // thing that was ever missing here was the caller. Validated above:
-        // --out is guaranteed.
-        // The v3 report sections — the cross-border transfers summary (§56),
-        // the subprocessor inventory (§57) and the insurance schedule (§58).
-        // Shipped and tested since spec-v3 and constructed by nothing until
-        // 9.674.0, so they could not be obtained from any surface. Passed only
-        // when the document actually carries that language, which keeps every
-        // other report byte-identical.
-        const docxExtracted = extractAll(r.ingest.tree);
-        const v3Inputs = buildV3ReportInputs(r.ingest.tree, {
-          parties: docxExtracted.parties,
-          dkb_build_date: deps.dkb.manifest.built_at,
-        });
-        const blob = await buildDocxReport(
-          r.run,
-          r.ingest,
-          deps.dkb,
-          r.playbook,
-          hasV3Sections(v3Inputs) ? v3Inputs : undefined,
-          docxExtracted,
-          r.secondary_families.length > 0 ? r.secondary_families : undefined,
-          {
-            delivery: r.delivery,
-            criticalDates: r.critical_dates,
-            closingChecklist: r.closing_checklist,
-            relatedDocuments: r.related_documents.length > 0 ? r.related_documents : undefined,
-            secondaryFamiliesOmitted: r.secondary_families_present - r.secondary_families.length,
-          },
-          r.negotiation_posture!,
-        );
-        await mkdir(args.out!, { recursive: true });
-        const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
-        const bytes = Buffer.from(await blob.arrayBuffer());
-        await writeFile(join(args.out!, outName), bytes);
-        human(`  Report: ${(bytes.byteLength / 1024).toFixed(1)} KB → ${outName}\n`);
+        // 🚨 The DOCX carries a CROSS-document section too — the §59
+        // consistency appendix, which `docx.ts` renders from
+        // `V3ReportInputs.consistency`. The deferral above named only SARIF and
+        // HTML, so on a bundle this report was built before the cross-document
+        // run existed and the appendix could never appear: one run put a
+        // "Cross-document consistency" section in the HTML report and nothing
+        // in the DOCX. `html.ts`'s own comment describes exactly that state for
+        // the mirror image of it — "a bundle's conflicts reached one
+        // human-readable surface and not the other" — and it was repaired in
+        // that direction only. Written in the deferred pass below.
+        deferredCrossDoc.push({ fmt, file, result: r, definitions });
         continue;
       }
       if (fmt === "docx-comments") {
@@ -1891,6 +1868,51 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   }
 
   for (const d of deferredCrossDoc) {
+    if (d.fmt === "docx") {
+      // The full attorney-facing report. Same builder the browser calls, with
+      // the same v9 surfaces and secondary families threaded in — the only
+      // thing that was ever missing here was the caller. Validated above:
+      // --out is guaranteed.
+      // The v3 report sections — the cross-border transfers summary (§56),
+      // the subprocessor inventory (§57) and the insurance schedule (§58).
+      // Shipped and tested since spec-v3 and constructed by nothing until
+      // 9.674.0, so they could not be obtained from any surface. Passed only
+      // when the document actually carries that language, which keeps every
+      // other report byte-identical.
+      const docxExtracted = extractAll(d.result.ingest.tree);
+      const v3Inputs = buildV3ReportInputs(d.result.ingest.tree, {
+        parties: docxExtracted.parties,
+        dkb_build_date: deps.dkb.manifest.built_at,
+        // The same ConsistencyRun this command already hands to
+        // buildHtmlReport — a bundle's conflicts must reach both.
+        consistency: consistency ?? undefined,
+      });
+      const blob = await buildDocxReport(
+        d.result.run,
+        d.result.ingest,
+        deps.dkb,
+        d.result.playbook,
+        hasV3Sections(v3Inputs) ? v3Inputs : undefined,
+        docxExtracted,
+        d.result.secondary_families.length > 0 ? d.result.secondary_families : undefined,
+        {
+          delivery: d.result.delivery,
+          criticalDates: d.result.critical_dates,
+          closingChecklist: d.result.closing_checklist,
+          relatedDocuments:
+            d.result.related_documents.length > 0 ? d.result.related_documents : undefined,
+          secondaryFamiliesOmitted:
+            d.result.secondary_families_present - d.result.secondary_families.length,
+        },
+        d.result.negotiation_posture!,
+      );
+      await mkdir(args.out!, { recursive: true });
+      const outName = basename(d.file, extname(d.file)) + FORMAT_EXT[d.fmt];
+      const bytes = Buffer.from(await blob.arrayBuffer());
+      await writeFile(join(args.out!, outName), bytes);
+      human(`  Report: ${(bytes.byteLength / 1024).toFixed(1)} KB → ${outName}\n`);
+      continue;
+    }
     const content = await renderFormat(
       d.fmt,
       d.result,

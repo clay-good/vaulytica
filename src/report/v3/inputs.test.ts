@@ -13,6 +13,7 @@ import { describe, expect, it } from "vitest";
 import { buildV3ReportInputs, hasV3Sections } from "./inputs.js";
 import { ingestPaste } from "../../ingest/paste.js";
 import { extractAll } from "../../extract/index.js";
+import type { ConsistencyRun } from "../../engine/consistency/types.js";
 
 const SPECIMENS = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -72,6 +73,27 @@ describe("buildV3ReportInputs", () => {
     expect(JSON.stringify(buildV3ReportInputs(ingest.tree))).toBe(
       JSON.stringify(buildV3ReportInputs(ingest.tree)),
     );
+  });
+
+  it("carries a consistency run, and a section counts as one", async () => {
+    // 🚨 `docx.ts` renders the §59 appendix from `V3ReportInputs.consistency`
+    // and nothing ever set it, so a bundle's conflicts reached the HTML report
+    // and not the DOCX. A document with no transfers, no subprocessor and no
+    // insurance must still produce a section when there IS a consistency run.
+    const ingest = await ingestPaste(
+      readFileSync(join(SPECIMENS, "mutual-nda-complete.txt"), "utf8"),
+    );
+    const run = {
+      version: "1.0.0",
+      documents: [{ doc_id: "a", kind: "msa" }],
+      findings: [],
+      execution_log: [],
+    } as unknown as ConsistencyRun;
+    const without = buildV3ReportInputs(ingest.tree);
+    expect(hasV3Sections(without)).toBe(false);
+    const withRun = buildV3ReportInputs(ingest.tree, { consistency: run });
+    expect(withRun.consistency).toBe(run);
+    expect(hasV3Sections(withRun)).toBe(true);
   });
 
   it("never builds a compliance matrix", async () => {

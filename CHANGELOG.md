@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.712.0] — 2026-09-10
+
+### Fixed
+- 🚨 **One bundle run put the cross-document conflicts in the HTML report and
+  nothing in the DOCX.** `docx.ts` renders the §59 "Two-Document Consistency"
+  appendix from `V3ReportInputs.consistency` — and **nothing ever set that
+  field**, so the section was unreachable from any surface. The CLI hands the
+  same `ConsistencyRun` straight to `buildHtmlReport`, so on the same
+  `analyze ./deal-room --consistency --format html,docx` the HTML carried
+  "Cross-document consistency" and the DOCX carried no such section at all.
+
+  🥇 **`html.ts`'s own comment describes that state, for the mirror image of
+  it**:
+
+  > the DOCX has rendered it since v3 (`renderConsistencyAppendix`); this file
+  > did not, and the omission was not on the deliberate list in the header
+  > above — so **a bundle's conflicts reached one human-readable surface and
+  > not the other**.
+
+  It was repaired in that direction only, and the premise had since become
+  false: the DOCX's path existed but was never fed.
+
+  🚨 **The cause was an ordering assumption, not a missing argument.** The
+  CLI defers a format's render when it needs the cross-document run, and the
+  list was `"sarif" | "html"` — so the DOCX was built inside the per-document
+  loop, before the run existed, and no argument could have helped. `"docx"`
+  joins the deferral, and `hasV3Sections` now counts a consistency run as a
+  section so a document carrying none of the other v3 content still gets its
+  appendix.
+
+  All 345 goldens changed hash only: a single-document run has no consistency
+  run and is unaffected.
+
 ## [9.711.0] — 2026-09-10
 
 ### Fixed
