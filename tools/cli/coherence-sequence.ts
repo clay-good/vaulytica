@@ -20,7 +20,7 @@ import {
   parsePostureCoherenceJson,
   type PostureCoherence,
 } from "../../src/report/posture-coherence.js";
-import { wrongKindOfJson } from "./json-kind.js";
+import { WRITTEN_BY, wrongKindOfJson } from "./json-kind.js";
 
 export type CoherenceSequence =
   | { ok: false; errors: string[] }
@@ -68,8 +68,7 @@ export async function verifyCoherenceSequence(texts: string[]): Promise<Coherenc
         ok: false,
         errors: [
           `that looks like ${wrong}, not a posture-coherence artifact.`,
-          "  A coherence artifact is written by: vaulytica analyze <docs> " +
-            "--playbook-file <playbook.json> --posture --emit-coherence <path>",
+          `  A coherence artifact is written by: ${WRITTEN_BY.coherence}`,
           "  (it needs two or more documents with a posture, and one artifact per round).",
         ],
       };

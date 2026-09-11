@@ -33,7 +33,7 @@ import {
   renderCoherenceMovementSummary,
   buildCoherenceMovementJson,
 } from "../../src/report/coherence-movement.js";
-import { wrongKindOfJson } from "./json-kind.js";
+import { WRITTEN_BY, wrongKindOfJson } from "./json-kind.js";
 
 export type CompareCoherenceFormat = "markdown" | "json";
 
@@ -75,8 +75,7 @@ export async function compareCoherenceArtifacts(
         ok: false,
         errors: [
           `that looks like ${wrong}, not a posture-coherence artifact.`,
-          "  A coherence artifact is written by: vaulytica analyze <docs> " +
-            "--playbook-file <playbook.json> --posture --emit-coherence <path>",
+          `  A coherence artifact is written by: ${WRITTEN_BY.coherence}`,
           "  To compare two ANALYSES of a document, use: vaulytica compare <base> <revised>",
         ],
       };

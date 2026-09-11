@@ -90,10 +90,14 @@ import {
   para,
   type ParaOpts,
 } from "./_docx-primitives.js";
-import { EXECUTED_AT_OMITTED, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
+import {
+  EXECUTED_AT_OMITTED,
+  determinismStatement,
+  nonAdviceStatement,
+  privacyStatement,
+} from "./disclaimers.js";
 
-const DETERMINISM_STATEMENT =
-  "This report was produced by a deterministic process. Given the same input file, the same Vaulytica engine version, and the same Deterministic Knowledge Base version listed above, the rules in this report will produce an identical report on any machine, at any time. The fingerprint of the input file is recorded above for verification. No part of this analysis was performed by a language model or any other non-deterministic system. The complete list of rules executed, including those that produced no findings, is included in the Audit Trail section so that the scope of the analysis is fully transparent.";
+const DETERMINISM_STATEMENT = determinismStatement("document");
 
 const PRIVACY_STATEMENT = privacyStatement("document");
 

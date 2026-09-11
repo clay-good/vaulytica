@@ -148,58 +148,94 @@ describe("a shared vocabulary", () => {
  * whose scope is genuinely narrower should derive it from that constant and say
  * why, not write its own.
  */
-describe("the privacy statement", () => {
-  // 🚨 The registry entry above forbids a second `privacyStatement` FUNCTION.
-  // It does not forbid a second copy of the TEXT, which is how the claim
-  // drifted four ways in the first place — four files each held their own
-  // string literal. Proven by pasting one back into `bundle.ts`, which the
-  // registry entry alone waved through.
-  it("exists as text in exactly one file", () => {
-    const OWNER = "src/report/disclaimers.ts";
-    // A phrase distinctive to the statement and to no other prose.
-    const PHRASE = "was transmitted to any server";
-    const offenders: string[] = [];
-    for (const root of ["src", "tools"]) {
-      for (const file of sourceFiles(join(process.cwd(), root))) {
-        const rel = relative(process.cwd(), file).replace(/\\/g, "/");
-        if (rel === OWNER) continue;
-        const src = readFileSync(file, "utf8");
-        // Comments may quote the old wording to explain the repair.
-        const code = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
-        if (code.includes(PHRASE)) offenders.push(rel);
-      }
-    }
-    expect(
-      offenders,
-      `the privacy statement is spelled out outside ${OWNER} — import privacyStatement() instead`,
-    ).toEqual([]);
-  });
-});
+/**
+ * The posture statements a report prints about ITSELF — determinism, privacy,
+ * not-legal-advice, and what it says where its timestamp would go.
+ *
+ * 🚨 All four were copied into `html.ts`, `docx.ts`, `bundle.ts` and
+ * `compare-docx.ts`, and all four had DRIFTED: the bundle's privacy copy had
+ * dropped the independent-verification sentence, its non-advice copy "the
+ * decision … is yours and your counsel's", its determinism copy the pointer to
+ * the Audit Trail where the rules that fired NOTHING are listed; and one
+ * rendered report said both wordings of the blanked timestamp, a thousand
+ * paragraphs apart. They were found and fixed ONE AT A TIME across 9.700.0,
+ * 9.706.0 and 9.708.0 — which is why this is a table now rather than a fourth
+ * bespoke test.
+ *
+ * 🚨 The registry above forbids a second DEFINITION; it does not forbid a
+ * second copy of the VALUE, which is how every one of these drifted. That is
+ * what this checks, and it was proven by pasting a literal back.
+ */
+type OwnedProse = {
+  what: string;
+  phrase: string;
+  importInstead: string;
+  /** Files that say it in their OWN words, on purpose, with the reason. */
+  allowed?: Record<string, string>;
+};
 
-describe("what a report says where its timestamp would go", () => {
-  // 🚨 `docx.ts` carried the diagnosis — "One artifact contradicting itself
-  // about its own provenance, on the page a reader looks at first" — and the
-  // repair landed on the COVER only. The same DOCX's audit trail still said
-  // the terse "(omitted from hash)", as did the HTML provenance list and the
-  // bundle cover: four sites, two wordings, two of them inside one file.
-  it("is spelled out in exactly one file", () => {
-    const OWNER = "src/report/disclaimers.ts";
-    const offenders: string[] = [];
-    for (const root of ["src", "tools"]) {
-      for (const file of sourceFiles(join(process.cwd(), root))) {
-        const rel = relative(process.cwd(), file).replace(/\\/g, "/");
-        if (rel === OWNER) continue;
-        const code = readFileSync(file, "utf8")
-          .replace(/\/\*[\s\S]*?\*\//g, "")
-          .replace(/^\s*\/\/.*$/gm, "");
-        if (code.includes("(omitted from hash")) offenders.push(rel);
+const OWNED_PROSE: ReadonlyArray<OwnedProse> = [
+  {
+    what: "the privacy statement",
+    phrase: "was transmitted to any server",
+    importInstead: "privacyStatement()",
+  },
+  {
+    what: "the not-legal-advice statement",
+    phrase: "is a software tool, not a lawyer",
+    importInstead: "nonAdviceStatement()",
+    allowed: {
+      // The court-facing certificate says it in a COMPRESSED form, as the tail
+      // of a numbered "Attorney responsibility" statement framed on ABA Formal
+      // Opinion 512. Substituting the long report wording there would break a
+      // deliberately terse, court-shaped document. Found by this very table —
+      // the fifth copy, and the one that is not drift.
+      "src/report/certificate.ts": "a numbered court-facing statement, deliberately compressed",
+    },
+  },
+  {
+    what: "the determinism statement",
+    phrase: "produced by a deterministic process",
+    importInstead: "determinismStatement()",
+  },
+  {
+    what: "the blanked-timestamp line",
+    phrase: "(omitted from hash",
+    importInstead: "EXECUTED_AT_OMITTED",
+  },
+];
+
+describe("the posture statements a report prints about itself", () => {
+  const OWNER = "src/report/disclaimers.ts";
+
+  it.each(OWNED_PROSE)(
+    "$what exists as text in exactly one file",
+    ({ phrase, importInstead, allowed }) => {
+      const offenders: string[] = [];
+      for (const root of ["src", "tools"]) {
+        for (const file of sourceFiles(join(process.cwd(), root))) {
+          const rel = relative(process.cwd(), file).replace(/\\/g, "/");
+          if (rel === OWNER) continue;
+          // Comments may quote the old wording to explain the repair.
+          const code = readFileSync(file, "utf8")
+            .replace(/\/\*[\s\S]*?\*\//g, "")
+            .replace(/^\s*\/\/.*$/gm, "");
+          if (code.includes(phrase) && !(allowed && rel in allowed)) offenders.push(rel);
+        }
       }
-    }
-    expect(
-      offenders,
-      `the blanked-timestamp line is spelled out outside ${OWNER} — import EXECUTED_AT_OMITTED`,
-    ).toEqual([]);
-  });
+      expect(offenders, `spelled out outside ${OWNER} — import ${importInstead} instead`).toEqual(
+        [],
+      );
+
+      // An exception that no longer fires is indistinguishable from a wrong one.
+      for (const file of Object.keys(allowed ?? {})) {
+        expect(
+          readFileSync(join(process.cwd(), file), "utf8"),
+          `${file} no longer says it — delete its exception`,
+        ).toContain(phrase);
+      }
+    },
+  );
 });
 
 describe("the document-reading root list", () => {

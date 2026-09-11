@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.709.0] — 2026-09-10
+
+### Fixed
+- 🥇 **Stopped finding these one at a time.** The privacy statement (9.700.0),
+  the not-legal-advice statement (9.706.0) and the blanked-timestamp line
+  (9.708.0) were each found copied across the report surfaces and drifted, by
+  tripping over them. A sweep for **prose string literals appearing in two or
+  more files** found eleven, and among them the fourth of the same class: the
+  **determinism statement**, byte-identical in `html.ts` and `docx.ts`, with
+  the bundle's copy having dropped the sentence that points a reader at the
+  Audit Trail — where the rules that produced NOTHING are listed, which is the
+  sentence that makes the determinism claim checkable.
+
+  All four posture statements now have one owner in
+  `src/report/disclaimers.ts`, and `shared-vocabulary.test.ts` guards them from
+  a **table** rather than a fourth bespoke test, so the fifth is one line.
+
+  🚨 **The table immediately found a fifth site the one-at-a-time method had
+  not** — `certificate.ts`, whose court-facing "Attorney responsibility"
+  statement ends with the same clause in compressed form, framed on ABA Formal
+  Opinion 512. That one is deliberate, not drift: substituting the long report
+  wording would break a terse, court-shaped document. It is a **declared
+  exception with its reason**, and the guard asserts the exception still fires
+  so a stale one cannot hide.
+
+- **A duplicate of my own.** 9.702.0 gave thirty commands a shared
+  `wrongKindOfJson`, then spelled the "a coherence artifact is written by…"
+  line out in both `coherence-sequence.ts` and `compare-coherence.ts` — while
+  `json-kind.ts` already held it as `WRITTEN_BY.coherence`. The same sweep
+  caught it. Both now read the owner.
+
+  Remaining duplicated prose is rule text shared between rule FAMILIES, where
+  each rule owns its own wording; no report surface restates another's.
+
 ## [9.708.0] — 2026-09-10
 
 ### Fixed

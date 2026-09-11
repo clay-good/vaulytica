@@ -91,7 +91,12 @@ import {
   type PortfolioStatus,
 } from "./portfolio.js";
 import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
-import { EXECUTED_AT_OMITTED, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
+import {
+  EXECUTED_AT_OMITTED,
+  determinismStatement,
+  nonAdviceStatement,
+  privacyStatement,
+} from "./disclaimers.js";
 
 /** Cap on per-document findings surfaced in the consolidated DOCX (spec §11). */
 export const BUNDLE_TOP_N = 10;
@@ -106,8 +111,7 @@ export const BUNDLE_TOP_N = 10;
  */
 export const BUNDLE_CROSS_DOC_TOP_N = 100;
 
-const DETERMINISM_STATEMENT =
-  "This consolidated report was produced by a deterministic process. Given the same input files, the same Vaulytica engine version, and the same Deterministic Knowledge Base version, the rules in this report will produce an identical report on any machine, at any time. The bundle fingerprint is recorded above for verification. No part of this analysis was performed by a language model or any other non-deterministic system.";
+const DETERMINISM_STATEMENT = determinismStatement("bundle");
 
 const PRIVACY_STATEMENT = privacyStatement("bundle");
 

@@ -42,7 +42,7 @@ import type { Clause, ClauseDiff, WordDiffSegment } from "./clause-diff.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { PostureMovement, PostureMovementKind } from "./posture-movement.js";
 import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
-import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
+import { determinismStatement, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 /**
  * Cap on redline rows rendered per category. A pathological redline (a
@@ -52,8 +52,7 @@ import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
  */
 const MAX_REDLINE_ROWS = 100;
 
-const DETERMINISM_STATEMENT =
-  "This comparison was produced by a deterministic process. It is the difference between two deterministic Vaulytica runs: given the same two input files, the same engine version, and the same Deterministic Knowledge Base version, this comparison reproduces byte-for-byte on any machine, at any time. The comparison hash above is the SHA-256 of the two run hashes and the canonical delta. No part of this analysis was performed by a language model or any other non-deterministic system.";
+const DETERMINISM_STATEMENT = determinismStatement("comparison");
 
 const PRIVACY_STATEMENT = privacyStatement("comparison");
 

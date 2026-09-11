@@ -104,3 +104,52 @@ export function nonAdviceStatement(subject: PrivacySubject): string {
  */
 export const EXECUTED_AT_OMITTED =
   "(omitted from hash — this report is reproducible on any machine)";
+
+/**
+ * The determinism statement.
+ *
+ * 🚨 The fourth posture statement found copied across the report surfaces this
+ * session, after the privacy statement, the not-legal-advice statement and the
+ * blanked-timestamp line. `html.ts` and `docx.ts` held byte-identical copies;
+ * the bundle's had dropped the sentence pointing a reader at the Audit Trail,
+ * where the rules that produced NOTHING are listed — which is the sentence
+ * that makes the claim checkable.
+ *
+ * Each subject keeps its own wording, because they are about different things:
+ * one file, several files, or the delta between two runs.
+ */
+export function determinismStatement(subject: PrivacySubject): string {
+  const AUDIT =
+    " The complete list of rules executed, including those that produced no findings, is " +
+    "included in the Audit Trail section so that the scope of the analysis is fully transparent.";
+  const NO_MODEL =
+    " No part of this analysis was performed by a language model or any other non-deterministic system.";
+  switch (subject) {
+    case "comparison":
+      return (
+        "This comparison was produced by a deterministic process. It is the difference between " +
+        "two deterministic Vaulytica runs: given the same two input files, the same engine " +
+        "version, and the same Deterministic Knowledge Base version, this comparison reproduces " +
+        "byte-for-byte on any machine, at any time. The comparison hash above is the SHA-256 of " +
+        "the two run hashes and the canonical delta." +
+        NO_MODEL
+      );
+    case "bundle":
+      return (
+        "This consolidated report was produced by a deterministic process. Given the same input " +
+        "files, the same Vaulytica engine version, and the same Deterministic Knowledge Base " +
+        "version, the rules in this report will produce an identical report on any machine, at " +
+        "any time. The bundle fingerprint is recorded above for verification." +
+        NO_MODEL
+      );
+    default:
+      return (
+        "This report was produced by a deterministic process. Given the same input file, the " +
+        "same Vaulytica engine version, and the same Deterministic Knowledge Base version listed " +
+        "above, the rules in this report will produce an identical report on any machine, at any " +
+        "time. The fingerprint of the input file is recorded above for verification." +
+        NO_MODEL +
+        AUDIT
+      );
+  }
+}
