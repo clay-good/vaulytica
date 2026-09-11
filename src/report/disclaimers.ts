@@ -1,5 +1,5 @@
 /**
- * The privacy statement every report surface prints — in ONE place.
+ * The posture statements every report surface prints — in ONE place.
  *
  * 🚨 **It was wrong on the headless surfaces.** Four files each declared their
  * own `PRIVACY_STATEMENT`, all four opening "This analysis was performed
@@ -21,10 +21,12 @@
  */
 
 /** What the report is about, for the one clause that differs. */
-export type PrivacySubject = "document" | "bundle" | "comparison";
+export type PrivacySubject = "document" | "bundle" | "comparison" | "review";
 
 const SUBJECT: Record<PrivacySubject, string> = {
   document: "No portion of the input document was transmitted to any server.",
+  // The anchored-comments copy: the caller's own file, commented in place.
+  review: "No portion of the input document was transmitted to any server.",
   bundle: "No portion of any input document was transmitted to any server.",
   comparison: "Neither file, nor any portion of either, was transmitted to any server.",
 };
@@ -46,5 +48,42 @@ export function privacyStatement(subject: PrivacySubject): string {
     "The developer of Vaulytica has no record of this analysis, no ability to recover it, " +
     "and no way to identify the user who performed it. The network logs of the machine " +
     "that ran it can independently confirm this."
+  );
+}
+
+/**
+ * The not-legal-advice statement.
+ *
+ * 🚨 **This had drifted the same four ways the privacy statement had**, and
+ * for the same reason: `html.ts`, `docx.ts`, `bundle.ts` and `compare-docx.ts`
+ * each declared their own. The bundle's copy had dropped "The decision to act
+ * on any finding, or not, is yours and your counsel's" — the sentence that
+ * puts the decision where it belongs — and the comparison's had dropped the
+ * "may be incorrect, incomplete, or inapplicable" qualifier.
+ *
+ * 🚨 And the ANCHORED-COMMENTS DOCX printed none of it. That artifact is a
+ * byte-copy of the client's own contract with review comments inserted, and
+ * its comments quote Chancery practice and the Restatement — the surface most
+ * likely to be forwarded to someone who did not run the tool, and the only one
+ * that said nothing about what it is.
+ */
+export function nonAdviceStatement(subject: PrivacySubject): string {
+  const WHAT: Record<PrivacySubject, string> = {
+    document:
+      "This report is a checklist of mechanical findings produced by a deterministic rule engine against a contract you provided.",
+    bundle:
+      "This report is a checklist of mechanical findings produced by a deterministic rule engine against documents you provided.",
+    comparison:
+      "This comparison is a mechanical diff of two rule-engine runs over documents you provided.",
+    review:
+      "These comments are a checklist of mechanical findings produced by a deterministic rule engine against the contract they are attached to.",
+  };
+  const what = WHAT[subject];
+  return (
+    `Vaulytica is a software tool, not a lawyer. ${what} It is not legal advice, and using ` +
+    "Vaulytica does not create an attorney-client relationship with anyone. The findings may be " +
+    "incorrect, incomplete, or inapplicable to your situation. The decision to act on any " +
+    "finding, or not, is yours and your counsel's. If something here matters to a transaction " +
+    "or a dispute, consult a licensed attorney in the relevant jurisdiction."
   );
 }

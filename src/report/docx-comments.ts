@@ -26,6 +26,8 @@
 
 import { unzipSync, zipSync, strToU8, strFromU8, type Zippable } from "fflate";
 import type { EngineRun, Finding } from "../engine/finding.js";
+import { nonAdviceStatement } from "./disclaimers.js";
+import type { ArtifactCaveats } from "./exports.js";
 
 /** Fixed comment timestamp — a real date here would break determinism. */
 const COMMENT_DATE = "2001-01-01T00:00:00Z";
@@ -187,7 +189,11 @@ export type ReviewedCopyResult = {
  * any finding whose anchor could not be located). Throws when the
  * container carries no `word/document.xml` (not a DOCX).
  */
-export function buildReviewedDocx(original: ArrayBuffer, run: EngineRun): ReviewedCopyResult {
+export function buildReviewedDocx(
+  original: ArrayBuffer,
+  run: EngineRun,
+  caveats?: ArtifactCaveats,
+): ReviewedCopyResult {
   const entries = unzipSync(new Uint8Array(original));
   const docEntry = entries["word/document.xml"];
   if (!docEntry) throw new Error("not a DOCX container: word/document.xml is missing");
@@ -215,6 +221,36 @@ export function buildReviewedDocx(original: ArrayBuffer, run: EngineRun): Review
     });
     insertions.push({
       pos: located.lastSegment.runEnd,
+      markup: `<w:commentRangeEnd w:id="${id}"/><w:r><w:rPr><w:rStyle w:val="CommentReference"/></w:rPr><w:commentReference w:id="${id}"/></w:r>`,
+    });
+  }
+
+  // 🚨 THE POSTURE COMMENT, FIRST AND ALWAYS.
+  //
+  // This artifact is a byte-copy of the CLIENT'S OWN CONTRACT with review
+  // comments inserted, and its comments quote Chancery practice and the
+  // Restatement. It is the surface most likely to be forwarded to someone who
+  // did not run the tool — and it was the only one that said nothing about
+  // what produced it. `honesty-caveat-reach.test.ts` says a new render surface
+  // must join its list; this one never did, so neither
+  // `IngestResult.warnings` nor `run.classification_notice` reached it either.
+  //
+  // Anchored at the document's first run, the same mechanism the unanchored
+  // aggregation comment already used.
+  {
+    const id = nextId++;
+    const lines: string[] = [nonAdviceStatement("review")];
+    if (run.classification_notice) lines.push(run.classification_notice.message);
+    for (const w of caveats?.warnings ?? []) lines.push(`About this input. ${w}`);
+    const body = lines
+      .map((l) => `<w:p><w:r><w:t xml:space="preserve">${escapeXml(l)}</w:t></w:r></w:p>`)
+      .join("");
+    comments.push(commentXml(id, author, body));
+    const firstRun = index.segments[0];
+    const pos = firstRun ? firstRun.runStart : documentXml.indexOf("<w:body>") + "<w:body>".length;
+    insertions.push({ pos, markup: `<w:commentRangeStart w:id="${id}"/>` });
+    insertions.push({
+      pos: firstRun ? firstRun.runEnd : pos,
       markup: `<w:commentRangeEnd w:id="${id}"/><w:r><w:rPr><w:rStyle w:val="CommentReference"/></w:rPr><w:commentReference w:id="${id}"/></w:r>`,
     });
   }

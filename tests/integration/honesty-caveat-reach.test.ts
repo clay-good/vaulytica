@@ -39,6 +39,14 @@ const FINDING_SURFACES: ReadonlyArray<[file: string, what: string]> = [
   ["src/report/exports.ts", "the Markdown fix list"],
   ["tools/cli/run.ts", "the CLI's terminal output"],
   ["src/ui/states.ts", "the in-tab result states"],
+  // 🚨 Joined in 9.706.0, having rendered findings since the feature shipped
+  // without either caveat. It is a byte-copy of the CLIENT'S OWN CONTRACT with
+  // review comments inserted, and its comments quote Chancery practice and the
+  // Restatement — the surface most likely to be forwarded to someone who did
+  // not run the tool, and the only one that said nothing about what it is.
+  // The docstring above says a new render surface must join this list; this
+  // one never did, which is exactly how it was missed.
+  ["src/report/docx-comments.ts", "the anchored-comments reviewed DOCX"],
 ];
 
 /**

@@ -4,7 +4,7 @@ import { buildHtmlReport } from "./html.js";
 import { loadStarterDkbSync } from "../engine/_test-fixtures.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
 import type { IngestResult } from "../ingest/types.js";
-import { privacyStatement } from "./privacy.js";
+import { privacyStatement } from "./disclaimers.js";
 
 const ingest: IngestResult = {
   tree: { type: "document", sections: [] },

@@ -90,15 +90,14 @@ import {
   para,
   type ParaOpts,
 } from "./_docx-primitives.js";
-import { privacyStatement } from "./privacy.js";
+import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 const DETERMINISM_STATEMENT =
   "This report was produced by a deterministic process. Given the same input file, the same Vaulytica engine version, and the same Deterministic Knowledge Base version listed above, the rules in this report will produce an identical report on any machine, at any time. The fingerprint of the input file is recorded above for verification. No part of this analysis was performed by a language model or any other non-deterministic system. The complete list of rules executed, including those that produced no findings, is included in the Audit Trail section so that the scope of the analysis is fully transparent.";
 
 const PRIVACY_STATEMENT = privacyStatement("document");
 
-const NON_ADVICE_STATEMENT =
-  "Vaulytica is a software tool, not a lawyer. This report is a checklist of mechanical findings produced by a deterministic rule engine against a contract you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The findings may be incorrect, incomplete, or inapplicable to your situation. The decision to act on any finding, or not, is yours and your counsel's. If something in this report matters to a transaction or a dispute, consult a licensed attorney in the relevant jurisdiction.";
+const NON_ADVICE_STATEMENT = nonAdviceStatement("document");
 
 void ImageRun; // reserved for future image embedding; keep the import surface stable
 

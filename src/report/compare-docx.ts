@@ -42,7 +42,7 @@ import type { Clause, ClauseDiff, WordDiffSegment } from "./clause-diff.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { PostureMovement, PostureMovementKind } from "./posture-movement.js";
 import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
-import { privacyStatement } from "./privacy.js";
+import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 /**
  * Cap on redline rows rendered per category. A pathological redline (a
@@ -57,8 +57,7 @@ const DETERMINISM_STATEMENT =
 
 const PRIVACY_STATEMENT = privacyStatement("comparison");
 
-const NON_ADVICE_STATEMENT =
-  "Vaulytica is a software tool, not a lawyer. This comparison is a mechanical diff of two rule-engine runs over documents you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The decision to act on any change shown here, or not, is yours and your counsel's.";
+const NON_ADVICE_STATEMENT = nonAdviceStatement("comparison");
 
 export async function buildComparisonDocx(
   cmp: Comparison,

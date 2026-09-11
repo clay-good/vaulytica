@@ -1753,6 +1753,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
             originalBytes.byteOffset + originalBytes.byteLength,
           ) as ArrayBuffer,
           r.run,
+          { warnings: r.ingest.warnings, classification_notice: r.run.classification_notice },
         );
         await mkdir(args.out!, { recursive: true });
         const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];

@@ -95,7 +95,7 @@ const VOCABULARIES: readonly Vocabulary[] = [
     // (9.700.0). This is the section a reader consults precisely because they
     // want the mechanism, so a fifth copy must not be written.
     what: "the privacy statement every report surface prints",
-    owner: "src/report/privacy.ts",
+    owner: "src/report/disclaimers.ts",
     definition: /export function privacyStatement\s*\(/,
   },
   {
@@ -155,7 +155,7 @@ describe("the privacy statement", () => {
   // string literal. Proven by pasting one back into `bundle.ts`, which the
   // registry entry alone waved through.
   it("exists as text in exactly one file", () => {
-    const OWNER = "src/report/privacy.ts";
+    const OWNER = "src/report/disclaimers.ts";
     // A phrase distinctive to the statement and to no other prose.
     const PHRASE = "was transmitted to any server";
     const offenders: string[] = [];

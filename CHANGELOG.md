@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.706.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The one artifact that is the client's own contract said nothing about
+  what it is.** `--format docx-comments` writes a byte-copy of the caller's
+  `.docx` with a Word comment anchored to each finding. Those comments quote
+  Delaware Chancery practice, the Restatement (Second) of Contracts § 205 and
+  FTC Act § 5 — and the file carried **no not-legal-advice statement, no
+  ingest caveat and no classification notice anywhere**: not in the comments,
+  not in the document properties. It is the surface most likely to be
+  forwarded to someone who never ran the tool, and the only one that said
+  nothing about what produced it. (Provenance was there: every comment is
+  authored `Vaulytica <version>`, which Word shows.)
+
+  🥇 **`honesty-caveat-reach.test.ts` had predicted exactly this**, in its own
+  docstring: *"A new render surface must join this list, which is the point:
+  the list is where the omission becomes visible."* The anchored-comments DOCX
+  never joined it, so neither `IngestResult.warnings` nor
+  `run.classification_notice` reached it either. It is on the list now, and a
+  posture comment is anchored at the document start — reusing the same
+  mechanism the unanchored-findings aggregation comment already used.
+
+- 🚨 **The not-legal-advice statement had drifted the same four ways the
+  privacy statement had.** `html.ts`, `docx.ts`, `bundle.ts` and
+  `compare-docx.ts` each declared their own: the bundle's had dropped *"The
+  decision to act on any finding, or not, is yours and your counsel's"* — the
+  sentence that puts the decision where it belongs — and the comparison's had
+  dropped the *"may be incorrect, incomplete, or inapplicable"* qualifier.
+
+  9.700.0 gave the privacy statement a single owner and stopped there; this is
+  the other half. `src/report/privacy.ts` becomes `src/report/disclaimers.ts`
+  and owns both, with per-surface wording so a comparison still says
+  "comparison" and the comments say "These comments". 🚨 The reviewed DOCX's
+  posture comment says nothing about an input that had nothing to say — the
+  load-bearing negative, so a clean ingest adds no "About this input" line.
+
+  **Every non-comment part of the container stays byte-identical**, which is
+  this artifact's contract and is now asserted in the same file.
+
 ## [9.705.0] — 2026-09-10
 
 ### Fixed

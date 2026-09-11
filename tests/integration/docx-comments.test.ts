@@ -168,3 +168,59 @@ describe("buildReviewedDocx — invariants", () => {
     }
   }, 120_000);
 });
+
+describe("the posture comment", () => {
+  // 🚨 This artifact is a byte-copy of the client's OWN CONTRACT with review
+  // comments inserted, and those comments quote Chancery practice and the
+  // Restatement. It said nothing about what produced it and carried no
+  // not-legal-advice statement — and because it had never joined
+  // `honesty-caveat-reach.test.ts`'s list, neither `IngestResult.warnings` nor
+  // `run.classification_notice` reached it either. It is the surface most
+  // likely to be forwarded to someone who did not run the tool.
+  const commentsOf = (bytes: Uint8Array): string =>
+    strFromU8(unzipSync(bytes)["word/comments.xml"]!);
+
+  it("always carries the not-legal-advice statement", async () => {
+    const original = toArrayBuffer(readFileSync(FIXTURE));
+    const r = await analyzeFile(FIXTURE);
+    const xml = commentsOf(buildReviewedDocx(original, r.run).bytes);
+    expect(xml).toContain("not a lawyer");
+    expect(xml).toContain("not legal advice");
+  });
+
+  it("carries the ingest's warnings and the classification notice", async () => {
+    const original = toArrayBuffer(readFileSync(FIXTURE));
+    const r = await analyzeFile(FIXTURE);
+    const run: EngineRun = {
+      ...r.run,
+      classification_notice: { message: "No document family matched.", reason: "generic-fallback" },
+    };
+    const xml = commentsOf(
+      buildReviewedDocx(original, run, { warnings: ["This PDF fell back to OCR."] }).bytes,
+    );
+    expect(xml).toContain("About this input. This PDF fell back to OCR.");
+    expect(xml).toContain("No document family matched.");
+  });
+
+  it("says nothing about an input that had nothing to say", async () => {
+    // The load-bearing negative: a clean ingest adds no "About this input"
+    // line, so the comment stays as short as the truth allows.
+    const original = toArrayBuffer(readFileSync(FIXTURE));
+    const r = await analyzeFile(FIXTURE);
+    const xml = commentsOf(buildReviewedDocx(original, r.run, { warnings: [] }).bytes);
+    expect(xml).not.toContain("About this input");
+  });
+
+  it("does not disturb the attorney's own bytes", async () => {
+    // The posture comment is still a COMMENT: every non-comment part of the
+    // container must remain byte-identical, which is this artifact's contract.
+    const original = toArrayBuffer(readFileSync(FIXTURE));
+    const r = await analyzeFile(FIXTURE);
+    const out = unzipSync(buildReviewedDocx(original, r.run).bytes);
+    const inn = unzipSync(new Uint8Array(original));
+    for (const [name, data] of Object.entries(out)) {
+      if (COMMENT_PARTS.has(name)) continue;
+      expect(Buffer.from(data).equals(Buffer.from(inn[name]!)), `${name} changed`).toBe(true);
+    }
+  });
+});

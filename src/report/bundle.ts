@@ -91,7 +91,7 @@ import {
   type PortfolioStatus,
 } from "./portfolio.js";
 import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
-import { privacyStatement } from "./privacy.js";
+import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 /** Cap on per-document findings surfaced in the consolidated DOCX (spec §11). */
 export const BUNDLE_TOP_N = 10;
@@ -111,8 +111,7 @@ const DETERMINISM_STATEMENT =
 
 const PRIVACY_STATEMENT = privacyStatement("bundle");
 
-const NON_ADVICE_STATEMENT =
-  "Vaulytica is a software tool, not a lawyer. This report is a checklist of mechanical findings produced by a deterministic rule engine against documents you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The findings may be incorrect, incomplete, or inapplicable to your situation. Consult a licensed attorney in the relevant jurisdiction.";
+const NON_ADVICE_STATEMENT = nonAdviceStatement("bundle");
 
 // ---------------------------------------------------------------------------
 // Public surface

@@ -94,7 +94,7 @@ import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
 import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
-import { privacyStatement } from "./privacy.js";
+import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -108,8 +108,7 @@ const DETERMINISM_STATEMENT =
 
 const PRIVACY_STATEMENT = privacyStatement("document");
 
-const NON_ADVICE_STATEMENT =
-  "Vaulytica is a software tool, not a lawyer. This report is a checklist of mechanical findings produced by a deterministic rule engine against a contract you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The findings may be incorrect, incomplete, or inapplicable to your situation. The decision to act on any finding, or not, is yours and your counsel's. If something in this report matters to a transaction or a dispute, consult a licensed attorney in the relevant jurisdiction.";
+const NON_ADVICE_STATEMENT = nonAdviceStatement("document");
 
 /** Escape text for safe inclusion in HTML element content / attributes. */
 function esc(text: string): string {
