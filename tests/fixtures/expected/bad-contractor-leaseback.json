@@ -867,7 +867,7 @@
         "end_offset": 941,
         "section_id": "s1.3",
         "start_offset": 855,
-        "text": "Contractor hereby irrevocably assigns to Company all right, title, and interest, including all intellectual property rights, in and to any and all works, inventions, methods, processes, software, and materials created, conceived, developed, or used by Contractor in connection wit"
+        "text": "Contractor hereby irrevocably assigns to Company all right, title, and interest, including all intellectual property rights, in and to any and all works, inventions, methods, processes, software, and materials created, conceived, developed, or used by Contractor in connection wi…"
       },
       "explanation": "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
       "id": "IPDATA-002-s1.3-855",
@@ -903,7 +903,7 @@
         "end_offset": 1245,
         "section_id": "s1.4",
         "start_offset": 1222,
-        "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in an"
+        "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in a…"
       },
       "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
       "id": "RISK-015-s1.4-1222",
@@ -1017,7 +1017,7 @@
         "end_offset": 1244,
         "section_id": "s1.4",
         "start_offset": 1236,
-        "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in an"
+        "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in a…"
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.4-1236",
@@ -1031,11 +1031,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "3cebfc4d9d6729b995d2a5a7ac6154287a491da9a01c40ea1a422ceba244cb58",
+  "result_hash": "2063d0dbbe2d3780f9ab786c23f6df2f69b1ce6b12f4505e33db6d171c6065b8",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.709.0"
+  "version": "9.710.0"
 }

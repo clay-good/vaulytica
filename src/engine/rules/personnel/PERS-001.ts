@@ -2,6 +2,7 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { describesCovenantElsewhere, emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 import { NON_COMPETE_DISCLAIMED } from "./PERS-005.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { truncate } from "../../text.js";
 
 /**
  * How long the covenant runs — "for a period of two (2) years", "for
@@ -83,7 +84,7 @@ export const rule: Rule = {
         ? `Non-compete scope: ${scope}`
         : "Non-compete clause — check scope and enforceability",
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
       position: hit.position,

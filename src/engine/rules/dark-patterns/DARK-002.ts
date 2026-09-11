@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
+import { truncate } from "../../text.js";
 
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
@@ -67,7 +68,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Auto-renewal with notice window buried or long",
       description: `Notice window: ${days} days, located in ${notice!.position.section_id}.`,
-      excerpt: auto.text.slice(0, 200),
+      excerpt: truncate(auto.text, 200),
       explanation:
         "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes address this pattern.",
       recommendation:

@@ -41,6 +41,7 @@ import {
 } from "./_helpers.js";
 import { forEachParagraph } from "../../../../extract/walk.js";
 import { ATTACHMENT_KIND } from "../../../../extract/attachment-kinds.js";
+import { truncate } from "../../../text.js";
 
 const V4_VERSION = "1.4.0";
 
@@ -804,13 +805,6 @@ export const CROSS_CURRENCY_001: ConsistencyRule = {
  * engine does not import from the report layer, so the guard is repeated here
  * rather than shared.
  */
-function truncate(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  let end = limit - 1;
-  const lastUnit = text.charCodeAt(end - 1);
-  if (lastUnit >= 0xd800 && lastUnit <= 0xdbff) end -= 1;
-  return text.slice(0, end) + "…";
-}
 
 function canonicalLaw(raw: string): string {
   return raw

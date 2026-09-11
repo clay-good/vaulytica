@@ -28,6 +28,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { flattenText } from "../../src/ingest/types.js";
+import { excerptNeedle } from "./_excerpt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -613,7 +614,14 @@ describe("a finding's quote is really in the document", () => {
           continue;
         }
         quoted += 1;
-        if (!flat.includes(ex.text)) {
+        // Same invariant as `excerpt-is-evidence.test.ts`, through the same
+        // owner — a trailing ellipsis marks a cut quote and is not document
+        // text; one anywhere else would be a spliced quote.
+        const { needle, spliced } = excerptNeedle(ex.text);
+        if (spliced) {
+          broken.push(`${name} ${f.rule_id}: spliced quote`);
+        }
+        if (!flat.includes(needle)) {
           broken.push(`${name} ${f.rule_id}: ${JSON.stringify(ex.text.slice(0, 80))}`);
         }
         if (ex.end_offset > flat.length) {

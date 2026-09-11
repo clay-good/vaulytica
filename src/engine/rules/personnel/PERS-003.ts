@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 // Employee-like signals under the IRS 20-factor test that must not appear in a
 // genuine independent-contractor agreement. The original list carried only four;
@@ -48,7 +49,7 @@ export const rule: Rule = {
         return emit(ctx, rule, {
           title: "Employee-like language in IC agreement",
           description: hit.match[0],
-          excerpt: hit.text.slice(0, 280),
+          excerpt: truncate(hit.text, 280),
           explanation:
             "Language consistent with an employer-employee relationship (set hours, mandatory reporting, employer-provided tools) can cause misclassification risk under the IRS 20-factor test (Rev. Rul. 87-41).",
           recommendation:

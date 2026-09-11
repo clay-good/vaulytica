@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** PERS-004 — Anti-poaching language (warning). */
 export const rule: Rule = {
@@ -39,7 +40,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Anti-poaching / no-hire clause present",
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "Mutual no-hire clauses between competitors raise antitrust scrutiny under FTC Act § 5. DOJ has prosecuted no-poach agreements between competitors.",
       recommendation:

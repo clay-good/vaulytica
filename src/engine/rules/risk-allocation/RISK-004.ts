@@ -2,6 +2,7 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 import { PAGE_FURNITURE } from "../_helpers.js";
 import { emit } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 // `[^.;\n]` after the exception so the indemnity carve-out must be in the
 // SAME sentence as the exception — otherwise a later, unrelated "indemnif"
@@ -73,7 +74,7 @@ export const rule: Rule = {
       title: "Indemnity carved out of the liability cap",
       description:
         "The limitation-of-liability clause appears to except indemnification, potentially creating uncapped indemnity exposure.",
-      excerpt: carveOut.text.slice(0, 320),
+      excerpt: truncate(carveOut.text, 320),
       explanation:
         "When indemnity is carved out of the LoL cap, the indemnifying party may face uncapped exposure on third-party claims. Verify a separate indemnity-specific cap exists, or that the carve-out is intended.",
       recommendation:

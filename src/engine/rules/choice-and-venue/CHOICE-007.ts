@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, clauseStartBefore } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 // `\b` boundaries so "lease" does not match inside "Release" — a routine B2B /
 // settlement "Release of Claims" heading is not a consumer contract, and the
@@ -52,7 +53,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Class-action waiver in a consumer-facing contract",
       description: "A class-action waiver appears in a consumer-context contract.",
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "Class-action waivers are enforceable in many jurisdictions under AT&T Mobility v. Concepcion, but they materially change the economics of small claims. Flag for review when the agreement is consumer-facing.",
       recommendation:

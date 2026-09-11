@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
@@ -59,7 +60,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Data-regime references missing",
       description: "Contract references personal data but does not cite GDPR / CCPA / HIPAA.",
-      excerpt: personalData.text.slice(0, 240),
+      excerpt: truncate(personalData.text, 240),
       explanation:
         "When a contract touches personal data, citing the governing regime (GDPR Art. 28, CCPA, HIPAA 45 CFR 164.504) makes obligations explicit and discoverable.",
       position: personalData.position ?? topPosition(ctx),

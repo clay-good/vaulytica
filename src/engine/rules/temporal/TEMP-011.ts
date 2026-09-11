@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /**
  * TEMP-011 — Auto-renewal notice window shorter than 30 days
@@ -43,7 +44,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Auto-renewal notice window under 30 days: ${days}`,
       description: `Auto-renewal requires non-renewal notice ${days} day${days === 1 ? "" : "s"} in advance.`,
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "An under-30-day non-renewal window compresses the customer's decision time. ROSCA (15 U.S.C. § 8403) and state-level auto-renewal statutes (California BPC §17600 et seq., New York GBL §527-a, and similar) constrain this in consumer contexts; even where the contract is B2B, short windows are widely reported as a friction-based dark pattern.",
       recommendation: "Negotiate a 30- or 60-day non-renewal notice window.",

@@ -19,6 +19,7 @@ import { makeFinding } from "../../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../../extract/walk.js";
 import type { DocPosition } from "../../../../extract/types.js";
 import { findDenial, firstBadPatternHit } from "../../_helpers.js";
+import { truncate } from "../../../text.js";
 
 const BAA_PLAYBOOKS = ["baa", "baa-deep", "baa-subcontractor"] as const;
 
@@ -122,7 +123,7 @@ export function buildBaaPresenceRule(spec: BaaPresenceSpec): Rule {
             rule: this as Rule,
             title: spec.denied_title ?? spec.missing_title,
             description: spec.denied_description ?? spec.missing_description,
-            excerptText: denial.sentence.slice(0, 280),
+            excerptText: truncate(denial.sentence, 280),
             explanation: spec.explanation,
             recommendation: spec.recommendation,
             position: denial.position,
@@ -191,7 +192,7 @@ export function buildBaaLanguageRule(spec: BaaLanguageSpec): Rule {
         rule: this as Rule,
         title: spec.bad_title,
         description: spec.bad_description,
-        excerptText: h.text.slice(0, 280),
+        excerptText: truncate(h.text, 280),
         explanation: spec.explanation,
         recommendation: spec.recommendation,
         position: h.position,

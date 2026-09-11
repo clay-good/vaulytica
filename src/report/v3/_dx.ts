@@ -143,13 +143,7 @@ export function hyperlinkParagraph(
  * was previously fixed in one place and three stale copies in the v3
  * renderers kept the old splitting behavior.
  */
-export function truncate(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  let end = limit - 1;
-  const lastUnit = text.charCodeAt(end - 1);
-  if (lastUnit >= 0xd800 && lastUnit <= 0xdbff) end -= 1;
-  return text.slice(0, end) + "…";
-}
+export { truncate } from "../../engine/text.js";
 
 /** `"1 day"` / `"2 days"` — pluralization-aware count + noun. */
 export function plural(n: number, noun: string): string {

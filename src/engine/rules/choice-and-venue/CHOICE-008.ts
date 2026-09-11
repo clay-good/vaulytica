@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** CHOICE-008 — Jury trial waiver (info). */
 export const rule: Rule = {
@@ -28,7 +29,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Jury trial waiver present",
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 240),
+      excerpt: truncate(hit.text, 240),
       explanation:
         "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
       position: hit.position,

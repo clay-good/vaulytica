@@ -10,6 +10,7 @@ import { topPosition } from "../_helpers.js";
 import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, irs, practice, stateLaw, usc } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { truncate } from "../../text.js";
 
 const C = "employment";
 
@@ -925,7 +926,7 @@ const WARN_ADVANCE_TIMING: Rule = {
         title: "Sixty-day advance timing — not found",
         description:
           "This notice states neither a sixty-day advance period nor a pair of dates from which the period can be computed.",
-        excerptText: paragraphs[0]?.text.slice(0, 200) ?? "",
+        excerptText: truncate(paragraphs[0]?.text ?? "", 200),
         explanation:
           "§ 2102 requires 60 days' notice before a covered plant closing or mass layoff. A notice that gives no date for the action cannot be measured against that period by its reader either.",
         recommendation:

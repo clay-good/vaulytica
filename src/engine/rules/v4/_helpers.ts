@@ -23,6 +23,7 @@ import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { findDenial, isNonOperative, isTableOfContents } from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
 import { isLegendLine } from "../../../extract/legends.js";
+import { truncate } from "../../text.js";
 
 /**
  * Concatenate every section heading + paragraph text, MINUS the non-operative
@@ -234,7 +235,7 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
             // Excerpt the denying SENTENCE. A policy states its disclaimer deep
             // inside a long clause, so the paragraph's leading 280 characters
             // would show everything except the sentence being reported.
-            excerptText: denial.sentence.slice(0, 280),
+            excerptText: truncate(denial.sentence, 280),
             explanation: spec.explanation,
             recommendation: spec.recommendation,
             position: denial.position,
@@ -330,7 +331,7 @@ export function buildV4LanguageRule(spec: V4LanguageSpec): Rule {
         rule: this as Rule,
         title: spec.bad_title,
         description: spec.bad_description,
-        excerptText: h.text.slice(0, 280),
+        excerptText: truncate(h.text, 280),
         explanation: spec.explanation,
         recommendation: spec.recommendation,
         position: h.position,

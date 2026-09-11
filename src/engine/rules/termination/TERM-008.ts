@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** TERM-008 — Termination linked to payment status (warning). */
 export const rule: Rule = {
@@ -35,7 +36,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Immediate termination on payment default",
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "Termination on payment default without a cure period gives one party a fast trigger that can be triggered by routine payment delays.",
       recommendation:

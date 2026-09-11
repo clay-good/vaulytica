@@ -889,7 +889,7 @@
         "end_offset": 1297,
         "section_id": "s1.4",
         "start_offset": 1278,
-        "text": "All deliverables, work product, methodologies, frameworks, tools, templates, and any improvements, derivatives, or modifications thereto (whether pre-existing or developed during the engagement) shall be deemed \"works made for hire\" and the sole and exclusive property of Client. "
+        "text": "All deliverables, work product, methodologies, frameworks, tools, templates, and any improvements, derivatives, or modifications thereto (whether pre-existing or developed during the engagement) shall be deemed \"works made for hire\" and the sole and exclusive property of Client.…"
       },
       "explanation": "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
       "id": "IPDATA-002-s1.4-1278",
@@ -1092,7 +1092,7 @@
         "end_offset": 1492,
         "section_id": "s1.5",
         "start_offset": 1484,
-        "text": "Advisor shall indemnify, defend and hold harmless Client from any claim arising out of or related to the Services. Advisor shall hold all Confidential Information in strict confidence and shall not disclose it to any third party for any reason whatsoever, including in connection "
+        "text": "Advisor shall indemnify, defend and hold harmless Client from any claim arising out of or related to the Services. Advisor shall hold all Confidential Information in strict confidence and shall not disclose it to any third party for any reason whatsoever, including in connection…"
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       "id": "RISK-011-s1.5-1484",
@@ -1106,11 +1106,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "f79c8c5ae59e3b40c19e89af4c86a8ae39d0896b6338ce2b85d9ac9d58760c2a",
+  "result_hash": "a9d3e68d3b576641b04701422c10962f0f7550e26d822c912fff824c98beebeb",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.709.0"
+  "version": "9.710.0"
 }

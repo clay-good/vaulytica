@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, allMatches, topPosition } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** RISK-002 — Indemnity mutuality (warning). */
 export const rule: Rule = {
@@ -181,7 +182,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Indemnity appears asymmetric",
       description: `Indemnity sentence counts by party: ${[...counts.entries()].map(([k, v]) => `${k}=${v}`).join(", ")}.`,
-      excerpt: lines[0]!.match[0].slice(0, 200),
+      excerpt: truncate(lines[0]!.match[0], 200),
       explanation:
         "One party appears to bear materially more indemnity scope than the other. Confirm the asymmetry is intentional and reciprocated by other consideration (e.g., a fee discount).",
       recommendation:

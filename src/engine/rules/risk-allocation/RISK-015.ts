@@ -8,6 +8,7 @@ import {
 } from "../_helpers.js";
 import { capExceptsIndemnity } from "./RISK-004.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { truncate } from "../../text.js";
 
 /**
  * RISK-015 — Indemnification present without an aggregate cap
@@ -268,7 +269,7 @@ export const rule: Rule = {
       description: hasCap
         ? `Indemnification language is present (\`${hit.raw}\`) and the liability cap explicitly carves it out — indemnity exposure is uncapped.`
         : `Indemnification language is present (\`${hit.raw}\`) but no clause caps the aggregate exposure.`,
-      excerpt: hit.sentence.length > 0 ? hit.sentence.slice(0, 280) : hit.raw,
+      excerpt: hit.sentence.length > 0 ? truncate(hit.sentence, 280) : hit.raw,
       explanation:
         "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
       recommendation:

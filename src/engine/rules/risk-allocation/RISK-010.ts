@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 import { AMOUNT_IN_WORDS, CURRENCY_TOKEN } from "../../../extract/amounts.js";
+import { truncate } from "../../text.js";
 
 /** RISK-010 — Insurance requirement levels (info). */
 export const rule: Rule = {
@@ -48,7 +49,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Insurance requirements stated",
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 320),
+      excerpt: truncate(hit.text, 320),
       explanation:
         "Insurance levels should match the deal size and risk. Common minimums are $1M per occurrence CGL and $2M E&O for services contracts.",
       position: hit.position,

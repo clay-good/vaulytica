@@ -19,6 +19,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
+import { excerptNeedle } from "./_excerpt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR)
@@ -43,7 +44,21 @@ describe("an excerpt with a span is text the document contains", () => {
         if (!excerpt?.text) continue;
         // Zero-width: an absence finding, whose excerpt is a marker.
         if ((excerpt.start_offset ?? 0) === (excerpt.end_offset ?? 0)) continue;
-        const needle = flat(excerpt.text);
+        const raw = flat(excerpt.text);
+        // 🚨 A TRAILING ELLIPSIS IS A MARK, NOT A QUOTE. Rules cut a long
+        // clause to a display length, and 196 of the corpus's 1,445 excerpts
+        // used to end mid-word with nothing to say they had been cut — the
+        // report quoting the client's contract and stopping at "…remove
+        // Halcyon bran". `truncate()` marks the cut, and the mark is not
+        // document text, so it comes off before the containment check.
+        //
+        // The constraint is TIGHTENED, not relaxed: the ellipsis may appear
+        // only at the very end. One in the middle would mean a spliced quote —
+        // two passages joined into a sentence the document never says — which
+        // is the failure this whole file exists to prevent.
+        const { needle, spliced } = excerptNeedle(raw);
+        if (spliced)
+          bad.push(`${finding.rule_id}: spliced quote — ${JSON.stringify(raw.slice(0, 100))}`);
         // A very short excerpt matches too easily to mean anything.
         if (needle.length < 8) continue;
         if (!haystack.includes(needle))

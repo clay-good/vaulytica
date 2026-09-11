@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.710.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The report quoted the client's contract and stopped mid-word.** A rule
+  cuts a long clause to a display length with `text.slice(0, 240)`, and the
+  report prints that excerpt as the evidence the rule fired on. **196 of the
+  corpus's 1,445 excerpts ended mid-word with nothing to mark the cut** — an
+  attorney-facing report quoting *"…does not prohibit a general advertisement
+  n"*, *"…remove Halcyon bran"*, *"…and profession"*. It reaches the DOCX
+  evidence block, the HTML report, the fix list, the CSV and the Word comments.
+
+  🥇 **The correct behaviour already existed three times** — `src/report/v3/_dx.ts`
+  and `cross-doc-rules.ts` held byte-identical ellipsis-and-surrogate-safe
+  `truncate()`s, and `exports.ts` a third variant — while the **fifty-five rule
+  sites that actually quote the document used none of them.**
+  `src/engine/text.ts` is now the owner; the two duplicates re-export it. 196 →
+  0 (the five the sweep still reports are a singular defined term found inside
+  its own plural — the probe, not the engine).
+
+  Found by a sweep for `.slice(0, N)` with nothing nearby naming the omission,
+  rather than by tripping over the next one — the same move that closed the
+  drifted-statement class in 9.709.0.
+
+### Changed
+- 🚨 **`excerpt-is-evidence.test.ts`'s invariant is TIGHTENED, not relaxed.**
+  It asserts that a quote is text the document contains, and an ellipsis is not
+  document text. Rather than exempt truncated excerpts, the rule is now: a
+  trailing ellipsis is a MARK and comes off before the check, and an ellipsis
+  **anywhere else is a spliced quote** — two passages joined into a sentence
+  the document never says — which is rejected outright. That is a new
+  constraint the file did not have.
+
+  🥇 **And the invariant was stated twice.** `format-invariance.test.ts` asserts
+  the same thing, and updating one left the other failing — which is the whole
+  argument for an owner. `tests/integration/_excerpt.ts` holds it now, and both
+  files ask it.
+
+  All 345 goldens changed hash only; no finding, id, severity or count moved.
+
 ## [9.709.0] — 2026-09-10
 
 ### Fixed

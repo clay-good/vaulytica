@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** TERM-007 — Post-termination obligations enumerated (info). */
 export const rule: Rule = {
@@ -33,7 +34,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Post-termination obligations enumerated",
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "Post-termination obligations typically include return or destruction of confidential materials, deletion of data, and a certificate of destruction.",
       position: hit.position,

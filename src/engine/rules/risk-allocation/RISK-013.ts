@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** RISK-013 — Force majeure clause present (info). */
 export const rule: Rule = {
@@ -25,7 +26,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Force majeure clause present",
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "Force-majeure clauses excuse performance during specified events beyond a party's control. Scope varies widely; pandemics, supply-chain disruption, and government action are common modern additions.",
       position: hit.position,

@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** Every party named as protected by a consequential-damages waiver in `text`. */
 const WAIVER_BENEFICIARY =
@@ -46,7 +47,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Consequential-damages waiver appears one-sided",
       description: "Only one party is named as protected from consequential damages.",
-      excerpt: oneSided.text.slice(0, 280),
+      excerpt: truncate(oneSided.text, 280),
       explanation:
         "Consequential-damages waivers are usually mutual. A one-sided version shifts risk significantly toward the unprotected party.",
       recommendation:

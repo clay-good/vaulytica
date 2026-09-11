@@ -3,6 +3,7 @@ import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { enclosingSentence } from "../_helpers.js";
 import type { Party } from "../../../extract/types.js";
+import { truncate } from "../../text.js";
 
 /**
  * STRUCT-017 — Signature-block completeness (spec-v9 Thrust B, §17–§18).
@@ -159,7 +160,7 @@ export const rule: Rule = {
       rule,
       title: `Declared part${unsigned.length === 1 ? "y" : "ies"} with no signature line: ${unsigned.length}`,
       description: `The document declares ${principals.length} contracting parties and the signature block names ${signed.length} of them; ${names} ${unsigned.length === 1 ? "has" : "have"} no attributable signature line.`,
-      excerptText: anchor.text.slice(0, 160),
+      excerptText: truncate(anchor.text, 160),
       explanation:
         "Every party bound by the agreement needs a line to sign. The signature block here is party-labeled but a declared party has no line attributable to it — a closing blocker, since the agreement cannot be fully executed until each named party has a place to sign. This reconciles the parties against the signature block; it does not assert the document is or is not validly executed (a jurisdiction-specific legal judgment).",
       recommendation: `Add a signature line (By / Name / Title / Date) for ${names}, or confirm the party is intentionally a non-signatory (e.g., a named beneficiary). Reconcile every preamble party to a signature line before closing.`,

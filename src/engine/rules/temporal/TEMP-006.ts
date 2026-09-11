@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 import { survivalListGaps } from "./TEMP-007.js";
+import { truncate } from "../../text.js";
 
 /** TEMP-006 — Survival clause present (info). */
 export const rule: Rule = {
@@ -36,7 +37,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Survival clause present",
       description: "Provisions are stated to survive termination.",
-      excerpt: hit.text.slice(0, 240),
+      excerpt: truncate(hit.text, 240),
       explanation:
         "A survival clause names the obligations that outlast termination — typically confidentiality, indemnity, payment obligations accrued before termination, and choice of law.",
       position: hit.position,

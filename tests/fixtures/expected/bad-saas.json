@@ -902,7 +902,7 @@
         "end_offset": 653,
         "section_id": "s1.3",
         "start_offset": 634,
-        "text": "(c) Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current "
+        "text": "(c) Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current…"
       },
       "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes address this pattern.",
       "id": "DARK-002-s1.3-634",
@@ -1244,11 +1244,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "21ef8635cea1259cf30a91aee868233c58aed98e5d7931df816f0b532769c633",
+  "result_hash": "7ec454737e89144b3ad26bb4e4d5f36f19bf9d20f159378697774aeb336c7172",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.709.0"
+  "version": "9.710.0"
 }

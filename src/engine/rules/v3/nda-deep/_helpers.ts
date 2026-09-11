@@ -13,6 +13,7 @@ import { makeFinding } from "../../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../../extract/walk.js";
 import type { DocPosition } from "../../../../extract/types.js";
 import { findDenial, firstBadPatternHit } from "../../_helpers.js";
+import { truncate } from "../../../text.js";
 
 const NDA_PLAYBOOKS_ALL = ["mutual-nda-deep", "unilateral-nda-deep"] as const;
 const NDA_PLAYBOOKS_MUTUAL = ["mutual-nda-deep"] as const;
@@ -130,7 +131,7 @@ export function buildNdaPresenceRule(spec: NdaPresenceSpec): Rule {
             rule: this as Rule,
             title: spec.denied_title ?? spec.missing_title,
             description: spec.denied_description ?? spec.missing_description,
-            excerptText: denial.sentence.slice(0, 280),
+            excerptText: truncate(denial.sentence, 280),
             explanation: spec.explanation,
             recommendation: spec.recommendation,
             position: denial.position,
@@ -217,7 +218,7 @@ export function buildNdaLanguageRule(spec: NdaLanguageSpec): Rule {
         rule: this as Rule,
         title: spec.bad_title,
         description: spec.bad_description,
-        excerptText: h.text.slice(0, 280),
+        excerptText: truncate(h.text, 280),
         explanation: spec.explanation,
         recommendation: spec.recommendation,
         position: h.position,
@@ -344,7 +345,7 @@ export function buildNdaCompoundRule(spec: NdaCompoundSpec): Rule {
         rule: this as Rule,
         title: spec.missing_title,
         description: spec.missing_description,
-        excerptText: found.text.slice(0, 280),
+        excerptText: truncate(found.text, 280),
         explanation: spec.explanation,
         recommendation: spec.recommendation,
         position: found.position,

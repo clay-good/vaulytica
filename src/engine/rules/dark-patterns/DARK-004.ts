@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** DARK-004 — Mandatory arbitration with class waiver in consumer contract (warning). */
 export const rule: Rule = {
@@ -51,7 +52,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Mandatory arbitration plus class-action waiver in a consumer-facing contract",
       description: "Both mandatory arbitration and a class-action waiver appear.",
-      excerpt: cw.text.slice(0, 280),
+      excerpt: truncate(cw.text, 280),
       explanation:
         "Mandatory arbitration combined with a class-action waiver effectively immunizes widespread small-dollar harms from collective redress. Enforceable in many jurisdictions, but worth surfacing prominently when the agreement is consumer-facing.",
       recommendation:

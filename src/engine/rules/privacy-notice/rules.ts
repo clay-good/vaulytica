@@ -40,6 +40,7 @@ import {
   type Regime,
   type RegimeId,
 } from "../../../privacy/regime-data.js";
+import { truncate } from "../../text.js";
 
 export const PRIVACY_NOTICE_PLAYBOOK_IDS = [
   "privacy-notice-us",
@@ -276,7 +277,7 @@ function buildTxExactRule(spec: TxExactSpec): PnotRule {
           rule: this as Rule,
           title: `Mandated ${spec.kind}-data sale notice present but altered`,
           description: `Language resembling the ${spec.citation} notice was found, but it does not match the mandated wording exactly. Required: "${spec.mandated}"`,
-          excerptText: a.text.slice(0, 280),
+          excerptText: truncate(a.text, 280),
           explanation: `${spec.citation} prescribes the notice text verbatim; a paraphrase or altered rendering does not satisfy it.`,
           recommendation: `Replace the altered text with the exact statutory notice: "${spec.mandated}"`,
           position: { section_id: a.section_id, paragraph_id: a.paragraph_id, start: 0, end: 0 },

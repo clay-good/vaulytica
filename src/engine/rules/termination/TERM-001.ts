@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
+import { truncate } from "../../text.js";
 
 // "For convenience" is as often written as its unambiguous synonyms — "without
 // cause", "for any reason" / "for any or no reason", "with or without cause".
@@ -43,7 +44,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Termination for convenience: ${days} days' notice`,
       description: hit.match[0],
-      excerpt: hit.text.slice(0, 240),
+      excerpt: truncate(hit.text, 240),
       explanation:
         "Termination for convenience permits exit without cause; the notice period determines how quickly the parties can unwind.",
       position: hit.position,

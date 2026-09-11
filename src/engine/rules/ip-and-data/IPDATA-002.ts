@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** IPDATA-002 — Pre-existing IP carve-out clarity (warning). */
 function documentText(ctx: RuleContext): string {
@@ -48,7 +49,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Pre-existing IP carve-out not stated",
       description: "An IP assignment is present but pre-existing IP is not expressly carved out.",
-      excerpt: hit.text.slice(0, 280),
+      excerpt: truncate(hit.text, 280),
       explanation:
         "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
       recommendation:

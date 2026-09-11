@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, expandSurvivalSectionRefs } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { truncate } from "../../text.js";
 
 /**
  * TEMP-012 — Survival clause silent on confidentiality / IP /
@@ -109,7 +110,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Survival clause does not name ${missing.length} sticky obligation${missing.length === 1 ? "" : "s"}`,
       description: `The survival clause exists but does not name: ${missing.join(", ")}.`,
-      excerpt: survivalParas[0]!.slice(0, 280),
+      excerpt: truncate(survivalParas[0]!, 280),
       explanation:
         "Survival language is what keeps sticky obligations alive after a contract terminates. A survival clause that doesn't expressly enumerate the present-in-document confidentiality / IP / indemnity obligations creates ambiguity at the moment those obligations matter most — post-termination, when the contract has already ended.",
       recommendation: `Add explicit named references to the missing obligation(s): ${missing.join(", ")}. Standard drafting names every sticky section by number or category in the survival clause.`,

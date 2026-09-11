@@ -888,7 +888,7 @@
         "end_offset": 1197,
         "section_id": "s1.4",
         "start_offset": 1175,
-        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than"
+        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer tha…"
       },
       "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes address this pattern.",
       "id": "DARK-002-s1.4-1175",
@@ -1143,11 +1143,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "3468366bdc7a7533c755c7763e6126e5326effbb7cb6a65b63b7ea4ca2700fd4",
+  "result_hash": "ea8ba681d0cae5498d9ec2e7ab442a6abf97c0b59b0ecfec10a44ab4a63f7427",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.709.0"
+  "version": "9.710.0"
 }

@@ -1019,7 +1019,7 @@
         "end_offset": 343,
         "section_id": "s1.1",
         "start_offset": 285,
-        "text": "Provider represents and warrants that the fees charged hereunder are, and shall at all times during the Term remain, no less favorable than those offered to any other customer of Provider for substant"
+        "text": "Provider represents and warrants that the fees charged hereunder are, and shall at all times during the Term remain, no less favorable than those offered to any other customer of Provider for substan…"
       },
       "explanation": "MFN clauses guarantee one party terms no worse than the other's best customer. They are operationally expensive to administer, sometimes raise antitrust concerns, and lock the drafting party into prices going forward.",
       "id": "FIN-007-s1.1-285",
@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "9f81bd30d6aafdaf516efd84cb595f071cf60ec724feffe763fa0a4a796fab66",
+  "result_hash": "46be74a17b8620ab8bfb57e4303daf1277120223ed58c3d8685fadab5c84ebc6",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.709.0"
+  "version": "9.710.0"
 }

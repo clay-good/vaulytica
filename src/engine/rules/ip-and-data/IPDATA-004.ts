@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { truncate } from "../../text.js";
 
 /** IPDATA-004 — Data ownership distinction from IP (info). */
 export const rule: Rule = {
@@ -54,7 +55,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Data ownership not separately addressed",
       description: "The contract references data but does not separately allocate data ownership.",
-      excerpt: dataMention.text.slice(0, 240),
+      excerpt: truncate(dataMention.text, 240),
       explanation:
         "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
       position: dataMention.position ?? topPosition(ctx),

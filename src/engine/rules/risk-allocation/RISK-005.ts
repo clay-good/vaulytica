@@ -2,6 +2,7 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 import { CONSEQ_WAIVER } from "./RISK-007.js";
+import { truncate } from "../../text.js";
 
 /**
  * A limitation of liability is the CAP, not the heading. Matching only the
@@ -79,7 +80,7 @@ export const rule: Rule = {
         title: "Liability limited by waiver only; no cap stated",
         description:
           "A consequential-damages waiver is present, but no clause caps the aggregate liability either party can incur.",
-        excerpt: waiver.text.slice(0, 240),
+        excerpt: truncate(waiver.text, 240),
         explanation:
           "A waiver of indirect and consequential damages bounds the KIND of loss recoverable; it does not bound the AMOUNT. Direct damages remain open-ended, and on a supply or services contract those are usually the larger exposure.",
         recommendation:
