@@ -969,7 +969,7 @@
       "title": "No IP-ownership clause detected"
     },
     {
-      "description": "The contract references data handling (`Customer Data`) but no clause specifies retention duration or deletion obligations.",
+      "description": "The contract references data handling ('Customer Data') but no clause specifies retention duration or deletion obligations.",
       "document_position": 360,
       "excerpt": {
         "end_offset": 373,
@@ -1253,11 +1253,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "d171fc8ef53a0131651058fc9868756838243e2261f7ed09ec6dc935167b7f22",
+  "result_hash": "97b8952c825279bc9bacde8628cf9045d9e7fe0e0cc16d5f890320947a6d5e1c",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.715.0"
+  "version": "9.716.0"
 }

@@ -75,6 +75,8 @@ Every new rule needs:
 4. Positive + negative tests in `<RULE-ID>.test.ts`.
 5. A PR description explaining the **legal basis** — the statute, regulation, drafting standard, or named source that justifies the rule. "It looked weird" is not enough.
 
+**Rule prose carries no Markdown.** A rule's `title`, `description`, `explanation` and `recommendation` are authored once and rendered on six surfaces — the Word report a lawyer emails a client, the HTML report, the findings CSV, SARIF, the JSON and the tab — and Markdown is the convention of exactly one of them. An asterisk pair or a code span reaches every other reader as literal punctuation. Write a case name as plain text (`Bloor v. Falstaff`, not `*Bloor v. Falstaff*`) and a quoted phrase in single quotes (`'best efforts'`, not a backtick span). `tests/integration/report-prose-markup.test.ts` enforces it across double-quoted **and** template literals; a function whose name ends in `Markdown` is exempt, because it renders Markdown by contract.
+
 ### New playbooks
 
 Every new playbook needs:

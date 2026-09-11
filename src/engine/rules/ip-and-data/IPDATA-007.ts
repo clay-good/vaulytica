@@ -66,7 +66,7 @@ export const rule: Rule = {
     const hit: Hit = dataHit;
     return emit(ctx, rule, {
       title: "Data retention period unspecified",
-      description: `The contract references data handling (\`${hit.raw}\`) but no clause specifies retention duration or deletion obligations.`,
+      description: `The contract references data handling ('${hit.raw}') but no clause specifies retention duration or deletion obligations.`,
       excerpt: hit.raw,
       explanation:
         "Under GDPR Article 5(1)(e), CCPA, and most modern data-protection regimes, the duration for which data is retained must be defined or tied to a defined purpose. A contract that handles data but says nothing about retention leaves the data subject without a contractual ceiling on how long their information can be held — and leaves the data controller without a clear obligation to delete.",

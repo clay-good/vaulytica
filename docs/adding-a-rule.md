@@ -52,6 +52,7 @@ Notes:
 - The `check` function must be **pure** — no `Date.now()`, no `Math.random()`, no `fetch`. Anything time-dependent breaks the determinism contract; the `result_hash` is recomputed on every run and must match.
 - Prefer `emit(ctx, rule, …)` from [`_helpers.ts`](../src/engine/rules/_helpers.ts) — it resolves `dkb_citations` to `SourceCitation`s for you and threads them onto the finding. If you need explicit citation control, use [`makeFinding`](../src/engine/finding.ts) directly and pass `source_citations` yourself.
 - Other helpers in `_helpers.ts`: `firstParagraphMatch(ctx, re)`, `allMatches(ctx, re)`, `hasCategory(ctx, category)`, `firstByCategory(ctx, category)`, `topPosition(ctx)`.
+- **No Markdown in the prose.** `title` / `description` / `explanation` / `recommendation` are rendered on six surfaces and Markdown is the convention of exactly one of them, so an asterisk pair or a code span reaches the Word report, the HTML and the CSV as literal punctuation. A case name is plain text; a quoted phrase takes single quotes — `` `${hit.raw}` `` becomes `'${hit.raw}'`. The temptation is strongest in a template literal that interpolates the phrase it quotes, which is exactly where the guard's first form could not see it; `tests/integration/report-prose-markup.test.ts` now reads those too.
 
 ## 3. Register the rule
 

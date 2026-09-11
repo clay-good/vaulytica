@@ -897,7 +897,7 @@
       "title": "No limitation-of-liability clause detected"
     },
     {
-      "description": "Indemnification language is present (`shall defend, indemnify`) but no clause caps the aggregate exposure.",
+      "description": "Indemnification language is present ('shall defend, indemnify') but no clause caps the aggregate exposure.",
       "document_position": 1222,
       "excerpt": {
         "end_offset": 1245,
@@ -1031,11 +1031,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "820d73ce1d5bbd053f85d5e34c5e40e58a647af364f16df06a0672e3cfd9d41f",
+  "result_hash": "3c86c99fcd685ff735bc203cd58273b4cde34cf8e6cd058a8966b17db2aca658",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.715.0"
+  "version": "9.716.0"
 }

@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.716.0] — 2026-09-11
+
+### Fixed
+- 🚨 **A sweep's blind spot is not a gap in the thing it sweeps.** 9.698.0
+  closed "a Word report is not a Markdown file" across 21 rule files — case
+  names out of italics, quoted phrases out of code spans — and committed a
+  guard. Printing every finding the 327-specimen corpus produces turned up
+  **47 that still carry a literal backtick**:
+
+  > Indemnification language is present (`shall indemnify`) but no clause
+  > caps the aggregate exposure.
+
+  The guard's literal scanner was anchored on the double-quote character —
+  **double-quoted string literals only**. A template literal is invisible to it, and a template literal
+  is precisely where this defect lives: it is the literal you reach for when
+  the prose INTERPOLATES the phrase it is quoting, which is the only reason to
+  write a code span in the first place. Five sites survived the sweep that was
+  written to find them (`RISK-015` ×2, `IPDATA-007`, `IPDATA-008`,
+  `CHOICE-009`), in the one literal form the sweep could not see.
+
+  The guard now reads single-line template literals too — stripping the
+  delimiters and unescaping the inner escaped backtick first, so a template literal is
+  tested as the READER sees it rather than reading as one giant code span.
+  Proven by putting the defect back.
+
+  🥇 **The exemption is a naming convention, not a file list.** Widening the
+  scan reached `diffPlaybooksMarkdown`, where the asterisks are the point. A
+  function whose name ends in `Markdown` renders Markdown by contract
+  (`buildClosingChecklistMarkdown`, `buildFixListMarkdown`, and the rest), so
+  that is what the guard exempts — and it asserts at least one such renderer
+  was actually skipped, because a convention that moves would otherwise
+  silently disable the exemption. One declared exception remains, for a REGEX
+  SOURCE whose asterisks are quantifiers.
+
+  Rule prose is inside `result_hash`, so the goldens moved. Classified field by
+  field: **`description` on 34 findings and nothing else** — no finding gained
+  or lost, no id, severity or count changed, across exactly the four rules
+  touched. No rule versions bumped, following the precedent of the sweep this
+  completes: a mechanical de-markup is not a change in what a rule MEANS.
+
+### Checked, not changed
+- **`STRUCT-019` fires on none of the 327 specimens, and that is honest.**
+  Measured before assuming blindness: 134 specimens mention a notary or a
+  witness, 20 carry a full jurat block, and **not one recites the formality as
+  an obligation** — every notarized instrument in the corpus is complete, so
+  there is nothing for a recital-versus-block reconciliation to report.
+  `STRUCT-011`, `STRUCT-013` and `STRUCT-016` are zero for the same kind of
+  reason. Recorded so the next reader does not re-derive it.
+
 ## [9.715.0] — 2026-09-11
 
 ### Fixed

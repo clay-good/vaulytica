@@ -45,10 +45,63 @@ const NOT_REPORT_PROSE = declaredExceptions([
     pattern: "needs `pattern` or `section_heading`",
     why: "zod message naming two schema fields, shown only in a CLI validation error",
   },
+  {
+    file: "src/playbooks/custom-interpreter.ts",
+    pattern: "(?:auto(?:matic(?:ally)?)?",
+    why: "REGEX SOURCE for the auto-renewal recognizer, not prose — the asterisks are quantifiers",
+  },
 ]);
+
+/**
+ * A function whose name ends in `Markdown` renders Markdown by contract, and
+ * its asterisks and backticks are the point.
+ *
+ * This is the principled form of the exemption: not a list of files, which
+ * goes stale the moment a renderer moves, but the naming convention the
+ * codebase already follows (`diffPlaybooksMarkdown`,
+ * `buildClosingChecklistMarkdown`, `buildFixListMarkdown`). A renderer that
+ * leaves the convention loses the exemption, which is the right default.
+ */
+const MARKDOWN_RENDERER = /^(?:export\s+)?(?:async\s+)?function\s+(\w*Markdown)\s*\(/;
 
 /** A double-quoted string literal, escapes respected. */
 const STRING_LITERAL = /"(?:[^"\\\n]|\\.)*"/g;
+
+/**
+ * A single-line TEMPLATE literal, escapes respected.
+ *
+ * 🚨 The first form of this guard read double-quoted literals only, and a
+ * template literal is precisely where a code span gets written: it is the
+ * literal you reach for when the prose INTERPOLATES the phrase it is quoting.
+ * `RISK-015` and `IPDATA-007` shipped
+ *
+ *     `Indemnification language is present (\`${hit.raw}\`) but no clause…`
+ *
+ * through the sweep that closed this class over 21 rule files, and printed a
+ * literal backtick on 47 findings across the corpus. A sweep's blind spot is
+ * not a gap in the thing it sweeps.
+ */
+const TEMPLATE_LITERAL = /`(?:[^`\\]|\\.)*`/g;
+
+/**
+ * The literals on one line, as the READER of the report will see them.
+ *
+ * A template literal's own delimiters are backticks, so they are stripped
+ * before the markup test — otherwise every template literal reads as one giant
+ * code span — and the escaped backticks INSIDE it are unescaped, because a
+ * `\`` in the source is a backtick on the page.
+ *
+ * Single-quoted literals are not scanned: Prettier holds this codebase to
+ * double quotes, so a `'…'` in the source is a quoted phrase INSIDE another
+ * literal (the convention this guard recommends), not a literal of its own.
+ */
+function literalsOn(line: string): string[] {
+  const out = [...(line.match(STRING_LITERAL) ?? [])];
+  for (const t of line.match(TEMPLATE_LITERAL) ?? []) {
+    out.push(t.slice(1, -1).replace(/\\`/g, "`"));
+  }
+  return out;
+}
 
 /**
  * Markdown that renders as itself outside a Markdown viewer.
@@ -74,12 +127,21 @@ describe("report prose carries no Markdown", () => {
     const offenders: string[] = [];
     let literals = 0;
 
+    const markdownRenderersSkipped = new Set<string>();
+
     for (const file of files) {
       const src = readFileSync(file, "utf8");
+      // The renderer the walk is currently inside, by this codebase's flat
+      // one-function-per-top-level-declaration module style.
+      let currentFn = "";
       for (const line of src.split("\n")) {
+        const declared = /^(?:export\s+)?(?:async\s+)?function\s+(\w+)/.exec(line);
+        if (declared) currentFn = declared[1]!;
+        if (MARKDOWN_RENDERER.test(line)) markdownRenderersSkipped.add(currentFn);
+        if (currentFn.endsWith("Markdown")) continue;
         // Comments explain the markup they mention; only shipped strings count.
         if (/^\s*(?:\/\/|\*\s|\/\*)/.test(line)) continue;
-        for (const lit of line.match(STRING_LITERAL) ?? []) {
+        for (const lit of literalsOn(line)) {
           literals += 1;
           for (const [name, re] of MARKUP) {
             if (!re.test(lit)) continue;
@@ -93,6 +155,13 @@ describe("report prose carries no Markdown", () => {
     }
 
     expect(literals, "no string literals were examined").toBeGreaterThan(500);
+    // Anti-vacuity for the exemption itself: if the naming convention moves,
+    // the skip silently stops applying and this guard starts reporting a
+    // Markdown renderer's own Markdown as a defect.
+    expect(
+      [...markdownRenderersSkipped].sort(),
+      "no *Markdown renderer was skipped — the naming convention moved",
+    ).not.toEqual([]);
     expect(
       offenders,
       "this prose reaches a .docx, an HTML report and a CSV, none of which render Markdown — " +

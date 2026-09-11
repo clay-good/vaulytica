@@ -41,7 +41,7 @@ export const rule: Rule = {
 
     return emit(ctx, rule, {
       title: "Governing law differs from venue jurisdiction",
-      description: `Governing law: \`${gov.raw_text}\` — venue: \`${venue.raw_text}\`.`,
+      description: `Governing law: '${gov.raw_text}' — venue: '${venue.raw_text}'.`,
       excerpt: `${gov.raw_text} / ${venue.raw_text}`,
       explanation:
         "Picking one jurisdiction's law and another's forum means a court applies foreign law — adding legal-research cost, raising the risk of jurisdiction-specific surprises (e.g., consumer-protection statutes the chosen-law state didn't anticipate), and sometimes triggering choice-of-law analysis the parties didn't expect. The pairing is legitimate (Delaware law + NY/DE forum is common in M&A) but a mismatch in routine commercial contracts is often unintentional.",

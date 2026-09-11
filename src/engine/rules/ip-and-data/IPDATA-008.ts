@@ -100,7 +100,7 @@ export const rule: Rule = {
     const hit: Hit = transferHit;
     return emit(ctx, rule, {
       title: "Cross-border data transfer without safeguard reference",
-      description: `The contract authorizes cross-border data transfer (\`${hit.raw}\`) but does not reference SCCs, BCRs, an adequacy decision, or the Data Privacy Framework.`,
+      description: `The contract authorizes cross-border data transfer ('${hit.raw}') but does not reference SCCs, BCRs, an adequacy decision, or the Data Privacy Framework.`,
       excerpt: hit.raw,
       explanation:
         "GDPR Article 46 (and the UK GDPR analogue) requires a documented transfer mechanism for personal data leaving the EEA/UK. Common mechanisms are EU Standard Contractual Clauses (Commission Decision 2021/914), Binding Corporate Rules, an adequacy decision, or — for US transfers — the EU-US Data Privacy Framework. A contract that authorizes cross-border transfer without naming a mechanism leaves the data exporter exposed to enforcement.",
