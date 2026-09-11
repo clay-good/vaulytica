@@ -201,10 +201,25 @@ export function buildPortfolioMatrix(
   const rollups: PortfolioRollup[] = [];
   PORTFOLIO_CHECKS.forEach((check, i) => {
     if (!check.rollup) return;
-    const matched = rows.filter((r) => check.rollup!.statuses.includes(r.cells[i]!.status));
+    // 🚨 THE DENOMINATOR IS THE DOCUMENTS THE CHECK ACTUALLY RAN ON.
+    //
+    // It used to be every row, so a bundle where the rule ran on NONE of them
+    // reported "**0 of 2** documents do not identify the subject-matter of
+    // processing" — directly under a matrix whose own legend says "A grey cell
+    // is never a claim that the clause is missing". The cells said "not
+    // applicable" and the rollup read them as "in place", which is the one
+    // direction this tool must never round in.
+    const applicable = rows.filter((r) => r.cells[i]!.status !== "na");
+    const matched = applicable.filter((r) => check.rollup!.statuses.includes(r.cells[i]!.status));
+    const skipped = rows.length - applicable.length;
+    const noun = (n: number): string => (n === 1 ? "document" : "documents");
     rollups.push({
       key: check.key,
-      text: `${matched.length} of ${rows.length} ${rows.length === 1 ? "document" : "documents"} ${check.rollup.phrase}.`,
+      text:
+        applicable.length === 0
+          ? `Not applicable to any of the ${rows.length} ${noun(rows.length)} — the underlying check did not run.`
+          : `${matched.length} of ${applicable.length} ${noun(applicable.length)} ${check.rollup.phrase}` +
+            (skipped > 0 ? ` (${skipped} not applicable).` : "."),
       count: matched.length,
       documents: matched.map((r) => r.source_file_name).sort(),
     });

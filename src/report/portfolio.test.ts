@@ -208,3 +208,47 @@ describe("portfolio executive summary (spec-v7 §17)", () => {
     expect(summary.per_document[0]!.digest).toMatch(/Clean of critical\/warning/);
   });
 });
+
+describe("a rollup counts only the documents its check ran on", () => {
+  // 🚨 The matrix's own legend says "A grey cell is never a claim that the
+  // clause is missing" — and the rollup under it read those same grey cells as
+  // "in place". A bundle where the rule ran on NEITHER document reported
+  //
+  //     0 of 2 documents do not identify the subject-matter of processing.
+  //
+  // which is the one direction this tool must never round in: an absent check
+  // reported as a clean result.
+  const key = "liability_cap";
+  const rollupOf = (docs: PortfolioInputDocument[]): string =>
+    buildPortfolioMatrix(docs).rollups.find((r) => r.key === key)!.text;
+
+  it("says 'not applicable' when the check ran on none of them", () => {
+    const text = rollupOf([
+      docSkipped("a.txt", ["RISK-005", "RISK-009"]),
+      docSkipped("b.txt", ["RISK-005", "RISK-009"]),
+    ]);
+    expect(text).toContain("Not applicable to any of the 2 documents");
+    // 🚨 The defect, as an assertion: no "0 of 2 … lack" reassurance.
+    expect(text).not.toMatch(/\b0 of 2\b/);
+  });
+
+  it("excludes the skipped documents from the denominator and says how many", () => {
+    const text = rollupOf([
+      doc("capped.txt", { "RISK-005": false }),
+      docSkipped("skipped.txt", ["RISK-005", "RISK-009"]),
+    ]);
+    // One document was actually checked, and it is capped.
+    expect(text).toContain("0 of 1 document");
+    expect(text).toContain("(1 not applicable)");
+  });
+
+  it("says nothing about applicability when every document was checked", () => {
+    // The load-bearing negative: the ordinary case must read exactly as before.
+    const text = rollupOf([
+      doc("a.txt", { "RISK-005": false }),
+      doc("b.txt", { "RISK-005": false }),
+    ]);
+    expect(text).toBe("0 of 2 documents lack a capped liability clause.");
+    expect(text).not.toContain("not applicable");
+  });
+});

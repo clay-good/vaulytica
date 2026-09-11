@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.704.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A portfolio rollup read "the check did not run" as "the clause is in
+  place".** The consolidated bundle report prints a Portfolio Risk Matrix whose
+  own legend says, in as many words:
+
+  > A grey cell is never a claim that the clause is missing.
+
+  And directly beneath it, over those same grey cells:
+
+  > **0 of 2** documents do not identify the subject-matter of processing.
+
+  The denominator was every row in the bundle, including the documents the
+  underlying rule never evaluated — so a deal room where the check ran on
+  **none** of the documents reported a clean sweep. That is the one direction
+  this tool must never round in: an absent check rendered as a passing result,
+  in a rollup a reader scans precisely to find the gaps.
+
+  The denominator is now the documents the check actually ran on. Where none
+  did, the rollup says so —
+
+  > Not applicable to any of the 2 documents — the underlying check did not run.
+
+  — and where some did, the count is out of those, with the remainder named:
+  "0 of 1 document lack a capped liability clause (1 not applicable)." 🚨 **A
+  bundle in which every document was checked reads exactly as before**, which
+  is the load-bearing negative in the test.
+
+  🥇 **Found by rendering the consolidated deal-room report and reading it** —
+  the artifact the browser has built on every multi-document drop since v4, and
+  the one this session had not opened. Nine of this session's defects have come
+  from printing an artifact and reading it; none was visible to a findings
+  relation, and this one moved no golden at all.
+
 ## [9.703.0] — 2026-09-10
 
 ### Fixed
