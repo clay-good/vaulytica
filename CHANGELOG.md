@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.699.0] — 2026-09-10
+
+### Fixed
+- 🚨 **Three defects in nine lines of OBLI-005, a rule that fires on 249 of 327
+  specimens.** Reading the DOCX report showed a finding titled "Negative
+  covenants: **5**" above a list of **four** snippets, **two of them
+  identical**, and two of those being "Provider represents and warrants that
+  the services will be performed in a professional and workmanlike manner" — an
+  affirmative warranty.
+
+  1. **The predicate tested the whole SENTENCE.** A sentence yields one
+     obligation per modal clause, so a negation anywhere in it made every
+     clause in it a negative covenant. The test is now the obligation's own
+     modal or its own action — including a coordinated second clause the
+     splitter kept merged ("maintain in strict confidence … **and shall not
+     disclose**"), which is a real covenant and must not be lost.
+  2. **Duplicate entries.** Two covenants in one sentence share a `raw_text`,
+     so the list printed the identical 120 characters twice. **41 documents**
+     showed a reader the same clause twice in a list of four.
+  3. **A silent truncation.** `.slice(0, 4)` with nothing to say a fifth
+     existed, on **43 documents**. It now says "+N more — see the obligations
+     ledger for the full list". *A cap is a silent truncation until something
+     says the number* — the same repair as `MAX_SECONDARY_FAMILIES`.
+
+  🥇 **And a scope carve-out is not a covenant.** "Sections 3.2 and 3.3 shall
+  not apply to a transfer by a Key Holder", "If the Act shall not apply" — the
+  subject is a provision or a statute and nobody is promising to refrain.
+  `present-indicative.test.ts` had **named this class and declared a specimen
+  against it** rather than correct it in passing; keying on the SUBJECT settles
+  it, and **that declaration is removed** — the set is now empty. Keyed on the
+  subject and not the verb, deliberately: "Licensee shall not **apply** to
+  register the Licensed Marks" is a real covenant.
+
+  🚨 **Bare `cannot` stays out**, as this file already said it should. Every
+  one of the 55 corpus obligations it alone would add is a statement of
+  IMPOSSIBILITY, not a promise to refrain: "the template cannot be reversed",
+  "strictly necessary cookies cannot be switched off", "a missed deadline
+  generally cannot be cured".
+
+  Corpus entries 678 → 630. **One specimen loses the finding entirely and
+  correctly**: `marital-settlement-agreement.txt`, whose only candidate was
+  "**This Agreement** shall be incorporated into the Judgment and Decree of
+  dissolution but shall not be merged into it" — an instrument subject with an
+  affirmative action. Of 345 goldens, **344 changed hash only**; the one
+  findings change is `eula-no-license-grant-or-prohibitions-fail` dropping
+  OBLI-005, which its own name says is right (its sole negation is a liability
+  cap). ⚠️ Honestly: that one matched the instrument test by coincidence — the
+  fragment obligor "CONTRACT, TORT (INCLUDING NEGLIGENCE), OR OTHERWISE" starts
+  with an instrument noun. Right answer, lucky reason.
+
+  🥇 **Both vocabularies come from their single owners.** Written by hand the
+  filter listed "agreement" and not "contract", and
+  `instrument-vocabulary.test.ts` caught it within one run by rewriting a
+  specimen's Agreement as a Contract; `attachment-kinds.test.ts` caught the
+  partial attachment list in the same pass. `INSTRUMENT_NOUN`'s own docstring
+  predicted this — "three separate hand-written subsets of this vocabulary
+  already existed in `_helpers.ts` alone".
+
 ## [9.698.0] — 2026-09-10
 
 ### Fixed

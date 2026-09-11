@@ -2699,9 +2699,14 @@ export const EXPECTED: Record<string, Expectation> = {
   // employer" was reported as an insurance requirement with no coverage
   // minimum — a minimum no health-coverage clause has ever stated. The same
   // sentence shape appears in every employment and physician agreement.
+  // OBLI-005 came off in 9.699.0. Its only candidate here was "This Agreement
+  // shall be incorporated into the Judgment and Decree of dissolution but
+  // shall not be merged into it" — the subject is the instrument, not a party,
+  // and the obligation's own action ("be incorporated into the Judgment…") is
+  // affirmative. A negative covenant has a party who must not do something.
   "marital-settlement-agreement.txt": {
     playbook: "family-msa",
-    findings: ["STRUCT-018", "EST-060", "OBLI-003", "OBLI-005"],
+    findings: ["STRUCT-018", "EST-060", "OBLI-003"],
   },
   // A first set of FRCP 34 requests for production — the 224th specimen, and
   // the first for `document-requests`. It reports NOTHING, which took two

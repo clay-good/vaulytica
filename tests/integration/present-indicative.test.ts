@@ -108,22 +108,24 @@ describe("the present indicative is the same carve-out", () => {
         /^(shall|will)$/i.test(verb) ? "does not apply" : "shall not apply",
       );
     /**
-     * A DECLARED divergence, not an allowance for anything that breaks.
+     * 🚨 **This set is empty, and that is the point.**
      *
-     * `employment-arbitration.txt` writes "If the Act does not apply, the
-     * arbitration law of the state where Employee last worked applies."
-     * Rewritten to "shall not apply", the obligations extractor reads it as an
-     * obligation and OBLI-005 counts it among the negative covenants.
+     * It used to hold `employment-arbitration.txt`, which writes "If the Act
+     * does not apply, the arbitration law of the state where Employee last
+     * worked applies." Rewritten to "shall not apply", the obligations
+     * extractor read it as an obligation and OBLI-005 counted it among the
+     * negative covenants — but a negative covenant has a PARTY who must not do
+     * something, and here the subject is a statute.
      *
-     * It is not one. A negative covenant has a PARTY who must not do
-     * something; here the subject is a statute, and the clause is a scope
-     * carve-out. So this is a real false positive on a real drafting shape —
-     * "Section 5 shall not apply to…" is ordinary — but the fix belongs in the
-     * obligations extractor, which feeds a large number of rules and deserves
-     * its own measured change rather than a correction made in passing. It is
-     * named here so it is visible rather than absorbed.
+     * The declaration named the class rather than correcting it in passing.
+     * 9.699.0 corrected it at the named cause: OBLI-005 now requires a party
+     * subject and ignores an instrument or provision, so the divergence is
+     * gone on this specimen and on `stockholders-agreement.txt` ("Sections 3.2
+     * and 3.3 shall not apply to a transfer by a Key Holder…"), which is the
+     * same shape. Anything added back here needs the same treatment: name the
+     * class, then close it.
      */
-    const DECLARED = new Set(["employment-arbitration.txt"]);
+    const DECLARED = new Set<string>();
     const broken: string[] = [];
     let probed = 0;
     for (const name of SPECIMENS) {

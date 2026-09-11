@@ -78,8 +78,10 @@ const OVERLAPS_ON_PURPOSE: ReadonlySet<string> = new Set([
   // One reports that the indemnity runs one way; the other that nothing caps
   // it. Either can be true without the other.
   "RISK-002 + RISK-015 [warning]",
-  // A covenant count and an ambiguous trigger inside one of the covenants.
-  "OBLI-003 + OBLI-005 [info]",
+  // A covenant count and a clause the other rule also reports. OBLI-003 came
+  // off this list in 9.699.0: OBLI-005 stopped counting an obligation whose
+  // negation belongs to a SIBLING clause of the same sentence, so the two no
+  // longer land on the same span anywhere in the corpus.
   "OBLI-005 + PERS-002 [info]",
   "OBLI-005 + RISK-010 [info]",
   // The presence note is read by the portfolio view — see above.
