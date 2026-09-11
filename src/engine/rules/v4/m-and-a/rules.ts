@@ -82,7 +82,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
     missing_description:
       "The LOI does not clearly state which provisions are binding and which are non-binding.",
     explanation:
-      "The *SIGA / Pennzoil* line shows that LOIs can be enforced as binding contracts if the parties do not clearly disclaim intent to be bound on commercial terms. Standard pattern: confidentiality / exclusivity / expenses / governing law / forum are binding; price / structure / definitive-agreement terms are non-binding.",
+      "The SIGA / Pennzoil line shows that LOIs can be enforced as binding contracts if the parties do not clearly disclaim intent to be bound on commercial terms. Standard pattern: confidentiality / exclusivity / expenses / governing law / forum are binding; price / structure / definitive-agreement terms are non-binding.",
     recommendation:
       "Add an explicit 'Binding / Non-Binding Effect' section that enumerates the binding clauses and disclaims binding effect on commercial terms.",
     default_severity: "critical",
@@ -386,7 +386,7 @@ const SPA_RULES: Rule[] = [
     missing_title: "MAE definition missing",
     missing_description: "No Material Adverse Effect definition was found.",
     explanation:
-      "*Akorn / Channel Medsystems* affirm the high bar to invoke MAE; nevertheless the definition is the linchpin of buyer walk rights and must be present.",
+      "Akorn / Channel Medsystems affirm the high bar to invoke MAE; nevertheless the definition is the linchpin of buyer walk rights and must be present.",
     recommendation:
       "Add a 'Material Adverse Effect' definition with the customary carve-outs (general economy, industry, war, pandemic) qualified by 'disproportionate impact'.",
     // "Material Adverse CHANGE" / "MAC" is the equally-standard label for the
@@ -788,7 +788,7 @@ const MERGER_RULES: Rule[] = [
     missing_title: "No-shop / fiduciary-out clause missing",
     missing_description: "No no-shop or fiduciary-out clause was found.",
     explanation:
-      "*Omnicare* requires fiduciary-out language so the target board may respond to superior proposals; locking up the deal completely is invalid for public targets.",
+      "Omnicare requires fiduciary-out language so the target board may respond to superior proposals; locking up the deal completely is invalid for public targets.",
     recommendation:
       "Add 'No Solicitation' with a fiduciary-out for Superior Proposals and a customary 'window-shop' allowance.",
     present_patterns: [
@@ -947,7 +947,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
     version: "1.2.0",
     name: "Schedules disclose by mere reference to a data-room folder",
     description:
-      "Mere reference to a data-room folder generally does not constitute disclosure (*Cobalt International* line).",
+      "Mere reference to a data-room folder generally does not constitute disclosure (Cobalt International line).",
     citation: maPractice(
       "cobalt-disclosure",
       "Cobalt International Energy, Inc. line on data-room disclosure (Del. Ch.)",
@@ -1548,7 +1548,7 @@ const EARNOUT_RULES: Rule[] = [
     missing_title: "Earnout period / milestones clause missing",
     missing_description: "No earnout period or milestones clause was found.",
     explanation:
-      "Delaware Chancery (*Aveta / Lazard*) emphasizes specificity to avoid 'implied covenant' fights post-closing.",
+      "Delaware Chancery (Aveta / Lazard) emphasizes specificity to avoid 'implied covenant' fights post-closing.",
     recommendation:
       "Add 'Earnout Period' and 'Milestones' with measurable financial or operational triggers.",
     present_patterns: [/earn[-\s]?out\s+period/i, /milestone/i, /performance\s+target/i],
@@ -1581,7 +1581,7 @@ const EARNOUT_RULES: Rule[] = [
     missing_title: "Conduct-of-business covenant missing",
     missing_description: "No conduct-of-business covenant was found.",
     explanation:
-      "*Lazard* and *Aveta* litigated whether buyer's post-closing conduct frustrated the earnout. Explicit covenant (commercially-reasonable efforts to maximize earnout, no actions intended to reduce earnout) preempts the dispute.",
+      "Lazard and Aveta litigated whether buyer's post-closing conduct frustrated the earnout. Explicit covenant (commercially-reasonable efforts to maximize earnout, no actions intended to reduce earnout) preempts the dispute.",
     recommendation:
       "Add 'Conduct of Business' with a chosen efforts standard (commercially reasonable / good faith) and a 'no actions intended to reduce earnout' covenant.",
     present_patterns: [
@@ -1601,16 +1601,16 @@ const EARNOUT_RULES: Rule[] = [
     id: "MNA-066",
     name: "Implied covenant — express acknowledgment or waiver",
     description:
-      "Delaware *Lazard* held that the implied covenant cannot be waived; the agreement should not purport to do so.",
+      "Delaware Lazard held that the implied covenant cannot be waived; the agreement should not purport to do so.",
     citation: delawareEarnoutCases(),
     playbooks: [MA_PLAYBOOK_EARNOUT],
     missing_title: "Implied-covenant acknowledgment missing",
     missing_description:
       "No acknowledgment of the implied covenant of good faith and fair dealing was found.",
     explanation:
-      "*Lazard v. Qinetiq* affirms that the implied covenant remains in earnouts despite express conduct covenants. Some agreements affirmatively reference it as a backstop.",
+      "Lazard v. Qinetiq affirms that the implied covenant remains in earnouts despite express conduct covenants. Some agreements affirmatively reference it as a backstop.",
     recommendation:
-      "Add an acknowledgment that the implied covenant of good faith and fair dealing applies (or, if buyer is comfortable, an express disclaimer of implied earnout-maximization duties — knowing it will not waive the covenant under *Lazard*).",
+      "Add an acknowledgment that the implied covenant of good faith and fair dealing applies (or, if buyer is comfortable, an express disclaimer of implied earnout-maximization duties — knowing it will not waive the covenant under Lazard).",
     present_patterns: [/implied\s+covenant/i, /good\s+faith\s+and\s+fair\s+dealing/i],
     default_severity: "warning",
   }),
@@ -1619,7 +1619,7 @@ const EARNOUT_RULES: Rule[] = [
     version: "1.2.0",
     name: "Disclaimer of obligation to maximize earnout",
     description:
-      "Disclaimers of any duty to maximize the earnout will not survive — *Lazard* still applies.",
+      "Disclaimers of any duty to maximize the earnout will not survive — Lazard still applies.",
     citation: delawareEarnoutCases(),
     playbooks: [MA_PLAYBOOK_EARNOUT],
     // v1.1.0 required "no duty/obligation to maximize/increase" to sit directly
@@ -1635,7 +1635,7 @@ const EARNOUT_RULES: Rule[] = [
     bad_description:
       "The agreement disclaims any obligation to maximize the earnout, which Delaware courts will not enforce as a complete shield.",
     explanation:
-      "*Lazard / Aveta* hold the implied covenant remains operative; disclaimers do not eliminate it.",
+      "Lazard / Aveta hold the implied covenant remains operative; disclaimers do not eliminate it.",
     recommendation: "Replace blanket disclaimers with a defined efforts standard.",
     default_severity: "warning",
   }),

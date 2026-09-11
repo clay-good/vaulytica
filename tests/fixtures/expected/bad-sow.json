@@ -992,7 +992,7 @@
         "start_offset": 147,
         "text": "Provider shall use best efforts to deliver the Deliverables described below."
       },
-      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. *Bloor v. Falstaff* (2d Cir. 1979) and its progeny treat `best efforts` as the most demanding, `commercially reasonable efforts` as the middle term, and `reasonable efforts` as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
+      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. Bloor v. Falstaff (2d Cir. 1979) and its progeny treat 'best efforts' as the most demanding, 'commercially reasonable efforts' as the middle term, and 'reasonable efforts' as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
       "id": "OBLI-008-s1.1-147",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
@@ -1022,11 +1022,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected sow (score 1). Title matched: \"statement of work\", \"sow\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "005da1c06db76b93756e8d19bdeac87179ad2e2f9508135a0f9ec723b3725eab",
+  "result_hash": "28b0dbfa767a4f13111dfe352b2a0039ab509ada13ca01e6d71584d5b197a32d",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

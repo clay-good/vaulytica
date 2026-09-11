@@ -471,7 +471,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
     missing_description:
       "No clause was found prohibiting trading on material non-public information.",
     explanation:
-      "Rule 10b-5 prohibits trading on MNPI; tipping liability extends to third parties under *Dirks v. SEC* + *Salman v. United States*.",
+      "Rule 10b-5 prohibits trading on MNPI; tipping liability extends to third parties under Dirks v. SEC + Salman v. United States.",
     recommendation:
       "Add 'Prohibited Trading' clause prohibiting any transaction in company securities while in possession of MNPI and prohibiting tipping.",
     present_patterns: [
@@ -534,7 +534,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
     missing_title: "Tipping liability clause missing",
     missing_description: "No tipping-liability clause was found.",
     explanation:
-      "Under *Dirks* + *Salman*, tippers and tippees can be liable; family / friend tips create reasonable inference of personal benefit.",
+      "Under Dirks + Salman, tippers and tippees can be liable; family / friend tips create reasonable inference of personal benefit.",
     recommendation:
       "Add 'Tipping' prohibiting disclosure of MNPI to anyone, including family / friends / brokers.",
     present_patterns: [
@@ -1053,7 +1053,7 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
     bad_description:
       "Policy appears to broadly restrict discussion of wages / working conditions or company-related online activity.",
     explanation:
-      "NLRA § 7 protects concerted activity including online discussion of wages and working conditions. NLRB *Stericycle* (2023) tightened scrutiny of rules that could chill § 7 activity.",
+      "NLRA § 7 protects concerted activity including online discussion of wages and working conditions. NLRB Stericycle (2023) tightened scrutiny of rules that could chill § 7 activity.",
     recommendation:
       "Narrow the policy with explicit carve-outs for § 7 protected concerted activity and wage / working-condition discussions.",
     default_severity: "warning",

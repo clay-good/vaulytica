@@ -482,7 +482,7 @@ const SEPARATION_RULES: Rule[] = [
     version: "1.2.0",
     name: "McLaren Macomb — overbroad confidentiality / non-disparagement",
     description:
-      "NLRB *McLaren Macomb* (Feb. 21, 2023) found that overbroad confidentiality or non-disparagement provisions in separation agreements violate NLRA § 7.",
+      "NLRB McLaren Macomb (Feb. 21, 2023) found that overbroad confidentiality or non-disparagement provisions in separation agreements violate NLRA § 7.",
     citation: mclarenMacomb(),
     playbooks: [EMP_PLAYBOOK_SEPARATION],
     bad_patterns: [
@@ -515,7 +515,7 @@ const SEPARATION_RULES: Rule[] = [
     bad_description:
       "The separation agreement appears to contain confidentiality or non-disparagement language broad enough to chill protected concerted activity.",
     explanation:
-      "Under *McLaren Macomb*, overbroad confidentiality / non-disparagement clauses are unlawful as to non-supervisory employees; the NLRB has signaled aggressive enforcement.",
+      "Under McLaren Macomb, overbroad confidentiality / non-disparagement clauses are unlawful as to non-supervisory employees; the NLRB has signaled aggressive enforcement.",
     recommendation:
       "Narrow the clause with carve-outs for protected concerted activity, Section 7 rights, communication with government agencies, and discussion of unlawful conduct.",
     default_severity: "warning",
@@ -1219,7 +1219,7 @@ const HANDBOOK_RULES: Rule[] = [
     missing_title: "EEO / anti-harassment policy clause missing",
     missing_description: "No EEO / anti-harassment policy was found.",
     explanation:
-      "*Faragher / Ellerth* affirmative defense requires a policy with a complaint procedure and anti-retaliation provision.",
+      "Faragher / Ellerth affirmative defense requires a policy with a complaint procedure and anti-retaliation provision.",
     recommendation:
       "Add 'EEO and Anti-Harassment' with prohibited conduct, complaint procedure (with alternative reporting paths), and anti-retaliation.",
     present_patterns: [
@@ -1299,7 +1299,7 @@ const HANDBOOK_RULES: Rule[] = [
     bad_description:
       "A handbook policy appears to broadly restrict discussion of wages / working conditions or social-media activity — protected by NLRA § 7.",
     explanation:
-      "NLRB's 2023 *Stericycle* decision tightened scrutiny of work rules that could be reasonably interpreted to chill § 7 activity. Wage-discussion bans are per-se unlawful.",
+      "NLRB's 2023 Stericycle decision tightened scrutiny of work rules that could be reasonably interpreted to chill § 7 activity. Wage-discussion bans are per-se unlawful.",
     recommendation:
       "Narrow the policy with explicit carve-outs for § 7 / protected concerted activity, wage / working-condition discussions, and post-employment communications.",
     default_severity: "warning",
@@ -1318,7 +1318,7 @@ const HANDBOOK_RULES: Rule[] = [
     missing_title: "Acknowledgment-of-receipt page missing",
     missing_description: "No acknowledgment-of-receipt page was found.",
     explanation:
-      "Acknowledgment evidences that the employee received and reviewed the handbook — essential for *Faragher / Ellerth* and disciplinary defense.",
+      "Acknowledgment evidences that the employee received and reviewed the handbook — essential for Faragher / Ellerth and disciplinary defense.",
     recommendation: "Add an 'Acknowledgment of Receipt' page with employee signature and date.",
     present_patterns: [
       /acknowledge?ment\s+of\s+receipt/i,

@@ -30,7 +30,7 @@ export const rule: Rule = {
   category: "personnel",
   default_severity: "warning",
   description:
-    "Fires when the contract labels the worker an `independent contractor` but ≥2 employee-indicator clauses also appear (fixed hours, company equipment, daily reporting, exclusivity).",
+    "Fires when the contract labels the worker an 'independent contractor' but ≥2 employee-indicator clauses also appear (fixed hours, company equipment, daily reporting, exclusivity).",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     let labelsIc = false;

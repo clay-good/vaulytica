@@ -917,9 +917,9 @@
         "start_offset": 1301,
         "text": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement."
       },
-      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Even where enforceable (most US jurisdictions under the FAA and Seventh Amendment), the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. *Leasing Service Corp. v. Crane* (4th Cir. 1986) requires the waiver to be `knowing and voluntary`, which courts apply more strictly to one-sided waivers.",
+      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Even where enforceable (most US jurisdictions under the FAA and Seventh Amendment), the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
       "id": "CHOICE-010-s1.4-1301",
-      "recommendation": "Make the waiver bilateral (`each party hereby waives any right to trial by jury`). If the asymmetry is intentional, document the consideration that supports the affected party's `knowing and voluntary` waiver.",
+      "recommendation": "Make the waiver bilateral ('each party hereby waives any right to trial by jury'). If the asymmetry is intentional, document the consideration that supports the affected party's 'knowing and voluntary' waiver.",
       "rule_id": "CHOICE-010",
       "rule_version": "1.1.0",
       "severity": "warning",
@@ -1140,11 +1140,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "5f0fe870bf1cd94d1c218f1099528274f8b647bea88243f6af953685c430c9e8",
+  "result_hash": "042fb824a5094c55131689f403ed6b7368af0e7e7fb77eff3c6cdd3810e58aad",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

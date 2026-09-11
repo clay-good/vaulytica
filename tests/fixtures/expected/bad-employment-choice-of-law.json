@@ -867,7 +867,7 @@
         "start_offset": 840,
         "text": "Delaware"
       },
-      "explanation": "Cal. Lab. Code § 925 voids out-of-state choice-of-law clauses in employment contracts entered into, modified, or extended after Jan. 1, 2017 — unless the employee was individually represented by counsel in negotiating that specific clause. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., *Lyon v. Neustar*) routinely refuse to enforce it.",
+      "explanation": "Cal. Lab. Code § 925 voids out-of-state choice-of-law clauses in employment contracts entered into, modified, or extended after Jan. 1, 2017 — unless the employee was individually represented by counsel in negotiating that specific clause. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., Lyon v. Neustar) routinely refuse to enforce it.",
       "id": "CHOICE-011-s1.3-840",
       "recommendation": "Either change governing law to California, or include a §925 counsel-representation acknowledgment. Note that §16600.5 may render any non-compete unenforceable even with §925-compliant choice-of-law language.",
       "rule_id": "CHOICE-011",
@@ -1021,11 +1021,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "346702a0988f4303d2b605d4f58b06c500e47fe0901fd8351cd78b1bacbe1eca",
+  "result_hash": "253b7e358b8ea5d52774f7c218e5d053054a93a6c8bf9954d96a562e28067a89",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

@@ -931,7 +931,7 @@
         "start_offset": 941,
         "text": "revised version on its website; continued use of the Service constitutes acceptance."
       },
-      "explanation": "Browsewrap acceptance — `by using the Service you agree`, `continued use constitutes acceptance`, `you are deemed to have agreed` — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. *Specht v. Netscape* (2d Cir. 2002), *Nguyen v. Barnes & Noble* (9th Cir. 2014), and *Berkson v. Gogo* (E.D.N.Y. 2015) are the modern canon. For consumer-facing contracts, the FTC's *.com Disclosures* guidance treats hidden or passive consent as a deceptive practice.",
+      "explanation": "Browsewrap acceptance — 'by using the Service you agree', 'continued use constitutes acceptance', 'you are deemed to have agreed' — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. Specht v. Netscape (2d Cir. 2002), Nguyen v. Barnes & Noble (9th Cir. 2014), and Berkson v. Gogo (E.D.N.Y. 2015) are the modern canon. For consumer-facing contracts, the FTC's *.com Disclosures* guidance treats hidden or passive consent as a deceptive practice.",
       "id": "DARK-007-s1.3-941",
       "recommendation": "Pair the contract with an affirmative manifestation of assent — a click-through checkbox, a typed name, or an e-signature. Confirm reasonable conspicuous notice of the terms prior to the assent step.",
       "rule_id": "DARK-007",
@@ -1244,11 +1244,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "6bb4217d438dca90cf1082b8a94b9f65171e2990defbef0ab89efaf8a5969834",
+  "result_hash": "62e9abc8135ab15eda9d39593a3446c01ccaf1da941a219b3271aa029858d052",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

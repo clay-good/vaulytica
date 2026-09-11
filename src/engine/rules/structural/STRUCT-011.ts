@@ -12,7 +12,7 @@ export const rule: Rule = {
   category: "structural",
   default_severity: "critical",
   description:
-    "Detects placeholders left unfilled (`[insert]`, `[Counterparty Name]`, `TBD`, etc.).",
+    "Detects placeholders left unfilled ('[insert]', '[Counterparty Name]', 'TBD', etc.).",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(ctx, PLACEHOLDER);

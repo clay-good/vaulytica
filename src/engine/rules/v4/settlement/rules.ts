@@ -251,7 +251,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     version: "1.1.0",
     name: "Overbroad confidentiality / non-disparagement (NLRB scrutiny)",
     description:
-      "NLRB *McLaren Macomb* found that overbroad confidentiality / non-disparagement provisions in settlements with non-supervisory employees violate NLRA § 7.",
+      "NLRB McLaren Macomb found that overbroad confidentiality / non-disparagement provisions in settlements with non-supervisory employees violate NLRA § 7.",
     citation: mclarenMacomb(),
     playbooks: [SETTLE_PLAYBOOK_SETTLEMENT],
     bad_patterns: [
@@ -273,7 +273,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     bad_description:
       "Settlement appears to contain confidentiality or non-disparagement language broad enough to chill protected concerted activity (NLRA § 7).",
     explanation:
-      "Under *McLaren Macomb*, settlement clauses that broadly restrict employees from discussing terms, disparaging the employer, or communicating about the dispute are unlawful as to covered employees.",
+      "Under McLaren Macomb, settlement clauses that broadly restrict employees from discussing terms, disparaging the employer, or communicating about the dispute are unlawful as to covered employees.",
     recommendation:
       "Narrow with carve-outs for protected concerted activity, § 7 rights, agency communications (SEC / EEOC / NLRB / DOL), and disclosure of unlawful conduct.",
     default_severity: "warning",
@@ -808,7 +808,7 @@ const LIT_HOLD_RULES: Rule[] = [
     missing_description:
       "No description of the litigation / investigation triggering the hold was found.",
     explanation:
-      "Under *Zubulake* and FRCP 37(e), the duty to preserve attaches when litigation is reasonably anticipated. The hold notice should describe the trigger so recipients understand scope.",
+      "Under Zubulake and FRCP 37(e), the duty to preserve attaches when litigation is reasonably anticipated. The hold notice should describe the trigger so recipients understand scope.",
     recommendation:
       "Identify the matter (case caption / investigation), the parties, and the date the duty to preserve attached.",
     present_patterns: [
@@ -866,7 +866,7 @@ const LIT_HOLD_RULES: Rule[] = [
     missing_description:
       "No custodian list or acknowledgment requirement was found in the hold notice.",
     explanation:
-      "*Zubulake V* requires counsel to oversee preservation. Acknowledgment establishes that custodians received and understood the hold; the custodian list scopes preservation.",
+      "Zubulake V requires counsel to oversee preservation. Acknowledgment establishes that custodians received and understood the hold; the custodian list scopes preservation.",
     recommendation:
       "Identify covered custodians and require each to return a signed acknowledgment within a stated period (typically 5–7 business days).",
     present_patterns: [/(custodian|recipient)/i, /(acknowledg(e|ment)|confirm\s+receipt)/i],

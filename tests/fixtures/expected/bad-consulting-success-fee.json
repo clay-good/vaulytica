@@ -1076,7 +1076,7 @@
         "start_offset": 260,
         "text": "Advisor shall use best efforts to provide strategic, capital-raising, and M&A advisory services on a non-exclusive basis. Advisor shall also identify and introduce potential investors."
       },
-      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. *Bloor v. Falstaff* (2d Cir. 1979) and its progeny treat `best efforts` as the most demanding, `commercially reasonable efforts` as the middle term, and `reasonable efforts` as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
+      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. Bloor v. Falstaff (2d Cir. 1979) and its progeny treat 'best efforts' as the most demanding, 'commercially reasonable efforts' as the middle term, and 'reasonable efforts' as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
       "id": "OBLI-008-s1.1-260",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
@@ -1106,11 +1106,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "76bdf67f1eb40e3b7e25b899553bbc1898cea32344184143e120d7f03ffa9102",
+  "result_hash": "a7020c59731a7c40f690c3fcb6b14adc48f96f151bb3f6f0a90a7f8200e7f694",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

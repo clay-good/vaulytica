@@ -138,7 +138,7 @@ export const CITE_002: Rule = {
   category: "filing",
   default_severity: "warning",
   description:
-    "Flags an `id.` short form with no full or short citation preceding it within the same section (scope boundary).",
+    "Flags an 'id.' short form with no full or short citation preceding it within the same section (scope boundary).",
   dkb_citations: [],
   applies_to_playbooks: GATE,
   check(ctx: RuleContext): Finding | null {
@@ -173,7 +173,7 @@ export const CITE_003: Rule = {
   category: "filing",
   default_severity: "warning",
   description:
-    "Flags a `supra` or case short form that refers to an authority never introduced by a full citation earlier in the document.",
+    "Flags a 'supra' or case short form that refers to an authority never introduced by a full citation earlier in the document.",
   dkb_citations: [],
   applies_to_playbooks: GATE,
   check(ctx: RuleContext): Finding | null {
@@ -284,7 +284,7 @@ export const CITE_005: Rule = {
   category: "filing",
   default_severity: "warning",
   description:
-    "Flags a single authority (introduced as `A v. B`) that is later short-cited by both party names, which reads as two different authorities.",
+    "Flags a single authority (introduced as 'A v. B') that is later short-cited by both party names, which reads as two different authorities.",
   dkb_citations: [],
   applies_to_playbooks: GATE,
   check(ctx: RuleContext): Finding | null {

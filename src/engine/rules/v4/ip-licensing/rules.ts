@@ -115,7 +115,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     missing_description:
       "No clause was found expressly assigning the right to sue for past infringement.",
     explanation:
-      "Under *Crown Die & Tool* and *Arachnid v. Merit Industries*, the right to sue for past infringement does not automatically pass with an assignment unless expressly conveyed.",
+      "Under Crown Die & Tool and Arachnid v. Merit Industries, the right to sue for past infringement does not automatically pass with an assignment unless expressly conveyed.",
     recommendation:
       "Add 'Right to Sue' assigning all causes of action for past, present, and future infringement, plus the right to all damages and remedies.",
     present_patterns: [
@@ -242,7 +242,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
     missing_description:
       "No clause was found specifying exclusivity, field of use, territory, and sublicensing rights.",
     explanation:
-      "These four parameters define the scope of the license; ambiguity invites *Brulotte* / *Kimble*-style misuse arguments or licensor / licensee scope disputes.",
+      "These four parameters define the scope of the license; ambiguity invites Brulotte / Kimble-style misuse arguments or licensor / licensee scope disputes.",
     recommendation:
       "Add 'License Grant' specifying exclusive vs non-exclusive, field of use, territory (e.g., worldwide / US), and sublicensing right (with or without consent).",
     present_patterns: [
@@ -256,7 +256,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
     version: "1.3.0",
     name: "Brulotte / Kimble — royalties beyond patent expiration",
     description:
-      "Royalty obligations that extend beyond patent expiration violate the *Brulotte / Kimble* rule absent a step-down or unbundling.",
+      "Royalty obligations that extend beyond patent expiration violate the Brulotte / Kimble rule absent a step-down or unbundling.",
     citation: brulotteKimble(),
     playbooks: [IPL_PLAYBOOK_PATENT],
     bad_patterns: [
@@ -291,7 +291,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
     bad_description:
       "Royalty language appears to require payment past patent expiration without a Brulotte-compliant step-down or unbundled consideration.",
     explanation:
-      "*Brulotte v. Thys* (379 U.S. 29) prohibits royalties accruing after patent expiration; *Kimble v. Marvel* (576 U.S. 446) reaffirmed. Workarounds: step-down at expiration, hybrid know-how / trade-secret royalty, or amortized lump-sum.",
+      "Brulotte v. Thys (379 U.S. 29) prohibits royalties accruing after patent expiration; Kimble v. Marvel (576 U.S. 446) reaffirmed. Workarounds: step-down at expiration, hybrid know-how / trade-secret royalty, or amortized lump-sum.",
     recommendation:
       "Add a step-down at patent expiration, allocate a portion of royalty to know-how / trade-secret rights with separate accrual, or structure as a lump-sum amortized payment.",
     default_severity: "warning",
@@ -419,7 +419,7 @@ const TM_LICENSE_RULES: Rule[] = [
     missing_title: "Quality-control clause missing",
     missing_description: "No quality-control clause was found.",
     explanation:
-      "A trademark license without meaningful quality control is a 'naked license' that can result in abandonment (*Stanfield v. Osborne Industries*; *Eva's Bridal Ltd. v. Halanick Enterprises*). Licensor must reserve and exercise quality control.",
+      "A trademark license without meaningful quality control is a 'naked license' that can result in abandonment (Stanfield v. Osborne Industries; Eva's Bridal Ltd. v. Halanick Enterprises). Licensor must reserve and exercise quality control.",
     recommendation:
       "Add 'Quality Control' requiring compliance with Quality Standards (attached or referenced), inspection / sample-submission rights, and remedies for non-compliance.",
     present_patterns: [
@@ -559,7 +559,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
     missing_title: "Exclusivity / § 204 writing clause missing",
     missing_description: "No clause stating exclusivity or satisfying § 204(a) was found.",
     explanation:
-      "Under 17 U.S.C. § 204(a), exclusive copyright transfers must be in writing signed by the owner; non-exclusive licenses can be oral or implied. Clarity prevents *Effects Associates v. Cohen*-style disputes.",
+      "Under 17 U.S.C. § 204(a), exclusive copyright transfers must be in writing signed by the owner; non-exclusive licenses can be oral or implied. Clarity prevents Effects Associates v. Cohen-style disputes.",
     recommendation:
       "Add 'Grant of Rights' stating exclusive vs non-exclusive; for exclusive grants, ensure a signed writing per § 204(a).",
     present_patterns: [/(exclusive|non.?exclusive|sole)/i, /(in\s+writing|signed|executed)/i],
@@ -611,7 +611,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
     missing_title: "Term / territory / media clause missing",
     missing_description: "No clause was found specifying term, territory, and media of use.",
     explanation:
-      "These three parameters define the boundary of the license. Open-ended grants in unfamiliar media invite *Bourne v. Walt Disney*-style disputes when new media emerge.",
+      "These three parameters define the boundary of the license. Open-ended grants in unfamiliar media invite Bourne v. Walt Disney-style disputes when new media emerge.",
     recommendation:
       "Add 'License Scope' specifying Term, Territory, and Media (with explicit treatment of 'now known or hereafter developed').",
     present_patterns: [

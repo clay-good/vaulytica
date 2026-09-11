@@ -1206,7 +1206,7 @@
         "start_offset": 253,
         "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
-      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. *Bloor v. Falstaff* (2d Cir. 1979) and its progeny treat `best efforts` as the most demanding, `commercially reasonable efforts` as the middle term, and `reasonable efforts` as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
+      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. Bloor v. Falstaff (2d Cir. 1979) and its progeny treat 'best efforts' as the most demanding, 'commercially reasonable efforts' as the middle term, and 'reasonable efforts' as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
       "id": "OBLI-008-s1.1-253",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
@@ -1253,11 +1253,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "eca48725f6cd51410a1983a16c42dcde1dece56b229ddfedc520812170d5d926",
+  "result_hash": "0af624c44121dbae5439617ae67ccf6da7776139c70aa092c5ae1769b78130ac",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

@@ -903,7 +903,7 @@
         "start_offset": 697,
         "text": "shall be free to use for any purpose the Residuals resulting from access to or work with Confidential Information, where \"Residuals\" means information in non-tangible form which may be retained in the unaided memory of persons who have had access to the Confidential Information."
       },
-      "explanation": "A residuals clause lets the recipient (or its representatives) use information retained in 'unaided memory' regardless of the underlying confidentiality obligation. In practice the clause is a near-total carve-out — the discloser cannot easily prove the use fell *outside* the residuals safe harbor, and trade secrets can be transferred via human memory. Particularly dangerous in M&A diligence NDAs where executives review competitive information and then return to their day jobs.",
+      "explanation": "A residuals clause lets the recipient (or its representatives) use information retained in 'unaided memory' regardless of the underlying confidentiality obligation. In practice the clause is a near-total carve-out — the discloser cannot easily prove the use fell outside the residuals safe harbor, and trade secrets can be transferred via human memory. Particularly dangerous in M&A diligence NDAs where executives review competitive information and then return to their day jobs.",
       "id": "OBLI-009-s1.2-697",
       "recommendation": "Strike the residuals clause, or narrow it dramatically — limit to general industry know-how, exclude trade secrets and PII expressly, exclude information memorized in bad faith, and limit to natural persons who actually had access (not 'Representatives').",
       "rule_id": "OBLI-009",
@@ -1032,11 +1032,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "6abaccadea7d7944b9cec25868ac45a90b2a3814e6ba1d2397b7a0b4f914e1f0",
+  "result_hash": "cd2a8fd033f6ada4bce485dadda411d48e48231da6e805419b8b46fb55f92374",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

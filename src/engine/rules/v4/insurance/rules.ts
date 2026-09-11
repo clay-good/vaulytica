@@ -65,7 +65,7 @@ const POLICY_SUMMARY_RULES: Rule[] = [
     missing_title: "Policy period clause missing",
     missing_description: "No policy period (inception / expiration) was identified.",
     explanation:
-      "Coverage is bounded by policy period; ambiguity invites *Montrose* / *Continental* trigger-of-coverage disputes.",
+      "Coverage is bounded by policy period; ambiguity invites Montrose / Continental trigger-of-coverage disputes.",
     recommendation:
       "Add 'Policy Period' with specific inception and expiration dates and time-of-day at the Named Insured's address.",
     present_patterns: [
@@ -433,7 +433,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     id: "INS-016",
     name: "Defense duty articulated separately from indemnity",
     description:
-      "Agreement should separately articulate the duty to defend (broader than duty to indemnify under *Crawford v. Weather Shield*).",
+      "Agreement should separately articulate the duty to defend (broader than duty to indemnify under Crawford v. Weather Shield).",
     citation: insPractice(
       "duty-to-defend",
       "Crawford v. Weather Shield, 44 Cal. 4th 541 (2008) — duty to defend is broader than duty to indemnify",
@@ -443,7 +443,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
     missing_title: "Defense-duty clause missing",
     missing_description: "No clause separately articulating the duty to defend was found.",
     explanation:
-      "Under *Crawford v. Weather Shield*, an indemnity agreement may impose an immediate duty to defend against any claim potentially within indemnity even before liability is established. Practice: state the duty separately or expressly disclaim it.",
+      "Under Crawford v. Weather Shield, an indemnity agreement may impose an immediate duty to defend against any claim potentially within indemnity even before liability is established. Practice: state the duty separately or expressly disclaim it.",
     recommendation:
       "Add 'Duty to Defend' clause separately articulating the obligation (including counsel selection, control of defense, and reimbursement timing) — or expressly disclaim it.",
     present_patterns: [/(duty\s+to\s+defend|defen[cs]e\s+obligation)/i, /(defend|defen[cs]e)/i],
@@ -612,7 +612,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
     bad_description:
       "Hold-harmless purports to cover future claims, gross negligence, willful misconduct, or intentional acts — many states refuse to enforce these.",
     explanation:
-      "Pre-dispute releases of gross negligence / willful misconduct / intentional acts are void in most states. Releases by consumers for recreational / fitness activities are scrutinized under the *Tunkl* factors in CA and similar lines elsewhere.",
+      "Pre-dispute releases of gross negligence / willful misconduct / intentional acts are void in most states. Releases by consumers for recreational / fitness activities are scrutinized under the Tunkl factors in CA and similar lines elsewhere.",
     recommendation:
       "Limit to ordinary negligence and accrued claims; carve out gross negligence, willful misconduct, intentional acts, and rights non-waivable as a matter of public policy.",
     default_severity: "warning",
@@ -631,7 +631,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
     missing_title: "Acknowledgment / assumption-of-risk clause missing",
     missing_description: "No acknowledgment of risk / assumption-of-risk clause was found.",
     explanation:
-      "Express assumption-of-risk language helps overcome the *Tunkl* factor analysis and signals an informed waiver — particularly important for consumer / volunteer hold-harmless forms.",
+      "Express assumption-of-risk language helps overcome the Tunkl factor analysis and signals an informed waiver — particularly important for consumer / volunteer hold-harmless forms.",
     recommendation:
       "Add 'Acknowledgment and Assumption of Risk' describing the specific risks and stating the protected party voluntarily assumes them.",
     present_patterns: [

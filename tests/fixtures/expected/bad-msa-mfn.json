@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "17431fbf7ff1510119a613eaac82b120512b9c169d5474e376a1a91bf58f11f5",
+  "result_hash": "994211f77cf1a22a817e26ba271894fef27b9439c55d4beb637c6391572d08eb",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }

@@ -71,7 +71,7 @@ const COOKIE_NOTICE_RULES: Rule[] = [
     missing_title: "Consent mechanism clause missing",
     missing_description: "No consent mechanism for non-essential cookies was disclosed.",
     explanation:
-      "Under ePrivacy Art. 5(3) + GDPR Art. 7, consent must be freely given, specific, informed, and unambiguous, by clear affirmative action; pre-ticked boxes are not consent (CJEU *Planet49*).",
+      "Under ePrivacy Art. 5(3) + GDPR Art. 7, consent must be freely given, specific, informed, and unambiguous, by clear affirmative action; pre-ticked boxes are not consent (CJEU Planet49).",
     recommendation:
       "Add 'How We Obtain Consent' describing the banner / preference center, the affirmative-action requirement, and how the user can change consent later.",
     present_patterns: [

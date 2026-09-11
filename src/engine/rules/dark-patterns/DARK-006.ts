@@ -55,9 +55,9 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "A pre-suit notice or cure window imposed on one party (typically the consumer / customer / employee) but not on the drafter compresses the affected party's ability to act quickly — by the time the notice period expires, evidence has aged and pressure to settle has built. The drafter, meanwhile, can initiate proceedings without warning. Confirm whether the asymmetry is a legitimate dispute-resolution structure (e.g., an MSA's `cure for material breach` provision) or a one-sided friction gate.",
+        "A pre-suit notice or cure window imposed on one party (typically the consumer / customer / employee) but not on the drafter compresses the affected party's ability to act quickly — by the time the notice period expires, evidence has aged and pressure to settle has built. The drafter, meanwhile, can initiate proceedings without warning. Confirm whether the asymmetry is a legitimate dispute-resolution structure (e.g., an MSA's 'cure for material breach' provision) or a one-sided friction gate.",
       recommendation:
-        "If the gate is meant as a dispute-cooling mechanism, make it bilateral (`each party shall provide…`). If it is a one-sided cure window for the drafter's benefit, weigh whether the trade is intended.",
+        "If the gate is meant as a dispute-cooling mechanism, make it bilateral ('each party shall provide…'). If it is a one-sided cure window for the drafter's benefit, weigh whether the trade is intended.",
       position: hit.position,
     });
   },

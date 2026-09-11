@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.698.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A Word report is not a Markdown file.** OBLI-008's explanation shipped
+  as "…***Bloor v. Falstaff*** (2d Cir. 1979) and its progeny treat
+  **`best efforts`** as the most demanding…", and the `.docx` a lawyer sends to
+  a client rendered every asterisk and backtick **literally**. So did the HTML
+  report and the findings CSV. **55 lines across 21 rule files** carried it:
+  case names in Markdown italics (`*McLaren Macomb*`, `*Brulotte / Kimble*`,
+  `*Shelley v. Kraemer*`, `*Dirks*` + `*Salman*`, `*Planet49*`, `*Akorn*`) and
+  quoted phrases in code spans (`` `best efforts` ``, `` `shall maintain
+  insurance` ``, `` `independent contractor` ``).
+
+  🥇 **The prose is authored once and shown on six surfaces, and Markdown is
+  the convention of exactly ONE of them** — the fix list. So it was fixed at
+  the single owner, the prose itself, rather than by stripping markup per
+  surface: a case name is plain text, and a quoted phrase takes the single
+  quotes this codebase's prose already uses ('Net 30', 'gag clause'). Every
+  surface is now right with no rendering code at all.
+
+  🚨 **Rule prose is covered by `result_hash`, so this moved every golden.**
+  The regeneration changed hashes and the two fix-list digests and **nothing
+  else** — no finding, id, severity or count anywhere in the corpus. That is
+  the check that makes a prose codemod safe to ship.
+
+  Found by rendering the DOCX report — the flagship artifact, and the last of
+  the text surfaces this session had not read.
+
+### Added
+- **`tests/integration/report-prose-markup.test.ts`** — no string literal under
+  `src/engine/rules` may carry `**bold**`, `*emphasis*` or a `` `code span` ``.
+  Each pattern requires the CLOSING mark, so an asterisk used as a footnote
+  marker or a multiplication sign is not caught; it is the pair that is markup.
+  Proven by putting `*Bloor v. Falstaff*` back.
+
 ## [9.697.0] — 2026-09-10
 
 ### Fixed

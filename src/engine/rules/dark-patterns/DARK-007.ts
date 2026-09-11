@@ -26,7 +26,7 @@ export const rule: Rule = {
   category: "dark-patterns",
   default_severity: "warning",
   description:
-    "Detects passive-acceptance constructs (`by using`, `continued use constitutes acceptance`, `deemed to have agreed`) that lack an affirmative consent step.",
+    "Detects passive-acceptance constructs ('by using', 'continued use constitutes acceptance', 'deemed to have agreed') that lack an affirmative consent step.",
   dkb_citations: ["stat-ftc-deception-statement"],
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
@@ -43,7 +43,7 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "Browsewrap acceptance — `by using the Service you agree`, `continued use constitutes acceptance`, `you are deemed to have agreed` — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. *Specht v. Netscape* (2d Cir. 2002), *Nguyen v. Barnes & Noble* (9th Cir. 2014), and *Berkson v. Gogo* (E.D.N.Y. 2015) are the modern canon. For consumer-facing contracts, the FTC's *.com Disclosures* guidance treats hidden or passive consent as a deceptive practice.",
+        "Browsewrap acceptance — 'by using the Service you agree', 'continued use constitutes acceptance', 'you are deemed to have agreed' — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. Specht v. Netscape (2d Cir. 2002), Nguyen v. Barnes & Noble (9th Cir. 2014), and Berkson v. Gogo (E.D.N.Y. 2015) are the modern canon. For consumer-facing contracts, the FTC's *.com Disclosures* guidance treats hidden or passive consent as a deceptive practice.",
       recommendation:
         "Pair the contract with an affirmative manifestation of assent — a click-through checkbox, a typed name, or an e-signature. Confirm reasonable conspicuous notice of the terms prior to the assent step.",
       position: hit.position,

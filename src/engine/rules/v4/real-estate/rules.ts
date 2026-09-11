@@ -969,7 +969,7 @@ const CCR_RULES: Rule[] = [
     bad_description:
       "The CC&Rs appear to contain a discriminatory covenant based on race, color, religion, or national origin.",
     explanation:
-      "Such covenants are unenforceable per *Shelley v. Kraemer* and violate 42 U.S.C. § 3604.",
+      "Such covenants are unenforceable per Shelley v. Kraemer and violate 42 U.S.C. § 3604.",
     recommendation:
       "Strike the discriminatory covenant entirely; some states require recordation of a fair-housing rider disclaiming any such legacy language.",
     default_severity: "critical",

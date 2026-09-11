@@ -871,7 +871,7 @@
         "start_offset": 662,
         "text": "perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning models, and related products."
       },
-      "explanation": "Granting the vendor a license to train ML / AI models on Customer Data creates several distinct problems: (1) under GDPR, training is processing that requires a lawful basis the customer typically cannot grant on behalf of the data subjects; (2) the right-to-erasure under Art. 17 is practically impossible because a trained model cannot unlearn specific training examples; (3) under HIPAA, GLBA, FERPA the training-license breaches the customer's downstream regulatory obligations; (4) downstream IP exposure from training-data litigation (*Andersen v. Stability AI*, *Getty Images*) flows back via indemnity.",
+      "explanation": "Granting the vendor a license to train ML / AI models on Customer Data creates several distinct problems: (1) under GDPR, training is processing that requires a lawful basis the customer typically cannot grant on behalf of the data subjects; (2) the right-to-erasure under Art. 17 is practically impossible because a trained model cannot unlearn specific training examples; (3) under HIPAA, GLBA, FERPA the training-license breaches the customer's downstream regulatory obligations; (4) downstream IP exposure from training-data litigation (Andersen v. Stability AI, Getty Images) flows back via indemnity.",
       "id": "IPDATA-009-s1.2-662",
       "recommendation": "Strike the training license entirely, or narrow it dramatically: (a) only de-identified / aggregated data, (b) only for operating the Service for that customer (not 'developing' the vendor's other services), (c) explicit opt-in rather than buried-in-TOS license, (d) carve-out for regulated data categories (PII, PHI, financial data, education records).",
       "rule_id": "IPDATA-009",
@@ -1120,11 +1120,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "70ce83dff6af6f07916716aad0426bb7d98eee35c06e551f65d427f04e52d725",
+  "result_hash": "68047a82fd0ccf4d149a5ce8cafeb65bfd62ed4d321ce8378099e3ed4b458fe1",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.697.0"
+  "version": "9.698.0"
 }
