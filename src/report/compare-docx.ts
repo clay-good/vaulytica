@@ -128,6 +128,20 @@ function renderCover(cmp: Comparison): Paragraph[] {
     coverField("Revised version", cmp.revised.name),
     coverField("Revised result hash", cmp.revised.result_hash),
     coverField("Comparison hash", cmp.result_hash),
+    // 🚨 A DELTA BETWEEN TWO DOCUMENTS READ DIFFERENTLY IS NOT
+    // APPLES-TO-APPLES. This cover already refuses to hide the other axis of
+    // that, one line below ("DKB version … (MISMATCH)"); a `.docx` compared
+    // against a pasted-text copy of the same contract could show findings as
+    // introduced or resolved purely because one side lost its heading
+    // structure, and no surface said so.
+    ...(cmp.base.warnings ?? []).map((w) => coverField("About the base", w)),
+    ...(cmp.revised.warnings ?? []).map((w) => coverField("About the revised", w)),
+    ...(cmp.base.classification_notice
+      ? [coverField("About the base", cmp.base.classification_notice)]
+      : []),
+    ...(cmp.revised.classification_notice
+      ? [coverField("About the revised", cmp.revised.classification_notice)]
+      : []),
     coverField(
       "DKB version",
       cmp.dkb_mismatch

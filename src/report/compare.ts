@@ -70,6 +70,32 @@ export type RunSummary = {
   result_hash: string;
   dkb_version: string;
   playbook_id: string;
+  /**
+   * What the ingest could and could not READ on this side —
+   * `IngestResult.warnings`.
+   *
+   * 🚨 A comparison is a DELTA, and a delta between two documents read
+   * DIFFERENTLY is not apples-to-apples. This file already refuses to hide the
+   * other axis of that — "Comparing across DKB versions is not
+   * apples-to-apples; the report flags it rather than hiding it" — while a
+   * `.docx` compared against a pasted-text copy of the same contract could
+   * show findings as INTRODUCED or RESOLVED purely because one side lost its
+   * heading structure, with nothing on any surface saying so. Neither
+   * comparison surface read the field, and neither was on
+   * `honesty-caveat-reach.test.ts`'s list.
+   *
+   * Omitted when the side read cleanly, so an existing comparison is
+   * byte-identical.
+   */
+  warnings?: string[];
+  /**
+   * `EngineRun.classification_notice` for this side: no document family
+   * matched, so only the generic lint ran. A delta in which one side fell back
+   * to generic lint and the other did not is comparing two different analyses,
+   * which is the same objection `dkb_mismatch` and `family_mismatch` already
+   * raise. Omitted when the side matched a family.
+   */
+  classification_notice?: string;
 };
 
 export type Comparison = {
@@ -129,7 +155,11 @@ export class ComparisonRefusedError extends Error {
 export async function compareRuns(
   base: EngineRun,
   revised: EngineRun,
-  opts: { confirmPairing?: boolean } = {},
+  opts: {
+    confirmPairing?: boolean;
+    /** `IngestResult.warnings` for each side — see {@link RunSummary.warnings}. */
+    warnings?: { base?: readonly string[]; revised?: readonly string[] };
+  } = {},
 ): Promise<Comparison> {
   const comparability = comparabilityOf(base, revised);
   if (!comparability.comparable && !opts.confirmPairing) {
@@ -142,8 +172,8 @@ export async function compareRuns(
   );
 
   return {
-    base: summarize(base),
-    revised: summarize(revised),
+    base: summarize(base, opts.warnings?.base),
+    revised: summarize(revised, opts.warnings?.revised),
     delta,
     dkb_mismatch: comparability.dkb_mismatch,
     family_mismatch: comparability.family_mismatch,
@@ -264,12 +294,18 @@ function severityCounts(findings: Finding[]): SeverityCounts {
   return out;
 }
 
-function summarize(run: EngineRun): RunSummary {
+function summarize(run: EngineRun, warnings?: readonly string[]): RunSummary {
   return {
     name: run.source_file.name,
     result_hash: run.result_hash,
     dkb_version: run.dkb_version,
     playbook_id: run.playbook_id,
+    // Omitted when the side read cleanly, so an existing comparison — and the
+    // `result_hash` computed over the delta — is byte-identical.
+    ...(warnings && warnings.length > 0 ? { warnings: [...warnings] } : {}),
+    ...(run.classification_notice
+      ? { classification_notice: run.classification_notice.message }
+      : {}),
   };
 }
 

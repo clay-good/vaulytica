@@ -47,6 +47,13 @@ const FINDING_SURFACES: ReadonlyArray<[file: string, what: string]> = [
   // The docstring above says a new render surface must join this list; this
   // one never did, which is exactly how it was missed.
   ["src/report/docx-comments.ts", "the anchored-comments reviewed DOCX"],
+  // 🚨 Joined in 9.711.0. A comparison is a DELTA, and a delta between two
+  // documents READ DIFFERENTLY is not apples-to-apples — `compare.ts` already
+  // refuses to hide the other axis of that ("Comparing across DKB versions is
+  // not apples-to-apples; the report flags it rather than hiding it") while
+  // neither comparison surface read the ingest's warnings at all.
+  ["src/report/compare.ts", "the comparison delta and its JSON"],
+  ["src/report/compare-docx.ts", "the comparison DOCX"],
 ];
 
 /**

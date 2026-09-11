@@ -334,7 +334,10 @@ export async function runCompare(argv: string[]): Promise<void> {
   const baseR = await analyzeFile(args.base, analyzeOpts);
   const revisedR = await analyzeFile(args.revised, analyzeOpts);
 
-  const cmp = await compareRuns(baseR.run, revisedR.run, { confirmPairing: args.confirmPairing });
+  const cmp = await compareRuns(baseR.run, revisedR.run, {
+    confirmPairing: args.confirmPairing,
+    warnings: { base: baseR.ingest.warnings, revised: revisedR.ingest.warnings },
+  });
   const clauseDiff = buildClauseDiff(baseR.ingest.tree, revisedR.ingest.tree);
   // The posture movement is computed only when both drafts were classified
   // against the same positions (spec-v11). Outside the comparison result_hash.

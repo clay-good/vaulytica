@@ -371,3 +371,37 @@ describe("parseCompareArgs — value-taking flags", () => {
     );
   });
 });
+
+describe("a comparison says how each side was READ", () => {
+  // 🚨 A comparison is a DELTA, and a delta between two documents read
+  // differently is not apples-to-apples. `compare.ts` already refuses to hide
+  // the other axis of that — "Comparing across DKB versions is not
+  // apples-to-apples; the report flags it rather than hiding it" — while a
+  // `.docx` compared against a pasted-text copy of the same contract could
+  // show findings as INTRODUCED or RESOLVED purely because one side lost its
+  // heading structure. Neither comparison surface read the field, and neither
+  // was on `honesty-caveat-reach.test.ts`'s list.
+  it("carries each side's ingest warnings", async () => {
+    const base = makeRun("a.txt", "a".repeat(64), []);
+    const revised = makeRun("b.txt", "b".repeat(64), []);
+    const cmp = await compareRuns(base, revised, {
+      warnings: { base: ["This PDF fell back to OCR."], revised: [] },
+    });
+    expect(cmp.base.warnings).toEqual(["This PDF fell back to OCR."]);
+    // The load-bearing negative: a clean side carries no field at all, so
+    // every existing comparison is byte-identical.
+    expect(cmp.revised.warnings).toBeUndefined();
+    expect(Object.keys(cmp.revised)).not.toContain("warnings");
+  });
+
+  it("carries a side's classification notice", async () => {
+    const base = makeRun("a.txt", "a".repeat(64), []);
+    base.classification_notice = {
+      reason: "generic-fallback",
+      message: "No document family matched.",
+    };
+    const cmp = await compareRuns(base, makeRun("b.txt", "b".repeat(64), []));
+    expect(cmp.base.classification_notice).toBe("No document family matched.");
+    expect(cmp.revised.classification_notice).toBeUndefined();
+  });
+});

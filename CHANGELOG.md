@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.711.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A comparison never said how each side was READ.** `compare.ts` already
+  refuses to hide one axis of this, in its own words:
+
+  > Comparing across DKB versions is not apples-to-apples; the report flags it
+  > rather than hiding it.
+
+  A `.docx` compared against a **pasted-text copy of the same contract** is not
+  apples-to-apples either — findings can show as INTRODUCED or RESOLVED purely
+  because one side lost its heading structure — and **neither comparison
+  surface read `IngestResult.warnings` at all.** Neither was on
+  `honesty-caveat-reach.test.ts`'s list, which is how it stayed that way.
+
+  Each side of a comparison now carries its ingest warnings and its
+  `classification_notice` (no family matched, so only the generic lint ran —
+  the same objection `dkb_mismatch` and `family_mismatch` already raise, on a
+  third axis). The DOCX cover prints them beside the mismatch lines; the JSON
+  carries them per side. `compare.ts` and `compare-docx.ts` are on the reach
+  list now.
+
+  🚨 A side that read cleanly carries **no field at all**, so every existing
+  comparison — and the `result_hash` computed over the delta — is
+  byte-identical. That is the load-bearing negative, and why all 345 goldens
+  changed hash only.
+
+  Found by sweeping for report files that export more than one artifact
+  builder, after the same shape produced 9.707.0's bundle-JSON gap: five files
+  do, and this was the pair where one surface had the caveats and the other
+  had none — except here **neither** did.
+
 ## [9.710.0] — 2026-09-10
 
 ### Fixed
