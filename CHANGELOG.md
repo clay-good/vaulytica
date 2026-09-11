@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.714.0] — 2026-09-10
+
+### Fixed
+- 🚨 **A contract told it carried "1 obligation with ambiguous obligor" — on a
+  sentence that obliges no one.** The whole cause was:
+
+  > **Covenants** to be performed after the Closing survive until performed in
+  > accordance with their terms.
+
+  "Covenants" is the NOUN there, the subject of a survival clause, and
+  `covenants to` sits in `MODALS` one entry along from `will` — the same trap
+  the extractor already guards for "at-will" and "this Will". Read as the
+  modal, the sentence has **no subject at all**, so the obligation carried an
+  EMPTY obligor and OBLI-001 duly reported it.
+
+  A modal that opens the sentence has no subject, and a duty nobody owes is not
+  a duty. `splitModalClauses` already drops a LATER clause whose subject was
+  elided; the first clause never had that check.
+
+  🚨 **The finding was a PINNED EXPECTATION** in
+  `specimen-regression.test.ts` — which is where a false accusation goes to be
+  forgotten, and the fourth time across sessions that a pinned expectation
+  turned out to be the bug. It is unpinned with the reason written beside it.
+
+  Found by measuring the obligor quality distribution over the corpus: 46.9% a
+  named party or role, 41.5% some other short phrase, 5.2% a bare pronoun, 5.2%
+  "the parties" — and **exactly one empty**, on a corpus my own notes recorded
+  as never producing one.
+
 ## [9.713.0] — 2026-09-10
 
 ### Fixed

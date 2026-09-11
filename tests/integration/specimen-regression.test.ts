@@ -1197,10 +1197,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // What remains is fair: no termination article (TERM-005), schedules and
   // exhibits delivered separately (STRUCT-018), and four terms this body uses
   // without defining (STRUCT-006).
+  // OBLI-001 came off in 9.714.0, and it was a PINNED FALSE ACCUSATION. Its
+  // only cause here was "Covenants to be performed after the Closing survive
+  // until performed in accordance with their terms" — a survival clause whose
+  // subject is the NOUN "Covenants", read as the modal `covenants to` with no
+  // subject at all, so the obligation had an EMPTY obligor and the report told
+  // this contract it carried "1 obligation with ambiguous obligor".
   "asset-purchase-agreement.txt": {
     playbook: "asset-purchase-agreement",
     findings: [
-      "OBLI-001",
       "OBLI-002",
       "OBLI-005",
       "OBLI-007",

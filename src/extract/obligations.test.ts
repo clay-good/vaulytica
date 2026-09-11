@@ -881,6 +881,30 @@ describe("resolveObligor — who the duty lands on", () => {
  * the row is nonsense rather than blank. 22 rows across 13 specimens.
  */
 describe("extractObligations — a modal inside a hyphenated compound", () => {
+  it("does not read a sentence-opening modal as a duty nobody owes", () => {
+    // 🚨 "Covenants" is a NOUN here — the subject of a survival clause — and
+    // `covenants to` is in MODALS one entry along from `will`, which the tests
+    // below cover for "at-will" and "this Will". The obligation it produced
+    // had an EMPTY obligor, and OBLI-001 duly reported the contract as
+    // carrying "1 obligation with ambiguous obligor", quoting a sentence that
+    // obliges no one. A modal that opens the sentence has no subject, and a
+    // duty nobody owes is not a duty.
+    const tree = buildTree([
+      "Survival",
+      "Covenants to be performed after the Closing survive until performed in accordance " +
+        "with their terms.",
+    ]);
+    expect(extractObligations(tree, [])).toEqual([]);
+  });
+
+  it("still reads a modal that merely follows a short subject", () => {
+    // The load-bearing negative: a one-word subject is still a subject.
+    const tree = buildTree(["Duty", "Seller covenants to deliver the Assets at Closing."]);
+    const [obli] = extractObligations(tree, []);
+    expect(obli?.obligor).toBe("Seller");
+    expect(obli?.action).toBe("deliver the Assets at Closing");
+  });
+
   it("does not read the 'will' of 'at-will' as a modal", () => {
     const tree = buildTree([
       "Employment",

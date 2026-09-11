@@ -385,7 +385,20 @@ function splitModalClauses(
     clauses.push({ subjectStart: clauseStart, modal: modals[k]! });
   }
 
-  return clauses.map((c) => ({
+  // 🚨 A MODAL THAT OPENS THE SENTENCE HAS NO SUBJECT, AND A DUTY NOBODY OWES
+  // IS NOT A DUTY. "Covenants to be performed after the Closing survive until
+  // performed in accordance with their terms" is a survival clause whose
+  // subject is the NOUN "Covenants" — the same trap as `will` in "at-will" and
+  // "this Will", one entry along in the same MODALS list. The obligation it
+  // produced had an EMPTY obligor, and OBLI-001 duly reported the contract as
+  // carrying "1 obligation with ambiguous obligor", quoting a sentence that
+  // obliges no one. That finding was a PINNED expectation, which is where a
+  // false accusation goes to be forgotten.
+  //
+  // The mirror of the check five lines up, which already drops a LATER clause
+  // whose subject was elided; the first clause never had one.
+  const bodied = clauses.filter((c) => sentence.slice(c.subjectStart, c.modal.index).trim() !== "");
+  return bodied.map((c) => ({
     subject: sentence.slice(c.subjectStart, c.modal.index).trim(),
     predicate: sentence.slice(c.modal.index + c.modal.len, c.predEnd ?? sentence.length).trim(),
     modal: c.modal.text,
