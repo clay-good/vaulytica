@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.708.0] — 2026-09-10
+
+### Fixed
+- 🚨 **One report still contradicted itself about its own provenance — the
+  defect its own comment describes.** `docx.ts` carries the diagnosis in as
+  many words:
+
+  > One artifact contradicting itself about its own provenance, on the page a
+  > reader looks at first.
+
+  The repair landed on the **cover** only. A rendered report still said, a
+  thousand paragraphs apart:
+
+  ```
+  Analysis date: (omitted from hash — this report is reproducible on any machine)
+  Executed at: (omitted from hash)
+  ```
+
+  So did the HTML report's provenance list and the bundle cover: **four sites,
+  two wordings, two of them inside one file.** The terse form reads like a
+  missing value; the long one says why the blank is the point — the timestamp
+  is left out so the same input reproduces the same bytes on any machine, which
+  is the whole determinism claim. `EXECUTED_AT_OMITTED` in
+  `src/report/disclaimers.ts` is now the single owner, registered with a
+  text-level guard.
+
+  🚨 **And the test named for this was enforcing the disagreement.**
+  `docx.test.ts`'s "the cover and the audit trail agree" asserted a PREFIX for
+  one line and the exact terse string for the other — so it passed on a report
+  that said both things, which is precisely what it was named to prevent. It
+  now asserts both lines against the owner.
+
+  🥇 Third statement this session found copied and drifted across the report
+  surfaces, after the privacy statement (9.700.0) and the not-legal-advice
+  statement (9.706.0). **A claim that exists four times will disagree with
+  itself**, and a repair applied to one of the four is how it stays that way.
+
 ## [9.707.0] — 2026-09-10
 
 ### Fixed

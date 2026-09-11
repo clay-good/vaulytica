@@ -94,7 +94,7 @@ import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
 import type { NegotiationPosture, NegotiationTier } from "../playbooks/custom-interpreter.js";
-import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
+import { EXECUTED_AT_OMITTED, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -704,7 +704,7 @@ export function buildHtmlReport(
     );
   }
   body.push(`<dt>Result hash</dt><dd>${esc(run.result_hash)}</dd>`);
-  body.push(`<dt>Executed at</dt><dd>${esc(run.executed_at || "(omitted from hash)")}</dd>`);
+  body.push(`<dt>Executed at</dt><dd>${esc(run.executed_at || EXECUTED_AT_OMITTED)}</dd>`);
   body.push(
     `<dt>Findings</dt><dd>${counts.critical} critical · ${counts.warning} warning · ${counts.info} info (${run.findings.length} total)</dd>`,
   );

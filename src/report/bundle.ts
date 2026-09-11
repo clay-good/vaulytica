@@ -91,7 +91,7 @@ import {
   type PortfolioStatus,
 } from "./portfolio.js";
 import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
-import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
+import { EXECUTED_AT_OMITTED, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 /** Cap on per-document findings surfaced in the consolidated DOCX (spec §11). */
 export const BUNDLE_TOP_N = 10;
@@ -721,7 +721,7 @@ export async function buildBundleZip(input: BundleZipInput): Promise<Blob> {
 function renderCover(input: BundleReportInput, fingerprint: string): Paragraph[] {
   const engineVersion = input.engine_version ?? input.documents[0]?.run.version ?? "0.0.0";
   const iso = input.executed_at ?? "";
-  const human = iso ? formatHumanDate(iso) : "(omitted from hash)";
+  const human = iso ? formatHumanDate(iso) : EXECUTED_AT_OMITTED;
   return [
     para({
       text: "Vaulytica Bundle Report",
@@ -745,7 +745,7 @@ function renderCover(input: BundleReportInput, fingerprint: string): Paragraph[]
           // here overstated the analysis coverage.
           `${input.consistency.execution_log.filter((e) => e.ran).length} rules executed`,
     ),
-    coverField("Analysis date", iso ? `${iso}  (${human})` : "(omitted from hash)"),
+    coverField("Analysis date", iso ? `${iso}  (${human})` : EXECUTED_AT_OMITTED),
     spacer(),
     para({ text: DETERMINISM_STATEMENT, italics: true }),
     spacer(2),

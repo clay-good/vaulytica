@@ -90,7 +90,7 @@ import {
   para,
   type ParaOpts,
 } from "./_docx-primitives.js";
-import { nonAdviceStatement, privacyStatement } from "./disclaimers.js";
+import { EXECUTED_AT_OMITTED, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 const DETERMINISM_STATEMENT =
   "This report was produced by a deterministic process. Given the same input file, the same Vaulytica engine version, and the same Deterministic Knowledge Base version listed above, the rules in this report will produce an identical report on any machine, at any time. The fingerprint of the input file is recorded above for verification. No part of this analysis was performed by a language model or any other non-deterministic system. The complete list of rules executed, including those that produced no findings, is included in the Audit Trail section so that the scope of the analysis is fully transparent.";
@@ -237,7 +237,7 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
   // at first.
   const dateLine = run.executed_at
     ? `${run.executed_at}  (${formatHumanDate(run.executed_at)})`
-    : "(omitted from hash — this report is reproducible on any machine)";
+    : EXECUTED_AT_OMITTED;
 
   // Asserted opt-in packs, recorded on the cover so the receipt shows what the
   // user turned on (each rides inside the hashed run).
@@ -1216,7 +1216,7 @@ function renderAuditTrail(
     }),
     para({ text: `File fingerprint: ${run.source_file.sha256}` }),
     para({ text: `Result hash: ${run.result_hash}` }),
-    para({ text: `Executed at: ${run.executed_at || "(omitted from hash)"}` }),
+    para({ text: `Executed at: ${run.executed_at || EXECUTED_AT_OMITTED}` }),
     para({
       text: `Model-clause references: this report references ${referencedInReport} public model clause${
         referencedInReport === 1 ? "" : "s"

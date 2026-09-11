@@ -8,7 +8,7 @@ import type { Playbook } from "../playbooks/types.js";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { privacyStatement } from "./disclaimers.js";
+import { EXECUTED_AT_OMITTED, privacyStatement } from "./disclaimers.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -633,11 +633,16 @@ describe("a blanked executed_at is never printed as a date", () => {
   });
 
   it("the cover and the audit trail agree", async () => {
+    // 🚨 This test was named for agreement and asserted the DISAGREEMENT: the
+    // cover matched a prefix, the audit trail the exact terse "(omitted from
+    // hash)". One artifact said both, a thousand paragraphs apart — the very
+    // defect `docx.ts`'s own comment describes, whose repair had landed on the
+    // cover only. Both lines now come from `EXECUTED_AT_OMITTED`.
     const run = makeRun();
     run.executed_at = "";
     const text = await docxText(run);
-    expect(text).toContain("Analysis date: (omitted from hash");
-    expect(text).toContain("Executed at: (omitted from hash)");
+    expect(text).toContain(`Analysis date: ${EXECUTED_AT_OMITTED}`);
+    expect(text).toContain(`Executed at: ${EXECUTED_AT_OMITTED}`);
   });
 
   it("every surface says 'omitted from hash' for the same blank run", async () => {

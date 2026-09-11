@@ -176,6 +176,32 @@ describe("the privacy statement", () => {
   });
 });
 
+describe("what a report says where its timestamp would go", () => {
+  // 🚨 `docx.ts` carried the diagnosis — "One artifact contradicting itself
+  // about its own provenance, on the page a reader looks at first" — and the
+  // repair landed on the COVER only. The same DOCX's audit trail still said
+  // the terse "(omitted from hash)", as did the HTML provenance list and the
+  // bundle cover: four sites, two wordings, two of them inside one file.
+  it("is spelled out in exactly one file", () => {
+    const OWNER = "src/report/disclaimers.ts";
+    const offenders: string[] = [];
+    for (const root of ["src", "tools"]) {
+      for (const file of sourceFiles(join(process.cwd(), root))) {
+        const rel = relative(process.cwd(), file).replace(/\\/g, "/");
+        if (rel === OWNER) continue;
+        const code = readFileSync(file, "utf8")
+          .replace(/\/\*[\s\S]*?\*\//g, "")
+          .replace(/^\s*\/\/.*$/gm, "");
+        if (code.includes("(omitted from hash")) offenders.push(rel);
+      }
+    }
+    expect(
+      offenders,
+      `the blanked-timestamp line is spelled out outside ${OWNER} — import EXECUTED_AT_OMITTED`,
+    ).toEqual([]);
+  });
+});
+
 describe("the document-reading root list", () => {
   it("is declared in exactly one place", () => {
     const strays: string[] = [];

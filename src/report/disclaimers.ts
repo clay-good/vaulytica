@@ -87,3 +87,20 @@ export function nonAdviceStatement(subject: PrivacySubject): string {
     "or a dispute, consult a licensed attorney in the relevant jurisdiction."
   );
 }
+
+/**
+ * What a report says where its own timestamp would go.
+ *
+ * 🚨 `docx.ts` already carries the diagnosis — "One artifact contradicting
+ * itself about its own provenance, on the page a reader looks at first" — and
+ * the repair landed on the COVER only. The same DOCX's audit trail, a thousand
+ * paragraphs later, still said the terse "(omitted from hash)", as did the
+ * HTML report's provenance list and the bundle cover. Four sites, two
+ * wordings, two of them inside one file.
+ *
+ * The terse form reads like a missing value. The long form says why the blank
+ * is the point: the timestamp is left out so the same input reproduces the
+ * same bytes on any machine, which is the whole determinism claim.
+ */
+export const EXECUTED_AT_OMITTED =
+  "(omitted from hash — this report is reproducible on any machine)";
