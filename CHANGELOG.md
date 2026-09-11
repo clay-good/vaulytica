@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.701.0] — 2026-09-10
+
+### Fixed
+- 🚨 **`verify`, handed the wrong JSON, printed a TypeError.**
+
+  ```
+  $ vaulytica verify team.json contract.txt
+  vaulytica: Cannot read properties of undefined (reading 'findings')
+  ```
+
+  True, internal, and silent about the mistake. `verify` re-derives a saved
+  report's `result_hash`, and every OTHER `.json` this tool touches is a custom
+  playbook — so pointing it at one is the natural wrong guess. It now says
+  which kind of file it got and which command wants that file:
+
+  ```
+  vaulytica: that looks like a custom playbook, not an analysis report.
+    verify re-derives a saved report's result_hash; a playbook has no run to re-derive.
+    To compare two playbook files, use: vaulytica diff <a.json> <b.json>
+  ```
+
+  and for anything else, what to pass instead — a JSON written by
+  `analyze --format json` or by `analyze --certificate`.
+
+  🥇 **The mirror of this was already solved for `diff`**, with the diagnosis
+  written out in `cli-diff-wrong-input.test.ts`: *"Every line is true and none
+  of them says 'you passed a report'."* `verify` is the same mistake in the
+  other direction and never got the same treatment.
+
+  🚨 **This command's one audience is someone auditing a receipt** — often not
+  the person who produced it, and reading its output to decide whether a
+  document's analysis can be trusted. A JavaScript internal error is the worst
+  thing it can say to them.
+
+  Found by rendering the verification certificate, reading it, and then running
+  the `reproduce_command` it prints. The happy path works; the neighbouring
+  wrong turn did not.
+
+### Added
+- **`tests/integration/cli-verify-wrong-input.test.ts`** — both wrong turns,
+  each asserting the message names the file kind AND that no internal error
+  text reaches the user. Proven by deleting the check, which puts `Cannot read
+  properties of undefined` straight back.
+
 ## [9.700.0] — 2026-09-10
 
 ### Fixed

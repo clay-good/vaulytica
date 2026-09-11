@@ -2240,7 +2240,23 @@ export function renderCoherenceSummary(coherence: PostureCoherence): string {
   return lines.join("\n") + "\n";
 }
 
-async function runVerify(argv: string[]): Promise<void> {
+/**
+ * Whether a parsed JSON file is an analysis report this command can re-derive.
+ * Structural and deliberately shallow — the verifier itself reports every
+ * substantive divergence; this only separates "wrong kind of file" from
+ * "report that does not reproduce", which are different answers.
+ */
+function isSavedReportShape(v: Record<string, unknown>): boolean {
+  const run = v.run;
+  return (
+    typeof run === "object" &&
+    run !== null &&
+    typeof (run as Record<string, unknown>).result_hash === "string"
+  );
+}
+
+/** Exported so  can drive the real command. */
+export async function runVerify(argv: string[]): Promise<void> {
   // Sequential parse so a `--playbook <id>` placed *before* the positionals
   // does not leak its value into the positional list (a filter-by-prefix
   // approach would mis-assign the report path).
@@ -2268,6 +2284,28 @@ async function runVerify(argv: string[]): Promise<void> {
     );
   }
   const parsed = JSON.parse(await readFile(reportPath, "utf8")) as Record<string, unknown>;
+  // 🚨 SAY WHAT THE FILE IS, NOT WHAT BROKE READING IT.
+  //
+  // `verify` takes an analysis report or a verification certificate, and every
+  // OTHER `.json` this tool touches is a custom playbook — so pointing it at
+  // one is the natural wrong guess, the mirror of the mistake
+  // `cli-diff-wrong-input.test.ts` names for `diff`. Unchecked, the shape
+  // mismatch surfaced as `Cannot read properties of undefined (reading
+  // 'findings')`: true, internal, and silent about the mistake — to a reader
+  // auditing a receipt, which is the one audience this command has.
+  if (parsed.schema !== CERTIFICATE_SCHEMA && !isSavedReportShape(parsed)) {
+    const looksLikePlaybook =
+      "rules" in parsed || "catalog_version" in parsed || "rule_overrides" in parsed;
+    throw new Error(
+      looksLikePlaybook
+        ? `that looks like a custom playbook, not an analysis report.\n` +
+            `  verify re-derives a saved report's result_hash; a playbook has no run to re-derive.\n` +
+            `  To compare two playbook files, use: vaulytica diff <a.json> <b.json>`
+        : `${reportPath} is not a Vaulytica analysis report or verification certificate.\n` +
+            `  Expected a JSON file written by \`analyze --format json\` (a \`run\` block with a\n` +
+            `  result_hash) or by \`analyze --certificate\`.`,
+    );
+  }
   // A verification certificate is an alternative provenance source
   // (add-court-certification-receipt): same fields as the report block,
   // hash-verified before use so a doctored certificate is a hard error.
