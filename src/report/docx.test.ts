@@ -8,6 +8,7 @@ import type { Playbook } from "../playbooks/types.js";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { privacyStatement } from "./privacy.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -1079,7 +1080,11 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
       await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
     );
     expect(xml).toContain("This report was produced by a deterministic process");
-    expect(xml).toContain("performed entirely inside the user"); // privacy (apostrophe-free prefix)
+    // Asserted against the SINGLE OWNER, not a restatement of it: a guard that
+    // spells the privacy text out is the fifth copy of the claim that already
+    // drifted four ways (9.700.0). A middle sentence is used because the
+    // container XML-escapes apostrophes and dashes; this one carries neither.
+    expect(xml).toContain(privacyStatement("document").split(". ")[1]);
     expect(xml).toContain("Vaulytica is a software tool, not a lawyer"); // non-advice disclaimer
   });
 

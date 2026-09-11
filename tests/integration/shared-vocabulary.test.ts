@@ -20,7 +20,7 @@
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { sourceFiles, DOCUMENT_READING_ROOTS } from "./_recognizer-sources.js";
 
 const ROOTS = ["src", "tools"];
@@ -86,6 +86,19 @@ const VOCABULARIES: readonly Vocabulary[] = [
     // reached only that one, so a joint development agreement saying "Nothing
     // in this Agreement grants a residuals right" was still warned that a
     // residuals clause is present (9.645.0).
+    // 🚨 Four files each declared their own `PRIVACY_STATEMENT`, all four
+    // opening "This analysis was performed entirely inside the user's web
+    // browser" — and the CLI and the GitHub Action render the same reports in
+    // a Node process on a build machine. They had also already drifted: the
+    // bundle's copy dropped the independent-verification sentence and the
+    // comparison's dropped the developer's "no record of this analysis" too
+    // (9.700.0). This is the section a reader consults precisely because they
+    // want the mechanism, so a fifth copy must not be written.
+    what: "the privacy statement every report surface prints",
+    owner: "src/report/privacy.ts",
+    definition: /export function privacyStatement\s*\(/,
+  },
+  {
     what: "the residuals-rejection patterns",
     owner: "src/engine/rules/_helpers.ts",
     definition: /export const RESIDUALS_REJECTED\s*:/,
@@ -135,6 +148,34 @@ describe("a shared vocabulary", () => {
  * whose scope is genuinely narrower should derive it from that constant and say
  * why, not write its own.
  */
+describe("the privacy statement", () => {
+  // 🚨 The registry entry above forbids a second `privacyStatement` FUNCTION.
+  // It does not forbid a second copy of the TEXT, which is how the claim
+  // drifted four ways in the first place — four files each held their own
+  // string literal. Proven by pasting one back into `bundle.ts`, which the
+  // registry entry alone waved through.
+  it("exists as text in exactly one file", () => {
+    const OWNER = "src/report/privacy.ts";
+    // A phrase distinctive to the statement and to no other prose.
+    const PHRASE = "was transmitted to any server";
+    const offenders: string[] = [];
+    for (const root of ["src", "tools"]) {
+      for (const file of sourceFiles(join(process.cwd(), root))) {
+        const rel = relative(process.cwd(), file).replace(/\\/g, "/");
+        if (rel === OWNER) continue;
+        const src = readFileSync(file, "utf8");
+        // Comments may quote the old wording to explain the repair.
+        const code = src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+        if (code.includes(PHRASE)) offenders.push(rel);
+      }
+    }
+    expect(
+      offenders,
+      `the privacy statement is spelled out outside ${OWNER} — import privacyStatement() instead`,
+    ).toEqual([]);
+  });
+});
+
 describe("the document-reading root list", () => {
   it("is declared in exactly one place", () => {
     const strays: string[] = [];

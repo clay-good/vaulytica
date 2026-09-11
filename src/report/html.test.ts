@@ -4,6 +4,7 @@ import { buildHtmlReport } from "./html.js";
 import { loadStarterDkbSync } from "../engine/_test-fixtures.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
 import type { IngestResult } from "../ingest/types.js";
+import { privacyStatement } from "./privacy.js";
 
 const ingest: IngestResult = {
   tree: { type: "document", sections: [] },
@@ -115,7 +116,9 @@ describe("buildHtmlReport (spec-v8 §21 — standalone single-file HTML)", () =>
   it("renders the bibliography and the verbatim posture block", () => {
     const html = buildHtmlReport(makeRun(), ingest, loadStarterDkbSync());
     expect(html).toContain("Bibliography");
-    expect(html).toContain("This analysis was performed entirely inside the user");
+    // Asserted against the SINGLE OWNER, not a restatement of it — see the
+    // matching guard in docx.test.ts and `shared-vocabulary.test.ts`.
+    expect(html).toContain(privacyStatement("document").split(". ")[1]);
     expect(html).toContain("Vaulytica is a software tool, not a lawyer");
   });
 

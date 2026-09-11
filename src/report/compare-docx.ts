@@ -42,6 +42,7 @@ import type { Clause, ClauseDiff, WordDiffSegment } from "./clause-diff.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { PostureMovement, PostureMovementKind } from "./posture-movement.js";
 import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
+import { privacyStatement } from "./privacy.js";
 
 /**
  * Cap on redline rows rendered per category. A pathological redline (a
@@ -54,8 +55,7 @@ const MAX_REDLINE_ROWS = 100;
 const DETERMINISM_STATEMENT =
   "This comparison was produced by a deterministic process. It is the difference between two deterministic Vaulytica runs: given the same two input files, the same engine version, and the same Deterministic Knowledge Base version, this comparison reproduces byte-for-byte on any machine, at any time. The comparison hash above is the SHA-256 of the two run hashes and the canonical delta. No part of this analysis was performed by a language model or any other non-deterministic system.";
 
-const PRIVACY_STATEMENT =
-  "Both documents were analyzed entirely inside the user's web browser. Neither file, nor any portion of it, was transmitted to any server. Vaulytica is a static web page with no backend, no database, no analytics, and no telemetry.";
+const PRIVACY_STATEMENT = privacyStatement("comparison");
 
 const NON_ADVICE_STATEMENT =
   "Vaulytica is a software tool, not a lawyer. This comparison is a mechanical diff of two rule-engine runs over documents you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The decision to act on any change shown here, or not, is yours and your counsel's.";

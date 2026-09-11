@@ -91,6 +91,7 @@ import {
   type PortfolioStatus,
 } from "./portfolio.js";
 import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
+import { privacyStatement } from "./privacy.js";
 
 /** Cap on per-document findings surfaced in the consolidated DOCX (spec §11). */
 export const BUNDLE_TOP_N = 10;
@@ -108,8 +109,7 @@ export const BUNDLE_CROSS_DOC_TOP_N = 100;
 const DETERMINISM_STATEMENT =
   "This consolidated report was produced by a deterministic process. Given the same input files, the same Vaulytica engine version, and the same Deterministic Knowledge Base version, the rules in this report will produce an identical report on any machine, at any time. The bundle fingerprint is recorded above for verification. No part of this analysis was performed by a language model or any other non-deterministic system.";
 
-const PRIVACY_STATEMENT =
-  "This analysis was performed entirely inside the user's web browser. No portion of any input document was transmitted to any server. Vaulytica is a static web page; the page has no backend, no database, no analytics, and no telemetry. The developer of Vaulytica has no record of this analysis, no ability to recover it, and no way to identify the user who performed it.";
+const PRIVACY_STATEMENT = privacyStatement("bundle");
 
 const NON_ADVICE_STATEMENT =
   "Vaulytica is a software tool, not a lawyer. This report is a checklist of mechanical findings produced by a deterministic rule engine against documents you provided. It is not legal advice, and using Vaulytica does not create an attorney-client relationship with anyone. The findings may be incorrect, incomplete, or inapplicable to your situation. Consult a licensed attorney in the relevant jurisdiction.";

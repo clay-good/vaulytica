@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.700.0] — 2026-09-10
+
+### Fixed
+- 🚨 **The report told a CI reader it had run in their web browser.** Every
+  report surface printed, verbatim: *"This analysis was performed entirely
+  inside the user's web browser … Vaulytica is a static web page hosted on
+  Cloudflare Pages."* The `vaulytica` CLI and the GitHub Action render those
+  same reports **in a Node process on a build machine**. A `.docx` produced in
+  CI described a mechanism that had nothing to do with the run that produced
+  it.
+
+  The substance was never in doubt — no surface sends document content
+  anywhere. What was wrong was the MECHANISM the report asserted, **in the one
+  section a reader consults precisely because they want the mechanism.** The
+  statement now names both paths and stakes the checkable claim on "the machine
+  that ran it" rather than "the user's browser", which is true and verifiable
+  whichever surface produced the file.
+
+  🚨 **And the four copies had already drifted.** `html.ts`, `docx.ts`,
+  `bundle.ts` and `compare-docx.ts` each declared their own
+  `PRIVACY_STATEMENT`: the bundle's had dropped the independent-verification
+  sentence, and the comparison's had dropped the developer's "no record of this
+  analysis" as well. **A claim that exists four times will disagree with
+  itself** — the same lesson as the four `sections[0]?.heading` copies and the
+  four obligation-modal alternations before it.
+
+### Added
+- **`src/report/privacy.ts`** — the single owner, registered in
+  `shared-vocabulary.test.ts`.
+
+  🚨 **The registry entry alone was vacuous, and proving it is what showed
+  that.** It forbids a second `privacyStatement` FUNCTION; pasting the old
+  string literal back into `bundle.ts` sailed straight through — which is
+  exactly how the claim drifted four ways to begin with. A second assertion
+  scans `src` and `tools` for the statement's text outside the owner, and that
+  one fails on the pasted copy. **A guard is proven by failing.**
+
+  The two verbatim-posture guards in `docx.test.ts` and `html.test.ts` now
+  assert against the owner instead of restating it — a guard that spells the
+  text out is the fifth copy.
+
+  All 345 goldens changed hash only; no finding, id, severity or count moved.
+
 ## [9.699.0] — 2026-09-10
 
 ### Fixed
