@@ -17,6 +17,7 @@ import {
   render404,
   renderSeoPage,
 } from "../../tools/site/seo-pages.js";
+import { decorateSampleReport } from "../../tools/site/sample-report.js";
 
 const INDEX = readFileSync(join(process.cwd(), "site", "index.html"), "utf8");
 const counts = readHeadlineCounts(INDEX);
@@ -82,6 +83,24 @@ describe("search-landing pages", () => {
         expect(m[1]).toBe(counts.rules);
       }
     }
+  });
+});
+
+describe("sample report", () => {
+  it("is linked from the home page and every landing page, and in the sitemap", () => {
+    expect(INDEX).toContain('href="/sample-report"');
+    for (const p of SEO_PAGES) expect(renderSeoPage(p, counts)).toContain('href="/sample-report"');
+    expect(buildSitemap()).toContain("<loc>https://vaulytica.com/sample-report</loc>");
+  });
+
+  it("decorates the engine's report without touching its body", () => {
+    const report =
+      "<html><head><title>Vaulytica Report — x</title></head><body><h1>Findings</h1></body></html>";
+    const out = decorateSampleReport(report);
+    expect(out).toContain('<link rel="canonical" href="https://vaulytica.com/sample-report" />');
+    expect(out).toContain("This is a sample report.");
+    expect(out).toContain("<h1>Findings</h1>");
+    expect(out).not.toMatch(/<script(?![^>]*ld\+json)/);
   });
 });
 

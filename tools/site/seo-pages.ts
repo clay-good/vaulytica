@@ -775,6 +775,7 @@ export function renderSeoPage(page: SeoPage, counts: HeadlineCounts): string {
           <div class="card"><h3>Deadlines on your calendar</h3><p>Renewal, notice and cure dates the document states, as an .ics file.</p></div>
           <div class="card"><h3>Obligations and fix lists</h3><p>Who owes what, and what to fix, as spreadsheets you can sort and share.</p></div>
         </div>
+        <p style="margin-top:20px"><a href="/sample-report">See a real sample report →</a></p>
       </section>
       <section>
         <h2>How it works</h2>
@@ -833,6 +834,7 @@ export function buildSitemap(docTypes: ReadonlyArray<{ readonly id: string }> = 
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     url(`${ORIGIN}/`),
+    url(`${ORIGIN}/sample-report`),
     ...SEO_PAGES.map((p) => url(pageUrl(p.slug))),
     ...(docTypes.length > 0 ? [url(`${ORIGIN}/reviews`)] : []),
     ...docTypes.map((t) => url(docTypeUrl(t.id))),
@@ -862,6 +864,7 @@ export function buildLlmsTxt(counts: HeadlineCounts): string {
     "",
     `- [Use the tool](${ORIGIN}/): the browser app`,
     `- [Every document type](${ORIGIN}/reviews): each of the ${counts.docTypes} document types and the checks it gets`,
+    `- [Sample report](${ORIGIN}/sample-report): an unedited report for a sample NDA`,
     "- [Source code](https://github.com/clay-good/vaulytica): MIT-licensed repository",
     "- [CI integration](https://github.com/clay-good/vaulytica/blob/main/docs/ci-integration.md): CLI and GitHub Action",
     "",
@@ -992,6 +995,7 @@ export function renderDocTypePage(
         <h1>${escapeHtml(t.name)} review</h1>
         <p class="lead">${escapeHtml(t.summary)}</p>
         <a class="cta" href="/">Review your document — free →</a>
+        <a href="/sample-report">See a sample report</a>
         <ul class="trust" aria-label="At a glance">
           <li>${t.checks.length} document-specific check${t.checks.length === 1 ? "" : "s"}</li>
           <li>+ ${t.general_checks} general checks</li>

@@ -48,7 +48,7 @@ function referencedAssetPaths(): string[] {
     if (!url.startsWith("/")) continue;
     if (url === "/") continue;
     if (SEO_PAGES.some((p) => url === `/${p.slug}`)) continue;
-    if (url === "/reviews" || url.startsWith("/review/")) continue;
+    if (url === "/reviews" || url.startsWith("/review/") || url === "/sample-report") continue;
     paths.add(url.replace(/[?#].*$/, ""));
   }
   return [...paths].sort();

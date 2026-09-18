@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.726.0] — 2026-09-18
+
+### Added
+- **`/sample-report` — a real report, before anyone uploads anything.** An
+  attorney deciding whether to trust a tool with a client's document wants to
+  see its output first, and the site showed none. The page is the unedited
+  HTML report the CLI writes for a deliberately flawed mutual NDA from the
+  test fixtures (`tests/fixtures/contracts/bad-nda.docx`, shown as
+  `sample-mutual-nda.docx`), regenerated on every build by
+  `tools/site/write-sample-report.ts`, so it cannot drift from the engine. The
+  only additions are a banner saying what it is and the head tags a public
+  page needs. Linked from the home page, every landing page, every
+  document-type page, the sitemap and `llms.txt`. It already reflects
+  9.725.0: a company-to-company NDA no longer draws the DTSA finding.
+
 ## [9.725.0] — 2026-09-18
 
 ### Fixed
