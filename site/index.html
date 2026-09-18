@@ -1981,6 +1981,12 @@
       .section-lead {
         max-width: 720px;
       }
+      /* A link inside running text must be told apart by more than colour
+         (WCAG 1.4.1; Lighthouse link-in-text-block). */
+      .section-lead a {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
 
       /* A heading inside a <summary> is the disclosure's own title: it must
          not inherit the block margins that would push the +/- marker out of
