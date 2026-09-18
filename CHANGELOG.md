@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.725.0] — 2026-09-18
+
+### Fixed
+- 🚨 **Every business-to-business NDA was told, at CRITICAL, that it lacked a
+  notice the law does not require of it.** NDA-D-001's description says "NDAs
+  **with employees, contractors, or consultants** must contain the DTSA
+  notice" — and 18 U.S.C. § 1833(b)(3) puts that duty on a contract with an
+  "employee", which (b)(4) defines to include an individual contractor or
+  consultant. The rule tested none of it. Across the corpus it fired on three
+  documents, all company-to-company NDAs — one governed by English law — and
+  on none with an individual party. It now stands down unless a party is an
+  individual (a defined Employee / Consultant / Contractor role, "an
+  individual", or an employment or consulting relationship). Deliberately not
+  a bare "employees, contractors and advisors": that is the representatives
+  clause of nearly every B2B NDA, and a test pins that it does not satisfy the
+  gate.
+- 🚨 **The planted positive encoded the bug, again.** `mutual-nda-deep-missing-dtsa-fail`
+  was an NDA between two corporations. It is now an NDA with an individual
+  consultant, so it stays a true positive. (First draft left "Consultant"
+  defined and never used; STRUCT-005 caught it.)
+- The NDA builder gains the same `applicable_if` gate the v3 and v4 builders
+  carry, recorded in `V3_GATED_PRESENCE_RULE_IDS`.
+
+Specimen rows updated: `mutual-nda-letter`, `uk-mutual-nda` (NDA-D-001).
+
 ## [9.724.0] — 2026-09-18
 
 ### Fixed

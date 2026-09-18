@@ -103,17 +103,32 @@ describe("NDA-deep ruleset — compliant mutual NDA fixture", () => {
 });
 
 describe("NDA-deep ruleset — failure cases", () => {
-  it("NDA-D-001 fires when DTSA notice is absent", async () => {
-    const ctx = withPb(
-      buildContext(["NDA", "Standard mutual NDA without any DTSA notice text."]),
-      MUTUAL,
-    );
-    const run = await runEngine({
-      rules: NDA_DEEP_RULES,
-      ctx,
-      source_file: { name: "nda.docx", sha256: "0".repeat(64), size_bytes: 1 },
-    });
-    expect(run.findings.some((f) => f.rule_id === "NDA-D-001")).toBe(true);
+  // § 1833(b)(3) requires the notice in a contract with an "employee" — which
+  // (b)(4) defines to include an individual contractor or consultant. Between
+  // two companies there is no such duty (9.725.0); both directions pinned.
+  const dtsaFires = async (body: string) =>
+    (
+      await runEngine({
+        rules: NDA_DEEP_RULES,
+        ctx: withPb(buildContext(["NDA", body]), MUTUAL),
+        source_file: { name: "nda.docx", sha256: "0".repeat(64), size_bytes: 1 },
+      })
+    ).findings.some((f) => f.rule_id === "NDA-D-001");
+
+  it("NDA-D-001 fires when an NDA with an individual consultant omits the DTSA notice", async () => {
+    expect(
+      await dtsaFires(
+        'This Agreement is between Acme Corp, a Delaware corporation, and Jordan Rivera, an individual ("Consultant"). Each party shall protect the other\'s Confidential Information.',
+      ),
+    ).toBe(true);
+  });
+
+  it("NDA-D-001 stands down on an NDA between two companies", async () => {
+    expect(
+      await dtsaFires(
+        "This Agreement is between Acme Corp, a Delaware corporation, and Stark Industries, Inc., a California corporation. Each party may share Confidential Information with its employees, contractors and advisors who need to know it.",
+      ),
+    ).toBe(false);
   });
 
   it("NDA-D-011 fires on 'any business purpose' permitted use", async () => {

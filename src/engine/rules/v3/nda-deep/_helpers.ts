@@ -14,6 +14,7 @@ import { forEachParagraph, forEachSection } from "../../../../extract/walk.js";
 import type { DocPosition } from "../../../../extract/types.js";
 import { findDenial, firstBadPatternHit } from "../../_helpers.js";
 import { truncate } from "../../../text.js";
+import { V3_GATED_PRESENCE_RULE_IDS } from "../_regulated-rule.js";
 
 const NDA_PLAYBOOKS_ALL = ["mutual-nda-deep", "unilateral-nda-deep"] as const;
 const NDA_PLAYBOOKS_MUTUAL = ["mutual-nda-deep"] as const;
@@ -108,9 +109,16 @@ export type NdaPresenceSpec = {
   default_severity?: Severity;
   scope?: PlaybookScope;
   dkb_citation_id?: string;
+  /**
+   * Applicability gate, as in the v3 regulated-rule and v4 builders: when set
+   * and none of its patterns match, the rule stands down. Recorded in
+   * `V3_GATED_PRESENCE_RULE_IDS` so the satisfiability guard sees it.
+   */
+  applicable_if?: readonly RegExp[];
 };
 
 export function buildNdaPresenceRule(spec: NdaPresenceSpec): Rule {
+  if (spec.applicable_if) V3_GATED_PRESENCE_RULE_IDS.add(spec.id);
   return {
     id: spec.id,
     version: spec.version ?? "1.0.0",
@@ -122,6 +130,7 @@ export function buildNdaPresenceRule(spec: NdaPresenceSpec): Rule {
     applies_to_playbooks: playbookList(spec.scope ?? "all"),
     check(ctx: RuleContext): Finding | null {
       const text = fullText(ctx);
+      if (spec.applicable_if && !spec.applicable_if.some((re) => re.test(text))) return null;
       if (spec.denied_if) {
         // An express denial outranks the presence check: the topic words are
         // present precisely because the document is disclaiming the clause.

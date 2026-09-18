@@ -24,6 +24,16 @@ import {
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
 
+/**
+ * A party who is a natural person — an employee, or an individual contractor
+ * or consultant, the "employee" of 18 U.S.C. § 1833(b)(4). A defined party
+ * role, "an individual", or an employment / consulting relationship. Deliberately
+ * NOT a bare "employees, contractors and advisors": that is the
+ * representatives clause of nearly every business-to-business NDA.
+ */
+const INDIVIDUAL_PARTY =
+  /\((?:the\s+|each\s+a\s+|hereinafter\s+)?["“](?:Employee|Consultant|Contractor|Executive|Advisor|Adviser|Intern|Worker|Individual)["”]\)|\ban\s+individual\b|\b(?:employment|consulting)\s+(?:agreement|relationship|engagement)\b|\bindependent\s+contractor\b/i;
+
 const presence = (s: NdaPresenceSpec): Rule => buildNdaPresenceRule(s);
 const language = (s: NdaLanguageSpec): Rule => buildNdaLanguageRule(s);
 const compound = (s: NdaCompoundSpec): Rule => buildNdaCompoundRule(s);
@@ -34,7 +44,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-001",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "DTSA whistleblower-immunity notice present",
     description:
       "NDAs with employees, contractors, or consultants must contain the DTSA notice of immunity for confidential disclosure of trade secrets to government or in court filings.",
@@ -53,6 +63,12 @@ export const NDA_DEEP_RULES: Rule[] = [
     denied_if: expressDenial(
       String.raw`(?:dtsa|defend\s+trade\s+secrets\s+act)\s+(?:whistleblower\s+)?immunity|immunity[^.]{0,30}?1833\(b\)|whistleblower\s+immunity`,
     ),
+    // "NDAs with employees, contractors, or consultants" — tested now. The
+    // § 1833(b)(3) notice duty runs to a contract with an "employee", which
+    // (b)(4) defines to include an individual contractor or consultant. It
+    // fired at CRITICAL on every business-to-business NDA in the corpus —
+    // including one governed by English law — and on none with an individual.
+    applicable_if: [INDIVIDUAL_PARTY],
     denied_title: "DTSA whistleblower immunity expressly denied",
     denied_description:
       "The agreement states that no DTSA immunity is provided. 18 U.S.C. \u00a7 1833(b) confers the immunity by statute, and an employer that omits the notice forfeits exemplary damages and fees.",

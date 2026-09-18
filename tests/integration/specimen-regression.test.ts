@@ -3044,7 +3044,7 @@ export const EXPECTED: Record<string, Expectation> = {
 
   "mutual-nda-letter.txt": {
     playbook: "mutual-nda-deep",
-    findings: ["NDA-D-001", "NDA-D-019", "NDA-D-022", "OBLI-005", "OBLI-008", "RISK-001"],
+    findings: ["NDA-D-019", "NDA-D-022", "OBLI-005", "OBLI-008", "RISK-001"],
   },
 
   "escrow-agreement-indemnity.txt": {
@@ -3830,7 +3830,6 @@ export const EXPECTED: Record<string, Expectation> = {
   "uk-mutual-nda.txt": {
     playbook: "mutual-nda-deep",
     findings: [
-      "NDA-D-001",
       "NDA-D-016",
       "NDA-D-022",
       "NDA-D-023",

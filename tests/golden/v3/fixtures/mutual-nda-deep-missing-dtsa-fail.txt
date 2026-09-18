@@ -1,6 +1,6 @@
 Mutual Non-Disclosure Agreement
 
-This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of January 15, 2026, by and between Acme Corp, a Delaware corporation ("Acme"), and Stark Industries, Inc., a California corporation ("Stark"). The Parties desire to explore a potential business relationship (the "Permitted Purpose") and may disclose certain confidential information to each other.
+This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of January 15, 2026, by and between Acme Corp, a Delaware corporation ("Acme"), and Jordan Rivera, an individual consultant residing in California ("Consultant"). The Parties desire to explore a potential engagement of Consultant by Acme (the "Permitted Purpose") and may disclose certain confidential information to each other.
 
 1. Definition of Confidential Information. "Confidential Information" means any non-public information disclosed by one Party (the "Disclosing Party") to the other Party (the "Receiving Party"), whether orally, in writing, or by any other means, that is designated as confidential or that reasonably should be understood to be confidential given the nature of the information and the circumstances of disclosure. Confidential Information includes, without limitation, trade secrets, technical data, business plans, financial information, customer lists, and product roadmaps.
 
