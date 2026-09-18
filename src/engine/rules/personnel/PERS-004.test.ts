@@ -44,4 +44,26 @@ describe("PERS-004 — anti-poaching / no-hire", () => {
     expect(fires("Neither party will hire employees without prior board approval.")).toBe(false);
     expect(fires("The Company will hire qualified staff for the project as needed.")).toBe(false);
   });
+
+  // v1.3.0 — the narrow form the recommendation asks for is a note, not a warning.
+  it("reports an engagement-limited, time-bounded non-solicit as a note", () => {
+    const f = PERS_004.check(
+      buildContext([
+        "Non-Solicitation",
+        "During the term and for twelve (12) months afterward, neither Party shall solicit for employment any employee of the other Party who was directly involved in performing or receiving the services.",
+      ]),
+    );
+    expect(f?.severity).toBe("info");
+    expect(f?.title).toBe("Employee non-solicit limited to engagement personnel");
+  });
+
+  it("still warns on a broad no-hire", () => {
+    const f = PERS_004.check(
+      buildContext([
+        "No-Hire",
+        "Neither party will hire the other party's employees during the term.",
+      ]),
+    );
+    expect(f?.severity).toBe("warning");
+  });
 });

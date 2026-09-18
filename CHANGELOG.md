@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.722.0] — 2026-09-18
+
+### Fixed
+- 🚨 **Two MSA rules stated a precondition and never tested it** — the defect
+  class TRANSFER-018 closed in 9.637.0, again. Found by reading the report on a
+  complete, well-drafted professional-services MSA the way its lawyer would:
+  - **MSA-016** ("MSA must reference or attach an SLA *where the service is
+    hosted*") told a services MSA — work under SOWs, nothing hosted — to add
+    uptime and support-response schedules. It now stands down unless the
+    agreement describes a hosted or online service. 19 goldens lose it, all
+    services-only agreements.
+  - **MSA-030** ("*When a limited remedy is the exclusive remedy*…") reported
+    "exclusive / limited remedy language is present" on every MSA specimen and
+    on the vendor-side minimal PASS fixture — none of which states one. One of
+    them says the opposite: "Service credits are **not** Customer's sole and
+    exclusive remedy," the customer-protective drafting the rule exists to ask
+    for. The gate is negation-aware. 11 goldens lose it.
+  - Its explanation also presented UCC § 2-719 as if it governed a services
+    agreement. Article 2 governs sales of goods; it reaches a mixed contract
+    where goods predominate and, in some courts, software licenses, while a
+    pure services agreement is governed by the common law. It now says so.
+- 🚨 **A pinned expectation encoded the bug.** The planted positive
+  `msa-vendor-deep-missing-sla-fail` was a professional-services MSA — by the
+  rule's own precondition, a document it should not fire on. The fixture now
+  describes a hosted platform, so it stays a true positive; the other planted
+  positives (`…-missing-essential-purpose-fail`, `…-sla-sole-exclusive-remedy-fail`)
+  still fire.
+- **PERS-004 warned about a non-solicit already in the form it recommends.**
+  A mutual non-solicit limited to the employees who worked on the engagement,
+  for a bounded period, drew a warning invoking DOJ no-poach prosecutions of
+  competitors. That narrow, ancillary form is now reported as a note; a broad
+  no-hire still warns.
+
+Specimen rows updated: `msa-complete` (MSA-016, MSA-030),
+`msa-customer-side` and `uk-master-services-agreement` (MSA-030).
+
 ## [9.721.0] — 2026-09-18
 
 ### Fixed

@@ -4,7 +4,7 @@ This Master Services Agreement ("MSA" or "Agreement") is entered into as of Marc
 
 1. Order of Precedence. In the event of any conflict or inconsistency between this MSA and any Statement of Work ("SOW"), the terms of this MSA shall control and govern, except to the extent that a SOW explicitly states that it supersedes a specific provision of this MSA by reference to the section number.
 
-2. Services. Vendor shall provide the services described in each SOW executed by the parties. Each SOW is incorporated into and made a part of this Agreement. Vendor shall perform services in a professional and workmanlike manner consistent with industry standards.
+2. Services. Vendor shall provide the services described in each SOW executed by the parties, including hosting and operating the software platform each SOW describes. Each SOW is incorporated into and made a part of this Agreement. Vendor shall perform services in a professional and workmanlike manner consistent with industry standards.
 
 3. Fees and Payment. Customer shall pay Vendor the fees set forth in each applicable SOW. Payment is due within thirty (30) days of Customer's receipt of Vendor's invoice (Net 30). Overdue amounts shall accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law.
 

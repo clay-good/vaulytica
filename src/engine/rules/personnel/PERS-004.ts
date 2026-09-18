@@ -2,10 +2,17 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
+/** Limited to the people who worked on the engagement. */
+const NARROWED =
+  /\bdirectly\s+involved\b|\binvolved\s+in\s+(?:performing|providing|receiving|the\s+(?:services|engagement|project))\b|\bwho\s+(?:performed|provided|worked\s+on)\b|\bassigned\s+to\s+(?:perform|provide|the\s+(?:services|engagement|project))\b/i;
+/** For a stated period. */
+const BOUNDED =
+  /\b(?:\w+\s+\()?\d+\)?\s+(?:months?|years?)\b|\b(?:one|two|six|twelve|eighteen|twenty-four)\s+months?\b|\bone\s+year\b/i;
+
 /** PERS-004 — Anti-poaching language (warning). */
 export const rule: Rule = {
   id: "PERS-004",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Anti-poaching / no-hire between parties",
   category: "personnel",
   default_severity: "warning",
@@ -37,6 +44,23 @@ export const rule: Rule = {
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
+    // A non-solicit already limited to the people who worked on the engagement,
+    // for a bounded period, is the form this rule's own recommendation asks
+    // for — the restraint ancillary to a legitimate collaboration. It is still
+    // reported, as a note, rather than warned about as a naked no-poach.
+    if (/\bsolicit/i.test(hit.match[0]) && NARROWED.test(hit.text) && BOUNDED.test(hit.text)) {
+      return emit(ctx, rule, {
+        title: "Employee non-solicit limited to engagement personnel",
+        description: hit.match[0],
+        excerpt: truncate(hit.text, 280),
+        severity: "info",
+        explanation:
+          "This non-solicitation is limited to the employees involved in the engagement and runs for a bounded period — the narrow form antitrust enforcers treat as ancillary to a legitimate collaboration, unlike a naked no-poach agreement between competitors.",
+        recommendation:
+          "Keep it this narrow. If the parties also compete for the same employees, confirm a general-solicitation carve-out and that the restraint lasts no longer than the engagement requires.",
+        position: hit.position,
+      });
+    }
     return emit(ctx, rule, {
       title: "Anti-poaching / no-hire clause present",
       description: hit.match[0],

@@ -48,6 +48,19 @@ import {
 
 const MSA_PLAYBOOKS = ["msa-vendor-deep", "msa-customer-deep"];
 
+/** A hosted or online service — the precondition MSA-016 states. */
+const HOSTED_SERVICE =
+  /\b(?:hosted|hosting|software[- ]as[- ]a[- ]service|SaaS|cloud[- ](?:based|service|platform)|subscription\s+services?|online\s+services?|platform\s+services?|web[- ]based|data\s+cent(?:er|re))\b/i;
+
+/**
+ * An exclusive or sole remedy — the precondition MSA-030 states. Negation-
+ * aware: "service credits are NOT Customer's sole and exclusive remedy" and
+ * "remedies are cumulative and not exclusive" are the customer-protective
+ * drafting this rule exists to ask for, not a limited remedy needing an escape.
+ */
+const EXCLUSIVE_REMEDY =
+  /(?<!\b(?:not|no)\s+(?:[\w'’]+\s+){0,4})\b(?:sole\s+and\s+exclusive|exclusive|sole)\s+(?:and\s+exclusive\s+)?remed(?:y|ies)\b|\bremed(?:y|ies)\b(?:(?!\b(?:not|non|cumulative)\b)[^.]){0,60}\b(?:sole|exclusive)\b/i;
+
 /** The commercial-contract forum states MSA-024 reconciles. */
 const FORUM_STATE = String.raw`California|New\s+York|Delaware|Texas|Washington|Massachusetts|Illinois|Florida`;
 
@@ -608,7 +621,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-016",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "SLA referenced or attached",
     description: "MSA must reference or attach an SLA where the service is hosted.",
     citation: "Commercial drafting baseline — SLA reference",
@@ -624,6 +637,11 @@ export const MSA_DEEP_RULES: Rule[] = [
     present_patterns: [
       /(service\s+level\s+agreement|\bSLA\b|uptime|availability\s+commitment|service\s+levels?\b)/i,
     ],
+    // "…where the service is hosted." A professional-services MSA — work
+    // performed under SOWs — has no availability to commit to, and was told to
+    // add an uptime SLA (msa-complete). The rule now stands down unless the
+    // agreement describes a hosted or online service.
+    applicable_if: [HOSTED_SERVICE],
     default_severity: "warning",
     denied_if: expressDenial(String.raw`service\s+level\s+agreement|\bSLA\b|service\s+levels?`),
     denied_title: "Service-level commitment expressly disclaimed",
@@ -979,6 +997,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   presence({
     id: "MSA-030",
+    version: "1.1.0",
     name: "UCC § 2-719 limited-remedy fail-of-essential-purpose carve-out",
     description:
       "When a limited remedy is the exclusive remedy, the MSA should anchor the UCC § 2-719(2) escape if the remedy fails of its essential purpose.",
@@ -987,12 +1006,16 @@ export const MSA_DEEP_RULES: Rule[] = [
     missing_description:
       "Exclusive / limited remedy language is present but no UCC § 2-719(2) fail-of-essential-purpose escape was found.",
     explanation:
-      "UCC § 2-719(2) preserves alternative remedies when a limited remedy fails of its essential purpose — anchoring this protects the customer from a remedy gap.",
+      "Under UCC § 2-719(2), when an exclusive or limited remedy fails of its essential purpose, the buyer may pursue the other remedies the Code provides. Article 2 governs sales of goods; courts apply it to a mixed contract in which goods predominate, and some apply it to software licenses, but a pure services agreement is governed by the common law, where courts reach a similar result less predictably. An express clause preserves the customer's other remedies whichever law applies.",
     recommendation:
       "Add: 'if the limited remedy is found to fail of its essential purpose, the customer's other remedies under this Agreement and applicable law remain available.'",
     present_patterns: [
       /(fail\w*\s+of\s+(?:its\s+)?essential\s+purpose|essential\s+purpose|U\.?C\.?C\.?\s*§\s*2-719)/i,
     ],
+    // "When a limited remedy is the exclusive remedy…" — and the finding says
+    // exclusive-remedy language is present. It fired on every MSA specimen and
+    // on the vendor-side minimal PASS fixture, none of which states one.
+    applicable_if: [EXCLUSIVE_REMEDY],
     default_severity: "info",
   }),
 ];

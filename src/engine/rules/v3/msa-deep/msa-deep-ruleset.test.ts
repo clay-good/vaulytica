@@ -531,8 +531,28 @@ describe("MSA pack — English drafting conventions", () => {
     ).toBe(false);
   });
 
-  // Load-bearing: an agreement that states none of them still reports all four.
-  it.each(["MSA-006", "MSA-007", "MSA-016", "MSA-011"])(
+  // MSA-016 states its precondition — "where the service is hosted" — and
+  // tests it: a professional-services MSA is not told to add an uptime SLA.
+  it("MSA-016 stands down on a professional-services agreement", async () => {
+    expect(
+      await fires(
+        "MSA-016",
+        "The Supplier shall supply the Services described in each Statement of Work.",
+      ),
+    ).toBe(false);
+  });
+
+  it("MSA-016 still fires on a hosted service that states no SLA", async () => {
+    expect(
+      await fires(
+        "MSA-016",
+        "The Supplier shall provide the hosted platform described in each Statement of Work.",
+      ),
+    ).toBe(true);
+  });
+
+  // Load-bearing: an agreement that states none of them still reports all three.
+  it.each(["MSA-006", "MSA-007", "MSA-011"])(
     "%s still fires on an agreement that states nothing",
     async (id) => {
       expect(

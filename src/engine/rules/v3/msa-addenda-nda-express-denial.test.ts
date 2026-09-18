@@ -56,7 +56,7 @@ const CASES: [Rule[], string, string, boolean, string][] = [
     "MSA-016",
     CLEAN_MSA,
     true,
-    "No service levels apply and Supplier provides no SLA.",
+    "No service levels apply to the hosted Service, and Supplier provides no SLA.",
   ],
   [MSA_DEEP_RULES, "MSA-018", CLEAN_MSA, true, "Customer may not terminate for material breach."],
   [
