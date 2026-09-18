@@ -424,7 +424,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -456,9 +456,8 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-001-s1-0",
-      "fired": true,
-      "ran": true,
+      "fired": false,
+      "ran": false,
       "rule_id": "RISK-001",
       "rule_version": "1.5.0"
     },
@@ -896,9 +895,9 @@
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       "id": "PERS-005-s1.2-704",
-      "recommendation": "Confirm the controlling jurisdiction's enforceability bucket (use the DKB jurisdiction record). If the controlling state voids non-competes, either delete the clause or convert to a narrower non-solicitation. If the clause is enforceable, audit the duration, geographic scope, and consideration provided.",
+      "recommendation": "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -911,24 +910,6 @@
         }
       ],
       "title": "Non-compete clause present"
-    },
-    {
-      "description": "Neither 'indemnify' nor 'hold harmless' appears in the document.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no indemnification language)"
-      },
-      "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
-      "id": "RISK-001-s1-0",
-      "recommendation": "Add an indemnity, or say expressly that the parties allocate no risk that way. If you add one, state who indemnifies whom, for which claims, and the procedure — prompt notice, control of the defence, and no settlement imposing a non-monetary obligation without consent.",
-      "rule_id": "RISK-001",
-      "rule_version": "1.5.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No indemnification clause detected"
     },
     {
       "description": "No Effective Date is named, defined, or stated near the top of this document.",
@@ -1021,11 +1002,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "8908bafb5e0e1494cbec8f86b63d22dc93f51260b310583b9c2487ed096b9a7c",
+  "result_hash": "47fd7503cad71dae5d6525bd54ef44f4b75afc67c2675fdb37c698ea995dab4b",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.720.0"
+  "version": "9.721.0"
 }

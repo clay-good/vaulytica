@@ -428,7 +428,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -461,9 +461,8 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-001-s1-0",
-      "fired": true,
-      "ran": true,
+      "fired": false,
+      "ran": false,
       "rule_id": "RISK-001",
       "rule_version": "1.5.0"
     },
@@ -997,24 +996,6 @@
       "title": "No IP-ownership clause detected"
     },
     {
-      "description": "Neither 'indemnify' nor 'hold harmless' appears in the document.",
-      "document_position": 0,
-      "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "(no indemnification language)"
-      },
-      "explanation": "Most commercial contracts allocate risk through an indemnification clause. The absence leaves the parties to default tort and contract law for any third-party claims.",
-      "id": "RISK-001-s1-0",
-      "recommendation": "Add an indemnity, or say expressly that the parties allocate no risk that way. If you add one, state who indemnifies whom, for which claims, and the procedure — prompt notice, control of the defence, and no settlement imposing a non-monetary obligation without consent.",
-      "rule_id": "RISK-001",
-      "rule_version": "1.5.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "No indemnification clause detected"
-    },
-    {
       "description": "No Effective Date is named, defined, or stated near the top of this document.",
       "document_position": 0,
       "excerpt": {
@@ -1140,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "20a809854de755938693b8fb30931d8d28c4b3ef95e5c97e00d374e3686d016d",
+  "result_hash": "c1cec7a1e506b3394d1d4f36e06112068f761e70bc5108ff14e2d587b4c1236d",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.720.0"
+  "version": "9.721.0"
 }

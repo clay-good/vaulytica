@@ -7821,6 +7821,9 @@
       "Disability"
     ],
     "rule_overrides": {
+      "RISK-001": {
+        "skip": true
+      },
       "RISK-005": {
         "skip": true
       },
@@ -13670,6 +13673,9 @@
       "Compensation"
     ],
     "rule_overrides": {
+      "RISK-001": {
+        "skip": true
+      },
       "RISK-005": {
         "skip": true
       },

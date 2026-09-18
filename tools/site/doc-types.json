@@ -5469,7 +5469,7 @@
    "group": "Employment",
    "summary": "Standard US offer-letter-style employment agreement for exempt, at-will employees. Based on GitHub's Balanced Employee IP Agreement and published Cooley offer-letter templates.",
    "checks": [],
-   "general_checks": 110,
+   "general_checks": 109,
    "companions": [],
    "sources": []
   },
@@ -5973,7 +5973,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 113,
    "companions": [
     "piia",
     "employment-restrictive-covenant"
@@ -10539,7 +10539,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 112,
    "companions": [
     "medical-director-agreement",
     "employment-restrictive-covenant"

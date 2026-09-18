@@ -316,11 +316,11 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     jurisdiction: "us-il",
     state_name: "Illinois",
     posture: "restricted",
-    headline: "Void below salary thresholds; notice + consideration",
+    headline: "Void at or below $75,000 ($80,000 from 2027); notice + consideration",
     summary:
-      "Illinois's Freedom to Work Act voids non-competes for employees earning at or below an annually-escalating salary threshold (and non-solicits below a lower one), requires 14 days' written notice and advice-to-consult-counsel, and codifies adequate-consideration and reasonableness requirements.",
+      "Illinois's Freedom to Work Act voids a covenant not to compete unless the employee's actual or expected annualized earnings exceed $75,000 ($80,000 from January 1, 2027; $85,000 from 2032), and a covenant not to solicit unless they exceed $45,000 ($47,500 from January 1, 2027). It requires 14 calendar days to review the covenant and written advice to consult an attorney, codifies adequate-consideration and legitimate-business-interest requirements, voids covenants for most construction workers and for employees laid off in pandemic-type circumstances without pay during enforcement, and since January 1, 2025 limits enforcement against licensed mental-health professionals serving veterans and first responders.",
     recommendation:
-      "Verify the employee's earnings exceed the current threshold and that the 14-day notice and adequate-consideration requirements were met; otherwise the covenant is void.",
+      "Confirm the employee's earnings exceed the threshold in force when the covenant was signed ($75,000 for a non-compete and $45,000 for a non-solicit, rising to $80,000 and $47,500 for covenants entered on or after January 1, 2027), that the 14-day review period and written advice to consult counsel were given, and that adequate consideration supports it; a covenant that fails the earnings test is void.",
     severity: "warning",
     citation: cite(
       "il-820-ilcs-90",

@@ -23,6 +23,7 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Cause", "Good Reason", "Change in Control", "Disability"],
   "rule_overrides": {
+    "RISK-001": { "skip": true },
     "RISK-005": { "skip": true },
     "RISK-015": { "severity": "info" }
   },

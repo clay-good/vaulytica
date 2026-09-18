@@ -762,7 +762,7 @@ const HYPHEN_WRAP_DEBT: readonly string[] = [
   "stock-purchase.txt: lost TEMP-012 gained -",
   "subcontract.txt: lost FIN-006 gained -",
   "subordination-agreement.txt: lost - gained CHOICE-003",
-  "uk-contract-of-employment.txt: lost IPDATA-001,OBLI-004,OBLI-005,PERS-002,RISK-001,TERM-005 gained - routed employment-at-will-us->generic-fallback",
+  "uk-contract-of-employment.txt: lost IPDATA-001,OBLI-004,OBLI-005,PERS-002,TERM-005 gained - routed employment-at-will-us->generic-fallback",
   "uk-mutual-nda.txt: lost - gained IPDATA-001",
   "unilateral-nda.txt: lost - gained CHOICE-003",
 ];

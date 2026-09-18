@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.721.0] — 2026-09-18
+
+### Fixed
+- **Employee agreements were told to add an indemnity.** RISK-001 ("No
+  indemnification clause detected") ran on at-will, executive and physician
+  employment agreements, with commercial advice: "add an indemnity … who
+  indemnifies whom." Employment agreements do not allocate risk that way, and
+  some states make the employer indemnify the employee by statute (e.g. Cal.
+  Lab. Code § 2802). The three employee playbooks now skip it, as the offer
+  letter, handbook and restrictive-covenant playbooks already did;
+  contractor, consulting and subcontractor agreements keep it. 8 findings
+  removed, all on employee agreements; no other finding moved.
+- **The Illinois non-compete note misstated the statute.** It said the
+  Freedom to Work Act's salary threshold is "annually-escalating". It steps up
+  every five years: a non-compete is void unless earnings exceed $75,000
+  ($80,000 from January 1, 2027; $85,000 from 2032), a non-solicit unless
+  they exceed $45,000 ($47,500 from January 1, 2027) — checked against 820
+  ILCS 90/10 as published by the General Assembly. The note now gives the
+  figures, and the 2025 carve-out for mental-health professionals serving
+  veterans and first responders.
+- PERS-005 told the reader to "use the DKB jurisdiction record". It now says
+  what varies by state: outright bans, salary thresholds, and advance-notice
+  or advice-of-counsel requirements.
+
 ## [9.720.0] — 2026-09-18
 
 ### Fixed

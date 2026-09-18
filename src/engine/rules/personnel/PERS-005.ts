@@ -38,7 +38,7 @@ export const NON_COMPETE_DISCLAIMED =
 
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",
@@ -92,7 +92,7 @@ export const rule: Rule = {
       explanation:
         "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       recommendation:
-        "Confirm the controlling jurisdiction's enforceability bucket (use the DKB jurisdiction record). If the controlling state voids non-competes, either delete the clause or convert to a narrower non-solicitation. If the clause is enforceable, audit the duration, geographic scope, and consideration provided.",
+        "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       position: hit.position,
     });
   },

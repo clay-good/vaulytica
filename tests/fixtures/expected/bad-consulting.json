@@ -428,7 +428,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -945,9 +945,9 @@
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       "id": "PERS-005-s1.5-910",
-      "recommendation": "Confirm the controlling jurisdiction's enforceability bucket (use the DKB jurisdiction record). If the controlling state voids non-competes, either delete the clause or convert to a narrower non-solicitation. If the clause is enforceable, audit the duration, geographic scope, and consideration provided.",
+      "recommendation": "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1186,11 +1186,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected consulting-agreement (score 1). Title matched: \"consulting agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\", \"consulting services\", \"consultant\".",
-  "result_hash": "fee2e7337ffb7de36d9f9c3d01d061551d3dc2b83109bd631f9c576a03352226",
+  "result_hash": "8dc8df3b4da905a6ecc78c18d31d8ce8c0b03920fec848e6535ed558e85ec80f",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.720.0"
+  "version": "9.721.0"
 }

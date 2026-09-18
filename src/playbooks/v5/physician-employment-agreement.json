@@ -25,6 +25,9 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Physician", "Practice", "Compensation"],
   "rule_overrides": {
+    "RISK-001": {
+      "skip": true
+    },
     "RISK-005": {
       "skip": true
     },

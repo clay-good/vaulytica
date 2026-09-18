@@ -3866,7 +3866,6 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: [
       "IPDATA-001",
       "IPDATA-007",
-      "RISK-001",
       "TERM-005",
       "OBLI-004",
       "OBLI-005",
@@ -4640,7 +4639,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // an effect of termination.
   "il-employment-noncompete.txt": {
     playbook: "employment-at-will-us",
-    findings: ["PERS-005", "RISK-001", "TERM-005", "OBLI-005", "PERS-001", "PERS-002"],
+    findings: ["PERS-005", "TERM-005", "OBLI-005", "PERS-001", "PERS-002"],
   },
 
   // A Texas One to Four Family Residential Contract — TREC's resale form, the
