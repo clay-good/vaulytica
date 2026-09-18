@@ -368,7 +368,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -730,7 +730,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1173,7 +1173,7 @@
       "title": "'Best efforts' standard used"
     },
     {
-      "description": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or in | Employee shall not disparage Employer, its officers, directors, products, or services in any forum at any time.",
+      "description": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or indirectly… | Employee shall not disparage Employer, its officers, directors, products, or services in any forum at any time.",
       "document_position": 668,
       "excerpt": {
         "end_offset": 902,
@@ -1184,7 +1184,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.5-668",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 2"
@@ -1288,11 +1288,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "f937aae44d8bb70f2b5027ebe8f8584ba3e226c6434365b2fcb9d50fbb20bc69",
+  "result_hash": "12842e10615d5c94902244d08ee572e5259a2ae33439c51706bbfbf5b08af836",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

@@ -84,6 +84,10 @@ const OVERLAPS_ON_PURPOSE: ReadonlySet<string> = new Set([
   // longer land on the same span anywhere in the corpus.
   "OBLI-005 + PERS-002 [info]",
   "OBLI-005 + RISK-010 [info]",
+  // 9.729.0: with liability caps no longer counted as covenants, the one
+  // negative covenant left in a purchase agreement is also its sole-discretion
+  // clause. A count and a discretion note are different statements.
+  "OBLI-005 + OBLI-006 [info]",
   // The presence note is read by the portfolio view — see above.
   "DARK-002 + TEMP-004 [warning]",
   // One says the post-termination obligations are enumerated; the other that

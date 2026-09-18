@@ -53,4 +53,46 @@ describe("OBLI-005 — negative covenants list", () => {
       ),
     ).toBeNull();
   });
+
+  // v1.2.0 — a cap limits a remedy; it is not a promise to refrain.
+  it("does not list a liability cap as a negative covenant", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Limitation",
+          "Seller's aggregate liability under Section 8.1(a) shall not exceed the escrow amount.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still lists a party's promise not to exceed a limit", () => {
+    expect(
+      OBLI_005.check(
+        buildContext(["Use", "Customer shall not exceed the usage limits in the Order Form."]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("does not list a statement of possibility", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Output",
+          "Material generated without sufficient human authorship may not be eligible for copyright registration.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("cuts a long clause at a word and marks the cut", () => {
+    const f = OBLI_005.check(
+      buildContext([
+        "Use",
+        "Subcontractor shall not use or disclose PHI other than as this Agreement permits, as the Upstream BAA permits Business Associate to use it, or as required by law.",
+      ]),
+    );
+    expect(f?.description).toMatch(/\b\w+…$/);
+    expect(f?.description).not.toMatch(/Busine…$/);
+  });
 });

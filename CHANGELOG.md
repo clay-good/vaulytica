@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.729.0] — 2026-09-18
+
+### Fixed
+- 🚨 **"May be intentionally back-dated" — on 18 documents dated by something
+  else.** TEMP-002's description says it flags an *Effective Date* far before
+  the document's other dates, and it tested any early date. Across the corpus
+  18 of its 19 findings dated another event or instrument: an Ohio statute's
+  cut-off, a ceiling collapse, a marriage, a D&O policy's pending-litigation
+  date, a claims-made retroactive date, financial-statement dates, the 1953
+  plat a deed describes. Each told the reader the contract may be back-dated.
+  Earlier releases added one exclusion per kind of past event; the rule now
+  tests only the date the document gives *itself* ("made as of", "entered into
+  on", "This Agreement, dated …", "Effective Date:"). The one genuine case —
+  a venue rental "made as of" four months before its other dates — still
+  fires. The finding now names both dates as written ("dated February 14,
+  2026, 126 days before …") instead of ISO dates and an ungrouped day count,
+  and its explanation no longer presumes bad faith.
+- **The negative-covenants list quoted liability caps and cut clauses
+  mid-word.** OBLI-005 listed "Seller's aggregate liability … shall not exceed
+  the escrow amount" (14 corpus caps) and "Output may not be eligible for
+  copyright registration" as negative covenants; a cap limits a remedy and a
+  statement of possibility prohibits nothing. Both are excluded — keyed on a
+  LIABILITY subject, so "Customer shall not exceed the usage limits" is still
+  a covenant. Each listed clause is now cut at a word and marked with "…"
+  ("… as the Upstream BAA permits Busine" / "… of Milwaukee, Wis" before).
+  156 goldens change OBLI-005's description; one loses it (its only "covenant"
+  was a cap).
+
+Specimen rows updated: TEMP-002 comes off 18 documents.
+
 ## [9.728.0] — 2026-09-18
 
 ### Fixed

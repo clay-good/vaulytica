@@ -65,7 +65,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // by: … Date prepared: …" as a two-token signature line.
   "insurance-policy-summary.txt": {
     playbook: "insurance-policy-summary",
-    findings: ["INS-001", "STRUCT-003", "INS-005", "TEMP-002"],
+    findings: ["INS-001", "STRUCT-003", "INS-005"],
   },
   // A Regulation D private placement memorandum. Clean: the whole
   // REG-025..032 pack is silent on a memorandum that covers every column —
@@ -371,15 +371,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // one.
   "stock-purchase.txt": {
     playbook: "venture-stock-purchase-agreement",
-    findings: [
-      "OBLI-007",
-      "STRUCT-006",
-      "STRUCT-018",
-      "TEMP-012",
-      "CHOICE-003",
-      "OBLI-005",
-      "TEMP-002",
-    ],
+    findings: ["OBLI-007", "STRUCT-006", "STRUCT-018", "TEMP-012", "CHOICE-003", "OBLI-005"],
   },
   // An NVCA-style right of first refusal and co-sale agreement. FOUR of its
   // own checks fired on the drafting they exist to require, three at
@@ -1090,7 +1082,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // governing law without a forum.
   "postnuptial-agreement.txt": {
     playbook: "postnuptial-agreement",
-    findings: ["EST-060", "STRUCT-018", "TEMP-002"],
+    findings: ["EST-060", "STRUCT-018"],
   },
   // A profits-interest award in an LLC — the 184th specimen, and the first for
   // `profits-interest-award`. EQT-114..119 are all satisfied: the threshold
@@ -1582,7 +1574,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // "30 days", "60 days", and "90 days" — which distinguish nothing — so a
   // textbook PIP scored 0.3 and fell to `generic-fallback`, and not one of the
   // six PIP checks ran on it.
-  "pip.txt": { playbook: "pip", findings: ["TEMP-002"] },
+  "pip.txt": { playbook: "pip", findings: [] },
 
   // An AIA-style construction change order. It closes by ratifying the
   // contract it modifies, which is where Contract Sum and Contract Time are
@@ -1723,15 +1715,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // the exclusion is written as a promise.
   "contingency-fee-agreement.txt": {
     playbook: "contingency-fee-agreement",
-    findings: [
-      "CHOICE-001",
-      "CHOICE-003",
-      "CHOICE-006",
-      "FIN-005",
-      "OBLI-005",
-      "RISK-010",
-      "TEMP-002",
-    ],
+    findings: ["CHOICE-001", "CHOICE-003", "CHOICE-006", "FIN-005", "OBLI-005", "RISK-010"],
   },
 
   // A research informed-consent form. 21 CFR 50.25 asks for a PLAIN-LANGUAGE
@@ -1803,7 +1787,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // severance only "if the Employee signs".
   "separation-agreement.txt": {
     playbook: "separation-agreement",
-    findings: ["CHOICE-003", "OBLI-005", "PERS-006", "TEMP-002"],
+    findings: ["CHOICE-003", "OBLI-005", "PERS-006"],
   },
 
   // A California proprietary-information and inventions agreement. EMP-032
@@ -2126,7 +2110,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-003",
       "RISK-005",
       "STRUCT-018",
-      "TEMP-002",
       "TEMP-006",
       "TEMP-008",
     ],
@@ -2259,7 +2242,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // the adequacy decision being invalidated, and this one does not.
   "uk-idta-addendum.txt": {
     playbook: "uk-idta-addendum",
-    findings: ["TEMP-002"],
+    findings: [],
   },
 
   // An executed EU SCC Module Two set — a cover page, the option selections,
@@ -2288,7 +2271,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // the one thing this family can rely on about its documents.
   "scc-module-2.txt": {
     playbook: "scc-module-2",
-    findings: ["DPA-030", "DPA-051", "OBLI-005", "OBLI-008", "TEMP-002"],
+    findings: ["DPA-030", "DPA-051", "OBLI-005", "OBLI-008"],
   },
 
   // A university exclusive license, the 231st specimen and the first for
@@ -3250,7 +3233,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // which is what a conveyance's dated references look like.
   "tx-general-warranty-deed.txt": {
     playbook: "warranty-deed",
-    findings: ["TEMP-002"],
+    findings: [],
   },
 
   // An action by written consent of a board, adopting an equity plan and
@@ -3328,7 +3311,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // tolling agreement exists.
   "tolling-agreement.txt": {
     playbook: "tolling-agreement",
-    findings: ["TEMP-002"],
+    findings: [],
   },
 
   // A patent assignment for USPTO recordation. Two defects, both about a
@@ -3586,7 +3569,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // and fell to generic-fallback, so not one deed check ran on it.
   "warranty-deed.txt": {
     playbook: "warranty-deed",
-    findings: ["STRUCT-018", "TEMP-002"],
+    findings: ["STRUCT-018"],
   },
 
   // A recorded declaration of covenants, conditions, and restrictions. Not a
@@ -3693,7 +3676,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // it has been released").
   "litigation-hold.txt": {
     playbook: "litigation-hold",
-    findings: ["OBLI-005", "TEMP-002"],
+    findings: ["OBLI-005"],
   },
 
   // A California preliminary notice, carrying the statutory NOTICE TO PROPERTY
@@ -3770,7 +3753,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // term at all.
   "sow-under-msa.txt": {
     playbook: "sow",
-    findings: ["OBLI-005", "TEMP-002"],
+    findings: ["OBLI-005"],
   },
 
   // A field-heavy SaaS ORDER FORM under a master agreement — a header block of
@@ -4156,7 +4139,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // defined, which is exactly what a purchaser would want defined.
   "reg-a-plus-circular.txt": {
     playbook: "reg-a-plus-circular",
-    findings: ["OBLI-004", "OBLI-008", "REG-040", "TEMP-002"],
+    findings: ["OBLI-004", "OBLI-008", "REG-040"],
   },
 
   // A standalone COMMERCIAL indemnity — a subcontractor indemnifying a
@@ -4424,7 +4407,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // prior-litigation date really is six years before the rest.
   "do-liability-policy.txt": {
     playbook: "do-policy",
-    findings: ["STRUCT-003", "STRUCT-006", "OBLI-005", "RISK-007", "TEMP-002"],
+    findings: ["STRUCT-003", "STRUCT-006", "OBLI-005", "RISK-007"],
   },
 
   // The RISK FACTORS section of an IPO prospectus — and the most severe
@@ -4545,7 +4528,7 @@ export const EXPECTED: Record<string, Expectation> = {
   // the others.
   "cohabitation-agreement.txt": {
     playbook: "cohabitation-agreement",
-    findings: ["STRUCT-018", "TEMP-002"],
+    findings: ["STRUCT-018"],
   },
 
   // A multi-state US privacy addendum covering CCPA/CPRA, VCDPA, CPA, CTDPA,
@@ -5428,7 +5411,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "RISK-013",
       "RISK-015",
       "STRUCT-018",
-      "TEMP-002",
       "TEMP-007",
       "TEMP-008",
     ],

@@ -363,7 +363,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -725,7 +725,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1051,7 +1051,7 @@
       "title": "'Best efforts' standard used"
     },
     {
-      "description": "Advisor shall hold all Confidential Information in strict confidence and shall not disclose it to any third party for an | For a period of three (3) years following termination of this Agreement for any reason, Advisor shall not, directly or i",
+      "description": "Advisor shall hold all Confidential Information in strict confidence and shall not disclose it to any third party for any… | For a period of three (3) years following termination of this Agreement for any reason, Advisor shall not, directly or indirectly…",
       "document_position": 1584,
       "excerpt": {
         "end_offset": 1816,
@@ -1062,7 +1062,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.5-1584",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 2"
@@ -1106,11 +1106,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "04d7186dc99ce2865f1fc6043a42b1ab8c9b23e96a6a63f85c59c42f2b8ac0d6",
+  "result_hash": "5a42de3e854a150542ba3862159c63534ae89454905c415caa02ff374abb9420",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

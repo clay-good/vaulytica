@@ -361,11 +361,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.4-784",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -730,7 +729,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1197,23 +1196,6 @@
       "title": "'Best efforts' standard used"
     },
     {
-      "description": "Provider's aggregate liability shall not exceed three (3) months of fees paid, except for indemnification obligations.",
-      "document_position": 784,
-      "excerpt": {
-        "end_offset": 902,
-        "section_id": "s1.4",
-        "start_offset": 784,
-        "text": "Provider's aggregate liability shall not exceed three (3) months of fees paid, except for indemnification obligations."
-      },
-      "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.4-784",
-      "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "Negative covenants: 1"
-    },
-    {
       "description": "The contract uses \"best efforts\" without defining it.",
       "document_position": 253,
       "excerpt": {
@@ -1269,11 +1251,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "e708b76fd69e5ee5f7a53052ea9b2580f02e294988d26936a165b44bedfbe996",
+  "result_hash": "96591e46f38088694e1991f396a14a9e9979abd10fd10a2a534abead6a06ac60",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

@@ -362,7 +362,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -722,7 +722,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1030,7 +1030,7 @@
       "title": "Most-favored-nation clause present"
     },
     {
-      "description": "Provider shall not invoice for any Deliverable until Customer has provided written acceptance of such Deliverable. | Customer shall not assign this Agreement, nor undergo any direct or indirect change of control (including any merger, co | EACH PARTY'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT, WHETHER IN CONTRACT, TORT, OR OTHER",
+      "description": "Provider shall not invoice for any Deliverable until Customer has provided written acceptance of such Deliverable. | Customer shall not assign this Agreement, nor undergo any direct or indirect change of control (including any merger, consolidation… | EACH PARTY'S TOTAL CUMULATIVE LIABILITY ARISING OUT OF OR RELATED TO THIS AGREEMENT, WHETHER IN CONTRACT, TORT, OR OTHERWISE…",
       "document_position": 863,
       "excerpt": {
         "end_offset": 977,
@@ -1041,7 +1041,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.3-863",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 3"
@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "8c2d0841777cc138fe582a2c7b8aba952747ad3a4d788e029ab24e73d6400e46",
+  "result_hash": "e655af34f614e85d3ce832d289ad267065d840fccc65f4d2ae4b8e4db0e8ca0b",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

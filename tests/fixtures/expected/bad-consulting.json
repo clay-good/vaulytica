@@ -361,7 +361,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -727,7 +727,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1122,7 +1122,7 @@
       "title": "'Best efforts' standard used"
     },
     {
-      "description": "During the Term and for twelve (12) months thereafter, Consultant shall not directly or indirectly compete with Customer | Consultant shall not disparage Customer, its officers, or its products in any public or private communication.",
+      "description": "During the Term and for twelve (12) months thereafter, Consultant shall not directly or indirectly compete with Customer… | Consultant shall not disparage Customer, its officers, or its products in any public or private communication.",
       "document_position": 844,
       "excerpt": {
         "end_offset": 1036,
@@ -1133,7 +1133,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.5-844",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 2"
@@ -1186,11 +1186,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected consulting-agreement (score 1). Title matched: \"consulting agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\", \"consulting services\", \"consultant\".",
-  "result_hash": "97817acaa700c4f902302bcfbe98c0ba8ee134f3e9915f237247b9a65a7833e3",
+  "result_hash": "a4ecb140ece4e4f17afa8ec516853252223c9fdb4b7ee139994a16a2e3861201",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

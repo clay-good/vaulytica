@@ -360,7 +360,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -720,7 +720,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1011,7 +1011,7 @@
       "title": "No venue / forum clause detected"
     },
     {
-      "description": "The Receiving Party agrees to maintain in strict confidence all Confidential Information and shall not disclose any such",
+      "description": "The Receiving Party agrees to maintain in strict confidence all Confidential Information and shall not disclose any such…",
       "document_position": 385,
       "excerpt": {
         "end_offset": 650,
@@ -1022,7 +1022,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.2-385",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1031,11 +1031,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way nda\", \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "652bf68f50bf5c841f484e3e715a97720bc6a766a9acac478ce0c847828bae17",
+  "result_hash": "c5f67cc24f1aaaae38e66ea4aedcddc5142988fda352daae7c7eafd4cd205f15",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",
     "size_bytes": 9006
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

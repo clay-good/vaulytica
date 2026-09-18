@@ -361,7 +361,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -727,7 +727,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1169,7 +1169,7 @@
       "title": "No venue / forum clause detected"
     },
     {
-      "description": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company  | Contractor shall not disparage Company, its officers, or its products at any time.",
+      "description": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company… | Contractor shall not disparage Company, its officers, or its products at any time.",
       "document_position": 673,
       "excerpt": {
         "end_offset": 851,
@@ -1180,7 +1180,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.3-673",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 2"
@@ -1215,11 +1215,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "73550152b4478461b6aa48a91f9925c10d1005953f87d221b9f3e7c871fb7983",
+  "result_hash": "d89d61566baac033aeb125f2a2f73dc4586aa779b8dacaa2cdb32580db04fdfa",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

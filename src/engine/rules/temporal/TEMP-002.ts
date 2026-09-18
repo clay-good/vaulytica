@@ -142,10 +142,43 @@ function referencedDateStarts(ctx: RuleContext): Set<number> {
   return out;
 }
 
+/**
+ * 🚨 **The document's OWN date.** The rule's description says "Flags an
+ * Effective Date more than 30 days before…" and it tested any early date. Each
+ * exclusion above was added for one more kind of past event a contract recites
+ * — and across the corpus 18 of its 19 findings still dated something else: an
+ * Ohio statute's cut-off, a ceiling collapse, a marriage, a D&O policy's
+ * pending-litigation date, a claims-made retroactive date, the 1953 plat a deed
+ * describes. Every one told the reader the contract "may be intentionally
+ * back-dated". Back-dating is a property of the date the document gives
+ * ITSELF, so that is the only date it is tested on now: "made as of",
+ * "entered into on", "This Agreement is dated / effective …", "Effective
+ * Date:".
+ */
+const OWN_DATE =
+  /(?:\bthis\s+[\w ,"'’“”()-]{1,60}?\b(?:is\s+)?(?:made|entered\s+into|executed|dated|effective)\b[^.;]{0,40}?|\beffective\s+date\b[^.;]{0,30}?|\b(?:made|dated|entered\s+into|effective)\s+(?:and\s+entered\s+into\s+)?as\s+of|\bdated\s*:|\bdate\s*:)\s*(?:the\s+)?$/i;
+
+function ownDateStarts(ctx: RuleContext): Set<number> {
+  const out = new Set<number>();
+  forEachParagraph(ctx.tree, (p) => {
+    for (const d of ctx.extracted.dates) {
+      const start = d.position?.start;
+      if (start === undefined || start < p.start || start >= p.start + p.text.length) continue;
+      if (OWN_DATE.test(p.text.slice(Math.max(0, start - p.start - 160), start - p.start))) {
+        out.add(start);
+      }
+    }
+  });
+  return out;
+}
+
+/** "12605" as a reader writes it. */
+const groupedDays = (n: number): string => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",
@@ -184,12 +217,14 @@ export const rule: Rule = {
     const last = new Date(sorted[sorted.length - 1]!.iso!);
     const restSpanDays = (last.getTime() - next.getTime()) / 86_400_000;
     if (gapDays <= restSpanDays) return null;
+    const start = sorted[0]!.position?.start;
+    if (start === undefined || !ownDateStarts(ctx).has(start)) return null;
     return emit(ctx, rule, {
-      title: "Earliest dated reference is far before other dates",
-      description: `Earliest date ${sorted[0]!.iso} precedes the next date ${sorted[1]!.iso} by ${Math.round(gapDays)} days.`,
+      title: "Document dated well before its other dates",
+      description: `The document is dated ${sorted[0]!.raw_text}, ${groupedDays(Math.round(gapDays))} days before the next date in it (${sorted[1]!.raw_text}).`,
       excerpt: sorted[0]!.raw_text,
       explanation:
-        "A contract dated significantly before its other date references may be intentionally back-dated. Confirm the intent before signing.",
+        'A document whose own date sits well before every other date in it may be back-dated — a date chosen to predate the signatures. That can be legitimate (a written record of terms the parties already followed, stated "as of" that date) or it can mislead, so confirm which before signing.',
       position: sorted[0]!.position ?? topPosition(ctx),
     });
   },

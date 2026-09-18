@@ -365,7 +365,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -724,7 +724,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1101,7 +1101,7 @@
       "title": "Jury trial waiver present"
     },
     {
-      "description": "For a period of twelve (12) months following the termination of Employee's employment with the Company for any reason, E",
+      "description": "For a period of twelve (12) months following the termination of Employee's employment with the Company for any reason, Employee…",
       "document_position": 632,
       "excerpt": {
         "end_offset": 924,
@@ -1112,7 +1112,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.3-632",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1121,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "744c8a604c9fab8d292b504b78c4a905cc01d809f803460558c42b5e00994ae7",
+  "result_hash": "84f506b6f9524e3ba0dc1217e58acfae06eeae453cdf50aaa473ea9a34eedb55",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }

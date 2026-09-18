@@ -1,7 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { ATTACHMENT_KIND_PLURAL } from "../../../extract/attachment-kinds.js";
 import { INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
-import { emit } from "../_helpers.js";
+import { emit, excerptWindow } from "../_helpers.js";
 
 // "must not <verb>" is a covenant negation the extractor captures but this filter
 // did not classify — a "Employee must not disclose" restriction was dropped.
@@ -77,10 +77,35 @@ const INSTRUMENT_SUBJECT = new RegExp(
   "i",
 );
 
+/**
+ * 🚨 **A cap is not a covenant.** "Seller's aggregate liability under Section
+ * 8.1(a) shall not exceed the escrow amount" limits a remedy; nobody promises
+ * to refrain from anything. Fourteen corpus caps were listed as negative
+ * covenants — the subject is a LIABILITY, which is what separates them from
+ * "Customer shall not exceed the usage limits", a real one.
+ */
+const CAP_SUBJECT = /\b(?:liabilit(?:y|ies)|damages|recovery)\b/i;
+const CAP_ACTION = /^not\s+exceed\b/i;
+
+/**
+ * "Material generated without human authorship MAY NOT BE ELIGIBLE for
+ * copyright" states a possibility, not a prohibition. Only a status adjective
+ * is excluded: "may not be assigned" is still a covenant, in the passive.
+ */
+const STATUS_ACTION =
+  /^be\s+(?:eligible|entitled|enforceable|protectable|valid|available|possible)\b/i;
+
+/** Up to 120 characters of a clause, cut at a word, marked when cut. */
+function clauseSnippet(raw: string): string {
+  const text = raw.trim();
+  const window = excerptWindow(text, 0, 0, 120);
+  return window.length < text.length ? `${window}…` : window;
+}
+
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",
@@ -91,7 +116,9 @@ export const rule: Rule = {
     const negs = ctx.extracted.obligations.filter(
       (o) =>
         (NEG_MODAL.test(o.modal) || NEG_ACTION.test(o.action) || NEG_PHRASE.test(o.action)) &&
-        !INSTRUMENT_SUBJECT.test(o.obligor.trim()),
+        !INSTRUMENT_SUBJECT.test(o.obligor.trim()) &&
+        !(CAP_ACTION.test(o.action) && CAP_SUBJECT.test(o.obligor)) &&
+        !STATUS_ACTION.test(o.action),
     );
     if (negs.length === 0) return null;
     // 🚨 Distinct SNIPPETS, and say when there are more.
@@ -107,7 +134,9 @@ export const rule: Rule = {
     // the number (spec-v8; the same repair as MAX_SECONDARY_FAMILIES).
     const shown: string[] = [];
     for (const n of negs) {
-      const snippet = n.raw_text.slice(0, 120);
+      // Cut at a word and say so: a fixed slice ended clauses mid-word
+      // ("… as the Upstream BAA permits Busine", "… of Milwaukee, Wis").
+      const snippet = clauseSnippet(n.raw_text);
       if (!shown.includes(snippet)) shown.push(snippet);
       if (shown.length === 4) break;
     }

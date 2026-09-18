@@ -359,7 +359,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -719,7 +719,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -948,7 +948,7 @@
       "title": "No effect-of-termination clause detected"
     },
     {
-      "description": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company",
+      "description": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company…",
       "document_position": 637,
       "excerpt": {
         "end_offset": 788,
@@ -959,7 +959,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.2-637",
       "rule_id": "OBLI-005",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1002,11 +1002,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "73f27ea4eb60e0e38079e84ce11901e819420ccc747f902fc4a214ab3045e3ea",
+  "result_hash": "ce4ccff14ebcd1c11436611a9551b3293433dd00a1169fa5e2ddb66d9e876ef0",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.728.0"
+  "version": "9.729.0"
 }
