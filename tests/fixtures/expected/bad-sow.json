@@ -196,7 +196,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-001",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -1022,11 +1022,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected sow (score 1). Title matched: \"statement of work\", \"sow\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "cb7e5e0cd387c7383bc587daca13ceb0d95ac1e850eed2db31682ccfbc1a0671",
+  "result_hash": "cb05684a2cdb103b9dea6665cb8a17aae13ebdd7cdb40e728b66ba1ecf8c2f0c",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.726.0"
+  "version": "9.727.0"
 }

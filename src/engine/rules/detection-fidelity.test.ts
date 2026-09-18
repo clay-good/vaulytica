@@ -37,7 +37,7 @@ describe("FIN-001 — magnitude suffixes are applied, not ignored", () => {
     const ctx = buildContext(["Fees", "The fee is one million dollars ($2M)."]);
     const finding = FIN_001.check(ctx);
     expect(finding?.severity).toBe("critical");
-    expect(finding?.description).toContain("2000000");
+    expect(finding?.description).toContain("2,000,000");
   });
 });
 

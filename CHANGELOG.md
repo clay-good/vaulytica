@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.727.0] — 2026-09-18
+
+### Fixed
+- **A money finding printed amounts no contract writes.** FIN-001 read
+  "Spelled-out amount 50000 does not match numeral 75000" — the first critical
+  finding in the new sample report, in a report an attorney forwards. It now
+  reads "50,000 … 75,000", and a one-digit fraction is shown as cents
+  ("1,250.50", not "1,250.5"). Pinned in `FIN-001.test.ts`.
+
 ## [9.726.0] — 2026-09-18
 
 ### Added

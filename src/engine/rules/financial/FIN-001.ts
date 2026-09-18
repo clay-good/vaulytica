@@ -19,7 +19,7 @@ const PAIR =
 
 export const rule: Rule = {
   id: "FIN-001",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Word-numeral amount mismatch",
   category: "financial",
   default_severity: "critical",
@@ -65,7 +65,7 @@ export const rule: Rule = {
     return makeFinding({
       rule,
       title: "Word/numeral amount mismatch",
-      description: `Spelled-out amount ${fm.word.toString()} does not match numeral ${fm.numeral.toString()}.`,
+      description: `Spelled-out amount ${grouped(fm.word.toFixed())} does not match numeral ${grouped(fm.numeral.toFixed())}.`,
       excerptText: fm.raw,
       explanation:
         "When a contract states an amount in words followed by a numeral in parentheses, the two forms must match. Courts in most US jurisdictions resolve a conflict in favor of the spelled-out form, but the inconsistency itself is a drafting error worth catching before signature.",
@@ -76,6 +76,19 @@ export const rule: Rule = {
     });
   },
 };
+
+/**
+ * An amount as a reader writes it: "50000" read as "50,000" in a report an
+ * attorney hands on. The integer part is grouped, and a one-digit fraction is
+ * shown as cents.
+ */
+function grouped(plain: string): string {
+  const [int, frac] = plain.split(".");
+  const sign = int!.startsWith("-") ? "-" : "";
+  const digits = int!.replace(/^-/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // Decimal drops a trailing zero ("1250.50" → "1250.5"); cents read as two digits.
+  return sign + digits + (frac ? `.${frac.length === 1 ? `${frac}0` : frac}` : "");
+}
 
 /**
  * Magnitude suffixes the PAIR regex tolerates. They MUST be applied
