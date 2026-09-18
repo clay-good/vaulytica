@@ -863,32 +863,31 @@ const REG_A_RULES: Rule[] = [
 
 const FILING_SCHEMA_DISCLAIMER_RULE: Rule = {
   id: "REG-040",
-  version: "1.0.0",
-  name: "v4 lints prose only — financial statements + filing schemas are out of scope",
+  version: "1.1.0",
+  name: "Prose only — financial statements and filing schemas are not checked",
   category: CATEGORY,
   default_severity: "info",
   description:
-    "Per spec-v4.md §6.P caveat, every output in the regulatory-prose sub-domain must say explicitly that v4 lints only the drafter's prose — not financial statements, numbers, or filing schemas. This rule emits that disclaimer on every analysis run in this sub-domain.",
+    "States on every regulatory-filing analysis that Vaulytica checks only the drafter's prose — not financial statements, numbers, or filing schemas.",
   dkb_citations: ["reg-prose-disclaimer"],
   applies_to_playbooks: [...REG_PLAYBOOK_IDS],
   check(ctx: RuleContext): Finding | null {
     return makeFinding({
       rule: this as Rule,
-      title: "v4 lints prose only — financial statements + filing schemas are out of scope",
+      title: "Prose only — financial statements and filing schemas are not checked",
       description:
         "Vaulytica lints the drafter's prose in regulatory filings — narrative risk factors, MD&A, plain-English disclosures. It does NOT opine on financial statements, accounting policies, EDGAR / Form D / Form ADV / Form 1-A filing schemas, financial calculations, or numerical disclosures. The regulator's review of the filing schema is the regulator's job, not the linter's.",
       excerptText: "(disclaimer applies to every regulatory-prose analysis run)",
       explanation:
-        "Regulatory filings (Form D, Form ADV, S-1, 10-K, PPM, Reg A+) combine drafter's prose with financial statements + filing schemas. v4 lints the drafter's text against published authority. The numerical disclosures live in the auditor's report; the filing schema lives in the EDGAR / SEC / FINRA validators. Both are outside Vaulytica's scope.",
+        "Regulatory filings (Form D, Form ADV, S-1, 10-K, PPM, Reg A+) combine drafter's prose with financial statements and filing schemas. Vaulytica checks the drafter's text against published authority. The numerical disclosures live in the auditor's report; the filing schema lives in the EDGAR / SEC / FINRA validators. Both are outside Vaulytica's scope.",
       recommendation:
         "Confirm financial-statement accuracy with auditors; confirm filing-schema compliance with EDGAR / SEC / FINRA validators; rely on Vaulytica's findings for prose / disclosure only.",
       position: docTop(ctx),
       source_citations: [
         {
           id: "reg-prose-disclaimer",
-          source:
-            "Vaulytica spec-v4.md §6.P caveat — prose-only / filing-schema disclaimer required on every output in regulatory-prose sub-domain",
-          source_url: "https://vaulytica.com/#spec-v4-6p-regulatory-prose-filing-schema-disclaimer",
+          source: "Vaulytica scope limits — financial statements and filing schemas",
+          source_url: "https://github.com/clay-good/vaulytica/blob/main/DISCLAIMER.md#scope-limits",
           retrieved_at: "2026-05-16T00:00:00Z",
           license: "MIT",
           license_url: "https://opensource.org/licenses/MIT",

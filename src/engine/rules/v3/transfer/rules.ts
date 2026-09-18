@@ -432,17 +432,18 @@ export const TRANSFER_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   languageAll({
     id: "TRANSFER-017",
-    name: "Adequacy: reliance on litigation-pending decision (DPF)",
+    version: "1.1.0",
+    name: "Adequacy: reliance on the EU-US Data Privacy Framework",
     description:
-      "Flags reliance on the EU-US Data Privacy Framework (or UK extension) — a warning given pending litigation.",
-    citation: "EU-US Data Privacy Framework",
-    bad_title: "Reliance on litigation-pending adequacy decision (DPF)",
+      "Flags reliance on the EU-US Data Privacy Framework (or its UK extension) so the importer's certification and a fallback transfer mechanism are confirmed.",
+    citation: "EU-US Data Privacy Framework — Commission Implementing Decision (EU) 2023/1795",
+    bad_title: "Reliance on the EU-US Data Privacy Framework",
     bad_description:
       "Detected reliance on the EU-US Data Privacy Framework as the transfer mechanism.",
     explanation:
-      "The EU-US Data Privacy Framework is the operative adequacy decision but is permanently under litigation. v3 treats this as a warning, not a fail.",
+      "The EU-US Data Privacy Framework rests on the Commission's adequacy decision of 10 July 2023 (Implementing Decision (EU) 2023/1795). The EU General Court upheld it in Latombe v Commission (Case T-553/23, 3 September 2025), but both of its predecessors — Safe Harbor and Privacy Shield — were invalidated by the Court of Justice, and further challenges remain possible. The framework also covers only a US importer that is actively self-certified on the Department of Commerce's Data Privacy Framework List.",
     recommendation:
-      "Maintain a fallback transfer mechanism (e.g., SCCs + TIA) in case the DPF is invalidated again.",
+      "Confirm the importer's active certification on the Data Privacy Framework List (dataprivacyframework.gov), and keep a fallback transfer mechanism — the Standard Contractual Clauses with a transfer impact assessment — that applies automatically if the decision is invalidated or the certification lapses.",
     bad_patterns: [
       /(EU[- ]US\s+Data\s+Privacy\s+Framework|EU-US\s+DPF|DPF\s+(?:adequacy|certification))/i,
     ],

@@ -103,6 +103,19 @@ export function publicSummary(description: string): string {
   );
 }
 
+/**
+ * A rule description written for the catalog, made fit for a reader: the
+ * "— a compliance-matrix column of the X playbook." tail says nothing, and a
+ * description that is only the rule's name again is dropped (the page shows
+ * the name).
+ */
+export function publicCheckDescription(name: string, description: string): string {
+  const d = description
+    .replace(/\s*[—-]+\s*a compliance-matrix column of the [\w-]+ playbook\.?$/, "")
+    .trim();
+  return d === name || d === "" ? "" : d;
+}
+
 function loadPlaybooks(root: string): RawPlaybook[] {
   const dir = join(root, "playbooks");
   const out: RawPlaybook[] = [];
@@ -153,7 +166,7 @@ export function buildDocTypes(root: string = process.cwd()): DocTypesData {
       checks: specific.map((r) => ({
         id: r.id,
         name: r.name,
-        description: r.description,
+        description: publicCheckDescription(r.name, r.description),
         severity: r.default_severity,
       })),
       general_checks: general,

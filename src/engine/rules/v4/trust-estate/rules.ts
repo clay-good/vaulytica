@@ -1255,12 +1255,12 @@ const FAMILY_MSA_RULES: Rule[] = [
 
 const EXECUTION_DISCLAIMER_RULE: Rule = {
   id: "EST-060",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Execution formalities cannot be verified from text alone",
   category: CATEGORY,
   default_severity: "info",
   description:
-    "Per spec-v4.md §6.N caveat, every output in the trust / estate / family sub-domain must say explicitly that execution formalities (witnesses, notary, holographic state-specific requirements) cannot be verified from a docx alone. This rule emits that disclaimer on every analysis run in this sub-domain.",
+    "States on every trust, estate and family-law analysis that execution formalities (witnesses, notary, holographic and other state-specific requirements) cannot be verified from the document's text.",
   dkb_citations: ["est-execution-disclaimer"],
   applies_to_playbooks: [...EST_PLAYBOOK_IDS],
   check(ctx: RuleContext): Finding | null {
@@ -1278,9 +1278,8 @@ const EXECUTION_DISCLAIMER_RULE: Rule = {
       source_citations: [
         {
           id: "est-execution-disclaimer",
-          source:
-            "Vaulytica spec-v4.md §6.N caveat — execution-formality disclaimer required on every output in trust / estate / family sub-domain",
-          source_url: "https://vaulytica.com/#spec-v4-6n-trust-estate-execution-disclaimer",
+          source: "Vaulytica scope limits — execution formalities",
+          source_url: "https://github.com/clay-good/vaulytica/blob/main/DISCLAIMER.md#scope-limits",
           retrieved_at: "2026-05-16T00:00:00Z",
           license: "MIT",
           license_url: "https://opensource.org/licenses/MIT",

@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.720.0] — 2026-09-18
+
+### Fixed
+- **The Data Privacy Framework finding described a court record that had
+  moved on.** TRANSFER-017 called the DPF "permanently under litigation" and
+  told the reader "v3 treats this as a warning, not a fail." The EU General
+  Court upheld the adequacy decision in *Latombe v Commission* (Case T-553/23,
+  3 September 2025). The finding now says so, notes that both predecessors
+  were struck down and further challenges remain possible, cites Implementing
+  Decision (EU) 2023/1795, and adds the check a transfer actually turns on:
+  is the US importer actively certified on the Data Privacy Framework List?
+- **POL-015 attributed an institution's AML duty to the Corporate
+  Transparency Act.** An AML program's beneficial-ownership duty comes from
+  the FinCEN Customer Due Diligence rule (31 C.F.R. § 1010.230). The CTA is a
+  separate reporting duty of the company, and since FinCEN's March 2025
+  interim final rule it reaches only foreign reporting companies. The
+  recommendation no longer tells a financial institution to add "CTA
+  reporting". The AML playbook's description is corrected to match.
+- **Two findings cited a document that does not exist.** REG-040 and EST-060
+  (the prose-only and execution-formality notices) cited "Vaulytica
+  spec-v4.md §6.N / §6.P" — sections the spec does not have — at a
+  `vaulytica.com/#…` anchor that goes nowhere, and REG-040's title read "v4
+  lints prose only". Both now cite a new **Scope limits** section of
+  `DISCLAIMER.md` and speak to the reader, not the maintainer.
+- The document-type pages drop the catalog filler "— a compliance-matrix
+  column of the … playbook." from 712 check descriptions.
+
 ## [9.719.0] — 2026-09-18
 
 ### Added

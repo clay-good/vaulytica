@@ -379,7 +379,7 @@ const AML_RULES: Rule[] = [
   }),
   presence({
     id: "POL-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Customer identification program (CIP) + beneficial ownership",
     description: "Policy must establish CIP and FinCEN beneficial-ownership identification rule.",
     citation: polPractice(
@@ -391,9 +391,9 @@ const AML_RULES: Rule[] = [
     missing_title: "CIP / beneficial-ownership clause missing",
     missing_description: "No CIP / beneficial-ownership clause was found.",
     explanation:
-      "FinCEN CDD rule + Corporate Transparency Act (CTA, 2024) require identification of beneficial owners (25%+ ownership / control). CIP requires name, DOB, address, ID number for natural-person customers.",
+      "The FinCEN Customer Due Diligence rule (31 C.F.R. § 1010.230) requires a covered financial institution to identify and verify the beneficial owners of each legal-entity customer: every individual who owns 25% or more of it, and one individual with significant responsibility to control or manage it. The Customer Identification Program rules require at least a name, date of birth, address and identification number for an individual customer. Beneficial-ownership reporting under the Corporate Transparency Act is a separate duty of the reporting company, not the institution, and since FinCEN's March 2025 interim final rule it applies only to foreign reporting companies.",
     recommendation:
-      "Add 'Customer Identification Program' + 'Beneficial Ownership' covering CIP elements (name / DOB / address / ID), 25% ownership threshold, and CTA reporting where applicable.",
+      "Add a Customer Identification Program (name, date of birth, address, identification number) and a beneficial-ownership procedure that identifies each 25% owner and one control person of every legal-entity customer.",
     present_patterns: [
       /(cip|customer\s+identification\s+programme?)/i,
       /(beneficial\s+ownership|beneficial\s+owners?)/i,

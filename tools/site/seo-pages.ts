@@ -937,7 +937,7 @@ export function renderDocTypePage(
           ${t.checks
             .map(
               (c) =>
-                `<div class="card"><h3>${escapeHtml(c.name)}</h3><p>${escapeHtml(c.description)}</p><p class="sev">${SEVERITY_LABEL[c.severity] ?? escapeHtml(c.severity)} · <code>${escapeHtml(c.id)}</code></p></div>`,
+                `<div class="card"><h3>${escapeHtml(c.name)}</h3>${c.description ? `<p>${escapeHtml(c.description)}</p>` : ""}<p class="sev">${SEVERITY_LABEL[c.severity] ?? escapeHtml(c.severity)} · <code>${escapeHtml(c.id)}</code></p></div>`,
             )
             .join("\n          ")}
         </div>

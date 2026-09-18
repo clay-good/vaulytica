@@ -508,7 +508,7 @@
     "id": "aml-policy",
     "version": "1.0.0",
     "name": "Anti-Money-Laundering Policy",
-    "description": "AML / OFAC / BSA policy under FinCEN five-pillar rule + Corporate Transparency Act + state. Selects the §6.O ruleset (POL-012..POL-017).",
+    "description": "AML / OFAC / BSA policy under the FinCEN five-pillar program rules, including customer due diligence and beneficial-ownership identification (31 C.F.R. § 1010.230), plus state law. Selects the §6.O ruleset (POL-012..POL-017).",
     "match_features": {
       "title_keywords": [
         "aml",
