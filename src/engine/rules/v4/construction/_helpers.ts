@@ -46,7 +46,7 @@ export function millerAct(): SourceCitation {
   return v4Cite({
     id: "miller-act-40-usc-3131",
     source: "Miller Act, 40 U.S.C. §§ 3131–3134 — payment / performance bonds on federal contracts",
-    source_url: "https://www.law.cornell.edu/uscode/text/40/chapter-31/subchapter-III",
+    source_url: "https://www.law.cornell.edu/uscode/text/40/3131",
   });
 }
 
@@ -56,8 +56,7 @@ export function littleMiller(): SourceCitation {
     id: "state-little-miller-acts",
     source:
       "State Little Miller Acts (state-funded public works payment / performance bonds — every state has one)",
-    source_url:
-      "https://www.nationalbondclaim.com/blog/the-miller-act-and-state-little-miller-acts",
+    source_url: "https://www.law.cornell.edu/uscode/text/40/3131",
   });
 }
 
@@ -67,7 +66,7 @@ export function mechanicsLien(): SourceCitation {
     id: "state-mechanics-lien",
     source:
       "State mechanic's lien statutes (CA Civ. §§ 8000 et seq.; TX Prop. ch. 53; NY Lien Law; FL § 713)",
-    source_url: "https://www.law.cornell.edu/wex/mechanic_s_lien",
+    source_url: "https://www.law.cornell.edu/wex/mechanic%27s_lien",
   });
 }
 

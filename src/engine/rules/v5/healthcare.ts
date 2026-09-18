@@ -89,7 +89,7 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
     cite: stateLaw(
       "physician-noncompete",
       "state statutes restricting physician non-compete agreements",
-      "https://www.law.cornell.edu/wex/non-compete_clause",
+      "https://www.law.cornell.edu/wex/covenant_not_to_compete",
     ),
     pat: [
       /(non-?compet|restrictive\s+covenant|(?:shall|will|must)\s+not\s+(practice|engage))/i,

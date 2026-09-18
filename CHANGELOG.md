@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.731.0] — 2026-09-18
+
+### Fixed
+- **Sixteen citation links in reports went nowhere.** A reachability sweep
+  of every citation URL the product can emit (`npm run citation:check --
+  --reachability`; 235 URLs) found 404s behind findings and model clauses:
+  the Bonterms forms, the UTSA text on uniformlaws.org, NCSL's usury survey,
+  four Cornell LII Wex pages, the Miller Act chapter (and a law-firm blog
+  cited for it), the EEOC guidance index, ISO forms at Verisk, *Kimble v.
+  Marvel*, the EDPB guidance index, and the ICO's IDTA pages. Each now points
+  to a page confirmed to resolve — the statute section, the current Wex
+  entry, the publisher's current page. The remaining flags are publishers
+  that refuse scripted requests (americanbar.org, sec.gov, hhs.gov) and open
+  normally in a browser.
+- Known and not user-facing: three uniformlaws.org URLs in the DKB build
+  fetcher (`dkb/build/fetchers/ulc.ts`) are placeholder document keys that
+  never resolved; they feed the build, not a report.
+
 ## [9.730.0] — 2026-09-18
 
 ### Fixed

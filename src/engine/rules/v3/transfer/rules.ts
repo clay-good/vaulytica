@@ -110,7 +110,7 @@ const CONFIG_SCC: RegulatedRuleConfig = {
     let url = "https://eur-lex.europa.eu/eli/dec_impl/2021/914/oj";
     if (lower.includes("idta") || lower.includes("addendum") || lower.includes("ico"))
       url =
-        "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/international-data-transfer-agreement-and-guidance/";
+        "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/";
     else if (lower.includes("edpb"))
       url =
         "https://edpb.europa.eu/our-work-tools/our-documents/recommendations/recommendations-012020-measures-supplement-transfer_en";

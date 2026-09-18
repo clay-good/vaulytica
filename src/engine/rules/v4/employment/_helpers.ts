@@ -78,7 +78,7 @@ export function stateNonCompete(): SourceCitation {
     id: "state-non-compete-law",
     source:
       "State non-compete law (e.g., CA Bus. & Prof. § 16600 (void); NY common law (BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999)); MA G.L. c. 149 § 24L; WA RCW 49.62; CO § 8-2-113)",
-    source_url: "https://www.law.cornell.edu/wex/non-compete_clause",
+    source_url: "https://www.law.cornell.edu/wex/covenant_not_to_compete",
   });
 }
 
@@ -106,7 +106,7 @@ export function eeocGuidance(): SourceCitation {
   return v4Cite({
     id: "eeoc-enforcement-guidance",
     source: "EEOC enforcement guidance (Title VII, ADA, ADEA, GINA)",
-    source_url: "https://www.eeoc.gov/laws/guidance",
+    source_url: "https://www.eeoc.gov/guidance",
   });
 }
 

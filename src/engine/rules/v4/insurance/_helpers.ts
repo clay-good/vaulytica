@@ -30,9 +30,9 @@ export function isoForm(form: string, label: string): SourceCitation {
   return v4Cite({
     id: `iso-form-${form.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `ISO form ${form} — ${label}`,
-    source_url: "https://www.verisk.com/iso/",
+    source_url: "https://www.verisk.com/insurance/brands/iso/",
     license: "ISO insurance form (citation only — copying restricted)",
-    license_url: "https://www.verisk.com/iso/",
+    license_url: "https://www.verisk.com/insurance/brands/iso/",
   });
 }
 

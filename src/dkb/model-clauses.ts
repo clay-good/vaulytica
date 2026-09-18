@@ -81,7 +81,7 @@ const COMMON_PAPER_LICENSE = {
 
 const BONTERMS_LICENSE = {
   license: "Bonterms Standard License",
-  license_url: "https://bonterms.com/license/",
+  license_url: "https://github.com/Bonterms/Cloud-Terms",
   attribution: "Bonterms Standard Forms, used under the Bonterms Standard License",
 } as const;
 
@@ -204,7 +204,7 @@ export const MODEL_CLAUSES: readonly ModelClauseReference[] = [
     source: {
       id: "bonterms-cloud-force-majeure",
       source: "Bonterms Standard Cloud Terms — Force Majeure",
-      source_url: "https://bonterms.com/forms/cloud-terms/",
+      source_url: "https://github.com/Bonterms/Cloud-Terms",
       retrieved_at: CURATED_AT,
       ...BONTERMS_LICENSE,
     },
@@ -219,7 +219,7 @@ export const MODEL_CLAUSES: readonly ModelClauseReference[] = [
     source: {
       id: "bonterms-cloud-governing-law",
       source: "Bonterms Standard Cloud Terms — Governing Law and Venue",
-      source_url: "https://bonterms.com/forms/cloud-terms/",
+      source_url: "https://github.com/Bonterms/Cloud-Terms",
       retrieved_at: CURATED_AT,
       ...BONTERMS_LICENSE,
     },

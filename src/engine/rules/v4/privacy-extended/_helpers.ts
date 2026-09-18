@@ -95,7 +95,8 @@ export function edpb(slug: string, label: string): SourceCitation {
   return v4Cite({
     id: `edpb-${slug}`,
     source: label,
-    source_url: "https://www.edpb.europa.eu/our-work-tools/general-guidance_en",
+    source_url:
+      "https://www.edpb.europa.eu/our-work-tools/general-guidance/guidelines-recommendations-best-practices_en",
     license: "EDPB guidance",
     license_url: "https://www.edpb.europa.eu/",
   });

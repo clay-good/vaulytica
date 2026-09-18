@@ -61,7 +61,7 @@ export function stateUsury(): SourceCitation {
     id: "state-usury",
     source:
       "State usury statutes (e.g., NY Gen. Oblig. § 5-501 + Penal § 190.40; CA Const. art. XV; TX Fin. § 302)",
-    source_url: "https://www.ncsl.org/financial-services/state-usury-laws",
+    source_url: "https://www.law.cornell.edu/wex/usury",
   });
 }
 
@@ -71,7 +71,7 @@ export function suretyship(): SourceCitation {
     id: "state-suretyship",
     source:
       "State suretyship law + Statute of Frauds (Restatement (Third) of Suretyship & Guaranty § 11; state statute-of-frauds provisions)",
-    source_url: "https://www.law.cornell.edu/wex/suretyship",
+    source_url: "https://www.law.cornell.edu/wex/surety",
   });
 }
 

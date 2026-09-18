@@ -209,7 +209,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     cite: stateLaw(
       "preliminary-notice",
       "statutory preliminary notice contents under state mechanic's lien acts",
-      "https://www.law.cornell.edu/wex/mechanic_s_lien",
+      "https://www.law.cornell.edu/wex/mechanic%27s_lien",
     ),
     pat: [
       /(claimant|the\s+undersigned|person\s+furnishing)/i,
@@ -225,7 +225,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     cite: stateLaw(
       "lien-property-description",
       "property description requirements in preliminary and lien notices",
-      "https://www.law.cornell.edu/wex/mechanic_s_lien",
+      "https://www.law.cornell.edu/wex/mechanic%27s_lien",
     ),
     pat: [
       /(description\s+of\s+the\s+(site|property|project)|legal\s+description|job\s+(site|address))/i,
@@ -241,7 +241,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     cite: stateLaw(
       "lien-notice-contents",
       "the description of labor, services, or materials and the estimated price required in preliminary notices",
-      "https://www.law.cornell.edu/wex/mechanic_s_lien",
+      "https://www.law.cornell.edu/wex/mechanic%27s_lien",
     ),
     pat: [
       /(labou?r|services|materials|equipment)\s+(furnished|provided|supplied)/i,
@@ -256,7 +256,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     cite: stateLaw(
       "lien-warning",
       "the statutory warning to the owner required verbatim in preliminary notices",
-      "https://www.law.cornell.edu/wex/mechanic_s_lien",
+      "https://www.law.cornell.edu/wex/mechanic%27s_lien",
     ),
     pat: [
       /(notice\s+to\s+(property\s+)?owner|you\s+are\s+hereby\s+notified|important\s+notice)/i,
@@ -272,7 +272,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     cite: stateLaw(
       "lien-notice-service",
       "service method and deadline requirements for preliminary notices",
-      "https://www.law.cornell.edu/wex/mechanic_s_lien",
+      "https://www.law.cornell.edu/wex/mechanic%27s_lien",
     ),
     pat: [
       /(serv(e|ed|ice)|mail(ed)?|deliver)/i,

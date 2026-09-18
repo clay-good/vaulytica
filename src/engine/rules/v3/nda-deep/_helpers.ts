@@ -57,7 +57,7 @@ export function utsaCite(): SourceCitation {
     retrieved_at: "2026-05-12T00:00:00Z",
     license: "Public uniform-law text",
     license_url:
-      "https://www.uniformlaws.org/HigherLogic/System/DownloadDocumentFile.ashx?DocumentFileKey=e19b2528-e0b1-0054-23c4-8069701a4b62",
+      "https://www.uniformlaws.org/committees/community-home?CommunityKey=3a2538fb-e030-4e2d-a9e2-90373dc05792",
   };
 }
 

@@ -75,7 +75,7 @@ export function brulotteKimble(): SourceCitation {
     id: "brulotte-kimble",
     source:
       "Brulotte v. Thys Co., 379 U.S. 29 (1964) / Kimble v. Marvel Entm't, LLC, 576 U.S. 446 (2015) — patent post-expiration royalty doctrine",
-    source_url: "https://www.law.cornell.edu/supremecourt/text/576/446",
+    source_url: "https://www.law.cornell.edu/supremecourt/text/13-720",
     license: "Public-domain US judicial opinion",
     license_url: "https://www.usa.gov/government-works",
   });
